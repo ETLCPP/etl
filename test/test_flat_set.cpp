@@ -60,22 +60,6 @@ namespace
   typedef std::set<DC>  Compare_DataDC;
   typedef std::set<NDC> Compare_DataNDC;
 
-  //*************************************************************************
-  std::ostream& operator <<(std::ostream& os, const DataNDC::iterator& itr)
-  {
-    os << itr->value;
-
-    return os;
-  }
-
-  //*************************************************************************
-  std::ostream& operator <<(std::ostream& os, const DataNDC::const_iterator& itr)
-  {
-    os << itr->value;
-
-    return os;
-  }
-
   SUITE(test_flat_set)
   {
     NDC NX = NDC("@");

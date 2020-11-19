@@ -42,8 +42,6 @@ namespace
 {
   SUITE(test_string_utilities_std_char)
   {
-    static const size_t SIZE = 50;
-
     using String     = std::string;
     using IString    = std::string;
     using StringView = std::string_view;
@@ -1570,6 +1568,39 @@ namespace
       StringView::const_iterator itr = etl::find_last_not_of(textview, STR("abcHello World"));
 
       CHECK(textview.end() == itr);
+    }
+
+    //*************************************************************************
+    TEST(test_to_upper_case)
+    {
+      String text(STR("HeLlO WoRlD!"));
+      String expected(STR("HELLO WORLD!"));
+
+      etl::to_upper_case(text);
+
+      CHECK(text == expected);
+    }
+
+    //*************************************************************************
+    TEST(test_to_lower_case)
+    {
+      String text(STR("HeLlO WoRlD!"));
+      String expected(STR("hello world!"));
+
+      etl::to_lower_case(text);
+
+      CHECK(text == expected);
+    }
+
+    //*************************************************************************
+    TEST(test_to_sentence_case)
+    {
+      String text(STR("HeLlO WoRlD!"));
+      String expected(STR("Hello world!"));
+
+      etl::to_sentence_case(text);
+
+      CHECK(text == expected);
     }
   };
 }

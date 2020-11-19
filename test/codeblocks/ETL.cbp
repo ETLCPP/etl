@@ -127,6 +127,29 @@
 					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
 				</ExtraCommands>
 			</Target>
+			<Target title="Windows Small Strings">
+				<Option output="bin/Debug/ETL" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-std=c++14" />
+					<Add option="-std=c++17" />
+					<Add option="-std=c++11" />
+					<Add option="-m32" />
+					<Add option="-g" />
+					<Add option="-D_DEBUG" />
+					<Add option="-DETL_DISABLE_STRING_TRUNCATION_CHECKS" />
+					<Add option="-DETL_DISABLE_STRING_CLEAR_AFTER_USE" />
+					<Add directory="../../src" />
+				</Compiler>
+				<Linker>
+					<Add option="-m32" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}" />
+				</ExtraCommands>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wshadow" />
@@ -211,6 +234,7 @@
 			<Option target="Windows 64" />
 			<Option target="Windows No STL" />
 			<Option target="Windows No STL - Force No Advanced" />
+			<Option target="Windows Small Strings" />
 		</Unit>
 		<Unit filename="../../../unittest-cpp/UnitTest++/Win32/TimeHelpers.h">
 			<Option target="&lt;{~None~}&gt;" />
@@ -495,9 +519,12 @@
 		<Unit filename="../test_bloom_filter.cpp" />
 		<Unit filename="../test_bresenham_line.cpp" />
 		<Unit filename="../test_bsd_checksum.cpp" />
+		<Unit filename="../test_buffer_descriptors.cpp" />
 		<Unit filename="../test_callback_service.cpp" />
 		<Unit filename="../test_callback_timer.cpp" />
 		<Unit filename="../test_checksum.cpp" />
+		<Unit filename="../test_circular_buffer.cpp" />
+		<Unit filename="../test_circular_buffer_external_buffer.cpp" />
 		<Unit filename="../test_compare.cpp" />
 		<Unit filename="../test_compiler_settings.cpp" />
 		<Unit filename="../test_constant.cpp" />
@@ -514,6 +541,7 @@
 		<Unit filename="../test_error_handler.cpp" />
 		<Unit filename="../test_exception.cpp" />
 		<Unit filename="../test_fixed_iterator.cpp" />
+		<Unit filename="../test_flags.cpp" />
 		<Unit filename="../test_flat_map.cpp" />
 		<Unit filename="../test_flat_multimap.cpp" />
 		<Unit filename="../test_flat_multiset.cpp" />
@@ -634,8 +662,6 @@
 			<code_completion>
 				<search_path add="../../unittest-cpp" />
 			</code_completion>
-			<debugger />
-			<envvars />
 			<editor_config active="1" use_tabs="0" tab_indents="1" tab_width="2" indent="2" eol_mode="0" />
 		</Extensions>
 	</Project>

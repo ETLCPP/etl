@@ -1306,7 +1306,7 @@ namespace etl
 
       return *this;
     }
-
+#if ETL_CPP11_SUPPORTED
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -1320,6 +1320,7 @@ namespace etl
 
       return *this;
     }
+#endif
 
   protected:
 

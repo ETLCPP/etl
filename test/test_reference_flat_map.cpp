@@ -78,22 +78,6 @@ namespace
     return true;
   }
 
-  //*************************************************************************
-  std::ostream& operator <<(std::ostream& os, const DataNDC::iterator& itr)
-  {
-    os << itr->first;
-
-    return os;
-  }
-
-  //*************************************************************************
-  std::ostream& operator <<(std::ostream& os, const DataNDC::const_iterator& itr)
-  {
-    os << itr->first;
-
-    return os;
-  }
-
   SUITE(test_reference_flat_map)
   {
     NDC N0 = NDC("A");

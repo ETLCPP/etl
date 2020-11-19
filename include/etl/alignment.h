@@ -196,14 +196,24 @@ namespace etl
     };
   };
 
+#if ETL_CPP14_SUPPORTED
+  template <const size_t LENGTH, const size_t ALIGNMENT>
+  using aligned_storage_t = typename aligned_storage<LENGTH, ALIGNMENT>::type;
+#endif
+
   //***************************************************************************
   /// Aligned storage as
   ///\ingroup alignment
   //***************************************************************************
-  template <const size_t LENGTH, typename T>
+  template <size_t LENGTH, typename T>
   struct aligned_storage_as : public etl::aligned_storage<LENGTH, etl::alignment_of<T>::value>
   {
   };
+
+#if ETL_CPP14_SUPPORTED
+  template <size_t LENGTH, typename T>
+  using aligned_storage_as_t = typename aligned_storage_as<LENGTH, T>::type;
+#endif
 }
 
 #endif

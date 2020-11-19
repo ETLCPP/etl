@@ -113,7 +113,7 @@ namespace etl
   template <typename TIString>
   void trim_from_left(TIString& s, typename TIString::const_pointer trim_characters)
   {
-    size_t position = s.find_first_not_of(trim_characters);
+    typename TIString::size_type position = s.find_first_not_of(trim_characters);
     s.erase(0U, position);
   }
 
@@ -134,7 +134,7 @@ namespace etl
   template <typename TStringView>
   TStringView trim_from_view_left(const TStringView& view, typename TStringView::const_pointer trim_characters)
   {
-    size_t first = view.find_first_not_of(trim_characters);
+    typename TStringView::size_type first = view.find_first_not_of(trim_characters);
 
     typename TStringView::const_pointer pbegin = view.data() + view.size();
 
@@ -163,7 +163,7 @@ namespace etl
   template <typename TIString>
   void trim_left(TIString& s, typename TIString::const_pointer delimiters)
   {
-    size_t p = s.find_first_of(delimiters);
+    typename TIString::size_type p = s.find_first_of(delimiters);
 
     if (p == TIString::npos)
     {
@@ -182,7 +182,7 @@ namespace etl
   template <typename TStringView>
   TStringView trim_view_left(const TStringView& view, typename TStringView::const_pointer delimiters)
   {
-    size_t first = view.find_first_of(delimiters);
+    typename TStringView::size_type first = view.find_first_of(delimiters);
 
     typename TStringView::const_pointer pbegin = view.data();
 
@@ -193,7 +193,7 @@ namespace etl
     }
     else
     {
-      return TStringView(pbegin, size_t(0U));
+      return TStringView(pbegin, typename TStringView::size_type(0U));
     }
   }
 
@@ -224,7 +224,7 @@ namespace etl
   template <typename TStringView>
   TStringView trim_from_view_right(const TStringView& view, typename TStringView::const_pointer trim_characters)
   {
-    size_t last = view.find_last_not_of(trim_characters) + 1;
+    typename TStringView::size_type last = view.find_last_not_of(trim_characters) + 1;
 
     typename TStringView::const_pointer pend = view.data();
 
@@ -252,7 +252,7 @@ namespace etl
   template <typename TIString>
   void trim_right(TIString& s, typename TIString::const_pointer delimiters)
   {
-    size_t p = s.find_last_of(delimiters);
+    typename TIString::size_type p = s.find_last_of(delimiters);
 
     if (p == TIString::npos)
     {
@@ -275,7 +275,7 @@ namespace etl
   template <typename TStringView>
   TStringView trim_view_right(const TStringView& view, typename TStringView::const_pointer delimiters)
   {
-    size_t last = view.find_last_of(delimiters) + 1;
+    typename TStringView::size_type last = view.find_last_of(delimiters) + 1;
 
     typename TStringView::const_pointer pend = view.data();
 
@@ -286,7 +286,7 @@ namespace etl
     }
     else
     {
-      return TStringView(view.data(), size_t(0U));
+      return TStringView(view.data(), typename TStringView::size_type(0U));
     }
   }
 
@@ -318,8 +318,8 @@ namespace etl
   template <typename TStringView>
   TStringView trim_from_view(const TStringView& view, typename TStringView::const_pointer trim_characters)
   {
-    size_t first = view.find_first_not_of(trim_characters);
-    size_t last  = view.find_last_not_of(trim_characters) + 1;
+    typename TStringView::size_type first = view.find_first_not_of(trim_characters);
+    typename TStringView::size_type last  = view.find_last_not_of(trim_characters) + 1;
 
     typename TStringView::const_pointer pbegin = view.data();
     typename TStringView::const_pointer pend   = view.data();
@@ -365,8 +365,8 @@ namespace etl
   template <typename TStringView>
   TStringView trim_view(const TStringView& view, typename TStringView::const_pointer delimiters)
   {
-    size_t first = view.find_first_of(delimiters);
-    size_t last  = view.find_last_of(delimiters) + 1;
+    typename TStringView::size_type first = view.find_first_of(delimiters);
+    typename TStringView::size_type last  = view.find_last_of(delimiters) + 1;
 
     typename TStringView::const_pointer pbegin = view.data();
     typename TStringView::const_pointer pend   = view.data();
@@ -388,7 +388,7 @@ namespace etl
   /// Get up to the first n characters.
   //***************************************************************************
   template <typename TIString>
-  void left_n(TIString& s, size_t n)
+  void left_n(TIString& s, typename TIString::size_type n)
   {
     n = (n > s.size()) ? s.size() : n;
 
@@ -399,7 +399,7 @@ namespace etl
   /// Get a view of up to the first n characters.
   //***************************************************************************
   template <typename TStringView>
-  TStringView left_n_view(const TStringView& view, size_t n)
+  TStringView left_n_view(const TStringView& view, typename TStringView::size_type n)
   {
     n = (n > view.size()) ? view.size() : n;
 
@@ -410,7 +410,7 @@ namespace etl
   /// Get up to the last n characters.
   //***************************************************************************
   template <typename TIString>
-  void right_n(TIString& s, size_t n)
+  void right_n(TIString& s, typename TIString::size_type n)
   {
     n = (n > s.size()) ? s.size() : n;
 
@@ -421,7 +421,7 @@ namespace etl
   /// Get a view of up to the last n characters.
   //***************************************************************************
   template <typename TStringView>
-  TStringView right_n_view(const TStringView& view, size_t n)
+  TStringView right_n_view(const TStringView& view, typename TStringView::size_type n)
   {
     n = (n > view.size()) ? view.size() : n;
 
@@ -466,15 +466,15 @@ namespace etl
       const typename TIString::value_type* p_old = pairsbegin->first;
       const typename TIString::value_type* p_new = pairsbegin->second;
 
-      size_t position = 0U;
+      typename TIString::size_type position = 0U;
 
       do
       {
         position = s.find(p_old, position);
         if (position != TIString::npos)
         {
-          s.replace(position, etl::strlen(p_old), p_new, etl::strlen(p_new));
-          position += etl::strlen(p_new);
+          s.replace(position, typename TIString::size_type(etl::strlen(p_old)), p_new, typename TIString::size_type(etl::strlen(p_new)));
+          position += typename TIString::size_type(etl::strlen(p_new));
         }
       } while (position != TIString::npos);
 
@@ -703,7 +703,7 @@ namespace etl
     typedef typename TInput::const_pointer const_pointer;
 
     bool token_found = false;
-    size_t position  = 0U;
+    typename TStringView::size_type position  = 0U;
     TStringView view = last_view.value_or(TStringView());
     const_pointer begin_ptr = input.data();
 
@@ -744,14 +744,14 @@ namespace etl
   /// pad_left
   //***************************************************************************
   template <typename TIString>
-  void pad_left(TIString& s, size_t required_size, typename TIString::value_type pad_char)
+  void pad_left(TIString& s, typename TIString::size_type required_size, typename TIString::value_type pad_char)
   {
     required_size = etl::min(required_size, s.max_size());
 
     if (required_size > s.size())
     {
       required_size -= s.size();
-      s.insert(size_t(0U), required_size, pad_char);
+      s.insert(typename TIString::size_type(0U), required_size, pad_char);
     }
   }
 
@@ -759,7 +759,7 @@ namespace etl
   /// pad_right
   //***************************************************************************
   template <typename TIString>
-  void pad_right(TIString& s, size_t required_size, typename TIString::value_type pad_char)
+  void pad_right(TIString& s, typename TIString::size_type required_size, typename TIString::value_type pad_char)
   {
     required_size = etl::min(required_size, s.max_size());
 
@@ -774,7 +774,7 @@ namespace etl
   /// pad
   //***************************************************************************
   template <typename TIString>
-  void pad(TIString& s, size_t required_size, string_pad_direction pad_direction, typename TIString::value_type pad_char)
+  void pad(TIString& s, typename TIString::size_type required_size, string_pad_direction pad_direction, typename TIString::value_type pad_char)
   {
     switch (int(pad_direction))
     {
@@ -795,6 +795,38 @@ namespace etl
         break;
       }
     }
+  }
+
+  //***************************************************************************
+  /// to_upper_case
+  //***************************************************************************
+  template <typename TString>
+  void to_upper_case(TString& s)
+  {
+    etl::transform(s.begin(), s.end(), s.begin(), ::toupper);
+  }
+
+  //***************************************************************************
+  /// to_lower_case
+  //***************************************************************************
+  template <typename TString>
+  void to_lower_case(TString& s)
+  {
+    etl::transform(s.begin(), s.end(), s.begin(), ::tolower);
+  }
+
+  //***************************************************************************
+  /// to_sentence_case
+  //***************************************************************************
+  template <typename TString>
+  void to_sentence_case(TString& s)
+  {
+    typename TString::iterator itr = s.begin();
+
+    *itr = typename TString::value_type(::toupper(*itr));
+    ++itr;
+
+    etl::transform(itr, s.end(), itr, ::tolower);
   }
 }
 

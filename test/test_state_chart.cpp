@@ -211,7 +211,7 @@ namespace
   };
 
   //***************************************************************************
-  const etl::array<MotorControl::transition, 7> MotorControl::transitionTable =
+  constexpr etl::array<MotorControl::transition, 7> MotorControl::transitionTable =
   {
     MotorControl::transition(StateId::IDLE,         EventId::START,          StateId::RUNNING,      &MotorControl::OnStart, &MotorControl::Guard),
     MotorControl::transition(StateId::IDLE,         EventId::START,          StateId::IDLE,         &MotorControl::Null,    &MotorControl::NotGuard),
@@ -223,7 +223,7 @@ namespace
   };
 
   //***************************************************************************
-  const etl::array<MotorControl::state, 3> MotorControl::stateTable =
+  constexpr etl::array<MotorControl::state, 3> MotorControl::stateTable =
   {
     MotorControl::state(StateId::IDLE,         &MotorControl::OnEnterIdle,        nullptr),
     MotorControl::state(StateId::RUNNING,      &MotorControl::OnEnterRunning,     nullptr),

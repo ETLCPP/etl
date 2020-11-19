@@ -340,6 +340,16 @@ namespace etl
       base_t::push_back(value);
     }
 
+    //*********************************************************************
+    /// Constructs a value at the end of the vector.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    ///\param value The value to add.
+    //*********************************************************************
+    void emplace_back(parameter_t value)
+    {
+      base_t::emplace_back(value);
+    }
+
     //*************************************************************************
     /// Removes an element from the end of the vector.
     /// Does nothing if the vector is empty.
@@ -358,6 +368,14 @@ namespace etl
     iterator insert(iterator position, parameter_t value)
     {
       return iterator(base_t::insert(base_t::iterator(position), value));
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the vector at the specified position.
+    //*************************************************************************
+    iterator emplace(iterator position, parameter_t value)
+    {
+      return iterator(base_t::emplace(base_t::iterator(position), value));
     }
 
     //*********************************************************************

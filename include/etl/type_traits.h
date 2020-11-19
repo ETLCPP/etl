@@ -737,10 +737,15 @@ namespace etl
     auto nonvoid_convertible(...)->etl::false_type;
   }
 
+#if defined(ETL_COMPILER_ARM5)
+  template <typename TFrom, typename TTo>
+  struct is_convertible : etl::integral_constant<bool, __is_convertible_to(TFrom, TTo)> {};
+#else
   template <typename TFrom, typename TTo>
   struct is_convertible : etl::integral_constant<bool, (decltype(private_type_traits::returnable<TTo>(0))::value &&
                                                         decltype(private_type_traits::nonvoid_convertible<TFrom, TTo>(0))::value) ||
                                                         (etl::is_void<TFrom>::value && etl::is_void<TTo>::value)> {};
+#endif
 #endif
 
 #if ETL_CPP17_SUPPORTED
@@ -1071,7 +1076,13 @@ namespace etl
   inline constexpr bool is_pod_v = std::is_standard_layout_v<T> && std::is_trivial_v<T>;
 #endif
 
-#if !defined(ARDUINO) && ETL_NOT_USING_STLPORT
+#if defined(ETL_COMPILER_GCC)
+  #if ETL_COMPILER_VERSION >= 5
+    #define ETL_GCC_V5_TYPE_TRAITS_SUPPORTED
+  #endif
+#endif
+
+#if !defined(ARDUINO) && ETL_NOT_USING_STLPORT && defined(ETL_GCC_V5_TYPE_TRAITS_SUPPORTED)
   //***************************************************************************
   /// is_trivially_constructible
   ///\ingroup type_traits
@@ -1557,6 +1568,28 @@ namespace etl
 #if ETL_CPP17_SUPPORTED
   template <typename T>
   inline constexpr size_t size_of_v = etl::size_of<T>::value;
+#endif
+
+#if ETL_CPP11_SUPPORTED
+  //***************************************************************************
+  /// are_all_same
+  template <typename T, typename T1, typename... TRest>
+  struct are_all_same
+  {
+    static const bool value = etl::is_same<T, T1>::value &&
+      etl::are_all_same<T, TRest...>::value;
+  };
+
+  template <typename T, typename T1>
+  struct are_all_same<T, T1>
+  {
+    static const bool value = etl::is_same<T, T1>::value;
+  };
+#endif
+
+#if ETL_CPP17_SUPPORTED
+  template <typename T, typename T1, typename... TRest>
+  inline constexpr bool are_all_same_v = are_all_same<T, T1, TRest...>::value;
 #endif
 }
 

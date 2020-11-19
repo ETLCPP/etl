@@ -43,16 +43,6 @@ namespace
 {
   typedef etl::wformat_spec Format;
 
-  std::ostream& operator << (std::ostream& os, const etl::iwstring& str)
-  {
-    for (auto c : str)
-    {
-      os << c;
-    }
-
-    return os;
-  }
-
   SUITE(test_to_wstring)
   {
     //*************************************************************************

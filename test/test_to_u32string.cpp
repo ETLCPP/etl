@@ -41,16 +41,6 @@ namespace
 {
   typedef etl::u32format_spec Format;
 
-  std::ostream& operator << (std::ostream& os, const etl::iu32string& str)
-  {
-    for (auto c : str)
-    {
-      os << c;
-    }
-
-    return os;
-  }
-
   SUITE(test_to_u32string)
   {
     //*************************************************************************

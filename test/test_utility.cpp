@@ -73,7 +73,6 @@ namespace
       CHECK_EQUAL(2.3, p1.second);
     }
 
-#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
     TEST(test_cpp17_deduced_pair_construct)
     {
@@ -85,7 +84,6 @@ namespace
       CHECK_EQUAL(1,   p1.first);
       CHECK_EQUAL(2.3, p1.second);
     }
-#endif
 
     //*************************************************************************
     TEST(test_pair_move_parameter_construct)
@@ -205,7 +203,6 @@ namespace
       CHECK(p3 > p1);
     }
 
-
     //*************************************************************************
     TEST(test_pair_conversion)
     {
@@ -216,11 +213,32 @@ namespace
       etl::pair<int, std::string> ep2(sp1);
       std::pair<int, std::string> sp2(ep1);
 
+      etl::pair<const int, std::string> ep3(1, "Hello");
+      std::pair<const int, std::string> sp3(2, "World");
+
+      etl::pair<int, std::string> ep4(sp3);
+      std::pair<int, std::string> sp4(ep3);
+
+      etl::pair<const int, std::string> ep5(sp1);
+      std::pair<const int, std::string> sp5(ep1);
+
       CHECK_EQUAL(2, ep2.first);
       CHECK_EQUAL(std::string("World"), ep2.second);
 
       CHECK_EQUAL(1, sp2.first);
       CHECK_EQUAL(std::string("Hello"), sp2.second);
+
+      CHECK_EQUAL(2, ep4.first);
+      CHECK_EQUAL(std::string("World"), ep4.second);
+
+      CHECK_EQUAL(1, sp4.first);
+      CHECK_EQUAL(std::string("Hello"), sp4.second);
+
+      CHECK_EQUAL(2, ep5.first);
+      CHECK_EQUAL(std::string("World"), ep5.second);
+
+      CHECK_EQUAL(1, sp5.first);
+      CHECK_EQUAL(std::string("Hello"), sp5.second);
 #endif
     }
 

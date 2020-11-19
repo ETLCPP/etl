@@ -37,6 +37,7 @@ SOFTWARE.
 #include "iterator.h"
 #include "utility.h"
 #include "nullptr.h"
+#include "alignment.h"
 
 #include <assert.h>
 
@@ -1900,6 +1901,156 @@ namespace etl
       memory_clear(static_cast<volatile T&>(*this));
     }
   };
+
+  //***************************************************************************
+  /// Declares an aligned buffer of N_OBJECTS x of size OBJECT_SIZE at alignment ALIGNMENT.
+  ///\ingroup alignment
+  //***************************************************************************
+  template <size_t OBJECT_SIZE_, size_t N_OBJECTS_, size_t ALIGNMENT_>
+  class uninitialized_buffer
+  {
+  public:
+
+    static ETL_CONSTANT size_t OBJECT_SIZE = OBJECT_SIZE_;
+    static ETL_CONSTANT size_t N_OBJECTS   = N_OBJECTS_;
+    static ETL_CONSTANT size_t ALIGNMENT   = ALIGNMENT_;
+
+    /// Convert to T reference.
+    template <typename T>
+    operator T& ()
+    {
+      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+      return *reinterpret_cast<T*>(raw);
+    }
+
+    /// Convert to const T reference.
+    template <typename T>
+    operator const T& () const
+    {
+      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+      return *reinterpret_cast<const T*>(raw);
+    }
+
+    /// Convert to T pointer.
+    template <typename T>
+    operator T* ()
+    {
+      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+      return reinterpret_cast<T*>(raw);
+    }
+
+    /// Convert to const T pointer.
+    template <typename T>
+    operator const T* () const
+    {
+      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+      return reinterpret_cast<const T*>(raw);
+    }
+
+#if ETL_CPP11_SUPPORTED && !defined(ETL_COMPILER_ARM5) && !defined(ETL_UNINITIALIZED_BUFFER_FORCE_CPP03)
+    alignas(ALIGNMENT) char raw[OBJECT_SIZE * N_OBJECTS];
+#else
+    union
+    {
+      char raw[OBJECT_SIZE * N_OBJECTS];
+      typename etl::type_with_alignment<ALIGNMENT>::type etl_alignment_type; // A POD type that has the same alignment as ALIGNMENT.
+    };
+#endif
+  };
+
+  //***************************************************************************
+  /// Declares an aligned buffer of N_OBJECTS as if they were type T.
+  ///\ingroup alignment
+  //***************************************************************************
+  template <typename T, size_t N_OBJECTS_>
+  class uninitialized_buffer_of
+  {
+  public:
+
+    typedef T        value_type;
+    typedef T&       reference;
+    typedef const T& const_reference;
+    typedef T*       pointer;
+    typedef const T* const_pointer;
+    typedef T*       iterator;
+    typedef const T* const_iterator;
+
+    static ETL_CONSTANT size_t OBJECT_SIZE = sizeof(T);
+    static ETL_CONSTANT size_t N_OBJECTS = N_OBJECTS_;
+    static ETL_CONSTANT size_t ALIGNMENT = etl::alignment_of<T>::value;
+
+    /// Index operator.
+    T& operator [](int i)
+    {
+      return ((T*)this->raw)[i];
+    }
+
+    /// Index operator.
+    const T& operator [](int i) const
+    {
+      return ((T*)this->raw)[i];
+    }
+
+    /// Convert to T reference.
+    operator T& ()
+    {
+      return *reinterpret_cast<T*>(raw);
+    }
+
+    /// Convert to const T reference.
+    operator const T& () const
+    {
+      return *reinterpret_cast<const T*>(raw);
+    }
+
+    /// Convert to T pointer.
+    operator T* ()
+
+    {
+      return reinterpret_cast<T*>(raw);
+    }
+
+    /// Convert to const T pointer.
+    operator const T* () const
+    {
+      return reinterpret_cast<const T*>(raw);
+    }
+
+    T* begin()
+    {
+      return reinterpret_cast<const T*>(raw);
+    }
+
+    const T* begin() const
+    {
+      return reinterpret_cast<const T*>(raw);
+    }
+
+    T* end()
+    {
+      return reinterpret_cast<const T*>(raw + (sizeof(T) * N_OBJECTS));
+    }
+
+    const T* end() const
+    {
+      return reinterpret_cast<const T*>(raw + (sizeof(T) * N_OBJECTS));
+    }
+
+#if ETL_CPP11_SUPPORTED && !defined(ETL_COMPILER_ARM5) && !defined(ETL_UNINITIALIZED_BUFFER_FORCE_CPP03)
+    alignas(ALIGNMENT) char raw[sizeof(T) * N_OBJECTS];
+#else
+    union
+    {
+      char raw[sizeof(T) * N_OBJECTS];
+      typename etl::type_with_alignment<ALIGNMENT>::type etl_alignment_type; // A POD type that has the same alignment as ALIGNMENT.
+    };
+#endif
+  };
+
+#if ETL_CPP14_SUPPORTED
+  template <typename T, size_t N_OBJECTS>
+  using uninitialized_buffer_of_v = typename uninitialized_buffer_of<T, N_OBJECTS>::buffer;
+#endif
 }
 
 #endif

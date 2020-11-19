@@ -502,8 +502,8 @@ namespace etl
 
   private:
 
-    T* mbegin;
-    T* mend;
+    pointer mbegin;
+    pointer mend;
   };
 
   //*************************************************************************

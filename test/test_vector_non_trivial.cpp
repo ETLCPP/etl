@@ -670,8 +670,8 @@ namespace
       {
         std::string value(" ");
         value[0] = char('A' + i);
-        compare_data.emplace_back(value);
-        data.emplace_back(value);
+        compare_data.emplace_back(value, i);
+        data.emplace_back(value, i);
       }
 
       CHECK_EQUAL(compare_data.size(), data.size());
@@ -936,8 +936,8 @@ namespace
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
 
-        data.emplace(data.begin() + offset, INITIAL_VALUE);
-        compare_data.emplace(compare_data.begin() + offset, INITIAL_VALUE);
+        data.emplace(data.begin() + offset, INITIAL_VALUE, offset);
+        compare_data.emplace(compare_data.begin() + offset, INITIAL_VALUE, offset);
 
         CHECK_EQUAL(compare_data.size(), data.size());
 

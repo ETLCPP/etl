@@ -832,4 +832,11 @@ namespace
     CHECK_EQUAL(false, etl::negation_v<etl::bool_constant<true>>);
     CHECK((std::is_same_v<bool, etl::bool_constant<true>::value_type>));
   }
+
+  //*************************************************************************
+  TEST(test_are_all_same)
+  {
+    CHECK((etl::are_all_same<int, int, int, int, int>::value == true));
+    CHECK((etl::are_all_same<int, int, int, char, int>::value == false));
+  }
 }

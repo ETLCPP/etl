@@ -34,12 +34,9 @@ SOFTWARE.
 #include <stdint.h>
 #include <limits.h>
 
-// Some targets do not support 8bit types.
-#define ETL_8BIT_SUPPORT (CHAR_BIT == 8)
-
 // Define a debug macro
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(ETL_DEBUG) 
-#define ETL_DEBUG
+  #define ETL_DEBUG
 #endif
 
 // Determine the bit width of the platform.
@@ -78,6 +75,17 @@ SOFTWARE.
   #define ETL_NOT_USING_STLPORT 1
 #endif
 
+// Some targets do not support 8bit types.
+#if (CHAR_BIT == 8)
+  #define ETL_USING_8BIT_TYPES     1
+  #define ETL_NOT_USING_8BIT_TYPES 0
+#else
+  #define ETL_USING_8BIT_TYPES     0
+  #define ETL_NOT_USING_8BIT_TYPES 1
+#endif
+
+#define ETL_8BIT_SUPPORT (CHAR_BIT == 8)
+
 // Helper macro for ETL_NO_64BIT_TYPES.
 #if defined(ETL_NO_64BIT_TYPES)
   #define ETL_USING_64BIT_TYPES     0
@@ -96,74 +104,92 @@ SOFTWARE.
 
 // Option to force string construction from a character pointer to be explicit.
 #if defined(ETL_FORCE_EXPLICIT_STRING_CONVERSION_FROM_CHAR)
-#define ETL_EXPLICIT_STRING_FROM_CHAR explicit
+  #define ETL_EXPLICIT_STRING_FROM_CHAR explicit
 #else
-#define ETL_EXPLICIT_STRING_FROM_CHAR
+  #define ETL_EXPLICIT_STRING_FROM_CHAR
+#endif
+
+// Option to disable truncation checks for strings.
+#if defined(ETL_DISABLE_STRING_TRUNCATION_CHECKS)
+  #define ETL_STRING_TRUNCATION_CHECKS_ENABLED 0
+#else
+  #define ETL_STRING_TRUNCATION_CHECKS_ENABLED 1
+#endif
+
+// Option to disable clear-after-use functionality for strings.
+#if defined(ETL_DISABLE_STRING_CLEAR_AFTER_USE)
+  #define ETL_STRING_CLEAR_AFTER_USE_ENABLED 0
+#else
+  #define ETL_STRING_CLEAR_AFTER_USE_ENABLED 1
 #endif
 
 // The macros below are dependent on the profile.
 // C++11
 #if ETL_CPP11_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
-#define ETL_CONSTEXPR constexpr
-#define ETL_CONST_OR_CONSTEXPR constexpr
-#define ETL_DELETE = delete
-#define ETL_EXPLICIT explicit
-#define ETL_OVERRIDE override
-#define ETL_FINAL final
-#define ETL_NORETURN [[noreturn]]
+  #define ETL_CONSTEXPR constexpr
+  #define ETL_CONSTANT constexpr
+  #define ETL_DELETE = delete
+  #define ETL_EXPLICIT explicit
+  #define ETL_OVERRIDE override
+  #define ETL_FINAL final
+  #define ETL_NORETURN [[noreturn]]
 
-#if defined(ETL_THROW_EXCEPTIONS)
-#define ETL_NOEXCEPT  noexcept
-#define ETL_NOEXCEPT_EXPR(expression) noexcept(expression)
+  #if defined(ETL_THROW_EXCEPTIONS)
+    #define ETL_NOEXCEPT  noexcept
+    #define ETL_NOEXCEPT_EXPR(expression) noexcept(expression)
+  #else
+    #define ETL_NOEXCEPT
+    #define ETL_NOEXCEPT_EXPR(expression)
+  #endif
 #else
-#define ETL_NOEXCEPT
-#define ETL_NOEXCEPT_EXPR(expression)
-#endif
-#else
-#define ETL_CONSTEXPR
-#define ETL_CONST_OR_CONSTEXPR const
-#define ETL_DELETE
-#define ETL_EXPLICIT
-#define ETL_OVERRIDE
-#define ETL_FINAL
-#define ETL_NORETURN
-#define ETL_NOEXCEPT
-#define ETL_NOEXCEPT_EXPR(expression)
+  #define ETL_CONSTEXPR
+  #define ETL_CONSTANT const
+  #define ETL_DELETE
+  #define ETL_EXPLICIT
+  #define ETL_OVERRIDE
+  #define ETL_FINAL
+  #define ETL_NORETURN
+  #define ETL_NOEXCEPT
+  #define ETL_NOEXCEPT_EXPR(expression)
 #endif
 
 // C++14
 #if ETL_CPP14_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
-#define ETL_CONSTEXPR14 constexpr
-#define ETL_DEPRECATED [[deprecated]]
-#define ETL_DEPRECATED_REASON(reason) [[deprecated(reason)]]
+  #define ETL_CONSTEXPR14 constexpr
+  #define ETL_DEPRECATED [[deprecated]]
+  #define ETL_DEPRECATED_REASON(reason) [[deprecated(reason)]]
 #else
-#define ETL_CONSTEXPR14
-#define ETL_DEPRECATED
-#define ETL_DEPRECATED_REASON(reason)
+  #define ETL_CONSTEXPR14
+  #define ETL_DEPRECATED
+  #define ETL_DEPRECATED_REASON(reason)
 #endif
 
 // C++17
 #if ETL_CPP17_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
-#define ETL_CONSTEXPR17 constexpr
-#define ETL_IF_CONSTEXPR constexpr
-#define ETL_NODISCARD [[nodiscard]]
-#define ETL_FALLTHROUGH [[fallthrough]]
+  #define ETL_CONSTEXPR17 constexpr
+  #define ETL_IF_CONSTEXPR constexpr
+  #define ETL_NODISCARD [[nodiscard]]
+  #define ETL_FALLTHROUGH [[fallthrough]]
 #else
-#define ETL_CONSTEXPR17
-#define ETL_IF_CONSTEXPR
-#define ETL_NODISCARD
-#define ETL_FALLTHROUGH
+  #define ETL_CONSTEXPR17
+  #define ETL_IF_CONSTEXPR
+  #define ETL_NODISCARD
+  #define ETL_FALLTHROUGH
 #endif
 
 // C++20
 #if ETL_CPP20_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
-#define ETL_LIKELY [[likely]]
-#define ETL_UNLIKELY [[unlikely]]
-#define ETL_CONSTEXPR20 constexpr
+  #define ETL_LIKELY [[likely]]
+  #define ETL_UNLIKELY [[unlikely]]
+  #define ETL_CONSTEXPR20 constexpr
+  #define ETL_CONSTEVAL consteval
+  #define ETL_CONSTINIT constinit
 #else
-#define ETL_LIKELY
-#define ETL_UNLIKELY
-#define ETL_CONSTEXPR20
+  #define ETL_LIKELY
+  #define ETL_UNLIKELY
+  #define ETL_CONSTEXPR20
+  #define ETL_CONSTEVAL
+  #define ETL_CONSTINIT
 #endif
 
 // Sort out namespaces for STL/No STL options.

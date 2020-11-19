@@ -257,5 +257,20 @@ test/Logs
 build-test-Desktop_x86_windows_msvc2019_pe_32bit-Debug
 test/vs2019/.vs
 Corel Auto-Preserve
-test/vs2019/Debug No Unit Tests
-test/kdevelopbuild
+.vscode
+build-test-Clang_10-Debug
+build-test-GCC-Debug
+test/kdevelopbuild/unittest++
+test/random_clcg.csv
+test/random_hash.csv
+test/random_lcg.csv
+test/random_lcg.csv
+test/random_lcg.csv
+test/random_lsfr.csv
+test/random_lsfr.csv
+test/random_mwc.csv
+test/random_pcg.csv
+test/random_pcg.csv
+test/random_xorshift.csv
+test/cmake_install.cmake
+test/Makefile

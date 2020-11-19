@@ -1,4 +1,60 @@
 ===============================================================================
+18.20.1
+Resolved issue with zero length literals for etl::make_string (again!)
+Remove redundant test support code.
+Disabled ASAN option in Visual Studio project.
+
+===============================================================================
+18.20.0
+Added etl::buffer_descriptors.
+Added std/etl pair conversions.
+Added etl::make_string_view.
+Resolved issue with zero length literals for etl::make_string
+Resolved etl::flags constexpr issues.
+Added atomics for clang.
+Resolved type_traits issues for GCC < v5
+
+===============================================================================
+18.19.3
+Addressed ARMCC v5 C++11 issues
+
+===============================================================================
+18.19.2
+Expanded the use of constexpr in etl::flags
+
+===============================================================================
+18.19.1
+Added ETL_CONSTEXPR for state_chart, transision and state constructors.
+Eliminate ARM compiler v5 warnings for state_chart.
+Fixed return type error for atomic GCC.
+
+===============================================================================
+18.19.0
+Modified strings for better memory efficiency. String truncation detection and clear-after-use can be disabled.
+Added ETL_DISABLE_STRING_TRUNCATION_CHECKS macro check in platform.h.
+Added ETL_DISABLE_STRING_CLEAR_AFTER_USE macro check in platform.h.
+Added etl::flags to wrap boolean flag functionality.
+Four parameter equal() algorithm variant added.
+Modified is_pod definition when using the STL.
+Added are_all_same trait.
+
+===============================================================================
+18.18.2
+Change to array_view member variable declaration, for constructor from array.
+
+===============================================================================
+18.18.1
+Added [] operators to etl::circular_buffer
+
+===============================================================================
+18.18.0
+Added etl::circular_buffer
+
+===============================================================================
+18.17.2
+Added missing emplace functions from vector-of-pointers specialisation.
+
+===============================================================================
 18.17.1
 Fixed incorrect reflected CRC8 0x07 lookup table
 

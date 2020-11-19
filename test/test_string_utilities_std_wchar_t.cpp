@@ -42,8 +42,6 @@ namespace
 {
   SUITE(test_string_utilities_std_wchar_t)
   {
-    static const size_t SIZE = 50;
-
     using String     = std::wstring;
     using IString    = std::wstring;
     using StringView = std::wstring_view;

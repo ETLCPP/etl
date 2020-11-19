@@ -61,38 +61,6 @@ using Data_const_iterator = Data::const_iterator;
 using Compare_Data_iterator = Compare_Data::iterator;
 using Compare_Data_const_iterator = Compare_Data::const_iterator;
 
-//*************************************************************************
-static std::ostream& operator << (std::ostream& os, const Data_iterator& it)
-{
-  os << (*it).first << " " << (*it).second;
-
-  return os;
-}
-
-//*************************************************************************
-static std::ostream& operator << (std::ostream& os, const Data_const_iterator& it)
-{
-  os << (*it).first << " " << (*it).second;
-
-  return os;
-}
-
-//*************************************************************************
-static std::ostream& operator << (std::ostream& os, const Compare_Data_iterator& it)
-{
-  os << (*it).first << " " << (*it).second;
-
-  return os;
-}
-
-//*************************************************************************
-static std::ostream& operator << (std::ostream& os, const Compare_Data_const_iterator& it)
-{
-  os << (*it).first << " " << (*it).second;
-
-  return os;
-}
-
 namespace
 {
   SUITE(test_multimap)
