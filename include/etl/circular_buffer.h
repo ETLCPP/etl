@@ -1051,7 +1051,7 @@ namespace etl
   {
   public:
 
-    ETL_STATIC_ASSERT((MAX_SIZE_ > 0U), "Zero sized etl::circular_buffer is not valid");
+    ETL_STATIC_ASSERT((MAX_SIZE_ > 0U), "Zero capacity etl::circular_buffer is not valid");
 
     static ETL_CONSTANT typename icircular_buffer<T>::size_type MAX_SIZE = typename icircular_buffer<T>::size_type(MAX_SIZE_);
 

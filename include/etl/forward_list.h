@@ -1625,7 +1625,7 @@ namespace etl
   {
   public:
 
-    ETL_STATIC_ASSERT((MAX_SIZE_ > 0U), "Zero sized etl::forward_list is not valid");
+    ETL_STATIC_ASSERT((MAX_SIZE_ > 0U), "Zero capacity etl::forward_list is not valid");
 
     static const size_t MAX_SIZE = MAX_SIZE_;
 

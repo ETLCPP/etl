@@ -37,6 +37,7 @@ SOFTWARE.
 #include "iterator.h"
 #include "utility.h"
 #include "functional.h"
+#include "static_assert.h"
 
 #if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
@@ -1292,6 +1293,8 @@ namespace etl
   {
   public:
 
+    ETL_STATIC_ASSERT((MAX_SIZE_ > 0U), "Zero capacity etl::indirect_vector is not valid");
+
     static const size_t MAX_SIZE = MAX_SIZE_;
 
     //*************************************************************************
@@ -1420,14 +1423,14 @@ namespace etl
   ///\ingroup indirect_vector
   //***************************************************************************
   template <typename T>
-  class indirect_vector<T, 0> : public etl::iindirect_vector<T>
+  class indirect_vector_ext : public etl::iindirect_vector<T>
   {
   public:
 
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    indirect_vector(etl::ivector<T*>& lookup_, etl::ipool& pool_)
+    indirect_vector_ext(etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
       ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
@@ -1435,9 +1438,9 @@ namespace etl
 
     //*************************************************************************
     /// Constructor, with size.
-    ///\param initial_size The initial size of the indirect_vector.
+    ///\param initial_size The initial size of the indirect_vector_ext.
     //*************************************************************************
-    explicit indirect_vector(size_t initial_size, etl::ivector<T*>& lookup_, etl::ipool& pool_)
+    explicit indirect_vector_ext(size_t initial_size, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
       ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
@@ -1446,10 +1449,10 @@ namespace etl
 
     //*************************************************************************
     /// Constructor, from initial size and value.
-    ///\param initial_size  The initial size of the indirect_vector.
-    ///\param value        The value to fill the indirect_vector with.
+    ///\param initial_size  The initial size of the indirect_vector_ext.
+    ///\param value        The value to fill the indirect_vector_ext with.
     //*************************************************************************
-    indirect_vector(size_t initial_size, typename etl::iindirect_vector<T>::parameter_t value, etl::ivector<T*>& lookup_, etl::ipool& pool_)
+    indirect_vector_ext(size_t initial_size, typename etl::iindirect_vector<T>::parameter_t value, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
       ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
@@ -1463,7 +1466,7 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    indirect_vector(TIterator first, TIterator last, etl::ivector<T*>& lookup_, etl::ipool& pool_)
+    indirect_vector_ext(TIterator first, TIterator last, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
       ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
@@ -1474,7 +1477,7 @@ namespace etl
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************
-    indirect_vector(std::initializer_list<T> init, etl::ivector<T*>& lookup_, etl::ipool& pool_)
+    indirect_vector_ext(std::initializer_list<T> init, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
       ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
@@ -1485,7 +1488,7 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    indirect_vector(const indirect_vector& other, etl::ivector<T*>& lookup_, etl::ipool& pool_)
+    indirect_vector_ext(const indirect_vector_ext& other, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
       ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
@@ -1495,7 +1498,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    indirect_vector& operator = (const indirect_vector& rhs)
+    indirect_vector_ext& operator = (const indirect_vector_ext& rhs)
     {
       if (&rhs != this)
       {
@@ -1509,7 +1512,7 @@ namespace etl
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
-    indirect_vector(indirect_vector&& other, etl::ivector<T*>& lookup_, etl::ipool& pool_)
+    indirect_vector_ext(indirect_vector_ext&& other, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
       ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
@@ -1519,7 +1522,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    indirect_vector& operator = (indirect_vector&& rhs)
+    indirect_vector_ext& operator = (indirect_vector_ext&& rhs)
     {
       this->move_container(etl::move(rhs));
 
@@ -1530,7 +1533,7 @@ namespace etl
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    ~indirect_vector()
+    ~indirect_vector_ext()
     {
       this->clear();
     }
