@@ -1,4 +1,8 @@
 ===============================================================================
+18.20.2
+Fixed etl::to_string for floating point numbers between 0 & -1.0
+
+===============================================================================
 18.20.1
 Resolved issue with zero length literals for etl::make_string (again!)
 Remove redundant test support code.
