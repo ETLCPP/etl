@@ -245,12 +245,10 @@ namespace etl
   };
 
   //***************************************************************************
-  /// A wstring implementation that uses a fixed size buffer.
-  /// A specialisation that requires an external buffer to be specified.
+  /// A wstring implementation that uses a fixed size external buffer.
   ///\ingroup wstring
   //***************************************************************************
-  template <>
-  class wstring<0U> : public iwstring
+  class wstring_ext : public iwstring
   {
   public:
 
@@ -262,7 +260,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    wstring(value_type* buffer, size_type buffer_size)
+    wstring_ext(value_type* buffer, size_type buffer_size)
       : iwstring(buffer, buffer_size - 1U)
     {
       this->initialise();
@@ -270,9 +268,9 @@ namespace etl
 
     //*************************************************************************
     /// Copy constructor.
-    ///\param other The other wstring.
+    ///\param other The other wstring_ext.
     //*************************************************************************
-    wstring(const etl::wstring<0U>& other, value_type* buffer, size_type buffer_size)
+    wstring_ext(const etl::wstring_ext& other, value_type* buffer, size_type buffer_size)
       : iwstring(buffer, buffer_size - 1U)
     {
       this->assign(other);
@@ -282,19 +280,19 @@ namespace etl
     /// From other iwstring.
     ///\param other The other iwstring.
     //*************************************************************************
-    wstring(const etl::iwstring& other, value_type* buffer, size_type buffer_size)
+    wstring_ext(const etl::iwstring& other, value_type* buffer, size_type buffer_size)
       : iwstring(buffer, buffer_size - 1U)
     {
       this->assign(other);
     }
 
     //*************************************************************************
-    /// From other wstring, position, length.
-    ///\param other The other wstring.
+    /// From other wstring_ext, position, length.
+    ///\param other The other wstring_ext.
     ///\param position The position of the first character.
     ///\param length   The number of characters. Default = npos.
     //*************************************************************************
-    wstring(const etl::iwstring& other, value_type* buffer, size_type buffer_size, size_type position, size_type length_ = npos)
+    wstring_ext(const etl::iwstring& other, value_type* buffer, size_type buffer_size, size_type position, size_type length_ = npos)
       : iwstring(buffer, buffer_size - 1U)
     {
       ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
@@ -315,9 +313,9 @@ namespace etl
 
     //*************************************************************************
     /// Constructor, from null terminated text.
-    ///\param text The initial text of the wstring.
+    ///\param text The initial text of the wstring_ext.
     //*************************************************************************
-    wstring(const value_type* text, value_type* buffer, size_type buffer_size)
+    wstring_ext(const value_type* text, value_type* buffer, size_type buffer_size)
       : iwstring(buffer, buffer_size - 1U)
     {
       // Is the initial text at the same address as the buffer?
@@ -333,10 +331,10 @@ namespace etl
 
     //*************************************************************************
     /// Constructor, from null terminated text and count.
-    ///\param text  The initial text of the wstring.
+    ///\param text  The initial text of the wstring_ext.
     ///\param count The number of characters to copy.
     //*************************************************************************
-    wstring(const value_type* text, size_type count, value_type* buffer, size_type buffer_size)
+    wstring_ext(const value_type* text, size_type count, value_type* buffer, size_type buffer_size)
       : iwstring(buffer, buffer_size - 1U)
     {
       this->assign(text, text + count);
@@ -344,10 +342,10 @@ namespace etl
 
     //*************************************************************************
     /// Constructor, from initial size and value.
-    ///\param initialSize  The initial size of the wstring.
-    ///\param value        The value to fill the wstring with.
+    ///\param initialSize  The initial size of the wstring_ext.
+    ///\param value        The value to fill the wstring_ext with.
     //*************************************************************************
-    wstring(size_type count, value_type c, value_type* buffer, size_type buffer_size)
+    wstring_ext(size_type count, value_type c, value_type* buffer, size_type buffer_size)
       : iwstring(buffer, buffer_size - 1U)
     {
       this->initialise();
@@ -361,7 +359,7 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    wstring(TIterator first, TIterator last, value_type* buffer, size_type buffer_size)
+    wstring_ext(TIterator first, TIterator last, value_type* buffer, size_type buffer_size)
       : iwstring(buffer, buffer_size - 1U)
     {
       this->assign(first, last);
@@ -371,7 +369,7 @@ namespace etl
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
-    wstring(std::initializer_list<value_type> init, value_type* buffer, size_type buffer_size)
+    wstring_ext(std::initializer_list<value_type> init, value_type* buffer, size_type buffer_size)
       : iwstring(buffer, buffer_size - 1U)
     {
       this->assign(init.begin(), init.end());
@@ -382,7 +380,7 @@ namespace etl
     /// From wstring_view.
     ///\param view The wstring_view.
     //*************************************************************************
-    explicit wstring(const etl::wstring_view& view, value_type* buffer, size_type buffer_size)
+    explicit wstring_ext(const etl::wstring_view& view, value_type* buffer, size_type buffer_size)
       : iwstring(buffer, buffer_size - 1U)
     {
       this->assign(view.begin(), view.end());
@@ -391,7 +389,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    wstring& operator = (const wstring& rhs)
+    wstring_ext& operator = (const wstring_ext& rhs)
     {
       if (&rhs != this)
       {
@@ -405,7 +403,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    wstring& operator = (const iwstring& rhs)
+    wstring_ext& operator = (const iwstring& rhs)
     {
       if (&rhs != this)
       {
@@ -418,7 +416,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    wstring& operator = (const value_type* text)
+    wstring_ext& operator = (const value_type* text)
     {
       this->assign(text);
 
@@ -440,7 +438,7 @@ namespace etl
     //*************************************************************************
     /// Deleted.
     //*************************************************************************
-    wstring(const wstring& other) ETL_DELETE;
+    wstring_ext(const wstring_ext& other) ETL_DELETE;
   };
 
   //*************************************************************************
@@ -461,6 +459,16 @@ namespace etl
   struct hash<etl::wstring<SIZE> >
   {
     size_t operator()(const etl::wstring<SIZE>& text) const
+    {
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
+                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
+    }
+  };
+
+  template <>
+  struct hash<etl::wstring_ext>
+  {
+    size_t operator()(const etl::wstring_ext& text) const
     {
       return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
                                                      reinterpret_cast<const uint8_t*>(&text[text.size()]));

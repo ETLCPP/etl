@@ -58,8 +58,8 @@ namespace
     {
       size_t length = strlen("");
 
-      auto ctext = etl::make_string("");
-      auto wtext = etl::make_string(L"");
+      auto ctext   = etl::make_string("");
+      auto wtext   = etl::make_string(L"");
       auto u16text = etl::make_string(u"");
       auto u32text = etl::make_string(U"");
 

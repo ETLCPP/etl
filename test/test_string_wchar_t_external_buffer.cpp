@@ -53,7 +53,7 @@ namespace
     static constexpr size_t SIZE_L = 52;
     static constexpr size_t SIZE_S = 4;
 
-    using Text         = etl::wstring<0>;
+    using Text         = etl::wstring_ext;
     using IText        = etl::iwstring;
     using TextT        = etl::wstring<SIZE>;
     using Compare_Text = std::wstring;
