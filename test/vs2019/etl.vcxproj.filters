@@ -1495,6 +1495,9 @@
     <None Include="..\..\meson.build">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\runtests.sh">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\include\etl\file_error_numbers.txt">
