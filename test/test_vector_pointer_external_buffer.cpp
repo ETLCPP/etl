@@ -47,12 +47,12 @@ namespace
 
   SUITE(test_vector_pointer)
   {
-    typedef etl::vector<int*, 0>       Data;
-    typedef etl::vector<const int*, 0> CData;
-    typedef etl::ivector<int*>         IData;
-    typedef etl::ivector<const int*>   CIData;
-    typedef std::vector<int*>          Compare_Data;
-    typedef std::vector<const int*>    CCompare_Data;
+    typedef etl::vector_ext<int*>       Data;
+    typedef etl::vector_ext<const int*> CData;
+    typedef etl::ivector<int*>          IData;
+    typedef etl::ivector<const int*>    CIData;
+    typedef std::vector<int*>           Compare_Data;
+    typedef std::vector<const int*>     CCompare_Data;
 
     Compare_Data initial_data;
     Compare_Data less_data;
@@ -1819,7 +1819,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_const_ivector_of_pointer_to_pointer)
     {
       int i1 = 1;
-      etl::vector<int*, 0> consttest(buffer1, SIZE);
+      etl::vector_ext<int*> consttest(buffer1, SIZE);
       consttest.push_back(&i1);
       const etl::ivector<int*>& ct = consttest;
 
@@ -1833,7 +1833,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_const_ivector_of_pointer_to_const_pointer)
     {
       int i1 = 1;
-      etl::vector<const int*, 0> consttest(buffer1, SIZE);
+      etl::vector_ext<const int*> consttest(buffer1, SIZE);
       consttest.push_back(&i1);
       const etl::ivector<const int*>& ct = consttest;
 
