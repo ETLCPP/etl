@@ -54,6 +54,20 @@ SOFTWARE.
 #if ETL_NOT_USING_STL
 #define ETL_LOG10_OF_2(x) (((x) * 301) / 1000)
 
+#if defined(ETL_NO_HUGE_VAL_SUPPORT)
+  #ifndef HUGE_VAL
+    #define HUGE_VAL (1.0e999999999)
+  #endif
+
+  #ifndef HUGE_VALF
+    #define HUGE_VALF (1.0e999999999F)
+  #endif
+
+  #ifndef HUGE_VALL
+    #define HUGE_VALL (1.0e999999999L)
+  #endif
+#endif
+
 #if defined(ETL_NO_CPP_NAN_SUPPORT)
   #if defined(NAN)
     #define ETL_NAN  (double)NAN
