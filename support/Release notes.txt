@@ -1,4 +1,8 @@
 ===============================================================================
+19.1.0
+Refactor of etl::buffer_descriptors interface.
+
+===============================================================================
 19.0.0
 Containers with external buffers or pools are now separate classes instead of specialisations.
 

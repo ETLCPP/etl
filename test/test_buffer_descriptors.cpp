@@ -52,17 +52,15 @@ namespace
   constexpr size_t N_BUFFERS   = 4U;
   constexpr size_t DATA_COUNT  = BUFFER_SIZE / 2;
 
-  using BD                   = etl::buffer_descriptors<char, uint_least8_t, BUFFER_SIZE, N_BUFFERS, std::atomic_char>;
-  using Descriptor           = BD::descriptor;
-  using NotificationCallback = BD::callback_type;
+  using BD = etl::buffer_descriptors<char, BUFFER_SIZE, N_BUFFERS, std::atomic_char>;
 
   //***********************************
   struct Receiver
   {
-    void receive(Descriptor& desc_, BD::size_type count_)
+    void receive(BD::notification n)
     {
-      pbuffer = desc_.data();
-      count   = count_;
+      pbuffer = n.get_descriptor().data();
+      count   = n.get_count();
     }
 
     BD::pointer   pbuffer;
@@ -89,7 +87,7 @@ namespace
       Receiver receiver;
 
       char buffers[N_BUFFERS][BUFFER_SIZE];
-      NotificationCallback callback = NotificationCallback::create<Receiver, &Receiver::receive>(receiver);
+      BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
 
       BD bd(&buffers[0][0], callback);
 
@@ -104,7 +102,7 @@ namespace
       Receiver receiver;
 
       char buffers[N_BUFFERS][BUFFER_SIZE];
-      NotificationCallback callback = NotificationCallback::create<Receiver, &Receiver::receive>(receiver);
+      BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
 
       BD bd(&buffers[0][0]);
       bd.set_callback(callback);
@@ -120,16 +118,42 @@ namespace
       Receiver receiver;
 
       char buffers[N_BUFFERS][BUFFER_SIZE];
-      NotificationCallback callback = NotificationCallback::create<Receiver, &Receiver::receive>(receiver);
+      BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
 
       BD bd(&buffers[0][0], callback);
 
       for (size_t i = 0U; i < N_BUFFERS; ++i)
       {
-        Descriptor& desc = bd.allocate();
+        BD::descriptor desc = bd.allocate();
 
         CHECK_EQUAL(BUFFER_SIZE, desc.max_size());
         CHECK_EQUAL(uintptr_t(&buffers[i][0]), uintptr_t(desc.data()));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_buffers_with_allocate_fill)
+    {
+      Receiver receiver;
+
+      std::array<char, BUFFER_SIZE> test = 
+      { 
+        char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), 
+        char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF) 
+      };
+
+      char buffers[N_BUFFERS][BUFFER_SIZE];
+      BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
+
+      BD bd(&buffers[0][0], callback);
+
+      for (size_t i = 0U; i < N_BUFFERS; ++i)
+      {
+        BD::descriptor desc = bd.allocate(char(0xFF));
+
+        CHECK_EQUAL(BUFFER_SIZE, desc.max_size());
+        CHECK_EQUAL(uintptr_t(&buffers[i][0]), uintptr_t(desc.data()));
+        CHECK_ARRAY_EQUAL(test.data(), desc.data(), BUFFER_SIZE);
       }
     }
 
@@ -143,18 +167,18 @@ namespace
       char buffers[N_BUFFERS][BUFFER_SIZE];
       std::fill(&buffers[0][0], &buffers[N_BUFFERS - 1][0] + BUFFER_SIZE , 0U);
 
-      NotificationCallback callback = NotificationCallback::create<Receiver, &Receiver::receive>(receiver);
+      BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
 
       BD bd(&buffers[0][0], callback);
 
       for (size_t i = 0U; i < N_BUFFERS; ++i)
       {
-        Descriptor& desc = bd.allocate();
+        BD::descriptor desc = bd.allocate();
 
         CHECK(desc.is_valid());
 
         std::copy(test.begin(), test.begin() + DATA_COUNT, desc.data());
-        bd.notify(desc, DATA_COUNT);
+        bd.notify(BD::notification(desc, DATA_COUNT));
         desc.release();
 
         CHECK_EQUAL(DATA_COUNT, receiver.count);
@@ -170,18 +194,18 @@ namespace
 
       char buffers[N_BUFFERS][BUFFER_SIZE];
 
-      NotificationCallback callback = NotificationCallback::create<Receiver, &Receiver::receive>(receiver);
+      BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
 
       BD bd(&buffers[0][0], callback);
 
       // Use up all of the descriptors.
       for (size_t i = 0U; i < N_BUFFERS; ++i)
       {
-        Descriptor& desc = bd.allocate();
+        BD::descriptor desc = bd.allocate();
         CHECK(desc.is_valid());
       }
 
-      Descriptor& desc = bd.allocate();
+      BD::descriptor desc = bd.allocate();
       CHECK(!desc.is_valid());
     }
 
@@ -189,25 +213,25 @@ namespace
     TEST(test_allocate_release_rollover)
     {
       Receiver receiver;
-      std::queue<Descriptor*> desc_queue;
+      std::queue<BD::descriptor> desc_queue;
 
       char buffers[N_BUFFERS][BUFFER_SIZE];
 
-      NotificationCallback callback = NotificationCallback::create<Receiver, &Receiver::receive>(receiver);
+      BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
 
       BD bd(&buffers[0][0], callback);
 
       // Use up all of the descriptors, then release/allocate for the rest.
       for (size_t i = 0U; i < (N_BUFFERS * 2); ++i)
       {
-        Descriptor& desc = bd.allocate();
-        desc_queue.push(&desc);
+        BD::descriptor desc = bd.allocate();
+        desc_queue.push(desc);
 
         CHECK(desc.is_valid());
 
         if (i >= (N_BUFFERS - 1))
         {
-          desc_queue.front()->release();
+          desc_queue.front().release();
           desc_queue.pop();
         }
       }
@@ -220,10 +244,10 @@ namespace
 
       BD bd(&buffers[0][0]);
 
-      Descriptor& desc1 = bd.allocate();
-      Descriptor& desc2 = bd.allocate();
-      Descriptor& desc3 = bd.allocate();
-      Descriptor& desc4 = bd.allocate();
+      BD::descriptor desc1 = bd.allocate();
+      BD::descriptor desc2 = bd.allocate();
+      BD::descriptor desc3 = bd.allocate();
+      BD::descriptor desc4 = bd.allocate();
 
       CHECK(desc1.is_allocated());
       CHECK(desc2.is_allocated());
@@ -279,18 +303,18 @@ namespace
     //*********************************
     struct Notification
     {
-      Descriptor*   pdesc;
+      BD::descriptor    desc;
       BD::size_type count;
     };
 
     constexpr int N_ITERATIONS = 1000000;
 
-    etl::queue_spsc_atomic<Notification, N_ITERATIONS + 100> desc_queue;
+    etl::queue_spsc_atomic<BD::notification, N_ITERATIONS + 100> desc_queue;
 
     //*********************************
-    void Callback(Descriptor& desc_, BD::size_type count_)
+    void Callback(BD::notification n)
     {
-      desc_queue.push(Notification{ &desc_, count_ });
+      desc_queue.push(n);
     }
 
     //*********************************
@@ -298,7 +322,7 @@ namespace
     {
       static char buffers[N_BUFFERS][BUFFER_SIZE];
 
-      BD bd(&buffers[0][0], NotificationCallback::create<Callback>());
+      BD bd(&buffers[0][0], BD::callback_type::create<Callback>());
 
       RAISE_THREAD_PRIORITY;
       FIX_PROCESSOR_AFFINITY1;
@@ -310,21 +334,21 @@ namespace
 
       for (int i = 0; i < N_ITERATIONS; ++i)
       {
-        Descriptor* pdesc;
+        BD::descriptor desc;
 
         // Wait until we can allocate a descriptor.
         do
         {
-          pdesc = &bd.allocate();
-        } while (pdesc->is_valid() == false);
+          desc = bd.allocate();
+        } while (desc.is_valid() == false);
 
-        if (!pdesc->is_allocated())
+        if (!desc.is_allocated())
         {
           ++errors;
         }
 
         // Send a notification to the callback function.
-        bd.notify(*pdesc, BUFFER_SIZE);
+        bd.notify(BD::notification(desc, BUFFER_SIZE));
       }
 
       CHECK_EQUAL(0, errors);
@@ -343,20 +367,20 @@ namespace
 
       for (int i = 0; i < N_ITERATIONS;)
       {
-        Notification n;
+        BD::notification notification;
 
         // Try to get a notification from the queue.
-        if (desc_queue.pop(n))
+        if (desc_queue.pop(notification))
         {
-          CHECK_EQUAL(BUFFER_SIZE, n.count);
-          CHECK(n.pdesc->is_allocated());
+          CHECK_EQUAL(BUFFER_SIZE, notification.get_count());
+          CHECK(notification.get_descriptor().is_allocated());
 
-          if (!n.pdesc->is_allocated())
+          if (!notification.get_descriptor().is_allocated())
           {
             ++errors;
           }
 
-          n.pdesc->release();
+          notification.get_descriptor().release();
           ++i;
         }
 
