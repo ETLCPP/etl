@@ -56,8 +56,6 @@ namespace
 
   char buffers[N_BUFFERS][BUFFER_SIZE];
 
-  Receiver receiver;
-
   //***********************************
   struct Receiver
   {
@@ -76,6 +74,8 @@ namespace
     BD::pointer   pbuffer;
     BD::size_type count;
   };
+
+  Receiver receiver;
 
   SUITE(test_buffer_descriptors)
   {
