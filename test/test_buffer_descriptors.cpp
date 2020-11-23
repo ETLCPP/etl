@@ -54,6 +54,8 @@ namespace
 
   using BD = etl::buffer_descriptors<char, BUFFER_SIZE, N_BUFFERS, std::atomic_char>;
 
+  static char buffers[N_BUFFERS][BUFFER_SIZE];
+
   //***********************************
   struct Receiver
   {
@@ -72,8 +74,6 @@ namespace
     //*************************************************************************
     TEST(test_constructor_plus_buffer)
     {
-      char buffers[N_BUFFERS][BUFFER_SIZE];
-
       BD bd(&buffers[0][0]);
 
       CHECK_EQUAL(N_BUFFERS, bd.N_BUFFERS);
@@ -86,7 +86,6 @@ namespace
     {
       Receiver receiver;
 
-      char buffers[N_BUFFERS][BUFFER_SIZE];
       BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
 
       BD bd(&buffers[0][0], callback);
@@ -101,7 +100,6 @@ namespace
     {
       Receiver receiver;
 
-      char buffers[N_BUFFERS][BUFFER_SIZE];
       BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
 
       BD bd(&buffers[0][0]);
@@ -116,8 +114,7 @@ namespace
     TEST(test_buffers)
     {
       Receiver receiver;
-
-      char buffers[N_BUFFERS][BUFFER_SIZE];
+            
       BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
 
       BD bd(&buffers[0][0], callback);
@@ -142,7 +139,6 @@ namespace
         char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF) 
       };
 
-      char buffers[N_BUFFERS][BUFFER_SIZE];
       BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
 
       BD bd(&buffers[0][0], callback);
@@ -164,7 +160,6 @@ namespace
 
       std::array<char, BUFFER_SIZE> test = { 0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-      char buffers[N_BUFFERS][BUFFER_SIZE];
       std::fill(&buffers[0][0], &buffers[N_BUFFERS - 1][0] + BUFFER_SIZE , 0U);
 
       BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
@@ -192,8 +187,6 @@ namespace
     {
       Receiver receiver;
 
-      char buffers[N_BUFFERS][BUFFER_SIZE];
-
       BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
 
       BD bd(&buffers[0][0], callback);
@@ -214,8 +207,6 @@ namespace
     {
       Receiver receiver;
       std::queue<BD::descriptor> desc_queue;
-
-      char buffers[N_BUFFERS][BUFFER_SIZE];
 
       BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
 
@@ -240,8 +231,6 @@ namespace
     //*************************************************************************
     TEST(test_descriptors)
     {
-      char buffers[N_BUFFERS][BUFFER_SIZE];
-
       BD bd(&buffers[0][0]);
 
       BD::descriptor desc1 = bd.allocate();
