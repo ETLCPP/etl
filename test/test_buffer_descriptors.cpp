@@ -205,7 +205,7 @@ namespace
     //*************************************************************************
     TEST(test_allocate_release_rollover)
     {
-      Receiver receiver;
+      static Receiver receiver;
       std::queue<BD::descriptor> desc_queue;
 
       BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
