@@ -54,7 +54,9 @@ namespace
 
   using BD = etl::buffer_descriptors<char, BUFFER_SIZE, N_BUFFERS, std::atomic_char>;
 
-  static char buffers[N_BUFFERS][BUFFER_SIZE];
+  char buffers[N_BUFFERS][BUFFER_SIZE];
+
+  Receiver receiver;
 
   //***********************************
   struct Receiver
@@ -63,6 +65,12 @@ namespace
     {
       pbuffer = n.get_descriptor().data();
       count   = n.get_count();
+    }
+
+    void clear()
+    {
+      pbuffer = nullptr;
+      count   = 0U;
     }
 
     BD::pointer   pbuffer;
@@ -84,8 +92,7 @@ namespace
     //*************************************************************************
     TEST(test_constructor_plus_buffer_and_callback)
     {
-      Receiver receiver;
-
+      receiver.clear();
       BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
 
       BD bd(&buffers[0][0], callback);
@@ -98,8 +105,7 @@ namespace
     //*************************************************************************
     TEST(test_constructor_plus_buffer_set_callback)
     {
-      Receiver receiver;
-
+      receiver.clear();
       BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
 
       BD bd(&buffers[0][0]);
@@ -113,11 +119,7 @@ namespace
     //*************************************************************************
     TEST(test_buffers)
     {
-      Receiver receiver;
-            
-      BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
-
-      BD bd(&buffers[0][0], callback);
+      BD bd(&buffers[0][0]);
 
       for (size_t i = 0U; i < N_BUFFERS; ++i)
       {
@@ -131,17 +133,13 @@ namespace
     //*************************************************************************
     TEST(test_buffers_with_allocate_fill)
     {
-      Receiver receiver;
-
       std::array<char, BUFFER_SIZE> test = 
       { 
         char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), 
         char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF) 
       };
 
-      BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
-
-      BD bd(&buffers[0][0], callback);
+      BD bd(&buffers[0][0]);
 
       for (size_t i = 0U; i < N_BUFFERS; ++i)
       {
@@ -156,12 +154,11 @@ namespace
     //*************************************************************************
     TEST(test_notifications)
     {
-      Receiver receiver;
-
       std::array<char, BUFFER_SIZE> test = { 0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0 };
 
       std::fill(&buffers[0][0], &buffers[N_BUFFERS - 1][0] + BUFFER_SIZE , 0U);
 
+      receiver.clear();
       BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
 
       BD bd(&buffers[0][0], callback);
@@ -185,11 +182,7 @@ namespace
     //*************************************************************************
     TEST(test_allocate_overflow)
     {
-      Receiver receiver;
-
-      BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
-
-      BD bd(&buffers[0][0], callback);
+      BD bd(&buffers[0][0]);
 
       // Use up all of the descriptors.
       for (size_t i = 0U; i < N_BUFFERS; ++i)
@@ -205,12 +198,9 @@ namespace
     //*************************************************************************
     TEST(test_allocate_release_rollover)
     {
-      static Receiver receiver;
       std::queue<BD::descriptor> desc_queue;
 
-      BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
-
-      BD bd(&buffers[0][0], callback);
+      BD bd(&buffers[0][0]);
 
       // Use up all of the descriptors, then release/allocate for the rest.
       for (size_t i = 0U; i < (N_BUFFERS * 2); ++i)
