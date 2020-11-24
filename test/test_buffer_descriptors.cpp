@@ -134,6 +134,27 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_clear)
+    {
+      BD bd(&buffers[0][0]);
+      BD::descriptor desc[4];
+
+      for (size_t i = 0U; i < N_BUFFERS; ++i)
+      {
+        desc[i] = bd.allocate();
+      }
+
+      bd.clear();
+
+      for (size_t i = 0U; i < N_BUFFERS; ++i)
+      {
+        CHECK(desc[i].is_valid());
+        CHECK(!desc[i].is_allocated());
+        CHECK(desc[i].is_released());
+      }
+    }
+
+    //*************************************************************************
     TEST(test_buffers_with_allocate_fill)
     {
       std::array<char, BUFFER_SIZE> test = 
