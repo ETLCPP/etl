@@ -126,6 +126,10 @@ namespace
         BD::descriptor desc = bd.allocate();
 
         CHECK(desc.is_valid());
+        if (!desc.is_valid())
+        {
+          CHECK_EQUAL(100000, i);
+        }
 
         //CHECK_EQUAL(BUFFER_SIZE, desc.max_size());
         
