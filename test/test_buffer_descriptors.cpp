@@ -125,10 +125,12 @@ namespace
       {
         BD::descriptor desc = bd.allocate();
 
+        CHECK(desc.is_valid());
+
         //CHECK_EQUAL(BUFFER_SIZE, desc.max_size());
         
         char* a = &buffers[i][0];
-        //char* b = desc.data();
+        char* b = desc.data();
         
         //CHECK_EQUAL(a, b);
       }
