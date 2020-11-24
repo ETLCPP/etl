@@ -96,6 +96,7 @@ namespace etl
       //*********************************
       pointer data() const
       {
+        assert(pdesc_item != nullptr);
         return pdesc_item->pbuffer;
       }
 
@@ -196,21 +197,13 @@ namespace etl
     typedef etl::delegate<void(notification)> callback_type;
 
     //*********************************
-    buffer_descriptors(TBuffer* pbuffers_)
-    {
-      for (size_t i = 0U; i < N_BUFFERS; ++i)
-      {
-        descriptor_items[i].pbuffer = pbuffers_ + (i * BUFFER_SIZE);
-      }
-    }
-
-    //*********************************
-    buffer_descriptors(TBuffer* pbuffers_, const callback_type& callback_)
+    buffer_descriptors(TBuffer* pbuffers_, callback_type callback_ = callback_type())
       : callback(callback_)
     {
       for (size_t i = 0U; i < N_BUFFERS; ++i)
       {
         descriptor_items[i].pbuffer = pbuffers_ + (i * BUFFER_SIZE);
+        descriptor_items[i].in_use  = false;
       }
     }
 
@@ -218,6 +211,17 @@ namespace etl
     void set_callback(const callback_type& callback_)
     {
       callback = callback_;
+    }
+
+    //*********************************
+    void clear()
+    {
+      for (size_t i = 0U; i < N_BUFFERS; ++i)
+      {
+        descriptor_items[i].in_use = false;
+      }
+
+      next.to_first();
     }
 
     //*********************************
