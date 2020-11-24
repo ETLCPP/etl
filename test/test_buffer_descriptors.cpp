@@ -126,7 +126,7 @@ namespace
         BD::descriptor desc = bd.allocate();
 
         //CHECK_EQUAL(BUFFER_SIZE, desc.max_size());
-        CHECK_EQUAL(uintptr_t(&buffers[i][0]), uintptr_t(desc.data()));
+        CHECK_EQUAL(&buffers[i][0], desc.data());
       }
     }
     //
