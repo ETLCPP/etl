@@ -274,3 +274,4 @@ test/random_pcg.csv
 test/random_xorshift.csv
 test/cmake_install.cmake
 test/Makefile
+test/vs2019/enc_temp_folder
