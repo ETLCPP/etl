@@ -121,7 +121,7 @@ namespace
     {
       BD bd(&buffers[0][0]);
 
-      for (size_t i = 0U; i < N_BUFFERS; ++i)
+      for (size_t i = 0U; i < N_BUFFERS - 1; ++i)
       {
         BD::descriptor desc = bd.allocate();
 
