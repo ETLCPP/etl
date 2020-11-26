@@ -211,15 +211,22 @@ namespace etl
     /// Upper case (for hex) = true
     /// Left Justified = false
     //***************************************************************************
-    basic_format_spec()
+    ETL_CONSTEXPR basic_format_spec()
+      : base_(10U)
+      , width_(0U)
+      , precision_(0U)
+      , upper_case_(false)
+      , left_justified_(false)
+      , boolalpha_(false)
+      , show_base_(false)
+      , fill_(typename TString::value_type(' '))
     {
-      clear();
     }
 
     //***************************************************************************
     /// Clears the format spec back to default.
     //***************************************************************************
-    void clear()
+    ETL_CONSTEXPR void clear()
     {
       base_           = 10U;
       width_          = 0U;
@@ -235,7 +242,7 @@ namespace etl
     /// Sets the base.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    basic_format_spec& base(uint32_t b)
+    ETL_CONSTEXPR basic_format_spec& base(uint32_t b)
     {
       base_ = static_cast<uint_least8_t>(b);
       return *this;
@@ -245,7 +252,7 @@ namespace etl
     /// Sets the base to binary.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    basic_format_spec& binary()
+    ETL_CONSTEXPR basic_format_spec& binary()
     {
       base(2);
       return *this;
@@ -255,7 +262,7 @@ namespace etl
     /// Sets the base to octal.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    basic_format_spec& octal()
+    ETL_CONSTEXPR basic_format_spec& octal()
     {
       base(8);
       return *this;
@@ -265,7 +272,7 @@ namespace etl
     /// Sets the base to decimal.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    basic_format_spec& decimal()
+    ETL_CONSTEXPR basic_format_spec& decimal()
     {
       base(10);
       return *this;
@@ -275,7 +282,7 @@ namespace etl
     /// Sets the base to hex.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    basic_format_spec& hex()
+    ETL_CONSTEXPR basic_format_spec& hex()
     {
       base(16);
       return *this;
@@ -284,7 +291,7 @@ namespace etl
     //***************************************************************************
     /// Gets the base.
     //***************************************************************************
-    uint32_t get_base() const
+    ETL_CONSTEXPR uint32_t get_base() const
     {
       return base_;
     }
@@ -293,7 +300,7 @@ namespace etl
     /// Sets the show base flag.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    basic_format_spec& show_base(bool b)
+    ETL_CONSTEXPR basic_format_spec& show_base(bool b)
     {
       show_base_ = b;
       return *this;
@@ -302,7 +309,7 @@ namespace etl
     //***************************************************************************
     /// Gets the show base flag.
     //***************************************************************************
-    bool is_show_base() const
+    ETL_CONSTEXPR bool is_show_base() const
     {
       return show_base_;
     }
@@ -311,7 +318,7 @@ namespace etl
     /// Sets the width.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    basic_format_spec& width(uint32_t w)
+    ETL_CONSTEXPR basic_format_spec& width(uint32_t w)
     {
       width_ = static_cast<uint_least8_t>(w);
       return *this;
@@ -320,7 +327,7 @@ namespace etl
     //***************************************************************************
     /// Gets the width.
     //***************************************************************************
-    uint32_t get_width() const
+    ETL_CONSTEXPR uint32_t get_width() const
     {
       return width_;
     }
@@ -329,7 +336,7 @@ namespace etl
     /// Sets the precision.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    basic_format_spec& precision(uint32_t p)
+    ETL_CONSTEXPR basic_format_spec& precision(uint32_t p)
     {
       precision_ = static_cast<uint_least8_t>(p);
       return *this;
@@ -338,7 +345,7 @@ namespace etl
     //***************************************************************************
     /// Gets the precision.
     //***************************************************************************
-    uint32_t get_precision() const
+    ETL_CONSTEXPR uint32_t get_precision() const
     {
       return precision_;
     }
@@ -347,7 +354,7 @@ namespace etl
     /// Sets the upper case flag.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    basic_format_spec& upper_case(bool u)
+    ETL_CONSTEXPR basic_format_spec& upper_case(bool u)
     {
       upper_case_ = u;
       return *this;
@@ -356,7 +363,7 @@ namespace etl
     //***************************************************************************
     /// Gets the upper case flag.
     //***************************************************************************
-    bool is_upper_case() const
+    ETL_CONSTEXPR bool is_upper_case() const
     {
       return upper_case_;
     }
@@ -365,7 +372,7 @@ namespace etl
     /// Sets the fill character.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    basic_format_spec& fill(typename TString::value_type c)
+    ETL_CONSTEXPR basic_format_spec& fill(typename TString::value_type c)
     {
       fill_ = c;
       return *this;
@@ -374,7 +381,7 @@ namespace etl
     //***************************************************************************
     /// Gets the fill character.
     //***************************************************************************
-    typename TString::value_type get_fill() const
+    ETL_CONSTEXPR typename TString::value_type get_fill() const
     {
       return fill_;
     }
@@ -383,7 +390,7 @@ namespace etl
     /// Sets the left justify flag.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    basic_format_spec& left()
+    ETL_CONSTEXPR basic_format_spec& left()
     {
       left_justified_ = true;
       return *this;
@@ -392,7 +399,7 @@ namespace etl
     //***************************************************************************
     /// Gets the left justify flag.
     //***************************************************************************
-    bool is_left() const
+    ETL_CONSTEXPR bool is_left() const
     {
       return left_justified_;
     }
@@ -401,7 +408,7 @@ namespace etl
     /// Sets the right justify flag.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    basic_format_spec& right()
+    ETL_CONSTEXPR basic_format_spec& right()
     {
       left_justified_ = false;
       return *this;
@@ -410,7 +417,7 @@ namespace etl
     //***************************************************************************
     /// Gets the right justify flag.
     //***************************************************************************
-    bool is_right() const
+    ETL_CONSTEXPR bool is_right() const
     {
       return !left_justified_;
     }
@@ -419,7 +426,7 @@ namespace etl
     /// Sets the bool alpha flag.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    basic_format_spec& boolalpha(bool b)
+    ETL_CONSTEXPR basic_format_spec& boolalpha(bool b)
     {
       boolalpha_ = b;
       return *this;
@@ -428,7 +435,7 @@ namespace etl
     //***************************************************************************
     /// Gets the boolalpha flag.
     //***************************************************************************
-    bool is_boolalpha() const
+    ETL_CONSTEXPR bool is_boolalpha() const
     {
       return boolalpha_;
     }
@@ -436,7 +443,7 @@ namespace etl
     //***************************************************************************
     /// Equality operator.
     //***************************************************************************
-    friend bool operator ==(const basic_format_spec& lhs, const basic_format_spec& rhs)
+    ETL_CONSTEXPR friend bool operator ==(const basic_format_spec& lhs, const basic_format_spec& rhs)
     {
       return (lhs.base_ == rhs.base_) &&
              (lhs.width_ == rhs.width_) &&
@@ -451,7 +458,7 @@ namespace etl
     //***************************************************************************
     /// Inequality operator.
     //***************************************************************************
-    friend bool operator !=(const basic_format_spec& lhs, const basic_format_spec& rhs)
+    ETL_CONSTEXPR friend bool operator !=(const basic_format_spec& lhs, const basic_format_spec& rhs)
     {
       return !(lhs == rhs);
     }
