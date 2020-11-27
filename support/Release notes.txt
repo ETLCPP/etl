@@ -1,4 +1,8 @@
 ===============================================================================
+19.2.1
+Fixed version number retrieval from Github.
+
+===============================================================================
 19.2.0
 Security flag for a string is copied on assignment or copy constructor.
 etl::format_spec may now be a constexpr.
