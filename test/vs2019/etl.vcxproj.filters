@@ -888,11 +888,11 @@
     <ClInclude Include="..\..\include\etl\flags.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\buffer_descriptors.h">
-      <Filter>ETL\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\atomic\atomic_clang_sync.h">
       <Filter>ETL\Utilities\Atomic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\buffer_descriptors.h">
+      <Filter>ETL\Containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
