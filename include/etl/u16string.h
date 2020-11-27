@@ -98,23 +98,12 @@ namespace etl
     ///\param position The position of the first character.
     ///\param length   The number of characters. Default = npos.
     //*************************************************************************
-    u16string(const etl::iu16string& other, size_type position, size_type length_ = npos)
+    u16string(const etl::iu16string& other, size_type position, size_type length = npos)
       : iu16string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
       ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
 
-      this->assign(other.begin() + position, other.begin() + position + length_);
-
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
-      if (other.is_truncated())
-      {
-        this->set_truncated(true);
-
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
-        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
-#endif
-      }
-#endif
+      this->assign(other, position, length);
     }
 
     //*************************************************************************
@@ -292,23 +281,12 @@ namespace etl
     ///\param position The position of the first character.
     ///\param length   The number of characters. Default = npos.
     //*************************************************************************
-    u16string_ext(const etl::iu16string& other, value_type* buffer, size_type buffer_size, size_type position, size_type length_ = npos)
+    u16string_ext(const etl::iu16string& other, value_type* buffer, size_type buffer_size, size_type position, size_type length = npos)
       : iu16string(buffer, buffer_size - 1U)
     {
       ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
 
-      this->assign(other.begin() + position, other.begin() + position + length_);
-
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
-      if (other.is_truncated())
-      {
-        this->set_truncated(true);
-
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
-        ETL_ALWAYS_ASSERT(ETL_ERROR(u16string_truncation));
-#endif
-      }
-#endif
+      this->assign(other, position, length);
     }
 
     //*************************************************************************

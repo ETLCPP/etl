@@ -1,4 +1,10 @@
 ===============================================================================
+19.2.0
+Security flag for a string is copied on assignment or copy constructor.
+etl::format_spec may now be a constexpr.
+Added AVR check to nullptr.h
+
+===============================================================================
 19.1.0
 Refactor of etl::buffer_descriptors interface.
 

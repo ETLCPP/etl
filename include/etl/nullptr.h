@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if defined(ARDUINO)
+#if defined(ARDUINO) || defined(AVR)
   #include <stddef.h>
 #else
   #include <cstddef>

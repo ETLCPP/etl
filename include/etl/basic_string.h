@@ -602,6 +602,13 @@ namespace etl
       }
 #endif
 
+#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
+      if (other.is_secure())
+      {
+        set_secure();
+      }
+#endif
+
       cleanup();
     }
 
@@ -622,6 +629,24 @@ namespace etl
       ETL_ASSERT(subposition <= other.size(), ETL_ERROR(string_out_of_bounds));
 
       assign(other.begin() + subposition, sublength);
+
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      if (other.is_truncated())
+      {
+        this->set_truncated(true);
+
+#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+#endif
+      }
+#endif
+
+#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
+      if (other.is_secure())
+      {
+        set_secure();
+      }
+#endif
     }
 
     //*********************************************************************

@@ -100,23 +100,12 @@ namespace etl
     ///\param position The position of the first character.
     ///\param length   The number of characters. Default = npos.
     //*************************************************************************
-    string(const etl::istring& other, size_t position, size_t length_ = npos)
+    string(const etl::istring& other, size_t position, size_t length = npos)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
       ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
 
-      this->assign(other.begin() + position, other.begin() + position + length_);
-
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
-      if (other.is_truncated())
-      {
-        this->set_truncated(true);
-
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
-        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
-#endif
-      }
-#endif
+      this->assign(other, position, length);
     }
 
     //*************************************************************************
@@ -309,23 +298,12 @@ namespace etl
     ///\param position The position of the first character.
     ///\param length   The number of characters. Default = npos.
     //*************************************************************************
-    string_ext(const etl::istring& other, value_type* buffer, size_type buffer_size, size_type position, size_type length_ = npos)
+    string_ext(const etl::istring& other, value_type* buffer, size_type buffer_size, size_type position, size_type length = npos)
       : istring(buffer, buffer_size - 1U)
     {
       ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
 
-      this->assign(other.begin() + position, other.begin() + position + length_);
-
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
-      if (other.is_truncated())
-      {
-        this->set_truncated(true);
-
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
-        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
-#endif
-      }
-#endif
+      this->assign(other, position, length);
     }
 
     //*************************************************************************
