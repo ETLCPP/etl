@@ -56,6 +56,25 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_pod_type_vt)
+    {
+      size_t size;
+      bool   type;
+
+      size = etl::largest_type_v<char, short, int>;
+      type = etl::is_same<int, etl::largest_type_t<char, short, int>>::value;
+
+      CHECK_EQUAL(sizeof(int), size);
+      CHECK(type);
+
+      size = etl::largest_type_v<int, char, short>;
+      type = etl::is_same<int, etl::largest_type_t<char, short, int>>::value;
+
+      CHECK_EQUAL(sizeof(int), size);
+      CHECK(type);
+    }
+
+    //*************************************************************************
     TEST(test_non_pod_type)
     {
       size_t size;
@@ -79,9 +98,40 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_non_pod_type_vt)
+    {
+      size_t size;
+      bool   type;
+
+      struct S1 { char a; char  b; char c; };
+      struct S2 { char a; short b; char c; };
+      struct S3 { int  a; short b; char c; };
+
+      size = etl::largest_type_v<S1, S2, S3>;
+      type = etl::is_same<S3, etl::largest_type_t<S1, S2, S3>>::value;
+
+      CHECK_EQUAL(sizeof(S3), size);
+      CHECK(type);
+
+      size = etl::largest_type_v<S2, S3, S1>;
+      type = etl::is_same<S3, etl::largest_type_t<S2, S3, S1>>::value;
+
+      CHECK_EQUAL(sizeof(S3), size);
+      CHECK(type);
+    }
+
+    //*************************************************************************
     TEST(test_pod_alignment)
     {
       size_t size = etl::largest_alignment<char, short, int, double>::value;
+
+      CHECK_EQUAL(std::alignment_of<double>::value, size);
+    }
+
+    //*************************************************************************
+    TEST(test_pod_alignment_v)
+    {
+      size_t size = etl::largest_alignment_v<char, short, int, double>;
 
       CHECK_EQUAL(std::alignment_of<double>::value, size);
     }
@@ -94,6 +144,18 @@ namespace
       struct S3 { int  a; short b; char c; };
 
       size_t size = etl::largest_alignment<S1, S2, S3>::value;
+
+      CHECK_EQUAL(std::alignment_of<S3>::value, size);
+    }
+
+    //*************************************************************************
+    TEST(test_non_pod_alignment_v)
+    {
+      struct S1 { char a; char  b; char c; };
+      struct S2 { char a; short b; char c; };
+      struct S3 { int  a; short b; char c; };
+
+      size_t size = etl::largest_alignment_v<S1, S2, S3>;
 
       CHECK_EQUAL(std::alignment_of<S3>::value, size);
     }
@@ -113,6 +175,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_larger_int_type_t)
+    {
+      CHECK(bool(etl::is_same<etl::larger_int_type_t<int8_t>,  int16_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_int_type_t<int16_t>, int32_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_int_type_t<int32_t>, int64_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_int_type_t<int64_t>, int64_t>::value));
+
+      CHECK(bool(etl::is_same<etl::larger_int_type_t<uint8_t>,  int16_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_int_type_t<uint16_t>, int32_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_int_type_t<uint32_t>, int64_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_int_type_t<uint64_t>, int64_t>::value));
+    }
+
+    //*************************************************************************
     TEST(test_larger_uint_type)
     {
       CHECK(bool(etl::is_same<etl::larger_uint_type<int8_t>::type,  uint16_t>::value));
@@ -127,6 +203,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_larger_uint_type_t)
+    {
+      CHECK(bool(etl::is_same<etl::larger_uint_type_t<int8_t>,  uint16_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_uint_type_t<int16_t>, uint32_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_uint_type_t<int32_t>, uint64_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_uint_type_t<int64_t>, uint64_t>::value));
+
+      CHECK(bool(etl::is_same<etl::larger_uint_type_t<uint8_t>,  uint16_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_uint_type_t<uint16_t>, uint32_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_uint_type_t<uint32_t>, uint64_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_uint_type_t<uint64_t>, uint64_t>::value));
+    }
+
+    //*************************************************************************
     TEST(test_larger_type)
     {
       CHECK(bool(etl::is_same<etl::larger_type<int8_t>::type,  int16_t>::value));
@@ -138,6 +228,20 @@ namespace
       CHECK(bool(etl::is_same<etl::larger_type<uint16_t>::type, uint32_t>::value));
       CHECK(bool(etl::is_same<etl::larger_type<uint32_t>::type, uint64_t>::value));
       CHECK(bool(etl::is_same<etl::larger_type<uint64_t>::type, uint64_t>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_larger_type_t)
+    {
+      CHECK(bool(etl::is_same<etl::larger_type_t<int8_t>,  int16_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_type_t<int16_t>, int32_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_type_t<int32_t>, int64_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_type_t<int64_t>, int64_t>::value));
+
+      CHECK(bool(etl::is_same<etl::larger_type_t<uint8_t>,  uint16_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_type_t<uint16_t>, uint32_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_type_t<uint32_t>, uint64_t>::value));
+      CHECK(bool(etl::is_same<etl::larger_type_t<uint64_t>, uint64_t>::value));
     }
   };
 }

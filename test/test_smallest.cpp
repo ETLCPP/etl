@@ -56,6 +56,25 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_pod_vt)
+    {
+      size_t size;
+      bool   type;
+
+      size = etl::smallest_type_v<char, short, int>;
+      type = etl::is_same<char, etl::smallest_type_t<char, short, int>>::value;
+
+      CHECK_EQUAL(sizeof(char), size);
+      CHECK(type);
+
+      size = etl::smallest_type<int, char, short>::size;
+      type = etl::is_same<char, etl::smallest_type<char, short, int>::type>::value;
+
+      CHECK_EQUAL(sizeof(char), size);
+      CHECK(type);
+    }
+
+    //*************************************************************************
     TEST(test_non_pod)
     {
       size_t size;
@@ -73,6 +92,29 @@ namespace
 
       size = etl::smallest_type<S2, S3, S1>::size;
       type = etl::is_same<S1, etl::smallest_type<S2, S3, S1>::type>::value;
+
+      CHECK_EQUAL(sizeof(S1), size);
+      CHECK(type);
+    }
+
+    //*************************************************************************
+    TEST(test_non_pod_vt)
+    {
+      size_t size;
+      bool   type;
+
+      struct S1 { char a; char  b; char c; };
+      struct S2 { char a; short b; char c; };
+      struct S3 { int  a; short b; char c; };
+
+      size = etl::smallest_type_v<S1, S2, S3>;
+      type = etl::is_same<S1, etl::smallest_type_t<S1, S2, S3>>::value;
+
+      CHECK_EQUAL(sizeof(S1), size);
+      CHECK(type);
+
+      size = etl::smallest_type_v<S2, S3, S1>;
+      type = etl::is_same<S1, etl::smallest_type_t<S2, S3, S1>>::value;
 
       CHECK_EQUAL(sizeof(S1), size);
       CHECK(type);
@@ -121,6 +163,48 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_smallest_uint_for_bits_t)
+    {
+      bool type;
+
+      type = etl::is_same<uint_least8_t, etl::smallest_uint_for_bits_t<7>>::value;
+      CHECK(type);
+
+      type = etl::is_same<uint_least8_t, etl::smallest_uint_for_bits_t<8>>::value;
+      CHECK(type);
+
+      type = etl::is_same<uint_least16_t, etl::smallest_uint_for_bits_t<9>>::value;
+      CHECK(type);
+
+      type = etl::is_same<uint_least16_t, etl::smallest_uint_for_bits_t<15>>::value;
+      CHECK(type);
+
+      type = etl::is_same<uint_least16_t, etl::smallest_uint_for_bits_t<16>>::value;
+      CHECK(type);
+
+      type = etl::is_same<uint_least32_t, etl::smallest_uint_for_bits_t<17>>::value;
+      CHECK(type);
+
+      type = etl::is_same<uint_least32_t, etl::smallest_uint_for_bits_t<31>>::value;
+      CHECK(type);
+
+      type = etl::is_same<uint_least32_t, etl::smallest_uint_for_bits_t<32>>::value;
+      CHECK(type);
+
+      type = etl::is_same<uint_least64_t, etl::smallest_uint_for_bits_t<33>>::value;
+      CHECK(type);
+
+      type = etl::is_same<uint_least64_t, etl::smallest_uint_for_bits_t<63>>::value;
+      CHECK(type);
+
+      type = etl::is_same<uint_least64_t, etl::smallest_uint_for_bits_t<64>>::value;
+      CHECK(type);
+
+      type = etl::is_same<uint_least64_t, etl::smallest_uint_for_bits_t<65>>::value;
+      CHECK(type);
+    }
+
+    //*************************************************************************
     TEST(test_smallest_int_for_bits)
     {
       bool type;
@@ -163,6 +247,48 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_smallest_int_for_bits_t)
+    {
+      bool type;
+
+      type = etl::is_same<int_least8_t, etl::smallest_int_for_bits_t<7>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least8_t, etl::smallest_int_for_bits_t<8>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least16_t, etl::smallest_int_for_bits_t<9>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least16_t, etl::smallest_int_for_bits_t<15>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least16_t, etl::smallest_int_for_bits_t<16>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least32_t, etl::smallest_int_for_bits_t<17>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least32_t, etl::smallest_int_for_bits_t<31>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least32_t, etl::smallest_int_for_bits_t<32>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least64_t, etl::smallest_int_for_bits_t<33>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least64_t, etl::smallest_int_for_bits_t<63>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least64_t, etl::smallest_int_for_bits_t<64>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least64_t, etl::smallest_int_for_bits_t<65>>::value;
+      CHECK(type);
+    }
+
+    //*************************************************************************
     TEST(test_smallest_uint_for_value)
     {
       bool type;
@@ -189,6 +315,36 @@ namespace
       CHECK(type);
 
       type = etl::is_same<uint_least64_t, etl::smallest_uint_for_value<UINT64_MAX>::type>::value;
+      CHECK(type);
+    }
+
+    //*************************************************************************
+    TEST(test_smallest_uint_for_value_t)
+    {
+      bool type;
+
+      type = etl::is_same<uint_least8_t, etl::smallest_uint_for_value_t<0>>::value;
+      CHECK(type);
+
+      type = etl::is_same<uint_least8_t, etl::smallest_uint_for_value_t<UINT8_MAX>>::value;
+      CHECK(type);
+
+      type = etl::is_same<uint_least16_t, etl::smallest_uint_for_value_t<UINT8_MAX + 1>>::value;
+      CHECK(type);
+
+      type = etl::is_same<uint_least16_t, etl::smallest_uint_for_value_t<UINT16_MAX>>::value;
+      CHECK(type);
+
+      type = etl::is_same<uint_least32_t, etl::smallest_uint_for_value_t<UINT16_MAX + 1>>::value;
+      CHECK(type);
+
+      type = etl::is_same<uint_least32_t, etl::smallest_uint_for_value_t<UINT32_MAX>>::value;
+      CHECK(type);
+
+      type = etl::is_same<uint_least64_t, etl::smallest_uint_for_value_t<uint64_t(UINT32_MAX) + 1>>::value;
+      CHECK(type);
+
+      type = etl::is_same<uint_least64_t, etl::smallest_uint_for_value_t<UINT64_MAX>>::value;
       CHECK(type);
     }
 
@@ -240,6 +396,57 @@ namespace
       CHECK(type);
 
       type = etl::is_same<int_least64_t, etl::smallest_int_for_value<INT64_MAX>::type>::value;
+      CHECK(type);
+    }
+
+    //*************************************************************************
+    TEST(test_smallest_int_for_value_t)
+    {
+      bool type;
+
+      type = etl::is_same<int_least8_t, etl::smallest_int_for_value_t<0>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least8_t, etl::smallest_int_for_value_t<INT8_MIN>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least8_t, etl::smallest_int_for_value_t<INT8_MAX>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least16_t, etl::smallest_int_for_value_t<INT8_MIN - 1>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least16_t, etl::smallest_int_for_value_t<INT8_MAX + 1>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least16_t, etl::smallest_int_for_value_t<INT16_MIN>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least16_t, etl::smallest_int_for_value_t<INT16_MAX>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least32_t, etl::smallest_int_for_value_t<INT16_MIN - 1>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least32_t, etl::smallest_int_for_value_t<INT16_MAX + 1>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least32_t, etl::smallest_int_for_value_t<INT32_MIN>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least32_t, etl::smallest_int_for_value_t<INT32_MAX>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least64_t, etl::smallest_int_for_value_t<intmax_t(INT32_MIN) - 1>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least64_t, etl::smallest_int_for_value_t<intmax_t(INT32_MAX) + 1>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least64_t, etl::smallest_int_for_value_t<INT64_MIN>>::value;
+      CHECK(type);
+
+      type = etl::is_same<int_least64_t, etl::smallest_int_for_value_t<INT64_MAX>>::value;
       CHECK(type);
     }
   };

@@ -125,47 +125,47 @@ namespace etl
   {
   public:
 
-    static const bool is_specialized    = true;
-    static const bool is_integer        = true;
-    static const bool is_exact          = true;
-    static const int  max_digits10      = 0;
-    static const int  radix             = 2;
-    static const int  min_exponent      = 0;
-    static const int  min_exponent10    = 0;
-    static const int  max_exponent      = 0;
-    static const int  max_exponent10    = 0;
-    static const bool has_infinity      = false;
-    static const bool has_quiet_NaN     = false;
-    static const bool has_signaling_NaN = false;
-    static const bool has_denorm_loss   = false;
-    static const bool is_iec559         = false;
-    static const bool is_bounded        = true;
-    static const bool traps             = false;
-    static const bool tinyness_before   = false;
-    static const float_denorm_style has_denorm = denorm_absent;
-    static const float_round_style round_style = round_toward_zero;
+    static ETL_CONSTANT bool is_specialized    = true;
+    static ETL_CONSTANT bool is_integer        = true;
+    static ETL_CONSTANT bool is_exact          = true;
+    static ETL_CONSTANT int  max_digits10      = 0;
+    static ETL_CONSTANT int  radix             = 2;
+    static ETL_CONSTANT int  min_exponent      = 0;
+    static ETL_CONSTANT int  min_exponent10    = 0;
+    static ETL_CONSTANT int  max_exponent      = 0;
+    static ETL_CONSTANT int  max_exponent10    = 0;
+    static ETL_CONSTANT bool has_infinity      = false;
+    static ETL_CONSTANT bool has_quiet_NaN     = false;
+    static ETL_CONSTANT bool has_signaling_NaN = false;
+    static ETL_CONSTANT bool has_denorm_loss   = false;
+    static ETL_CONSTANT bool is_iec559         = false;
+    static ETL_CONSTANT bool is_bounded        = true;
+    static ETL_CONSTANT bool traps             = false;
+    static ETL_CONSTANT bool tinyness_before   = false;
+    static ETL_CONSTANT float_denorm_style has_denorm = denorm_absent;
+    static ETL_CONSTANT float_round_style round_style = round_toward_zero;
   };
 
   class etl_floating_point_limits
   {
   public:
 
-    static const bool is_specialized    = true;
-    static const bool is_signed         = true;
-    static const bool is_integer        = false;
-    static const bool is_exact          = false;
-    static const int radix              = 2;
-    static const bool has_infinity      = true;
-    static const bool has_quiet_NaN     = ETL_HAS_NAN;
-    static const bool has_signaling_NaN = ETL_HAS_NAN;
-    static const bool has_denorm_loss   = false;
-    static const bool is_iec559         = false;
-    static const bool is_bounded        = true;
-    static const bool is_modulo         = false;
-    static const bool traps             = false;
-    static const bool tinyness_before   = false;
-    static const float_denorm_style has_denorm = denorm_indeterminate;
-    static const float_round_style round_style = round_indeterminate;
+    static ETL_CONSTANT bool is_specialized    = true;
+    static ETL_CONSTANT bool is_signed         = true;
+    static ETL_CONSTANT bool is_integer        = false;
+    static ETL_CONSTANT bool is_exact          = false;
+    static ETL_CONSTANT int radix              = 2;
+    static ETL_CONSTANT bool has_infinity      = true;
+    static ETL_CONSTANT bool has_quiet_NaN     = ETL_HAS_NAN;
+    static ETL_CONSTANT bool has_signaling_NaN = ETL_HAS_NAN;
+    static ETL_CONSTANT bool has_denorm_loss   = false;
+    static ETL_CONSTANT bool is_iec559         = false;
+    static ETL_CONSTANT bool is_bounded        = true;
+    static ETL_CONSTANT bool is_modulo         = false;
+    static ETL_CONSTANT bool traps             = false;
+    static ETL_CONSTANT bool tinyness_before   = false;
+    static ETL_CONSTANT float_denorm_style has_denorm = denorm_indeterminate;
+    static ETL_CONSTANT float_round_style round_style = round_indeterminate;
 
     static float round_error() { return float(0.5); }
   };
@@ -191,10 +191,10 @@ namespace etl
   {
   public:
 
-    static const int  digits    = 1;
-    static const int  digits10  = 0;
-    static const bool is_signed = false;
-    static const bool is_modulo = false;
+    static ETL_CONSTANT int  digits    = 1;
+    static ETL_CONSTANT int  digits10  = 0;
+    static ETL_CONSTANT bool is_signed = false;
+    static ETL_CONSTANT bool is_modulo = false;
 
     static bool min() { return false; }
     static bool max() { return true; }
@@ -214,10 +214,10 @@ namespace etl
   {
   public:
 
-    static const int digits     = (CHAR_BIT * sizeof(char)) - (etl::is_signed<char>::value ? 1 : 0);
-    static const int digits10   = ETL_LOG10_OF_2(digits);
-    static const bool is_signed = etl::is_signed<char>::value;
-    static const bool is_modulo = false;
+    static ETL_CONSTANT int digits     = (CHAR_BIT * sizeof(char)) - (etl::is_signed<char>::value ? 1 : 0);
+    static ETL_CONSTANT int digits10   = ETL_LOG10_OF_2(digits);
+    static ETL_CONSTANT bool is_signed = etl::is_signed<char>::value;
+    static ETL_CONSTANT bool is_modulo = false;
 
     static char min() { return char(CHAR_MIN); }
     static char max() { return char(CHAR_MAX); }
@@ -237,10 +237,10 @@ namespace etl
   {
   public:
 
-    static const int digits     = (CHAR_BIT * sizeof(unsigned char)) - (etl::is_signed<unsigned char>::value ? 1 : 0);
-    static const int digits10   = ETL_LOG10_OF_2(digits);
-    static const bool is_signed = false;
-    static const bool is_modulo = true;
+    static ETL_CONSTANT int digits     = (CHAR_BIT * sizeof(unsigned char)) - (etl::is_signed<unsigned char>::value ? 1 : 0);
+    static ETL_CONSTANT int digits10   = ETL_LOG10_OF_2(digits);
+    static ETL_CONSTANT bool is_signed = false;
+    static ETL_CONSTANT bool is_modulo = true;
 
     static unsigned char min() { return 0U; }
     static unsigned char max() { return UCHAR_MAX; }
@@ -260,10 +260,10 @@ namespace etl
   {
   public:
 
-    static const int digits = (CHAR_BIT * sizeof(char)) - (etl::is_signed<char>::value ? 1 : 0);
-    static const int digits10 = ETL_LOG10_OF_2(digits);
-    static const bool is_signed = true;
-    static const bool is_modulo = false;
+    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(char)) - (etl::is_signed<char>::value ? 1 : 0);
+    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
+    static ETL_CONSTANT bool is_signed = true;
+    static ETL_CONSTANT bool is_modulo = false;
 
     static signed char min() { return SCHAR_MIN; }
     static signed char max() { return SCHAR_MAX; }
@@ -284,10 +284,10 @@ namespace etl
   {
   public:
 
-    static const int digits = (CHAR_BIT * sizeof(char16_t)) - (etl::is_signed<char16_t>::value ? 1 : 0);
-    static const int digits10 = ETL_LOG10_OF_2(digits);
-    static const bool is_signed = false;
-    static const bool is_modulo = true;
+    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(char16_t)) - (etl::is_signed<char16_t>::value ? 1 : 0);
+    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
+    static ETL_CONSTANT bool is_signed = false;
+    static ETL_CONSTANT bool is_modulo = true;
 
     static char16_t min() { return 0U; }
     static char16_t max() { return UINT_LEAST16_MAX; }
@@ -307,10 +307,10 @@ namespace etl
   {
   public:
 
-    static const int digits = (CHAR_BIT * sizeof(char32_t)) - (etl::is_signed<char32_t>::value ? 1 : 0);
-    static const int digits10 = ETL_LOG10_OF_2(digits);
-    static const bool is_signed = false;
-    static const bool is_modulo = true;
+    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(char32_t)) - (etl::is_signed<char32_t>::value ? 1 : 0);
+    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
+    static ETL_CONSTANT bool is_signed = false;
+    static ETL_CONSTANT bool is_modulo = true;
 
     static char32_t min() { return 0U; }
     static char32_t max() { return UINT_LEAST32_MAX; }
@@ -332,10 +332,10 @@ namespace etl
   {
   public:
 
-    static const int digits = (CHAR_BIT * sizeof(wchar_t)) - (etl::is_signed<wchar_t>::value ? 1 : 0);
-    static const int digits10 = ETL_LOG10_OF_2(digits);
-    static const bool is_signed = etl::is_signed<wchar_t>::value;
-    static const bool is_modulo = etl::is_unsigned<wchar_t>::value;
+    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(wchar_t)) - (etl::is_signed<wchar_t>::value ? 1 : 0);
+    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
+    static ETL_CONSTANT bool is_signed = etl::is_signed<wchar_t>::value;
+    static ETL_CONSTANT bool is_modulo = etl::is_unsigned<wchar_t>::value;
 
     static wchar_t min() { return WCHAR_MIN; }
     static wchar_t max() { return WCHAR_MAX; }
@@ -355,10 +355,10 @@ namespace etl
   {
   public:
 
-    static const int digits = (CHAR_BIT * sizeof(short)) - (etl::is_signed<short>::value ? 1 : 0);
-    static const int digits10 = ETL_LOG10_OF_2(digits);
-    static const bool is_signed = true;
-    static const bool is_modulo = false;
+    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(short)) - (etl::is_signed<short>::value ? 1 : 0);
+    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
+    static ETL_CONSTANT bool is_signed = true;
+    static ETL_CONSTANT bool is_modulo = false;
 
     static short min() { return SHRT_MIN; }
     static short max() { return SHRT_MAX; }
@@ -378,10 +378,10 @@ namespace etl
   {
   public:
 
-    static const int digits = (CHAR_BIT * sizeof(unsigned short)) - (etl::is_signed<unsigned short>::value ? 1 : 0);
-    static const int digits10 = ETL_LOG10_OF_2(digits);
-    static const bool is_signed = false;
-    static const bool is_modulo = true;
+    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(unsigned short)) - (etl::is_signed<unsigned short>::value ? 1 : 0);
+    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
+    static ETL_CONSTANT bool is_signed = false;
+    static ETL_CONSTANT bool is_modulo = true;
 
     static unsigned short min() { return 0U; }
     static unsigned short max() { return USHRT_MAX; }
@@ -402,10 +402,10 @@ namespace etl
   {
   public:
 
-    static const int digits = (CHAR_BIT * sizeof(int)) - (etl::is_signed<int>::value ? 1 : 0);
-    static const int digits10 = ETL_LOG10_OF_2(digits);
-    static const bool is_signed = true;
-    static const bool is_modulo = false;
+    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(int)) - (etl::is_signed<int>::value ? 1 : 0);
+    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
+    static ETL_CONSTANT bool is_signed = true;
+    static ETL_CONSTANT bool is_modulo = false;
 
     static int min() { return INT_MIN; }
     static int max() { return INT_MAX; }
@@ -425,10 +425,10 @@ namespace etl
   {
   public:
 
-    static const int digits = (CHAR_BIT * sizeof(unsigned int)) - (etl::is_signed<unsigned int>::value ? 1 : 0);
-    static const int digits10 = ETL_LOG10_OF_2(digits);
-    static const bool is_signed = false;
-    static const bool is_modulo = true;
+    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(unsigned int)) - (etl::is_signed<unsigned int>::value ? 1 : 0);
+    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
+    static ETL_CONSTANT bool is_signed = false;
+    static ETL_CONSTANT bool is_modulo = true;
 
     static unsigned int min() { return 0U; }
     static unsigned int max() { return UINT_MAX; }
@@ -448,10 +448,10 @@ namespace etl
   {
   public:
 
-    static const int digits = (CHAR_BIT * sizeof(long)) - (etl::is_signed<long>::value ? 1 : 0);
-    static const int digits10 = ETL_LOG10_OF_2(digits);
-    static const bool is_signed = true;
-    static const bool is_modulo = false;
+    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(long)) - (etl::is_signed<long>::value ? 1 : 0);
+    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
+    static ETL_CONSTANT bool is_signed = true;
+    static ETL_CONSTANT bool is_modulo = false;
 
     static long min() { return LONG_MIN; }
     static long max() { return LONG_MAX; }
@@ -471,10 +471,10 @@ namespace etl
   {
   public:
 
-    static const int digits = (CHAR_BIT * sizeof(unsigned long)) - (etl::is_signed<unsigned long>::value ? 1 : 0);
-    static const int digits10 = ETL_LOG10_OF_2(digits);
-    static const bool is_signed = false;
-    static const bool is_modulo = true;
+    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(unsigned long)) - (etl::is_signed<unsigned long>::value ? 1 : 0);
+    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
+    static ETL_CONSTANT bool is_signed = false;
+    static ETL_CONSTANT bool is_modulo = true;
 
     static unsigned long min() { return 0U; }
     static unsigned long max() { return ULONG_MAX; }
@@ -494,10 +494,10 @@ namespace etl
   {
   public:
 
-    static const int digits = (CHAR_BIT * sizeof(long long)) - (etl::is_signed<long long>::value ? 1 : 0);
-    static const int digits10 = ETL_LOG10_OF_2(digits);
-    static const bool is_signed = true;
-    static const bool is_modulo = false;
+    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(long long)) - (etl::is_signed<long long>::value ? 1 : 0);
+    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
+    static ETL_CONSTANT bool is_signed = true;
+    static ETL_CONSTANT bool is_modulo = false;
 
     static long long min() { return LLONG_MIN; }
     static long long max() { return LLONG_MAX; }
@@ -517,10 +517,10 @@ namespace etl
   {
   public:
 
-    static const int digits = (CHAR_BIT * sizeof(unsigned long long)) - (etl::is_signed<unsigned long long>::value ? 1 : 0);
-    static const int digits10 = ETL_LOG10_OF_2(digits);
-    static const bool is_signed = false;
-    static const bool is_modulo = true;
+    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(unsigned long long)) - (etl::is_signed<unsigned long long>::value ? 1 : 0);
+    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
+    static ETL_CONSTANT bool is_signed = false;
+    static ETL_CONSTANT bool is_modulo = true;
 
     static unsigned long long min() { return 0U; }
     static unsigned long long max() { return ULLONG_MAX; }
@@ -549,14 +549,14 @@ namespace etl
     static float quiet_NaN() { return ETL_NANF; }
     static float signaling_NaN() { return ETL_NANF; }
 
-    static const int digits       = FLT_MANT_DIG;
-    static const int digits10     = FLT_DIG;
-    static const int max_digits10 = ETL_LOG10_OF_2(FLT_MANT_DIG) + 2;
+    static ETL_CONSTANT int digits       = FLT_MANT_DIG;
+    static ETL_CONSTANT int digits10     = FLT_DIG;
+    static ETL_CONSTANT int max_digits10 = ETL_LOG10_OF_2(FLT_MANT_DIG) + 2;
 
-    static const int min_exponent   = FLT_MIN_EXP;
-    static const int min_exponent10 = FLT_MIN_10_EXP;
-    static const int max_exponent   = FLT_MAX_EXP;
-    static const int max_exponent10 = FLT_MAX_10_EXP;
+    static ETL_CONSTANT int min_exponent   = FLT_MIN_EXP;
+    static ETL_CONSTANT int min_exponent10 = FLT_MIN_10_EXP;
+    static ETL_CONSTANT int max_exponent   = FLT_MAX_EXP;
+    static ETL_CONSTANT int max_exponent10 = FLT_MAX_10_EXP;
   };
 
   //***************************************************************************
@@ -575,14 +575,14 @@ namespace etl
     static double quiet_NaN() { return ETL_NAN; }
     static double signaling_NaN() { return ETL_NAN; }
 
-    static const int digits       = DBL_MANT_DIG;
-    static const int digits10     = DBL_DIG;
-    static const int max_digits10 = ETL_LOG10_OF_2(DBL_MANT_DIG) + 2;
+    static ETL_CONSTANT int digits       = DBL_MANT_DIG;
+    static ETL_CONSTANT int digits10     = DBL_DIG;
+    static ETL_CONSTANT int max_digits10 = ETL_LOG10_OF_2(DBL_MANT_DIG) + 2;
 
-    static const int min_exponent   = DBL_MIN_EXP;
-    static const int min_exponent10 = DBL_MIN_10_EXP;
-    static const int max_exponent   = DBL_MAX_EXP;
-    static const int max_exponent10 = DBL_MAX_10_EXP;
+    static ETL_CONSTANT int min_exponent   = DBL_MIN_EXP;
+    static ETL_CONSTANT int min_exponent10 = DBL_MIN_10_EXP;
+    static ETL_CONSTANT int max_exponent   = DBL_MAX_EXP;
+    static ETL_CONSTANT int max_exponent10 = DBL_MAX_10_EXP;
   };
 
   //***************************************************************************
@@ -601,14 +601,14 @@ namespace etl
     static long double quiet_NaN() { return ETL_NANL; }
     static long double signaling_NaN() { return ETL_NANL; }
 
-    static const int digits       = LDBL_MANT_DIG;
-    static const int digits10     = LDBL_DIG;
-    static const int max_digits10 = ETL_LOG10_OF_2(LDBL_MANT_DIG) + 2;
+    static ETL_CONSTANT int digits       = LDBL_MANT_DIG;
+    static ETL_CONSTANT int digits10     = LDBL_DIG;
+    static ETL_CONSTANT int max_digits10 = ETL_LOG10_OF_2(LDBL_MANT_DIG) + 2;
 
-    static const int min_exponent   = LDBL_MIN_EXP;
-    static const int min_exponent10 = LDBL_MIN_10_EXP;
-    static const int max_exponent   = LDBL_MAX_EXP;
-    static const int max_exponent10 = LDBL_MAX_10_EXP;
+    static ETL_CONSTANT int min_exponent   = LDBL_MIN_EXP;
+    static ETL_CONSTANT int min_exponent10 = LDBL_MIN_10_EXP;
+    static ETL_CONSTANT int max_exponent   = LDBL_MAX_EXP;
+    static ETL_CONSTANT int max_exponent10 = LDBL_MAX_10_EXP;
   };
 }
 

@@ -82,8 +82,10 @@ namespace etl
       using type = typename type_select_helper<ID, 0, TTypes...>::type;
     };
 
+#if ETL_CPP14_SUPPORTED
     template <size_t ID>
     using select_t = typename select<ID>::type;
+#endif
   };
 
 #else

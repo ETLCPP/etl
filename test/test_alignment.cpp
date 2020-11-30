@@ -41,7 +41,7 @@ SOFTWARE.
 #endif
 
 #ifdef ETL_COMPILER_GCC
-  #pragma GCC diagnostic ignored "-Wno-deprecated"
+  #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
 void f(int)
