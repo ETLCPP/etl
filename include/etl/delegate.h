@@ -118,7 +118,7 @@ namespace etl
     /// Create from function (Compile time).
     //*************************************************************************
     template <TReturn(*Method)(TParams...)>
-    ETL_CONSTEXPR14 static delegate create()
+    constexpr static delegate create()
     {
       return delegate(ETL_NULLPTR, function_stub<Method>);
     }
@@ -127,7 +127,7 @@ namespace etl
     /// Create from Lambda or Functor.
     //*************************************************************************
     template <typename TLambda, typename = typename etl::enable_if<etl::is_class<TLambda>::value, void>::type>
-    ETL_CONSTEXPR14 static delegate create(const TLambda& instance)
+    constexpr static delegate create(const TLambda& instance)
     {
       return delegate((void*)(&instance), lambda_stub<TLambda>);
     }
@@ -136,7 +136,7 @@ namespace etl
     /// Create from instance method (Run time).
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...)>
-    ETL_CONSTEXPR14 static delegate create(T& instance)
+    constexpr static delegate create(T& instance)
     {
       return delegate((void*)(&instance), method_stub<T, Method>);
     }
@@ -152,7 +152,7 @@ namespace etl
     /// Create from const instance method (Run time).
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...) const>
-    ETL_CONSTEXPR14 static delegate create(const T& instance)
+    constexpr static delegate create(const T& instance)
     {
       return delegate((void*)(&instance), const_method_stub<T, Method>);
     }
@@ -161,13 +161,13 @@ namespace etl
     /// Disable create from rvalue instance method (Run time).
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...) const>
-    ETL_CONSTEXPR14 static delegate create(T&& instance) = delete;
+    constexpr static delegate create(T&& instance) = delete;
 
     //*************************************************************************
     /// Create from instance method (Compile time).
     //*************************************************************************
     template <typename T, T& Instance, TReturn(T::*Method)(TParams...)>
-    ETL_CONSTEXPR14 static delegate create()
+    constexpr static delegate create()
     {
       return delegate(method_instance_stub<T, Instance, Method>);
     }
@@ -176,7 +176,7 @@ namespace etl
     /// Create from const instance method (Compile time).
     //*************************************************************************
     template <typename T, T const& Instance, TReturn(T::*Method)(TParams...) const>
-    ETL_CONSTEXPR14 static delegate create()
+    constexpr static delegate create()
     {
       return delegate(const_method_instance_stub<T, Instance, Method>);
     }
@@ -187,7 +187,7 @@ namespace etl
     /// At the time of writing, GCC appears to have trouble with this.
     //*************************************************************************
     template <typename T, T& Instance>
-    ETL_CONSTEXPR14 static delegate create()
+    constexpr static delegate create()
     {
       return delegate(operator_instance_stub<T, Instance>);
     }
@@ -262,7 +262,7 @@ namespace etl
       invocation_element() = default;
 
       //***********************************************************************
-      invocation_element(void* object_, stub_type stub_)
+      constexpr invocation_element(void* object_, stub_type stub_)
         : object(object_)
         , stub(stub_)
       {
@@ -288,25 +288,23 @@ namespace etl
     //*************************************************************************
     /// Constructs a delegate from an object and stub.
     //*************************************************************************
-    ETL_CONSTEXPR14 delegate(void* object, stub_type stub)
+    constexpr delegate(void* object, stub_type stub)
+      : invocation(object, stub)
     {
-      invocation.object = object;
-      invocation.stub   = stub;
     }
 
     //*************************************************************************
     /// Constructs a delegate from a stub.
     //*************************************************************************
-    ETL_CONSTEXPR14 delegate(stub_type stub)
+    constexpr delegate(stub_type stub)
+      : invocation(ETL_NULLPTR, stub)
     {
-      invocation.object = ETL_NULLPTR;
-      invocation.stub   = stub;
     }
 
     //*************************************************************************
     /// Assign from an object and stub.
     //*************************************************************************
-    ETL_CONSTEXPR14 void assign(void* object, stub_type stub)
+    void assign(void* object, stub_type stub)
     {
       invocation.object = object;
       invocation.stub   = stub;

@@ -1,4 +1,8 @@
 ===============================================================================
+19.3.0
+More constexpr, template aliases and inline variables.
+
+===============================================================================
 19.2.1
 Fixed version number retrieval from Github.
 
