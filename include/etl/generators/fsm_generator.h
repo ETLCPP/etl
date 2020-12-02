@@ -147,6 +147,19 @@ namespace etl
   };
 
   //***************************************************************************
+  /// Exception for incompatible order state list.
+  //***************************************************************************
+  class fsm_state_list_order_exception : public etl::fsm_exception
+  {
+  public:
+
+    fsm_state_list_order_exception(string_type file_name_, numeric_type line_number_)
+      : etl::fsm_exception(ETL_ERROR_TEXT("fsm:state list order", ETL_FILE"D"), file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
   /// Interface class for FSM states.
   //***************************************************************************
   class ifsm_state
@@ -234,14 +247,15 @@ namespace etl
     template <typename TSize>
     void set_states(etl::ifsm_state** p_states, TSize size)
     {
-      state_list       = p_states;
+      state_list = p_states;
       number_of_states = etl::fsm_state_id_t(size);
 
-      ETL_ASSERT((number_of_states > 0), ETL_ERROR(etl::fsm_state_list_exception));
+      ETL_ASSERT(number_of_states > 0, ETL_ERROR(etl::fsm_state_list_exception));
 
       for (etl::fsm_state_id_t i = 0; i < size; ++i)
       {
-        ETL_ASSERT((state_list[i] != ETL_NULLPTR), ETL_ERROR(etl::fsm_null_state_exception));
+        ETL_ASSERT(state_list[i] != ETL_NULLPTR, ETL_ERROR(etl::fsm_null_state_exception));
+        ETL_ASSERT(state_list[i]->get_state_id() == i, ETL_ERROR(etl::fsm_state_list_order_exception));
         state_list[i]->set_fsm_context(*this);
       }
     }

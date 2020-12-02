@@ -26,3 +26,11 @@
 #define CHECK
 #define CHECK_EQUAL
 #define CHECK_THROW
+// Hint files help the Visual Studio IDE interpret Visual C++ identifiers
+// such as names of functions and macros.
+// For more information see https://go.microsoft.com/fwlink/?linkid=865984
+#define ETL_ASSERT(b, e)
+#define ETL_ASSERT(b, e) {if (!(b)) {etl::error_handler::error((e)); throw((e));}}
+#define ETL_ASSERT(b, e) {if (!(b)) {throw((e));}}
+#define ETL_ASSERT(b, e) {if(!(b)) {etl::error_handler::error((e));}}
+#define ETL_ASSERT(b, e) assert((b))

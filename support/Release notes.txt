@@ -1,6 +1,7 @@
 ===============================================================================
 19.3.0
 More constexpr, template aliases and inline variables.
+Added ETL_ASSERT for out-of-order state list.
 
 ===============================================================================
 19.2.1
