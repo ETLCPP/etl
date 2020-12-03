@@ -1,7 +1,7 @@
 name: gcc
 on:
   push:
-    branches: [ master ]
+    branches: [ master, hotfix/issue-314-constexpr ]
   pull_request:
     branches: [ master ]
 

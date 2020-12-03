@@ -45,6 +45,15 @@ namespace
 
   SUITE(test_to_string)
   {
+    TEST(test_issue_314)
+    {
+      etl::string<20> str;
+
+      etl::format_spec ft;
+      ft.precision(6);
+      etl::to_string('c', str, ft, true);
+    }
+
     //*************************************************************************
     TEST(test_default_format_no_append)
     {
