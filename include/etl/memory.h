@@ -43,10 +43,10 @@ SOFTWARE.
 
 #include <string.h>
 
-#include <new>
+#include <new.h>
 
 #if ETL_USING_STL
-  #include <memory>
+  #include <memory.h>
 #endif
 
 ///\defgroup memory memory
