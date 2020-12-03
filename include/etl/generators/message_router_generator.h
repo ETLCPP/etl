@@ -64,7 +64,7 @@ cog.outl("//********************************************************************
 #define ETL_MESSAGE_ROUTER_INCLUDED
 
 #include <stdint.h>
-#include <new>
+#include "private/new.h"
 
 #include "platform.h"
 #include "message.h"

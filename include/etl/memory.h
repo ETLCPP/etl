@@ -38,15 +38,13 @@ SOFTWARE.
 #include "utility.h"
 #include "nullptr.h"
 #include "alignment.h"
+#include "private/new.h"
 
 #include <assert.h>
-
 #include <string.h>
 
-#include <new.h>
-
 #if ETL_USING_STL
-  #include <memory.h>
+  #include <memory>
 #endif
 
 ///\defgroup memory memory

@@ -34,7 +34,8 @@ SOFTWARE.
 #include <stddef.h>
 #include <stdint.h>
 
-#include <new>
+#include "private/new.h"
+
 
 #include "platform.h"
 

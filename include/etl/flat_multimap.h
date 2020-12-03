@@ -31,7 +31,7 @@ SOFTWARE.
 #ifndef ETL_FLAT_MULTMAP_INCLUDED
 #define ETL_FLAT_MULTMAP_INCLUDED
 
-#include <new>
+#include "private/new.h"
 
 #include "platform.h"
 #include "reference_flat_multimap.h"

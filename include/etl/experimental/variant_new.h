@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#include <new>
+#include "private/new.h"
 
 #include "platform.h"
 #include "utility.h"
