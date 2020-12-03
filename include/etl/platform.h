@@ -170,11 +170,13 @@ SOFTWARE.
   #define ETL_IF_CONSTEXPR constexpr
   #define ETL_NODISCARD [[nodiscard]]
   #define ETL_FALLTHROUGH [[fallthrough]]
+  #define ETL_INLINE_VAR inline
 #else
   #define ETL_CONSTEXPR17
   #define ETL_IF_CONSTEXPR
   #define ETL_NODISCARD
   #define ETL_FALLTHROUGH
+  #define ETL_INLINE_VAR
 #endif
 
 // C++20

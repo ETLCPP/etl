@@ -1,4 +1,36 @@
 ===============================================================================
+19.3.0
+More constexpr, template aliases and inline variables.
+Added ETL_ASSERT for out-of-order state list.
+
+===============================================================================
+19.2.1
+Fixed version number retrieval from Github.
+
+===============================================================================
+19.2.0
+Security flag for a string is copied on assignment or copy constructor.
+etl::format_spec may now be a constexpr.
+Added AVR check to nullptr.h
+
+===============================================================================
+19.1.0
+Refactor of etl::buffer_descriptors interface.
+
+===============================================================================
+19.0.0
+Containers with external buffers or pools are now separate classes instead of specialisations.
+
+etl::circular_buffer<T, 0> => etl::circular_buffer_ext<T>
+etl::forward_list<T, 0>    => etl::forward_list_ext<T>
+etl::list<T, 0>            => etl::list_ext<T>
+etl::string<0>             => etl::string_ext
+etl::wstring<0>            => etl::wstring_ext
+etl::u16string<0>          => etl::u16string_ext
+etl::u32string<0>          => etl::u32string_ext
+etl::vector<T, 0>          => etl::vector_ext<T>
+
+===============================================================================
 18.20.2
 Fixed etl::to_string for floating point numbers between 0 & -1.0
 

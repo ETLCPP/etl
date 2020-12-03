@@ -331,7 +331,7 @@ namespace
 
   MotorControl motorControl;
 
-  SUITE(test_map)
+  SUITE(test_fsm_states)
   {
     //*************************************************************************
     TEST(test_fsm)
@@ -576,6 +576,45 @@ namespace
       CHECK(motorControl.accepts(Stop()));
       CHECK(motorControl.accepts(Stopped()));
       CHECK(motorControl.accepts(Unsupported()));
+    }
+
+    //*************************************************************************
+    TEST(test_fsm_no_states)
+    {
+      MotorControl mc;
+
+      // No states.
+      etl::ifsm_state** stateList = nullptr;
+
+      CHECK_THROW(mc.set_states(stateList, 0U), etl::fsm_state_list_exception);
+    }
+
+    //*************************************************************************
+    TEST(test_fsm_null_state)
+    {
+      MotorControl mc;
+
+      // Null state.
+      etl::ifsm_state* stateList[StateId::NUMBER_OF_STATES] =
+      {
+        &idle, &running,& windingDown, nullptr
+      };
+
+      CHECK_THROW(mc.set_states(stateList, StateId::NUMBER_OF_STATES), etl::fsm_null_state_exception);
+    }
+
+    //*************************************************************************
+    TEST(test_fsm_incorrect_state_order)
+    {
+      MotorControl mc;
+
+      // Incorrect order.
+      etl::ifsm_state* stateList[StateId::NUMBER_OF_STATES] =
+      {
+        &idle, &windingDown, &running, &locked
+      };
+
+      CHECK_THROW(mc.set_states(stateList, StateId::NUMBER_OF_STATES), etl::fsm_state_list_order_exception);
     }
   };
 }

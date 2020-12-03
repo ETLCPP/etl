@@ -50,14 +50,14 @@ namespace
 
     const size_t SIZE = 10;
 
-    typedef etl::list<ItemDC, 0>  DataDC;
-    typedef etl::list<ItemNDC, 0> DataNDC;
+    typedef etl::list_ext<ItemDC>  DataDC;
+    typedef etl::list_ext<ItemNDC> DataNDC;
     typedef etl::ilist<ItemNDC>   IDataNDC;
 
     typedef std::list<ItemNDC>   CompareData;
     typedef std::vector<ItemNDC> InitialData;
 
-    typedef etl::list<int, 0> DataInt;
+    typedef etl::list_ext<int> DataInt;
 
     typedef etl::pool<DataNDC::pool_type, SIZE> Pool;
     typedef etl::pool<DataNDC::pool_type, SIZE * 2> Pool2;

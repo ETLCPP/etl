@@ -47,9 +47,9 @@ namespace
 
   SUITE(test_vector)
   {
-    typedef etl::vector<int, 0> Data;
-    typedef etl::ivector<int>   IData;
-    typedef std::vector<int>    Compare_Data;
+    typedef etl::vector_ext<int> Data;
+    typedef etl::ivector<int>    IData;
+    typedef std::vector<int>     Compare_Data;
 
     Compare_Data initial_data;
     Compare_Data less_data;
@@ -1077,8 +1077,8 @@ namespace
 
       const S raw[6] = { 1, 2, 3, 4, 5, 6 };
 
-      etl::vector<S, 0> dest(etl::begin(raw), etl::end(raw), sbuffer1, SIZE);
-      etl::vector<S, 0> src((size_t) 2, S(8), sbuffer2, SIZE);
+      etl::vector_ext<S> dest(etl::begin(raw), etl::end(raw), sbuffer1, SIZE);
+      etl::vector_ext<S> src((size_t) 2, S(8), sbuffer2, SIZE);
 
       dest.insert(dest.begin(), src.begin(), src.end());
 
@@ -1112,7 +1112,7 @@ namespace
 
       const S raw[6] = { 1, 2, 3, 4, 5, 6 };
 
-      etl::vector<S, 0> dest(etl::begin(raw), etl::end(raw), sbuffer1, SIZE);
+      etl::vector_ext<S> dest(etl::begin(raw), etl::end(raw), sbuffer1, SIZE);
 
       dest.insert(dest.begin(), 2, S(8));
 

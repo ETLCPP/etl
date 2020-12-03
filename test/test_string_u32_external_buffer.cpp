@@ -53,7 +53,7 @@ namespace
     static constexpr size_t SIZE_L = 52;
     static constexpr size_t SIZE_S = 4;
 
-    using Text         = etl::u32string<0>;
+    using Text         = etl::u32string_ext;
     using IText        = etl::iu32string;
     using TextT        = etl::u32string<SIZE>;
     using Compare_Text = std::u32string;
@@ -4481,20 +4481,25 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_secure_after_clear)
+    TEST_FIXTURE(SetupFixture, test_secure_flag_after_copy)
     {
-      TextBuffer buffer;
-      Text text(buffer.data(), buffer.size());
-      text.set_secure();
-      text.assign(STR("ABCDEF"));
+      TextBuffer buffer1;
+      Text text1(STR("Hello World"), buffer1.data(), buffer1.size());
+      text1.set_secure();
 
-      Text::pointer pb = text.begin();
-      Text::pointer pe = text.end();
+      TextBuffer buffer2;
+      Text text2(text1, buffer2.data(), buffer2.size());
 
-      text.clear();
+      TextBuffer buffer3;
+      Text text3(buffer3.data(), buffer3.size());
+      text3 = text1;
 
-      // Check there no non-zero values in the remainder of the string.
-      CHECK(std::find_if(pb, pe, [](Text::value_type x) { return x != 0; }) == pe);
+      TextBuffer buffer4;
+      Text text4(text1, buffer4.data(), buffer4.size(), 6U, 2U);
+
+      CHECK(text2.is_secure());
+      CHECK(text3.is_secure());
+      CHECK(text4.is_secure());
     }
 #endif
   };

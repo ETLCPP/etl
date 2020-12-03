@@ -50,11 +50,11 @@ namespace
     typedef TestDataDC<std::string>  ItemDC;
     typedef TestDataNDC<std::string> ItemNDC;
 
-    typedef etl::forward_list<ItemDC, 0>  DataDC;
-    typedef etl::forward_list<ItemNDC, 0> DataNDC;
+    typedef etl::forward_list_ext<ItemDC>  DataDC;
+    typedef etl::forward_list_ext<ItemNDC> DataNDC;
     typedef etl::iforward_list<ItemNDC>   IDataNDC;
 
-    typedef etl::forward_list<int, 0> DataInt;
+    typedef etl::forward_list_ext<int> DataInt;
 
     typedef std::forward_list<ItemDC> CompareDataDC;
     typedef std::forward_list<ItemNDC> CompareDataNDC;

@@ -37,33 +37,34 @@ SOFTWARE.
 #include "type_traits.h"
 #include "static_assert.h"
 #include "cyclic_value.h"
+#include "algorithm.h"
 
 #include <cstring>
-
-#undef ETL_FILE
-#define ETL_FILE "57"
 
 namespace etl
 {
   //***************************************************************************
   /// buffer_descriptors
   //***************************************************************************
-  template <typename TBuffer, typename TSize, TSize BUFFER_SIZE_, size_t N_BUFFERS_, typename TFlag = bool>
+  template <typename TBuffer, size_t BUFFER_SIZE_, size_t N_BUFFERS_, typename TFlag = bool>
   class buffer_descriptors
   {
+  private:
+
+    struct descriptor_item;
+
   public:
 
-    typedef TBuffer           value_type;
-    typedef value_type*       pointer;
-    typedef TSize             size_type;
-    typedef TFlag             flag_type;
+    typedef TBuffer     value_type;
+    typedef value_type* pointer;
+    typedef size_t      size_type;
+    typedef TFlag       flag_type;
     
-    ETL_STATIC_ASSERT(etl::is_unsigned<TSize>::value, "TSize must be unsigned");
-    ETL_STATIC_ASSERT(etl::is_integral<TSize>::value, "TSize must be integral");
-
-    static ETL_CONSTANT size_t    N_BUFFERS   = N_BUFFERS_;
+    static ETL_CONSTANT size_type N_BUFFERS   = N_BUFFERS_;
     static ETL_CONSTANT size_type BUFFER_SIZE = BUFFER_SIZE_;
 
+    //*********************************
+    /// Describes a buffer.
     //*********************************
     class descriptor
     {
@@ -75,88 +76,134 @@ namespace etl
 
       //*********************************
       descriptor()
-        : pbuffer(ETL_NULLPTR)
-        , in_use(false)
+        : pdesc_item(ETL_NULLPTR)
       {
       }
 
       //*********************************
-      ETL_CONSTEXPR pointer data() const
+      descriptor(const descriptor& other)
+        : pdesc_item(other.pdesc_item)
       {
-        return pbuffer;
       }
 
       //*********************************
-      ETL_CONSTEXPR size_type max_size() const
+      descriptor& operator =(const descriptor& other)
+      {
+        pdesc_item = other.pdesc_item;
+        return *this;
+      }
+
+      //*********************************
+      pointer data() const
+      {
+        assert(pdesc_item != nullptr);
+        return pdesc_item->pbuffer;
+      }
+
+      //*********************************
+      ETL_NODISCARD
+      constexpr size_type max_size() const
       {
         return BUFFER_SIZE;
       }
 
       //*********************************
-      bool is_valid() const
-      {
-        return pbuffer != ETL_NULLPTR;
-      }
-
-      //*********************************
+      ETL_NODISCARD
       bool is_allocated() const
       {
-        return bool(in_use);
+        return bool(pdesc_item->in_use);
       }
 
       //*********************************
+      ETL_NODISCARD
       bool is_released() const
       {
-        return !bool(in_use);
+        return bool(!pdesc_item->in_use);
+      }
+
+      //*********************************
+      ETL_NODISCARD
+      bool is_valid() const
+      {
+        return pdesc_item != ETL_NULLPTR;
       }
 
       //*********************************
       void release()
       {
-        in_use = false;
+        pdesc_item->in_use = false;
       }
 
     private:
 
       //*********************************
-      ETL_CONSTEXPR descriptor(TBuffer* pbuffer_)
-        : pbuffer(pbuffer_)
-        , in_use(false)
+      descriptor(descriptor_item* pdesc_item_)
+        : pdesc_item(pdesc_item_)
       {
       }
 
       //*********************************
       void allocate()
       {
-        in_use = true;
+        pdesc_item->in_use = true;;
+      }
+
+      /// The pointer to the buffer descriptor.
+      descriptor_item* pdesc_item;
+    };
+
+    //*********************************
+    /// Describes a notification.
+    //*********************************
+    class notification
+    {
+    public:
+
+      //*********************************
+      notification()
+        : desc()
+        , count(0U)
+      {
       }
 
       //*********************************
-      descriptor(const descriptor&) ETL_DELETE;
-      descriptor& operator =(const descriptor&) ETL_DELETE;
+      notification(descriptor desc_, size_t count_)
+        : desc(desc_)
+        , count(count_)
+      {
+      }
 
-      pointer   pbuffer;
-      volatile flag_type in_use;
+      //*********************************
+      ETL_NODISCARD
+      descriptor get_descriptor() const
+      {
+        return desc;
+      }
+
+      //*********************************
+      ETL_NODISCARD
+      size_t get_count() const
+      {
+        return count;
+      }
+
+    private:
+
+      descriptor desc;
+      size_t     count;
     };
 
-    typedef etl::delegate<void(descriptor&, size_type)> callback_type;
+    // The type of the callback function.
+    typedef etl::delegate<void(notification)> callback_type;
 
     //*********************************
-    buffer_descriptors(TBuffer* pbuffers_)
-    {
-      for (size_t i = 0U; i < N_BUFFERS; ++i)
-      {
-        descriptors[i].pbuffer = pbuffers_ + (i * BUFFER_SIZE);
-      }
-    }
-
-    //*********************************
-    buffer_descriptors(TBuffer* pbuffers_, const callback_type& callback_)
+    buffer_descriptors(TBuffer* pbuffers_, callback_type callback_ = callback_type())
       : callback(callback_)
     {
       for (size_t i = 0U; i < N_BUFFERS; ++i)
       {
-        descriptors[i].pbuffer = pbuffers_ + (i * BUFFER_SIZE);
+        descriptor_items[i].pbuffer = pbuffers_ + (i * BUFFER_SIZE);
+        descriptor_items[i].in_use  = false;
       }
     }
 
@@ -167,26 +214,38 @@ namespace etl
     }
 
     //*********************************
+    void clear()
+    {
+      for (size_t i = 0U; i < N_BUFFERS; ++i)
+      {
+        descriptor_items[i].in_use = false;
+      }
+
+      next.to_first();
+    }
+
+    //*********************************
+    ETL_NODISCARD
     bool is_valid() const
     {
       return callback.is_valid();
     }
 
     //*********************************
-    void notify(descriptor& desc_, size_type count_)
+    void notify(notification n)
     {
-      // We have a valid callback?
+      // Do we have a valid callback?
       if (callback.is_valid())
       {
-        // Set the relevant data.
-        callback(desc_, count_);
-       }
+        callback(n);
+      }
     }
 
     //*********************************
-    descriptor& allocate()
+    ETL_NODISCARD
+    descriptor allocate()
     {    
-      descriptor& desc = descriptors[next];
+      descriptor desc(&descriptor_items[next]);
 
       if (desc.is_released())
       {
@@ -198,19 +257,37 @@ namespace etl
       }
       else
       {
-        static descriptor null_descriptor;
-        return null_descriptor;
+        return descriptor();
       }
+    }
+
+    //*********************************
+    ETL_NODISCARD
+    descriptor allocate(value_type fill_)
+    {
+      descriptor desc = allocate();
+
+      if (desc.is_valid())
+      {
+        etl::fill_n(desc.data(), BUFFER_SIZE, fill_);
+      }
+
+      return desc;
     }
 
   private:
 
+    //*********************************
+    struct descriptor_item
+    {
+      pointer  pbuffer;
+      volatile flag_type in_use;
+    };
+
     callback_type callback;
-    etl::array<descriptor, N_BUFFERS> descriptors;
+    etl::array<descriptor_item, N_BUFFERS> descriptor_items;
     etl::cyclic_value<uint_least8_t, 0U, N_BUFFERS - 1> next;
   };
 }
-
-#undef ETL_FILE
 
 #endif

@@ -888,11 +888,11 @@
     <ClInclude Include="..\..\include\etl\flags.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\buffer_descriptors.h">
-      <Filter>ETL\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\atomic\atomic_clang_sync.h">
       <Filter>ETL\Utilities\Atomic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\buffer_descriptors.h">
+      <Filter>ETL\Containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1424,6 +1424,9 @@
     <ClCompile Include="..\test_atomic_clang_sync.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_format_spec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -1493,6 +1496,12 @@
       <Filter>Resource Files\CI\Github</Filter>
     </None>
     <None Include="..\..\meson.build">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\runtests.sh">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="..\..\conanfile.py">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

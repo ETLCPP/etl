@@ -1515,6 +1515,7 @@
     <ClCompile Include="..\test_delegate.cpp" />
     <ClCompile Include="..\test_delegate_service.cpp" />
     <ClCompile Include="..\test_flags.cpp" />
+    <ClCompile Include="..\test_format_spec.cpp" />
     <ClCompile Include="..\test_forward_list_shared_pool.cpp" />
     <ClCompile Include="..\test_bit_stream.cpp" />
     <ClCompile Include="..\test_indirect_vector.cpp" />
@@ -1980,6 +1981,7 @@
     <None Include="..\..\.github\workflows\gcc.yml" />
     <None Include="..\..\.github\workflows\vs2019.yml" />
     <None Include="..\..\appveyor.yml" />
+    <None Include="..\..\conanfile.py" />
     <None Include="..\..\etl.pspimage" />
     <None Include="..\..\etl.xar" />
     <None Include="..\..\include\etl\generators\generate.bat" />
@@ -1997,6 +1999,7 @@
     <None Include="..\..\meson.build" />
     <None Include="..\..\README.md" />
     <None Include="..\cmake\unit-test_external_project.cmake" />
+    <None Include="..\runtests.sh" />
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
