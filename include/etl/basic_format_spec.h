@@ -226,7 +226,7 @@ namespace etl
     //***************************************************************************
     /// Clears the format spec back to default.
     //***************************************************************************
-    ETL_CONSTEXPR void clear()
+    ETL_CONSTEXPR14 void clear()
     {
       base_           = 10U;
       width_          = 0U;
@@ -242,7 +242,7 @@ namespace etl
     /// Sets the base.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR basic_format_spec& base(uint32_t b)
+    ETL_CONSTEXPR14 basic_format_spec& base(uint32_t b)
     {
       base_ = static_cast<uint_least8_t>(b);
       return *this;
@@ -252,7 +252,7 @@ namespace etl
     /// Sets the base to binary.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR basic_format_spec& binary()
+    ETL_CONSTEXPR14 basic_format_spec& binary()
     {
       base(2);
       return *this;
@@ -262,7 +262,7 @@ namespace etl
     /// Sets the base to octal.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR basic_format_spec& octal()
+    ETL_CONSTEXPR14 basic_format_spec& octal()
     {
       base(8);
       return *this;
@@ -272,7 +272,7 @@ namespace etl
     /// Sets the base to decimal.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR basic_format_spec& decimal()
+    ETL_CONSTEXPR14 basic_format_spec& decimal()
     {
       base(10);
       return *this;
@@ -282,7 +282,7 @@ namespace etl
     /// Sets the base to hex.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR basic_format_spec& hex()
+    ETL_CONSTEXPR14 basic_format_spec& hex()
     {
       base(16);
       return *this;
@@ -300,7 +300,7 @@ namespace etl
     /// Sets the show base flag.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR basic_format_spec& show_base(bool b)
+    ETL_CONSTEXPR14 basic_format_spec& show_base(bool b)
     {
       show_base_ = b;
       return *this;
@@ -318,7 +318,7 @@ namespace etl
     /// Sets the width.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR basic_format_spec& width(uint32_t w)
+    ETL_CONSTEXPR14 basic_format_spec& width(uint32_t w)
     {
       width_ = static_cast<uint_least8_t>(w);
       return *this;
@@ -336,7 +336,7 @@ namespace etl
     /// Sets the precision.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR basic_format_spec& precision(uint32_t p)
+    ETL_CONSTEXPR14 basic_format_spec& precision(uint32_t p)
     {
       precision_ = static_cast<uint_least8_t>(p);
       return *this;
@@ -354,7 +354,7 @@ namespace etl
     /// Sets the upper case flag.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR basic_format_spec& upper_case(bool u)
+    ETL_CONSTEXPR14 basic_format_spec& upper_case(bool u)
     {
       upper_case_ = u;
       return *this;
@@ -372,7 +372,7 @@ namespace etl
     /// Sets the fill character.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR basic_format_spec& fill(typename TString::value_type c)
+    ETL_CONSTEXPR14 basic_format_spec& fill(typename TString::value_type c)
     {
       fill_ = c;
       return *this;
@@ -390,7 +390,7 @@ namespace etl
     /// Sets the left justify flag.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR basic_format_spec& left()
+    ETL_CONSTEXPR14 basic_format_spec& left()
     {
       left_justified_ = true;
       return *this;
@@ -408,7 +408,7 @@ namespace etl
     /// Sets the right justify flag.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR basic_format_spec& right()
+    ETL_CONSTEXPR14 basic_format_spec& right()
     {
       left_justified_ = false;
       return *this;
@@ -426,7 +426,7 @@ namespace etl
     /// Sets the bool alpha flag.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR basic_format_spec& boolalpha(bool b)
+    ETL_CONSTEXPR14 basic_format_spec& boolalpha(bool b)
     {
       boolalpha_ = b;
       return *this;
