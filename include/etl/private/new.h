@@ -34,16 +34,15 @@ SOFTWARE.
 
 #include "../platform.h"
 
-#if ETL_USING_STL
-#include <new>
-#endif
-
-#if ETL_NOT_USING_STL && !defined(_LIBCPP_HIDE_FROM_ABI)
+#ifdef ETL_NO_NEW_HEADER_AVAILABLE
+// Define placement new if no new header is available
 inline void* operator new(size_t, void* const __p){ return __p; }
 inline void* operator new[](size_t, void* const __p){ return __p; }
 
 inline void operator delete(void*, void* const){ }
 inline void operator delete[](void*, void* const){ }
+#else
+#include <new>
 #endif
 
 #endif
