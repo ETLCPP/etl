@@ -51,7 +51,7 @@ namespace
 
       etl::format_spec ft;
       ft.precision(6);
-      etl::to_string('c', str, ft, true);
+      etl::to_string(1.23, str, ft, true);
     }
 
     //*************************************************************************
