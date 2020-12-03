@@ -314,8 +314,6 @@ namespace etl
 
           from_bytes(data, value);
 
-          bits_remaining -= width;
-
           success = true;
         }
       }
