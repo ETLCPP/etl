@@ -463,6 +463,27 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_first_2)
+    {
+      std::vector<int> original = {1, 2, 3, 4, 5, 6, 7, 8};
+      std::vector<int> first = {1, 2, 3, 4, 5, 6};
+      View view(original);
+      CView cview(original);
+
+      bool isEqual;
+
+      auto result = view.first(6);
+      isEqual = std::equal(result.begin(), result.end(), first.begin());
+      CHECK(isEqual);
+      CHECK_EQUAL(first.size(), result.size());
+
+      auto cresult = cview.first(6);
+      isEqual = std::equal(cresult.begin(), cresult.end(), first.begin());
+      CHECK(isEqual);
+      CHECK_EQUAL(first.size(), cresult.size());
+    }
+
+    //*************************************************************************
     TEST(test_last)
     {
       std::vector<int> original = { 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -482,6 +503,27 @@ namespace
       isEqual = std::equal(cresult.begin(), cresult.end(), last.begin());
       CHECK(isEqual);
       CHECK_EQUAL(last.size(), cresult.extent);
+      CHECK_EQUAL(last.size(), cresult.size());
+    }
+
+    //*************************************************************************
+    TEST(test_last_2)
+    {
+      std::vector<int> original = {1, 2, 3, 4, 5, 6, 7, 8};
+      std::vector<int> last = {3, 4, 5, 6, 7, 8};
+      View view(original);
+      CView cview(original);
+
+      bool isEqual;
+
+      auto result = view.last(6);
+      isEqual = std::equal(result.begin(), result.end(), last.begin());
+      CHECK(isEqual);
+      CHECK_EQUAL(last.size(), result.size());
+
+      auto cresult = cview.last(6);
+      isEqual = std::equal(cresult.begin(), cresult.end(), last.begin());
+      CHECK(isEqual);
       CHECK_EQUAL(last.size(), cresult.size());
     }
 

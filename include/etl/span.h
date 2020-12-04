@@ -259,12 +259,28 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Obtains a span that is a view over the first count elements of this span.
+    //*************************************************************************
+    ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> first(size_t count) const
+    {
+      return etl::span<element_type, etl::dynamic_extent>(mbegin, mbegin + count);
+    }
+
+    //*************************************************************************
     /// Obtains a span that is a view over the last COUNT elements of this span.
     //*************************************************************************
     template <const size_t COUNT>
     ETL_CONSTEXPR etl::span<element_type, COUNT> last() const
     {
       return etl::span<element_type, COUNT>(mend - COUNT, mend);
+    }
+
+    //*************************************************************************
+    /// Obtains a span that is a view over the last count elements of this span.
+    //*************************************************************************
+    ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> last(size_t count) const
+    {
+      return etl::span<element_type, etl::dynamic_extent>(mend - count, mend);
     }
 
     //*************************************************************************
