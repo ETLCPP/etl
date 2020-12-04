@@ -58,6 +58,22 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_constexpr_parameterised_format)
+    {
+      constexpr etl::format_spec format(16U, 4, 6, true, false, true, false, '?');
+
+      CHECK_EQUAL(16, format.get_base());
+      CHECK_EQUAL('?', format.get_fill());
+      CHECK_EQUAL(6, format.get_precision());
+      CHECK_EQUAL(4, format.get_width());
+      CHECK_EQUAL(true, format.is_boolalpha());
+      CHECK_EQUAL(false, format.is_left());
+      CHECK_EQUAL(true, format.is_right());
+      CHECK_EQUAL(false, format.is_show_base());
+      CHECK_EQUAL(true, format.is_upper_case());
+    }
+
+    //*************************************************************************
     TEST(test_format)
     {
       etl::format_spec format;

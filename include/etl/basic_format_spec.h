@@ -205,11 +205,6 @@ namespace etl
 
     //***************************************************************************
     /// Default constructor.
-    /// Sets:-
-    /// Base = 10
-    /// Width = 0
-    /// Upper case (for hex) = true
-    /// Left Justified = false
     //***************************************************************************
     ETL_CONSTEXPR basic_format_spec()
       : base_(10U)
@@ -220,6 +215,28 @@ namespace etl
       , boolalpha_(false)
       , show_base_(false)
       , fill_(typename TString::value_type(' '))
+    {
+    }
+
+    //***************************************************************************
+    /// Cconstructor.
+    //***************************************************************************
+    ETL_CONSTEXPR basic_format_spec(uint_least8_t base__,
+                                    uint_least8_t width__,
+                                    uint_least8_t precision__,
+                                    bool upper_case__,
+                                    bool left_justified__,
+                                    bool boolalpha__,
+                                    bool show_base__,
+                                    typename TString::value_type fill__)
+      : base_(base__)
+      , width_(width__)
+      , precision_(precision__)
+      , upper_case_(upper_case__)
+      , left_justified_(left_justified__)
+      , boolalpha_(boolalpha__)
+      , show_base_(show_base__)
+      , fill_(fill__)
     {
     }
 
