@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include <stddef.h>
 
-#include <new>
+#include "private/new.h"
 
 #include "platform.h"
 #include "algorithm.h"

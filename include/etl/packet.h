@@ -31,7 +31,7 @@ SOFTWARE.
 #ifndef ETL_PACKET_INCLUDED
 #define ETL_PACKET_INCLUDED
 
-#include <new>
+#include "private/new.h"
 
 #include "platform.h"
 #include "static_assert.h"
