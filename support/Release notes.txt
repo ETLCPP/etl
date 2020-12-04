@@ -1,4 +1,9 @@
 ===============================================================================
+19.3.1
+Fixed etl::format_spec constexpr compatibility with C++11.
+Fixed etl::bit_stream reading too many bits when reading floating point values.
+
+===============================================================================
 19.3.0
 More constexpr, template aliases and inline variables.
 Added ETL_ASSERT for out-of-order state list.
