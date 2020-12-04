@@ -87,7 +87,7 @@ namespace etl
     /// data() and size() member functions.
     //*************************************************************************
     template <typename TSpan>
-    ETL_CONSTEXPR explicit span(TSpan& a) ETL_NOEXCEPT
+    ETL_CONSTEXPR span(TSpan& a) ETL_NOEXCEPT
       : mbegin(a.data())
       , mend(a.data() + a.size())
     {
@@ -98,7 +98,7 @@ namespace etl
     /// data() and size() member functions.
     //*************************************************************************
     template <typename TSpan>
-    ETL_CONSTEXPR explicit span(const TSpan& a) ETL_NOEXCEPT
+    ETL_CONSTEXPR span(const TSpan& a) ETL_NOEXCEPT
       : mbegin(a.data())
       , mend(a.data() + a.size())
     {

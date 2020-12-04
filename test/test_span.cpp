@@ -394,6 +394,19 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_assignment_operator)
+    {
+      View view(etldata);
+      CView cview = view;
+
+      CHECK_EQUAL(etldata.size(), view.size());
+      CHECK_EQUAL(etldata.max_size(), view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), etldata.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST(test_empty)
     {
       View view1(etldata.begin(), etldata.begin());
