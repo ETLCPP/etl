@@ -864,7 +864,7 @@
     <ClInclude Include="..\..\include\etl\message_pool.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\ishared_message_processor.h">
+    <ClInclude Include="..\..\include\etl\shared_message_processor.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
   </ItemGroup>

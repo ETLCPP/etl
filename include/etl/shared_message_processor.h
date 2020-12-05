@@ -38,13 +38,27 @@ namespace etl
   //***************************************************************************
   /// This is the base of all shared message processors.
   //***************************************************************************
-  class ishared_message_processor
+  class shared_message_processor
   {
   public:
 
-    virtual ~ishared_message_processor() {}
+    shared_message_processor(imessage_router& router_)
+      : router(router_)
+    {
+    }
+
+    virtual ~shared_message_processor() {}
     virtual void receive(etl::shared_message message) = 0;
     virtual void receive(imessage_router& source, etl::shared_message message) = 0;
+
+    imessage_router& get_router() const
+    {
+      return router;
+    }
+
+  private:
+
+    imessage_router& router;
   };
 }
 

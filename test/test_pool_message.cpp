@@ -36,7 +36,7 @@ SOFTWARE.
 #include "etl/atomic.h"
 
 #include "etl/queue.h"
-#include "etl/ishared_message_processor.h"
+#include "etl/shared_message_processor.h"
 
 namespace
 {
@@ -71,10 +71,10 @@ namespace
   };
 
   //*************************************************************************
-  struct Processor : public etl::ishared_message_processor
+  struct Processor : public etl::shared_message_processor
   {
-    Processor(etl::imessage_router& router_)
-      : router(router_)
+    Processor(Router& router_)
+      : shared_message_processor(router_)
     {
     }
 
@@ -89,16 +89,14 @@ namespace
 
     void receive(etl::imessage_router& source, etl::shared_message message)
     {
-
     }
 
     void Process()
     {
-      router.receive(smqueue.front().get_message());
+      get_router().receive(smqueue.front().get_message());
       smqueue.pop();
     }
 
-    etl::imessage_router& router;
     etl::queue<etl::shared_message, 10> smqueue;
   };
 
