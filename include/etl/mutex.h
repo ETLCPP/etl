@@ -43,6 +43,9 @@ SOFTWARE.
 #elif defined(ETL_COMPILER_GCC)
   #include "mutex/mutex_gcc_sync.h"
   #define ETL_HAS_MUTEX 1
+#elif defined(ETL_COMPILER_GCC)
+  #include "mutex/mutex_clang_sync.h"
+  #define ETL_HAS_MUTEX 1
 #else
   #define ETL_HAS_MUTEX 0
 #endif

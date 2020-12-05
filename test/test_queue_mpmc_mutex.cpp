@@ -80,13 +80,6 @@ namespace
 
   using ItemM = TestDataM<int>;
 
-//  std::ostream& operator <<(std::ostream& os, const Data& data)
-//  {
-//    os << data.a << " " << data.b << " " << data.c << " " << data.d;
-//
-//    return os;
-//  }
-
   SUITE(test_queue_mpmc_mutex)
   {
     //*************************************************************************

@@ -894,6 +894,9 @@
     <ClInclude Include="..\..\include\etl\buffer_descriptors.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\mutex\mutex_clang_sync.h">
+      <Filter>ETL\Utilities\Mutex</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">

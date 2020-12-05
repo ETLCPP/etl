@@ -1,4 +1,8 @@
 ===============================================================================
+19.3.2
+Added No-STL clang mutex that uses GCC implementation.
+
+===============================================================================
 19.3.1
 Fixed etl::format_spec constexpr compatibility with C++11.
 Fixed etl::bit_stream reading too many bits when reading floating point values.

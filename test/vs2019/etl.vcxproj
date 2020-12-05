@@ -1291,6 +1291,7 @@
     <ClInclude Include="..\..\include\etl\macros.h" />
     <ClInclude Include="..\..\include\etl\message_packet.h" />
     <ClInclude Include="..\..\include\etl\multi_array.h" />
+    <ClInclude Include="..\..\include\etl\mutex\mutex_clang_sync.h" />
     <ClInclude Include="..\..\include\etl\mutex\mutex_freertos.h" />
     <ClInclude Include="..\..\include\etl\negative.h" />
     <ClInclude Include="..\..\include\etl\null_type.h" />

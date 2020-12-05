@@ -1,5 +1,3 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -7,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 jwellbelove
+Copyright(c) 2020 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,23 +26,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_VERSION_INCLUDED
-#define ETL_VERSION_INCLUDED
+#ifndef ETL_MUTEX_CLANG_INCLUDED
+#define ETL_MUTEX_CLANG_INCLUDED
 
-#include "macros.h"
-
-///\defgroup version version
-/// Definitions of the ETL version
-///\ingroup utilities
-
-#define ETL_VERSION_MAJOR 19
-#define ETL_VERSION_MINOR  3
-#define ETL_VERSION_PATCH  2
-#define ETL_VERSION       ETL_STRINGIFY(ETL_VERSION_MAJOR) "." ETL_STRINGIFY(ETL_VERSION_MINOR) "." ETL_STRINGIFY(ETL_VERSION_PATCH)
-#define ETL_VERSION_W     ETL_STRINGIFY(ETL_VERSION_MAJOR) L"." ETL_STRINGIFY(ETL_VERSION_MINOR) L"." ETL_STRINGIFY(ETL_VERSION_PATCH)
-#define ETL_VERSION_U16   ETL_STRINGIFY(ETL_VERSION_MAJOR) u"." ETL_STRINGIFY(ETL_VERSION_MINOR) u"." ETL_STRINGIFY(ETL_VERSION_PATCH)
-#define ETL_VERSION_U32   ETL_STRINGIFY(ETL_VERSION_MAJOR) U"." ETL_STRINGIFY(ETL_VERSION_MINOR) U"." ETL_STRINGIFY(ETL_VERSION_PATCH)
-#define ETL_VERSION_VALUE ((ETL_VERSION_MAJOR * 10000) + (ETL_VERSION_MINOR * 100) + ETL_VERSION_PATCH)
+#include "mutex_gcc_sync.h"
 
 #endif
-
