@@ -1293,6 +1293,7 @@
     <ClInclude Include="..\..\include\etl\multi_array.h" />
     <ClInclude Include="..\..\include\etl\mutex\mutex_freertos.h" />
     <ClInclude Include="..\..\include\etl\negative.h" />
+    <ClInclude Include="..\..\include\etl\placement_new.h" />
     <ClInclude Include="..\..\include\etl\null_type.h" />
     <ClInclude Include="..\..\include\etl\parameter_pack.h" />
     <ClInclude Include="..\..\include\etl\private\choose_namespace.h" />

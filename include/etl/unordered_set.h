@@ -33,8 +33,6 @@ SOFTWARE.
 
 #include <stddef.h>
 
-#include "private/new.h"
-
 #include "platform.h"
 #include "algorithm.h"
 #include "iterator.h"
@@ -53,6 +51,7 @@ SOFTWARE.
 #include "error_handler.h"
 #include "debug_count.h"
 #include "iterator.h"
+#include "placement_new.h"
 
 #if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>

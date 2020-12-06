@@ -34,14 +34,13 @@ SOFTWARE.
 #include <stddef.h>
 #include <stdint.h>
 
-#include "private/new.h"
-
 #include "platform.h"
 #include "alignment.h"
 #include "parameter_type.h"
 #include "memory_model.h"
 #include "integral_limits.h"
 #include "utility.h"
+#include "placement_new.h"
 
 #undef ETL_FILE
 #define ETL_FILE "46"

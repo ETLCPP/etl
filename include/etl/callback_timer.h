@@ -31,8 +31,6 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#include "private/new.h"
-
 #include "platform.h"
 #include "algorithm.h"
 #include "nullptr.h"
@@ -41,6 +39,7 @@ SOFTWARE.
 #include "timer.h"
 #include "atomic.h"
 #include "error_handler.h"
+#include "placement_new.h"
 
 #if ETL_CPP11_SUPPORTED
   #include "delegate.h"

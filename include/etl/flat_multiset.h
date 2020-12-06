@@ -34,6 +34,7 @@ SOFTWARE.
 #include "platform.h"
 #include "reference_flat_multiset.h"
 #include "pool.h"
+#include "placement_new.h"
 
 #if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>

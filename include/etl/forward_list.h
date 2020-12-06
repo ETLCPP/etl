@@ -33,15 +33,11 @@ SOFTWARE.
 
 #include <stddef.h>
 
-#include "private/new.h"
-
 #include "platform.h"
-
 #include "algorithm.h"
 #include "iterator.h"
 #include "functional.h"
 #include "utility.h"
-
 #include "pool.h"
 #include "container.h"
 #include "exception.h"
@@ -52,6 +48,7 @@ SOFTWARE.
 #include "memory.h"
 #include "iterator.h"
 #include "static_assert.h"
+#include "placement_new.h"
 
 #if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>

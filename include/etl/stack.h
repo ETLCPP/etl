@@ -34,8 +34,6 @@ SOFTWARE.
 #include <stddef.h>
 #include <stdint.h>
 
-#include "private/new.h"
-
 #include "platform.h"
 #include "algorithm.h"
 #include "utility.h"
@@ -46,6 +44,7 @@ SOFTWARE.
 #include "error_handler.h"
 #include "debug_count.h"
 #include "type_traits.h"
+#include "placement_new.h"
 
 #undef ETL_FILE
 #define ETL_FILE "15"

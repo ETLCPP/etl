@@ -32,17 +32,17 @@ SOFTWARE.
 #define ETL_NEW_INCLUDED
 ///\ingroup private
 
-#include "../platform.h"
+#include "platform.h"
 
-#ifdef ETL_NO_NEW_HEADER_AVAILABLE
-// Define placement new if no new header is available
-inline void* operator new(size_t, void* const __p){ return __p; }
-inline void* operator new[](size_t, void* const __p){ return __p; }
-
-inline void operator delete(void*, void* const){ }
-inline void operator delete[](void*, void* const){ }
+#if ETL_USING_STD_NEW
+  #include <new>
 #else
-#include <new>
+// Define placement new if no new header is available
+inline void* operator new(size_t, void* p) { return p; }
+inline void* operator new[](size_t, void* p) { return p; }
+
+inline void operator delete(void*, void*) ETL_NOEXCEPT {}
+inline void operator delete[](void*, void*) ETL_NOEXCEPT {}
 #endif
 
 #endif
