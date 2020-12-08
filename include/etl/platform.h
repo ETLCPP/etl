@@ -102,12 +102,10 @@ SOFTWARE.
 // See if we can determine the OS we're compiling on, if haven't already done so in etl_profile.h
 #include "profiles/determine_development_os.h"
 
-#include <new.h>
-
 // Figure out if we can use the standard library <new> header, if haven't already done so in etl_profile.h
 #if !defined(ETL_USING_STD_NEW)
   #if defined(__has_include)
-    #define ETL_USING_STD_NEW (__has_include(<new>) || __has_include(<new.h>))
+    #define ETL_USING_STD_NEW __has_include(<new>)
   #elif ETL_NOT_USING_STL || (defined(ARDUINO) && defined(__AVR__))
     #define ETL_USING_STD_NEW 0
   #else

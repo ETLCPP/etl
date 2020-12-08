@@ -73,8 +73,8 @@ namespace etl
     struct type_select_helper
     {
       using type = typename etl::conditional<ID == N,
-        T1,
-        typename type_select_helper<ID, N + 1, TRest...>::type>::type;
+                                             T1,
+                                             typename type_select_helper<ID, N + 1, TRest...>::type>::type;
     };
 
     //***********************************
@@ -94,8 +94,10 @@ namespace etl
       using type = typename type_select_helper<ID, 0, TTypes...>::type;
     };
 
+#if ETL_CPP14_SUPPORTED
     template <size_t ID>
     using select_t = typename select<ID>::type;
+#endif
   };
 
 #else

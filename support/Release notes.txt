@@ -1,4 +1,9 @@
 ===============================================================================
+19.3.2
+Added check for existance of <new> in platform.h
+Added placement_new.h which selects between <new> and ETL definitions.
+
+===============================================================================
 19.3.1
 Fixed etl::format_spec constexpr compatibility with C++11.
 Fixed etl::bit_stream reading too many bits when reading floating point values.
