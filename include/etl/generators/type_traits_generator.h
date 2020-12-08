@@ -1088,7 +1088,13 @@ namespace etl
   inline constexpr bool is_pod_v = std::is_standard_layout_v<T> && std::is_trivial_v<T>;
 #endif
 
-#if !defined(ARDUINO) && ETL_NOT_USING_STLPORT && !(defined(ETL_COMPILER_GCC) && ETL_COMPILER_VERSION < 5)
+#if defined(ETL_COMPILER_GCC)
+  #if ETL_COMPILER_VERSION >= 5
+    #define ETL_GCC_V5_TYPE_TRAITS_SUPPORTED
+  #endif
+#endif
+
+#if !defined(ARDUINO) && ETL_NOT_USING_STLPORT && defined(ETL_GCC_V5_TYPE_TRAITS_SUPPORTED)
   //***************************************************************************
   /// is_trivially_constructible
   ///\ingroup type_traits

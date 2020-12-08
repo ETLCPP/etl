@@ -33,8 +33,6 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#include <new>
-
 #include "platform.h"
 #include "utility.h"
 #include "array.h"
@@ -46,6 +44,7 @@ SOFTWARE.
 #include "alignment.h"
 #include "error_handler.h"
 #include "null_type.h"
+#include "placement_new.h"
 
 #if defined(ETL_COMPILER_KEIL)
   #pragma diag_suppress 940

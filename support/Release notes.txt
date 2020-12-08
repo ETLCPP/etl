@@ -1,4 +1,9 @@
 ===============================================================================
+19.3.3
+Added check for existance of <new> in platform.h
+Added placement_new.h which selects between <new> and ETL definitions.
+
+===============================================================================
 19.3.2
 Added No-STL clang mutex that uses GCC implementation.
 

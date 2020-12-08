@@ -38,12 +38,10 @@ SOFTWARE.
 #include "utility.h"
 #include "nullptr.h"
 #include "alignment.h"
+#include "placement_new.h"
 
 #include <assert.h>
-
 #include <string.h>
-
-#include <new>
 
 #if ETL_USING_STL
   #include <memory>

@@ -34,8 +34,6 @@ SOFTWARE.
 #include <stddef.h>
 #include <stdint.h>
 
-#include <new>
-
 #include "platform.h"
 #include "alignment.h"
 #include "parameter_type.h"
@@ -43,6 +41,7 @@ SOFTWARE.
 #include "memory_model.h"
 #include "integral_limits.h"
 #include "utility.h"
+#include "placement_new.h"
 
 #undef ETL_FILE
 #define ETL_FILE "47"

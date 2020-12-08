@@ -30,7 +30,6 @@ SOFTWARE.
 #define ETL_CALLBACK_TIMER_INCLUDED
 
 #include <stdint.h>
-#include <new>
 
 #include "platform.h"
 #include "algorithm.h"
@@ -40,6 +39,7 @@ SOFTWARE.
 #include "timer.h"
 #include "atomic.h"
 #include "error_handler.h"
+#include "placement_new.h"
 
 #if ETL_CPP11_SUPPORTED
   #include "delegate.h"

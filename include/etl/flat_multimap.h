@@ -31,12 +31,11 @@ SOFTWARE.
 #ifndef ETL_FLAT_MULTMAP_INCLUDED
 #define ETL_FLAT_MULTMAP_INCLUDED
 
-#include <new>
-
 #include "platform.h"
 #include "reference_flat_multimap.h"
 #include "pool.h"
 #include "utility.h"
+#include "placement_new.h"
 
 #if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>

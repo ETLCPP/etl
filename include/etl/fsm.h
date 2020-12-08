@@ -235,7 +235,7 @@ namespace etl
     template <typename TSize>
     void set_states(etl::ifsm_state** p_states, TSize size)
     {
-      state_list       = p_states;
+      state_list = p_states;
       number_of_states = etl::fsm_state_id_t(size);
 
       ETL_ASSERT(number_of_states > 0, ETL_ERROR(etl::fsm_state_list_exception));
@@ -281,7 +281,7 @@ namespace etl
     //*******************************************
     /// Top level message handler for the FSM.
     //*******************************************
-    void receive(const etl::imessage& message)
+    void receive(const etl::imessage& message) ETL_OVERRIDE
     {
       static etl::null_message_router nmr;
       receive(nmr, message);
@@ -290,7 +290,7 @@ namespace etl
     //*******************************************
     /// Top level message handler for the FSM.
     //*******************************************
-    void receive(imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& message)
+    void receive(imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& message) ETL_OVERRIDE
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
@@ -301,7 +301,7 @@ namespace etl
     //*******************************************
     /// Top level message handler for the FSM.
     //*******************************************
-    void receive(etl::imessage_router& source, const etl::imessage& message)
+    void receive(etl::imessage_router& source, const etl::imessage& message) ETL_OVERRIDE
     {
         etl::fsm_state_id_t next_state_id = p_state->process_event(source, message);
         ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
@@ -331,7 +331,7 @@ namespace etl
     /// Does this FSM accept the message id?
     /// Yes, it accepts everything!
     //*******************************************
-    bool accepts(etl::message_id_t) const
+    bool accepts(etl::message_id_t) const ETL_OVERRIDE
     {
       return true;
     }

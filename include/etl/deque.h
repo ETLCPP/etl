@@ -34,14 +34,10 @@ SOFTWARE.
 #include <stddef.h>
 #include <stdint.h>
 
-#include <new>
-
 #include "platform.h"
-
 #include "algorithm.h"
 #include "iterator.h"
 #include "utility.h"
-
 #include "container.h"
 #include "memory.h"
 #include "exception.h"
@@ -50,6 +46,7 @@ SOFTWARE.
 #include "algorithm.h"
 #include "type_traits.h"
 #include "iterator.h"
+#include "placement_new.h"
 
 #if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>

@@ -52,7 +52,6 @@ SOFTWARE.
 #define ETL_MESSAGE_ROUTER_INCLUDED
 
 #include <stdint.h>
-#include <new>
 
 #include "platform.h"
 #include "message.h"
@@ -63,6 +62,7 @@ SOFTWARE.
 #include "exception.h"
 #include "largest.h"
 #include "nullptr.h"
+#include "placement_new.h"
 
 #undef ETL_FILE
 #define ETL_FILE "35"

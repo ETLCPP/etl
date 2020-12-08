@@ -32,9 +32,6 @@ SOFTWARE.
 #define ETL_POOL_INCLUDED
 
 #include "platform.h"
-
-#include <new>
-
 #include "algorithm.h"
 #include "iterator.h"
 #include "utility.h"
@@ -47,6 +44,7 @@ SOFTWARE.
 #include "alignment.h"
 #include "static_assert.h"
 #include "algorithm.h"
+#include "placement_new.h"
 
 #undef ETL_FILE
 #define ETL_FILE "11"
