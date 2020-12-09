@@ -246,6 +246,20 @@ namespace
       CHECK(isEqual);
     }
 
+    //*************************************************************************
+    TEST(test_implicit_constructor_c_array_2)
+    {
+      CView view;
+
+      view = ccdata;
+
+      CHECK_EQUAL(SIZE, view.size());
+      CHECK_EQUAL(SIZE, view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), ccdata);
+      CHECK(isEqual);
+    }
+
 #if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
@@ -393,6 +407,19 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_assignment_operator)
+    {
+      View view(etldata);
+      CView cview = view;
+
+      CHECK_EQUAL(etldata.size(), view.size());
+      CHECK_EQUAL(etldata.max_size(), view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), etldata.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST(test_empty)
     {
       View view1(etldata.begin(), etldata.begin());
@@ -462,6 +489,27 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_first_2)
+    {
+      std::vector<int> original = {1, 2, 3, 4, 5, 6, 7, 8};
+      std::vector<int> first = {1, 2, 3, 4, 5, 6};
+      View view(original);
+      CView cview(original);
+
+      bool isEqual;
+
+      auto result = view.first(6);
+      isEqual = std::equal(result.begin(), result.end(), first.begin());
+      CHECK(isEqual);
+      CHECK_EQUAL(first.size(), result.size());
+
+      auto cresult = cview.first(6);
+      isEqual = std::equal(cresult.begin(), cresult.end(), first.begin());
+      CHECK(isEqual);
+      CHECK_EQUAL(first.size(), cresult.size());
+    }
+
+    //*************************************************************************
     TEST(test_last)
     {
       std::vector<int> original = { 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -481,6 +529,27 @@ namespace
       isEqual = std::equal(cresult.begin(), cresult.end(), last.begin());
       CHECK(isEqual);
       CHECK_EQUAL(last.size(), cresult.extent);
+      CHECK_EQUAL(last.size(), cresult.size());
+    }
+
+    //*************************************************************************
+    TEST(test_last_2)
+    {
+      std::vector<int> original = {1, 2, 3, 4, 5, 6, 7, 8};
+      std::vector<int> last = {3, 4, 5, 6, 7, 8};
+      View view(original);
+      CView cview(original);
+
+      bool isEqual;
+
+      auto result = view.last(6);
+      isEqual = std::equal(result.begin(), result.end(), last.begin());
+      CHECK(isEqual);
+      CHECK_EQUAL(last.size(), result.size());
+
+      auto cresult = cview.last(6);
+      isEqual = std::equal(cresult.begin(), cresult.end(), last.begin());
+      CHECK(isEqual);
       CHECK_EQUAL(last.size(), cresult.size());
     }
 
