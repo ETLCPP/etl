@@ -247,6 +247,20 @@ namespace
       CHECK(isEqual);
     }
 
+    //*************************************************************************
+    TEST(test_implicit_constructor_c_array_2)
+    {
+      CView view;
+
+      view = ccdata;
+
+      CHECK_EQUAL(SIZE, view.size());
+      CHECK_EQUAL(SIZE, view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), ccdata);
+      CHECK(isEqual);
+    }
+
 #if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)

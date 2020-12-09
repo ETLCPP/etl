@@ -128,7 +128,7 @@ namespace etl
     /// Construct from C array
     //*************************************************************************
     template<const size_t ARRAY_SIZE>
-    ETL_CONSTEXPR explicit span(element_type(&begin_)[ARRAY_SIZE]) ETL_NOEXCEPT
+    ETL_CONSTEXPR span(element_type(&begin_)[ARRAY_SIZE]) ETL_NOEXCEPT
       : mbegin(begin_)
       , mend(begin_ + ARRAY_SIZE)
     {
