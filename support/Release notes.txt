@@ -1,4 +1,8 @@
 ===============================================================================
+19.3.4
+Make etl::span compliant with STL API by adding missing overloads for span::first + span::last
+
+===============================================================================
 19.3.3
 Added check for existance of <new> in platform.h
 Added placement_new.h which selects between <new> and ETL definitions.
