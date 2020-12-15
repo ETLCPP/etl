@@ -906,6 +906,9 @@
     <ClInclude Include="..\..\arduino\Embedded_Template_Library.h">
       <Filter>ETL\Arduino</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\multi_loop.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>    
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1437,6 +1440,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_format_spec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_multi_loop.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

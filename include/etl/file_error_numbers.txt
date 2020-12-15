@@ -54,3 +54,4 @@
 54 queue_spsc_locked
 55 message_packet
 56 circular_buffer
+57 multi_loop
