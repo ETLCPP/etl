@@ -628,8 +628,15 @@ namespace etl
     static ETL_CONSTANT bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::bidirectional_iterator_tag>::value;
   };
 
+  // Deprecated
   template <typename T>
   struct is_random_iterator
+  {
+    static ETL_CONSTANT bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::random_access_iterator_tag>::value;
+  };
+
+  template <typename T>
+  struct is_random_access_iterator
   {
     static ETL_CONSTANT bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::random_access_iterator_tag>::value;
   };
@@ -667,10 +674,17 @@ namespace etl
                                                etl::is_random_iterator<T>::value;
   };
 
+  // Deprecated
   template <typename T>
   struct is_random_iterator_concept
   {
     static ETL_CONSTANT bool value = etl::is_random_iterator<T>::value;
+  };
+
+  template <typename T>
+  struct is_random_access_iterator_concept
+  {
+    static ETL_CONSTANT bool value = etl::is_random_access_iterator<T>::value;
   };
 }
 
