@@ -1,4 +1,8 @@
 ===============================================================================
+19.3.5
+Change std::move to etl::move in etl::forward_list
+
+===============================================================================
 19.3.4
 Make etl::span compliant with STL API by adding missing overloads for span::first + span::last
 

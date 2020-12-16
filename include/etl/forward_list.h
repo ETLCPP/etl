@@ -1821,7 +1821,7 @@ namespace etl
     forward_list_ext(forward_list_ext&& other)
       : etl::iforward_list<T>(*other.p_node_pool, other.p_node_pool->max_size(), true)
     {
-      this->move_container(std::move(other));
+      this->move_container(etl::move(other));
     }
 
     //*************************************************************************
@@ -1830,7 +1830,7 @@ namespace etl
     forward_list_ext(forward_list_ext&& other, etl::ipool& node_pool)
       : etl::iforward_list<T>(node_pool, node_pool.max_size(), true)
     {
-      this->move_container(std::move(other));
+      this->move_container(etl::move(other));
     }
 #endif
 
