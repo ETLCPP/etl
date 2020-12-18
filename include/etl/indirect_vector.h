@@ -225,7 +225,7 @@ namespace etl
         return temp;
       }
 
-      iterator operator =(const iterator& other)
+      iterator& operator =(const iterator& other)
       {
         lookup_itr = other.lookup_itr;
         return *this;
@@ -388,7 +388,7 @@ namespace etl
         return *this;
       }
 
-      const_iterator operator =(const const_iterator& other)
+      const_iterator& operator =(const const_iterator& other)
       {
         lookup_itr = other.lookup_itr;
         return *this;
