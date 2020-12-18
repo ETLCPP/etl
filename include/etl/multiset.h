@@ -777,7 +777,7 @@ namespace etl
         return temp;
       }
 
-      iterator operator =(const iterator& other)
+      iterator& operator =(const iterator& other)
       {
         p_multiset = other.p_multiset;
         p_node = other.p_node;
@@ -904,7 +904,7 @@ namespace etl
         return temp;
       }
 
-      const_iterator operator =(const const_iterator& other)
+      const_iterator& operator =(const const_iterator& other)
       {
         p_multiset = other.p_multiset;
         p_node = other.p_node;

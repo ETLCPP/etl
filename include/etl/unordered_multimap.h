@@ -239,7 +239,7 @@ namespace etl
       }
 
       //*********************************
-      iterator operator =(const iterator& other)
+      iterator& operator =(const iterator& other)
       {
         pbuckets_end = other.pbuckets_end;
         pbucket = other.pbucket;
@@ -409,7 +409,7 @@ namespace etl
       }
 
       //*********************************
-      const_iterator operator =(const const_iterator& other)
+      const_iterator& operator =(const const_iterator& other)
       {
         pbuckets_end = other.pbuckets_end;
         pbucket = other.pbucket;

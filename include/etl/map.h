@@ -637,7 +637,7 @@ namespace etl
         return temp;
       }
 
-      iterator operator =(const iterator& other)
+      iterator& operator =(const iterator& other)
       {
         p_map = other.p_map;
         p_node = other.p_node;
@@ -764,7 +764,7 @@ namespace etl
         return temp;
       }
 
-      const_iterator operator =(const const_iterator& other)
+      const_iterator& operator =(const const_iterator& other)
       {
         p_map = other.p_map;
         p_node = other.p_node;
