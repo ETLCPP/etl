@@ -1,4 +1,8 @@
 ===============================================================================
+19.3.7
+Fix some container iterator assignment operators to return a reference, rather than value.
+
+===============================================================================
 19.3.6
 Arduino compatibility mods.
 
