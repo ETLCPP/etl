@@ -33,7 +33,6 @@ SOFTWARE.
  * This file is intended to evaluated multiple times by design.
  */
 
-#if defined(ETL_COMPILER_MICROSOFT)
-  #pragma pop_macro("min")
-  #pragma pop_macro("max")
-#endif
+#pragma pop_macro("min")
+#pragma pop_macro("max")
+

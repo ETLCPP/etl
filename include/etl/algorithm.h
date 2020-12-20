@@ -53,6 +53,8 @@ SOFTWARE.
   #include <functional>
 #endif
 
+#include "private/minmax_push.h"
+
 namespace etl
 {
   // Declare prototypes of the ETL's sort functions
@@ -3416,5 +3418,7 @@ namespace etl
   }
 #endif
 }
+
+#include "private/minmax_pop.h"
 
 #endif
