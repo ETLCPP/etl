@@ -2,24 +2,42 @@
 import shutil
 import os
 
-# Get the current Path of the script
+# Assumes this folder structure.
+# Folder              Variable
+# ---------------------------------------
+# etl                 etl_dir
+#   arduino           arduino_dir
+#   include           include_dir
+# etl-arduino         etl_arduino_dir
+#   src               etl_arduino_src_dir
+
+print('')
+print('Copy ETL files to the etl-arduino repository')
+print('')
+
+# Get the current path of the script
 arduino_dir = os.path.dirname(__file__)
-print('arduino_dir         ', arduino_dir)
+print('arduino_dir         = ', arduino_dir)
 
+# Get the root folder of the ETL
 etl_dir = os.path.dirname(arduino_dir)
-print('etl_dir             ', etl_dir)
+print('etl_dir             = ', etl_dir)
 
-etl_include_dir = os.path.join(etl_dir, 'include')
-print('etl_include_dir     ', etl_include_dir)
+# Get the ETL repository folder
+include_dir = os.path.join(etl_dir, 'include')
+print('include_dir         = ', include_dir)
 
+# Get the root folder of both repositories
 common_dir = os.path.dirname(etl_dir)
-print('common_dir          ', common_dir)
+print('common_dir          = ', common_dir)
 
+# Get the ETL Arduino repository folder
 etl_arduino_dir = os.path.join(common_dir, 'etl-arduino')
-print('etl_arduino_dir     ', etl_arduino_dir)
+print('etl_arduino_dir     = ', etl_arduino_dir)
 
+# Get the ETL Arduino src repository folder
 etl_arduino_src_dir = os.path.join(etl_arduino_dir, 'src')
-print('etl_arduino_src_dir ', etl_arduino_src_dir)
+print('etl_arduino_src_dir = ', etl_arduino_src_dir)
 
 print('')
 
@@ -27,21 +45,28 @@ print('')
 filename    = 'library.properties'
 source      = os.path.join(etl_dir, filename)
 destination = os.path.join(etl_arduino_dir, filename)
-print('source      = ', source)
-print('destination = ', destination)
+print('Copy the library properties')
+print(' From : ', source)
+print(' To   : ', destination)
 shutil.copyfile(source, destination)
+
+print('')
 
 # Copy the Arduino ETL header
 filename    = 'Embedded_Template_Library.h'
 source      = os.path.join(arduino_dir, filename)
 destination = os.path.join(etl_arduino_src_dir, filename)
-print('source      = ', source)
-print('destination = ', destination)
+print('Copy the Arduino ETL header')
+print('  From : ', source)
+print('  To   : ', destination)
 shutil.copyfile(source, destination)
 
+print('')
+
 # Copy the ETL headers
-source      = etl_include_dir
+source      = include_dir
 destination = etl_arduino_src_dir
-print('source      = ', source)
-print('destination = ', destination)
+print('Copy the ETL headers')
+print('  From : ', source)
+print('  To   : ', destination)
 shutil.copytree(source, destination, dirs_exist_ok = True)
