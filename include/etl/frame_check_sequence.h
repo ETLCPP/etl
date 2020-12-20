@@ -164,7 +164,7 @@ namespace etl
     //*************************************************************************
     /// Gets the FCS value.
     //*************************************************************************
-    value_type value()
+    value_type value() const
     {
       return policy.final(frame_check);
     }
@@ -172,7 +172,7 @@ namespace etl
     //*************************************************************************
     /// Conversion operator to value_type.
     //*************************************************************************
-    operator value_type ()
+    operator value_type () const
     {
       return policy.final(frame_check);
     }
