@@ -85,6 +85,9 @@
     <Filter Include="Resource Files\CI\Appveyor">
       <UniqueIdentifier>{74399f00-a7a3-47e3-9b27-d01fb2b5ce87}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Arduino">
+      <UniqueIdentifier>{afc65d0e-d846-4e30-8723-06c8cefa3a36}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -900,6 +903,9 @@
     <ClInclude Include="..\..\include\etl\mutex\mutex_clang_sync.h">
       <Filter>ETL\Utilities\Mutex</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\arduino\Embedded_Template_Library.h">
+      <Filter>ETL\Arduino</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1509,6 +1515,9 @@
     </None>
     <None Include="..\..\conanfile.py">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\arduino\create_arduino_library.py">
+      <Filter>ETL\Arduino</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

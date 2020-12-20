@@ -277,3 +277,4 @@ test/Makefile
 test/vs2019/enc_temp_folder
 test/vs2019/.leu
 test/etl_test_log.txt
+temp/create_arduino_library.py

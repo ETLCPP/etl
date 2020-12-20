@@ -1240,6 +1240,7 @@
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\UnitTest++.h" />
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\UnitTestPP.h" />
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\XmlTestReporter.h" />
+    <ClInclude Include="..\..\arduino\Embedded_Template_Library.h" />
     <ClInclude Include="..\..\include\etl\array_view.h" />
     <ClInclude Include="..\..\include\etl\array_wrapper.h" />
     <ClInclude Include="..\..\include\etl\atomic.h" />
@@ -1983,6 +1984,7 @@
     <None Include="..\..\.github\workflows\gcc.yml" />
     <None Include="..\..\.github\workflows\vs2019.yml" />
     <None Include="..\..\appveyor.yml" />
+    <None Include="..\..\arduino\create_arduino_library.py" />
     <None Include="..\..\conanfile.py" />
     <None Include="..\..\etl.pspimage" />
     <None Include="..\..\etl.xar" />
