@@ -88,8 +88,6 @@ namespace
       return !(lhs == rhs);
     }
 
-  private:
-
     int index;
   };
 
@@ -221,66 +219,5 @@ namespace
 
       CHECK(loops.completed());
     }
-
-    ////*************************************************************************
-    //TEST(reset_a_loop)
-    //{
-    //  MultiLoop loops;
-
-    //  CHECK_EQUAL(N_LOOPS, loops.max_number_of_loops());
-
-    //  loops.add_outer(Index(-2), Index(2)); // Middle loop
-    //  loops.add_outer(Index(0), Index(4)); // Outer loop
-    //  loops.add_inner(Index(2), Index(6)); // Inner loop
-
-    //  struct result
-    //  {
-    //    Index index0;
-    //    Index index1;
-    //    Index index2;
-    //  };
-
-    //std::array results
-    //{
-    //    result{ 0, -2, 2 }, result{ 0, -2, 3 }, result{ 0, -2, 4 }, result{ 0, -2, 5 },
-    //    result{ 0, -1, 2 }, result{ 0, -1, 3 }, result{ 0, -1, 4 }, result{ 0, -1, 5 },
-    //    result{ 0,  0, 2 }, result{ 0,  0, 3 }, result{ 0,  0, 4 }, result{ 0,  0, 5 },
-    //    result{ 0,  1, 2 }, result{ 0,  1, 3 }, result{ 0,  1, 4 }, result{ 0,  1, 5 },
-    //    result{ 1, -2, 2 }, result{ 1, -2, 3 }, result{ 1, -2, 4 }, result{ 1, -2, 5 },
-    //    result{ 1, -1, 2 }, result{ 1, -1, 3 }, result{ 1, -1, 4 }, result{ 1, -1, 5 },
-    //    result{ 1,  0, 2 }, result{ 1,  0, 3 }, result{ 1,  0, 4 }, result{ 1,  0, 5 },
-    //    result{ 1,  1, 2 }, result{ 1,  1, 3 }, result{ 1,  1, 4 }, result{ 1,  1, 5 },
-    //    result{ 2, -2, 2 }, result{ 2, -2, 3 }, result{ 2, -2, 4 }, result{ 2, -2, 5 },
-    //    result{ 2, -1, 2 }, result{ 2, -1, 3 }, result{ 2, -1, 4 }, result{ 2, -1, 5 },
-    //    result{ 2,  0, 2 }, result{ 2,  0, 3 }, result{ 2,  0, 4 }, result{ 2,  0, 5 },
-    //    result{ 2,  1, 2 }, result{ 2,  1, 3 }, result{ 2,  1, 4 }, result{ 2,  1, 5 },
-    //    result{ 3, -2, 2 }, result{ 3, -2, 3 }, result{ 3, -2, 4 }, result{ 3, -2, 5 },
-    //    result{ 3, -1, 2 }, result{ 3, -1, 3 }, result{ 3, -1, 4 }, result{ 3, -1, 5 },
-    //    result{ 3,  0, 2 }, result{ 3,  0, 3 }, result{ 3,  0, 4 }, result{ 3,  0, 5 },
-    //    result{ 3,  1, 2 }, result{ 3,  1, 3 }, result{ 3,  1, 4 }, result{ 3,  1, 5 }
-    //};
-
-    //  size_t i = 0U;
-
-    //  loops.start();
-
-    //  for (loops.start(); loops.completed() == false; loops.next())
-    //  {
-    //    CHECK_EQUAL(results[i].index0, loops.index(0));
-    //    CHECK_EQUAL(results[i].index1, loops.index(1));
-    //    CHECK_EQUAL(results[i].index2, loops.index(2));
-
-    //    if ((results[i].index0 != loops.index(0)) ||
-    //      (results[i].index1 != loops.index(1)) ||
-    //      (results[i].index2 != loops.index(2)))
-    //    {
-    //      CHECK_EQUAL(UINT_MAX, i);
-    //    }
-
-    //    ++i;
-    //  }
-
-    //  CHECK(loops.completed());
-    //}
   };
 }

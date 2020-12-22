@@ -2057,7 +2057,7 @@ namespace
     //*************************************************************************
     TEST(for_each)
     {
-      constexpr int data[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
+      int data[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
 
       struct Sum
       {
@@ -2075,6 +2075,7 @@ namespace
       };
 
       Sum sum;
+      sum = etl::for_each(std::begin(data), std::end(data), sum);
       CHECK_EQUAL(std::accumulate(std::begin(data), std::end(data), 0), sum.value);
     }
   };
