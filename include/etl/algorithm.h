@@ -964,6 +964,29 @@ namespace etl
 
 #if ETL_NOT_USING_STL
   //***************************************************************************
+  // for_each
+  template <typename TIterator, typename TUnaryOperation>
+  ETL_CONSTEXPR14 TUnaryOperation for_each(TIterator first, TIterator last, TUnaryOperation unary_operation)
+  {
+    while (first != last)
+    {
+      unary_operation(*first++);
+    }
+
+    return unary_operation;
+  }
+#else
+  //***************************************************************************
+  // for_each
+  template <typename TIterator, typename TUnaryOperation>
+  ETL_CONSTEXPR14 TUnaryOperation for_each(TIterator first, TIterator last, TUnaryOperation unary_operation)
+  {
+    return std::for_each(first, last, unary_operation);
+  }
+#endif
+
+#if ETL_NOT_USING_STL
+  //***************************************************************************
   // transform
   template <typename TIteratorIn, typename TIteratorOut, typename TUnaryOperation>
   TIteratorOut transform(TIteratorIn first1, TIteratorIn last1, TIteratorOut d_first, TUnaryOperation unary_operation)
