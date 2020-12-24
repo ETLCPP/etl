@@ -31,211 +31,305 @@ SOFTWARE.
 #ifndef ETL_MULTI_LOOP_INCLUDED
 #define ETL_MULTI_LOOP_INCLUDED
 
-#include "vector.h"
-#include "algorithm.h"
-#include "error_handler.h"
+#include "platform.h"
+#include "nullptr.h"
+#include "functional.h"
 #include "exception.h"
+#include "error_handler.h"
 
 #undef ETL_FILE
 #define ETL_FILE "57"
 
 namespace etl
 {
-  struct multi_loop_exception : etl::exception
+  //***************************************************************************
+  /// Exception for the multi_loop.
+  //***************************************************************************
+  class multi_loop_exception : public etl::exception
   {
+  public:
+
     multi_loop_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
       : exception(reason_, file_name_, line_number_)
     {
     }
   };
 
-  struct multi_loop_parameter_error : multi_loop_exception
+  //***************************************************************************
+  /// Circular reference exception.
+  //***************************************************************************
+  class multi_loop_circular_reference : public etl::multi_loop_exception
   {
-    multi_loop_parameter_error(string_type file_name_, numeric_type line_number_)
-      : multi_loop_exception(ETL_ERROR_TEXT("multi_loop:paramters", ETL_FILE"A"), file_name_, line_number_)
-    {
-    }
-  };
+  public:
 
-  struct multi_loop_index_error : multi_loop_exception
-  {
-    multi_loop_index_error(string_type file_name_, numeric_type line_number_)
-      : multi_loop_exception(ETL_ERROR_TEXT("multi_loop:index", ETL_FILE"B"), file_name_, line_number_)
+    multi_loop_circular_reference(string_type file_name_, numeric_type line_number_)
+      : etl::multi_loop_exception(ETL_ERROR_TEXT("multi_loop:circular reference", ETL_FILE"A"), file_name_, line_number_)
     {
     }
   };
 
   //***************************************************************************
-  /// imulti_loop
+  /// The base class for multi_loop.
   //***************************************************************************
-  template<typename T>
   class imulti_loop
   {
   public:
 
     //***************************************************************************
-    void add_inner(T begin_value, T end_value)
+    /// Insert after this loop.
+    //***************************************************************************
+    imulti_loop& insert(imulti_loop& inner_loop)
     {
-      ETL_ASSERT(begin_value < end_value, ETL_ERROR(multi_loop_parameter_error));
+      ETL_ASSERT(is_valid(inner_loop), ETL_ERROR(multi_loop_circular_reference));
 
-      loops.push_back(loop_info(begin_value, end_value));
+      // Remember what the next loop was.
+      imulti_loop* next = inner;
+
+      // Append the new loop
+      inner = &inner_loop;
+
+      // Link to the original next loop.
+      inner_loop.set_last(next);
+
+      return *this;
     }
 
     //***************************************************************************
-    void add_outer(T begin_value, T end_value)
+    /// Append to the most inner loop.
+    //***************************************************************************
+    imulti_loop& append(imulti_loop& inner_loop)
     {
-      ETL_ASSERT(begin_value < end_value, ETL_ERROR(multi_loop_parameter_error));
+      ETL_ASSERT(is_valid(inner_loop), ETL_ERROR(multi_loop_circular_reference));
 
-      loops.insert(loops.begin(), loop_info(begin_value, end_value));
+      if (inner != nullptr)
+      {
+        inner->append(inner_loop);
+      }
+      else
+      {
+        inner = &inner_loop;
+      }
+
+      return *this;
     }
 
     //***************************************************************************
-    void start()
+    /// Unlinks this loop from its inner.
+    /// Re-starts the loop.
+    //***************************************************************************
+    void clear()
     {
-      etl::for_each(loops.begin(), loops.end(), reset_loop);
+      inner = ETL_NULLPTR;  
+      start();
     }
 
+    //***************************************************************************
+    ///
     //***************************************************************************
     bool completed() const
     {
-      // We have completed all nested loops if the outer-most loop has completed
-      // or we have configured no loops.
-      return (loops[0].completed()) ||
-             (number_of_loops() == 0);
+      return has_completed;
     }
 
     //***************************************************************************
-    void next()
-    {
-      if (!completed())
-      {
-        size_t i = number_of_loops() - 1U;
-
-        while (true)
-        {
-          // Increment the loop.
-          ++loops[i].current;
-
-          // Has the loop not completed or is it the outer loop?
-          if (!loops[i].completed() || (i == 0U))
-          {
-            return;
-          }
-
-          // Reset it and move on to the next outer loop.
-          loops[i].reset();
-          --i;
-        }
-      }
-    }
-
-    //***************************************************************************
-    T begin(size_t i) const
-    {
-      ETL_ASSERT(i < number_of_loops(), ETL_ERROR(multi_loop_index_error));
-
-      return loops[i].begin;
-    }
-
-    //***************************************************************************
-    T end(size_t i) const
-    {
-      ETL_ASSERT(i < number_of_loops(), ETL_ERROR(multi_loop_index_error));
-
-      return loops[i].end;
-    }
-
-    //***************************************************************************
-    T index(size_t i) const
-    {
-      ETL_ASSERT(i < number_of_loops(), ETL_ERROR(multi_loop_index_error));
-
-      return loops[i].current;
-    }
-
-    //***************************************************************************
-    const T operator [](int i) const
-    {
-      ETL_ASSERT(i < number_of_loops(), ETL_ERROR(multi_loop_index_error));
-
-      return (loops[i].current);
-    }
-
+    /// Gets the total number of loops, from this loop inclusive.
     //***************************************************************************
     size_t number_of_loops() const
     {
-      return loops.size();
+      size_t count = 1U;
+
+      imulti_loop* p_loop = inner;
+
+      while (p_loop != ETL_NULLPTR)
+      {
+        ++count;
+        p_loop = p_loop->inner;
+      }
+
+      return count;
     }
 
     //***************************************************************************
-    size_t max_number_of_loops() const
+    /// Gets the total number of iterations over all loops, from this loop inclusive.
+    //***************************************************************************
+    size_t number_of_iterations()
     {
-      return max_loops;
+      size_t count = 0U;
+
+      for (start(); !completed(); next())
+      {
+        ++count;
+      }
+
+      return count;
     }
+
+    //***************************************************************************
+    /// Pure virtual functions.
+    //***************************************************************************
+    virtual void next() = 0;
+    virtual void start() = 0;
 
   protected:
 
     //***************************************************************************
-    struct loop_info
-    {
-      loop_info(T begin_, T end_)
-        : begin(begin_)
-        , end(end_)
-        , current(begin_)
-      {
-      }
-
-      void reset()
-      {
-        current = begin;
-      }
-
-      bool completed() const
-      {
-        return current == end;
-      }
-
-      T begin;
-      T end;
-      T current;
-    };
-
+    /// Constructor
     //***************************************************************************
-    imulti_loop(etl::ivector<loop_info>& loops_, size_t max_loops_)
-      : loops(loops_)
-      , max_loops(max_loops_)
+    imulti_loop()
+      : has_completed(true)
+      , inner(ETL_NULLPTR)
     {
     }
 
     //***************************************************************************
-    static void reset_loop(loop_info& loop)
+    /// Checks that there are no circular references by making sure that the
+    /// inner loop does not link to this loop.
+    //***************************************************************************
+    bool is_valid(imulti_loop& inner_loop)
     {
-      loop.reset();
+      imulti_loop* loop = &inner_loop;
+
+      while (loop != ETL_NULLPTR)
+      {
+        if (loop == this)
+        {
+          return false;
+        }
+
+        loop = loop->inner;
+      }
+
+      return true;
     }
 
-    etl::ivector<loop_info>& loops; ///< The list of loops.
-    size_t max_loops;               ///< The maximum supported number of loops.
+    //***************************************************************************
+    /// Set the inner loop of the last linked loop.
+    //***************************************************************************
+    void set_last(imulti_loop* next)
+    {
+      // Find the last loop.
+      imulti_loop* loop = this;
+
+      while (loop->inner != ETL_NULLPTR)
+      {
+        loop = loop->inner;
+      }
+
+      loop->inner = next;
+    }
+
+    bool has_completed;
+    imulti_loop* inner;
   };
 
   //***************************************************************************
   /// multi_loop
+  /// \tparam T The type to loop over.
+  /// \tparam TIncrementor The incrementor type that implements operator() to increment.
+  /// Default = etl::increment, which calls operator ++() for the type.
   //***************************************************************************
-  template<typename T, size_t MAX_LOOPS_>
-  class multi_loop : public imulti_loop<T>
+  template <typename T, template <typename U> class TIncrementor = etl::increment>
+  class multi_loop : public imulti_loop
   {
   public:
 
-    static ETL_CONSTANT size_t MAX_LOOPS = MAX_LOOPS_;
+    //***************************************************************************
+    /// Constructor
+    /// \param first The starting value of the loop.
+    /// \param last  The terminating value of the loop. Equal to the last required value + 1.
+    //***************************************************************************
+    multi_loop(T first_, T last_)
+      : first(first_)
+      , last(last_)
+      , current(first_)
+    {
+    }
 
     //***************************************************************************
-    multi_loop()
-      : imulti_loop(loops, MAX_LOOPS)
+    /// Get a const reference to the starting value of the loop.
+    //***************************************************************************
+    const T& begin()
     {
+      return first;
+    }
+
+    //***************************************************************************
+    /// Get a const reference to the terminating value of the loop.
+    /// Equal to the last required value + 1.
+    //***************************************************************************
+    const T& end()
+    {
+      return last;
+    }
+
+    //***************************************************************************
+    /// Initialises the loops to the starting values.
+    //***************************************************************************
+    void start() ETL_OVERRIDE
+    {
+      if (inner != ETL_NULLPTR)
+      {
+        inner->start();
+      }
+
+      current = first;
+      has_completed = false;
+    }
+
+    //***************************************************************************
+    /// Step to the next logical values in the loops.
+    //***************************************************************************
+    void next() ETL_OVERRIDE
+    {
+      has_completed = false;
+
+      if (inner != ETL_NULLPTR)
+      {
+        inner->next();
+
+        if (inner->completed())
+        {
+          has_completed = increment();
+        }
+      }
+      else
+      {
+        has_completed = increment();
+      }
+    }
+
+    //***************************************************************************
+    /// Returns a const reference to the current loop value.
+    //***************************************************************************
+    const T& value() const
+    {
+      return current;
     }
 
   private:
 
-    etl::vector<typename etl::imulti_loop<T>::loop_info, MAX_LOOPS> loops;
+    //***************************************************************************
+    /// Increments the current loop value.
+    //***************************************************************************
+    bool increment()
+    {
+      incrementor(current);
+
+      const bool has_rolled_over = (current == last);
+
+      if (has_rolled_over)
+      {
+        current = first;
+      }
+
+      return has_rolled_over;
+    }
+
+    TIncrementor<T> incrementor; ///< The incrementor type.
+        
+    T first;   ///< The first value of the loop.
+    T last;    ///< The terminating value of the loop.
+    T current; ///< The current value of the loop.
   };
 }
 

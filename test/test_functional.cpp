@@ -152,5 +152,65 @@ namespace
       CHECK_EQUAL(1, a);
       CHECK_EQUAL(1, ra);
     }
+
+    //*************************************************************************
+    TEST(test_pre_increment)
+    {
+      etl::pre_increment<int> pi;
+
+      int i = 0;
+      int j = 0;
+      
+      pi(i);
+      j = pi(i);
+
+      CHECK_EQUAL(2, i);
+      CHECK_EQUAL(2, j);
+    }
+
+    //*************************************************************************
+    TEST(test_post_increment)
+    {
+      etl::post_increment<int> pi;
+
+      int i = 0;
+      int j = 0;
+
+      pi(i);
+      j = pi(i);
+
+      CHECK_EQUAL(2, i);
+      CHECK_EQUAL(1, j);
+    }
+
+    //*************************************************************************
+    TEST(test_pre_decrement)
+    {
+      etl::pre_decrement<int> pi;
+
+      int i = 0;
+      int j = 0;
+
+      pi(i);
+      j = pi(i);
+
+      CHECK_EQUAL(-2, i);
+      CHECK_EQUAL(-2, j);
+    }
+
+    //*************************************************************************
+    TEST(test_post_decrement)
+    {
+      etl::post_decrement<int> pi;
+
+      int i = 0;
+      int j = 0;
+
+      pi(i);
+      j = pi(i);
+
+      CHECK_EQUAL(-2, i);
+      CHECK_EQUAL(-1, j);
+    }
   };
 }

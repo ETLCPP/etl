@@ -237,6 +237,62 @@ namespace etl
   {
     return binder2nd<F>(f, x);
   }
+
+  //***************************************************************************
+
+  template <typename T>
+  struct pre_increment
+  {
+    T operator()(T& value)
+    {
+      ++value;
+
+      return value;
+    }
+  };
+
+  template <typename T>
+  struct post_increment
+  {
+    T operator()(T& value)
+    {
+      T temp(value);
+      ++value;
+      return temp;
+    }
+  };
+
+  template <typename T>
+  struct increment : etl::pre_increment<T>
+  {
+  };
+
+  template <typename T>
+  struct pre_decrement
+  {
+    T operator()(T& value)
+    {
+      --value;
+
+      return value;
+    }
+  };
+
+  template <typename T>
+  struct post_decrement
+  {
+    T operator()(T& value)
+    {
+      T temp(value);
+      --value;
+      return temp;
+    }
+  };
+
+  template <typename T>
+  struct decrement : etl::pre_decrement<T>
+  {
+  };
 }
 
 #endif
