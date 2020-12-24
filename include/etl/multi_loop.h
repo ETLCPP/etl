@@ -233,12 +233,15 @@ namespace etl
   {
   public:
 
+    typedef T        value_type;
+    typedef const T& const_reference;
+
     //***************************************************************************
     /// Constructor
     /// \param first The starting value of the loop.
     /// \param last  The terminating value of the loop. Equal to the last required value + 1.
     //***************************************************************************
-    multi_loop(T first_, T last_)
+    multi_loop(value_type first_, value_type last_)
       : first(first_)
       , last(last_)
       , current(first_)
@@ -248,7 +251,7 @@ namespace etl
     //***************************************************************************
     /// Get a const reference to the starting value of the loop.
     //***************************************************************************
-    const T& begin()
+    const_reference begin()
     {
       return first;
     }
@@ -257,7 +260,7 @@ namespace etl
     /// Get a const reference to the terminating value of the loop.
     /// Equal to the last required value + 1.
     //***************************************************************************
-    const T& end()
+    const_reference end()
     {
       return last;
     }
@@ -301,7 +304,7 @@ namespace etl
     //***************************************************************************
     /// Returns a const reference to the current loop value.
     //***************************************************************************
-    const T& value() const
+    const_reference value() const
     {
       return current;
     }
@@ -325,11 +328,11 @@ namespace etl
       return has_rolled_over;
     }
 
-    TIncrementor<T> incrementor; ///< The incrementor type.
+    TIncrementor<value_type> incrementor; ///< The incrementor type.
         
-    T first;   ///< The first value of the loop.
-    T last;    ///< The terminating value of the loop.
-    T current; ///< The current value of the loop.
+    value_type first;   ///< The first value of the loop.
+    value_type last;    ///< The terminating value of the loop.
+    value_type current; ///< The current value of the loop.
   };
 }
 
