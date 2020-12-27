@@ -115,12 +115,23 @@ namespace etl
 
     //***************************************************************************
     /// Unlinks this loop from its inner.
-    /// Re-starts the loop.
     //***************************************************************************
-    void clear()
+    void detach()
     {
       inner = ETL_NULLPTR;  
-      start();
+    }
+
+    //***************************************************************************
+    /// Unlinks this and all inner loops.
+    //***************************************************************************
+    void detach_all()
+    {
+      if (inner != ETL_NULLPTR)
+      {
+        inner->detach_all();
+      }
+
+      detach();
     }
 
     //***************************************************************************
@@ -225,10 +236,14 @@ namespace etl
   //***************************************************************************
   /// multi_loop
   /// \tparam T The type to loop over.
-  /// \tparam TIncrementor The incrementor type that implements operator() to increment.
+  /// \tparam TStepper The type that implements operator() to step.
   /// Default = etl::increment, which calls operator ++() for the type.
+  /// \tparam TContinue The type that implements operator() to test for loop continuation.
+  /// Default = etl::not_equal_to, which calls operator !=() for the type.
   //***************************************************************************
-  template <typename T, template <typename U> class TIncrementor = etl::increment>
+  template <typename T, 
+            typename TStepper  = etl::increment<T>, 
+            typename TContinue = etl::not_equal_to<T> >
   class multi_loop : public imulti_loop
   {
   public:
@@ -241,10 +256,15 @@ namespace etl
     /// \param first The starting value of the loop.
     /// \param last  The terminating value of the loop. Equal to the last required value + 1.
     //***************************************************************************
-    multi_loop(value_type first_, value_type last_)
+    multi_loop(value_type first_, 
+               value_type last_, 
+               TStepper   stepper_       = TStepper(),
+               TContinue  continue_loop_ = TContinue())
       : first(first_)
       , last(last_)
       , current(first_)
+      , stepper(stepper_)
+      , continue_loop(continue_loop_)
     {
     }
 
@@ -276,7 +296,7 @@ namespace etl
       }
 
       current = first;
-      has_completed = false;
+      has_completed = !continue_loop(current, last); // Check for null loop.
     }
 
     //***************************************************************************
@@ -292,12 +312,12 @@ namespace etl
 
         if (inner->completed())
         {
-          has_completed = increment();
+          has_completed = step();
         }
       }
       else
       {
-        has_completed = increment();
+        has_completed = step();
       }
     }
 
@@ -314,11 +334,11 @@ namespace etl
     //***************************************************************************
     /// Increments the current loop value.
     //***************************************************************************
-    bool increment()
+    bool step()
     {
-      incrementor(current);
+      current = stepper(current);
 
-      const bool has_rolled_over = (current == last);
+      const bool has_rolled_over = !continue_loop(current, last);
 
       if (has_rolled_over)
       {
@@ -327,12 +347,13 @@ namespace etl
 
       return has_rolled_over;
     }
-
-    TIncrementor<value_type> incrementor; ///< The incrementor type.
-        
+       
     value_type first;   ///< The first value of the loop.
     value_type last;    ///< The terminating value of the loop.
     value_type current; ///< The current value of the loop.
+
+    TStepper  stepper;       ///< The type to step the value to the next.
+    TContinue continue_loop; ///< The type to determine if the loop should continue.
   };
 }
 

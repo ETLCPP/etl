@@ -61,11 +61,27 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_less_equal)
+    {
+      CHECK((compare<etl::less_equal<int>>(1, 2)));
+      CHECK(!(compare<etl::less_equal<int>>(2, 1)));
+      CHECK((compare<etl::less_equal<int>>(1, 1)));
+    }
+
+    //*************************************************************************
     TEST(test_greater)
     {
       CHECK(!(compare<etl::greater<int>>(1, 2)));
       CHECK((compare<etl::greater<int>>(2, 1)));
       CHECK(!(compare<etl::greater<int>>(1, 1)));
+    }
+
+    //*************************************************************************
+    TEST(test_greater_equal)
+    {
+      CHECK(!(compare<etl::greater_equal<int>>(1, 2)));
+      CHECK((compare<etl::greater_equal<int>>(2, 1)));
+      CHECK((compare<etl::greater_equal<int>>(1, 1)));
     }
 
     //*************************************************************************
@@ -186,13 +202,13 @@ namespace
     //*************************************************************************
     TEST(test_pre_decrement)
     {
-      etl::pre_decrement<int> pi;
+      etl::pre_decrement<int> pd;
 
       int i = 0;
       int j = 0;
 
-      pi(i);
-      j = pi(i);
+      pd(i);
+      j = pd(i);
 
       CHECK_EQUAL(-2, i);
       CHECK_EQUAL(-2, j);
@@ -201,16 +217,126 @@ namespace
     //*************************************************************************
     TEST(test_post_decrement)
     {
-      etl::post_decrement<int> pi;
+      etl::post_decrement<int> pd;
 
       int i = 0;
       int j = 0;
 
-      pi(i);
-      j = pi(i);
+      pd(i);
+      j = pd(i);
 
       CHECK_EQUAL(-2, i);
       CHECK_EQUAL(-1, j);
+    }
+
+    //*************************************************************************
+    TEST(test_plus)
+    {
+      auto f = etl::plus<int>();
+      CHECK_EQUAL(2 + 4, f(2, 4));
+    }
+
+    //*************************************************************************
+    TEST(test_minus)
+    {
+      auto f = etl::minus<int>();
+      CHECK_EQUAL(2 - 4, f(2, 4));
+    }
+
+    //*************************************************************************
+    TEST(test_negate)
+    {
+      auto f = etl::negate<int>();
+      CHECK_EQUAL(-2, f(2));
+    }
+
+    //*************************************************************************
+    TEST(test_multiplies)
+    {
+      auto f = etl::multiplies<int>();
+      CHECK_EQUAL(2 * 4, f(2, 4));
+    }
+
+    //*************************************************************************
+    TEST(test_divides)
+    {
+      auto f = etl::divides<int>();
+      CHECK_EQUAL(4 / 2, f(4, 2));
+    }
+
+    //*************************************************************************
+    TEST(test_modulus)
+    {
+      auto f = etl::modulus<int>();
+      CHECK_EQUAL(5 % 2, f(5, 2));
+    }
+
+    //*************************************************************************
+    TEST(test_logical_and)
+    {
+      auto f = etl::logical_and<bool>();
+      CHECK_EQUAL(false && false, f(false, false));
+      CHECK_EQUAL(false && true,  f(false, true));
+      CHECK_EQUAL(true  && false, f(true,  false));
+      CHECK_EQUAL(true &&  true,  f(true,  true));
+    }
+
+    //*************************************************************************
+    TEST(test_logical_or)
+    {
+      auto f = etl::logical_or<bool>();
+      CHECK_EQUAL(false || false, f(false, false));
+      CHECK_EQUAL(false || true,  f(false, true));
+      CHECK_EQUAL(true  || false, f(true, false));
+      CHECK_EQUAL(true  || true,  f(true, true));
+    }
+
+    //*************************************************************************
+    TEST(test_logical_not)
+    {
+      auto f = etl::logical_not<bool>();
+      CHECK_EQUAL(!false, f(false));
+      CHECK_EQUAL(!true, f(true));
+    }
+
+    //*************************************************************************
+    TEST(test_bit_and)
+    {
+      auto f = etl::bit_and<uint8_t>();
+      CHECK_EQUAL(0x00 & 0xFF, f(0x00, 0xFF));
+      CHECK_EQUAL(0xAA & 0xFF, f(0xAA, 0xFF));
+      CHECK_EQUAL(0x55 & 0xFF, f(0x55, 0xFF));
+      CHECK_EQUAL(0xFF & 0xFF, f(0xFF, 0xFF));
+    }
+
+    //*************************************************************************
+    TEST(test_bit_or)
+    {
+      auto f = etl::bit_or<uint8_t>();
+      CHECK_EQUAL(0xFF | 0x00, f(0xFF, 0x00));
+      CHECK_EQUAL(0xAA | 0x00, f(0xAA, 0x00));
+      CHECK_EQUAL(0x55 | 0x00, f(0x55, 0x00));
+      CHECK_EQUAL(0x55 | 0xAA, f(0x55, 0xAA));
+    }
+
+    //*************************************************************************
+    TEST(test_bit_xor)
+    {
+      auto f = etl::bit_xor<uint8_t>();
+      CHECK_EQUAL(0xFF ^ 0x00, f(0xFF, 0x00));
+      CHECK_EQUAL(0xAA ^ 0x00, f(0xAA, 0x00));
+      CHECK_EQUAL(0x55 ^ 0x00, f(0x55, 0x00));
+      CHECK_EQUAL(0x55 ^ 0xAA, f(0x55, 0xAA));
+    }
+
+    //*************************************************************************
+    TEST(test_bit_not)
+    {
+      auto f = etl::bit_not<uint8_t>();
+      CHECK_EQUAL(uint8_t(~0x00), f(0x00));
+      CHECK_EQUAL(uint8_t(~0x55), f(0x55));
+      CHECK_EQUAL(uint8_t(~0xAA), f(0xAA));
+      CHECK_EQUAL(uint8_t(~0xFF), f(0xFF));
     }
   };
 }
