@@ -170,66 +170,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_pre_increment)
-    {
-      etl::pre_increment<int> pi;
-
-      int i = 0;
-      int j = 0;
-      
-      pi(i);
-      j = pi(i);
-
-      CHECK_EQUAL(2, i);
-      CHECK_EQUAL(2, j);
-    }
-
-    //*************************************************************************
-    TEST(test_post_increment)
-    {
-      etl::post_increment<int> pi;
-
-      int i = 0;
-      int j = 0;
-
-      pi(i);
-      j = pi(i);
-
-      CHECK_EQUAL(2, i);
-      CHECK_EQUAL(1, j);
-    }
-
-    //*************************************************************************
-    TEST(test_pre_decrement)
-    {
-      etl::pre_decrement<int> pd;
-
-      int i = 0;
-      int j = 0;
-
-      pd(i);
-      j = pd(i);
-
-      CHECK_EQUAL(-2, i);
-      CHECK_EQUAL(-2, j);
-    }
-
-    //*************************************************************************
-    TEST(test_post_decrement)
-    {
-      etl::post_decrement<int> pd;
-
-      int i = 0;
-      int j = 0;
-
-      pd(i);
-      j = pd(i);
-
-      CHECK_EQUAL(-2, i);
-      CHECK_EQUAL(-1, j);
-    }
-
-    //*************************************************************************
     TEST(test_plus)
     {
       auto f = etl::plus<int>();

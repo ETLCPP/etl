@@ -114,7 +114,7 @@ namespace etl
 
     ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
     {
-      return lhs < rhs;
+      return (lhs < rhs);
     }
   };
 
@@ -126,7 +126,7 @@ namespace etl
 
     ETL_CONSTEXPR bool operator()(const T& lhs, const T& rhs) const
     {
-      return lhs <= rhs;
+      return !(rhs < lhs);
     }
   };
 
@@ -138,7 +138,7 @@ namespace etl
 
     ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
     {
-      return lhs > rhs;
+      return (rhs < lhs);
     }
   };
 
@@ -150,7 +150,7 @@ namespace etl
 
     ETL_CONSTEXPR bool operator()(const T& lhs, const T& rhs) const
     {
-      return lhs >= rhs;
+      return !(lhs < rhs);
     }
   };
 
@@ -174,7 +174,7 @@ namespace etl
 
     ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
     {
-      return lhs != rhs;
+      return !(lhs == rhs);
     }
   };
 
@@ -441,70 +441,6 @@ namespace etl
     {
       return ~lhs;
     }
-  };
-
-  //***************************************************************************
-
-  template <typename T>
-  struct pre_increment
-  {
-    T operator()(T& value)
-    {
-      ++value;
-      return value;
-    }
-  };
-
-  //***************************************************************************
-
-  template <typename T>
-  struct post_increment
-  {
-    T operator()(T& value)
-    {
-      T temp(value);
-      ++value;
-      return temp;
-    }
-  };
-
-  //***************************************************************************
-
-  template <typename T>
-  struct increment : etl::pre_increment<T>
-  {
-  };
-
-  //***************************************************************************
-
-  template <typename T>
-  struct pre_decrement
-  {
-    T operator()(T& value)
-    {
-      --value;
-      return value;
-    }
-  };
-
-  //***************************************************************************
-
-  template <typename T>
-  struct post_decrement
-  {
-    T operator()(T& value)
-    {
-      T temp(value);
-      --value;
-      return temp;
-    }
-  };
-
-  //***************************************************************************
-
-  template <typename T>
-  struct decrement : etl::pre_decrement<T>
-  {
   };
 }
 

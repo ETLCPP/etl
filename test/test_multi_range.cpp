@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "UnitTest++/UnitTest++.h"
 
-#include "etl/multi_loop.h"
+#include "etl/multi_range.h"
 #include "etl/functional.h"
 
 #include <iterator>
@@ -109,40 +109,42 @@ namespace
 
   using Iterator = std::forward_list<std::string>::const_iterator;
 
-  struct Adder
-  {
-    Adder()
-      : value(0)
-    {
-    }
+  //*************************************************************************
+  using StepperOuter = etl::multi_range<int>::forward_step_by;
 
-    Adder(int value_)
-      : value(value_)
-    {
-    }
+  //*************************************************************************
+  using StepperMiddle = etl::multi_range<Index>::reverse_step;
 
-    int operator()(int i)
-    {
-      return i + value;
-    }
+  //*************************************************************************
+  using CompareMiddle = etl::multi_range<Index>::greater_than_compare;
 
-    int value;
-  };
+  // Declare the loops.
+  using Outer  = etl::multi_range<int>;
+  using Middle = etl::multi_range<Index>;
+  using Inner  = etl::multi_range<Iterator>;
 
-  using Outer  = etl::multi_loop<int, Adder>;
-  using Middle = etl::multi_loop<Index, etl::decrement<Index>, etl::greater<Index>>;
-  using Inner  = etl::multi_loop<Iterator>;
-
+  // A list of strings.
   std::forward_list<std::string> strings =
   {
     "zero", "one", "two", "three"
   };
 
-  Outer  outer(0, 8, Adder(2));
-  Middle middle(Index(2), Index(-2));
-  Inner  inner(strings.begin(), strings.end());
+  // Outer loop : Iterate from 0 to 6 in steps of 2.
+  // Keep looping while the value is not equal to 8.
+  StepperOuter stepperOuter(2);
+  Outer outer(0, 8, stepperOuter);
 
-  SUITE(test_multi_loop)
+  // Middle loop : Iterate from Index(2) to Index(-1).
+  // Keep looping while the value is greater than Index(-2).
+  StepperMiddle stepperMiddle;
+  CompareMiddle compareMiddle;
+  Middle middle(Index(2), Index(-2), stepperMiddle, compareMiddle);
+
+  // Inner loop : Iterate from the first to the last string in the forward_list of strings.
+  // Keep looping while the iterator is not equal to strings.end().
+  Inner inner(strings.begin(), strings.end());
+
+  SUITE(test_multi_range)
   {  
     //*************************************************************************
     TEST(create_three_loops)
@@ -154,9 +156,9 @@ namespace
       CHECK(middle.completed());
       CHECK(inner.completed());
 
-      CHECK_EQUAL(3U, outer.number_of_loops());
-      CHECK_EQUAL(2U, middle.number_of_loops());
-      CHECK_EQUAL(1U, inner.number_of_loops());
+      CHECK_EQUAL(3U, outer.number_of_ranges());
+      CHECK_EQUAL(2U, middle.number_of_ranges());
+      CHECK_EQUAL(1U, inner.number_of_ranges());
 
       CHECK_EQUAL(64U, outer.number_of_iterations());
       CHECK_EQUAL(16U, middle.number_of_iterations());
@@ -187,9 +189,9 @@ namespace
       CHECK(middle.completed());
       CHECK(inner.completed());
 
-      CHECK_EQUAL(3U, outer.number_of_loops());
-      CHECK_EQUAL(2U, middle.number_of_loops());
-      CHECK_EQUAL(1U, inner.number_of_loops());
+      CHECK_EQUAL(3U, outer.number_of_ranges());
+      CHECK_EQUAL(2U, middle.number_of_ranges());
+      CHECK_EQUAL(1U, inner.number_of_ranges());
 
       CHECK_EQUAL(64U, outer.number_of_iterations());
       CHECK_EQUAL(16U, middle.number_of_iterations());
@@ -219,9 +221,9 @@ namespace
       CHECK(middle.completed());
       CHECK(inner.completed());
 
-      CHECK_EQUAL(3U, outer.number_of_loops());
-      CHECK_EQUAL(2U, middle.number_of_loops());
-      CHECK_EQUAL(1U, inner.number_of_loops());
+      CHECK_EQUAL(3U, outer.number_of_ranges());
+      CHECK_EQUAL(2U, middle.number_of_ranges());
+      CHECK_EQUAL(1U, inner.number_of_ranges());
 
       CHECK_EQUAL(64U, outer.number_of_iterations());
       CHECK_EQUAL(16U, middle.number_of_iterations());
@@ -247,8 +249,8 @@ namespace
     {
       middle.append(outer);
 
-      CHECK_THROW(outer.append(middle), etl::multi_loop_circular_reference);
-      CHECK_THROW(inner.append(inner),  etl::multi_loop_circular_reference);
+      CHECK_THROW(outer.append(middle), etl::multi_range_circular_reference);
+      CHECK_THROW(inner.append(inner),  etl::multi_range_circular_reference);
 
       outer.detach();
       middle.detach();
@@ -262,7 +264,7 @@ namespace
 
       CHECK(null_loop.completed());
 
-      CHECK_EQUAL(1U, null_loop.number_of_loops());
+      CHECK_EQUAL(1U, null_loop.number_of_ranges());
 
       CHECK_EQUAL(0U, null_loop.number_of_iterations());
 
