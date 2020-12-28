@@ -1292,7 +1292,7 @@
     <ClInclude Include="..\..\include\etl\macros.h" />
     <ClInclude Include="..\..\include\etl\message_packet.h" />
     <ClInclude Include="..\..\include\etl\multi_array.h" />
-    <ClInclude Include="..\..\include\etl\multi_loop.h" />
+    <ClInclude Include="..\..\include\etl\multi_range.h" />
     <ClInclude Include="..\..\include\etl\mutex\mutex_clang_sync.h" />
     <ClInclude Include="..\..\include\etl\mutex\mutex_freertos.h" />
     <ClInclude Include="..\..\include\etl\negative.h" />
@@ -1863,7 +1863,7 @@
     <ClCompile Include="..\test_message_timer.cpp" />
     <ClCompile Include="..\test_multimap.cpp" />
     <ClCompile Include="..\test_multiset.cpp" />
-    <ClCompile Include="..\test_multi_loop.cpp" />
+    <ClCompile Include="..\test_multi_range.cpp" />
     <ClCompile Include="..\test_murmur3.cpp" />
     <ClCompile Include="..\test_numeric.cpp" />
     <ClCompile Include="..\test_observer.cpp">

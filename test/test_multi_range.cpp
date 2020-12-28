@@ -28,12 +28,14 @@ SOFTWARE.
 
 #include "UnitTest++/UnitTest++.h"
 
-#include "etl/multi_loop.h"
+#include "etl/multi_range.h"
+#include "etl/functional.h"
 
 #include <iterator>
 #include <string>
 #include <forward_list>
 #include <array>
+#include <functional>
 
 namespace
 {
@@ -107,45 +109,63 @@ namespace
 
   using Iterator = std::forward_list<std::string>::const_iterator;
 
-  using Outer  = etl::multi_loop<int>;
-  using Middle = etl::multi_loop<Index, etl::decrement>;
-  using Inner  = etl::multi_loop<Iterator>;
+  //*************************************************************************
+  using StepperOuter = etl::multi_range<int>::forward_step_by;
 
+  //*************************************************************************
+  using StepperMiddle = etl::multi_range<Index>::reverse_step;
+
+  //*************************************************************************
+  using CompareMiddle = etl::multi_range<Index>::greater_than_compare;
+
+  // Declare the loops.
+  using Outer  = etl::multi_range<int>;
+  using Middle = etl::multi_range<Index>;
+  using Inner  = etl::multi_range<Iterator>;
+
+  // A list of strings.
   std::forward_list<std::string> strings =
   {
     "zero", "one", "two", "three"
   };
 
-  Outer  outer(0, 4);
-  Middle middle(Index(2), Index(-2));
-  Inner  inner(strings.begin(), strings.end());
+  // Outer loop : Iterate from 0 to 6 in steps of 2.
+  // Keep looping while the value is not equal to 8.
+  StepperOuter stepperOuter(2);
+  Outer outer(0, 8, stepperOuter);
 
-  SUITE(test_multi_loop)
+  // Middle loop : Iterate from Index(2) to Index(-1).
+  // Keep looping while the value is greater than Index(-2).
+  StepperMiddle stepperMiddle;
+  CompareMiddle compareMiddle;
+  Middle middle(Index(2), Index(-2), stepperMiddle, compareMiddle);
+
+  // Inner loop : Iterate from the first to the last string in the forward_list of strings.
+  // Keep looping while the iterator is not equal to strings.end().
+  Inner inner(strings.begin(), strings.end());
+
+  SUITE(test_multi_range)
   {  
     //*************************************************************************
     TEST(create_three_loops)
     {
-      outer.clear();
-      middle.clear();
-      inner.clear();
-
       outer.append(middle);
       middle.insert(inner);
 
-      CHECK(!outer.completed());
-      CHECK(!middle.completed());
-      CHECK(!inner.completed());
+      CHECK(outer.completed());
+      CHECK(middle.completed());
+      CHECK(inner.completed());
 
-      CHECK_EQUAL(3U, outer.number_of_loops());
-      CHECK_EQUAL(2U, middle.number_of_loops());
-      CHECK_EQUAL(1U, inner.number_of_loops());
+      CHECK_EQUAL(3U, outer.number_of_ranges());
+      CHECK_EQUAL(2U, middle.number_of_ranges());
+      CHECK_EQUAL(1U, inner.number_of_ranges());
 
       CHECK_EQUAL(64U, outer.number_of_iterations());
       CHECK_EQUAL(16U, middle.number_of_iterations());
       CHECK_EQUAL(4U,  inner.number_of_iterations());
 
       CHECK_EQUAL(0,             outer.begin());
-      CHECK_EQUAL(4,             outer.end());
+      CHECK_EQUAL(8,             outer.end());
       CHECK_EQUAL(outer.begin(), outer.value());
 
       CHECK_EQUAL(Index(2),       middle.begin());
@@ -155,32 +175,30 @@ namespace
       CHECK(strings.begin() == inner.begin());
       CHECK(strings.end()   == inner.end());
       CHECK(inner.begin()   == inner.value());
+
+      outer.detach_all();
     }
 
     //*************************************************************************
     TEST(create_three_loops_different_order)
     {
-      outer.clear();
-      middle.clear();
-      inner.clear();
-
       middle.append(inner);
       outer.insert(middle);
         
-      CHECK(!outer.completed());
-      CHECK(!middle.completed());
-      CHECK(!inner.completed());
+      CHECK(outer.completed());
+      CHECK(middle.completed());
+      CHECK(inner.completed());
 
-      CHECK_EQUAL(3U, outer.number_of_loops());
-      CHECK_EQUAL(2U, middle.number_of_loops());
-      CHECK_EQUAL(1U, inner.number_of_loops());
+      CHECK_EQUAL(3U, outer.number_of_ranges());
+      CHECK_EQUAL(2U, middle.number_of_ranges());
+      CHECK_EQUAL(1U, inner.number_of_ranges());
 
       CHECK_EQUAL(64U, outer.number_of_iterations());
       CHECK_EQUAL(16U, middle.number_of_iterations());
       CHECK_EQUAL(4U, inner.number_of_iterations());
 
       CHECK_EQUAL(0, outer.begin());
-      CHECK_EQUAL(4, outer.end());
+      CHECK_EQUAL(8, outer.end());
       CHECK_EQUAL(outer.begin(), outer.value());
 
       CHECK_EQUAL(Index(2), middle.begin());
@@ -190,31 +208,29 @@ namespace
       CHECK(strings.begin() == inner.begin());
       CHECK(strings.end()   == inner.end());
       CHECK(inner.begin()   == inner.value());
+
+      outer.detach_all();
     }
 
     //*************************************************************************
     TEST(create_three_loops_functional_style)
     {
-      outer.clear();
-      middle.clear();
-      inner.clear();
-
       outer.append(inner).insert(middle);
 
-      CHECK(!outer.completed());
-      CHECK(!middle.completed());
-      CHECK(!inner.completed());
+      CHECK(outer.completed());
+      CHECK(middle.completed());
+      CHECK(inner.completed());
 
-      CHECK_EQUAL(3U, outer.number_of_loops());
-      CHECK_EQUAL(2U, middle.number_of_loops());
-      CHECK_EQUAL(1U, inner.number_of_loops());
+      CHECK_EQUAL(3U, outer.number_of_ranges());
+      CHECK_EQUAL(2U, middle.number_of_ranges());
+      CHECK_EQUAL(1U, inner.number_of_ranges());
 
       CHECK_EQUAL(64U, outer.number_of_iterations());
       CHECK_EQUAL(16U, middle.number_of_iterations());
       CHECK_EQUAL(4U, inner.number_of_iterations());
 
       CHECK_EQUAL(0, outer.begin());
-      CHECK_EQUAL(4, outer.end());
+      CHECK_EQUAL(8, outer.end());
       CHECK_EQUAL(outer.begin(), outer.value());
 
       CHECK_EQUAL(Index(2), middle.begin());
@@ -224,28 +240,42 @@ namespace
       CHECK(strings.begin() == inner.begin());
       CHECK(strings.end()   == inner.end());
       CHECK(inner.begin()   == inner.value());
+
+      outer.detach_all();
     }
 
     //*************************************************************************
     TEST(create_three_loops_circular_links)
     {
-      outer.clear();
-      middle.clear();
-      inner.clear();
-
       middle.append(outer);
 
-      CHECK_THROW(outer.append(middle), etl::multi_loop_circular_reference);
-      CHECK_THROW(inner.append(inner),  etl::multi_loop_circular_reference);
+      CHECK_THROW(outer.append(middle), etl::multi_range_circular_reference);
+      CHECK_THROW(inner.append(inner),  etl::multi_range_circular_reference);
+
+      outer.detach();
+      middle.detach();
+      inner.detach();
+    }
+
+    //*************************************************************************
+    TEST(null_loop)
+    {
+      Outer null_loop(2, 2);
+
+      CHECK(null_loop.completed());
+
+      CHECK_EQUAL(1U, null_loop.number_of_ranges());
+
+      CHECK_EQUAL(0U, null_loop.number_of_iterations());
+
+      CHECK_EQUAL(2, null_loop.begin());
+      CHECK_EQUAL(2, null_loop.end());
+      CHECK_EQUAL(null_loop.begin(), null_loop.value());
     }
 
     //*************************************************************************
     TEST(run_three_loops)
     {
-      outer.clear();
-      middle.clear();
-      inner.clear();
-
       outer.append(middle).append(inner);
      
       struct result
@@ -261,18 +291,18 @@ namespace
           result{ 0,  1, "zero" }, result{ 0,  1, "one" }, result{ 0,  1, "two" }, result{ 0,  1, "three" },
           result{ 0,  0, "zero" }, result{ 0,  0, "one" }, result{ 0,  0, "two" }, result{ 0,  0, "three" },
           result{ 0, -1, "zero" }, result{ 0, -1, "one" }, result{ 0, -1, "two" }, result{ 0, -1, "three" },
-          result{ 1,  2, "zero" }, result{ 1,  2, "one" }, result{ 1,  2, "two" }, result{ 1,  2, "three" },
-          result{ 1,  1, "zero" }, result{ 1,  1, "one" }, result{ 1,  1, "two" }, result{ 1,  1, "three" },
-          result{ 1,  0, "zero" }, result{ 1,  0, "one" }, result{ 1,  0, "two" }, result{ 1,  0, "three" },
-          result{ 1, -1, "zero" }, result{ 1, -1, "one" }, result{ 1, -1, "two" }, result{ 1, -1, "three" },
           result{ 2,  2, "zero" }, result{ 2,  2, "one" }, result{ 2,  2, "two" }, result{ 2,  2, "three" },
           result{ 2,  1, "zero" }, result{ 2,  1, "one" }, result{ 2,  1, "two" }, result{ 2,  1, "three" },
           result{ 2,  0, "zero" }, result{ 2,  0, "one" }, result{ 2,  0, "two" }, result{ 2,  0, "three" },
           result{ 2, -1, "zero" }, result{ 2, -1, "one" }, result{ 2, -1, "two" }, result{ 2, -1, "three" },
-          result{ 3,  2, "zero" }, result{ 3,  2, "one" }, result{ 3,  2, "two" }, result{ 3,  2, "three" },
-          result{ 3,  1, "zero" }, result{ 3,  1, "one" }, result{ 3,  1, "two" }, result{ 3,  1, "three" },
-          result{ 3,  0, "zero" }, result{ 3,  0, "one" }, result{ 3,  0, "two" }, result{ 3,  0, "three" },
-          result{ 3, -1, "zero" }, result{ 3, -1, "one" }, result{ 3, -1, "two" }, result{ 3, -1, "three" }
+          result{ 4,  2, "zero" }, result{ 4,  2, "one" }, result{ 4,  2, "two" }, result{ 4,  2, "three" },
+          result{ 4,  1, "zero" }, result{ 4,  1, "one" }, result{ 4,  1, "two" }, result{ 4,  1, "three" },
+          result{ 4,  0, "zero" }, result{ 4,  0, "one" }, result{ 4,  0, "two" }, result{ 4,  0, "three" },
+          result{ 4, -1, "zero" }, result{ 4, -1, "one" }, result{ 4, -1, "two" }, result{ 4, -1, "three" },
+          result{ 6,  2, "zero" }, result{ 6,  2, "one" }, result{ 6,  2, "two" }, result{ 6,  2, "three" },
+          result{ 6,  1, "zero" }, result{ 6,  1, "one" }, result{ 6,  1, "two" }, result{ 6,  1, "three" },
+          result{ 6,  0, "zero" }, result{ 6,  0, "one" }, result{ 6,  0, "two" }, result{ 6,  0, "three" },
+          result{ 6, -1, "zero" }, result{ 6, -1, "one" }, result{ 6, -1, "two" }, result{ 6, -1, "three" }
       };
 
       size_t i = 0U;
@@ -322,15 +352,13 @@ namespace
       }
 
       CHECK(outer.completed());
+
+      outer.detach_all();
     }
 
     //*************************************************************************
     TEST(create_three_loops_but_just_run_the_inner_two)
     {
-      outer.clear();
-      middle.clear();
-      inner.clear();
-
       outer.append(middle).append(inner);
 
       struct result
@@ -395,6 +423,8 @@ namespace
       }
 
       CHECK(middle.completed());
+
+      outer.detach_all();
     }
   };
 }

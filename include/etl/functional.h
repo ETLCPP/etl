@@ -114,7 +114,19 @@ namespace etl
 
     ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
     {
-      return lhs < rhs;
+      return (lhs < rhs);
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct less_equal
+  {
+    typedef T value_type;
+
+    ETL_CONSTEXPR bool operator()(const T& lhs, const T& rhs) const
+    {
+      return !(rhs < lhs);
     }
   };
 
@@ -126,7 +138,19 @@ namespace etl
 
     ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
     {
-      return lhs > rhs;
+      return (rhs < lhs);
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct greater_equal
+  {
+    typedef T value_type;
+
+    ETL_CONSTEXPR bool operator()(const T& lhs, const T& rhs) const
+    {
+      return !(lhs < rhs);
     }
   };
 
@@ -239,59 +263,184 @@ namespace etl
   }
 
   //***************************************************************************
-
-  template <typename T>
-  struct pre_increment
+  template <typename T = void>
+  struct plus
   {
-    T operator()(T& value)
-    {
-      ++value;
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
 
-      return value;
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
+    {
+      return lhs + rhs;
     }
   };
 
-  template <typename T>
-  struct post_increment
+  //***************************************************************************
+  template <typename T = void>
+  struct minus
   {
-    T operator()(T& value)
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
     {
-      T temp(value);
-      ++value;
-      return temp;
+      return lhs - rhs;
     }
   };
 
-  template <typename T>
-  struct increment : etl::pre_increment<T>
+  //***************************************************************************
+  template <typename T = void>
+  struct negate
   {
-  };
+    typedef T argument_type;
+    typedef T result_type;
 
-  template <typename T>
-  struct pre_decrement
-  {
-    T operator()(T& value)
+    ETL_CONSTEXPR T operator()(const T& lhs) const
     {
-      --value;
-
-      return value;
+      return -lhs;
     }
   };
 
-  template <typename T>
-  struct post_decrement
+  //***************************************************************************
+  template <typename T = void>
+  struct multiplies
   {
-    T operator()(T& value)
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
     {
-      T temp(value);
-      --value;
-      return temp;
+      return lhs * rhs;
     }
   };
 
-  template <typename T>
-  struct decrement : etl::pre_decrement<T>
+  //***************************************************************************
+  template <typename T = void>
+  struct divides
   {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
+    {
+      return lhs / rhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct modulus
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
+    {
+      return lhs % rhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct logical_and
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
+    {
+      return lhs && rhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct logical_or
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
+    {
+      return lhs || rhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct logical_not
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs) const
+    {
+      return !lhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct bit_and
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
+    {
+      return lhs & rhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct bit_or
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
+    {
+      return lhs | rhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct bit_xor
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
+    {
+      return lhs ^ rhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct bit_not
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs) const
+    {
+      return ~lhs;
+    }
   };
 }
 
