@@ -47,14 +47,14 @@ namespace etl
     {
     }
 
-    virtual ~shared_message_processor() {}
-    virtual void receive(etl::shared_message message) = 0;
-    virtual void receive(imessage_router& source, etl::shared_message message) = 0;
-
     imessage_router& get_router() const
     {
       return router;
     }
+
+    virtual ~shared_message_processor() {}
+    virtual void receive(etl::shared_message message) = 0;
+    virtual void receive(imessage_router& source, etl::shared_message message) = 0;
 
   private:
 
