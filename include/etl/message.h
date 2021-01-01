@@ -65,6 +65,8 @@ namespace etl
   };
 
   //***************************************************************************
+  // Message interface.
+  //***************************************************************************
   class imessage
   {
   public:
@@ -77,87 +79,83 @@ namespace etl
   };
 
   //***************************************************************************
-  class ireference_counted_message : public etl::imessage, public etl::ireference_counted_object
-  {
-  };
-
+  // Message type.
   //***************************************************************************
-  template <typename TCounter>
-  class reference_counted_message : public etl::ireference_counted_message
+  template <etl::message_id_t ID_>
+  class message : public imessage
   {
   public:
 
-    reference_counted_message()
-      : reference_count(TCounter())
+    enum
     {
+      ID = ID_
+    };
+
+    ETL_NODISCARD etl::message_id_t get_message_id() const ETL_NOEXCEPT ETL_OVERRIDE
+    {
+      return ID;
+    }
+  };
+  
+  class ireference_counted_message
+  {
+  public:
+
+    virtual etl::imessage* get_message() = 0;
+    virtual const etl::imessage* get_message() const = 0;
+    virtual ~ireference_counted_message() {};
+    virtual void set_reference_count(uint32_t value) = 0;
+    virtual void increment_reference_count() = 0;
+    ETL_NODISCARD virtual uint32_t decrement_reference_count() = 0;
+    ETL_NODISCARD virtual uint32_t get_reference_count() const = 0;
+  };
+
+  //*******************************************************
+  template <typename TMessage, typename TCounter>
+  class reference_counted_message : virtual public ireference_counted_message
+  {
+  public:
+
+    reference_counted_message(const TMessage& msg_)
+      : msg(msg_)
+    {
+      reference_count = 0;
     }
 
-  private:
+    virtual TMessage* get_message() ETL_OVERRIDE
+    {
+      return &msg;
+    }
 
-    //***************************************************************************
-    void set_reference_count(uint32_t value) ETL_OVERRIDE
+    virtual const TMessage* get_message() const ETL_OVERRIDE
+    {
+      return &msg;
+    }
+
+    virtual void set_reference_count(uint32_t value) ETL_OVERRIDE
     {
       reference_count = value;
     }
 
-    //***************************************************************************
-    void increment_reference_count() ETL_OVERRIDE
+    virtual void increment_reference_count() ETL_OVERRIDE
     {
       ++reference_count;
     }
 
-    //***************************************************************************
-    ETL_NODISCARD uint32_t decrement_reference_count() ETL_OVERRIDE
+    ETL_NODISCARD virtual uint32_t decrement_reference_count() ETL_OVERRIDE
     {
       return uint32_t(--reference_count);
     }
 
-    //***************************************************************************
-    ETL_NODISCARD uint32_t get_reference_count() const ETL_OVERRIDE
+    ETL_NODISCARD virtual uint32_t get_reference_count() const ETL_OVERRIDE
     {
       return uint32_t(reference_count);
     }
 
-    /// The reference counter.
+  private:
+
     TCounter reference_count;
-  };
-
-  //***************************************************************************
-  // Reference counted message.
-  //***************************************************************************
-  template <etl::message_id_t ID_, typename TCounter = void>
-  class message : public reference_counted_message<TCounter>
-  {
-  public:
-
-    enum
-    {
-      ID = ID_
-    };
-
-    ETL_NODISCARD etl::message_id_t get_message_id() const ETL_NOEXCEPT
-    {
-      return ID;
-    }
-  };
-
-  //***************************************************************************
-  // Non-reference counted message.
-  //***************************************************************************
-  template <etl::message_id_t ID_>
-  class message<ID_, void> : public imessage
-  {
-  public:
-
-    enum
-    {
-      ID = ID_
-    };
-
-    ETL_NODISCARD etl::message_id_t get_message_id() const ETL_NOEXCEPT
-    {
-      return ID;
-    }
+    TMessage msg;
   };
 }
 

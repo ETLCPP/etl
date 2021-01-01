@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_MESSAGE_POOL_INCLUDED
-#define ETL_MESSAGE_POOL_INCLUDED
+#ifndef ETL_REFERENCE_COUNTED_MESSAGE_POOL_INCLUDED
+#define ETL_REFERENCE_COUNTED_MESSAGE_POOL_INCLUDED
 
 #include "platform.h"
 #include "message.h"
@@ -38,77 +38,112 @@ SOFTWARE.
 #include "utility.h"
 #include "memory.h"
 
+#include <iostream>
+
 #define ETL_FILE "99"
 
 namespace etl
 {
+  ////***************************************************************************
+  /////
+  ////***************************************************************************
+  //class message_pool_allocation_exception : public etl::exception
+  //{
+  //public:
+
+  //  message_pool_allocation_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+  //    : exception(reason_, file_name_, line_number_)
+  //  {
+  //  }
+  //};
+
+  ////***************************************************************************
+  /////
+  ////***************************************************************************
+  //class message_pool_allocation_failure : etl::message_pool_allocation_exception
+  //{
+  //public:
+
+  //  message_pool_allocation_failure(string_type file_name_, numeric_type line_number_)
+  //    : message_pool_allocation_exception(ETL_ERROR_TEXT("message_pool:allocation failure", ETL_FILE"A"), file_name_, line_number_)
+  //  {
+  //  }
+  //};
+
   //***************************************************************************
   ///
   //***************************************************************************
-  class message_pool_allocation_exception : public etl::exception
+  class ireference_counted_message_pool
   {
   public:
 
-    message_pool_allocation_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
-      : exception(reason_, file_name_, line_number_)
+    virtual void destroy(const etl::ireference_counted_message* const pmsg) = 0;
+    virtual void destroy(const etl::ireference_counted_message& msg) = 0;
+  };
+
+  //***************************************************************************
+  ///
+  //***************************************************************************
+  class null_reference_counted_message_pool : public ireference_counted_message_pool
+  {
+  public:
+
+    void destroy(const etl::ireference_counted_message* const pmsg) ETL_OVERRIDE
     {
+      std::cout << "null_reference_counted_message_pool : destroy\n";
+    }
+
+    void destroy(const etl::ireference_counted_message& msg) ETL_OVERRIDE
+    {
+      std::cout << "null_reference_counted_message_pool : destroy\n";
     }
   };
 
   //***************************************************************************
   ///
   //***************************************************************************
-  class message_pool_allocation_failure : etl::message_pool_allocation_exception
-  {
-  public:
-
-    message_pool_allocation_failure(string_type file_name_, numeric_type line_number_)
-      : message_pool_allocation_exception(ETL_ERROR_TEXT("message_pool:allocation failure", ETL_FILE"A"), file_name_, line_number_)
-    {
-    }
-  };
-
-  //***************************************************************************
-  ///
-  //***************************************************************************
-  class message_pool
+  template <typename TCounter>
+  class reference_counted_message_pool : public ireference_counted_message_pool
   {
   public:
 
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    message_pool(imemory_block_pool& memory_block_pool_)
-      : memory_block_pool(memory_block_pool_)
-    {
-    }
+    //reference_counted_message_pool(imemory_block_pool& memory_block_pool_)
+    //  : memory_block_pool(memory_block_pool_)
+    //{
+    //}
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_MESSAGE_POOL_FORCE_CPP03)
     //*************************************************************************
     /// Create a message from the pool.
     //*************************************************************************
     template <typename TMessage, typename... TArgs>
-    TMessage* create(TArgs&&... args)
+    etl::ireference_counted_message* create(TArgs&&... args)
     {
-      ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
+      //ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
 
-      void* p = ETL_NULLPTR;
+      using ref_message_t = etl::reference_counted_message<TMessage, TCounter>;
 
-      if (sizeof(TMessage) <= memory_block_pool.get_memory_block_size())
-      {
-        p = memory_block_pool.allocate_memory_block(sizeof(TMessage));
+      etl::ireference_counted_message* p = ETL_NULLPTR;
 
-        if (p != ETL_NULLPTR)
-        {
-          ::new(p) TMessage(etl::forward<TArgs>(args)...);
-        }
-        else
-        {
-          ETL_ALWAYS_ASSERT(ETL_ERROR(etl::message_pool_allocation_failure));
-        }
-      }
+      //if (sizeof(ref_message_t) <= memory_block_pool.get_memory_block_size(ref_message_t))
+      //{
+      //  p = memory_block_pool.allocate_memory_block(sizeof(ref_message_t));
 
-      return reinterpret_cast<TMessage*>(p);
+      //  if (p != ETL_NULLPTR)
+      //  {
+      //    ::new(p) ref_message_t(TMessage(etl::forward<TArgs>(args)...));
+      p = ::new ref_message_t(TMessage(etl::forward<TArgs>(args)...));
+      //  }
+      //  else
+      //  {
+      //    ETL_ALWAYS_ASSERT(ETL_ERROR(etl::message_pool_allocation_failure));
+      //  }
+      //}
+
+      return p;
     }
 #else
     //*************************************************************************
@@ -250,19 +285,22 @@ namespace etl
     //*************************************************************************
     /// Destruct a message and send it back to the pool.
     //*************************************************************************
-    void destroy(const etl::imessage* const pmsg)
+    void destroy(const etl::ireference_counted_message* const pmsg)
     {
+      std::cout << "reference_counted_message_pool : destroy\n";
+
       if (pmsg != ETL_NULLPTR)
       {
-        pmsg->~imessage();
-        memory_block_pool.release_memory_block(pmsg);
+//        pmsg->~ireference_counted_message();
+        delete pmsg;
+        //memory_block_pool.release_memory_block(pmsg);
       }
     }
 
     //*************************************************************************
     /// Destruct a message and send it back to the pool.
     //*************************************************************************
-    void destroy(const etl::imessage& msg)
+    void destroy(const etl::ireference_counted_message& msg)
     {
       destroy(&msg);
     }
@@ -270,11 +308,11 @@ namespace etl
   private:
 
     /// The raw memory block pool.
-    imemory_block_pool& memory_block_pool;
+    //imemory_block_pool& memory_block_pool;
 
-    // Should not be copied.
-    message_pool(const message_pool&) ETL_DELETE;
-    message_pool& operator =(const message_pool&) ETL_DELETE;
+    //// Should not be copied.
+    //message_pool(const message_pool&) ETL_DELETE;
+    //message_pool& operator =(const message_pool&) ETL_DELETE;
   };
 }
 
