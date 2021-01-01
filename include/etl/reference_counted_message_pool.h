@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "message.h"
+#include "reference_counted_message.h"
 #include "static_assert.h"
 #include "error_handler.h"
 #include "utility.h"
@@ -77,8 +78,8 @@ namespace etl
   {
   public:
 
-    virtual void destroy(const etl::ireference_counted_message* const pmsg) = 0;
-    virtual void destroy(const etl::ireference_counted_message& msg) = 0;
+    virtual void release(const etl::ireference_counted_message* const pmsg) = 0;
+    virtual void release(const etl::ireference_counted_message& msg) = 0;
   };
 
   //***************************************************************************
@@ -88,12 +89,12 @@ namespace etl
   {
   public:
 
-    void destroy(const etl::ireference_counted_message* const pmsg) ETL_OVERRIDE
+    void release(const etl::ireference_counted_message* const pmsg) ETL_OVERRIDE
     {
       std::cout << "null_reference_counted_message_pool : destroy\n";
     }
 
-    void destroy(const etl::ireference_counted_message& msg) ETL_OVERRIDE
+    void release(const etl::ireference_counted_message& msg) ETL_OVERRIDE
     {
       std::cout << "null_reference_counted_message_pool : destroy\n";
     }
@@ -115,12 +116,12 @@ namespace etl
     //{
     //}
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_MESSAGE_POOL_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_REFERENCE_COUNTED_MESSAGE_POOL_FORCE_CPP03)
     //*************************************************************************
     /// Create a message from the pool.
     //*************************************************************************
     template <typename TMessage, typename... TArgs>
-    etl::ireference_counted_message* create(TArgs&&... args)
+    etl::ireference_counted_message* allocate(TArgs&&... args)
     {
       //ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
 
@@ -150,7 +151,7 @@ namespace etl
     /// Create a message from the pool. No parameters.
     //*************************************************************************
     template <typename TMessage>
-    TMessage* create()
+    TMessage* allocate()
     {
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
 
@@ -177,7 +178,7 @@ namespace etl
     /// Create a message from the pool. One parameter.
     //*************************************************************************
     template <typename TMessage, typename T1>
-    TMessage* create(const T1& t1)
+    TMessage* allocate(const T1& t1)
     {
       ETL_STATIC_ASSERT(etl::is_base_of<etl::imessage, TMessage>::value, "Not a message type");
 
@@ -204,7 +205,7 @@ namespace etl
     /// Create a message from the pool. Two parameters.
     //*************************************************************************
     template <typename TMessage, typename T1, typename T2>
-    TMessage* create(const T1& t1, const T2& t2)
+    TMessage* allocate(const T1& t1, const T2& t2)
     {
       ETL_STATIC_ASSERT(etl::is_base_of<etl::imessage, TMessage>::value, "Not a message type");
 
@@ -231,7 +232,7 @@ namespace etl
     /// Create a message from the pool. Three parameters.
     //*************************************************************************
     template <typename TMessage, typename T1, typename T2, typename T3>
-    TMessage* create(const T1& t1, const T2& t2, const T3& t3)
+    TMessage* allocate(const T1& t1, const T2& t2, const T3& t3)
     {
       ETL_STATIC_ASSERT(etl::is_base_of<etl::imessage, TMessage>::value, "Not a message type");
 
@@ -258,7 +259,7 @@ namespace etl
     /// Create a message from the pool. Four parameters.
     //*************************************************************************
     template <typename TMessage, typename T1, typename T2, typename T3, typename T4>
-    TMessage* create(const T1& t1, const T2& t2, const T3& t3, const T4& t4)
+    TMessage* allocate(const T1& t1, const T2& t2, const T3& t3, const T4& t4)
     {
       ETL_STATIC_ASSERT(etl::is_base_of<etl::imessage, TMessage>::value, "Not a message type");
 
@@ -285,7 +286,7 @@ namespace etl
     //*************************************************************************
     /// Destruct a message and send it back to the pool.
     //*************************************************************************
-    void destroy(const etl::ireference_counted_message* const pmsg)
+    void release(const etl::ireference_counted_message* const pmsg)
     {
       std::cout << "reference_counted_message_pool : destroy\n";
 
@@ -300,9 +301,9 @@ namespace etl
     //*************************************************************************
     /// Destruct a message and send it back to the pool.
     //*************************************************************************
-    void destroy(const etl::ireference_counted_message& msg)
+    void release(const etl::ireference_counted_message& msg)
     {
-      destroy(&msg);
+      release(&msg);
     }
 
   private:

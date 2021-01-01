@@ -35,7 +35,6 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 #include "message_types.h"
-#include "reference_counted_object.h"
 
 #undef ETL_FILE
 #define ETL_FILE "38"
@@ -95,67 +94,6 @@ namespace etl
     {
       return ID;
     }
-  };
-  
-  class ireference_counted_message
-  {
-  public:
-
-    virtual etl::imessage* get_message() = 0;
-    virtual const etl::imessage* get_message() const = 0;
-    virtual ~ireference_counted_message() {};
-    virtual void set_reference_count(uint32_t value) = 0;
-    virtual void increment_reference_count() = 0;
-    ETL_NODISCARD virtual uint32_t decrement_reference_count() = 0;
-    ETL_NODISCARD virtual uint32_t get_reference_count() const = 0;
-  };
-
-  //*******************************************************
-  template <typename TMessage, typename TCounter>
-  class reference_counted_message : virtual public ireference_counted_message
-  {
-  public:
-
-    reference_counted_message(const TMessage& msg_)
-      : msg(msg_)
-    {
-      reference_count = 0;
-    }
-
-    virtual TMessage* get_message() ETL_OVERRIDE
-    {
-      return &msg;
-    }
-
-    virtual const TMessage* get_message() const ETL_OVERRIDE
-    {
-      return &msg;
-    }
-
-    virtual void set_reference_count(uint32_t value) ETL_OVERRIDE
-    {
-      reference_count = value;
-    }
-
-    virtual void increment_reference_count() ETL_OVERRIDE
-    {
-      ++reference_count;
-    }
-
-    ETL_NODISCARD virtual uint32_t decrement_reference_count() ETL_OVERRIDE
-    {
-      return uint32_t(--reference_count);
-    }
-
-    ETL_NODISCARD virtual uint32_t get_reference_count() const ETL_OVERRIDE
-    {
-      return uint32_t(reference_count);
-    }
-
-  private:
-
-    TCounter reference_count;
-    TMessage msg;
   };
 }
 

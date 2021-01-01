@@ -63,7 +63,7 @@ namespace etl
     //***************************************************************************
     bool accepts(etl::shared_message shared_msg) const
     {
-      return accepts(shared_msg.get_message()->get_message_id());
+      return accepts(shared_msg.get_message().get_message_id());
     }
 
     //***************************************************************************
@@ -220,7 +220,7 @@ namespace etl
           {
             etl::ishared_message_processor& processor = **iprocessor;
 
-            if (processor.accepts(shared_msg.get_message()->get_message_id()))
+            if (processor.accepts(shared_msg.get_message().get_message_id()))
             {
               processor.receive(shared_msg);
             }
@@ -246,7 +246,7 @@ namespace etl
           // Call all of them.
           while (range.first != range.second)
           {
-            if ((*(range.first))->accepts(shared_msg.get_message()->get_message_id()))
+            if ((*(range.first))->accepts(shared_msg.get_message().get_message_id()))
             {
               (*(range.first))->receive(shared_msg);
             }
