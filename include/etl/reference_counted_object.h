@@ -55,7 +55,7 @@ namespace etl
   /// \tparam TObject  The type to be reference counted.
   /// \tparam TCounter The type to use as the counter.
   //***************************************************************************
-  template <typename TObject, typename TCounter>
+  template <typename TObject, typename TCounter = void>
   class reference_counted_object : public etl::ireference_counted_object
   {
   public:
@@ -146,8 +146,13 @@ namespace etl
   };
 #endif
 
+  //***************************************************************************
+  /// Specialisation creating objects that have the ireference_counted_object interface
+  /// but do not actually count.
+  /// \tparam TObject  The type stored in the object.
+  //***************************************************************************
   template <typename TObject>
-  class uncounted_object : public etl::ireference_counted_object
+  class reference_counted_object<TObject, void> : public etl::ireference_counted_object
   {
   public:
 
@@ -157,7 +162,7 @@ namespace etl
     //***************************************************************************
     /// Constructor.
     //***************************************************************************
-    uncounted_object(const TObject& object_)
+    reference_counted_object(const TObject& object_)
       : object(object_)
     {
     }

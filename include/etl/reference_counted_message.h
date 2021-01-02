@@ -54,7 +54,7 @@ namespace etl
   //***************************************************************************
   // Reference counted message type.
   //***************************************************************************
-  template <typename TMessage, typename TCounter>
+  template <typename TMessage, typename TCounter = void>
   class reference_counted_message : public etl::ireference_counted_message
   {
   public:
@@ -132,7 +132,7 @@ namespace etl
   // Uncounted message type.
   //***************************************************************************
   template <typename TMessage>
-  class uncounted_message : virtual public etl::ireference_counted_message
+  class reference_counted_message<TMessage, void> : virtual public etl::ireference_counted_message
   {
   public:
 
@@ -143,7 +143,7 @@ namespace etl
     /// Constructor
     /// \param msg The message to count.
     //***************************************************************************
-    uncounted_message(const TMessage& msg_)
+    reference_counted_message(const TMessage& msg_)
       : rc_object(msg_)
     {
     }
@@ -178,7 +178,7 @@ namespace etl
   private:
 
     /// The reference counted object.
-    etl::uncounted_object<TMessage> rc_object;
+    etl::reference_counted_object<TMessage, void> rc_object;
   };
 }
 
