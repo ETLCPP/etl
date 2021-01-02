@@ -44,10 +44,10 @@ namespace etl
   public:
 
     virtual ~ireference_counted_object() {};
-    virtual void set_reference_count(uint32_t value) = 0;
+    virtual void set_reference_count(int32_t value) = 0;
     virtual void increment_reference_count() = 0;
-    ETL_NODISCARD virtual uint32_t decrement_reference_count() = 0;
-    ETL_NODISCARD virtual uint32_t get_reference_count() const = 0;
+    ETL_NODISCARD virtual int32_t decrement_reference_count() = 0;
+    ETL_NODISCARD virtual int32_t get_reference_count() const = 0;
   };
 
   //***************************************************************************
@@ -83,7 +83,7 @@ namespace etl
     //***************************************************************************
     /// Set the reference count.
     //***************************************************************************
-    virtual void set_reference_count(uint32_t value) ETL_OVERRIDE
+    virtual void set_reference_count(int32_t value) ETL_OVERRIDE
     {
       reference_count = value;
     }
@@ -99,19 +99,19 @@ namespace etl
     //***************************************************************************
     /// Decrement the refernce count.
     //***************************************************************************
-    ETL_NODISCARD virtual uint32_t decrement_reference_count() ETL_OVERRIDE
+    ETL_NODISCARD virtual int32_t decrement_reference_count() ETL_OVERRIDE
     {
       assert(reference_count > 0);
 
-      return uint32_t(--reference_count);
+      return int32_t(--reference_count);
     }
 
     //***************************************************************************
     /// Get the current reference count.
     //***************************************************************************
-    ETL_NODISCARD virtual uint32_t get_reference_count() const ETL_OVERRIDE
+    ETL_NODISCARD virtual int32_t get_reference_count() const ETL_OVERRIDE
     {
-      return uint32_t(reference_count);
+      return int32_t(reference_count);
     }
 
   private:
@@ -125,46 +125,22 @@ namespace etl
     const TObject object;     // The object being reference counted.
   };
 
-#if ETL_HAS_ATOMIC
   //***************************************************************************
-  /// Class for creating reference counted objects using an atomic counter.
-  /// \tparam TObject  The type to be reference counted.
-  //***************************************************************************
-  template <typename TObject>
-  class atomic_counted_object : public etl::reference_counted_object<TObject, etl::atomic_int32_t>
-  {
-  public:
-
-    //***************************************************************************
-    /// Constructor.
-    //***************************************************************************
-    atomic_counted_object(const TObject& object_)
-      : reference_counted_object<TObject, etl::atomic_int32_t>(object_)
-    {
-    }
-
-    typedef typename reference_counted_object<TObject, etl::atomic_int32_t>::value_type   value_type;
-    typedef typename reference_counted_object<TObject, etl::atomic_int32_t>::counter_type counter_type;
-  };
-#endif
-
-  //***************************************************************************
-  /// Specialisation creating objects that have the ireference_counted_object interface
-  /// but do not actually count.
+  /// Persistent message type.
+  /// The message type will always have a reference count of 1. 
   /// \tparam TObject  The type stored in the object.
   //***************************************************************************
   template <typename TObject>
-  class reference_counted_object<TObject, void> : public etl::ireference_counted_object
+  class persistent_object : public etl::ireference_counted_object
   {
   public:
 
-    typedef TObject  value_type;
-    typedef void     counter_type;
+    typedef TObject value_type;
 
     //***************************************************************************
     /// Constructor.
     //***************************************************************************
-    reference_counted_object(const TObject& object_)
+    persistent_object(const TObject& object_)
       : object(object_)
     {
     }
@@ -188,7 +164,7 @@ namespace etl
     //***************************************************************************
     /// Set the reference count.
     //***************************************************************************
-    virtual void set_reference_count(uint32_t value) ETL_OVERRIDE
+    virtual void set_reference_count(int32_t) ETL_OVERRIDE
     {
     }
 
@@ -202,7 +178,7 @@ namespace etl
     //***************************************************************************
     /// Decrement the refernce count.
     //***************************************************************************
-    ETL_NODISCARD virtual uint32_t decrement_reference_count() ETL_OVERRIDE
+    ETL_NODISCARD virtual int32_t decrement_reference_count() ETL_OVERRIDE
     {
       return 1;
     }
@@ -210,36 +186,29 @@ namespace etl
     //***************************************************************************
     /// Get the current reference count.
     //***************************************************************************
-    ETL_NODISCARD virtual uint32_t get_reference_count() const ETL_OVERRIDE
+    ETL_NODISCARD virtual int32_t get_reference_count() const ETL_OVERRIDE
     {
       return 1;
     }
 
   private:
 
+    // This class must not be default contructed, copy constructed or assigned.
+    persistent_object() ETL_DELETE;
+    persistent_object(const persistent_object&) ETL_DELETE;
+    persistent_object& operator =(const persistent_object&) ETL_DELETE;
+
     TObject object; // The object being reference counted.
   };
 
+#if ETL_CPP11_SUPPORTED && ETL_HAS_ATOMIC
   //***************************************************************************
-  /// Synonym for reference_counted_object<TObject, void>
-  /// \tparam TObject  The type stored in the object.
+  /// Class for creating reference counted objects using an atomic counter.
+  /// \tparam TObject  The type to be reference counted.
   //***************************************************************************
   template <typename TObject>
-  class uncounted_object : public etl::reference_counted_object<TObject, void>
-  {
-  public:
-
-    //***************************************************************************
-    /// Constructor.
-    //***************************************************************************
-    uncounted_object(const TObject& object_)
-      : reference_counted_object<TObject>(object_)
-    {
-    }
-
-    typedef typename reference_counted_object<TObject, void>::value_type   value_type;
-    typedef typename reference_counted_object<TObject, void>::counter_type counter_type;
-  };
+  using atomic_counted_object = etl::reference_counted_object<TObject, etl::atomic_int32_t>;
+#endif
 }
 
 #endif

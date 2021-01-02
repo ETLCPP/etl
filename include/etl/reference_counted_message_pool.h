@@ -72,7 +72,7 @@ namespace etl
   //};
 
   //***************************************************************************
-  ///
+  /// Iterface for a reference counted message pool.
   //***************************************************************************
   class ireference_counted_message_pool
   {
@@ -83,7 +83,7 @@ namespace etl
   };
 
   //***************************************************************************
-  ///
+  /// A pool for allocating reference counted messages.
   //***************************************************************************
   template <typename TCounter>
   class reference_counted_message_pool : public ireference_counted_message_pool
@@ -98,13 +98,17 @@ namespace etl
     //{
     //}
 
+    reference_counted_message_pool()
+    {
+    }
+
     //*************************************************************************
     /// Allocate a reference counted message from the pool.
     //*************************************************************************
     template <typename TMessage>
     etl::ireference_counted_message* allocate(const TMessage& message)
     {
-      //ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
+      ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
 
       using ref_message_t = etl::reference_counted_message<TMessage, TCounter>;
 
@@ -135,7 +139,7 @@ namespace etl
     template <typename TMessage, typename... TArgs>
     etl::ireference_counted_message* allocate(TArgs&&... args)
     {
-      //ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
+      ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
 
       using ref_message_t = etl::reference_counted_message<TMessage, TCounter>;
 
@@ -298,15 +302,13 @@ namespace etl
     //*************************************************************************
     /// Destruct a message and send it back to the pool.
     //*************************************************************************
-    void release(const etl::ireference_counted_message* const prcm)
+    void release(const etl::ireference_counted_message* const p_rcmessage)
     {
-      std::cout << "reference_counted_message_pool : release\n";
-
-      if (prcm != ETL_NULLPTR)
+      if (p_rcmessage != ETL_NULLPTR)
       {
-//        prcm->~ireference_counted_message();
-        delete prcm;
-        //memory_block_pool.release_memory_block(prcm);
+//        p_rcmessage->~ireference_counted_message();
+        delete p_rcmessage;
+        //memory_block_pool.release_memory_block(p_rcmessage);
       }
     }
 
@@ -323,9 +325,9 @@ namespace etl
     /// The raw memory block pool.
     //imemory_block_pool& memory_block_pool;
 
-    //// Should not be copied.
-    //message_pool(const message_pool&) ETL_DELETE;
-    //message_pool& operator =(const message_pool&) ETL_DELETE;
+    // Should not be copied.
+    reference_counted_message_pool(const reference_counted_message_pool&) ETL_DELETE;
+    reference_counted_message_pool& operator =(const reference_counted_message_pool&) ETL_DELETE;
   };
 }
 

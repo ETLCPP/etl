@@ -104,46 +104,23 @@ namespace etl
     etl::reference_counted_object<TMessage, TCounter> rc_object;
   };
 
-#if ETL_HAS_ATOMIC
   //***************************************************************************
-  /// Class for creating reference counted messages using an atomic counter.
-  /// \tparam TMessage The type to be reference counted.
-  //***************************************************************************
-  template <typename TMessage>
-  class atomic_counted_message : virtual public etl::reference_counted_message<TMessage, etl::atomic_int32_t>
-  {
-  public:
-
-    //***************************************************************************
-    /// Constructor.
-    /// \param msg The message to count.
-    //***************************************************************************
-    atomic_counted_message(const TMessage& msg_)
-      : reference_counted_message<TMessage, etl::atomic_int32_t>(msg_)
-    {
-    }
-
-    typedef typename reference_counted_message<TMessage, etl::atomic_int32_t>::message_type message_type;
-    typedef typename reference_counted_message<TMessage, etl::atomic_int32_t>::counter_type counter_type;
-  };
-#endif
-
-  //***************************************************************************
-  // Uncounted message type.
+  /// Persistent message type.
+  /// The message type will always have a reference count of 1. 
+  /// \tparam TMessage  The message type stored.
   //***************************************************************************
   template <typename TMessage>
-  class reference_counted_message<TMessage, void> : virtual public etl::ireference_counted_message
+  class persistent_message : virtual public etl::ireference_counted_message
   {
   public:
 
     typedef TMessage message_type;
-    typedef void     counter_type;
 
     //***************************************************************************
     /// Constructor
     /// \param msg The message to count.
     //***************************************************************************
-    reference_counted_message(const TMessage& msg_)
+    persistent_message(const TMessage& msg_)
       : rc_object(msg_)
     {
     }
@@ -177,30 +154,23 @@ namespace etl
 
   private:
 
+    // This class must not be default contructed, copy constructed or assigned.
+    persistent_message() ETL_DELETE;
+    persistent_message(const persistent_message&) ETL_DELETE;
+    persistent_message& operator =(const persistent_message&) ETL_DELETE;
+
     /// The reference counted object.
-    etl::reference_counted_object<TMessage, void> rc_object;
+    etl::persistent_object<TMessage> rc_object;
   };
 
+#if ETL_CPP11_SUPPORTED && ETL_HAS_ATOMIC
   //***************************************************************************
-  /// Synonym for reference_counted_message<TMessage, void>
-  /// \tparam TObject  The type stored in the object.
+  /// Class for creating reference counted objects using an atomic counter.
+  /// \tparam TObject  The type to be reference counted.
   //***************************************************************************
   template <typename TMessage>
-  class uncounted_message : public etl::reference_counted_message<TMessage, void>
-  {
-  public:
-
-    //***************************************************************************
-    /// Constructor.
-    //***************************************************************************
-    uncounted_message(const TMessage& msg_)
-      : reference_counted_message<TMessage, void>(msg_)
-    {
-    }
-
-    typedef typename reference_counted_message<TMessage, void>::message_type message_type;
-    typedef typename reference_counted_message<TMessage, void>::counter_type counter_type;
-  };
+  using atomic_counted_message = etl::reference_counted_message<TMessage, etl::atomic_int32_t>;
+#endif
 }
 
 #endif
