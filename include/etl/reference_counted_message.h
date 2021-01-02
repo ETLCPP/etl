@@ -54,7 +54,7 @@ namespace etl
   //***************************************************************************
   // Reference counted message type.
   //***************************************************************************
-  template <typename TMessage, typename TCounter = void>
+  template <typename TMessage, typename TCounter>
   class reference_counted_message : public etl::ireference_counted_message
   {
   public:
@@ -110,7 +110,7 @@ namespace etl
   /// \tparam TMessage The type to be reference counted.
   //***************************************************************************
   template <typename TMessage>
-  class atomic_counted_message : virtual public etl::reference_counted_message<TMessage, etl::atomic_uint32_t>
+  class atomic_counted_message : virtual public etl::reference_counted_message<TMessage, etl::atomic_int32_t>
   {
   public:
 
@@ -119,12 +119,12 @@ namespace etl
     /// \param msg The message to count.
     //***************************************************************************
     atomic_counted_message(const TMessage& msg_)
-      : reference_counted_message<TMessage, etl::atomic_uint32_t>(msg_)
+      : reference_counted_message<TMessage, etl::atomic_int32_t>(msg_)
     {
     }
 
-    typedef typename reference_counted_message<TMessage, etl::atomic_uint32_t>::message_type message_type;
-    typedef typename reference_counted_message<TMessage, etl::atomic_uint32_t>::counter_type counter_type;
+    typedef typename reference_counted_message<TMessage, etl::atomic_int32_t>::message_type message_type;
+    typedef typename reference_counted_message<TMessage, etl::atomic_int32_t>::counter_type counter_type;
   };
 #endif
 
@@ -179,6 +179,27 @@ namespace etl
 
     /// The reference counted object.
     etl::reference_counted_object<TMessage, void> rc_object;
+  };
+
+  //***************************************************************************
+  /// Synonym for reference_counted_message<TMessage, void>
+  /// \tparam TObject  The type stored in the object.
+  //***************************************************************************
+  template <typename TMessage>
+  class uncounted_message : public etl::reference_counted_message<TMessage, void>
+  {
+  public:
+
+    //***************************************************************************
+    /// Constructor.
+    //***************************************************************************
+    uncounted_message(const TMessage& msg_)
+      : reference_counted_message<TMessage, void>(msg_)
+    {
+    }
+
+    typedef typename reference_counted_message<TMessage, void>::message_type message_type;
+    typedef typename reference_counted_message<TMessage, void>::counter_type counter_type;
   };
 }
 

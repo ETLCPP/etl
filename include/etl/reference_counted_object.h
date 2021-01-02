@@ -55,7 +55,7 @@ namespace etl
   /// \tparam TObject  The type to be reference counted.
   /// \tparam TCounter The type to use as the counter.
   //***************************************************************************
-  template <typename TObject, typename TCounter = void>
+  template <typename TObject, typename TCounter>
   class reference_counted_object : public etl::ireference_counted_object
   {
   public:
@@ -101,6 +101,8 @@ namespace etl
     //***************************************************************************
     ETL_NODISCARD virtual uint32_t decrement_reference_count() ETL_OVERRIDE
     {
+      assert(reference_count > 0);
+
       return uint32_t(--reference_count);
     }
 
@@ -129,7 +131,7 @@ namespace etl
   /// \tparam TObject  The type to be reference counted.
   //***************************************************************************
   template <typename TObject>
-  class atomic_counted_object : public etl::reference_counted_object<TObject, etl::atomic_uint32_t>
+  class atomic_counted_object : public etl::reference_counted_object<TObject, etl::atomic_int32_t>
   {
   public:
 
@@ -137,12 +139,12 @@ namespace etl
     /// Constructor.
     //***************************************************************************
     atomic_counted_object(const TObject& object_)
-      : reference_counted_object<TObject, etl::atomic_uint32_t>(object_)
+      : reference_counted_object<TObject, etl::atomic_int32_t>(object_)
     {
     }
 
-    typedef typename reference_counted_object<TObject, etl::atomic_uint32_t>::value_type   value_type;
-    typedef typename reference_counted_object<TObject, etl::atomic_uint32_t>::counter_type counter_type;
+    typedef typename reference_counted_object<TObject, etl::atomic_int32_t>::value_type   value_type;
+    typedef typename reference_counted_object<TObject, etl::atomic_int32_t>::counter_type counter_type;
   };
 #endif
 
@@ -216,6 +218,27 @@ namespace etl
   private:
 
     TObject object; // The object being reference counted.
+  };
+
+  //***************************************************************************
+  /// Synonym for reference_counted_object<TObject, void>
+  /// \tparam TObject  The type stored in the object.
+  //***************************************************************************
+  template <typename TObject>
+  class uncounted_object : public etl::reference_counted_object<TObject, void>
+  {
+  public:
+
+    //***************************************************************************
+    /// Constructor.
+    //***************************************************************************
+    uncounted_object(const TObject& object_)
+      : reference_counted_object<TObject>(object_)
+    {
+    }
+
+    typedef typename reference_counted_object<TObject, void>::value_type   value_type;
+    typedef typename reference_counted_object<TObject, void>::counter_type counter_type;
   };
 }
 
