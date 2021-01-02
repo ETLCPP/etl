@@ -53,30 +53,30 @@ namespace etl
     /// \param pmessage A reference to the message allocated from the pool.
     //*************************************************************************
     shared_message(etl::ireference_counted_message& message_, etl::ireference_counted_message_pool& owner_)
-      : p_message_owner(&owner_)
-      , p_message(&message_)
+      : p_rcmessage_owner(&owner_)
+      , p_rcmessage(&message_)
     {
-      p_message->get_reference_counter().set_reference_count(1U);
-      std::cout << "shared_message  C : Reference " << int(p_message->get_message().get_message_id()) << " " << p_message->get_reference_counter().get_reference_count() << "\n";
+      p_rcmessage->get_reference_counter().set_reference_count(1U);
+      std::cout << "shared_message  C : ID =  " << int(p_rcmessage->get_message().get_message_id()) << " : Count = " << p_rcmessage->get_reference_counter().get_reference_count() << "\n";
     }
 
     shared_message(etl::ireference_counted_message& message_)
-      : p_message_owner(ETL_NULLPTR)
-      , p_message(&message_)
+      : p_rcmessage_owner(ETL_NULLPTR)
+      , p_rcmessage(&message_)
     {
-      p_message->get_reference_counter().set_reference_count(1U);
-      std::cout << "shared_message  C : Reference " << int(p_message->get_message().get_message_id()) << " No Owner\n";
+      p_rcmessage->get_reference_counter().set_reference_count(1U);
+      std::cout << "shared_message  C : ID =  " << int(p_rcmessage->get_message().get_message_id()) << " No Owner\n";
     }
 
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
     shared_message(const shared_message& other)
-      : p_message_owner(other.p_message_owner)
-      , p_message(other.p_message)
+      : p_rcmessage_owner(other.p_rcmessage_owner)
+      , p_rcmessage(other.p_rcmessage)
     {
-      p_message->get_reference_counter().increment_reference_count();
-      std::cout << "shared_message CC : Reference " << int(p_message->get_message().get_message_id()) << " " << p_message->get_reference_counter().get_reference_count() << "\n";
+      p_rcmessage->get_reference_counter().increment_reference_count();
+      std::cout << "shared_message CC : ID =  " << int(p_rcmessage->get_message().get_message_id()) << " : Count = " << p_rcmessage->get_reference_counter().get_reference_count() << "\n";
     }
 
     //*************************************************************************
@@ -87,20 +87,20 @@ namespace etl
       if (&other != this)
       {
         // Deal with the current message.
-        if (p_message->get_reference_counter().decrement_reference_count() == 0U)
+        if (p_rcmessage->get_reference_counter().decrement_reference_count() == 0U)
         {
           std::cout << "shared_message  =: Destroy reference counted message\n";
-          if (p_message_owner != ETL_NULLPTR)
+          if (p_rcmessage_owner != ETL_NULLPTR)
           {
-            p_message_owner->release(p_message);
+            p_rcmessage_owner->release(p_rcmessage);
           }
         }
 
         // Copy over the new one.
-        p_message_owner = other.p_message_owner;
-        p_message       = other.p_message;
-        p_message->get_reference_counter().increment_reference_count();
-        std::cout << "shared_message  =: Reference " << int(p_message->get_message().get_message_id()) << " " << p_message->get_reference_counter().get_reference_count() << "\n";
+        p_rcmessage_owner = other.p_rcmessage_owner;
+        p_rcmessage       = other.p_rcmessage;
+        p_rcmessage->get_reference_counter().increment_reference_count();
+        std::cout << "shared_message  =: ID =  " << int(p_rcmessage->get_message().get_message_id()) << " : Count = " << p_rcmessage->get_reference_counter().get_reference_count() << "\n";
        }
 
       return *this;
@@ -112,42 +112,30 @@ namespace etl
     //*************************************************************************
     ~shared_message()
     {
-      if (p_message->get_reference_counter().decrement_reference_count() == 0U)
-      {
-        std::cout << "shared_message  ~: Destroy reference counted message\n";
-        if (p_message_owner != ETL_NULLPTR)
+      if (p_rcmessage->get_reference_counter().decrement_reference_count() == 0U)
+      {       
+        if (is_owned())
         {
-          p_message_owner->release(p_message);
+          std::cout << "shared_message  ~: Destroy reference counted message\n";
+          p_rcmessage_owner->release(p_rcmessage);
+        }
+        else
+        {
+          std::cout << "shared_message  ~: Uncounted message\n";
         }
       }
       else
       {
-        std::cout << "shared_message  ~: Reference " << int(p_message->get_message().get_message_id()) << " " << p_message->get_reference_counter().get_reference_count() << "\n";
+        std::cout << "shared_message  ~ : ID =  " << int(p_rcmessage->get_message().get_message_id()) << " : Count = " << p_rcmessage->get_reference_counter().get_reference_count() << "\n";
       }
     }
 
     //*************************************************************************
-    /// Get a pointer to the contained message.
-    //*************************************************************************
-    etl::imessage& get_message()
-    {
-      return p_message->get_message();
-    }
-
-    //*************************************************************************
-    /// Get a const pointer to the contained message.
+    /// Get a const reference to the contained message.
     //*************************************************************************
     const etl::imessage& get_message() const
     {
-      return p_message->get_message();
-    }
-
-    //*************************************************************************
-    /// Returns <b>true</b> if the shared message is owned by a pool.
-    //*************************************************************************
-    bool is_owned() const
-    {
-      return (p_message_owner != ETL_NULLPTR);
+      return p_rcmessage->get_message();
     }
 
     //*************************************************************************
@@ -155,16 +143,40 @@ namespace etl
     //*************************************************************************
     uint32_t get_reference_count() const
     {
-      return p_message->get_reference_counter().get_reference_count();
+      return p_rcmessage->get_reference_counter().get_reference_count();
     }
 
   private:
 
+    //*************************************************************************
+    /// Returns <b>true</b> if the internal reference counted message is owned by a pool.
+    //*************************************************************************
+    bool is_owned() const
+    {
+      return (p_rcmessage_owner != ETL_NULLPTR);
+    }
+
     shared_message() ETL_DELETE;
 
-    etl::ireference_counted_message_pool* p_message_owner;
-    etl::ireference_counted_message*      p_message;
+    etl::ireference_counted_message_pool* p_rcmessage_owner;
+    etl::ireference_counted_message*      p_rcmessage;
   };
+
+  template <typename TPool, typename TMessage>
+  etl::shared_message make_shared_message(TPool& owner, const TMessage& message)
+  {
+    etl::ireference_counted_message* prcm = owner.allocate(message);
+    return etl::shared_message(*prcm, owner);
+  }
+
+#if ETL_CPP11_SUPPORTED
+  template <typename TMessage, typename TPool, typename... TArgs>
+  etl::shared_message make_shared_message(TPool& owner, TArgs&&... args)
+  {
+    etl::ireference_counted_message* prcm = owner.allocate<TMessage>(etl::forward<TArgs>(args)...);
+    return etl::shared_message(*prcm, owner);
+  }
+#endif
 }
 
 #endif

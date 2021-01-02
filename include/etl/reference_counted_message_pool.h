@@ -85,24 +85,6 @@ namespace etl
   //***************************************************************************
   ///
   //***************************************************************************
-  class null_reference_counted_message_pool : public ireference_counted_message_pool
-  {
-  public:
-
-    void release(const etl::ireference_counted_message* const pmsg) ETL_OVERRIDE
-    {
-      std::cout << "null_reference_counted_message_pool : destroy\n";
-    }
-
-    void release(const etl::ireference_counted_message& msg) ETL_OVERRIDE
-    {
-      std::cout << "null_reference_counted_message_pool : destroy\n";
-    }
-  };
-
-  //***************************************************************************
-  ///
-  //***************************************************************************
   template <typename TCounter>
   class reference_counted_message_pool : public ireference_counted_message_pool
   {
@@ -116,9 +98,39 @@ namespace etl
     //{
     //}
 
+    //*************************************************************************
+    /// Allocate a reference counted message from the pool.
+    //*************************************************************************
+    template <typename TMessage>
+    etl::ireference_counted_message* allocate(const TMessage& message)
+    {
+      //ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
+
+      using ref_message_t = etl::reference_counted_message<TMessage, TCounter>;
+
+      etl::ireference_counted_message* p = ETL_NULLPTR;
+
+      //if (sizeof(ref_message_t) <= memory_block_pool.get_memory_block_size(ref_message_t))
+      //{
+      //  p = memory_block_pool.allocate_memory_block(sizeof(ref_message_t));
+
+      //  if (p != ETL_NULLPTR)
+      //  {
+      //    ::new(p) ref_message_t(TMessage(etl::forward<TArgs>(args)...));
+      p = ::new ref_message_t(message);
+      //  }
+      //  else
+      //  {
+      //    ETL_ALWAYS_ASSERT(ETL_ERROR(etl::message_pool_allocation_failure));
+      //  }
+      //}
+
+      return p;
+    }
+
 #if ETL_CPP11_SUPPORTED && !defined(ETL_REFERENCE_COUNTED_MESSAGE_POOL_FORCE_CPP03)
     //*************************************************************************
-    /// Create a message from the pool.
+    /// Allocate a reference counted message from the pool.
     //*************************************************************************
     template <typename TMessage, typename... TArgs>
     etl::ireference_counted_message* allocate(TArgs&&... args)
@@ -148,7 +160,7 @@ namespace etl
     }
 #else
     //*************************************************************************
-    /// Create a message from the pool. No parameters.
+    /// Allocate a reference counted message from the pool. No parameters.
     //*************************************************************************
     template <typename TMessage>
     TMessage* allocate()
@@ -175,7 +187,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Create a message from the pool. One parameter.
+    /// Allocate a reference counted message from the pool. One parameter.
     //*************************************************************************
     template <typename TMessage, typename T1>
     TMessage* allocate(const T1& t1)
@@ -202,7 +214,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Create a message from the pool. Two parameters.
+    /// Allocate a reference counted message from the pool. Two parameters.
     //*************************************************************************
     template <typename TMessage, typename T1, typename T2>
     TMessage* allocate(const T1& t1, const T2& t2)
@@ -229,7 +241,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Create a message from the pool. Three parameters.
+    /// Allocate a reference counted message from the pool. Three parameters.
     //*************************************************************************
     template <typename TMessage, typename T1, typename T2, typename T3>
     TMessage* allocate(const T1& t1, const T2& t2, const T3& t3)
@@ -256,7 +268,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Create a message from the pool. Four parameters.
+    /// Allocate a reference counted message from the pool. Four parameters.
     //*************************************************************************
     template <typename TMessage, typename T1, typename T2, typename T3, typename T4>
     TMessage* allocate(const T1& t1, const T2& t2, const T3& t3, const T4& t4)
@@ -286,15 +298,15 @@ namespace etl
     //*************************************************************************
     /// Destruct a message and send it back to the pool.
     //*************************************************************************
-    void release(const etl::ireference_counted_message* const pmsg)
+    void release(const etl::ireference_counted_message* const prcm)
     {
-      std::cout << "reference_counted_message_pool : destroy\n";
+      std::cout << "reference_counted_message_pool : release\n";
 
-      if (pmsg != ETL_NULLPTR)
+      if (prcm != ETL_NULLPTR)
       {
-//        pmsg->~ireference_counted_message();
-        delete pmsg;
-        //memory_block_pool.release_memory_block(pmsg);
+//        prcm->~ireference_counted_message();
+        delete prcm;
+        //memory_block_pool.release_memory_block(prcm);
       }
     }
 

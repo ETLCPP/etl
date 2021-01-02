@@ -71,15 +71,7 @@ namespace etl
     {
       reference_count = 0;
     }
-
-    //***************************************************************************
-    /// Get a reference to the counted object.
-    //***************************************************************************
-    value_type& get_object()
-    {
-      return object;
-    }
-    
+   
     //***************************************************************************
     /// Get a const reference to the counted object.
     //***************************************************************************
@@ -122,8 +114,13 @@ namespace etl
 
   private:
 
+    // This class must not be default contructed, copy constructed or assigned.
+    reference_counted_object() ETL_DELETE;
+    reference_counted_object(const reference_counted_object&) ETL_DELETE;
+    reference_counted_object& operator =(const reference_counted_object&) ETL_DELETE;
+
     TCounter reference_count; // The reference counter
-    TObject  object;          // The object being reference counted.
+    const TObject object;     // The object being reference counted.
   };
 
 #if ETL_HAS_ATOMIC
