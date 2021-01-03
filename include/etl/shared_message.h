@@ -32,6 +32,7 @@ SOFTWARE.
 #define ETL_SHARED_MESSAGE_INCLUDED
 
 #include "platform.h"
+#include "utility.h"
 #include "reference_counted_message.h"
 
 //*****************************************************************************
@@ -140,7 +141,7 @@ namespace etl
   template <typename TMessage, typename TPool, typename... TArgs>
   etl::shared_message make_shared_message(TPool& owner, TArgs&&... args)
   {
-    etl::ireference_counted_message* p_rcmessage = owner.allocate<TMessage>(etl::forward<TArgs>(args)...);
+    etl::ireference_counted_message* p_rcmessage = owner.allocate(TMessage(etl::forward<TArgs>(args)...));
     return etl::shared_message(*p_rcmessage);
   }
 #endif

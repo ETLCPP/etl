@@ -1051,6 +1051,7 @@
     <ClInclude Include="..\..\include\etl\ipool.h" />
     <ClInclude Include="..\..\include\etl\limits.h" />
     <ClInclude Include="..\..\include\etl\macros.h" />
+    <ClInclude Include="..\..\include\etl\fixed_sized_memory_block_pool.h" />
     <ClInclude Include="..\..\include\etl\message_packet.h" />
     <ClInclude Include="..\..\include\etl\message_pool.h" />
     <ClInclude Include="..\..\include\etl\multi_array.h" />
@@ -1591,7 +1592,6 @@
     <ClCompile Include="..\test_parity_checksum.cpp" />
     <ClCompile Include="..\test_pearson.cpp" />
     <ClCompile Include="..\test_pool.cpp" />
-    <ClCompile Include="..\test_pool_message.cpp" />
     <ClCompile Include="..\test_priority_queue.cpp" />
     <ClCompile Include="..\test_queue.cpp" />
     <ClCompile Include="..\test_queue_memory_model_small.cpp" />

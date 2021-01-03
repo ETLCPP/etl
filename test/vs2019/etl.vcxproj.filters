@@ -867,6 +867,9 @@
     <ClInclude Include="..\..\include\etl\shared_message_processor.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\fixed_sized_memory_block_pool.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1326,9 +1329,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_span.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_pool_message.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

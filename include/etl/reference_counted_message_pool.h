@@ -40,37 +40,35 @@ SOFTWARE.
 #include "utility.h"
 #include "memory.h"
 
-#include <iostream>
-
-#define ETL_FILE "99"
+#define ETL_FILE "57"
 
 namespace etl
 {
-  ////***************************************************************************
-  /////
-  ////***************************************************************************
-  //class message_pool_allocation_exception : public etl::exception
-  //{
-  //public:
+  //***************************************************************************
+  ///
+  //***************************************************************************
+  class reference_counted_message_pool_allocation_exception : public etl::exception
+  {
+  public:
 
-  //  message_pool_allocation_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
-  //    : exception(reason_, file_name_, line_number_)
-  //  {
-  //  }
-  //};
+    reference_counted_message_pool_allocation_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
 
-  ////***************************************************************************
-  /////
-  ////***************************************************************************
-  //class message_pool_allocation_failure : etl::message_pool_allocation_exception
-  //{
-  //public:
+  //***************************************************************************
+  ///
+  //***************************************************************************
+  class reference_counted_message_pool_allocation_failure : etl::reference_counted_message_pool_allocation_exception
+  {
+  public:
 
-  //  message_pool_allocation_failure(string_type file_name_, numeric_type line_number_)
-  //    : message_pool_allocation_exception(ETL_ERROR_TEXT("message_pool:allocation failure", ETL_FILE"A"), file_name_, line_number_)
-  //  {
-  //  }
-  //};
+    reference_counted_message_pool_allocation_failure(string_type file_name_, numeric_type line_number_)
+      : reference_counted_message_pool_allocation_exception(ETL_ERROR_TEXT("reference_counted_message_pool:allocation failure", ETL_FILE"A"), file_name_, line_number_)
+    {
+    }
+  };
 
   //***************************************************************************
   /// A pool for allocating reference counted messages.
@@ -83,12 +81,8 @@ namespace etl
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    //reference_counted_message_pool(imemory_block_pool& memory_block_pool_)
-    //  : memory_block_pool(memory_block_pool_)
-    //{
-    //}
-
-    reference_counted_message_pool()
+    reference_counted_message_pool(imemory_block_pool& memory_block_pool_)
+      : memory_block_pool(memory_block_pool_)
     {
     }
 
@@ -100,194 +94,25 @@ namespace etl
     {
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
 
-      using ref_message_t = etl::reference_counted_message<TMessage, TCounter>;
+      typedef etl::reference_counted_message<TMessage, TCounter> rcm_t;
+      typedef rcm_t* prcm_t;
 
-      etl::ireference_counted_message* p = ETL_NULLPTR;
+      prcm_t p = ETL_NULLPTR;
 
-      //if (sizeof(ref_message_t) <= memory_block_pool.get_memory_block_size(ref_message_t))
-      //{
-      //  p = memory_block_pool.allocate_memory_block(sizeof(ref_message_t));
+      if (sizeof(rcm_t) <= memory_block_pool.get_memory_block_size())
+      {
+        p = static_cast<prcm_t>(memory_block_pool.allocate_memory_block(sizeof(rcm_t)));
 
-      //  if (p != ETL_NULLPTR)
-      //  {
-      //    ::new(p) ref_message_t(TMessage(etl::forward<TArgs>(args)...));
-      p = ::new ref_message_t(message, *this);
-      //  }
-      //  else
-      //  {
-      //    ETL_ALWAYS_ASSERT(ETL_ERROR(etl::message_pool_allocation_failure));
-      //  }
-      //}
+        if (p != ETL_NULLPTR)
+        {
+          ::new(p) rcm_t(message, *this);
+        }
+      }
+
+      ETL_ASSERT((p != ETL_NULLPTR), ETL_ERROR(etl::message_pool_allocation_failure));
 
       return p;
     }
-
-#if ETL_CPP11_SUPPORTED && !defined(ETL_REFERENCE_COUNTED_MESSAGE_POOL_FORCE_CPP03)
-    //*************************************************************************
-    /// Allocate a reference counted message from the pool.
-    //*************************************************************************
-    template <typename TMessage, typename... TArgs>
-    etl::ireference_counted_message* allocate(TArgs&&... args)
-    {
-      ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
-
-      using ref_message_t = etl::reference_counted_message<TMessage, TCounter>;
-
-      etl::ireference_counted_message* p = ETL_NULLPTR;
-
-      //if (sizeof(ref_message_t) <= memory_block_pool.get_memory_block_size(ref_message_t))
-      //{
-      //  p = memory_block_pool.allocate_memory_block(sizeof(ref_message_t));
-
-      //  if (p != ETL_NULLPTR)
-      //  {
-      //    ::new(p) ref_message_t(TMessage(etl::forward<TArgs>(args)...));
-      p = ::new ref_message_t(TMessage(etl::forward<TArgs>(args)...), *this);
-      //  }
-      //  else
-      //  {
-      //    ETL_ALWAYS_ASSERT(ETL_ERROR(etl::message_pool_allocation_failure));
-      //  }
-      //}
-
-      return p;
-    }
-#else
-    //*************************************************************************
-    /// Allocate a reference counted message from the pool. No parameters.
-    //*************************************************************************
-    template <typename TMessage>
-    TMessage* allocate()
-    {
-      ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
-
-      void* p = ETL_NULLPTR;
-
-      if (sizeof(TMessage) <= memory_block_pool.get_memory_block_size())
-      {
-        p = memory_block_pool.allocate_memory_block(sizeof(TMessage));
-
-        if (p != ETL_NULLPTR)
-        {
-          ::new(p) TMessage();
-        }
-        else
-        {
-          ETL_ALWAYS_ASSERT(ETL_ERROR(etl::message_pool_allocation_failure));
-        }
-      }
-
-      return reinterpret_cast<TMessage*>(p);
-    }
-
-    //*************************************************************************
-    /// Allocate a reference counted message from the pool. One parameter.
-    //*************************************************************************
-    template <typename TMessage, typename T1>
-    TMessage* allocate(const T1& t1)
-    {
-      ETL_STATIC_ASSERT(etl::is_base_of<etl::imessage, TMessage>::value, "Not a message type");
-
-      void* p = ETL_NULLPTR;
-
-      if (sizeof(TMessage) <= memory_block_pool.get_memory_block_size())
-      {
-        p = memory_block_pool.allocate_memory_block(sizeof(TMessage));
-
-        if (p != ETL_NULLPTR)
-        {
-          ::new(p) TMessage(t1);
-        }
-        else
-        {
-          ETL_ALWAYS_ASSERT(ETL_ERROR(etl::message_pool_allocation_failure));
-        }
-      }
-
-      return reinterpret_cast<TMessage*>(p);
-    }
-
-    //*************************************************************************
-    /// Allocate a reference counted message from the pool. Two parameters.
-    //*************************************************************************
-    template <typename TMessage, typename T1, typename T2>
-    TMessage* allocate(const T1& t1, const T2& t2)
-    {
-      ETL_STATIC_ASSERT(etl::is_base_of<etl::imessage, TMessage>::value, "Not a message type");
-
-      void* p = ETL_NULLPTR;
-
-      if (sizeof(TMessage) <= memory_block_pool.get_memory_block_size())
-      {
-        p = memory_block_pool.allocate_memory_block(sizeof(TMessage));
-
-        if (p != ETL_NULLPTR)
-        {
-          ::new(p) TMessage(t1, t2);
-        }
-        else
-        {
-          ETL_ALWAYS_ASSERT(ETL_ERROR(etl::message_pool_allocation_failure));
-        }
-      }
-
-      return reinterpret_cast<TMessage*>(p);
-    }
-
-    //*************************************************************************
-    /// Allocate a reference counted message from the pool. Three parameters.
-    //*************************************************************************
-    template <typename TMessage, typename T1, typename T2, typename T3>
-    TMessage* allocate(const T1& t1, const T2& t2, const T3& t3)
-    {
-      ETL_STATIC_ASSERT(etl::is_base_of<etl::imessage, TMessage>::value, "Not a message type");
-
-      void* p = ETL_NULLPTR;
-
-      if (sizeof(TMessage) <= memory_block_pool.get_memory_block_size())
-      {
-        p = memory_block_pool.allocate_memory_block(sizeof(TMessage));
-
-        if (p != ETL_NULLPTR)
-        {
-          ::new(p) TMessage(t1, t2, t3);
-        }
-        else
-        {
-          ETL_ALWAYS_ASSERT(ETL_ERROR(etl::message_pool_allocation_failure));
-        }
-      }
-      
-      return reinterpret_cast<TMessage*>(p);
-    }
-
-    //*************************************************************************
-    /// Allocate a reference counted message from the pool. Four parameters.
-    //*************************************************************************
-    template <typename TMessage, typename T1, typename T2, typename T3, typename T4>
-    TMessage* allocate(const T1& t1, const T2& t2, const T3& t3, const T4& t4)
-    {
-      ETL_STATIC_ASSERT(etl::is_base_of<etl::imessage, TMessage>::value, "Not a message type");
-
-      void* p = ETL_NULLPTR;
-
-      if (sizeof(TMessage) <= memory_block_pool.get_memory_block_size())
-      {
-        p = memory_block_pool.allocate_memory_block(sizeof(TMessage));
-
-        if (p != ETL_NULLPTR)
-        {
-          ::new(p) TMessage(t1, t2, t3, t4);
-        }
-        else
-        {
-          ETL_ALWAYS_ASSERT(ETL_ERROR(etl::message_pool_allocation_failure));
-        }
-      }
-
-      return reinterpret_cast<TMessage*>(p)
-    }
-#endif
 
     //*************************************************************************
     /// Destruct a message and send it back to the pool.
@@ -296,9 +121,8 @@ namespace etl
     {
       if (p_rcmessage != ETL_NULLPTR)
       {
-//        p_rcmessage->~ireference_counted_message();
-        delete p_rcmessage;
-        //memory_block_pool.release_memory_block(p_rcmessage);
+        p_rcmessage->~ireference_counted_message();
+        memory_block_pool.release_memory_block(p_rcmessage);
       }
     }
 
@@ -313,7 +137,7 @@ namespace etl
   private:
 
     /// The raw memory block pool.
-    //imemory_block_pool& memory_block_pool;
+    imemory_block_pool& memory_block_pool;
 
     // Should not be copied.
     reference_counted_message_pool(const reference_counted_message_pool&) ETL_DELETE;
@@ -324,4 +148,3 @@ namespace etl
 #undef ETL_FILE
 
 #endif
-

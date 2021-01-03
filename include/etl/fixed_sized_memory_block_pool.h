@@ -1,3 +1,5 @@
+///\file
+
 /******************************************************************************
 The MIT License(MIT)
 
@@ -26,26 +28,38 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_ATOMIC_INCLUDED
-#define ETL_ATOMIC_INCLUDED
+#ifndef ETL_FIXED_MEMORY_BLOCK_POOL_INCLUDED
+#define ETL_FIXED_MEMORY_BLOCK_POOL_INCLUDED
 
 #include "platform.h"
+#include "memory.h"
+#include "pool.h"
+#include "alignment.h"
 
-#if ETL_CPP11_SUPPORTED == 1 && !defined(ETL_NO_STL)
-  #include "atomic/atomic_std.h"
-  #define ETL_HAS_ATOMIC 1
-#elif defined(ETL_COMPILER_ARM5)
-  #include "atomic/atomic_arm.h"
-  #define ETL_HAS_ATOMIC 1
-#elif defined(ETL_COMPILER_ARM6)
-  #include "atomic/atomic_arm.h"
-  #define ETL_HAS_ATOMIC 1
-#elif defined(ETL_COMPILER_GCC)
-  #include "atomic/atomic_gcc_sync.h"
-  #define ETL_HAS_ATOMIC 1
-#else
-  #define ETL_HAS_ATOMIC 0
-  #pragma message ("ETL atomics not supported")
-#endif
+namespace etl
+{
+  //*************************************************************************
+  /// The fixed sized memory block pool.
+  /// The allocated memory blocks are all the same size.
+  //*************************************************************************
+  template <size_t BLOCK_SIZE, size_t ALIGNMENT, size_t SIZE>
+  struct fixed_sized_memory_block_pool : public etl::ipool
+  {
+  public:
+
+    fixed_sized_memory_block_pool()
+      : ipool(buffer.get_address<char>(), BLOCK_SIZE, SIZE)
+    {
+    }
+
+  private:
+
+    // No copying allowed.
+    fixed_sized_memory_block_pool(const etl::fixed_sized_memory_block_pool<BLOCK_SIZE, ALIGNMENT, SIZE>&) ETL_DELETE;
+    fixed_sized_memory_block_pool& operator =(const etl::fixed_sized_memory_block_pool<BLOCK_SIZE, ALIGNMENT, SIZE>&) ETL_DELETE;
+
+    typename etl::aligned_storage<SIZE * BLOCK_SIZE, ALIGNMENT>::type buffer;
+  };
+}
 
 #endif
