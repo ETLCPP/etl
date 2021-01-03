@@ -37,17 +37,122 @@
 namespace etl
 {
   //***************************************************************************
-  /// The base of all reference counted objects.
+  /// The base of all reference counters.
+  //***************************************************************************
+  class ireference_counter
+  {
+  public:
+
+    virtual ~ireference_counter() {};
+    virtual void set_reference_count(int32_t value) = 0;
+    virtual void increment_reference_count() = 0;
+    ETL_NODISCARD virtual int32_t decrement_reference_count() = 0;
+    ETL_NODISCARD virtual int32_t get_reference_count() const = 0;
+  };
+
+  //***************************************************************************
+  /// A specific type of reference counter.
+  //***************************************************************************
+  template <typename TCounter>
+  class reference_counter : public ireference_counter
+  {
+  public:
+
+    //***************************************************************************
+    /// Constructor.
+    //***************************************************************************
+    reference_counter()
+      : reference_count(0)
+    {
+    }
+
+    //***************************************************************************
+    /// Set the reference count.
+    //***************************************************************************
+    virtual void set_reference_count(int32_t value) ETL_OVERRIDE
+    {
+      reference_count = value;
+    }
+
+    //***************************************************************************
+    /// Increment the reference count.
+    //***************************************************************************
+    virtual void increment_reference_count() ETL_OVERRIDE
+    {
+      ++reference_count;
+    }
+
+    //***************************************************************************
+    /// Decrement the reference count.
+    //***************************************************************************
+    ETL_NODISCARD virtual int32_t decrement_reference_count() ETL_OVERRIDE
+    {
+      assert(reference_count > 0);
+
+      return int32_t(--reference_count);
+    }
+
+    //***************************************************************************
+    /// Get the current reference count.
+    //***************************************************************************
+    ETL_NODISCARD virtual int32_t get_reference_count() const ETL_OVERRIDE
+    {
+      return int32_t(reference_count);
+    }
+
+  private:
+
+    TCounter reference_count; // The reference count object.
+  };
+
+  //***************************************************************************
+  /// A null reference counter.
+  /// Always returns the reference count as 1, for persistent objects.
+  //***************************************************************************
+  class null_reference_counter : public ireference_counter
+  {
+  public:
+
+    //***************************************************************************
+    /// Set the reference count.
+    //***************************************************************************
+    virtual void set_reference_count(int32_t value) ETL_OVERRIDE
+    {
+    }
+
+    //***************************************************************************
+    /// Increment the reference count.
+    //***************************************************************************
+    virtual void increment_reference_count() ETL_OVERRIDE
+    {
+    }
+
+    //***************************************************************************
+    /// Decrement the reference count.
+    //***************************************************************************
+    ETL_NODISCARD virtual int32_t decrement_reference_count() ETL_OVERRIDE
+    {
+      return int32_t(1);
+    }
+
+    //***************************************************************************
+    /// Get the current reference count.
+    //***************************************************************************
+    ETL_NODISCARD virtual int32_t get_reference_count() const ETL_OVERRIDE
+    {
+      return int32_t(1);
+    }
+  };
+
+  //***************************************************************************
+  /// Base for all reference counted objects.
   //***************************************************************************
   class ireference_counted_object
   {
   public:
 
-    virtual ~ireference_counted_object() {};
-    virtual void set_reference_count(int32_t value) = 0;
-    virtual void increment_reference_count() = 0;
-    ETL_NODISCARD virtual int32_t decrement_reference_count() = 0;
-    ETL_NODISCARD virtual int32_t get_reference_count() const = 0;
+    ETL_NODISCARD virtual ireference_counter& get_reference_counter() = 0;
+    ETL_NODISCARD virtual const ireference_counter& get_reference_counter() const = 0;
   };
 
   //***************************************************************************
@@ -69,49 +174,30 @@ namespace etl
     reference_counted_object(const TObject& object_)
       : object(object_)
     {
-      reference_count = 0;
     }
-   
+
     //***************************************************************************
     /// Get a const reference to the counted object.
     //***************************************************************************
-    const value_type& get_object() const
+    ETL_NODISCARD const value_type& get_object() const
     {
       return object;
     }
 
     //***************************************************************************
-    /// Set the reference count.
+    /// Get a reference to the reference counter.
     //***************************************************************************
-    virtual void set_reference_count(int32_t value) ETL_OVERRIDE
+    virtual ETL_NODISCARD ireference_counter& get_reference_counter() ETL_OVERRIDE
     {
-      reference_count = value;
+      return reference_counter;
     }
 
     //***************************************************************************
-    /// Increment the refernce count.
+    /// Get a const reference to the reference counter.
     //***************************************************************************
-    virtual void increment_reference_count() ETL_OVERRIDE
+    virtual ETL_NODISCARD const ireference_counter& get_reference_counter() const ETL_OVERRIDE
     {
-      ++reference_count;
-    }
-
-    //***************************************************************************
-    /// Decrement the refernce count.
-    //***************************************************************************
-    ETL_NODISCARD virtual int32_t decrement_reference_count() ETL_OVERRIDE
-    {
-      assert(reference_count > 0);
-
-      return int32_t(--reference_count);
-    }
-
-    //***************************************************************************
-    /// Get the current reference count.
-    //***************************************************************************
-    ETL_NODISCARD virtual int32_t get_reference_count() const ETL_OVERRIDE
-    {
-      return int32_t(reference_count);
+      return reference_counter;
     }
 
   private:
@@ -120,9 +206,9 @@ namespace etl
     reference_counted_object() ETL_DELETE;
     reference_counted_object(const reference_counted_object&) ETL_DELETE;
     reference_counted_object& operator =(const reference_counted_object&) ETL_DELETE;
-
-    TCounter reference_count; // The reference counter
-    const TObject object;     // The object being reference counted.
+        
+    const TObject object;                               ///< The object being reference counted.
+    etl::reference_counter<TCounter> reference_counter; ///< The reference counter.
   };
 
   //***************************************************************************
@@ -146,49 +232,27 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Get a reference to the counted object.
-    //***************************************************************************
-    value_type& get_object()
-    {
-      return object;
-    }
-
-    //***************************************************************************
     /// Get a const reference to the counted object.
     //***************************************************************************
-    const value_type& get_object() const
+    ETL_NODISCARD const value_type& get_object() const
     {
       return object;
     }
 
     //***************************************************************************
-    /// Set the reference count.
+    /// Get a reference to the reference counter.
     //***************************************************************************
-    virtual void set_reference_count(int32_t) ETL_OVERRIDE
+    virtual ETL_NODISCARD ireference_counter& get_reference_counter() ETL_OVERRIDE
     {
+      return reference_counter;
     }
 
     //***************************************************************************
-    /// Increment the refernce count.
+    /// Get a const reference to the reference counter.
     //***************************************************************************
-    virtual void increment_reference_count() ETL_OVERRIDE
+    virtual ETL_NODISCARD const ireference_counter& get_reference_counter() const ETL_OVERRIDE
     {
-    }
-
-    //***************************************************************************
-    /// Decrement the refernce count.
-    //***************************************************************************
-    ETL_NODISCARD virtual int32_t decrement_reference_count() ETL_OVERRIDE
-    {
-      return 1;
-    }
-
-    //***************************************************************************
-    /// Get the current reference count.
-    //***************************************************************************
-    ETL_NODISCARD virtual int32_t get_reference_count() const ETL_OVERRIDE
-    {
-      return 1;
+      return reference_counter;
     }
 
   private:
@@ -198,7 +262,8 @@ namespace etl
     persistent_object(const persistent_object&) ETL_DELETE;
     persistent_object& operator =(const persistent_object&) ETL_DELETE;
 
-    TObject object; // The object being reference counted.
+    TObject object;                                ///< The object being reference counted.
+    etl::null_reference_counter reference_counter; ///< The reference counter.
   };
 
 #if ETL_CPP11_SUPPORTED && ETL_HAS_ATOMIC

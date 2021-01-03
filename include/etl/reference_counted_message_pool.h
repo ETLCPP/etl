@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "message.h"
+#include "ireference_counted_message_pool.h"
 #include "reference_counted_message.h"
 #include "static_assert.h"
 #include "error_handler.h"
@@ -70,17 +71,6 @@ namespace etl
   //  {
   //  }
   //};
-
-  //***************************************************************************
-  /// Iterface for a reference counted message pool.
-  //***************************************************************************
-  class ireference_counted_message_pool
-  {
-  public:
-
-    virtual void release(const etl::ireference_counted_message* const pmsg) = 0;
-    virtual void release(const etl::ireference_counted_message& msg) = 0;
-  };
 
   //***************************************************************************
   /// A pool for allocating reference counted messages.
@@ -121,7 +111,7 @@ namespace etl
       //  if (p != ETL_NULLPTR)
       //  {
       //    ::new(p) ref_message_t(TMessage(etl::forward<TArgs>(args)...));
-      p = ::new ref_message_t(message);
+      p = ::new ref_message_t(message, *this);
       //  }
       //  else
       //  {
@@ -152,7 +142,7 @@ namespace etl
       //  if (p != ETL_NULLPTR)
       //  {
       //    ::new(p) ref_message_t(TMessage(etl::forward<TArgs>(args)...));
-      p = ::new ref_message_t(TMessage(etl::forward<TArgs>(args)...));
+      p = ::new ref_message_t(TMessage(etl::forward<TArgs>(args)...), *this);
       //  }
       //  else
       //  {
