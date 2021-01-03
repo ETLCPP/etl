@@ -148,13 +148,6 @@ namespace etl
     }
 
     //*******************************************
-    void receive(const etl::imessage& message) ETL_OVERRIDE
-    {
-      etl::null_message_router nmr;
-      receive(nmr, etl::imessage_router::ALL_MESSAGE_ROUTERS, message);
-    }
-
-    //*******************************************
     void receive(etl::message_router_id_t destination_router_id,
                  const etl::imessage&     message)
     {

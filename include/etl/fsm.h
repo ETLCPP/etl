@@ -269,26 +269,6 @@ namespace etl
     //*******************************************
     /// Top level message handler for the FSM.
     //*******************************************
-    void receive(const etl::imessage& message) ETL_OVERRIDE
-    {
-      static etl::null_message_router nmr;
-      receive(nmr, message);
-    }
-
-    //*******************************************
-    /// Top level message handler for the FSM.
-    //*******************************************
-    void receive(imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& message) ETL_OVERRIDE
-    {
-      if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
-      {
-        receive(source, message);
-      }
-    }
-
-    //*******************************************
-    /// Top level message handler for the FSM.
-    //*******************************************
     void receive(etl::imessage_router& source, const etl::imessage& message) ETL_OVERRIDE
     {
         etl::fsm_state_id_t next_state_id = p_state->process_event(source, message);
