@@ -19,7 +19,7 @@
     #elif defined(__MK66FX1M0__)
         #define ARDUINO_BOARD "Teensy 3.6"
     #else
-       #error "Unknown"
+       #define ARDUINO_BOARD "Unknown"
     #endif
 
 #else // --------------- Arduino ------------------
@@ -73,7 +73,7 @@
     #elif defined(ARDUINO_ARC32_TOOLS)       
         #define ARDUINO_BOARD "101"
     #else
-       #error "Unknown"
+       #define ARDUINO_BOARD "Unknown"
     #endif
 #endif
 
