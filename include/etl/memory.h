@@ -1508,36 +1508,36 @@ namespace etl
 //*****************************************************************************
 // Global functions for unique_ptr
 //*****************************************************************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator ==(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator ==(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return lhs.get() == rhs.get();
 }
 
 //*********************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator <(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator <(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return reinterpret_cast<char*>(lhs.get()) < reinterpret_cast<char*>(rhs.get());
 }
 
 //*********************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator <=(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator <=(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return !(rhs < lhs);
 }
 
 //*********************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator >(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator >(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return (rhs < lhs);
 }
 
 //*********************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator >=(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator >=(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return !(lhs < rhs);
 }
@@ -1593,7 +1593,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-   void create_value_at(T* p)
+  void create_value_at(T* p)
   {
     ::new (p) T();
   }
@@ -1603,7 +1603,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T, typename TCounter>
-   void create_value_at(T* p, TCounter& count)
+  void create_value_at(T* p, TCounter& count)
   {
     ::new (p) T();
     ++count;
@@ -1614,7 +1614,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-   void create_copy_at(T* p, const T& value)
+  void create_copy_at(T* p, const T& value)
   {
     ::new (p) T(value);
   }
@@ -1898,6 +1898,16 @@ namespace etl
     {
       memory_clear(static_cast<volatile T&>(*this));
     }
+  };
+
+  //*************************************************************************
+  /// The interface for a memory block pool.
+  //*************************************************************************
+  struct imemory_block_pool
+  {
+    virtual void* allocate_memory_block(size_t required_size) = 0;
+    virtual void  release_memory_block(const void* const) = 0;
+    virtual size_t get_memory_block_size() = 0;
   };
 
   //***************************************************************************

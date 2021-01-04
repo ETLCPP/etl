@@ -712,27 +712,36 @@ namespace etl
 #endif
 
     //*************************************************************************
+    /// Releases the object.
+    /// Undefined behaviour if the pool does not contain a 'U' object derived from 'U'.
+    /// \param p_object A pointer to the object to be destroyed.
+    //*************************************************************************
+    template <typename U>
+    void release(const U* const p_object)
+    {
+      ETL_STATIC_ASSERT((etl::is_base_of<U, T>::value), "Pool does not contain this type");
+      base_t::template release(p_object);
+    }
+
+    //*************************************************************************
     /// Destroys the object.
-    /// Undefined behaviour if the pool does not contain a 'U'.
+    /// Undefined behaviour if the pool does not contain a 'U' object derived from 'U'.
     /// \param p_object A pointer to the object to be destroyed.
     //*************************************************************************
     template <typename U>
     void destroy(const U* const p_object)
     {
       ETL_STATIC_ASSERT((etl::is_base_of<U, T>::value), "Pool does not contain this type");
-      p_object->~U();
-      base_t::release(p_object);
+      base_t::template destroy(p_object);
     }
 
   private:
 
     // Should not be copied.
-    pool(const pool&);
-    pool& operator =(const pool&);
+    pool(const pool&) ETL_DELETE;
+    pool& operator =(const pool&) ETL_DELETE;
   };
 }
-
-#undef ETL_FILE
 
 #endif
 

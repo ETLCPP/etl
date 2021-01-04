@@ -64,43 +64,36 @@ namespace etl
   };
 
   //***************************************************************************
+  // Message interface.
+  //***************************************************************************
   class imessage
   {
   public:
 
-    imessage(etl::message_id_t id)
-      : message_id(id)
-    {
-    }
-
-    const etl::message_id_t message_id;
-
-#if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
     virtual ~imessage()
     {
     }
-#else
-    ~imessage()
-    {
-    }
-#endif
+
+    ETL_NODISCARD virtual etl::message_id_t get_message_id() const ETL_NOEXCEPT = 0;
   };
 
   //***************************************************************************
-  template <const etl::message_id_t ID_>
+  // Message type.
+  //***************************************************************************
+  template <etl::message_id_t ID_>
   class message : public imessage
   {
   public:
-
-    message()
-      : imessage(ID_)
-    {
-    }
 
     enum
     {
       ID = ID_
     };
+
+    ETL_NODISCARD etl::message_id_t get_message_id() const ETL_NOEXCEPT ETL_OVERRIDE
+    {
+      return ID;
+    }
   };
 }
 

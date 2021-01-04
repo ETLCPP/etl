@@ -148,13 +148,6 @@ namespace etl
     }
 
     //*******************************************
-    void receive(const etl::imessage& message) ETL_OVERRIDE
-    {
-      etl::null_message_router nmr;
-      receive(nmr, etl::imessage_router::ALL_MESSAGE_ROUTERS, message);
-    }
-
-    //*******************************************
     void receive(etl::message_router_id_t destination_router_id,
                  const etl::imessage&     message)
     {
@@ -187,7 +180,7 @@ namespace etl
           {
             etl::imessage_router& router = **irouter;
 
-            if (router.accepts(message.message_id))
+            if (router.accepts(message.get_message_id()))
             {
               router.receive(source, message);
             }
@@ -213,7 +206,7 @@ namespace etl
           // Call all of them.
           while (range.first != range.second)
           {
-            if ((*(range.first))->accepts(message.message_id))
+            if ((*(range.first))->accepts(message.get_message_id()))
             {
               (*(range.first))->receive(source, message);
             }
