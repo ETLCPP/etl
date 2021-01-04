@@ -1907,7 +1907,7 @@ namespace etl
   {
     virtual void* allocate_memory_block(size_t required_size) = 0;
     virtual void  release_memory_block(const void* const) = 0;
-    virtual size_t get_memory_block_size() = 0;
+    virtual size_t get_memory_block_size() const = 0;
   };
 
   //***************************************************************************
