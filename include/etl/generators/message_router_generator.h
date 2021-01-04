@@ -197,23 +197,23 @@ namespace etl
     enum
     {
       NULL_MESSAGE_ROUTER = 255,
-      MESSAGE_BUS = 254,
+      MESSAGE_BUS         = 254,
       ALL_MESSAGE_ROUTERS = 253,
-      MAX_MESSAGE_ROUTER = 249
+      MAX_MESSAGE_ROUTER  = 249
     };
 
   protected:
 
     imessage_router(etl::message_router_id_t id_)
-      : successor(ETL_NULLPTR),
-      message_router_id(id_)
+      : successor(ETL_NULLPTR)
+      , message_router_id(id_)
     {
     }
 
     imessage_router(etl::message_router_id_t id_,
       imessage_router& successor_)
-      : successor(&successor_),
-      message_router_id(id_)
+      : successor(&successor_)
+      , message_router_id(id_)
     {
     }
 
@@ -240,14 +240,16 @@ namespace etl
     {
     }
 
-    using imessage_router::receive;
-
     //********************************************
+    using etl::imessage_router::receive;
+
     void receive(etl::imessage_router&, const etl::imessage&) ETL_OVERRIDE
     {
     }
 
     //********************************************
+    using etl::imessage_router::accepts;
+
     bool accepts(etl::message_id_t) const ETL_OVERRIDE
     {
       return false;
@@ -298,14 +300,16 @@ namespace etl
     {
     }
 
-    using imessage_router::receive;
-
     //********************************************
+    using etl::imessage_router::receive;
+
     void receive(etl::imessage_router&, const etl::imessage&) ETL_OVERRIDE
     {
     }
 
     //********************************************
+    using etl::imessage_router::accepts;
+
     bool accepts(etl::message_id_t) const ETL_OVERRIDE
     {
       return false;
@@ -390,9 +394,9 @@ namespace etl
       cog.outl("    ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));")
       cog.outl("  }")
       cog.outl("")
-      cog.outl("  using imessage_router::receive;")
-      cog.outl("")
       cog.outl("  //**********************************************")
+      cog.outl("  using etl::imessage_router::receive;")
+      cog.outl("")
       cog.outl("  void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE")
       cog.outl("  {")
       cog.outl("    const etl::message_id_t id = msg.get_message_id();")
@@ -418,9 +422,9 @@ namespace etl
       cog.outl("    }")
       cog.outl("  }")
       cog.outl("")
+      cog.outl("  //**********************************************")
       cog.outl("  using imessage_router::accepts;")
       cog.outl("")
-      cog.outl("  //**********************************************")
       cog.outl("  bool accepts(etl::message_id_t id) const ETL_OVERRIDE")
       cog.outl("  {")
       cog.outl("    switch (id)")
@@ -510,9 +514,9 @@ namespace etl
           cog.outl("    ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));")
           cog.outl("  }")
           cog.outl("")
-          cog.outl("  using imessage_router::receive;")
-          cog.outl("")
           cog.outl("  //**********************************************")
+          cog.outl("  using etl::imessage_router::receive;")
+          cog.outl("")
           cog.outl("  void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE")
           cog.outl("  {")
           cog.outl("    const size_t id = msg.get_message_id();")
@@ -538,9 +542,9 @@ namespace etl
           cog.outl("    }")
           cog.outl("  }")
           cog.outl("")
+          cog.outl("  //**********************************************")
           cog.outl("  using imessage_router::accepts;")
           cog.outl("")
-          cog.outl("  //**********************************************")
           cog.outl("  bool accepts(etl::message_id_t id) const ETL_OVERRIDE")
           cog.outl("  {")
           cog.outl("    switch (id)")

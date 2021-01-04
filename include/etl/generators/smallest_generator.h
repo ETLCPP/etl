@@ -372,9 +372,9 @@ namespace etl
   private:
 
     // Determines the index of the best signed type for the required value.
-    static const int TYPE_INDEX = (((VALUE > INT_LEAST8_MAX)  || (VALUE < INT_LEAST8_MIN))  ? 1 : 0) +
-                                  (((VALUE > INT16_MAX) || (VALUE < INT16_MIN)) ? 1 : 0) +
-                                  (((VALUE > INT32_MAX) || (VALUE < INT32_MIN)) ? 1 : 0);
+    static const int TYPE_INDEX = (((VALUE > intmax_t(INT_LEAST8_MAX)) || (VALUE < intmax_t(INT_LEAST8_MIN))) ? 1 : 0) +
+                                  (((VALUE > intmax_t(INT16_MAX))      || (VALUE < intmax_t(INT16_MIN))) ? 1 : 0) +
+                                  (((VALUE > intmax_t(INT32_MAX))      || (VALUE < intmax_t(INT32_MIN))) ? 1 : 0);
 
   public:
 
