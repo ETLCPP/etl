@@ -1509,36 +1509,36 @@ namespace etl
 //*****************************************************************************
 // Global functions for unique_ptr
 //*****************************************************************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator ==(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator ==(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return lhs.get() == rhs.get();
 }
 
 //*********************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator <(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator <(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return reinterpret_cast<char*>(lhs.get()) < reinterpret_cast<char*>(rhs.get());
 }
 
 //*********************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator <=(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator <=(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return !(rhs < lhs);
 }
 
 //*********************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator >(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator >(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return (rhs < lhs);
 }
 
 //*********************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator >=(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator >=(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return !(lhs < rhs);
 }
