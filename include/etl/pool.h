@@ -157,7 +157,7 @@ namespace etl
     void release(const U* const p_object)
     {
       ETL_STATIC_ASSERT((etl::is_base_of<U, T>::value), "Pool does not contain this type");
-      base_t::template release(p_object);
+      base_t::release(p_object);
     }
 
     //*************************************************************************

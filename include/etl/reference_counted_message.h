@@ -47,9 +47,9 @@ namespace etl
   public:
 
     virtual ~ireference_counted_message() {}
-    virtual ETL_NODISCARD const etl::imessage& get_message() const = 0;                     ///< Get a const reference to the message.
-    virtual ETL_NODISCARD etl::ireference_counter& get_reference_counter() = 0;             ///< Get a reference to the reference counter.
-    virtual ETL_NODISCARD const etl::ireference_counter& get_reference_counter() const = 0; ///< Get a const reference to the reference counter.
+    ETL_NODISCARD virtual const etl::imessage& get_message() const = 0;                     ///< Get a const reference to the message.
+    ETL_NODISCARD virtual etl::ireference_counter& get_reference_counter() = 0;             ///< Get a reference to the reference counter.
+    ETL_NODISCARD virtual const etl::ireference_counter& get_reference_counter() const = 0; ///< Get a const reference to the reference counter.
     virtual void release() = 0;                                                             ///< Release back to the owner.
   };
 
@@ -82,7 +82,7 @@ namespace etl
     /// Get a const reference to the message.
     /// \return A const reference to the message.
     //***************************************************************************
-    virtual ETL_NODISCARD const TMessage& get_message() const ETL_OVERRIDE
+    ETL_NODISCARD virtual const TMessage& get_message() const ETL_OVERRIDE
     {
       return rc_object.get_object();
     }
@@ -91,7 +91,7 @@ namespace etl
     /// Get a reference to the reference counter.
     /// \return A reference to the reference counter.
     //***************************************************************************
-    virtual ETL_NODISCARD etl::ireference_counter& get_reference_counter() ETL_OVERRIDE
+    ETL_NODISCARD virtual etl::ireference_counter& get_reference_counter() ETL_OVERRIDE
     {
       return rc_object.get_reference_counter();
     }
@@ -100,7 +100,7 @@ namespace etl
     /// Get a const reference to the reference counter.
     /// \return A const reference to the reference counter.
     //***************************************************************************
-    virtual ETL_NODISCARD const etl::ireference_counter& get_reference_counter() const ETL_OVERRIDE
+    ETL_NODISCARD virtual const etl::ireference_counter& get_reference_counter() const ETL_OVERRIDE
     {
       return rc_object.get_reference_counter();
     }
@@ -149,7 +149,7 @@ namespace etl
     /// Get a const reference to the message.
     /// \return A const reference to the message.
     //***************************************************************************
-    virtual ETL_NODISCARD const TMessage& get_message() const ETL_OVERRIDE
+    ETL_NODISCARD virtual const TMessage& get_message() const ETL_OVERRIDE
     {
       return rc_object.get_object();
     }
@@ -158,7 +158,7 @@ namespace etl
     /// Get a reference to the reference counter.
     /// \return A reference to the reference counter.
     //***************************************************************************
-    virtual ETL_NODISCARD etl::ireference_counter& get_reference_counter() ETL_OVERRIDE
+    ETL_NODISCARD virtual etl::ireference_counter& get_reference_counter() ETL_OVERRIDE
     {
       return rc_object.get_reference_counter();
     }
@@ -167,7 +167,7 @@ namespace etl
     /// Get a const reference to the reference counter.
     /// \return A const reference to the reference counter.
     //***************************************************************************
-    virtual ETL_NODISCARD const etl::ireference_counter& get_reference_counter() const ETL_OVERRIDE
+    ETL_NODISCARD virtual const etl::ireference_counter& get_reference_counter() const ETL_OVERRIDE
     {
       return rc_object.get_reference_counter();
     }

@@ -77,7 +77,7 @@ namespace etl
     {
       if (required_size <= Block_Size)
       {
-        return  pool.allocate<block>();
+        return  pool.template allocate<block>();
       }
       else
       {

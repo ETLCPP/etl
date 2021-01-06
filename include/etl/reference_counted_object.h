@@ -188,7 +188,7 @@ namespace etl
     //***************************************************************************
     /// Get a reference to the reference counter.
     //***************************************************************************
-    virtual ETL_NODISCARD ireference_counter& get_reference_counter() ETL_OVERRIDE
+    ETL_NODISCARD virtual ireference_counter& get_reference_counter() ETL_OVERRIDE
     {
       return reference_counter;
     }
@@ -196,7 +196,7 @@ namespace etl
     //***************************************************************************
     /// Get a const reference to the reference counter.
     //***************************************************************************
-    virtual ETL_NODISCARD const ireference_counter& get_reference_counter() const ETL_OVERRIDE
+    ETL_NODISCARD virtual const ireference_counter& get_reference_counter() const ETL_OVERRIDE
     {
       return reference_counter;
     }
@@ -243,7 +243,7 @@ namespace etl
     //***************************************************************************
     /// Get a reference to the reference counter.
     //***************************************************************************
-    virtual ETL_NODISCARD ireference_counter& get_reference_counter() ETL_OVERRIDE
+    ETL_NODISCARD virtual ireference_counter& get_reference_counter() ETL_OVERRIDE
     {
       return reference_counter;
     }
@@ -251,7 +251,7 @@ namespace etl
     //***************************************************************************
     /// Get a const reference to the reference counter.
     //***************************************************************************
-    virtual ETL_NODISCARD const ireference_counter& get_reference_counter() const ETL_OVERRIDE
+    ETL_NODISCARD virtual const ireference_counter& get_reference_counter() const ETL_OVERRIDE
     {
       return reference_counter;
     }
