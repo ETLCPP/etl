@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2021 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -32,7 +32,7 @@ SOFTWARE.
 #define ETL_FIXED_MEMORY_BLOCK_POOL_INCLUDED
 
 #include "platform.h"
-#include "memory.h"
+#include "imemory_block_allocator.h"
 #include "generic_pool.h"
 #include "alignment.h"
 
@@ -42,23 +42,19 @@ namespace etl
   /// The fixed sized memory block pool.
   /// The allocated memory blocks are all the same size.
   //*************************************************************************
-  template <size_t Block_Size, size_t Alignment, size_t Size>
+  template <size_t VBlock_Size, size_t VAlignment, size_t VSize>
   class fixed_sized_memory_block_allocator : public imemory_block_allocator                                       
   {
   public:
 
-    //*************************************************************************
-    /// Default contsrcutor
-    //*************************************************************************
-    fixed_sized_memory_block_allocator()
-    {
-    }
+    static ETL_CONSTANT size_t Block_Size = VBlock_Size;
+    static ETL_CONSTANT size_t Alignment  = VAlignment;
+    static ETL_CONSTANT size_t Size       = VSize;
 
     //*************************************************************************
-    /// Construct with a successor allocator.
+    /// Default constructor
     //*************************************************************************
-    fixed_sized_memory_block_allocator(etl::imemory_block_allocator& successor)
-      : imemory_block_allocator(successor)
+    fixed_sized_memory_block_allocator()
     {
     }
 
@@ -75,7 +71,7 @@ namespace etl
     //*************************************************************************
     virtual void* allocate_block(size_t required_size) ETL_OVERRIDE
     {
-      if (required_size <= Block_Size)
+      if ((required_size <= Block_Size) && !pool.full())
       {
         return  pool.template allocate<block>();
       }
