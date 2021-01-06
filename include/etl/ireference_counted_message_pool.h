@@ -35,7 +35,7 @@ SOFTWARE.
 
 namespace etl
 {
-  class ireference_counted_message;
+  class ipool_message;
 
   //***************************************************************************
   /// Interface for a reference counted message pool.
@@ -44,8 +44,8 @@ namespace etl
   {
   public:
 
-    virtual void release(const etl::ireference_counted_message* const pmsg) = 0;
-    virtual void release(const etl::ireference_counted_message& msg) = 0;
+    virtual ~ireference_counted_message_pool() {}
+    virtual void release(const etl::ipool_message& msg) = 0;
   };
 }
 

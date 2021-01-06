@@ -117,6 +117,7 @@ namespace etl
     virtual bool is_producer() const = 0;
     virtual bool is_consumer() const = 0;
 
+    //********************************************
     virtual void receive(imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& message)
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
@@ -144,12 +145,18 @@ namespace etl
     }
 
     //********************************************
-    void receive(imessage_router& source, etl::message_router_id_t destination_router_id, etl::shared_message shared_msg)
+    virtual void receive(imessage_router& source, etl::message_router_id_t destination_router_id, etl::shared_message shared_msg)
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
         receive(source, shared_msg);
       }
+    }
+
+    //********************************************
+    void receive(etl::message_router_id_t destination_router_id, etl::shared_message shared_msg)
+    {
+      receive(etl::get_null_message_router(), destination_router_id, shared_msg);
     }
 
     //********************************************

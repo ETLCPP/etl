@@ -34,6 +34,8 @@ SOFTWARE.
 #include <stdint.h>
 #include <limits.h>
 
+#include "file_error_numbers.h"
+
 // Define a debug macro
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(ETL_DEBUG) 
   #define ETL_DEBUG

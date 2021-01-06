@@ -54,7 +54,7 @@ SOFTWARE.
 #include <stdint.h>
 
 #include "platform.h"
-#include "generic_pool.h"
+#include "pool.h"
 #include "type_traits.h"
 #include "static_assert.h"
 #include "largest.h"

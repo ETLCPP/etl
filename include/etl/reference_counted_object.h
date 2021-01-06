@@ -151,6 +151,7 @@ namespace etl
   {
   public:
 
+    virtual ~ireference_counted_object() {}
     ETL_NODISCARD virtual ireference_counter& get_reference_counter() = 0;
     ETL_NODISCARD virtual const ireference_counter& get_reference_counter() const = 0;
   };

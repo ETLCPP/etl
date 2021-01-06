@@ -46,6 +46,7 @@ namespace etl
   {
   public:
 
+    virtual ~ireference_counted_message() {}
     virtual ETL_NODISCARD const etl::imessage& get_message() const = 0;                     ///< Get a const reference to the message.
     virtual ETL_NODISCARD etl::ireference_counter& get_reference_counter() = 0;             ///< Get a reference to the reference counter.
     virtual ETL_NODISCARD const etl::ireference_counter& get_reference_counter() const = 0; ///< Get a const reference to the reference counter.
@@ -55,8 +56,12 @@ namespace etl
   //***************************************************************************
   // Reference counted message type.
   //***************************************************************************
+  class ipool_message : public etl::ireference_counted_message
+  {
+  };
+
   template <typename TMessage, typename TCounter>
-  class reference_counted_message : public etl::ireference_counted_message
+  class pool_message : public etl::ipool_message
   {
   public:
 
@@ -67,7 +72,7 @@ namespace etl
     /// Constructor
     /// \param msg The message to count.
     //***************************************************************************
-    reference_counted_message(const TMessage& msg_, etl::ireference_counted_message_pool& owner_)
+    pool_message(const TMessage& msg_, etl::ireference_counted_message_pool& owner_)
       : rc_object(msg_)
       , owner(owner_)
     {
@@ -112,7 +117,7 @@ namespace etl
   private:
 
     etl::reference_counted_object<TMessage, TCounter> rc_object; ///< The reference counted object.
-    etl::ireference_counted_message_pool&   owner;               ///< The pool that owns this object.
+    etl::ireference_counted_message_pool& owner;                 ///< The pool that owns this object.
   };
 
   //***************************************************************************
@@ -120,8 +125,12 @@ namespace etl
   /// The message type will always have a reference count of 1. 
   /// \tparam TMessage  The message type stored.
   //***************************************************************************
+  class inon_pool_message : public etl::ireference_counted_message
+  {
+  };
+  
   template <typename TMessage>
-  class persistent_message : virtual public etl::ireference_counted_message
+  class non_pool_message : public etl::inon_pool_message
   {
   public:
 
@@ -131,7 +140,7 @@ namespace etl
     /// Constructor
     /// \param msg The message to count.
     //***************************************************************************
-    persistent_message(const TMessage& msg_)
+    explicit non_pool_message(const TMessage& msg_)
       : rc_object(msg_)
     {
     }
@@ -175,9 +184,9 @@ namespace etl
   private:
 
     // This class must not be default contructed, copy constructed or assigned.
-    persistent_message() ETL_DELETE;
-    persistent_message(const persistent_message&) ETL_DELETE;
-    persistent_message& operator =(const persistent_message&) ETL_DELETE;
+    non_pool_message() ETL_DELETE;
+    non_pool_message(const non_pool_message&) ETL_DELETE;
+    non_pool_message& operator =(const non_pool_message&) ETL_DELETE;
 
     etl::persistent_object<TMessage> rc_object; ///< The reference counted object.
   };
@@ -188,7 +197,7 @@ namespace etl
   /// \tparam TObject  The type to be reference counted.
   //***************************************************************************
   template <typename TMessage>
-  using atomic_counted_message = etl::reference_counted_message<TMessage, etl::atomic_int32_t>;
+  using atomic_counted_message = etl::pool_message<TMessage, etl::atomic_int32_t>;
 #endif
 }
 

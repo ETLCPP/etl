@@ -34,6 +34,10 @@ SOFTWARE.
 #include "platform.h"
 #include "utility.h"
 #include "reference_counted_message.h"
+#include "ireference_counted_message_pool.h"
+#include "message.h"
+#include "type_traits.h"
+#include "static_assert.h"
 
 //*****************************************************************************
 /// A wrapper for reference counted messages.
@@ -47,9 +51,35 @@ namespace etl
 
     //*************************************************************************
     /// Constructor
+    //*************************************************************************
+    template <typename TPool, typename TMessage>
+    shared_message(TPool& owner, const TMessage& message)
+    {
+      ETL_STATIC_ASSERT((etl::is_base_of<etl::ireference_counted_message_pool, TPool>::value), "TPool not derived from etl::ireference_counted_message_pool");
+      ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "TMessage not derived from etl::imessage");
+
+      p_rcmessage = owner.allocate(message);
+      
+      if (p_rcmessage != ETL_NULLPTR)
+      {
+        p_rcmessage->get_reference_counter().set_reference_count(1U);
+      }
+    }
+
+    //*************************************************************************
+    /// Constructor
+    /// \param np_message A reference to a message not controlled by a pool.
+    //*************************************************************************
+    explicit shared_message(etl::inon_pool_message& np_message)
+      : p_rcmessage(&np_message)
+    {      
+    }
+
+    //*************************************************************************
+    /// Constructor
     /// \param message A reference to the message allocated from the pool.
     //*************************************************************************
-    shared_message(etl::ireference_counted_message& rcmessage_)
+    explicit shared_message(etl::ipool_message& rcmessage_)
       : p_rcmessage(&rcmessage_)
     {
       p_rcmessage->get_reference_counter().set_reference_count(1U);
@@ -100,7 +130,7 @@ namespace etl
     //*************************************************************************
     /// Get a const reference to the contained message.
     //*************************************************************************
-    const etl::imessage& get_message() const
+    ETL_NODISCARD const etl::imessage& get_message() const
     {
       return p_rcmessage->get_message();
     }
@@ -108,7 +138,7 @@ namespace etl
     //*************************************************************************
     /// Get the current reference count for this shared message.
     //*************************************************************************
-    uint32_t get_reference_count() const
+    ETL_NODISCARD uint32_t get_reference_count() const
     {
       return p_rcmessage->get_reference_counter().get_reference_count();
     }
@@ -117,34 +147,8 @@ namespace etl
 
     shared_message() ETL_DELETE;
 
-    etl::ireference_counted_message* p_rcmessage;
+    etl::ireference_counted_message* p_rcmessage; ///< A pointer to the reference  counted message.
   };
-
-  //*****************************************************************************
-  /// Make a shared_message from a pool.
-  /// \param owner   The pool to allocate the reference counted message from.
-  /// \param message The message to reference count.
-  //*****************************************************************************
-  template <typename TPool, typename TMessage>
-  etl::shared_message make_shared_message(TPool& owner, const TMessage& message)
-  {
-    etl::ireference_counted_message* p_rcmessage = owner.allocate(message);
-    return etl::shared_message(*p_rcmessage);
-  }
-
-#if ETL_CPP11_SUPPORTED
-  //*****************************************************************************
-  /// Make a shared_message from a pool.
-  /// \param owner The pool to allocate the reference counted message from.
-  /// \param args  The arguments to pass to the message constructor.
-  //*****************************************************************************
-  template <typename TMessage, typename TPool, typename... TArgs>
-  etl::shared_message make_shared_message(TPool& owner, TArgs&&... args)
-  {
-    etl::ireference_counted_message* p_rcmessage = owner.allocate(TMessage(etl::forward<TArgs>(args)...));
-    return etl::shared_message(*p_rcmessage);
-  }
-#endif
 }
 
 #endif

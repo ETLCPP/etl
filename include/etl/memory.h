@@ -1900,34 +1900,124 @@ namespace etl
     }
   };
 
-  //*************************************************************************
+  //*****************************************************************************
   /// The interface for a memory block pool.
-  //*************************************************************************
-  struct imemory_block_pool
+  //*****************************************************************************
+  class imemory_block_allocator
   {
-    virtual void* allocate_memory_block(size_t required_size) = 0;
-    virtual void  release_memory_block(const void* const) = 0;
-    virtual size_t get_memory_block_size() const = 0;
+  public:
+
+    //*****************************************************************************
+    /// Default constructor.
+    //*****************************************************************************
+    imemory_block_allocator()
+      : p_successor(ETL_NULLPTR)
+    {
+    }
+
+    //*****************************************************************************
+    /// Construct with a successor.
+    //*****************************************************************************
+    explicit imemory_block_allocator(imemory_block_allocator& successor)
+      : p_successor(&successor)
+    {
+    }
+
+    //*****************************************************************************
+    /// Try to allocate a memory block of the required size.
+    /// If this allocator cannot, then pass the request on the the successor, if configured.
+    //*****************************************************************************
+    void* allocate(size_t required_size)
+    {
+      // Call the derived implementation.
+      void* p = allocate_block(required_size);
+
+      // If that failed...
+      if (p == ETL_NULLPTR)
+      {
+        /// ...and we have a successor...
+        if (has_successor())
+        {
+          // Try to allocate from the next one in the chain.
+          return get_successor().allocate(required_size);
+        }
+      }
+
+      return p;
+    }
+
+    //*****************************************************************************
+    /// Try to release a memory block of the required size.
+    /// If this allocator cannot, then pass the request on the the successor, if configured.
+    //*****************************************************************************
+    bool release(const void* const p)
+    {
+      // Call the derived implementation to try to release.
+      if (!release_block(p))
+      {
+        // If it failed and we have a successor...
+        if (has_successor())
+        {
+          // Try to release from the next one in the chain.
+          return get_successor().release(p);
+        }
+      }
+
+      return true;
+    }
+
+    //*****************************************************************************
+    /// Set the sucessor allocator.
+    //*****************************************************************************
+    void set_successor(etl::imemory_block_allocator& successor)
+    {
+      p_successor = &successor;
+    }
+
+    //*****************************************************************************
+    /// Get the sucessor allocator.
+    //*****************************************************************************
+    etl::imemory_block_allocator& get_successor() const
+    {
+      return *p_successor;
+    }
+
+    //*****************************************************************************
+    /// Do we have a successor allocator.
+    //*****************************************************************************
+    bool has_successor() const
+    {
+      return (p_successor != ETL_NULLPTR);
+    }
+
+  protected:
+
+    virtual void* allocate_block(size_t required_size) = 0;
+    virtual bool release_block(const void* const) = 0;
+
+  private:
+
+    etl::imemory_block_allocator* p_successor;
   };
 
   //***************************************************************************
-  /// Declares an aligned buffer of N_OBJECTS x of size OBJECT_SIZE at alignment ALIGNMENT.
+  /// Declares an aligned buffer of N_Objects x of size Object_Size at alignment Alignment.
   ///\ingroup alignment
   //***************************************************************************
-  template <size_t OBJECT_SIZE_, size_t N_OBJECTS_, size_t ALIGNMENT_>
+  template <size_t VObject_Size, size_t VN_Objects, size_t VAlignment>
   class uninitialized_buffer
   {
   public:
 
-    static ETL_CONSTANT size_t OBJECT_SIZE = OBJECT_SIZE_;
-    static ETL_CONSTANT size_t N_OBJECTS   = N_OBJECTS_;
-    static ETL_CONSTANT size_t ALIGNMENT   = ALIGNMENT_;
+    static ETL_CONSTANT size_t Object_Size = VObject_Size;
+    static ETL_CONSTANT size_t N_Objects   = VN_Objects;
+    static ETL_CONSTANT size_t Alignment   = VAlignment;
 
     /// Convert to T reference.
     template <typename T>
     operator T& ()
     {
-      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
       return *reinterpret_cast<T*>(raw);
     }
 
@@ -1935,7 +2025,7 @@ namespace etl
     template <typename T>
     operator const T& () const
     {
-      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
       return *reinterpret_cast<const T*>(raw);
     }
 
@@ -1943,7 +2033,7 @@ namespace etl
     template <typename T>
     operator T* ()
     {
-      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
       return reinterpret_cast<T*>(raw);
     }
 
@@ -1951,26 +2041,26 @@ namespace etl
     template <typename T>
     operator const T* () const
     {
-      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
       return reinterpret_cast<const T*>(raw);
     }
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_COMPILER_ARM5) && !defined(ETL_UNINITIALIZED_BUFFER_FORCE_CPP03)
-    alignas(ALIGNMENT) char raw[OBJECT_SIZE * N_OBJECTS];
+    alignas(VAlignment) char raw[Object_Size * N_Objects];
 #else
     union
     {
-      char raw[OBJECT_SIZE * N_OBJECTS];
-      typename etl::type_with_alignment<ALIGNMENT>::type etl_alignment_type; // A POD type that has the same alignment as ALIGNMENT.
+      char raw[VObject_Size * VN_Objects];
+      typename etl::type_with_alignment<Alignment>::type etl_alignment_type; // A POD type that has the same alignment as VAlignment.
     };
 #endif
   };
 
   //***************************************************************************
-  /// Declares an aligned buffer of N_OBJECTS as if they were type T.
+  /// Declares an aligned buffer of VN_Objects as if they were type T.
   ///\ingroup alignment
   //***************************************************************************
-  template <typename T, size_t N_OBJECTS_>
+  template <typename T, size_t VN_Objects>
   class uninitialized_buffer_of
   {
   public:
@@ -1983,9 +2073,9 @@ namespace etl
     typedef T*       iterator;
     typedef const T* const_iterator;
 
-    static ETL_CONSTANT size_t OBJECT_SIZE = sizeof(T);
-    static ETL_CONSTANT size_t N_OBJECTS = N_OBJECTS_;
-    static ETL_CONSTANT size_t ALIGNMENT = etl::alignment_of<T>::value;
+    static ETL_CONSTANT size_t Object_Size = sizeof(T);
+    static ETL_CONSTANT size_t N_Objects   = VN_Objects;
+    static ETL_CONSTANT size_t Alignment   = etl::alignment_of<T>::value;
 
     /// Index operator.
     T& operator [](int i)
@@ -2036,28 +2126,28 @@ namespace etl
 
     T* end()
     {
-      return reinterpret_cast<const T*>(raw + (sizeof(T) * N_OBJECTS));
+      return reinterpret_cast<const T*>(raw + (sizeof(T) * N_Objects));
     }
 
     const T* end() const
     {
-      return reinterpret_cast<const T*>(raw + (sizeof(T) * N_OBJECTS));
+      return reinterpret_cast<const T*>(raw + (sizeof(T) * N_Objects));
     }
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_COMPILER_ARM5) && !defined(ETL_UNINITIALIZED_BUFFER_FORCE_CPP03)
-    alignas(ALIGNMENT) char raw[sizeof(T) * N_OBJECTS];
+    alignas(Alignment) char raw[sizeof(T) * N_Objects];
 #else
     union
     {
-      char raw[sizeof(T) * N_OBJECTS];
-      typename etl::type_with_alignment<ALIGNMENT>::type etl_alignment_type; // A POD type that has the same alignment as ALIGNMENT.
+      char raw[sizeof(T) * N_Objects];
+      typename etl::type_with_alignment<Alignment>::type etl_alignment_type; // A POD type that has the same alignment as Alignment.
     };
 #endif
   };
 
 #if ETL_CPP14_SUPPORTED
-  template <typename T, size_t N_OBJECTS>
-  using uninitialized_buffer_of_v = typename uninitialized_buffer_of<T, N_OBJECTS>::buffer;
+  template <typename T, size_t N_Objects>
+  using uninitialized_buffer_of_v = typename uninitialized_buffer_of<T, N_Objects>::buffer;
 #endif
 }
 

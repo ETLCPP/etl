@@ -37,19 +37,12 @@ SOFTWARE.
 #include "static_assert.h"
 #include "utility.h"
 #include "memory.h"
-
-#include <new>
+#include "placement_new.h"
 
 #undef ETL_FILE
-#define ETL_FILE "11"
+#define ETL_FILE ETL_POOL_ID
 
 #define ETL_POOL_CPP03_CODE 0
-
-//*****************************************************************************
-///\defgroup pool pool
-/// A fixed capacity pool.
-///\ingroup containers
-//*****************************************************************************
 
 namespace etl
 {
@@ -106,38 +99,13 @@ namespace etl
   };
 
   //***************************************************************************
-  /// The base implementation of a pool.
-  /// Implements the imemory_block_pool interface.
+  ///\ingroup pool
   //***************************************************************************
-  class ipool : public imemory_block_pool
+  class ipool
   {
   public:
 
     typedef size_t size_type;
-
-    //*************************************************************************
-    /// Implementation of the low level imemory_block_pool interface.
-    //*************************************************************************
-    void* allocate_memory_block(size_t require_size) ETL_OVERRIDE
-    {
-      return allocate<void*>();
-    }
-
-    //*************************************************************************
-    /// Implementation of the low level imemory_block_pool interface.
-    //*************************************************************************
-    void release_memory_block(const void* const ptr) ETL_OVERRIDE
-    {
-      release(ptr);
-    }
-
-    //*************************************************************************
-    /// Implementation of the low level imemory_block_pool interface.
-    //*************************************************************************
-    size_t get_memory_block_size() ETL_OVERRIDE
-    {
-      return ITEM_SIZE;
-    }
 
     //*************************************************************************
     /// Allocate storage for an object from the pool.
@@ -147,7 +115,7 @@ namespace etl
     template <typename T>
     T* allocate()
     {
-      if (sizeof(T) > ITEM_SIZE)
+      if (sizeof(T) > Item_Size)
       {
         ETL_ASSERT(false, ETL_ERROR(etl::pool_element_size));
       }
@@ -155,7 +123,7 @@ namespace etl
       return reinterpret_cast<T*>(allocate_item());
     }
 
-#if !ETL_CPP11_SUPPORTED || ETL_POOL_CPP03_CODE || defined(ETL_STLPORT)
+#if ETL_CPP11_NOT_SUPPORTED || ETL_POOL_CPP03_CODE || ETL_USING_STLPORT
     //*************************************************************************
     /// Allocate storage for an object from the pool and create default.
     /// If asserts or exceptions are enabled and there are no more free items an
@@ -250,24 +218,19 @@ namespace etl
 
     //*************************************************************************
     /// Destroys the object.
-    /// If asserts or exceptions are enabled and the object does not belong to this
-    /// pool then an etl::pool_object_not_in_pool is thrown.
-    /// Undefined behaviour if p_object is not a 'T' or derived from 'T'.
+    /// Undefined behaviour if the pool does not contain a 'T'.
     /// \param p_object A pointer to the object to be destroyed.
     //*************************************************************************
     template <typename T>
     void destroy(const T* const p_object)
     {
-      // Does it belong to us?
-      if (is_in_pool(p_object))
+      if (sizeof(T) > Item_Size)
       {
-        p_object->~T();
-        release_item((char*)p_object);
+        ETL_ASSERT(false, ETL_ERROR(etl::pool_element_size));
       }
-      else
-      {
-        ETL_ALWAYS_ASSERT(ETL_ERROR(pool_object_not_in_pool));
-      }
+
+      p_object->~T();
+      release(p_object);
     }
 
     //*************************************************************************
@@ -278,15 +241,8 @@ namespace etl
     //*************************************************************************
     void release(const void* const p_object)
     {
-      // Does it belong to us?
-      if (is_in_pool(p_object))
-      {
-        release_item((char*)p_object);
-      }
-      else
-      {
-        ETL_ALWAYS_ASSERT(ETL_ERROR(pool_object_not_in_pool));
-      }
+      const uintptr_t p = uintptr_t(p_object);
+      release_item((char*)p);
     }
 
     //*************************************************************************
@@ -294,9 +250,9 @@ namespace etl
     //*************************************************************************
     void release_all()
     {
-      items_allocated   = 0;
+      items_allocated = 0;
       items_initialised = 0;
-      p_next            = p_buffer;
+      p_next = p_buffer;
     }
 
     //*************************************************************************
@@ -304,9 +260,10 @@ namespace etl
     /// \param p_object A pointer to the object to be checked.
     /// \return <b>true<\b> if it does, otherwise <b>false</b>
     //*************************************************************************
-    bool is_in_pool(const void* p_object) const
+    bool is_in_pool(const void* const p_object) const
     {
-      return is_item_in_pool((const char*)p_object);
+      const uintptr_t p = uintptr_t(p_object);
+      return is_item_in_pool((const char*)p);
     }
 
     //*************************************************************************
@@ -314,7 +271,7 @@ namespace etl
     //*************************************************************************
     size_t max_size() const
     {
-      return MAX_SIZE;
+      return Max_Size;
     }
 
     //*************************************************************************
@@ -322,7 +279,7 @@ namespace etl
     //*************************************************************************
     size_t capacity() const
     {
-      return MAX_SIZE;
+      return Max_Size;
     }
 
     //*************************************************************************
@@ -330,7 +287,7 @@ namespace etl
     //*************************************************************************
     size_t available() const
     {
-      return MAX_SIZE - items_allocated;
+      return Max_Size - items_allocated;
     }
 
     //*************************************************************************
@@ -356,7 +313,7 @@ namespace etl
     //*************************************************************************
     bool full() const
     {
-      return items_allocated == MAX_SIZE;
+      return items_allocated == Max_Size;
     }
 
   protected:
@@ -366,11 +323,11 @@ namespace etl
     //*************************************************************************
     ipool(char* p_buffer_, uint32_t item_size_, uint32_t max_size_)
       : p_buffer(p_buffer_),
-        p_next(p_buffer_),
-        items_allocated(0),
-        items_initialised(0),
-        ITEM_SIZE(item_size_),
-        MAX_SIZE(max_size_)
+      p_next(p_buffer_),
+      items_allocated(0),
+      items_initialised(0),
+      Item_Size(item_size_),
+      Max_Size(max_size_)
     {
     }
 
@@ -384,13 +341,13 @@ namespace etl
       char* p_value = ETL_NULLPTR;
 
       // Any free space left?
-      if (items_allocated < MAX_SIZE)
+      if (items_allocated < Max_Size)
       {
         // Initialise another one if necessary.
-        if (items_initialised < MAX_SIZE)
+        if (items_initialised < Max_Size)
         {
-          char* p = p_buffer + (items_initialised * ITEM_SIZE);
-          char* np = p + ITEM_SIZE;
+          char* p = p_buffer + (items_initialised * Item_Size);
+          char* np = p + Item_Size;
           *reinterpret_cast<char**>(p) = np;
           ++items_initialised;
         }
@@ -399,7 +356,7 @@ namespace etl
         p_value = p_next;
 
         ++items_allocated;
-        if (items_allocated != MAX_SIZE)
+        if (items_allocated != Max_Size)
         {
           // Set up the pointer to the next free item
           p_next = *reinterpret_cast<char**>(p_next);
@@ -423,6 +380,9 @@ namespace etl
     //*************************************************************************
     void release_item(char* p_value)
     {
+      // Does it belong to us?
+      ETL_ASSERT(is_item_in_pool(p_value), ETL_ERROR(pool_object_not_in_pool));
+
       if (p_next != ETL_NULLPTR)
       {
         // Point it to the current free item.
@@ -446,12 +406,12 @@ namespace etl
     {
       // Within the range of the buffer?
       intptr_t distance = p - p_buffer;
-      bool is_within_range = (distance >= 0) && (distance <= intptr_t((ITEM_SIZE * MAX_SIZE) - ITEM_SIZE));
+      bool is_within_range = (distance >= 0) && (distance <= intptr_t((Item_Size * Max_Size) - Item_Size));
 
       // Modulus and division can be slow on some architectures, so only do this in debug.
 #if defined(ETL_DEBUG)
       // Is the address on a valid object boundary?
-      bool is_valid_address = ((distance % ITEM_SIZE) == 0);
+      bool is_valid_address = ((distance % Item_Size) == 0);
 #else
       bool is_valid_address = true;
 #endif
@@ -469,8 +429,8 @@ namespace etl
     uint32_t  items_allocated;   ///< The number of items allocated.
     uint32_t  items_initialised; ///< The number of items initialised.
 
-    const uint32_t ITEM_SIZE;    ///< The size of allocated items.
-    const uint32_t MAX_SIZE;     ///< The maximum number of objects that can be allocated.
+    const uint32_t Item_Size;    ///< The size of allocated items.
+    const uint32_t Max_Size;     ///< The maximum number of objects that can be allocated.
 
     //*************************************************************************
     /// Destructor.

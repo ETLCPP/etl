@@ -1272,6 +1272,7 @@
     <ClInclude Include="..\..\include\etl\cumulative_moving_average.h" />
     <ClInclude Include="..\..\include\etl\delegate.h" />
     <ClInclude Include="..\..\include\etl\delegate_service.h" />
+    <ClInclude Include="..\..\include\etl\file_error_numbers.h" />
     <ClInclude Include="..\..\include\etl\flags.h" />
     <ClInclude Include="..\..\include\etl\format_spec.h" />
     <ClInclude Include="..\..\include\etl\frame_check_sequence.h" />
@@ -1293,7 +1294,7 @@
     <ClInclude Include="..\..\include\etl\ireference_counted_message_pool.h" />
     <ClInclude Include="..\..\include\etl\limits.h" />
     <ClInclude Include="..\..\include\etl\macros.h" />
-    <ClInclude Include="..\..\include\etl\fixed_sized_memory_block_pool.h" />
+    <ClInclude Include="..\..\include\etl\fixed_sized_memory_block_allocator.h" />
     <ClInclude Include="..\..\include\etl\message_packet.h" />
     <ClInclude Include="..\..\include\etl\message_pool.h" />
     <ClInclude Include="..\..\include\etl\multi_array.h" />
@@ -1333,7 +1334,6 @@
     <ClInclude Include="..\..\include\etl\reference_counted_object.h" />
     <ClInclude Include="..\..\include\etl\scaled_rounding.h" />
     <ClInclude Include="..\..\include\etl\shared_message.h" />
-    <ClInclude Include="..\..\include\etl\shared_message_processor.h" />
     <ClInclude Include="..\..\include\etl\span.h" />
     <ClInclude Include="..\..\include\etl\state_chart.h" />
     <ClInclude Include="..\..\include\etl\math_constants.h" />
@@ -1915,7 +1915,7 @@
     <ClCompile Include="..\test_parity_checksum.cpp" />
     <ClCompile Include="..\test_pearson.cpp" />
     <ClCompile Include="..\test_pool.cpp" />
-    <ClCompile Include="..\test_pool_message.cpp" />
+    <ClCompile Include="..\test_shared_message.cpp" />
     <ClCompile Include="..\test_priority_queue.cpp" />
     <ClCompile Include="..\test_queue.cpp" />
     <ClCompile Include="..\test_queue_memory_model_small.cpp" />
@@ -2021,7 +2021,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\CMakeLists.txt" />
-    <Text Include="..\..\include\etl\file_error_numbers.txt" />
     <Text Include="..\..\support\Release notes.txt" />
     <Text Include="..\..\todo.txt" />
     <Text Include="..\CMakeLists.txt" />
