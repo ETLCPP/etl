@@ -1379,6 +1379,7 @@
     <ClInclude Include="..\..\include\etl\string_stream.h" />
     <ClInclude Include="..\..\include\etl\string_utilities.h" />
     <ClInclude Include="..\..\include\etl\string_view.h" />
+    <ClInclude Include="..\..\include\etl\successor.h" />
     <ClInclude Include="..\..\include\etl\task.h" />
     <ClInclude Include="..\..\include\etl\timer.h" />
     <ClInclude Include="..\..\include\etl\to_string.h" />

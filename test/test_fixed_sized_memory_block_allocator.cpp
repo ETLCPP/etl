@@ -131,7 +131,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_allocator_with_different_block_sized_successors_use_all_allocation)
+    TEST(test_allocator_with_different_block_sized_successors)
     {
       Allocator8  allocator8;
       Allocator16 allocator16;
@@ -139,6 +139,86 @@ namespace
 
       allocator8.set_successor(allocator16);
       allocator16.set_successor(allocator32);
+
+      int8_t*  p1  = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t)));   // Take from allocator8
+      int16_t* p2  = static_cast<int16_t*>(allocator8.allocate(sizeof(int16_t))); // Take from allocator16
+      int32_t* p3  = static_cast<int32_t*>(allocator8.allocate(sizeof(int32_t))); // Take from allocator32
+      int64_t* p4  = static_cast<int64_t*>(allocator8.allocate(sizeof(int64_t))); // Unable to allocate
+      int8_t*  p5  = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t)));   // Take from allocator8
+      int8_t*  p6  = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t)));   // Take from allocator8
+      int8_t*  p7  = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t)));   // Take from allocator8. allocator8 is full.
+      int8_t*  p8  = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t)));   // Take from allocator16
+      int8_t*  p9  = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t)));   // Take from allocator16
+      int8_t*  p10 = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t)));   // Take from allocator16. allocator16 is full.
+      int8_t*  p11 = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t)));   // Take from allocator32
+
+      CHECK(p1  != nullptr);
+      CHECK(p2  != nullptr);
+      CHECK(p3  != nullptr);
+      CHECK(p4  == nullptr);
+      CHECK(p5  != nullptr);
+      CHECK(p6  != nullptr);
+      CHECK(p7  != nullptr);
+      CHECK(p8  != nullptr);
+      CHECK(p9  != nullptr);
+      CHECK(p10 != nullptr);
+      CHECK(p11 != nullptr);
+
+      CHECK(allocator8.is_owner_of(p1));
+      CHECK(!allocator16.is_owner_of(p1));
+      CHECK(!allocator32.is_owner_of(p1));
+
+      CHECK(!allocator8.is_owner_of(p2));
+      CHECK(allocator16.is_owner_of(p2));
+      CHECK(!allocator32.is_owner_of(p2));
+
+      CHECK(!allocator8.is_owner_of(p3));
+      CHECK(!allocator16.is_owner_of(p3));
+      CHECK(allocator32.is_owner_of(p3));
+            
+      CHECK(!allocator8.is_owner_of(p4));
+      CHECK(!allocator16.is_owner_of(p4));
+      CHECK(!allocator32.is_owner_of(p4));
+
+      CHECK(allocator8.is_owner_of(p5));
+      CHECK(!allocator16.is_owner_of(p5));
+      CHECK(!allocator32.is_owner_of(p5));
+
+      CHECK(allocator8.is_owner_of(p6));
+      CHECK(!allocator16.is_owner_of(p6));
+      CHECK(!allocator32.is_owner_of(p6));
+
+      CHECK(allocator8.is_owner_of(p7));
+      CHECK(!allocator16.is_owner_of(p7));
+      CHECK(!allocator32.is_owner_of(p7));
+
+      CHECK(!allocator8.is_owner_of(p8));
+      CHECK(allocator16.is_owner_of(p8));
+      CHECK(!allocator32.is_owner_of(p8));
+
+      CHECK(!allocator8.is_owner_of(p9));
+      CHECK(allocator16.is_owner_of(p9));
+      CHECK(!allocator32.is_owner_of(p9));
+
+      CHECK(!allocator8.is_owner_of(p10));
+      CHECK(allocator16.is_owner_of(p10));
+      CHECK(!allocator32.is_owner_of(p10));
+
+      CHECK(!allocator8.is_owner_of(p11));
+      CHECK(!allocator16.is_owner_of(p11));
+      CHECK(allocator32.is_owner_of(p11));
+
+      CHECK(allocator8.release(p1));
+      CHECK(allocator8.release(p2));
+      CHECK(allocator8.release(p3));
+      CHECK(!allocator8.release(p4));
+      CHECK(allocator8.release(p5));
+      CHECK(allocator8.release(p6));
+      CHECK(allocator8.release(p7));
+      CHECK(allocator8.release(p8));
+      CHECK(allocator8.release(p9));
+      CHECK(allocator8.release(p10));
+      CHECK(allocator8.release(p11));
     }
   }
 }

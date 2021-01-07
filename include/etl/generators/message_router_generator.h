@@ -76,6 +76,7 @@ cog.outl("//********************************************************************
 #include "largest.h"
 #include "nullptr.h"
 #include "placement_new.h"
+#include "successor.h"
 
 #undef ETL_FILE
 #define ETL_FILE "35"
@@ -118,7 +119,7 @@ namespace etl
   //***************************************************************************
   /// This is the base of all message routers.
   //***************************************************************************
-  class imessage_router
+  class imessage_router : public etl::successor<imessage_router>
   {
   public:
 
@@ -139,6 +140,12 @@ namespace etl
     }
 
     //********************************************
+    void receive(etl::message_router_id_t destination_router_id, const etl::imessage& message)
+    {
+      receive(etl::get_null_message_router(), destination_router_id, message);
+    }
+
+    //********************************************
     void receive(const etl::imessage& message)
     {
       receive(etl::get_null_message_router(), message);
@@ -151,18 +158,24 @@ namespace etl
     }
 
     //********************************************
-    void receive(etl::shared_message shared_msg)
-    {
-      receive(etl::get_null_message_router(), shared_msg);
-    }
-
-    //********************************************
-    void receive(imessage_router& source, etl::message_router_id_t destination_router_id, etl::shared_message shared_msg)
+    virtual void receive(imessage_router& source, etl::message_router_id_t destination_router_id, etl::shared_message shared_msg)
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
         receive(source, shared_msg);
       }
+    }
+
+    //********************************************
+    void receive(etl::message_router_id_t destination_router_id, etl::shared_message shared_msg)
+    {
+      receive(etl::get_null_message_router(), destination_router_id, shared_msg);
+    }
+
+    //********************************************
+    void receive(etl::shared_message shared_msg)
+    {
+      receive(etl::get_null_message_router(), shared_msg);
     }
 
     //********************************************
@@ -177,24 +190,6 @@ namespace etl
       return message_router_id;
     }
 
-    //********************************************
-    void set_successor(imessage_router& successor_)
-    {
-      successor = &successor_;
-    }
-
-    //********************************************
-    imessage_router& get_successor() const
-    {
-      return *successor;
-    }
-
-    //********************************************
-    bool has_successor() const
-    {
-      return (successor != ETL_NULLPTR);
-    }
-
     enum
     {
       NULL_MESSAGE_ROUTER = 255,
@@ -206,15 +201,12 @@ namespace etl
   protected:
 
     imessage_router(etl::message_router_id_t id_)
-      : successor(ETL_NULLPTR)
-      , message_router_id(id_)
+      : message_router_id(id_)
     {
     }
 
-    imessage_router(etl::message_router_id_t id_,
-      imessage_router& successor_)
-      : successor(&successor_)
-      , message_router_id(id_)
+    imessage_router(etl::message_router_id_t id_, imessage_router& successor_)
+      : message_router_id(id_)
     {
     }
 
@@ -223,8 +215,6 @@ namespace etl
     // Disabled.
     imessage_router(const imessage_router&);
     imessage_router& operator =(const imessage_router&);
-
-    etl::imessage_router* successor;
 
     etl::message_router_id_t  message_router_id;
   };

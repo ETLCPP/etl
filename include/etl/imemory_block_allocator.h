@@ -33,13 +33,14 @@ SOFTWARE.
 
 #include "platform.h"
 #include "nullptr.h"
+#include "successor.h"
 
 namespace etl
 {
   //*****************************************************************************
   /// The interface for a memory block pool.
   //*****************************************************************************
-  class imemory_block_allocator
+  class imemory_block_allocator : public successor<imemory_block_allocator>
   {
   public:
 
@@ -47,7 +48,6 @@ namespace etl
     /// Default constructor.
     //*****************************************************************************
     imemory_block_allocator()
-      : p_successor(ETL_NULLPTR)
     {
     }
 
@@ -80,44 +80,20 @@ namespace etl
     //*****************************************************************************
     bool release(const void* const p)
     {
-      bool successful = release_block(p);
+      bool was_released = release_block(p);
 
       // Call the derived implementation to try to release.
-      if (!successful)
+      if (!was_released)
       {
         // If it failed and we have a successor...
         if (has_successor())
         {
           // Try to release from the next one in the chain.
-          successful = get_successor().release(p);
+          was_released = get_successor().release(p);
         }
       }
 
-      return successful;
-    }
-
-    //*****************************************************************************
-    /// Set the sucessor allocator.
-    //*****************************************************************************
-    void set_successor(etl::imemory_block_allocator& successor)
-    {
-      p_successor = &successor;
-    }
-
-    //*****************************************************************************
-    /// Get the sucessor allocator.
-    //*****************************************************************************
-    etl::imemory_block_allocator& get_successor() const
-    {
-      return *p_successor;
-    }
-
-    //*****************************************************************************
-    /// Do we have a successor allocator.
-    //*****************************************************************************
-    bool has_successor() const
-    {
-      return (p_successor != ETL_NULLPTR);
+      return was_released;
     }
 
   protected:
@@ -127,7 +103,9 @@ namespace etl
 
   private:
 
-    etl::imemory_block_allocator* p_successor;
+    // No copying allowed.
+    imemory_block_allocator(const etl::imemory_block_allocator&) ETL_DELETE;
+    imemory_block_allocator& operator =(const imemory_block_allocator&) ETL_DELETE;
   };
 }
 

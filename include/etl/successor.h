@@ -28,88 +28,67 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_FIXED_MEMORY_BLOCK_POOL_INCLUDED
-#define ETL_FIXED_MEMORY_BLOCK_POOL_INCLUDED
+#ifndef ETL_SUCCESSOR_INCLUDED
+#define ETL_SUCCESSOR_INCLUDED
 
 #include "platform.h"
-#include "imemory_block_allocator.h"
-#include "generic_pool.h"
-#include "alignment.h"
+#include "nullptr.h"
 
 namespace etl
 {
-  //*************************************************************************
-  /// The fixed sized memory block pool.
-  /// The allocated memory blocks are all the same size.
-  //*************************************************************************
-  template <size_t VBlock_Size, size_t VAlignment, size_t VSize>
-  class fixed_sized_memory_block_allocator : public imemory_block_allocator
+  //***************************************************************************
+  /// Adds successor traits to a class.
+  //***************************************************************************
+  template <typename T>
+  class successor
   {
   public:
 
-    static ETL_CONSTANT size_t Block_Size = VBlock_Size;
-    static ETL_CONSTANT size_t Alignment  = VAlignment;
-    static ETL_CONSTANT size_t Size       = VSize;
+    typedef T successor_type;
 
     //*************************************************************************
     /// Default constructor
     //*************************************************************************
-    fixed_sized_memory_block_allocator()
+    successor()
+      : p_successor(ETL_NULLPTR)
     {
     }
 
-#if defined(ETL_IN_UNIT_TEST)
     //*************************************************************************
-    /// Returns true if the allocator is the owner of the block.
-    /// For unit testing purposes.
+    /// Construct from a successor type
     //*************************************************************************
-    bool is_owner_of(const void* const pblock) const
+    successor(successor_type& s)
+      : p_successor(&s)
     {
-      return pool.is_in_pool(pblock);
     }
-#endif
+
+    //*************************************************************************
+    /// Set the successor.
+    //*************************************************************************
+    void set_successor(successor_type& s)
+    {
+      p_successor = &s;
+    }
+
+    //*************************************************************************
+    /// Get the successor.
+    //*************************************************************************
+    successor_type& get_successor() const
+    {
+      return *p_successor;
+    }
+
+    //*************************************************************************
+    /// Do we have a successor?
+    //*************************************************************************
+    bool has_successor() const
+    {
+      return (p_successor != ETL_NULLPTR);
+    }
 
   private:
 
-    /// A structure that has the size Block_Size.
-    struct block
-    {
-      char data[Block_Size];
-    };
-
-    //*************************************************************************
-    /// The overridden virtual function to allocate a block.
-    //*************************************************************************
-    virtual void* allocate_block(size_t required_size) ETL_OVERRIDE
-    {
-      if ((required_size <= Block_Size) && !pool.full())
-      {
-        return  pool.template allocate<block>();
-      }
-      else
-      {
-        return ETL_NULLPTR;
-      }
-    }
-
-    //*************************************************************************
-    /// The overridden virtual function to release a block.
-    //*************************************************************************
-    virtual bool release_block(const void* const pblock) ETL_OVERRIDE
-    {
-      if (pool.is_in_pool(pblock))
-      {
-        pool.release(static_cast<const block* const>(pblock));
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-
-    /// The generic pool from which allocate memory blocks.
-    etl::generic_pool<Block_Size, Alignment, Size> pool;
+    successor_type* p_successor;
   };
 }
 
