@@ -65,6 +65,8 @@ namespace etl
   {
   public:
 
+    ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
+
     typedef TMessage message_type;
     typedef TCounter counter_type;
 
@@ -133,6 +135,8 @@ namespace etl
   class non_pool_message : public etl::inon_pool_message
   {
   public:
+
+    ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
 
     typedef TMessage message_type;
 
