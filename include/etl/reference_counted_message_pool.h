@@ -40,9 +40,13 @@ SOFTWARE.
 #include "utility.h"
 #include "atomic.h"
 #include "memory.h"
+#include "largest.h"
 
 #undef ETL_FILE
 #define ETL_FILE ETL_REFERENCE_COUNTER_MESSAGE_POOL_ID
+
+#undef ETL_MAX
+#define ETL_MAX(a, b) ((a) < (b) ? (b) : (a))
 
 namespace etl
 {
@@ -140,7 +144,7 @@ namespace etl
 #if ETL_CPP11_SUPPORTED
     //*****************************************************
     template <typename TMessage1, typename... TMessages>
-    struct pool_message_size
+    struct max_pool_message_size
     {
     private:
 
@@ -148,13 +152,13 @@ namespace etl
       static constexpr size_t size1 = sizeof(etl::pool_message<TMessage1, TCounter>);
 
       // Maximum size of the the rest of the pool message types.
-      static constexpr size_t size2 = pool_message_size<TMessages...>::size;
+      static constexpr size_t size2 = max_pool_message_size<TMessages...>::size;
 
       // Size of the first pool message type.
       static constexpr size_t alignment1 = etl::alignment_of<etl::pool_message<TMessage1, TCounter>>::value;
 
       // Maximum size of the the rest of the pool message types.
-      static constexpr size_t alignment2 = pool_message_size<TMessages...>::alignment;
+      static constexpr size_t alignment2 = max_pool_message_size<TMessages...>::alignment;
 
     public:
 
@@ -167,7 +171,7 @@ namespace etl
 
     //*****************************************************
     template <typename TMessage1>
-    struct pool_message_size<TMessage1>
+    struct max_pool_message_size<TMessage1>
     {
     public:
 
@@ -180,11 +184,28 @@ namespace etl
       static constexpr size_t alignment = etl::alignment_of<etl::pool_message<TMessage1, TCounter>>::value;
     };
 #else
-    template <typename TMessage>
-    struct pool_message_size
+    template <typename TMessage1,              typename TMessage2  = TMessage1, typename TMessage3  = TMessage1, typename TMessage4  = TMessage1,
+              typename TMessage5  = TMessage1, typename TMessage6  = TMessage1, typename TMessage7  = TMessage1, typename TMessage8  = TMessage1>
+    struct max_pool_message_size
     {
-      static const size_t size      = sizeof(etl::pool_message<TMessage, TCounter>);
-      static const size_t alignment = etl::alignment_of<etl::pool_message<TMessage, TCounter> >::value;
+      static const size_t size = etl::largest<etl::pool_message<TMessage1, TCounter>,
+                                              etl::pool_message<TMessage2, TCounter>,
+                                              etl::pool_message<TMessage3, TCounter>,
+                                              etl::pool_message<TMessage4, TCounter>,
+                                              etl::pool_message<TMessage5, TCounter>,
+                                              etl::pool_message<TMessage6, TCounter>,
+                                              etl::pool_message<TMessage7, TCounter>,
+                                              etl::pool_message<TMessage8, TCounter> >::size;
+
+
+      static const size_t alignment = etl::largest<etl::pool_message<TMessage1, TCounter>,
+                                                   etl::pool_message<TMessage2, TCounter>,
+                                                   etl::pool_message<TMessage3, TCounter>,
+                                                   etl::pool_message<TMessage4, TCounter>,
+                                                   etl::pool_message<TMessage5, TCounter>,
+                                                   etl::pool_message<TMessage6, TCounter>,
+                                                   etl::pool_message<TMessage7, TCounter>,
+                                                   etl::pool_message<TMessage8, TCounter> >::alignment;
     };
 #endif
 
@@ -204,5 +225,6 @@ namespace etl
 }
 
 #undef ETL_FILE
+#undef ETL_MAX
 
 #endif

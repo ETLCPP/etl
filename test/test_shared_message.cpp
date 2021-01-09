@@ -151,7 +151,7 @@ namespace
     Router2 router2;
     Bus     bus;
 
-    using pool_message_parameters = etl::atomic_counted_message_pool::pool_message_size<Message1, Message2>;
+    using pool_message_parameters = etl::atomic_counted_message_pool::max_pool_message_size<Message1, Message2>;
 
     etl::fixed_sized_memory_block_allocator<pool_message_parameters::size,
                                             pool_message_parameters::alignment,
