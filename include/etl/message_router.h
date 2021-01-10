@@ -112,14 +112,14 @@ namespace etl
   public:
 
     virtual ~imessage_router() {}
-    virtual void receive(imessage_router& source, const etl::imessage& message) = 0;
+    virtual void receive(etl::imessage_router& source, const etl::imessage& message) = 0;
     virtual bool accepts(etl::message_id_t id) const = 0;
     virtual bool is_null_router() const = 0;
     virtual bool is_producer() const = 0;
     virtual bool is_consumer() const = 0;
 
     //********************************************
-    virtual void receive(imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& message)
+    virtual void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& message)
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
@@ -140,13 +140,13 @@ namespace etl
     }
 
     //********************************************
-    virtual void receive(imessage_router& source, etl::shared_message shared_msg)
+    virtual void receive(etl::imessage_router& source, etl::shared_message shared_msg)
     {
       receive(source, shared_msg.get_message());
     }
 
     //********************************************
-    virtual void receive(imessage_router& source, etl::message_router_id_t destination_router_id, etl::shared_message shared_msg)
+    virtual void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, etl::shared_message shared_msg)
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {

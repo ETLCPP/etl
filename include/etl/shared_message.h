@@ -88,7 +88,7 @@ namespace etl
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
-    shared_message(const shared_message& other)
+    shared_message(const etl::shared_message& other)
       : p_rcmessage(other.p_rcmessage)
     {
       p_rcmessage->get_reference_counter().increment_reference_count();
@@ -97,7 +97,7 @@ namespace etl
     //*************************************************************************
     /// Copy assignment operator
     //*************************************************************************
-    shared_message& operator =(const shared_message& other)
+    shared_message& operator =(const etl::shared_message& other)
     {
       if (&other != this)
       {

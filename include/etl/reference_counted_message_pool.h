@@ -93,14 +93,14 @@ namespace etl
   /// A pool for allocating reference counted messages.
   //***************************************************************************
   template <typename TCounter>
-  class reference_counted_message_pool : public ireference_counted_message_pool
+  class reference_counted_message_pool : public etl::ireference_counted_message_pool
   {
   public:
 
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    reference_counted_message_pool(imemory_block_allocator& memory_block_allocator_)
+    reference_counted_message_pool(etl::imemory_block_allocator& memory_block_allocator_)
       : memory_block_allocator(memory_block_allocator_)
     {
     }
