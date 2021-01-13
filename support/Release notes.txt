@@ -1,6 +1,6 @@
 ===============================================================================
 19.4.07
-Added virtual function 'void on_task_added()' that is called when a task is added to a shceduler.
+Added virtual function 'void on_task_added()' that is called when a task is added to a scheduler.
 
 ===============================================================================
 19.3.7
