@@ -297,6 +297,8 @@ namespace etl
                                                                    compare_priority());
 
         task_list.insert(itask, &task);
+
+        task.on_task_added();
       }
     }
 
@@ -312,6 +314,7 @@ namespace etl
       {
         ETL_ASSERT((p_tasks[i] != ETL_NULLPTR), ETL_ERROR(etl::scheduler_null_task_exception));
         add_task(*(p_tasks[i]));
+        p_tasks[i]->on_task_added();
       }
     }
 

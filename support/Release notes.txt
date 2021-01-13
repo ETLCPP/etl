@@ -1,4 +1,8 @@
 ===============================================================================
+19.4.07
+Added virtual function 'void on_task_added()' that is called when a task is added to a shceduler.
+
+===============================================================================
 19.3.7
 Fix some container iterator assignment operators to return a reference, rather than value.
 Fix non-const etl::frame_check_sequence functions are const in all derived classes.
