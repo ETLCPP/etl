@@ -46,8 +46,8 @@ filename    = 'library.properties'
 source      = os.path.join(etl_dir, filename)
 destination = os.path.join(etl_arduino_dir, filename)
 print('Copy the library properties')
-print(' From : ', source)
-print(' To   : ', destination)
+print('  From :', source)
+print('  To   :', destination)
 shutil.copyfile(source, destination)
 
 print('')
@@ -57,8 +57,8 @@ filename    = 'Embedded_Template_Library.h'
 source      = os.path.join(arduino_dir, filename)
 destination = os.path.join(etl_arduino_src_dir, filename)
 print('Copy the Arduino ETL header')
-print('  From : ', source)
-print('  To   : ', destination)
+print('  From :', source)
+print('  To   :', destination)
 shutil.copyfile(source, destination)
 
 print('')
@@ -67,6 +67,6 @@ print('')
 source      = include_dir
 destination = etl_arduino_src_dir
 print('Copy the ETL headers')
-print('  From : ', source)
-print('  To   : ', destination)
+print('  From :', source)
+print('  To   :', destination)
 shutil.copytree(source, destination, dirs_exist_ok = True)

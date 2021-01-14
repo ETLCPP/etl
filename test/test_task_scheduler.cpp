@@ -81,13 +81,14 @@ public:
 
   //*********************************************
   Task(etl::task_priority_t priority_, WorkList_t& work_, Common& common_)
-    : task(priority_),
-      work(work_),
-      common(common_),
-      workIndex(0),
-      addAtIndex(0),
-      workToAdd(""),
-      pTaskToAddTo(nullptr)
+    : task(priority_)
+    , work(work_)
+    , common(common_)
+    , workIndex(0)
+    , addAtIndex(0)
+    , workToAdd("")
+    , pTaskToAddTo(nullptr)
+    , task_added(false)
   {
     workCopy = work;
   }
@@ -100,6 +101,7 @@ public:
     workToAdd    = "";
     pTaskToAddTo = nullptr;
     work         = workCopy;
+    task_added   = false;
   }
 
   //*********************************************
@@ -111,13 +113,13 @@ public:
   }
 
   //*********************************************
-  uint32_t task_request_work() const
+  virtual uint32_t task_request_work() const ETL_OVERRIDE
   {
     return uint_least8_t(work.size() - workIndex);
   }
 
   //*********************************************
-  void task_process_work()
+  virtual void task_process_work() ETL_OVERRIDE
   {
     common.workList.push_back(work[workIndex]);
     ++workIndex;
@@ -127,6 +129,14 @@ public:
       pTaskToAddTo->work.push_back(workToAdd);
     }
   }
+
+  //*********************************************
+  virtual void on_task_added() ETL_OVERRIDE
+  {
+    task_added = true;
+  }
+
+  bool task_added;
 
 private:
 
@@ -160,6 +170,24 @@ namespace
 {
   SUITE(test_task_scheduler)
   {
+    //*************************************************************************
+    TEST(test_task_added)
+    {
+      SchedulerSequentialSingle s;
+
+      task1.Reset();
+      task2.Reset();
+      task3.Reset();
+
+      common.Clear();
+
+      s.add_task_list(taskList, etl::size(taskList));
+
+      CHECK(task1.task_added);
+      CHECK(task2.task_added);
+      CHECK(task3.task_added);
+    }
+
     //*************************************************************************
     TEST(test_scheduler_sequencial_single)
     {

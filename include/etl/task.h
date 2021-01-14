@@ -90,6 +90,14 @@ namespace etl
     virtual void task_process_work() = 0;
 
     //*******************************************
+    /// Called when the task has been added to the scheduler.
+    //*******************************************
+    virtual void on_task_added()
+    {
+      // Do nothing.
+    }
+
+    //*******************************************
     /// Set the running state for the task.
     //*******************************************
     void set_task_running(bool task_running_)
