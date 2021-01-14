@@ -106,45 +106,6 @@ namespace etl
   };
 
   //***************************************************************************
-  /// A null reference counter.
-  /// Always returns the reference count as 1, for persistent objects.
-  //***************************************************************************
-  class null_reference_counter : public ireference_counter
-  {
-  public:
-
-    //***************************************************************************
-    /// Set the reference count.
-    //***************************************************************************
-    virtual void set_reference_count(int32_t value) ETL_OVERRIDE
-    {
-    }
-
-    //***************************************************************************
-    /// Increment the reference count.
-    //***************************************************************************
-    virtual void increment_reference_count() ETL_OVERRIDE
-    {
-    }
-
-    //***************************************************************************
-    /// Decrement the reference count.
-    //***************************************************************************
-    ETL_NODISCARD virtual int32_t decrement_reference_count() ETL_OVERRIDE
-    {
-      return int32_t(1);
-    }
-
-    //***************************************************************************
-    /// Get the current reference count.
-    //***************************************************************************
-    ETL_NODISCARD virtual int32_t get_reference_count() const ETL_OVERRIDE
-    {
-      return int32_t(1);
-    }
-  };
-
-  //***************************************************************************
   /// Base for all reference counted objects.
   //***************************************************************************
   class ireference_counted_object
@@ -210,61 +171,6 @@ namespace etl
         
     const TObject object;                               ///< The object being reference counted.
     etl::reference_counter<TCounter> reference_counter; ///< The reference counter.
-  };
-
-  //***************************************************************************
-  /// Persistent message type.
-  /// The message type will always have a reference count of 1. 
-  /// \tparam TObject  The type stored in the object.
-  //***************************************************************************
-  template <typename TObject>
-  class persistent_object : public etl::ireference_counted_object
-  {
-  public:
-
-    typedef TObject value_type;
-
-    //***************************************************************************
-    /// Constructor.
-    //***************************************************************************
-    persistent_object(const TObject& object_)
-      : object(object_)
-    {
-    }
-
-    //***************************************************************************
-    /// Get a const reference to the counted object.
-    //***************************************************************************
-    ETL_NODISCARD const value_type& get_object() const
-    {
-      return object;
-    }
-
-    //***************************************************************************
-    /// Get a reference to the reference counter.
-    //***************************************************************************
-    ETL_NODISCARD virtual ireference_counter& get_reference_counter() ETL_OVERRIDE
-    {
-      return reference_counter;
-    }
-
-    //***************************************************************************
-    /// Get a const reference to the reference counter.
-    //***************************************************************************
-    ETL_NODISCARD virtual const ireference_counter& get_reference_counter() const ETL_OVERRIDE
-    {
-      return reference_counter;
-    }
-
-  private:
-
-    // This class must not be default contructed, copy constructed or assigned.
-    persistent_object() ETL_DELETE;
-    persistent_object(const persistent_object&) ETL_DELETE;
-    persistent_object& operator =(const persistent_object&) ETL_DELETE;
-
-    TObject object;                                ///< The object being reference counted.
-    etl::null_reference_counter reference_counter; ///< The reference counter.
   };
 
 #if ETL_CPP11_SUPPORTED && ETL_HAS_ATOMIC

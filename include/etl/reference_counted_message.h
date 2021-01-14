@@ -53,15 +53,8 @@ namespace etl
     virtual void release() = 0;                                                             ///< Release back to the owner.
   };
 
-  //***************************************************************************
-  // Reference counted message type.
-  //***************************************************************************
-  class ipool_message : public etl::ireference_counted_message
-  {
-  };
-
   template <typename TMessage, typename TCounter>
-  class pool_message : public etl::ipool_message
+  class reference_counted_message : public etl::ireference_counted_message
   {
   public:
 
@@ -74,7 +67,7 @@ namespace etl
     /// Constructor
     /// \param msg The message to count.
     //***************************************************************************
-    pool_message(const TMessage& msg_, etl::ireference_counted_message_pool& owner_)
+    reference_counted_message(const TMessage& msg_, etl::ireference_counted_message_pool& owner_)
       : rc_object(msg_)
       , owner(owner_)
     {
@@ -122,86 +115,13 @@ namespace etl
     etl::ireference_counted_message_pool& owner;                 ///< The pool that owns this object.
   };
 
-  //***************************************************************************
-  /// Persistent message type.
-  /// The message type will always have a reference count of 1. 
-  /// \tparam TMessage  The message type stored.
-  //***************************************************************************
-  class inon_pool_message : public etl::ireference_counted_message
-  {
-  };
-  
-  template <typename TMessage>
-  class non_pool_message : public etl::inon_pool_message
-  {
-  public:
-
-    ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
-
-    typedef TMessage message_type;
-
-    //***************************************************************************
-    /// Constructor
-    /// \param msg The message to count.
-    //***************************************************************************
-    explicit non_pool_message(const TMessage& msg_)
-      : rc_object(msg_)
-    {
-    }
-
-    //***************************************************************************
-    /// Get a const reference to the message.
-    /// \return A const reference to the message.
-    //***************************************************************************
-    ETL_NODISCARD virtual const TMessage& get_message() const ETL_OVERRIDE
-    {
-      return rc_object.get_object();
-    }
-
-    //***************************************************************************
-    /// Get a reference to the reference counter.
-    /// \return A reference to the reference counter.
-    //***************************************************************************
-    ETL_NODISCARD virtual etl::ireference_counter& get_reference_counter() ETL_OVERRIDE
-    {
-      return rc_object.get_reference_counter();
-    }
-
-    //***************************************************************************
-    /// Get a const reference to the reference counter.
-    /// \return A const reference to the reference counter.
-    //***************************************************************************
-    ETL_NODISCARD virtual const etl::ireference_counter& get_reference_counter() const ETL_OVERRIDE
-    {
-      return rc_object.get_reference_counter();
-    }
-
-    //***************************************************************************
-    /// Release back to the owner pool.
-    /// \return A reference to the owner pool.
-    //***************************************************************************
-    virtual void release() ETL_OVERRIDE
-    {
-      // Do nothing.
-    }
-
-  private:
-
-    // This class must not be default contructed, copy constructed or assigned.
-    non_pool_message() ETL_DELETE;
-    non_pool_message(const non_pool_message&) ETL_DELETE;
-    non_pool_message& operator =(const non_pool_message&) ETL_DELETE;
-
-    etl::persistent_object<TMessage> rc_object; ///< The reference counted object.
-  };
-
 #if ETL_CPP11_SUPPORTED && ETL_HAS_ATOMIC
   //***************************************************************************
   /// Class for creating reference counted objects using an atomic counter.
   /// \tparam TObject  The type to be reference counted.
   //***************************************************************************
   template <typename TMessage>
-  using atomic_counted_message = etl::pool_message<TMessage, etl::atomic_int32_t>;
+  using atomic_counted_message = etl::reference_counted_message<TMessage, etl::atomic_int32_t>;
 #endif
 }
 

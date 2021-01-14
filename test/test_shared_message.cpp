@@ -160,6 +160,26 @@ namespace
     etl::atomic_counted_message_pool message_pool(memory_allocator);
 
     //*************************************************************************
+    class Message2Allocator : public etl::ireference_counted_message_pool
+    {
+      public:
+
+        static etl::reference_counted_message<Message2, int>& Get()
+        {
+          static Message2Allocator allocator;
+          static Message2 message2;
+          static etl::reference_counted_message<Message2, int> rcm2(message2, allocator);
+
+          return rcm2;
+        }
+
+        void release(const etl::ireference_counted_message& msg) override
+        {
+          // Do nothing.
+        }
+    };
+
+    //*************************************************************************
     TEST(test_send_to_routers)
     {
       bus.clear();
@@ -168,11 +188,9 @@ namespace
       router1.clear();
       router2.clear();
 
-      etl::non_pool_message<Message2> npm((Message2()));  // npm is not owned by any pool. Extra parentheses to fix 'vexing parse'.
-
       etl::shared_message sm1(message_pool, Message1(1)); // sm1 holds a Message1 that is owned by message_pool.
       etl::shared_message sm2(message_pool, Message2());  // sm2 holds a Message2 that is owned by message_pool.
-      etl::shared_message sm3(npm);                       // sm3 holds a Message2 that is not owned by a message pool.
+      etl::shared_message sm3(Message2Allocator::Get());  // sm3 holds a Message2 that is owned by a statically allocated message pool.
       etl::shared_message sm4(sm1);                       // sm4 is a copy of sm1.
 
       bus.receive(sm1);

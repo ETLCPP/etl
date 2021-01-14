@@ -68,20 +68,11 @@ namespace etl
 
     //*************************************************************************
     /// Constructor
-    /// \param np_message A reference to a message not controlled by a pool.
     //*************************************************************************
-    explicit shared_message(etl::inon_pool_message& np_message)
-      : p_rcmessage(&np_message)
-    {      
-    }
-
-    //*************************************************************************
-    /// Constructor
-    /// \param message A reference to the message allocated from the pool.
-    //*************************************************************************
-    explicit shared_message(etl::ipool_message& rcmessage_)
-      : p_rcmessage(&rcmessage_)
+    shared_message(etl::ireference_counted_message& rcm)
     {
+      p_rcmessage = &rcm;
+
       p_rcmessage->get_reference_counter().set_reference_count(1U);
     }
 
