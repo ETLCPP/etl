@@ -149,9 +149,16 @@ namespace etl
 
     //*******************************************
     virtual void receive(etl::imessage_router& source,
-                         const etl::imessage&  message) ETL_OVERRIDE
+                         const etl::imessage& message) ETL_OVERRIDE
     {
       receive(source, etl::imessage_router::ALL_MESSAGE_ROUTERS, message);
+    }
+
+    //*******************************************
+    virtual void receive(etl::imessage_router& source,
+                         etl::shared_message   shared_msg) ETL_OVERRIDE
+    {
+      receive(source, etl::imessage_router::ALL_MESSAGE_ROUTERS, shared_msg);
     }
 
     //********************************************

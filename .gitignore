@@ -284,3 +284,4 @@ examples/FunctionInterruptSimulation-Delegates/vs2019/.vs
 
 *.db-shm
 test/vs2019/.vs/etl/v16/Browse.VC.db-wal
+examples/SharedMessage/.vs

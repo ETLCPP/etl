@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "message.h"
+#include "imemory_block_allocator.h"
 #include "ireference_counted_message_pool.h"
 #include "reference_counted_message.h"
 #include "static_assert.h"
@@ -44,9 +45,6 @@ SOFTWARE.
 
 #undef ETL_FILE
 #define ETL_FILE ETL_REFERENCE_COUNTER_MESSAGE_POOL_ID
-
-#undef ETL_MAX
-#define ETL_MAX(a, b) ((a) < (b) ? (b) : (a))
 
 namespace etl
 {
@@ -234,6 +232,5 @@ namespace etl
 }
 
 #undef ETL_FILE
-#undef ETL_MAX
 
 #endif
