@@ -142,7 +142,7 @@ namespace etl
 #if ETL_CPP11_SUPPORTED
     //*****************************************************
     template <typename TMessage1, typename... TMessages>
-    struct max_pool_message_size
+    struct pool_message_parameters
     {
     private:
 
@@ -150,26 +150,26 @@ namespace etl
       static constexpr size_t size1 = sizeof(etl::reference_counted_message<TMessage1, TCounter>);
 
       // Maximum size of the the rest of the pool message types.
-      static constexpr size_t size2 = max_pool_message_size<TMessages...>::size;
+      static constexpr size_t size2 = pool_message_parameters<TMessages...>::size;
 
       // Size of the first pool message type.
       static constexpr size_t alignment1 = etl::alignment_of<etl::reference_counted_message<TMessage1, TCounter>>::value;
 
       // Maximum size of the the rest of the pool message types.
-      static constexpr size_t alignment2 = max_pool_message_size<TMessages...>::alignment;
+      static constexpr size_t alignment2 = pool_message_parameters<TMessages...>::alignment;
 
     public:
 
       // The maximum size.
-      static constexpr size_t size = (size1 < size2) ? size2 : size1;
+      static constexpr size_t max_size = (size1 < size2) ? size2 : size1;
 
       // The maximum alignment.
-      static constexpr size_t alignment = (alignment1 < alignment2) ? alignment2 : alignment1;
+      static constexpr size_t max_alignment = (alignment1 < alignment2) ? alignment2 : alignment1;
     };
 
     //*****************************************************
     template <typename TMessage1>
-    struct max_pool_message_size<TMessage1>
+    struct pool_message_parameters<TMessage1>
     {
     public:
 
@@ -184,7 +184,7 @@ namespace etl
 #else
     template <typename TMessage1,              typename TMessage2  = TMessage1, typename TMessage3  = TMessage1, typename TMessage4  = TMessage1,
               typename TMessage5  = TMessage1, typename TMessage6  = TMessage1, typename TMessage7  = TMessage1, typename TMessage8  = TMessage1>
-    struct max_pool_message_size
+    struct pool_message_parameters
     {
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage1>::value), "TMessage1 not derived from etl::imessage");
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage1>::value), "TMessage2 not derived from etl::imessage");
@@ -195,24 +195,24 @@ namespace etl
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage1>::value), "TMessage7 not derived from etl::imessage");
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage1>::value), "TMessage8 not derived from etl::imessage");
 
-      static const size_t size = etl::largest<etl::reference_counted_message<TMessage1, TCounter>,
-                                              etl::reference_counted_message<TMessage2, TCounter>,
-                                              etl::reference_counted_message<TMessage3, TCounter>,
-                                              etl::reference_counted_message<TMessage4, TCounter>,
-                                              etl::reference_counted_message<TMessage5, TCounter>,
-                                              etl::reference_counted_message<TMessage6, TCounter>,
-                                              etl::reference_counted_message<TMessage7, TCounter>,
-                                              etl::reference_counted_message<TMessage8, TCounter> >::size;
+      static const size_t max_size = etl::largest<etl::reference_counted_message<TMessage1, TCounter>,
+                                                  etl::reference_counted_message<TMessage2, TCounter>,
+                                                  etl::reference_counted_message<TMessage3, TCounter>,
+                                                  etl::reference_counted_message<TMessage4, TCounter>,
+                                                  etl::reference_counted_message<TMessage5, TCounter>,
+                                                  etl::reference_counted_message<TMessage6, TCounter>,
+                                                  etl::reference_counted_message<TMessage7, TCounter>,
+                                                  etl::reference_counted_message<TMessage8, TCounter> >::size;
 
 
-      static const size_t alignment = etl::largest<etl::reference_counted_message<TMessage1, TCounter>,
-                                                   etl::reference_counted_message<TMessage2, TCounter>,
-                                                   etl::reference_counted_message<TMessage3, TCounter>,
-                                                   etl::reference_counted_message<TMessage4, TCounter>,
-                                                   etl::reference_counted_message<TMessage5, TCounter>,
-                                                   etl::reference_counted_message<TMessage6, TCounter>,
-                                                   etl::reference_counted_message<TMessage7, TCounter>,
-                                                   etl::reference_counted_message<TMessage8, TCounter> >::alignment;
+      static const size_t max_alignment = etl::largest<etl::reference_counted_message<TMessage1, TCounter>,
+                                                       etl::reference_counted_message<TMessage2, TCounter>,
+                                                       etl::reference_counted_message<TMessage3, TCounter>,
+                                                       etl::reference_counted_message<TMessage4, TCounter>,
+                                                       etl::reference_counted_message<TMessage5, TCounter>,
+                                                       etl::reference_counted_message<TMessage6, TCounter>,
+                                                       etl::reference_counted_message<TMessage7, TCounter>,
+                                                       etl::reference_counted_message<TMessage8, TCounter> >::alignment;
     };
 #endif
 

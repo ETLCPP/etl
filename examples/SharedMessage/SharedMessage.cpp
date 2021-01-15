@@ -41,12 +41,14 @@ struct Message2 : public etl::message<2>
 };
 
 //*****************************************************************************
-void Print(const std::string& prefix, const etl::shared_message& sm)
+void Print(const std::string& prefix, etl::shared_message sm)
 {
   std::cout << prefix << " : " << int(sm.get_message().get_message_id()) << "\n";
 }
 
 //*****************************************************************************
+// This router accepts Message1 and Message2 types.
+// If a shared message it received, it will be processed immediately.
 class MessageRouter1 : public etl::message_router<MessageRouter1, Message1, Message2>
 {
 public:
@@ -60,23 +62,26 @@ public:
   //****************************************
   void on_receive(etl::imessage_router& source, const Message1& msg)
   {
-    std::cout << "on_receive Message1 : " << msg.s << "\n";
+    std::cout << "MessageRouter1 : on_receive Message1 : " << msg.s << "\n";
   }
 
   //****************************************
   void on_receive(etl::imessage_router& source, const Message2& msg)
   {
-    std::cout << "on_receive Message2 : " << msg.s << "\n";
+    std::cout << "MessageRouter1 : on_receive Message2 : " << msg.s << "\n";
   }
 
   //****************************************
   void on_receive_unknown(etl::imessage_router& source, const etl::imessage& msg)
   {
-    std::cout << "on_receive Unknown\n";
+    std::cout << "MessageRouter1 : on_receive Unknown\n";
   }
 };
 
 //*****************************************************************************
+// This router accepts Message1 and Message2 types.
+// If a shared message it received it will queue them.
+// The messages will be processed when process_queue() is called.
 class MessageRouter2 : public etl::message_router<MessageRouter2, Message1, Message2>
 {
 public:
@@ -96,7 +101,7 @@ public:
   {
     if (!queue.full())
     {
-      Print("Queueing shared message", shared_msg);
+      Print("MessageRouter2 : Queueing shared message", shared_msg);
 
       queue.push(QueuedData{ &source, shared_msg });
     }
@@ -110,7 +115,7 @@ public:
       // Get the shared message from the queue.
       QueuedData data = queue.front();
 
-      Print("Process queued shared messages", data.shared_msg);
+      Print("MessageRouter2 : Process queued shared messages", data.shared_msg);
 
       // Send it to the base implementation for routing.
       base_t::receive(*data.source, data.shared_msg);
@@ -122,19 +127,19 @@ public:
   //****************************************
   void on_receive(etl::imessage_router& source, const Message1& msg)
   {
-    std::cout << "on_receive Message1 : " << msg.s << "\n";
+    std::cout << "MessageRouter2 : on_receive Message1 : " << msg.s << "\n";
   }
 
   //****************************************
   void on_receive(etl::imessage_router& source, const Message2& msg)
   {
-    std::cout << "on_receive Message2 : " << msg.s << "\n";
+    std::cout << "MessageRouter2 : on_receive Message2 : " << msg.s << "\n";
   }
 
   //****************************************
   void on_receive_unknown(etl::imessage_router& source, const etl::imessage& msg)
   {
-    std::cout << "on_receive Unknown\n";
+    std::cout << "MessageRouter2 : on_receive Unknown\n";
   }
 
 private:
@@ -149,11 +154,13 @@ private:
 };
 
 //*****************************************************************************
+// A message bus that can accomodate two subscribers.
 struct Bus : public etl::message_bus<2U>
 {
 };
 
 //*****************************************************************************
+// Define the routers and bus.
 MessageRouter1 router1;
 MessageRouter2 router2;
 Bus bus;
@@ -161,12 +168,23 @@ Bus bus;
 //*****************************************************************************
 // The memory block allocator that supplies the pool with memory 
 // to store reference counted messages in. 
-etl::fixed_sized_memory_block_allocator<100U, 4U, 4U> memory_pool;
+
+// The reference counted message pool type. Uses atomic uint32_t for counting.
+using ref_message_pool = etl::reference_counted_message_pool<std::atomic_int32_t>;
+
+// The reference counted message parameters type for the messages we will use.
+using ref_message_parameters = ref_message_pool::pool_message_parameters<Message1, Message2>;
+
+constexpr size_t max_size      = ref_message_parameters::max_size;
+constexpr size_t max_alignment = ref_message_parameters::max_alignment;
+
+// A fixed memory block allocator for 4 items, using the parameters from the pool.
+etl::fixed_sized_memory_block_allocator<max_size, max_alignment, 4U> memory_pool;
 
 //*****************************************************************************
 // The pool that supplies reference counted messages.
 // Uses memory_pool as its allocator.
-etl::reference_counted_message_pool<std::atomic_int32_t> pool(memory_pool);
+ref_message_pool pool(memory_pool);
 
 //*****************************************************************************
 int main()
