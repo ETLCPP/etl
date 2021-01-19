@@ -150,13 +150,13 @@ namespace etl
       static constexpr size_t size1 = sizeof(etl::reference_counted_message<TMessage1, TCounter>);
 
       // Maximum size of the the rest of the pool message types.
-      static constexpr size_t size2 = pool_message_parameters<TMessages...>::size;
+      static constexpr size_t size2 = pool_message_parameters<TMessages...>::max_size;
 
       // Size of the first pool message type.
       static constexpr size_t alignment1 = etl::alignment_of<etl::reference_counted_message<TMessage1, TCounter>>::value;
 
       // Maximum size of the the rest of the pool message types.
-      static constexpr size_t alignment2 = pool_message_parameters<TMessages...>::alignment;
+      static constexpr size_t alignment2 = pool_message_parameters<TMessages...>::max_alignment;
 
     public:
 
@@ -176,10 +176,10 @@ namespace etl
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage1>::value), "TMessage not derived from etl::imessage");
 
       // The size of this pool message type.
-      static constexpr size_t size = sizeof(etl::reference_counted_message<TMessage1, TCounter>);
+      static constexpr size_t max_size = sizeof(etl::reference_counted_message<TMessage1, TCounter>);
 
       // The maximum alignment.
-      static constexpr size_t alignment = etl::alignment_of<etl::reference_counted_message<TMessage1, TCounter>>::value;
+      static constexpr size_t max_alignment = etl::alignment_of<etl::reference_counted_message<TMessage1, TCounter>>::value;
     };
 #else
     template <typename TMessage1,              typename TMessage2  = TMessage1, typename TMessage3  = TMessage1, typename TMessage4  = TMessage1,

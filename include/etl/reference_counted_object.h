@@ -106,6 +106,55 @@ namespace etl
   };
 
   //***************************************************************************
+  /// A specialisation for a counter type of void.
+  //***************************************************************************
+  template <>
+  class reference_counter<void> : public ireference_counter
+  {
+  public:
+
+    //***************************************************************************
+    /// Constructor.
+    //***************************************************************************
+    reference_counter()
+    {
+      // Do nothing.
+    }
+
+    //***************************************************************************
+    /// Set the reference count.
+    //***************************************************************************
+    virtual void set_reference_count(int32_t value) ETL_OVERRIDE
+    {
+      // Do nothing.
+    }
+
+    //***************************************************************************
+    /// Increment the reference count.
+    //***************************************************************************
+    virtual void increment_reference_count() ETL_OVERRIDE
+    {
+      // Do nothing.
+    }
+
+    //***************************************************************************
+    /// Decrement the reference count.
+    //***************************************************************************
+    ETL_NODISCARD virtual int32_t decrement_reference_count() ETL_OVERRIDE
+    {
+      return int32_t(1);
+    }
+
+    //***************************************************************************
+    /// Get the current reference count.
+    //***************************************************************************
+    ETL_NODISCARD virtual int32_t get_reference_count() const ETL_OVERRIDE
+    {
+      return int32_t(1);
+    }
+  };
+
+  //***************************************************************************
   /// Base for all reference counted objects.
   //***************************************************************************
   class ireference_counted_object

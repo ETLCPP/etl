@@ -151,10 +151,10 @@ namespace
     Router2 router2;
     Bus     bus;
 
-    using pool_message_parameters = etl::atomic_counted_message_pool::max_pool_message_size<Message1, Message2>;
+    using pool_message_parameters = etl::atomic_counted_message_pool::pool_message_parameters<Message1, Message2>;
 
-    etl::fixed_sized_memory_block_allocator<pool_message_parameters::size,
-                                            pool_message_parameters::alignment,
+    etl::fixed_sized_memory_block_allocator<pool_message_parameters::max_size,
+                                            pool_message_parameters::max_alignment,
                                             4U> memory_allocator;
 
     etl::atomic_counted_message_pool message_pool(memory_allocator);
@@ -164,11 +164,11 @@ namespace
     {
       public:
 
-        static etl::reference_counted_message<Message2, int>& Get()
+        static etl::reference_counted_message<Message2, void>& Get()
         {
           static Message2Allocator allocator;
           static Message2 message2;
-          static etl::reference_counted_message<Message2, int> rcm2(message2, allocator);
+          static etl::reference_counted_message<Message2, void> rcm2(message2, allocator);
 
           return rcm2;
         }
