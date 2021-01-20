@@ -116,7 +116,9 @@ namespace etl
 
       prcm_t p = ETL_NULLPTR;
 
+      lock();
       p = static_cast<prcm_t>(memory_block_allocator.allocate(sizeof(rcm_t)));
+      unlock();
 
       if (p != ETL_NULLPTR)
       {
@@ -134,7 +136,9 @@ namespace etl
     void release(const etl::ireference_counted_message& rcmessage)
     {
       rcmessage.~ireference_counted_message();
+      lock();
       bool released = memory_block_allocator.release(&rcmessage);
+      unlock();
 
       ETL_ASSERT(released, ETL_ERROR(etl::reference_counted_message_pool_release_failure));
     }
