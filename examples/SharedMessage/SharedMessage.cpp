@@ -13,6 +13,7 @@
 #include <iostream>
 #include <atomic>
 #include <string>
+#include <mutex>
 
 constexpr etl::message_router_id_t RouterId1 = 1U;
 constexpr etl::message_router_id_t RouterId2 = 2U;
@@ -207,21 +208,46 @@ MessageRouter2 router2;
 Bus bus;
 
 //*****************************************************************************
+// The thread safe message pool. Uses atomic uint32_t for counting.
+class MessagePool : public etl::reference_counted_message_pool<std::atomic_int32_t>
+{
+public:
+
+  MessagePool(etl::imemory_block_allocator& allocator)
+    : reference_counted_message_pool(allocator)
+  {
+  }
+
+  // Called before the memory block allocator is accessed.
+  void lock() override
+  {
+    mut.lock();
+  }
+
+  // Called after the memory block allocator has been accessed.
+  void unlock() override
+  {
+    mut.unlock();
+  }
+
+private:
+
+  std::mutex mut;
+};
+
+//*****************************************************************************
 // The memory block allocator that supplies the pool with memory 
 // to store reference counted messages in. 
 
-// The reference counted message pool type. Uses atomic uint32_t for counting.
-using ref_message_pool = etl::reference_counted_message_pool<std::atomic_int32_t>;
-
 // The reference counted message parameters type for the messages we will use.
-using ref_message_parameters_small = ref_message_pool::pool_message_parameters<Message1, Message3>;
-using ref_message_parameters_large = ref_message_pool::pool_message_parameters<Message2>;
+using message_parameters_small = MessagePool::pool_message_parameters<Message1, Message3>;
+using message_parameters_large = MessagePool::pool_message_parameters<Message2>;
 
-constexpr size_t max_size_small      = ref_message_parameters_small::max_size;
-constexpr size_t max_alignment_small = ref_message_parameters_small::max_alignment;
+constexpr size_t max_size_small      = message_parameters_small::max_size;
+constexpr size_t max_alignment_small = message_parameters_small::max_alignment;
 
-constexpr size_t max_size_large      = ref_message_parameters_large::max_size;
-constexpr size_t max_alignment_large = ref_message_parameters_large::max_alignment;
+constexpr size_t max_size_large      = message_parameters_large::max_size;
+constexpr size_t max_alignment_large = message_parameters_large::max_alignment;
 
 // A fixed memory block allocator for 4 items, using the parameters from the smaller messages.
 etl::fixed_sized_memory_block_allocator<max_size_small, max_alignment_small, 4U> memory_allocator;
@@ -234,7 +260,7 @@ etl::fixed_sized_memory_block_allocator<max_size_large, max_alignment_large, 4U>
 // The pool that supplies reference counted messages.
 // Uses memory_allocator as its allocator.
 //*****************************************************************************
-ref_message_pool message_pool(memory_allocator);
+MessagePool message_pool(memory_allocator);
 
 //*****************************************************************************
 // A statically allocated reference counted message that is never allocated or released by a pool.
