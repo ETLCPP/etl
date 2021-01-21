@@ -1,4 +1,8 @@
 ===============================================================================
+19.4.1
+Added constructors with deleters for unique_ptr.
+
+===============================================================================
 19.4.0
 Added virtual function 'void on_task_added()' that is called when a task is added to a scheduler.
 

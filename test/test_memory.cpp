@@ -1042,6 +1042,46 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_unique_ptr_custom_deleter)
+    {
+      //*******************************
+      struct Object
+      {
+        Object()
+          : count(1)
+        {
+        }
+
+        void Delete()
+        {
+          count = 0;
+        }
+
+        int count;
+      };
+
+      //*******************************
+      struct Deleter 
+      {
+        void operator()(Object* p) 
+        { 
+          p->Delete(); 
+        }
+      };
+
+      Deleter deleter;
+      Object object;
+
+      CHECK_EQUAL(1, object.count);
+
+      {
+        etl::unique_ptr<Object, Deleter> up(&object, deleter);
+      }
+
+      CHECK_EQUAL(0, object.count);
+    }
+
+    //*************************************************************************
     TEST(test_uninitialized_buffer)
     {
       typedef etl::uninitialized_buffer<sizeof(uint32_t), 4, etl::alignment_of_v<uint32_t>> storage32_t;
