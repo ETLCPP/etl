@@ -1261,6 +1261,24 @@ namespace etl
 #endif
 
     //*********************************
+    unique_ptr(pointer p_, typename etl::conditional<etl::is_reference<TDeleter>::value, 
+                                                     TDeleter, 
+                                                     typename etl::add_lvalue_reference<const TDeleter>::type>::type deleter_) ETL_NOEXCEPT
+      : p(p_)
+      , deleter(deleter_)
+    {
+    }
+
+#if ETL_CPP11_SUPPORTED
+    //*********************************
+    unique_ptr(pointer pValue, typename etl::remove_reference<TDeleter>::type&& deleter) ETL_NOEXCEPT
+      : p(p_)
+      , deleter(etl::move(deleter_))
+    {
+    }
+#endif
+
+    //*********************************
     ~unique_ptr()
     {
       deleter(p);
