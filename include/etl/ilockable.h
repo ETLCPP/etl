@@ -28,43 +28,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_IREFERENCE_COUNTED_MESSAGE_POOL_INCLUDED
-#define ETL_IREFERENCE_COUNTED_MESSAGE_POOL_INCLUDED
+#ifndef ETL_ILOCKABLE_INCLUDED
+#define ETL_ILOCKABLE_INCLUDED
 
 #include "platform.h"
-#include "ilockable.h"
 
 namespace etl
 {
-  class ireference_counted_message;
-
   //***************************************************************************
-  /// Interface for a reference counted message pool.
+  /// Interface for a lockable object.
   //***************************************************************************
-  class ireference_counted_message_pool : public etl::ilockable
+  class ilockable
   {
   public:
 
-    virtual ~ireference_counted_message_pool() {}
-    virtual void release(const etl::ireference_counted_message& msg) = 0;
-
-    //***************************************************************************
-    /// The pool lock function.
-    /// Override to add thread or interrupt locking to the pool.
-    //***************************************************************************
-    virtual void lock() ETL_OVERRIDE
-    {
-      // The default implementation does nothing.
-    }
-
-    //***************************************************************************
-    /// The pool unlock function.
-    /// Override to add thread or interrupt unlocking to the pool.
-    //***************************************************************************
-    virtual void unlock() ETL_OVERRIDE
-    {
-      // The default implementation does nothing.
-    }
+    virtual ~ilockable() {}
+    virtual void lock() = 0;
+    virtual void unlock() = 0;
   };
 }
 
