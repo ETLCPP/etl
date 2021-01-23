@@ -260,10 +260,12 @@ namespace etl
     //*************************************************************************
     /// Iterator
     //*************************************************************************
-    struct iterator : public etl::iterator<ETL_OR_STD::random_access_iterator_tag, T>
+    class iterator : public etl::iterator<ETL_OR_STD::random_access_iterator_tag, T>
     {
+    public:
+
       friend class ideque;
-      friend struct ideque::const_iterator;
+      friend class const_iterator;
 
       //***************************************************
       iterator()
@@ -498,8 +500,10 @@ namespace etl
     //*************************************************************************
     /// Const Iterator
     //*************************************************************************
-    struct const_iterator : public etl::iterator<ETL_OR_STD::random_access_iterator_tag, const T>
+    class const_iterator : public etl::iterator<ETL_OR_STD::random_access_iterator_tag, const T>
     {
+    public:
+
       friend class ideque;
 
       //***************************************************

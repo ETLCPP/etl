@@ -1256,6 +1256,7 @@ namespace etl
     //*********************************
     unique_ptr(unique_ptr&& p_) ETL_NOEXCEPT
       : p(p_.release())
+      , deleter(etl::move(p_.deleter))
     {
     }
 #endif
@@ -1281,7 +1282,10 @@ namespace etl
     //*********************************
     ~unique_ptr()
     {
-      deleter(p);
+      if (p != ETL_NULLPTR)
+      {
+        deleter(p);
+      }
     }
 
     //*********************************
@@ -1387,9 +1391,8 @@ namespace etl
     unique_ptr(const unique_ptr&) ETL_DELETE;
     unique_ptr&	operator =(const unique_ptr&) ETL_DELETE;
 
+    pointer	 p;
     TDeleter deleter;
-
-    pointer	p;
   };
 
   //*****************************************************************************
