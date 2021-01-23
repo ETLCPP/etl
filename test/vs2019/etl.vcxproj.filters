@@ -942,6 +942,9 @@
     <ClInclude Include="..\..\include\etl\successor.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\ilockable.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -1482,6 +1485,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_fixed_sized_memory_block_allocator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_lockable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_lockable_small.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

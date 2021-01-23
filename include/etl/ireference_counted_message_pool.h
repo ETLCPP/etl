@@ -52,7 +52,7 @@ namespace etl
     /// The pool lock function.
     /// Override to add thread or interrupt locking to the pool.
     //***************************************************************************
-    virtual void lock() ETL_OVERRIDE
+    virtual void lock() const ETL_OVERRIDE
     {
       // The default implementation does nothing.
     }
@@ -61,7 +61,7 @@ namespace etl
     /// The pool unlock function.
     /// Override to add thread or interrupt unlocking to the pool.
     //***************************************************************************
-    virtual void unlock() ETL_OVERRIDE
+    virtual void unlock() const ETL_OVERRIDE
     {
       // The default implementation does nothing.
     }

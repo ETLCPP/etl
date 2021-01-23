@@ -131,7 +131,7 @@ namespace etl
     public:
 
       friend class ireference_flat_map;
-      friend class const_iterator;
+      friend class ireference_flat_map::const_iterator;
 
       iterator()
       {

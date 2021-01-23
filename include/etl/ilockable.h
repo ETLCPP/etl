@@ -43,8 +43,8 @@ namespace etl
   public:
 
     virtual ~ilockable() {}
-    virtual void lock() = 0;
-    virtual void unlock() = 0;
+    virtual void lock() const = 0;
+    virtual void unlock() const = 0;
   };
 }
 
