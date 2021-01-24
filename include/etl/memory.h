@@ -1426,7 +1426,7 @@ namespace etl
     //*********************************
     unique_ptr(unique_ptr&& p_) ETL_NOEXCEPT
       : p(p_.release())
-      , deleter(etl::move(deleter_))
+      , deleter(etl::move(p_.deleter))
     {
     }
 #endif
