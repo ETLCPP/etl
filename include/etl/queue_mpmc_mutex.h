@@ -47,7 +47,7 @@ SOFTWARE.
 #include "placement_new.h"
 
 #undef ETL_FILE
-#define ETL_FILE "48"
+#define ETL_FILE ETL_QUEUE_MPMC_MUTEX_ID
 
 namespace etl
 {
@@ -282,20 +282,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Pop a value from the queue.
-    //*************************************************************************
-    bool pop(rvalue_reference value)
-    {
-      access.lock();
-
-      bool result = pop_implementation(etl::move(value));
-
-      access.unlock();
-
-      return result;
-    }
-
-    //*************************************************************************
     /// Pop a value from the queue and discard.
     //*************************************************************************
     bool pop()
@@ -413,7 +399,7 @@ namespace etl
       return false;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_MPMC_MUTEX_FORCE_CPP03)
     //*************************************************************************
     /// Push a value to the queue.
     //*************************************************************************
@@ -434,7 +420,6 @@ namespace etl
       return false;
     }
 #endif
-
 
 #if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_MPMC_MUTEX_FORCE_CPP03)
     //*************************************************************************
@@ -554,29 +539,12 @@ namespace etl
         return false;
       }
 
-      value = p_buffer[read_index];
-      p_buffer[read_index].~T();
-
-      read_index = get_next_index(read_index, MAX_SIZE);
-
-      --current_size;
-
-      return true;
-    }
-
-#if ETL_CPP11_SUPPORTED
-    //*************************************************************************
-    /// Pop a value from the queue.
-    //*************************************************************************
-    bool pop_implementation(rvalue_reference value)
-    {
-      if (current_size == 0)
-      {
-        // Queue is empty
-        return false;
-      }
-
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03)
       value = etl::move(p_buffer[read_index]);
+#else
+      value = p_buffer[read_index];
+#endif
+
       p_buffer[read_index].~T();
 
       read_index = get_next_index(read_index, MAX_SIZE);
@@ -585,7 +553,6 @@ namespace etl
 
       return true;
     }
-#endif
 
     //*************************************************************************
     /// Pop a value from the queue and discard.

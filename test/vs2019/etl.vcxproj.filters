@@ -939,11 +939,11 @@
     <ClInclude Include="..\..\include\etl\fixed_sized_memory_block_allocator.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\successor.h">
-      <Filter>ETL\Utilities</Filter>
+    <ClInclude Include="..\..\include\etl\queue_lockable.h">
+      <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\ilockable.h">
-      <Filter>ETL\Utilities</Filter>
+    <ClInclude Include="..\..\include\etl\successor.h">
+      <Filter>ETL\Patterns</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -178,9 +178,6 @@ namespace
 
       CHECK_EQUAL(4U, queue.max_size());
       CHECK_EQUAL(4U, queue.capacity());
-
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
     }
 
     //*************************************************************************
@@ -188,16 +185,16 @@ namespace
     {
       QueueInt queue;
 
-      CHECK_EQUAL(0U, queue.size_from_unlocked());
+      CHECK_EQUAL(0U, queue.size());
 
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
 
       queue.clear_test_flags();
 
-      CHECK_EQUAL(4U, queue.available_from_unlocked());
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
+      CHECK_EQUAL(4U, queue.available());
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
 
       queue.clear_test_flags();
 
@@ -215,40 +212,40 @@ namespace
 
       queue.clear_test_flags();
 
-      queue.push_from_unlocked(1);
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
-      CHECK_EQUAL(1U, queue.size_from_unlocked());
-      CHECK_EQUAL(3U, queue.available_from_unlocked());
+      queue.push(1);
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
+      CHECK_EQUAL(1U, queue.size());
+      CHECK_EQUAL(3U, queue.available());
 
       queue.clear_test_flags();
 
       queue.push(2);
       CHECK(queue.called_lock);
       CHECK(queue.called_unlock);
-      CHECK_EQUAL(2U, queue.size_from_unlocked());
-      CHECK_EQUAL(2U, queue.available_from_unlocked());
+      CHECK_EQUAL(2U, queue.size());
+      CHECK_EQUAL(2U, queue.available());
 
       queue.clear_test_flags();
 
       queue.push(3);
       CHECK(queue.called_lock);
       CHECK(queue.called_unlock);
-      CHECK_EQUAL(3U, queue.size_from_unlocked());
-      CHECK_EQUAL(1U, queue.available_from_unlocked());
+      CHECK_EQUAL(3U, queue.size());
+      CHECK_EQUAL(1U, queue.available());
 
       queue.clear_test_flags();
 
       queue.push(4);
       CHECK(queue.called_lock);
       CHECK(queue.called_unlock);
-      CHECK_EQUAL(4U, queue.size_from_unlocked());
-      CHECK_EQUAL(0U, queue.available_from_unlocked());
+      CHECK_EQUAL(4U, queue.size());
+      CHECK_EQUAL(0U, queue.available());
 
       queue.clear_test_flags();
 
       CHECK(!queue.push(5));
-      CHECK(!queue.push_from_unlocked(5));
+      CHECK(!queue.push(5));
 
       queue.clear_test_flags();
 
@@ -258,36 +255,36 @@ namespace
       CHECK_EQUAL(1, i);
       CHECK(queue.called_lock);
       CHECK(queue.called_unlock);
-      CHECK_EQUAL(3U, queue.size_from_unlocked());
+      CHECK_EQUAL(3U, queue.size());
 
       queue.clear_test_flags();
 
-      CHECK(queue.pop_from_unlocked(i));
+      CHECK(queue.pop(i));
       CHECK_EQUAL(2, i);
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
-      CHECK_EQUAL(2U, queue.size_from_unlocked());
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
+      CHECK_EQUAL(2U, queue.size());
 
       queue.clear_test_flags();
 
-      CHECK(queue.pop_from_unlocked(i));
+      CHECK(queue.pop(i));
       CHECK_EQUAL(3, i);
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
-      CHECK_EQUAL(1U, queue.size_from_unlocked());
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
+      CHECK_EQUAL(1U, queue.size());
 
       queue.clear_test_flags();
 
-      CHECK(queue.pop_from_unlocked(i));
+      CHECK(queue.pop(i));
       CHECK_EQUAL(4, i);
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
-      CHECK_EQUAL(0U, queue.size_from_unlocked());
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
+      CHECK_EQUAL(0U, queue.size());
 
       queue.clear_test_flags();
 
       CHECK(!queue.pop(i));
-      CHECK(!queue.pop_from_unlocked(i));
+      CHECK(!queue.pop(i));
     }
 
     //*************************************************************************
@@ -312,16 +309,16 @@ namespace
 
       ItemM pr(0);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(1, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(2, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(3, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(4, pr.value);
     }
 
@@ -332,10 +329,10 @@ namespace
 
       etl::iqueue_lockable<int, etl::memory_model::MEMORY_MODEL_SMALL>& iqueue = queue;
 
-      CHECK_EQUAL(0U, iqueue.size_from_unlocked());
+      CHECK_EQUAL(0U, iqueue.size());
 
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
 
       queue.clear_test_flags();
 
@@ -346,36 +343,36 @@ namespace
 
       queue.clear_test_flags();
 
-      iqueue.push_from_unlocked(1);
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
-      CHECK_EQUAL(1U, iqueue.size_from_unlocked());
+      iqueue.push(1);
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
+      CHECK_EQUAL(1U, iqueue.size());
 
       queue.clear_test_flags();
 
       iqueue.push(2);
       CHECK(queue.called_lock);
       CHECK(queue.called_unlock);
-      CHECK_EQUAL(2U, iqueue.size_from_unlocked());
+      CHECK_EQUAL(2U, iqueue.size());
 
       queue.clear_test_flags();
 
       iqueue.push(3);
       CHECK(queue.called_lock);
       CHECK(queue.called_unlock);
-      CHECK_EQUAL(3U, iqueue.size_from_unlocked());
+      CHECK_EQUAL(3U, iqueue.size());
 
       queue.clear_test_flags();
 
       iqueue.push(4);
       CHECK(queue.called_lock);
       CHECK(queue.called_unlock);
-      CHECK_EQUAL(4U, iqueue.size_from_unlocked());
+      CHECK_EQUAL(4U, iqueue.size());
 
       queue.clear_test_flags();
 
       CHECK(!iqueue.push(5));
-      CHECK(!iqueue.push_from_unlocked(5));
+      CHECK(!iqueue.push(5));
 
       queue.clear_test_flags();
 
@@ -385,36 +382,36 @@ namespace
       CHECK_EQUAL(1, i);
       CHECK(queue.called_lock);
       CHECK(queue.called_unlock);
-      CHECK_EQUAL(3U, iqueue.size_from_unlocked());
+      CHECK_EQUAL(3U, iqueue.size());
 
       queue.clear_test_flags();
 
-      CHECK(iqueue.pop_from_unlocked(i));
+      CHECK(iqueue.pop(i));
       CHECK_EQUAL(2, i);
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
-      CHECK_EQUAL(2U, iqueue.size_from_unlocked());
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
+      CHECK_EQUAL(2U, iqueue.size());
 
       queue.clear_test_flags();
 
-      CHECK(iqueue.pop_from_unlocked(i));
+      CHECK(iqueue.pop(i));
       CHECK_EQUAL(3, i);
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
-      CHECK_EQUAL(1U, iqueue.size_from_unlocked());
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
+      CHECK_EQUAL(1U, iqueue.size());
 
       queue.clear_test_flags();
 
-      CHECK(iqueue.pop_from_unlocked(i));
+      CHECK(iqueue.pop(i));
       CHECK_EQUAL(4, i);
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
-      CHECK_EQUAL(0U, iqueue.size_from_unlocked());
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
+      CHECK_EQUAL(0U, iqueue.size());
 
       queue.clear_test_flags();
 
       CHECK(!iqueue.pop(i));
-      CHECK(!iqueue.pop_from_unlocked(i));
+      CHECK(!iqueue.pop(i));
     }
 
     //*************************************************************************
@@ -422,10 +419,10 @@ namespace
     {
       QueueInt queue;
 
-      CHECK_EQUAL(0U, queue.size_from_unlocked());
+      CHECK_EQUAL(0U, queue.size());
 
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
 
       queue.clear_test_flags();
 
@@ -436,69 +433,69 @@ namespace
 
       queue.clear_test_flags();
 
-      queue.push_from_unlocked(1);
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
-      CHECK_EQUAL(1U, queue.size_from_unlocked());
+      queue.push(1);
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
+      CHECK_EQUAL(1U, queue.size());
 
       queue.clear_test_flags();
 
       queue.push(2);
       CHECK(queue.called_lock);
       CHECK(queue.called_unlock);
-      CHECK_EQUAL(2U, queue.size_from_unlocked());
+      CHECK_EQUAL(2U, queue.size());
 
       queue.clear_test_flags();
 
       queue.push(3);
       CHECK(queue.called_lock);
       CHECK(queue.called_unlock);
-      CHECK_EQUAL(3U, queue.size_from_unlocked());
+      CHECK_EQUAL(3U, queue.size());
 
       queue.clear_test_flags();
 
       queue.push(4);
       CHECK(queue.called_lock);
       CHECK(queue.called_unlock);
-      CHECK_EQUAL(4U, queue.size_from_unlocked());
+      CHECK_EQUAL(4U, queue.size());
 
       queue.clear_test_flags();
 
       CHECK(!queue.push(5));
-      CHECK(!queue.push_from_unlocked(5));
+      CHECK(!queue.push(5));
 
       queue.clear_test_flags();
 
       CHECK(queue.pop());
       CHECK(queue.called_lock);
       CHECK(queue.called_unlock);
-      CHECK_EQUAL(3U, queue.size_from_unlocked());
+      CHECK_EQUAL(3U, queue.size());
 
       queue.clear_test_flags();
 
-      CHECK(queue.pop_from_unlocked());
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
-      CHECK_EQUAL(2U, queue.size_from_unlocked());
+      CHECK(queue.pop());
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
+      CHECK_EQUAL(2U, queue.size());
 
       queue.clear_test_flags();
 
-      CHECK(queue.pop_from_unlocked());
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
-      CHECK_EQUAL(1U, queue.size_from_unlocked());
+      CHECK(queue.pop());
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
+      CHECK_EQUAL(1U, queue.size());
 
       queue.clear_test_flags();
 
-      CHECK(queue.pop_from_unlocked());
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
-      CHECK_EQUAL(0U, queue.size_from_unlocked());
+      CHECK(queue.pop());
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
+      CHECK_EQUAL(0U, queue.size());
 
       queue.clear_test_flags();
 
       CHECK(!queue.pop());
-      CHECK(!queue.pop_from_unlocked());
+      CHECK(!queue.pop());
     }
 
     //*************************************************************************
@@ -542,13 +539,13 @@ namespace
       queue.clear_test_flags();
 
       // Do it again to check that clear() didn't screw up the internals.
-      queue.push_from_unlocked(1);
-      queue.push_from_unlocked(2);
-      CHECK_EQUAL(2U, queue.size_from_unlocked());
-      queue.clear_from_unlocked();
-      CHECK_EQUAL(0U, queue.size_from_unlocked());
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
+      queue.push(1);
+      queue.push(2);
+      CHECK_EQUAL(2U, queue.size());
+      queue.clear();
+      CHECK_EQUAL(0U, queue.size());
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
     }
 
     //*************************************************************************
@@ -571,17 +568,17 @@ namespace
       queue.clear();
       queue.clear_test_flags();
 
-      CHECK(queue.empty_from_unlocked());
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
+      CHECK(queue.empty());
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
 
       queue.push(1);
 
       queue.clear_test_flags();
 
-      CHECK(!queue.empty_from_unlocked());
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
+      CHECK(!queue.empty());
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
     }
 
     //*************************************************************************
@@ -607,9 +604,9 @@ namespace
       queue.clear();
       queue.clear_test_flags();
 
-      CHECK(!queue.full_from_unlocked());
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
+      CHECK(!queue.full());
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
 
       queue.push(1);
       queue.push(2);
@@ -618,9 +615,9 @@ namespace
 
       queue.clear_test_flags();
 
-      CHECK(queue.full_from_unlocked());
-      CHECK(!queue.called_lock);
-      CHECK(!queue.called_unlock);
+      CHECK(queue.full());
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
     }
 
     //*************************************************************************

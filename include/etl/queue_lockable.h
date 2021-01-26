@@ -1,4 +1,4 @@
-///\file
+ ///\file
 
 /******************************************************************************
 The MIT License(MIT)
@@ -42,137 +42,117 @@ SOFTWARE.
 #include "function.h"
 #include "utility.h"
 #include "placement_new.h"
-#include "ilockable.h"
 
 #undef ETL_FILE
-#define ETL_FILE "54"
+#define ETL_FILE ETL_QUEUE_SPSC_LOCKABLE
 
 namespace etl
 {
-  template <typename T, const size_t VMemory_Model = etl::memory_model::MEMORY_MODEL_LARGE>
-  class iqueue_lockable_base
+  template <size_t VMemory_Model = etl::memory_model::MEMORY_MODEL_LARGE>
+  class queue_lockable_base
   {
   public:
 
     /// The type used for determining the size of queue.
     typedef typename etl::size_type_lookup<VMemory_Model>::type size_type;
 
-    typedef T        value_type;      ///< The type stored in the queue.
-    typedef T&       reference;       ///< A reference to the type used in the queue.
-    typedef const T& const_reference; ///< A const reference to the type used in the queue.
-#if ETL_CPP11_SUPPORTED
-    typedef T&&      rvalue_reference;///< An rvalue reference to the type used in the queue.
-#endif
-
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    virtual ~iqueue_lockable_base()
+    virtual ~queue_lockable_base()
     {
     }
 
     //*************************************************************************
-    /// Push a value to the queue from an ISR.
+    /// How much free space available in the queue. 
+    /// Unlocked
     //*************************************************************************
-    bool push_from_unlocked(const_reference value)
+    size_type available_unlocked() const
     {
-      return push_implementation(value);
-    }
-
-#if ETL_CPP11_SUPPORTED
-    //*************************************************************************
-    /// Push a value to the queue from an ISR.
-    //*************************************************************************
-    bool push_from_unlocked(rvalue_reference value)
-    {
-      return push_implementation(etl::move(value));
-    }
-#endif
-
-    //*************************************************************************
-    /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
-    ///\param value The value to use to construct the item to push to the queue.
-    //*************************************************************************
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKED_FORCE_CPP03)
-    template <typename ... Args>
-    bool emplace_from_unlocked(Args&&... args)
-    {
-      return emplace_implementation(etl::forward<Args>(args)...);
-    }
-#endif
-
-    //*************************************************************************
-    /// Pop a value from the queue from an ISR
-    //*************************************************************************
-    bool pop_from_unlocked(reference value)
-    {
-      return pop_implementation(value);
-    }
-
-#if ETL_CPP11_SUPPORTED
-    //*************************************************************************
-    /// Pop a value from the queue from an ISR
-    //*************************************************************************
-    bool pop_from_unlocked(rvalue_reference value)
-    {
-      return pop_implementation(etl::move(value));
-    }
-#endif
-
-    //*************************************************************************
-    /// Pop a value from the queue from an ISR, and discard.
-    //*************************************************************************
-    bool pop_from_unlocked()
-    {
-      return pop_implementation();
+      return available_impementation();
     }
 
     //*************************************************************************
     /// How much free space available in the queue.
-    /// Called from ISR.
     //*************************************************************************
-    size_type available_from_unlocked() const
+    size_type available() const
     {
-      return Max_Size - current_size;
+      this->lock();
+
+      size_type result = available_impementation();
+
+      this->unlock();
+
+      return result;
     }
 
     //*************************************************************************
-    /// Clear the queue from the ISR.
+    /// Is the queue empty? 
+    /// Unlocked.
     //*************************************************************************
-    void clear_from_unlocked()
+    bool empty_unlocked() const
     {
-      while (pop_implementation())
-      {
-        // Do nothing.
-      }
+      return empty_impementation();
     }
 
     //*************************************************************************
     /// Is the queue empty?
-    /// Called from ISR.
     //*************************************************************************
-    bool empty_from_unlocked() const
+    bool empty() const
     {
-      return (current_size == 0);
+      this->lock();
+
+      size_type result = empty_impementation();
+
+      this->unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Is the queue full? 
+    /// Unlocked.
+    //*************************************************************************
+    bool full_unlocked() const
+    {
+      return full_impementation();
     }
 
     //*************************************************************************
     /// Is the queue full?
-    /// Called from ISR.
     //*************************************************************************
-    bool full_from_unlocked() const
+    bool full() const
     {
-      return (current_size == Max_Size);
+      this->lock();
+
+      size_type result = full_impementation();
+
+      this->unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// How many items in the queue? 
+    /// Unlocked.
+    //*************************************************************************
+    size_type size_unlocked() const
+    {
+      return size_impementation();
     }
 
     //*************************************************************************
     /// How many items in the queue?
-    /// Called from ISR.
     //*************************************************************************
-    size_type size_from_unlocked() const
+    size_type size() const
     {
-      return current_size;
+      this->lock();
+
+      size_type result = size_impementation();
+
+      this->unlock();
+
+      return result;
     }
 
     //*************************************************************************
@@ -193,233 +173,12 @@ namespace etl
 
   protected:
 
-    iqueue_lockable_base(T* p_buffer_, size_type max_size_)
-      : p_buffer(p_buffer_),
-        write_index(0),
+    queue_lockable_base(size_type max_size_)
+      : write_index(0),
         read_index(0),
         current_size(0),
         Max_Size(max_size_)
     {
-    }
-
-    //*************************************************************************
-    /// Push a value to the queue.
-    //*************************************************************************
-    bool push_implementation(const_reference value)
-    {
-      if (current_size != Max_Size)
-      {
-        ::new (&p_buffer[write_index]) T(value);
-
-        write_index = get_next_index(write_index, Max_Size);
-
-        ++current_size;
-
-        return true;
-      }
-
-      // Queue is full.
-      return false;
-    }
-
-#if ETL_CPP11_SUPPORTED
-    //*************************************************************************
-    /// Push a value to the queue.
-    //*************************************************************************
-    bool push_implementation(rvalue_reference value)
-    {
-      if (current_size != Max_Size)
-      {
-        ::new (&p_buffer[write_index]) T(etl::move(value));
-
-        write_index = get_next_index(write_index, Max_Size);
-
-        ++current_size;
-
-        return true;
-      }
-
-      // Queue is full.
-      return false;
-    }
-#endif
-
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKED_FORCE_CPP03)
-    //*************************************************************************
-    /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
-    ///\param value The value to use to construct the item to push to the queue.
-    //*************************************************************************
-    template <typename ... Args>
-    bool emplace_implementation(Args&&... args)
-    {
-      if (current_size != Max_Size)
-      {
-        ::new (&p_buffer[write_index]) T(etl::forward<Args>(args)...);
-
-        write_index = get_next_index(write_index, Max_Size);
-
-        ++current_size;
-
-        return true;
-      }
-
-      // Queue is full.
-      return false;
-    }
-#else
-    //*************************************************************************
-    /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
-    //*************************************************************************
-    template <typename T1>
-    bool emplace_implementation(const T1& value1)
-    {
-      if (current_size != Max_Size)
-      {
-        ::new (&p_buffer[write_index]) T(value1);
-
-        write_index = get_next_index(write_index, Max_Size);
-
-        ++current_size;
-
-        return true;
-      }
-
-      // Queue is full.
-      return false;
-    }
-
-    //*************************************************************************
-    /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
-    //*************************************************************************
-    template <typename T1, typename T2>
-    bool emplace_implementation(const T1& value1, const T2& value2)
-    {
-      if (current_size != Max_Size)
-      {
-        ::new (&p_buffer[write_index]) T(value1, value2);
-
-        write_index = get_next_index(write_index, Max_Size);
-
-        ++current_size;
-
-        return true;
-      }
-
-      // Queue is full.
-      return false;
-    }
-
-    //*************************************************************************
-    /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
-    //*************************************************************************
-    template <typename T1, typename T2, typename T3>
-    bool emplace_implementation(const T1& value1, const T2& value2, const T3& value3)
-    {
-      if (current_size != Max_Size)
-      {
-        ::new (&p_buffer[write_index]) T(value1, value2, value3);
-
-        write_index = get_next_index(write_index, Max_Size);
-
-        ++current_size;
-
-        return true;
-      }
-
-      // Queue is full.
-      return false;
-    }
-
-    //*************************************************************************
-    /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
-    //*************************************************************************
-    template <typename T1, typename T2, typename T3, typename T4>
-    bool emplace_implementation(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
-    {
-      if (current_size != Max_Size)
-      {
-        ::new (&p_buffer[write_index]) T(value1, value2, value3, value4);
-
-        write_index = get_next_index(write_index, Max_Size);
-
-        ++current_size;
-
-        return true;
-      }
-
-      // Queue is full.
-      return false;
-    }
-
-#endif
-
-    //*************************************************************************
-    /// Pop a value from the queue.
-    //*************************************************************************
-    bool pop_implementation(reference value)
-    {
-      if (current_size == 0)
-      {
-        // Queue is empty
-        return false;
-      }
-
-      value = p_buffer[read_index];
-      p_buffer[read_index].~T();
-
-      read_index = get_next_index(read_index, Max_Size);
-
-      --current_size;
-
-      return true;
-    }
-
-#if ETL_CPP11_SUPPORTED
-    //*************************************************************************
-    /// Pop a value from the queue.
-    //*************************************************************************
-    bool pop_implementation(rvalue_reference value)
-    {
-      if (current_size == 0)
-      {
-        // Queue is empty
-        return false;
-      }
-
-      value = etl::move(p_buffer[read_index]);
-      p_buffer[read_index].~T();
-
-      read_index = get_next_index(read_index, Max_Size);
-
-      --current_size;
-
-      return true;
-    }
-#endif
-
-    //*************************************************************************
-    /// Pop a value from the queue and discard.
-    //*************************************************************************
-    bool pop_implementation()
-    {
-      if (current_size == 0)
-      {
-        // Queue is empty
-        return false;
-      }
-
-      p_buffer[read_index].~T();
-
-      read_index = get_next_index(read_index, Max_Size);
-
-      --current_size;
-
-      return true;
     }
 
     //*************************************************************************
@@ -437,11 +196,50 @@ namespace etl
       return index;
     }
 
-    T* p_buffer;              ///< The internal buffer.
+    //*************************************************************************
+    /// The pure virtual lock and unlock functions.
+    //*************************************************************************
+    virtual void lock() const = 0;
+    virtual void unlock() const = 0;
+
     size_type write_index;    ///< Where to input new data.
     size_type read_index;     ///< Where to get the oldest data.
     size_type current_size;   ///< The current size of the queue.
     const size_type Max_Size; ///< The maximum number of items in the queue.
+
+  private:
+
+    //*************************************************************************
+    /// How much free space available in the queue.
+    //*************************************************************************
+    size_type available_impementation() const
+    {
+      return Max_Size - current_size;
+    }
+
+    //*************************************************************************
+    /// Is the queue empty?
+    //*************************************************************************
+    bool empty_impementation() const
+    {
+      return (current_size == 0);
+    }
+
+    //*************************************************************************
+    /// Is the queue full?
+    //*************************************************************************
+    bool full_impementation() const
+    {
+      return (current_size == Max_Size);;
+    }
+
+    //*************************************************************************
+    /// How many items in the queue?
+    //*************************************************************************
+    size_type size_impementation() const
+    {
+      return current_size;
+    }
   };
 
   //***************************************************************************
@@ -451,177 +249,244 @@ namespace etl
   /// \tparam T The type of value that the queue_lockable holds.
   //***************************************************************************
   template <typename T, const size_t VMemory_Model = etl::memory_model::MEMORY_MODEL_LARGE>
-  class iqueue_lockable : public etl::iqueue_lockable_base<T, VMemory_Model>
-                        , public etl::ilockable
+  class iqueue_lockable : public etl::queue_lockable_base<VMemory_Model>
   {
   private:
 
-    typedef iqueue_lockable_base<T, VMemory_Model> base_t;
+    typedef queue_lockable_base<VMemory_Model> base_t;
 
   public:
 
-    typedef typename base_t::value_type       value_type;      ///< The type stored in the queue.
-    typedef typename base_t::reference        reference;       ///< A reference to the type used in the queue.
-    typedef typename base_t::const_reference  const_reference; ///< A const reference to the type used in the queue.
+    typedef T                          value_type;       ///< The type stored in the queue.
+    typedef T&                         reference;        ///< A reference to the type used in the queue.
+    typedef const T&                   const_reference;  ///< A const reference to the type used in the queue.
 #if ETL_CPP11_SUPPORTED
-    typedef typename base_t::rvalue_reference rvalue_reference;///< An rvalue reference to the type used in the queue.
+    typedef T&&                        rvalue_reference; ///< An rvalue reference to the type used in the queue.
 #endif
-    typedef typename base_t::size_type        size_type;       ///< The type used for determining the size of the queue.
+    typedef typename base_t::size_type size_type;        ///< The type used for determining the size of the queue.
+
+    //*************************************************************************
+    /// Push a value to the queue without locking.
+    //*************************************************************************
+    bool push_unlocked(const_reference value)
+    {
+      return push_implementation(value);
+    }
 
     //*************************************************************************
     /// Push a value to the queue.
     //*************************************************************************
     bool push(const_reference value)
     {
-      lock();
+      this->lock();
 
-      bool result = this->push_implementation(value);
+      bool result = push_implementation(value);
 
-      unlock();
+      this->unlock();
 
       return result;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03)
+    //*************************************************************************
+    /// Push a value to the queue without locking.
+    //*************************************************************************
+    bool push_unlocked(rvalue_reference value)
+    {
+      return push_implementation(value);
+    }
+
     //*************************************************************************
     /// Push a value to the queue.
     //*************************************************************************
     bool push(rvalue_reference value)
     {
-      lock();
+      this->lock();
 
-      bool result = this->push_implementation(etl::move(value));
+      bool result = push_implementation(etl::move(value));
 
-      unlock();
+      this->unlock();
 
       return result;
     }
 #endif
 
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03)
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
     //*************************************************************************
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKED_FORCE_CPP03)
+    template <typename ... Args>
+    bool emplace_unlocked(Args&&... args)
+    {
+      return emplace_implementation(etl::forward<Args>(args)...);
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    //*************************************************************************
     template <typename ... Args>
     bool emplace(Args&&... args)
     {
-      lock();
+      this->lock();
 
-      bool result = this->emplace_implementation(etl::forward<Args>(args)...);
+      bool result = emplace_implementation(etl::forward<Args>(args)...);
 
-      unlock();
+      this->unlock();
 
       return result;
     }
 #else
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    //*************************************************************************
+    template <typename T1>
+    bool emplace_unlocked(const T1& value1)
+    {
+      return emplace_implementation(value1);
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    bool emplace_unlocked(const T1& value1, const T2& value2)
+    {
+      return emplace_implementation(value1, value2);
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    bool emplace_unlocked(const T1& value1, const T2& value2, const T3& value3)
+    {
+      return emplace_implementation(value1, value2, value3);
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    bool emplace_unlocked(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      return emplace_implementation(value1, value2, value3, value4);
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
     //*************************************************************************
     template <typename T1>
     bool emplace(const T1& value1)
     {
-      lock();
+      this->lock();
 
-      bool result = this->emplace_implementation(value1);
+      bool result = emplace_implementation(value1);
 
-      unlock();
+      this->unlock();
 
       return result;
     }
 
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
     //*************************************************************************
     template <typename T1, typename T2>
     bool emplace(const T1& value1, const T2& value2)
     {
-      lock();
+      this->lock();
 
-      bool result = this->emplace_implementation(value1, value2);
+      bool result = emplace_implementation(value1, value2);
 
-      unlock();
+      this->unlock();
 
       return result;
     }
 
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
     //*************************************************************************
     template <typename T1, typename T2, typename T3>
     bool emplace(const T1& value1, const T2& value2, const T3& value3)
     {
-      lock();
+      this->lock();
 
-      bool result = this->emplace_implementation(value1, value2, value3);
+      bool result = emplace_implementation(value1, value2, value3);
 
-      unlock();
+      this->unlock();
 
       return result;
     }
 
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
-    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
     //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     bool emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
-      lock();
+      this->lock();
 
-      bool result = this->emplace_implementation(value1, value2, value3, value4);
+      bool result = emplace_implementation(value1, value2, value3, value4);
 
-      unlock();
-
-      return result;
-    }
-#endif
-
-    //*************************************************************************
-    /// Pop a value from the queue.
-    //*************************************************************************
-    bool pop(reference value)
-    {
-      lock();
-
-      bool result = this->pop_implementation(value);
-
-      unlock();
-
-      return result;
-    }
-
-#if ETL_CPP11_SUPPORTED
-    //*************************************************************************
-    /// Pop a value from the queue.
-    //*************************************************************************
-    bool pop(rvalue_reference value)
-    {
-      lock();
-
-      bool result = this->pop_implementation(etl::move(value));
-
-      unlock();
+      this->unlock();
 
       return result;
     }
 #endif
+
+    //*************************************************************************
+    /// Pop a value from the queue without locking, and discard.
+    //*************************************************************************
+    bool pop_unlocked()
+    {
+      return pop_implementation();
+    }
+
 
     //*************************************************************************
     /// Pop a value from the queue and discard.
     //*************************************************************************
     bool pop()
     {
-      lock();
+      this->lock();
 
-      bool result = this->pop_implementation();
+      bool result = pop_implementation();
 
-      unlock();
+      this->unlock();
 
       return result;
+    }
+
+    //*************************************************************************
+    /// Pop a value from the queue without locking
+    //*************************************************************************
+    bool pop_unlocked(reference value)
+    {
+      return pop_implementation(value);
+    }
+
+    //*************************************************************************
+    /// Pop a value from the queue.
+    //*************************************************************************
+    bool pop(reference value)
+    {
+      this->lock();
+
+      bool result = pop_implementation(value);
+
+      this->unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Clear the queue, unlocked.
+    //*************************************************************************
+    void clear_unlocked()
+    {
+      while (pop_implementation())
+      {
+        // Do nothing.
+      }
     }
 
     //*************************************************************************
@@ -629,70 +494,14 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-      lock();
+      this->lock();
 
-      while (this->pop_implementation())
+      while (pop_implementation())
       {
         // Do nothing.
       }
 
-      unlock();
-    }
-
-    //*************************************************************************
-    /// Is the queue empty?
-    //*************************************************************************
-    bool empty() const
-    {
-      lock();
-
-      size_type result = (this->current_size == 0);
-
-      unlock();
-
-      return result;
-    }
-
-    //*************************************************************************
-    /// Is the queue full?
-    //*************************************************************************
-    bool full() const
-    {
-      lock();
-
-      size_type result = (this->current_size == this->Max_Size);
-
-      unlock();
-
-      return result;
-    }
-
-    //*************************************************************************
-    /// How many items in the queue?
-    //*************************************************************************
-    size_type size() const
-    {
-      lock();
-
-      size_type result = this->current_size;
-
-      unlock();
-
-      return result;
-    }
-
-    //*************************************************************************
-    /// How much free space available in the queue.
-    //*************************************************************************
-    size_type available() const
-    {
-      lock();
-
-      size_type result = this->Max_Size - this->current_size;
-
-      unlock();
-
-      return result;
+      this->unlock();
     }
 
   protected:
@@ -701,11 +510,207 @@ namespace etl
     /// The constructor that is called from derived classes.
     //*************************************************************************
     iqueue_lockable(T* p_buffer_, size_type max_size_)
-      : base_t(p_buffer_, max_size_)
+      : base_t(max_size_)
+      , p_buffer(p_buffer_)
     {
     }
 
   private:
+
+    //*************************************************************************
+    /// Push a value to the queue without locking.
+    //*************************************************************************
+    bool push_implementation(const_reference value)
+    {
+      if (this->current_size != this->Max_Size)
+      {
+        ::new (&p_buffer[this->write_index]) T(value);
+
+        this->write_index = this->get_next_index(this->write_index, this->Max_Size);
+
+        ++this->current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03)
+    //*************************************************************************
+    /// Push a value to the queue without locking.
+    //*************************************************************************
+    bool push_implementation(rvalue_reference value)
+    {
+      if (this->current_size != this->Max_Size)
+      {
+        ::new (&p_buffer[this->write_index]) T(etl::move(value));
+
+        this->write_index = this->get_next_index(this->write_index, this->Max_Size);
+
+        ++this->current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+#endif
+
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03)
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    //*************************************************************************
+    template <typename ... Args>
+    bool emplace_implementation(Args&&... args)
+    {
+      if (this->current_size != this->Max_Size)
+      {
+        ::new (&p_buffer[this->write_index]) T(etl::forward<Args>(args)...);
+
+        this->write_index = this->get_next_index(this->write_index, this->Max_Size);
+
+        ++this->current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+#else
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    //*************************************************************************
+    template <typename T1>
+    bool emplace_implementation(const T1& value1)
+    {
+      if (this->current_size != this->Max_Size)
+      {
+        ::new (&p_buffer[this->write_index]) T(value1);
+
+        this->write_index = this->get_next_index(this->write_index, this->Max_Size);
+
+        ++this->current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    bool emplace_implementation(const T1& value1, const T2& value2)
+    {
+      if (this->current_size != this->Max_Size)
+      {
+        ::new (&p_buffer[this->write_index]) T(value1, value2);
+
+        this->write_index = this->get_next_index(this->write_index, this->Max_Size);
+
+        ++this->current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    bool emplace_implementation(const T1& value1, const T2& value2, const T3& value3)
+    {
+      if (this->current_size != this->Max_Size)
+      {
+        ::new (&p_buffer[this->write_index]) T(value1, value2, value3);
+
+        this->write_index = this->get_next_index(this->write_index, this->Max_Size);
+
+        ++this->current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    bool emplace_implementation(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      if (this->current_size != this->Max_Size)
+      {
+        ::new (&p_buffer[this->write_index]) T(value1, value2, value3, value4);
+
+        this->write_index = this->get_next_index(this->write_index, this->Max_Size);
+
+        ++this->current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+#endif
+
+    //*************************************************************************
+    /// Pop a value from the queue without locking, and discard.
+    //*************************************************************************
+    bool pop_implementation()
+    {
+      if (this->current_size == 0)
+      {
+        // Queue is empty
+        return false;
+      }
+
+      p_buffer[this->read_index].~T();
+
+      this->read_index = this->get_next_index(this->read_index, this->Max_Size);
+
+      --this->current_size;
+
+      return true;
+    }
+
+    //*************************************************************************
+    /// Pop a value from the queue without locking
+    //*************************************************************************
+    bool pop_implementation(reference value)
+    {
+      if (this->current_size == 0)
+      {
+        // Queue is empty
+        return false;
+      }
+
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03)
+      value = etl::move(p_buffer[this->read_index]);
+#else
+      value = p_buffer[this->read_index];
+#endif
+
+      p_buffer[this->read_index].~T();
+
+      this->read_index = this->get_next_index(this->read_index, this->Max_Size);
+
+      --this->current_size;
+
+      return true;
+    }
 
     // Disable copy construction and assignment.
     iqueue_lockable(const iqueue_lockable&) ETL_DELETE;
@@ -715,12 +720,14 @@ namespace etl
     iqueue_lockable(iqueue_lockable&&) = delete;
     iqueue_lockable& operator =(iqueue_lockable&&) = delete;
 #endif
+
+    T* p_buffer; ///< The internal buffer.
   };
 
   //***************************************************************************
   /// A fixed capacity lockable queue.
   /// This queue supports concurrent access.
-  /// \tparam T            The type this queue should support.
+  /// \tparam T             The type this queue should support.
   /// \tparam VSize         The maximum capacity of the queue.
   /// \tparam VMemory_Model The memory model for the queue. Determines the type of the internal counter variables.
   //***************************************************************************
@@ -754,7 +761,7 @@ namespace etl
     //*************************************************************************
     ~queue_lockable()
     {
-      while (this->pop_implementation())
+      while (this->pop_unlocked())
       {
         // Do nothing.
       }

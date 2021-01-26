@@ -249,16 +249,16 @@ namespace
 
       ItemM pr(0);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(1, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(2, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(3, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(4, pr.value);
     }
 

@@ -44,7 +44,7 @@ SOFTWARE.
 #include "placement_new.h"
 
 #undef ETL_FILE
-#define ETL_FILE "47"
+#define ETL_FILE ETL_QUEUE_SPSC_ATOMIC_ID
 
 #if ETL_HAS_ATOMIC
 
@@ -228,7 +228,7 @@ namespace etl
       return false;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_ATOMIC_FORCE_CPP03)
     //*************************************************************************
     /// Push a value to the queue.
     //*************************************************************************
@@ -383,38 +383,18 @@ namespace etl
 
       size_type next_index = get_next_index(read_index, RESERVED);
 
-      value = p_buffer[read_index];
-      p_buffer[read_index].~T();
-
-      read.store(next_index, etl::memory_order_release);
-
-      return true;
-    }
-
-#if ETL_CPP11_SUPPORTED
-    //*************************************************************************
-    /// Pop a value from the queue.
-    //*************************************************************************
-      bool pop(rvalue_reference value)
-    {
-      size_type read_index = read.load(etl::memory_order_relaxed);
-
-      if (read_index == write.load(etl::memory_order_acquire))
-      {
-        // Queue is empty
-        return false;
-      }
-
-      size_type next_index = get_next_index(read_index, RESERVED);
-
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03)
       value = etl::move(p_buffer[read_index]);
+#else
+      value = p_buffer[read_index];
+#endif
+
       p_buffer[read_index].~T();
 
       read.store(next_index, etl::memory_order_release);
 
       return true;
     }
-#endif
 
     //*************************************************************************
     /// Pop a value from the queue and discard.

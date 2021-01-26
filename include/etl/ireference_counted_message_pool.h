@@ -32,7 +32,6 @@ SOFTWARE.
 #define ETL_IREFERENCE_COUNTED_MESSAGE_POOL_INCLUDED
 
 #include "platform.h"
-#include "ilockable.h"
 
 namespace etl
 {
@@ -41,18 +40,20 @@ namespace etl
   //***************************************************************************
   /// Interface for a reference counted message pool.
   //***************************************************************************
-  class ireference_counted_message_pool : public etl::ilockable
+  class ireference_counted_message_pool
   {
   public:
 
     virtual ~ireference_counted_message_pool() {}
     virtual void release(const etl::ireference_counted_message& msg) = 0;
 
+  protected:
+
     //***************************************************************************
     /// The pool lock function.
     /// Override to add thread or interrupt locking to the pool.
     //***************************************************************************
-    virtual void lock() const ETL_OVERRIDE
+    virtual void lock()
     {
       // The default implementation does nothing.
     }
@@ -61,7 +62,7 @@ namespace etl
     /// The pool unlock function.
     /// Override to add thread or interrupt unlocking to the pool.
     //***************************************************************************
-    virtual void unlock() const ETL_OVERRIDE
+    virtual void unlock()
     {
       // The default implementation does nothing.
     }

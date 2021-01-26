@@ -1288,7 +1288,6 @@
     <ClInclude Include="..\..\include\etl\generators\type_traits_generator.h" />
     <ClInclude Include="..\..\include\etl\generators\variant_pool_generator.h" />
     <ClInclude Include="..\..\include\etl\generic_pool.h" />
-    <ClInclude Include="..\..\include\etl\ilockable.h" />
     <ClInclude Include="..\..\include\etl\indirect_vector.h" />
     <ClInclude Include="..\..\include\etl\absolute.h" />
     <ClInclude Include="..\..\include\etl\ipool.h" />
@@ -1329,6 +1328,7 @@
     <ClInclude Include="..\..\include\etl\profiles\gcc_windows_x86_no_stl.h" />
     <ClInclude Include="..\..\include\etl\profiles\msvc_x86_no_stl.h" />
     <ClInclude Include="..\..\include\etl\profiles\ticc_no_stl.h" />
+    <ClInclude Include="..\..\include\etl\queue_lockable.h" />
     <ClInclude Include="..\..\include\etl\queue_spsc_locked.h" />
     <ClInclude Include="..\..\include\etl\reference_counted_message.h" />
     <ClInclude Include="..\..\include\etl\reference_counted_message_pool.h" />
