@@ -300,6 +300,8 @@ namespace etl
   {
   public:
 
+    virtual ~observer() = default;
+
     virtual void notification(T1) = 0;
   };
 
