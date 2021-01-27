@@ -1,4 +1,22 @@
 ===============================================================================
+19.5.0
+Added shared messages to the messaging framework + supporting allocator classes.
+Some refactoring of the messaging framework internals.
+Added example application for shared messages.
+Added a lockable queue with locks implemented as pure virtuals.
+Refeactored the other queues.
+Fixed missing virtual destructor for C++11 observer.
+Added etl::successor class for consistant 'chain of responsibilty' pattern generation.
+Added missing constructors to unique_ptr.
+Added nullptr check to unique_ptr destructor.
+Fixed VS2019 warning for etl::deque iterators.
+Added a virtual on_task_added callback to the scheduler.
+Added a runtime multi range nested loop class.
+Added etl::for_each.
+Added is_random_access_iterator and deprecated is_random_iterator.
+Added VS2019 Delegate function interrupt service example.
+
+===============================================================================
 19.4.3
 Added nullptr check to unique_ptr destructor.
 
