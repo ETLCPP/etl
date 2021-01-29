@@ -854,7 +854,7 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator>
+    template <typename TIterator, typename = typename etl::enable_if<!etl::is_integral<TIterator>::value, void>::type>
     reference_flat_multimap(TIterator first, TIterator last)
       : ireference_flat_multimap<TKey, TValue, TCompare>(lookup)
     {

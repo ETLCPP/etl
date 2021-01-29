@@ -517,7 +517,7 @@ namespace etl
     //*************************************************************************
     /// Constructor from range
     //*************************************************************************
-    template <typename TIterator>
+    template <typename TIterator, typename = typename etl::enable_if<!etl::is_integral<TIterator>::value, void>::type>
     intrusive_forward_list(TIterator first, TIterator last)
     {
       this->assign(first, last);

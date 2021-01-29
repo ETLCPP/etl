@@ -1196,5 +1196,12 @@ namespace
       CHECK_EQUAL(raw[4].i, dest[6].i);
       CHECK_EQUAL(raw[5].i, dest[7].i);
     }
+
+    //*************************************************************************
+    TEST(test_two_parameter_constructor_same_type_not_iterator)
+    {
+      // No compilation error.
+      etl::vector<int, 10> v(5, 5);
+    }
   };
 }

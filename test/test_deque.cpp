@@ -1985,5 +1985,12 @@ namespace
 
       CHECK_EQUAL(ACTUAL_SIZE, data3.size());
     }
+
+    //*************************************************************************
+    TEST(test_two_parameter_constructor_same_type_not_iterator)
+    {
+      // No compilation error.
+      etl::deque<int, 10> v(5, 5);
+    }
   };
 }

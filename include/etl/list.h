@@ -2118,7 +2118,7 @@ namespace etl
     //*************************************************************************
     /// Construct from range.
     //*************************************************************************
-    template <typename TIterator>
+    template <typename TIterator, typename = typename etl::enable_if<!etl::is_integral<TIterator>::value, void>::type>
     list(TIterator first, TIterator last)
       : ilist<T>(node_pool, MAX_SIZE, false)
     {
@@ -2282,7 +2282,7 @@ namespace etl
     //*************************************************************************
     /// Construct from range.
     //*************************************************************************
-    template <typename TIterator>
+    template <typename TIterator, typename = typename etl::enable_if<!etl::is_integral<TIterator>::value, void>::type>
     list_ext(TIterator first, TIterator last, etl::ipool& node_pool)
       : ilist<T>(node_pool, node_pool.max_size(), true)
     {

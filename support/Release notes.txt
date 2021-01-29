@@ -1,4 +1,8 @@
 ===============================================================================
+19.5.1
+Exclude integral types from being considered for iterator range container constructors.
+
+===============================================================================
 19.5.0
 Added shared messages to the messaging framework + supporting allocator classes.
 Some refactoring of the messaging framework internals.
