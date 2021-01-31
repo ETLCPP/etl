@@ -184,15 +184,26 @@ namespace
 
       Access::clear();
 
+      // Queue full.
       CHECK(!queue.push(5));
-      CHECK(!queue.push_from_isr(5));
+
+      queue.pop();
+      // Queue not full (buffer rollover)
+      CHECK(queue.push(5));
+
+      // Queue full.
+      CHECK(!queue.push(6));
+
+      queue.pop();
+      // Queue not full (buffer rollover)
+      CHECK(queue.push(6));
 
       Access::clear();
 
       int i;
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(1, i);
+      CHECK_EQUAL(3, i);
       CHECK(Access::called_lock);
       CHECK(Access::called_unlock);
       CHECK_EQUAL(3U, queue.size_from_isr());
@@ -200,7 +211,7 @@ namespace
       Access::clear();
 
       CHECK(queue.pop_from_isr(i));
-      CHECK_EQUAL(2, i);
+      CHECK_EQUAL(4, i);
       CHECK(!Access::called_lock);
       CHECK(!Access::called_unlock);
       CHECK_EQUAL(2U, queue.size_from_isr());
@@ -208,7 +219,7 @@ namespace
       Access::clear();
 
       CHECK(queue.pop_from_isr(i));
-      CHECK_EQUAL(3, i);
+      CHECK_EQUAL(5, i);
       CHECK(!Access::called_lock);
       CHECK(!Access::called_unlock);
       CHECK_EQUAL(1U, queue.size_from_isr());
@@ -216,7 +227,7 @@ namespace
       Access::clear();
 
       CHECK(queue.pop_from_isr(i));
-      CHECK_EQUAL(4, i);
+      CHECK_EQUAL(6, i);
       CHECK(!Access::called_lock);
       CHECK(!Access::called_unlock);
       CHECK_EQUAL(0U, queue.size_from_isr());

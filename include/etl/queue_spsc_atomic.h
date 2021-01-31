@@ -97,7 +97,7 @@ namespace etl
       }
       else
       {
-        n = RESERVED - read_index + write_index - 1;
+        n = RESERVED - read_index + write_index;
       }
 
       return n;

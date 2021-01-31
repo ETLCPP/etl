@@ -117,7 +117,7 @@ namespace etl
       prcm_t p = ETL_NULLPTR;
 
       lock();
-      p = static_cast<prcm_t>(memory_block_allocator.allocate(sizeof(rcm_t)));
+      p = static_cast<prcm_t>(memory_block_allocator.allocate(sizeof(rcm_t), etl::alignment_of<rcm_t>::value));
       unlock();
 
       if (p != ETL_NULLPTR)

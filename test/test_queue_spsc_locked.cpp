@@ -187,15 +187,26 @@ namespace
 
       access.clear();
 
+      // Queue full.
       CHECK(!queue.push(5));
-      CHECK(!queue.push_from_unlocked(5));
+
+      queue.pop();
+      // Queue not full (buffer rollover)
+      CHECK(queue.push(5));
+
+      // Queue full.
+      CHECK(!queue.push(6));
+
+      queue.pop();
+      // Queue not full (buffer rollover)
+      CHECK(queue.push(6));
 
       access.clear();
 
       int i;
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(1, i);
+      CHECK_EQUAL(3, i);
       CHECK(access.called_lock);
       CHECK(access.called_unlock);
       CHECK_EQUAL(3U, queue.size_from_unlocked());
@@ -203,7 +214,7 @@ namespace
       access.clear();
 
       CHECK(queue.pop_from_unlocked(i));
-      CHECK_EQUAL(2, i);
+      CHECK_EQUAL(4, i);
       CHECK(!access.called_lock);
       CHECK(!access.called_unlock);
       CHECK_EQUAL(2U, queue.size_from_unlocked());
@@ -211,7 +222,7 @@ namespace
       access.clear();
 
       CHECK(queue.pop_from_unlocked(i));
-      CHECK_EQUAL(3, i);
+      CHECK_EQUAL(5, i);
       CHECK(!access.called_lock);
       CHECK(!access.called_unlock);
       CHECK_EQUAL(1U, queue.size_from_unlocked());
@@ -219,7 +230,7 @@ namespace
       access.clear();
 
       CHECK(queue.pop_from_unlocked(i));
-      CHECK_EQUAL(4, i);
+      CHECK_EQUAL(6, i);
       CHECK(!access.called_lock);
       CHECK(!access.called_unlock);
       CHECK_EQUAL(0U, queue.size_from_unlocked());

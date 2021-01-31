@@ -43,11 +43,11 @@ namespace
     {
       Allocator16 allocator16;
 
-      int16_t* p1 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t)));
-      int16_t* p2 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t)));
-      int16_t* p3 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t)));
-      int16_t* p4 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t)));
-      int16_t* p5 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t)));
+      int16_t* p1 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t), alignof(int16_t)));
+      int16_t* p2 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t), alignof(int16_t)));
+      int16_t* p3 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t), alignof(int16_t)));
+      int16_t* p4 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t), alignof(int16_t)));
+      int16_t* p5 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t), alignof(int16_t)));
 
       CHECK(p1 != nullptr);
       CHECK(p2 != nullptr);
@@ -87,19 +87,19 @@ namespace
       allocator16.set_successor(allocator16s);
       allocator16s.set_successor(allocator16ss);
 
-      int16_t* p1 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t)));
-      int16_t* p2 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t)));
-      int16_t* p3 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t)));
-      int16_t* p4 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t)));
-      int16_t* p5 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t)));
-      int16_t* p6 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t)));
-      int16_t* p7 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t)));
-      int16_t* p8 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t)));
-      int16_t* p9 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t)));
-      int16_t* p10 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t)));
-      int16_t* p11 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t)));
-      int16_t* p12 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t)));
-      int16_t* p13 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t)));
+      int16_t* p1 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t), alignof(uint16_t)));
+      int16_t* p2 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t), alignof(uint16_t)));
+      int16_t* p3 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t), alignof(uint16_t)));
+      int16_t* p4 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t), alignof(uint16_t)));
+      int16_t* p5 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t), alignof(uint16_t)));
+      int16_t* p6 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t), alignof(uint16_t)));
+      int16_t* p7 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t), alignof(uint16_t)));
+      int16_t* p8 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t), alignof(uint16_t)));
+      int16_t* p9 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t), alignof(uint16_t)));
+      int16_t* p10 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t), alignof(uint16_t)));
+      int16_t* p11 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t), alignof(uint16_t)));
+      int16_t* p12 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t), alignof(uint16_t)));
+      int16_t* p13 = static_cast<int16_t*>(allocator16.allocate(sizeof(int16_t), alignof(uint16_t)));
 
       CHECK(p1  != nullptr);
       CHECK(p2  != nullptr);
@@ -140,17 +140,17 @@ namespace
       allocator8.set_successor(allocator16);
       allocator16.set_successor(allocator32);
 
-      int8_t*  p1  = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t)));   // Take from allocator8
-      int16_t* p2  = static_cast<int16_t*>(allocator8.allocate(sizeof(int16_t))); // Take from allocator16
-      int32_t* p3  = static_cast<int32_t*>(allocator8.allocate(sizeof(int32_t))); // Take from allocator32
-      int64_t* p4  = static_cast<int64_t*>(allocator8.allocate(sizeof(int64_t))); // Unable to allocate
-      int8_t*  p5  = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t)));   // Take from allocator8
-      int8_t*  p6  = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t)));   // Take from allocator8
-      int8_t*  p7  = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t)));   // Take from allocator8. allocator8 is full.
-      int8_t*  p8  = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t)));   // Take from allocator16
-      int8_t*  p9  = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t)));   // Take from allocator16
-      int8_t*  p10 = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t)));   // Take from allocator16. allocator16 is full.
-      int8_t*  p11 = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t)));   // Take from allocator32
+      int8_t*  p1  = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t),   alignof(uint8_t)));  // Take from allocator8
+      int16_t* p2  = static_cast<int16_t*>(allocator8.allocate(sizeof(int16_t), alignof(uint16_t))); // Take from allocator16
+      int32_t* p3  = static_cast<int32_t*>(allocator8.allocate(sizeof(int32_t), alignof(uint32_t))); // Take from allocator32
+      int64_t* p4  = static_cast<int64_t*>(allocator8.allocate(sizeof(int64_t), alignof(uint64_t))); // Unable to allocate
+      int8_t*  p5  = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t),   alignof(uint8_t)));  // Take from allocator8
+      int8_t*  p6  = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t),   alignof(uint8_t)));  // Take from allocator8
+      int8_t*  p7  = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t),   alignof(uint8_t)));  // Take from allocator8. allocator8 is full.
+      int8_t*  p8  = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t),   alignof(uint8_t)));  // Take from allocator16
+      int8_t*  p9  = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t),   alignof(uint8_t)));  // Take from allocator16
+      int8_t*  p10 = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t),   alignof(uint8_t)));  // Take from allocator16. allocator16 is full.
+      int8_t*  p11 = static_cast<int8_t*>(allocator8.allocate(sizeof(int8_t),   alignof(uint8_t)));  // Take from allocator32
 
       CHECK(p1  != nullptr);
       CHECK(p2  != nullptr);

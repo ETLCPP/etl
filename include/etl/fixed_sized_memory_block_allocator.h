@@ -80,9 +80,11 @@ namespace etl
     //*************************************************************************
     /// The overridden virtual function to allocate a block.
     //*************************************************************************
-    virtual void* allocate_block(size_t required_size) ETL_OVERRIDE
+    virtual void* allocate_block(size_t required_size, size_t required_alignment) ETL_OVERRIDE
     {
-      if ((required_size <= Block_Size) && !pool.full())
+      if ((required_alignment <= Alignment) &&
+          (required_size <= Block_Size) && 
+          !pool.full())
       {
         return  pool.template allocate<block>();
       }
