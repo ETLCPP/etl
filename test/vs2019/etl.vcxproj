@@ -1288,6 +1288,7 @@
     <ClInclude Include="..\..\include\etl\generators\type_traits_generator.h" />
     <ClInclude Include="..\..\include\etl\generators\variant_pool_generator.h" />
     <ClInclude Include="..\..\include\etl\generic_pool.h" />
+    <ClInclude Include="..\..\include\etl\imemory_block_allocator.h" />
     <ClInclude Include="..\..\include\etl\indirect_vector.h" />
     <ClInclude Include="..\..\include\etl\absolute.h" />
     <ClInclude Include="..\..\include\etl\ipool.h" />

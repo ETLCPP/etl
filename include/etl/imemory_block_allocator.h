@@ -55,10 +55,10 @@ namespace etl
     /// Try to allocate a memory block of the required size.
     /// If this allocator cannot, then pass the request on the the successor, if configured.
     //*****************************************************************************
-    void* allocate(size_t required_size)
+    void* allocate(size_t required_size, size_t required_alignment)
     {
       // Call the derived implementation.
-      void* p = allocate_block(required_size);
+      void* p = allocate_block(required_size, required_alignment);
 
       // If that failed...
       if (p == ETL_NULLPTR)
@@ -67,7 +67,7 @@ namespace etl
         if (has_successor())
         {
           // Try to allocate from the next one in the chain.
-          return get_successor().allocate(required_size);
+          return get_successor().allocate(required_size, required_alignment);
         }
       }
 
@@ -98,7 +98,7 @@ namespace etl
 
   protected:
 
-    virtual void* allocate_block(size_t required_size) = 0;
+    virtual void* allocate_block(size_t required_size, size_t required_alignment) = 0;
     virtual bool release_block(const void* const) = 0;
 
   private:

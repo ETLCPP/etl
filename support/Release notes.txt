@@ -1,4 +1,10 @@
 ===============================================================================
+19.5.2
+Fixed rollover error for etl::queue_spsc_atomic
+Added 'required_alignment' parameter to 'allocate' for etl::imemeory_block_allocator.
+Updated QueuedMessageRouter example.
+
+===============================================================================
 19.5.1
 Exclude integral types from being considered for iterator range container constructors.
 

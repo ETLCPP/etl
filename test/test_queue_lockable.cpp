@@ -244,15 +244,26 @@ namespace
 
       queue.clear_test_flags();
 
+      // Queue full.
       CHECK(!queue.push(5));
-      CHECK(!queue.push(5));
+
+      queue.pop();
+      // Queue not full (buffer rollover)
+      CHECK(queue.push(5));
+
+      // Queue full.
+      CHECK(!queue.push(6));
+
+      queue.pop();
+      // Queue not full (buffer rollover)
+      CHECK(queue.push(6));
 
       queue.clear_test_flags();
 
       int i;
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(1, i);
+      CHECK_EQUAL(3, i);
       CHECK(queue.called_lock);
       CHECK(queue.called_unlock);
       CHECK_EQUAL(3U, queue.size());
@@ -260,7 +271,7 @@ namespace
       queue.clear_test_flags();
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(2, i);
+      CHECK_EQUAL(4, i);
       CHECK(queue.called_lock);
       CHECK(queue.called_unlock);
       CHECK_EQUAL(2U, queue.size());
@@ -268,7 +279,7 @@ namespace
       queue.clear_test_flags();
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(3, i);
+      CHECK_EQUAL(5, i);
       CHECK(queue.called_lock);
       CHECK(queue.called_unlock);
       CHECK_EQUAL(1U, queue.size());
@@ -276,7 +287,7 @@ namespace
       queue.clear_test_flags();
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(4, i);
+      CHECK_EQUAL(6, i);
       CHECK(queue.called_lock);
       CHECK(queue.called_unlock);
       CHECK_EQUAL(0U, queue.size());

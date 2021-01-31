@@ -945,6 +945,9 @@
     <ClInclude Include="..\..\include\etl\successor.h">
       <Filter>ETL\Patterns</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\imemory_block_allocator.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
