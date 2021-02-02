@@ -85,6 +85,17 @@ namespace etl
       p_rcmessage->get_reference_counter().increment_reference_count();
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move constructor
+    //*************************************************************************
+    shared_message(etl::shared_message&& other)
+      : p_rcmessage(etl::move(other.p_rcmessage))
+    {
+      other.p_rcmessage = ETL_NULLPTR;
+    }
+#endif
+
     //*************************************************************************
     /// Copy assignment operator
     //*************************************************************************
@@ -106,13 +117,37 @@ namespace etl
       return *this;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator
+    //*************************************************************************
+    shared_message& operator =(etl::shared_message&& other)
+    {
+      if (&other != this)
+      {
+        // Deal with the current message.
+        if (p_rcmessage->get_reference_counter().decrement_reference_count() == 0U)
+        {
+          p_rcmessage->release();
+        }
+
+        // Move over the new one.
+        p_rcmessage = etl::move(other.p_rcmessage);
+        other.p_rcmessage = ETL_NULLPTR;
+      }
+
+      return *this;
+    }
+#endif
+
     //*************************************************************************
     /// Destructor
     /// Returns the message back to the pool it it is the last copy.
     //*************************************************************************
     ~shared_message()
     {
-      if (p_rcmessage->get_reference_counter().decrement_reference_count() == 0U)
+      if ((p_rcmessage != ETL_NULLPTR) &&
+          (p_rcmessage->get_reference_counter().decrement_reference_count() == 0U))
       {       
         p_rcmessage->release();
       }

@@ -1,4 +1,8 @@
 ===============================================================================
+19.5.3
+Added move constructor and move assignment operator to etl::shared_message.
+
+===============================================================================
 19.5.2
 Fixed rollover error for etl::queue_spsc_atomic
 Added 'required_alignment' parameter to 'allocate' for etl::imemeory_block_allocator.

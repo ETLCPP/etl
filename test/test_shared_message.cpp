@@ -180,6 +180,21 @@ namespace
     };
 
     //*************************************************************************
+    TEST(test_move_constructor)
+    {
+      etl::shared_message sm1(std::move(etl::shared_message(message_pool, Message1(1))));
+      CHECK_EQUAL(1, sm1.get_reference_count());
+    }
+    
+    //*************************************************************************
+    TEST(test_move_assignemnt)
+    {
+      etl::shared_message sm2 = etl::shared_message(message_pool, Message1(2));
+      sm2 = std::move(etl::shared_message(message_pool, Message1(3)));
+      CHECK_EQUAL(1, sm2.get_reference_count());
+    }
+
+    //*************************************************************************
     TEST(test_send_to_routers)
     {
       bus.clear();
