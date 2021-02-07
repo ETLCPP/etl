@@ -473,8 +473,7 @@ namespace etl
 
               if (timer.p_router != ETL_NULLPTR)
               {
-                static etl::null_message_router nmr;
-                timer.p_router->receive(nmr, timer.destination_router_id, *(timer.p_message));
+                timer.p_router->receive(timer.destination_router_id, *(timer.p_message));
               }
 
               has_active = !active_list.empty();

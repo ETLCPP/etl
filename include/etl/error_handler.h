@@ -283,12 +283,12 @@ namespace etl
     #define ETL_ASSERT(b, e) {if(!(b)) {etl::error_handler::error((e));}}                  // If the condition fails, calls the error handler
     #define ETL_ALWAYS_ASSERT(e) {etl::error_handler::error((e));}                         // Calls the error handler
   #else
-    #if defined(NDEBUG)
-      #define ETL_ASSERT(b, e)                                                             // Does nothing.
-      #define ETL_ALWAYS_ASSERT(e)                                                         // Does nothing.
-    #else
+    #if defined(ETL_DEBUG)
       #define ETL_ASSERT(b, e) assert((b))                                                 // If the condition fails, asserts.
       #define ETL_ALWAYS_ASSERT(e) assert(false)                                           // Asserts.
+    #else
+      #define ETL_ASSERT(b, e)                                                             // Does nothing.
+      #define ETL_ALWAYS_ASSERT(e)                                                         // Does nothing.
     #endif
   #endif
 #endif

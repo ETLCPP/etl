@@ -124,58 +124,34 @@ namespace etl
   public:
 
     virtual ~imessage_router() {}
-    virtual void receive(etl::imessage_router& source, const etl::imessage& message) = 0;
+    virtual void receive(const etl::imessage& message) = 0;
     virtual bool accepts(etl::message_id_t id) const = 0;
     virtual bool is_null_router() const = 0;
     virtual bool is_producer() const = 0;
     virtual bool is_consumer() const = 0;
 
     //********************************************
-    virtual void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& message)
+    virtual void receive(etl::message_router_id_t destination_router_id, const etl::imessage& message)
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
-        receive(source, message);
+        receive(message);
       }
     }
 
     //********************************************
-    void receive(etl::message_router_id_t destination_router_id, const etl::imessage& message)
+    virtual void receive(etl::shared_message shared_msg)
     {
-      receive(etl::get_null_message_router(), destination_router_id, message);
+      receive(shared_msg.get_message());
     }
 
     //********************************************
-    void receive(const etl::imessage& message)
-    {
-      receive(etl::get_null_message_router(), message);
-    }
-
-    //********************************************
-    virtual void receive(etl::imessage_router& source, etl::shared_message shared_msg)
-    {
-      receive(source, shared_msg.get_message());
-    }
-
-    //********************************************
-    virtual void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, etl::shared_message shared_msg)
+    virtual void receive(etl::message_router_id_t destination_router_id, etl::shared_message shared_msg)
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
-        receive(source, shared_msg);
+        receive(shared_msg);
       }
-    }
-
-    //********************************************
-    void receive(etl::message_router_id_t destination_router_id, etl::shared_message shared_msg)
-    {
-      receive(etl::get_null_message_router(), destination_router_id, shared_msg);
-    }
-
-    //********************************************
-    void receive(etl::shared_message shared_msg)
-    {
-      receive(etl::get_null_message_router(), shared_msg);
     }
 
     //********************************************
@@ -234,7 +210,7 @@ namespace etl
     //********************************************
     using etl::imessage_router::receive;
 
-    void receive(etl::imessage_router&, const etl::imessage&) ETL_OVERRIDE
+    void receive(const etl::imessage&) ETL_OVERRIDE
     {
     }
 
@@ -294,7 +270,7 @@ namespace etl
     //********************************************
     using etl::imessage_router::receive;
 
-    void receive(etl::imessage_router&, const etl::imessage&) ETL_OVERRIDE
+    void receive(const etl::imessage&) ETL_OVERRIDE
     {
     }
 
@@ -324,24 +300,14 @@ namespace etl
       return false;
     }
   };
+
   //***************************************************************************
   /// Send a message to a router.
-  /// Sets the 'sender' to etl::null_message_router type.
   //***************************************************************************
   inline static void send_message(etl::imessage_router& destination,
                                   const etl::imessage&  message)
   {
     destination.receive(message);
-  }
-
-  //***************************************************************************
-  /// Send a message to a router.
-  //***************************************************************************
-  inline static void send_message(etl::imessage_router& source,
-                                  etl::imessage_router& destination,
-                                  const etl::imessage&  message)
-  {
-    destination.receive(source, message);
   }
 
   /*[[[cog
@@ -388,7 +354,7 @@ namespace etl
       cog.outl("  //**********************************************")
       cog.outl("  using etl::imessage_router::receive;")
       cog.outl("")
-      cog.outl("  void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE")
+      cog.outl("  void receive(const etl::imessage& msg) ETL_OVERRIDE")
       cog.outl("  {")
       cog.outl("    const etl::message_id_t id = msg.get_message_id();")
       cog.outl("")
@@ -396,17 +362,17 @@ namespace etl
       cog.outl("    {")
       for n in range(1, int(Handlers) + 1):
           cog.out("      case T%d::ID:" % n)
-          cog.out(" static_cast<TDerived*>(this)->on_receive(source, static_cast<const T%d&>(msg));" % n)
+          cog.out(" static_cast<TDerived*>(this)->on_receive(static_cast<const T%d&>(msg));" % n)
           cog.outl(" break;")
       cog.outl("      default:")
       cog.outl("      {")
       cog.outl("         if (has_successor())")
       cog.outl("         {")
-      cog.outl("           get_successor().receive(source, msg);")
+      cog.outl("           get_successor().receive(msg);")
       cog.outl("         }")
       cog.outl("         else")
       cog.outl("         {")
-      cog.outl("           static_cast<TDerived*>(this)->on_receive_unknown(source, msg);")
+      cog.outl("           static_cast<TDerived*>(this)->on_receive_unknown(msg);")
       cog.outl("         }")
       cog.outl("         break;")
       cog.outl("      }")
@@ -508,7 +474,7 @@ namespace etl
           cog.outl("  //**********************************************")
           cog.outl("  using etl::imessage_router::receive;")
           cog.outl("")
-          cog.outl("  void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE")
+          cog.outl("  void receive(const etl::imessage& msg) ETL_OVERRIDE")
           cog.outl("  {")
           cog.outl("    const size_t id = msg.get_message_id();")
           cog.outl("")
@@ -516,17 +482,17 @@ namespace etl
           cog.outl("    {")
           for t in range(1, n + 1):
               cog.out("      case T%d::ID:" % t)
-              cog.out(" static_cast<TDerived*>(this)->on_receive(source, static_cast<const T%d&>(msg));" % t)
+              cog.out(" static_cast<TDerived*>(this)->on_receive(static_cast<const T%d&>(msg));" % t)
               cog.outl(" break;")
           cog.outl("      default:")
           cog.outl("      {")
           cog.outl("         if (has_successor())")
           cog.outl("         {")
-          cog.outl("           get_successor().receive(source, msg);")
+          cog.outl("           get_successor().receive(msg);")
           cog.outl("         }")
           cog.outl("         else")
           cog.outl("         {")
-          cog.outl("           static_cast<TDerived*>(this)->on_receive_unknown(source, msg);")
+          cog.outl("           static_cast<TDerived*>(this)->on_receive_unknown(msg);")
           cog.outl("         }")
           cog.outl("         break;")
           cog.outl("      }")

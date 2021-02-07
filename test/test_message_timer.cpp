@@ -92,22 +92,22 @@ namespace
 
     }
 
-    void on_receive(etl::imessage_router&, const Message1&)
+    void on_receive(const Message1&)
     {
       message1.push_back(ticks);
     }
 
-    void on_receive(etl::imessage_router&, const Message2&)
+    void on_receive(const Message2&)
     {
       message2.push_back(ticks);
     }
 
-    void on_receive(etl::imessage_router&, const Message3&)
+    void on_receive(const Message3&)
     {
       message3.push_back(ticks);
     }
 
-    void on_receive_unknown(etl::imessage_router&, const etl::imessage&)
+    void on_receive_unknown(const etl::imessage&)
     {
     }
 
