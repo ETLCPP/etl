@@ -1,4 +1,9 @@
 ===============================================================================
+20.0.0
+Removed source 'etl::imessage_router&' parameter from the message framework 'receive'
+and 'on_receive' member functions.
+
+===============================================================================
 19.5.3
 Added move constructor and move assignment operator to etl::shared_message.
 

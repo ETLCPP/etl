@@ -203,7 +203,7 @@ namespace etl
 
   private:
 
-    virtual fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message) = 0;
+    virtual fsm_state_id_t process_event(const etl::imessage& message) = 0;
 
     virtual fsm_state_id_t on_enter_state() { return state_id; } // By default, do nothing.
     virtual void on_exit_state() {}  // By default, do nothing.
@@ -295,9 +295,9 @@ namespace etl
     //*******************************************
     /// Top level message handler for the FSM.
     //*******************************************
-    void receive(etl::imessage_router& source, const etl::imessage& message) ETL_OVERRIDE
+    void receive(const etl::imessage& message) ETL_OVERRIDE
     {
-        etl::fsm_state_id_t next_state_id = p_state->process_event(source, message);
+        etl::fsm_state_id_t next_state_id = p_state->process_event(message);
         ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
 
         etl::ifsm_state* p_next_state = state_list[next_state_id];
@@ -447,7 +447,7 @@ namespace etl
   cog.outl("")
   cog.outl("private:")
   cog.outl("")
-  cog.outl("  etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)")
+  cog.outl("  etl::fsm_state_id_t process_event(const etl::imessage& message)")
   cog.outl("  {")
   cog.outl("    etl::fsm_state_id_t new_state_id;")
   cog.outl("    etl::message_id_t event_id = message.get_message_id();")
@@ -456,10 +456,10 @@ namespace etl
   cog.outl("    {")
   for n in range(1, int(Handlers) + 1):
       cog.out("      case T%d::ID:" % n)
-      cog.out(" new_state_id = static_cast<TDerived*>(this)->on_event(source, static_cast<const T%d&>(message));" % n)
+      cog.out(" new_state_id = static_cast<TDerived*>(this)->on_event(static_cast<const T%d&>(message));" % n)
       cog.outl(" break;")
   cog.out("      default:")
-  cog.out(" new_state_id = static_cast<TDerived*>(this)->on_event_unknown(source, message);")
+  cog.out(" new_state_id = static_cast<TDerived*>(this)->on_event_unknown(message);")
   cog.outl(" break;")
   cog.outl("    }")
   cog.outl("")
@@ -524,7 +524,7 @@ namespace etl
       cog.outl("")
       cog.outl("private:")
       cog.outl("")
-      cog.outl("  etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)")
+      cog.outl("  etl::fsm_state_id_t process_event(const etl::imessage& message)")
       cog.outl("  {")
       cog.outl("    etl::fsm_state_id_t new_state_id;")
       cog.outl("    etl::message_id_t event_id = message.get_message_id();")
@@ -533,10 +533,10 @@ namespace etl
       cog.outl("    {")
       for n in range(1, n + 1):
           cog.out("      case T%d::ID:" % n)
-          cog.out(" new_state_id = static_cast<TDerived*>(this)->on_event(source, static_cast<const T%d&>(message));" % n)
+          cog.out(" new_state_id = static_cast<TDerived*>(this)->on_event(static_cast<const T%d&>(message));" % n)
           cog.outl(" break;")
       cog.out("      default:")
-      cog.out(" new_state_id = static_cast<TDerived*>(this)->on_event_unknown(source, message);")
+      cog.out(" new_state_id = static_cast<TDerived*>(this)->on_event_unknown(message);")
       cog.outl(" break;")
       cog.outl("    }")
       cog.outl("")
@@ -583,9 +583,9 @@ namespace etl
   cog.outl("  }")
   cog.outl("private:")
   cog.outl("")
-  cog.outl("  etl::fsm_state_id_t process_event(etl::imessage_router& source, const etl::imessage& message)")
+  cog.outl("  etl::fsm_state_id_t process_event(const etl::imessage& message)")
   cog.outl("  {")
-  cog.outl("    return static_cast<TDerived*>(this)->on_event_unknown(source, message);")
+  cog.outl("    return static_cast<TDerived*>(this)->on_event_unknown(message);")
   cog.outl("  }")
   cog.outl("};")
   ]]]*/

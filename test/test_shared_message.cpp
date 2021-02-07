@@ -80,17 +80,17 @@ namespace
     {
     }
 
-    void on_receive(etl::imessage_router& source, const Message1& message)
+    void on_receive(const Message1& message)
     {
       ++count_message1;
     }
 
-    void on_receive(etl::imessage_router& source, const Message2& message)
+    void on_receive(const Message2& message)
     {
       ++count_message2;
     }
 
-    void on_receive_unknown(etl::imessage_router& source, const etl::imessage& message)
+    void on_receive_unknown(const etl::imessage& message)
     {
 
     }
@@ -118,12 +118,12 @@ namespace
     {
     }
 
-    void on_receive(etl::imessage_router& source, const Message1& message)
+    void on_receive(const Message1& message)
     {
       ++count_message1;
     }
 
-    void on_receive_unknown(etl::imessage_router& source, const etl::imessage& message)
+    void on_receive_unknown(const etl::imessage& message)
     {
       ++count_unknown_message;
     }
