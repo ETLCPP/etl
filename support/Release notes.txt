@@ -1,4 +1,8 @@
 ===============================================================================
+20.1.0
+Changed template aliases so they are available for C++11 rather than C++14.
+
+===============================================================================
 20.0.0
 Removed source 'etl::imessage_router&' parameter from the message framework 'receive'
 and 'on_receive' member functions.
