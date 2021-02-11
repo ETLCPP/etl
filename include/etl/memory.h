@@ -2090,7 +2090,7 @@ namespace etl
 
 #if ETL_CPP11_SUPPORTED
   template <typename T, size_t N_Objects>
-  using uninitialized_buffer_of_v = typename uninitialized_buffer_of<T, N_Objects>::buffer;
+  using uninitialized_buffer_of_t = typename uninitialized_buffer_of<T, N_Objects>::buffer;
 #endif
 }
 
