@@ -1,4 +1,8 @@
 ===============================================================================
+20.2.0
+Allow default constructed messages for shared messages.
+
+===============================================================================
 20.1.0
 Changed template aliases so they are available for C++11 rather than C++14.
 
