@@ -1,4 +1,9 @@
 ===============================================================================
+20.2.1
+Modified reference_counted_message_pool::allocate() return type.
+Changed from etl::ireference_counted_message* to etl::reference_counted_message<TMessage, TCounter>*
+
+===============================================================================
 20.2.0
 Allow default constructed messages for shared messages.
 
