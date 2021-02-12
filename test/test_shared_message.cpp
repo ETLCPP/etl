@@ -185,13 +185,24 @@ namespace
       etl::shared_message sm1(std::move(etl::shared_message(message_pool, Message1(1))));
       CHECK_EQUAL(1, sm1.get_reference_count());
     }
+
+    //*************************************************************************
+    TEST(test_default_message_constructor)
+    {
+      etl::ireference_counted_message* prcm = message_pool.allocate<Message2>();
+
+      etl::shared_message sm1(*prcm);
+      CHECK_EQUAL(1, sm1.get_reference_count());
+      CHECK(sm1.is_valid());
+    }
     
     //*************************************************************************
-    TEST(test_move_assignemnt)
+    TEST(test_move_assignment)
     {
       etl::shared_message sm2 = etl::shared_message(message_pool, Message1(2));
       sm2 = std::move(etl::shared_message(message_pool, Message1(3)));
       CHECK_EQUAL(1, sm2.get_reference_count());
+      CHECK(sm2.is_valid());
     }
 
     //*************************************************************************
@@ -214,6 +225,11 @@ namespace
       bus.receive(sm3);
       bus.receive(sm4);            // sm4 is a copy of sm1
       bus.receive(RouterId2, sm1); // Only send sm1 to Router2
+
+      CHECK(sm1.is_valid());
+      CHECK(sm2.is_valid());
+      CHECK(sm3.is_valid());
+      CHECK(sm4.is_valid());
 
       CHECK_EQUAL(2, sm1.get_reference_count());
       CHECK_EQUAL(1, sm2.get_reference_count());

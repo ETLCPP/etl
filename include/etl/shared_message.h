@@ -169,6 +169,14 @@ namespace etl
       return p_rcmessage->get_reference_counter().get_reference_count();
     }
 
+    //*************************************************************************
+    /// Checks if the shared message is valid.
+    //*************************************************************************
+    ETL_NODISCARD bool is_valid() const
+    {
+      return p_rcmessage != ETL_NULLPTR;
+    }
+
   private:
 
     shared_message() ETL_DELETE;

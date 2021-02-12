@@ -68,7 +68,17 @@ namespace etl
 
     //***************************************************************************
     /// Constructor
-    /// \param msg The message to count.
+    /// \param owner The message owner.
+    //***************************************************************************
+    reference_counted_message(etl::ireference_counted_message_pool& owner_)
+      : owner(owner_)
+    {
+    }
+
+    //***************************************************************************
+    /// Constructor
+    /// \param msg   The message to count.
+    /// \param owner The message owner.
     //***************************************************************************
     reference_counted_message(const TMessage& msg_, etl::ireference_counted_message_pool& owner_)
       : rc_object(msg_)
