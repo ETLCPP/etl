@@ -189,7 +189,7 @@ namespace
     //*************************************************************************
     TEST(test_default_message_constructor)
     {
-      etl::ireference_counted_message* prcm = message_pool.allocate<Message2>();
+      etl::reference_counted_message<Message2, etl::atomic_int>* prcm = message_pool.allocate<Message2>();
 
       etl::shared_message sm1(*prcm);
       CHECK_EQUAL(1, sm1.get_reference_count());

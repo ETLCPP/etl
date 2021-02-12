@@ -107,7 +107,7 @@ namespace etl
     /// Allocate a reference counted message from the pool.
     //*************************************************************************
     template <typename TMessage>
-    etl::ireference_counted_message* allocate(const TMessage& message)
+    etl::reference_counted_message<TMessage, TCounter>* allocate(const TMessage& message)
     {
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
 
@@ -134,7 +134,7 @@ namespace etl
     /// Allocate a reference counted message from the pool.
     //*************************************************************************
     template <typename TMessage>
-    etl::ireference_counted_message* allocate()
+    etl::reference_counted_message<TMessage, TCounter>* allocate()
     {
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
 
