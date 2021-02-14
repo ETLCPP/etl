@@ -154,6 +154,14 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Get a reference to the contained message.
+    //***********************************************************************
+    ETL_NODISCARD etl::imessage& get_message()
+    {
+      return p_rcmessage->get_message();
+    }
+
+    //*************************************************************************
     /// Get a const reference to the contained message.
     //*************************************************************************
     ETL_NODISCARD const etl::imessage& get_message() const

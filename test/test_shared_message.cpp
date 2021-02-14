@@ -191,7 +191,14 @@ namespace
     {
       etl::reference_counted_message<Message2, etl::atomic_int>* prcm = message_pool.allocate<Message2>();
 
+      Message2&        m2 = prcm->get_message(); // Check that we can get a non-const reference to the message.
+      const Message2& cm2 = prcm->get_message(); // Check that we can get a const reference to the message.
+
       etl::shared_message sm1(*prcm);
+
+      etl::imessage&        im = sm1.get_message(); // Check that we can get a non-const reference to the message.
+      const etl::imessage& cim = sm1.get_message(); // Check that we can get a const reference to the message.
+
       CHECK_EQUAL(1, sm1.get_reference_count());
       CHECK(sm1.is_valid());
     }

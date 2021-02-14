@@ -1,4 +1,4 @@
-#sudo ntpdate time.windows.com
+sudo ntpdate ntp.ubuntu.com
 cd build
 echo "ETL Tests" > etl_test_log.txt
 echo "********** GCC **********" >> etl_test_log.txt

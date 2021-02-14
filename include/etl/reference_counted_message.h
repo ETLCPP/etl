@@ -47,6 +47,7 @@ namespace etl
   public:
 
     virtual ~ireference_counted_message() {}
+    ETL_NODISCARD virtual etl::imessage& get_message() = 0;                                 ///< Get a reference to the message.
     ETL_NODISCARD virtual const etl::imessage& get_message() const = 0;                     ///< Get a const reference to the message.
     ETL_NODISCARD virtual etl::ireference_counter& get_reference_counter() = 0;             ///< Get a reference to the reference counter.
     ETL_NODISCARD virtual const etl::ireference_counter& get_reference_counter() const = 0; ///< Get a const reference to the reference counter.
@@ -84,6 +85,15 @@ namespace etl
       : rc_object(msg_)
       , owner(owner_)
     {
+    }
+
+    //***************************************************************************
+    /// Get a reference to the message.
+    /// \return A reference to the message.
+    //***************************************************************************
+    ETL_NODISCARD virtual TMessage& get_message() ETL_OVERRIDE
+    {
+      return rc_object.get_object();
     }
 
     //***************************************************************************
@@ -148,6 +158,15 @@ namespace etl
     explicit persistent_message(const TMessage& msg_)
       : rc_object(msg_)
     {
+    }
+
+    //***************************************************************************
+    /// Get a reference to the message.
+    /// \return A reference to the message.
+    //***************************************************************************
+    ETL_NODISCARD virtual TMessage& get_message() ETL_OVERRIDE
+    {
+      return rc_object.get_object();
     }
 
     //***************************************************************************

@@ -195,6 +195,15 @@ namespace etl
     }
 
     //***************************************************************************
+    /// Get a reference to the counted object.
+    //***************************************************************************
+    ETL_NODISCARD value_type& get_object()
+    {
+      return object;
+    }
+
+
+    //***************************************************************************
     /// Get a const reference to the counted object.
     //***************************************************************************
     ETL_NODISCARD const value_type& get_object() const
@@ -224,7 +233,7 @@ namespace etl
     reference_counted_object(const reference_counted_object&) ETL_DELETE;
     reference_counted_object& operator =(const reference_counted_object&) ETL_DELETE;
         
-    const TObject object;                               ///< The object being reference counted.
+    TObject object;                                     ///< The object being reference counted.
     etl::reference_counter<TCounter> reference_counter; ///< The reference counter.
   };
 
