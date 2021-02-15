@@ -2184,6 +2184,23 @@ namespace etl
     virtual void repair() = 0;
 #endif
 
+    //*********************************************************************
+    /// Update the size to the distnace to the first null, or max size.
+    //*********************************************************************
+    void update_size()
+    {
+      p_buffer[max_size()] = 0; // Ensure a terminating null.
+
+      size_t i = 0U;
+
+      while ((i != max_size()) && (p_buffer[i] != 0))
+      {
+        ++i;
+      }
+
+      current_size = i;
+    }
+
   protected:
 
     //*********************************************************************
@@ -2200,7 +2217,7 @@ namespace etl
     //*********************************************************************
     void initialise()
     {
-      current_size = 0;
+      current_size = 0U;
       cleanup();
       p_buffer[0] = 0;
 #if ETL_STRING_TRUNCATION_CHECKS_ENABLED

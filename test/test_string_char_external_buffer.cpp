@@ -4519,5 +4519,44 @@ namespace
       CHECK(text4.is_secure());
     }
 #endif
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_update_after_c_string_max_size)
+    {
+      TextBuffer buffer;
+      Text text(buffer.data(), buffer.size());
+
+      text.resize(text.max_size());
+      std::fill(text.data(), text.data() + text.max_size(), STR('A'));
+      text.update_size();
+
+      CHECK_EQUAL(text.max_size(), text.size());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_update_after_c_string_shorter_size)
+    {
+      TextBuffer buffer;
+      Text text(buffer.data(), buffer.size());
+
+      text.resize(text.max_size());
+      std::fill(text.data(), text.data() + text.max_size() - 1, STR('A'));
+      text.update_size();
+
+      CHECK_EQUAL(text.max_size() - 1, text.size());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_update_after_c_string_greater_size)
+    {
+      TextBuffer buffer;
+      Text text(buffer.data(), buffer.size());
+
+      text.resize(text.max_size());
+      std::fill(text.data(), text.data() + text.max_size() + 1, STR('A')); // Overwrites to terminating null.
+      text.update_size();
+
+      CHECK_EQUAL(text.max_size(), text.size());
+    }
   };
 }
