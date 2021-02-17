@@ -589,7 +589,7 @@ namespace etl
 
         // Needs checking?
         if ((state && (value != ALL_CLEAR)) ||
-          (!state && (value != ALL_SET)))
+            (!state && (value != ALL_SET)))
         {
           // For each bit in the element...
           while ((bit < BITS_PER_ELEMENT) && (position < NBITS))
