@@ -1023,11 +1023,26 @@ namespace
 
       CHECK_EQUAL(12, bits16.find_first(true));
       CHECK_EQUAL(12, bits16.find_next(true, 4));
-      CHECK_EQUAL(16, bits16.find_next(true, 13));
+      CHECK_EQUAL(etl::ibitset::npos, bits16.find_next(true, 13));
 
       CHECK_EQUAL(12, bits24.find_first(true));
       CHECK_EQUAL(12, bits24.find_next(true, 4));
-      CHECK_EQUAL(24, bits16.find_next(true, 13));
+      CHECK_EQUAL(etl::ibitset::npos, bits24.find_next(true, 13));
+    }
+
+    //*************************************************************************
+    TEST(test_find_next_multi_byte_bitset_github_issue_336)
+    {
+      etl::bitset<16> data;
+      data.set(12);
+      data.set(22);
+      CHECK_EQUAL(12U, data.find_next(true, 3));
+      CHECK_EQUAL(12U, data.find_next(true, 10));
+
+      // set first ten bytes
+      data.set("1111111111");
+      CHECK_EQUAL(10U, data.find_next(false, 3));
+      CHECK_EQUAL(10U, data.find_next(false, 9));
     }
 
     //*************************************************************************
