@@ -1013,6 +1013,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_find_next_github_issue_336)
+    {
+      etl::bitset<16> bits16;
+      bits16.set(12);
+
+      etl::bitset<24> bits24;
+      bits24.set(12);
+
+      CHECK_EQUAL(12, bits16.find_first(true));
+      CHECK_EQUAL(12, bits16.find_next(true, 4));
+      CHECK_EQUAL(16, bits16.find_next(true, 13));
+
+      CHECK_EQUAL(12, bits24.find_first(true));
+      CHECK_EQUAL(12, bits24.find_next(true, 4));
+      CHECK_EQUAL(24, bits16.find_next(true, 13));
+    }
+
+    //*************************************************************************
     TEST(test_swap)
     {
       etl::bitset<6> compare1("101010");
