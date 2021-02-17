@@ -1,4 +1,8 @@
 ===============================================================================
+20.2.3
+Fixed indexing error in find_next for etl::bitset.
+
+===============================================================================
 20.2.2
 Added non-const get_message() member funtions in shared message framework.
 
