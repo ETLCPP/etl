@@ -456,6 +456,22 @@ namespace
       CHECK((etl::is_same<etl::make_signed<const int>::type,          std::make_signed<const int>::type>::value));
       CHECK((etl::is_same<etl::make_signed<const volatile int>::type, std::make_signed<const volatile int>::type>::value));
       CHECK((etl::is_same<etl::make_signed<size_t>::type,             std::make_signed<size_t>::type>::value));
+
+      enum class ue : uint8_t
+      {
+        One,
+        Two
+      };
+
+      CHECK((etl::is_same<etl::make_signed<__underlying_type(ue)>::type, std::make_signed<ue>::type>::value));
+
+      enum class se : int8_t
+      {
+        One,
+        Two
+      };
+
+      CHECK((etl::is_same<etl::make_signed<__underlying_type(se)>::type, std::make_signed<se>::type>::value));
     }
 
     //*************************************************************************
@@ -482,6 +498,22 @@ namespace
       CHECK((etl::is_same<etl::make_unsigned<const int>::type,          std::make_unsigned<const int>::type>::value));
       CHECK((etl::is_same<etl::make_unsigned<const volatile int>::type, std::make_unsigned<const volatile int>::type>::value));
       CHECK((etl::is_same<etl::make_unsigned<size_t>::type,             std::make_unsigned<size_t>::type>::value));
+
+      enum class ue : uint8_t
+      {
+        One,
+        Two
+      };
+
+      CHECK((etl::is_same<etl::make_unsigned<__underlying_type(ue)>::type, std::make_unsigned<ue>::type>::value));
+
+      enum class se : int8_t
+      {
+        One,
+        Two
+      };
+
+      CHECK((etl::is_same<etl::make_unsigned<__underlying_type(se)>::type, std::make_unsigned<se>::type>::value));
     }
 
     //*************************************************************************
