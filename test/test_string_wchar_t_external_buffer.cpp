@@ -4504,41 +4504,83 @@ namespace
 #endif
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_initialize_free_space_empty_string)
+    {
+      TextBuffer buffer1;
+      TextBuffer buffer2;
+      Text text(buffer1.data(), buffer1.size());
+      Text empty(buffer2.data(), buffer2.size());
+
+      text.initialize_free_space();
+
+      CHECK(text.empty());
+      CHECK(text == empty);
+
+      for (size_t i = text.size(); i < text.max_size(); ++i)
+      {
+        CHECK_EQUAL(0, text[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_initialize_free_space_part_filled_string)
+    {
+      TextBuffer buffer1;
+      TextBuffer buffer2;
+      Text initial(STR("ABC"), buffer1.data(), buffer1.size());
+      Text empty(buffer2.data(), buffer2.size());
+      Text text(initial, buffer2.data(), buffer2.size());
+
+      text.initialize_free_space();
+
+      CHECK(text == initial);
+      CHECK(text != empty);
+
+      for (size_t i = text.size(); i < text.max_size(); ++i)
+      {
+        CHECK_EQUAL(0, text[i]);
+      }
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_update_after_c_string_max_size)
     {
-      TextBuffer buffer;
-      Text text(buffer.data(), buffer.size());
+      TextBuffer buffer1;
+      Text text(buffer1.data(), buffer1.size());
 
-      text.resize(text.max_size());
+      text.initialize_free_space();
       std::fill(text.data(), text.data() + text.max_size(), STR('A'));
-      text.update_size();
+      text.trim();
 
+      CHECK(!text.is_truncated());
       CHECK_EQUAL(text.max_size(), text.size());
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_update_after_c_string_shorter_size)
     {
-      TextBuffer buffer;
-      Text text(buffer.data(), buffer.size());
+      TextBuffer buffer1;
+      Text text(buffer1.data(), buffer1.size());
 
-      text.resize(text.max_size());
+      text.initialize_free_space();
       std::fill(text.data(), text.data() + text.max_size() - 1, STR('A'));
-      text.update_size();
+      text.trim();
 
+      CHECK(!text.is_truncated());
       CHECK_EQUAL(text.max_size() - 1, text.size());
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_update_after_c_string_greater_size)
     {
-      TextBuffer buffer;
-      Text text(buffer.data(), buffer.size());
+      TextBuffer buffer1;
+      Text text(buffer1.data(), buffer1.size());
 
-      text.resize(text.max_size());
+      text.initialize_free_space();
       std::fill(text.data(), text.data() + text.max_size() + 1, STR('A')); // Overwrites to terminating null.
-      text.update_size();
+      text.trim();
 
+      CHECK(text.is_truncated());
       CHECK_EQUAL(text.max_size(), text.size());
     }
   };

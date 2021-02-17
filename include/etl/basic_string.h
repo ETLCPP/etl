@@ -2185,20 +2185,29 @@ namespace etl
 #endif
 
     //*********************************************************************
-    /// Update the size to the distnace to the first null, or max size.
+    /// Clears the free space to string terminator value.
     //*********************************************************************
-    void update_size()
+    void initialize_free_space()
     {
-      p_buffer[max_size()] = 0; // Ensure a terminating null.
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      set_truncated(false);
+#endif
+      etl::fill(&p_buffer[current_size], &p_buffer[CAPACITY + 1U], T(0));
+    }
 
-      size_t i = 0U;
+    //*********************************************************************
+    /// Trim the size to the distance to the first null terminator.
+    /// If the last buffer position has a non-null value then the truncated
+    /// flag will be set.
+    //*********************************************************************
+    void trim()
+    {
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      set_truncated(p_buffer[CAPACITY] != T(0));
+#endif
 
-      while ((i != max_size()) && (p_buffer[i] != 0))
-      {
-        ++i;
-      }
-
-      current_size = i;
+      p_buffer[CAPACITY] = T(0); // Ensure a terminating null.
+      current_size = etl::strlen(p_buffer);
     }
 
   protected:
