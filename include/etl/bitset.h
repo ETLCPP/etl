@@ -608,7 +608,7 @@ namespace etl
         }
         else
         {
-          position += BITS_PER_ELEMENT - bit;
+          position += (BITS_PER_ELEMENT - bit);
         }
 
         // Start at the beginning for all other elements.
