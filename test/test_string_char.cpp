@@ -874,7 +874,7 @@ namespace
       Text text(compare_text.begin(), compare_text.end());
 
       bool is_equal = std::equal(text.data(),
-                                 text.data() + text.size(),
+                                 text.data_end(),
                                  compare_text.begin());
 
       CHECK(is_equal);
@@ -891,7 +891,7 @@ namespace
       const Text text(compare_text.begin(), compare_text.end());
 
       bool is_equal = std::equal(text.data(),
-                                 text.data() + text.size(),
+                                 text.data_end(),
                                  compare_text.begin());
 
       CHECK(is_equal);
@@ -4159,14 +4159,50 @@ namespace
 #endif
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_initialize_free_space_empty_string)
+    {
+      Text empty;
+      Text text;
+
+      text.initialize_free_space();
+
+      CHECK(text.empty());
+      CHECK(text == empty);
+
+      for (size_t i = text.size(); i < text.max_size(); ++i)
+      {
+        CHECK_EQUAL(0, text[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_initialize_free_space_part_filled_string)
+    {
+      Text empty;
+      Text initial = STR("ABC");
+      Text text(initial);
+
+      text.initialize_free_space();
+
+      CHECK(text == initial);
+      CHECK(text != empty);
+
+      for (size_t i = text.size(); i < text.max_size(); ++i)
+      {
+        CHECK_EQUAL(0, text[i]);
+      }
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_update_after_c_string_max_size)
     {
       Text text;
 
-      text.resize(text.max_size());
+      text.initialize_free_space();
       std::fill(text.data(), text.data() + text.max_size(), STR('A'));
-      text.update_size();
+      text.trim_to_terminator();
 
+      CHECK(!text.is_truncated());
       CHECK_EQUAL(text.max_size(), text.size());
     }
 
@@ -4175,10 +4211,11 @@ namespace
     {
       Text text;
 
-      text.resize(text.max_size());
+      text.initialize_free_space();
       std::fill(text.data(), text.data() + text.max_size() - 1, STR('A'));
-      text.update_size();
+      text.trim_to_terminator();
 
+      CHECK(!text.is_truncated());
       CHECK_EQUAL(text.max_size() - 1, text.size());
     }
 
@@ -4187,10 +4224,11 @@ namespace
     {
       Text text;
 
-      text.resize(text.max_size());
+      text.initialize_free_space();
       std::fill(text.data(), text.data() + text.max_size() + 1, STR('A')); // Overwrites to terminating null.
-      text.update_size();
+      text.trim_to_terminator();
 
+      CHECK(text.is_truncated());
       CHECK_EQUAL(text.max_size(), text.size());
     }
   };
