@@ -583,6 +583,24 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Returns a pointer to the beginning of the string data.
+    ///\return A pointer to the beginning of the string data.
+    //*********************************************************************
+    pointer data_end()
+    {
+      return p_buffer + current_size;
+    }
+
+    //*********************************************************************
+    /// Returns a const pointer to the beginning of the string data.
+    ///\return A const pointer to the beginning of the string data.
+    //*********************************************************************
+    const_pointer data_end() const
+    {
+      return p_buffer + current_size;
+    }
+
+    //*********************************************************************
     /// Assigns values to the string.
     /// Truncates if the string does not have enough free space.
     ///\param other The other string.
@@ -2200,7 +2218,7 @@ namespace etl
     /// If the last buffer position has a non-null value then the truncated
     /// flag will be set.
     //*********************************************************************
-    void trim()
+    void trim_to_terminator()
     {
 #if ETL_STRING_TRUNCATION_CHECKS_ENABLED
       set_truncated(p_buffer[CAPACITY] != T(0));

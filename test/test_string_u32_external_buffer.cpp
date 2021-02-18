@@ -4550,7 +4550,7 @@ namespace
 
       text.initialize_free_space();
       std::fill(text.data(), text.data() + text.max_size(), STR('A'));
-      text.trim();
+      text.trim_to_terminator();
 
       CHECK(!text.is_truncated());
       CHECK_EQUAL(text.max_size(), text.size());
@@ -4564,7 +4564,7 @@ namespace
 
       text.initialize_free_space();
       std::fill(text.data(), text.data() + text.max_size() - 1, STR('A'));
-      text.trim();
+      text.trim_to_terminator();
 
       CHECK(!text.is_truncated());
       CHECK_EQUAL(text.max_size() - 1, text.size());
@@ -4578,7 +4578,7 @@ namespace
 
       text.initialize_free_space();
       std::fill(text.data(), text.data() + text.max_size() + 1, STR('A')); // Overwrites to terminating null.
-      text.trim();
+      text.trim_to_terminator();
 
       CHECK(text.is_truncated());
       CHECK_EQUAL(text.max_size(), text.size());

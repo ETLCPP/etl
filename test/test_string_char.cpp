@@ -874,7 +874,7 @@ namespace
       Text text(compare_text.begin(), compare_text.end());
 
       bool is_equal = std::equal(text.data(),
-                                 text.data() + text.size(),
+                                 text.data_end(),
                                  compare_text.begin());
 
       CHECK(is_equal);
@@ -891,7 +891,7 @@ namespace
       const Text text(compare_text.begin(), compare_text.end());
 
       bool is_equal = std::equal(text.data(),
-                                 text.data() + text.size(),
+                                 text.data_end(),
                                  compare_text.begin());
 
       CHECK(is_equal);
@@ -4200,7 +4200,7 @@ namespace
 
       text.initialize_free_space();
       std::fill(text.data(), text.data() + text.max_size(), STR('A'));
-      text.trim();
+      text.trim_to_terminator();
 
       CHECK(!text.is_truncated());
       CHECK_EQUAL(text.max_size(), text.size());
@@ -4213,7 +4213,7 @@ namespace
 
       text.initialize_free_space();
       std::fill(text.data(), text.data() + text.max_size() - 1, STR('A'));
-      text.trim();
+      text.trim_to_terminator();
 
       CHECK(!text.is_truncated());
       CHECK_EQUAL(text.max_size() - 1, text.size());
@@ -4226,7 +4226,7 @@ namespace
 
       text.initialize_free_space();
       std::fill(text.data(), text.data() + text.max_size() + 1, STR('A')); // Overwrites to terminating null.
-      text.trim();
+      text.trim_to_terminator();
 
       CHECK(text.is_truncated());
       CHECK_EQUAL(text.max_size(), text.size());
