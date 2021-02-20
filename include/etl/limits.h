@@ -196,15 +196,15 @@ namespace etl
     static ETL_CONSTANT bool is_signed = false;
     static ETL_CONSTANT bool is_modulo = false;
 
-    static bool min() { return false; }
-    static bool max() { return true; }
-    static bool lowest() { return false; }
-    static bool epsilon() { return false; }
-    static bool round_error() { return false; }
-    static bool denorm_min() { return false; }
-    static bool infinity() { return false; }
-    static bool quiet_NaN() { return false; }
-    static bool signaling_NaN() { return false; }
+    static ETL_CONSTANT bool min() { return false; }
+    static ETL_CONSTANT bool max() { return true; }
+    static ETL_CONSTANT bool lowest() { return false; }
+    static ETL_CONSTANT bool epsilon() { return false; }
+    static ETL_CONSTANT bool round_error() { return false; }
+    static ETL_CONSTANT bool denorm_min() { return false; }
+    static ETL_CONSTANT bool infinity() { return false; }
+    static ETL_CONSTANT bool quiet_NaN() { return false; }
+    static ETL_CONSTANT bool signaling_NaN() { return false; }
   };
 
   //***************************************************************************
@@ -219,15 +219,15 @@ namespace etl
     static ETL_CONSTANT bool is_signed = etl::is_signed<char>::value;
     static ETL_CONSTANT bool is_modulo = false;
 
-    static char min() { return char(CHAR_MIN); }
-    static char max() { return char(CHAR_MAX); }
-    static char lowest() { return char(CHAR_MIN); }
-    static char epsilon() { return 0; }
-    static char round_error() { return 0; }
-    static char denorm_min() { return 0; }
-    static char infinity() { return 0; }
-    static char quiet_NaN() { return 0; }
-    static char signaling_NaN() { return 0; }
+    static ETL_CONSTANT char min() { return char(CHAR_MIN); }
+    static ETL_CONSTANT char max() { return char(CHAR_MAX); }
+    static ETL_CONSTANT char lowest() { return char(CHAR_MIN); }
+    static ETL_CONSTANT char epsilon() { return 0; }
+    static ETL_CONSTANT char round_error() { return 0; }
+    static ETL_CONSTANT char denorm_min() { return 0; }
+    static ETL_CONSTANT char infinity() { return 0; }
+    static ETL_CONSTANT char quiet_NaN() { return 0; }
+    static ETL_CONSTANT char signaling_NaN() { return 0; }
   };
 
   //***************************************************************************
@@ -242,15 +242,15 @@ namespace etl
     static ETL_CONSTANT bool is_signed = false;
     static ETL_CONSTANT bool is_modulo = true;
 
-    static unsigned char min() { return 0U; }
-    static unsigned char max() { return UCHAR_MAX; }
-    static unsigned char lowest() { return 0U; }
-    static unsigned char epsilon() { return 0U; }
-    static unsigned char round_error() { return 0U; }
-    static unsigned char denorm_min() { return 0U; }
-    static unsigned char infinity() { return 0U; }
-    static unsigned char quiet_NaN() { return 0U; }
-    static unsigned char signaling_NaN() { return 0U; }
+    static ETL_CONSTANT unsigned char min() { return 0U; }
+    static ETL_CONSTANT unsigned char max() { return UCHAR_MAX; }
+    static ETL_CONSTANT unsigned char lowest() { return 0U; }
+    static ETL_CONSTANT unsigned char epsilon() { return 0U; }
+    static ETL_CONSTANT unsigned char round_error() { return 0U; }
+    static ETL_CONSTANT unsigned char denorm_min() { return 0U; }
+    static ETL_CONSTANT unsigned char infinity() { return 0U; }
+    static ETL_CONSTANT unsigned char quiet_NaN() { return 0U; }
+    static ETL_CONSTANT unsigned char signaling_NaN() { return 0U; }
   };
 
   //***************************************************************************
@@ -265,15 +265,15 @@ namespace etl
     static ETL_CONSTANT bool is_signed = true;
     static ETL_CONSTANT bool is_modulo = false;
 
-    static signed char min() { return SCHAR_MIN; }
-    static signed char max() { return SCHAR_MAX; }
-    static signed char lowest() { return SCHAR_MIN; }
-    static signed char epsilon() { return 0; }
-    static signed char round_error() { return 0; }
-    static signed char denorm_min() { return 0; }
-    static signed char infinity() { return 0; }
-    static signed char quiet_NaN() { return 0; }
-    static signed char signaling_NaN() { return 0; }
+    static ETL_CONSTANT signed char min() { return SCHAR_MIN; }
+    static ETL_CONSTANT signed char max() { return SCHAR_MAX; }
+    static ETL_CONSTANT signed char lowest() { return SCHAR_MIN; }
+    static ETL_CONSTANT signed char epsilon() { return 0; }
+    static ETL_CONSTANT signed char round_error() { return 0; }
+    static ETL_CONSTANT signed char denorm_min() { return 0; }
+    static ETL_CONSTANT signed char infinity() { return 0; }
+    static ETL_CONSTANT signed char quiet_NaN() { return 0; }
+    static ETL_CONSTANT signed char signaling_NaN() { return 0; }
   };
 
 #if (ETL_NO_LARGE_CHAR_SUPPORT == false)
@@ -289,15 +289,15 @@ namespace etl
     static ETL_CONSTANT bool is_signed = false;
     static ETL_CONSTANT bool is_modulo = true;
 
-    static char16_t min() { return 0U; }
-    static char16_t max() { return UINT_LEAST16_MAX; }
-    static char16_t lowest() { return 0U; }
-    static char16_t epsilon() { return 0U; }
-    static char16_t round_error() { return 0U; }
-    static char16_t denorm_min() { return 0U; }
-    static char16_t infinity() { return 0U; }
-    static char16_t quiet_NaN() { return 0U; }
-    static char16_t signaling_NaN() { return 0U; }
+    static ETL_CONSTANT char16_t min() { return 0U; }
+    static ETL_CONSTANT char16_t max() { return UINT_LEAST16_MAX; }
+    static ETL_CONSTANT char16_t lowest() { return 0U; }
+    static ETL_CONSTANT char16_t epsilon() { return 0U; }
+    static ETL_CONSTANT char16_t round_error() { return 0U; }
+    static ETL_CONSTANT char16_t denorm_min() { return 0U; }
+    static ETL_CONSTANT char16_t infinity() { return 0U; }
+    static ETL_CONSTANT char16_t quiet_NaN() { return 0U; }
+    static ETL_CONSTANT char16_t signaling_NaN() { return 0U; }
   };
 
   //***************************************************************************
@@ -312,15 +312,15 @@ namespace etl
     static ETL_CONSTANT bool is_signed = false;
     static ETL_CONSTANT bool is_modulo = true;
 
-    static char32_t min() { return 0U; }
-    static char32_t max() { return UINT_LEAST32_MAX; }
-    static char32_t lowest() { return 0U; }
-    static char32_t epsilon() { return 0U; }
-    static char32_t round_error() { return 0U; }
-    static char32_t denorm_min() { return 0U; }
-    static char32_t infinity() { return 0U; }
-    static char32_t quiet_NaN() { return 0U; }
-    static char32_t signaling_NaN() { return 0U; }
+    static ETL_CONSTANT char32_t min() { return 0U; }
+    static ETL_CONSTANT char32_t max() { return UINT_LEAST32_MAX; }
+    static ETL_CONSTANT char32_t lowest() { return 0U; }
+    static ETL_CONSTANT char32_t epsilon() { return 0U; }
+    static ETL_CONSTANT char32_t round_error() { return 0U; }
+    static ETL_CONSTANT char32_t denorm_min() { return 0U; }
+    static ETL_CONSTANT char32_t infinity() { return 0U; }
+    static ETL_CONSTANT char32_t quiet_NaN() { return 0U; }
+    static ETL_CONSTANT char32_t signaling_NaN() { return 0U; }
   };
 
 #endif
@@ -337,15 +337,15 @@ namespace etl
     static ETL_CONSTANT bool is_signed = etl::is_signed<wchar_t>::value;
     static ETL_CONSTANT bool is_modulo = etl::is_unsigned<wchar_t>::value;
 
-    static wchar_t min() { return WCHAR_MIN; }
-    static wchar_t max() { return WCHAR_MAX; }
-    static wchar_t lowest() { return WCHAR_MIN; }
-    static wchar_t epsilon() { return wchar_t(0); }
-    static wchar_t round_error() { return wchar_t(0); }
-    static wchar_t denorm_min() { return wchar_t(0); }
-    static wchar_t infinity() { return wchar_t(0); }
-    static wchar_t quiet_NaN() { return wchar_t(0); }
-    static wchar_t signaling_NaN() { return wchar_t(0); }
+    static ETL_CONSTANT wchar_t min() { return WCHAR_MIN; }
+    static ETL_CONSTANT wchar_t max() { return WCHAR_MAX; }
+    static ETL_CONSTANT wchar_t lowest() { return WCHAR_MIN; }
+    static ETL_CONSTANT wchar_t epsilon() { return wchar_t(0); }
+    static ETL_CONSTANT wchar_t round_error() { return wchar_t(0); }
+    static ETL_CONSTANT wchar_t denorm_min() { return wchar_t(0); }
+    static ETL_CONSTANT wchar_t infinity() { return wchar_t(0); }
+    static ETL_CONSTANT wchar_t quiet_NaN() { return wchar_t(0); }
+    static ETL_CONSTANT wchar_t signaling_NaN() { return wchar_t(0); }
   };
 
   //***************************************************************************
@@ -360,15 +360,15 @@ namespace etl
     static ETL_CONSTANT bool is_signed = true;
     static ETL_CONSTANT bool is_modulo = false;
 
-    static short min() { return SHRT_MIN; }
-    static short max() { return SHRT_MAX; }
-    static short lowest() { return SHRT_MIN; }
-    static short epsilon() { return 0; }
-    static short round_error() { return 0; }
-    static short denorm_min() { return 0; }
-    static short infinity() { return 0; }
-    static short quiet_NaN() { return 0; }
-    static short signaling_NaN() { return 0; }
+    static ETL_CONSTANT short min() { return SHRT_MIN; }
+    static ETL_CONSTANT short max() { return SHRT_MAX; }
+    static ETL_CONSTANT short lowest() { return SHRT_MIN; }
+    static ETL_CONSTANT short epsilon() { return 0; }
+    static ETL_CONSTANT short round_error() { return 0; }
+    static ETL_CONSTANT short denorm_min() { return 0; }
+    static ETL_CONSTANT short infinity() { return 0; }
+    static ETL_CONSTANT short quiet_NaN() { return 0; }
+    static ETL_CONSTANT short signaling_NaN() { return 0; }
   };
 
   //***************************************************************************
@@ -383,15 +383,15 @@ namespace etl
     static ETL_CONSTANT bool is_signed = false;
     static ETL_CONSTANT bool is_modulo = true;
 
-    static unsigned short min() { return 0U; }
-    static unsigned short max() { return USHRT_MAX; }
-    static unsigned short lowest() { return 0U; }
-    static unsigned short epsilon() { return 0U; }
-    static unsigned short round_error() { return 0U; }
-    static unsigned short denorm_min() { return 0U; }
-    static unsigned short infinity() { return 0U; }
-    static unsigned short quiet_NaN() { return 0U; }
-    static unsigned short signaling_NaN() { return 0U; }
+    static ETL_CONSTANT unsigned short min() { return 0U; }
+    static ETL_CONSTANT unsigned short max() { return USHRT_MAX; }
+    static ETL_CONSTANT unsigned short lowest() { return 0U; }
+    static ETL_CONSTANT unsigned short epsilon() { return 0U; }
+    static ETL_CONSTANT unsigned short round_error() { return 0U; }
+    static ETL_CONSTANT unsigned short denorm_min() { return 0U; }
+    static ETL_CONSTANT unsigned short infinity() { return 0U; }
+    static ETL_CONSTANT unsigned short quiet_NaN() { return 0U; }
+    static ETL_CONSTANT unsigned short signaling_NaN() { return 0U; }
 
   };
 
@@ -407,15 +407,15 @@ namespace etl
     static ETL_CONSTANT bool is_signed = true;
     static ETL_CONSTANT bool is_modulo = false;
 
-    static int min() { return INT_MIN; }
-    static int max() { return INT_MAX; }
-    static int lowest() { return INT_MIN; }
-    static int epsilon() { return 0; }
-    static int round_error() { return 0; }
-    static int denorm_min() { return 0; }
-    static int infinity() { return 0; }
-    static int quiet_NaN() { return 0; }
-    static int signaling_NaN() { return 0; }
+    static ETL_CONSTANT int min() { return INT_MIN; }
+    static ETL_CONSTANT int max() { return INT_MAX; }
+    static ETL_CONSTANT int lowest() { return INT_MIN; }
+    static ETL_CONSTANT int epsilon() { return 0; }
+    static ETL_CONSTANT int round_error() { return 0; }
+    static ETL_CONSTANT int denorm_min() { return 0; }
+    static ETL_CONSTANT int infinity() { return 0; }
+    static ETL_CONSTANT int quiet_NaN() { return 0; }
+    static ETL_CONSTANT int signaling_NaN() { return 0; }
   };
 
   //***************************************************************************
@@ -430,15 +430,15 @@ namespace etl
     static ETL_CONSTANT bool is_signed = false;
     static ETL_CONSTANT bool is_modulo = true;
 
-    static unsigned int min() { return 0U; }
-    static unsigned int max() { return UINT_MAX; }
-    static unsigned int lowest() { return 0U; }
-    static unsigned int epsilon() { return 0U; }
-    static unsigned int round_error() { return 0U; }
-    static unsigned int denorm_min() { return 0U; }
-    static unsigned int infinity() { return 0U; }
-    static unsigned int quiet_NaN() { return 0U; }
-    static unsigned int signaling_NaN() { return 0U; }
+    static ETL_CONSTANT unsigned int min() { return 0U; }
+    static ETL_CONSTANT unsigned int max() { return UINT_MAX; }
+    static ETL_CONSTANT unsigned int lowest() { return 0U; }
+    static ETL_CONSTANT unsigned int epsilon() { return 0U; }
+    static ETL_CONSTANT unsigned int round_error() { return 0U; }
+    static ETL_CONSTANT unsigned int denorm_min() { return 0U; }
+    static ETL_CONSTANT unsigned int infinity() { return 0U; }
+    static ETL_CONSTANT unsigned int quiet_NaN() { return 0U; }
+    static ETL_CONSTANT unsigned int signaling_NaN() { return 0U; }
   };
 
   //***************************************************************************
@@ -453,15 +453,15 @@ namespace etl
     static ETL_CONSTANT bool is_signed = true;
     static ETL_CONSTANT bool is_modulo = false;
 
-    static long min() { return LONG_MIN; }
-    static long max() { return LONG_MAX; }
-    static long lowest() { return LONG_MIN; }
-    static long epsilon() { return 0; }
-    static long round_error() { return 0; }
-    static long denorm_min() { return 0; }
-    static long infinity() { return 0; }
-    static long quiet_NaN() { return 0; }
-    static long signaling_NaN() { return 0; }
+    static ETL_CONSTANT long min() { return LONG_MIN; }
+    static ETL_CONSTANT long max() { return LONG_MAX; }
+    static ETL_CONSTANT long lowest() { return LONG_MIN; }
+    static ETL_CONSTANT long epsilon() { return 0; }
+    static ETL_CONSTANT long round_error() { return 0; }
+    static ETL_CONSTANT long denorm_min() { return 0; }
+    static ETL_CONSTANT long infinity() { return 0; }
+    static ETL_CONSTANT long quiet_NaN() { return 0; }
+    static ETL_CONSTANT long signaling_NaN() { return 0; }
   };
 
   //***************************************************************************
@@ -476,15 +476,15 @@ namespace etl
     static ETL_CONSTANT bool is_signed = false;
     static ETL_CONSTANT bool is_modulo = true;
 
-    static unsigned long min() { return 0U; }
-    static unsigned long max() { return ULONG_MAX; }
-    static unsigned long lowest() { return 0U; }
-    static unsigned long epsilon() { return 0U; }
-    static unsigned long round_error() { return 0U; }
-    static unsigned long denorm_min() { return 0U; }
-    static unsigned long infinity() { return 0U; }
-    static unsigned long quiet_NaN() { return 0U; }
-    static unsigned long signaling_NaN() { return 0U; }
+    static ETL_CONSTANT unsigned long min() { return 0U; }
+    static ETL_CONSTANT unsigned long max() { return ULONG_MAX; }
+    static ETL_CONSTANT unsigned long lowest() { return 0U; }
+    static ETL_CONSTANT unsigned long epsilon() { return 0U; }
+    static ETL_CONSTANT unsigned long round_error() { return 0U; }
+    static ETL_CONSTANT unsigned long denorm_min() { return 0U; }
+    static ETL_CONSTANT unsigned long infinity() { return 0U; }
+    static ETL_CONSTANT unsigned long quiet_NaN() { return 0U; }
+    static ETL_CONSTANT unsigned long signaling_NaN() { return 0U; }
   };
 
   //***************************************************************************
@@ -499,15 +499,15 @@ namespace etl
     static ETL_CONSTANT bool is_signed = true;
     static ETL_CONSTANT bool is_modulo = false;
 
-    static long long min() { return LLONG_MIN; }
-    static long long max() { return LLONG_MAX; }
-    static long long lowest() { return LLONG_MIN; }
-    static long long epsilon() { return 0; }
-    static long long round_error() { return 0; }
-    static long long denorm_min() { return 0; }
-    static long long infinity() { return 0; }
-    static long long quiet_NaN() { return 0; }
-    static long long signaling_NaN() { return 0; }
+    static ETL_CONSTANT long long min() { return LLONG_MIN; }
+    static ETL_CONSTANT long long max() { return LLONG_MAX; }
+    static ETL_CONSTANT long long lowest() { return LLONG_MIN; }
+    static ETL_CONSTANT long long epsilon() { return 0; }
+    static ETL_CONSTANT long long round_error() { return 0; }
+    static ETL_CONSTANT long long denorm_min() { return 0; }
+    static ETL_CONSTANT long long infinity() { return 0; }
+    static ETL_CONSTANT long long quiet_NaN() { return 0; }
+    static ETL_CONSTANT long long signaling_NaN() { return 0; }
   };
 
   //***************************************************************************
@@ -522,15 +522,15 @@ namespace etl
     static ETL_CONSTANT bool is_signed = false;
     static ETL_CONSTANT bool is_modulo = true;
 
-    static unsigned long long min() { return 0U; }
-    static unsigned long long max() { return ULLONG_MAX; }
-    static unsigned long long lowest() { return 0U; }
-    static unsigned long long epsilon() { return 0U; }
-    static unsigned long long round_error() { return 0U; }
-    static unsigned long long denorm_min() { return 0U; }
-    static unsigned long long infinity() { return 0U; }
-    static unsigned long long quiet_NaN() { return 0U; }
-    static unsigned long long signaling_NaN() { return 0U; }
+    static ETL_CONSTANT unsigned long long min() { return 0U; }
+    static ETL_CONSTANT unsigned long long max() { return ULLONG_MAX; }
+    static ETL_CONSTANT unsigned long long lowest() { return 0U; }
+    static ETL_CONSTANT unsigned long long epsilon() { return 0U; }
+    static ETL_CONSTANT unsigned long long round_error() { return 0U; }
+    static ETL_CONSTANT unsigned long long denorm_min() { return 0U; }
+    static ETL_CONSTANT unsigned long long infinity() { return 0U; }
+    static ETL_CONSTANT unsigned long long quiet_NaN() { return 0U; }
+    static ETL_CONSTANT unsigned long long signaling_NaN() { return 0U; }
   };
 
   //***************************************************************************
@@ -540,12 +540,12 @@ namespace etl
   {
   public:
 
-    static float min() { return FLT_MIN; }
-    static float max() { return FLT_MAX; }
-    static float lowest() { return -FLT_MAX; }
-    static float epsilon() { return FLT_EPSILON; }
-    static float denorm_min() { return FLT_MIN; }
-    static float infinity() { return HUGE_VALF; }
+    static ETL_CONSTANT float min() { return FLT_MIN; }
+    static ETL_CONSTANT float max() { return FLT_MAX; }
+    static ETL_CONSTANT float lowest() { return -FLT_MAX; }
+    static ETL_CONSTANT float epsilon() { return FLT_EPSILON; }
+    static ETL_CONSTANT float denorm_min() { return FLT_MIN; }
+    static ETL_CONSTANT float infinity() { return HUGE_VALF; }
     static float quiet_NaN() { return ETL_NANF; }
     static float signaling_NaN() { return ETL_NANF; }
 
@@ -566,12 +566,12 @@ namespace etl
   {
   public:
 
-    static double min() { return DBL_MIN; }
-    static double max() { return DBL_MAX; }
-    static double lowest() { return -DBL_MAX; }
-    static double epsilon() { return DBL_EPSILON; }
-    static double denorm_min() { return DBL_MIN; }
-    static double infinity() { return HUGE_VAL; }
+    static ETL_CONSTANT double min() { return DBL_MIN; }
+    static ETL_CONSTANT double max() { return DBL_MAX; }
+    static ETL_CONSTANT double lowest() { return -DBL_MAX; }
+    static ETL_CONSTANT double epsilon() { return DBL_EPSILON; }
+    static ETL_CONSTANT double denorm_min() { return DBL_MIN; }
+    static ETL_CONSTANT double infinity() { return HUGE_VAL; }
     static double quiet_NaN() { return ETL_NAN; }
     static double signaling_NaN() { return ETL_NAN; }
 
@@ -592,12 +592,12 @@ namespace etl
   {
   public:
 
-    static long double min() { return LDBL_MIN; }
-    static long double max() { return LDBL_MAX; }
-    static long double lowest() { return -LDBL_MAX; }
-    static long double epsilon() { return LDBL_EPSILON; }
-    static long double denorm_min() { return LDBL_MIN; }
-    static long double infinity() { return HUGE_VALL; }
+    static ETL_CONSTANT long double min() { return LDBL_MIN; }
+    static ETL_CONSTANT long double max() { return LDBL_MAX; }
+    static ETL_CONSTANT long double lowest() { return -LDBL_MAX; }
+    static ETL_CONSTANT long double epsilon() { return LDBL_EPSILON; }
+    static ETL_CONSTANT long double denorm_min() { return LDBL_MIN; }
+    static ETL_CONSTANT long double infinity() { return HUGE_VALL; }
     static long double quiet_NaN() { return ETL_NANL; }
     static long double signaling_NaN() { return ETL_NANL; }
 

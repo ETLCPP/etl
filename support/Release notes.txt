@@ -1,4 +1,8 @@
 ===============================================================================
+20.3.1
+Added ETL_CONSTANT to numeric_limits member functions.
+
+===============================================================================
 20.3.0
 Added initialize_free_space(), trim_to_terminator() and data_end() functions to
 strings for easier integration with C APIs.
