@@ -1,4 +1,8 @@
 ===============================================================================
+20.4.0
+Added uninitialized_resize() to etl::vector and etl::basic_string.
+
+===============================================================================
 20.3.1
 Added ETL_CONSTANT to numeric_limits member functions.
 
