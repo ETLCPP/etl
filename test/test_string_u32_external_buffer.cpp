@@ -760,7 +760,7 @@ namespace
       Text text(INITIAL_SIZE, INITIAL_VALUE, buffer.data(), buffer.size());
       text.resize(NEW_SIZE, INITIAL_VALUE);
 
-      std::array<char, NEW_SIZE> compare_text;
+      std::array<value_t, NEW_SIZE> compare_text;
       compare_text.fill(INITIAL_VALUE);
 
       bool is_equal = Equal(compare_text, text);
@@ -815,7 +815,7 @@ namespace
 
       CHECK_EQUAL(text.size(), NEW_SIZE);
 
-      std::array<char, NEW_SIZE> compare_text;
+      std::array<value_t, NEW_SIZE> compare_text;
       compare_text.fill(INITIAL_VALUE);
 
       bool is_equal = Equal(compare_text, text);

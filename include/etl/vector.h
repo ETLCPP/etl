@@ -249,6 +249,28 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Resizes the vector, but does not initialise new entries.
+    ///\param new_size The new size.
+    //*********************************************************************
+    void uninitialized_resize(size_t new_size)
+    {
+      ETL_ASSERT(new_size <= CAPACITY, ETL_ERROR(vector_full));
+
+#if defined(ETL_DEBUG_COUNT)
+      if (size() < new_size)
+      {
+        ETL_ADD_DEBUG_COUNT(new_size - size())
+      }
+      else
+      {
+        ETL_SUBTRACT_DEBUG_COUNT(size() - new_size)
+      }
+#endif
+
+      p_end = p_buffer + new_size;
+    }
+
+    //*********************************************************************
     /// Does nothing.
     //*********************************************************************
     void reserve(size_t)

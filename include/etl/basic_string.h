@@ -485,6 +485,19 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Resizes the string, but doesn't initialise the free space 
+    /// except for a terminator null.
+    ///\param new_size The new size.
+    //*********************************************************************
+    void uninitialized_resize(size_type new_size)
+    {
+      new_size = etl::min(new_size, CAPACITY);
+
+      current_size = new_size;
+      p_buffer[new_size] = 0;
+    }
+
+    //*********************************************************************
     /// Returns a reference to the value at index 'i'
     ///\param i The index.
     ///\return A reference to the value at index 'i'

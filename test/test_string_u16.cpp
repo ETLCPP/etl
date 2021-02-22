@@ -617,7 +617,7 @@ namespace
       Text text(INITIAL_SIZE, INITIAL_VALUE);
       text.resize(NEW_SIZE, INITIAL_VALUE);
 
-      std::array<char, NEW_SIZE> compare_text;
+      std::array<value_t, NEW_SIZE> compare_text;
       compare_text.fill(INITIAL_VALUE);
 
       bool is_equal = Equal(compare_text, text);
@@ -669,7 +669,7 @@ namespace
 
       CHECK_EQUAL(text.size(), NEW_SIZE);
 
-      std::array<char, NEW_SIZE> compare_text;
+      std::array<value_t, NEW_SIZE> compare_text;
       compare_text.fill(INITIAL_VALUE);
 
       bool is_equal = Equal(compare_text, text);
@@ -679,6 +679,75 @@ namespace
 #endif
     }
 
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_uninitialized_resize_up)
+    {
+      const size_t  INITIAL_SIZE = 5;
+      const size_t  NEW_SIZE = 8;
+      const value_t INITIAL_VALUE = STR('A');
+      const value_t FILL_VALUE = STR('B');
+
+      Text text(INITIAL_SIZE, INITIAL_VALUE);
+
+      Text::pointer pbegin = &text.front();
+      Text::pointer pend = &text.back() + 1;
+      Text::pointer pmax = pbegin + text.max_size();
+
+      // Fill free space with a pattern.
+      std::fill(pend, pmax, FILL_VALUE);
+
+      text.uninitialized_resize(NEW_SIZE);
+
+      std::array<value_t, NEW_SIZE> compare_text;
+      compare_text.fill(FILL_VALUE);
+      std::fill(compare_text.begin(), compare_text.begin() + INITIAL_SIZE, INITIAL_VALUE);
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+
+      CHECK_EQUAL(text.size(), NEW_SIZE);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_uninitialized_resize_up_excess)
+    {
+      const size_t INITIAL_SIZE = 5;
+      const size_t NEW_SIZE = SIZE + 1;
+
+      Text text(INITIAL_SIZE, STR('A'));
+
+      text.uninitialized_resize(NEW_SIZE);
+
+      CHECK_EQUAL(text.size(), SIZE);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_uninitialized_resize_down)
+    {
+      const size_t  INITIAL_SIZE = 5;
+      const size_t  NEW_SIZE = 2;
+      const value_t INITIAL_VALUE = STR('A');
+      const value_t FILL_VALUE = STR('B');
+
+      Text text(INITIAL_SIZE, INITIAL_VALUE);
+
+      Text::pointer pbegin = &text.front();
+      Text::pointer pend = &text.back() + 1;
+      Text::pointer pmax = pbegin + text.max_size();
+
+      // Fill free space with a pattern.
+      std::fill(pend, pmax, FILL_VALUE);
+
+      text.uninitialized_resize(NEW_SIZE);
+
+      std::array<value_t, NEW_SIZE> compare_text;
+      compare_text.fill(INITIAL_VALUE);
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+
+      CHECK_EQUAL(text.size(), NEW_SIZE);
+    }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_empty_full)
