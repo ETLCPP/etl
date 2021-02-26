@@ -84,25 +84,25 @@ public:
   }
 
   //****************************************
-  void on_receive(etl::imessage_router& source, const Message1& msg)
+  void on_receive(const Message1& msg)
   {
     std::cout << "MessageRouter1 : on_receive Message1 : " << msg.s << "\n";
   }
 
   //****************************************
-  void on_receive(etl::imessage_router& source, const Message2& msg)
+  void on_receive(const Message2& msg)
   {
     std::cout << "MessageRouter1 : on_receive Message2 : " << msg.s << "\n";
   }
 
   //****************************************
-  void on_receive(etl::imessage_router& source, const Message3& msg)
+  void on_receive(const Message3& msg)
   {
     std::cout << "MessageRouter1 : on_receive Message3 : " << msg.s << "\n";
   }
 
   //****************************************
-  void on_receive_unknown(etl::imessage_router& source, const etl::imessage& msg)
+  void on_receive_unknown(const etl::imessage& msg)
   {
     std::cout << "MessageRouter1 : on_receive Unknown\n";
   }
@@ -130,13 +130,13 @@ public:
   //****************************************
   // Overridden receive.
   // Puts the shared messages into a queue.
-  void receive(etl::imessage_router& source, etl::shared_message shared_msg) override
+  void receive(etl::shared_message shared_msg) override
   {
     if (!queue.full())
     {
       Print("MessageRouter2 : Queueing shared message", shared_msg);
 
-      queue.push(QueuedData{ &source, shared_msg });
+      queue.push(shared_msg);
     }
   }
 
@@ -147,50 +147,44 @@ public:
     while (!queue.empty())
     {
       // Get the shared message from the queue.
-      QueuedData data = queue.front();
+      etl::shared_message shared_msg = queue.front();
 
-      Print("MessageRouter2 : Process queued shared message", data.shared_msg);
+      Print("MessageRouter2 : Process queued shared message", shared_msg);
 
       // Send it to the base implementation for routing.
-      base_t::receive(*data.source, data.shared_msg);
+      base_t::receive(shared_msg);
 
       queue.pop();
     }
   }
 
   //****************************************
-  void on_receive(etl::imessage_router& source, const Message1& msg)
+  void on_receive(const Message1& msg)
   {
     std::cout << "MessageRouter2 : on_receive Message1 : " << msg.s << "\n";
   }
 
   //****************************************
-  void on_receive(etl::imessage_router& source, const Message2& msg)
+  void on_receive(const Message2& msg)
   {
     std::cout << "MessageRouter2 : on_receive Message2 : " << msg.s << "\n";
   }
 
   //****************************************
-  void on_receive(etl::imessage_router& source, const Message3& msg)
+  void on_receive(const Message3& msg)
   {
     std::cout << "MessageRouter2 : on_receive Message3 : " << msg.s << "\n";
   }
 
   //****************************************
-  void on_receive_unknown(etl::imessage_router& source, const etl::imessage& msg)
+  void on_receive_unknown(const etl::imessage& msg)
   {
     std::cout << "MessageRouter2 : on_receive Unknown\n";
   }
 
 private:
 
-  struct QueuedData
-  {
-    etl::imessage_router* source;
-    etl::shared_message   shared_msg;
-  };
-
-  etl::queue<QueuedData, 10> queue;
+  etl::queue<etl::shared_message, 10> queue;
 };
 
 //*****************************************************************************
@@ -254,7 +248,6 @@ etl::fixed_sized_memory_block_allocator<max_size_small, max_alignment_small, 4U>
 
 // A fixed memory block allocator for 4 items, using the parameters from the larger message.
 etl::fixed_sized_memory_block_allocator<max_size_large, max_alignment_large, 4U> memory_allocator_successor;
-
 
 //*****************************************************************************
 // The pool that supplies reference counted messages.
