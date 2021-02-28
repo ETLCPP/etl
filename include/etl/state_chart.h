@@ -35,6 +35,7 @@ SOFTWARE.
 #include "etl/nullptr.h"
 #include "etl/array.h"
 #include "etl/array_view.h"
+#include "etl/type_traits.h"
 
 namespace etl
 {
@@ -76,9 +77,330 @@ namespace etl
 
   //***************************************************************************
   /// Simple Finite State Machine
+  /// Data parameter for events.
+  //***************************************************************************
+  template <typename TObject, typename TDataParameter = void>
+  class state_chart : public istate_chart
+  {
+  public:
+
+    typedef TDataParameter data_parameter_type;
+    typedef typename etl::types<data_parameter_type>::type data_type;
+
+    //*************************************************************************
+    /// Transition definition
+    //*************************************************************************
+    struct transition
+    {
+      ETL_CONSTEXPR transition(const state_id_t current_state_id_,
+                               const event_id_t event_id_,
+                               const state_id_t next_state_id_,
+                               void (TObject::* const action_)(data_parameter_type) = ETL_NULLPTR,
+                               bool (TObject::* const guard_)() = ETL_NULLPTR)
+        : from_any_state(false),
+          current_state_id(current_state_id_),
+          event_id(event_id_),
+          next_state_id(next_state_id_),
+          action(action_),
+          guard(guard_)
+      {
+      }
+
+      ETL_CONSTEXPR transition(const event_id_t event_id_,
+                               const state_id_t next_state_id_,
+                               void (TObject::* const action_)(data_parameter_type) = ETL_NULLPTR,
+                               bool (TObject::* const guard_)() = ETL_NULLPTR)
+          : from_any_state(true),
+            current_state_id(0),
+            event_id(event_id_),
+            next_state_id(next_state_id_),
+            action(action_),
+            guard(guard_)
+      {
+      }
+
+      const bool       from_any_state;
+      const state_id_t current_state_id;
+      const event_id_t event_id;
+      const state_id_t next_state_id;
+      void (TObject::* const action)(data_parameter_type);
+      bool (TObject::* const guard)();
+    };
+
+    //*************************************************************************
+    /// State definition
+    //*************************************************************************
+    struct state
+    {
+      ETL_CONSTEXPR state(const state_id_t state_id_,
+                          void (TObject::* const on_entry_)() = ETL_NULLPTR,
+                          void (TObject::* const on_exit_)()  = ETL_NULLPTR)
+        : state_id(state_id_),
+          on_entry(on_entry_),
+          on_exit(on_exit_)
+      {
+      }
+
+      state_id_t state_id;
+      void (TObject::* const on_entry)();
+      void (TObject::* const on_exit)();
+    };
+
+    //*************************************************************************
+    /// Constructor.
+    /// \param object_                 A reference to the implementation object.
+    /// \param transition_table_begin_ The start of the table of transitions.
+    /// \param transition_table_end_   The end of the table of transitions.
+    /// \param state_id_               The initial state id.
+    //*************************************************************************
+    ETL_CONSTEXPR state_chart(TObject& object_,
+                              const transition* transition_table_begin_,
+                              const transition* transition_table_end_,
+                              const state_id_t state_id_)
+      : istate_chart(state_id_),
+        object(object_),
+        transition_table(transition_table_begin_, transition_table_end_),
+        started(false)
+    {
+    }
+
+    //*************************************************************************
+    /// Constructor.
+    /// \param object_                 A reference to the implementation object.
+    /// \param transition_table_begin_ The start of the table of transitions.
+    /// \param transition_table_end_   The end of the table of transitions.
+    /// \param state_table_begin_      The start of the state table.
+    /// \param state_table_end_        The end of the state table.
+    /// \param state_id_               The initial state id.
+    //*************************************************************************
+    ETL_CONSTEXPR state_chart(TObject& object_,
+                              const transition* transition_table_begin_,
+                              const transition* transition_table_end_,
+                              const state* state_table_begin_,
+                              const state* state_table_end_,
+                              const state_id_t state_id_)
+      : istate_chart(state_id_),
+        object(object_),
+        transition_table(transition_table_begin_, transition_table_end_),
+        state_table(state_table_begin_, state_table_end_),
+        started(false)
+    {
+    }
+
+    //*************************************************************************
+    /// Sets the transition table.
+    /// \param state_table_begin_ The start of the state table.
+    /// \param state_table_end_   The end of the state table.
+    //*************************************************************************
+    void set_transition_table(const transition* transition_table_begin_,
+                              const transition* transition_table_end_)
+    {
+      transition_table.assign(transition_table_begin_, transition_table_end_);
+    }
+
+    //*************************************************************************
+    /// Sets the state table.
+    /// \param state_table_begin_ The start of the state table.
+    /// \param state_table_end_   The end of the state table.
+    //*************************************************************************
+    void set_state_table(const state* state_table_begin_,
+                         const state* state_table_end_)
+    {
+      state_table.assign(state_table_begin_, state_table_end_);
+    }
+
+    //*************************************************************************
+    /// Gets a reference to the implementation object.
+    /// \return Reference to the implementation object.
+    //*************************************************************************
+    TObject& get_object()
+    {
+      return object;
+    }
+
+    //*************************************************************************
+    /// Gets a const reference to the implementation object.
+    /// \return Const reference to the implementation object.
+    //*************************************************************************
+    const TObject& get_object() const
+    {
+      return object;
+    }
+
+    //*************************************************************************
+    /// Gets the current state id.
+    /// \return The current state id.
+    //*************************************************************************
+    const state* find_state(state_id_t state_id)
+    {
+      if (state_table.empty())
+      {
+        return state_table.end();
+      }
+      else
+      {
+        return etl::find_if(state_table.begin(),
+                            state_table.end(),
+                            is_state(state_id));
+      }
+    }
+
+    //*************************************************************************
+    ///
+    //*************************************************************************
+    virtual void start(const bool on_entry_initial = true) ETL_OVERRIDE
+    {
+      if (!started)
+      {
+        if (on_entry_initial)
+        {
+          // See if we have a state item for the initial state.
+          const state* s = find_state(current_state_id);
+
+          // If the initial state has an 'on_entry' then call it.
+          if ((s != state_table.end()) && (s->on_entry != ETL_NULLPTR))
+          {
+            (object.*(s->on_entry))();
+          }
+        }
+
+        started = true;
+      }
+    }
+
+    //*************************************************************************
+    /// Processes the specified event.
+    /// The state machine will action the <b>first</b> item in the transition table
+    /// that satisfies the conditions for executing the action.
+    /// \param event_id The id of the event to process.
+    //*************************************************************************
+    virtual void process_event(const event_id_t event_id) ETL_OVERRIDE
+    {
+      process_event(event_id, data_type());
+    }
+
+    //*************************************************************************
+    /// Processes the specified event.
+    /// The state machine will action the <b>first</b> item in the transition table
+    /// that satisfies the conditions for executing the action.
+    /// \param event_id The id of the event to process.
+    /// \param data     The data to pass to the action.
+    //*************************************************************************
+    void process_event(const event_id_t event_id, data_parameter_type data)
+    {
+      if (started)
+      {
+        const transition* t = transition_table.begin();
+
+        // Keep looping until we execute a transition or reach the end of the table.
+        while (t != transition_table.end())
+        {
+          // Scan the transition table from the latest position.
+          t = etl::find_if(t,
+                           transition_table.end(),
+                           is_transition(event_id, current_state_id));
+
+          // Found an entry?
+          if (t != transition_table.end())
+          {
+            // Shall we execute the transition?
+            if ((t->guard == ETL_NULLPTR) || ((object.*t->guard)()))
+            {
+              // Shall we execute the action?
+              if (t->action != ETL_NULLPTR)
+              {
+                (object.*t->action)(data);
+              }
+
+              // Changing state?
+              if (current_state_id != t->next_state_id)
+              {
+                const state* s;
+
+                // See if we have a state item for the current state.
+                s = find_state(current_state_id);
+
+                // If the current state has an 'on_exit' then call it.
+                if ((s != state_table.end()) && (s->on_exit != ETL_NULLPTR))
+                {
+                  (object.*(s->on_exit))();
+                }
+
+                current_state_id = t->next_state_id;
+
+                // See if we have a state item for the new state.
+                s = find_state(current_state_id);
+
+                // If the new state has an 'on_entry' then call it.
+                if ((s != state_table.end()) && (s->on_entry != ETL_NULLPTR))
+                {
+                  (object.*(s->on_entry))();
+                }
+              }
+
+              t = transition_table.end();
+            }
+            else
+            {
+              // Start the search from the next item in the table.
+              ++t;
+            }
+          }
+        }
+      }
+    }
+
+  private:
+
+    //*************************************************************************
+    struct is_transition
+    {
+      is_transition(event_id_t event_id_, state_id_t state_id_)
+        : event_id(event_id_),
+          state_id(state_id_)
+      {
+      }
+
+      bool operator()(const transition& t) const
+      {
+        return (t.event_id == event_id) && (t.from_any_state || (t.current_state_id == state_id));
+      }
+
+      const event_id_t event_id;
+      const state_id_t state_id;
+    };
+
+    //*************************************************************************
+    struct is_state
+    {
+      is_state(state_id_t state_id_)
+        : state_id(state_id_)
+      {
+      }
+
+      bool operator()(const state& s) const
+      {
+        return (s.state_id == state_id);
+      }
+
+      const state_id_t state_id;
+    };
+
+    // Disabled
+    state_chart(const state_chart&) ETL_DELETE;
+    state_chart& operator =(const state_chart&) ETL_DELETE;
+
+    TObject&                                object;           ///< The object that supplies guard and action member functions.
+    const etl::array_view<const transition> transition_table; ///< The table of transitions.
+    etl::array_view<const state>            state_table;      ///< The table of states.
+    bool                                    started;          ///< Set if the state chart has been started.
+  };
+
+  //***************************************************************************
+  /// Simple Finite State Machine
   //***************************************************************************
   template <typename TObject>
-  class state_chart : public istate_chart
+  class state_chart<TObject, void> : public istate_chart
   {
   public:
 
@@ -243,7 +565,7 @@ namespace etl
     //*************************************************************************
     ///
     //*************************************************************************
-    virtual void start(const bool on_entry_initial = true)
+    virtual void start(const bool on_entry_initial = true) ETL_OVERRIDE
     {
       if (!started)
       {
@@ -269,7 +591,7 @@ namespace etl
     /// that satisfies the conditions for executing the action.
     /// \param event_id The id of the event to process.
     //*************************************************************************
-    virtual void process_event(const event_id_t event_id)
+    virtual void process_event(const event_id_t event_id) ETL_OVERRIDE
     {
       if (started)
       {

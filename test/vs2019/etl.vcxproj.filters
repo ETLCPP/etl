@@ -1496,6 +1496,9 @@
     <ClCompile Include="..\test_queue_lockable_small.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_state_chart_with_data_parameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
