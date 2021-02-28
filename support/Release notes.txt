@@ -1,4 +1,11 @@
 ===============================================================================
+20.5.0
+Added specialisation of etl::state_chart to allow a parameter to be passed along
+with the event.
+Issue #339 - Fix extent type conversion warning
+Issue #340 - Export headers as system includes
+
+===============================================================================
 20.4.1
 Updates to etl::shared_message example application.
 
