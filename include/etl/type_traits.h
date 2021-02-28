@@ -560,23 +560,23 @@ namespace etl
 
   //***************************************************************************
   /// extent
-  template <typename T, size_t MAXN = 0U>
+  template <typename T, unsigned MAXN = 0U>
   struct extent : integral_constant<size_t, 0U> {};
 
   template <typename T>
   struct extent<T[], 0> : integral_constant<size_t, 0U> {};
 
-  template <typename T, size_t MAXN>
+  template <typename T, unsigned MAXN>
   struct extent<T[], MAXN> : integral_constant<size_t, extent<T, MAXN - 1>::value> {};
 
-  template <typename T, size_t MAXN>
+  template <typename T, unsigned MAXN>
   struct extent<T[MAXN], 0> : integral_constant<size_t, MAXN> {};
 
-  template <typename T, size_t I, size_t MAXN>
+  template <typename T, size_t I, unsigned MAXN>
   struct extent<T[I], MAXN> : integral_constant<size_t, extent<T, MAXN - 1>::value> {};
 
 #if ETL_CPP17_SUPPORTED
-  template <typename T, size_t N = 0U>
+  template <typename T, unsigned N = 0U>
   inline constexpr size_t extent_v = extent<T, N>::value;
 #endif
 
@@ -1227,7 +1227,7 @@ namespace etl
   struct extent : std::extent<T, MAXN> {};
 
 #if ETL_CPP17_SUPPORTED
-  template <typename T, size_t MAXN = 0U>
+  template <typename T, unsigned MAXN = 0U>
   inline constexpr size_t extent_v = std::extent_v<T, MAXN>;
 #endif
 
