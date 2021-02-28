@@ -1223,7 +1223,7 @@ namespace etl
   //***************************************************************************
   /// extent
   ///\ingroup type_traits
-  template <typename T, size_t MAXN = 0U>
+  template <typename T, unsigned MAXN = 0U>
   struct extent : std::extent<T, MAXN> {};
 
 #if ETL_CPP17_SUPPORTED
