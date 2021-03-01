@@ -584,7 +584,7 @@ namespace etl
   template <typename T, unsigned MAXN>
   struct extent<T[MAXN], 0> : integral_constant<size_t, MAXN> {};
 
-  template <typename T, size_t I, unsigned MAXN>
+  template <typename T, unsigned I, unsigned MAXN>
   struct extent<T[I], MAXN> : integral_constant<size_t, extent<T, MAXN - 1>::value> {};
 
 #if ETL_CPP17_SUPPORTED
