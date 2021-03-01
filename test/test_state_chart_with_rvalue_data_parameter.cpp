@@ -87,7 +87,7 @@ namespace
     Data()
       : i(0)
     {
-    }
+    } 
 
     explicit Data(int i_)
       : i(i_)
