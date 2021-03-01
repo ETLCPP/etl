@@ -1,4 +1,8 @@
 ===============================================================================
+20.5.1
+Fixed ambiguous template error for etl::extent.
+
+===============================================================================
 20.5.0
 Added specialisation of etl::state_chart to allow a parameter to be passed along
 with the event.
