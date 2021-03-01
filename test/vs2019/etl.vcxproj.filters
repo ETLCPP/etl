@@ -1499,6 +1499,9 @@
     <ClCompile Include="..\test_state_chart_with_data_parameter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_state_chart_with_rvalue_data_parameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">

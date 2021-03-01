@@ -35,7 +35,7 @@ SOFTWARE.
 #include "etl/nullptr.h"
 #include "etl/array.h"
 #include "etl/array_view.h"
-#include "etl/type_traits.h"
+#include "etl/utility.h"
 
 namespace etl
 {
@@ -79,13 +79,12 @@ namespace etl
   /// Simple Finite State Machine
   /// Data parameter for events.
   //***************************************************************************
-  template <typename TObject, typename TDataParameter = void>
+  template <typename TObject, typename TParameter = void>
   class state_chart : public istate_chart
   {
   public:
 
-    typedef TDataParameter data_parameter_type;
-    typedef typename etl::types<data_parameter_type>::type data_type;
+    typedef TParameter parameter_t;
 
     //*************************************************************************
     /// Transition definition
@@ -95,7 +94,7 @@ namespace etl
       ETL_CONSTEXPR transition(const state_id_t current_state_id_,
                                const event_id_t event_id_,
                                const state_id_t next_state_id_,
-                               void (TObject::* const action_)(data_parameter_type) = ETL_NULLPTR,
+                               void (TObject::* const action_)(parameter_t) = ETL_NULLPTR,
                                bool (TObject::* const guard_)() = ETL_NULLPTR)
         : from_any_state(false),
           current_state_id(current_state_id_),
@@ -108,7 +107,7 @@ namespace etl
 
       ETL_CONSTEXPR transition(const event_id_t event_id_,
                                const state_id_t next_state_id_,
-                               void (TObject::* const action_)(data_parameter_type) = ETL_NULLPTR,
+                               void (TObject::* const action_)(parameter_t) = ETL_NULLPTR,
                                bool (TObject::* const guard_)() = ETL_NULLPTR)
           : from_any_state(true),
             current_state_id(0),
@@ -123,7 +122,7 @@ namespace etl
       const state_id_t current_state_id;
       const event_id_t event_id;
       const state_id_t next_state_id;
-      void (TObject::* const action)(data_parameter_type);
+      void (TObject::* const action)(parameter_t);
       bool (TObject::* const guard)();
     };
 
@@ -276,7 +275,7 @@ namespace etl
     //*************************************************************************
     virtual void process_event(const event_id_t event_id) ETL_OVERRIDE
     {
-      process_event(event_id, data_type());
+      process_event(event_id, typename etl::types<parameter_t>::type());
     }
 
     //*************************************************************************
@@ -286,7 +285,7 @@ namespace etl
     /// \param event_id The id of the event to process.
     /// \param data     The data to pass to the action.
     //*************************************************************************
-    void process_event(const event_id_t event_id, data_parameter_type data)
+    void process_event(const event_id_t event_id, parameter_t data)
     {
       if (started)
       {
@@ -309,7 +308,11 @@ namespace etl
               // Shall we execute the action?
               if (t->action != ETL_NULLPTR)
               {
+#if ETL_CPP11_SUPPORTED
+                (object.*t->action)(etl::forward<parameter_t>(data));
+#else
                 (object.*t->action)(data);
+#endif
               }
 
               // Changing state?
