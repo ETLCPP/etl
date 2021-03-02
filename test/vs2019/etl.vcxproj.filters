@@ -948,6 +948,9 @@
     <ClInclude Include="..\..\include\etl\imemory_block_allocator.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_router_registry.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">

@@ -1334,6 +1334,7 @@
     <ClInclude Include="..\..\include\etl\reference_counted_message.h" />
     <ClInclude Include="..\..\include\etl\reference_counted_message_pool.h" />
     <ClInclude Include="..\..\include\etl\reference_counted_object.h" />
+    <ClInclude Include="..\..\include\etl\message_router_registry.h" />
     <ClInclude Include="..\..\include\etl\scaled_rounding.h" />
     <ClInclude Include="..\..\include\etl\shared_message.h" />
     <ClInclude Include="..\..\include\etl\span.h" />
