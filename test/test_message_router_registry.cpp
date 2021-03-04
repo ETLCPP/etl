@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2021 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -29,10 +29,6 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/message_router.h"
-#include "etl/message_bus.h"
-#include "etl/queue.h"
-#include "etl/largest.h"
-#include "etl/packet.h"
 
 //***************************************************************************
 // The set of messages.
