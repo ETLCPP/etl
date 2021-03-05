@@ -26,7 +26,7 @@
 //SOFTWARE.
 //******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/circular_buffer.h"
 #include "etl/integral_limits.h"

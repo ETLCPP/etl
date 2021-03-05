@@ -1334,6 +1334,7 @@
     <ClInclude Include="..\..\include\etl\reference_counted_message.h" />
     <ClInclude Include="..\..\include\etl\reference_counted_message_pool.h" />
     <ClInclude Include="..\..\include\etl\reference_counted_object.h" />
+    <ClInclude Include="..\..\include\etl\message_router_registry.h" />
     <ClInclude Include="..\..\include\etl\scaled_rounding.h" />
     <ClInclude Include="..\..\include\etl\shared_message.h" />
     <ClInclude Include="..\..\include\etl\span.h" />
@@ -1494,6 +1495,7 @@
     <ClInclude Include="..\etl_profile.h" />
     <ClInclude Include="..\murmurhash3.h" />
     <ClInclude Include="..\iterators_for_unit_tests.h" />
+    <ClInclude Include="..\unit_test_framework.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp" />
@@ -1542,6 +1544,7 @@
     <ClCompile Include="..\test_list_shared_pool.cpp" />
     <ClCompile Include="..\test_make_string.cpp" />
     <ClCompile Include="..\test_message_packet.cpp" />
+    <ClCompile Include="..\test_message_router_registry.cpp" />
     <ClCompile Include="..\test_multi_array.cpp" />
     <ClCompile Include="..\test_array.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../unittest-cpp</AdditionalIncludeDirectories>
