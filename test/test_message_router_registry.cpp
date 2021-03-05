@@ -232,6 +232,34 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_copy_construction)
+    {
+      etl::message_router_registry<Registry_Size> registry = { &router1, &router2, &router3, &router4 };
+      etl::message_router_registry<Registry_Size> registry2(registry);
+
+      CHECK(!registry2.empty());
+      CHECK(registry2.full());
+      CHECK_EQUAL(Registry_Size, registry2.size());
+      CHECK_EQUAL(0U,            registry2.available());
+      CHECK_EQUAL(Registry_Size, registry2.max_size());
+    }
+
+        //*************************************************************************
+    TEST(test_assignment)
+    {
+      etl::message_router_registry<Registry_Size> registry = { &router1, &router2, &router3, &router4 };
+      etl::message_router_registry<Registry_Size> registry2;
+
+      registry2 = registry;
+
+      CHECK(!registry2.empty());
+      CHECK(registry2.full());
+      CHECK_EQUAL(Registry_Size, registry2.size());
+      CHECK_EQUAL(0U,            registry2.available());
+      CHECK_EQUAL(Registry_Size, registry2.max_size());
+    }
+
+    //*************************************************************************
     TEST(test_registery_contains)
     {
       etl::message_router_registry<Registry_Size> registry = { &router1, &router2, &router3 };
@@ -257,10 +285,10 @@ namespace
     {
       etl::message_router_registry<Registry_Size> registry = { &router1, &router2, &router3 };
 
-      CHECK_EQUAL(&router1, registry.get_message_router(ROUTER1));
-      CHECK_EQUAL(&router2, registry.get_message_router(ROUTER2));
-      CHECK_EQUAL(&router3, registry.get_message_router(ROUTER3));
-      CHECK_EQUAL(nullptr,  registry.get_message_router(ROUTER4));
+      CHECK_EQUAL(&router1, registry.get(ROUTER1));
+      CHECK_EQUAL(&router2, registry.get(ROUTER2));
+      CHECK_EQUAL(&router3, registry.get(ROUTER3));
+      CHECK_EQUAL(nullptr,  registry.get(ROUTER4));
     }
 
     //*************************************************************************
@@ -272,10 +300,10 @@ namespace
 
       CHECK(!registry.contains(router3));
 
-      CHECK_EQUAL(&router1, registry.get_message_router(ROUTER1));
-      CHECK_EQUAL(&router2, registry.get_message_router(ROUTER2));
-      CHECK_EQUAL(nullptr,  registry.get_message_router(ROUTER3));
-      CHECK_EQUAL(&router4, registry.get_message_router(ROUTER4));
+      CHECK_EQUAL(&router1, registry.get(ROUTER1));
+      CHECK_EQUAL(&router2, registry.get(ROUTER2));
+      CHECK_EQUAL(nullptr,  registry.get(ROUTER3));
+      CHECK_EQUAL(&router4, registry.get(ROUTER4));
     }
   };
 }

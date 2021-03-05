@@ -115,7 +115,7 @@ namespace etl
     {
       while (first != last)
       {
-        this->add(*first++);
+        add(*first++);
       }
     }
 
@@ -131,7 +131,7 @@ namespace etl
     /// Get a pointer to a router that has the specified ID.
     /// Returns ETL_NULLPTR if not found.
     //********************************************
-    etl::imessage_router* get_message_router(etl::message_router_id_t id) const
+    etl::imessage_router* get(etl::message_router_id_t id) const
     {
       IRegistry::const_iterator itr = registry.find(id);
 
@@ -222,6 +222,8 @@ namespace etl
     typedef etl::iflat_map<etl::message_router_id_t, etl::imessage_router*> IRegistry;
 
     //********************************************
+    // Constructor.
+    //********************************************
     imessage_router_registry(IRegistry& registry_)
       : registry(registry_)
     {
@@ -248,10 +250,10 @@ namespace etl
     {
     }
 
-    //*************************************************************************
+    //********************************************
     /// Constructor.
     /// Constructs from an iterator range.
-    //*************************************************************************
+    //********************************************
     template <typename TIterator>
     message_router_registry(TIterator first, const TIterator& last)
        : imessage_router_registry(registry)
@@ -277,6 +279,25 @@ namespace etl
       }
     }
 #endif
+
+    //********************************************
+    // Copy constructor.
+    //********************************************
+    message_router_registry(const message_router_registry& rhs)
+      : imessage_router_registry(registry)
+    {
+      registry = rhs.registry;
+    }
+
+    //********************************************
+    // Assignment operator.
+    //********************************************
+    message_router_registry& operator =(const message_router_registry& rhs)
+    {
+      registry = rhs.registry;
+
+      return *this;
+    }
 
   private:
 
