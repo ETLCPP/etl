@@ -43,31 +43,31 @@ SOFTWARE.
 
 namespace etl
 {
-  ////***************************************************************************
-  ///// Base exception class for message router
-  ////***************************************************************************
-  //class message_router_registry_exception : public etl::exception
-  //{
-  //public:
+  //***************************************************************************
+  /// Base exception class for message router registry.
+  //***************************************************************************
+  class message_router_registry_exception : public etl::exception
+  {
+  public:
 
-  //  message_router_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
-  //    : etl::exception(reason_, file_name_, line_number_)
-  //  {
-  //  }
-  //};
+    message_router_registry_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : etl::exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
 
-  ////***************************************************************************
-  ///// Router id is out of the legal range.
-  ////***************************************************************************
-  //class message_router_illegal_id : public etl::message_router_registry_exception
-  //{
-  //public:
+  //***************************************************************************
+  /// The registry is full.
+  //***************************************************************************
+  class message_router_registry_full : public etl::message_router_registry_exception
+  {
+  public:
 
-  //  message_router_illegal_id(string_type file_name_, numeric_type line_number_)
-  //    : message_router_exception(ETL_ERROR_TEXT("message router:illegal id", ETL_FILE"A"), file_name_, line_number_)
-  //  {
-  //  }
-  //};
+    message_router_registry_full(string_type file_name_, numeric_type line_number_)
+      : message_router_registry_exception(ETL_ERROR_TEXT("message router registry:full", ETL_FILE"A"), file_name_, line_number_)
+    {
+    }
+  };
 
   //***************************************************************************
   /// This is the base of all message router registries.
@@ -76,6 +76,35 @@ namespace etl
   {
   public:
 
+    //********************************************
+    /// Registers a router.
+    /// If the resgitry is full then an ETL assert is called.
+    //********************************************
+    void register_message_router(etl::imessage_router& router)
+    {
+      if (!registry.full())
+      {
+        typename IRegistry::value_type element(router.get_message_router_id(), &router);
+
+        registry.insert(element);
+      }
+      else
+      {
+        ETL_ALWAYS_ASSERT(ETL_ERROR(etl::message_router_registry_full));
+      }
+    }
+
+    //********************************************
+    /// Unregisters a router.
+    //********************************************
+    void unregister_message_router(etl::message_router_id_t id)
+    {
+      registry.erase(id);
+    }
+
+    //********************************************
+    /// Get a pointer to a router that has the specified ID.
+    /// Returns ETL_NULLPTR if not found.
     //********************************************
     etl::imessage_router* get_message_router(etl::message_router_id_t id) const
     {
@@ -92,31 +121,75 @@ namespace etl
     }
 
     //********************************************
-    bool contains(etl::message_router_id_t id) const
+    /// Returns <b>true</b> if the registry contains a router that has the specified ID.
+    /// Returns <b>false</b> if not found.
+    //********************************************
+    bool contains(const etl::message_router_id_t id) const
     {
       return registry.find(id) != registry.end();
     }
 
     //********************************************
-    bool register_message_router(etl::imessage_router& router)
+    /// Returns <b>true</b> if the registry contains the router.
+    /// Returns <b>false</b> if not found.
+    //********************************************
+    bool contains(const etl::imessage_router* const p_router) const
     {
-      if (!registry.full())
-      {
-        typename IRegistry::value_type element(router.get_message_router_id(), &router);
-
-        registry.insert(element);
-        return true;
-      }
-      else
+      if (p_router == ETL_NULLPTR)
       {
         return false;
       }
+
+      return registry.find(p_router->get_message_router_id()) != registry.end();
     }
 
     //********************************************
-    void unregister_message_router(etl::message_router_id_t id)
+    /// Returns <b>true</b> if the registry contains the router.
+    /// Returns <b>false</b> if not found.
+    //********************************************
+    bool contains(const etl::imessage_router& router) const
     {
-      registry.erase(id);
+      return registry.find(router.get_message_router_id()) != registry.end();
+    }
+
+    //********************************************
+    /// Returns <b>true</b> if the registry is empty, otherwise <b>false</b>.
+    //********************************************
+    bool empty() const
+    {
+      return registry.empty();
+    }
+
+    //********************************************
+    /// Returns <b>true</b> if the registry is full, otherwise <b>false</b>.
+    //********************************************
+    bool full() const
+    {
+      return registry.full();
+    }
+
+    //********************************************
+    /// Returns the size of the registry.
+    //********************************************
+    size_t size() const
+    {
+      return registry.size();
+    }
+
+    //********************************************
+    /// Returns the available size of the registry.
+    //********************************************
+    size_t available() const
+    {
+      return registry.available();
+    }
+
+    //********************************************
+    /// Returns the maximum size of the registry.
+    //********************************************
+    size_t max_size() const
+    {
+      return registry.max_size();
     }
 
   protected:
@@ -129,7 +202,7 @@ namespace etl
     {
     }
 
-  private:  
+  private:
 
     IRegistry& registry;
   };
@@ -144,7 +217,7 @@ namespace etl
 
     //********************************************
     message_router_registry()
-      : message_router_registry(registry)
+      : imessage_router_registry(registry)
     {
     }
 
