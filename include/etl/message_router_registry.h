@@ -78,9 +78,9 @@ namespace etl
 
     //********************************************
     /// Registers a router.
-    /// If the resgitry is full then an ETL assert is called.
+    /// If the registry is full then an ETL assert is called.
     //********************************************
-    void register_message_router(etl::imessage_router& router)
+    void add(etl::imessage_router& router)
     {
       if (!registry.full())
       {
@@ -95,9 +95,34 @@ namespace etl
     }
 
     //********************************************
+    /// Registers a router.
+    /// If the registry is full then an ETL assert is called.
+    //********************************************
+    void add(etl::imessage_router* p_router)
+    {
+      if (p_router != ETL_NULLPTR)
+      {
+        add(*p_router);
+      }
+    }
+
+    //********************************************
+    /// Registers a list of routers.
+    /// If the registry is full then an ETL assert is called.
+    //********************************************
+    template <typename TIterator>
+    void add(TIterator first, const TIterator& last)
+    {
+      while (first != last)
+      {
+        this->add(*first++);
+      }
+    }
+
+    //********************************************
     /// Unregisters a router.
     //********************************************
-    void unregister_message_router(etl::message_router_id_t id)
+    void remove(etl::message_router_id_t id)
     {
       registry.erase(id);
     }
@@ -216,10 +241,42 @@ namespace etl
   public:
 
     //********************************************
+    // Default constructor.
+    //********************************************
     message_router_registry()
       : imessage_router_registry(registry)
     {
     }
+
+    //*************************************************************************
+    /// Constructor.
+    /// Constructs from an iterator range.
+    //*************************************************************************
+    template <typename TIterator>
+    message_router_registry(TIterator first, const TIterator& last)
+       : imessage_router_registry(registry)
+    {
+      while (first != last)
+      {
+        this->add(*first++);
+      }
+    }
+
+#if ETL_CPP11_SUPPORTED && ETL_USING_STL
+    //********************************************
+    // Initializer_list constructor.
+    //********************************************
+    message_router_registry(std::initializer_list<etl::imessage_router*> init)
+      : imessage_router_registry(registry)
+    {
+      std::initializer_list<etl::imessage_router*>::const_iterator itr = init.begin();
+
+      while (itr != init.end())
+      {
+        this->add(*itr++);
+      }
+    }
+#endif
 
   private:
 
