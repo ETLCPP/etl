@@ -30,7 +30,7 @@ SOFTWARE.
 
 #include "etl/message_router.h"
 #include "etl/message_router_registry.h"
-#include "etl/array.h"
+#include "etl/vector.h"
 
 //***************************************************************************
 // The set of messages.
@@ -180,9 +180,8 @@ namespace
     //*************************************************************************
     TEST(test_iterator_construction)
     {
-      etl::array<etl::imessage_router*, Registry_Size> routers{ &router1, &router2, &router3, &router4 };
-
-      etl::message_router_registry<Registry_Size> registry(routers.begin(), routers.end());
+      etl::imessage_router* routers[] = { &router1, &router2, &router3, &router4 };
+      etl::message_router_registry<Registry_Size> registry(std::begin(routers), std::end(routers));
 
       CHECK(!registry.empty());
       CHECK(registry.full());
@@ -194,11 +193,10 @@ namespace
     //*************************************************************************
     TEST(test_iterator_construction_excess)
     {
-      etl::array<etl::imessage_router*, Registry_Size + 1U> routers{ &router1, &router2, &router3, &router4, &router5 };
-
+      etl::imessage_router* routers[] = { &router1, &router2, &router3, &router4, &router5 };
       etl::message_router_registry<Registry_Size> registry;
 
-      CHECK_THROW((registry.add(routers.begin(), routers.end())), etl::message_router_registry_full);
+      CHECK_THROW((registry.add(std::begin(routers), std::end(routers))), etl::message_router_registry_full);
 
       CHECK(!registry.empty());
       CHECK(registry.full());
@@ -207,6 +205,7 @@ namespace
       CHECK_EQUAL(Registry_Size, registry.max_size());
     }
 
+#if ETL_USING_STL
     //*************************************************************************
     TEST(test_initializer_list_construction)
     {
@@ -230,11 +229,13 @@ namespace
       CHECK_EQUAL(1U,                 registry.available());
       CHECK_EQUAL(Registry_Size,      registry.max_size());
     }
+#endif
 
     //*************************************************************************
     TEST(test_copy_construction)
     {
-      etl::message_router_registry<Registry_Size> registry = { &router1, &router2, &router3, &router4 };
+      etl::imessage_router* routers[] = { &router1, &router2, &router3, &router4 };
+      etl::message_router_registry<Registry_Size> registry(std::begin(routers), std::end(routers));
       etl::message_router_registry<Registry_Size> registry2(registry);
 
       CHECK(!registry2.empty());
@@ -247,7 +248,8 @@ namespace
         //*************************************************************************
     TEST(test_assignment)
     {
-      etl::message_router_registry<Registry_Size> registry = { &router1, &router2, &router3, &router4 };
+      etl::imessage_router* routers[] = { &router1, &router2, &router3, &router4 };
+      etl::message_router_registry<Registry_Size> registry(std::begin(routers), std::end(routers));
       etl::message_router_registry<Registry_Size> registry2;
 
       registry2 = registry;
@@ -262,7 +264,8 @@ namespace
     //*************************************************************************
     TEST(test_registery_contains)
     {
-      etl::message_router_registry<Registry_Size> registry = { &router1, &router2, &router3 };
+      etl::imessage_router* routers[] = { &router1, &router2, &router3 };
+      etl::message_router_registry<Registry_Size> registry(std::begin(routers), std::end(routers));
 
       CHECK(registry.contains(ROUTER1));
       CHECK(registry.contains(ROUTER2));
@@ -283,7 +286,8 @@ namespace
     //*************************************************************************
     TEST(test_get_message_router)
     {
-      etl::message_router_registry<Registry_Size> registry = { &router1, &router2, &router3 };
+      etl::imessage_router* routers[] = { &router1, &router2, &router3 };
+      etl::message_router_registry<Registry_Size> registry(std::begin(routers), std::end(routers));
 
       CHECK_EQUAL(&router1, registry.get(ROUTER1));
       CHECK_EQUAL(&router2, registry.get(ROUTER2));
@@ -294,7 +298,8 @@ namespace
     //*************************************************************************
     TEST(test_unregister_message_router)
     {
-      etl::message_router_registry<Registry_Size> registry = { &router1, &router2, &router3, &router4 };
+      etl::imessage_router* routers[] = { &router1, &router2, &router3, &router4 };
+      etl::message_router_registry<Registry_Size> registry(std::begin(routers), std::end(routers));
 
       registry.remove(ROUTER3);
 
@@ -304,6 +309,41 @@ namespace
       CHECK_EQUAL(&router2, registry.get(ROUTER2));
       CHECK_EQUAL(nullptr,  registry.get(ROUTER3));
       CHECK_EQUAL(&router4, registry.get(ROUTER4));
+    }
+
+    //*************************************************************************
+    TEST(test_iterators)
+    {
+      etl::imessage_router* routers[] = { &router1, &router2, &router3, &router4 };
+      etl::message_router_registry<Registry_Size> registry(std::begin(routers), std::end(routers));
+
+      etl::message_router_registry<Registry_Size>::iterator       bitr   = registry.begin();
+      etl::message_router_registry<Registry_Size>::const_iterator cbitr  = registry.begin();
+      etl::message_router_registry<Registry_Size>::const_iterator cbitr2 = registry.cbegin();
+
+      etl::message_router_registry<Registry_Size>::iterator       eitr   = registry.end();
+      etl::message_router_registry<Registry_Size>::const_iterator ceitr  = registry.end();
+      etl::message_router_registry<Registry_Size>::const_iterator ceitr2 = registry.cend();
+
+      CHECK_EQUAL(&router1, *bitr++);
+      CHECK_EQUAL(&router1, *cbitr++);
+      CHECK_EQUAL(&router1, *cbitr2++);
+
+      CHECK_EQUAL(&router2, *bitr++);
+      CHECK_EQUAL(&router2, *cbitr++);
+      CHECK_EQUAL(&router2, *cbitr2++);
+
+      CHECK_EQUAL(&router3, *bitr++);
+      CHECK_EQUAL(&router3, *cbitr++);
+      CHECK_EQUAL(&router3, *cbitr2++);
+
+      CHECK_EQUAL(&router4, *bitr++);
+      CHECK_EQUAL(&router4, *cbitr++);
+      CHECK_EQUAL(&router4, *cbitr2++);
+
+      CHECK(bitr   == eitr);
+      CHECK(cbitr  == ceitr);
+      CHECK(cbitr2 == ceitr2);
     }
   };
 }
