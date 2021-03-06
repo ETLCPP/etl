@@ -108,6 +108,7 @@ namespace etl
       iterator& operator =(const iterator& other)
       {
         itr = other.itr;
+        return *this;
       }
 
       //********************************************
@@ -190,6 +191,7 @@ namespace etl
       const_iterator& operator =(const const_iterator& other)
       {
         itr = other.itr;
+        return *this;
       }
 
       //********************************************
