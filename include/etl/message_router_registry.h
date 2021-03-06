@@ -37,6 +37,7 @@ SOFTWARE.
 #include "flat_map.h"
 #include "exception.h"
 #include "error_handler.h"
+#include "iterator.h"
 
 #undef ETL_FILE
 #define ETL_FILE ETL_MESSAGE_ROUTER_REGISTRY
@@ -74,7 +75,202 @@ namespace etl
   //***************************************************************************
   class imessage_router_registry
   {
+  private:
+
+    typedef etl::iflat_map<etl::message_router_id_t, etl::imessage_router*> IRegistry;
+
   public:
+
+    class const_iterator;
+
+    //********************************************
+    /// Iterator
+    //********************************************
+    class iterator : etl::iterator<ETL_OR_STD::forward_iterator_tag, etl::imessage_router*>
+    {
+    public:
+
+      friend class imessage_router_registry;
+      friend class const_iterator;
+
+      //********************************************
+      iterator()
+      {
+      }
+
+      //********************************************
+      iterator(const iterator& other)
+        : itr(other.itr)
+      {
+      }
+
+      //********************************************
+      iterator& operator =(const iterator& other)
+      {
+        itr = other.itr;
+      }
+
+      //********************************************
+      etl::imessage_router* operator *()
+      {
+        return itr->second;
+      }
+
+      //********************************************
+      const etl::imessage_router* operator *() const
+      {
+        return itr->second;
+      }
+
+      //********************************************
+      iterator& operator ++()
+      {
+        ++itr;
+        return *this;
+      }
+
+      //********************************************
+      iterator operator ++(int)
+      {
+        iterator temp(*this);
+        ++itr;
+        return temp;
+      }
+
+      //********************************************
+      friend bool operator ==(const iterator& lhs, const iterator& rhs)
+      {
+        return lhs.itr == rhs.itr;
+      }
+
+      //********************************************
+      friend bool operator !=(const iterator& lhs, const iterator& rhs)
+      {
+        return !(lhs == rhs);
+      }
+
+    private:
+
+      //********************************************
+      iterator(typename IRegistry::iterator itr_)
+        : itr(itr_)
+      {
+      }
+
+      typename IRegistry::iterator itr;
+    };
+
+    //********************************************
+    /// Const Iterator
+    //********************************************
+    class const_iterator : etl::iterator<ETL_OR_STD::forward_iterator_tag, const etl::imessage_router*>
+    {
+    public:
+
+      friend class imessage_router_registry;
+
+      //********************************************
+      const_iterator()
+      {
+      }
+
+      //********************************************
+      const_iterator(const typename imessage_router_registry::iterator& other)
+        : itr(other.itr)
+      {
+      }
+
+      //********************************************
+      const_iterator(const const_iterator& other)
+        : itr(other.itr)
+      {
+      }
+
+      //********************************************
+      const_iterator& operator =(const const_iterator& other)
+      {
+        itr = other.itr;
+      }
+
+      //********************************************
+      const etl::imessage_router* operator *() const
+      {
+        return itr->second;
+      }
+
+      //********************************************
+      const_iterator& operator ++()
+      {
+        ++itr;
+        return *this;
+      }
+
+      //********************************************
+      const_iterator operator ++(int)
+      {
+        const_iterator temp(*this);
+        ++itr;
+        return temp;
+      }
+
+      //********************************************
+      friend bool operator ==(const const_iterator& lhs, const const_iterator& rhs)
+      {
+        return lhs.itr == rhs.itr;
+      }
+
+      //********************************************
+      friend bool operator !=(const const_iterator& lhs, const const_iterator& rhs)
+      {
+        return !(lhs == rhs);
+      }
+
+    private:
+
+      //********************************************
+      const_iterator(typename IRegistry::const_iterator itr_)
+        : itr(itr_)
+      {
+      }
+
+      typename IRegistry::const_iterator itr;
+    };
+
+    //********************************************
+    /// Get the beginning of the registry.
+    //********************************************
+    iterator begin()
+    {
+      return iterator(registry.begin());
+    }
+
+    const_iterator begin() const
+    {
+      return const_iterator(registry.cbegin());
+    }
+
+    const_iterator cbegin() const
+    {
+      return const_iterator(registry.cbegin());
+    }
+
+    //********************************************
+    /// Get the end of the registry.
+    //********************************************
+    iterator end()
+    {
+      return iterator(registry.end());
+    }
+
+    const_iterator end() const
+    {
+      return const_iterator(registry.cend());
+    }
+
+    const_iterator cend() const
+    {
+      return const_iterator(registry.cend());
+    }
 
     //********************************************
     /// Registers a router.
@@ -218,8 +414,6 @@ namespace etl
     }
 
   protected:
-
-    typedef etl::iflat_map<etl::message_router_id_t, etl::imessage_router*> IRegistry;
 
     //********************************************
     // Constructor.
