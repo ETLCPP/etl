@@ -34,10 +34,11 @@ SOFTWARE.
 #include "platform.h"
 #include "file_error_numbers.h"
 #include "message_router.h"
-#include "flat_map.h"
+#include "flat_multimap.h"
 #include "exception.h"
 #include "error_handler.h"
 #include "iterator.h"
+#include "memory.h"
 
 #undef ETL_FILE
 #define ETL_FILE ETL_MESSAGE_ROUTER_REGISTRY
@@ -77,7 +78,7 @@ namespace etl
   {
   private:
 
-    typedef etl::iflat_map<etl::message_router_id_t, etl::imessage_router*> IRegistry;
+    typedef etl::iflat_multimap<etl::message_router_id_t, etl::imessage_router*> IRegistry;
 
   public:
 
@@ -363,7 +364,9 @@ namespace etl
         return false;
       }
 
-      return registry.find(p_router->get_message_router_id()) != registry.end();
+      typename IRegistry::const_iterator irouter = registry.find(p_router->get_message_router_id());
+
+      return  (irouter != registry.cend()) && (irouter->second == p_router);
     }
 
     //********************************************
@@ -372,7 +375,9 @@ namespace etl
     //********************************************
     bool contains(const etl::imessage_router& router) const
     {
-      return registry.find(router.get_message_router_id()) != registry.end();
+      typename IRegistry::const_iterator irouter = registry.find(router.get_message_router_id());
+
+      return  (irouter != registry.cend()) && (irouter->second == &router);
     }
 
     //********************************************
@@ -497,7 +502,7 @@ namespace etl
 
   private:
 
-    typedef etl::flat_map<etl::message_router_id_t, etl::imessage_router*, MaxRouters> Registry;
+    typedef etl::flat_multimap<etl::message_router_id_t, etl::imessage_router*, MaxRouters> Registry;
     Registry registry;
   };
 }
