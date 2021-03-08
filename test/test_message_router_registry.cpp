@@ -159,6 +159,8 @@ namespace
 
   Router1 router1;
   Router2 router2;
+  Router2 router2b;
+  Router2 router2c;
   Router3 router3;
   Router4 router4;
   Router5 router5;
@@ -284,15 +286,43 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_get_message_router)
+    TEST(test_find_message_router)
     {
       etl::imessage_router* routers[] = { &router1, &router2, &router3 };
       etl::message_router_registry<Registry_Size> registry(std::begin(routers), std::end(routers));
 
-      CHECK_EQUAL(&router1, registry.get(ROUTER1));
-      CHECK_EQUAL(&router2, registry.get(ROUTER2));
-      CHECK_EQUAL(&router3, registry.get(ROUTER3));
-      CHECK_EQUAL(nullptr,  registry.get(ROUTER4));
+      CHECK(&router1 == registry.find(ROUTER1));
+      CHECK(&router2 == registry.find(ROUTER2));
+      CHECK(&router3 == registry.find(ROUTER3));
+      CHECK(nullptr  == registry.find(ROUTER4));
+    }
+
+    //*************************************************************************
+    TEST(test_multiple_message_routers_with_same_id)
+    {
+      etl::imessage_router* routers[] = { &router1, &router2, &router3, &router2b, &router4, &router2c, &router5 };
+      etl::message_router_registry<7U> registry(std::begin(routers), std::end(routers));
+
+      using iterator = etl::imessage_router_registry::iterator;
+
+      iterator start = registry.lower_bound(ROUTER2);
+      iterator end   = registry.upper_bound(ROUTER2);
+
+      CHECK_EQUAL(1U, registry.count(ROUTER1));
+      CHECK_EQUAL(3U, registry.count(ROUTER2));
+      CHECK_EQUAL(1U, registry.count(ROUTER3));
+      CHECK_EQUAL(1U, registry.count(ROUTER4));
+      CHECK_EQUAL(1U, registry.count(ROUTER5));
+
+      iterator itr = start;
+
+      CHECK(*itr == &router2);
+      ++itr;
+      CHECK(*itr == &router2b);
+      ++itr;
+      CHECK(*itr == &router2c);
+      ++itr;
+      CHECK(itr == end);
     }
 
     //*************************************************************************
@@ -304,11 +334,12 @@ namespace
       registry.remove(ROUTER3);
 
       CHECK(!registry.contains(router3));
+      CHECK(!registry.contains(ROUTER3));
 
-      CHECK_EQUAL(&router1, registry.get(ROUTER1));
-      CHECK_EQUAL(&router2, registry.get(ROUTER2));
-      CHECK_EQUAL(nullptr,  registry.get(ROUTER3));
-      CHECK_EQUAL(&router4, registry.get(ROUTER4));
+      CHECK(&router1 == registry.find(ROUTER1));
+      CHECK(&router2 == registry.find(ROUTER2));
+      CHECK(nullptr  == registry.find(ROUTER3));
+      CHECK(&router4 == registry.find(ROUTER4));
     }
 
     //*************************************************************************

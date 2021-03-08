@@ -263,7 +263,7 @@ namespace etl
 
       ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
-      iterator i_element = lower_bound(value.first);
+      iterator i_element = upper_bound(value.first);
 
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(value);
@@ -285,7 +285,7 @@ namespace etl
 
       ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
-      iterator i_element = lower_bound(value.first);
+      iterator i_element = upper_bound(value.first);
 
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(etl::move(value));
@@ -355,7 +355,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value);
-      iterator i_element = lower_bound(key);
+      iterator i_element = upper_bound(key);
       ETL_INCREMENT_DEBUG_COUNT
 
       return refmap_t::insert_at(i_element, *pvalue);
@@ -374,7 +374,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(etl::forward<Args>(args)...);
-      iterator i_element = lower_bound(key);
+      iterator i_element = upper_bound(key);
       ETL_INCREMENT_DEBUG_COUNT
 
       return refmap_t::insert_at(i_element, *pvalue);
@@ -393,7 +393,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1);
-      iterator i_element = lower_bound(key);
+      iterator i_element = upper_bound(key);
       ETL_INCREMENT_DEBUG_COUNT
 
       return refmap_t::insert_at(i_element, *pvalue);
@@ -411,7 +411,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2);
-      iterator i_element = lower_bound(key);
+      iterator i_element = upper_bound(key);
       ETL_INCREMENT_DEBUG_COUNT
 
       return refmap_t::insert_at(i_element, *pvalue);
@@ -429,7 +429,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2, value3);
-      iterator i_element = lower_bound(key);
+      iterator i_element = upper_bound(key);
       ETL_INCREMENT_DEBUG_COUNT
 
       return refmap_t::insert_at(i_element, *pvalue);
@@ -447,7 +447,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2, value3, value4);
-      iterator i_element = lower_bound(key);
+      iterator i_element = upper_bound(key);
       ETL_INCREMENT_DEBUG_COUNT
 
       return refmap_t::insert_at(i_element, *pvalue);

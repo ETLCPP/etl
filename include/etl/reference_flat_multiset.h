@@ -462,7 +462,7 @@ namespace etl
 
       ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_multiset_full));
 
-      iterator i_element = etl::lower_bound(begin(), end(), value, compare);
+      iterator i_element = etl::upper_bound(begin(), end(), value, compare);
 
       if (i_element == end())
       {

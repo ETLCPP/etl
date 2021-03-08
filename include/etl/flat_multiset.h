@@ -232,7 +232,7 @@ namespace etl
 
       ETL_ASSERT(!full(), ETL_ERROR(flat_multiset_full));
 
-      iterator i_element = etl::lower_bound(begin(), end(), value, compare);
+      iterator i_element = etl::upper_bound(begin(), end(), value, compare);
 
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(value);
@@ -254,7 +254,7 @@ namespace etl
 
       ETL_ASSERT(!full(), ETL_ERROR(flat_multiset_full));
 
-      iterator i_element = etl::lower_bound(begin(), end(), value, compare);
+      iterator i_element = etl::upper_bound(begin(), end(), value, compare);
 
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(etl::move(value));
@@ -327,7 +327,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(etl::forward<Args>(args)...);
 
-      iterator i_element = lower_bound(*pvalue);
+      iterator i_element = upper_bound(*pvalue);
 
       ETL_INCREMENT_DEBUG_COUNT
       return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
@@ -345,7 +345,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(value1);
 
-      iterator i_element = lower_bound(*pvalue);
+      iterator i_element = upper_bound(*pvalue);
 
       ETL_INCREMENT_DEBUG_COUNT
       return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
@@ -363,7 +363,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(value1, value2);
 
-      iterator i_element = lower_bound(*pvalue);
+      iterator i_element = upper_bound(*pvalue);
 
       ETL_INCREMENT_DEBUG_COUNT
       return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
@@ -381,7 +381,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(value1, value2, value3);
 
-      iterator i_element = lower_bound(*pvalue);
+      iterator i_element = upper_bound(*pvalue);
 
       ETL_INCREMENT_DEBUG_COUNT
       return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
@@ -399,7 +399,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(value1, value2, value3, value4);
 
-      iterator i_element = lower_bound(*pvalue);
+      iterator i_element = upper_bound(*pvalue);
 
       ETL_INCREMENT_DEBUG_COUNT
       return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));

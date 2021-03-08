@@ -467,7 +467,7 @@ namespace etl
 
       ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
-      iterator i_element = lower_bound(value.first);
+      iterator i_element = upper_bound(value.first);
 
       return insert_at(i_element, value);
     }

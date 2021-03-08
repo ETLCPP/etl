@@ -154,12 +154,12 @@ namespace etl
     private:
 
       //********************************************
-      iterator(typename IRegistry::iterator itr_)
+      iterator(IRegistry::iterator itr_)
         : itr(itr_)
       {
       }
 
-      typename IRegistry::iterator itr;
+      IRegistry::iterator itr;
     };
 
     //********************************************
@@ -177,7 +177,7 @@ namespace etl
       }
 
       //********************************************
-      const_iterator(const typename imessage_router_registry::iterator& other)
+      const_iterator(const imessage_router_registry::iterator& other)
         : itr(other.itr)
       {
       }
@@ -231,12 +231,12 @@ namespace etl
     private:
 
       //********************************************
-      const_iterator(typename IRegistry::const_iterator itr_)
+      const_iterator(IRegistry::const_iterator itr_)
         : itr(itr_)
       {
       }
 
-      typename IRegistry::const_iterator itr;
+      IRegistry::const_iterator itr;
     };
 
     //********************************************
@@ -276,14 +276,71 @@ namespace etl
     }
 
     //********************************************
-    /// Registers a router.
+    /// Get the first router in the registry with the specified ID.
+    //********************************************
+    etl::imessage_router* find(etl::message_router_id_t id)
+    {
+      IRegistry::iterator itr = registry.find(id);
+
+      if (registry.find(id) != registry.end())
+      {
+        return itr->second;
+      }
+      else
+      {
+        return ETL_NULLPTR;
+      }
+    }
+
+    const etl::imessage_router* find(etl::message_router_id_t id) const
+    {
+      IRegistry::const_iterator itr = registry.find(id);
+
+      if (registry.find(id) != registry.end())
+      {
+        return itr->second;
+      }
+      else
+      {
+        return ETL_NULLPTR;
+      }
+    }
+
+    //********************************************
+    /// Get the lower bound in the registry with the specified ID.
+    //********************************************
+    iterator lower_bound(etl::message_router_id_t id)
+    {
+      return iterator(registry.lower_bound(id));
+    }
+
+    const_iterator lower_bound(etl::message_router_id_t id) const
+    {
+      return const_iterator(IRegistry::const_iterator(registry.lower_bound(id)));
+    }
+
+    //********************************************
+    /// Get the upper bound in the registry with the specified ID.
+    //********************************************
+    iterator upper_bound(etl::message_router_id_t id)
+    {
+      return iterator(registry.upper_bound(id));
+    }
+
+    const_iterator upper_bound(etl::message_router_id_t id) const
+    {
+      return const_iterator(IRegistry::const_iterator(registry.upper_bound(id)));
+    }
+
+    //********************************************
+    /// Registers a router, if not already registered.
     /// If the registry is full then an ETL assert is called.
     //********************************************
     void add(etl::imessage_router& router)
     {
-      if (!registry.full())
+      if (!registry.full() && !contains(router))
       {
-        typename IRegistry::value_type element(router.get_message_router_id(), &router);
+        IRegistry::value_type element(router.get_message_router_id(), &router);
 
         registry.insert(element);
       }
@@ -294,7 +351,7 @@ namespace etl
     }
 
     //********************************************
-    /// Registers a router.
+    /// Registers a router, if not already registered.
     /// If the registry is full then an ETL assert is called.
     //********************************************
     void add(etl::imessage_router* p_router)
@@ -306,7 +363,7 @@ namespace etl
     }
 
     //********************************************
-    /// Registers a list of routers.
+    /// Registers a list of routers, if not already registered.
     /// If the registry is full then an ETL assert is called.
     //********************************************
     template <typename TIterator>
@@ -327,30 +384,15 @@ namespace etl
     }
 
     //********************************************
-    /// Get a pointer to a router that has the specified ID.
-    /// Returns ETL_NULLPTR if not found.
-    //********************************************
-    etl::imessage_router* get(etl::message_router_id_t id) const
-    {
-      IRegistry::const_iterator itr = registry.find(id);
-
-      if (itr != registry.end())
-      {
-        return itr->second;
-      }
-      else
-      {
-        return ETL_NULLPTR;
-      }
-    }
-
-    //********************************************
     /// Returns <b>true</b> if the registry contains a router that has the specified ID.
     /// Returns <b>false</b> if not found.
     //********************************************
     bool contains(const etl::message_router_id_t id) const
     {
-      return registry.find(id) != registry.end();
+      return find(id) != ETL_NULLPTR;
+
+
+      //return registry.find(id) != registry.end();
     }
 
     //********************************************
@@ -364,7 +406,7 @@ namespace etl
         return false;
       }
 
-      typename IRegistry::const_iterator irouter = registry.find(p_router->get_message_router_id());
+      IRegistry::const_iterator irouter = registry.find(p_router->get_message_router_id());
 
       return  (irouter != registry.cend()) && (irouter->second == p_router);
     }
@@ -375,9 +417,17 @@ namespace etl
     //********************************************
     bool contains(const etl::imessage_router& router) const
     {
-      typename IRegistry::const_iterator irouter = registry.find(router.get_message_router_id());
+      IRegistry::const_iterator irouter = registry.find(router.get_message_router_id());
 
       return  (irouter != registry.cend()) && (irouter->second == &router);
+    }
+
+    //********************************************
+    /// Returns the number of routers with the specified ID.
+    //********************************************
+    size_t count(const etl::message_router_id_t id) const
+    {
+      return registry.count(id);
     }
 
     //********************************************
