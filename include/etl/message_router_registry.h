@@ -113,13 +113,25 @@ namespace etl
       }
 
       //********************************************
-      etl::imessage_router* operator *()
+      etl::imessage_router& operator *()
+      {
+        return *(itr->second);
+      }
+
+      //********************************************
+      const etl::imessage_router& operator *() const
+      {
+        return *(itr->second);
+      }
+
+      //********************************************
+      etl::imessage_router* operator ->()
       {
         return itr->second;
       }
 
       //********************************************
-      const etl::imessage_router* operator *() const
+      const etl::imessage_router* operator ->() const
       {
         return itr->second;
       }
@@ -196,7 +208,13 @@ namespace etl
       }
 
       //********************************************
-      const etl::imessage_router* operator *() const
+      const etl::imessage_router& operator *() const
+      {
+        return *(itr->second);
+      }
+
+      //********************************************
+      const etl::imessage_router* operator ->() const
       {
         return itr->second;
       }
