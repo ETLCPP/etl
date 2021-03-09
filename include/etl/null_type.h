@@ -29,6 +29,8 @@ SOFTWARE.
 #ifndef ETL_NULL_TYPE_INCLUDED
 #define ETL_NULL_TYPE_INCLUDED
 
+#include <stddef.h>
+
 #undef ETL_FILE
 #define ETL_FILE "50"
 
