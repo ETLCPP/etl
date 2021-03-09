@@ -316,11 +316,11 @@ namespace
 
       iterator itr = start;
 
-      CHECK(*itr == &router2);
+      CHECK(&*itr == &router2);
       ++itr;
-      CHECK(*itr == &router2b);
+      CHECK(&*itr == &router2b);
       ++itr;
-      CHECK(*itr == &router2c);
+      CHECK(&*itr == &router2c);
       ++itr;
       CHECK(itr == end);
     }
@@ -356,25 +356,41 @@ namespace
       etl::message_router_registry<Registry_Size>::const_iterator ceitr  = registry.end();
       etl::message_router_registry<Registry_Size>::const_iterator ceitr2 = registry.cend();
 
-      CHECK_EQUAL(&router1, *bitr++);
-      CHECK_EQUAL(&router1, *cbitr++);
-      CHECK_EQUAL(&router1, *cbitr2++);
+      CHECK_EQUAL(&router1, &*bitr++);
+      CHECK_EQUAL(&router1, &*cbitr++);
+      CHECK_EQUAL(&router1, &*cbitr2++);
 
-      CHECK_EQUAL(&router2, *bitr++);
-      CHECK_EQUAL(&router2, *cbitr++);
-      CHECK_EQUAL(&router2, *cbitr2++);
+      CHECK_EQUAL(&router2, &*bitr++);
+      CHECK_EQUAL(&router2, &*cbitr++);
+      CHECK_EQUAL(&router2, &*cbitr2++);
 
-      CHECK_EQUAL(&router3, *bitr++);
-      CHECK_EQUAL(&router3, *cbitr++);
-      CHECK_EQUAL(&router3, *cbitr2++);
+      CHECK_EQUAL(&router3, &*bitr++);
+      CHECK_EQUAL(&router3, &*cbitr++);
+      CHECK_EQUAL(&router3, &*cbitr2++);
 
-      CHECK_EQUAL(&router4, *bitr++);
-      CHECK_EQUAL(&router4, *cbitr++);
-      CHECK_EQUAL(&router4, *cbitr2++);
+      CHECK_EQUAL(&router4, &*bitr++);
+      CHECK_EQUAL(&router4, &*cbitr++);
+      CHECK_EQUAL(&router4, &*cbitr2++);
 
       CHECK(bitr   == eitr);
       CHECK(cbitr  == ceitr);
       CHECK(cbitr2 == ceitr2);
+    }
+
+    //*************************************************************************
+    TEST(test_operators)
+    {
+      etl::imessage_router* routers[] = { &router1, &router2, &router3, &router4 };
+      etl::message_router_registry<Registry_Size> registry(std::begin(routers), std::end(routers));
+
+      etl::message_router_registry<Registry_Size>::iterator       itr   = registry.begin();
+      etl::message_router_registry<Registry_Size>::const_iterator citr  = registry.cbegin();
+
+      CHECK_EQUAL(ROUTER1, (*itr).get_message_router_id());
+      CHECK_EQUAL(ROUTER1, itr->get_message_router_id());
+
+      CHECK_EQUAL(ROUTER1, (*citr).get_message_router_id());
+      CHECK_EQUAL(ROUTER1, citr->get_message_router_id());
     }
   };
 }
