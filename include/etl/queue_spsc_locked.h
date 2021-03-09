@@ -290,7 +290,7 @@ namespace etl
     template <typename T1>
     bool emplace_from_unlocked(const T1& value1)
     {
-      return emplace_implementation(valie1);
+      return emplace_implementation(value1);
     }
 
     //*************************************************************************
@@ -300,7 +300,7 @@ namespace etl
     template <typename T1, typename T2>
     bool emplace_from_unlocked(const T1& value1, const T2& value2)
     {
-      return emplace_implementation(valie1, value2);
+      return emplace_implementation(value1, value2);
     }
 
     //*************************************************************************
@@ -310,7 +310,7 @@ namespace etl
     template <typename T1, typename T2, typename T3>
     bool emplace_from_unlocked(const T1& value1, const T2& value2, const T3& value3)
     {
-      return emplace_implementation(valie1, value2, value3);
+      return emplace_implementation(value1, value2, value3);
     }
 
     //*************************************************************************
@@ -320,7 +320,7 @@ namespace etl
     template <typename T1, typename T2, typename T3, typename T4>
     bool emplace_from_unlocked(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
-      return emplace_implementation(valie1, value2, value3, value4);
+      return emplace_implementation(value1, value2, value3, value4);
     }
 
     //*************************************************************************

@@ -35,6 +35,8 @@ SOFTWARE.
 #include "message.h"
 #include "atomic.h"
 #include "reference_counted_object.h"
+#include "static_assert.h"
+#include "type_traits.h"
 #include "ireference_counted_message_pool.h"
 
 namespace etl

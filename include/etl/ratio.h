@@ -31,7 +31,10 @@ SOFTWARE.
 #ifndef ETL_RATIO_INCLUDED
 #define ETL_RATIO_INCLUDED
 
+#include <stddef.h>
 #include <stdint.h>
+
+#include "platform.h"
 
 ///\defgroup ratio ratio
 ///\ingroup maths

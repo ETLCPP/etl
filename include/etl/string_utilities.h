@@ -83,6 +83,7 @@ namespace etl
     }
   };
 
+#if ETL_CPP11_SUPPORTED
   template <>
   struct whitespace<char16_t>
   {
@@ -100,6 +101,7 @@ namespace etl
       return U" \t\n\r\f\v";
     }
   };
+#endif
 
 #if ETL_CPP17_SUPPORTED
   template <typename TChar>
