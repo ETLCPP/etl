@@ -1,4 +1,11 @@
 ===============================================================================
+20.6.0
+Added etl::message_router_registry.
+Changed etl::flat_multimap & etl::flat_multiset to iterate in insertion order.
+C++98 compatibility fixes.
+Abstracted unit test framework header.
+
+===============================================================================
 20.5.2
 Fixed template aliases when using STL and below C++14
 
@@ -30,7 +37,7 @@ Added ETL_CONSTANT to numeric_limits member functions.
 Added initialize_free_space(), trim_to_terminator() and data_end() functions to
 strings for easier integration with C APIs.
 
-===============================================================================
+=============================================================================== 
 20.2.3
 Fixed indexing error in find_next() for etl::bitset.
 
