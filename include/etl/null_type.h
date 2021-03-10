@@ -31,9 +31,6 @@ SOFTWARE.
 
 #include <stddef.h>
 
-#undef ETL_FILE
-#define ETL_FILE "50"
-
 namespace etl
 {
   template <size_t N>
@@ -41,7 +38,5 @@ namespace etl
   {
   };
 }
-
-#undef ETL_FILE
 
 #endif

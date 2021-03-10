@@ -54,9 +54,6 @@ SOFTWARE.
 
 #include "private/minmax_push.h"
 
-#undef ETL_FILE
-#define ETL_FILE "52"
-
 #if defined(ETL_COMPILER_KEIL)
 #pragma diag_suppress 1300
 #endif
@@ -92,7 +89,7 @@ namespace etl
   public:
 
     bitset_nullptr(string_type file_name_, numeric_type line_number_)
-      : bitset_exception(ETL_ERROR_TEXT("bitset:null pointer", ETL_FILE"A"), file_name_, line_number_)
+      : bitset_exception(ETL_ERROR_TEXT("bitset:null pointer", ETL_BITSET_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -106,7 +103,7 @@ namespace etl
   public:
 
     bitset_type_too_small(string_type file_name_, numeric_type line_number_)
-      : bitset_exception(ETL_ERROR_TEXT("bitset:type_too_small", ETL_FILE"B"), file_name_, line_number_)
+      : bitset_exception(ETL_ERROR_TEXT("bitset:type_too_small", ETL_BITSET_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -1206,7 +1203,5 @@ void swap(etl::bitset<MAXN>& lhs, etl::bitset<MAXN>& rhs)
 }
 
 #include "private/minmax_pop.h"
-
-#undef ETL_FILE
 
 #endif

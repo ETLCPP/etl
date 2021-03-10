@@ -51,9 +51,6 @@ SOFTWARE.
 #include "iterator.h"
 #include "functional.h"
 
-#undef ETL_FILE
-#define ETL_FILE "21"
-
 namespace etl
 {
   //***************************************************************************
@@ -79,7 +76,7 @@ namespace etl
   public:
 
     intrusive_list_empty(string_type file_name_, numeric_type line_number_)
-      : intrusive_list_exception(ETL_ERROR_TEXT("intrusive_list:empty", ETL_FILE"A"), file_name_, line_number_)
+      : intrusive_list_exception(ETL_ERROR_TEXT("intrusive_list:empty", ETL_INTRUSIVE_LIST_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -93,7 +90,7 @@ namespace etl
   public:
 
     intrusive_list_iterator_exception(string_type file_name_, numeric_type line_number_)
-      : intrusive_list_exception(ETL_ERROR_TEXT("intrusive_list:iterator", ETL_FILE"B"), file_name_, line_number_)
+      : intrusive_list_exception(ETL_ERROR_TEXT("intrusive_list:iterator", ETL_INTRUSIVE_LIST_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -107,7 +104,7 @@ namespace etl
   public:
 
     intrusive_list_unsorted(string_type file_name_, numeric_type line_number_)
-      : intrusive_list_exception(ETL_ERROR_TEXT("intrusive_list:unsorted", ETL_FILE"C"), file_name_, line_number_)
+      : intrusive_list_exception(ETL_ERROR_TEXT("intrusive_list:unsorted", ETL_INTRUSIVE_LIST_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -1100,7 +1097,5 @@ namespace etl
 }
 
 #include "private/minmax_pop.h"
-
-#undef ETL_FILE
 
 #endif

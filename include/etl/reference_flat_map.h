@@ -43,9 +43,6 @@ SOFTWARE.
 #include "static_assert.h"
 #include "iterator.h"
 
-#undef ETL_FILE
-#define ETL_FILE "30"
-
 //*****************************************************************************
 ///\defgroup reference_flat_map reference_flat_map
 /// An reference_flat_map with the capacity defined at compile time.
@@ -79,7 +76,7 @@ namespace etl
   public:
 
     flat_map_full(string_type file_name_, numeric_type line_number_)
-      : flat_map_exception(ETL_ERROR_TEXT("flat_map: full", ETL_FILE"A"), file_name_, line_number_)
+      : flat_map_exception(ETL_ERROR_TEXT("flat_map: full", ETL_REFERENCE_FLAT_MAP_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -93,7 +90,7 @@ namespace etl
   public:
 
     flat_map_out_of_bounds(string_type file_name_, numeric_type line_number_)
-      : flat_map_exception(ETL_ERROR_TEXT("flat_map:bounds", ETL_FILE"B"), file_name_, line_number_)
+      : flat_map_exception(ETL_ERROR_TEXT("flat_map:bounds", ETL_REFERENCE_FLAT_MAP_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -981,7 +978,5 @@ namespace etl
   };
 
 }
-
-#undef ETL_FILE
 
 #endif

@@ -66,9 +66,6 @@ SOFTWARE.
 #include "placement_new.h"
 #include "successor.h"
 
-#undef ETL_FILE
-#define ETL_FILE "35"
-
 namespace etl
 {
   //***************************************************************************
@@ -92,7 +89,7 @@ namespace etl
   public:
 
     message_router_illegal_id(string_type file_name_, numeric_type line_number_)
-      : message_router_exception(ETL_ERROR_TEXT("message router:illegal id", ETL_FILE"A"), file_name_, line_number_)
+      : message_router_exception(ETL_ERROR_TEXT("message router:illegal id", ETL_MESSAGE_ROUTER_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -1794,7 +1791,5 @@ namespace etl
     }
   };
 }
-
-#undef ETL_FILE
 
 #endif

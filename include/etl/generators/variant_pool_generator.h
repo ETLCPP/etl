@@ -77,9 +77,6 @@ cog.outl("//********************************************************************
 
 #include "utility.h"
 
-#undef ETL_FILE
-#define ETL_FILE "40"
-
 namespace etl
 {
   //***************************************************************************
@@ -99,7 +96,7 @@ namespace etl
   public:
 
     variant_pool_cannot_create(string_type file_name_, numeric_type line_number_)
-      : variant_pool_exception(ETL_ERROR_TEXT("variant_pool:cannot create", ETL_FILE"A"), file_name_, line_number_)
+      : variant_pool_exception(ETL_ERROR_TEXT("variant_pool:cannot create", ETL_VARIANT_POOL_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -110,7 +107,7 @@ namespace etl
   public:
 
     variant_pool_did_not_create(string_type file_name_, numeric_type line_number_)
-      : variant_pool_exception(ETL_ERROR_TEXT("variant_pool:did not create", ETL_FILE"B"), file_name_, line_number_)
+      : variant_pool_exception(ETL_ERROR_TEXT("variant_pool:did not create", ETL_VARIANT_POOL_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -472,7 +469,5 @@ namespace etl
     /*[[[end]]]*/
   };
 }
-
-#undef ETL_FILE
 
 #endif

@@ -57,9 +57,6 @@ Original publication: https://www.codeproject.com/Articles/1170503/The-Impossibl
 #error NOT SUPPORTED FOR C++03 OR BELOW
 #endif
 
-#undef ETL_FILE
-#define ETL_FILE ETL_DELEGATE_FILE_ID
-
 namespace etl
 {
   //***************************************************************************
@@ -83,7 +80,7 @@ namespace etl
   public:
 
     delegate_uninitialised(string_type file_name_, numeric_type line_number_)
-      : delegate_exception(ETL_ERROR_TEXT("delegate:uninitialised", ETL_FILE"A"), file_name_, line_number_)
+      : delegate_exception(ETL_ERROR_TEXT("delegate:uninitialised", ETL_DELEGATE_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -384,7 +381,5 @@ namespace etl
     invocation_element invocation;
   };
 }
-
-#undef ETL_FILE
 
 #endif

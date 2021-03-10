@@ -56,9 +56,6 @@ SOFTWARE.
 
 #include "private/minmax_push.h"
 
-#undef ETL_FILE
-#define ETL_FILE "6"
-
 //*****************************************************************************
 ///\defgroup forward_list forward_list
 /// A linked forward_list with the capacity defined at compile time.
@@ -90,7 +87,7 @@ namespace etl
   public:
 
     forward_list_full(string_type file_name_, numeric_type line_number_)
-      : etl::forward_list_exception(ETL_ERROR_TEXT("forward_list:full", ETL_FILE"A"), file_name_, line_number_)
+      : etl::forward_list_exception(ETL_ERROR_TEXT("forward_list:full", ETL_FORWARD_LIST_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -104,7 +101,7 @@ namespace etl
   public:
 
     forward_list_empty(string_type file_name_, numeric_type line_number_)
-      : etl::forward_list_exception(ETL_ERROR_TEXT("forward_list:empty", ETL_FILE"B"), file_name_, line_number_)
+      : etl::forward_list_exception(ETL_ERROR_TEXT("forward_list:empty", ETL_FORWARD_LIST_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -118,7 +115,7 @@ namespace etl
   public:
 
     forward_list_iterator(string_type file_name_, numeric_type line_number_)
-      : etl::forward_list_exception(ETL_ERROR_TEXT("forward_list:iterator", ETL_FILE"C"), file_name_, line_number_)
+      : etl::forward_list_exception(ETL_ERROR_TEXT("forward_list:iterator", ETL_FORWARD_LIST_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -132,7 +129,7 @@ namespace etl
   public:
 
     forward_list_no_pool(string_type file_name_, numeric_type line_number_)
-      : forward_list_exception(ETL_ERROR_TEXT("list:no pool", ETL_FILE"D"), file_name_, line_number_)
+      : forward_list_exception(ETL_ERROR_TEXT("list:no pool", ETL_FORWARD_LIST_FILE_ID"D"), file_name_, line_number_)
     {
     }
   };
@@ -1990,7 +1987,5 @@ namespace etl
 }
 
 #include "private/minmax_pop.h"
-
-#undef ETL_FILE
 
 #endif

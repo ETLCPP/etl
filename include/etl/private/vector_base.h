@@ -42,9 +42,6 @@ SOFTWARE.
 #include "../error_handler.h"
 #include "../debug_count.h"
 
-#undef ETL_FILE
-#define ETL_FILE "17"
-
 namespace etl
 {
   //***************************************************************************
@@ -70,7 +67,7 @@ namespace etl
   public:
 
     vector_full(string_type file_name_, numeric_type line_number_)
-      : vector_exception(ETL_ERROR_TEXT("vector:full", ETL_FILE"A"), file_name_, line_number_)
+      : vector_exception(ETL_ERROR_TEXT("vector:full", ETL_VECTOR_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -84,7 +81,7 @@ namespace etl
   public:
 
     vector_empty(string_type file_name_, numeric_type line_number_)
-      : vector_exception(ETL_ERROR_TEXT("vector:empty", ETL_FILE"B"), file_name_, line_number_)
+      : vector_exception(ETL_ERROR_TEXT("vector:empty", ETL_VECTOR_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -98,7 +95,7 @@ namespace etl
   public:
 
     vector_out_of_bounds(string_type file_name_, numeric_type line_number_)
-      : vector_exception(ETL_ERROR_TEXT("vector:bounds", ETL_FILE"C"), file_name_, line_number_)
+      : vector_exception(ETL_ERROR_TEXT("vector:bounds", ETL_VECTOR_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -112,7 +109,7 @@ namespace etl
   public:
 
     vector_incompatible_type(string_type file_name_, numeric_type line_number_)
-      : vector_exception(ETL_ERROR_TEXT("vector:type", ETL_FILE"D"), file_name_, line_number_)
+      : vector_exception(ETL_ERROR_TEXT("vector:type", ETL_VECTOR_FILE_ID"D"), file_name_, line_number_)
     {
     }
   };
@@ -166,7 +163,5 @@ namespace etl
     ETL_DECLARE_DEBUG_COUNT   ///< Internal debugging.
   };
 }
-
-#undef ETL_FILE
 
 #endif

@@ -39,9 +39,6 @@ SOFTWARE.
 #include "memory.h"
 #include "placement_new.h"
 
-#undef ETL_FILE
-#define ETL_FILE ETL_POOL_ID
-
 #define ETL_POOL_CPP03_CODE 0
 
 namespace etl
@@ -68,7 +65,7 @@ namespace etl
   public:
 
     explicit pool_no_allocation(string_type file_name_, numeric_type line_number_)
-      : pool_exception(ETL_ERROR_TEXT("pool:allocation", ETL_FILE"A"), file_name_, line_number_)
+      : pool_exception(ETL_ERROR_TEXT("pool:allocation", ETL_POOL_FILE_ID"A"), file_name_, line_number_)
     {}
   };
 
@@ -81,7 +78,7 @@ namespace etl
   public:
 
     pool_object_not_in_pool(string_type file_name_, numeric_type line_number_)
-      : pool_exception(ETL_ERROR_TEXT("pool:not in pool", ETL_FILE"B"), file_name_, line_number_)
+      : pool_exception(ETL_ERROR_TEXT("pool:not in pool", ETL_POOL_FILE_ID"B"), file_name_, line_number_)
     {}
   };
 
@@ -94,7 +91,7 @@ namespace etl
   public:
 
     pool_element_size(string_type file_name_, numeric_type line_number_)
-      : pool_exception(ETL_ERROR_TEXT("pool:element size", ETL_FILE"C"), file_name_, line_number_)
+      : pool_exception(ETL_ERROR_TEXT("pool:element size", ETL_POOL_FILE_ID"C"), file_name_, line_number_)
     {}
   };
 
@@ -448,8 +445,6 @@ namespace etl
 #endif
   };
 }
-
-#undef ETL_FILE
 
 #endif
 

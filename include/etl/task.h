@@ -35,9 +35,6 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 
-#undef ETL_FILE
-#define ETL_FILE "37"
-
 namespace etl
 {
   //***************************************************************************
@@ -128,7 +125,5 @@ namespace etl
     etl::task_priority_t task_priority;
   };
 }
-
-#undef ETL_FILE
 
 #endif

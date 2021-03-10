@@ -75,9 +75,6 @@ cog.outl("//********************************************************************
 #include "integral_limits.h"
 #include "largest.h"
 
-#undef ETL_FILE
-#define ETL_FILE "34"
-
 #include "private/minmax_push.h"
 
 namespace etl
@@ -115,7 +112,7 @@ namespace etl
   public:
 
     fsm_null_state_exception(string_type file_name_, numeric_type line_number_)
-      : etl::fsm_exception(ETL_ERROR_TEXT("fsm:null state", ETL_FILE"A"), file_name_, line_number_)
+      : etl::fsm_exception(ETL_ERROR_TEXT("fsm:null state", ETL_FSM_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -128,7 +125,7 @@ namespace etl
   public:
 
     fsm_state_id_exception(string_type file_name_, numeric_type line_number_)
-      : etl::fsm_exception(ETL_ERROR_TEXT("fsm:state id", ETL_FILE"B"), file_name_, line_number_)
+      : etl::fsm_exception(ETL_ERROR_TEXT("fsm:state id", ETL_FSM_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -141,7 +138,7 @@ namespace etl
   public:
 
     fsm_state_list_exception(string_type file_name_, numeric_type line_number_)
-      : etl::fsm_exception(ETL_ERROR_TEXT("fsm:state list", ETL_FILE"C"), file_name_, line_number_)
+      : etl::fsm_exception(ETL_ERROR_TEXT("fsm:state list", ETL_FSM_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -154,7 +151,7 @@ namespace etl
   public:
 
     fsm_state_list_order_exception(string_type file_name_, numeric_type line_number_)
-      : etl::fsm_exception(ETL_ERROR_TEXT("fsm:state list order", ETL_FILE"D"), file_name_, line_number_)
+      : etl::fsm_exception(ETL_ERROR_TEXT("fsm:state list order", ETL_FSM_FILE_ID"D"), file_name_, line_number_)
     {
     }
   };
@@ -591,8 +588,6 @@ namespace etl
   ]]]*/
   /*[[[end]]]*/
 }
-
-#undef ETL_FILE
 
 #include "private/minmax_pop.h"
 

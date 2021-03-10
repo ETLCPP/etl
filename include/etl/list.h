@@ -57,9 +57,6 @@ SOFTWARE.
 
 #include "private/minmax_push.h"
 
-#undef ETL_FILE
-#define ETL_FILE "7"
-
 //*****************************************************************************
 ///\defgroup list list
 /// A linked list with the capacity defined at compile time.
@@ -91,7 +88,7 @@ namespace etl
   public:
 
     list_full(string_type file_name_, numeric_type line_number_)
-      : list_exception(ETL_ERROR_TEXT("list:full", ETL_FILE"A"), file_name_, line_number_)
+      : list_exception(ETL_ERROR_TEXT("list:full", ETL_LIST_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -105,7 +102,7 @@ namespace etl
   public:
 
     list_empty(string_type file_name_, numeric_type line_number_)
-      : list_exception(ETL_ERROR_TEXT("list:empty", ETL_FILE"B"), file_name_, line_number_)
+      : list_exception(ETL_ERROR_TEXT("list:empty", ETL_LIST_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -119,7 +116,7 @@ namespace etl
   public:
 
     list_iterator(string_type file_name_, numeric_type line_number_)
-      : list_exception(ETL_ERROR_TEXT("list:iterator", ETL_FILE"C"), file_name_, line_number_)
+      : list_exception(ETL_ERROR_TEXT("list:iterator", ETL_LIST_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -133,7 +130,7 @@ namespace etl
   public:
 
     list_unsorted(string_type file_name_, numeric_type line_number_)
-      : list_exception(ETL_ERROR_TEXT("list:unsorted", ETL_FILE"D"), file_name_, line_number_)
+      : list_exception(ETL_ERROR_TEXT("list:unsorted", ETL_LIST_FILE_ID"D"), file_name_, line_number_)
     {
     }
   };
@@ -147,7 +144,7 @@ namespace etl
   public:
 
     list_no_pool(string_type file_name_, numeric_type line_number_)
-      : list_exception(ETL_ERROR_TEXT("list:no pool", ETL_FILE"E"), file_name_, line_number_)
+      : list_exception(ETL_ERROR_TEXT("list:no pool", ETL_LIST_FILE_ID"E"), file_name_, line_number_)
     {
     }
   };
@@ -2426,7 +2423,5 @@ namespace etl
 }
 
 #include "private/minmax_pop.h"
-
-#undef ETL_FILE
 
 #endif

@@ -43,9 +43,6 @@ SOFTWARE.
 #include "utility.h"
 #include "placement_new.h"
 
-#undef ETL_FILE
-#define ETL_FILE ETL_QUEUE_SPSC_LOCKED_ID
-
 namespace etl
 {
   template <size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
@@ -800,7 +797,5 @@ namespace etl
     etl::uninitialized_buffer_of<T, MAX_SIZE> buffer;
   };
 }
-
-#undef ETL_FILE
 
 #endif

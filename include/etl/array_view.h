@@ -46,9 +46,6 @@ SOFTWARE.
 /// A wrapper for arrays
 ///\ingroup containers
 
-#undef ETL_FILE
-#define ETL_FILE ETL_ARRAY_VIEW_FILE_ID
-
 namespace etl
 {
   //***************************************************************************
@@ -73,7 +70,7 @@ namespace etl
   public:
 
     array_view_bounds(string_type file_name_, numeric_type line_number_)
-      : array_view_exception(ETL_ERROR_TEXT("array_view:bounds", ETL_FILE"A"), file_name_, line_number_)
+      : array_view_exception(ETL_ERROR_TEXT("array_view:bounds", ETL_ARRAY_VIEW_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -87,7 +84,7 @@ namespace etl
   public:
 
     array_view_uninitialised(string_type file_name_, numeric_type line_number_)
-      : array_view_exception(ETL_ERROR_TEXT("array_view:uninitialised", ETL_FILE"B"), file_name_, line_number_)
+      : array_view_exception(ETL_ERROR_TEXT("array_view:uninitialised", ETL_ARRAY_VIEW_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -548,7 +545,5 @@ void swap(etl::array_view<T>& lhs, etl::array_view<T>& rhs)
 {
   lhs.swap(rhs);
 }
-
-#undef ETL_FILE
 
 #endif

@@ -51,9 +51,6 @@ SOFTWARE.
   #pragma diag_suppress 111
 #endif
 
-#undef ETL_FILE
-#define ETL_FILE "24"
-
 //*****************************************************************************
 ///\defgroup variant variant
 /// A class that can contain one a several specified types in a type safe manner.
@@ -95,7 +92,7 @@ namespace etl
   {
   public:
     variant_incorrect_type_exception(string_type file_name_, numeric_type line_number_)
-      : variant_exception(ETL_ERROR_TEXT("variant: unsupported type", ETL_FILE"A"), file_name_, line_number_)
+      : variant_exception(ETL_ERROR_TEXT("variant: unsupported type", ETL_VARIANT_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -1032,7 +1029,5 @@ namespace etl
     type_id_t type_id;
   };
 }
-
-#undef ETL_FILE
 
 #endif

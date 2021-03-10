@@ -37,9 +37,6 @@ SOFTWARE.
 #include "exception.h"
 #include "error_handler.h"
 
-#undef ETL_FILE
-#define ETL_FILE "57"
-
 namespace etl
 {
   //***************************************************************************
@@ -63,7 +60,7 @@ namespace etl
   public:
 
     multi_range_circular_reference(string_type file_name_, numeric_type line_number_)
-      : etl::multi_range_exception(ETL_ERROR_TEXT("multi_range:circular reference", ETL_FILE"A"), file_name_, line_number_)
+      : etl::multi_range_exception(ETL_ERROR_TEXT("multi_range:circular reference", ETL_MULTI_LOOP_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -528,7 +525,5 @@ namespace etl
     not_equal_compare default_compare;
   };
 }
-
-#undef ETL_FILE
 
 #endif

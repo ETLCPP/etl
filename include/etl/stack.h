@@ -46,9 +46,6 @@ SOFTWARE.
 #include "type_traits.h"
 #include "placement_new.h"
 
-#undef ETL_FILE
-#define ETL_FILE "15"
-
 //*****************************************************************************
 ///\defgroup stack stack
 /// A Last-in / first-out stack with the capacity defined at compile time,
@@ -81,7 +78,7 @@ namespace etl
   public:
 
     stack_full(string_type file_name_, numeric_type line_number_)
-      : stack_exception(ETL_ERROR_TEXT("stack:full", ETL_FILE"A"), file_name_, line_number_)
+      : stack_exception(ETL_ERROR_TEXT("stack:full", ETL_STACK_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -95,7 +92,7 @@ namespace etl
   public:
 
     stack_empty(string_type file_name_, numeric_type line_number_)
-      : stack_exception(ETL_ERROR_TEXT("stack:empty", ETL_FILE"B"), file_name_, line_number_)
+      : stack_exception(ETL_ERROR_TEXT("stack:empty", ETL_STACK_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -604,7 +601,5 @@ namespace etl
     typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[SIZE];
   };
 }
-
-#undef ETL_FILE
 
 #endif

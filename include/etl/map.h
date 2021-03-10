@@ -55,9 +55,6 @@ SOFTWARE.
 
 #include "private/minmax_push.h"
 
-#undef ETL_FILE
-#define ETL_FILE "8"
-
 //*****************************************************************************
 ///\defgroup map map
 /// A map with the capacity defined at compile time.
@@ -89,7 +86,7 @@ namespace etl
   public:
 
     map_full(string_type file_name_, numeric_type line_number_)
-      : etl::map_exception("map:full", file_name_, line_number_)
+      : etl::map_exception(ETL_ERROR_TEXT("map:full", ETL_MAP_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -103,7 +100,7 @@ namespace etl
   public:
 
     map_out_of_bounds(string_type file_name_, numeric_type line_number_)
-      : etl::map_exception("map:bounds", file_name_, line_number_)
+      : etl::map_exception(ETL_ERROR_TEXT("map:bounds", ETL_MAP_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -117,7 +114,7 @@ namespace etl
   public:
 
     map_iterator(string_type file_name_, numeric_type line_number_)
-      : etl::map_exception("map:iterator", file_name_, line_number_)
+      : etl::map_exception(ETL_ERROR_TEXT("map:iterator", ETL_MAP_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -2386,7 +2383,5 @@ namespace etl
 }
 
 #include "private/minmax_pop.h"
-
-#undef ETL_FILE
 
 #endif

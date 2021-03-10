@@ -41,9 +41,6 @@ SOFTWARE.
 #include "iterator.h"
 #include "static_assert.h"
 
-#undef ETL_FILE
-#define ETL_FILE "56"
-
 namespace etl
 {
   //***************************************************************************
@@ -67,7 +64,7 @@ namespace etl
   public:
 
     circular_buffer_empty(string_type file_name_, numeric_type line_number_)
-      : etl::circular_buffer_exception(ETL_ERROR_TEXT("circular_buffer:empty", ETL_FILE"A"), file_name_, line_number_)
+      : etl::circular_buffer_exception(ETL_ERROR_TEXT("circular_buffer:empty", ETL_CIRCULAR_BUFFER_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -1322,7 +1319,5 @@ namespace etl
     return !(lhs == rhs);
   }
 }
-
-#undef ETL_FILE
 
 #endif

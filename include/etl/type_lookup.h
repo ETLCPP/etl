@@ -37,9 +37,6 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "null_type.h"
 
-#undef ETL_FILE
-#define ETL_FILE "45"
-
 #if 0
 #error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
 #endif
@@ -376,7 +373,5 @@ namespace etl
 
 #endif
 }
-
-#undef ETL_FILE
 
 #endif

@@ -57,9 +57,6 @@ SOFTWARE.
   #include <initializer_list>
 #endif
 
-#undef ETL_FILE
-#define ETL_FILE "23"
-
 //*****************************************************************************
 ///\defgroup unordered_set unordered_set
 /// A unordered_set with the capacity defined at compile time.
@@ -91,7 +88,7 @@ namespace etl
   public:
 
     unordered_set_full(string_type file_name_, numeric_type line_number_)
-      : etl::unordered_set_exception(ETL_ERROR_TEXT("unordered_set:full", ETL_FILE"A"), file_name_, line_number_)
+      : etl::unordered_set_exception(ETL_ERROR_TEXT("unordered_set:full", ETL_UNORDERED_SET_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -105,7 +102,7 @@ namespace etl
   public:
 
     unordered_set_out_of_range(string_type file_name_, numeric_type line_number_)
-      : etl::unordered_set_exception(ETL_ERROR_TEXT("unordered_set:range", ETL_FILE"B"), file_name_, line_number_)
+      : etl::unordered_set_exception(ETL_ERROR_TEXT("unordered_set:range", ETL_UNORDERED_SET_FILE_ID"B"), file_name_, line_number_)
     {}
   };
 
@@ -118,7 +115,7 @@ namespace etl
   public:
 
     unordered_set_iterator(string_type file_name_, numeric_type line_number_)
-      : etl::unordered_set_exception(ETL_ERROR_TEXT("unordered_set:iterator", ETL_FILE"C"), file_name_, line_number_)
+      : etl::unordered_set_exception(ETL_ERROR_TEXT("unordered_set:iterator", ETL_UNORDERED_SET_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -1554,7 +1551,5 @@ namespace etl
     ->unordered_set<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
 #endif 
 }
-
-#undef ETL_FILE
 
 #endif

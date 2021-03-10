@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_REFERENCE_FLAT_MULTIMAP_BASE_INCLUDED
-#define ETL_REFERENCE_FLAT_MULTIMAP_BASE_INCLUDED
+#ifndef ETL_REFERENCE_FLAT_MULTIMAP_INCLUDED
+#define ETL_REFERENCE_FLAT_MULTIMAP_INCLUDED
 
 #include <stddef.h>
 
@@ -39,9 +39,6 @@ SOFTWARE.
 #include "debug_count.h"
 #include "vector.h"
 #include "iterator.h"
-
-#undef ETL_FILE
-#define ETL_FILE "31"
 
 namespace etl
 {
@@ -68,7 +65,7 @@ namespace etl
   public:
 
     flat_multimap_full(string_type file_name_, numeric_type line_number_)
-      : flat_multimap_exception(ETL_ERROR_TEXT("flat_multimap:full", ETL_FILE"A"), file_name_, line_number_)
+      : flat_multimap_exception(ETL_ERROR_TEXT("flat_multimap:full", ETL_REFERENCE_FLAT_MULTIMAP_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -877,7 +874,5 @@ namespace etl
     etl::vector<node_t*, MAX_SIZE> lookup;
   };
 }
-
-#undef ETL_FILE
 
 #endif

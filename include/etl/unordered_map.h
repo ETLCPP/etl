@@ -57,9 +57,6 @@ SOFTWARE.
   #include <initializer_list>
 #endif
 
-#undef ETL_FILE
-#define ETL_FILE "16"
-
 //*****************************************************************************
 ///\defgroup unordered_map unordered_map
 /// A unordered_map with the capacity defined at compile time.
@@ -91,7 +88,7 @@ namespace etl
   public:
 
     unordered_map_full(string_type file_name_, numeric_type line_number_)
-      : etl::unordered_map_exception(ETL_ERROR_TEXT("unordered_map:full", ETL_FILE"A"), file_name_, line_number_)
+      : etl::unordered_map_exception(ETL_ERROR_TEXT("unordered_map:full", ETL_UNORDERED_MAP_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -105,7 +102,7 @@ namespace etl
   public:
 
     unordered_map_out_of_range(string_type file_name_, numeric_type line_number_)
-      : etl::unordered_map_exception(ETL_ERROR_TEXT("unordered_map:range", ETL_FILE"B"), file_name_, line_number_)
+      : etl::unordered_map_exception(ETL_ERROR_TEXT("unordered_map:range", ETL_UNORDERED_MAP_FILE_ID"B"), file_name_, line_number_)
     {}
   };
 
@@ -118,7 +115,7 @@ namespace etl
   public:
 
     unordered_map_iterator(string_type file_name_, numeric_type line_number_)
-      : etl::unordered_map_exception(ETL_ERROR_TEXT("unordered_map:iterator", ETL_FILE"C"), file_name_, line_number_)
+      : etl::unordered_map_exception(ETL_ERROR_TEXT("unordered_map:iterator", ETL_UNORDERED_MAP_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -1661,7 +1658,5 @@ namespace etl
                     1U + sizeof...(Ts)>;
 #endif 
 }
-
-#undef ETL_FILE
 
 #endif

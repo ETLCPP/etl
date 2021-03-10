@@ -44,9 +44,6 @@ SOFTWARE.
 /// A wrapper for arrays
 ///\ingroup containers
 
-#undef ETL_FILE
-#define ETL_FILE "41"
-
 namespace etl
 {
   static ETL_CONSTANT size_t dynamic_extent = etl::integral_limits<size_t>::max;
@@ -358,8 +355,6 @@ namespace etl
   };
 #endif
 }
-
-#undef ETL_FILE
 
 #endif
 

@@ -56,9 +56,6 @@ SOFTWARE.
   #include <initializer_list>
 #endif
 
-#undef ETL_FILE
-#define ETL_FILE "26"
-
 //*****************************************************************************
 ///\defgroup unordered_multiset unordered_multiset
 /// A unordered_multiset with the capacity defined at compile time.
@@ -90,7 +87,7 @@ namespace etl
   public:
 
     unordered_multiset_full(string_type file_name_, numeric_type line_number_)
-      : etl::unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:full", ETL_FILE"A"), file_name_, line_number_)
+      : etl::unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:full", ETL_UNORDERED_MULTISET_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -104,7 +101,7 @@ namespace etl
   public:
 
     unordered_multiset_out_of_range(string_type file_name_, numeric_type line_number_)
-      : etl::unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:range", ETL_FILE"B"), file_name_, line_number_)
+      : etl::unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:range", ETL_UNORDERED_MULTISET_FILE_ID"B"), file_name_, line_number_)
     {}
   };
 
@@ -117,7 +114,7 @@ namespace etl
   public:
 
     unordered_multiset_iterator(string_type file_name_, numeric_type line_number_)
-      : etl::unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:iterator", ETL_FILE"C"), file_name_, line_number_)
+      : etl::unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:iterator", ETL_UNORDERED_MULTISET_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -1556,7 +1553,5 @@ namespace etl
     ->unordered_multiset<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
 #endif 
 }
-
-#undef ETL_FILE
 
 #endif

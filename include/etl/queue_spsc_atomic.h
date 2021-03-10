@@ -43,9 +43,6 @@ SOFTWARE.
 #include "utility.h"
 #include "placement_new.h"
 
-#undef ETL_FILE
-#define ETL_FILE ETL_QUEUE_SPSC_ATOMIC_ID
-
 #if ETL_HAS_ATOMIC
 
 namespace etl
@@ -509,7 +506,5 @@ namespace etl
 }
 
 #endif
-
-#undef ETL_FILE
 
 #endif

@@ -41,9 +41,6 @@ SOFTWARE.
   #include <initializer_list>
 #endif
 
-#undef ETL_FILE
-#define ETL_FILE "3"
-
 //*****************************************************************************
 ///\defgroup flat_multimap flat_multimap
 /// A flat_multimap with the capacity defined at compile time.
@@ -918,7 +915,5 @@ namespace etl
     1U + sizeof...(Ts)>;
 #endif 
 }
-
-#undef ETL_FILE
 
 #endif

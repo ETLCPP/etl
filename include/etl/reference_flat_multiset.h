@@ -46,9 +46,6 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 
-#undef ETL_FILE
-#define ETL_FILE "33"
-
 namespace etl
 {
   //***************************************************************************
@@ -74,7 +71,7 @@ namespace etl
   public:
 
     flat_multiset_full(string_type file_name_, numeric_type line_number_)
-      : flat_multiset_exception(ETL_ERROR_TEXT("flat_multiset:full", ETL_FILE"A"), file_name_, line_number_)
+      : flat_multiset_exception(ETL_ERROR_TEXT("flat_multiset:full", ETL_REFERENCE_FLAT_MULTISET_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -88,7 +85,7 @@ namespace etl
   public:
 
     flat_multiset_iterator(string_type file_name_, numeric_type line_number_)
-      : flat_multiset_exception(ETL_ERROR_TEXT("flat_multiset:iterator", ETL_FILE"C"), file_name_, line_number_)
+      : flat_multiset_exception(ETL_ERROR_TEXT("flat_multiset:iterator", ETL_REFERENCE_FLAT_MULTISET_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -885,5 +882,4 @@ namespace etl
   }
 }
 
-#undef ETL_FILE
 #endif

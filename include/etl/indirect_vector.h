@@ -48,9 +48,6 @@ SOFTWARE.
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 
-#undef ETL_FILE
-#define ETL_FILE "53"
-
 //*****************************************************************************
 ///\defgroup indirect_vector indirect_vector
 /// A indirect_vector with the capacity defined at compile time. Objects are allocated from a pool and stored as pointers.
@@ -68,7 +65,7 @@ namespace etl
   public:
 
     indirect_vector_buffer_missmatch(string_type file_name_, numeric_type line_number_)
-      : vector_exception(ETL_ERROR_TEXT("indirect_vector:buffer_missmatch", ETL_FILE"A"), file_name_, line_number_)
+      : vector_exception(ETL_ERROR_TEXT("indirect_vector:buffer_missmatch", INDIRECT_VECTOR_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -1543,8 +1540,6 @@ namespace etl
 #ifdef ETL_COMPILER_GCC
 #pragma GCC diagnostic pop
 #endif
-
-#undef ETL_FILE
 
 #endif
 

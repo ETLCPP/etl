@@ -54,9 +54,6 @@ SOFTWARE.
 
 #include "private/minmax_push.h"
 
-#undef ETL_FILE
-#define ETL_FILE "1"
-
 //*****************************************************************************
 ///\defgroup deque deque
 /// A double ended queue with the capacity defined at compile time.
@@ -88,7 +85,7 @@ namespace etl
   public:
 
     deque_full(string_type file_name_, numeric_type line_number_)
-      : etl::deque_exception(ETL_ERROR_TEXT("deque:full", ETL_FILE"A"), file_name_, line_number_)
+      : etl::deque_exception(ETL_ERROR_TEXT("deque:full", ETL_DEQUE_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -102,7 +99,7 @@ namespace etl
   public:
 
     deque_empty(string_type file_name_, numeric_type line_number_)
-      : etl::deque_exception(ETL_ERROR_TEXT("deque:empty", ETL_FILE"B"), file_name_, line_number_)
+      : etl::deque_exception(ETL_ERROR_TEXT("deque:empty", ETL_DEQUE_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -116,7 +113,7 @@ namespace etl
   public:
 
     deque_out_of_bounds(string_type file_name_, numeric_type line_number_)
-      : etl::deque_exception(ETL_ERROR_TEXT("deque:bounds", ETL_FILE"C"), file_name_, line_number_)
+      : etl::deque_exception(ETL_ERROR_TEXT("deque:bounds", ETL_DEQUE_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -130,7 +127,7 @@ namespace etl
   public:
 
     deque_incompatible_type(string_type file_name_, numeric_type line_number_)
-      : deque_exception(ETL_ERROR_TEXT("deque:type", ETL_FILE"D"), file_name_, line_number_)
+      : deque_exception(ETL_ERROR_TEXT("deque:type", ETL_DEQUE_FILE_ID"D"), file_name_, line_number_)
     {
     }
   };
@@ -2555,8 +2552,6 @@ namespace etl
     return !(lhs < rhs);
   }
 }
-
-#undef ETL_FILE
 
 #include "private/minmax_pop.h"
 

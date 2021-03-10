@@ -34,9 +34,6 @@ SOFTWARE.
 #include "type_traits.h"
 #include "null_type.h"
 
-#undef ETL_FILE
-#define ETL_FILE "49"
-
 /*[[[cog
 import cog
 cog.outl("#if 0")
@@ -172,7 +169,5 @@ namespace etl
   /*[[[end]]]*/
 #endif
 }
-
-#undef ETL_FILE
 
 #endif

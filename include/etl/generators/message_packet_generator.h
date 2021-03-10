@@ -72,9 +72,6 @@ cog.outl("//********************************************************************
 
 #include <stdint.h>
 
-#undef ETL_FILE
-#define ETL_FILE "55"
-
 namespace etl
 {
   /*[[[cog
@@ -464,7 +461,5 @@ namespace etl
   ]]]*/
   /*[[[end]]]*/
 }
-
-#undef ETL_FILE
 
 #endif

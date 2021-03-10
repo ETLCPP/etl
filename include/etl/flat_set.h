@@ -40,9 +40,6 @@ SOFTWARE.
   #include <initializer_list>
 #endif
 
-#undef ETL_FILE
-#define ETL_FILE "5"
-
 //*****************************************************************************
 ///\defgroup flat_set flat_set
 /// A flat_set with the capacity defined at compile time.
@@ -953,7 +950,5 @@ namespace etl
     ->flat_set<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
 #endif 
 }
-
-#undef ETL_FILE
 
 #endif

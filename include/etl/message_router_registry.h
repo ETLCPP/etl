@@ -40,9 +40,6 @@ SOFTWARE.
 #include "iterator.h"
 #include "memory.h"
 
-#undef ETL_FILE
-#define ETL_FILE ETL_MESSAGE_ROUTER_REGISTRY
-
 namespace etl
 {
   //***************************************************************************
@@ -66,7 +63,7 @@ namespace etl
   public:
 
     message_router_registry_full(string_type file_name_, numeric_type line_number_)
-      : message_router_registry_exception(ETL_ERROR_TEXT("message router registry:full", ETL_FILE"A"), file_name_, line_number_)
+      : message_router_registry_exception(ETL_ERROR_TEXT("message router registry:full", ETL_MESSAGE_ROUTER_REGISTRY_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -574,7 +571,5 @@ namespace etl
     Registry registry;
   };
 }
-
-#undef ETL_FILE
 
 #endif

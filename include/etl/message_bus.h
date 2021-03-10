@@ -42,9 +42,6 @@ SOFTWARE.
 #include "message.h"
 #include "message_router.h"
 
-#undef ETL_FILE
-#define ETL_FILE "39"
-
 namespace etl
 {
   //***************************************************************************
@@ -68,7 +65,7 @@ namespace etl
   public:
 
     message_bus_too_many_subscribers(string_type file_name_, numeric_type line_number_)
-      : message_bus_exception(ETL_ERROR_TEXT("message bus:too many subscribers", ETL_FILE"A"), file_name_, line_number_)
+      : message_bus_exception(ETL_ERROR_TEXT("message bus:too many subscribers", ETL_MESSAGE_BUS_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -435,7 +432,5 @@ namespace etl
     bus.receive(id, message);
   }
 }
-
-#undef ETL_FILE
 
 #endif

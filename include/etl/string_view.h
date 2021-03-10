@@ -48,9 +48,6 @@ SOFTWARE.
 /// A wrapper for arrays
 ///\ingroup containers
 
-#undef ETL_FILE
-#define ETL_FILE "42"
-
 #include "private/minmax_push.h"
 
 namespace etl
@@ -77,7 +74,7 @@ namespace etl
   public:
 
     string_view_bounds(string_type file_name_, numeric_type line_number_)
-      : string_view_exception(ETL_ERROR_TEXT("basic_string_view:bounds", ETL_FILE"A"), file_name_, line_number_)
+      : string_view_exception(ETL_ERROR_TEXT("basic_string_view:bounds", ETL_STRING_VIEW_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -91,7 +88,7 @@ namespace etl
   public:
 
     string_view_uninitialised(string_type file_name_, numeric_type line_number_)
-      : string_view_exception(ETL_ERROR_TEXT("basic_string_view:uninitialised", ETL_FILE"B"), file_name_, line_number_)
+      : string_view_exception(ETL_ERROR_TEXT("basic_string_view:uninitialised", ETL_STRING_VIEW_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -904,8 +901,6 @@ void swap(etl::basic_string_view<T, etl::char_traits<T> >& lhs, etl::basic_strin
 }
 
 #include "private/minmax_pop.h"
-
-#undef ETL_FILE
 
 #endif
 
