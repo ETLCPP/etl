@@ -47,7 +47,7 @@ SOFTWARE.
 ///\ingroup containers
 
 #undef ETL_FILE
-#define ETL_FILE "41"
+#define ETL_FILE ETL_ARRAY_VIEW_FILE_ID
 
 namespace etl
 {

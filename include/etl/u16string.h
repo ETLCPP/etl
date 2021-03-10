@@ -145,7 +145,7 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator, typename = typename etl::enable_if<!etl::is_integral<TIterator>::value, void>::type>
+    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
     u16string(TIterator first, TIterator last)
       : iu16string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
@@ -336,7 +336,7 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator, typename = typename etl::enable_if<!etl::is_integral<TIterator>::value, void>::type>
+    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
     u16string_ext(TIterator first, TIterator last, value_type* buffer, size_type buffer_size)
       : iu16string(buffer, buffer_size - 1U)
     {

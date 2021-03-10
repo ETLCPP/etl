@@ -58,7 +58,7 @@ Original publication: https://www.codeproject.com/Articles/1170503/The-Impossibl
 #endif
 
 #undef ETL_FILE
-#define ETL_FILE "51"
+#define ETL_FILE ETL_DELEGATE_FILE_ID
 
 namespace etl
 {

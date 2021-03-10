@@ -2088,7 +2088,7 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator, typename = typename etl::enable_if<!etl::is_integral<TIterator>::value, void>::type>
+    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
     multimap(TIterator first, TIterator last)
       : etl::imultimap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {
