@@ -169,7 +169,7 @@ namespace etl
     void destroy(const U* const p_object)
     {
       ETL_STATIC_ASSERT((etl::is_base_of<U, T>::value), "Pool does not contain this type");
-      base_t::template destroy(p_object);
+      base_t::destroy(p_object);
     }
 
   private:
