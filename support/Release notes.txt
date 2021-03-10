@@ -4,6 +4,7 @@ Added etl::message_router_registry.
 Changed etl::flat_multimap & etl::flat_multiset to iterate in insertion order, as per C++11 map and set.
 Added ETL_CONSTEXPR to etl::array.
 C++98 compatibility fixes.
+Remove unnecessary template keyword to destroy() call in etl::pool.
 Abstracted unit test framework header.
 
 ===============================================================================
