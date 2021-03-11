@@ -96,7 +96,7 @@ namespace etl
       //*********************************
       pointer data() const
       {
-        assert(pdesc_item != nullptr);
+        assert(pdesc_item != ETL_NULLPTR);
         return pdesc_item->pbuffer;
       }
 
