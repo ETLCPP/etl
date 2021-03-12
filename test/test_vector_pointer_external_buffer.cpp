@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <vector>
 #include <array>
@@ -47,12 +47,12 @@ namespace
 
   SUITE(test_vector_pointer)
   {
-    typedef etl::vector<int*, 0>       Data;
-    typedef etl::vector<const int*, 0> CData;
-    typedef etl::ivector<int*>         IData;
-    typedef etl::ivector<const int*>   CIData;
-    typedef std::vector<int*>          Compare_Data;
-    typedef std::vector<const int*>    CCompare_Data;
+    typedef etl::vector_ext<int*>       Data;
+    typedef etl::vector_ext<const int*> CData;
+    typedef etl::ivector<int*>          IData;
+    typedef etl::ivector<const int*>    CIData;
+    typedef std::vector<int*>           Compare_Data;
+    typedef std::vector<const int*>     CCompare_Data;
 
     Compare_Data initial_data;
     Compare_Data less_data;
@@ -236,7 +236,7 @@ namespace
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
     }
 
-#if !defined(ETL_NO_STL)
+#if ETL_USING_STL
     //*************************************************************************
     TEST(test_constructor_initializer_list)
     {
@@ -291,9 +291,34 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_constructor)
+    {
+      Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
+      Data data2(std::move(data), buffer2, SIZE);
+
+      CHECK_EQUAL(0U, data.size());
+      CHECK_EQUAL(initial_data.size(), data2.size());
+
+      CHECK_EQUAL(initial_data.size(), data2.size());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment)
     {
       Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
+      Data other_data(buffer2, SIZE);
+
+      other_data = data;
+
+      bool is_equal = std::equal(data.begin(), data.end(), other_data.begin());
+
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_assignment_from_pointer_range)
+    {
+      Data data(initial_data.data(), initial_data.data() + initial_data.size(), buffer1, SIZE);
       Data other_data(buffer2, SIZE);
 
       other_data = data;
@@ -313,6 +338,21 @@ namespace
 
       bool is_equal = std::equal(data.begin(), data.end(), other_data.begin());
 
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_assignment)
+    {
+      Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
+      Data other_data(buffer2, SIZE);
+
+      other_data = std::move(data);
+
+      CHECK_EQUAL(0U, data.size());
+      CHECK_EQUAL(initial_data.size(), other_data.size());
+
+      bool is_equal = std::equal(data.begin(), data.end(), other_data.begin());
       CHECK(is_equal);
     }
 
@@ -977,6 +1017,29 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back)
+    {
+      Compare_Data compare_data;
+      Data data(buffer1, SIZE);
+
+      int d;
+
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        compare_data.emplace_back(&d);
+      }
+
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        data.emplace_back(&d);
+      }
+
+      bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_pop_back)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
@@ -1105,6 +1168,31 @@ namespace
       offset = data.size();
 
       CHECK_THROW(data.insert(data.begin() + offset, &INITIAL_VALUE), etl::vector_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_position_value)
+    {
+      const size_t INITIAL_SIZE = 5;
+      int INITIAL_VALUE = 1;
+
+      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      {
+        Compare_Data compare_data;
+        Data data(buffer1, SIZE);
+
+        data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+        compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+
+        data.emplace(data.begin() + offset, &INITIAL_VALUE);
+        compare_data.emplace(compare_data.begin() + offset, &INITIAL_VALUE);
+
+        CHECK_EQUAL(compare_data.size(), data.size());
+
+        bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+        CHECK(is_equal);
+      }
     }
 
     //*************************************************************************
@@ -1731,7 +1819,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_const_ivector_of_pointer_to_pointer)
     {
       int i1 = 1;
-      etl::vector<int*, 0> consttest(buffer1, SIZE);
+      etl::vector_ext<int*> consttest(buffer1, SIZE);
       consttest.push_back(&i1);
       const etl::ivector<int*>& ct = consttest;
 
@@ -1745,7 +1833,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_const_ivector_of_pointer_to_const_pointer)
     {
       int i1 = 1;
-      etl::vector<const int*, 0> consttest(buffer1, SIZE);
+      etl::vector_ext<const int*> consttest(buffer1, SIZE);
       consttest.push_back(&i1);
       const etl::ivector<const int*>& ct = consttest;
 

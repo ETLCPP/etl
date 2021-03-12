@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <iterator>
 #include <string>
@@ -98,6 +98,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_checksum_add_range_via_iterator)
+    {
+      std::string data("123456789");
+
+      etl::checksum<uint8_t> checksum_calculator;
+
+      std::copy(data.begin(), data.end(), checksum_calculator.input());
+
+      uint8_t sum = checksum_calculator.value();
+
+      CHECK_EQUAL(221, int(sum));
+    }
+
+    //*************************************************************************
     TEST(test_checksum_add_range_sum16)
     {
       std::string data("123456789");
@@ -112,6 +126,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_checksum_add_range_sum16_via_iterator)
+    {
+      std::string data("123456789");
+
+      etl::checksum<uint16_t> checksum_calculator;
+
+      std::copy(data.begin(), data.end(), checksum_calculator.input());
+
+      uint16_t sum = checksum_calculator.value();
+
+      CHECK_EQUAL(477, int(sum));
+    }
+
+    //*************************************************************************
     TEST(test_checksum_add_range_sum32)
     {
       std::string data("123456789");
@@ -119,6 +147,20 @@ namespace
       etl::checksum<uint32_t> checksum_calculator;
 
       checksum_calculator.add(data.begin(), data.end());
+
+      uint32_t sum = checksum_calculator.value();
+
+      CHECK_EQUAL(477, int(sum));
+    }
+
+    //*************************************************************************
+    TEST(test_checksum_add_range_sum32_via_iterator)
+    {
+      std::string data("123456789");
+
+      etl::checksum<uint32_t> checksum_calculator;
+
+      std::copy(data.begin(), data.end(), checksum_calculator.input());
 
       uint32_t sum = checksum_calculator.value();
 

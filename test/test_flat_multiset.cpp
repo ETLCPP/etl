@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2015 jwellbelove
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <set>
 #include <array>
@@ -162,23 +162,6 @@ namespace
   typedef std::multiset<D3> Compare3;
   typedef std::multiset<D4> Compare4;
 
-
-  //*************************************************************************
-  std::ostream& operator <<(std::ostream& os, DataNDC::iterator itr)
-  {
-    os << *itr;
-
-    return os;
-  }
-
-  //*************************************************************************
-  std::ostream& operator <<(std::ostream& os, DataNDC::const_iterator itr)
-  {
-    os << *itr;
-
-    return os;
-  }
-
   SUITE(test_flat_multiset)
   {
     NDC NX = NDC("@");
@@ -262,6 +245,24 @@ namespace
       CHECK(data.begin() == data.end());
     }
 
+#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::flat_multiset data{ N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
+      etl::flat_multiset<NDC, 10U> check = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
+
+      CHECK(!data.empty());
+      CHECK(data.full());
+      CHECK(data.begin() != data.end());
+      CHECK_EQUAL(10U, data.size());
+      CHECK_EQUAL(0U, data.available());
+      CHECK_EQUAL(10U, data.capacity());
+      CHECK_EQUAL(10U, data.max_size());
+      CHECK(data == check);
+    }
+#endif
+
     //*************************************************************************
     TEST(test_destruct_via_iflat_multiset)
     {
@@ -286,7 +287,7 @@ namespace
       CHECK(!data.empty());
     }
 
-#if !defined(ETL_NO_STL)
+#if ETL_USING_STL
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -398,8 +399,8 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       const DataNDC constData(data);
 
-      CHECK_EQUAL(data.begin(), std::begin(data));
-      CHECK_EQUAL(constData.begin(), std::begin(constData));
+      CHECK(data.begin() == std::begin(data));
+      CHECK(constData.begin() == std::begin(constData));
     }
 
     //*************************************************************************
@@ -408,8 +409,8 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       const DataNDC constData(data);
 
-      CHECK_EQUAL(data.end(), std::end(data));
-      CHECK_EQUAL(constData.end(), std::end(constData));
+      CHECK(data.end() == std::end(data));
+      CHECK(constData.end() == std::end(constData));
     }
 
     //*************************************************************************
@@ -859,7 +860,7 @@ namespace
       CHECK_EQUAL(N3, *it);
 
       it = data.find(N19);
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
     }
 
     //*************************************************************************
@@ -868,10 +869,10 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
 
       DataNDC::iterator it = data.find(NX);
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
 
       it = data.find(NY);
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
     }
 
     //*************************************************************************
@@ -883,7 +884,7 @@ namespace
       CHECK_EQUAL(N3, *it);
 
       it = data.find(N19);
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
     }
 
     //*************************************************************************
@@ -892,10 +893,10 @@ namespace
       const DataNDC data(initial_data.begin(), initial_data.end());
 
       DataNDC::const_iterator it = data.find(NX);
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
 
       it = data.find(NY);
-      CHECK_EQUAL(data.end(), it);
+      CHECK(data.end() == it);
     }
 
     //*************************************************************************
@@ -943,12 +944,12 @@ namespace
       ETL_OR_STD::pair<DataNDC::iterator, DataNDC::iterator> i_data;
 
       i_data = data.equal_range(NX);
-      CHECK_EQUAL(data.begin(), i_data.first);
-      CHECK_EQUAL(data.begin(), i_data.second);
+      CHECK(data.begin() == i_data.first);
+      CHECK(data.begin() == i_data.second);
 
       i_data = data.equal_range(NY);
-      CHECK_EQUAL(data.end(), i_data.first);
-      CHECK_EQUAL(data.end(), i_data.second);
+      CHECK(data.end() == i_data.first);
+      CHECK(data.end() == i_data.second);
     }
 
     //*************************************************************************

@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2017 jwellbelove
 
@@ -26,8 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
-#include "ExtraCheckMacros.h"
+#include "unit_test_framework.h"
 
 #include "etl/message_router.h"
 #include "etl/message_bus.h"
@@ -92,22 +91,22 @@ namespace
 
     }
 
-    void on_receive(etl::imessage_router&, const Message1&)
+    void on_receive(const Message1&)
     {
       message1.push_back(ticks);
     }
 
-    void on_receive(etl::imessage_router&, const Message2&)
+    void on_receive(const Message2&)
     {
       message2.push_back(ticks);
     }
 
-    void on_receive(etl::imessage_router&, const Message3&)
+    void on_receive(const Message3&)
     {
       message3.push_back(ticks);
     }
 
-    void on_receive_unknown(etl::imessage_router&, const etl::imessage&)
+    void on_receive_unknown(const etl::imessage&)
     {
     }
 
@@ -601,7 +600,8 @@ namespace
     #define RAISE_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)
     #define FIX_PROCESSOR_AFFINITY SetThreadAffinityMask(GetCurrentThread(), 1);
   #else
-    #error No thread priority modifier defined
+    #define RAISE_THREAD_PRIORITY
+    #define FIX_PROCESSOR_AFFINITY
   #endif
 
     etl::message_timer<3> controller;

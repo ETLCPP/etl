@@ -1,13 +1,13 @@
 {
-  "name": "Embedded Template Library",
-  "version": "17.0.0",
-  "authors": {
+  "name": "ETL Embedded Template Library",
+  "version": "20.6.0",
+  "author s": {
     "name": "John Wellbelove",
     "email": "john.wellbelove@etlcpp.com"
   },
   "homepage": "https://www.etlcpp.com/",
   "license": "MIT",
-  "description": "A C++ template library tailored for embedded systems.",
+  "description": "ETL. A C++ template library tailored for embedded systems.",
   "repository": {
     "type": "git",
     "url": "https://github.com/ETLCPP/etl.git"

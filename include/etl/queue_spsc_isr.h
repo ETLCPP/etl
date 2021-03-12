@@ -34,17 +34,13 @@ SOFTWARE.
 #include <stddef.h>
 #include <stdint.h>
 
-#include <new>
-
 #include "platform.h"
 #include "alignment.h"
 #include "parameter_type.h"
 #include "memory_model.h"
 #include "integral_limits.h"
 #include "utility.h"
-
-#undef ETL_FILE
-#define ETL_FILE "46"
+#include "placement_new.h"
 
 namespace etl
 {
@@ -86,7 +82,7 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
     ///\param value The value to use to construct the item to push to the queue.
     //*************************************************************************
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_QUEUE_ISR_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_ISR_FORCE_CPP03)
     template <typename ... Args>
     bool emplace_from_isr(Args&&... args)
     {
@@ -101,16 +97,6 @@ namespace etl
     {
       return pop_implementation(value);
     }
-
-#if ETL_CPP11_SUPPORTED
-    //*************************************************************************
-    /// Pop a value from the queue from an ISR
-    //*************************************************************************
-    bool pop_from_isr(rvalue_reference value)
-    {
-      return pop_implementation(etl::move(value));
-    }
-#endif
 
     //*************************************************************************
     /// Pop a value from the queue from an ISR, and discard.
@@ -236,7 +222,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_QUEUE_ISR_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_ISR_FORCE_CPP03)
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
@@ -361,29 +347,12 @@ namespace etl
         return false;
       }
 
-      value = p_buffer[read_index];
-      p_buffer[read_index].~T();
-
-      read_index = get_next_index(read_index, MAX_SIZE);
-
-      --current_size;
-
-      return true;
-    }
-
-#if ETL_CPP11_SUPPORTED
-    //*************************************************************************
-    /// Pop a value from the queue.
-    //*************************************************************************
-    bool pop_implementation(rvalue_reference value)
-    {
-      if (current_size == 0)
-      {
-        // Queue is empty
-        return false;
-      }
-
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03)
       value = etl::move(p_buffer[read_index]);
+#else
+      value = p_buffer[read_index];
+#endif
+
       p_buffer[read_index].~T();
 
       read_index = get_next_index(read_index, MAX_SIZE);
@@ -392,7 +361,6 @@ namespace etl
 
       return true;
     }
-#endif
 
     //*************************************************************************
     /// Pop a value from the queue and discard.
@@ -515,7 +483,7 @@ namespace etl
     /// Constructs a value in the queue 'in place'.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
     //*************************************************************************
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_QUEUE_ISR_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_ISR_FORCE_CPP03)
     template <typename ... Args>
     bool emplace(Args&&... args)
     {
@@ -606,22 +574,6 @@ namespace etl
 
       return result;
     }
-
-#if ETL_CPP11_SUPPORTED
-    //*************************************************************************
-    /// Pop a value from the queue.
-    //*************************************************************************
-    bool pop(rvalue_reference value)
-    {
-      TAccess::lock();
-
-      bool result = this->pop_implementation(etl::move(value));
-
-      TAccess::unlock();
-
-      return result;
-    }
-#endif
 
     //*************************************************************************
     /// Pop a value from the queue and discard.
@@ -786,7 +738,5 @@ namespace etl
     typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[MAX_SIZE];
   };
 }
-
-#undef ETL_FILE
 
 #endif

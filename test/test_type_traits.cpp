@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/type_traits.h"
 #include <type_traits>
@@ -389,7 +389,9 @@ namespace
       CHECK(etl::is_fundamental<double>::value             == std::is_fundamental<double>::value);
       CHECK(etl::is_fundamental<long double>::value        == std::is_fundamental<long double>::value);
       CHECK(etl::is_fundamental<Test>::value               == std::is_fundamental<Test>::value);
+#if ETL_USING_STL
       CHECK(etl::is_fundamental<std::nullptr_t>::value     == std::is_fundamental<std::nullptr_t>::value);
+#endif
     }
 
     //*************************************************************************
@@ -454,6 +456,22 @@ namespace
       CHECK((etl::is_same<etl::make_signed<const int>::type,          std::make_signed<const int>::type>::value));
       CHECK((etl::is_same<etl::make_signed<const volatile int>::type, std::make_signed<const volatile int>::type>::value));
       CHECK((etl::is_same<etl::make_signed<size_t>::type,             std::make_signed<size_t>::type>::value));
+
+      enum class ue : uint8_t
+      {
+        One,
+        Two
+      };
+
+      CHECK((etl::is_same<etl::make_signed<__underlying_type(ue)>::type, std::make_signed<ue>::type>::value));
+
+      enum class se : int8_t
+      {
+        One,
+        Two
+      };
+
+      CHECK((etl::is_same<etl::make_signed<__underlying_type(se)>::type, std::make_signed<se>::type>::value));
     }
 
     //*************************************************************************
@@ -480,6 +498,22 @@ namespace
       CHECK((etl::is_same<etl::make_unsigned<const int>::type,          std::make_unsigned<const int>::type>::value));
       CHECK((etl::is_same<etl::make_unsigned<const volatile int>::type, std::make_unsigned<const volatile int>::type>::value));
       CHECK((etl::is_same<etl::make_unsigned<size_t>::type,             std::make_unsigned<size_t>::type>::value));
+
+      enum class ue : uint8_t
+      {
+        One,
+        Two
+      };
+
+      CHECK((etl::is_same<etl::make_unsigned<__underlying_type(ue)>::type, std::make_unsigned<ue>::type>::value));
+
+      enum class se : int8_t
+      {
+        One,
+        Two
+      };
+
+      CHECK((etl::is_same<etl::make_unsigned<__underlying_type(se)>::type, std::make_unsigned<se>::type>::value));
     }
 
     //*************************************************************************
@@ -735,7 +769,7 @@ namespace
   };
 
   //*************************************************************************
-  TEST(conditional_integral_constant)
+  TEST(test_conditional_integral_constant)
   {
     int v1 = etl::conditional_integral_constant<true,  int, 1, 2>::value;
     int v2 = etl::conditional_integral_constant<false, int, 1, 2>::value;
@@ -745,7 +779,7 @@ namespace
   }
 
   //*************************************************************************
-  TEST(size_of)
+  TEST(test_size_of)
   {
     CHECK_EQUAL(1, etl::size_of<void>::value);
     CHECK_EQUAL(1, etl::size_of<char>::value);
@@ -761,7 +795,7 @@ namespace
   }
 
   //*************************************************************************
-  TEST(is_convertible)
+  TEST(test_is_convertible)
   {
     CHECK((etl::is_convertible<char, int>::value));
     CHECK((etl::is_convertible<int,  char>::value));
@@ -777,7 +811,7 @@ namespace
   }
 
   //*************************************************************************
-  TEST(add_lvalue_reference)
+  TEST(test_add_lvalue_reference)
   {
     CHECK(!std::is_lvalue_reference_v<etl::add_lvalue_reference<void>::type>);
     CHECK(std::is_lvalue_reference_v<etl::add_lvalue_reference<int>::type>);
@@ -787,7 +821,7 @@ namespace
   }
 
   //*************************************************************************
-  TEST(add_rvalue_reference)
+  TEST(test_add_rvalue_reference)
   {
     CHECK(!std::is_rvalue_reference_v<etl::add_rvalue_reference<void>::type>);
     CHECK(std::is_rvalue_reference_v<etl::add_rvalue_reference<int>::type>);
@@ -797,12 +831,44 @@ namespace
   }
 
   //*************************************************************************
-  TEST(is_lvalue_reference)
+  TEST(test_is_lvalue_reference)
   {
     CHECK_EQUAL(std::is_lvalue_reference_v<void>,  etl::is_lvalue_reference_v<void>);
     CHECK_EQUAL(std::is_lvalue_reference_v<int>,   etl::is_lvalue_reference_v<int>);
     CHECK_EQUAL(std::is_lvalue_reference_v<int*>,  etl::is_lvalue_reference_v<int*>);
     CHECK_EQUAL(std::is_lvalue_reference_v<int&>,  etl::is_lvalue_reference_v<int&>);
     CHECK_EQUAL(std::is_lvalue_reference_v<int&&>, etl::is_lvalue_reference_v<int&&>);
+  }
+
+  //*************************************************************************
+  TEST(test_is_rvalue_reference)
+  {
+    CHECK_EQUAL(std::is_rvalue_reference_v<void>,  etl::is_rvalue_reference_v<void>);
+    CHECK_EQUAL(std::is_rvalue_reference_v<int>,   etl::is_rvalue_reference_v<int>);
+    CHECK_EQUAL(std::is_rvalue_reference_v<int*>,  etl::is_rvalue_reference_v<int*>);
+    CHECK_EQUAL(std::is_rvalue_reference_v<int&>,  etl::is_rvalue_reference_v<int&>);
+    CHECK_EQUAL(std::is_rvalue_reference_v<int&&>, etl::is_rvalue_reference_v<int&&>);
+  }
+
+  //*************************************************************************
+  TEST(test_integral_constants)
+  {
+    CHECK_EQUAL(1, (etl::integral_constant<int, 1>::value));
+    CHECK((std::is_same_v<int, etl::integral_constant<int, 1>::value_type>));
+
+    CHECK_EQUAL(false, (etl::bool_constant<false>::value));
+    CHECK_EQUAL(true, (etl::bool_constant<true>::value));
+    CHECK((std::is_same_v<bool, etl::bool_constant<true>::value_type>));
+
+    CHECK_EQUAL(true, etl::negation_v<etl::bool_constant<false>>);
+    CHECK_EQUAL(false, etl::negation_v<etl::bool_constant<true>>);
+    CHECK((std::is_same_v<bool, etl::bool_constant<true>::value_type>));
+  }
+
+  //*************************************************************************
+  TEST(test_are_all_same)
+  {
+    CHECK((etl::are_all_same<int, int, int, int, int>::value == true));
+    CHECK((etl::are_all_same<int, int, int, char, int>::value == false));
   }
 }

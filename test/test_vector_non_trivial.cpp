@@ -3,7 +3,7 @@
 //
 //Embedded Template Library.
 //https://github.com/ETLCPP/etl
-//http://www.etlcpp.com
+//https://www.etlcpp.com
 //
 //Copyright(c) 2014 jwellbelove
 //
@@ -26,7 +26,7 @@
 //SOFTWARE.
 //******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <vector>
 #include <array>
@@ -91,6 +91,24 @@ namespace
       CHECK_EQUAL(data.capacity(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
     }
+
+#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::vector data{ NDC("0"), NDC("1"), NDC("2"), NDC("3"), NDC("4"), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9") };
+      etl::vector<NDC, 10U> check = { NDC("0"), NDC("1"), NDC("2"), NDC("3"), NDC("4"), NDC("5"), NDC("6"), NDC("7"), NDC("8"), NDC("9") };
+
+      CHECK(!data.empty());
+      CHECK(data.full());
+      CHECK(data.begin() != data.end());
+      CHECK_EQUAL(0U, data.available());
+      CHECK_EQUAL(10U, data.capacity());
+      CHECK_EQUAL(10U, data.size());
+      CHECK_EQUAL(10U, data.max_size());
+      CHECK(data == check);
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_destruct_via_ivector)
@@ -168,7 +186,7 @@ namespace
       CHECK(!data.empty());
     }
 
-#if !defined(ETL_NO_STL)
+#if ETL_USING_STL
     //*************************************************************************
     TEST(test_constructor_initializer_list)
     {
@@ -652,8 +670,8 @@ namespace
       {
         std::string value(" ");
         value[0] = char('A' + i);
-        compare_data.emplace_back(value);
-        data.emplace_back(value);
+        compare_data.emplace_back(value, i);
+        data.emplace_back(value, i);
       }
 
       CHECK_EQUAL(compare_data.size(), data.size());
@@ -805,7 +823,7 @@ namespace
     // So this is only tested on C++11 onwards
     TEST_FIXTURE(SetupFixture, test_emplace_back_non_const_references)
     {
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_VECTOR_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_VECTOR_FORCE_CPP03)
       class Data
       {
       public:
@@ -918,8 +936,8 @@ namespace
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
 
-        data.emplace(data.begin() + offset, INITIAL_VALUE);
-        compare_data.emplace(compare_data.begin() + offset, INITIAL_VALUE);
+        data.emplace(data.begin() + offset, INITIAL_VALUE, offset);
+        compare_data.emplace(compare_data.begin() + offset, INITIAL_VALUE, offset);
 
         CHECK_EQUAL(compare_data.size(), data.size());
 

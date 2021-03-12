@@ -1,0 +1,21 @@
+From 18713df17b39ef01707a5891f1d26b39b74ca8a3 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Micha=C5=82=20Chodzikiewicz?= <mchodzikiewicz@gmail.com>
+Date: Mon, 30 Nov 2020 17:06:02 +0100
+Subject: [PATCH] Add assertion for fsm's state array order
+---
+ include/etl/fsm.h | 1 +
+ 1 file changed, 1 insertion(+)
+diff --git a/include/etl/fsm.h b/include/etl/fsm.h
+index 84bb34c..55a41f7 100644
+--- a/include/etl/fsm.h
++++ b/include/etl/fsm.h
+@@ -230,6 +230,7 @@ namespace etl
+       for (etl::fsm_state_id_t i = 0; i < size; ++i)
+       {
+         ETL_ASSERT((state_list[i] != nullptr), ETL_ERROR(etl::fsm_null_state_exception));
++        ETL_ASSERT((state_list[i]->state_id == i),"State list is in incorrect order");
+         state_list[i]->set_fsm_context(*this);
+       }
+     }
+-- 
+2.29.2

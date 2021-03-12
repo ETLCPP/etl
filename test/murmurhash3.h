@@ -16,7 +16,7 @@
 
 typedef unsigned char uint8_t;
 typedef unsigned int uint32_t;
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
 typedef unsigned __int64 uint64_t;
 #endif
 

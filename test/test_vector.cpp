@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <vector>
 #include <array>
@@ -82,6 +82,24 @@ namespace
       CHECK_EQUAL(data.max_size(), SIZE);
       CHECK(data.begin() == data.end());
     }
+
+#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::vector data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10U> check = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      CHECK(!data.empty());
+      CHECK(data.full());
+      CHECK(data.begin() != data.end());
+      CHECK_EQUAL(0U, data.available());
+      CHECK_EQUAL(10U, data.capacity());
+      CHECK_EQUAL(10U, data.size());
+      CHECK_EQUAL(10U, data.max_size());
+      CHECK(data == check);
+    }
+#endif
 
     //*************************************************************************
     TEST(test_iterator_comparison_empty)
@@ -142,7 +160,7 @@ namespace
       CHECK(!data.empty());
     }
 
-#if !defined(ETL_NO_STL)
+#if ETL_USING_STL
     //*************************************************************************
     TEST(test_constructor_initializer_list)
     {
@@ -320,6 +338,78 @@ namespace
 
       Data data(INITIAL_SIZE);
       data.resize(NEW_SIZE, INITIAL_VALUE);
+
+      CHECK_EQUAL(data.size(), NEW_SIZE);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_uninitialized_resize_up)
+    {
+      const size_t INITIAL_SIZE = 5;
+      const size_t NEW_SIZE = 8;
+
+      Data data(INITIAL_SIZE);
+
+      int* pbegin = &data.front();
+      int* pend   = &data.back() + 1;
+      int* pmax = pbegin + data.max_size();
+
+      constexpr int Pattern = 0x12345678;
+
+      // Fill free space with a pattern.
+      std::fill(pend, pmax, Pattern);
+
+      data.uninitialized_resize(NEW_SIZE);
+
+      for (int* p = pbegin; p != pend; ++p)
+      {
+        CHECK_EQUAL(*p, 0);
+      }
+
+      for (int* p = pend; p != pmax; ++p)
+      {
+        CHECK_EQUAL(*p, Pattern);
+      }
+
+      CHECK_EQUAL(data.size(), NEW_SIZE);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_uninitialized_resize_up_excess)
+    {
+      const size_t INITIAL_SIZE = 5;
+      const size_t NEW_SIZE = SIZE + 1;
+
+      Data data(INITIAL_SIZE);
+
+      CHECK_THROW(data.resize(NEW_SIZE), etl::vector_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_uninitialized_resize_down)
+    {
+      const size_t INITIAL_SIZE = 5;
+      const size_t NEW_SIZE = 2;
+
+      Data data(INITIAL_SIZE);
+
+      int* pbegin = &data.front();
+      int* pend   = &data.back() + 1;
+      int* pmax   = pbegin + data.max_size();
+
+      constexpr int Pattern = 0x12345678;
+
+      // Fill free space with a pattern.
+      std::fill(pend, pmax, Pattern);
+
+      data.uninitialized_resize(NEW_SIZE);
+
+      pend = &data.back() + 1;
+
+      for (int* p = pbegin; p < pend; ++p)
+      {
+        CHECK_EQUAL(*p, 0);
+      }
 
       CHECK_EQUAL(data.size(), NEW_SIZE);
     }
@@ -540,6 +630,31 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back)
+    {
+      Compare_Data compare_data;
+      Data data;
+
+      for (int i = 0; i < int(SIZE); ++i)
+      {
+        compare_data.emplace_back(i);
+      }
+
+      for (int i = 0; i < int(SIZE); ++i)
+      {
+        data.emplace_back(i);
+      }
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      bool is_equal = std::equal(data.begin(),
+                                 data.end(),
+                                 compare_data.begin());
+
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_back_literal)
     {
       Compare_Data compare_data;
@@ -633,6 +748,33 @@ namespace
         bool is_equal = std::equal(data.begin(),
                                    data.end(),
                                    compare_data.begin());
+
+        CHECK(is_equal);
+      }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_position_value)
+    {
+      const size_t INITIAL_SIZE = 5;
+      const int INITIAL_VALUE = 1;
+
+      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      {
+        Compare_Data compare_data;
+        Data data;
+
+        data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+        compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+
+        data.emplace(data.begin() + offset, INITIAL_VALUE);
+        compare_data.emplace(compare_data.begin() + offset, INITIAL_VALUE);
+
+        CHECK_EQUAL(compare_data.size(), data.size());
+
+        bool is_equal = std::equal(data.begin(),
+          data.end(),
+          compare_data.begin());
 
         CHECK(is_equal);
       }
@@ -1125,6 +1267,13 @@ namespace
       CHECK_EQUAL(raw[3].i, dest[5].i);
       CHECK_EQUAL(raw[4].i, dest[6].i);
       CHECK_EQUAL(raw[5].i, dest[7].i);
+    }
+
+    //*************************************************************************
+    TEST(test_two_parameter_constructor_same_type_not_iterator)
+    {
+      // No compilation error.
+      etl::vector<int, 10> v(5, 5);
     }
   };
 }

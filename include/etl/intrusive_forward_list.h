@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2016 jwellbelove
 
@@ -50,9 +50,6 @@ SOFTWARE.
 #include "algorithm.h"
 #include "iterator.h"
 
-#undef ETL_FILE
-#define ETL_FILE "20"
-
 namespace etl
 {
   //***************************************************************************
@@ -78,7 +75,7 @@ namespace etl
   public:
 
     intrusive_forward_list_empty(string_type file_name_, numeric_type line_number_)
-      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:empty", ETL_FILE"A"), file_name_, line_number_)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:empty", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -92,7 +89,7 @@ namespace etl
   public:
 
     intrusive_forward_list_iterator_exception(string_type file_name_, numeric_type line_number_)
-      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:iterator", ETL_FILE"B"), file_name_, line_number_)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:iterator", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -106,7 +103,7 @@ namespace etl
   public:
 
     intrusive_forward_list_index_exception(string_type file_name_, numeric_type line_number_)
-      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:bounds", ETL_FILE"C"), file_name_, line_number_)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:bounds", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -120,7 +117,7 @@ namespace etl
   public:
 
     intrusive_forward_list_unsorted(string_type file_name_, numeric_type line_number_)
-      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:unsorted", ETL_FILE"D"), file_name_, line_number_)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:unsorted", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"D"), file_name_, line_number_)
     {
     }
   };
@@ -200,7 +197,7 @@ namespace etl
         return;
       }
 
-      link_type* first = nullptr;             // To keep first link
+      link_type* first = ETL_NULLPTR;             // To keep first link
       link_type* second = start_link.etl_next; // To keep second link
       link_type* track = start_link.etl_next; // Track the list
 
@@ -220,7 +217,7 @@ namespace etl
     //*************************************************************************
     bool empty() const
     {
-      return start_link.etl_next == nullptr;
+      return start_link.etl_next == ETL_NULLPTR;
     }
 
     //*************************************************************************
@@ -249,7 +246,7 @@ namespace etl
     //*************************************************************************
     bool is_trivial_list() const
     {
-      return (start_link.link_type::etl_next == nullptr) || (start_link.link_type::etl_next->etl_next == nullptr);
+      return (start_link.link_type::etl_next == ETL_NULLPTR) || (start_link.link_type::etl_next->etl_next == ETL_NULLPTR);
     }
 
     //*************************************************************************
@@ -269,7 +266,7 @@ namespace etl
     {
       link_type* p_next = link.etl_next;
 
-      if (p_next != nullptr)
+      if (p_next != ETL_NULLPTR)
       {
         etl::unlink_after<link_type>(link);
         --current_size;
@@ -297,7 +294,7 @@ namespace etl
     //*************************************************************************
     void initialise()
     {
-      start_link.etl_next = nullptr;
+      start_link.etl_next = ETL_NULLPTR;
       current_size = 0;
     }
   };
@@ -336,7 +333,7 @@ namespace etl
       friend class const_iterator;
 
       iterator()
-        : p_value(nullptr)
+        : p_value(ETL_NULLPTR)
       {
       }
 
@@ -365,7 +362,7 @@ namespace etl
         return temp;
       }
 
-      iterator operator =(const iterator& other)
+      iterator& operator =(const iterator& other)
       {
         p_value = other.p_value;
         return *this;
@@ -426,7 +423,7 @@ namespace etl
       friend class intrusive_forward_list;
 
       const_iterator()
-        : p_value(nullptr)
+        : p_value(ETL_NULLPTR)
       {
       }
 
@@ -460,7 +457,7 @@ namespace etl
         return temp;
       }
 
-      const_iterator operator =(const const_iterator& other)
+      const_iterator& operator =(const const_iterator& other)
       {
         p_value = other.p_value;
         return *this;
@@ -517,7 +514,7 @@ namespace etl
     //*************************************************************************
     /// Constructor from range
     //*************************************************************************
-    template <typename TIterator>
+    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
     intrusive_forward_list(TIterator first, TIterator last)
     {
       this->assign(first, last);
@@ -661,7 +658,7 @@ namespace etl
         // Join the ends.
         etl::link<link_type>(p_first, p_last);
 
-        if (p_next == nullptr)
+        if (p_next == ETL_NULLPTR)
         {
           return end();
         }
@@ -691,7 +688,7 @@ namespace etl
       link_type* last    = this->get_head();
       link_type* current = last->etl_next;
 
-      while (current != nullptr)
+      while (current != ETL_NULLPTR)
       {
         // Is this value the same as the last?
         if (isEqual(*static_cast<value_type*>(current), *static_cast<value_type*>(last)))
@@ -835,7 +832,7 @@ namespace etl
               i_tail = i_link;
             }
 
-            i_tail.p_value->link_type::etl_next = nullptr;
+            i_tail.p_value->link_type::etl_next = ETL_NULLPTR;
           }
 
           // Now left has stepped `list_size' places along, and right has too.
@@ -921,7 +918,7 @@ namespace etl
           etl::link<link_type>(before, first);
 
           link_type* last = &before;
-          while (last->link_type::etl_next != nullptr)
+          while (last->link_type::etl_next != ETL_NULLPTR)
           {
             last = last->link_type::etl_next;
           }
@@ -997,7 +994,7 @@ namespace etl
     template <typename TCompare>
     void merge(list_type& other, TCompare compare)
     {
-      if (!other.empty())
+      if ((this != &other) && !other.empty())
       {
 #if defined(ETL_DEBUG)
         ETL_ASSERT(etl::is_sorted(other.begin(), other.end(), compare), ETL_ERROR(intrusive_forward_list_unsorted));
@@ -1005,11 +1002,11 @@ namespace etl
 #endif
 
         value_type* other_begin    = static_cast<value_type*>(other.get_head());
-        value_type* other_terminal = nullptr;
+        value_type* other_terminal = ETL_NULLPTR;
 
         value_type* before      = static_cast<value_type*>(&this->start_link);
         value_type* before_next = get_next(before);
-        value_type* terminal    = nullptr;
+        value_type* terminal    = ETL_NULLPTR;
 
         while ((before->link_type::etl_next != terminal) && (other_begin != other_terminal))
         {
@@ -1068,7 +1065,5 @@ namespace etl
 }
 
 #include "private/minmax_pop.h"
-
-#undef ETL_FILE
 
 #endif

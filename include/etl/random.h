@@ -450,7 +450,7 @@ namespace etl
     uint32_t value2;
   };
 
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
   //***************************************************************************
   /// A 32 bit random number generator.
   /// Uses a permuted congruential generator calculation.

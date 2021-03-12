@@ -37,8 +37,6 @@ SOFTWARE.
 #include <stdint.h>
 #include <stddef.h>
 
-#include <new>
-
 #include "platform.h"
 #include "algorithm.h"
 #include "type_traits.h"
@@ -50,12 +48,12 @@ SOFTWARE.
 #include "exception.h"
 #include "debug_count.h"
 #include "private/vector_base.h"
-
-#include "algorithm.h"
 #include "iterator.h"
 #include "functional.h"
+#include "static_assert.h"
+#include "placement_new.h"
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
 #endif
 
@@ -251,6 +249,28 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Resizes the vector, but does not initialise new entries.
+    ///\param new_size The new size.
+    //*********************************************************************
+    void uninitialized_resize(size_t new_size)
+    {
+      ETL_ASSERT(new_size <= CAPACITY, ETL_ERROR(vector_full));
+
+#if defined(ETL_DEBUG_COUNT)
+      if (size() < new_size)
+      {
+        ETL_ADD_DEBUG_COUNT(new_size - size())
+      }
+      else
+      {
+        ETL_SUBTRACT_DEBUG_COUNT(size() - new_size)
+      }
+#endif
+
+      p_end = p_buffer + new_size;
+    }
+
+    //*********************************************************************
     /// Does nothing.
     //*********************************************************************
     void reserve(size_t)
@@ -430,7 +450,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_VECTOR_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_VECTOR_FORCE_CPP03)
     //*********************************************************************
     /// Constructs a value at the end of the vector.
     /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
@@ -577,7 +597,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the vector at the specified position.
     //*************************************************************************
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT
     template <typename ... Args>
     iterator emplace(iterator position, Args && ... args)
     {
@@ -940,9 +960,9 @@ namespace etl
     /// Constructor.
     //*********************************************************************
     ivector(T* p_buffer_, size_t MAX_SIZE)
-      : vector_base(MAX_SIZE),
-      p_buffer(p_buffer_),
-      p_end(p_buffer_)
+      : vector_base(MAX_SIZE)
+      , p_buffer(p_buffer_)
+      , p_end(p_buffer_)
     {
     }
 
@@ -955,24 +975,6 @@ namespace etl
       ETL_SUBTRACT_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
 
       p_end = p_buffer;
-    }
-
-    //*********************************************************************
-    /// Initialise the source vector after a move.
-    //*********************************************************************
-    void initialise_source_external_buffer_after_move()
-    {
-      ETL_SUBTRACT_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
-
-      p_end = p_buffer;
-    }
-
-    //*********************************************************************
-    /// Initialise the destination vector after a move.
-    //*********************************************************************
-    void initialise_destination_external_buffer_after_move()
-    {
-      ETL_ADD_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
     }
 
     //*************************************************************************
@@ -1149,6 +1151,8 @@ namespace etl
   {
   public:
 
+    ETL_STATIC_ASSERT((MAX_SIZE_ > 0U), "Zero capacity etl::vector is not valid");
+
     static const size_t MAX_SIZE = MAX_SIZE_;
 
     //*************************************************************************
@@ -1189,14 +1193,14 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator>
+    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
     vector(TIterator first, TIterator last)
       : etl::ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************
@@ -1288,6 +1292,9 @@ namespace etl
     virtual
 #endif
     void repair()
+#ifdef ETL_IVECTOR_REPAIR_ENABLE
+      ETL_OVERRIDE
+#endif
     {
       #if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
       ETL_ASSERT(etl::is_trivially_copyable<T>::value, ETL_ERROR(etl::vector_incompatible_type));
@@ -1301,21 +1308,30 @@ namespace etl
     typename etl::aligned_storage<sizeof(T) * MAX_SIZE, etl::alignment_of<T>::value>::type buffer;
   };
 
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  vector(T, Ts...)
+    ->vector<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
+#endif
+
   //***************************************************************************
-  /// A vector implementation that uses a fixed size buffer.
+  /// A vector implementation that uses a fixed size external buffer.
   /// The buffer is supplied on construction.
   ///\tparam T The element type.
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
-  class vector<T, 0> : public etl::ivector<T>
+  class vector_ext : public etl::ivector<T>
   {
   public:
 
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    vector(void* buffer, size_t max_size)
+    vector_ext(void* buffer, size_t max_size)
       : etl::ivector<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       this->initialise();
@@ -1323,9 +1339,9 @@ namespace etl
 
     //*************************************************************************
     /// Constructor, with size.
-    ///\param initial_size The initial size of the vector.
+    ///\param initial_size The initial size of the vector_ext.
     //*************************************************************************
-    explicit vector(size_t initial_size, void* buffer, size_t max_size)
+    explicit vector_ext(size_t initial_size, void* buffer, size_t max_size)
       : etl::ivector<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       this->initialise();
@@ -1334,10 +1350,10 @@ namespace etl
 
     //*************************************************************************
     /// Constructor, from initial size and value.
-    ///\param initial_size  The initial size of the vector.
-    ///\param value        The value to fill the vector with.
+    ///\param initial_size  The initial size of the vector_ext.
+    ///\param value        The value to fill the vector_ext with.
     //*************************************************************************
-    vector(size_t initial_size, typename etl::ivector<T>::parameter_t value, void* buffer, size_t max_size)
+    vector_ext(size_t initial_size, typename etl::ivector<T>::parameter_t value, void* buffer, size_t max_size)
       : etl::ivector<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       this->initialise();
@@ -1350,18 +1366,18 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator>
-    vector(TIterator first, TIterator last, void* buffer, size_t max_size)
+    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
+    vector_ext(TIterator first, TIterator last, void* buffer, size_t max_size)
       : etl::ivector<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************
-    vector(std::initializer_list<T> init, void* buffer, size_t max_size)
+    vector_ext(std::initializer_list<T> init, void* buffer, size_t max_size)
       : etl::ivector<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       this->assign(init.begin(), init.end());
@@ -1371,7 +1387,7 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    vector(const vector& other, void* buffer, size_t max_size)
+    vector_ext(const vector_ext& other, void* buffer, size_t max_size)
       : etl::ivector<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       this->assign(other.begin(), other.end());
@@ -1380,7 +1396,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    vector& operator = (const vector& rhs)
+    vector_ext& operator = (const vector_ext& rhs)
     {
       if (&rhs != this)
       {
@@ -1394,34 +1410,41 @@ namespace etl
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
-    vector(vector&& other, void* buffer, size_t max_size)
+    vector_ext(vector_ext&& other, void* buffer, size_t max_size)
       : etl::ivector<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       if (this != &other)
       {
         this->initialise();
 
-        this->p_buffer = other.p_buffer;
-        this->p_end    = other.p_end;
+        typename etl::ivector<T>::iterator itr = other.begin();
+        while (itr != other.end())
+        {
+          this->push_back(etl::move(*itr));
+          ++itr;
+        }
 
-        this->initialise_destination_external_buffer_after_move();
-        other.initialise_source_external_buffer_after_move();
+        other.initialise();
       }
     }
 
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    vector& operator = (vector&& rhs)
+    vector_ext& operator = (vector_ext&& rhs)
     {
       if (&rhs != this)
       {
         this->clear();
-        this->p_buffer = rhs.p_buffer;
-        this->p_end    = rhs.p_end;
 
-        this->initialise_destination_external_buffer_after_move();
-        rhs.initialise_source_external_buffer_after_move();
+        typename etl::ivector<T>::iterator itr = rhs.begin();
+        while (itr != rhs.end())
+        {
+          this->push_back(etl::move(*itr));
+          ++itr;
+        }
+
+        rhs.initialise();
       }
 
       return *this;
@@ -1431,7 +1454,7 @@ namespace etl
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    ~vector()
+    ~vector_ext()
     {
       this->clear();
     }
@@ -1439,10 +1462,10 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
+    void repair()
 #ifdef ETL_IVECTOR_REPAIR_ENABLE
-    virtual
+      ETL_OVERRIDE
 #endif
-      void repair()
     {
 #if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
       ETL_ASSERT(etl::is_trivially_copyable<T>::value, ETL_ERROR(etl::vector_incompatible_type));
@@ -1462,6 +1485,8 @@ namespace etl
   class vector<T*, MAX_SIZE_> : public etl::ivector<T*>
   {
   public:
+
+    ETL_STATIC_ASSERT((MAX_SIZE_ > 0U), "Zero capacity etl::vector is not valid");
 
     static const size_t MAX_SIZE = MAX_SIZE_;
 
@@ -1503,14 +1528,14 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator>
+    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
     vector(TIterator first, TIterator last)
       : etl::ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************
@@ -1527,10 +1552,7 @@ namespace etl
     vector(const vector& other)
       : etl::ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
-      if (this != &other)
-      {
-        this->assign(other.begin(), other.end());
-      }
+      (void)etl::ivector<T*>::operator = (other);
     }
 
     //*************************************************************************
@@ -1538,10 +1560,7 @@ namespace etl
     //*************************************************************************
     vector& operator = (const vector& rhs)
     {
-      if (&rhs != this)
-      {
-        this->assign(rhs.cbegin(), rhs.cend());
-      }
+      (void)etl::ivector<T*>::operator = (rhs);
 
       return *this;
     }
@@ -1553,19 +1572,7 @@ namespace etl
     vector(vector&& other)
       : etl::ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
-      if (this != &other)
-      {
-        this->initialise();
-
-        typename etl::ivector<T*>::iterator itr = other.begin();
-        while (itr != other.end())
-        {
-          this->push_back(etl::move(*itr));
-          ++itr;
-        }
-
-        other.initialise_source_external_buffer_after_move();
-      }
+      (void)etl::ivector<T*>::operator = (etl::move(other));
     }
 
     //*************************************************************************
@@ -1573,18 +1580,7 @@ namespace etl
     //*************************************************************************
     vector& operator = (vector&& rhs)
     {
-      if (&rhs != this)
-      {
-        this->clear();
-        typename etl::ivector<T*>::iterator itr = rhs.begin();
-        while (itr != rhs.end())
-        {
-          this->push_back(etl::move(*itr));
-          ++itr;
-        }
-
-        rhs.initialise_source_external_buffer_after_move();
-      }
+      (void)etl::ivector<T*>::operator = (etl::move(rhs));
 
       return *this;
     }
@@ -1594,6 +1590,9 @@ namespace etl
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
     void repair()
+#ifdef ETL_IVECTOR_REPAIR_ENABLE
+      ETL_OVERRIDE
+#endif
     {
       etl::ivector<T*>::repair_buffer(buffer);
     }
@@ -1603,6 +1602,15 @@ namespace etl
     typename etl::aligned_storage<sizeof(T*) * MAX_SIZE, etl::alignment_of<T*>::value>::type buffer;
   };
 
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  vector(T*, Ts*...)
+    ->vector<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T*>, 1U + sizeof...(Ts)>;
+#endif
+
   //***************************************************************************
   /// A vector implementation that uses a fixed size buffer.
   /// The buffer is supplied on construction.
@@ -1610,14 +1618,14 @@ namespace etl
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
-  class vector<T*, 0> : public etl::ivector<T*>
+  class vector_ext<T*> : public etl::ivector<T*>
   {
   public:
 
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    vector(void* buffer, size_t max_size)
+    vector_ext(void* buffer, size_t max_size)
       : etl::ivector<T*>(reinterpret_cast<T**>(buffer), max_size)
     {
       this->initialise();
@@ -1625,9 +1633,9 @@ namespace etl
 
     //*************************************************************************
     /// Constructor, with size.
-    ///\param initial_size The initial size of the vector.
+    ///\param initial_size The initial size of the vector_ext.
     //*************************************************************************
-    vector(size_t initial_size, void* buffer, size_t max_size)
+    vector_ext(size_t initial_size, void* buffer, size_t max_size)
       : etl::ivector<T*>(reinterpret_cast<T**>(buffer), max_size)
     {
       this->initialise();
@@ -1636,10 +1644,10 @@ namespace etl
 
     //*************************************************************************
     /// Constructor, from initial size and value.
-    ///\param initial_size  The initial size of the vector.
-    ///\param value        The value to fill the vector with.
+    ///\param initial_size  The initial size of the vector_ext.
+    ///\param value        The value to fill the vector_ext with.
     //*************************************************************************
-    vector(size_t initial_size, typename etl::ivector<T*>::parameter_t value, void* buffer, size_t max_size)
+    vector_ext(size_t initial_size, typename etl::ivector<T*>::parameter_t value, void* buffer, size_t max_size)
       : etl::ivector<T*>(reinterpret_cast<T**>(buffer), max_size)
     {
       this->initialise();
@@ -1652,18 +1660,18 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator>
-    vector(TIterator first, TIterator last, void* buffer, size_t max_size)
+    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
+    vector_ext(TIterator first, TIterator last, void* buffer, size_t max_size)
       : etl::ivector<T*>(reinterpret_cast<T**>(buffer), max_size)
     {
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************
-    vector(std::initializer_list<T*> init, void* buffer, size_t max_size)
+    vector_ext(std::initializer_list<T*> init, void* buffer, size_t max_size)
       : etl::ivector<T*>(reinterpret_cast<T**>(buffer), max_size)
     {
       this->assign(init.begin(), init.end());
@@ -1673,21 +1681,18 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    vector(const vector& other, void* buffer, size_t max_size)
+    vector_ext(const vector_ext& other, void* buffer, size_t max_size)
       : etl::ivector<T*>(reinterpret_cast<T**>(buffer), max_size)
     {
-      this->assign(other.begin(), other.end());
+      (void)etl::ivector<T*>::operator = (other);
     }
 
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    vector& operator = (const vector& rhs)
+    vector_ext& operator = (const vector_ext& rhs)
     {
-      if (&rhs != this)
-      {
-        this->assign(rhs.cbegin(), rhs.cend());
-      }
+      (void)etl::ivector<T*>::operator = (rhs);
 
       return *this;
     }
@@ -1696,33 +1701,18 @@ namespace etl
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
-    vector(vector&& other, void* buffer, size_t max_size)
+    vector_ext(vector_ext&& other, void* buffer, size_t max_size)
       : etl::ivector<T*>(reinterpret_cast<T**>(buffer), max_size)
     {
-      if (this != &other)
-      {
-        this->p_buffer = other.p_buffer;
-        this->p_end    = other.p_end;
-
-        this->initialise_destination_external_buffer_after_move();
-        other.initialise_source_external_buffer_after_move();
-      }
+      (void)etl::ivector<T*>::operator = (etl::move(other));
     }
 
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    vector& operator = (vector&& rhs)
+    vector_ext& operator = (vector_ext&& rhs)
     {
-      if (&rhs != this)
-      {
-        this->clear();
-        this->p_buffer = rhs.p_buffer;
-        this->p_end    = rhs.p_end;
-
-        this->initialise_destination_external_buffer_after_move();
-        rhs.initialise_source_external_buffer_after_move();
-      }
+      (void)etl::ivector<T*>::operator = (etl::move(rhs));
 
       return *this;
     }
@@ -1731,7 +1721,7 @@ namespace etl
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    ~vector()
+    ~vector_ext()
     {
       this->clear();
     }
@@ -1739,10 +1729,10 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
+    void repair()
 #ifdef ETL_IVECTOR_REPAIR_ENABLE
-    virtual
+      ETL_OVERRIDE
 #endif
-      void repair()
     {
       etl::ivector<T*>::repair_buffer(this->p_buffer);
     }

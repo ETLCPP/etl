@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2016 jwellbelove
 
@@ -38,9 +38,6 @@ SOFTWARE.
 #include "error_handler.h"
 #include "intrusive_links.h"
 
-#undef ETL_FILE
-#define ETL_FILE "29"
-
 namespace etl
 {
   //***************************************************************************
@@ -66,7 +63,7 @@ namespace etl
   public:
 
     intrusive_queue_empty(string_type file_name_, numeric_type line_number_)
-      : intrusive_queue_exception(ETL_ERROR_TEXT("intrusive_queue:empty", ETL_FILE"A"), file_name_, line_number_)
+      : intrusive_queue_exception(ETL_ERROR_TEXT("intrusive_queue:empty", ETL_INTRUSIVE_QUEUE_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -92,7 +89,7 @@ namespace etl
     {
       value.clear();
 
-      if (p_back != nullptr)
+      if (p_back != ETL_NULLPTR)
       {
         etl::link(p_back, value);
       }
@@ -120,9 +117,9 @@ namespace etl
       p_front = p_next;
 
       // Now empty?
-      if (p_front == nullptr)
+      if (p_front == ETL_NULLPTR)
       {
-        p_back = nullptr;
+        p_back = ETL_NULLPTR;
       }
 
       --current_size;
@@ -176,8 +173,8 @@ namespace etl
     /// Constructor
     //*************************************************************************
     intrusive_queue_base()
-      : p_front(nullptr),
-        p_back(nullptr),
+      : p_front(ETL_NULLPTR),
+        p_back(ETL_NULLPTR),
         current_size(0)
     {
     }
@@ -273,7 +270,5 @@ namespace etl
     intrusive_queue& operator = (const intrusive_queue& rhs);
   };
 }
-
-#undef ETL_FILE
 
 #endif

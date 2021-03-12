@@ -32,9 +32,58 @@ SOFTWARE.
 #define ETL_CUMULATIVE_MOVING_AVERAGE_INCLUDED
 
 #include "type_traits.h"
+#include "iterator.h"
 
 namespace etl
 {
+  namespace private_cumulative_moving_average
+  {
+    //***************************************************
+    /// add_insert_iterator
+    /// An output iterator used to add new values.
+    //***************************************************
+    template <typename TCMA>
+    class add_insert_iterator : public etl::iterator<ETL_OR_STD::output_iterator_tag, void, void, void, void>
+    {
+    public:
+
+      //***********************************
+      explicit add_insert_iterator(TCMA& cma) ETL_NOEXCEPT
+        : p_cma(&cma)
+      {
+      }
+
+      //***********************************
+      add_insert_iterator& operator*() ETL_NOEXCEPT
+      {
+        return *this;
+      }
+
+      //***********************************
+      add_insert_iterator& operator++() ETL_NOEXCEPT
+      {
+        return *this;
+      }
+
+      //***********************************
+      add_insert_iterator& operator++(int) ETL_NOEXCEPT
+      {
+        return *this;
+      }
+
+      //***********************************
+      add_insert_iterator& operator =(typename TCMA::value_type value)
+      {
+        p_cma->add(value);
+        return *this;
+      }
+
+    private:
+
+      TCMA* p_cma;
+    };
+  }
+
   //***************************************************************************
   /// Cumulative Moving Average
   /// \tparam T           The sample value type.
@@ -58,6 +107,10 @@ namespace etl
   template <typename T, const size_t SAMPLE_SIZE_, const size_t SCALING_>
   class cumulative_moving_average<T, SAMPLE_SIZE_, SCALING_, true, false>
   {
+  private:
+
+    typedef cumulative_moving_average<T, SAMPLE_SIZE_, SCALING_, true, false> this_t;
+
     typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type scale_t;
     typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type sample_t;
 
@@ -65,6 +118,9 @@ namespace etl
     static const scale_t  SCALE   = static_cast<scale_t>(SCALING_);
 
   public:
+
+    typedef T value_type;
+    typedef private_cumulative_moving_average::add_insert_iterator<this_t> add_insert_iterator;
 
     static const size_t SAMPLE_SIZE = SAMPLE_SIZE_; ///< The number of samples averaged over.
     static const size_t SCALING     = SCALING_;     ///< The sample scaling factor.
@@ -107,6 +163,15 @@ namespace etl
       return average;
     }
 
+    //*************************************************************************
+    /// Gets an iterator for input.
+    /// \return An iterator.
+    //*************************************************************************
+    add_insert_iterator input()
+    {
+      return add_insert_iterator(*this);
+    }
+
   private:
 
     T average; ///< The current cumulative average.
@@ -121,12 +186,17 @@ namespace etl
   template <typename T, const size_t SCALING_>
   class cumulative_moving_average<T, 0, SCALING_, true, false>
   {
+    typedef cumulative_moving_average<T, 0, SCALING_, true, false> this_t;
+
     typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type scale_t;
     typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type sample_t;
 
     static const scale_t SCALE = static_cast<scale_t>(SCALING_);
 
   public:
+
+    typedef T value_type;
+    typedef private_cumulative_moving_average::add_insert_iterator<this_t> add_insert_iterator;
 
     static const size_t SCALING = SCALING_;     ///< The sample scaling factor.
 
@@ -178,6 +248,15 @@ namespace etl
       return average;
     }
 
+    //*************************************************************************
+    /// Gets an iterator for input.
+    /// \return An iterator.
+    //*************************************************************************
+    add_insert_iterator input()
+    {
+      return add_insert_iterator(*this);
+    }
+
   private:
 
     T        average; ///< The current cumulative average.
@@ -193,7 +272,12 @@ namespace etl
   template <typename T, const size_t SAMPLE_SIZE_>
   class cumulative_moving_average<T, SAMPLE_SIZE_, 1U, false, true>
   {
+    typedef cumulative_moving_average<T, SAMPLE_SIZE_, 1U, false, true> this_t;
+
   public:
+
+    typedef T value_type;
+    typedef private_cumulative_moving_average::add_insert_iterator<this_t> add_insert_iterator;
 
     static const size_t SAMPLE_SIZE = SAMPLE_SIZE_;
 
@@ -234,6 +318,15 @@ namespace etl
       return average;
     }
 
+    //*************************************************************************
+    /// Gets an iterator for input.
+    /// \return An iterator.
+    //*************************************************************************
+    add_insert_iterator input()
+    {
+      return add_insert_iterator(*this);
+    }
+
   private:
 
     const T reciprocal_samples_plus_1; ///< Reciprocal of one greater than the sample size.
@@ -241,15 +334,20 @@ namespace etl
   };
 
   //***************************************************************************
-/// Cumulative Moving Average
-/// For floating point types.
-/// \tparam T           The sample value type.
-/// \tparam SAMPLE_SIZE The number of samples to average over.
-//***************************************************************************
+  /// Cumulative Moving Average
+  /// For floating point types.
+  /// \tparam T           The sample value type.
+  /// \tparam SAMPLE_SIZE The number of samples to average over.
+  //***************************************************************************
   template <typename T>
   class cumulative_moving_average<T, 0U, 1U, false, true>
   {
+    typedef cumulative_moving_average<T, 0U, 1U, false, true> this_t;
+
   public:
+
+    typedef T value_type;
+    typedef private_cumulative_moving_average::add_insert_iterator<this_t> add_insert_iterator;
 
     //*************************************************************************
     /// Constructor
@@ -295,6 +393,15 @@ namespace etl
     T value() const
     {
       return average;
+    }
+
+    //*************************************************************************
+    /// Gets an iterator for input.
+    /// \return An iterator.
+    //*************************************************************************
+    add_insert_iterator input()
+    {
+      return add_insert_iterator(*this);
     }
 
   private:

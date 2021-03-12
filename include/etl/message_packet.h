@@ -56,11 +56,9 @@ SOFTWARE.
 #include "static_assert.h"
 #include "largest.h"
 #include "alignment.h"
+#include "utility.h"
 
 #include <stdint.h>
-
-#undef ETL_FILE
-#define ETL_FILE "55"
 
 namespace etl
 {
@@ -76,10 +74,149 @@ namespace etl
   public:
 
     //********************************************
-    explicit message_packet(const etl::imessage& msg)
+    message_packet()
+      : valid(false)
     {
-      const size_t id = msg.message_id;
+    }
 
+    //********************************************
+    explicit message_packet(const etl::imessage& msg)
+      : valid(true)
+    {
+      add_new_message(msg);
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    explicit message_packet(etl::imessage&& msg)
+      : valid(true)
+    {
+      add_new_message(etl::move(msg));
+    }
+  #endif
+
+    //**********************************************
+    message_packet(const message_packet& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(other.get());
+      }
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet(message_packet&& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
+    }
+  #endif
+
+    //**********************************************
+    message_packet& operator =(const message_packet& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(rhs.get());
+      }
+
+      return *this;
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet& operator =(message_packet&& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(etl::move(rhs.get()));
+      }
+
+      return *this;
+    }
+  #endif
+
+    //********************************************
+    ~message_packet()
+    {
+      delete_current_message();
+    }
+
+    //********************************************
+    etl::imessage& get() ETL_NOEXCEPT
+    {
+      return *static_cast<etl::imessage*>(data);
+    }
+
+    //********************************************
+    const etl::imessage& get() const ETL_NOEXCEPT
+    {
+      return *static_cast<const etl::imessage*>(data);
+    }
+
+    //********************************************
+    bool is_valid() const
+    {
+      return valid;
+    }
+
+    enum
+    {
+      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::size,
+      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::alignment
+    };
+
+  private:
+
+    //********************************************
+    void delete_current_message()
+    {
+      if (valid)
+      {
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->get_message_id();
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
+          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
+          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
+          case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
+          case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
+          case T13::ID: static_cast<T13*>(pmsg)->~T13(); break;
+          case T14::ID: static_cast<T14*>(pmsg)->~T14(); break;
+          case T15::ID: static_cast<T15*>(pmsg)->~T15(); break;
+          case T16::ID: static_cast<T16*>(pmsg)->~T16(); break;
+          default: assert(false); break;
+        }
+    #endif
+      }
+    }
+
+    //********************************************
+    void add_new_message(const etl::imessage& msg)
+    {
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -100,81 +237,42 @@ namespace etl
         case T14::ID: ::new (p) T14(static_cast<const T14&>(msg)); break;
         case T15::ID: ::new (p) T15(static_cast<const T15&>(msg)); break;
         case T16::ID: ::new (p) T16(static_cast<const T16&>(msg)); break;
-        default: default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
       }
     }
 
-    //**********************************************
-    template <typename T>
-    explicit message_packet(const T& msg)
-    {
-      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type for this message packet");
-
-      void* p = data;
-      ::new (p) T(static_cast<const T&>(msg));
-    }
-
+  #if ETL_CPP11_SUPPORTED
     //********************************************
-    ~message_packet()
+    void add_new_message(etl::imessage&& msg)
     {
-      etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-      pmsg->~imessage();
-  #else
-      size_t id = pmsg->message_id;
+      const size_t id = msg.get_message_id();
+      void* p = data;
 
       switch (id)
       {
-        case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-        case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-        case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-        case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-        case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-        case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-        case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-        case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
-        case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
-        case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
-        case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
-        case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
-        case T13::ID: static_cast<T13*>(pmsg)->~T13(); break;
-        case T14::ID: static_cast<T14*>(pmsg)->~T14(); break;
-        case T15::ID: static_cast<T15*>(pmsg)->~T15(); break;
-        case T16::ID: static_cast<T16*>(pmsg)->~T16(); break;
-        default: assert(false); break;
+        case T1::ID: ::new (p) T1(static_cast<T1&&>(msg)); break;
+        case T2::ID: ::new (p) T2(static_cast<T2&&>(msg)); break;
+        case T3::ID: ::new (p) T3(static_cast<T3&&>(msg)); break;
+        case T4::ID: ::new (p) T4(static_cast<T4&&>(msg)); break;
+        case T5::ID: ::new (p) T5(static_cast<T5&&>(msg)); break;
+        case T6::ID: ::new (p) T6(static_cast<T6&&>(msg)); break;
+        case T7::ID: ::new (p) T7(static_cast<T7&&>(msg)); break;
+        case T8::ID: ::new (p) T8(static_cast<T8&&>(msg)); break;
+        case T9::ID: ::new (p) T9(static_cast<T9&&>(msg)); break;
+        case T10::ID: ::new (p) T10(static_cast<T10&&>(msg)); break;
+        case T11::ID: ::new (p) T11(static_cast<T11&&>(msg)); break;
+        case T12::ID: ::new (p) T12(static_cast<T12&&>(msg)); break;
+        case T13::ID: ::new (p) T13(static_cast<T13&&>(msg)); break;
+        case T14::ID: ::new (p) T14(static_cast<T14&&>(msg)); break;
+        case T15::ID: ::new (p) T15(static_cast<T15&&>(msg)); break;
+        case T16::ID: ::new (p) T16(static_cast<T16&&>(msg)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
       }
+    }
   #endif
-    }
-
-    //********************************************
-    etl::imessage& get() ETL_NOEXCEPT
-    {
-      return *static_cast<etl::imessage*>(data);
-    }
-
-    //********************************************
-    const etl::imessage& get() const ETL_NOEXCEPT
-    {
-      return *static_cast<const etl::imessage*>(data);
-    }
-
-    enum
-    {
-      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::size,
-      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::alignment
-    };
-
-  private:
 
     typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-
-    message_packet(const message_packet&) ETL_DELETE;
-    message_packet& operator =(const message_packet&) ETL_DELETE;
-  #if ETL_CPP11_SUPPORTED
-    message_packet(message_packet&&) ETL_DELETE;
-    message_packet& operator =(message_packet&&) ETL_DELETE;
-  #endif
+    bool valid;
   };
 
   //***************************************************************************
@@ -189,10 +287,148 @@ namespace etl
   public:
 
     //********************************************
-    explicit message_packet(const etl::imessage& msg)
+    message_packet()
+      : valid(false)
     {
-      const size_t id = msg.message_id;
+    }
 
+    //********************************************
+    explicit message_packet(const etl::imessage& msg)
+      : valid(true)
+    {
+      add_new_message(msg);
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    explicit message_packet(etl::imessage&& msg)
+      : valid(true)
+    {
+      add_new_message(etl::move(msg));
+    }
+  #endif
+
+    //**********************************************
+    message_packet(const message_packet& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(other.get());
+      }
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet(message_packet&& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
+    }
+  #endif
+
+    //**********************************************
+    message_packet& operator =(const message_packet& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(rhs.get());
+      }
+
+      return *this;
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet& operator =(message_packet&& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(etl::move(rhs.get()));
+      }
+
+      return *this;
+    }
+  #endif
+
+    //********************************************
+    ~message_packet()
+    {
+      delete_current_message();
+    }
+
+    //********************************************
+    etl::imessage& get() ETL_NOEXCEPT
+    {
+      return *static_cast<etl::imessage*>(data);
+    }
+
+    //********************************************
+    const etl::imessage& get() const ETL_NOEXCEPT
+    {
+      return *static_cast<const etl::imessage*>(data);
+    }
+
+    //********************************************
+    bool is_valid() const
+    {
+      return valid;
+    }
+
+    enum
+    {
+      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::size,
+      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::alignment
+    };
+
+  private:
+
+    //********************************************
+    void delete_current_message()
+    {
+      if (valid)
+      {
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->get_message_id();
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
+          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
+          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
+          case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
+          case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
+          case T13::ID: static_cast<T13*>(pmsg)->~T13(); break;
+          case T14::ID: static_cast<T14*>(pmsg)->~T14(); break;
+          case T15::ID: static_cast<T15*>(pmsg)->~T15(); break;
+          default: assert(false); break;
+        }
+    #endif
+      }
+    }
+
+    //********************************************
+    void add_new_message(const etl::imessage& msg)
+    {
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -216,76 +452,37 @@ namespace etl
       }
     }
 
-    //**********************************************
-    template <typename T>
-    explicit message_packet(const T& msg)
-    {
-      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::value), "Unsupported type for this message packet");
-
-      void* p = data;
-      ::new (p) T(static_cast<const T&>(msg));
-    }
-
+  #if ETL_CPP11_SUPPORTED
     //********************************************
-    ~message_packet()
+    void add_new_message(etl::imessage&& msg)
     {
-      etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-      pmsg->~imessage();
-  #else
-      size_t id = pmsg->message_id;
+      const size_t id = msg.get_message_id();
+      void* p = data;
 
       switch (id)
       {
-        case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-        case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-        case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-        case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-        case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-        case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-        case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-        case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
-        case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
-        case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
-        case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
-        case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
-        case T13::ID: static_cast<T13*>(pmsg)->~T13(); break;
-        case T14::ID: static_cast<T14*>(pmsg)->~T14(); break;
-        case T15::ID: static_cast<T15*>(pmsg)->~T15(); break;
-        default: assert(false); break;
+        case T1::ID: ::new (p) T1(static_cast<T1&&>(msg)); break;
+        case T2::ID: ::new (p) T2(static_cast<T2&&>(msg)); break;
+        case T3::ID: ::new (p) T3(static_cast<T3&&>(msg)); break;
+        case T4::ID: ::new (p) T4(static_cast<T4&&>(msg)); break;
+        case T5::ID: ::new (p) T5(static_cast<T5&&>(msg)); break;
+        case T6::ID: ::new (p) T6(static_cast<T6&&>(msg)); break;
+        case T7::ID: ::new (p) T7(static_cast<T7&&>(msg)); break;
+        case T8::ID: ::new (p) T8(static_cast<T8&&>(msg)); break;
+        case T9::ID: ::new (p) T9(static_cast<T9&&>(msg)); break;
+        case T10::ID: ::new (p) T10(static_cast<T10&&>(msg)); break;
+        case T11::ID: ::new (p) T11(static_cast<T11&&>(msg)); break;
+        case T12::ID: ::new (p) T12(static_cast<T12&&>(msg)); break;
+        case T13::ID: ::new (p) T13(static_cast<T13&&>(msg)); break;
+        case T14::ID: ::new (p) T14(static_cast<T14&&>(msg)); break;
+        case T15::ID: ::new (p) T15(static_cast<T15&&>(msg)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
       }
+    }
   #endif
-    }
-
-    //********************************************
-    etl::imessage& get() ETL_NOEXCEPT
-    {
-      return *static_cast<etl::imessage*>(data);
-    }
-
-    //********************************************
-    const etl::imessage& get() const ETL_NOEXCEPT
-    {
-      return *static_cast<const etl::imessage*>(data);
-    }
-
-    enum
-    {
-      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::size,
-      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::alignment
-    };
-
-  private:
 
     typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-
-    message_packet(const message_packet&) ETL_DELETE;
-    message_packet& operator =(const message_packet&) ETL_DELETE;
-  #if ETL_CPP11_SUPPORTED
-    message_packet(message_packet&&) ETL_DELETE;
-    message_packet& operator =(message_packet&&) ETL_DELETE;
-  #endif
+    bool valid;
   };
 
   //***************************************************************************
@@ -300,10 +497,147 @@ namespace etl
   public:
 
     //********************************************
-    explicit message_packet(const etl::imessage& msg)
+    message_packet()
+      : valid(false)
     {
-      const size_t id = msg.message_id;
+    }
 
+    //********************************************
+    explicit message_packet(const etl::imessage& msg)
+      : valid(true)
+    {
+      add_new_message(msg);
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    explicit message_packet(etl::imessage&& msg)
+      : valid(true)
+    {
+      add_new_message(etl::move(msg));
+    }
+  #endif
+
+    //**********************************************
+    message_packet(const message_packet& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(other.get());
+      }
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet(message_packet&& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
+    }
+  #endif
+
+    //**********************************************
+    message_packet& operator =(const message_packet& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(rhs.get());
+      }
+
+      return *this;
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet& operator =(message_packet&& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(etl::move(rhs.get()));
+      }
+
+      return *this;
+    }
+  #endif
+
+    //********************************************
+    ~message_packet()
+    {
+      delete_current_message();
+    }
+
+    //********************************************
+    etl::imessage& get() ETL_NOEXCEPT
+    {
+      return *static_cast<etl::imessage*>(data);
+    }
+
+    //********************************************
+    const etl::imessage& get() const ETL_NOEXCEPT
+    {
+      return *static_cast<const etl::imessage*>(data);
+    }
+
+    //********************************************
+    bool is_valid() const
+    {
+      return valid;
+    }
+
+    enum
+    {
+      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::size,
+      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::alignment
+    };
+
+  private:
+
+    //********************************************
+    void delete_current_message()
+    {
+      if (valid)
+      {
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->get_message_id();
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
+          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
+          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
+          case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
+          case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
+          case T13::ID: static_cast<T13*>(pmsg)->~T13(); break;
+          case T14::ID: static_cast<T14*>(pmsg)->~T14(); break;
+          default: assert(false); break;
+        }
+    #endif
+      }
+    }
+
+    //********************************************
+    void add_new_message(const etl::imessage& msg)
+    {
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -326,75 +660,36 @@ namespace etl
       }
     }
 
-    //**********************************************
-    template <typename T>
-    explicit message_packet(const T& msg)
-    {
-      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::value), "Unsupported type for this message packet");
-
-      void* p = data;
-      ::new (p) T(static_cast<const T&>(msg));
-    }
-
+  #if ETL_CPP11_SUPPORTED
     //********************************************
-    ~message_packet()
+    void add_new_message(etl::imessage&& msg)
     {
-      etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-      pmsg->~imessage();
-  #else
-      size_t id = pmsg->message_id;
+      const size_t id = msg.get_message_id();
+      void* p = data;
 
       switch (id)
       {
-        case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-        case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-        case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-        case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-        case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-        case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-        case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-        case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
-        case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
-        case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
-        case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
-        case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
-        case T13::ID: static_cast<T13*>(pmsg)->~T13(); break;
-        case T14::ID: static_cast<T14*>(pmsg)->~T14(); break;
-        default: assert(false); break;
+        case T1::ID: ::new (p) T1(static_cast<T1&&>(msg)); break;
+        case T2::ID: ::new (p) T2(static_cast<T2&&>(msg)); break;
+        case T3::ID: ::new (p) T3(static_cast<T3&&>(msg)); break;
+        case T4::ID: ::new (p) T4(static_cast<T4&&>(msg)); break;
+        case T5::ID: ::new (p) T5(static_cast<T5&&>(msg)); break;
+        case T6::ID: ::new (p) T6(static_cast<T6&&>(msg)); break;
+        case T7::ID: ::new (p) T7(static_cast<T7&&>(msg)); break;
+        case T8::ID: ::new (p) T8(static_cast<T8&&>(msg)); break;
+        case T9::ID: ::new (p) T9(static_cast<T9&&>(msg)); break;
+        case T10::ID: ::new (p) T10(static_cast<T10&&>(msg)); break;
+        case T11::ID: ::new (p) T11(static_cast<T11&&>(msg)); break;
+        case T12::ID: ::new (p) T12(static_cast<T12&&>(msg)); break;
+        case T13::ID: ::new (p) T13(static_cast<T13&&>(msg)); break;
+        case T14::ID: ::new (p) T14(static_cast<T14&&>(msg)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
       }
+    }
   #endif
-    }
-
-    //********************************************
-    etl::imessage& get() ETL_NOEXCEPT
-    {
-      return *static_cast<etl::imessage*>(data);
-    }
-
-    //********************************************
-    const etl::imessage& get() const ETL_NOEXCEPT
-    {
-      return *static_cast<const etl::imessage*>(data);
-    }
-
-    enum
-    {
-      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::size,
-      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::alignment
-    };
-
-  private:
 
     typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-
-    message_packet(const message_packet&) ETL_DELETE;
-    message_packet& operator =(const message_packet&) ETL_DELETE;
-  #if ETL_CPP11_SUPPORTED
-    message_packet(message_packet&&) ETL_DELETE;
-    message_packet& operator =(message_packet&&) ETL_DELETE;
-  #endif
+    bool valid;
   };
 
   //***************************************************************************
@@ -409,10 +704,146 @@ namespace etl
   public:
 
     //********************************************
-    explicit message_packet(const etl::imessage& msg)
+    message_packet()
+      : valid(false)
     {
-      const size_t id = msg.message_id;
+    }
 
+    //********************************************
+    explicit message_packet(const etl::imessage& msg)
+      : valid(true)
+    {
+      add_new_message(msg);
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    explicit message_packet(etl::imessage&& msg)
+      : valid(true)
+    {
+      add_new_message(etl::move(msg));
+    }
+  #endif
+
+    //**********************************************
+    message_packet(const message_packet& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(other.get());
+      }
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet(message_packet&& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
+    }
+  #endif
+
+    //**********************************************
+    message_packet& operator =(const message_packet& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(rhs.get());
+      }
+
+      return *this;
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet& operator =(message_packet&& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(etl::move(rhs.get()));
+      }
+
+      return *this;
+    }
+  #endif
+
+    //********************************************
+    ~message_packet()
+    {
+      delete_current_message();
+    }
+
+    //********************************************
+    etl::imessage& get() ETL_NOEXCEPT
+    {
+      return *static_cast<etl::imessage*>(data);
+    }
+
+    //********************************************
+    const etl::imessage& get() const ETL_NOEXCEPT
+    {
+      return *static_cast<const etl::imessage*>(data);
+    }
+
+    //********************************************
+    bool is_valid() const
+    {
+      return valid;
+    }
+
+    enum
+    {
+      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::size,
+      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::alignment
+    };
+
+  private:
+
+    //********************************************
+    void delete_current_message()
+    {
+      if (valid)
+      {
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->get_message_id();
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
+          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
+          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
+          case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
+          case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
+          case T13::ID: static_cast<T13*>(pmsg)->~T13(); break;
+          default: assert(false); break;
+        }
+    #endif
+      }
+    }
+
+    //********************************************
+    void add_new_message(const etl::imessage& msg)
+    {
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -434,44 +865,123 @@ namespace etl
       }
     }
 
-    //**********************************************
-    template <typename T>
-    explicit message_packet(const T& msg)
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    void add_new_message(etl::imessage&& msg)
     {
-      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::value), "Unsupported type for this message packet");
-
+      const size_t id = msg.get_message_id();
       void* p = data;
-      ::new (p) T(static_cast<const T&>(msg));
+
+      switch (id)
+      {
+        case T1::ID: ::new (p) T1(static_cast<T1&&>(msg)); break;
+        case T2::ID: ::new (p) T2(static_cast<T2&&>(msg)); break;
+        case T3::ID: ::new (p) T3(static_cast<T3&&>(msg)); break;
+        case T4::ID: ::new (p) T4(static_cast<T4&&>(msg)); break;
+        case T5::ID: ::new (p) T5(static_cast<T5&&>(msg)); break;
+        case T6::ID: ::new (p) T6(static_cast<T6&&>(msg)); break;
+        case T7::ID: ::new (p) T7(static_cast<T7&&>(msg)); break;
+        case T8::ID: ::new (p) T8(static_cast<T8&&>(msg)); break;
+        case T9::ID: ::new (p) T9(static_cast<T9&&>(msg)); break;
+        case T10::ID: ::new (p) T10(static_cast<T10&&>(msg)); break;
+        case T11::ID: ::new (p) T11(static_cast<T11&&>(msg)); break;
+        case T12::ID: ::new (p) T12(static_cast<T12&&>(msg)); break;
+        case T13::ID: ::new (p) T13(static_cast<T13&&>(msg)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
     }
+  #endif
+
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    bool valid;
+  };
+
+  //***************************************************************************
+  // Specialisation for 12 message types.
+  //***************************************************************************
+  template <typename T1, typename T2, typename T3, typename T4, 
+            typename T5, typename T6, typename T7, typename T8, 
+            typename T9, typename T10, typename T11, typename T12>
+  class message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, void, void, void, void>
+  {
+  public:
+
+    //********************************************
+    message_packet()
+      : valid(false)
+    {
+    }
+
+    //********************************************
+    explicit message_packet(const etl::imessage& msg)
+      : valid(true)
+    {
+      add_new_message(msg);
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    explicit message_packet(etl::imessage&& msg)
+      : valid(true)
+    {
+      add_new_message(etl::move(msg));
+    }
+  #endif
+
+    //**********************************************
+    message_packet(const message_packet& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(other.get());
+      }
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet(message_packet&& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
+    }
+  #endif
+
+    //**********************************************
+    message_packet& operator =(const message_packet& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(rhs.get());
+      }
+
+      return *this;
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet& operator =(message_packet&& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(etl::move(rhs.get()));
+      }
+
+      return *this;
+    }
+  #endif
 
     //********************************************
     ~message_packet()
     {
-      etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-      pmsg->~imessage();
-  #else
-      size_t id = pmsg->message_id;
-
-      switch (id)
-      {
-        case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-        case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-        case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-        case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-        case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-        case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-        case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-        case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
-        case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
-        case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
-        case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
-        case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
-        case T13::ID: static_cast<T13*>(pmsg)->~T13(); break;
-        default: assert(false); break;
-      }
-  #endif
+      delete_current_message();
     }
 
     //********************************************
@@ -486,39 +996,56 @@ namespace etl
       return *static_cast<const etl::imessage*>(data);
     }
 
+    //********************************************
+    bool is_valid() const
+    {
+      return valid;
+    }
+
     enum
     {
-      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::size,
-      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::alignment
+      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::size,
+      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::alignment
     };
 
   private:
 
-    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    //********************************************
+    void delete_current_message()
+    {
+      if (valid)
+      {
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
-    message_packet(const message_packet&) ETL_DELETE;
-    message_packet& operator =(const message_packet&) ETL_DELETE;
-  #if ETL_CPP11_SUPPORTED
-    message_packet(message_packet&&) ETL_DELETE;
-    message_packet& operator =(message_packet&&) ETL_DELETE;
-  #endif
-  };
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->get_message_id();
 
-  //***************************************************************************
-  // Specialisation for 12 message types.
-  //***************************************************************************
-  template <typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
-            typename T9, typename T10, typename T11, typename T12>
-  class message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, void, void, void, void>
-  {
-  public:
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
+          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
+          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
+          case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
+          case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
+          default: assert(false); break;
+        }
+    #endif
+      }
+    }
 
     //********************************************
-    explicit message_packet(const etl::imessage& msg)
+    void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
-
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -539,43 +1066,122 @@ namespace etl
       }
     }
 
-    //**********************************************
-    template <typename T>
-    explicit message_packet(const T& msg)
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    void add_new_message(etl::imessage&& msg)
     {
-      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::value), "Unsupported type for this message packet");
-
+      const size_t id = msg.get_message_id();
       void* p = data;
-      ::new (p) T(static_cast<const T&>(msg));
+
+      switch (id)
+      {
+        case T1::ID: ::new (p) T1(static_cast<T1&&>(msg)); break;
+        case T2::ID: ::new (p) T2(static_cast<T2&&>(msg)); break;
+        case T3::ID: ::new (p) T3(static_cast<T3&&>(msg)); break;
+        case T4::ID: ::new (p) T4(static_cast<T4&&>(msg)); break;
+        case T5::ID: ::new (p) T5(static_cast<T5&&>(msg)); break;
+        case T6::ID: ::new (p) T6(static_cast<T6&&>(msg)); break;
+        case T7::ID: ::new (p) T7(static_cast<T7&&>(msg)); break;
+        case T8::ID: ::new (p) T8(static_cast<T8&&>(msg)); break;
+        case T9::ID: ::new (p) T9(static_cast<T9&&>(msg)); break;
+        case T10::ID: ::new (p) T10(static_cast<T10&&>(msg)); break;
+        case T11::ID: ::new (p) T11(static_cast<T11&&>(msg)); break;
+        case T12::ID: ::new (p) T12(static_cast<T12&&>(msg)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
     }
+  #endif
+
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    bool valid;
+  };
+
+  //***************************************************************************
+  // Specialisation for 11 message types.
+  //***************************************************************************
+  template <typename T1, typename T2, typename T3, typename T4, 
+            typename T5, typename T6, typename T7, typename T8, 
+            typename T9, typename T10, typename T11>
+  class message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, void, void, void, void, void>
+  {
+  public:
+
+    //********************************************
+    message_packet()
+      : valid(false)
+    {
+    }
+
+    //********************************************
+    explicit message_packet(const etl::imessage& msg)
+      : valid(true)
+    {
+      add_new_message(msg);
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    explicit message_packet(etl::imessage&& msg)
+      : valid(true)
+    {
+      add_new_message(etl::move(msg));
+    }
+  #endif
+
+    //**********************************************
+    message_packet(const message_packet& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(other.get());
+      }
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet(message_packet&& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
+    }
+  #endif
+
+    //**********************************************
+    message_packet& operator =(const message_packet& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(rhs.get());
+      }
+
+      return *this;
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet& operator =(message_packet&& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(etl::move(rhs.get()));
+      }
+
+      return *this;
+    }
+  #endif
 
     //********************************************
     ~message_packet()
     {
-      etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-      pmsg->~imessage();
-  #else
-      size_t id = pmsg->message_id;
-
-      switch (id)
-      {
-        case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-        case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-        case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-        case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-        case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-        case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-        case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-        case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
-        case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
-        case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
-        case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
-        case T12::ID: static_cast<T12*>(pmsg)->~T12(); break;
-        default: assert(false); break;
-      }
-  #endif
+      delete_current_message();
     }
 
     //********************************************
@@ -590,39 +1196,55 @@ namespace etl
       return *static_cast<const etl::imessage*>(data);
     }
 
+    //********************************************
+    bool is_valid() const
+    {
+      return valid;
+    }
+
     enum
     {
-      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::size,
-      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::alignment
+      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::size,
+      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::alignment
     };
 
   private:
 
-    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    //********************************************
+    void delete_current_message()
+    {
+      if (valid)
+      {
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
-    message_packet(const message_packet&) ETL_DELETE;
-    message_packet& operator =(const message_packet&) ETL_DELETE;
-  #if ETL_CPP11_SUPPORTED
-    message_packet(message_packet&&) ETL_DELETE;
-    message_packet& operator =(message_packet&&) ETL_DELETE;
-  #endif
-  };
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->get_message_id();
 
-  //***************************************************************************
-  // Specialisation for 11 message types.
-  //***************************************************************************
-  template <typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
-            typename T9, typename T10, typename T11>
-  class message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, void, void, void, void, void>
-  {
-  public:
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
+          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
+          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
+          case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
+          default: assert(false); break;
+        }
+    #endif
+      }
+    }
 
     //********************************************
-    explicit message_packet(const etl::imessage& msg)
+    void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
-
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -642,42 +1264,121 @@ namespace etl
       }
     }
 
-    //**********************************************
-    template <typename T>
-    explicit message_packet(const T& msg)
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    void add_new_message(etl::imessage&& msg)
     {
-      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::value), "Unsupported type for this message packet");
-
+      const size_t id = msg.get_message_id();
       void* p = data;
-      ::new (p) T(static_cast<const T&>(msg));
+
+      switch (id)
+      {
+        case T1::ID: ::new (p) T1(static_cast<T1&&>(msg)); break;
+        case T2::ID: ::new (p) T2(static_cast<T2&&>(msg)); break;
+        case T3::ID: ::new (p) T3(static_cast<T3&&>(msg)); break;
+        case T4::ID: ::new (p) T4(static_cast<T4&&>(msg)); break;
+        case T5::ID: ::new (p) T5(static_cast<T5&&>(msg)); break;
+        case T6::ID: ::new (p) T6(static_cast<T6&&>(msg)); break;
+        case T7::ID: ::new (p) T7(static_cast<T7&&>(msg)); break;
+        case T8::ID: ::new (p) T8(static_cast<T8&&>(msg)); break;
+        case T9::ID: ::new (p) T9(static_cast<T9&&>(msg)); break;
+        case T10::ID: ::new (p) T10(static_cast<T10&&>(msg)); break;
+        case T11::ID: ::new (p) T11(static_cast<T11&&>(msg)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
     }
+  #endif
+
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    bool valid;
+  };
+
+  //***************************************************************************
+  // Specialisation for 10 message types.
+  //***************************************************************************
+  template <typename T1, typename T2, typename T3, typename T4, 
+            typename T5, typename T6, typename T7, typename T8, 
+            typename T9, typename T10>
+  class message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, void, void, void, void, void, void>
+  {
+  public:
+
+    //********************************************
+    message_packet()
+      : valid(false)
+    {
+    }
+
+    //********************************************
+    explicit message_packet(const etl::imessage& msg)
+      : valid(true)
+    {
+      add_new_message(msg);
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    explicit message_packet(etl::imessage&& msg)
+      : valid(true)
+    {
+      add_new_message(etl::move(msg));
+    }
+  #endif
+
+    //**********************************************
+    message_packet(const message_packet& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(other.get());
+      }
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet(message_packet&& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
+    }
+  #endif
+
+    //**********************************************
+    message_packet& operator =(const message_packet& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(rhs.get());
+      }
+
+      return *this;
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet& operator =(message_packet&& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(etl::move(rhs.get()));
+      }
+
+      return *this;
+    }
+  #endif
 
     //********************************************
     ~message_packet()
     {
-      etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-      pmsg->~imessage();
-  #else
-      size_t id = pmsg->message_id;
-
-      switch (id)
-      {
-        case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-        case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-        case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-        case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-        case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-        case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-        case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-        case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
-        case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
-        case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
-        case T11::ID: static_cast<T11*>(pmsg)->~T11(); break;
-        default: assert(false); break;
-      }
-  #endif
+      delete_current_message();
     }
 
     //********************************************
@@ -692,39 +1393,54 @@ namespace etl
       return *static_cast<const etl::imessage*>(data);
     }
 
+    //********************************************
+    bool is_valid() const
+    {
+      return valid;
+    }
+
     enum
     {
-      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::size,
-      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::alignment
+      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::size,
+      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::alignment
     };
 
   private:
 
-    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    //********************************************
+    void delete_current_message()
+    {
+      if (valid)
+      {
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
-    message_packet(const message_packet&) ETL_DELETE;
-    message_packet& operator =(const message_packet&) ETL_DELETE;
-  #if ETL_CPP11_SUPPORTED
-    message_packet(message_packet&&) ETL_DELETE;
-    message_packet& operator =(message_packet&&) ETL_DELETE;
-  #endif
-  };
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->get_message_id();
 
-  //***************************************************************************
-  // Specialisation for 10 message types.
-  //***************************************************************************
-  template <typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
-            typename T9, typename T10>
-  class message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, void, void, void, void, void, void>
-  {
-  public:
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
+          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
+          case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
+          default: assert(false); break;
+        }
+    #endif
+      }
+    }
 
     //********************************************
-    explicit message_packet(const etl::imessage& msg)
+    void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
-
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -743,41 +1459,120 @@ namespace etl
       }
     }
 
-    //**********************************************
-    template <typename T>
-    explicit message_packet(const T& msg)
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    void add_new_message(etl::imessage&& msg)
     {
-      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::value), "Unsupported type for this message packet");
-
+      const size_t id = msg.get_message_id();
       void* p = data;
-      ::new (p) T(static_cast<const T&>(msg));
+
+      switch (id)
+      {
+        case T1::ID: ::new (p) T1(static_cast<T1&&>(msg)); break;
+        case T2::ID: ::new (p) T2(static_cast<T2&&>(msg)); break;
+        case T3::ID: ::new (p) T3(static_cast<T3&&>(msg)); break;
+        case T4::ID: ::new (p) T4(static_cast<T4&&>(msg)); break;
+        case T5::ID: ::new (p) T5(static_cast<T5&&>(msg)); break;
+        case T6::ID: ::new (p) T6(static_cast<T6&&>(msg)); break;
+        case T7::ID: ::new (p) T7(static_cast<T7&&>(msg)); break;
+        case T8::ID: ::new (p) T8(static_cast<T8&&>(msg)); break;
+        case T9::ID: ::new (p) T9(static_cast<T9&&>(msg)); break;
+        case T10::ID: ::new (p) T10(static_cast<T10&&>(msg)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
     }
+  #endif
+
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    bool valid;
+  };
+
+  //***************************************************************************
+  // Specialisation for 9 message types.
+  //***************************************************************************
+  template <typename T1, typename T2, typename T3, typename T4, 
+            typename T5, typename T6, typename T7, typename T8, 
+            typename T9>
+  class message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, void, void, void, void, void, void, void>
+  {
+  public:
+
+    //********************************************
+    message_packet()
+      : valid(false)
+    {
+    }
+
+    //********************************************
+    explicit message_packet(const etl::imessage& msg)
+      : valid(true)
+    {
+      add_new_message(msg);
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    explicit message_packet(etl::imessage&& msg)
+      : valid(true)
+    {
+      add_new_message(etl::move(msg));
+    }
+  #endif
+
+    //**********************************************
+    message_packet(const message_packet& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(other.get());
+      }
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet(message_packet&& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
+    }
+  #endif
+
+    //**********************************************
+    message_packet& operator =(const message_packet& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(rhs.get());
+      }
+
+      return *this;
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet& operator =(message_packet&& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(etl::move(rhs.get()));
+      }
+
+      return *this;
+    }
+  #endif
 
     //********************************************
     ~message_packet()
     {
-      etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-      pmsg->~imessage();
-  #else
-      size_t id = pmsg->message_id;
-
-      switch (id)
-      {
-        case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-        case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-        case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-        case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-        case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-        case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-        case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-        case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
-        case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
-        case T10::ID: static_cast<T10*>(pmsg)->~T10(); break;
-        default: assert(false); break;
-      }
-  #endif
+      delete_current_message();
     }
 
     //********************************************
@@ -792,39 +1587,53 @@ namespace etl
       return *static_cast<const etl::imessage*>(data);
     }
 
+    //********************************************
+    bool is_valid() const
+    {
+      return valid;
+    }
+
     enum
     {
-      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::size,
-      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::alignment
+      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9>::size,
+      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9>::alignment
     };
 
   private:
 
-    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    //********************************************
+    void delete_current_message()
+    {
+      if (valid)
+      {
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
-    message_packet(const message_packet&) ETL_DELETE;
-    message_packet& operator =(const message_packet&) ETL_DELETE;
-  #if ETL_CPP11_SUPPORTED
-    message_packet(message_packet&&) ETL_DELETE;
-    message_packet& operator =(message_packet&&) ETL_DELETE;
-  #endif
-  };
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->get_message_id();
 
-  //***************************************************************************
-  // Specialisation for 9 message types.
-  //***************************************************************************
-  template <typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
-            typename T9>
-  class message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, void, void, void, void, void, void, void>
-  {
-  public:
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
+          case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
+          default: assert(false); break;
+        }
+    #endif
+      }
+    }
 
     //********************************************
-    explicit message_packet(const etl::imessage& msg)
+    void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
-
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -842,40 +1651,118 @@ namespace etl
       }
     }
 
-    //**********************************************
-    template <typename T>
-    explicit message_packet(const T& msg)
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    void add_new_message(etl::imessage&& msg)
     {
-      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9>::value), "Unsupported type for this message packet");
-
+      const size_t id = msg.get_message_id();
       void* p = data;
-      ::new (p) T(static_cast<const T&>(msg));
+
+      switch (id)
+      {
+        case T1::ID: ::new (p) T1(static_cast<T1&&>(msg)); break;
+        case T2::ID: ::new (p) T2(static_cast<T2&&>(msg)); break;
+        case T3::ID: ::new (p) T3(static_cast<T3&&>(msg)); break;
+        case T4::ID: ::new (p) T4(static_cast<T4&&>(msg)); break;
+        case T5::ID: ::new (p) T5(static_cast<T5&&>(msg)); break;
+        case T6::ID: ::new (p) T6(static_cast<T6&&>(msg)); break;
+        case T7::ID: ::new (p) T7(static_cast<T7&&>(msg)); break;
+        case T8::ID: ::new (p) T8(static_cast<T8&&>(msg)); break;
+        case T9::ID: ::new (p) T9(static_cast<T9&&>(msg)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
     }
+  #endif
+
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    bool valid;
+  };
+
+  //***************************************************************************
+  // Specialisation for 8 message types.
+  //***************************************************************************
+  template <typename T1, typename T2, typename T3, typename T4, 
+            typename T5, typename T6, typename T7, typename T8>
+  class message_packet<T1, T2, T3, T4, T5, T6, T7, T8, void, void, void, void, void, void, void, void>
+  {
+  public:
+
+    //********************************************
+    message_packet()
+      : valid(false)
+    {
+    }
+
+    //********************************************
+    explicit message_packet(const etl::imessage& msg)
+      : valid(true)
+    {
+      add_new_message(msg);
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    explicit message_packet(etl::imessage&& msg)
+      : valid(true)
+    {
+      add_new_message(etl::move(msg));
+    }
+  #endif
+
+    //**********************************************
+    message_packet(const message_packet& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(other.get());
+      }
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet(message_packet&& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
+    }
+  #endif
+
+    //**********************************************
+    message_packet& operator =(const message_packet& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(rhs.get());
+      }
+
+      return *this;
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet& operator =(message_packet&& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(etl::move(rhs.get()));
+      }
+
+      return *this;
+    }
+  #endif
 
     //********************************************
     ~message_packet()
     {
-      etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-      pmsg->~imessage();
-  #else
-      size_t id = pmsg->message_id;
-
-      switch (id)
-      {
-        case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-        case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-        case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-        case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-        case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-        case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-        case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-        case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
-        case T9::ID: static_cast<T9*>(pmsg)->~T9(); break;
-        default: assert(false); break;
-      }
-  #endif
+      delete_current_message();
     }
 
     //********************************************
@@ -890,38 +1777,52 @@ namespace etl
       return *static_cast<const etl::imessage*>(data);
     }
 
+    //********************************************
+    bool is_valid() const
+    {
+      return valid;
+    }
+
     enum
     {
-      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9>::size,
-      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9>::alignment
+      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8>::size,
+      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8>::alignment
     };
 
   private:
 
-    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    //********************************************
+    void delete_current_message()
+    {
+      if (valid)
+      {
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
-    message_packet(const message_packet&) ETL_DELETE;
-    message_packet& operator =(const message_packet&) ETL_DELETE;
-  #if ETL_CPP11_SUPPORTED
-    message_packet(message_packet&&) ETL_DELETE;
-    message_packet& operator =(message_packet&&) ETL_DELETE;
-  #endif
-  };
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->get_message_id();
 
-  //***************************************************************************
-  // Specialisation for 8 message types.
-  //***************************************************************************
-  template <typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8>
-  class message_packet<T1, T2, T3, T4, T5, T6, T7, T8, void, void, void, void, void, void, void, void>
-  {
-  public:
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
+          default: assert(false); break;
+        }
+    #endif
+      }
+    }
 
     //********************************************
-    explicit message_packet(const etl::imessage& msg)
+    void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
-
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -938,39 +1839,117 @@ namespace etl
       }
     }
 
-    //**********************************************
-    template <typename T>
-    explicit message_packet(const T& msg)
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    void add_new_message(etl::imessage&& msg)
     {
-      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8>::value), "Unsupported type for this message packet");
-
+      const size_t id = msg.get_message_id();
       void* p = data;
-      ::new (p) T(static_cast<const T&>(msg));
+
+      switch (id)
+      {
+        case T1::ID: ::new (p) T1(static_cast<T1&&>(msg)); break;
+        case T2::ID: ::new (p) T2(static_cast<T2&&>(msg)); break;
+        case T3::ID: ::new (p) T3(static_cast<T3&&>(msg)); break;
+        case T4::ID: ::new (p) T4(static_cast<T4&&>(msg)); break;
+        case T5::ID: ::new (p) T5(static_cast<T5&&>(msg)); break;
+        case T6::ID: ::new (p) T6(static_cast<T6&&>(msg)); break;
+        case T7::ID: ::new (p) T7(static_cast<T7&&>(msg)); break;
+        case T8::ID: ::new (p) T8(static_cast<T8&&>(msg)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
     }
+  #endif
+
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    bool valid;
+  };
+
+  //***************************************************************************
+  // Specialisation for 7 message types.
+  //***************************************************************************
+  template <typename T1, typename T2, typename T3, typename T4, 
+            typename T5, typename T6, typename T7>
+  class message_packet<T1, T2, T3, T4, T5, T6, T7, void, void, void, void, void, void, void, void, void>
+  {
+  public:
+
+    //********************************************
+    message_packet()
+      : valid(false)
+    {
+    }
+
+    //********************************************
+    explicit message_packet(const etl::imessage& msg)
+      : valid(true)
+    {
+      add_new_message(msg);
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    explicit message_packet(etl::imessage&& msg)
+      : valid(true)
+    {
+      add_new_message(etl::move(msg));
+    }
+  #endif
+
+    //**********************************************
+    message_packet(const message_packet& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(other.get());
+      }
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet(message_packet&& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
+    }
+  #endif
+
+    //**********************************************
+    message_packet& operator =(const message_packet& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(rhs.get());
+      }
+
+      return *this;
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet& operator =(message_packet&& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(etl::move(rhs.get()));
+      }
+
+      return *this;
+    }
+  #endif
 
     //********************************************
     ~message_packet()
     {
-      etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-      pmsg->~imessage();
-  #else
-      size_t id = pmsg->message_id;
-
-      switch (id)
-      {
-        case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-        case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-        case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-        case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-        case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-        case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-        case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-        case T8::ID: static_cast<T8*>(pmsg)->~T8(); break;
-        default: assert(false); break;
-      }
-  #endif
+      delete_current_message();
     }
 
     //********************************************
@@ -985,38 +1964,51 @@ namespace etl
       return *static_cast<const etl::imessage*>(data);
     }
 
+    //********************************************
+    bool is_valid() const
+    {
+      return valid;
+    }
+
     enum
     {
-      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8>::size,
-      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8>::alignment
+      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7>::size,
+      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7>::alignment
     };
 
   private:
 
-    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    //********************************************
+    void delete_current_message()
+    {
+      if (valid)
+      {
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
-    message_packet(const message_packet&) ETL_DELETE;
-    message_packet& operator =(const message_packet&) ETL_DELETE;
-  #if ETL_CPP11_SUPPORTED
-    message_packet(message_packet&&) ETL_DELETE;
-    message_packet& operator =(message_packet&&) ETL_DELETE;
-  #endif
-  };
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->get_message_id();
 
-  //***************************************************************************
-  // Specialisation for 7 message types.
-  //***************************************************************************
-  template <typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7>
-  class message_packet<T1, T2, T3, T4, T5, T6, T7, void, void, void, void, void, void, void, void, void>
-  {
-  public:
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
+          default: assert(false); break;
+        }
+    #endif
+      }
+    }
 
     //********************************************
-    explicit message_packet(const etl::imessage& msg)
+    void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
-
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -1032,38 +2024,116 @@ namespace etl
       }
     }
 
-    //**********************************************
-    template <typename T>
-    explicit message_packet(const T& msg)
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    void add_new_message(etl::imessage&& msg)
     {
-      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7>::value), "Unsupported type for this message packet");
-
+      const size_t id = msg.get_message_id();
       void* p = data;
-      ::new (p) T(static_cast<const T&>(msg));
+
+      switch (id)
+      {
+        case T1::ID: ::new (p) T1(static_cast<T1&&>(msg)); break;
+        case T2::ID: ::new (p) T2(static_cast<T2&&>(msg)); break;
+        case T3::ID: ::new (p) T3(static_cast<T3&&>(msg)); break;
+        case T4::ID: ::new (p) T4(static_cast<T4&&>(msg)); break;
+        case T5::ID: ::new (p) T5(static_cast<T5&&>(msg)); break;
+        case T6::ID: ::new (p) T6(static_cast<T6&&>(msg)); break;
+        case T7::ID: ::new (p) T7(static_cast<T7&&>(msg)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
     }
+  #endif
+
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    bool valid;
+  };
+
+  //***************************************************************************
+  // Specialisation for 6 message types.
+  //***************************************************************************
+  template <typename T1, typename T2, typename T3, typename T4, 
+            typename T5, typename T6>
+  class message_packet<T1, T2, T3, T4, T5, T6, void, void, void, void, void, void, void, void, void, void>
+  {
+  public:
+
+    //********************************************
+    message_packet()
+      : valid(false)
+    {
+    }
+
+    //********************************************
+    explicit message_packet(const etl::imessage& msg)
+      : valid(true)
+    {
+      add_new_message(msg);
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    explicit message_packet(etl::imessage&& msg)
+      : valid(true)
+    {
+      add_new_message(etl::move(msg));
+    }
+  #endif
+
+    //**********************************************
+    message_packet(const message_packet& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(other.get());
+      }
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet(message_packet&& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
+    }
+  #endif
+
+    //**********************************************
+    message_packet& operator =(const message_packet& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(rhs.get());
+      }
+
+      return *this;
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet& operator =(message_packet&& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(etl::move(rhs.get()));
+      }
+
+      return *this;
+    }
+  #endif
 
     //********************************************
     ~message_packet()
     {
-      etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-      pmsg->~imessage();
-  #else
-      size_t id = pmsg->message_id;
-
-      switch (id)
-      {
-        case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-        case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-        case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-        case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-        case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-        case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-        case T7::ID: static_cast<T7*>(pmsg)->~T7(); break;
-        default: assert(false); break;
-      }
-  #endif
+      delete_current_message();
     }
 
     //********************************************
@@ -1078,38 +2148,50 @@ namespace etl
       return *static_cast<const etl::imessage*>(data);
     }
 
+    //********************************************
+    bool is_valid() const
+    {
+      return valid;
+    }
+
     enum
     {
-      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7>::size,
-      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7>::alignment
+      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6>::size,
+      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6>::alignment
     };
 
   private:
 
-    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    //********************************************
+    void delete_current_message()
+    {
+      if (valid)
+      {
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
-    message_packet(const message_packet&) ETL_DELETE;
-    message_packet& operator =(const message_packet&) ETL_DELETE;
-  #if ETL_CPP11_SUPPORTED
-    message_packet(message_packet&&) ETL_DELETE;
-    message_packet& operator =(message_packet&&) ETL_DELETE;
-  #endif
-  };
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->get_message_id();
 
-  //***************************************************************************
-  // Specialisation for 6 message types.
-  //***************************************************************************
-  template <typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6>
-  class message_packet<T1, T2, T3, T4, T5, T6, void, void, void, void, void, void, void, void, void, void>
-  {
-  public:
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
+          default: assert(false); break;
+        }
+    #endif
+      }
+    }
 
     //********************************************
-    explicit message_packet(const etl::imessage& msg)
+    void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
-
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -1124,37 +2206,115 @@ namespace etl
       }
     }
 
-    //**********************************************
-    template <typename T>
-    explicit message_packet(const T& msg)
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    void add_new_message(etl::imessage&& msg)
     {
-      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6>::value), "Unsupported type for this message packet");
-
+      const size_t id = msg.get_message_id();
       void* p = data;
-      ::new (p) T(static_cast<const T&>(msg));
+
+      switch (id)
+      {
+        case T1::ID: ::new (p) T1(static_cast<T1&&>(msg)); break;
+        case T2::ID: ::new (p) T2(static_cast<T2&&>(msg)); break;
+        case T3::ID: ::new (p) T3(static_cast<T3&&>(msg)); break;
+        case T4::ID: ::new (p) T4(static_cast<T4&&>(msg)); break;
+        case T5::ID: ::new (p) T5(static_cast<T5&&>(msg)); break;
+        case T6::ID: ::new (p) T6(static_cast<T6&&>(msg)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
     }
+  #endif
+
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    bool valid;
+  };
+
+  //***************************************************************************
+  // Specialisation for 5 message types.
+  //***************************************************************************
+  template <typename T1, typename T2, typename T3, typename T4, 
+            typename T5>
+  class message_packet<T1, T2, T3, T4, T5, void, void, void, void, void, void, void, void, void, void, void>
+  {
+  public:
+
+    //********************************************
+    message_packet()
+      : valid(false)
+    {
+    }
+
+    //********************************************
+    explicit message_packet(const etl::imessage& msg)
+      : valid(true)
+    {
+      add_new_message(msg);
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    explicit message_packet(etl::imessage&& msg)
+      : valid(true)
+    {
+      add_new_message(etl::move(msg));
+    }
+  #endif
+
+    //**********************************************
+    message_packet(const message_packet& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(other.get());
+      }
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet(message_packet&& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
+    }
+  #endif
+
+    //**********************************************
+    message_packet& operator =(const message_packet& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(rhs.get());
+      }
+
+      return *this;
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet& operator =(message_packet&& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(etl::move(rhs.get()));
+      }
+
+      return *this;
+    }
+  #endif
 
     //********************************************
     ~message_packet()
     {
-      etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-      pmsg->~imessage();
-  #else
-      size_t id = pmsg->message_id;
-
-      switch (id)
-      {
-        case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-        case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-        case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-        case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-        case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-        case T6::ID: static_cast<T6*>(pmsg)->~T6(); break;
-        default: assert(false); break;
-      }
-  #endif
+      delete_current_message();
     }
 
     //********************************************
@@ -1169,38 +2329,49 @@ namespace etl
       return *static_cast<const etl::imessage*>(data);
     }
 
+    //********************************************
+    bool is_valid() const
+    {
+      return valid;
+    }
+
     enum
     {
-      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6>::size,
-      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6>::alignment
+      SIZE      = etl::largest<T1, T2, T3, T4, T5>::size,
+      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5>::alignment
     };
 
   private:
 
-    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    //********************************************
+    void delete_current_message()
+    {
+      if (valid)
+      {
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
-    message_packet(const message_packet&) ETL_DELETE;
-    message_packet& operator =(const message_packet&) ETL_DELETE;
-  #if ETL_CPP11_SUPPORTED
-    message_packet(message_packet&&) ETL_DELETE;
-    message_packet& operator =(message_packet&&) ETL_DELETE;
-  #endif
-  };
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->get_message_id();
 
-  //***************************************************************************
-  // Specialisation for 5 message types.
-  //***************************************************************************
-  template <typename T1, typename T2, typename T3, typename T4, 
-            typename T5>
-  class message_packet<T1, T2, T3, T4, T5, void, void, void, void, void, void, void, void, void, void, void>
-  {
-  public:
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
+          default: assert(false); break;
+        }
+    #endif
+      }
+    }
 
     //********************************************
-    explicit message_packet(const etl::imessage& msg)
+    void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
-
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -1214,36 +2385,113 @@ namespace etl
       }
     }
 
-    //**********************************************
-    template <typename T>
-    explicit message_packet(const T& msg)
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    void add_new_message(etl::imessage&& msg)
     {
-      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5>::value), "Unsupported type for this message packet");
-
+      const size_t id = msg.get_message_id();
       void* p = data;
-      ::new (p) T(static_cast<const T&>(msg));
+
+      switch (id)
+      {
+        case T1::ID: ::new (p) T1(static_cast<T1&&>(msg)); break;
+        case T2::ID: ::new (p) T2(static_cast<T2&&>(msg)); break;
+        case T3::ID: ::new (p) T3(static_cast<T3&&>(msg)); break;
+        case T4::ID: ::new (p) T4(static_cast<T4&&>(msg)); break;
+        case T5::ID: ::new (p) T5(static_cast<T5&&>(msg)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
     }
+  #endif
+
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    bool valid;
+  };
+
+  //***************************************************************************
+  // Specialisation for 4 message types.
+  //***************************************************************************
+  template <typename T1, typename T2, typename T3, typename T4>
+  class message_packet<T1, T2, T3, T4, void, void, void, void, void, void, void, void, void, void, void, void>
+  {
+  public:
+
+    //********************************************
+    message_packet()
+      : valid(false)
+    {
+    }
+
+    //********************************************
+    explicit message_packet(const etl::imessage& msg)
+      : valid(true)
+    {
+      add_new_message(msg);
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    explicit message_packet(etl::imessage&& msg)
+      : valid(true)
+    {
+      add_new_message(etl::move(msg));
+    }
+  #endif
+
+    //**********************************************
+    message_packet(const message_packet& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(other.get());
+      }
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet(message_packet&& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
+    }
+  #endif
+
+    //**********************************************
+    message_packet& operator =(const message_packet& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(rhs.get());
+      }
+
+      return *this;
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet& operator =(message_packet&& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(etl::move(rhs.get()));
+      }
+
+      return *this;
+    }
+  #endif
 
     //********************************************
     ~message_packet()
     {
-      etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-      pmsg->~imessage();
-  #else
-      size_t id = pmsg->message_id;
-
-      switch (id)
-      {
-        case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-        case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-        case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-        case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-        case T5::ID: static_cast<T5*>(pmsg)->~T5(); break;
-        default: assert(false); break;
-      }
-  #endif
+      delete_current_message();
     }
 
     //********************************************
@@ -1258,37 +2506,48 @@ namespace etl
       return *static_cast<const etl::imessage*>(data);
     }
 
+    //********************************************
+    bool is_valid() const
+    {
+      return valid;
+    }
+
     enum
     {
-      SIZE      = etl::largest<T1, T2, T3, T4, T5>::size,
-      ALIGNMENT = etl::largest<T1, T2, T3, T4, T5>::alignment
+      SIZE      = etl::largest<T1, T2, T3, T4>::size,
+      ALIGNMENT = etl::largest<T1, T2, T3, T4>::alignment
     };
 
   private:
 
-    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    //********************************************
+    void delete_current_message()
+    {
+      if (valid)
+      {
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
-    message_packet(const message_packet&) ETL_DELETE;
-    message_packet& operator =(const message_packet&) ETL_DELETE;
-  #if ETL_CPP11_SUPPORTED
-    message_packet(message_packet&&) ETL_DELETE;
-    message_packet& operator =(message_packet&&) ETL_DELETE;
-  #endif
-  };
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->get_message_id();
 
-  //***************************************************************************
-  // Specialisation for 4 message types.
-  //***************************************************************************
-  template <typename T1, typename T2, typename T3, typename T4>
-  class message_packet<T1, T2, T3, T4, void, void, void, void, void, void, void, void, void, void, void, void>
-  {
-  public:
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
+          default: assert(false); break;
+        }
+    #endif
+      }
+    }
 
     //********************************************
-    explicit message_packet(const etl::imessage& msg)
+    void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
-
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -1301,65 +2560,26 @@ namespace etl
       }
     }
 
-    //**********************************************
-    template <typename T>
-    explicit message_packet(const T& msg)
-    {
-      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4>::value), "Unsupported type for this message packet");
-
-      void* p = data;
-      ::new (p) T(static_cast<const T&>(msg));
-    }
-
+  #if ETL_CPP11_SUPPORTED
     //********************************************
-    ~message_packet()
+    void add_new_message(etl::imessage&& msg)
     {
-      etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-      pmsg->~imessage();
-  #else
-      size_t id = pmsg->message_id;
+      const size_t id = msg.get_message_id();
+      void* p = data;
 
       switch (id)
       {
-        case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-        case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-        case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-        case T4::ID: static_cast<T4*>(pmsg)->~T4(); break;
-        default: assert(false); break;
+        case T1::ID: ::new (p) T1(static_cast<T1&&>(msg)); break;
+        case T2::ID: ::new (p) T2(static_cast<T2&&>(msg)); break;
+        case T3::ID: ::new (p) T3(static_cast<T3&&>(msg)); break;
+        case T4::ID: ::new (p) T4(static_cast<T4&&>(msg)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
       }
+    }
   #endif
-    }
-
-    //********************************************
-    etl::imessage& get() ETL_NOEXCEPT
-    {
-      return *static_cast<etl::imessage*>(data);
-    }
-
-    //********************************************
-    const etl::imessage& get() const ETL_NOEXCEPT
-    {
-      return *static_cast<const etl::imessage*>(data);
-    }
-
-    enum
-    {
-      SIZE      = etl::largest<T1, T2, T3, T4>::size,
-      ALIGNMENT = etl::largest<T1, T2, T3, T4>::alignment
-    };
-
-  private:
 
     typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-
-    message_packet(const message_packet&) ETL_DELETE;
-    message_packet& operator =(const message_packet&) ETL_DELETE;
-  #if ETL_CPP11_SUPPORTED
-    message_packet(message_packet&&) ETL_DELETE;
-    message_packet& operator =(message_packet&&) ETL_DELETE;
-  #endif
+    bool valid;
   };
 
   //***************************************************************************
@@ -1371,10 +2591,136 @@ namespace etl
   public:
 
     //********************************************
-    explicit message_packet(const etl::imessage& msg)
+    message_packet()
+      : valid(false)
     {
-      const size_t id = msg.message_id;
+    }
 
+    //********************************************
+    explicit message_packet(const etl::imessage& msg)
+      : valid(true)
+    {
+      add_new_message(msg);
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    explicit message_packet(etl::imessage&& msg)
+      : valid(true)
+    {
+      add_new_message(etl::move(msg));
+    }
+  #endif
+
+    //**********************************************
+    message_packet(const message_packet& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(other.get());
+      }
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet(message_packet&& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
+    }
+  #endif
+
+    //**********************************************
+    message_packet& operator =(const message_packet& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(rhs.get());
+      }
+
+      return *this;
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet& operator =(message_packet&& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(etl::move(rhs.get()));
+      }
+
+      return *this;
+    }
+  #endif
+
+    //********************************************
+    ~message_packet()
+    {
+      delete_current_message();
+    }
+
+    //********************************************
+    etl::imessage& get() ETL_NOEXCEPT
+    {
+      return *static_cast<etl::imessage*>(data);
+    }
+
+    //********************************************
+    const etl::imessage& get() const ETL_NOEXCEPT
+    {
+      return *static_cast<const etl::imessage*>(data);
+    }
+
+    //********************************************
+    bool is_valid() const
+    {
+      return valid;
+    }
+
+    enum
+    {
+      SIZE      = etl::largest<T1, T2, T3>::size,
+      ALIGNMENT = etl::largest<T1, T2, T3>::alignment
+    };
+
+  private:
+
+    //********************************************
+    void delete_current_message()
+    {
+      if (valid)
+      {
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->get_message_id();
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
+          default: assert(false); break;
+        }
+    #endif
+      }
+    }
+
+    //********************************************
+    void add_new_message(const etl::imessage& msg)
+    {
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -1386,64 +2732,25 @@ namespace etl
       }
     }
 
-    //**********************************************
-    template <typename T>
-    explicit message_packet(const T& msg)
-    {
-      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3>::value), "Unsupported type for this message packet");
-
-      void* p = data;
-      ::new (p) T(static_cast<const T&>(msg));
-    }
-
+  #if ETL_CPP11_SUPPORTED
     //********************************************
-    ~message_packet()
+    void add_new_message(etl::imessage&& msg)
     {
-      etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-      pmsg->~imessage();
-  #else
-      size_t id = pmsg->message_id;
+      const size_t id = msg.get_message_id();
+      void* p = data;
 
       switch (id)
       {
-        case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-        case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-        case T3::ID: static_cast<T3*>(pmsg)->~T3(); break;
-        default: assert(false); break;
+        case T1::ID: ::new (p) T1(static_cast<T1&&>(msg)); break;
+        case T2::ID: ::new (p) T2(static_cast<T2&&>(msg)); break;
+        case T3::ID: ::new (p) T3(static_cast<T3&&>(msg)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
       }
+    }
   #endif
-    }
-
-    //********************************************
-    etl::imessage& get() ETL_NOEXCEPT
-    {
-      return *static_cast<etl::imessage*>(data);
-    }
-
-    //********************************************
-    const etl::imessage& get() const ETL_NOEXCEPT
-    {
-      return *static_cast<const etl::imessage*>(data);
-    }
-
-    enum
-    {
-      SIZE      = etl::largest<T1, T2, T3>::size,
-      ALIGNMENT = etl::largest<T1, T2, T3>::alignment
-    };
-
-  private:
 
     typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-
-    message_packet(const message_packet&) ETL_DELETE;
-    message_packet& operator =(const message_packet&) ETL_DELETE;
-  #if ETL_CPP11_SUPPORTED
-    message_packet(message_packet&&) ETL_DELETE;
-    message_packet& operator =(message_packet&&) ETL_DELETE;
-  #endif
+    bool valid;
   };
 
   //***************************************************************************
@@ -1455,47 +2762,81 @@ namespace etl
   public:
 
     //********************************************
-    explicit message_packet(const etl::imessage& msg)
+    message_packet()
+      : valid(false)
     {
-      const size_t id = msg.message_id;
+    }
 
-      void* p = data;
+    //********************************************
+    explicit message_packet(const etl::imessage& msg)
+      : valid(true)
+    {
+      add_new_message(msg);
+    }
 
-      switch (id)
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    explicit message_packet(etl::imessage&& msg)
+      : valid(true)
+    {
+      add_new_message(etl::move(msg));
+    }
+  #endif
+
+    //**********************************************
+    message_packet(const message_packet& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
       {
-        case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
-        case T2::ID: ::new (p) T2(static_cast<const T2&>(msg)); break;
-        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+        add_new_message(other.get());
       }
     }
 
+  #if ETL_CPP11_SUPPORTED
     //**********************************************
-    template <typename T>
-    explicit message_packet(const T& msg)
+    message_packet(message_packet&& other)
+      : valid(other.is_valid())
     {
-      ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2>::value), "Unsupported type for this message packet");
-
-      void* p = data;
-      ::new (p) T(static_cast<const T&>(msg));
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
     }
+  #endif
+
+    //**********************************************
+    message_packet& operator =(const message_packet& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(rhs.get());
+      }
+
+      return *this;
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet& operator =(message_packet&& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(etl::move(rhs.get()));
+      }
+
+      return *this;
+    }
+  #endif
 
     //********************************************
     ~message_packet()
     {
-      etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-      pmsg->~imessage();
-  #else
-      size_t id = pmsg->message_id;
-
-      switch (id)
-      {
-        case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-        case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
-        default: assert(false); break;
-      }
-  #endif
+      delete_current_message();
     }
 
     //********************************************
@@ -1510,6 +2851,12 @@ namespace etl
       return *static_cast<const etl::imessage*>(data);
     }
 
+    //********************************************
+    bool is_valid() const
+    {
+      return valid;
+    }
+
     enum
     {
       SIZE      = etl::largest<T1, T2>::size,
@@ -1518,14 +2865,60 @@ namespace etl
 
   private:
 
-    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    //********************************************
+    void delete_current_message()
+    {
+      if (valid)
+      {
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
-    message_packet(const message_packet&) ETL_DELETE;
-    message_packet& operator =(const message_packet&) ETL_DELETE;
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->get_message_id();
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          case T2::ID: static_cast<T2*>(pmsg)->~T2(); break;
+          default: assert(false); break;
+        }
+    #endif
+      }
+    }
+
+    //********************************************
+    void add_new_message(const etl::imessage& msg)
+    {
+      const size_t id = msg.get_message_id();
+      void* p = data;
+
+      switch (id)
+      {
+        case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
+        case T2::ID: ::new (p) T2(static_cast<const T2&>(msg)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
+
   #if ETL_CPP11_SUPPORTED
-    message_packet(message_packet&&) ETL_DELETE;
-    message_packet& operator =(message_packet&&) ETL_DELETE;
+    //********************************************
+    void add_new_message(etl::imessage&& msg)
+    {
+      const size_t id = msg.get_message_id();
+      void* p = data;
+
+      switch (id)
+      {
+        case T1::ID: ::new (p) T1(static_cast<T1&&>(msg)); break;
+        case T2::ID: ::new (p) T2(static_cast<T2&&>(msg)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
   #endif
+
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    bool valid;
   };
 
   //***************************************************************************
@@ -1537,45 +2930,81 @@ namespace etl
   public:
 
     //********************************************
-    explicit message_packet(const etl::imessage& msg)
+    message_packet()
+      : valid(false)
     {
-      const size_t id = msg.message_id;
+    }
 
-      void* p = data;
+    //********************************************
+    explicit message_packet(const etl::imessage& msg)
+      : valid(true)
+    {
+      add_new_message(msg);
+    }
 
-      switch (id)
+  #if ETL_CPP11_SUPPORTED
+    //********************************************
+    explicit message_packet(etl::imessage&& msg)
+      : valid(true)
+    {
+      add_new_message(etl::move(msg));
+    }
+  #endif
+
+    //**********************************************
+    message_packet(const message_packet& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
       {
-        case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
-        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+        add_new_message(other.get());
       }
     }
 
+  #if ETL_CPP11_SUPPORTED
     //**********************************************
-    template <typename T>
-    explicit message_packet(const T& msg)
+    message_packet(message_packet&& other)
+      : valid(other.is_valid())
     {
-      ETL_STATIC_ASSERT((etl::is_one_of<T, T1>::value), "Unsupported type for this message packet");
-
-      void* p = data;
-      ::new (p) T(static_cast<const T&>(msg));
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
     }
+  #endif
+
+    //**********************************************
+    message_packet& operator =(const message_packet& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(rhs.get());
+      }
+
+      return *this;
+    }
+
+  #if ETL_CPP11_SUPPORTED
+    //**********************************************
+    message_packet& operator =(message_packet&& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(etl::move(rhs.get()));
+      }
+
+      return *this;
+    }
+  #endif
 
     //********************************************
     ~message_packet()
     {
-      etl::imessage* pmsg = static_cast<etl::imessage*>(data);
-
-  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
-      pmsg->~imessage();
-  #else
-      size_t id = pmsg->message_id;
-
-      switch (id)
-      {
-        case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
-        default: assert(false); break;
-      }
-  #endif
+      delete_current_message();
     }
 
     //********************************************
@@ -1590,6 +3019,12 @@ namespace etl
       return *static_cast<const etl::imessage*>(data);
     }
 
+    //********************************************
+    bool is_valid() const
+    {
+      return valid;
+    }
+
     enum
     {
       SIZE      = etl::largest<T1>::size,
@@ -1598,17 +3033,58 @@ namespace etl
 
   private:
 
-    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    //********************************************
+    void delete_current_message()
+    {
+      if (valid)
+      {
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
-    message_packet(const message_packet&) ETL_DELETE;
-    message_packet& operator =(const message_packet&) ETL_DELETE;
+  #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+  #else
+        size_t id = pmsg->get_message_id();
+
+        switch (id)
+        {
+          case T1::ID: static_cast<T1*>(pmsg)->~T1(); break;
+          default: assert(false); break;
+        }
+    #endif
+      }
+    }
+
+    //********************************************
+    void add_new_message(const etl::imessage& msg)
+    {
+      const size_t id = msg.get_message_id();
+      void* p = data;
+
+      switch (id)
+      {
+        case T1::ID: ::new (p) T1(static_cast<const T1&>(msg)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
+
   #if ETL_CPP11_SUPPORTED
-    message_packet(message_packet&&) ETL_DELETE;
-    message_packet& operator =(message_packet&&) ETL_DELETE;
+    //********************************************
+    void add_new_message(etl::imessage&& msg)
+    {
+      const size_t id = msg.get_message_id();
+      void* p = data;
+
+      switch (id)
+      {
+        case T1::ID: ::new (p) T1(static_cast<T1&&>(msg)); break;
+        default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;
+      }
+    }
   #endif
+
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    bool valid;
   };
 }
-
-#undef ETL_FILE
 
 #endif

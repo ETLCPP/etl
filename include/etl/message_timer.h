@@ -42,10 +42,7 @@ SOFTWARE.
 #include "timer.h"
 #include "atomic.h"
 
-#undef ETL_FILE
-#define ETL_FILE "44"
-
-#if defined(ETL_IN_UNIT_TEST) && defined(ETL_NO_STL)
+#if defined(ETL_IN_UNIT_TEST) && ETL_NOT_USING_STL
   #define ETL_DISABLE_TIMER_UPDATES
   #define ETL_ENABLE_TIMER_UPDATES
   #define ETL_TIMER_UPDATES_ENABLED true
@@ -86,8 +83,8 @@ namespace etl
   {
     //*******************************************
     message_timer_data()
-      : p_message(nullptr),
-        p_router(nullptr),
+      : p_message(ETL_NULLPTR),
+        p_router(ETL_NULLPTR),
         period(0),
         delta(etl::timer::state::INACTIVE),
         destination_router_id(etl::imessage_bus::ALL_MESSAGE_ROUTERS),
@@ -471,10 +468,9 @@ namespace etl
                 active_list.insert(timer.id);
               }
 
-              if (timer.p_router != nullptr)
+              if (timer.p_router != ETL_NULLPTR)
               {
-                static etl::null_message_router nmr;
-                timer.p_router->receive(nmr, timer.destination_router_id, *(timer.p_message));
+                timer.p_router->receive(timer.destination_router_id, *(timer.p_message));
               }
 
               has_active = !active_list.empty();
@@ -658,7 +654,5 @@ namespace etl
 #undef ETL_DISABLE_TIMER_UPDATES
 #undef ETL_ENABLE_TIMER_UPDATES
 #undef ETL_TIMER_UPDATES_ENABLED
-
-#undef ETL_FILE
 
 #endif

@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2016 jwellbelove
 
@@ -38,9 +38,6 @@ SOFTWARE.
 #include "error_handler.h"
 #include "intrusive_links.h"
 
-#undef ETL_FILE
-#define ETL_FILE "28"
-
 namespace etl
 {
   //***************************************************************************
@@ -66,7 +63,7 @@ namespace etl
   public:
 
     intrusive_stack_empty(string_type file_name_, numeric_type line_number_)
-      : intrusive_stack_exception(ETL_ERROR_TEXT("intrusive_stack:empty", ETL_FILE"A"), file_name_, line_number_)
+      : intrusive_stack_exception(ETL_ERROR_TEXT("intrusive_stack:empty", ETL_INTRUSIVE_STACK_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -92,7 +89,7 @@ namespace etl
     {
       value.clear();
 
-      if (p_top != nullptr)
+      if (p_top != ETL_NULLPTR)
       {
         etl::link(value, p_top);
       }
@@ -134,11 +131,11 @@ namespace etl
     //*************************************************************************
     void reverse()
     {
-      link_type* previous = nullptr;
+      link_type* previous = ETL_NULLPTR;
       link_type* current = p_top;
       link_type* next;
 
-      while (current != nullptr)
+      while (current != ETL_NULLPTR)
       {
         next = current->etl_next;
         current->etl_next = previous;
@@ -184,7 +181,7 @@ namespace etl
     /// Constructor
     //*************************************************************************
     intrusive_stack_base()
-      : p_top(nullptr),
+      : p_top(ETL_NULLPTR),
         current_size(0)
     {
     }
@@ -258,7 +255,5 @@ namespace etl
     intrusive_stack& operator = (const intrusive_stack& rhs);
   };
 }
-
-#undef ETL_FILE
 
 #endif

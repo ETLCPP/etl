@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2017 jwellbelove
 
@@ -26,8 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
-#include "ExtraCheckMacros.h"
+#include "unit_test_framework.h"
 
 #include "etl/variant_pool.h"
 
@@ -202,7 +201,7 @@ namespace
       CHECK(!variant_pool.empty());
       CHECK(variant_pool.full());
 
-      CHECK_THROW(variant_pool.create<Derived1>(), etl::variant_pool_cannot_create);
+      CHECK_THROW(variant_pool.create<Derived1>(), etl::pool_no_allocation);
     }
 
     //*************************************************************************
@@ -309,7 +308,7 @@ namespace
       CHECK_NO_THROW(variant_pool1.destroy(p));
 
       p = variant_pool2.create<Derived1>();
-      CHECK_THROW(variant_pool1.destroy(p), etl::variant_pool_did_not_create);
+      CHECK_THROW(variant_pool1.destroy(p), etl::pool_object_not_in_pool);
     }
   };
 }

@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2019 jwellbelove
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/queue_spsc_locked.h"
 #include "etl/function.h"
@@ -187,15 +187,26 @@ namespace
 
       access.clear();
 
+      // Queue full.
       CHECK(!queue.push(5));
-      CHECK(!queue.push_from_unlocked(5));
+
+      queue.pop();
+      // Queue not full (buffer rollover)
+      CHECK(queue.push(5));
+
+      // Queue full.
+      CHECK(!queue.push(6));
+
+      queue.pop();
+      // Queue not full (buffer rollover)
+      CHECK(queue.push(6));
 
       access.clear();
 
       int i;
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(1, i);
+      CHECK_EQUAL(3, i);
       CHECK(access.called_lock);
       CHECK(access.called_unlock);
       CHECK_EQUAL(3U, queue.size_from_unlocked());
@@ -203,7 +214,7 @@ namespace
       access.clear();
 
       CHECK(queue.pop_from_unlocked(i));
-      CHECK_EQUAL(2, i);
+      CHECK_EQUAL(4, i);
       CHECK(!access.called_lock);
       CHECK(!access.called_unlock);
       CHECK_EQUAL(2U, queue.size_from_unlocked());
@@ -211,7 +222,7 @@ namespace
       access.clear();
 
       CHECK(queue.pop_from_unlocked(i));
-      CHECK_EQUAL(3, i);
+      CHECK_EQUAL(5, i);
       CHECK(!access.called_lock);
       CHECK(!access.called_unlock);
       CHECK_EQUAL(1U, queue.size_from_unlocked());
@@ -219,7 +230,7 @@ namespace
       access.clear();
 
       CHECK(queue.pop_from_unlocked(i));
-      CHECK_EQUAL(4, i);
+      CHECK_EQUAL(6, i);
       CHECK(!access.called_lock);
       CHECK(!access.called_unlock);
       CHECK_EQUAL(0U, queue.size_from_unlocked());
@@ -252,16 +263,16 @@ namespace
 
       ItemM pr(0);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(1, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(2, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(3, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(4, pr.value);
     }
 
@@ -574,12 +585,13 @@ namespace
     }
 
     //*************************************************************************
-#if REALTIME_TEST && defined(ETL_COMPILER_MICROSOFT)
+#if REALTIME_TEST
   #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
     #define RAISE_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)
     #define FIX_PROCESSOR_AFFINITY SetThreadAffinityMask(GetCurrentThread(), 1);
   #else
-    #error No thread priority modifier defined
+    #define RAISE_THREAD_PRIORITY
+    #define FIX_PROCESSOR_AFFINITY
   #endif
 
     size_t ticks = 0;

@@ -266,6 +266,12 @@ namespace etl
     typedef volatile T&       reference;
     typedef volatile const T& const_reference;
 
+    /// Default constructor.
+    io_port_wos()
+      : shadow_value(T())
+    {
+    }
+
     /// Read.
     operator T() const
     {
@@ -347,7 +353,7 @@ namespace etl
 
     /// Default constructor.
     io_port_rw()
-      : address(nullptr)
+      : address(ETL_NULLPTR)
     {
     }
 
@@ -458,7 +464,7 @@ namespace etl
 
     /// Default constructor.
     io_port_ro()
-      : address(nullptr)
+      : address(ETL_NULLPTR)
     {
     }
 
@@ -547,7 +553,7 @@ namespace etl
 
     /// Default constructor.
     io_port_wo()
-      : address(nullptr)
+      : address(ETL_NULLPTR)
     {
     }
 
@@ -699,7 +705,7 @@ namespace etl
 
     /// Default constructor.
     io_port_wos()
-      : address(nullptr)
+      : address(ETL_NULLPTR)
     {
     }
 

@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2017 jwellbelove
 
@@ -26,8 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
-#include "ExtraCheckMacros.h"
+#include "unit_test_framework.h"
 
 #include "etl/callback_timer.h"
 #include "etl/function.h"
@@ -55,6 +54,7 @@ namespace
   public:
 
     Test()
+      : p_controller(nullptr)
     {
     }
 
@@ -684,7 +684,8 @@ namespace
     #define RAISE_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)
     #define FIX_PROCESSOR_AFFINITY SetThreadAffinityMask(GetCurrentThread(), 1);
   #else
-    #error No thread priority modifier defined
+    #define RAISE_THREAD_PRIORITY
+    #define FIX_PROCESSOR_AFFINITY
   #endif
 
     etl::callback_timer<3> controller;

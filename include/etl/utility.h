@@ -34,7 +34,7 @@ SOFTWARE.
 #include "platform.h"
 #include "type_traits.h"
 
-#if !defined(ETL_NO_STL)
+#if ETL_USING_STL
   #if ETL_CPP11_SUPPORTED
     #include <utility>
   #else
@@ -71,7 +71,7 @@ namespace etl
 
   // We can't have std::swap and etl::swap templates coexisting in the unit tests
   // as the compiler will be unable to decide of which one to use, due to ADL.
-#if defined(ETL_NO_STL) && !defined(ETL_IN_UNIT_TEST)
+#if ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST)
   //***************************************************************************
   // swap
 #if ETL_CPP11_SUPPORTED
@@ -155,23 +155,50 @@ namespace etl
     /// Move constructor
     template <typename U1, typename U2>
     ETL_CONSTEXPR14 pair(pair<U1, U2>&& other)
-      : first(etl::move(other.first))
-      , second(etl::move(other.second))
+      : first(etl::forward<U1>(other.first))
+      , second(etl::forward<U2>(other.second))
     {
     }
+#endif
+
+#if defined(ETL_IN_UNIT_TEST) || ETL_USING_STL
+    /// Converting to std::pair
+    template <typename U1, typename U2>
+    operator std::pair<U1, U2>()
+    {
+      return std::make_pair(first, second);
+    }
+
+    /// Constructing from std::pair
+    template <typename U1, typename U2>
+    pair(const std::pair<U1, U2>& other)
+      : first(other.first)
+      , second(other.second)
+    {
+    }
+
+#if ETL_CPP11_SUPPORTED
+    /// Constructing to etl::pair
+    template <typename U1, typename U2>
+    pair(std::pair<U1, U2>&& other)
+      : first(etl::forward<U1>(other.first))
+      , second(etl::forward<U2>(other.second))
+    {
+    }
+#endif
 #endif
 
     void swap(pair<T1, T2>& other)
     {
       using ETL_OR_STD::swap;
 
-      swap(first,  other.first);
+      swap(first, other.first);
       swap(second, other.second);
     }
 
     pair<T1, T2>& operator =(const pair<T1, T2>& other)
     {
-      first  = other.first;
+      first = other.first;
       second = other.second;
 
       return *this;
@@ -180,7 +207,7 @@ namespace etl
     template <typename U1, typename U2>
     pair<U1, U2>& operator =(const pair<U1, U2>& other)
     {
-      first  = other.first;
+      first = other.first;
       second = other.second;
 
       return *this;
@@ -189,8 +216,8 @@ namespace etl
 #if ETL_CPP11_SUPPORTED
     pair<T1, T2>& operator =(pair<T1, T2>&& other)
     {
-      first  = etl::move(other.first);
-      second = etl::move(other.second);
+      first = etl::forward<T1>(other.first);
+      second = etl::forward<T2>(other.second);
 
       return *this;
     }
@@ -198,8 +225,8 @@ namespace etl
     template <typename U1, typename U2>
     pair<U1, U2>& operator =(pair<U1, U2>&& other)
     {
-      first  = etl::move(other.first);
-      second = etl::move(other.second);
+      first = etl::forward<U1>(other.first);
+      second = etl::forward<U2>(other.second);
 
       return *this;
     }
@@ -211,7 +238,7 @@ namespace etl
   template <typename T1, typename T2>
   inline pair<T1, T2> make_pair(T1&& a, T2&& b)
   {
-    return pair<T1, T2>(etl::move(a), etl::move(b));
+    return pair<T1, T2>(etl::forward<T1>(a), etl::forward<T2>(b));
   }
 #else
   template <typename T1, typename T2>
@@ -266,7 +293,7 @@ namespace etl
     return !(a < b);
   }
 
-#if defined(ETL_NO_STL) || !ETL_CPP14_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP14_NOT_SUPPORTED
   //***************************************************************************
   /// exchange (const)
   //***************************************************************************
@@ -304,6 +331,37 @@ namespace etl
   {
     return t;
   }
+
+  //******************************************************************************
+  /// 2D coordinate type.
+  template <typename T>
+  struct coordinate_2d
+  {
+    coordinate_2d()
+      : x(T(0))
+      , y(T(0))
+    {
+    }
+
+    coordinate_2d(T x_, T y_)
+      : x(x_)
+      , y(y_)
+    {
+    }
+
+    friend bool operator ==(const coordinate_2d& lhs, const coordinate_2d& rhs)
+    {
+      return (lhs.x == rhs.x) && (lhs.y == rhs.y);
+    }
+
+    friend bool operator !=(const coordinate_2d& lhs, const coordinate_2d& rhs)
+    {
+      return !(lhs == rhs);
+    }
+
+    T x;
+    T y;
+  };
 }
 
 #endif

@@ -43,9 +43,11 @@ namespace etl
 {
   //***************************************************************************
   /// Default format spec.
+  /// !etl::iu32string && !etl::u32string_view
   //***************************************************************************
   template <typename T>
-  const etl::iu32string& to_string(const T value, etl::iu32string& str, const bool append = false)
+  typename etl::enable_if<!etl::is_same<T, etl::iu32string>::value && !etl::is_same<T, etl::u32string_view>::value, const etl::iu32string&>::type
+    to_string(const T value, etl::iu32string& str, bool append = false)
   {
     etl::u32format_spec format;
 
@@ -54,11 +56,69 @@ namespace etl
 
   //***************************************************************************
   /// Supplied format spec.
+  /// !etl::iu32string && !etl::u32string_view
   //***************************************************************************
   template <typename T>
-  const etl::iu32string& to_string(const T value, etl::iu32string& str, const etl::u32format_spec& format, const bool append = false)
+  typename etl::enable_if<!etl::is_same<T, etl::iu32string>::value && !etl::is_same<T, etl::u32string_view>::value, const etl::iu32string&>::type
+    to_string(const T value, etl::iu32string& str, const etl::u32format_spec& format, bool append = false)
   {
     return private_to_string::to_string(value, str, format, append);
+  }
+
+  //***************************************************************************
+  /// Default format spec.
+  /// etl::iu32string
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<T, etl::iu32string>::value, const etl::iu32string&>::type
+    to_string(const T& value, etl::iu32string& str, bool append = false)
+  {
+    etl::u32format_spec format;
+
+    private_to_string::add_string(value, str, format, append);
+
+    return str;
+  }
+
+  //***************************************************************************
+  /// Supplied format spec.
+  /// etl::iu32string
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<T, etl::iu32string>::value, const etl::iu32string&>::type
+    to_string(const etl::iu32string& value, T& str, const etl::u32format_spec& format, bool append = false)
+  {
+    private_to_string::add_string(value, str, format, append);
+
+    return str;
+  }
+
+  //***************************************************************************
+  /// Default format spec.
+  /// etl::u32string_view
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<T, etl::u32string_view>::value, const etl::iu32string&>::type
+    to_string(T value, etl::iu32string& str, bool append = false)
+  {
+    etl::u32format_spec format;
+
+    private_to_string::add_string_view(value, str, format, append);
+
+    return str;
+  }
+
+  //***************************************************************************
+  /// Supplied format spec.
+  /// etl::u32string_view
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_same<T, etl::u32string_view>::value, const etl::iu32string&>::type
+    to_string(T value, etl::iu32string& str, const etl::u32format_spec& format, bool append = false)
+  {
+    private_to_string::add_string_view(value, str, format, append);
+
+    return str;
   }
 }
 

@@ -29,22 +29,14 @@ SOFTWARE.
 #ifndef ETL_NULL_TYPE_INCLUDED
 #define ETL_NULL_TYPE_INCLUDED
 
-#undef ETL_FILE
-#define ETL_FILE "50"
+#include <stddef.h>
 
 namespace etl
 {
   template <size_t N>
   class null_type
   {
-  private:
-
-    null_type();
-    null_type(const null_type&);
-    null_type& operator=(const null_type&);
   };
 }
-
-#undef ETL_FILE
 
 #endif

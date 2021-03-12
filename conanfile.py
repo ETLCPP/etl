@@ -20,10 +20,10 @@ class EmbeddedTemplateLibraryConan(ConanFile):
     name = "embedded-template-library"
     version = get_version_from_git_tag()
     license = "MIT"
-    author = "John Wellbelove <smartgit@wellbelove.co.uk>"
+    author = "John Wellbelove <john.wellbelove@etlcpp.com>"
     url = "https://github.com/ETLCPP/etl"
     description = "A C++ template library for embedded applications"
-    topics = ("embedded", "template", "container")
+    topics = ("C++", "embedded", "template", "container", "utility", "framework", "messaging")
 
     # Source info
     scm = {

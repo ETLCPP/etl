@@ -63,7 +63,7 @@ FORCE_INLINE uint32_t getblock32(const uint32_t * p, int i)
   return p[i];
 }
 
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
 FORCE_INLINE uint64_t getblock64(const uint64_t * p, int i)
 {
   return p[i];
@@ -86,7 +86,7 @@ FORCE_INLINE uint32_t fmix32(uint32_t h)
 
 //----------
 
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
 FORCE_INLINE uint64_t fmix64(uint64_t k)
 {
   k ^= k >> 33;
@@ -261,7 +261,7 @@ void MurmurHash3_x86_128(const void * key, const int len,
 
 //-----------------------------------------------------------------------------
 
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
 void MurmurHash3_x64_128(const void * key, const int len,
   const uint32_t seed, void * out)
 {

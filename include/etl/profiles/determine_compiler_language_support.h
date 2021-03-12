@@ -31,28 +31,56 @@ SOFTWARE.
 #ifndef ETL_DETERMINE_COMPILER_LANGUAGE_SUPPORT_H_INCLUDED
 #define ETL_DETERMINE_COMPILER_LANGUAGE_SUPPORT_H_INCLUDED
 
-#ifdef __cplusplus
-  #if defined(ETL_COMPILER_MICROSOFT)
-    #define ETL_CPP11_SUPPORTED (_MSC_VER >= 1600)
-    #define ETL_CPP14_SUPPORTED (_MSC_VER >= 1900)
-    #define ETL_CPP17_SUPPORTED (_MSC_VER >= 1914)
-  #elif defined(ETL_COMPILER_ARM5)
+#include <math.h>
+
+#include "determine_compiler.h"
+
+#if !defined(ETL_CPP11_SUPPORTED) && !defined(ETL_CPP14_SUPPORTED) && !defined(ETL_CPP17_SUPPORTED)
+  #if defined(__cplusplus)
+    #if defined(ETL_COMPILER_MICROSOFT)
+      #define ETL_CPP11_SUPPORTED (_MSC_VER >= 1600)
+      #define ETL_CPP14_SUPPORTED (_MSC_VER >= 1900)
+      #define ETL_CPP17_SUPPORTED (_MSC_VER >= 1914)
+      #define ETL_CPP20_SUPPORTED 0
+    #elif defined(ETL_COMPILER_ARM5)
+      #define ETL_CPP11_SUPPORTED 0
+      #define ETL_CPP14_SUPPORTED 0
+      #define ETL_CPP17_SUPPORTED 0
+      #define ETL_CPP20_SUPPORTED 0
+    #else
+      #define ETL_CPP11_SUPPORTED (__cplusplus >= 201103L)
+      #define ETL_CPP14_SUPPORTED (__cplusplus >= 201402L)
+      #define ETL_CPP17_SUPPORTED (__cplusplus >= 201703L)
+      #define ETL_CPP20_SUPPORTED 0
+    #endif
+  #else
     #define ETL_CPP11_SUPPORTED 0
     #define ETL_CPP14_SUPPORTED 0
     #define ETL_CPP17_SUPPORTED 0
-  #else
-    #define ETL_CPP11_SUPPORTED (__cplusplus >= 201103L)
-    #define ETL_CPP14_SUPPORTED (__cplusplus >= 201402L)
-    #define ETL_CPP17_SUPPORTED (__cplusplus >= 201703L)
+    #define ETL_CPP20_SUPPORTED 0
   #endif
-#else
-  #define ETL_CPP11_SUPPORTED 0
-  #define ETL_CPP14_SUPPORTED 0
-  #define ETL_CPP17_SUPPORTED 0
 #endif
 
-#define ETL_NO_NULLPTR_SUPPORT                     !ETL_CPP11_SUPPORTED
-#define ETL_NO_LARGE_CHAR_SUPPORT                  !ETL_CPP11_SUPPORTED
-#define ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED ETL_CPP14_SUPPORTED
+// Helper macros
+#define ETL_CPP11_NOT_SUPPORTED !ETL_CPP11_SUPPORTED
+#define ETL_CPP14_NOT_SUPPORTED !ETL_CPP14_SUPPORTED
+#define ETL_CPP17_NOT_SUPPORTED !ETL_CPP17_SUPPORTED
+
+#if !defined(ETL_NO_NULLPTR_SUPPORT)
+  #define ETL_NO_NULLPTR_SUPPORT ETL_CPP11_NOT_SUPPORTED
+#endif
+
+#if !defined(ETL_NO_LARGE_CHAR_SUPPORT)
+  #define ETL_NO_LARGE_CHAR_SUPPORT ETL_CPP11_NOT_SUPPORTED
+#endif
+
+#if !defined(ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED)
+  #define ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED ETL_CPP14_SUPPORTED
+#endif
+
+// NAN not defined or Rowley CrossWorks
+#if !defined(NAN) || defined(__CROSSWORKS_ARM) || defined(ETL_COMPILER_ARM5)
+  #define ETL_NO_CPP_NAN_SUPPORT
+#endif
 
 #endif

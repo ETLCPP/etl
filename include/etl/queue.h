@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove, Mark Kitson
 
@@ -34,8 +34,6 @@ SOFTWARE.
 #include <stddef.h>
 #include <stdint.h>
 
-#include <new>
-
 #include "platform.h"
 #include "container.h"
 #include "alignment.h"
@@ -48,9 +46,7 @@ SOFTWARE.
 #include "memory_model.h"
 #include "integral_limits.h"
 #include "utility.h"
-
-#undef ETL_FILE
-#define ETL_FILE "13"
+#include "placement_new.h"
 
 //*****************************************************************************
 ///\defgroup queue queue
@@ -84,7 +80,7 @@ namespace etl
   public:
 
     queue_full(string_type file_name_, numeric_type line_number_)
-      : queue_exception(ETL_ERROR_TEXT("queue:full", ETL_FILE"A"), file_name_, line_number_)
+      : queue_exception(ETL_ERROR_TEXT("queue:full", ETL_QUEUE_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -98,7 +94,7 @@ namespace etl
   public:
 
     queue_empty(string_type file_name_, numeric_type line_number_)
-      : queue_exception(ETL_ERROR_TEXT("queue:empty", ETL_FILE"B"), file_name_, line_number_)
+      : queue_exception(ETL_ERROR_TEXT("queue:empty", ETL_QUEUE_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -337,7 +333,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_QUEUE_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_FORCE_CPP03)
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
@@ -618,7 +614,7 @@ namespace etl
     queue(queue&& rhs)
       : base_t(reinterpret_cast<T*>(&buffer[0]), SIZE)
     {
-      base_t::move_clone(std::move(rhs));
+      base_t::move_clone(etl::move(rhs));
     }
 #endif
 
@@ -664,7 +660,5 @@ namespace etl
     typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[SIZE];
   };
 }
-
-#undef ETL_FILE
 
 #endif

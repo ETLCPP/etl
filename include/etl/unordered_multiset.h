@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2016 jwellbelove
 
@@ -33,15 +33,11 @@ SOFTWARE.
 
 #include <stddef.h>
 
-#include <new>
-
 #include "platform.h"
-
 #include "algorithm.h"
 #include "iterator.h"
 #include "functional.h"
 #include "utility.h"
-
 #include "container.h"
 #include "pool.h"
 #include "vector.h"
@@ -54,9 +50,11 @@ SOFTWARE.
 #include "exception.h"
 #include "debug_count.h"
 #include "iterator.h"
+#include "placement_new.h"
 
-#undef ETL_FILE
-#define ETL_FILE "26"
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  #include <initializer_list>
+#endif
 
 //*****************************************************************************
 ///\defgroup unordered_multiset unordered_multiset
@@ -89,7 +87,7 @@ namespace etl
   public:
 
     unordered_multiset_full(string_type file_name_, numeric_type line_number_)
-      : etl::unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:full", ETL_FILE"A"), file_name_, line_number_)
+      : etl::unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:full", ETL_UNORDERED_MULTISET_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -103,7 +101,7 @@ namespace etl
   public:
 
     unordered_multiset_out_of_range(string_type file_name_, numeric_type line_number_)
-      : etl::unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:range", ETL_FILE"B"), file_name_, line_number_)
+      : etl::unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:range", ETL_UNORDERED_MULTISET_FILE_ID"B"), file_name_, line_number_)
     {}
   };
 
@@ -116,7 +114,7 @@ namespace etl
   public:
 
     unordered_multiset_iterator(string_type file_name_, numeric_type line_number_)
-      : etl::unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:iterator", ETL_FILE"C"), file_name_, line_number_)
+      : etl::unordered_multiset_exception(ETL_ERROR_TEXT("unordered_multiset:iterator", ETL_UNORDERED_MULTISET_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -137,6 +135,9 @@ namespace etl
     typedef TKeyEqual         key_equal;
     typedef value_type&       reference;
     typedef const value_type& const_reference;
+#if ETL_CPP11_SUPPORTED
+    typedef value_type&&      rvalue_reference;
+#endif
     typedef value_type*       pointer;
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
@@ -148,7 +149,7 @@ namespace etl
     // The nodes that store the elements.
     struct node_t : public link_t
     {
-      node_t(const value_type& key_)
+      node_t(const_reference key_)
         : key(key_)
       {
       }
@@ -232,7 +233,7 @@ namespace etl
       }
 
       //*********************************
-      iterator operator =(const iterator& other)
+      iterator& operator =(const iterator& other)
       {
         pbuckets_end = other.pbuckets_end;
         pbucket = other.pbucket;
@@ -401,7 +402,7 @@ namespace etl
       }
 
       //*********************************
-      const_iterator operator =(const const_iterator& other)
+      const_iterator& operator =(const const_iterator& other)
       {
         pbuckets_end = other.pbuckets_end;
         pbucket = other.pbucket;
@@ -655,7 +656,7 @@ namespace etl
     /// If asserts or exceptions are enabled, emits unordered_multiset_full if the unordered_multiset is already full.
     ///\param value The value to insert.
     //*********************************************************************
-    ETL_OR_STD::pair<iterator, bool> insert(const value_type& key)
+    ETL_OR_STD::pair<iterator, bool> insert(const_reference key)
     {
       ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
@@ -672,7 +673,7 @@ namespace etl
       if (bucket.empty())
       {
         // Get a new node.
-        node_t& node = *pnodepool->allocate<node_t>();
+        node_t& node = create_data_node();
         ::new (&node.key) value_type(key);
         ETL_INCREMENT_DEBUG_COUNT
 
@@ -702,7 +703,7 @@ namespace etl
         }
 
         // Get a new node.
-        node_t& node = *pnodepool->allocate<node_t>();
+        node_t& node = create_data_node();
         ::new (&node.key) value_type(key);
         ETL_INCREMENT_DEBUG_COUNT
 
@@ -718,13 +719,83 @@ namespace etl
       return result;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    /// Inserts a value to the unordered_multiset.
+    /// If asserts or exceptions are enabled, emits unordered_multiset_full if the unordered_multiset is already full.
+    ///\param value The value to insert.
+    //*********************************************************************
+    ETL_OR_STD::pair<iterator, bool> insert(rvalue_reference key)
+    {
+      ETL_OR_STD::pair<iterator, bool> result(end(), false);
+
+      ETL_ASSERT(!full(), ETL_ERROR(unordered_multiset_full));
+
+      // Get the hash index.
+      size_t index = get_bucket_index(key);
+
+      // Get the bucket & bucket iterator.
+      bucket_t* pbucket = pbuckets + index;
+      bucket_t& bucket = *pbucket;
+
+      // The first one in the bucket?
+      if (bucket.empty())
+      {
+        // Get a new node.
+        node_t& node = create_data_node();
+        ::new (&node.key) value_type(etl::move(key));
+        ETL_INCREMENT_DEBUG_COUNT
+
+          // Just add the pointer to the bucket;
+          bucket.insert_after(bucket.before_begin(), node);
+        adjust_first_last_markers_after_insert(&bucket);
+
+        result.first = iterator((pbuckets + number_of_buckets), pbucket, pbucket->begin());
+        result.second = true;
+      }
+      else
+      {
+        // Step though the bucket looking for a place to insert.
+        local_iterator inode_previous = bucket.before_begin();
+        local_iterator inode = bucket.begin();
+
+        while (inode != bucket.end())
+        {
+          // Do we already have this key?
+          if (inode->key == key)
+          {
+            break;
+          }
+
+          ++inode_previous;
+          ++inode;
+        }
+
+        // Get a new node.
+        node_t& node = create_data_node();
+        ::new (&node.key) value_type(etl::move(key));
+        ETL_INCREMENT_DEBUG_COUNT
+
+          // Add the node to the end of the bucket;
+          bucket.insert_after(inode_previous, node);
+        adjust_first_last_markers_after_insert(&bucket);
+        ++inode_previous;
+
+        result.first = iterator((pbuckets + number_of_buckets), pbucket, inode_previous);
+        result.second = true;
+      }
+
+      return result;
+    }
+#endif
+
     //*********************************************************************
     /// Inserts a value to the unordered_multiset.
     /// If asserts or exceptions are enabled, emits unordered_multiset_full if the unordered_multiset is already full.
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(const_iterator position, const value_type& key)
+    iterator insert(const_iterator position, const_reference key)
     {
       return insert(key).first;
     }
@@ -821,22 +892,31 @@ namespace etl
     //*********************************************************************
     iterator erase(const_iterator first_, const_iterator last_)
     {
+      // Erasing everything?
+      if ((first_ == begin()) && (last_ == end()))
+      {
+        clear();
+        return end();
+      }
+
       // Make a note of the last.
       iterator result((pbuckets + number_of_buckets), last_.get_bucket_list_iterator(), last_.get_local_iterator());
 
       // Get the starting point.
-      bucket_t*      pbucket   = first_.get_bucket_list_iterator();
-      local_iterator iprevious = pbucket->before_begin();
-      local_iterator icurrent  = first_.get_local_iterator();
-      local_iterator iend      = last_.get_local_iterator(); // Note: May not be in the same bucket as icurrent.
+      bucket_t*      pbucket     = first_.get_bucket_list_iterator();
+      bucket_t*      pend_bucket = last_.get_bucket_list_iterator();
+      local_iterator iprevious   = pbucket->before_begin();
+      local_iterator icurrent    = first_.get_local_iterator();
+      local_iterator iend        = last_.get_local_iterator(); // Note: May not be in the same bucket as icurrent.
 
-                                                       // Find the node previous to the first one.
+      // Find the node previous to the first one.
       while (iprevious->etl_next != &*icurrent)
       {
         ++iprevious;
       }
 
-      while (icurrent != iend)
+      // Until we reach the end.
+      while ((icurrent != iend) || (pbucket != pend_bucket))
       {
 
         local_iterator inext = pbucket->erase_after(iprevious); // Unlink from the bucket.
@@ -847,8 +927,8 @@ namespace etl
 
         icurrent = inext;
 
-        // Are we there yet?
-        if (icurrent != iend)
+        // Have we not reached the end?
+        if ((icurrent != iend) || (pbucket != pend_bucket))
         {
           // At the end of this bucket?
           if ((icurrent == pbucket->end()))
@@ -860,7 +940,7 @@ namespace etl
             } while (pbucket->empty());
 
             iprevious = pbucket->before_begin();
-            icurrent = pbucket->begin();
+            icurrent  = pbucket->begin();
           }
         }
       }
@@ -1039,6 +1119,14 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Gets the maximum possible size of the unordered_multiset.
+    //*************************************************************************
+    size_type capacity() const
+    {
+      return pnodepool->max_size();
+    }
+
+    //*************************************************************************
     /// Checks to see if the unordered_multiset is empty.
     //*************************************************************************
     bool empty() const
@@ -1104,6 +1192,23 @@ namespace etl
       return *this;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    iunordered_multiset& operator = (iunordered_multiset&& rhs)
+    {
+      // Skip if doing self assignment
+      if (this != &rhs)
+      {
+        clear();
+        move(rhs.begin(), rhs.end());
+      }
+
+      return *this;
+    }
+#endif
+
   protected:
 
     //*********************************************************************
@@ -1154,7 +1259,29 @@ namespace etl
       last = first;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move from a range
+    //*************************************************************************
+    void move(iterator first, iterator last)
+    {
+      while (first != last)
+      {
+        insert(etl::move(*first++));
+      }
+    }
+#endif
+
   private:
+
+    //*************************************************************************
+    /// Create a node.
+    //*************************************************************************
+    node_t& create_data_node()
+    {
+      node_t* (etl::ipool::*func)() = &etl::ipool::allocate<node_t>;
+      return *(pnodepool->*func)();
+    }
 
     //*********************************************************************
     /// Adjust the first and last markers according to the new entry.
@@ -1322,8 +1449,28 @@ namespace etl
     unordered_multiset(const unordered_multiset& other)
       : base(node_pool, buckets, MAX_BUCKETS)
     {
-      base::assign(other.cbegin(), other.cend());
+      // Skip if doing self assignment
+      if (this != &other)
+      {
+        base::assign(other.cbegin(), other.cend());
+      }
     }
+
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move constructor.
+    //*************************************************************************
+    unordered_multiset(unordered_multiset&& other)
+      : base(node_pool, buckets, MAX_BUCKETS)
+    {
+      // Skip if doing self assignment
+      if (this != &other)
+      {
+        base::move(other.begin(), other.end());
+      }
+    }
+#endif
 
     //*************************************************************************
     /// Constructor, from an iterator range.
@@ -1331,12 +1478,23 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator>
+    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
     unordered_multiset(TIterator first_, TIterator last_)
       : base(node_pool, buckets, MAX_BUCKETS)
     {
       base::assign(first_, last_);
     }
+
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+    //*************************************************************************
+    /// Construct from initializer_list.
+    //*************************************************************************
+    unordered_multiset(std::initializer_list<TKey> init)
+      : base(node_pool, buckets, MAX_BUCKETS)
+    {
+      base::assign(init.begin(), init.end());
+    }
+#endif
 
     //*************************************************************************
     /// Destructor.
@@ -1360,6 +1518,23 @@ namespace etl
       return *this;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    unordered_multiset& operator = (unordered_multiset&& rhs)
+    {
+      // Skip if doing self assignment
+      if (this != &rhs)
+      {
+        base::clear();
+        base::move(rhs.begin(), rhs.end());
+      }
+
+      return *this;
+    }
+#endif
+
   private:
 
     /// The pool of nodes used for the unordered_multiset.
@@ -1368,8 +1543,15 @@ namespace etl
     /// The buckets of node lists.
     etl::intrusive_forward_list<typename base::node_t> buckets[MAX_BUCKETS_];
   };
-}
 
-#undef ETL_FILE
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  unordered_multiset(T, Ts...)
+    ->unordered_multiset<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
+#endif 
+}
 
 #endif

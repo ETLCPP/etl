@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/utility.h"
 
@@ -60,7 +60,7 @@ namespace
     {
       etl::pair<int, double> p1;
 
-      CHECK_EQUAL(int(), p1.first);
+      CHECK_EQUAL(int(),    p1.first);
       CHECK_EQUAL(double(), p1.second);
     }
 
@@ -69,7 +69,19 @@ namespace
     {
       etl::pair<int, double> p1(1, 2.3);
 
-      CHECK_EQUAL(1, p1.first);
+      CHECK_EQUAL(1,   p1.first);
+      CHECK_EQUAL(2.3, p1.second);
+    }
+
+    //*************************************************************************
+    TEST(test_cpp17_deduced_pair_construct)
+    {
+      etl::pair p1{ 1, 2.3 };
+
+      CHECK((std::is_same_v<decltype(p1.first), int>));
+      CHECK((std::is_same_v<decltype(p1.second), double>));
+
+      CHECK_EQUAL(1,   p1.first);
       CHECK_EQUAL(2.3, p1.second);
     }
 
@@ -78,7 +90,7 @@ namespace
     {
       etl::pair<ItemM1, ItemM2> p1(1, 2.3);
 
-      CHECK_EQUAL(1, p1.first.value);
+      CHECK_EQUAL(1,   p1.first.value);
       CHECK_EQUAL(2.3, p1.second.value);
     }
 
@@ -88,7 +100,7 @@ namespace
       etl::pair<int, double> p1(1, 2.3);
       etl::pair<int, double> p2(p1);
 
-      CHECK_EQUAL(p1.first, p2.first);
+      CHECK_EQUAL(p1.first,  p2.first);
       CHECK_EQUAL(p1.second, p2.second);
     }
 
@@ -101,7 +113,7 @@ namespace
       CHECK(!bool(p1.first));
       CHECK(!bool(p1.second));
 
-      CHECK_EQUAL(1, p2.first.value);
+      CHECK_EQUAL(1,   p2.first.value);
       CHECK_EQUAL(2.3, p2.second.value);
     }
 
@@ -111,7 +123,7 @@ namespace
       etl::pair<char, float> p1(1, 2.3f);
       etl::pair<int, double> p2(p1);
 
-      CHECK_EQUAL(p1.first, p2.first);
+      CHECK_EQUAL(p1.first,  p2.first);
       CHECK_EQUAL(p1.second, p2.second);
     }
 
@@ -122,7 +134,7 @@ namespace
       etl::pair<int, double> p2;
       p2 = etl::make_pair(1, 2.3);
 
-      CHECK_EQUAL(p1.first, p2.first);
+      CHECK_EQUAL(p1.first,  p2.first);
       CHECK_EQUAL(p1.second, p2.second);
     }
 
@@ -146,10 +158,10 @@ namespace
 
       p1.swap(p2);
 
-      CHECK_EQUAL(2, p1.first);
+      CHECK_EQUAL(2,   p1.first);
       CHECK_EQUAL(3.4, p1.second);
 
-      CHECK_EQUAL(1, p2.first);
+      CHECK_EQUAL(1,   p2.first);
       CHECK_EQUAL(2.3, p2.second);
     }
 
@@ -161,10 +173,10 @@ namespace
 
       swap(p1, p2);
 
-      CHECK_EQUAL(2, p1.first);
+      CHECK_EQUAL(2,   p1.first);
       CHECK_EQUAL(3.4, p1.second);
 
-      CHECK_EQUAL(1, p2.first);
+      CHECK_EQUAL(1,   p2.first);
       CHECK_EQUAL(2.3, p2.second);
     }
 
@@ -189,6 +201,61 @@ namespace
       CHECK(!(p1 > p2));
       CHECK(!(p1 > p3));
       CHECK(p3 > p1);
+    }
+
+    //*************************************************************************
+    TEST(test_pair_conversion)
+    {
+#if ETL_CPP11_SUPPORTED
+      etl::pair<int, std::string> ep1(1, "Hello");
+      std::pair<int, std::string> sp1(2, "World");
+
+      etl::pair<int, std::string> ep2(sp1);
+      std::pair<int, std::string> sp2(ep1);
+
+      etl::pair<const int, std::string> ep3(1, "Hello");
+      std::pair<const int, std::string> sp3(2, "World");
+
+      etl::pair<int, std::string> ep4(sp3);
+      std::pair<int, std::string> sp4(ep3);
+
+      etl::pair<const int, std::string> ep5(sp1);
+      std::pair<const int, std::string> sp5(ep1);
+
+      CHECK_EQUAL(2, ep2.first);
+      CHECK_EQUAL(std::string("World"), ep2.second);
+
+      CHECK_EQUAL(1, sp2.first);
+      CHECK_EQUAL(std::string("Hello"), sp2.second);
+
+      CHECK_EQUAL(2, ep4.first);
+      CHECK_EQUAL(std::string("World"), ep4.second);
+
+      CHECK_EQUAL(1, sp4.first);
+      CHECK_EQUAL(std::string("Hello"), sp4.second);
+
+      CHECK_EQUAL(2, ep5.first);
+      CHECK_EQUAL(std::string("World"), ep5.second);
+
+      CHECK_EQUAL(1, sp5.first);
+      CHECK_EQUAL(std::string("Hello"), sp5.second);
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_pair_move_conversion)
+    {
+      etl::pair<int, std::string> ep1(1, "Hello");
+      std::pair<int, std::string> sp1(2, "World");
+
+      etl::pair<int, std::string> ep2(std::move(sp1));
+      std::pair<int, std::string> sp2(std::move(ep1));
+
+      CHECK_EQUAL(2, ep2.first);
+      CHECK_EQUAL(std::string("World"), ep2.second);
+
+      CHECK_EQUAL(1, sp2.first);
+      CHECK_EQUAL(std::string("Hello"), sp2.second);
     }
 
     //*************************************************************************

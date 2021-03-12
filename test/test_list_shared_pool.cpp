@@ -26,8 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
-#include "ExtraCheckMacros.h"
+#include "unit_test_framework.h"
 
 #include "etl/list.h"
 #include "etl/pool.h"
@@ -50,14 +49,14 @@ namespace
 
     const size_t SIZE = 10;
 
-    typedef etl::list<ItemDC, 0>  DataDC;
-    typedef etl::list<ItemNDC, 0> DataNDC;
+    typedef etl::list_ext<ItemDC>  DataDC;
+    typedef etl::list_ext<ItemNDC> DataNDC;
     typedef etl::ilist<ItemNDC>   IDataNDC;
 
     typedef std::list<ItemNDC>   CompareData;
     typedef std::vector<ItemNDC> InitialData;
 
-    typedef etl::list<int, 0> DataInt;
+    typedef etl::list_ext<int> DataInt;
 
     typedef etl::pool<DataNDC::pool_type, SIZE> Pool;
     typedef etl::pool<DataNDC::pool_type, SIZE * 2> Pool2;
@@ -106,6 +105,8 @@ namespace
       DataNDC data;
 
       CHECK_EQUAL(data.max_size(), 0U);
+      CHECK_EQUAL(data.size(), 0U);
+      CHECK(data.empty());     
       CHECK(data.has_shared_pool());
     }
 
@@ -115,6 +116,8 @@ namespace
       DataNDC data;
 
       CHECK_THROW(data.push_back(ItemNDC("1")), etl::list_no_pool);
+      CHECK_THROW(data.full(), etl::list_no_pool);
+      CHECK_THROW(data.available(), etl::list_no_pool);
     }
 
     //*************************************************************************
@@ -125,6 +128,8 @@ namespace
 
       CHECK_EQUAL(data.size(), size_t(0));
       CHECK(data.empty());
+      CHECK(!data.full());
+      CHECK_EQUAL(data.available(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
       CHECK(data.begin() == data.end());
 
@@ -232,7 +237,7 @@ namespace
       CHECK(pool.full());
     }
 
-#if !defined(ETL_NO_STL)
+#if ETL_USING_STL
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -264,7 +269,7 @@ namespace
 #endif
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_copy_constructor)
+    TEST_FIXTURE(SetupFixture, test_copy_constructor_implicit_pool)
     {
       CompareData compare_data(half_data.begin(), half_data.end());
 
@@ -285,6 +290,82 @@ namespace
       other_data.pop_back();
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK_EQUAL(compare_data.size() - 2, other_data.size());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_copy_constructor_explicit_pool)
+    {
+      CompareData compare_data(half_data.begin(), half_data.end());
+
+      Pool pool;
+      DataNDC data(half_data.begin(), half_data.end(), pool);
+      DataNDC other_data(data, pool);
+
+      CHECK_EQUAL(data.size(), other_data.size());
+
+      CHECK(std::equal(data.begin(), data.end(), other_data.begin()));
+
+      CHECK(pool.full());
+
+      other_data.pop_front();
+      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK_EQUAL(compare_data.size() - 1, other_data.size());
+
+      other_data.pop_back();
+      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK_EQUAL(compare_data.size() - 2, other_data.size());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_constructor_implicit_pool)
+    {
+      Pool2 pool;
+      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC data2(unsorted_data.begin(), unsorted_data.end(), data1.get_pool());
+      DataNDC other_data1(std::move(data1));
+      DataNDC other_data2(std::move(data2));
+
+      CHECK_EQUAL(0U, data1.size());
+      CHECK(data1.empty());
+      CHECK_EQUAL(pool.max_size(), data1.max_size());
+      CHECK(data1.begin() == data1.end());
+
+      CHECK_EQUAL(0U, data2.size());
+      CHECK(data2.empty());
+      CHECK_EQUAL(pool.max_size(), data2.max_size());
+      CHECK(data2.begin() == data2.end());
+
+      CHECK_EQUAL(sorted_data.size(), other_data1.size());
+      CHECK_EQUAL(unsorted_data.size(), other_data2.size());
+
+      CHECK(std::equal(sorted_data.begin(), sorted_data.end(), other_data1.begin()));
+      CHECK(std::equal(unsorted_data.begin(), unsorted_data.end(), other_data2.begin()));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_constructor_explicit_pool)
+    {
+      Pool2 pool;
+      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC data2(unsorted_data.begin(), unsorted_data.end(), data1.get_pool());
+      DataNDC other_data1(std::move(data1), pool);
+      DataNDC other_data2(std::move(data2), pool);
+
+      CHECK_EQUAL(0U, data1.size());
+      CHECK(data1.empty());
+      CHECK_EQUAL(pool.max_size(), data1.max_size());
+      CHECK(data1.begin() == data1.end());
+
+      CHECK_EQUAL(0U, data2.size());
+      CHECK(data2.empty());
+      CHECK_EQUAL(pool.max_size(), data2.max_size());
+      CHECK(data2.begin() == data2.end());
+
+      CHECK_EQUAL(sorted_data.size(), other_data1.size());
+      CHECK_EQUAL(unsorted_data.size(), other_data2.size());
+
+      CHECK(std::equal(sorted_data.begin(), sorted_data.end(), other_data1.begin()));
+      CHECK(std::equal(unsorted_data.begin(), unsorted_data.end(), other_data2.begin()));
     }
 
     //*************************************************************************
@@ -448,12 +529,19 @@ namespace
       DataNDC data1(pool);
       DataNDC data2(pool);
 
+      CHECK_EQUAL(pool.available(), data1.available());
+      CHECK_EQUAL(pool.available(), data2.available());
+
       data1.assign(compare_data.begin(), compare_data.end());
       CHECK(!data1.empty());
       CHECK(data2.empty());
+      CHECK_EQUAL(pool.available(), data1.available());
+      CHECK_EQUAL(pool.available(), data2.available());
       data2.assign(compare_data.begin(), compare_data.end());
       CHECK(!data1.empty());
       CHECK(!data2.empty());
+      CHECK_EQUAL(pool.available(), data1.available());
+      CHECK_EQUAL(pool.available(), data2.available());
 
       CHECK_EQUAL(compare_data.size(), data1.size());
       CHECK_EQUAL(compare_data.size(), data2.size());
@@ -1223,6 +1311,38 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_assignment)
+    {
+      Pool4 pool;
+      DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
+      DataNDC data2(sorted_data.begin(), sorted_data.end(), data1.get_pool());
+      DataNDC other_data1(pool);
+      DataNDC other_data2(pool);
+
+      other_data1 = std::move(data1);
+      other_data2 = std::move(data2);
+
+      CHECK_EQUAL(0U, data1.size());
+      CHECK(data1.empty());
+      CHECK_EQUAL(pool.max_size(), data1.max_size());
+      CHECK(data1.begin() == data1.end());
+
+      CHECK_EQUAL(0U, data2.size());
+      CHECK(data2.empty());
+      CHECK_EQUAL(pool.max_size(), data2.max_size());
+      CHECK(data2.begin() == data2.end());
+
+      CHECK_EQUAL(sorted_data.size(), other_data1.size());
+      CHECK_EQUAL(sorted_data.size(), other_data2.size());
+
+      are_equal = std::equal(sorted_data.begin(), sorted_data.end(), other_data1.begin());
+      CHECK(are_equal);
+
+      are_equal = std::equal(sorted_data.begin(), sorted_data.end(), other_data2.begin());
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment_interface)
     {
       Pool pool;
@@ -1727,7 +1847,7 @@ namespace
       to = data.begin();
       std::advance(to, 2);
 
-      DataNDC data2(data);
+      DataNDC data2(data, data.get_pool());
       data.splice(to, data, begin, end);
 
       CHECK_EQUAL(data.size(), data2.size());

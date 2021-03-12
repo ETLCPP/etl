@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove, rlindeman
 
@@ -33,14 +33,10 @@ SOFTWARE.
 
 #include <stddef.h>
 
-#include <new>
-
 #include "platform.h"
-
 #include "algorithm.h"
 #include "iterator.h"
 #include "functional.h"
-
 #include "container.h"
 #include "pool.h"
 #include "exception.h"
@@ -51,15 +47,13 @@ SOFTWARE.
 #include "parameter_type.h"
 #include "iterator.h"
 #include "utility.h"
+#include "placement_new.h"
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
 #endif
 
 #include "private/minmax_push.h"
-
-#undef ETL_FILE
-#define ETL_FILE "9"
 
 //*****************************************************************************
 /// A multimap with the capacity defined at compile time.
@@ -91,7 +85,7 @@ namespace etl
   public:
 
     multimap_full(string_type file_name_, numeric_type line_number_)
-      : etl::multimap_exception("multimap:full", file_name_, line_number_)
+      : etl::multimap_exception(ETL_ERROR_TEXT("multimap:full", ETL_MULTIMAP_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -105,7 +99,7 @@ namespace etl
   public:
 
     multimap_out_of_bounds(string_type file_name_, numeric_type line_number_)
-      : etl::multimap_exception("multimap:bounds", file_name_, line_number_)
+      : etl::multimap_exception(ETL_ERROR_TEXT("multimap:bounds", ETL_MULTIMAP_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -119,7 +113,7 @@ namespace etl
   public:
 
     multimap_iterator(string_type file_name_, numeric_type line_number_)
-      : etl::multimap_exception("multimap:iterator", file_name_, line_number_)
+      : etl::multimap_exception(ETL_ERROR_TEXT("multimap:iterator", ETL_MULTIMAP_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -214,9 +208,9 @@ namespace etl
       {
         weight = (uint_least8_t) kNeither;
         dir = (uint_least8_t) kNeither;
-        parent = nullptr;
-        children[0] = nullptr;
-        children[1] = nullptr;
+        parent = ETL_NULLPTR;
+        children[0] = ETL_NULLPTR;
+        children[1] = ETL_NULLPTR;
       }
 
       Node* parent;
@@ -231,7 +225,7 @@ namespace etl
     multimap_base(size_type max_size_)
       : current_size(0)
       , CAPACITY(max_size_)
-      , root_node(nullptr)
+      , root_node(ETL_NULLPTR)
     {
     }
 
@@ -595,7 +589,7 @@ namespace etl
       // otherwise we might lose the other child of the swap node
       replacement = swap->children[1 - swap->dir];
 
-      if (replacement != nullptr)
+      if (replacement != ETL_NULLPTR)
       {
         replacement->parent = swap->parent;
       }
@@ -745,14 +739,14 @@ namespace etl
       friend class const_iterator;
 
       iterator()
-        : p_multimap(nullptr)
-        , p_node(nullptr)
+        : p_multimap(ETL_NULLPTR)
+        , p_node(ETL_NULLPTR)
       {
       }
 
       iterator(imultimap& multimap)
         : p_multimap(&multimap)
-        , p_node(nullptr)
+        , p_node(ETL_NULLPTR)
       {
       }
 
@@ -798,7 +792,7 @@ namespace etl
         return temp;
       }
 
-      iterator operator =(const iterator& other)
+      iterator& operator =(const iterator& other)
       {
         p_multimap = other.p_multimap;
         p_node = other.p_node;
@@ -865,14 +859,14 @@ namespace etl
       friend class imultimap;
 
       const_iterator()
-        : p_multimap(nullptr)
-        , p_node(nullptr)
+        : p_multimap(ETL_NULLPTR)
+        , p_node(ETL_NULLPTR)
       {
       }
 
       const_iterator(const imultimap& multimap)
         : p_multimap(&multimap)
-        , p_node(nullptr)
+        , p_node(ETL_NULLPTR)
       {
       }
 
@@ -924,7 +918,7 @@ namespace etl
         return temp;
       }
 
-      const_iterator operator =(const const_iterator& other)
+      const_iterator& operator =(const const_iterator& other)
       {
         p_multimap = other.p_multimap;
         p_node = other.p_node;
@@ -1224,14 +1218,14 @@ namespace etl
     iterator insert(const_reference value)
     {
       // Default to no inserted node
-      Node* inserted_node = nullptr;
+      Node* inserted_node = ETL_NULLPTR;
 
       ETL_ASSERT(!full(), ETL_ERROR(multimap_full));
 
       // Get next available free node
       Data_Node& node = allocate_data_node(value);
 
-      // Obtain the inserted node (might be nullptr if node was a duplicate)
+      // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
       inserted_node = insert_node(root_node, node);
 
       // Insert node into tree and return iterator to new node location in tree
@@ -1247,14 +1241,14 @@ namespace etl
     iterator insert(rvalue_reference value)
     {
       // Default to no inserted node
-      Node* inserted_node = nullptr;
+      Node* inserted_node = ETL_NULLPTR;
 
       ETL_ASSERT(!full(), ETL_ERROR(multimap_full));
 
       // Get next available free node
       Data_Node& node = allocate_data_node(etl::move(value));
 
-      // Obtain the inserted node (might be nullptr if node was a duplicate)
+      // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
       inserted_node = insert_node(root_node, node);
 
       // Insert node into tree and return iterator to new node location in tree
@@ -1456,7 +1450,7 @@ namespace etl
     //*************************************************************************
     Data_Node& allocate_data_node(const_reference value)
     {
-      Data_Node& node = *p_node_pool->allocate<Data_Node>();
+      Data_Node& node = create_data_node();
       ::new (&node.value) const value_type(value);
       ETL_INCREMENT_DEBUG_COUNT
       return node;
@@ -1468,12 +1462,21 @@ namespace etl
     //*************************************************************************
     Data_Node& allocate_data_node(rvalue_reference value)
     {
-      Data_Node& node = *p_node_pool->allocate<Data_Node>();
+      Data_Node& node = create_data_node();
       ::new (&node.value) const value_type(etl::move(value));
       ETL_INCREMENT_DEBUG_COUNT
       return node;
     }
 #endif
+
+    //*************************************************************************
+    /// Create a Data_Node.
+    //*************************************************************************
+    Data_Node& create_data_node()
+    {
+      Data_Node* (etl::ipool::*func)() = &etl::ipool::allocate<Data_Node>;
+      return *(p_node_pool->*func)();
+    }
 
     //*************************************************************************
     /// Destroy a Data_Node.
@@ -1522,7 +1525,7 @@ namespace etl
     //*************************************************************************
     Node* find_node(Node* position, key_parameter_t key) const
     {
-      Node* found = nullptr;
+      Node* found = ETL_NULLPTR;
       while (position)
       {
         // Downcast found to Data_Node class for comparison and other operations
@@ -1546,7 +1549,7 @@ namespace etl
         }
       }
 
-      // Return the node found (might be nullptr)
+      // Return the node found (might be ETL_NULLPTR)
       return found;
     }
 
@@ -1555,7 +1558,7 @@ namespace etl
     //*************************************************************************
     const Node* find_node(const Node* position, key_parameter_t key) const
     {
-      const Node* found = nullptr;
+      const Node* found = ETL_NULLPTR;
       while (position)
       {
         // Downcast found to Data_Node class for comparison and other operations
@@ -1579,7 +1582,7 @@ namespace etl
         }
       }
 
-      // Return the node found (might be nullptr)
+      // Return the node found (might be ETL_NULLPTR)
       return found;
     }
 
@@ -1589,7 +1592,7 @@ namespace etl
     Node* find_lower_node(Node* position, key_parameter_t key) const
     {
       // Something at this position? keep going
-      Node* lower_node = nullptr;
+      Node* lower_node = ETL_NULLPTR;
       while (position)
       {
         // Downcast lower node to Data_Node reference for key comparisons
@@ -1630,7 +1633,7 @@ namespace etl
     Node* find_upper_node(Node* position, key_parameter_t key) const
     {
       // Keep track of parent of last upper node
-      Node* upper_node = nullptr;
+      Node* upper_node = ETL_NULLPTR;
       // Has an equal node been found? start with no
       bool found = false;
       while (position)
@@ -1663,7 +1666,7 @@ namespace etl
         }
       }
 
-      // Return the upper node position found (might be nullptr)
+      // Return the upper node position found (might be ETL_NULLPTR)
       return upper_node;
     }
 
@@ -1678,8 +1681,8 @@ namespace etl
       // Was position provided not empty? then find where the node belongs
       if (position)
       {
-        // Find the critical parent node (default to nullptr)
-        Node* critical_parent_node = nullptr;
+        // Find the critical parent node (default to ETL_NULLPTR)
+        Node* critical_parent_node = ETL_NULLPTR;
         Node* critical_node = root_node;
 
         while (found)
@@ -1742,30 +1745,33 @@ namespace etl
         // Was a critical node found that should be checked for balance?
         if (critical_node)
         {
-          if (critical_parent_node == nullptr && critical_node == root_node)
+          if (critical_parent_node == ETL_NULLPTR && critical_node == root_node)
           {
             balance_node(root_node);
           }
-          else if (critical_parent_node == nullptr && critical_node == position)
+          else if (critical_parent_node == ETL_NULLPTR && critical_node == position)
           {
             balance_node(position);
           }
           else
           {
-            balance_node(critical_parent_node->children[critical_parent_node->dir]);
+            if (critical_parent_node != ETL_NULLPTR)
+            {
+              balance_node(critical_parent_node->children[critical_parent_node->dir]);
+            }
           }
         }
       }
       else
       {
         // Attach node to current position (which is assumed to be root)
-        attach_node(nullptr, position, node);
+        attach_node(ETL_NULLPTR, position, node);
 
         // Return newly added node at current position
         found = position;
       }
 
-      // Return the node found (might be nullptr)
+      // Return the node found (might be ETL_NULLPTR)
       return found;
     }
 
@@ -1839,9 +1845,9 @@ namespace etl
             node = node->children[node->dir];
           }
         }
-        // The value for node should not be nullptr at this point otherwise
+        // The value for node should not be ETL_NULLPTR at this point otherwise
         // step 1 failed to provide the correct path to found. Step 5 will fail
-        // (probably subtly) if node should be nullptr at this point
+        // (probably subtly) if node should be ETL_NULLPTR at this point
 
         // Step 3: Find the node (node should be equal to found at this point)
         // to replace found with (might end up equal to found) while also
@@ -1850,7 +1856,7 @@ namespace etl
         {
           // Replacement node found if its missing a child in the replace->dir
           // value set at the end of step 2 above
-          if (node->children[node->dir] == nullptr)
+          if (node->children[node->dir] == ETL_NULLPTR)
           {
             // Exit loop once node to replace found is determined
             break;
@@ -1897,7 +1903,7 @@ namespace etl
         while (balance)
         {
           // Break when balance node reaches the parent of replacement node
-          if (balance->children[balance->dir] == nullptr)
+          if (balance->children[balance->dir] == ETL_NULLPTR)
           {
             break;
           }
@@ -1922,7 +1928,7 @@ namespace etl
             if (weight == balance->dir)
             {
               // Is the root node being rebalanced (no parent)
-              if (balance->parent == nullptr)
+              if (balance->parent == ETL_NULLPTR)
               {
                 rotate_3node(root_node, 1 - balance->dir,
                   balance->children[1 - balance->dir]->children[balance->dir]->weight);
@@ -1938,7 +1944,7 @@ namespace etl
             else if (weight == (uint_least8_t) kNeither)
             {
               // Is the root node being rebalanced (no parent)
-              if (balance->parent == nullptr)
+              if (balance->parent == ETL_NULLPTR)
               {
                 rotate_2node(root_node, 1 - balance->dir);
                 root_node->weight = balance->dir;
@@ -1959,7 +1965,7 @@ namespace etl
             else
             {
               // Is the root node being rebalanced (no parent)
-              if (balance->parent == nullptr)
+              if (balance->parent == ETL_NULLPTR)
               {
                 rotate_2node(root_node, 1 - balance->dir);
               }
@@ -2021,7 +2027,6 @@ namespace etl
     {
     }
 #endif
-
   };
 
   //*************************************************************************
@@ -2080,14 +2085,14 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator>
+    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
     multimap(TIterator first, TIterator last)
       : etl::imultimap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************
@@ -2145,6 +2150,17 @@ namespace etl
     /// The pool of data nodes used for the multimap.
     etl::pool<typename etl::imultimap<TKey, TValue, TCompare>::Data_Node, MAX_SIZE> node_pool;
   };
+
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  multimap(T, Ts...)
+    ->multimap<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), typename T::first_type>,
+                typename T::second_type,
+                1U + sizeof...(Ts)>;
+#endif 
 
   //***************************************************************************
   /// Equal operator.
@@ -2226,7 +2242,5 @@ namespace etl
 }
 
 #include "private/minmax_pop.h"
-
-#undef ETL_FILE
 
 #endif

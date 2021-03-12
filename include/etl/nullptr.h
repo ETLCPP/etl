@@ -33,63 +33,18 @@ SOFTWARE.
 
 #include "platform.h"
 
-///\defgroup nullptr nullptr
-/// A definition of nullptr for compilers that don't support it as standard.
-///\ingroup utilities
-
-#if (ETL_NO_NULLPTR_SUPPORT && !defined(ARDUINO)) || defined(ETL_COMPILER_ARM5)
-namespace std
-{
-  //*****************************************************************************
-  /// A null pointer type.
-  ///\ingroup nullptr
-  //*****************************************************************************
-  class nullptr_t
-  {
-  public:
-
-    // Convertible to any type of null non-member pointer.
-    template<typename T>
-    operator T*() const
-    {
-      return 0;
-    }
-
-    // Or any type of null member pointer.
-    template<typename ANYCLASS, typename T>
-    operator T ANYCLASS::*() const
-    {
-      return 0;
-    }
-
-  private:
-
-    // Can't take address of nullptr.
-    void operator&() const ETL_DELETE;
-  };
-}
-
-//*****************************************************************************
-/// A null pointer.
-///\ingroup nullptr
-//*****************************************************************************
-#if !defined(ETL_STLPORT)
-const std::nullptr_t nullptr = {};
-#endif
-
+#if defined(ARDUINO) || defined(__AVR__)
+  #include <stddef.h>
 #else
-  #if defined(ARDUINO)
-    #include <stddef.h>
-  #else
-    #include <cstddef>
-  #endif
+  #include <cstddef>
 #endif
 
-#if defined(ARDUINO)
-namespace std
-{
-  typedef ::nullptr_t nullptr_t;
-}
+#if (ETL_CPP11_SUPPORTED == 0) || ETL_NOT_USING_STL
+  // Use the old style NULL definition.
+  #define ETL_NULLPTR NULL
+#else
+  // Use the new style nullptr.
+  #define ETL_NULLPTR nullptr
 #endif
 
 #endif

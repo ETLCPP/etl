@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 jwellbelove
+Copyright(c) 2021 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -37,8 +37,8 @@ SOFTWARE.
 /// Definitions of the ETL version
 ///\ingroup utilities
 
-#define ETL_VERSION_MAJOR 17
-#define ETL_VERSION_MINOR  0
+#define ETL_VERSION_MAJOR 20
+#define ETL_VERSION_MINOR  6
 #define ETL_VERSION_PATCH  0
 #define ETL_VERSION       ETL_STRINGIFY(ETL_VERSION_MAJOR) "." ETL_STRINGIFY(ETL_VERSION_MINOR) "." ETL_STRINGIFY(ETL_VERSION_PATCH)
 #define ETL_VERSION_W     ETL_STRINGIFY(ETL_VERSION_MAJOR) L"." ETL_STRINGIFY(ETL_VERSION_MINOR) L"." ETL_STRINGIFY(ETL_VERSION_PATCH)

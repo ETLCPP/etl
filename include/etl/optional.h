@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2015 jwellbelove
 
@@ -31,15 +31,13 @@ SOFTWARE.
 #ifndef ETL_OPTIONAL_INCLUDED
 #define ETL_OPTIONAL_INCLUDED
 
-#include <new>
-
 #include "platform.h"
 #include "alignment.h"
 #include "type_traits.h"
 #include "exception.h"
 #include "error_handler.h"
-
 #include "utility.h"
+#include "placement_new.h"
 
 namespace etl
 {
@@ -167,7 +165,7 @@ namespace etl
     //***************************************************************************
     optional(T&& value_)
     {
-      ::new (storage.template get_address<T>()) T(std::move(value_));
+      ::new (storage.template get_address<T>()) T(etl::move(value_));
       valid = true;
     }
 #endif
@@ -414,7 +412,7 @@ namespace etl
       }
     }
 
-#if ETL_CPP11_SUPPORTED  && !defined(ETL_STLPORT) && !defined(ETL_OPTIONAL_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED  && ETL_NOT_USING_STLPORT && !defined(ETL_OPTIONAL_FORCE_CPP03)
     //*************************************************************************
     /// Emplaces a value.
     ///\param args The arguments to construct with.

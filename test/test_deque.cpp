@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,8 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
-#include "ExtraCheckMacros.h"
+#include "unit_test_framework.h"
 
 #include "etl/deque.h"
 
@@ -94,8 +93,30 @@ namespace
     {
       DataDC data;
 
+      CHECK(data.empty());
+      CHECK(!data.full());
+      CHECK(data.begin() == data.end());
+      CHECK_EQUAL(0U, data.size());
       CHECK_EQUAL(SIZE, data.max_size());
     }
+
+#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::deque data{ N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13 };
+      etl::deque<NDC, 14> check = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13 };
+
+      CHECK(!data.empty());
+      CHECK(data.full());
+      CHECK(data.begin() != data.end());
+      CHECK_EQUAL(14U, data.size());
+      CHECK_EQUAL(0U, data.available());
+      CHECK_EQUAL(14U, data.capacity());
+      CHECK_EQUAL(14U, data.max_size());
+      CHECK(data == check);
+    }
+#endif
 
     //*************************************************************************
     TEST(test_constructor_fill)
@@ -136,7 +157,7 @@ namespace
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
     }
 
-#if !defined(ETL_NO_STL)
+#if ETL_USING_STL
     //*************************************************************************
     TEST(test_constructor_initializer_list)
     {
@@ -177,7 +198,6 @@ namespace
 
       Data deque2(std::move(deque1));
 
-      CHECK_EQUAL(0U, deque1.size());
       CHECK_EQUAL(4U, deque2.size());
 
       std::unique_ptr<uint32_t> pr = std::move(*deque2.begin());
@@ -261,7 +281,6 @@ namespace
       Data deque2;
       deque2 = std::move(deque1);
 
-      CHECK_EQUAL(0U, deque1.size());
       CHECK_EQUAL(4U, deque2.size());
 
       CHECK_EQUAL(1U, *deque2[0]);
@@ -531,11 +550,39 @@ namespace
     {
       DataNDC data(SIZE, N0);
 
-      DataNDC::iterator first = data.begin() + 1;
-      DataNDC::iterator second = data.begin() + 4;
+      DataNDC::iterator first  = data.begin() + 1;
+      DataNDC::iterator second = data.begin() + 1;
+      DataNDC::iterator third  = data.begin() + 4;
 
-      CHECK(first < second);
+      CHECK(first    == second);
+      CHECK(second   == first);
+      CHECK(!(first  == third));
+      CHECK(!(third  == first));
+
+      CHECK(!(first  != second));
+      CHECK(!(second != first));
+      CHECK(first    != third);
+      CHECK(third    != first);
+
+      CHECK(!(first  < second));
       CHECK(!(second < first));
+      CHECK(first    < third);
+      CHECK(!(third  < first));
+
+      CHECK(first    <= second);
+      CHECK(second   <= first);
+      CHECK(first    <= third);
+      CHECK(!(third  <= first));
+
+      CHECK(!(first  > second));
+      CHECK(!(second > first));
+      CHECK(!(first  > third));
+      CHECK(third    > first);
+
+      CHECK(first    >= second);
+      CHECK(second   >= first);
+      CHECK(!(first  >= third));
+      CHECK(third    >= first);
     }
 
     //*************************************************************************
@@ -543,11 +590,39 @@ namespace
     {
       DataNDC data(SIZE, N0);
 
-      DataNDC::const_iterator first  = data.cbegin() + 1;
-      DataNDC::const_iterator second = data.cbegin() + 4;
+      DataNDC::const_iterator first  = data.begin() + 1;
+      DataNDC::const_iterator second = data.begin() + 1;
+      DataNDC::const_iterator third  = data.begin() + 4;
 
-      CHECK(first < second);
+      CHECK(first    == second);
+      CHECK(second   == first);
+      CHECK(!(first  == third));
+      CHECK(!(third  == first));
+
+      CHECK(!(first  != second));
+      CHECK(!(second != first));
+      CHECK(first    != third);
+      CHECK(third    != first);
+
+      CHECK(!(first  < second));
       CHECK(!(second < first));
+      CHECK(first    < third);
+      CHECK(!(third  < first));
+
+      CHECK(first    <= second);
+      CHECK(second   <= first);
+      CHECK(first    <= third);
+      CHECK(!(third  <= first));
+
+      CHECK(!(first  > second));
+      CHECK(!(second > first));
+      CHECK(!(first  > third));
+      CHECK(third    > first);
+
+      CHECK(first    >= second);
+      CHECK(second   >= first);
+      CHECK(!(first  >= third));
+      CHECK(third    >= first);
     }
 
     //*************************************************************************
@@ -791,6 +866,23 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_insert_to_empty)
+    {
+      const int value(5);
+      const size_t insertCount = 2;
+      etl::deque<int, 2> valuesToInsert(insertCount, value);
+      etl::deque<int, 10> data;
+
+      data.insert(data.begin(), valuesToInsert.begin(), valuesToInsert.end());
+
+      CHECK_EQUAL(insertCount, std::distance(data.begin(), data.end()));
+      CHECK(data.size() == insertCount);
+      CHECK(data[0] == value);
+      CHECK(data[1] == value);
+      CHECK(std::equal(data.begin(), data.end(), valuesToInsert.begin()));
+    }
+
+    //*************************************************************************
     TEST(test_insert_value_begin)
     {
       Compare_Data compare_data(initial_data_under.begin(), initial_data_under.end());
@@ -799,6 +891,7 @@ namespace
       Compare_Data::iterator cposition = compare_data.insert(compare_data.begin(), N14);
       DataNDC::iterator      position  = data.insert(data.begin(), N14);
 
+      CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
       CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
@@ -813,6 +906,7 @@ namespace
       Compare_Data::iterator cposition = compare_data.emplace(compare_data.begin(), N14.value);
       DataNDC::iterator      position  = data.emplace(data.begin(), N14.value);
 
+      CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
       CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
@@ -827,6 +921,7 @@ namespace
       Compare_Data::iterator cposition = compare_data.insert(compare_data.end(), N14);
       DataNDC::iterator      position  = data.insert(data.end(), N14);
 
+      CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
       CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
@@ -841,6 +936,7 @@ namespace
       Compare_Data::iterator cposition = compare_data.emplace(compare_data.end(), N14.value);
       DataNDC::iterator      position  = data.emplace(data.end(), N14.value);
 
+      CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
       CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
@@ -855,6 +951,7 @@ namespace
       Compare_Data::iterator cposition = compare_data.insert(compare_data.begin() + 3, N14);
       DataNDC::iterator         position  = data.insert(data.begin() + 3, N14);
 
+      CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
       CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
@@ -865,6 +962,7 @@ namespace
       cposition = compare_data.insert(compare_data.begin() + 4, N14);
       position  = data.insert(data.begin() + 4, N14);
 
+      CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
       CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
@@ -879,6 +977,7 @@ namespace
       Compare_Data::iterator cposition = compare_data.emplace(compare_data.begin() + 3, N14.value);
       DataNDC::iterator         position = data.emplace(data.begin() + 3, N14.value);
 
+      CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
       CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
@@ -889,6 +988,7 @@ namespace
       cposition = compare_data.emplace(compare_data.begin() + 4, N14.value);
       position = data.emplace(data.begin() + 4, N14.value);
 
+      CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
       CHECK_EQUAL(std::distance(compare_data.begin(), cposition), std::distance(data.begin(), position));
@@ -945,6 +1045,7 @@ namespace
           compare_data.insert(compare_data.begin() + offset, range.begin(), range.end());
           data.insert(data.begin() + offset, range.begin(), range.end());
 
+          CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
           CHECK_EQUAL(compare_data.size(), data.size());
           CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
         }
@@ -1869,7 +1970,6 @@ namespace
       CHECK_EQUAL(2U, *(*(data2.begin() + 3)));
       CHECK_EQUAL(5U, *(*(data2.begin() + 4)));
 
-      CHECK(data1.empty());
       CHECK_EQUAL(ACTUAL_SIZE, data2.size());
 
       // Move assignment.
@@ -1882,8 +1982,14 @@ namespace
       CHECK_EQUAL(2U, *(*(data3.begin() + 3)));
       CHECK_EQUAL(5U, *(*(data3.begin() + 4)));
 
-      CHECK(data2.empty());
       CHECK_EQUAL(ACTUAL_SIZE, data3.size());
+    }
+
+    //*************************************************************************
+    TEST(test_two_parameter_constructor_same_type_not_iterator)
+    {
+      // No compilation error.
+      etl::deque<int, 10> v(5, 5);
     }
   };
 }

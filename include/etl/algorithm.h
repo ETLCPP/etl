@@ -46,12 +46,14 @@ SOFTWARE.
 #include "functional.h"
 #include "utility.h"
 
-#if !defined(ETL_NO_STL)
+#if ETL_USING_STL
   #include <algorithm>
   #include <utility>
   #include <iterator>
   #include <functional>
 #endif
+
+#include "private/minmax_push.h"
 
 namespace etl
 {
@@ -74,7 +76,7 @@ namespace etl
 //*****************************************************************************
 namespace etl
 {
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // iter_swap
   template <typename TIterator1, typename TIterator2>
@@ -93,7 +95,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // swap_ranges
   template <typename T1terator1, typename TIterator2>
@@ -120,14 +122,14 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // copy
   // Pointer
   template <typename TIterator1, typename TIterator2>
   typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
                              etl::is_pointer<TIterator2>::value &&
-                             etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                             etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
     typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
@@ -142,7 +144,7 @@ namespace etl
   template <typename TIterator1, typename TIterator2>
   typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
                              !etl::is_pointer<TIterator2>::value ||
-                             !etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                             !etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
     while (sb != se)
@@ -162,7 +164,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // reverse_copy
   template <typename TIterator1, typename TIterator2>
@@ -185,14 +187,14 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   // copy_n
   // Pointer
   template <typename TIterator1, typename TSize, typename TIterator2>
   typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
-                             etl::is_pointer<TIterator2>::value &&
-                             etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                          etl::is_pointer<TIterator2>::value &&
+                          etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy_n(TIterator1 sb, TSize count, TIterator2 db)
   {
     typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
@@ -203,8 +205,8 @@ namespace etl
   // Other iterator
   template <typename TIterator1, typename TSize, typename TIterator2>
   typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
-                             !etl::is_pointer<TIterator2>::value ||
-                             !etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                          !etl::is_pointer<TIterator2>::value ||
+                          !etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy_n(TIterator1 sb, TSize count, TIterator2 db)
   {
     while (count != 0)
@@ -230,14 +232,14 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // copy_backward
   // Pointer
   template <typename TIterator1, typename TIterator2>
   typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
-    etl::is_pointer<TIterator2>::value &&
-    etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                          etl::is_pointer<TIterator2>::value &&
+                          etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
     typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
@@ -250,8 +252,8 @@ namespace etl
   // Other iterator
   template <typename TIterator1, typename TIterator2>
   typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
-    !etl::is_pointer<TIterator2>::value ||
-    !etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+                          !etl::is_pointer<TIterator2>::value ||
+                          !etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
     copy_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
     while (se != sb)
@@ -272,11 +274,15 @@ namespace etl
 #endif
 
 #if ETL_CPP11_SUPPORTED
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // move
+  // non-pointer or not trivially copyable
   template <typename TIterator1, typename TIterator2>
-  TIterator2 move(TIterator1 sb, TIterator1 se, TIterator2 db)
+  typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
+                          !etl::is_pointer<TIterator2>::value ||
+                          !etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+    move(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
     while (sb != se)
     {
@@ -284,6 +290,21 @@ namespace etl
     }
 
     return db;
+  }
+
+  // pointer and trivially copyable
+  template <typename TIterator1, typename TIterator2>
+  typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
+                          etl::is_pointer<TIterator2>::value &&
+                          etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+    move(TIterator1 sb, TIterator1 se, TIterator2 db)
+  {
+    typedef typename etl::iterator_traits<TIterator1>::value_type      value_t;
+    typedef typename etl::iterator_traits<TIterator1>::difference_type difference_t;
+
+    difference_t count = (se - sb);
+
+    return TIterator2(memmove(db, sb, sizeof(value_t) * count)) + count;
   }
 #else
   //***************************************************************************
@@ -307,11 +328,15 @@ namespace etl
 #endif
 
 #if ETL_CPP11_SUPPORTED
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // move_backward
+  // non-pointer, non-pod
   template <typename TIterator1, typename TIterator2>
-  TIterator2 move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
+  typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
+                          !etl::is_pointer<TIterator2>::value ||
+                          !etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+    move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
     while (sb != se)
     {
@@ -319,6 +344,22 @@ namespace etl
     }
 
     return de;
+  }
+
+  // pointer and pod
+  template <typename TIterator1, typename TIterator2>
+  typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
+                          etl::is_pointer<TIterator2>::value &&
+                          etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+    move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
+  {
+    typedef typename etl::iterator_traits<TIterator1>::value_type      value_t;
+    typedef typename etl::iterator_traits<TIterator1>::difference_type difference_t;
+
+    difference_t count = (se - sb);
+    TIterator2 db = de - count;
+
+    return TIterator2(memmove(db, sb, sizeof(value_t) * count)) + count;
   }
 #else
   //***************************************************************************
@@ -340,7 +381,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // reverse
   // Pointers
@@ -378,7 +419,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // lower_bound
   template<typename TIterator, typename TValue, typename TCompare>
@@ -436,7 +477,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // upper_bound
   template<typename TIterator, typename TValue, typename TCompare>
@@ -494,7 +535,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // equal_range
   template<typename TIterator, typename TValue, typename TCompare>
@@ -532,7 +573,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // find_if
   template <typename TIterator, typename TUnaryPredicate>
@@ -562,7 +603,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // find
   template <typename TIterator, typename T>
@@ -592,7 +633,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // fill
   template<typename TIterator, typename TValue>
@@ -621,7 +662,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // fill_n
   template<typename TIterator, typename TSize, typename TValue>
@@ -658,7 +699,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // count
   template <typename TIterator, typename T>
@@ -690,7 +731,7 @@ namespace etl
   }
 #endif
 
-#if defined (ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // count_if
   template <typename TIterator, typename TUnaryPredicate>
@@ -722,12 +763,12 @@ namespace etl
   }
 #endif
 
-#if defined (ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // equal
   template <typename TIterator1, typename TIterator2>
   ETL_NODISCARD
-  typename etl::enable_if<!etl::is_pointer<TIterator1>::value || !etl::is_pointer<TIterator2>::value || !etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, bool>::type
+  typename etl::enable_if<!etl::is_pointer<TIterator1>::value || !etl::is_pointer<TIterator2>::value || !etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, bool>::type
     equal(TIterator1 first1, TIterator1 last1, TIterator2 first2)
   {
     while (first1 != last1)
@@ -743,13 +784,22 @@ namespace etl
 
   template <typename TIterator1, typename TIterator2>
   ETL_NODISCARD
-  typename etl::enable_if<etl::is_pointer<TIterator1>::value && etl::is_pointer<TIterator2>::value && etl::is_pod<typename etl::iterator_traits<TIterator1>::value_type>::value, bool>::type
+  typename etl::enable_if<etl::is_pointer<TIterator1>::value && etl::is_pointer<TIterator2>::value && etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, bool>::type
     equal(TIterator1 first1, TIterator1 last1, TIterator2 first2)
   {
     typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
 
     return (memcmp(first1, first2, sizeof(value_t) * (last1 - first1)) == 0);
   }
+
+  template <typename TIterator1, typename TIterator2>
+  ETL_NODISCARD
+    bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2, TIterator2 last2)
+  {
+    return (etl::distance(first1, last1) == etl::distance(first2, last2)) &&
+            etl::equal(first1, last1, first2);
+  }
+
 #else
   //***************************************************************************
   // equal
@@ -759,9 +809,26 @@ namespace etl
   {
     return std::equal(first1, last1, first2);
   }
+
+#if ETL_CPP14_SUPPORTED
+  template <typename TIterator1, typename TIterator2>
+  ETL_NODISCARD
+    bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2, TIterator2 last2)
+  {
+    return std::equal(first1, last1, first2, last2);
+  }
+#else
+  template <typename TIterator1, typename TIterator2>
+  ETL_NODISCARD
+  bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2, TIterator2 last2)
+  {
+    return (etl::distance(first1, last1) == etl::distance(first2, last2)) &&
+            etl::equal(first1, last1, first2);
+  }
+#endif
 #endif
 
-#if defined (ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // lexicographical_compare
   template <typename TIterator1, typename TIterator2, typename TCompare>
@@ -823,7 +890,7 @@ namespace etl
   }
 #endif
 
-#if defined (ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // min
   template <typename T, typename TCompare>
@@ -859,7 +926,7 @@ namespace etl
   }
 #endif
 
-#if defined (ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // max
   template <typename T, typename TCompare>
@@ -895,7 +962,30 @@ namespace etl
   }
 #endif
 
-#if defined (ETL_NO_STL)
+#if ETL_NOT_USING_STL
+  //***************************************************************************
+  // for_each
+  template <typename TIterator, typename TUnaryOperation>
+  ETL_CONSTEXPR14 TUnaryOperation for_each(TIterator first, TIterator last, TUnaryOperation unary_operation)
+  {
+    while (first != last)
+    {
+      unary_operation(*first++);
+    }
+
+    return unary_operation;
+  }
+#else
+  //***************************************************************************
+  // for_each
+  template <typename TIterator, typename TUnaryOperation>
+  ETL_CONSTEXPR14 TUnaryOperation for_each(TIterator first, TIterator last, TUnaryOperation unary_operation)
+  {
+    return std::for_each(first, last, unary_operation);
+  }
+#endif
+
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // transform
   template <typename TIteratorIn, typename TIteratorOut, typename TUnaryOperation>
@@ -932,6 +1022,56 @@ namespace etl
   TIteratorOut transform(TIteratorIn1 first1, TIteratorIn1 last1, TIteratorIn2 first2, TIteratorOut d_first, TBinaryOperation binary_operation)
   {
     return std::transform(first1, last1, first2, d_first, binary_operation);
+  }
+#endif
+
+#if ETL_NOT_USING_STL
+  //***************************************************************************
+  // replace
+  template <typename TIterator, typename T>
+  ETL_CONSTEXPR14 void replace(TIterator first, TIterator last, const T& old_value, const T& new_value)
+  {
+    while (first != last)
+    {
+      if (*first == old_value)
+      {
+        *first = new_value;
+      }
+
+      ++first;
+    }
+  }
+
+  //***************************************************************************
+  // replace_if
+  template <typename TIterator, typename TPredicate, typename T>
+  ETL_CONSTEXPR14 void replace_if(TIterator first, TIterator last, TPredicate predicate, const T& new_value)
+  {
+    while (first != last)
+    {
+      if (predicate(*first))
+      {
+        *first = new_value;
+      }
+
+      ++first;
+    }
+  }
+#else
+  //***************************************************************************
+  // replace
+  template <typename TIterator, typename T>
+  ETL_CONSTEXPR14 void replace(TIterator first, TIterator last, const T& old_value, const T& new_value)
+  {
+    std::replace(first, last, old_value, new_value);
+  }
+
+  //***************************************************************************
+  // replace_if
+  template <typename TIterator, typename TPredicate, typename T>
+  ETL_CONSTEXPR14 void replace_if(TIterator first, TIterator last, TPredicate predicate, const T& new_value)
+  {
+    std::replace_if(first, last, predicate, new_value);
   }
 #endif
 
@@ -1006,7 +1146,7 @@ namespace etl
     }
   }
 
-  #if defined (ETL_NO_STL)
+  #if ETL_NOT_USING_STL
   // Pop Heap
   template <typename TIterator, typename TCompare>
   void pop_heap(TIterator first, TIterator last, TCompare compare)
@@ -1186,7 +1326,7 @@ namespace etl
   {
 #if ETL_CPP11_SUPPORTED
     return std::is_heap(first, last);
-#else    
+#else
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
     return private_heap::is_heap(first, last - first, compare());
 #endif
@@ -1208,7 +1348,7 @@ namespace etl
 
 #endif
 
-#if defined (ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // Search
   template<typename TIterator1, typename TIterator2, typename TCompare>
@@ -1273,33 +1413,91 @@ namespace etl
   }
 #endif
 
-#if defined (ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // Rotate
+  namespace private_algorithm
+  {
+    //*********************************
+    template <typename TIterator>
+    TIterator rotate_general(TIterator first, TIterator middle, TIterator last)
+    {
+      TIterator next = middle;
+
+      while (first != next)
+      {
+        using ETL_OR_STD::swap; // Allow ADL
+
+        swap(*first++, *next++);
+
+        if (next == last)
+        {
+          next = middle;
+        }
+        else if (first == middle)
+        {
+          middle = next;
+        }
+      }
+
+      return first;
+    }
+
+    //*********************************
+    template <typename TIterator>
+    TIterator rotate_left_by_one(TIterator first, TIterator last)
+    {
+      typedef typename etl::iterator_traits<TIterator>::value_type value_type;
+
+      // Save the first item.
+      value_type temp(etl::move(*first));
+
+      // Move the rest.
+      TIterator result = etl::move(etl::next(first), last, first);
+
+      // Restore the first item in its rotated position.
+      *result = etl::move(temp);
+
+      // The new position of the first item.
+      return result;
+    }
+
+    //*********************************
+    template <typename TIterator>
+    TIterator rotate_right_by_one(TIterator first, TIterator last)
+    {
+      typedef typename etl::iterator_traits<TIterator>::value_type value_type;
+
+      // Save the last item.
+      TIterator previous = etl::prev(last);
+      value_type temp(etl::move(*previous));
+
+      // Move the rest.
+      TIterator result = etl::move_backward(first, previous, last);
+
+      // Restore the last item in its rotated position.
+      *first = etl::move(temp);
+
+      // The new position of the first item.
+      return result;
+    }
+  }
+
+  //*********************************
   template<typename TIterator>
   TIterator rotate(TIterator first, TIterator middle, TIterator last)
   {
-    using ETL_OR_STD::swap; // Allow ADL
-
-    TIterator next = middle;
-
-    while (first != next)
+    if (etl::next(first) == middle)
     {
-      using ETL_OR_STD::swap;
-
-      swap(*first++, *next++);
-
-      if (next == last)
-      {
-        next = middle;
-      }
-      else if (first == middle)
-      {
-        middle = next;
-      }
+      return private_algorithm::rotate_left_by_one(first, last);
     }
 
-    return first;
+    if (etl::next(middle) == last)
+    {
+      return private_algorithm::rotate_right_by_one(first, last);
+    }
+
+    return private_algorithm::rotate_general(first, middle, last);
   }
 #else
   //***************************************************************************
@@ -1311,7 +1509,7 @@ namespace etl
   }
 #endif
 
-#if defined (ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   // find_end
   // Predicate
@@ -1379,7 +1577,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   /// Finds the iterator to the smallest element in the range (begin, end).<br>
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/min_element"></a>
@@ -1449,7 +1647,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   /// Finds the iterator to the largest element in the range (begin, end).<br>
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/max_element"></a>
@@ -1519,7 +1717,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// Finds the greatest and the smallest element in the range (begin, end).<br>
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/minmax_element"></a>
@@ -1595,7 +1793,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// minmax
   ///\ingroup algorithm
@@ -1651,7 +1849,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// is_sorted_until
   ///\ingroup algorithm
@@ -1737,7 +1935,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// is_sorted
   ///\ingroup algorithm
@@ -1793,7 +1991,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// find_if_not
   ///\ingroup algorithm
@@ -1833,7 +2031,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// is_permutation
   ///\ingroup algorithm
@@ -2029,7 +2227,7 @@ namespace etl
   #endif
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// is_partitioned
   ///\ingroup algorithm
@@ -2075,7 +2273,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// partition_point
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/partition_point"></a>
@@ -2115,7 +2313,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// Copies the elements from the range (begin, end) to two different ranges
   /// depending on the value returned by the predicate.<br>
@@ -2161,7 +2359,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// copy_if
   ///\ingroup algorithm
@@ -2201,7 +2399,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// all_of
   ///\ingroup algorithm
@@ -2231,7 +2429,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// any_of
   ///\ingroup algorithm
@@ -2261,7 +2459,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL) || !ETL_CPP11_SUPPORTED
+#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// none_of
   ///\ingroup algorithm
@@ -2291,7 +2489,7 @@ namespace etl
   }
 #endif
 
-#if defined(ETL_NO_STL)
+#if ETL_NOT_USING_STL
   //***************************************************************************
   /// Sorts the elements.
   /// Uses user defined comparison.
@@ -3243,5 +3441,7 @@ namespace etl
   }
 #endif
 }
+
+#include "private/minmax_pop.h"
 
 #endif

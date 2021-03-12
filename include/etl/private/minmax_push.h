@@ -33,9 +33,7 @@ SOFTWARE.
  * This file is intended to evaluated multiple times by design.
  */
 
-#if defined(ETL_COMPILER_MICROSOFT)
-  #pragma push_macro("min")
-  #pragma push_macro("max")
-  #undef min
-  #undef max
-#endif
+#pragma push_macro("min")
+#pragma push_macro("max")
+#undef min
+#undef max

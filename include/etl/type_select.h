@@ -34,9 +34,6 @@ SOFTWARE.
 #include "type_traits.h"
 #include "null_type.h"
 
-#undef ETL_FILE
-#define ETL_FILE "49"
-
 #if 0
 #error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
 #endif
@@ -47,6 +44,49 @@ SOFTWARE.
 
 namespace etl
 {
+#if ETL_CPP11_SUPPORTED && !defined(ETL_TYPE_SELECT_FORCE_CPP03)
+  //***************************************************************************
+  // Variadic version.
+  //***************************************************************************
+  template <typename... TTypes>
+  struct type_select
+  {
+  private:
+
+    //***********************************
+    template <size_t ID, size_t N, typename T1, typename... TRest>
+    struct type_select_helper
+    {
+      using type = typename etl::conditional<ID == N,
+                                             T1,
+                                             typename type_select_helper<ID, N + 1, TRest...>::type>::type;
+    };
+
+    //***********************************
+    template <size_t ID, size_t N, typename T1>
+    struct type_select_helper<ID, N, T1>
+    {
+      using type = T1;
+    };
+
+  public:
+
+    template <size_t ID>
+    struct select
+    {
+      static_assert(ID < sizeof...(TTypes), "Illegal type_select::select index");
+
+      using type = typename type_select_helper<ID, 0, TTypes...>::type;
+    };
+
+#if ETL_CPP11_SUPPORTED
+    template <size_t ID>
+    using select_t = typename select<ID>::type;
+#endif
+  };
+
+#else
+
   //***************************************************************************
   // For 16 types.
   //***************************************************************************
@@ -583,8 +623,7 @@ namespace etl
       ETL_STATIC_ASSERT(ID < 1, "Invalid ID");
     };
   };
+#endif
 }
-
-#undef ETL_FILE
 
 #endif

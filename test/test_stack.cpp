@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <stack>
 
@@ -436,6 +436,10 @@ namespace
       stack.push(4);
 
       etl::stack<int, 4> stack2;
+
+      // These should be overwritten.
+      stack2.push(5);
+      stack2.push(6);
 
       stack2 = stack;
 

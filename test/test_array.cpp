@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/array.h"
 
@@ -56,6 +56,18 @@ namespace
       CHECK_EQUAL(data.size(), size_t(SIZE));
       CHECK_EQUAL(data.max_size(), SIZE);
     }
+
+#if !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      Data compare = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      bool isEqual = std::equal(data.begin(), data.end(), compare.begin());
+      CHECK(isEqual);
+    }
+#endif
 
     //*************************************************************************
     TEST(test_assignment)

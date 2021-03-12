@@ -29,14 +29,14 @@ SOFTWARE.
 #include <stdint.h>
 #include <limits.h>
 
-#include "etl/platform.h"
-#include "etl/type_traits.h"
-#include "etl/nullptr.h"
-#include "etl/endianness.h"
-#include "etl/integral_limits.h"
-#include "etl/binary.h"
-#include "etl/algorithm.h"
-#include "etl/iterator.h"
+#include "platform.h"
+#include "type_traits.h"
+#include "nullptr.h"
+#include "endianness.h"
+#include "integral_limits.h"
+#include "binary.h"
+#include "algorithm.h"
+#include "iterator.h"
 
 #include "private/minmax_push.h"
 
@@ -56,7 +56,7 @@ namespace etl
     /// Default constructor.
     //***************************************************************************
     bit_stream()
-      : pdata(nullptr),
+      : pdata(ETL_NULLPTR),
         length(0U)
     {
       restart();
@@ -163,7 +163,7 @@ namespace etl
     {
       bool success = false;
 
-      if (pdata != nullptr)
+      if (pdata != ETL_NULLPTR)
       {
         if (bits_remaining > 0)
         {
@@ -186,7 +186,7 @@ namespace etl
       return put_integral(static_cast<uint32_t>(value), width);
     }
 
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
     //***************************************************************************
     /// For 64bit integral types
     //***************************************************************************
@@ -234,7 +234,7 @@ namespace etl
     {
       bool success = false;
 
-      if (pdata != nullptr)
+      if (pdata != ETL_NULLPTR)
       {
         // Do we have enough bits?
         if (bits_remaining > 0)
@@ -257,7 +257,7 @@ namespace etl
       bool success = false;
       uint_least8_t bits = width;
 
-      if (pdata != nullptr)
+      if (pdata != ETL_NULLPTR)
       {
         // Do we have enough bits?
         if (bits_remaining >= width)
@@ -297,7 +297,7 @@ namespace etl
     {
       bool success = false;
 
-      if (pdata != nullptr)
+      if (pdata != ETL_NULLPTR)
       {
         uint_least8_t width = CHAR_BIT * sizeof(T);
 
@@ -313,8 +313,6 @@ namespace etl
           }
 
           from_bytes(data, value);
-
-          bits_remaining -= width;
 
           success = true;
         }
@@ -372,7 +370,7 @@ namespace etl
     {
       bool success = false;
 
-      if (pdata != nullptr)
+      if (pdata != ETL_NULLPTR)
       {
         // Do we have enough bits?
         if (bits_remaining >= width)
@@ -398,7 +396,7 @@ namespace etl
       return success;
     }
 
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
     //***************************************************************************
     /// For unsigned integral types. 64bit
     //***************************************************************************
@@ -406,7 +404,7 @@ namespace etl
     {
       bool success = false;
 
-      if (pdata != nullptr)
+      if (pdata != ETL_NULLPTR)
       {
         // Do we have enough bits?
         if (bits_remaining >= width)

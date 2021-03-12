@@ -53,7 +53,7 @@ SOFTWARE.
   #if !defined(ETL_COMPILER_TYPE_DETECTED) && !defined(ETL_COMPILER_ARM6)
     #if defined(__ARMCOMPILER_VERSION) && (__ARMCOMPILER_VERSION >= 6000000L) && (__ARMCOMPILER_VERSION < 7000000L)
       #define ETL_COMPILER_ARM6
-      #define ETL_COMPILER_TYPE_DETECTED
+      #define ETL_COMPILER_TYPE_DETECTED 1
     #endif
   #endif
 
@@ -65,7 +65,7 @@ SOFTWARE.
   #endif
 
   #if !defined(ETL_COMPILER_TYPE_DETECTED) && !defined(ETL_COMPILER_GCC)
-    #if defined(__GNUC__)
+    #if defined(__GNUC__) && !defined(__clang__) && !defined(__llvm__)
       #define ETL_COMPILER_GCC
       #define ETL_COMPILER_TYPE_DETECTED
     #endif

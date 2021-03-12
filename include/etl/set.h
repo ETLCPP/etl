@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove, rlindeman
 
@@ -33,8 +33,6 @@ SOFTWARE.
 
 #include <stddef.h>
 
-#include <new>
-
 #include "platform.h"
 #include "container.h"
 #include "pool.h"
@@ -46,19 +44,16 @@ SOFTWARE.
 #include "parameter_type.h"
 #include "iterator.h"
 #include "utility.h"
-
 #include "algorithm.h"
 #include "iterator.h"
 #include "functional.h"
+#include "placement_new.h"
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
 #endif
 
 #include "private/minmax_push.h"
-
-#undef ETL_FILE
-#define ETL_FILE "14"
 
 //*****************************************************************************
 ///\defgroup set set
@@ -91,7 +86,7 @@ namespace etl
   public:
 
     set_full(string_type file_name_, numeric_type line_number_)
-      : etl::set_exception(ETL_ERROR_TEXT("set:full", ETL_FILE"A"), file_name_, line_number_)
+      : etl::set_exception(ETL_ERROR_TEXT("set:full", ETL_SET_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -105,7 +100,7 @@ namespace etl
   public:
 
     set_out_of_bounds(string_type file_name_, numeric_type line_number_)
-      : etl::set_exception(ETL_ERROR_TEXT("set:bounds", ETL_FILE"B"), file_name_, line_number_)
+      : etl::set_exception(ETL_ERROR_TEXT("set:bounds", ETL_SET_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -119,7 +114,7 @@ namespace etl
   public:
 
     set_iterator(string_type file_name_, numeric_type line_number_)
-      : etl::set_exception(ETL_ERROR_TEXT("set:iterator problem", ETL_FILE"C"), file_name_, line_number_)
+      : etl::set_exception(ETL_ERROR_TEXT("set:iterator problem", ETL_SET_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -214,8 +209,8 @@ namespace etl
       {
         weight = kNeither;
         dir = kNeither;
-        children[0] = nullptr;
-        children[1] = nullptr;
+        children[0] = ETL_NULLPTR;
+        children[1] = ETL_NULLPTR;
       }
 
       Node* children[2];
@@ -229,7 +224,7 @@ namespace etl
     set_base(size_type max_size_)
       : current_size(0)
       , CAPACITY(max_size_)
-      , root_node(nullptr)
+      , root_node(ETL_NULLPTR)
 
     {
     }
@@ -564,14 +559,14 @@ namespace etl
       friend class const_iterator;
 
       iterator()
-        : p_set(nullptr)
-        , p_node(nullptr)
+        : p_set(ETL_NULLPTR)
+        , p_node(ETL_NULLPTR)
       {
       }
 
       iterator(iset& set)
         : p_set(&set)
-        , p_node(nullptr)
+        , p_node(ETL_NULLPTR)
       {
       }
 
@@ -617,7 +612,7 @@ namespace etl
         return temp;
       }
 
-      iterator operator =(const iterator& other)
+      iterator& operator =(const iterator& other)
       {
         p_set = other.p_set;
         p_node = other.p_node;
@@ -684,14 +679,14 @@ namespace etl
       friend class iset;
 
       const_iterator()
-        : p_set(nullptr)
-        , p_node(nullptr)
+        : p_set(ETL_NULLPTR)
+        , p_node(ETL_NULLPTR)
       {
       }
 
       const_iterator(const iset& set)
         : p_set(&set)
-        , p_node(nullptr)
+        , p_node(ETL_NULLPTR)
       {
       }
 
@@ -743,7 +738,7 @@ namespace etl
         return temp;
       }
 
-      const_iterator operator =(const const_iterator& other)
+      const_iterator& operator =(const const_iterator& other)
       {
         p_set = other.p_set;
         p_node = other.p_node;
@@ -1063,7 +1058,7 @@ namespace etl
     ETL_OR_STD::pair<iterator, bool> insert(const_reference value)
     {
       // Default to no inserted node
-      Node* inserted_node = nullptr;
+      Node* inserted_node = ETL_NULLPTR;
       bool inserted = false;
 
       ETL_ASSERT(!full(), ETL_ERROR(set_full));
@@ -1071,7 +1066,7 @@ namespace etl
       // Get next available free node
       Data_Node& node = allocate_data_node(value);
 
-      // Obtain the inserted node (might be nullptr if node was a duplicate)
+      // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
       inserted_node = insert_node(root_node, node);
       inserted = inserted_node == &node;
 
@@ -1088,7 +1083,7 @@ namespace etl
     ETL_OR_STD::pair<iterator, bool> insert(rvalue_reference value)
     {
       // Default to no inserted node
-      Node* inserted_node = nullptr;
+      Node* inserted_node = ETL_NULLPTR;
       bool inserted = false;
 
       ETL_ASSERT(!full(), ETL_ERROR(set_full));
@@ -1096,7 +1091,7 @@ namespace etl
       // Get next available free node
       Data_Node& node = allocate_data_node(etl::move(value));
 
-      // Obtain the inserted node (might be nullptr if node was a duplicate)
+      // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
       inserted_node = insert_node(root_node, node);
       inserted = inserted_node == &node;
 
@@ -1114,14 +1109,14 @@ namespace etl
     iterator insert(iterator, const_reference value)
     {
       // Default to no inserted node
-      Node* inserted_node = nullptr;
+      Node* inserted_node = ETL_NULLPTR;
 
       ETL_ASSERT(!full(), ETL_ERROR(set_full));
 
       // Get next available free node
       Data_Node& node = allocate_data_node(value);
 
-      // Obtain the inserted node (might be nullptr if node was a duplicate)
+      // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
       inserted_node = insert_node(root_node, node);
 
       // Insert node into tree and return iterator to new node location in tree
@@ -1138,14 +1133,14 @@ namespace etl
     iterator insert(iterator, rvalue_reference value)
     {
       // Default to no inserted node
-      Node* inserted_node = nullptr;
+      Node* inserted_node = ETL_NULLPTR;
 
       ETL_ASSERT(!full(), ETL_ERROR(set_full));
 
       // Get next available free node
       Data_Node& node = allocate_data_node(etl::move(value));
 
-      // Obtain the inserted node (might be nullptr if node was a duplicate)
+      // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
       inserted_node = insert_node(root_node, node);
 
       // Insert node into tree and return iterator to new node location in tree
@@ -1162,14 +1157,14 @@ namespace etl
     iterator insert(const_iterator, const_reference value)
     {
       // Default to no inserted node
-      Node* inserted_node = nullptr;
+      Node* inserted_node = ETL_NULLPTR;
 
       ETL_ASSERT(!full(), ETL_ERROR(set_full));
 
       // Get next available free node
       Data_Node& node = allocate_data_node(value);
 
-      // Obtain the inserted node (might be nullptr if node was a duplicate)
+      // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
       inserted_node = insert_node(root_node, node);
 
       // Insert node into tree and return iterator to new node location in tree
@@ -1186,14 +1181,14 @@ namespace etl
     iterator insert(const_iterator, rvalue_reference value)
     {
       // Default to no inserted node
-      Node* inserted_node = nullptr;
+      Node* inserted_node = ETL_NULLPTR;
 
       ETL_ASSERT(!full(), ETL_ERROR(set_full));
 
       // Get next available free node
       Data_Node& node = allocate_data_node(etl::move(value));
 
-      // Obtain the inserted node (might be nullptr if node was a duplicate)
+      // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
       inserted_node = insert_node(root_node, node);
 
       // Insert node into tree and return iterator to new node location in tree
@@ -1308,7 +1303,7 @@ namespace etl
     //*************************************************************************
     Data_Node& allocate_data_node(const_reference value)
     {
-      Data_Node& node = *p_node_pool->allocate<Data_Node>();
+      Data_Node& node = create_data_node();
       ::new ((void*)&node.value) value_type(value);
       ETL_INCREMENT_DEBUG_COUNT
       return node;
@@ -1320,12 +1315,21 @@ namespace etl
     //*************************************************************************
     Data_Node& allocate_data_node(rvalue_reference value)
     {
-      Data_Node& node = *p_node_pool->allocate<Data_Node>();
+      Data_Node& node = create_data_node();
       ::new ((void*)&node.value) value_type(etl::move(value));
       ETL_INCREMENT_DEBUG_COUNT
       return node;
     }
 #endif
+
+    //*************************************************************************
+    /// Create a Data_Node.
+    //*************************************************************************
+    Data_Node& create_data_node()
+    {
+      Data_Node* (etl::ipool::*func)() = &etl::ipool::allocate<Data_Node>;
+      return *(p_node_pool->*func)();
+    }
 
     //*************************************************************************
     /// Destroy a Data_Node.
@@ -1366,7 +1370,7 @@ namespace etl
         }
       }
 
-      // Return the node found (might be nullptr)
+      // Return the node found (might be ETL_NULLPTR)
       return found;
     }
 
@@ -1399,7 +1403,7 @@ namespace etl
         }
       }
 
-      // Return the node found (might be nullptr)
+      // Return the node found (might be ETL_NULLPTR)
       return found;
     }
 
@@ -1455,7 +1459,7 @@ namespace etl
     Node* find_parent_node(Node* position, const Node* node)
     {
       // Default to no parent node found
-      Node* found = nullptr;
+      Node* found = ETL_NULLPTR;
 
       // If the position provided is the same as the node then there is no parent
       if (position && node && position != node)
@@ -1492,7 +1496,7 @@ namespace etl
         }
       }
 
-      // Return the parent node found (might be nullptr)
+      // Return the parent node found (might be ETL_NULLPTR)
       return found;
     }
 
@@ -1503,7 +1507,7 @@ namespace etl
     const Node* find_parent_node(const Node* position, const Node* node) const
     {
       // Default to no parent node found
-      const Node* found = nullptr;
+      const Node* found = ETL_NULLPTR;
 
       // If the position provided is the same as the node then there is no parent
       if (position && node && position != node)
@@ -1540,7 +1544,7 @@ namespace etl
         }
       }
 
-      // Return the parent node found (might be nullptr)
+      // Return the parent node found (might be ETL_NULLPTR)
       return found;
     }
 
@@ -1550,7 +1554,7 @@ namespace etl
     Node* find_lower_node(Node* position, key_parameter_t key) const
     {
       // Something at this position? keep going
-      Node* lower_node = nullptr;
+      Node* lower_node = ETL_NULLPTR;
       while (position)
       {
         // Downcast lower node to Data_Node reference for key comparisons
@@ -1591,7 +1595,7 @@ namespace etl
     Node* find_upper_node(Node* position, key_parameter_t key) const
     {
       // Keep track of parent of last upper node
-      Node* upper_node = nullptr;
+      Node* upper_node = ETL_NULLPTR;
       // Start with position provided
       Node* node = position;
       while (node)
@@ -1619,7 +1623,7 @@ namespace etl
         }
       }
 
-      // Return the upper node position found (might be nullptr)
+      // Return the upper node position found (might be ETL_NULLPTR)
       return upper_node;
     }
 
@@ -1634,8 +1638,8 @@ namespace etl
       // Was position provided not empty? then find where the node belongs
       if (position)
       {
-        // Find the critical parent node (default to nullptr)
-        Node* critical_parent_node = nullptr;
+        // Find the critical parent node (default to ETL_NULLPTR)
+        Node* critical_parent_node = ETL_NULLPTR;
         Node* critical_node = root_node;
 
         while (found)
@@ -1668,7 +1672,7 @@ namespace etl
             found->dir = kNeither;
 
             // Clear critical node value to skip weight step below
-            critical_node = nullptr;
+            critical_node = ETL_NULLPTR;
 
             // Destroy the node provided (its a duplicate)
             destroy_data_node(node);
@@ -1706,17 +1710,20 @@ namespace etl
         // Was a critical node found that should be checked for balance?
         if (critical_node)
         {
-          if (critical_parent_node == nullptr && critical_node == root_node)
+          if (critical_parent_node == ETL_NULLPTR && critical_node == root_node)
           {
             balance_node(root_node);
           }
-          else if (critical_parent_node == nullptr && critical_node == position)
+          else if (critical_parent_node == ETL_NULLPTR && critical_node == position)
           {
             balance_node(position);
           }
           else
           {
-            balance_node(critical_parent_node->children[critical_parent_node->dir]);
+            if (critical_parent_node != ETL_NULLPTR)
+            {
+              balance_node(critical_parent_node->children[critical_parent_node->dir]);
+            }
           }
         }
       }
@@ -1729,7 +1736,7 @@ namespace etl
         found = position;
       }
 
-      // Return the node found (might be nullptr)
+      // Return the node found (might be ETL_NULLPTR)
       return found;
     }
 
@@ -1882,11 +1889,11 @@ namespace etl
       // Step 1: Find the target node that matches the key provided, the
       // replacement node (might be the same as target node), and the critical
       // node to start rebalancing the tree from (up to the replacement node)
-      Node* found_parent = nullptr;
-      Node* found = nullptr;
-      Node* replace_parent = nullptr;
+      Node* found_parent = ETL_NULLPTR;
+      Node* found = ETL_NULLPTR;
+      Node* replace_parent = ETL_NULLPTR;
       Node* replace = position;
-      Node* balance_parent = nullptr;
+      Node* balance_parent = ETL_NULLPTR;
       Node* balance = root_node;
       while (replace)
       {
@@ -1915,7 +1922,7 @@ namespace etl
         }
         // Replacement node found if its missing a child in the replace->dir
         // value set above
-        if (replace->children[replace->dir] == nullptr)
+        if (replace->children[replace->dir] == ETL_NULLPTR)
         {
           // Exit loop once replace node is found (target might not have been)
           break;
@@ -1945,7 +1952,7 @@ namespace etl
         // Step 2: Update weights from critical node to replacement parent node
         while (balance)
         {
-          if (balance->children[balance->dir] == nullptr)
+          if (balance->children[balance->dir] == ETL_NULLPTR)
           {
             break;
           }
@@ -1965,7 +1972,7 @@ namespace etl
             if (weight == balance->dir)
             {
               // Is the root node being rebalanced (no parent)
-              if (balance_parent == nullptr)
+              if (balance_parent == ETL_NULLPTR)
               {
                 rotate_3node(root_node, 1 - balance->dir,
                   balance->children[1 - balance->dir]->children[balance->dir]->weight);
@@ -1981,7 +1988,7 @@ namespace etl
             else if (weight == kNeither)
             {
               // Is the root node being rebalanced (no parent)
-              if (balance_parent == nullptr)
+              if (balance_parent == ETL_NULLPTR)
               {
                 rotate_2node(root_node, 1 - balance->dir);
                 root_node->weight = balance->dir;
@@ -1998,7 +2005,7 @@ namespace etl
             else
             {
               // Is the root node being rebalanced (no parent)
-              if (balance_parent == nullptr)
+              if (balance_parent == ETL_NULLPTR)
               {
                 rotate_2node(root_node, 1 - balance->dir);
               }
@@ -2063,7 +2070,7 @@ namespace etl
         destroy_data_node(found_data_node);
       } // if(found)
 
-        // Return node found (might be nullptr)
+        // Return node found (might be ETL_NULLPTR)
       return found;
     }
 
@@ -2142,14 +2149,14 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator>
+    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
     set(TIterator first, TIterator last)
       : etl::iset<TKey, TCompare>(node_pool, MAX_SIZE)
     {
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************
@@ -2208,6 +2215,15 @@ namespace etl
     /// The pool of data nodes used for the set.
     etl::pool<typename etl::iset<TKey, TCompare>::Data_Node, MAX_SIZE> node_pool;
   };
+
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  set(T, Ts...)
+    ->set<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
+#endif 
 
   //***************************************************************************
   /// Equal operator.
@@ -2289,7 +2305,5 @@ namespace etl
 }
 
 #include "private/minmax_pop.h"
-
-#undef ETL_FILE
 
 #endif

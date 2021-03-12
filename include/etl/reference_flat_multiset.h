@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2017 jwellbelove
 
@@ -46,9 +46,6 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 
-#undef ETL_FILE
-#define ETL_FILE "33"
-
 namespace etl
 {
   //***************************************************************************
@@ -74,7 +71,7 @@ namespace etl
   public:
 
     flat_multiset_full(string_type file_name_, numeric_type line_number_)
-      : flat_multiset_exception(ETL_ERROR_TEXT("flat_multiset:full", ETL_FILE"A"), file_name_, line_number_)
+      : flat_multiset_exception(ETL_ERROR_TEXT("flat_multiset:full", ETL_REFERENCE_FLAT_MULTISET_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -88,7 +85,7 @@ namespace etl
   public:
 
     flat_multiset_iterator(string_type file_name_, numeric_type line_number_)
-      : flat_multiset_exception(ETL_ERROR_TEXT("flat_multiset:iterator", ETL_FILE"C"), file_name_, line_number_)
+      : flat_multiset_exception(ETL_ERROR_TEXT("flat_multiset:iterator", ETL_REFERENCE_FLAT_MULTISET_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -462,7 +459,7 @@ namespace etl
 
       ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_multiset_full));
 
-      iterator i_element = etl::lower_bound(begin(), end(), value, compare);
+      iterator i_element = etl::upper_bound(begin(), end(), value, compare);
 
       if (i_element == end())
       {
@@ -885,5 +882,4 @@ namespace etl
   }
 }
 
-#undef ETL_FILE
 #endif

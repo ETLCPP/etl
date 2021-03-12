@@ -15,6 +15,7 @@ examples/ArmTimerCallbacks/Listings
 examples/ArmTimerCallbacks/Objects
 examples/ArmTimerCallbacks/DebugConfig
 build-test-Desktop_x86_windows_msvc2017_pe_32bit-Debug/unittest++/src
+buildresults/
 
 #################
 ## Eclipse
@@ -251,3 +252,37 @@ cmake-build-*/
 
 unittest-cpp
 *.opendb
+build-test-Desktop_x86_windows_msvc2017_pe_32bit-Debug
+test/Logs
+build-test-Desktop_x86_windows_msvc2019_pe_32bit-Debug
+test/vs2019/.vs
+Corel Auto-Preserve
+.vscode
+build-test-Clang_10-Debug
+build-test-GCC-Debug
+test/kdevelopbuild/unittest++
+test/random_clcg.csv
+test/random_hash.csv
+test/random_lcg.csv
+test/random_lcg.csv
+test/random_lcg.csv
+test/random_lsfr.csv
+test/random_lsfr.csv
+test/random_mwc.csv
+test/random_pcg.csv
+test/random_pcg.csv
+test/random_xorshift.csv
+test/cmake_install.cmake
+test/Makefile
+test/vs2019/enc_temp_folder
+test/vs2019/.leu
+test/etl_test_log.txt
+test/vs2019/Debug No Unit Tests
+test/vs2019/multi_loop.csv
+temp/create_arduino_library.py
+examples/FunctionInterruptSimulation-Delegates/vs2019/.vs
+
+*.db-shm
+test/vs2019/.vs/etl/v16/Browse.VC.db-wal
+examples/SharedMessage/.vs
+examples/QueuedMessageRouter/vs2019/.vs

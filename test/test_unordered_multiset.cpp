@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2016 jwellbelove
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <set>
 #include <array>
@@ -44,12 +44,30 @@ SOFTWARE.
 
 namespace
 {
+  typedef TestDataDC<std::string>  DC;
+  typedef TestDataNDC<std::string> NDC;
+}
+
+namespace etl
+{
+  template <>
+  struct hash<NDC>
+  {
+    size_t operator ()(const NDC& e) const
+    {
+      size_t sum = 0U;
+      return std::accumulate(e.value.begin(), e.value.end(), sum);
+    }
+  };
+}
+
+namespace
+{
   SUITE(test_unordered_multiset)
   {
     static const size_t SIZE = 10;
 
-    typedef TestDataDC<std::string>  DC;
-    typedef TestDataNDC<std::string> NDC;
+    using ItemM = TestDataM<int>;
 
     struct simple_hash
     {
@@ -57,7 +75,19 @@ namespace
       {
         return etl::checksum<size_t>(value.value.begin(), value.value.end());
       }
+
+      size_t operator ()(const ItemM& value) const
+      {
+        etl::checksum<size_t> sum;
+
+        sum.add(value.valid);
+        sum.add(value.value);
+
+        return sum.value();
+      }
     };
+
+    using DataM = etl::unordered_multiset<ItemM, SIZE, SIZE, simple_hash>;
 
     typedef etl::unordered_multiset<DC,  SIZE, SIZE / 2, simple_hash> DataDC;
     typedef etl::unordered_multiset<NDC, SIZE, SIZE / 2, simple_hash> DataNDC;
@@ -132,6 +162,24 @@ namespace
       CHECK(data.begin() == data.end());
     }
 
+#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::unordered_multiset data{ N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
+      etl::unordered_multiset<NDC, 10U> check = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
+
+      CHECK(!data.empty());
+      CHECK(data.full());
+      CHECK(data.begin() != data.end());
+      CHECK_EQUAL(10U, data.size());
+      CHECK_EQUAL(0U, data.available());
+      CHECK_EQUAL(10U, data.capacity());
+      CHECK_EQUAL(10U, data.max_size());
+      CHECK(data == check);
+    }
+#endif
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_range)
     {
@@ -140,6 +188,30 @@ namespace
       CHECK(data.size() == SIZE);
       CHECK(!data.empty());
       CHECK(data.full());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_constructor)
+    {
+      DataM data1;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data1.insert(etl::move(d1));
+      data1.insert(etl::move(d2));
+      data1.insert(etl::move(d3));
+      data1.insert(ItemM(4));
+
+      DataM data2(std::move(data1));
+
+      CHECK(!data1.empty()); // Move does not clear the source.
+
+      CHECK_EQUAL(1, ItemM(1).value);
+      CHECK_EQUAL(2, ItemM(2).value);
+      CHECK_EQUAL(3, ItemM(3).value);
+      CHECK_EQUAL(4, ItemM(4).value);
     }
 
     //*************************************************************************
@@ -201,6 +273,32 @@ namespace
                                 other_data.begin());
 
       CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_assignment)
+    {
+      DataM data1;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data1.insert(etl::move(d1));
+      data1.insert(etl::move(d2));
+      data1.insert(etl::move(d3));
+      data1.insert(ItemM(4));
+
+      DataM data2;
+
+      data2 = std::move(data1);
+
+      CHECK(!data1.empty()); // Move does not clear the source.
+
+      CHECK_EQUAL(1, ItemM(1).value);
+      CHECK_EQUAL(2, ItemM(2).value);
+      CHECK_EQUAL(3, ItemM(3).value);
+      CHECK_EQUAL(4, ItemM(4).value);
     }
 
     //*************************************************************************
@@ -301,6 +399,30 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_moved_value)
+    {
+      DataM data;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data.insert(etl::move(d1));
+      data.insert(etl::move(d2));
+      data.insert(etl::move(d3));
+      data.insert(ItemM(4));
+
+      CHECK(!bool(d1));
+      CHECK(!bool(d2));
+      CHECK(!bool(d3));
+
+      CHECK_EQUAL(1, data.find(ItemM(1))->value);
+      CHECK_EQUAL(2, data.find(ItemM(2))->value);
+      CHECK_EQUAL(3, data.find(ItemM(3))->value);
+      CHECK_EQUAL(4, data.find(ItemM(4))->value);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_key)
     {
       DataNDC data(equal_data.begin(), equal_data.end());
@@ -390,6 +512,52 @@ namespace
       idata = data.find(N9);
       CHECK(idata != data.end());
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_range_first_half)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      DataNDC::iterator end = data.begin();
+      etl::advance(end, data.size() / 2);
+
+      auto itr = data.erase(data.begin(), end);
+
+      CHECK_EQUAL(initial_data.size() / 2, data.size());
+      CHECK(!data.full());
+      CHECK(!data.empty());
+      CHECK(itr == end);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_range_last_half)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      DataNDC::iterator begin = data.begin();
+      etl::advance(begin, data.size() / 2);
+
+      auto itr = data.erase(begin, data.end());
+
+      CHECK_EQUAL(initial_data.size() / 2, data.size());
+      CHECK(!data.full());
+      CHECK(!data.empty());
+      CHECK(itr == data.end());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_range_all)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      auto itr = data.erase(data.begin(), data.end());
+
+      CHECK_EQUAL(0U, data.size());
+      CHECK(!data.full());
+      CHECK(data.empty());
+      CHECK(itr == data.end());
+    }
+
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_clear)

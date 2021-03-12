@@ -343,7 +343,7 @@ namespace etl
   public:
 
     atomic()
-      : value(nullptr)
+      : value(ETL_NULLPTR)
     {
     }
 
@@ -550,12 +550,13 @@ namespace etl
 
   private:
 
-    atomic & operator =(const atomic&);
-    //atomic& operator =(const atomic&) volatile;
+    atomic & operator =(const atomic&) ETL_DELETE;
+    atomic& operator =(const atomic&) volatile ETL_DELETE;
 
     std::atomic<T*> value;
   };
 
+  typedef std::atomic<bool>                atomic_bool;
   typedef std::atomic<char>                atomic_char;
   typedef std::atomic<signed char>         atomic_schar;
   typedef std::atomic<unsigned char>       atomic_uchar;
@@ -570,13 +571,15 @@ namespace etl
   typedef std::atomic<wchar_t>             atomic_wchar_t;
   typedef std::atomic<char16_t>            atomic_char16_t;
   typedef std::atomic<char32_t>            atomic_char32_t;
+#if ETL_USING_8BIT_TYPES
   typedef std::atomic<uint8_t>             atomic_uint8_t;
   typedef std::atomic<int8_t>              atomic_int8_t;
+#endif
   typedef std::atomic<uint16_t>            atomic_uint16_t;
   typedef std::atomic<int16_t>             atomic_int16_t;
   typedef std::atomic<uint32_t>            atomic_uint32_t;
   typedef std::atomic<int32_t>             atomic_int32_t;
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
   typedef std::atomic<uint64_t>            atomic_uint64_t;
   typedef std::atomic<int64_t>             atomic_int64_t;
 #endif
@@ -586,7 +589,7 @@ namespace etl
   typedef std::atomic<uint_least16_t>      atomic_uint_least16_t;
   typedef std::atomic<int_least32_t>       atomic_int_least32_t;
   typedef std::atomic<uint_least32_t>      atomic_uint_least32_t;
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
   typedef std::atomic<int_least64_t>       atomic_int_least64_t;
   typedef std::atomic<uint_least64_t>      atomic_uint_least64_t;
 #endif
@@ -596,7 +599,7 @@ namespace etl
   typedef std::atomic<uint_fast16_t>       atomic_uint_fast16_t;
   typedef std::atomic<int_fast32_t>        atomic_int_fast32_t;
   typedef std::atomic<uint_fast32_t>       atomic_uint_fast32_t;
-#if !defined(ETL_NO_64BIT_TYPES)
+#if ETL_USING_64BIT_TYPES
   typedef std::atomic<int_fast64_t>        atomic_int_fast64_t;
   typedef std::atomic<uint_fast64_t>       atomic_uint_fast64_t;
 #endif

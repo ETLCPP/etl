@@ -1,26 +1,32 @@
 version: 2
-
 jobs:
   build:
     docker:
-      - image: "debian:stretch"
+      - image: "rikorose/gcc-cmake:latest"
+    branches:
+      only:
+      - master
+      - development
     steps:
-      - checkout
+      - checkout:
       - run:
-          name: Installing SUDO
-          command: 'apt-get update && apt-get install -y sudo && rm -rf /var/lib/apt/lists/*'
-      - run:
-          name: Installing GCC
-          command: 'apt-get update && apt-get install -y gcc g++'
-      - run:
-          name: Install CMAKE
-          command: 'apt-get update && sudo apt-get install -y cmake'
+          name: Listing0
+          command: 'ls -lrt'
       - run:
           name: Creating Build Files
-          command: 'cmake -H. -Bbuild'
+          command: 'cmake -Bbuild test/'
       - run:
           name: Creating Binary Files
           command: 'cmake --build build'
       - run:
+          name: Listing1
+          command: 'ls -lrt /root/project/build'
+      - run:
+          name: Listing2
+          command: 'ls -lrt /root/project/build/CMakeFiles'
+      - run:
+          name: Listing3
+          command: 'cat /root/project/build/CMakeFiles/CMakeOutput.log' 
+      - run:
           name: ETL Unit Testing
-          command: './bin/etl'
+          command: './build/etl_tests'

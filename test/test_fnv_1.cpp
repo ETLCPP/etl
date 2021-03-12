@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <iterator>
 #include <string>
@@ -74,6 +74,20 @@ namespace
       etl::fnv_1_32 fnv_1_32_calculator;
 
       fnv_1_32_calculator.add(data.begin(), data.end());
+
+      uint32_t hash = fnv_1_32_calculator.value();
+
+      CHECK_EQUAL(0x24148816U, hash);
+    }
+
+    //*************************************************************************
+    TEST(test_fnv_1_32_add_range_via_iterator)
+    {
+      std::string data("123456789");
+
+      etl::fnv_1_32 fnv_1_32_calculator;
+
+      std::copy(data.begin(), data.end(), fnv_1_32_calculator.input());
 
       uint32_t hash = fnv_1_32_calculator.value();
 
@@ -137,6 +151,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_fnv_1a_32_add_range_via_iterator)
+    {
+      std::string data("123456789");
+
+      etl::fnv_1a_32 fnv_1a_32_calculator;
+
+      std::copy(data.begin(), data.end(), fnv_1a_32_calculator.input());
+
+      uint32_t hash = fnv_1a_32_calculator.value();
+
+      CHECK_EQUAL(0xBB86B11CU, hash);
+    }
+
+    //*************************************************************************
     TEST(test_fnv_1a_32_add_range_endian)
     {
       std::vector<uint8_t>  data1 = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
@@ -193,6 +221,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_fnv_1_64_add_range_via_iterator)
+    {
+      std::string data("123456789");
+
+      etl::fnv_1_64 fnv_1_64_calculator;
+
+      std::copy(data.begin(), data.end(), fnv_1_64_calculator.input());
+
+      uint64_t hash = fnv_1_64_calculator.value();
+
+      CHECK_EQUAL(0xA72FFC362BF916D6U, hash);
+    }
+
+    //*************************************************************************
     TEST(test_fnv_1_64_add_range_endian)
     {
       std::vector<uint8_t>  data1 = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
@@ -242,6 +284,20 @@ namespace
       etl::fnv_1a_64 fnv_1a_64_calculator;
 
       fnv_1a_64_calculator.add(data.begin(), data.end());
+
+      uint64_t hash = fnv_1a_64_calculator.value();
+
+      CHECK_EQUAL(0x06D5573923C6CDFCU, hash);
+    }
+
+    //*************************************************************************
+    TEST(test_fnv_1a_64_add_range_via_iterator)
+    {
+      std::string data("123456789");
+
+      etl::fnv_1a_64 fnv_1a_64_calculator;
+
+      std::copy(data.begin(), data.end(), fnv_1a_64_calculator.input());
 
       uint64_t hash = fnv_1a_64_calculator.value();
 

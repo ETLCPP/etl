@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2015 jwellbelove
 
@@ -31,24 +31,22 @@ SOFTWARE.
 #ifndef ETL_FLAT_MAP_INCLUDED
 #define ETL_FLAT_MAP_INCLUDED
 
-#include <new>
-
 #include "platform.h"
 #include "reference_flat_map.h"
 #include "pool.h"
+#include "placement_new.h"
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
 #endif
 #include "utility.h"
 
-#undef ETL_FILE
-#define ETL_FILE "2"
-
 //*****************************************************************************
 ///\defgroup flat_map flat_map
-/// A flat_map with the capacity defined at compile time.
-/// Has insertion of O(N) and flat_map of O(logN)
+/// A flat_map based on a sorted vector with the capacity defined at
+/// compile time. This container is best used for tables that are occasionally
+/// updated and spend most of their time being searched.
+/// Has insertion of O(N) and find of O(logN).
 /// Duplicate entries are not allowed.
 ///\ingroup containers
 //*****************************************************************************
@@ -382,7 +380,7 @@ namespace etl
       return emplace(value.first, value.second);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT
     //*************************************************************************
     /// Emplaces a value to the map.
     //*************************************************************************
@@ -938,14 +936,14 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator>
+    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
     flat_map(TIterator first, TIterator last)
       : etl::iflat_map<TKey, TValue, TCompare>(lookup, storage)
     {
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_STLPORT) && !defined(ETL_NO_STL)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
@@ -1002,8 +1000,17 @@ namespace etl
     /// The vector that stores pointers to the nodes.
     etl::vector<node_t*, MAX_SIZE> lookup;
   };
-}
 
-#undef ETL_FILE
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  flat_map(T, Ts...)
+    ->flat_map<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), typename T::first_type>,
+               etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), typename T::second_type>,
+               1U + sizeof...(Ts)>;
+#endif 
+}
 
 #endif

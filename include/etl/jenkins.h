@@ -59,7 +59,7 @@ namespace etl
   {
     typedef uint32_t value_type;
 
-    inline uint32_t initial()
+    inline uint32_t initial() const
     {
       is_finalised = false;
 
@@ -77,7 +77,7 @@ namespace etl
       return hash;
     }
 
-    inline uint32_t final(value_type hash)
+    inline uint32_t final(value_type hash) const
     {
       hash += (hash << 3);
       hash ^= (hash >> 11);
@@ -87,7 +87,7 @@ namespace etl
       return hash;
     }
 
-    bool is_finalised;
+    mutable bool is_finalised;
   };
 
   //*************************************************************************

@@ -5,7 +5,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -50,11 +50,9 @@ SOFTWARE.
 #include "char_traits.h"
 #include "static_assert.h"
 #include "error_handler.h"
+#include "span.h"
 
 #include "private/minmax_push.h"
-
-#undef ETL_FILE
-#define ETL_FILE "52"
 
 #if defined(ETL_COMPILER_KEIL)
 #pragma diag_suppress 1300
@@ -83,7 +81,7 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Bitset nullptr exception.
+  /// Bitset null pointer exception.
   ///\ingroup bitset
   //***************************************************************************
   class bitset_nullptr : public bitset_exception
@@ -91,7 +89,7 @@ namespace etl
   public:
 
     bitset_nullptr(string_type file_name_, numeric_type line_number_)
-      : bitset_exception(ETL_ERROR_TEXT("bitset:nullptr", ETL_FILE"A"), file_name_, line_number_)
+      : bitset_exception(ETL_ERROR_TEXT("bitset:null pointer", ETL_BITSET_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -105,7 +103,7 @@ namespace etl
   public:
 
     bitset_type_too_small(string_type file_name_, numeric_type line_number_)
-      : bitset_exception(ETL_ERROR_TEXT("bitset:type_too_small", ETL_FILE"B"), file_name_, line_number_)
+      : bitset_exception(ETL_ERROR_TEXT("bitset:type_too_small", ETL_BITSET_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -131,6 +129,9 @@ namespace etl
     static const element_t ALL_CLEAR = 0;
 
     static const size_t    BITS_PER_ELEMENT = etl::integral_limits<element_t>::bits;
+
+    typedef etl::span<element_t>       span_type;
+    typedef etl::span<const element_t> const_span_type;
 
     enum
     {
@@ -195,7 +196,7 @@ namespace etl
       /// Default constructor.
       //*******************************
       bit_reference()
-        : p_bitset(nullptr),
+        : p_bitset(ETL_NULLPTR),
         position(0)
       {
       }
@@ -585,7 +586,7 @@ namespace etl
 
         // Needs checking?
         if ((state && (value != ALL_CLEAR)) ||
-          (!state && (value != ALL_SET)))
+            (!state && (value != ALL_SET)))
         {
           // For each bit in the element...
           while ((bit < BITS_PER_ELEMENT) && (position < NBITS))
@@ -604,7 +605,7 @@ namespace etl
         }
         else
         {
-          position += BITS_PER_ELEMENT;
+          position += (BITS_PER_ELEMENT - bit);
         }
 
         // Start at the beginning for all other elements.
@@ -749,6 +750,24 @@ namespace etl
       etl::swap_ranges(pdata, pdata + SIZE, other.pdata);
     }
 
+    //*************************************************************************
+    /// span
+    /// Returns a span of the underlying data.
+    //*************************************************************************
+    span_type span()
+    {
+      return span_type(pdata, pdata + SIZE);
+    }
+
+    //*************************************************************************
+    /// span
+    /// Returns a const span of the underlying data.
+    //*************************************************************************
+    const_span_type span() const
+    {
+      return const_span_type(pdata, pdata + SIZE);
+    }
+
   protected:
 
     //*************************************************************************
@@ -852,7 +871,7 @@ namespace etl
   /// The class emulates an array of bool elements, but optimized for space allocation.
   /// Will accommodate any number of bits.
   /// Does not use std::string.
-  ///\tparam N The number of bits.
+  ///\tparam MAXN The number of bits.
   ///\ingroup bitset
   //*************************************************************************
   template <const size_t MAXN>
@@ -1184,7 +1203,5 @@ void swap(etl::bitset<MAXN>& lhs, etl::bitset<MAXN>& rhs)
 }
 
 #include "private/minmax_pop.h"
-
-#undef ETL_FILE
 
 #endif

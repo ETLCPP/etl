@@ -50,7 +50,7 @@ namespace etl
 {
   namespace private_to_string
   {
-#if defined(ETL_NO_64BIT_TYPES)
+#if ETL_NOT_USING_64BIT_TYPES
     typedef int32_t workspace_t;
 #else
     typedef int64_t workspace_t;
@@ -88,7 +88,7 @@ namespace etl
     void add_boolean(const bool value,
                      TIString& str,
                      const etl::basic_format_spec<TIString>& format,
-                     const bool append)
+                     bool append)
     {
       typedef typename TIString::value_type type;
       typedef typename TIString::iterator   iterator;
@@ -136,12 +136,11 @@ namespace etl
     void add_integral(T value,
                       TIString& str,
                       const etl::basic_format_spec<TIString>& format,
-                      const bool append)
+                      bool append,
+                      const bool negative)
     {
       typedef typename TIString::value_type type;
       typedef typename TIString::iterator   iterator;
-
-      const bool negative = etl::is_negative(value);
 
       if (!append)
       {
@@ -152,6 +151,12 @@ namespace etl
 
       if (value == 0)
       {
+        // If number is negative, append '-' (a negative zero might occure for fractional numbers > -1.0) 
+        if ((format.get_base() == 10U) && negative)
+        {
+          str.push_back(type('-'));
+        }
+
         str.push_back(type('0'));
       }
       else
@@ -165,9 +170,40 @@ namespace etl
         }
 
         // If number is negative, append '-'
-        if ((format.get_base() == 10) && negative)
+        if ((format.get_base() == 10U) && negative)
         {
           str.push_back(type('-'));
+        }
+
+        if (format.is_show_base())
+        {
+          switch (format.get_base())
+          {
+            case 2U:
+            {
+              str.push_back(format.is_upper_case() ? type('B') : type('b'));
+              str.push_back(type('0'));
+              break;
+            }
+
+            case 8U:
+            {
+              str.push_back(type('0'));
+              break;
+            }
+
+            case 16U:
+            {
+              str.push_back(format.is_upper_case() ? type('X') : type('x'));
+              str.push_back(type('0'));
+              break;
+            }
+
+            default:
+            {
+              break;
+            }
+          }
         }
 
         // Reverse the string we appended.
@@ -208,16 +244,17 @@ namespace etl
                                  const workspace_t fractional,
                                  TIString& str,
                                  const etl::basic_format_spec<TIString>& integral_format,
-                                 const etl::basic_format_spec<TIString>& fractional_format)
+                                 const etl::basic_format_spec<TIString>& fractional_format,
+                                 const bool negative)
     {
       typedef typename TIString::value_type type;
 
-      etl::private_to_string::add_integral(integral, str, integral_format, true);
+      etl::private_to_string::add_integral(integral, str, integral_format, true, negative);
 
       if (fractional_format.get_precision() > 0)
       {
         str.push_back(type('.'));
-        etl::private_to_string::add_integral(fractional, str, fractional_format, true);
+        etl::private_to_string::add_integral(fractional, str, fractional_format, true, false);
       }
     }
 
@@ -228,7 +265,7 @@ namespace etl
     void add_floating_point(T value,
                             TIString& str,
                             const etl::basic_format_spec<TIString>& format,
-                            const bool append)
+                            bool append)
     {
       typedef typename TIString::iterator   iterator;
       typedef typename TIString::value_type type;
@@ -276,7 +313,7 @@ namespace etl
           fractional = 0;
         }
 
-        etl::private_to_string::add_integral_fractional(integral, fractional, str, integral_format, fractional_format);
+        etl::private_to_string::add_integral_fractional(integral, fractional, str, integral_format, fractional_format, etl::is_negative(value));
       }
 
       etl::private_to_string::add_alignment(str, start, format);
@@ -289,22 +326,64 @@ namespace etl
     void add_pointer(const volatile void* value,
                      TIString& str,
                      const etl::basic_format_spec<TIString>& format,
-                     const bool append)
+                     bool append)
     {
       uintptr_t p = reinterpret_cast<uintptr_t>(value);
 
-      return etl::private_to_string::add_integral(p, str, format, append);
+      return etl::private_to_string::add_integral(p, str, format, append, false);
+    }
+
+    //***************************************************************************
+    /// Helper function for strings.
+    //***************************************************************************
+    template <typename TIString>
+    void add_string(const TIString& value,
+                    TIString& str,
+                    const etl::basic_format_spec<TIString>& format,
+                    bool append)
+    {
+      if (!append)
+      {
+        str.clear();
+      }
+
+      typename TIString::iterator start = str.end();
+
+      str.insert(str.end(), value.begin(), value.end());
+
+      etl::private_to_string::add_alignment(str, start, format);
+    }
+
+    //***************************************************************************
+    /// Helper function for string views.
+    //***************************************************************************
+    template <typename TSringView, typename TIString>
+    void add_string_view(const TSringView& value,
+                         TIString& str,
+                         const etl::basic_format_spec<TIString>& format,
+                         bool append)
+    {
+      if (!append)
+      {
+        str.clear();
+      }
+
+      typename TIString::iterator start = str.end();
+
+      str.insert(str.end(), value.begin(), value.end());
+
+      etl::private_to_string::add_alignment(str, start, format);
     }
 
     //*********************************************************************************************************
 
     //***************************************************************************
     /// For booleans. Default format spec.
-    //***************************************************************************etl::basic_format_spec<TIString>
+    //***************************************************************************
     template <typename TIString>
     const TIString& to_string(const bool value,
                               TIString& str,
-                              const bool append = false)
+                              bool append = false)
     {
       etl::basic_format_spec<TIString> format;
 
@@ -320,7 +399,7 @@ namespace etl
     const TIString& to_string(const bool value,
                               TIString& str,
                               const etl::basic_format_spec<TIString>& format,
-                              const bool append = false)
+                              bool append = false)
     {
       etl::private_to_string::add_boolean(value, str, format, append);
 
@@ -333,7 +412,7 @@ namespace etl
     template <typename TIString>
     const TIString& to_string(const volatile void* value,
                               TIString& str,
-                              const bool append = false)
+                              bool append = false)
     {
       etl::basic_format_spec<TIString> format;
 
@@ -349,14 +428,14 @@ namespace etl
     const TIString& to_string(const volatile void* value,
                               TIString& str,
                               const etl::basic_format_spec<TIString>& format,
-                              const bool append = false)
+                              bool append = false)
     {
       etl::private_to_string::add_pointer(value, str, format, append);
 
       return str;
     }
 
-#if defined(ETL_NO_64BIT_TYPES)
+#if ETL_NOT_USING_64BIT_TYPES
     //***************************************************************************
     /// For signed integrals less than 64 bits. Default format spec.
     //***************************************************************************
@@ -364,11 +443,11 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value &&
                             etl::is_signed<T>::value &&
                             !etl::is_same<T, bool>::value>::value, const TIString& > ::type
-      to_string(const T value, TIString& str, const bool append = false)
+      to_string(const T value, TIString& str, bool append = false)
     {
       etl::basic_format_spec<TIString> format;
 
-      etl::private_to_string::add_integral(int32_t(value), str, format, append);
+      etl::private_to_string::add_integral(int32_t(value), str, format, append, etl::is_negative(value));
 
       return str;
     }
@@ -380,9 +459,9 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value &&
                             etl::is_signed<T>::value &&
                             !etl::is_same<T, bool>::value>::value, const TIString& > ::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
+      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
     {
-      etl::private_to_string::add_integral(int32_t(value), str, format, append);
+      etl::private_to_string::add_integral(int32_t(value), str, format, append, etl::is_negative(value));
 
       return str;
     }
@@ -394,11 +473,11 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value &&
                             etl::is_unsigned<T>::value &&
                             !etl::is_same<T, bool>::value>::value, const TIString& > ::type
-      to_string(const T value, TIString& str, const bool append = false)
+      to_string(const T value, TIString& str, bool append = false)
     {
       etl::basic_format_spec<TIString> format;
 
-      etl::private_to_string::add_integral(uint32_t(value), str, format, append);
+      etl::private_to_string::add_integral(uint32_t(value), str, format, append, false);
 
       return str;
     }
@@ -410,9 +489,9 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value &&
                             etl::is_unsigned<T>::value &&
                             !etl::is_same<T, bool>::value>::value, const TIString& > ::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
+      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
     {
-      etl::private_to_string::add_integral(uint32_t(value), str, format, append);
+      etl::private_to_string::add_integral(uint32_t(value), str, format, append, false);
 
       return str;
     }
@@ -425,11 +504,11 @@ namespace etl
                             etl::is_signed<T>::value &&
                             !etl::is_same<T, bool>::value &&
                             !etl::is_same<T, int64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const bool append = false)
+      to_string(const T value, TIString& str, bool append = false)
     {
       etl::basic_format_spec<TIString> format;
 
-      etl::private_to_string::add_integral(int32_t(value), str, format, append);
+      etl::private_to_string::add_integral(int32_t(value), str, format, append, etl::is_negative(value));
 
       return str;
     }
@@ -442,9 +521,9 @@ namespace etl
                             etl::is_signed<T>::value &&
                             !etl::is_same<T, bool>::value &&
                             !etl::is_same<T, int64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
+      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
     {
-      etl::private_to_string::add_integral(int32_t(value), str, format, append);
+      etl::private_to_string::add_integral(int32_t(value), str, format, append, etl::is_negative(value));
 
       return str;
     }
@@ -457,11 +536,11 @@ namespace etl
                             etl::is_unsigned<T>::value &&
                             !etl::is_same<T, bool>::value &&
                             !etl::is_same<T, uint64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const bool append = false)
+      to_string(const T value, TIString& str, bool append = false)
     {
       etl::basic_format_spec<TIString> format;
 
-      etl::private_to_string::add_integral(uint32_t(value), str, format, append);
+      etl::private_to_string::add_integral(uint32_t(value), str, format, append, false);
 
       return str;
     }
@@ -474,9 +553,9 @@ namespace etl
                             etl::is_unsigned<T>::value &&
                             !etl::is_same<T, bool>::value &&
                             !etl::is_same<T, uint64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
+      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
     {
-      etl::private_to_string::add_integral(uint32_t(value), str, format, append);
+      etl::private_to_string::add_integral(uint32_t(value), str, format, append, false);
 
       return str;
     }
@@ -489,11 +568,11 @@ namespace etl
                             etl::is_signed<T>::value &&
                             !etl::is_same<T, bool>::value &&
                             etl::is_same<T, int64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const bool append = false)
+      to_string(const T value, TIString& str, bool append = false)
     {
       etl::basic_format_spec<TIString> format;
 
-      etl::private_to_string::add_integral(int64_t(value), str, format, append);
+      etl::private_to_string::add_integral(int64_t(value), str, format, append, etl::is_negative(value));
 
       return str;
     }
@@ -506,9 +585,9 @@ namespace etl
                             etl::is_signed<T>::value &&
                             !etl::is_same<T, bool>::value &&
                             etl::is_same<T, int64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
+      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
     {
-      etl::private_to_string::add_integral(int64_t(value), str, format, append);
+      etl::private_to_string::add_integral(int64_t(value), str, format, append, etl::is_negative(value));
 
       return str;
     }
@@ -521,11 +600,11 @@ namespace etl
                             etl::is_unsigned<T>::value &&
                             !etl::is_same<T, bool>::value &&
                             etl::is_same<T, uint64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const bool append = false)
+      to_string(const T value, TIString& str, bool append = false)
     {
       etl::basic_format_spec<TIString> format;
 
-      etl::private_to_string::add_integral(uint64_t(value), str, format, append);
+      etl::private_to_string::add_integral(uint64_t(value), str, format, append, false);
 
       return str;
     }
@@ -538,9 +617,9 @@ namespace etl
                             etl::is_unsigned<T>::value &&
                             !etl::is_same<T, bool>::value &&
                             etl::is_same<T, uint64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
+      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
     {
-      etl::private_to_string::add_integral(uint64_t(value), str, format, append);
+      etl::private_to_string::add_integral(uint64_t(value), str, format, append, false);
 
       return str;
     }
@@ -551,7 +630,7 @@ namespace etl
     //***************************************************************************
     template <typename T, typename TIString>
     typename etl::enable_if<etl::is_floating_point<T>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const bool append = false)
+      to_string(const T value, TIString& str, bool append = false)
     {
       etl::basic_format_spec<TIString> format;
 
@@ -565,7 +644,7 @@ namespace etl
     //***************************************************************************
     template <typename T, typename TIString>
     typename etl::enable_if<etl::is_floating_point<T>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
+      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
     {
       etl::private_to_string::add_floating_point(value, str, format, append);
 

@@ -40,9 +40,6 @@ SOFTWARE.
 #include "type_traits.h"
 #include "function.h"
 
-#undef ETL_FILE
-#define ETL_FILE "36"
-
 namespace etl
 {
   //***************************************************************************
@@ -66,7 +63,7 @@ namespace etl
   public:
 
     scheduler_no_tasks_exception(string_type file_name_, numeric_type line_number_)
-      : etl::scheduler_exception(ETL_ERROR_TEXT("scheduler:no tasks", ETL_FILE"A"), file_name_, line_number_)
+      : etl::scheduler_exception(ETL_ERROR_TEXT("scheduler:no tasks", ETL_SCHEDULER_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -79,7 +76,7 @@ namespace etl
   public:
 
     scheduler_null_task_exception(string_type file_name_, numeric_type line_number_)
-      : etl::scheduler_exception(ETL_ERROR_TEXT("scheduler:null task", ETL_FILE"B"), file_name_, line_number_)
+      : etl::scheduler_exception(ETL_ERROR_TEXT("scheduler:null task", ETL_SCHEDULER_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -92,17 +89,17 @@ namespace etl
   public:
 
     scheduler_too_many_tasks_exception(string_type file_name_, numeric_type line_number_)
-      : etl::scheduler_exception(ETL_ERROR_TEXT("scheduler:too many tasks", ETL_FILE"C"), file_name_, line_number_)
+      : etl::scheduler_exception(ETL_ERROR_TEXT("scheduler:too many tasks", ETL_SCHEDULER_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
 
   //***************************************************************************
-  /// Sequencial Single.
+  /// Sequential Single.
   /// A policy the scheduler can use to decide what to do next.
   /// Only calls the task to process work once, if it has work to do.
   //***************************************************************************
-  struct scheduler_policy_sequencial_single
+  struct scheduler_policy_sequential_single
   {
     bool schedule_tasks(etl::ivector<etl::task*>& task_list)
     {
@@ -123,12 +120,15 @@ namespace etl
     }
   };
 
+  /// Typedef for backwards compatibility with miss-spelt struct name.
+  ETL_DEPRECATED_REASON("Misspelt class name") typedef scheduler_policy_sequential_single scheduler_policy_sequencial_single;
+
   //***************************************************************************
-  /// Sequencial Multiple.
+  /// Sequential Multiple.
   /// A policy the scheduler can use to decide what to do next.
   /// Calls the task to process work until it reports that it has no more.
   //***************************************************************************
-  struct scheduler_policy_sequencial_multiple
+  struct scheduler_policy_sequential_multiple
   {
     bool schedule_tasks(etl::ivector<etl::task*>& task_list)
     {
@@ -148,6 +148,9 @@ namespace etl
       return idle;
     }
   };
+
+  /// Typedef for backwards compatibility with miss-spelt struct name.
+  ETL_DEPRECATED typedef scheduler_policy_sequential_multiple scheduler_policy_sequencial_multiple;
 
   //***************************************************************************
   /// Highest Priority.
@@ -194,13 +197,13 @@ namespace etl
       bool idle = true;
 
       size_t most_index = 0;
-      uint_least8_t most_work = 0;
+      uint32_t most_work = 0;
 
       for (size_t index = 0; index < task_list.size(); ++index)
       {
         etl::task& task = *(task_list[index]);
 
-        uint_least8_t n_work = task.task_request_work();
+        uint32_t n_work = task.task_request_work();
 
         if (n_work > most_work)
         {
@@ -291,6 +294,8 @@ namespace etl
                                                                    compare_priority());
 
         task_list.insert(itask, &task);
+
+        task.on_task_added();
       }
     }
 
@@ -304,8 +309,9 @@ namespace etl
     {
       for (TSize i = 0; i < size; ++i)
       {
-        ETL_ASSERT((p_tasks[i] != nullptr), ETL_ERROR(etl::scheduler_null_task_exception));
+        ETL_ASSERT((p_tasks[i] != ETL_NULLPTR), ETL_ERROR(etl::scheduler_null_task_exception));
         add_task(*(p_tasks[i]));
+        p_tasks[i]->on_task_added();
       }
     }
 
@@ -317,8 +323,8 @@ namespace etl
     ischeduler(etl::ivector<etl::task*>& task_list_)
       : scheduler_running(false),
         scheduler_exit(false),
-        p_idle_callback(nullptr),
-        p_watchdog_callback(nullptr),
+        p_idle_callback(ETL_NULLPTR),
+        p_watchdog_callback(ETL_NULLPTR),
         task_list(task_list_)
     {
     }
@@ -364,8 +370,7 @@ namespace etl
     }
 
     //*******************************************
-    /// Start the scheduler. SEQUENCIAL_SINGLE
-    /// Only calls the task to process work once, if it has work to do.
+    /// Start the scheduler.
     //*******************************************
     void start()
     {
@@ -398,7 +403,5 @@ namespace etl
     task_list_t task_list;
   };
 }
-
-#undef ETL_FILE
 
 #endif

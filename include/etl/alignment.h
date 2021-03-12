@@ -99,7 +99,7 @@ namespace etl
   {
   public:
 
-#if defined(ETL_NO_64BIT_TYPES)
+#if ETL_NOT_USING_64BIT_TYPES
     typedef typename private_alignment::type_with_alignment_helper<ALIGNMENT, int_least8_t, int_least16_t, int32_t, float, double, void*>::type type;
 #else
     typedef typename private_alignment::type_with_alignment_helper<ALIGNMENT, int_least8_t, int_least16_t, int32_t, int64_t, float, double, void*>::type type;
@@ -184,7 +184,7 @@ namespace etl
         return reinterpret_cast<const T*>(data);
       }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED && !defined(ETL_COMPILER_ARM5)
       alignas(ALIGNMENT) char data[LENGTH];
 #else
       union
@@ -196,14 +196,24 @@ namespace etl
     };
   };
 
+#if ETL_CPP11_SUPPORTED
+  template <const size_t LENGTH, const size_t ALIGNMENT>
+  using aligned_storage_t = typename aligned_storage<LENGTH, ALIGNMENT>::type;
+#endif
+
   //***************************************************************************
   /// Aligned storage as
   ///\ingroup alignment
   //***************************************************************************
-  template <const size_t LENGTH, typename T>
+  template <size_t LENGTH, typename T>
   struct aligned_storage_as : public etl::aligned_storage<LENGTH, etl::alignment_of<T>::value>
   {
   };
+
+#if ETL_CPP11_SUPPORTED
+  template <size_t LENGTH, typename T>
+  using aligned_storage_as_t = typename aligned_storage_as<LENGTH, T>::type;
+#endif
 }
 
 #endif

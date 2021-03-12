@@ -3,7 +3,7 @@ The MIT License(MIT)
 
 Embedded Template Library.
 https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+https://www.etlcpp.com
 
 Copyright(c) 2014 jwellbelove
 
@@ -26,13 +26,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
+
+#include <string>
 
 #include "etl/iterator.h"
+
 #include "iterators_for_unit_tests.h"
+#include "data.h"
 
 namespace
 {
+  using Item = TestDataM<std::string>;
+
   struct input : public etl::iterator<ETL_OR_STD::input_iterator_tag, int>
   {
 
@@ -68,7 +74,7 @@ namespace
   {
     // NOTE '!!' is required to keep GCC happy.
 
-        //*************************************************************************
+    //*************************************************************************
     TEST(distance_non_random)
     {
       ptrdiff_t d = etl::distance(non_random_iterator<int>(&dataA[0]), non_random_iterator<int>(&dataA[SIZE]));
@@ -374,6 +380,142 @@ namespace
       CHECK(!!etl::is_forward_iterator_concept<const_pointer>::value);
       CHECK(!!etl::is_bidirectional_iterator_concept<const_pointer>::value);
       CHECK(!!etl::is_random_iterator_concept<const_pointer>::value);
+    }
+
+    //*************************************************************************
+    TEST(move_iterator_constructors)
+    {
+      Item list[] = { Item("1"), Item("2"), Item("3") };
+
+      etl::move_iterator<Item*> mitr1(&list[0]);
+      etl::move_iterator<Item*> mitr2(&list[1]);
+      etl::move_iterator<Item*> mitr3(&list[1]);
+
+      etl::move_iterator<Item*> mitr4 = etl::make_move_iterator(&list[2]);
+      etl::move_iterator<Item*> mitr5(mitr4);
+
+      CHECK(mitr1.base() == &list[0]);
+      CHECK(mitr2.base() == &list[1]);
+      CHECK(mitr3.base() == &list[1]);
+      CHECK(mitr4.base() == &list[2]);
+      CHECK(mitr5.base() == &list[2]);
+    }
+
+    //*************************************************************************
+    TEST(move_iterator_relational_operators)
+    {
+      Item list[] = { Item("1"), Item("2"), Item("3") };
+
+      etl::move_iterator<Item*> mitr1(&list[0]);
+      etl::move_iterator<Item*> mitr2(&list[1]);
+      etl::move_iterator<Item*> mitr3(&list[1]);
+
+      etl::move_iterator<Item*> mitr4 = etl::make_move_iterator(&list[2]);
+      etl::move_iterator<Item*> mitr5(mitr4);
+
+      CHECK(mitr1 < mitr2);
+      CHECK(!(mitr2 < mitr1));
+      CHECK(!(mitr2 < mitr3));
+
+      CHECK(mitr1 <= mitr2);
+      CHECK(mitr2 <= mitr3);
+      CHECK(!(mitr2 <= mitr1));
+
+      CHECK(mitr2 > mitr1);
+      CHECK(!(mitr1 > mitr2));
+      CHECK(!(mitr3 > mitr2));
+
+      CHECK(mitr2 >= mitr1);
+      CHECK(mitr3 >= mitr2);
+      CHECK(!(mitr1 >= mitr2));
+
+      CHECK(mitr4 == mitr5);
+      CHECK(mitr3 != mitr5);
+    }
+
+    //*************************************************************************
+    TEST(move_iterator_access_operators)
+    {
+      Item item1("1");
+
+      etl::move_iterator<Item*> mitr(&item1);
+
+      CHECK_EQUAL("1", mitr->value);
+      CHECK_EQUAL(true, mitr->valid);
+
+      CHECK_EQUAL("1", (*mitr).value);
+      CHECK_EQUAL(true, (*mitr).valid);
+
+      Item item2 = *mitr; // Move item1
+
+      CHECK_EQUAL(false, item1.valid);
+
+      CHECK_EQUAL("1", item2.value);
+      CHECK_EQUAL(true, item2.valid);
+    }
+
+    //*************************************************************************
+    TEST(move_iterator_index)
+    {
+      Item list[] = { Item("1"), Item("2"), Item("3") };
+
+      etl::move_iterator<Item*> mitr(&list[0]);
+
+      CHECK_EQUAL("3", mitr[2].value);
+      CHECK_EQUAL(true, mitr[2].valid);
+    }
+
+    //*************************************************************************
+    TEST(move_iterator_increment_decrement)
+    {
+      Item list[] = { Item("1"), Item("2"), Item("3") };
+
+      etl::move_iterator<Item*> mitr(&list[0]);
+
+      mitr++;
+      ++mitr;
+
+      CHECK_EQUAL("3", mitr->value);
+      CHECK_EQUAL(true, mitr->valid);
+
+      mitr--;
+      --mitr;
+
+      CHECK_EQUAL("1", mitr->value);
+      CHECK_EQUAL(true, mitr->valid);
+
+      mitr += 1;
+
+      CHECK_EQUAL("2", mitr->value);
+      CHECK_EQUAL(true, mitr->valid);
+
+      mitr -= 1;
+
+      CHECK_EQUAL("1", mitr->value);
+      CHECK_EQUAL(true, mitr->valid);
+
+      mitr = mitr + 1;
+
+      CHECK_EQUAL("2", mitr->value);
+      CHECK_EQUAL(true, mitr->valid);
+
+      mitr = mitr - 1;
+
+      CHECK_EQUAL("1", mitr->value);
+      CHECK_EQUAL(true, mitr->valid);
+    }
+
+    //*************************************************************************
+    TEST(move_iterator_subtraction)
+    {
+      Item list[] = { Item("1"), Item("2"), Item("3") };
+
+      etl::move_iterator<Item*> mitr1(&list[0]);
+      etl::move_iterator<Item*> mitr2(&list[1]);
+
+      etl::move_iterator<Item*>::difference_type d = mitr2 - mitr1;
+
+      CHECK_EQUAL(1, d);
     }
   };
 }
