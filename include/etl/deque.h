@@ -2380,8 +2380,8 @@ namespace etl
     //*************************************************************************
     /// Assigns data to the deque.
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
-    deque(TIterator begin_, TIterator end_)
+    template <typename TIterator>
+    deque(TIterator begin_, TIterator end_, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : etl::ideque<T>(reinterpret_cast<T*>(buffer.raw), MAX_SIZE, BUFFER_SIZE)
     {
       this->assign(begin_, end_);
@@ -2444,7 +2444,10 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
-    void repair()
+#ifdef ETL_ISTRING_REPAIR_ENABLE
+      virtual
+#endif
+      void repair()
 #ifdef ETL_ISTRING_REPAIR_ENABLE
       ETL_OVERRIDE
 #endif

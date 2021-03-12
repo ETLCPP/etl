@@ -65,7 +65,7 @@ namespace etl
   public:
 
     indirect_vector_buffer_missmatch(string_type file_name_, numeric_type line_number_)
-      : vector_exception(ETL_ERROR_TEXT("indirect_vector:buffer_missmatch", INDIRECT_VECTOR_FILE_ID"A"), file_name_, line_number_)
+      : vector_exception(ETL_ERROR_TEXT("indirect_vector:buffer_missmatch", ETL_INDIRECT_VECTOR_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };

@@ -1542,9 +1542,8 @@ namespace etl
     unique_ptr(const unique_ptr&) ETL_DELETE;
     unique_ptr&	operator =(const unique_ptr&) ETL_DELETE;
 
+    pointer	p; 
     TDeleter deleter;
-
-    pointer	p;
   };
 }
 

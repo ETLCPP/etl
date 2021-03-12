@@ -92,7 +92,7 @@ namespace etl
   public:
 
     string_empty(string_type file_name_, numeric_type line_number_)
-      : string_exception(ETL_ERROR_TEXT("string:empty", ETL_STRING_FILE_ID"A"), file_name_, line_number_)
+      : string_exception(ETL_ERROR_TEXT("string:empty", ETL_BASIC_STRING_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -106,7 +106,7 @@ namespace etl
   public:
 
     string_out_of_bounds(string_type file_name_, numeric_type line_number_)
-      : string_exception(ETL_ERROR_TEXT("string:bounds", ETL_STRING_FILE_ID"B"), file_name_, line_number_)
+      : string_exception(ETL_ERROR_TEXT("string:bounds", ETL_BASIC_STRING_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -120,7 +120,7 @@ namespace etl
   public:
 
     string_iterator(string_type file_name_, numeric_type line_number_)
-      : string_exception(ETL_ERROR_TEXT("string:iterator", ETL_STRING_FILE_ID"C"), file_name_, line_number_)
+      : string_exception(ETL_ERROR_TEXT("string:iterator", ETL_BASIC_STRING_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -134,7 +134,7 @@ namespace etl
   public:
 
     string_truncation(string_type file_name_, numeric_type line_number_)
-      : string_exception(ETL_ERROR_TEXT("string:iterator", ETL_STRING_FILE_ID"D"), file_name_, line_number_)
+      : string_exception(ETL_ERROR_TEXT("string:iterator", ETL_BASIC_STRING_FILE_ID"D"), file_name_, line_number_)
     {
     }
   };

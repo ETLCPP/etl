@@ -1,4 +1,10 @@
 ===============================================================================
+20.6.1
+Added missing etl::atomic<bool> from gcc & clang implementations.
+Changed nullptr to ETL_NULLPTR in buffer_descriptors and multi_range.
+Fixed header includes in state_chart.h
+
+===============================================================================
 20.6.0
 Added etl::message_router_registry.
 Changed etl::flat_multimap & etl::flat_multiset to iterate in insertion order, as per C++11 map and set.

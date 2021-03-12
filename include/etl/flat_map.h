@@ -936,7 +936,7 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
+    template <typename TIterator>
     flat_map(TIterator first, TIterator last)
       : etl::iflat_map<TKey, TValue, TCompare>(lookup, storage)
     {

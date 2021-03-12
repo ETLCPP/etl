@@ -179,7 +179,7 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
+    template<typename TIterator>
     crc16_poly_0x8005(TIterator begin, const TIterator end)
     {
       this->reset();

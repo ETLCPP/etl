@@ -2066,7 +2066,7 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
+    template <typename TIterator>
     multiset(TIterator first, TIterator last)
       : etl::imultiset<TKey, TCompare>(node_pool, MAX_SIZE)
     {

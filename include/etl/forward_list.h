@@ -1673,8 +1673,8 @@ namespace etl
     //*************************************************************************
     /// Construct from range.
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
-    forward_list(TIterator first, TIterator last)
+    template <typename TIterator>
+    forward_list(TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : etl::iforward_list<T>(node_pool, MAX_SIZE, false)
     {
       this->assign(first, last);
@@ -1834,8 +1834,8 @@ namespace etl
     //*************************************************************************
     /// Construct from range.
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
-    forward_list_ext(TIterator first, TIterator last, etl::ipool& node_pool)
+    template <typename TIterator>
+    forward_list_ext(TIterator first, TIterator last, etl::ipool& node_pool, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : etl::iforward_list<T>(node_pool, node_pool.max_size(), true)
     {
       this->assign(first, last);

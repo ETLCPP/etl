@@ -1064,8 +1064,8 @@ namespace etl
     /// Constructor.
     /// Constructs a buffer from an iterator range.
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
-    circular_buffer(TIterator first, const TIterator& last)
+    template <typename TIterator>
+    circular_buffer(TIterator first, const TIterator& last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : icircular_buffer<T>(reinterpret_cast<T*>(buffer.raw), MAX_SIZE)
     {
       while (first != last)
@@ -1181,8 +1181,8 @@ namespace etl
     /// Constructor.
     /// Constructs a buffer from an iterator range.
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
-    circular_buffer_ext(TIterator first, const TIterator& last, void* buffer, size_t max_size)
+    template <typename TIterator>
+    circular_buffer_ext(TIterator first, const TIterator& last, void* buffer, size_t max_size, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : icircular_buffer<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       while (first != last)

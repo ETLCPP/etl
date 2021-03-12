@@ -147,8 +147,8 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
-    string(TIterator first, TIterator last)
+    template <typename TIterator>
+    string(TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : istring(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
       this->assign(first, last);
@@ -353,8 +353,8 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
-    string_ext(TIterator first, TIterator last, value_type* buffer, size_type buffer_size)
+    template <typename TIterator>
+    string_ext(TIterator first, TIterator last, value_type* buffer, size_type buffer_size, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : istring(buffer, buffer_size - 1U)
     {
       this->assign(first, last);
