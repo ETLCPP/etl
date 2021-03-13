@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <array>
 #include <algorithm>
@@ -40,15 +40,32 @@ SOFTWARE.
 
 #include "etl/unordered_set.h"
 #include "etl/checksum.h"
+#include "etl/hash.h"
+
+namespace
+{
+  typedef TestDataDC<std::string>  DC;
+  typedef TestDataNDC<std::string> NDC;
+}
+
+namespace etl
+{
+  template <>
+  struct hash<NDC>
+  {
+    size_t operator ()(const NDC& e) const
+    {
+      size_t sum = 0U;
+      return std::accumulate(e.value.begin(), e.value.end(), sum);
+    }
+  };
+}
 
 namespace
 {
   SUITE(test_unordered_set)
   {
     static const size_t SIZE = 10;
-
-    typedef TestDataDC<std::string>  DC;
-    typedef TestDataNDC<std::string> NDC;
 
     using ItemM = TestDataM<int>;
 
@@ -137,6 +154,24 @@ namespace
       CHECK_EQUAL(data.max_size(), SIZE);
       CHECK(data.begin() == data.end());
     }
+
+#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::unordered_set data{ N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
+      etl::unordered_set<NDC, 10U> check = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
+
+      CHECK(!data.empty());
+      CHECK(data.full());
+      CHECK(data.begin() != data.end());
+      CHECK_EQUAL(10U, data.size());
+      CHECK_EQUAL(0U, data.available());
+      CHECK_EQUAL(10U, data.capacity());
+      CHECK_EQUAL(10U, data.max_size());
+      CHECK(data == check);
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_range)
@@ -458,6 +493,52 @@ namespace
       idata = data.find(N9);
       CHECK(idata != data.end());
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_range_first_half)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      DataNDC::iterator end = data.begin();
+      etl::advance(end, data.size() / 2);
+
+      auto itr = data.erase(data.begin(), end);
+
+      CHECK_EQUAL(initial_data.size() / 2, data.size());
+      CHECK(!data.full());
+      CHECK(!data.empty());
+      CHECK(itr == end);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_range_last_half)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      DataNDC::iterator begin = data.begin();
+      etl::advance(begin, data.size() / 2);
+
+      auto itr = data.erase(begin, data.end());
+
+      CHECK_EQUAL(initial_data.size() / 2, data.size());
+      CHECK(!data.full());
+      CHECK(!data.empty());
+      CHECK(itr == data.end());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_range_all)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      auto itr = data.erase(data.begin(), data.end());
+
+      CHECK_EQUAL(0U, data.size());
+      CHECK(!data.full());
+      CHECK(data.empty());
+      CHECK(itr == data.end());
+    }
+
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_clear)

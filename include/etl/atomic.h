@@ -31,7 +31,7 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if ETL_CPP11_SUPPORTED && ETL_USING_STL
+#if ETL_CPP11_SUPPORTED && (ETL_USING_STL || defined(ETL_IN_UNIT_TEST))
   #include "atomic/atomic_std.h"
   #define ETL_HAS_ATOMIC 1
 #elif defined(ETL_COMPILER_ARM5)
@@ -43,8 +43,12 @@ SOFTWARE.
 #elif defined(ETL_COMPILER_GCC)
   #include "atomic/atomic_gcc_sync.h"
   #define ETL_HAS_ATOMIC 1
+#elif defined(ETL_COMPILER_CLANG)
+  #include "atomic/atomic_clang_sync.h"
+  #define ETL_HAS_ATOMIC 1
 #else
   #define ETL_HAS_ATOMIC 0
+  #pragma message ("ETL atomics not supported")
 #endif
 
 #endif

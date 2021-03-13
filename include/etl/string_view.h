@@ -48,9 +48,6 @@ SOFTWARE.
 /// A wrapper for arrays
 ///\ingroup containers
 
-#undef ETL_FILE
-#define ETL_FILE "42"
-
 #include "private/minmax_push.h"
 
 namespace etl
@@ -77,7 +74,7 @@ namespace etl
   public:
 
     string_view_bounds(string_type file_name_, numeric_type line_number_)
-      : string_view_exception(ETL_ERROR_TEXT("basic_string_view:bounds", ETL_FILE"A"), file_name_, line_number_)
+      : string_view_exception(ETL_ERROR_TEXT("basic_string_view:bounds", ETL_STRING_VIEW_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -91,7 +88,7 @@ namespace etl
   public:
 
     string_view_uninitialised(string_type file_name_, numeric_type line_number_)
-      : string_view_exception(ETL_ERROR_TEXT("basic_string_view:uninitialised", ETL_FILE"B"), file_name_, line_number_)
+      : string_view_exception(ETL_ERROR_TEXT("basic_string_view:uninitialised", ETL_STRING_VIEW_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -154,7 +151,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Construct from iterator/size.
+    /// Construct from pointer/size.
     //*************************************************************************
     ETL_CONSTEXPR17 basic_string_view(const T* begin_, size_t size_)
       : mbegin(begin_)
@@ -308,7 +305,7 @@ namespace etl
     //*************************************************************************
     /// Assign from iterators
     //*************************************************************************
-    template <typename TIterator>
+    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
       void assign(TIterator begin_, TIterator end_)
     {
       mbegin = etl::addressof(*begin_);
@@ -816,6 +813,33 @@ namespace etl
   typedef etl::basic_string_view<char32_t> u32string_view;
 
   //*************************************************************************
+  /// make_string_view.
+  //*************************************************************************
+  template<size_t ARRAY_SIZE>
+  string_view make_string_view(const char(&text)[ARRAY_SIZE])
+  {
+    return string_view(text, ARRAY_SIZE - 1U);
+  }
+
+  template<size_t ARRAY_SIZE>
+  wstring_view make_string_view(const wchar_t(&text)[ARRAY_SIZE])
+  {
+    return wstring_view(text, ARRAY_SIZE - 1U);
+  }
+
+  template<size_t ARRAY_SIZE>
+  u16string_view make_string_view(const char16_t(&text)[ARRAY_SIZE])
+  {
+    return u16string_view(text, ARRAY_SIZE - 1U);
+  }
+
+  template<size_t ARRAY_SIZE>
+  u32string_view make_string_view(const char32_t(&text)[ARRAY_SIZE])
+  {
+    return u32string_view(text, ARRAY_SIZE - 1U);
+  }
+
+  //*************************************************************************
   /// Hash function.
   //*************************************************************************
 #if ETL_8BIT_SUPPORT
@@ -825,7 +849,7 @@ namespace etl
     size_t operator()(const etl::string_view& text) const
     {
       return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                         reinterpret_cast<const uint8_t*>(&text[text.size()]));
+                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
 
@@ -835,7 +859,7 @@ namespace etl
     size_t operator()(const etl::wstring_view& text) const
     {
       return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                         reinterpret_cast<const uint8_t*>(&text[text.size()]));
+                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
 
@@ -845,7 +869,7 @@ namespace etl
     size_t operator()(const etl::u16string_view& text) const
     {
       return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                         reinterpret_cast<const uint8_t*>(&text[text.size()]));
+                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
 
@@ -855,7 +879,7 @@ namespace etl
     size_t operator()(const etl::u32string_view& text) const
     {
       return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                         reinterpret_cast<const uint8_t*>(&text[text.size()]));
+                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
     }
   };
 #endif
@@ -877,8 +901,6 @@ void swap(etl::basic_string_view<T, etl::char_traits<T> >& lhs, etl::basic_strin
 }
 
 #include "private/minmax_pop.h"
-
-#undef ETL_FILE
 
 #endif
 

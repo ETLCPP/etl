@@ -26,14 +26,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <ostream>
 #include <sstream>
 #include <iomanip>
 
 #include "etl/string_stream.h"
-#include "etl/cstring.h"
+#include "etl/string.h"
 #include "etl/format_spec.h"
 
 #undef STR
@@ -41,10 +41,10 @@ SOFTWARE.
 
 namespace
 {
-  using String  = etl::string<50>;
+  using String = etl::string<50>;
   using IString = etl::istring;
-  using Stream  = etl::string_stream;
-  using Format  = etl::format_spec;
+  using Stream = etl::string_stream;
+  using Format = etl::format_spec;
 
   //***********************************
   struct Custom
@@ -59,7 +59,10 @@ namespace
     ss << STR("X = ") << value.x << STR(" : Y = ") << value.y;
     return ss;
   }
+}
 
+namespace etl
+{
   //***********************************
   std::ostream& operator << (std::ostream& os, const IString& str)
   {
@@ -70,7 +73,10 @@ namespace
 
     return os;
   }
+}
 
+namespace
+{
   SUITE(test_string_stream)
   {
     //*************************************************************************
@@ -138,32 +144,32 @@ namespace
       ss << etl::bin << value;
       CHECK_EQUAL(String(STR("11110001001000000---")), ss.str());
 
-      ss.clear();
+      ss.str().clear();
       ss << etl::oct << value;
       CHECK_EQUAL(String(STR("361100--------------")), ss.str());
 
-      ss.clear();
+      ss.str().clear();
       ss << etl::dec << value;
       CHECK_EQUAL(String(STR("123456--------------")), ss.str());
 
-      ss.clear();
+      ss.str().clear();
       ss << etl::hex << etl::uppercase << value;
       CHECK_EQUAL(String(STR("1E240---------------")), ss.str());
 
-      ss.clear();
+      ss.str().clear();
       ss << etl::hex << etl::nouppercase << value;
       CHECK_EQUAL(String(STR("1e240---------------")), ss.str());
 
-      ss.clear();
+      ss.str().clear();
       ss << etl::setw(0);
       ss << etl::noboolalpha << false << STR(" ") << true << STR(" ") << etl::boolalpha << false << STR(" ") << true;
       CHECK_EQUAL(String(STR("0 1 false true")), ss.str());
 
-      ss.clear();
+      ss.str().clear();
       ss << etl::setprecision(4) << 3.1415927;
       CHECK_EQUAL(String(STR("3.1416")), ss.str());
 
-      ss.clear();
+      ss.str().clear();
       ss << STR("abcdef") << STR(" ") << etl::uppercase << STR("abcdef");
       CHECK_EQUAL(String(STR("abcdef abcdef")), ss.str());
     }
@@ -179,31 +185,31 @@ namespace
       ss << etl::bin << etl::noshowbase << value;
       CHECK_EQUAL(String(STR("11110001001000000")), ss.str());
 
-      ss.clear();
+      ss.str().clear();
       ss << etl::bin << etl::showbase << value;
       CHECK_EQUAL(String(STR("0b11110001001000000")), ss.str());
 
-      ss.clear();
+      ss.str().clear();
       ss << etl::oct << etl::noshowbase << value;
       CHECK_EQUAL(String(STR("361100")), ss.str());
 
-      ss.clear();
+      ss.str().clear();
       ss << etl::oct << etl::showbase << value;
       CHECK_EQUAL(String(STR("0361100")), ss.str());
 
-      ss.clear();
+      ss.str().clear();
       ss << etl::dec << etl::noshowbase << value;
       CHECK_EQUAL(String(STR("123456")), ss.str());
 
-      ss.clear();
+      ss.str().clear();
       ss << etl::dec << etl::showbase << value;
       CHECK_EQUAL(String(STR("123456")), ss.str());
 
-      ss.clear();
+      ss.str().clear();
       ss << etl::hex << etl::noshowbase << value;
       CHECK_EQUAL(String(STR("1e240")), ss.str());
 
-      ss.clear();
+      ss.str().clear();
       ss << etl::hex << etl::showbase << value;
       CHECK_EQUAL(String(STR("0x1e240")), ss.str());
     }
@@ -303,17 +309,6 @@ namespace
       const IString& istr = ss.str();
 
       CHECK_EQUAL(String(STR("Hello")), istr);
-    }
-
-    //*************************************************************************
-    TEST(test_get_size)
-    {
-      String str;
-      Stream ss(str);
-
-      ss.str(String(STR("Hello")));
-
-      CHECK_EQUAL(str.size(), ss.size());
     }
   };
 }

@@ -35,7 +35,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "type_traits.h"
-#include "cstring.h"
+#include "string.h"
 #include "format_spec.h"
 #include "private/to_string_helper.h"
 

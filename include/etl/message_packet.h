@@ -60,9 +60,6 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#undef ETL_FILE
-#define ETL_FILE "55"
-
 namespace etl
 {
   //***************************************************************************
@@ -190,7 +187,7 @@ namespace etl
   #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
         pmsg->~imessage();
   #else
-        size_t id = pmsg->message_id;
+        size_t id = pmsg->get_message_id();
 
         switch (id)
         {
@@ -219,7 +216,7 @@ namespace etl
     //********************************************
     void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -248,7 +245,7 @@ namespace etl
     //********************************************
     void add_new_message(etl::imessage&& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -403,7 +400,7 @@ namespace etl
   #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
         pmsg->~imessage();
   #else
-        size_t id = pmsg->message_id;
+        size_t id = pmsg->get_message_id();
 
         switch (id)
         {
@@ -431,7 +428,7 @@ namespace etl
     //********************************************
     void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -459,7 +456,7 @@ namespace etl
     //********************************************
     void add_new_message(etl::imessage&& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -613,7 +610,7 @@ namespace etl
   #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
         pmsg->~imessage();
   #else
-        size_t id = pmsg->message_id;
+        size_t id = pmsg->get_message_id();
 
         switch (id)
         {
@@ -640,7 +637,7 @@ namespace etl
     //********************************************
     void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -667,7 +664,7 @@ namespace etl
     //********************************************
     void add_new_message(etl::imessage&& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -820,7 +817,7 @@ namespace etl
   #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
         pmsg->~imessage();
   #else
-        size_t id = pmsg->message_id;
+        size_t id = pmsg->get_message_id();
 
         switch (id)
         {
@@ -846,7 +843,7 @@ namespace etl
     //********************************************
     void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -872,7 +869,7 @@ namespace etl
     //********************************************
     void add_new_message(etl::imessage&& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -1023,7 +1020,7 @@ namespace etl
   #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
         pmsg->~imessage();
   #else
-        size_t id = pmsg->message_id;
+        size_t id = pmsg->get_message_id();
 
         switch (id)
         {
@@ -1048,7 +1045,7 @@ namespace etl
     //********************************************
     void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -1073,7 +1070,7 @@ namespace etl
     //********************************************
     void add_new_message(etl::imessage&& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -1223,7 +1220,7 @@ namespace etl
   #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
         pmsg->~imessage();
   #else
-        size_t id = pmsg->message_id;
+        size_t id = pmsg->get_message_id();
 
         switch (id)
         {
@@ -1247,7 +1244,7 @@ namespace etl
     //********************************************
     void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -1271,7 +1268,7 @@ namespace etl
     //********************************************
     void add_new_message(etl::imessage&& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -1420,7 +1417,7 @@ namespace etl
   #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
         pmsg->~imessage();
   #else
-        size_t id = pmsg->message_id;
+        size_t id = pmsg->get_message_id();
 
         switch (id)
         {
@@ -1443,7 +1440,7 @@ namespace etl
     //********************************************
     void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -1466,7 +1463,7 @@ namespace etl
     //********************************************
     void add_new_message(etl::imessage&& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -1614,7 +1611,7 @@ namespace etl
   #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
         pmsg->~imessage();
   #else
-        size_t id = pmsg->message_id;
+        size_t id = pmsg->get_message_id();
 
         switch (id)
         {
@@ -1636,7 +1633,7 @@ namespace etl
     //********************************************
     void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -1658,7 +1655,7 @@ namespace etl
     //********************************************
     void add_new_message(etl::imessage&& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -1804,7 +1801,7 @@ namespace etl
   #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
         pmsg->~imessage();
   #else
-        size_t id = pmsg->message_id;
+        size_t id = pmsg->get_message_id();
 
         switch (id)
         {
@@ -1825,7 +1822,7 @@ namespace etl
     //********************************************
     void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -1846,7 +1843,7 @@ namespace etl
     //********************************************
     void add_new_message(etl::imessage&& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -1991,7 +1988,7 @@ namespace etl
   #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
         pmsg->~imessage();
   #else
-        size_t id = pmsg->message_id;
+        size_t id = pmsg->get_message_id();
 
         switch (id)
         {
@@ -2011,7 +2008,7 @@ namespace etl
     //********************************************
     void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -2031,7 +2028,7 @@ namespace etl
     //********************************************
     void add_new_message(etl::imessage&& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -2175,7 +2172,7 @@ namespace etl
   #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
         pmsg->~imessage();
   #else
-        size_t id = pmsg->message_id;
+        size_t id = pmsg->get_message_id();
 
         switch (id)
         {
@@ -2194,7 +2191,7 @@ namespace etl
     //********************************************
     void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -2213,7 +2210,7 @@ namespace etl
     //********************************************
     void add_new_message(etl::imessage&& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -2356,7 +2353,7 @@ namespace etl
   #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
         pmsg->~imessage();
   #else
-        size_t id = pmsg->message_id;
+        size_t id = pmsg->get_message_id();
 
         switch (id)
         {
@@ -2374,7 +2371,7 @@ namespace etl
     //********************************************
     void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -2392,7 +2389,7 @@ namespace etl
     //********************************************
     void add_new_message(etl::imessage&& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -2533,7 +2530,7 @@ namespace etl
   #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
         pmsg->~imessage();
   #else
-        size_t id = pmsg->message_id;
+        size_t id = pmsg->get_message_id();
 
         switch (id)
         {
@@ -2550,7 +2547,7 @@ namespace etl
     //********************************************
     void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -2567,7 +2564,7 @@ namespace etl
     //********************************************
     void add_new_message(etl::imessage&& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -2707,7 +2704,7 @@ namespace etl
   #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
         pmsg->~imessage();
   #else
-        size_t id = pmsg->message_id;
+        size_t id = pmsg->get_message_id();
 
         switch (id)
         {
@@ -2723,7 +2720,7 @@ namespace etl
     //********************************************
     void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -2739,7 +2736,7 @@ namespace etl
     //********************************************
     void add_new_message(etl::imessage&& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -2878,7 +2875,7 @@ namespace etl
   #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
         pmsg->~imessage();
   #else
-        size_t id = pmsg->message_id;
+        size_t id = pmsg->get_message_id();
 
         switch (id)
         {
@@ -2893,7 +2890,7 @@ namespace etl
     //********************************************
     void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -2908,7 +2905,7 @@ namespace etl
     //********************************************
     void add_new_message(etl::imessage&& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -3046,7 +3043,7 @@ namespace etl
   #if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
         pmsg->~imessage();
   #else
-        size_t id = pmsg->message_id;
+        size_t id = pmsg->get_message_id();
 
         switch (id)
         {
@@ -3060,7 +3057,7 @@ namespace etl
     //********************************************
     void add_new_message(const etl::imessage& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -3074,7 +3071,7 @@ namespace etl
     //********************************************
     void add_new_message(etl::imessage&& msg)
     {
-      const size_t id = msg.message_id;
+      const size_t id = msg.get_message_id();
       void* p = data;
 
       switch (id)
@@ -3089,7 +3086,5 @@ namespace etl
     bool valid;
   };
 }
-
-#undef ETL_FILE
 
 #endif

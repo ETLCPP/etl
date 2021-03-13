@@ -31,15 +31,11 @@ SOFTWARE.
 #ifndef ETL_PACKET_INCLUDED
 #define ETL_PACKET_INCLUDED
 
-#include <new>
-
 #include "platform.h"
 #include "static_assert.h"
 #include "alignment.h"
 #include "utility.h"
-
-#undef ETL_FILE
-#define ETL_FILE "38"
+#include "placement_new.h"
 
 //*****************************************************************************
 ///\defgroup packet packet
@@ -165,7 +161,5 @@ namespace etl
     typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
   };
 }
-
-#undef ETL_FILE
 
 #endif

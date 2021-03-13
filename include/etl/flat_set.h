@@ -31,18 +31,14 @@ SOFTWARE.
 #ifndef ETL_FLAT_SET_INCLUDED
 #define ETL_FLAT_SET_INCLUDED
 
-#include <new>
-
 #include "platform.h"
 #include "reference_flat_set.h"
 #include "pool.h"
+#include "placement_new.h"
 
 #if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
 #endif
-
-#undef ETL_FILE
-#define ETL_FILE "5"
 
 //*****************************************************************************
 ///\defgroup flat_set flat_set
@@ -880,7 +876,7 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator>
+    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
     flat_set(TIterator first, TIterator last)
       : etl::iflat_set<T, TCompare>(lookup, storage)
     {
@@ -944,8 +940,15 @@ namespace etl
     // The vector that stores pointers to the nodes.
     etl::vector<node_t*, MAX_SIZE> lookup;
   };
-}
 
-#undef ETL_FILE
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  flat_set(T, Ts...)
+    ->flat_set<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
+#endif 
+}
 
 #endif

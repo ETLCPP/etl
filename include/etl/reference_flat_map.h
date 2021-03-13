@@ -43,9 +43,6 @@ SOFTWARE.
 #include "static_assert.h"
 #include "iterator.h"
 
-#undef ETL_FILE
-#define ETL_FILE "30"
-
 //*****************************************************************************
 ///\defgroup reference_flat_map reference_flat_map
 /// An reference_flat_map with the capacity defined at compile time.
@@ -79,7 +76,7 @@ namespace etl
   public:
 
     flat_map_full(string_type file_name_, numeric_type line_number_)
-      : flat_map_exception(ETL_ERROR_TEXT("flat_map: full", ETL_FILE"A"), file_name_, line_number_)
+      : flat_map_exception(ETL_ERROR_TEXT("flat_map: full", ETL_REFERENCE_FLAT_MAP_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -93,7 +90,7 @@ namespace etl
   public:
 
     flat_map_out_of_bounds(string_type file_name_, numeric_type line_number_)
-      : flat_map_exception(ETL_ERROR_TEXT("flat_map:bounds", ETL_FILE"B"), file_name_, line_number_)
+      : flat_map_exception(ETL_ERROR_TEXT("flat_map:bounds", ETL_REFERENCE_FLAT_MAP_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -125,13 +122,15 @@ namespace etl
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
 
+    class const_iterator;
+
     //*************************************************************************
     class iterator : public etl::iterator<ETL_OR_STD::bidirectional_iterator_tag, value_type>
     {
     public:
 
       friend class ireference_flat_map;
-      friend class const_iterator;
+      friend class ireference_flat_map::const_iterator;
 
       iterator()
       {
@@ -467,7 +466,7 @@ namespace etl
     {
       iterator i_element = lower_bound(key);
 
-      ETL_ASSERT(i_element != end(), ETL_ERROR(flat_map_out_of_bounds));
+      ETL_ASSERT((i_element != end()) && keys_are_equal(i_element->first, key), ETL_ERROR(flat_map_out_of_bounds));
 
       return i_element->second;
     }
@@ -481,7 +480,7 @@ namespace etl
     {
       iterator i_element = lower_bound(key);
 
-      ETL_ASSERT(i_element != end(), ETL_ERROR(flat_map_out_of_bounds));
+      ETL_ASSERT((i_element != end()) && keys_are_equal(i_element->first, key), ETL_ERROR(flat_map_out_of_bounds));
 
       return i_element->second;
     }
@@ -496,7 +495,7 @@ namespace etl
     {
       iterator i_element = lower_bound(key);
 
-      ETL_ASSERT(i_element != end(), ETL_ERROR(flat_map_out_of_bounds));
+      ETL_ASSERT((i_element != end()) && keys_are_equal(i_element->first, key), ETL_ERROR(flat_map_out_of_bounds));
 
       return i_element->second;
     }
@@ -511,7 +510,7 @@ namespace etl
     {
       const_iterator i_element = lower_bound(key);
 
-      ETL_ASSERT(i_element != end(), ETL_ERROR(flat_map_out_of_bounds));
+      ETL_ASSERT((i_element != end()) && keys_are_equal(i_element->first, key), ETL_ERROR(flat_map_out_of_bounds));
 
       return i_element->second;
     }
@@ -591,12 +590,12 @@ namespace etl
 
       if (i_element == end())
       {
-        return 0;
+        return 0U;
       }
       else
       {
         lookup.erase(i_element.ilookup);
-        return 1;
+        return 1U;
       }
     }
 
@@ -640,7 +639,7 @@ namespace etl
 
       if (itr != end())
       {
-        if (!key_compare()(itr->first, key) && !key_compare()(key, itr->first))
+        if (keys_are_equal(itr->first, key))
         {
           return itr;
         }
@@ -664,7 +663,7 @@ namespace etl
 
       if (itr != end())
       {
-        if (!key_compare()(itr->first, key) && !key_compare()(key, itr->first))
+        if (keys_are_equal(itr->first, key))
         {
           return itr;
         }
@@ -684,7 +683,7 @@ namespace etl
     //*********************************************************************
     size_t count(key_parameter_t key) const
     {
-      return (find(key) == end()) ? 0 : 1;
+      return (find(key) == end()) ? 0U : 1U;
     }
 
     //*********************************************************************
@@ -838,8 +837,8 @@ namespace etl
         // Not at the end.
         result.first = i_element;
 
-        // Existing element?
-        if (TKeyCompare()(value.first, i_element->first) || TKeyCompare()(i_element->first, value.first))
+        //Not an existing element?
+        if (!keys_are_equal(i_element->first, value.first))
         {
           // A new one.
           ETL_ASSERT(!lookup.full(), ETL_ERROR(flat_map_full));
@@ -849,6 +848,14 @@ namespace etl
       }
 
       return result;
+    }
+
+    //*********************************************************************
+    /// Check to see if the keys are equal.
+    //*********************************************************************
+    bool keys_are_equal(key_parameter_t key1, key_parameter_t key2) const
+    {
+      return !key_compare()(key1, key2) && !key_compare()(key2, key1);
     }
 
   private:
@@ -932,7 +939,7 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator>
+    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
     reference_flat_map(TIterator first, TIterator last)
       : ireference_flat_map<TKey, TValue, TCompare>(lookup)
     {
@@ -971,7 +978,5 @@ namespace etl
   };
 
 }
-
-#undef ETL_FILE
 
 #endif

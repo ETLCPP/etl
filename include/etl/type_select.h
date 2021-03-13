@@ -34,9 +34,6 @@ SOFTWARE.
 #include "type_traits.h"
 #include "null_type.h"
 
-#undef ETL_FILE
-#define ETL_FILE "49"
-
 #if 0
 #error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
 #endif
@@ -82,8 +79,10 @@ namespace etl
       using type = typename type_select_helper<ID, 0, TTypes...>::type;
     };
 
+#if ETL_CPP11_SUPPORTED
     template <size_t ID>
     using select_t = typename select<ID>::type;
+#endif
   };
 
 #else
@@ -626,7 +625,5 @@ namespace etl
   };
 #endif
 }
-
-#undef ETL_FILE
 
 #endif

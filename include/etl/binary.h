@@ -46,9 +46,6 @@ SOFTWARE.
 #include "exception.h"
 #include "error_handler.h"
 
-#undef ETL_FILE
-#define ETL_FILE "50"
-
 namespace etl
 {
   //***************************************************************************
@@ -74,7 +71,7 @@ namespace etl
   public:
 
     binary_out_of_range(string_type file_name_, numeric_type line_number_)
-      : etl::binary_exception(ETL_ERROR_TEXT("binary:out of range", ETL_FILE"A"), file_name_, line_number_)
+      : etl::binary_exception(ETL_ERROR_TEXT("binary:out of range", ETL_BINARY_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -1483,7 +1480,5 @@ namespace etl
     b31 = 0x80000000
   };
 }
-
-#undef ETL_FILE
 
 #endif

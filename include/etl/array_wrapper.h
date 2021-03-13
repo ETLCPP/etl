@@ -45,9 +45,6 @@ SOFTWARE.
 /// A wrapper for arrays
 ///\ingroup containers
 
-#undef ETL_FILE
-#define ETL_FILE "42"
-
 namespace etl
 {
   //***************************************************************************
@@ -72,7 +69,7 @@ namespace etl
   public:
 
     array_wrapper_bounds(string_type file_name_, numeric_type line_number_)
-      : array_wrapper_exception(ETL_ERROR_TEXT("array_wrapper:bounds", ETL_FILE"A"), file_name_, line_number_)
+      : array_wrapper_exception(ETL_ERROR_TEXT("array_wrapper:bounds", ETL_ARRAY_WRAPPER_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -416,8 +413,6 @@ void swap(etl::array_wrapper<T, SIZE, ARRAYL>& lhs,
 }
 
 #define ETL_ARRAY_WRAPPER(arraytype, arrayobject)  etl::array_wrapper<arraytype, ETL_ARRAY_SIZE(arrayobject), arrayobject>
-
-#undef ETL_FILE
 
 #endif
 

@@ -40,13 +40,11 @@ SOFTWARE.
 #include "hash.h"
 #include "algorithm.h"
 #include "memory.h"
+#include "type_traits.h"
 
 ///\defgroup array array
 /// A wrapper for arrays
 ///\ingroup containers
-
-#undef ETL_FILE
-#define ETL_FILE "41"
 
 namespace etl
 {
@@ -72,7 +70,7 @@ namespace etl
   public:
 
     array_view_bounds(string_type file_name_, numeric_type line_number_)
-      : array_view_exception(ETL_ERROR_TEXT("array_view:bounds", ETL_FILE"A"), file_name_, line_number_)
+      : array_view_exception(ETL_ERROR_TEXT("array_view:bounds", ETL_ARRAY_VIEW_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -86,7 +84,7 @@ namespace etl
   public:
 
     array_view_uninitialised(string_type file_name_, numeric_type line_number_)
-      : array_view_exception(ETL_ERROR_TEXT("array_view:uninitialised", ETL_FILE"B"), file_name_, line_number_)
+      : array_view_exception(ETL_ERROR_TEXT("array_view:uninitialised", ETL_ARRAY_VIEW_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -132,7 +130,7 @@ namespace etl
     /// data() and size() member functions.
     //*************************************************************************
     template <typename TArray>
-    ETL_CONSTEXPR explicit array_view(TArray& a)
+    ETL_CONSTEXPR array_view(TArray& a)
       : mbegin(a.data()),
         mend(a.data() + a.size())
     {
@@ -162,8 +160,8 @@ namespace etl
     //*************************************************************************
     /// Construct from C array
     //*************************************************************************
-    template<const size_t ARRAY_SIZE>
-    ETL_CONSTEXPR explicit array_view(T(&begin_)[ARRAY_SIZE])
+    template<size_t ARRAY_SIZE>
+    ETL_CONSTEXPR array_view(T(&begin_)[ARRAY_SIZE])
       : mbegin(begin_),
         mend(begin_ + ARRAY_SIZE)
     {
@@ -501,9 +499,27 @@ namespace etl
 
   private:
 
-    T* mbegin;
-    T* mend;
+    pointer mbegin;
+    pointer mend;
   };
+
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED
+  template <typename TArray>
+  array_view(TArray& a) 
+    -> array_view<typename TArray::value_type>;
+
+  template <typename TIterator>
+  array_view(const TIterator begin_, const TIterator end_)
+    -> array_view<etl::remove_pointer_t<TIterator>>;
+
+  template <typename TIterator,
+            typename TSize>
+  array_view(const TIterator begin_, const TSize size_)
+    -> array_view<etl::remove_pointer_t<TIterator>>;
+#endif  
 
   //*************************************************************************
   /// Hash function.
@@ -530,7 +546,4 @@ void swap(etl::array_view<T>& lhs, etl::array_view<T>& rhs)
   lhs.swap(rhs);
 }
 
-#undef ETL_FILE
-
 #endif
-

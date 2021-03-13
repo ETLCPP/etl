@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <string>
 #include <array>
@@ -53,7 +53,7 @@ namespace
     static constexpr size_t SIZE_L = 52;
     static constexpr size_t SIZE_S = 4;
 
-    using Text         = etl::wstring<0>;
+    using Text         = etl::wstring_ext;
     using IText        = etl::iwstring;
     using TextT        = etl::wstring<SIZE>;
     using Compare_Text = std::wstring;
@@ -73,6 +73,9 @@ namespace
     Compare_Text short_text;
 
     const value_t* pinitial_text = STR("Hello World");
+
+    value_t  array_text[12];
+    value_t* p_text = array_text;
 
     //*************************************************************************
     template <typename T1, typename T2>
@@ -94,6 +97,8 @@ namespace
         different_text = STR("Byee Planet");
         longer_text    = STR("Hello World There");
         short_text     = STR("Hello");
+
+        std::copy(pinitial_text, pinitial_text + etl::strlen(pinitial_text), array_text);
       }
     };
 
@@ -108,7 +113,70 @@ namespace
       CHECK_EQUAL(SIZE, text.capacity());
       CHECK_EQUAL(SIZE, text.max_size());
       CHECK(text.begin() == text.end());
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_default_constructor_use_buffer_and_size)
+    {
+      size_t length = etl::strlen(p_text);
+      Text text(p_text, length + 1);
+
+      CHECK_EQUAL(0U, text.size());
+      CHECK(text.empty());
+      CHECK_EQUAL(length, text.capacity());
+      CHECK_EQUAL(length, text.max_size());
+      CHECK(text.begin() == text.end());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_default_constructor_use_buffer_text_and_size)
+    {
+      Text text(p_text, p_text, etl::strlen(p_text) + 1);
+
+      CHECK_EQUAL(text.size(), etl::strlen(p_text));
+      CHECK(!text.empty());
+      CHECK_EQUAL(etl::strlen(p_text), text.capacity());
+      CHECK_EQUAL(etl::strlen(p_text), text.max_size());
+      CHECK(text.begin() != text.end());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_default_constructor_use_array_buffer)
+    {
+      Text text(array_text, etl::size(array_text));
+
+      CHECK_EQUAL(0U, text.size());
+      CHECK(text.empty());
+      CHECK_EQUAL(etl::size(array_text) - 1, text.capacity());
+      CHECK_EQUAL(etl::size(array_text) - 1, text.max_size());
+      CHECK(text.begin() == text.end());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_default_constructor_use_array_buffer_text)
+    {
+      Text text(array_text, array_text, etl::size(array_text));
+
+      CHECK_EQUAL(text.size(), etl::strlen(array_text));
+      CHECK(!text.empty());
+      CHECK_EQUAL(etl::size(array_text) - 1, text.capacity());
+      CHECK_EQUAL(etl::size(array_text) - 1, text.max_size());
+      CHECK(text.begin() != text.end());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -117,11 +185,13 @@ namespace
       TextBuffer buffer;
       Text text(buffer.data(), buffer.size());
 
-      CHECK(text.begin()   == text.end());
-      CHECK(text.cbegin()  == text.cend());
-      CHECK(text.rbegin()  == text.rend());
+      CHECK(text.begin() == text.end());
+      CHECK(text.cbegin() == text.cend());
+      CHECK(text.rbegin() == text.rend());
       CHECK(text.crbegin() == text.crend());
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -140,7 +210,9 @@ namespace
       bool is_equal = Equal(compare_text, text);
 
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -150,7 +222,9 @@ namespace
       Text text(buffer.size() + 1, STR('A'), buffer.data(), buffer.size());
 
       CHECK_EQUAL(buffer.size() - 1, text.size());
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -165,7 +239,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -180,22 +256,26 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_char_pointer_size)
     {
-        Compare_Text compare_text(SIZE, STR('A'));
+      Compare_Text compare_text(SIZE, STR('A'));
 
-        TextBuffer buffer;
-        Text text(SIZE, STR('A'), buffer.data(), buffer.size());
+      TextBuffer buffer;
+      Text text(SIZE, STR('A'), buffer.data(), buffer.size());
 
-        CHECK(!text.empty());
+      CHECK(!text.empty());
 
-        bool is_equal = Equal(compare_text, text);
-        CHECK(is_equal);
-        CHECK(!text.truncated());
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -210,22 +290,26 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_size_char)
     {
-        Compare_Text compare_text(initial_text.c_str(), initial_text.size() / 2);
+      Compare_Text compare_text(initial_text.c_str(), initial_text.size() / 2);
 
-        TextBuffer buffer;
-        Text text(initial_text.c_str(), initial_text.size() / 2, buffer.data(), buffer.size());
+      TextBuffer buffer;
+      Text text(initial_text.c_str(), initial_text.size() / 2, buffer.data(), buffer.size());
 
-        CHECK(!text.empty());
+      CHECK(!text.empty());
 
-        bool is_equal = Equal(compare_text, text);
-        CHECK(is_equal);
-        CHECK(!text.truncated());
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -240,7 +324,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -253,7 +339,9 @@ namespace
 
       CHECK(text.size() == SIZE);
       CHECK(!text.empty());
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -266,7 +354,9 @@ namespace
       CHECK(is_equal);
       CHECK(text.size() == SIZE);
       CHECK(!text.empty());
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -300,11 +390,13 @@ namespace
     {
       TextBuffer buffer;
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
-      
+
       TextBuffer buffer2;
       Text text2(text, buffer2.data(), buffer2.size());
       CHECK(text2 == text);
-      CHECK(!text2.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text2.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -317,7 +409,9 @@ namespace
       TextBuffer buffer2;
       Text text2(itext, buffer2.data(), buffer2.size());
       CHECK(text2 == text);
-      CHECK(!text2.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text2.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -325,14 +419,16 @@ namespace
     {
       TextBuffer buffer;
       Text  text(initial_text.c_str(), buffer.data(), buffer.size());
-      
+
       TextBufferL bufferl;
       Text textl(longer_text.c_str(), bufferl.data(), bufferl.size());
-      
+
       TextBuffer buffer2;
       Text  text2(textl, buffer2.data(), buffer2.size());
       CHECK(text2 == text);
-      CHECK(text2.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text2.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -344,7 +440,9 @@ namespace
       TextBuffer buffer2;
       Text  text2(text, buffer2.data(), buffer2.size());
 
-      CHECK(text2.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text2.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -361,7 +459,9 @@ namespace
 
       bool is_equal = Equal(compare_text2, text2);
       CHECK(is_equal);
-      CHECK(!text2.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text2.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -378,7 +478,9 @@ namespace
 
       bool is_equal = Equal(compare_text2, text2);
       CHECK(is_equal);
-      CHECK(text2.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text2.is_truncated());
+#endif
     }
 
 #if ETL_USING_STL
@@ -393,7 +495,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -410,7 +514,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 #endif
 
@@ -419,7 +525,7 @@ namespace
     {
       TextBuffer buffer;
       Text text(initial_text.begin(), initial_text.end(), buffer.data(), buffer.size());
-      
+
       TextBuffer buffer2;
       Text other_text(buffer2.data(), buffer2.size());
 
@@ -427,8 +533,10 @@ namespace
 
       bool is_equal = Equal(text, other_text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
-      CHECK(!other_text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+      CHECK(!other_text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -436,7 +544,7 @@ namespace
     {
       TextBuffer buffer;
       Text text(longer_text.begin(), longer_text.end(), buffer.data(), buffer.size());
-      
+
       TextBuffer buffer2;
       Text other_text(buffer2.data(), buffer2.size());
 
@@ -444,8 +552,10 @@ namespace
 
       bool is_equal = Equal(text, other_text);
       CHECK(is_equal);
-      CHECK(text.truncated());
-      CHECK(other_text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+      CHECK(other_text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -465,8 +575,10 @@ namespace
       bool is_equal = Equal(text1, text2);
 
       CHECK(is_equal);
-      CHECK(!text1.truncated());
-      CHECK(!text2.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text1.is_truncated());
+      CHECK(!text2.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -486,8 +598,10 @@ namespace
       bool is_equal = Equal(text1, text2);
 
       CHECK(is_equal);
-      CHECK(text1.truncated());
-      CHECK(text2.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text1.is_truncated());
+      CHECK(text2.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -504,8 +618,10 @@ namespace
       bool is_equal = Equal(text, other_text);
 
       CHECK(is_equal);
-      CHECK(!text.truncated());
-      CHECK(!other_text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+      CHECK(!other_text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -522,8 +638,10 @@ namespace
       bool is_equal = Equal(text, other_text);
 
       CHECK(is_equal);
-      CHECK(text.truncated());
-      CHECK(other_text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+      CHECK(other_text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -536,7 +654,9 @@ namespace
 
       bool is_equal = Equal(std::wstring(STR("Hello World")), text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -549,7 +669,9 @@ namespace
 
       bool is_equal = Equal(std::wstring(STR("Hello World")), text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -563,7 +685,9 @@ namespace
 
       bool is_equal = Equal(std::wstring(STR("Hello World")), itext);
       CHECK(is_equal);
-      CHECK(!itext.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!itext.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -577,7 +701,9 @@ namespace
 
       bool is_equal = Equal(std::wstring(STR("Hello World")), itext);
       CHECK(is_equal);
-      CHECK(itext.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(itext.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -589,7 +715,7 @@ namespace
       TextBuffer buffer2;
       const Text constText(initial_text.c_str(), buffer2.data(), buffer2.size());
 
-      CHECK_EQUAL(&text[0],      text.begin());
+      CHECK_EQUAL(&text[0], text.begin());
       CHECK_EQUAL(&constText[0], constText.begin());
     }
 
@@ -603,7 +729,7 @@ namespace
       TextBuffer buffer2;
       const Text constText(initial_text.c_str(), buffer2.data(), buffer2.size());
 
-      CHECK_EQUAL(&text[initial_text.size()],      text.end());
+      CHECK_EQUAL(&text[initial_text.size()], text.end());
       CHECK_EQUAL(&constText[initial_text.size()], constText.end());
     }
 
@@ -618,7 +744,9 @@ namespace
       text.resize(NEW_SIZE);
 
       CHECK_EQUAL(text.size(), NEW_SIZE);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -632,12 +760,14 @@ namespace
       Text text(INITIAL_SIZE, INITIAL_VALUE, buffer.data(), buffer.size());
       text.resize(NEW_SIZE, INITIAL_VALUE);
 
-      std::array<char, NEW_SIZE> compare_text;
+      std::array<value_t, NEW_SIZE> compare_text;
       compare_text.fill(INITIAL_VALUE);
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
 
@@ -651,7 +781,9 @@ namespace
       Text text(INITIAL_SIZE, STR('A'), buffer.data(), buffer.size());
       text.resize(NEW_SIZE, STR('A'));
       CHECK_EQUAL(SIZE, text.size());
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -665,7 +797,9 @@ namespace
       text.resize(NEW_SIZE);
 
       CHECK_EQUAL(text.size(), NEW_SIZE);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -681,14 +815,88 @@ namespace
 
       CHECK_EQUAL(text.size(), NEW_SIZE);
 
-      std::array<char, NEW_SIZE> compare_text;
+      std::array<value_t, NEW_SIZE> compare_text;
       compare_text.fill(INITIAL_VALUE);
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_uninitialized_resize_up)
+    {
+      const size_t  INITIAL_SIZE = 5;
+      const size_t  NEW_SIZE = 8;
+      const value_t INITIAL_VALUE = STR('A');
+      const value_t FILL_VALUE = STR('B');
+
+      TextBuffer buffer;
+      Text text(INITIAL_SIZE, INITIAL_VALUE, buffer.data(), buffer.size());
+
+      Text::pointer pbegin = &text.front();
+      Text::pointer pend = &text.back() + 1;
+      Text::pointer pmax = pbegin + text.max_size();
+
+      // Fill free space with a pattern.
+      std::fill(pend, pmax, FILL_VALUE);
+
+      text.uninitialized_resize(NEW_SIZE);
+
+      std::array<value_t, NEW_SIZE> compare_text;
+      compare_text.fill(FILL_VALUE);
+      std::fill(compare_text.begin(), compare_text.begin() + INITIAL_SIZE, INITIAL_VALUE);
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+
+      CHECK_EQUAL(text.size(), NEW_SIZE);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_uninitialized_resize_up_excess)
+    {
+      const size_t INITIAL_SIZE = 5;
+      const size_t NEW_SIZE = SIZE + 1;
+
+      TextBuffer buffer;
+      Text text(INITIAL_SIZE, STR('A'), buffer.data(), buffer.size());
+
+      text.uninitialized_resize(NEW_SIZE);
+
+      CHECK_EQUAL(text.size(), SIZE);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_uninitialized_resize_down)
+    {
+      const size_t  INITIAL_SIZE = 5;
+      const size_t  NEW_SIZE = 2;
+      const value_t INITIAL_VALUE = STR('A');
+      const value_t FILL_VALUE = STR('B');
+
+      TextBuffer buffer;
+      Text text(INITIAL_SIZE, INITIAL_VALUE, buffer.data(), buffer.size());
+
+      Text::pointer pbegin = &text.front();
+      Text::pointer pend = &text.back() + 1;
+      Text::pointer pmax = pbegin + text.max_size();
+
+      // Fill free space with a pattern.
+      std::fill(pend, pmax, FILL_VALUE);
+
+      text.uninitialized_resize(NEW_SIZE);
+
+      std::array<value_t, NEW_SIZE> compare_text;
+      compare_text.fill(INITIAL_VALUE);
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+
+      CHECK_EQUAL(text.size(), NEW_SIZE);
+    }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_empty_full)
@@ -698,7 +906,9 @@ namespace
       text.resize(text.max_size(), STR('A'));
 
       CHECK(!text.empty());
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -709,7 +919,9 @@ namespace
       text.resize(text.max_size() / 2, STR('A'));
 
       CHECK(!text.empty());
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -719,7 +931,9 @@ namespace
       Text text(buffer.data(), buffer.size());
 
       CHECK(text.empty());
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -730,7 +944,9 @@ namespace
       text.resize(text.max_size(), STR('A'));
 
       CHECK(text.full());
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -741,7 +957,9 @@ namespace
       text.resize(text.max_size() / 2, STR('A'));
 
       CHECK(!text.full());
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -751,7 +969,9 @@ namespace
       Text text(buffer.data(), buffer.size());
 
       CHECK(!text.full());
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -767,7 +987,9 @@ namespace
         CHECK_EQUAL(text[i], compare_text[i]);
       }
 
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -783,7 +1005,9 @@ namespace
         CHECK_EQUAL(text[i], compare_text[i]);
       }
 
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -799,7 +1023,9 @@ namespace
         CHECK_EQUAL(text.at(i), compare_text.at(i));
       }
 
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       CHECK_THROW(text.at(text.size()), etl::string_out_of_bounds);
     }
@@ -817,7 +1043,9 @@ namespace
         CHECK_EQUAL(text.at(i), compare_text.at(i));
       }
 
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       CHECK_THROW(text.at(text.size()), etl::string_out_of_bounds);
     }
@@ -831,7 +1059,9 @@ namespace
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
 
       CHECK(text.front() == compare_text.front());
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -843,7 +1073,9 @@ namespace
       const Text text(initial_text.c_str(), buffer.data(), buffer.size());
 
       CHECK(text.front() == compare_text.front());
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -855,7 +1087,9 @@ namespace
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
 
       CHECK(text.back() == compare_text.back());
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -867,7 +1101,9 @@ namespace
       const Text text(initial_text.c_str(), buffer.data(), buffer.size());
 
       CHECK(text.back() == compare_text.back());
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -879,11 +1115,13 @@ namespace
       Text text(compare_text.begin(), compare_text.end(), buffer.data(), buffer.size());
 
       bool is_equal = std::equal(text.data(),
-                                 text.data() + text.size(),
-                                 compare_text.begin());
+        text.data() + text.size(),
+        compare_text.begin());
 
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -895,11 +1133,13 @@ namespace
       const Text text(compare_text.begin(), compare_text.end(), buffer.data(), buffer.size());
 
       bool is_equal = std::equal(text.data(),
-                                 text.data() + text.size(),
-                                 compare_text.begin());
+        text.data() + text.size(),
+        compare_text.begin());
 
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -920,7 +1160,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -941,7 +1183,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -955,7 +1199,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -969,7 +1215,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -983,7 +1231,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -999,7 +1249,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -1014,7 +1266,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -1029,7 +1283,9 @@ namespace
 
       bool is_equal = Equal(initial_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -1049,7 +1305,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -1067,7 +1325,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -1093,7 +1353,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -1112,7 +1374,9 @@ namespace
       for (size_t i = 0; i < SIZE; ++i)
       {
         text.push_back(STR('A') + value_t(i));
-        CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+        CHECK(!text.is_truncated());
+#endif
       }
 
       text.push_back(STR('A') + value_t(SIZE));
@@ -1122,7 +1386,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -1150,7 +1416,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_position_value)
     {
       const size_t INITIAL_SIZE = 5;
-      const value_t INITIAL_VALUE  = STR('A');
+      const value_t INITIAL_VALUE = STR('A');
 
       for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
       {
@@ -1188,7 +1454,9 @@ namespace
       compare_text.insert(compare_text.begin() + offset, INITIAL_VALUE);
       compare_text.erase(compare_text.end() - 1);
 
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -1198,7 +1466,9 @@ namespace
       compare_text.insert(compare_text.begin() + offset, STR('A'));
       compare_text.erase(compare_text.end() - 1);
 
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -1208,7 +1478,9 @@ namespace
       compare_text.insert(compare_text.begin() + offset, STR('A'));
       compare_text.erase(compare_text.end() - 1);
 
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -1222,9 +1494,9 @@ namespace
       TextBuffer buffer;
       Text text(buffer.data(), buffer.size());
 
-      const size_t INITIAL_SIZE     = 5;
-      const size_t INSERT_SIZE      = 3;
-      const value_t INITIAL_VALUE      = STR('A');
+      const size_t INITIAL_SIZE = 5;
+      const size_t INSERT_SIZE = 3;
+      const value_t INITIAL_VALUE = STR('A');
 
       for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
       {
@@ -1233,7 +1505,9 @@ namespace
         text.insert(text.begin() + offset, INSERT_SIZE, INITIAL_VALUE);
         compare_text.insert(compare_text.begin() + offset, INSERT_SIZE, INITIAL_VALUE);
 
-        CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+        CHECK(!text.is_truncated());
+#endif
 
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
@@ -1249,7 +1523,7 @@ namespace
       Text text(buffer.data(), buffer.size());
 
       const size_t INSERT_SIZE = 4;
-      const value_t INSERT_VALUE  = STR('A');
+      const value_t INSERT_VALUE = STR('A');
 
       size_t offset = 0;
       compare_text.assign(initial_text.begin(), initial_text.end());
@@ -1258,7 +1532,9 @@ namespace
       compare_text.erase(compare_text.end() - INSERT_SIZE, compare_text.end());
       text.insert(text.begin() + offset, INSERT_SIZE, INSERT_VALUE);
 
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -1271,7 +1547,9 @@ namespace
       text.assign(initial_text.begin(), initial_text.end());
       text.insert(text.begin() + offset, INSERT_SIZE, INSERT_VALUE);
 
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -1284,7 +1562,9 @@ namespace
       text.assign(initial_text.begin(), initial_text.end());
       text.insert(text.begin() + offset, INSERT_SIZE, INSERT_VALUE);
 
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -1297,7 +1577,9 @@ namespace
       text.assign(initial_text.begin(), initial_text.end());
       text.insert(text.begin() + offset, INSERT_SIZE, INSERT_VALUE);
 
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -1320,7 +1602,9 @@ namespace
         text.insert(text.begin() + offset, insert_text.begin(), insert_text.end());
         compare_text.insert(compare_text.begin() + offset, insert_text.begin(), insert_text.end());
 
-        CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+        CHECK(!text.is_truncated());
+#endif
 
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
@@ -1331,7 +1615,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_position_range_excess)
     {
       const size_t INITIAL_SIZE = 5;
-      const value_t INITIAL_VALUE  = STR('A');
+      const value_t INITIAL_VALUE = STR('A');
 
       Compare_Text compare_text;
 
@@ -1346,7 +1630,9 @@ namespace
       compare_text.resize(initial_text.size());
       text.insert(text.begin() + offset, initial_text.begin(), initial_text.end());
 
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -1359,7 +1645,9 @@ namespace
       compare_text.resize(initial_text.size());
       text.insert(text.begin() + offset, initial_text.begin(), initial_text.end());
 
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -1372,7 +1660,9 @@ namespace
       compare_text.resize(initial_text.size());
       text.insert(text.begin() + offset, initial_text.begin(), initial_text.end());
 
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       CHECK_EQUAL(compare_text.size(), text.size());
       is_equal = Equal(compare_text, text);
@@ -1396,7 +1686,9 @@ namespace
 
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
-        CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+        CHECK(!text.is_truncated());
+#endif
       }
     }
 
@@ -1419,7 +1711,9 @@ namespace
 
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
-        CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+        CHECK(!text.is_truncated());
+#endif
       }
     }
 
@@ -1442,7 +1736,9 @@ namespace
 
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
-        CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+        CHECK(text.is_truncated());
+#endif
       }
     }
 
@@ -1468,7 +1764,9 @@ namespace
 
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
-        CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+        CHECK(text.is_truncated());
+#endif
       }
     }
 
@@ -1489,7 +1787,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       compare_text.assign(short_text.begin(), short_text.end());
       text.assign(short_text.begin(), short_text.end());
@@ -1502,7 +1802,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       compare_text.assign(short_text.begin(), short_text.end());
       text.assign(short_text.begin(), short_text.end());
@@ -1513,7 +1815,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -1533,7 +1837,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow.
       compare_text.assign(short_text.c_str());
@@ -1546,7 +1852,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -1557,10 +1865,14 @@ namespace
 
       TextBufferS buffers;
       Text append(short_text.c_str(), buffers.data(), buffers.size());
-      CHECK(append.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(append.is_truncated());
+#endif
 
       text.append(append);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -1577,7 +1889,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow.
       compare_text.assign(shorter_text.c_str());
@@ -1589,7 +1903,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -1609,7 +1925,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Partial string.
       compare_text.assign(short_text.c_str());
@@ -1622,7 +1940,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow.
       compare_text.assign(short_text.c_str());
@@ -1635,7 +1955,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -1646,10 +1968,14 @@ namespace
 
       TextBufferS buffer2;
       Text append(short_text.c_str(), buffer2.data(), buffer2.size());
-      CHECK(append.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(append.is_truncated());
+#endif
 
       text.append(append, 1, 2);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -1667,7 +1993,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow.
       compare_text.assign(short_text.c_str());
@@ -1679,7 +2007,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -1697,7 +2027,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow.
       compare_text.assign(short_text.c_str());
@@ -1709,7 +2041,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -1729,7 +2063,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow.
       compare_text.assign(short_text.c_str());
@@ -1742,7 +2078,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -1760,7 +2098,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Non-overflow short text.
       compare_text.assign(short_text.c_str());
@@ -1772,7 +2112,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -1784,7 +2126,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Overflow short text, npos.
       compare_text.assign(short_text.c_str());
@@ -1796,7 +2140,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
@@ -1808,7 +2154,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -1820,7 +2168,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Overflow, npos.
       compare_text.assign(initial_text.c_str());
@@ -1832,7 +2182,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -1850,7 +2202,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -1862,7 +2216,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
@@ -1874,7 +2230,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -1886,7 +2244,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -1904,7 +2264,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Non-overflow short text, npos.
       compare_text.assign(short_text.c_str());
@@ -1916,7 +2278,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -1928,7 +2292,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Overflow short text, npos.
       compare_text.assign(short_text.c_str());
@@ -1940,7 +2306,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
@@ -1952,7 +2320,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Non-overflow, npos.
       compare_text.assign(initial_text.c_str());
@@ -1964,7 +2334,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -1976,7 +2348,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Overflow, npos.
       compare_text.assign(initial_text.c_str());
@@ -1988,7 +2362,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -2006,7 +2382,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Non-overflow short text, npos.
       compare_text.assign(short_text.c_str());
@@ -2018,7 +2396,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -2030,7 +2410,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Overflow short text, npos.
       compare_text.assign(short_text.c_str());
@@ -2042,7 +2424,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
@@ -2054,7 +2438,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Non-overflow, npos.
       compare_text.assign(initial_text.c_str());
@@ -2066,7 +2452,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -2078,7 +2466,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Overflow, npos.
       compare_text.assign(initial_text.c_str());
@@ -2090,7 +2480,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -2108,7 +2500,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -2120,7 +2514,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
@@ -2132,7 +2528,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -2144,7 +2542,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -2152,7 +2552,7 @@ namespace
     {
       // Non-overflow short text.
       Compare_Text compare_text(short_text.c_str());
-      
+
       TextBuffer buffer;
       Text text(short_text.c_str(), buffer.data(), buffer.size());
 
@@ -2162,7 +2562,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Non-overflow short text, npos.
       compare_text.assign(short_text.c_str());
@@ -2174,7 +2576,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -2186,7 +2590,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Overflow short text, npos.
       compare_text.assign(short_text.c_str());
@@ -2198,7 +2604,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
@@ -2210,7 +2618,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Non-overflow, npos.
       compare_text.assign(initial_text.c_str());
@@ -2222,7 +2632,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -2234,7 +2646,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Overflow, npos.
       compare_text.assign(initial_text.c_str());
@@ -2246,7 +2660,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -2264,7 +2680,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -2276,7 +2694,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
@@ -2288,7 +2708,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -2300,7 +2722,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -2318,7 +2742,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Non-overflow short text, npos.
       compare_text.assign(short_text.c_str());
@@ -2330,7 +2756,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -2342,7 +2770,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Overflow short text, npos.
       compare_text.assign(short_text.c_str());
@@ -2354,7 +2784,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
@@ -2366,7 +2798,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Non-overflow, npos.
       compare_text.assign(initial_text.c_str());
@@ -2378,7 +2812,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -2390,7 +2826,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Overflow, npos.
       compare_text.assign(initial_text.c_str());
@@ -2402,7 +2840,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -2420,7 +2860,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -2432,7 +2874,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
@@ -2444,7 +2888,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -2456,7 +2902,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -2477,7 +2925,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow short text.
       compare_text.assign(short_text.c_str());
@@ -2489,7 +2939,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
@@ -2501,7 +2953,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       // Overflow.
       compare_text.assign(initial_text.c_str());
@@ -2513,7 +2967,9 @@ namespace
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -2529,7 +2985,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -2546,7 +3004,9 @@ namespace
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -2557,7 +3017,9 @@ namespace
       text.clear();
 
       CHECK_EQUAL(text.size(), size_t(0));
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -2570,7 +3032,9 @@ namespace
 
       bool is_equal = std::equal(text.begin(), text.end(), compare_text.begin());
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -2583,7 +3047,9 @@ namespace
 
       bool is_equal = std::equal(text.cbegin(), text.cend(), compare_text.cbegin());
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -2596,7 +3062,9 @@ namespace
 
       bool is_equal = std::equal(text.rbegin(), text.rend(), compare_text.rbegin());
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -2609,7 +3077,9 @@ namespace
 
       bool is_equal = std::equal(text.crbegin(), text.crend(), compare_text.crbegin());
       CHECK(is_equal);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
     }
 
     //*************************************************************************
@@ -2666,7 +3136,7 @@ namespace
       const Text initial(initial_text.c_str(), buffer2.data(), buffer2.size());
 
       // String-String
-      CHECK((less    < initial) == (less_text < initial_text));
+      CHECK((less < initial) == (less_text < initial_text));
       CHECK((initial < less) == (initial_text < less_text));
 
       TextBuffer buffer3;
@@ -2683,17 +3153,17 @@ namespace
       CHECK((initial < initial) == (initial_text < initial_text));
 
       // String-Pointer Pointer-String
-      CHECK((less          < pinitial_text) == (less_text     < pinitial_text));
-      CHECK((pinitial_text < less)          == (pinitial_text < less_text));
+      CHECK((less < pinitial_text) == (less_text < pinitial_text));
+      CHECK((pinitial_text < less) == (pinitial_text < less_text));
 
-      CHECK((greater       < pinitial_text) == (greater_text  < pinitial_text));
-      CHECK((pinitial_text < greater)       == (pinitial_text < greater_text));
+      CHECK((greater < pinitial_text) == (greater_text < pinitial_text));
+      CHECK((pinitial_text < greater) == (pinitial_text < greater_text));
 
-      CHECK((shorter       < pinitial_text) == (shorter_text  < pinitial_text));
-      CHECK((pinitial_text < shorter)       == (pinitial_text < shorter_text));
+      CHECK((shorter < pinitial_text) == (shorter_text < pinitial_text));
+      CHECK((pinitial_text < shorter) == (pinitial_text < shorter_text));
 
-      CHECK((initial       < pinitial_text) == (initial_text  < pinitial_text));
-      CHECK((pinitial_text < initial)       == (pinitial_text < initial_text));
+      CHECK((initial < pinitial_text) == (initial_text < pinitial_text));
+      CHECK((pinitial_text < initial) == (pinitial_text < initial_text));
     }
 
     //*************************************************************************
@@ -2706,8 +3176,8 @@ namespace
       const Text initial(initial_text.c_str(), buffer2.data(), buffer2.size());
 
       // String-String
-      CHECK((less    <= initial) == (less_text    <= initial_text));
-      CHECK((initial <= less)    == (initial_text <= less_text));
+      CHECK((less <= initial) == (less_text <= initial_text));
+      CHECK((initial <= less) == (initial_text <= less_text));
 
       TextBuffer buffer3;
       const Text greater(greater_text.c_str(), buffer3.data(), buffer3.size());
@@ -2723,17 +3193,17 @@ namespace
       CHECK((initial <= initial) == (initial_text <= initial_text));
 
       // String-Pointer Pointer-String
-      CHECK((less          <= pinitial_text) == (less_text     <= pinitial_text));
-      CHECK((pinitial_text <= less)          == (pinitial_text <= less_text));
+      CHECK((less <= pinitial_text) == (less_text <= pinitial_text));
+      CHECK((pinitial_text <= less) == (pinitial_text <= less_text));
 
-      CHECK((greater       <= pinitial_text) == (greater_text  <= pinitial_text));
-      CHECK((pinitial_text <= greater)       == (pinitial_text <= greater_text));
+      CHECK((greater <= pinitial_text) == (greater_text <= pinitial_text));
+      CHECK((pinitial_text <= greater) == (pinitial_text <= greater_text));
 
-      CHECK((shorter       <= pinitial_text) == (shorter_text  <= pinitial_text));
-      CHECK((pinitial_text <= shorter)       == (pinitial_text <= shorter_text));
+      CHECK((shorter <= pinitial_text) == (shorter_text <= pinitial_text));
+      CHECK((pinitial_text <= shorter) == (pinitial_text <= shorter_text));
 
-      CHECK((initial       <= pinitial_text) == (initial_text  <= pinitial_text));
-      CHECK((pinitial_text <= initial)       == (pinitial_text <= initial_text));
+      CHECK((initial <= pinitial_text) == (initial_text <= pinitial_text));
+      CHECK((pinitial_text <= initial) == (pinitial_text <= initial_text));
     }
 
     //*************************************************************************
@@ -2763,17 +3233,17 @@ namespace
       CHECK((initial > initial) == (initial_text > initial_text));
 
       // String-Pointer Pointer-String
-      CHECK((less          > pinitial_text) == (less_text     > pinitial_text));
-      CHECK((pinitial_text > less)          == (pinitial_text > less_text));
+      CHECK((less > pinitial_text) == (less_text > pinitial_text));
+      CHECK((pinitial_text > less) == (pinitial_text > less_text));
 
-      CHECK((greater       > pinitial_text) == (greater_text  > pinitial_text));
-      CHECK((pinitial_text > greater)       == (pinitial_text > greater_text));
+      CHECK((greater > pinitial_text) == (greater_text > pinitial_text));
+      CHECK((pinitial_text > greater) == (pinitial_text > greater_text));
 
-      CHECK((shorter       > pinitial_text) == (shorter_text  > pinitial_text));
-      CHECK((pinitial_text > shorter)       == (pinitial_text > shorter_text));
+      CHECK((shorter > pinitial_text) == (shorter_text > pinitial_text));
+      CHECK((pinitial_text > shorter) == (pinitial_text > shorter_text));
 
-      CHECK((initial       > pinitial_text) == (initial_text  > pinitial_text));
-      CHECK((pinitial_text > initial)       == (pinitial_text > initial_text));
+      CHECK((initial > pinitial_text) == (initial_text > pinitial_text));
+      CHECK((pinitial_text > initial) == (pinitial_text > initial_text));
     }
 
     //*************************************************************************
@@ -2786,8 +3256,8 @@ namespace
       const Text initial(initial_text.begin(), initial_text.end(), buffer2.data(), buffer2.size());
 
       // String-String
-      CHECK((less    >= initial) == (less_text    >= initial_text));
-      CHECK((initial >= less)    == (initial_text >= less_text));
+      CHECK((less >= initial) == (less_text >= initial_text));
+      CHECK((initial >= less) == (initial_text >= less_text));
 
       TextBuffer buffer3;
       const Text greater(greater_text.begin(), greater_text.end(), buffer3.data(), buffer3.size());
@@ -2803,17 +3273,17 @@ namespace
       CHECK((initial >= initial) == (initial_text >= initial_text));
 
       // String-Pointer Pointer-String
-      CHECK((less          >= pinitial_text) == (less_text     >= pinitial_text));
-      CHECK((pinitial_text >= less)          == (pinitial_text >= less_text));
+      CHECK((less >= pinitial_text) == (less_text >= pinitial_text));
+      CHECK((pinitial_text >= less) == (pinitial_text >= less_text));
 
-      CHECK((greater       >= pinitial_text) == (greater_text  >= pinitial_text));
-      CHECK((pinitial_text >= greater)       == (pinitial_text >= greater_text));
+      CHECK((greater >= pinitial_text) == (greater_text >= pinitial_text));
+      CHECK((pinitial_text >= greater) == (pinitial_text >= greater_text));
 
-      CHECK((shorter       >= pinitial_text) == (shorter_text  >= pinitial_text));
-      CHECK((pinitial_text >= shorter)       == (pinitial_text >= shorter_text));
+      CHECK((shorter >= pinitial_text) == (shorter_text >= pinitial_text));
+      CHECK((pinitial_text >= shorter) == (pinitial_text >= shorter_text));
 
-      CHECK((initial       >= pinitial_text) == (initial_text  >= pinitial_text));
-      CHECK((pinitial_text >= initial)       == (pinitial_text >= initial_text));
+      CHECK((initial >= pinitial_text) == (initial_text >= pinitial_text));
+      CHECK((pinitial_text >= initial) == (pinitial_text >= initial_text));
     }
 
     //*************************************************************************
@@ -2834,11 +3304,13 @@ namespace
       buffer2[length2] = STR('\0');
 
       CHECK_EQUAL(length1, length2);
-      CHECK(!text.truncated());
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
 
       bool is_equal = std::equal(buffer1,
-                                 buffer1 + length1,
-                                 buffer2);
+        buffer1 + length1,
+        buffer2);
       CHECK(is_equal);
     }
 
@@ -2848,7 +3320,7 @@ namespace
       const value_t* the_haystack = STR("A haystack with a needle and another needle");
 
       std::wstring compare_needle(STR("needle"));
-      
+
       TextBuffer buffer;
       Text needle(STR("needle"), buffer.data(), buffer.size());
 
@@ -2884,7 +3356,7 @@ namespace
       const value_t* needle = STR("needle");
 
       std::wstring compare_haystack(the_haystack);
-      
+
       TextBufferL buffer;
       Text haystack(the_haystack, buffer.data(), buffer.size());
 
@@ -2902,7 +3374,7 @@ namespace
       position2 = haystack.find(needle, position2 + 1);
       CHECK_EQUAL(IText::npos, position2);
 
-      const value_t *pin = STR("pin");
+      const value_t* pin = STR("pin");
       position2 = haystack.find(pin);
       CHECK_EQUAL(IText::npos, position2);
     }
@@ -2933,7 +3405,7 @@ namespace
       position2 = haystack.find(needle, position2 + 1, 3);
       CHECK_EQUAL(IText::npos, position2);
 
-      const value_t *pin = STR("pin");
+      const value_t* pin = STR("pin");
       position2 = haystack.find(pin, 0, 3);
       CHECK_EQUAL(IText::npos, position2);
     }
@@ -2949,7 +3421,7 @@ namespace
       Text needle(STR("needle"), buffer.data(), buffer.size());
 
       std::wstring compare_haystack(the_haystack);
-      
+
       TextBufferL buffer2;
       Text haystack(the_haystack, buffer2.data(), buffer2.size());
 
@@ -2973,7 +3445,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_rfind_pointer)
     {
-      const value_t*the_haystack = STR("A haystack with a needle and another needle");
+      const value_t* the_haystack = STR("A haystack with a needle and another needle");
 
       std::wstring compare_haystack(the_haystack);
 
@@ -3002,7 +3474,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_rfind_pointer_n)
     {
-      const value_t*the_haystack = STR("A haystack with a needle and another needle");
+      const value_t* the_haystack = STR("A haystack with a needle and another needle");
 
       std::wstring compare_haystack(the_haystack);
 
@@ -3030,7 +3502,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_rfind_c_position)
     {
-      const value_t*the_haystack = STR("A haystack with a needle and another needle");
+      const value_t* the_haystack = STR("A haystack with a needle and another needle");
 
       std::wstring compare_haystack(the_haystack);
 
@@ -3913,30 +4385,31 @@ namespace
       CHECK(is_equal);
     }
 
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_truncate_over_many_operations)
     {
       TextBuffer buffer;
       Text text(short_text.c_str(), buffer.data(), buffer.size());
-      CHECK(!text.truncated());
+      CHECK(!text.is_truncated());
 
       text.insert(3, initial_text.c_str());
-      CHECK(text.truncated());
+      CHECK(text.is_truncated());
 
       while (text.size() != 0)
       {
         text.pop_back();
-        CHECK(text.truncated());
+        CHECK(text.is_truncated());
       }
 
       text.clear();
-      CHECK(!text.truncated());
+      CHECK(!text.is_truncated());
 
       text.assign(longer_text.c_str());
-      CHECK(text.truncated());
+      CHECK(text.is_truncated());
 
       text.assign(short_text.c_str());
-      CHECK(!text.truncated());
+      CHECK(!text.is_truncated());
     }
 
     //*************************************************************************
@@ -3948,13 +4421,13 @@ namespace
       TextBufferS buffers;
       Text text2(short_text.c_str(), buffers.data(), buffers.size());
 
-      CHECK(!text1.truncated());
-      CHECK(text2.truncated());
+      CHECK(!text1.is_truncated());
+      CHECK(text2.is_truncated());
 
       // text2 has the truncate flag set.
       text1 += text2;
 
-      CHECK(text1.truncated());
+      CHECK(text1.is_truncated());
     }
 
     //*************************************************************************
@@ -3966,8 +4439,8 @@ namespace
       TextBuffer buffer2;
       Text text2(short_text.c_str(), buffer2.data(), buffer2.size());
 
-      CHECK(text1.truncated());
-      CHECK(!text2.truncated());
+      CHECK(text1.is_truncated());
+      CHECK(!text2.is_truncated());
 
       // Clear text but not the truncate flag.
       text1.erase(text1.begin(), text1.end());
@@ -3975,7 +4448,7 @@ namespace
       // text1 still has the truncate flag set.
       text1 += text2;
 
-      CHECK(text1.truncated());
+      CHECK(text1.is_truncated());
     }
 
     //*************************************************************************
@@ -3983,18 +4456,20 @@ namespace
     {
       TextBuffer buffer;
       Text text(longer_text.c_str(), buffer.data(), buffer.size());
-      CHECK(text.truncated());
+      CHECK(text.is_truncated());
 
       text.clear_truncated();
-      CHECK(!text.truncated());
+      CHECK(!text.is_truncated());
     }
+#endif
 
+#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_secure_after_destructor)
     {
       char buffer[sizeof(Text)];
       std::fill_n(buffer, sizeof(Text), 0);
-      
+
       TextBuffer buffer2;
       ::new (buffer) Text(STR("ABCDEF"), buffer2.data(), buffer2.size());
 
@@ -4078,20 +4553,107 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_secure_after_clear)
+    TEST_FIXTURE(SetupFixture, test_secure_flag_after_copy)
     {
-      TextBuffer buffer;
-      Text text(buffer.data(), buffer.size());
-      text.set_secure();
-      text.assign(STR("ABCDEF"));
+      TextBuffer buffer1;
+      Text text1(STR("Hello World"), buffer1.data(), buffer1.size());
+      text1.set_secure();
 
-      Text::pointer pb = text.begin();
-      Text::pointer pe = text.end();
+      TextBuffer buffer2;
+      Text text2(text1, buffer2.data(), buffer2.size());
 
-      text.clear();
+      TextBuffer buffer3;
+      Text text3(buffer3.data(), buffer3.size());
+      text3 = text1;
 
-      // Check there no non-zero values in the remainder of the string.
-      CHECK(std::find_if(pb, pe, [](Text::value_type x) { return x != 0; }) == pe);
+      TextBuffer buffer4;
+      Text text4(text1, buffer4.data(), buffer4.size(), 6U, 2U);
+
+      CHECK(text2.is_secure());
+      CHECK(text3.is_secure());
+      CHECK(text4.is_secure());
+    }
+#endif
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_initialize_free_space_empty_string)
+    {
+      TextBuffer buffer1;
+      TextBuffer buffer2;
+      Text text(buffer1.data(), buffer1.size());
+      Text empty(buffer2.data(), buffer2.size());
+
+      text.initialize_free_space();
+
+      CHECK(text.empty());
+      CHECK(text == empty);
+
+      for (size_t i = text.size(); i < text.max_size(); ++i)
+      {
+        CHECK_EQUAL(0, text[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_initialize_free_space_part_filled_string)
+    {
+      TextBuffer buffer1;
+      TextBuffer buffer2;
+      Text initial(STR("ABC"), buffer1.data(), buffer1.size());
+      Text empty(buffer2.data(), buffer2.size());
+      Text text(initial, buffer2.data(), buffer2.size());
+
+      text.initialize_free_space();
+
+      CHECK(text == initial);
+      CHECK(text != empty);
+
+      for (size_t i = text.size(); i < text.max_size(); ++i)
+      {
+        CHECK_EQUAL(0, text[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_update_after_c_string_max_size)
+    {
+      TextBuffer buffer1;
+      Text text(buffer1.data(), buffer1.size());
+
+      text.initialize_free_space();
+      std::fill(text.data(), text.data() + text.max_size(), STR('A'));
+      text.trim_to_terminator();
+
+      CHECK(!text.is_truncated());
+      CHECK_EQUAL(text.max_size(), text.size());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_update_after_c_string_shorter_size)
+    {
+      TextBuffer buffer1;
+      Text text(buffer1.data(), buffer1.size());
+
+      text.initialize_free_space();
+      std::fill(text.data(), text.data() + text.max_size() - 1, STR('A'));
+      text.trim_to_terminator();
+
+      CHECK(!text.is_truncated());
+      CHECK_EQUAL(text.max_size() - 1, text.size());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_update_after_c_string_greater_size)
+    {
+      TextBuffer buffer1;
+      Text text(buffer1.data(), buffer1.size());
+
+      text.initialize_free_space();
+      std::fill(text.data(), text.data() + text.max_size() + 1, STR('A')); // Overwrites to terminating null.
+      text.trim_to_terminator();
+
+      CHECK(text.is_truncated());
+      CHECK_EQUAL(text.max_size(), text.size());
     }
   };
 }

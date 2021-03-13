@@ -1,0 +1,89 @@
+name: clang
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-clang-9-linux:
+    name: Clang-9 Linux
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        export CC=clang-9
+        export CXX=clang++-9
+        cmake -D BUILD_TESTS=ON ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-9-linux-no-stl:
+    name: Clang-9 Linux - No STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        cmake -DBUILD_TESTS=ON -DNO_STL=ON ./
+        gcc --version
+        make
+    
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-10-osx:
+    name: Clang-10 OSX
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-10.15]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        export CC=clang
+        export CXX=clang++
+        cmake -D BUILD_TESTS=ON ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-10-osx-no-stl:
+    name: Clang-10 OSX - No STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-10.15]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        export CC=clang
+        export CXX=clang++
+        cmake -D BUILD_TESTS=ON -DNO_STL=ON ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests

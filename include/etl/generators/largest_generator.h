@@ -121,6 +121,17 @@ namespace etl
       size = etl::size_of<type>::value
     };
   };
+
+#if ETL_CPP11_SUPPORTED
+  template <typename... T>
+  using largest_type_t = typename largest_type<T...>::type;
+#endif
+
+#if ETL_CPP17_SUPPORTED
+  template <typename... T>
+  constexpr size_t largest_type_v = largest_type<T...>::size;
+#endif
+
 #else
   /*[[[cog
   import cog
@@ -225,6 +236,12 @@ namespace etl
       value = etl::alignment_of<type>::value
     };
   };
+
+#if ETL_CPP17_SUPPORTED
+  template <typename... T>
+  inline constexpr size_t largest_alignment_v = largest_alignment<T...>::value;
+#endif
+
 #else
   /*[[[cog
   import cog
@@ -302,6 +319,11 @@ namespace etl
     typedef typename etl::smallest_int_for_bits<etl::integral_limits<typename etl::make_signed<T>::type>::bits + 1>::type type;
   };
 
+#if ETL_CPP11_SUPPORTED
+  template <typename T>
+  using larger_int_type_t = typename larger_int_type<T>::type;
+#endif
+
   //***************************************************************************
   /// Defines a type that is as larger or larger than the specified type.
   /// Will return the specified type is there is not a larger type.
@@ -314,6 +336,11 @@ namespace etl
 
     typedef typename etl::smallest_uint_for_bits<etl::integral_limits<typename etl::make_unsigned<T>::type>::bits + 1>::type type;
   };
+
+#if ETL_CPP11_SUPPORTED
+  template <typename T>
+  using larger_uint_type_t = typename larger_uint_type<T>::type;
+#endif
 
   //***************************************************************************
   /// Defines a type that is as larger or larger than the specified type.
@@ -340,6 +367,11 @@ namespace etl
     typedef typename etl::smallest_int_for_bits<etl::integral_limits<T>::bits + 1>::type type;
   };
 
+#if ETL_CPP11_SUPPORTED
+  template <typename T>
+  using larger_type_t = typename larger_type<T>::type;
+#endif
+
 #if ETL_CPP11_SUPPORTED && !defined(ETL_LARGEST_FORCE_CPP03)
   //***************************************************************************
   /// Template to determine the largest type, size and alignment.
@@ -357,6 +389,12 @@ namespace etl
       alignment = etl::largest_alignment<T...>::value
     };
   };
+
+#if ETL_CPP11_SUPPORTED
+    template <typename... T>
+    using largest_t = typename largest<T...>::type;
+#endif
+
 #else
   /*[[[cog
   import cog

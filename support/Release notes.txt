@@ -1,4 +1,397 @@
 ===============================================================================
+20.6.0
+Added etl::message_router_registry.
+Changed etl::flat_multimap & etl::flat_multiset to iterate in insertion order, as per C++11 map and set.
+Added ETL_CONSTEXPR to etl::array.
+C++98 compatibility fixes.
+Remove unnecessary template keyword to destroy() call in etl::pool.
+Abstracted unit test framework header.
+
+===============================================================================
+20.5.2
+Fixed template aliases when using STL and below C++14
+
+===============================================================================
+20.5.1
+Fixed ambiguous template error for etl::extent.
+
+===============================================================================
+20.5.0
+Added specialisation of etl::state_chart to allow a parameter to be passed along
+with the event.
+Issue #339 - Fix extent type conversion warning
+Issue #340 - Export headers as system includes
+
+===============================================================================
+20.4.1
+Updates to etl::shared_message example application.
+
+===============================================================================
+20.4.0
+Added uninitialized_resize() to etl::vector and etl::basic_string.
+
+===============================================================================
+20.3.1
+Added ETL_CONSTANT to numeric_limits member functions.
+
+===============================================================================
+20.3.0
+Added initialize_free_space(), trim_to_terminator() and data_end() functions to
+strings for easier integration with C APIs.
+
+=============================================================================== 
+20.2.3
+Fixed indexing error in find_next() for etl::bitset.
+
+===============================================================================
+20.2.2
+Added non-const get_message() member funtions in shared message framework.
+
+===============================================================================
+20.2.1
+Modified reference_counted_message_pool::allocate() return type.
+Changed from etl::ireference_counted_message* to etl::reference_counted_message<TMessage, TCounter>*
+
+===============================================================================
+20.2.0
+Allow default constructed messages for shared messages.
+
+===============================================================================
+20.1.0
+Changed template aliases so they are available for C++11 rather than C++14.
+
+===============================================================================
+20.0.0
+Removed source 'etl::imessage_router&' parameter from the message framework 'receive'
+and 'on_receive' member functions.
+
+===============================================================================
+19.5.3
+Added move constructor and move assignment operator to etl::shared_message.
+
+===============================================================================
+19.5.2
+Fixed rollover error for etl::queue_spsc_atomic
+Added 'required_alignment' parameter to 'allocate' for etl::imemeory_block_allocator.
+Updated QueuedMessageRouter example.
+
+===============================================================================
+19.5.1
+Exclude integral types from being considered for iterator range container constructors.
+
+===============================================================================
+19.5.0
+Added shared messages to the messaging framework + supporting allocator classes.
+Some refactoring of the messaging framework internals.
+Added example application for shared messages.
+Added a lockable queue with locks implemented as pure virtuals.
+Refeactored the other queues.
+Fixed missing virtual destructor for C++11 observer.
+Added etl::successor class for consistant 'chain of responsibilty' pattern generation.
+Added missing constructors to unique_ptr.
+Added nullptr check to unique_ptr destructor.
+Fixed VS2019 warning for etl::deque iterators.
+Added a virtual on_task_added callback to the scheduler.
+Added a runtime multi range nested loop class.
+Added etl::for_each.
+Added is_random_access_iterator and deprecated is_random_iterator.
+Added VS2019 Delegate function interrupt service example.
+
+===============================================================================
+19.4.3
+Added nullptr check to unique_ptr destructor.
+
+===============================================================================
+19.4.2
+Fixed VS2019 warning for etl::deque iterators.
+
+===============================================================================
+19.4.1
+Added constructors with deleters for unique_ptr.
+
+===============================================================================
+19.4.0
+Added virtual function 'void on_task_added()' that is called when a task is added to a scheduler.
+
+===============================================================================
+19.3.7
+Fix some container iterator assignment operators to return a reference, rather than value.
+Fix non-const etl::frame_check_sequence functions are const in all derived classes.
+Make value getter functions const in etl::frame_check_sequence.
+
+===============================================================================
+19.3.6
+Arduino compatibility mods.
+
+===============================================================================
+19.3.5
+Change std::move to etl::move in etl::forward_list
+
+===============================================================================
+19.3.4
+Make etl::span compliant with STL API by adding missing overloads for span::first + span::last
+
+===============================================================================
+19.3.3
+Added check for existance of <new> in platform.h
+Added placement_new.h which selects between <new> and ETL definitions.
+
+===============================================================================
+19.3.2
+Added No-STL clang mutex that uses GCC implementation.
+
+===============================================================================
+19.3.1
+Fixed etl::format_spec constexpr compatibility with C++11.
+Fixed etl::bit_stream reading too many bits when reading floating point values.
+
+===============================================================================
+19.3.0
+More constexpr, template aliases and inline variables.
+Added ETL_ASSERT for out-of-order state list.
+
+===============================================================================
+19.2.1
+Fixed version number retrieval from Github.
+
+===============================================================================
+19.2.0
+Security flag for a string is copied on assignment or copy constructor.
+etl::format_spec may now be a constexpr.
+Added AVR check to nullptr.h
+
+===============================================================================
+19.1.0
+Refactor of etl::buffer_descriptors interface.
+
+===============================================================================
+19.0.0
+Containers with external buffers or pools are now separate classes instead of specialisations.
+
+etl::circular_buffer<T, 0> => etl::circular_buffer_ext<T>
+etl::forward_list<T, 0>    => etl::forward_list_ext<T>
+etl::list<T, 0>            => etl::list_ext<T>
+etl::string<0>             => etl::string_ext
+etl::wstring<0>            => etl::wstring_ext
+etl::u16string<0>          => etl::u16string_ext
+etl::u32string<0>          => etl::u32string_ext
+etl::vector<T, 0>          => etl::vector_ext<T>
+
+===============================================================================
+18.20.2
+Fixed etl::to_string for floating point numbers between 0 & -1.0
+
+===============================================================================
+18.20.1
+Resolved issue with zero length literals for etl::make_string (again!)
+Remove redundant test support code.
+Disabled ASAN option in Visual Studio project.
+
+===============================================================================
+18.20.0
+Added etl::buffer_descriptors.
+Added std/etl pair conversions.
+Added etl::make_string_view.
+Resolved issue with zero length literals for etl::make_string
+Resolved etl::flags constexpr issues.
+Added atomics for clang.
+Resolved type_traits issues for GCC < v5
+
+===============================================================================
+18.19.3
+Addressed ARMCC v5 C++11 issues
+
+===============================================================================
+18.19.2
+Expanded the use of constexpr in etl::flags
+
+===============================================================================
+18.19.1
+Added ETL_CONSTEXPR for state_chart, transision and state constructors.
+Eliminate ARM compiler v5 warnings for state_chart.
+Fixed return type error for atomic GCC.
+
+===============================================================================
+18.19.0
+Modified strings for better memory efficiency. String truncation detection and clear-after-use can be disabled.
+Added ETL_DISABLE_STRING_TRUNCATION_CHECKS macro check in platform.h.
+Added ETL_DISABLE_STRING_CLEAR_AFTER_USE macro check in platform.h.
+Added etl::flags to wrap boolean flag functionality.
+Four parameter equal() algorithm variant added.
+Modified is_pod definition when using the STL.
+Added are_all_same trait.
+
+===============================================================================
+18.18.2
+Change to array_view member variable declaration, for constructor from array.
+
+===============================================================================
+18.18.1
+Added [] operators to etl::circular_buffer
+
+===============================================================================
+18.18.0
+Added etl::circular_buffer
+
+===============================================================================
+18.17.2
+Added missing emplace functions from vector-of-pointers specialisation.
+
+===============================================================================
+18.17.1
+Fixed incorrect reflected CRC8 0x07 lookup table
+
+===============================================================================
+18.17.0
+Added iterator API to all etl::frame_check_sequence based template classes, such as CRCs and checksums.
+Example:
+std::string data("123456789");
+etl::crc32 crc;
+std::copy(data.begin(), data.end(), crc.input());
+uint32_t value = crc.value();
+
+===============================================================================
+18.16.5
+Add missing include in test etl_profile.h
+
+===============================================================================
+18.16.4
+Reduced warnings from cppcheck v2.2
+
+===============================================================================
+18.16.3
+Added VS2019 to CI configuration file.
+Created separate VS2019, GCC and clang configuration files.
+
+===============================================================================
+18.16.2
+Updates to CI configuration files to compile 'No STL' variants of the tests.
+
+===============================================================================
+18.16.1
+Updates to CI configuration files.
+
+===============================================================================
+18.16.0
+Added template deduction guides for most containers.
+
+===============================================================================
+18.15.5
+Refactored empty(), full(), available() member functions for etl::list and etl::forward_list
+
+===============================================================================
+18.15.4
+Performance optimisations for etl::rotate, etl::move & etl::move_backward
+when not using the STL, iterators are pointers and the objects are trivially
+copyable (currently POD types).
+
+===============================================================================
+18.15.3
+etl::array_view constructor from C array is no longer explicit.
+
+===============================================================================
+18.15.2
+Workaround for Segger ARM Link-Time-Optimisation (LTO) bug.
+etl::array_view constructor from etl or std array is no longer explicit.
+
+===============================================================================
+18.15.1
+Refactoring of 18.15.0.
+Modified constructor syntax.
+
+===============================================================================
+18.15.0
+Allow strings with external buffers to use a pre-initialised buffer.
+
+===============================================================================
+18.14.1
+Fixed conditional compilation macro use for template deduction guides.
+
+===============================================================================
+18.14.0
+Added template deduction guides for array and array_view
+
+===============================================================================
+18.13.0
+Added a line coordinate generator using the Bresenham algorithm.
+The API is similar to a container.
+
+===============================================================================
+18.12.7
+Made etl::reference_wrapper API closer to the STL version. Does not support invocation of a callable object.
+
+===============================================================================
+18.12.6
+Fixed etl::stack top level assignment operator not clearing before copy.
+
+===============================================================================
+18.12.5
+Fixed issue for incorrect operation of erase(const_iterator, const_iterator) when 
+the terminating iterator was end() for etl::unordered_map, etl::unordered_multimap,
+etl::unordered_set and etl::unordered_multiset. 
+
+===============================================================================
+18.12.4
+Resolve clang 9 compatibility issues.
+
+===============================================================================
+18.12.3
+Resolve 0U constant ambiguity in string utility tests
+
+===============================================================================
+18.12.2
+Deleted unused file.
+Updated CMakeLists.txt
+
+===============================================================================
+18.12.1
+Fixed compiler compatibility issues in etl::forward_list and etl::list
+
+===============================================================================
+18.12.0
+Recoded string utility get_token()
+clang 9 compatibility changes
+
+===============================================================================
+18.11.1
+Fix and optimise etl::list and etl::forward_list move constructors and assignment operators.
+
+===============================================================================
+18.11.0
+Added etl::ibitset::span() member function to return a span of the underlying binary data.
+
+===============================================================================
+18.10.0
+Fixed pointer vector move operators.
+Optimised constructors and assignments for pointer vectors.
+
+===============================================================================
+18.9.0
+Added enable/disable observer interface to observable class.
+
+===============================================================================
+18.8.2
+Fixed incorrect return in find() and at() for non-existent key.
+
+===============================================================================
+18.8.1
+Fix C++03 error_handler compatibility
+
+===============================================================================
+18.8.0
+Re-coded string utilities to allow any string-like container to use it.
+
+===============================================================================
+18.7.1
+Removed to_upper_case, to_lower_case & to_sentence_case from
+wstring_utilities, u16string_utilities & u32string_utilities
+
+===============================================================================
+18.7.0
+String utilities added.
+Fixed C++03 compatibility issue in error_handler.h
+
+===============================================================================
 18.6.0
 Added stream manipulators
 
@@ -23,7 +416,7 @@ Allows set_callback() function to be given run-time and compile-time pointers to
 
 ===============================================================================
 18.3.4
-Changed std::move to etl::move in std::optional and std::queue
+Changed std::move to etl::move in etl::optional and etl::queue
 Fixed etl::span subspan with etl::dynamic_extent
 
 ===============================================================================

@@ -17,6 +17,8 @@ Global
 		Debug MSVC - No STL|x64 = Debug MSVC - No STL|x64
 		Debug MSVC - No Unit Tests|Win32 = Debug MSVC - No Unit Tests|Win32
 		Debug MSVC - No Unit Tests|x64 = Debug MSVC - No Unit Tests|x64
+		Debug MSVC - Small Strings|Win32 = Debug MSVC - Small Strings|Win32
+		Debug MSVC - Small Strings|x64 = Debug MSVC - Small Strings|x64
 		Debug MSVC - String Truncation Is Error|Win32 = Debug MSVC - String Truncation Is Error|Win32
 		Debug MSVC - String Truncation Is Error|x64 = Debug MSVC - String Truncation Is Error|x64
 		Debug MSVC 64|Win32 = Debug MSVC 64|Win32
@@ -27,6 +29,10 @@ Global
 		Debug MSVC|x64 = Debug MSVC|x64
 		LLVM New|Win32 = LLVM New|Win32
 		LLVM New|x64 = LLVM New|x64
+		MSVCDebugAppveyor|Win32 = MSVCDebugAppveyor|Win32
+		MSVCDebugAppveyor|x64 = MSVCDebugAppveyor|x64
+		MSVCDebugNoSTLAppveyor|Win32 = MSVCDebugNoSTLAppveyor|Win32
+		MSVCDebugNoSTLAppveyor|x64 = MSVCDebugNoSTLAppveyor|x64
 		Release|Win32 = Release|Win32
 		Release|x64 = Release|x64
 	EndGlobalSection
@@ -51,6 +57,10 @@ Global
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - No Unit Tests|Win32.Build.0 = Debug No Unit Tests|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - No Unit Tests|x64.ActiveCfg = Debug No Unit Tests|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - No Unit Tests|x64.Build.0 = Debug No Unit Tests|x64
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - Small Strings|Win32.ActiveCfg = DebugMSVCSmallStrings|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - Small Strings|Win32.Build.0 = DebugMSVCSmallStrings|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - Small Strings|x64.ActiveCfg = DebugMSVCSmallStrings|x64
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - Small Strings|x64.Build.0 = DebugMSVCSmall Strings|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - String Truncation Is Error|Win32.ActiveCfg = DebugStringTruncationIsError|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - String Truncation Is Error|Win32.Build.0 = DebugStringTruncationIsError|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - String Truncation Is Error|x64.ActiveCfg = DebugStringTruncationIsError|x64
@@ -71,6 +81,14 @@ Global
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.LLVM New|Win32.Build.0 = LLVM New|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.LLVM New|x64.ActiveCfg = LLVM New|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.LLVM New|x64.Build.0 = LLVM New|x64
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.MSVCDebugAppveyor|Win32.ActiveCfg = MSVCDebugAppveyor|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.MSVCDebugAppveyor|Win32.Build.0 = MSVCDebugAppveyor|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.MSVCDebugAppveyor|x64.ActiveCfg = MSVCDebugAppveyor|x64
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.MSVCDebugAppveyor|x64.Build.0 = MSVCDebugAppveyor|x64
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.MSVCDebugNoSTLAppveyor|Win32.ActiveCfg = MSVCDebugNoSTLAppveyor|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.MSVCDebugNoSTLAppveyor|Win32.Build.0 = MSVCDebugNoSTLAppveyor|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.MSVCDebugNoSTLAppveyor|x64.ActiveCfg = MSVCDebugNoSTLAppveyor|x64
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.MSVCDebugNoSTLAppveyor|x64.Build.0 = MSVCDebugNoSTLAppveyor|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Release|Win32.ActiveCfg = Release|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Release|Win32.Build.0 = Release|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Release|x64.ActiveCfg = Release|x64

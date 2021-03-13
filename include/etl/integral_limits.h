@@ -32,6 +32,7 @@ SOFTWARE.
 #define ETL_INTEGRAL_LIMITS_INCLUDED
 
 #include <stddef.h>
+#include <limits.h>
 
 #include "platform.h"
 #include "type_traits.h"

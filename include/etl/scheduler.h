@@ -40,9 +40,6 @@ SOFTWARE.
 #include "type_traits.h"
 #include "function.h"
 
-#undef ETL_FILE
-#define ETL_FILE "36"
-
 namespace etl
 {
   //***************************************************************************
@@ -66,7 +63,7 @@ namespace etl
   public:
 
     scheduler_no_tasks_exception(string_type file_name_, numeric_type line_number_)
-      : etl::scheduler_exception(ETL_ERROR_TEXT("scheduler:no tasks", ETL_FILE"A"), file_name_, line_number_)
+      : etl::scheduler_exception(ETL_ERROR_TEXT("scheduler:no tasks", ETL_SCHEDULER_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -79,7 +76,7 @@ namespace etl
   public:
 
     scheduler_null_task_exception(string_type file_name_, numeric_type line_number_)
-      : etl::scheduler_exception(ETL_ERROR_TEXT("scheduler:null task", ETL_FILE"B"), file_name_, line_number_)
+      : etl::scheduler_exception(ETL_ERROR_TEXT("scheduler:null task", ETL_SCHEDULER_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -92,7 +89,7 @@ namespace etl
   public:
 
     scheduler_too_many_tasks_exception(string_type file_name_, numeric_type line_number_)
-      : etl::scheduler_exception(ETL_ERROR_TEXT("scheduler:too many tasks", ETL_FILE"C"), file_name_, line_number_)
+      : etl::scheduler_exception(ETL_ERROR_TEXT("scheduler:too many tasks", ETL_SCHEDULER_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -297,6 +294,8 @@ namespace etl
                                                                    compare_priority());
 
         task_list.insert(itask, &task);
+
+        task.on_task_added();
       }
     }
 
@@ -312,6 +311,7 @@ namespace etl
       {
         ETL_ASSERT((p_tasks[i] != ETL_NULLPTR), ETL_ERROR(etl::scheduler_null_task_exception));
         add_task(*(p_tasks[i]));
+        p_tasks[i]->on_task_added();
       }
     }
 
@@ -403,7 +403,5 @@ namespace etl
     task_list_t task_list;
   };
 }
-
-#undef ETL_FILE
 
 #endif

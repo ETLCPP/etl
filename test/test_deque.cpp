@@ -26,8 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
-#include "ExtraCheckMacros.h"
+#include "unit_test_framework.h"
 
 #include "etl/deque.h"
 
@@ -100,6 +99,24 @@ namespace
       CHECK_EQUAL(0U, data.size());
       CHECK_EQUAL(SIZE, data.max_size());
     }
+
+#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::deque data{ N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13 };
+      etl::deque<NDC, 14> check = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13 };
+
+      CHECK(!data.empty());
+      CHECK(data.full());
+      CHECK(data.begin() != data.end());
+      CHECK_EQUAL(14U, data.size());
+      CHECK_EQUAL(0U, data.available());
+      CHECK_EQUAL(14U, data.capacity());
+      CHECK_EQUAL(14U, data.max_size());
+      CHECK(data == check);
+    }
+#endif
 
     //*************************************************************************
     TEST(test_constructor_fill)
@@ -533,11 +550,39 @@ namespace
     {
       DataNDC data(SIZE, N0);
 
-      DataNDC::iterator first = data.begin() + 1;
-      DataNDC::iterator second = data.begin() + 4;
+      DataNDC::iterator first  = data.begin() + 1;
+      DataNDC::iterator second = data.begin() + 1;
+      DataNDC::iterator third  = data.begin() + 4;
 
-      CHECK(first < second);
+      CHECK(first    == second);
+      CHECK(second   == first);
+      CHECK(!(first  == third));
+      CHECK(!(third  == first));
+
+      CHECK(!(first  != second));
+      CHECK(!(second != first));
+      CHECK(first    != third);
+      CHECK(third    != first);
+
+      CHECK(!(first  < second));
       CHECK(!(second < first));
+      CHECK(first    < third);
+      CHECK(!(third  < first));
+
+      CHECK(first    <= second);
+      CHECK(second   <= first);
+      CHECK(first    <= third);
+      CHECK(!(third  <= first));
+
+      CHECK(!(first  > second));
+      CHECK(!(second > first));
+      CHECK(!(first  > third));
+      CHECK(third    > first);
+
+      CHECK(first    >= second);
+      CHECK(second   >= first);
+      CHECK(!(first  >= third));
+      CHECK(third    >= first);
     }
 
     //*************************************************************************
@@ -545,11 +590,39 @@ namespace
     {
       DataNDC data(SIZE, N0);
 
-      DataNDC::const_iterator first  = data.cbegin() + 1;
-      DataNDC::const_iterator second = data.cbegin() + 4;
+      DataNDC::const_iterator first  = data.begin() + 1;
+      DataNDC::const_iterator second = data.begin() + 1;
+      DataNDC::const_iterator third  = data.begin() + 4;
 
-      CHECK(first < second);
+      CHECK(first    == second);
+      CHECK(second   == first);
+      CHECK(!(first  == third));
+      CHECK(!(third  == first));
+
+      CHECK(!(first  != second));
+      CHECK(!(second != first));
+      CHECK(first    != third);
+      CHECK(third    != first);
+
+      CHECK(!(first  < second));
       CHECK(!(second < first));
+      CHECK(first    < third);
+      CHECK(!(third  < first));
+
+      CHECK(first    <= second);
+      CHECK(second   <= first);
+      CHECK(first    <= third);
+      CHECK(!(third  <= first));
+
+      CHECK(!(first  > second));
+      CHECK(!(second > first));
+      CHECK(!(first  > third));
+      CHECK(third    > first);
+
+      CHECK(first    >= second);
+      CHECK(second   >= first);
+      CHECK(!(first  >= third));
+      CHECK(third    >= first);
     }
 
     //*************************************************************************
@@ -1910,6 +1983,13 @@ namespace
       CHECK_EQUAL(5U, *(*(data3.begin() + 4)));
 
       CHECK_EQUAL(ACTUAL_SIZE, data3.size());
+    }
+
+    //*************************************************************************
+    TEST(test_two_parameter_constructor_same_type_not_iterator)
+    {
+      // No compilation error.
+      etl::deque<int, 10> v(5, 5);
     }
   };
 }

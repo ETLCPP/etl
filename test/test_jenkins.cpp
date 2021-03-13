@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <iterator>
 #include <string>
@@ -95,6 +95,22 @@ namespace
       etl::jenkins jenkins_calculator;
 
       jenkins_calculator.add(data.begin(), data.end());
+
+      uint32_t hash = jenkins_calculator.value();
+
+      uint32_t compare = jenkins(data.begin(), data.end());
+
+      CHECK_EQUAL(compare, hash);
+    }
+
+    //*************************************************************************
+    TEST(test_jenkins_add_range_via_iterator)
+    {
+      std::string data("123456789");
+
+      etl::jenkins jenkins_calculator;
+
+      std::copy(data.begin(), data.end(), jenkins_calculator.input());
 
       uint32_t hash = jenkins_calculator.value();
 

@@ -607,37 +607,44 @@ namespace etl
   template <typename T>
   struct is_input_iterator
   {
-    static ETL_CONST_OR_CONSTEXPR bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::input_iterator_tag>::value;
+    static ETL_CONSTANT bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::input_iterator_tag>::value;
   };
 
   template <typename T>
   struct is_output_iterator
   {
-    static ETL_CONST_OR_CONSTEXPR bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::output_iterator_tag>::value;
+    static ETL_CONSTANT bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::output_iterator_tag>::value;
   };
 
   template <typename T>
   struct is_forward_iterator
   {
-    static ETL_CONST_OR_CONSTEXPR bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::forward_iterator_tag>::value;
+    static ETL_CONSTANT bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::forward_iterator_tag>::value;
   };
 
   template <typename T>
   struct is_bidirectional_iterator
   {
-    static ETL_CONST_OR_CONSTEXPR bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::bidirectional_iterator_tag>::value;
+    static ETL_CONSTANT bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::bidirectional_iterator_tag>::value;
   };
 
+  // Deprecated
   template <typename T>
   struct is_random_iterator
   {
-    static ETL_CONST_OR_CONSTEXPR bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::random_access_iterator_tag>::value;
+    static ETL_CONSTANT bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::random_access_iterator_tag>::value;
+  };
+
+  template <typename T>
+  struct is_random_access_iterator
+  {
+    static ETL_CONSTANT bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::random_access_iterator_tag>::value;
   };
 
   template <typename T>
   struct is_input_iterator_concept
   {
-    static ETL_CONST_OR_CONSTEXPR bool value = etl::is_input_iterator<T>::value ||
+    static ETL_CONSTANT bool value = etl::is_input_iterator<T>::value ||
                                                etl::is_forward_iterator<T>::value ||
                                                etl::is_bidirectional_iterator<T>::value ||
                                                etl::is_random_iterator<T>::value;
@@ -646,7 +653,7 @@ namespace etl
   template <typename T>
   struct is_output_iterator_concept
   {
-    static ETL_CONST_OR_CONSTEXPR bool value = etl::is_output_iterator<T>::value ||
+    static ETL_CONSTANT bool value = etl::is_output_iterator<T>::value ||
                                                etl::is_forward_iterator<T>::value ||
                                                etl::is_bidirectional_iterator<T>::value ||
                                                etl::is_random_iterator<T>::value;
@@ -655,7 +662,7 @@ namespace etl
   template <typename T>
   struct is_forward_iterator_concept
   {
-    static ETL_CONST_OR_CONSTEXPR bool value = etl::is_forward_iterator<T>::value ||
+    static ETL_CONSTANT bool value = etl::is_forward_iterator<T>::value ||
                                                etl::is_bidirectional_iterator<T>::value ||
                                                etl::is_random_iterator<T>::value;
   };
@@ -663,14 +670,21 @@ namespace etl
   template <typename T>
   struct is_bidirectional_iterator_concept
   {
-    static ETL_CONST_OR_CONSTEXPR bool value = etl::is_bidirectional_iterator<T>::value ||
+    static ETL_CONSTANT bool value = etl::is_bidirectional_iterator<T>::value ||
                                                etl::is_random_iterator<T>::value;
   };
 
+  // Deprecated
   template <typename T>
   struct is_random_iterator_concept
   {
-    static ETL_CONST_OR_CONSTEXPR bool value = etl::is_random_iterator<T>::value;
+    static ETL_CONSTANT bool value = etl::is_random_iterator<T>::value;
+  };
+
+  template <typename T>
+  struct is_random_access_iterator_concept
+  {
+    static ETL_CONSTANT bool value = etl::is_random_access_iterator<T>::value;
   };
 }
 

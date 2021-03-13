@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <iterator>
 #include <string>
@@ -116,6 +116,21 @@ namespace
       checksum_calculator.add(data.begin(), data.end());
 
       uint8_t sum     = checksum_calculator.value();
+      uint8_t compare = reference_checksum<uint8_t>(data.begin(), data.end());
+
+      CHECK_EQUAL(int(compare), int(sum));
+    }
+
+    //*************************************************************************
+    TEST(test_checksum_add_range_via_iterator)
+    {
+      std::string data("123456789");
+
+      etl::bsd_checksum<uint8_t> checksum_calculator;
+
+      std::copy(data.begin(), data.end(), checksum_calculator.input());
+
+      uint8_t sum = checksum_calculator.value();
       uint8_t compare = reference_checksum<uint8_t>(data.begin(), data.end());
 
       CHECK_EQUAL(int(compare), int(sum));

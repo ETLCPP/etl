@@ -37,9 +37,6 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "null_type.h"
 
-#undef ETL_FILE
-#define ETL_FILE "45"
-
 #if 0
 #error THIS HEADER IS A GENERATOR. DO NOT INCLUDE.
 #endif
@@ -117,8 +114,10 @@ namespace etl
       static_assert(!(etl::is_same<nulltype, type>::value), "Invalid id");
     };
 
+#if ETL_CPP11_SUPPORTED
     template <int ID>
     using type_from_id_t = typename type_from_id<ID>::type;
+#endif
 
   private:
 
@@ -211,9 +210,11 @@ namespace etl
       static_assert(!etl::is_same<type, nulltype>::value, "Type match not found");
     };
 
+#if ETL_CPP11_SUPPORTED
     // Template alias.
     template <typename T>
-    using TypeFromType_t = typename type_from_type<T>::type;
+    using type_from_type_t = typename type_from_type<T>::type;
+#endif
   };
 
 #else
@@ -372,7 +373,5 @@ namespace etl
 
 #endif
 }
-
-#undef ETL_FILE
 
 #endif

@@ -61,6 +61,9 @@ namespace etl
     memory_order_seq_cst
   } memory_order;
 
+  //***************************************************************************
+  /// For all types except bool and pointers
+  //***************************************************************************
   template <typename T>
   class atomic
   {
@@ -430,24 +433,27 @@ namespace etl
 
   private:
 
-    atomic& operator =(const atomic&);
-    atomic& operator =(const atomic&) volatile;
+    atomic& operator =(const atomic&) ETL_DELETE;
+    atomic& operator =(const atomic&) volatile ETL_DELETE;
 
     mutable volatile T value;
   };
 
+  //***************************************************************************
+  /// Specialisation for pointers
+  //***************************************************************************
   template <typename T>
   class atomic<T*>
   {
   public:
 
     atomic()
-      : value(ETL_NULLPTR)
+      : value(0U)
     {
     }
 
     atomic(T* v)
-      : value(v)
+      : value(uintptr_t(v))
     {
     }
 
@@ -540,7 +546,7 @@ namespace etl
 
     operator T*() volatile const
     {
-      return __sync_fetch_and_add(&value, 0);
+      return (T*)__sync_fetch_and_add(&value, 0);
     }
 
     // Is lock free?
@@ -557,12 +563,12 @@ namespace etl
     // Store
     void store(T* v, etl::memory_order order = etl::memory_order_seq_cst)
     {
-      __sync_lock_test_and_set(&value, v);
+      __sync_lock_test_and_set(&value, uintptr_t(v));
     }
 
     void store(T* v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
-      __sync_lock_test_and_set(&value, v);
+      __sync_lock_test_and_set(&value, uintptr_t(v));
     }
 
     // Load
@@ -573,7 +579,7 @@ namespace etl
 
     T* load(etl::memory_order order = etl::memory_order_seq_cst) const volatile
     {
-      return __sync_fetch_and_add(&value, 0);
+      return (T*)__sync_fetch_and_add(&value, 0);
     }
 
     // Fetch add
@@ -601,18 +607,18 @@ namespace etl
     // Exchange
     T* exchange(T* v, etl::memory_order order = etl::memory_order_seq_cst)
     {
-      return (T*)__sync_lock_test_and_set(&value, v);
+      return (T*)__sync_lock_test_and_set(&value, uintptr_t(v));
     }
 
     T* exchange(T* v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
-      return (T*)__sync_lock_test_and_set(&value, v);
+      return (T*)__sync_lock_test_and_set(&value, uintptr_t(v));
     }
 
     // Compare exchange weak
     bool compare_exchange_weak(T*& expected, T* desired, etl::memory_order order = etl::memory_order_seq_cst)
     {
-      T* old = __sync_val_compare_and_swap(&value, expected, desired);
+      T* old = (T*)__sync_val_compare_and_swap(&value, uintptr_t(expected), uintptr_t(desired));
 
       if (old == expected)
       {
@@ -627,7 +633,7 @@ namespace etl
 
     bool compare_exchange_weak(T*& expected, T* desired, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
-      T* old = __sync_val_compare_and_swap(&value, expected, desired);
+      T* old = (T*)__sync_val_compare_and_swap(&value, uintptr_t(expected), uintptr_t(desired));
 
       if (old == expected)
       {
@@ -642,7 +648,7 @@ namespace etl
 
     bool compare_exchange_weak(T*& expected, T* desired, etl::memory_order success, etl::memory_order failure)
     {
-      T* old = __sync_val_compare_and_swap(&value, expected, desired);
+      T* old = (T*)__sync_val_compare_and_swap(&value, uintptr_t(expected), uintptr_t(desired));
 
       if (old == expected)
       {
@@ -657,7 +663,7 @@ namespace etl
 
     bool compare_exchange_weak(T*& expected, T* desired, etl::memory_order success, etl::memory_order failure) volatile
     {
-      T* old = __sync_val_compare_and_swap(&value, expected, desired);
+      T* old = (T*)__sync_val_compare_and_swap(&value, uintptr_t(expected), uintptr_t(desired));
 
       if (old == expected)
       {
@@ -737,10 +743,10 @@ namespace etl
 
   private:
 
-    atomic& operator =(const atomic&);
-    atomic& operator =(const atomic&) volatile;
+    atomic& operator =(const atomic&) ETL_DELETE;
+    atomic& operator =(const atomic&) volatile ETL_DELETE;
 
-    mutable volatile T* value;
+    mutable uintptr_t value;
   };
 
   typedef etl::atomic<char>                atomic_char;
@@ -757,8 +763,10 @@ namespace etl
   typedef etl::atomic<wchar_t>             atomic_wchar_t;
   typedef etl::atomic<char16_t>            atomic_char16_t;
   typedef etl::atomic<char32_t>            atomic_char32_t;
+#if ETL_USING_8BIT_TYPES
   typedef etl::atomic<uint8_t>             atomic_uint8_t;
   typedef etl::atomic<int8_t>              atomic_int8_t;
+#endif
   typedef etl::atomic<uint16_t>            atomic_uint16_t;
   typedef etl::atomic<int16_t>             atomic_int16_t;
   typedef etl::atomic<uint32_t>            atomic_uint32_t;

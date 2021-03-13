@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/alignment.h"
 #include "etl/type_traits.h"
@@ -35,6 +35,14 @@ SOFTWARE.
 #include <utility>
 #include <string>
 #include <ostream>
+
+#if defined(ETL_COMPILER_MICROSOFT)
+  #pragma warning(disable : 4996)
+#endif
+
+#ifdef ETL_COMPILER_GCC
+  #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 
 void f(int)
 {

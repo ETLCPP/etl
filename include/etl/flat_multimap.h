@@ -31,19 +31,15 @@ SOFTWARE.
 #ifndef ETL_FLAT_MULTMAP_INCLUDED
 #define ETL_FLAT_MULTMAP_INCLUDED
 
-#include <new>
-
 #include "platform.h"
 #include "reference_flat_multimap.h"
 #include "pool.h"
 #include "utility.h"
+#include "placement_new.h"
 
 #if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
 #endif
-
-#undef ETL_FILE
-#define ETL_FILE "3"
 
 //*****************************************************************************
 ///\defgroup flat_multimap flat_multimap
@@ -264,7 +260,7 @@ namespace etl
 
       ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
-      iterator i_element = lower_bound(value.first);
+      iterator i_element = upper_bound(value.first);
 
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(value);
@@ -286,7 +282,7 @@ namespace etl
 
       ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
-      iterator i_element = lower_bound(value.first);
+      iterator i_element = upper_bound(value.first);
 
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(etl::move(value));
@@ -356,7 +352,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value);
-      iterator i_element = lower_bound(key);
+      iterator i_element = upper_bound(key);
       ETL_INCREMENT_DEBUG_COUNT
 
       return refmap_t::insert_at(i_element, *pvalue);
@@ -375,7 +371,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(etl::forward<Args>(args)...);
-      iterator i_element = lower_bound(key);
+      iterator i_element = upper_bound(key);
       ETL_INCREMENT_DEBUG_COUNT
 
       return refmap_t::insert_at(i_element, *pvalue);
@@ -394,7 +390,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1);
-      iterator i_element = lower_bound(key);
+      iterator i_element = upper_bound(key);
       ETL_INCREMENT_DEBUG_COUNT
 
       return refmap_t::insert_at(i_element, *pvalue);
@@ -412,7 +408,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2);
-      iterator i_element = lower_bound(key);
+      iterator i_element = upper_bound(key);
       ETL_INCREMENT_DEBUG_COUNT
 
       return refmap_t::insert_at(i_element, *pvalue);
@@ -430,7 +426,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2, value3);
-      iterator i_element = lower_bound(key);
+      iterator i_element = upper_bound(key);
       ETL_INCREMENT_DEBUG_COUNT
 
       return refmap_t::insert_at(i_element, *pvalue);
@@ -448,7 +444,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2, value3, value4);
-      iterator i_element = lower_bound(key);
+      iterator i_element = upper_bound(key);
       ETL_INCREMENT_DEBUG_COUNT
 
       return refmap_t::insert_at(i_element, *pvalue);
@@ -843,7 +839,7 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator>
+    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
     flat_multimap(TIterator first, TIterator last)
       : etl::iflat_multimap<TKey, TValue, TCompare>(lookup, storage)
     {
@@ -907,8 +903,17 @@ namespace etl
     // The vector that stores pointers to the nodes.
     etl::vector<node_t*, MAX_SIZE> lookup;
   };
-}
 
-#undef ETL_FILE
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  flat_multimap(T, Ts...)
+    ->flat_multimap<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), typename T::first_type>,
+    etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), typename T::second_type>,
+    1U + sizeof...(Ts)>;
+#endif 
+}
 
 #endif

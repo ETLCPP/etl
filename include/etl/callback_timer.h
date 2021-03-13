@@ -30,7 +30,6 @@ SOFTWARE.
 #define ETL_CALLBACK_TIMER_INCLUDED
 
 #include <stdint.h>
-#include <new>
 
 #include "platform.h"
 #include "algorithm.h"
@@ -40,13 +39,11 @@ SOFTWARE.
 #include "timer.h"
 #include "atomic.h"
 #include "error_handler.h"
+#include "placement_new.h"
 
 #if ETL_CPP11_SUPPORTED
   #include "delegate.h"
 #endif
-
-#undef ETL_FILE
-#define ETL_FILE "43"
 
 #if defined(ETL_IN_UNIT_TEST) && ETL_NOT_USING_STL
   #define ETL_DISABLE_TIMER_UPDATES
@@ -771,7 +768,5 @@ namespace etl
 #undef ETL_DISABLE_TIMER_UPDATES
 #undef ETL_ENABLE_TIMER_UPDATES
 #undef ETL_TIMER_UPDATES_ENABLED
-
-#undef ETL_FILE
 
 #endif

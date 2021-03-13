@@ -29,8 +29,7 @@ SOFTWARE.
 #ifndef ETL_NULL_TYPE_INCLUDED
 #define ETL_NULL_TYPE_INCLUDED
 
-#undef ETL_FILE
-#define ETL_FILE "50"
+#include <stddef.h>
 
 namespace etl
 {
@@ -39,7 +38,5 @@ namespace etl
   {
   };
 }
-
-#undef ETL_FILE
 
 #endif

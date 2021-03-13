@@ -42,9 +42,6 @@ SOFTWARE.
 #include "timer.h"
 #include "atomic.h"
 
-#undef ETL_FILE
-#define ETL_FILE "44"
-
 #if defined(ETL_IN_UNIT_TEST) && ETL_NOT_USING_STL
   #define ETL_DISABLE_TIMER_UPDATES
   #define ETL_ENABLE_TIMER_UPDATES
@@ -473,8 +470,7 @@ namespace etl
 
               if (timer.p_router != ETL_NULLPTR)
               {
-                static etl::null_message_router nmr;
-                timer.p_router->receive(nmr, timer.destination_router_id, *(timer.p_message));
+                timer.p_router->receive(timer.destination_router_id, *(timer.p_message));
               }
 
               has_active = !active_list.empty();
@@ -658,7 +654,5 @@ namespace etl
 #undef ETL_DISABLE_TIMER_UPDATES
 #undef ETL_ENABLE_TIMER_UPDATES
 #undef ETL_TIMER_UPDATES_ENABLED
-
-#undef ETL_FILE
 
 #endif

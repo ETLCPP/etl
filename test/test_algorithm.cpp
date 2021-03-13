@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/algorithm.h"
 #include "etl/container.h"
@@ -703,6 +703,10 @@ namespace
     {
       CHECK(etl::equal(std::begin(dataV), std::end(dataV), std::begin(dataL)));
       CHECK(!etl::equal(std::begin(dataSL), std::end(dataSL), std::begin(dataL)));
+
+      int small[] = { dataS[0] };
+      CHECK(etl::equal(std::begin(dataV), std::end(dataV), std::begin(dataL), std::end(dataL)));
+      CHECK(!etl::equal(std::begin(dataS), std::end(dataS), std::begin(small), std::end(small)));
     }
 
     //*************************************************************************
@@ -1099,7 +1103,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(rotate)
+    TEST(rotate_pod)
     {
       std::vector<int> initial_data = { 1, 2, 3, 4, 5, 6, 7 };
 
@@ -1107,6 +1111,25 @@ namespace
       {
         std::vector<int> data1(initial_data);
         std::vector<int> data2(initial_data);
+
+        std::rotate(data1.data(), data1.data() + i, data1.data() + data1.size());
+        etl::rotate(data2.data(), data2.data() + i, data2.data() + data2.size());
+
+        bool isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
+        CHECK(isEqual);
+      }
+    }
+
+
+    //*************************************************************************
+    TEST(rotate_non_pod)
+    {
+      std::vector<NDC> initial_data = { NDC(1), NDC(2), NDC(3), NDC(4), NDC(5), NDC(6), NDC(7) };
+
+      for (size_t i = 0; i < initial_data.size(); ++i)
+      {
+        std::vector<NDC> data1(initial_data);
+        std::vector<NDC> data2(initial_data);
 
         std::rotate(data1.data(), data1.data() + i, data1.data() + data1.size());
         etl::rotate(data2.data(), data2.data() + i, data2.data() + data2.size());
@@ -2003,6 +2026,57 @@ namespace
       CHECK_EQUAL(1, *etl::multimin_iter(&i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7]));
       CHECK_EQUAL(1, *etl::multimin_iter_compare(std::less<int>(), &i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7]));
       CHECK_EQUAL(8, *etl::multimin_iter_compare(std::greater<int>(), &i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7]));
+    }
+
+    //*************************************************************************
+    TEST(replace)
+    {
+      int data[]     = { 1, 8, 2, 7, 2, 6, 2, 2, 10, 9 };
+      int expected[] = { 1, 8, 0, 7, 0, 6, 0, 0, 10, 9 };
+
+      // Replace 2 with 0
+      etl::replace(std::begin(data), std::end(data), 2, 0);
+
+      bool is_same = std::equal(std::begin(data), std::end(data), std::begin(expected));
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(replace_if)
+    {
+      int data[]     = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
+      int expected[] = { 0, 8, 0, 7, 0, 6, 0, 0, 10, 9 };
+
+      // Replace <=5 with 0
+      etl::replace_if(std::begin(data), std::end(data), std::bind(std::less_equal<int>(), std::placeholders::_1, 5), 0);
+
+      bool is_same = std::equal(std::begin(data), std::end(data), std::begin(expected));
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(for_each)
+    {
+      int data[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
+
+      struct Sum
+      {
+        void operator()(int i)
+        {
+          value += i;
+        }
+
+        Sum()
+          : value(0)
+        {
+        }
+
+        int value;
+      };
+
+      Sum sum;
+      sum = etl::for_each(std::begin(data), std::end(data), sum);
+      CHECK_EQUAL(std::accumulate(std::begin(data), std::end(data), 0), sum.value);
     }
   };
 }

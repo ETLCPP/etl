@@ -34,9 +34,6 @@ SOFTWARE.
 #include "type_traits.h"
 #include "null_type.h"
 
-#undef ETL_FILE
-#define ETL_FILE "49"
-
 /*[[[cog
 import cog
 cog.outl("#if 0")
@@ -73,8 +70,8 @@ namespace etl
     struct type_select_helper
     {
       using type = typename etl::conditional<ID == N,
-        T1,
-        typename type_select_helper<ID, N + 1, TRest...>::type>::type;
+                                             T1,
+                                             typename type_select_helper<ID, N + 1, TRest...>::type>::type;
     };
 
     //***********************************
@@ -94,8 +91,10 @@ namespace etl
       using type = typename type_select_helper<ID, 0, TTypes...>::type;
     };
 
+#if ETL_CPP11_SUPPORTED
     template <size_t ID>
     using select_t = typename select<ID>::type;
+#endif
   };
 
 #else
@@ -170,7 +169,5 @@ namespace etl
   /*[[[end]]]*/
 #endif
 }
-
-#undef ETL_FILE
 
 #endif

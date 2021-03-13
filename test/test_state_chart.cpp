@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/state_chart.h"
 #include "etl/enum_type.h"
@@ -211,7 +211,7 @@ namespace
   };
 
   //***************************************************************************
-  const etl::array<MotorControl::transition, 7> MotorControl::transitionTable =
+  constexpr etl::array<MotorControl::transition, 7> MotorControl::transitionTable =
   {
     MotorControl::transition(StateId::IDLE,         EventId::START,          StateId::RUNNING,      &MotorControl::OnStart, &MotorControl::Guard),
     MotorControl::transition(StateId::IDLE,         EventId::START,          StateId::IDLE,         &MotorControl::Null,    &MotorControl::NotGuard),
@@ -223,7 +223,7 @@ namespace
   };
 
   //***************************************************************************
-  const etl::array<MotorControl::state, 3> MotorControl::stateTable =
+  constexpr etl::array<MotorControl::state, 3> MotorControl::stateTable =
   {
     MotorControl::state(StateId::IDLE,         &MotorControl::OnEnterIdle,        nullptr),
     MotorControl::state(StateId::RUNNING,      &MotorControl::OnEnterRunning,     nullptr),

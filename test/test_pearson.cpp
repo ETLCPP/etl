@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <iterator>
 #include <string>
@@ -115,7 +115,7 @@ namespace
       hash_t compare = Pearson_Compare(data);
       hash_t hash    = etl::pearson<HASH_SIZE>(data.begin(), data.end());
 
-      CHECK_EQUAL(compare, hash);
+      CHECK(compare == hash);
     }
 
     //*************************************************************************
@@ -133,7 +133,7 @@ namespace
       hash_t compare = Pearson_Compare(data);
       hash_t hash    = pearson_calculator;
 
-      CHECK_EQUAL(compare, hash);
+      CHECK(compare == hash);
     }
 
     //*************************************************************************
@@ -148,7 +148,7 @@ namespace
       hash_t compare = Pearson_Compare(data);
       hash_t hash    = pearson_calculator.value();
 
-      CHECK_EQUAL(compare, hash);
+      CHECK(compare == hash);
     }
 
     //*************************************************************************
@@ -160,10 +160,10 @@ namespace
 
       hash_t hash1 = etl::pearson<HASH_SIZE>(data1.begin(), data1.end());
       hash_t hash2 = etl::pearson<HASH_SIZE>((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
-      CHECK_EQUAL(hash1, hash2);
+      CHECK(hash1 == hash2);
 
       hash_t hash3 = etl::pearson<HASH_SIZE>(data3.rbegin(), data3.rend());
-      CHECK_EQUAL(hash1, hash3);
+      CHECK(hash1 == hash3);
     }
   };
 }

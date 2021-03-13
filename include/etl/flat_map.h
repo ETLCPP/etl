@@ -31,19 +31,15 @@ SOFTWARE.
 #ifndef ETL_FLAT_MAP_INCLUDED
 #define ETL_FLAT_MAP_INCLUDED
 
-#include <new>
-
 #include "platform.h"
 #include "reference_flat_map.h"
 #include "pool.h"
+#include "placement_new.h"
 
 #if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
 #endif
 #include "utility.h"
-
-#undef ETL_FILE
-#define ETL_FILE "2"
 
 //*****************************************************************************
 ///\defgroup flat_map flat_map
@@ -940,7 +936,7 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator>
+    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
     flat_map(TIterator first, TIterator last)
       : etl::iflat_map<TKey, TValue, TCompare>(lookup, storage)
     {
@@ -1004,8 +1000,17 @@ namespace etl
     /// The vector that stores pointers to the nodes.
     etl::vector<node_t*, MAX_SIZE> lookup;
   };
-}
 
-#undef ETL_FILE
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  flat_map(T, Ts...)
+    ->flat_map<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), typename T::first_type>,
+               etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), typename T::second_type>,
+               1U + sizeof...(Ts)>;
+#endif 
+}
 
 #endif

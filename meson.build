@@ -8,7 +8,7 @@ project('PROJECT_NAME',
 		'cpp_std=c++17', 'build.cpp_std=c++17',
 	],
 	meson_version: '>=0.54.0',
-	version: '18.0'
+	version: '19.3.7'
 )
 
 ######################
@@ -36,6 +36,7 @@ etl_test_sources = files(
 	'test/test_bitset.cpp',
 	'test/test_bloom_filter.cpp',
 	'test/test_bsd_checksum.cpp',
+	'test/test_buffer_descriptors.cpp',
 	'test/test_callback_timer.cpp',
 	'test/test_checksum.cpp',
 	'test/test_compare.cpp',
@@ -137,38 +138,30 @@ etl_test_sources = files(
 	'test/test_type_select.cpp',
 	'test/test_vector_external_buffer.cpp',
 	'test/test_vector_pointer_external_buffer.cpp',
+	'test/test_deque.cpp',
+	'test/test_flat_map.cpp',
+	'test/test_flat_multimap.cpp',
+	'test/test_flat_multiset.cpp',
+	'test/test_flat_set.cpp',
+	'test/test_map.cpp',
+	'test/test_multimap.cpp',
+	'test/test_multiset.cpp',
+	'test/test_reference_flat_map.cpp',
+	'test/test_reference_flat_multimap.cpp',
+	'test/test_reference_flat_multiset.cpp',
+	'test/test_reference_flat_set.cpp',
+	'test/test_pearson.cpp',
+	'test/test_set.cpp',
+	'test/test_string_view.cpp',
+	'test/test_to_u16string.cpp',
+	'test/test_to_u32string.cpp',
+	'test/test_to_string.cpp',
+	'test/test_to_wstring.cpp',
+	'test/test_unordered_map.cpp',
+	'test/test_unordered_multimap.cpp',
+	'test/test_unordered_multiset.cpp',
+	'test/test_unordered_set.cpp'
 )
-
-# These files currently fail to compile with OS X clang at the very least
-if meson.get_compiler('cpp').get_id() == 'clang' and build_machine.system() == 'darwin'
-	message('Some test files fail to compile with OS X clang and are disabled.')
-else
-	etl_test_sources += files(
-		'test/test_deque.cpp',
-		'test/test_flat_map.cpp',
-		'test/test_flat_multimap.cpp',
-		'test/test_flat_multiset.cpp',
-		'test/test_flat_set.cpp',
-		'test/test_map.cpp',
-		'test/test_multimap.cpp',
-		'test/test_multiset.cpp',
-		'test/test_reference_flat_map.cpp',
-		'test/test_reference_flat_multimap.cpp',
-		'test/test_reference_flat_multiset.cpp',
-		'test/test_reference_flat_set.cpp',
-		'test/test_pearson.cpp',
-		'test/test_set.cpp',
-		'test/test_string_view.cpp',
-		'test/test_to_u16string.cpp',
-		'test/test_to_u32string.cpp',
-		'test/test_to_string.cpp',
-		'test/test_to_wstring.cpp',
-		'test/test_unordered_map.cpp',
-		'test/test_unordered_multimap.cpp',
-		'test/test_unordered_multiset.cpp',
-		'test/test_unordered_set.cpp',
-	)
-endif
 
 if meson.get_compiler('cpp').get_id() == 'gcc'
 	etl_test_sources += files('test/test_atomic_gcc_sync.cpp')

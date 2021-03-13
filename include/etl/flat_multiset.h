@@ -34,13 +34,11 @@ SOFTWARE.
 #include "platform.h"
 #include "reference_flat_multiset.h"
 #include "pool.h"
+#include "placement_new.h"
 
 #if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
 #endif
-
-#undef ETL_FILE
-#define ETL_FILE "4"
 
 //*****************************************************************************
 ///\defgroup flat_multiset flat_multiset
@@ -231,7 +229,7 @@ namespace etl
 
       ETL_ASSERT(!full(), ETL_ERROR(flat_multiset_full));
 
-      iterator i_element = etl::lower_bound(begin(), end(), value, compare);
+      iterator i_element = etl::upper_bound(begin(), end(), value, compare);
 
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(value);
@@ -253,7 +251,7 @@ namespace etl
 
       ETL_ASSERT(!full(), ETL_ERROR(flat_multiset_full));
 
-      iterator i_element = etl::lower_bound(begin(), end(), value, compare);
+      iterator i_element = etl::upper_bound(begin(), end(), value, compare);
 
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(etl::move(value));
@@ -326,7 +324,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(etl::forward<Args>(args)...);
 
-      iterator i_element = lower_bound(*pvalue);
+      iterator i_element = upper_bound(*pvalue);
 
       ETL_INCREMENT_DEBUG_COUNT
       return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
@@ -344,7 +342,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(value1);
 
-      iterator i_element = lower_bound(*pvalue);
+      iterator i_element = upper_bound(*pvalue);
 
       ETL_INCREMENT_DEBUG_COUNT
       return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
@@ -362,7 +360,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(value1, value2);
 
-      iterator i_element = lower_bound(*pvalue);
+      iterator i_element = upper_bound(*pvalue);
 
       ETL_INCREMENT_DEBUG_COUNT
       return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
@@ -380,7 +378,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(value1, value2, value3);
 
-      iterator i_element = lower_bound(*pvalue);
+      iterator i_element = upper_bound(*pvalue);
 
       ETL_INCREMENT_DEBUG_COUNT
       return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
@@ -398,7 +396,7 @@ namespace etl
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(value1, value2, value3, value4);
 
-      iterator i_element = lower_bound(*pvalue);
+      iterator i_element = upper_bound(*pvalue);
 
       ETL_INCREMENT_DEBUG_COUNT
       return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
@@ -793,7 +791,7 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator>
+    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
     flat_multiset(TIterator first, TIterator last)
       : iflat_multiset<T, TCompare>(lookup, storage)
     {
@@ -857,8 +855,15 @@ namespace etl
     // The vector that stores pointers to the nodes.
     etl::vector<node_t*, MAX_SIZE> lookup;
   };
-}
 
-#undef ETL_FILE
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  flat_multiset(T, Ts...)
+    ->flat_multiset<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
+#endif 
+}
 
 #endif

@@ -42,9 +42,6 @@ SOFTWARE.
 #include "utility.h"
 #include "algorithm.h"
 
-#undef ETL_FILE
-#define ETL_FILE "22"
-
 //*****************************************************************************
 // Note:
 // The link functions work slightly differently to the STL 'insert' convention
@@ -79,7 +76,7 @@ namespace etl
   public:
 
     not_unlinked_exception(string_type file_name_, numeric_type line_number_)
-      : link_exception(ETL_ERROR_TEXT("link:still linked", ETL_FILE"A"), file_name_, line_number_)
+      : link_exception(ETL_ERROR_TEXT("link:still linked", ETL_INTRUSIVE_LINKS_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -794,5 +791,4 @@ namespace etl
   }
 }
 
-#undef ETL_FILE
 #endif

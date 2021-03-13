@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/type_traits.h"
 #include <type_traits>
@@ -456,6 +456,22 @@ namespace
       CHECK((etl::is_same<etl::make_signed<const int>::type,          std::make_signed<const int>::type>::value));
       CHECK((etl::is_same<etl::make_signed<const volatile int>::type, std::make_signed<const volatile int>::type>::value));
       CHECK((etl::is_same<etl::make_signed<size_t>::type,             std::make_signed<size_t>::type>::value));
+
+      enum class ue : uint8_t
+      {
+        One,
+        Two
+      };
+
+      CHECK((etl::is_same<etl::make_signed<__underlying_type(ue)>::type, std::make_signed<ue>::type>::value));
+
+      enum class se : int8_t
+      {
+        One,
+        Two
+      };
+
+      CHECK((etl::is_same<etl::make_signed<__underlying_type(se)>::type, std::make_signed<se>::type>::value));
     }
 
     //*************************************************************************
@@ -482,6 +498,22 @@ namespace
       CHECK((etl::is_same<etl::make_unsigned<const int>::type,          std::make_unsigned<const int>::type>::value));
       CHECK((etl::is_same<etl::make_unsigned<const volatile int>::type, std::make_unsigned<const volatile int>::type>::value));
       CHECK((etl::is_same<etl::make_unsigned<size_t>::type,             std::make_unsigned<size_t>::type>::value));
+
+      enum class ue : uint8_t
+      {
+        One,
+        Two
+      };
+
+      CHECK((etl::is_same<etl::make_unsigned<__underlying_type(ue)>::type, std::make_unsigned<ue>::type>::value));
+
+      enum class se : int8_t
+      {
+        One,
+        Two
+      };
+
+      CHECK((etl::is_same<etl::make_unsigned<__underlying_type(se)>::type, std::make_unsigned<se>::type>::value));
     }
 
     //*************************************************************************
@@ -831,5 +863,12 @@ namespace
     CHECK_EQUAL(true, etl::negation_v<etl::bool_constant<false>>);
     CHECK_EQUAL(false, etl::negation_v<etl::bool_constant<true>>);
     CHECK((std::is_same_v<bool, etl::bool_constant<true>::value_type>));
+  }
+
+  //*************************************************************************
+  TEST(test_are_all_same)
+  {
+    CHECK((etl::are_all_same<int, int, int, int, int>::value == true));
+    CHECK((etl::are_all_same<int, int, int, char, int>::value == false));
   }
 }

@@ -76,6 +76,18 @@
     <Filter Include="Resource Files\CI\CircleCI">
       <UniqueIdentifier>{0d5824b1-3ef9-43e0-b2d5-15d6246b843e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\CI\Github">
+      <UniqueIdentifier>{c25471f3-451a-4279-925d-cbdcec912ef8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Pseudo Containers">
+      <UniqueIdentifier>{586d2c92-e504-4dea-9b1f-42d725a5272c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\CI\Appveyor">
+      <UniqueIdentifier>{74399f00-a7a3-47e3-9b27-d01fb2b5ce87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Arduino">
+      <UniqueIdentifier>{afc65d0e-d846-4e30-8723-06c8cefa3a36}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -606,9 +618,6 @@
     <ClInclude Include="..\..\include\etl\math_constants.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\atomic\atomic_llvm_sync.h">
-      <Filter>ETL\Utilities\Atomic</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\bit_stream.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
@@ -662,9 +671,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\delegate_service.h">
       <Filter>ETL\Frameworks</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\cstring.h">
-      <Filter>ETL\Strings</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\string_view.h">
       <Filter>ETL\Strings</Filter>
@@ -869,6 +875,84 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\basic_string_stream.h">
       <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\string_utilities.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\bresenham_line.h">
+      <Filter>ETL\Pseudo Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\string.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\circular_buffer.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\flags.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\atomic\atomic_clang_sync.h">
+      <Filter>ETL\Utilities\Atomic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\buffer_descriptors.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\placement_new.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\mutex\mutex_clang_sync.h">
+      <Filter>ETL\Utilities\Mutex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\arduino\Embedded_Template_Library.h">
+      <Filter>ETL\Arduino</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\multi_range.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_pool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\ireference_counted_message_pool.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\reference_counted_message.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\reference_counted_message_pool.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generic_pool.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\ipool.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\file_error_numbers.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\shared_message.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\reference_counted_object.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\fixed_sized_memory_block_allocator.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\queue_lockable.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\successor.h">
+      <Filter>ETL\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\imemory_block_allocator.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_router_registry.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unit_test_framework.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1349,13 +1433,82 @@
     <ClCompile Include="..\test_string_stream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_wstring_stream.cpp">
+    <ClCompile Include="..\test_string_stream_u16.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_u16string_stream.cpp">
+    <ClCompile Include="..\test_string_stream_u32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_u32string_stream.cpp">
+    <ClCompile Include="..\test_string_stream_wchar_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_wchar_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_u16.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_u32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_std.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_std_wchar_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_std_u16.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_std_u32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bresenham_line.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_circular_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_circular_buffer_external_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_flags.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_buffer_descriptors.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_atomic_clang_sync.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_format_spec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_multi_range.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_shared_message.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_fixed_sized_memory_block_allocator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_lockable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_lockable_small.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_state_chart_with_data_parameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_state_chart_with_rvalue_data_parameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_message_router_registry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1411,11 +1564,35 @@
     <None Include="..\..\.circleci\config.yml">
       <Filter>Resource Files\CI\CircleCI</Filter>
     </None>
+    <None Include="..\cmake\unit-test_external_project.cmake">
+      <Filter>Resource Files\Make</Filter>
+    </None>
+    <None Include="..\..\appveyor.yml">
+      <Filter>Resource Files\CI\Appveyor</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\vs2019.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\meson.build">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\runtests.sh">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="..\..\conanfile.py">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\arduino\create_arduino_library.py">
+      <Filter>ETL\Arduino</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\include\etl\file_error_numbers.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
     <Text Include="..\..\support\Release notes.txt">
       <Filter>Resource Files</Filter>
     </Text>
@@ -1424,6 +1601,9 @@
     </Text>
     <Text Include="..\..\todo.txt">
       <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="..\..\CMakeLists.txt">
+      <Filter>Resource Files\Make</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

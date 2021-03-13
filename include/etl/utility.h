@@ -162,24 +162,27 @@ namespace etl
 #endif
 
 #if defined(ETL_IN_UNIT_TEST) || ETL_USING_STL
-    /// Converting from etl::pair to std::pair
-    operator std::pair<T1, T2>()
+    /// Converting to std::pair
+    template <typename U1, typename U2>
+    operator std::pair<U1, U2>()
     {
       return std::make_pair(first, second);
     }
 
     /// Constructing from std::pair
-    pair(const std::pair<T1, T2>& other)
+    template <typename U1, typename U2>
+    pair(const std::pair<U1, U2>& other)
       : first(other.first)
       , second(other.second)
     {
     }
 
 #if ETL_CPP11_SUPPORTED
-    /// Constructing from std::pair
-    pair(std::pair<T1, T2>&& other)
-      : first(etl::forward<T1>(other.first))
-      , second(etl::forward<T2>(other.second))
+    /// Constructing to etl::pair
+    template <typename U1, typename U2>
+    pair(std::pair<U1, U2>&& other)
+      : first(etl::forward<U1>(other.first))
+      , second(etl::forward<U2>(other.second))
     {
     }
 #endif
@@ -328,6 +331,37 @@ namespace etl
   {
     return t;
   }
+
+  //******************************************************************************
+  /// 2D coordinate type.
+  template <typename T>
+  struct coordinate_2d
+  {
+    coordinate_2d()
+      : x(T(0))
+      , y(T(0))
+    {
+    }
+
+    coordinate_2d(T x_, T y_)
+      : x(x_)
+      , y(y_)
+    {
+    }
+
+    friend bool operator ==(const coordinate_2d& lhs, const coordinate_2d& rhs)
+    {
+      return (lhs.x == rhs.x) && (lhs.y == rhs.y);
+    }
+
+    friend bool operator !=(const coordinate_2d& lhs, const coordinate_2d& rhs)
+    {
+      return !(lhs == rhs);
+    }
+
+    T x;
+    T y;
+  };
 }
 
 #endif

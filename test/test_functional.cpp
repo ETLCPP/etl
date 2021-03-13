@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/functional.h"
 
@@ -61,11 +61,27 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_less_equal)
+    {
+      CHECK((compare<etl::less_equal<int>>(1, 2)));
+      CHECK(!(compare<etl::less_equal<int>>(2, 1)));
+      CHECK((compare<etl::less_equal<int>>(1, 1)));
+    }
+
+    //*************************************************************************
     TEST(test_greater)
     {
       CHECK(!(compare<etl::greater<int>>(1, 2)));
       CHECK((compare<etl::greater<int>>(2, 1)));
       CHECK(!(compare<etl::greater<int>>(1, 1)));
+    }
+
+    //*************************************************************************
+    TEST(test_greater_equal)
+    {
+      CHECK(!(compare<etl::greater_equal<int>>(1, 2)));
+      CHECK((compare<etl::greater_equal<int>>(2, 1)));
+      CHECK((compare<etl::greater_equal<int>>(1, 1)));
     }
 
     //*************************************************************************
@@ -104,7 +120,7 @@ namespace
       int a = 0;
       etl::reference_wrapper<int> ra(a);
 
-      ra = 1;
+      ra.get() = 1;
       CHECK_EQUAL(1, a);
       CHECK_EQUAL(1, ra);
 
@@ -114,41 +130,14 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_reference_wrapper_vector)
-    {
-      std::vector<etl::reference_wrapper<int>> ref_int;
-
-      int a = 1;
-      int b = 2;
-
-      ref_int.push_back(etl::ref(a));
-      ref_int.push_back(etl::ref(b));
-
-      CHECK_EQUAL(a, ref_int[0]);
-      CHECK_EQUAL(b, ref_int[1]);
-
-      ref_int[0] = 3;
-      ref_int[1] = 4;
-
-      CHECK_EQUAL(3, a);
-      CHECK_EQUAL(4, b);
-
-      CHECK_EQUAL(3, ref_int[0]);
-      CHECK_EQUAL(4, ref_int[1]);
-    }
-
-    //*************************************************************************
     TEST(test_reference_wrapper_container)
     {
-      std::list<int> test = { 0, 1, 2, 3, 4 };
-      std::list<int> compare = { 5, 6, 7, 8, 9 };
+      std::list<int> test    = { 0, 1, 2, 3, 4 };
+      std::list<int> compare = { 0, 1, 2, 3, 4 };
       std::vector<etl::reference_wrapper<int>> test_ref(test.begin(), test.end());
 
-      std::iota(test_ref.begin(), test_ref.end(), 5);
-
-      std::list<int>::const_iterator itest = test.begin();
+      std::list<int>::const_iterator itest    = test.begin();
       std::list<int>::const_iterator icompare = compare.begin();
-      //std::vector<etl::reference_wrapper<int>>::const_iterator ivector = test_ref.begin();
 
       while (icompare != compare.end())
       {
@@ -164,7 +153,7 @@ namespace
       int a = 0;
       etl::reference_wrapper<int> ra = etl::ref(a);
 
-      ra = 1;
+      ra.get() = 1;
       CHECK_EQUAL(1, a);
       CHECK_EQUAL(1, ra);
     }
@@ -178,6 +167,116 @@ namespace
       a = 1;
       CHECK_EQUAL(1, a);
       CHECK_EQUAL(1, ra);
+    }
+
+    //*************************************************************************
+    TEST(test_plus)
+    {
+      auto f = etl::plus<int>();
+      CHECK_EQUAL(2 + 4, f(2, 4));
+    }
+
+    //*************************************************************************
+    TEST(test_minus)
+    {
+      auto f = etl::minus<int>();
+      CHECK_EQUAL(2 - 4, f(2, 4));
+    }
+
+    //*************************************************************************
+    TEST(test_negate)
+    {
+      auto f = etl::negate<int>();
+      CHECK_EQUAL(-2, f(2));
+    }
+
+    //*************************************************************************
+    TEST(test_multiplies)
+    {
+      auto f = etl::multiplies<int>();
+      CHECK_EQUAL(2 * 4, f(2, 4));
+    }
+
+    //*************************************************************************
+    TEST(test_divides)
+    {
+      auto f = etl::divides<int>();
+      CHECK_EQUAL(4 / 2, f(4, 2));
+    }
+
+    //*************************************************************************
+    TEST(test_modulus)
+    {
+      auto f = etl::modulus<int>();
+      CHECK_EQUAL(5 % 2, f(5, 2));
+    }
+
+    //*************************************************************************
+    TEST(test_logical_and)
+    {
+      auto f = etl::logical_and<bool>();
+      CHECK_EQUAL(false && false, f(false, false));
+      CHECK_EQUAL(false && true,  f(false, true));
+      CHECK_EQUAL(true  && false, f(true,  false));
+      CHECK_EQUAL(true &&  true,  f(true,  true));
+    }
+
+    //*************************************************************************
+    TEST(test_logical_or)
+    {
+      auto f = etl::logical_or<bool>();
+      CHECK_EQUAL(false || false, f(false, false));
+      CHECK_EQUAL(false || true,  f(false, true));
+      CHECK_EQUAL(true  || false, f(true, false));
+      CHECK_EQUAL(true  || true,  f(true, true));
+    }
+
+    //*************************************************************************
+    TEST(test_logical_not)
+    {
+      auto f = etl::logical_not<bool>();
+      CHECK_EQUAL(!false, f(false));
+      CHECK_EQUAL(!true, f(true));
+    }
+
+    //*************************************************************************
+    TEST(test_bit_and)
+    {
+      auto f = etl::bit_and<uint8_t>();
+      CHECK_EQUAL(0x00 & 0xFF, f(0x00, 0xFF));
+      CHECK_EQUAL(0xAA & 0xFF, f(0xAA, 0xFF));
+      CHECK_EQUAL(0x55 & 0xFF, f(0x55, 0xFF));
+      CHECK_EQUAL(0xFF & 0xFF, f(0xFF, 0xFF));
+    }
+
+    //*************************************************************************
+    TEST(test_bit_or)
+    {
+      auto f = etl::bit_or<uint8_t>();
+      CHECK_EQUAL(0xFF | 0x00, f(0xFF, 0x00));
+      CHECK_EQUAL(0xAA | 0x00, f(0xAA, 0x00));
+      CHECK_EQUAL(0x55 | 0x00, f(0x55, 0x00));
+      CHECK_EQUAL(0x55 | 0xAA, f(0x55, 0xAA));
+    }
+
+    //*************************************************************************
+    TEST(test_bit_xor)
+    {
+      auto f = etl::bit_xor<uint8_t>();
+      CHECK_EQUAL(0xFF ^ 0x00, f(0xFF, 0x00));
+      CHECK_EQUAL(0xAA ^ 0x00, f(0xAA, 0x00));
+      CHECK_EQUAL(0x55 ^ 0x00, f(0x55, 0x00));
+      CHECK_EQUAL(0x55 ^ 0xAA, f(0x55, 0xAA));
+    }
+
+    //*************************************************************************
+    TEST(test_bit_not)
+    {
+      auto f = etl::bit_not<uint8_t>();
+      CHECK_EQUAL(uint8_t(~0x00), f(0x00));
+      CHECK_EQUAL(uint8_t(~0x55), f(0x55));
+      CHECK_EQUAL(uint8_t(~0xAA), f(0xAA));
+      CHECK_EQUAL(uint8_t(~0xFF), f(0xFF));
     }
   };
 }

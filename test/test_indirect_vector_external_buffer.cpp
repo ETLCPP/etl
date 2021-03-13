@@ -26,7 +26,7 @@
 //SOFTWARE.
 //******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <vector>
 #include <array>
@@ -63,11 +63,11 @@ namespace
 
     static NDC ndc("NDC");
 
-    typedef etl::indirect_vector<NDC, 0U> DataNDC;
+    typedef etl::indirect_vector_ext<NDC> DataNDC;
     typedef etl::iindirect_vector<NDC>    IDataNDC;
     typedef std::vector<NDC>              CompareDataNDC;
 
-    typedef etl::indirect_vector<DC, 0U> DataDC;
+    typedef etl::indirect_vector_ext<DC> DataDC;
     typedef etl::iindirect_vector<DC>    IDataDC;
     typedef std::vector<DC>              CompareDataDC;
 
@@ -293,7 +293,7 @@ namespace
     //*************************************************************************
     TEST(test_move_constructor)
     {
-      typedef etl::indirect_vector<std::unique_ptr<uint32_t>, 0> Data;
+      typedef etl::indirect_vector_ext<std::unique_ptr<uint32_t>> Data;
 
       LookupUniquePtr lookup1;
       PoolUniquePtr   pool1;
@@ -352,7 +352,7 @@ namespace
     //*************************************************************************
     TEST(test_move_assignment)
     {
-      typedef etl::indirect_vector<std::unique_ptr<uint32_t>, 0> Data;
+      typedef etl::indirect_vector_ext<std::unique_ptr<uint32_t>> Data;
 
       LookupUniquePtr lookup1;
       PoolUniquePtr   pool1;
@@ -421,7 +421,7 @@ namespace
       LookupUniquePtr lookup2;
       PoolUniquePtr   pool2;
 
-      typedef etl::indirect_vector<std::unique_ptr<uint32_t>, 0U> Data;
+      typedef etl::indirect_vector_ext<std::unique_ptr<uint32_t>> Data;
       typedef etl::iindirect_vector<std::unique_ptr<uint32_t>> IData;
 
       std::unique_ptr<uint32_t> p1(new uint32_t(1U));
@@ -860,7 +860,7 @@ namespace
       LookupUniquePtr lookup;
       PoolUniquePtr   pool;
 
-      etl::indirect_vector<std::unique_ptr<uint32_t>, 0U> data(lookup, pool);
+      etl::indirect_vector_ext<std::unique_ptr<uint32_t>> data(lookup, pool);
 
       std::unique_ptr<uint32_t> p1(new uint32_t(1));
       std::unique_ptr<uint32_t> p2(new uint32_t(2));
@@ -889,7 +889,7 @@ namespace
       LookupInt lookup;
       PoolInt   pool;
 
-      etl::indirect_vector<int, 0U> data(lookup, pool);
+      etl::indirect_vector_ext<int> data(lookup, pool);
 
       int p1(1);
       int p2(2);
@@ -913,7 +913,7 @@ namespace
       LookupUniquePtr lookup;
       PoolUniquePtr   pool;
 
-      etl::indirect_vector<std::unique_ptr<uint32_t>, 0U> data(lookup, pool);
+      etl::indirect_vector_ext<std::unique_ptr<uint32_t>> data(lookup, pool);
 
       std::unique_ptr<uint32_t> p1(new uint32_t(1));
       std::unique_ptr<uint32_t> p2(new uint32_t(2));

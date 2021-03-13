@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/fsm.h"
 #include "etl/enum_type.h"
@@ -207,21 +207,21 @@ namespace
   public:
 
     //***********************************
-    etl::fsm_state_id_t on_event(etl::imessage_router&, const Start&)
+    etl::fsm_state_id_t on_event(const Start&)
     {
       ++get_fsm_context().startCount;
       return StateId::RUNNING;
     }
 
     //***********************************
-    etl::fsm_state_id_t on_event(etl::imessage_router&, const Recursive&)
+    etl::fsm_state_id_t on_event(const Recursive&)
     {
       get_fsm_context().queue_recursive_message(Start());
       return StateId::IDLE;
     }
 
     //***********************************
-    etl::fsm_state_id_t on_event_unknown(etl::imessage_router&, const etl::imessage&)
+    etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
       return STATE_ID;
@@ -243,7 +243,7 @@ namespace
   public:
 
     //***********************************
-    etl::fsm_state_id_t on_event(etl::imessage_router&, const Stop& event)
+    etl::fsm_state_id_t on_event(const Stop& event)
     {
       ++get_fsm_context().stopCount;
 
@@ -258,7 +258,7 @@ namespace
     }
 
     //***********************************
-    etl::fsm_state_id_t on_event(etl::imessage_router&, const SetSpeed& event)
+    etl::fsm_state_id_t on_event(const SetSpeed& event)
     {
       ++get_fsm_context().setSpeedCount;
       get_fsm_context().SetSpeedValue(event.speed);
@@ -266,7 +266,7 @@ namespace
     }
 
     //***********************************
-    etl::fsm_state_id_t on_event_unknown(etl::imessage_router&, const etl::imessage&)
+    etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
       return STATE_ID;
@@ -289,14 +289,14 @@ namespace
   public:
 
     //***********************************
-    etl::fsm_state_id_t on_event(etl::imessage_router&, const Stopped&)
+    etl::fsm_state_id_t on_event(const Stopped&)
     {
       ++get_fsm_context().stoppedCount;
       return StateId::IDLE;
     }
 
     //***********************************
-    etl::fsm_state_id_t on_event_unknown(etl::imessage_router&, const etl::imessage&)
+    etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
       return STATE_ID;
@@ -311,7 +311,7 @@ namespace
   public:
 
     //***********************************
-    etl::fsm_state_id_t on_event_unknown(etl::imessage_router&, const etl::imessage&)
+    etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
       return STATE_ID;
@@ -331,12 +331,15 @@ namespace
 
   MotorControl motorControl;
 
-  SUITE(test_map)
+  SUITE(test_fsm_states)
   {
     //*************************************************************************
     TEST(test_fsm)
     {
       etl::null_message_router nmr;
+
+      CHECK(motorControl.is_producer());
+      CHECK(motorControl.is_consumer());
 
       motorControl.Initialise(stateList, etl::size(stateList));
       motorControl.reset();
@@ -362,9 +365,9 @@ namespace
       CHECK_EQUAL(0, motorControl.unknownCount);
 
       // Send unhandled events.
-      motorControl.receive(nmr, Stop());
-      motorControl.receive(nmr, Stopped());
-      motorControl.receive(nmr, SetSpeed(10));
+      motorControl.receive(Stop());
+      motorControl.receive(Stopped());
+      motorControl.receive(SetSpeed(10));
 
       CHECK_EQUAL(StateId::IDLE, motorControl.get_state_id());
       CHECK_EQUAL(StateId::IDLE, motorControl.get_state().get_state_id());
@@ -378,7 +381,7 @@ namespace
       CHECK_EQUAL(3, motorControl.unknownCount);
 
       // Send Start event.
-      motorControl.receive(nmr, Start());
+      motorControl.receive(Start());
 
       // Now in Running state.
 
@@ -394,8 +397,8 @@ namespace
       CHECK_EQUAL(3, motorControl.unknownCount);
 
       // Send unhandled events.
-      motorControl.receive(nmr, Start());
-      motorControl.receive(nmr, Stopped());
+      motorControl.receive(Start());
+      motorControl.receive(Stopped());
 
       CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state_id()));
       CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state().get_state_id()));
@@ -409,7 +412,7 @@ namespace
       CHECK_EQUAL(5, motorControl.unknownCount);
 
       // Send SetSpeed event.
-      motorControl.receive(nmr, SetSpeed(100));
+      motorControl.receive(SetSpeed(100));
 
       // Still in Running state.
 
@@ -425,7 +428,7 @@ namespace
       CHECK_EQUAL(5, motorControl.unknownCount);
 
       // Send Stop event.
-      motorControl.receive(nmr, Stop());
+      motorControl.receive(Stop());
 
       // Now in WindingDown state.
 
@@ -441,9 +444,9 @@ namespace
       CHECK_EQUAL(5, motorControl.unknownCount);
 
       // Send unhandled events.
-      motorControl.receive(nmr, Start());
-      motorControl.receive(nmr, Stop());
-      motorControl.receive(nmr, SetSpeed(100));
+      motorControl.receive(Start());
+      motorControl.receive(Stop());
+      motorControl.receive(SetSpeed(100));
 
       CHECK_EQUAL(StateId::WINDING_DOWN, int(motorControl.get_state_id()));
       CHECK_EQUAL(StateId::WINDING_DOWN, int(motorControl.get_state().get_state_id()));
@@ -457,7 +460,7 @@ namespace
       CHECK_EQUAL(8, motorControl.unknownCount);
 
       // Send Stopped event.
-      motorControl.receive(nmr, Stopped());
+      motorControl.receive(Stopped());
 
       // Now in Locked state via Idle state.
       CHECK_EQUAL(StateId::LOCKED, int(motorControl.get_state_id()));
@@ -490,7 +493,7 @@ namespace
       // Now in Idle state.
 
       // Send Start event.
-      motorControl.receive(nmr, Start());
+      motorControl.receive(Start());
 
       // Now in Running state.
 
@@ -506,7 +509,7 @@ namespace
       CHECK_EQUAL(0, motorControl.unknownCount);
 
       // Send emergency Stop event.
-      motorControl.receive(nmr, Stop(true));
+      motorControl.receive(Stop(true));
 
       // Now in Locked state via Idle state.
       CHECK_EQUAL(StateId::LOCKED, int(motorControl.get_state_id()));
@@ -537,12 +540,12 @@ namespace
 
       // Now in Idle state.
       // Send Start event.
-      motorControl.receive(nmr, Recursive());
+      motorControl.receive(Recursive());
 
       CHECK_EQUAL(1U, motorControl.messageQueue.size());
 
       // Send the queued message.
-      motorControl.receive(nmr, motorControl.messageQueue.front().get());
+      motorControl.receive(motorControl.messageQueue.front().get());
       motorControl.messageQueue.pop();
 
       // Now in Running state.
@@ -573,6 +576,45 @@ namespace
       CHECK(motorControl.accepts(Stop()));
       CHECK(motorControl.accepts(Stopped()));
       CHECK(motorControl.accepts(Unsupported()));
+    }
+
+    //*************************************************************************
+    TEST(test_fsm_no_states)
+    {
+      MotorControl mc;
+
+      // No states.
+      etl::ifsm_state** stateList = nullptr;
+
+      CHECK_THROW(mc.set_states(stateList, 0U), etl::fsm_state_list_exception);
+    }
+
+    //*************************************************************************
+    TEST(test_fsm_null_state)
+    {
+      MotorControl mc;
+
+      // Null state.
+      etl::ifsm_state* stateList[StateId::NUMBER_OF_STATES] =
+      {
+        &idle, &running,& windingDown, nullptr
+      };
+
+      CHECK_THROW(mc.set_states(stateList, StateId::NUMBER_OF_STATES), etl::fsm_null_state_exception);
+    }
+
+    //*************************************************************************
+    TEST(test_fsm_incorrect_state_order)
+    {
+      MotorControl mc;
+
+      // Incorrect order.
+      etl::ifsm_state* stateList[StateId::NUMBER_OF_STATES] =
+      {
+        &idle, &windingDown, &running, &locked
+      };
+
+      CHECK_THROW(mc.set_states(stateList, StateId::NUMBER_OF_STATES), etl::fsm_state_list_order_exception);
     }
   };
 }

@@ -33,14 +33,10 @@ SOFTWARE.
 
 #include <stddef.h>
 
-#include <new>
-
 #include "platform.h"
-
 #include "algorithm.h"
 #include "iterator.h"
 #include "functional.h"
-
 #include "parameter_type.h"
 #include "container.h"
 #include "pool.h"
@@ -50,15 +46,13 @@ SOFTWARE.
 #include "nullptr.h"
 #include "type_traits.h"
 #include "utility.h"
+#include "placement_new.h"
 
 #if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
 #endif
 
 #include "private/minmax_push.h"
-
-#undef ETL_FILE
-#define ETL_FILE "10"
 
 //*****************************************************************************
 /// A multiset with the capacity defined at compile time.
@@ -90,7 +84,7 @@ namespace etl
   public:
 
     multiset_full(string_type file_name_, numeric_type line_number_)
-      : etl::multiset_exception(ETL_ERROR_TEXT("multiset:full", ETL_FILE"A"), file_name_, line_number_)
+      : etl::multiset_exception(ETL_ERROR_TEXT("multiset:full", ETL_MULTISET_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -104,7 +98,7 @@ namespace etl
   public:
 
     multiset_out_of_bounds(string_type file_name_, numeric_type line_number_)
-      : etl::multiset_exception(ETL_ERROR_TEXT("multiset:bounds", ETL_FILE"B"), file_name_, line_number_)
+      : etl::multiset_exception(ETL_ERROR_TEXT("multiset:bounds", ETL_MULTISET_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -118,7 +112,7 @@ namespace etl
   public:
 
     multiset_iterator(string_type file_name_, numeric_type line_number_)
-      : etl::multiset_exception(ETL_ERROR_TEXT("multiset:iterator", ETL_FILE"C"), file_name_, line_number_)
+      : etl::multiset_exception(ETL_ERROR_TEXT("multiset:iterator", ETL_MULTISET_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -780,7 +774,7 @@ namespace etl
         return temp;
       }
 
-      iterator operator =(const iterator& other)
+      iterator& operator =(const iterator& other)
       {
         p_multiset = other.p_multiset;
         p_node = other.p_node;
@@ -907,7 +901,7 @@ namespace etl
         return temp;
       }
 
-      const_iterator operator =(const const_iterator& other)
+      const_iterator& operator =(const const_iterator& other)
       {
         p_multiset = other.p_multiset;
         p_node = other.p_node;
@@ -2072,7 +2066,7 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator>
+    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
     multiset(TIterator first, TIterator last)
       : etl::imultiset<TKey, TCompare>(node_pool, MAX_SIZE)
     {
@@ -2139,6 +2133,15 @@ namespace etl
     /// The pool of data nodes used for the multiset.
     etl::pool<typename etl::imultiset<TKey, TCompare>::Data_Node, MAX_SIZE> node_pool;
   };
+
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  template <typename T, typename... Ts>
+  multiset(T, Ts...)
+    ->multiset<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
+#endif 
 
   //***************************************************************************
   /// Equal operator.
@@ -2223,7 +2226,5 @@ namespace etl
 }
 
 #include "private/minmax_pop.h"
-
-#undef ETL_FILE
 
 #endif

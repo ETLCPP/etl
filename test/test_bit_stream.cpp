@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/bit_stream.h"
 
@@ -1040,6 +1040,32 @@ namespace
 
       CHECK_EQUAL(object1, object1a);
       CHECK_EQUAL(object2, object2a);
+    }
+
+    //*************************************************************************
+    TEST(put_get_multiple_float)
+    {
+
+      float  f = 3.1415927f;
+      double d = 3.1415927;
+
+      std::array<unsigned char, 12> storage;
+
+      etl::bit_stream bit_stream(storage.data(), storage.size());
+
+      bit_stream.put(f);
+      bit_stream.put(d);
+
+      bit_stream.restart();
+
+      float rf;
+      double rd;
+
+      CHECK(bit_stream.get(rf));
+      CHECK_CLOSE(f, rf, 0.1f);
+
+      CHECK(bit_stream.get(rd));
+      CHECK_CLOSE(f, rd, 0.1f);
     }
   };
 }

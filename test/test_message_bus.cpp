@@ -26,8 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
-#include "ExtraCheckMacros.h"
+#include "unit_test_framework.h"
 
 #include "etl/message_router.h"
 #include "etl/message_bus.h"
@@ -60,37 +59,57 @@ namespace
 
   struct Message1 : public etl::message<MESSAGE1>
   {
+    Message1(etl::imessage_router& callback_)
+      : callback(callback_)
+    {
+    }
+
+    etl::imessage_router& callback;
   };
 
   struct Message2 : public etl::message<MESSAGE2>
   {
+    Message2(etl::imessage_router& callback_)
+      : callback(callback_)
+    {
+    }
+
+    etl::imessage_router& callback;
   };
 
   struct Message3 : public etl::message<MESSAGE3>
   {
+    Message3(etl::imessage_router& callback_)
+      : callback(callback_)
+    {
+    }
+
+    etl::imessage_router& callback;
     int value[10];
   };
 
   struct Message4 : public etl::message<MESSAGE4>
   {
+    Message4(etl::imessage_router& callback_)
+      : callback(callback_)
+    {
+    }
+
+    etl::imessage_router& callback;
   };
 
-  struct Message5 : public etl::message<MESSAGE5>
+  struct Response : public etl::message<MESSAGE5>
   {
   };
 
-  Message1 message1;
-  Message2 message2;
-  Message3 message3;
-  Message4 message4;
-  Message5 message5;
+  Response response;
 
   int call_order;
 
   //***************************************************************************
   // Router that handles messages 1, 2, 3, 4, 5.
   //***************************************************************************
-  class RouterA : public etl::message_router<RouterA, Message1, Message2, Message3, Message4, Message5>
+  class RouterA : public etl::message_router<RouterA, Message1, Message2, Message3, Message4, Response>
   {
   public:
 
@@ -106,38 +125,38 @@ namespace
 
     }
 
-    void on_receive(etl::imessage_router& sender, const Message1&)
+    void on_receive(const Message1& msg)
     {
       ++message1_count;
-      etl::send_message(sender, message5);
+      etl::send_message(msg.callback, response);
 
       order = call_order++;
     }
 
-    void on_receive(etl::imessage_router& sender, const Message2&)
+    void on_receive(const Message2& msg)
     {
       ++message2_count;
-      etl::send_message(sender, message5);
+      etl::send_message(msg.callback, response);
     }
 
-    void on_receive(etl::imessage_router& sender, const Message3&)
+    void on_receive(const Message3& msg)
     {
       ++message3_count;
-      etl::send_message(sender, message5);
+      etl::send_message(msg.callback, response);
     }
 
-    void on_receive(etl::imessage_router& sender, const Message4&)
+    void on_receive(const Message4& msg)
     {
       ++message4_count;
-      etl::send_message(sender, message5);
+      etl::send_message(msg.callback, response);
     }
 
-    void on_receive(etl::imessage_router&, const Message5&)
+    void on_receive(const Response&)
     {
       ++message5_count;
     }
 
-    void on_receive_unknown(etl::imessage_router&, const etl::imessage&)
+    void on_receive_unknown(const etl::imessage&)
     {
       ++message_unknown_count;
     }
@@ -154,7 +173,7 @@ namespace
   //***************************************************************************
   // Router that handles messages 1, 2, 4 and 5 and returns nothing.
   //***************************************************************************
-  class RouterB : public etl::message_router<RouterB, Message1, Message2, Message4, Message5>
+  class RouterB : public etl::message_router<RouterB, Message1, Message2, Message4, Response>
   {
   public:
 
@@ -169,33 +188,33 @@ namespace
 
     }
 
-    void on_receive(etl::imessage_router& sender, const Message1&)
+    void on_receive(const Message1& msg)
     {
       ++message1_count;
-      etl::send_message(sender, message5);
+      etl::send_message(msg.callback, response);
     }
 
-    void on_receive(etl::imessage_router& sender, const Message2&)
+    void on_receive(const Message2& msg)
     {
       ++message2_count;
-      etl::send_message(sender, message5);
+      etl::send_message(msg.callback, response);
     }
 
-    void on_receive(etl::imessage_router& sender, const Message4&)
+    void on_receive(const Message4& msg)
     {
       ++message4_count;
-      etl::send_message(sender, message5);
+      etl::send_message(msg.callback, response);
     }
 
-    void on_receive(etl::imessage_router&, const Message5&)
+    void on_receive(const Response&)
     {
       ++message5_count;
     }
 
-    void on_receive_unknown(etl::imessage_router& sender, const etl::imessage&)
+    void on_receive_unknown(const etl::imessage& msg)
     {
       ++message_unknown_count;
-      etl::send_message(sender, message5);
+      //etl::send_message(msg.callback, response);
     }
 
     int message1_count;
@@ -279,12 +298,17 @@ namespace
 
       RouterA router1(ROUTER1);
       RouterB router2(ROUTER2);
-      RouterA sender(ROUTER3);
+      RouterA callback(ROUTER3);
 
       bus1.subscribe(router1);
       bus1.subscribe(router2);
 
-      bus1.receive(sender, message1);
+      Message1 message1(callback);
+      Message2 message2(callback);
+      Message3 message3(callback);
+      Message4 message4(callback);
+
+      bus1.receive(message1);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(0, router1.message2_count);
@@ -299,9 +323,9 @@ namespace
       CHECK_EQUAL(0, router2.message5_count);
       CHECK_EQUAL(0, router2.message_unknown_count);
 
-      CHECK_EQUAL(2, sender.message5_count);
+      CHECK_EQUAL(2, callback.message5_count);
 
-      bus1.receive(sender, message2);
+      bus1.receive(message2);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(1, router1.message2_count);
@@ -316,9 +340,9 @@ namespace
       CHECK_EQUAL(0, router2.message5_count);
       CHECK_EQUAL(0, router2.message_unknown_count);
 
-      CHECK_EQUAL(4, sender.message5_count);
+      CHECK_EQUAL(4, callback.message5_count);
 
-      bus1.receive(sender, message3);
+      bus1.receive(message3);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(1, router1.message2_count);
@@ -333,10 +357,10 @@ namespace
       CHECK_EQUAL(0, router2.message5_count);
       CHECK_EQUAL(0, router2.message_unknown_count);
 
-      CHECK_EQUAL(5, sender.message5_count);
+      CHECK_EQUAL(5, callback.message5_count);
 
       // Use global function.
-      etl::send_message(sender, bus1, message4);
+      etl::send_message(bus1, message4);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(1, router1.message2_count);
@@ -351,7 +375,7 @@ namespace
       CHECK_EQUAL(0, router2.message5_count);
       CHECK_EQUAL(0, router2.message_unknown_count);
 
-      CHECK_EQUAL(7, sender.message5_count);
+      CHECK_EQUAL(7, callback.message5_count);
     }
 
     //*************************************************************************
@@ -361,15 +385,20 @@ namespace
 
       RouterA router1(ROUTER1);
       RouterB router2(ROUTER2);
-      RouterA sender(ROUTER3);
+      RouterA callback(ROUTER3);
 
       bus1.subscribe(router1);
       bus1.subscribe(router2);
 
+      Message1 message1(callback);
+      Message2 message2(callback);
+      Message3 message3(callback);
+      Message4 message4(callback);
+
       // Reference to router sub-type
       etl::imessage_router& irouter = bus1;
 
-      irouter.receive(sender, message1);
+      irouter.receive(message1);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(0, router1.message2_count);
@@ -384,9 +413,9 @@ namespace
       CHECK_EQUAL(0, router2.message5_count);
       CHECK_EQUAL(0, router2.message_unknown_count);
 
-      CHECK_EQUAL(2, sender.message5_count);
+      CHECK_EQUAL(2, callback.message5_count);
 
-      irouter.receive(sender, message2);
+      irouter.receive(message2);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(1, router1.message2_count);
@@ -401,9 +430,9 @@ namespace
       CHECK_EQUAL(0, router2.message5_count);
       CHECK_EQUAL(0, router2.message_unknown_count);
 
-      CHECK_EQUAL(4, sender.message5_count);
+      CHECK_EQUAL(4, callback.message5_count);
 
-      irouter.receive(sender, message3);
+      irouter.receive(message3);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(1, router1.message2_count);
@@ -418,10 +447,10 @@ namespace
       CHECK_EQUAL(0, router2.message5_count);
       CHECK_EQUAL(0, router2.message_unknown_count);
 
-      CHECK_EQUAL(5, sender.message5_count);
+      CHECK_EQUAL(5, callback.message5_count);
 
       // Use global function.
-      etl::send_message(sender, irouter, message4);
+      etl::send_message(irouter, message4);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(1, router1.message2_count);
@@ -436,7 +465,7 @@ namespace
       CHECK_EQUAL(0, router2.message5_count);
       CHECK_EQUAL(0, router2.message_unknown_count);
 
-      CHECK_EQUAL(7, sender.message5_count);
+      CHECK_EQUAL(7, callback.message5_count);
     }
 
     //*************************************************************************
@@ -446,12 +475,17 @@ namespace
 
       RouterA router1(ROUTER1);
       RouterB router2(ROUTER2);
-      RouterA sender(ROUTER3);
+      RouterA callback(ROUTER3);
 
       bus1.subscribe(router1);
       bus1.subscribe(router2);
 
-      bus1.receive(sender, ROUTER1, message1);
+      Message1 message1(callback);
+      Message2 message2(callback);
+      Message3 message3(callback);
+      Message4 message4(callback);
+
+      bus1.receive(ROUTER1, message1);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(0, router1.message2_count);
@@ -466,9 +500,9 @@ namespace
       CHECK_EQUAL(0, router2.message5_count);
       CHECK_EQUAL(0, router2.message_unknown_count);
 
-      CHECK_EQUAL(1, sender.message5_count);
+      CHECK_EQUAL(1, callback.message5_count);
 
-      bus1.receive(sender, ROUTER2, message2);
+      bus1.receive(ROUTER2, message2);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(0, router1.message2_count);
@@ -483,9 +517,9 @@ namespace
       CHECK_EQUAL(0, router2.message5_count);
       CHECK_EQUAL(0, router2.message_unknown_count);
 
-      CHECK_EQUAL(2, sender.message5_count);
+      CHECK_EQUAL(2, callback.message5_count);
 
-      bus1.receive(sender, ROUTER1, message3);
+      bus1.receive(ROUTER1, message3);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(0, router1.message2_count);
@@ -500,10 +534,10 @@ namespace
       CHECK_EQUAL(0, router2.message5_count);
       CHECK_EQUAL(0, router2.message_unknown_count);
 
-      CHECK_EQUAL(3, sender.message5_count);
+      CHECK_EQUAL(3, callback.message5_count);
 
       // Use global function.
-      etl::send_message(sender, bus1, ROUTER2, message4);
+      etl::send_message(bus1, ROUTER2, message4);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(0, router1.message2_count);
@@ -518,10 +552,10 @@ namespace
       CHECK_EQUAL(0, router2.message5_count);
       CHECK_EQUAL(0, router2.message_unknown_count);
 
-      CHECK_EQUAL(4, sender.message5_count);
+      CHECK_EQUAL(4, callback.message5_count);
 
       // Send to a router not subscribed to the bus.
-      bus1.receive(sender, ROUTER5, message1);
+      bus1.receive(ROUTER5, message1);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(0, router1.message2_count);
@@ -536,7 +570,7 @@ namespace
       CHECK_EQUAL(0, router2.message5_count);
       CHECK_EQUAL(0, router2.message_unknown_count);
 
-      CHECK_EQUAL(4, sender.message5_count);
+      CHECK_EQUAL(4, callback.message5_count);
     }
 
     //*************************************************************************
@@ -547,13 +581,17 @@ namespace
       RouterA router1(ROUTER1);
       RouterB router2(ROUTER1);
       RouterB router3(ROUTER2);
-      RouterA sender(ROUTER3);
+      RouterA callback(ROUTER3);
 
       bus1.subscribe(router1);
       bus1.subscribe(router2);
       bus1.subscribe(router3);
 
-      bus1.receive(sender, ROUTER1, message1);
+      Message1 message1(callback);
+      Message2 message2(callback);
+      Message3 message3(callback);
+
+      bus1.receive(ROUTER1, message1);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(0, router1.message2_count);
@@ -574,7 +612,7 @@ namespace
       CHECK_EQUAL(0, router3.message5_count);
       CHECK_EQUAL(0, router3.message_unknown_count);
 
-      CHECK_EQUAL(2, sender.message5_count);
+      CHECK_EQUAL(2, callback.message5_count);
     }
 
     //*************************************************************************
@@ -588,7 +626,7 @@ namespace
       RouterA router3(ROUTER3);
       RouterA router4(ROUTER4);
 
-      RouterA sender(ROUTER5);
+      RouterA callback(ROUTER5);
 
       bus1.subscribe(router1);
       bus1.subscribe(router2);
@@ -597,8 +635,13 @@ namespace
       bus2.subscribe(router3);
       bus2.subscribe(router4);
 
+      Message1 message1(callback);
+      Message2 message2(callback);
+      Message3 message3(callback);
+      Message4 message4(callback);
+
       // Broadcast to bus1
-      bus1.receive(sender, message1);
+      bus1.receive(message1);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(0, router1.message2_count);
@@ -625,10 +668,10 @@ namespace
       CHECK_EQUAL(0, router4.message5_count);
       CHECK_EQUAL(0, router4.message_unknown_count);
 
-      CHECK_EQUAL(4, sender.message5_count);
+      CHECK_EQUAL(4, callback.message5_count);
 
       // Addressed to ROUTER2
-      bus1.receive(sender, ROUTER2, message1);
+      bus1.receive(ROUTER2, message1);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(0, router1.message2_count);
@@ -655,10 +698,10 @@ namespace
       CHECK_EQUAL(0, router4.message5_count);
       CHECK_EQUAL(0, router4.message_unknown_count);
 
-      CHECK_EQUAL(5, sender.message5_count);
+      CHECK_EQUAL(5, callback.message5_count);
 
       // Addressed to ROUTER3 via bus2
-      bus1.receive(sender, ROUTER3, message1);
+      bus1.receive(ROUTER3, message1);
 
       CHECK_EQUAL(1, router1.message1_count);
       CHECK_EQUAL(0, router1.message2_count);
@@ -685,7 +728,7 @@ namespace
       CHECK_EQUAL(0, router4.message5_count);
       CHECK_EQUAL(0, router4.message_unknown_count);
 
-      CHECK_EQUAL(6, sender.message5_count);
+      CHECK_EQUAL(6, callback.message5_count);
     }
 
     //*************************************************************************
@@ -701,7 +744,7 @@ namespace
       RouterA router4a(ROUTER4);
       RouterA router4b(ROUTER4);
 
-      RouterA sender(ROUTER5);
+      RouterA callback(ROUTER5);
 
       bus1.subscribe(router1);
       bus1.subscribe(bus3);
@@ -712,9 +755,11 @@ namespace
       bus3.subscribe(router4b);
       bus3.subscribe(router4a);
 
+      Message1 message1(callback);
+
       call_order = 0;
 
-      bus1.receive(sender, message1);
+      bus1.receive(message1);
 
       CHECK_EQUAL(0, router1.order);
       CHECK_EQUAL(1, router2.order);

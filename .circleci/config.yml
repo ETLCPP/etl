@@ -6,6 +6,7 @@ jobs:
     branches:
       only:
       - master
+      - development
     steps:
       - checkout:
       - run:

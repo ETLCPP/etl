@@ -26,8 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
-#include "ExtraCheckMacros.h"
+#include "unit_test_framework.h"
 
 #include "etl/message_packet.h"
 
@@ -201,9 +200,9 @@ namespace
       // The next line should result in a compile error.
       //Packet packet4(message4);
 
-      CHECK_EQUAL(MESSAGE1, packet1.get().message_id);
-      CHECK_EQUAL(MESSAGE2, packet2.get().message_id);
-      CHECK_EQUAL(MESSAGE3, packet3.get().message_id);
+      CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
+      CHECK_EQUAL(MESSAGE2, packet2.get().get_message_id());
+      CHECK_EQUAL(MESSAGE3, packet3.get().get_message_id());
 
       CHECK(!static_cast<Message1&>(packet1.get()).moved);
       CHECK(!static_cast<Message2&>(packet2.get()).moved);
@@ -227,8 +226,8 @@ namespace
       Packet packet1(message1);
       Packet packet2(std::move(message2));
 
-      CHECK_EQUAL(MESSAGE1, packet1.get().message_id);
-      CHECK_EQUAL(MESSAGE2, packet2.get().message_id);
+      CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
+      CHECK_EQUAL(MESSAGE2, packet2.get().get_message_id());
 
       CHECK(!static_cast<Message1&>(packet1.get()).moved);
       CHECK(static_cast<Message2&>(packet2.get()).moved);
@@ -255,9 +254,9 @@ namespace
       // The next line should result in a compile error.
       //Packet packet4(message4);
 
-      CHECK_EQUAL(MESSAGE1, packet1.get().message_id);
-      CHECK_EQUAL(MESSAGE2, packet2.get().message_id);
-      CHECK_EQUAL(MESSAGE3, packet3.get().message_id);
+      CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
+      CHECK_EQUAL(MESSAGE2, packet2.get().get_message_id());
+      CHECK_EQUAL(MESSAGE3, packet3.get().get_message_id());
 
       CHECK_EQUAL(1,   static_cast<const Message1&>(packet1.get()).x);
       CHECK_EQUAL(2.2, static_cast<const Message2&>(packet2.get()).x);
@@ -278,9 +277,9 @@ namespace
 
       CHECK_THROW(Packet packet4(static_cast<etl::imessage&>(message4)), etl::unhandled_message_exception);
 
-      CHECK_EQUAL(MESSAGE1, packet1.get().message_id);
-      CHECK_EQUAL(MESSAGE2, packet2.get().message_id);
-      CHECK_EQUAL(MESSAGE3, packet3.get().message_id);
+      CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
+      CHECK_EQUAL(MESSAGE2, packet2.get().get_message_id());
+      CHECK_EQUAL(MESSAGE3, packet3.get().get_message_id());
 
       CHECK_EQUAL(1,   static_cast<Message1&>(packet1.get()).x);
       CHECK_EQUAL(2.2, static_cast<Message2&>(packet2.get()).x);
@@ -296,8 +295,8 @@ namespace
       Packet packet1(message1);
       Packet packet2(packet1);
 
-      CHECK_EQUAL(MESSAGE1, packet1.get().message_id);
-      CHECK_EQUAL(MESSAGE1, packet2.get().message_id);
+      CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
+      CHECK_EQUAL(MESSAGE1, packet2.get().get_message_id());
 
       CHECK(!static_cast<Message1&>(packet1.get()).moved);
       CHECK(!static_cast<Message1&>(packet2.get()).moved);
@@ -318,8 +317,8 @@ namespace
       Packet packet1(message1);
       Packet packet2(std::move(Packet(message1)));
 
-      CHECK_EQUAL(MESSAGE1, packet1.get().message_id);
-      CHECK_EQUAL(MESSAGE1, packet2.get().message_id);
+      CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
+      CHECK_EQUAL(MESSAGE1, packet2.get().get_message_id());
 
       CHECK(!static_cast<Message1&>(packet1.get()).moved);
       CHECK(static_cast<Message1&>(packet2.get()).moved);
@@ -342,8 +341,8 @@ namespace
 
       packet2 = packet1;
 
-      CHECK_EQUAL(MESSAGE1, packet1.get().message_id);
-      CHECK_EQUAL(MESSAGE1, packet2.get().message_id);
+      CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
+      CHECK_EQUAL(MESSAGE1, packet2.get().get_message_id());
 
       CHECK(!static_cast<Message1&>(packet1.get()).moved);
       CHECK(!static_cast<Message1&>(packet2.get()).moved);
@@ -366,8 +365,8 @@ namespace
 
       packet2 = std::move(packet1);
 
-      CHECK_EQUAL(MESSAGE1, packet1.get().message_id);
-      CHECK_EQUAL(MESSAGE1, packet2.get().message_id);
+      CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
+      CHECK_EQUAL(MESSAGE1, packet2.get().get_message_id());
 
       CHECK(!static_cast<Message1&>(packet1.get()).moved);
       CHECK(static_cast<Message1&>(packet2.get()).moved);

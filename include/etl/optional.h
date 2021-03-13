@@ -31,15 +31,13 @@ SOFTWARE.
 #ifndef ETL_OPTIONAL_INCLUDED
 #define ETL_OPTIONAL_INCLUDED
 
-#include <new>
-
 #include "platform.h"
 #include "alignment.h"
 #include "type_traits.h"
 #include "exception.h"
 #include "error_handler.h"
-
 #include "utility.h"
+#include "placement_new.h"
 
 namespace etl
 {

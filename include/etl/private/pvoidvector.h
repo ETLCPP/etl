@@ -211,10 +211,21 @@ namespace etl
       // Size up if necessary.
       if (p_end < p_new_end)
       {
-        etl::fill(p_end, p_new_end, value);
+        etl::fill(p_end, p_new_end, value);       
       }
 
       p_end = p_new_end;
+    }
+
+    //*********************************************************************
+    /// Resizes the vector, but does not initialise new entries.
+    ///\param new_size The new size.
+    //*********************************************************************
+    void uninitialized_resize(size_t new_size)
+    {
+      ETL_ASSERT(new_size <= CAPACITY, ETL_ERROR(vector_full));
+
+      p_end = p_buffer + new_size;
     }
 
     //*********************************************************************
@@ -224,7 +235,7 @@ namespace etl
     //*********************************************************************
     reference operator [](size_t i)
     {
-      return reference(p_buffer[i]);
+      return p_buffer[i];
     }
 
     //*********************************************************************
@@ -234,7 +245,7 @@ namespace etl
     //*********************************************************************
     const_reference operator [](size_t i) const
     {
-      return const_reference(p_buffer[i]);
+      return p_buffer[i];
     }
 
     //*********************************************************************
@@ -246,7 +257,7 @@ namespace etl
     reference at(size_t i)
     {
       ETL_ASSERT(i < size(), ETL_ERROR(vector_out_of_bounds));
-      return reference(p_buffer[i]);
+      return p_buffer[i];
     }
 
     //*********************************************************************
@@ -258,7 +269,7 @@ namespace etl
     const_reference at(size_t i) const
     {
       ETL_ASSERT(i < size(), ETL_ERROR(vector_out_of_bounds));
-      return const_reference(p_buffer[i]);
+      return p_buffer[i];
     }
 
     //*********************************************************************
@@ -267,7 +278,7 @@ namespace etl
     //*********************************************************************
     reference front()
     {
-      return reference(p_buffer[0]);
+      return p_buffer[0];
     }
 
     //*********************************************************************
@@ -276,7 +287,7 @@ namespace etl
     //*********************************************************************
     const_reference front() const
     {
-      return const_reference(p_buffer[0]);
+      return p_buffer[0];
     }
 
     //*********************************************************************
@@ -285,7 +296,7 @@ namespace etl
     //*********************************************************************
     reference back()
     {
-      return reference(*(p_end - 1));
+      return *(p_end - 1);
     }
 
     //*********************************************************************
@@ -294,7 +305,7 @@ namespace etl
     //*********************************************************************
     const_reference back() const
     {
-      return const_reference(*(p_end - 1));
+      return *(p_end - 1);
     }
 
     //*********************************************************************
@@ -303,7 +314,7 @@ namespace etl
     //*********************************************************************
     pointer data()
     {
-      return pointer(p_buffer);
+      return p_buffer;
     }
 
     //*********************************************************************
@@ -312,18 +323,19 @@ namespace etl
     //*********************************************************************
     const_pointer data() const
     {
-      return const_pointer(p_buffer);
+      return p_buffer;
     }
 
     //*********************************************************************
-    /// Assigns values to the vector.
+    /// Assigns values to the vector. Non-pointer
     /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
     /// If asserts or exceptions are enabled, emits vector_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
     template <typename TIterator>
-    void assign(TIterator first, TIterator last)
+    typename etl::enable_if<!etl::is_pointer<TIterator>::value, void>::type
+      assign(TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
       difference_type d = etl::distance(first, last);
@@ -334,8 +346,32 @@ namespace etl
 
       while (first != last)
       {
-        *p_end++ = const_cast<void*>(*first++);
+        *p_end++ = (void*)(*first++);
       }
+    }
+
+    //*********************************************************************
+    /// Assigns values to the vector. Pointer
+    /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
+    /// If asserts or exceptions are enabled, emits vector_iterator if the iterators are reversed.
+    ///\param first The iterator to the first element.
+    ///\param last  The iterator to the last element + 1.
+    //*********************************************************************
+    template <typename TIterator>
+    typename etl::enable_if<etl::is_pointer<TIterator>::value, void>::type
+      assign(TIterator first, TIterator last)
+    {
+#if defined(ETL_DEBUG)     
+      difference_type d = etl::distance(first, last);
+      ETL_ASSERT(static_cast<size_t>(d) <= CAPACITY, ETL_ERROR(vector_full));
+#endif
+
+      initialise();
+
+      void** p_first = (void**)(first);
+      void** p_last  = (void**)(last);
+
+      p_end = etl::copy(p_first, p_last, p_buffer);;
     }
 
     //*********************************************************************
@@ -346,14 +382,11 @@ namespace etl
     //*********************************************************************
     void assign(size_t n, value_type value)
     {
-      initialise();
-
       ETL_ASSERT(n <= CAPACITY, ETL_ERROR(vector_full));
 
-      for (size_t current_size = 0; current_size < n; ++current_size)
-      {
-        *p_end++ = value;
-      }
+      initialise();
+
+      p_end = etl::fill_n(p_buffer, n, value);
     }
 
     //*************************************************************************
@@ -377,6 +410,19 @@ namespace etl
       *p_end++ = value;
     }
 
+    //*********************************************************************
+    /// Emplaces a value at the end of the vector.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    ///\param value The value to add.
+    //*********************************************************************
+    void emplace_back(value_type value)
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
+#endif
+      * p_end++ = value;
+    }
+
     //*************************************************************************
     /// Removes an element from the end of the vector.
     /// Does nothing if the vector is empty.
@@ -396,6 +442,29 @@ namespace etl
     ///\param value    The value to insert.
     //*********************************************************************
     iterator insert(iterator position, value_type value)
+    {
+      ETL_ASSERT(size() + 1 <= CAPACITY, ETL_ERROR(vector_full));
+
+      if (position != end())
+      {
+        ++p_end;
+        etl::copy_backward(position, end() - 1, end());
+        *position = value;
+      }
+      else
+      {
+        *p_end++ = value;
+      }
+
+      return position;
+    }
+
+
+    //*************************************************************************
+    /// Emplaces a value to the vector at the specified position.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    //*************************************************************************
+    iterator emplace(iterator position, value_type value)
     {
       ETL_ASSERT(size() + 1 <= CAPACITY, ETL_ERROR(vector_full));
 
@@ -489,11 +558,31 @@ namespace etl
     {
       if (&rhs != this)
       {
-        assign(rhs.cbegin(), rhs.cend());
+        this->initialise();
+        this->resize(rhs.size());
+        etl::copy_n(rhs.data(), rhs.size(), this->data());
       }
 
       return *this;
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    etl::pvoidvector& operator = (etl::pvoidvector&& rhs)
+    {
+      if (&rhs != this)
+      {
+        this->initialise();
+        this->resize(rhs.size());
+        etl::copy_n(rhs.data(), rhs.size(), this->data());
+        rhs.initialise();
+      }
+
+      return *this;
+    }
+#endif
 
     //*************************************************************************
     /// Gets the current size of the vector.
@@ -537,9 +626,9 @@ namespace etl
     /// Constructor.
     //*********************************************************************
     pvoidvector(void** p_buffer_, size_t MAX_SIZE)
-      : vector_base(MAX_SIZE),
-      p_buffer(p_buffer_),
-      p_end(p_buffer_)
+      : vector_base(MAX_SIZE)
+      , p_buffer(p_buffer_)
+      , p_end(p_buffer_)
     {
     }
 

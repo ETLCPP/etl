@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <queue>
 
@@ -484,6 +484,10 @@ namespace
       queue.push(4);
 
       etl::queue<int, 4> queue2;
+
+      // These should be overwritten.
+      queue2.push(5);
+      queue2.push(6);
 
       queue2 = queue;
 

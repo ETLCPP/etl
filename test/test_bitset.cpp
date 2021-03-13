@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <limits>
 #include <type_traits>
@@ -1012,6 +1012,38 @@ namespace
       CHECK_EQUAL(4U, data.find_next(true,  1));
     }
 
+    //*************************************************************************
+    TEST(test_find_next_multi_byte_bitset_github_issue_336)
+    {
+      etl::bitset<24> data;
+      data.set(12);
+      data.set(22);
+      CHECK_EQUAL(12U, data.find_next(true,  3));
+      CHECK_EQUAL(12U, data.find_next(true, 10));
+
+      // set first ten bytes
+      data.set("1111111111");
+      CHECK_EQUAL(10U, data.find_next(false, 3));
+      CHECK_EQUAL(10U, data.find_next(false, 9));
+    }
+
+    //*************************************************************************
+    TEST(test_find_next_github_issue_336)
+    {
+      etl::bitset<16> bits16;
+      bits16.set(12);
+
+      etl::bitset<24> bits24;
+      bits24.set(12);
+
+      CHECK_EQUAL(12, bits16.find_first(true));
+      CHECK_EQUAL(12, bits16.find_next(true, 4));
+      CHECK_EQUAL(etl::ibitset::npos, bits16.find_next(true, 13));
+
+      CHECK_EQUAL(12, bits24.find_first(true));
+      CHECK_EQUAL(12, bits24.find_next(true, 4));
+      CHECK_EQUAL(etl::ibitset::npos, bits24.find_next(true, 13));
+    }
 
     //*************************************************************************
     TEST(test_swap)
@@ -1026,6 +1058,38 @@ namespace
 
       CHECK(data1 == compare2);
       CHECK(data2 == compare1);
+    }
+
+    //*************************************************************************
+    TEST(test_span)
+    {
+      using span_t = etl::ibitset::span_type;
+
+      etl::bitset<32> b(0x12345678);
+
+      span_t s = b.span();
+      CHECK_EQUAL(0x78, s[0]);
+      CHECK_EQUAL(0x56, s[1]);
+      CHECK_EQUAL(0x34, s[2]);
+      CHECK_EQUAL(0x12, s[3]);
+
+      s[2] = 0x9A;
+      uint32_t value = b.value<uint32_t>();
+      CHECK_EQUAL(0x129A5678, value);
+    }
+
+    //*************************************************************************
+    TEST(test_const_span)
+    {
+      using span_t = etl::ibitset::const_span_type;
+
+      const etl::bitset<32> b(0x12345678);
+
+      span_t s = b.span();
+      CHECK_EQUAL(0x78, s[0]);
+      CHECK_EQUAL(0x56, s[1]);
+      CHECK_EQUAL(0x34, s[2]);
+      CHECK_EQUAL(0x12, s[3]);
     }
   };
 }

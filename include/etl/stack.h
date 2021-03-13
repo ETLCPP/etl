@@ -34,8 +34,6 @@ SOFTWARE.
 #include <stddef.h>
 #include <stdint.h>
 
-#include <new>
-
 #include "platform.h"
 #include "algorithm.h"
 #include "utility.h"
@@ -46,9 +44,7 @@ SOFTWARE.
 #include "error_handler.h"
 #include "debug_count.h"
 #include "type_traits.h"
-
-#undef ETL_FILE
-#define ETL_FILE "15"
+#include "placement_new.h"
 
 //*****************************************************************************
 ///\defgroup stack stack
@@ -82,7 +78,7 @@ namespace etl
   public:
 
     stack_full(string_type file_name_, numeric_type line_number_)
-      : stack_exception(ETL_ERROR_TEXT("stack:full", ETL_FILE"A"), file_name_, line_number_)
+      : stack_exception(ETL_ERROR_TEXT("stack:full", ETL_STACK_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -96,7 +92,7 @@ namespace etl
   public:
 
     stack_empty(string_type file_name_, numeric_type line_number_)
-      : stack_exception(ETL_ERROR_TEXT("stack:empty", ETL_FILE"B"), file_name_, line_number_)
+      : stack_exception(ETL_ERROR_TEXT("stack:empty", ETL_STACK_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -447,8 +443,7 @@ namespace etl
     istack& operator = (istack&& rhs)
     {
       if (&rhs != this)
-      {
-        clear();
+      {        
         clone(etl::move(rhs));
       }
 
@@ -463,6 +458,8 @@ namespace etl
     //*************************************************************************
     void clone(const istack& other)
     {
+      clear();
+
       size_t index = 0;
 
       for (size_t i = 0; i < other.size(); ++i)
@@ -477,6 +474,8 @@ namespace etl
     //*************************************************************************
     void clone(istack&& other)
     {
+      clear();
+
       size_t index = 0;
 
       for (size_t i = 0; i < other.size(); ++i)
@@ -602,7 +601,5 @@ namespace etl
     typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[SIZE];
   };
 }
-
-#undef ETL_FILE
 
 #endif

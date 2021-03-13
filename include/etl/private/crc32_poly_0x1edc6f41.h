@@ -161,8 +161,8 @@ namespace etl
   //*************************************************************************
   /// CRC32 Poly 0x1EDC6F41
   //*************************************************************************
-  template <const uint32_t INITIA, const uint32_t XOR_OUT, const bool REFLECT>
-  class crc32_poly_0x1edc6f41 : public etl::frame_check_sequence<etl::crc32_policy_poly_0x1edc6f41<INITIA, XOR_OUT, REFLECT> >
+  template <const uint32_t INITIAL, const uint32_t XOR_OUT, const bool REFLECT>
+  class crc32_poly_0x1edc6f41 : public etl::frame_check_sequence<etl::crc32_policy_poly_0x1edc6f41<INITIAL, XOR_OUT, REFLECT> >
   {
   public:
 
@@ -179,7 +179,7 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
+    template<typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
     crc32_poly_0x1edc6f41(TIterator begin, const TIterator end)
     {
       this->reset();
