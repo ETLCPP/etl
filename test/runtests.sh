@@ -1,5 +1,6 @@
+#!/bin/sh
 sudo ntpdate ntp.ubuntu.com
-cd build
+cd build || exit 1
 echo "ETL Tests" > etl_test_log.txt
 echo "********** GCC **********" >> etl_test_log.txt
 gcc --version | grep gcc >> etl_test_log.txt
