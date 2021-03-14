@@ -12,7 +12,8 @@ else()
 	message(STATUS "Compiling for STL")
 endif()
 
-add_library(t11)
+add_library(t11 OBJECT)
+target_compile_definitions(t11 PRIVATE __STDC_LIMIT_MACROS __STDC_CONSTANT_MACROS __STDC_FORMAT_MACROS)
 target_include_directories(t11 PRIVATE "")
 target_include_directories(t11 SYSTEM PRIVATE ../../../include)
 set_target_properties(t11 PROPERTIES
@@ -21,7 +22,7 @@ set_target_properties(t11 PROPERTIES
         CXX_EXTENSIONS ON
         )
 target_sources(t11 PRIVATE etl_profile.h
-../absolute.h.t.cpp
+        ../absolute.h.t.cpp
         ../algorithm.h.t.cpp
         ../alignment.h.t.cpp
         ../array.h.t.cpp

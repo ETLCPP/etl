@@ -12,7 +12,8 @@ else()
 	message(STATUS "Compiling for STL")
 endif()
 
-add_library(t17)
+add_library(t17 OBJECT)
+target_compile_definitions(t17 PRIVATE __STDC_LIMIT_MACROS __STDC_CONSTANT_MACROS __STDC_FORMAT_MACROS)
 target_include_directories(t17 PRIVATE "")
 target_include_directories(t17 SYSTEM PRIVATE ../../../include)
 set_target_properties(t17 PROPERTIES
