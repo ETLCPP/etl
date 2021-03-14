@@ -38,6 +38,7 @@ SOFTWARE.
 #include "char_traits.h"
 #include "optional.h"
 
+#include <ctype.h>
 #include <stdint.h>
 
 namespace etl
