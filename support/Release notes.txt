@@ -1,4 +1,9 @@
 ===============================================================================
+20.6.2
+C++98/03 compatibility fixes.
+Added 'sanity check' tests for checking for 98/03/11/14/17 issues.
+
+===============================================================================
 20.6.1
 Added missing etl::atomic<bool> from gcc & clang implementations.
 Changed nullptr to ETL_NULLPTR in buffer_descriptors and multi_range.
