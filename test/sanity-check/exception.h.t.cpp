@@ -1,5 +1,3 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -7,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 jwellbelove, Mark Kitson
+Copyright(c) 2021 Bo Rydberg
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,20 +26,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __ETL_SPSC_QUEUE__
-#define __ETL_SPSC_QUEUE__
-
-#include "platform.h"
-#include "atomic.h"
-
-#if ETL_HAS_ATOMIC
-  #include "spsc_queue_atomic.h"
-#endif
-
-#if defined(ETL_OS_FREERTOS)
-  #include "spsc_queue_freertos.h"
-#endif
-
-#include "spsc_queue_isr.h"
-
-#endif
+#include <etl/exception.h>

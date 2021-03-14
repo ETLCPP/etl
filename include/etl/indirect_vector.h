@@ -1157,6 +1157,7 @@ namespace etl
       lookup.clear();
     }
 
+#if ETL_CPP11_SUPPORTED
     //*********************************************************************
     /// Move from a container.
     //*********************************************************************
@@ -1177,6 +1178,7 @@ namespace etl
         other.initialise();
       }
     }
+#endif
 
     etl::ivector<T*>& lookup;
     etl::ipool&       storage;

@@ -41,6 +41,8 @@ SOFTWARE.
 
 #include <cstring>
 
+#if ETL_CPP11_SUPPORTED
+
 namespace etl
 {
   //***************************************************************************
@@ -72,7 +74,7 @@ namespace etl
 
       friend class buffer_descriptors;
 
-      static ETL_CONSTANT const size_type MAX_SIZE = buffer_descriptors::BUFFER_SIZE;
+      static ETL_CONSTANT size_type MAX_SIZE = buffer_descriptors::BUFFER_SIZE;
 
       //*********************************
       descriptor()
@@ -102,7 +104,7 @@ namespace etl
 
       //*********************************
       ETL_NODISCARD
-      constexpr size_type max_size() const
+      ETL_CONSTEXPR size_type max_size() const
       {
         return BUFFER_SIZE;
       }
@@ -289,5 +291,5 @@ namespace etl
     etl::cyclic_value<uint_least8_t, 0U, N_BUFFERS - 1> next;
   };
 }
-
+#endif
 #endif

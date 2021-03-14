@@ -43,7 +43,7 @@ SOFTWARE.
 #include <assert.h>
 #include <string.h>
 
-#if ETL_USING_STL
+#if defined(ETL_IN_UNIT_TEST) || ETL_USING_STL
   #include <memory>
 #endif
 

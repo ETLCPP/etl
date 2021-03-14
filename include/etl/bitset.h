@@ -58,6 +58,18 @@ SOFTWARE.
 #pragma diag_suppress 1300
 #endif
 
+#if ETL_CPP11_SUPPORTED
+  #define ETL_STR(x)  x  
+  #define ETL_STRL(x) L##x
+  #define ETL_STRu(x) u##x
+  #define ETL_STRU(x) U##x
+#else
+  #define ETL_STR(x)  x  
+  #define ETL_STRL(x) x
+  #define ETL_STRu(x) x
+  #define ETL_STRU(x) x
+#endif
+
 //*****************************************************************************
 ///\defgroup bitset bitset
 /// Similar to std::bitset but without requiring std::string.
@@ -130,8 +142,10 @@ namespace etl
 
     static const size_t    BITS_PER_ELEMENT = etl::integral_limits<element_t>::bits;
 
+#if ETL_CPP11_SUPPORTED
     typedef etl::span<element_t>       span_type;
     typedef etl::span<const element_t> const_span_type;
+#endif
 
     enum
     {
@@ -317,7 +331,7 @@ namespace etl
 
       while (i > 0)
       {
-        set(--i, *text++ == '1');
+        set(--i, *text++ == ETL_STR('1'));
       }
 
       return *this;
@@ -334,7 +348,7 @@ namespace etl
 
       while (i > 0)
       {
-        set(--i, *text++ == L'1');
+        set(--i, *text++ == ETL_STRL('1'));
       }
 
       return *this;
@@ -351,7 +365,7 @@ namespace etl
 
       while (i > 0)
       {
-        set(--i, *text++ == L'1');
+        set(--i, *text++ == ETL_STRL('1'));
       }
 
       return *this;
@@ -368,7 +382,7 @@ namespace etl
 
       while (i > 0)
       {
-        set(--i, *text++ == u'1');
+        set(--i, *text++ == ETL_STRu('1'));
       }
 
       return *this;
@@ -385,7 +399,7 @@ namespace etl
 
       while (i > 0)
       {
-        set(--i, *text++ == U'1');
+        set(--i, *text++ == ETL_STRU('1'));
       }
 
       return *this;
@@ -750,6 +764,7 @@ namespace etl
       etl::swap_ranges(pdata, pdata + SIZE, other.pdata);
     }
 
+#if ETL_CPP11_SUPPORTED
     //*************************************************************************
     /// span
     /// Returns a span of the underlying data.
@@ -767,6 +782,7 @@ namespace etl
     {
       return const_span_type(pdata, pdata + SIZE);
     }
+#endif
 
   protected:
 

@@ -35,9 +35,10 @@ SOFTWARE.
 #include "type_traits.h"
 
 #if ETL_CPP11_NOT_SUPPORTED
-  #error NOT SUPPORTED FOR C++03 OR BELOW
+  #if !defined(ETL_IN_UNIT_TEST)
+    #error NOT SUPPORTED FOR C++03 OR BELOW
+  #endif
 #else
-
 namespace etl
 {
   //***************************************************************************
@@ -62,7 +63,7 @@ namespace etl
       template <typename Type, typename T1, typename... TRest>
       struct index_of_type_helper
       {
-        static constexpr size_t value = std::is_same<Type, T1>::value ? 1 : 1 + index_of_type_helper<Type, TRest...>::value;
+        static constexpr size_t value = etl::is_same<Type, T1>::value ? 1 : 1 + index_of_type_helper<Type, TRest...>::value;
       };
 
       //***********************************
@@ -97,7 +98,7 @@ namespace etl
       template <size_t II, size_t N, typename T1, typename... TRest>
       struct type_from_index_helper
       {
-        using type = typename std::conditional<II == N, T1, typename type_from_index_helper<II, N + 1, TRest...>::type>::type;
+        using type = typename etl::conditional<II == N, T1, typename type_from_index_helper<II, N + 1, TRest...>::type>::type;
       };
 
       //***********************************

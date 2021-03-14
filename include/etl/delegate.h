@@ -53,10 +53,11 @@ Original publication: https://www.codeproject.com/Articles/1170503/The-Impossibl
 #include "exception.h"
 #include "type_traits.h"
 
-#if ETL_CPP11_SUPPORTED == 0
-#error NOT SUPPORTED FOR C++03 OR BELOW
-#endif
-
+#if ETL_CPP11_NOT_SUPPORTED
+  #if !defined(ETL_IN_UNIT_TEST)
+    #error NOT SUPPORTED FOR C++03 OR BELOW
+  #endif
+#else
 namespace etl
 {
   //***************************************************************************
@@ -381,5 +382,7 @@ namespace etl
     invocation_element invocation;
   };
 }
+
+#endif
 
 #endif
