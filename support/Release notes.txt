@@ -1,4 +1,9 @@
 ===============================================================================
+20.6.3
+Updates to unit test CMake files.
+Added missing include for string_utilities.h
+
+===============================================================================
 20.6.2
 C++98/03 compatibility fixes.
 Added 'sanity check' tests for checking for 98/03/11/14/17 issues.
