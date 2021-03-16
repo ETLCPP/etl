@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/memory.h"
 #include "etl/debug_count.h"
@@ -1039,6 +1039,46 @@ namespace
       CHECK_EQUAL(5, up1[1]);
       CHECK_EQUAL(6, up1[2]);
       CHECK_EQUAL(7, up1[3]);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_custom_deleter)
+    {
+      //*******************************
+      struct Object
+      {
+        Object()
+          : count(1)
+        {
+        }
+
+        void Delete()
+        {
+          count = 0;
+        }
+
+        int count;
+      };
+
+      //*******************************
+      struct Deleter 
+      {
+        void operator()(Object* p) 
+        { 
+          p->Delete(); 
+        }
+      };
+
+      Deleter deleter;
+      Object object;
+
+      CHECK_EQUAL(1, object.count);
+
+      {
+        etl::unique_ptr<Object, Deleter> up(&object, deleter);
+      }
+
+      CHECK_EQUAL(0, object.count);
     }
 
     //*************************************************************************

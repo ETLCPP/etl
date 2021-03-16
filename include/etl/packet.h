@@ -37,9 +37,6 @@ SOFTWARE.
 #include "utility.h"
 #include "placement_new.h"
 
-#undef ETL_FILE
-#define ETL_FILE "38"
-
 //*****************************************************************************
 ///\defgroup packet packet
 /// A class that can contain one a several related types.
@@ -164,7 +161,5 @@ namespace etl
     typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
   };
 }
-
-#undef ETL_FILE
 
 #endif

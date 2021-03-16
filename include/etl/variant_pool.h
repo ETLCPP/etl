@@ -54,55 +54,13 @@ SOFTWARE.
 #include <stdint.h>
 
 #include "platform.h"
-#include "error_handler.h"
-#include "exception.h"
-#include "largest.h"
-#include "type_traits.h"
-#include "alignment.h"
-#include "static_assert.h"
-#include "type_lookup.h"
 #include "pool.h"
-
-#include "utility.h"
-
-#undef ETL_FILE
-#define ETL_FILE "40"
+#include "type_traits.h"
+#include "static_assert.h"
+#include "largest.h"
 
 namespace etl
 {
-  //***************************************************************************
-  class variant_pool_exception : public etl::exception
-  {
-  public:
-
-    variant_pool_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
-      : exception(reason_, file_name_, line_number_)
-    {
-    }
-  };
-
-  //***************************************************************************
-  class variant_pool_cannot_create : public etl::variant_pool_exception
-  {
-  public:
-
-    variant_pool_cannot_create(string_type file_name_, numeric_type line_number_)
-      : variant_pool_exception(ETL_ERROR_TEXT("variant_pool:cannot create", ETL_FILE"A"), file_name_, line_number_)
-    {
-    }
-  };
-
-  //***************************************************************************
-  class variant_pool_did_not_create : public etl::variant_pool_exception
-  {
-  public:
-
-    variant_pool_did_not_create(string_type file_name_, numeric_type line_number_)
-      : variant_pool_exception(ETL_ERROR_TEXT("variant_pool:did not create", ETL_FILE"B"), file_name_, line_number_)
-    {
-    }
-  };
-
   //***************************************************************************
   template <const size_t MAX_SIZE_,
             typename T1,
@@ -121,9 +79,15 @@ namespace etl
             typename T14 = void,
             typename T15 = void,
             typename T16 = void>
-  class variant_pool
+  class variant_pool : public etl::generic_pool<etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::size,
+                                                etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::alignment,
+                                                MAX_SIZE_>
   {
   public:
+
+    typedef etl::generic_pool<etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::size,
+                              etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::alignment,
+                              MAX_SIZE_> base_t;
 
     static const size_t MAX_SIZE = MAX_SIZE_;
 
@@ -143,23 +107,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
-      T* p = ETL_NULLPTR;
-
-      if (pool.full())
-      {
-        ETL_ASSERT(false, ETL_ERROR(etl::variant_pool_cannot_create));
-      }
-      else
-      {
-        p = pool.template allocate<T>();
-
-        if (p != ETL_NULLPTR)
-        {
-          new (p) T();
-        }
-      }
-
-      return p;
+      return base_t::template create<T>();
     }
 
     //*************************************************************************
@@ -170,23 +118,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
-      T* p = ETL_NULLPTR;
-
-      if (pool.full())
-      {
-        ETL_ASSERT(false, ETL_ERROR(etl::variant_pool_cannot_create));
-      }
-      else
-      {
-        p = pool.template allocate<T>();
-
-        if (p != ETL_NULLPTR)
-        {
-          new (p) T(p1);
-        }
-      }
-
-      return p;
+      return base_t::template create<T>(p1);
     }
 
     //*************************************************************************
@@ -197,23 +129,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
-      T* p = ETL_NULLPTR;
-
-      if (pool.full())
-      {
-        ETL_ASSERT(false, ETL_ERROR(etl::variant_pool_cannot_create));
-      }
-      else
-      {
-        p = pool.template allocate<T>();
-
-        if (p != ETL_NULLPTR)
-        {
-          new (p) T(p1, p2);
-        }
-      }
-
-      return p;
+      return base_t::template create<T>(p1, p2);
     }
 
     //*************************************************************************
@@ -224,23 +140,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
-      T* p = ETL_NULLPTR;
-
-      if (pool.full())
-      {
-        ETL_ASSERT(false, ETL_ERROR(etl::variant_pool_cannot_create));
-      }
-      else
-      {
-        p = pool.template allocate<T>();
-
-        if (p != ETL_NULLPTR)
-        {
-          new (p) T(p1, p2, p3);
-        }
-      }
-
-      return p;
+      return base_t::template create<T>(p1, p2, p3);
     }
 
     //*************************************************************************
@@ -251,23 +151,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
-      T* p = ETL_NULLPTR;
-
-      if (pool.full())
-      {
-        ETL_ASSERT(false, ETL_ERROR(etl::variant_pool_cannot_create));
-      }
-      else
-      {
-        p = pool.template allocate<T>();
-
-        if (p != ETL_NULLPTR)
-        {
-          new (p) T(p1, p2, p3, p4);
-        }
-      }
-
-      return p;
+      return base_t::template create<T>(p1, p2, p3, p4);
     }
 #else
     //*************************************************************************
@@ -278,23 +162,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value), "Unsupported type");
 
-      T* p = ETL_NULLPTR;
-
-      if (pool.full())
-      {
-        ETL_ASSERT(false, ETL_ERROR(etl::variant_pool_cannot_create));
-      }
-      else
-      {
-        p = pool.template allocate<T>();
-
-        if (p != ETL_NULLPTR)
-        {
-          new (p) T(etl::forward<Args>(args)...);
-        }
-      }
-
-      return p;
+      return base_t::template create<T>(args...);
     }
 #endif
 
@@ -302,40 +170,27 @@ namespace etl
     /// Destroys the object.
     //*************************************************************************
     template <typename T>
-    bool destroy(const T* const p)
+    void destroy(const T* const p)
     {
       ETL_STATIC_ASSERT((etl::is_one_of<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value ||
-                     etl::is_base_of<T, T1>::value ||
-                     etl::is_base_of<T, T2>::value ||
-                     etl::is_base_of<T, T3>::value ||
-                     etl::is_base_of<T, T4>::value ||
-                     etl::is_base_of<T, T5>::value ||
-                     etl::is_base_of<T, T6>::value ||
-                     etl::is_base_of<T, T7>::value ||
-                     etl::is_base_of<T, T8>::value ||
-                     etl::is_base_of<T, T9>::value ||
-                     etl::is_base_of<T, T10>::value ||
-                     etl::is_base_of<T, T11>::value ||
-                     etl::is_base_of<T, T12>::value ||
-                     etl::is_base_of<T, T13>::value ||
-                     etl::is_base_of<T, T14>::value ||
-                     etl::is_base_of<T, T15>::value ||
-                     etl::is_base_of<T, T16>::value), "Invalid type");
+                         etl::is_base_of<T, T1>::value ||
+                         etl::is_base_of<T, T2>::value ||
+                         etl::is_base_of<T, T3>::value ||
+                         etl::is_base_of<T, T4>::value ||
+                         etl::is_base_of<T, T5>::value ||
+                         etl::is_base_of<T, T6>::value ||
+                         etl::is_base_of<T, T7>::value ||
+                         etl::is_base_of<T, T8>::value ||
+                         etl::is_base_of<T, T9>::value ||
+                         etl::is_base_of<T, T10>::value ||
+                         etl::is_base_of<T, T11>::value ||
+                         etl::is_base_of<T, T12>::value ||
+                         etl::is_base_of<T, T13>::value ||
+                         etl::is_base_of<T, T14>::value ||
+                         etl::is_base_of<T, T15>::value ||
+                         etl::is_base_of<T, T16>::value), "Invalid type");
 
-      p->~T();
-
-      void* vp = reinterpret_cast<char*>(const_cast<T*>(p));
-
-      if (pool.is_in_pool(vp))
-      {
-        pool.release(vp);
-        return true;
-      }
-      else
-      {
-        ETL_ASSERT(false, ETL_ERROR(variant_pool_did_not_create));
-        return false;
-      }
+      base_t::destroy(p);
     }
 
     //*************************************************************************
@@ -346,52 +201,11 @@ namespace etl
       return MAX_SIZE;
     }
 
-    //*************************************************************************
-    /// Returns the number of free items in the variant_pool.
-    //*************************************************************************
-    size_t available() const
-    {
-      return pool.available();
-    }
-
-    //*************************************************************************
-    /// Returns the number of allocated items in the variant_pool.
-    //*************************************************************************
-    size_t size() const
-    {
-      return pool.size();
-    }
-
-    //*************************************************************************
-    /// Checks to see if there are no allocated items in the variant_pool.
-    /// \return <b>true</b> if there are none allocated.
-    //*************************************************************************
-    bool empty() const
-    {
-      return pool.empty();
-    }
-
-    //*************************************************************************
-    /// Checks to see if there are no free items in the variant_pool.
-    /// \return <b>true</b> if there are none free.
-    //*************************************************************************
-    bool full() const
-    {
-      return pool.full();
-    }
-
   private:
 
-    variant_pool(const variant_pool&);
-    variant_pool& operator =(const variant_pool&);
-
-    // The pool.
-    etl::generic_pool<etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::size,
-                      etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::alignment,
-                      MAX_SIZE> pool;
+    variant_pool(const variant_pool&) ETL_DELETE;
+    variant_pool& operator =(const variant_pool&) ETL_DELETE;
   };
 }
-
-#undef ETL_FILE
 
 #endif

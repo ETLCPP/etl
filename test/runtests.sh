@@ -1,5 +1,6 @@
-#sudo ntpdate time.windows.com
-cd build
+#!/bin/sh
+sudo ntpdate ntp.ubuntu.com
+cd build || exit 1
 echo "ETL Tests" > etl_test_log.txt
 echo "********** GCC **********" >> etl_test_log.txt
 gcc --version | grep gcc >> etl_test_log.txt

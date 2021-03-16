@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <thread>
 #include <chrono>
@@ -129,25 +129,36 @@ namespace
       CHECK_EQUAL(4U, queue.size());
       CHECK_EQUAL(0U, queue.available());
 
+      // Queue full.
       CHECK(!queue.push(5));
-      CHECK(!queue.push(5));
+
+      queue.pop();
+      // Queue not full (buffer rollover)
+      CHECK(queue.push(5));
+
+      // Queue full.
+      CHECK(!queue.push(6));
+
+      queue.pop();
+      // Queue not full (buffer rollover)
+      CHECK(queue.push(6));
 
       int i;
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(1, i);
+      CHECK_EQUAL(3, i);
       CHECK_EQUAL(3U, queue.size());
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(2, i);
+      CHECK_EQUAL(4, i);
       CHECK_EQUAL(2U, queue.size());
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(3, i);
+      CHECK_EQUAL(5, i);
       CHECK_EQUAL(1U, queue.size());
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(4, i);
+      CHECK_EQUAL(6, i);
       CHECK_EQUAL(0U, queue.size());
 
       CHECK(!queue.pop(i));
@@ -176,16 +187,16 @@ namespace
 
       ItemM pr(0);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(1, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(2, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(3, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(4, pr.value);
     }
 

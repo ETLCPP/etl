@@ -72,9 +72,6 @@ cog.outl("//********************************************************************
 
 #include <stdint.h>
 
-#undef ETL_FILE
-#define ETL_FILE "55"
-
 namespace etl
 {
   /*[[[cog
@@ -217,7 +214,7 @@ namespace etl
     cog.outl("#if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)")
     cog.outl("      pmsg->~imessage();")
     cog.outl("#else")
-    cog.outl("      size_t id = pmsg->message_id;")
+    cog.outl("      size_t id = pmsg->get_message_id();")
     cog.outl("")
     cog.outl("      switch (id)")
     cog.outl("      {")
@@ -232,7 +229,7 @@ namespace etl
     cog.outl("  //********************************************")
     cog.outl("  void add_new_message(const etl::imessage& msg)")
     cog.outl("  {")
-    cog.outl("    const size_t id = msg.message_id;")
+    cog.outl("    const size_t id = msg.get_message_id();")
     cog.outl("    void* p = data;")
     cog.outl("")
     cog.outl("    switch (id)")
@@ -247,7 +244,7 @@ namespace etl
     cog.outl("  //********************************************")
     cog.outl("  void add_new_message(etl::imessage&& msg)")
     cog.outl("  {")
-    cog.outl("    const size_t id = msg.message_id;")
+    cog.outl("    const size_t id = msg.get_message_id();")
     cog.outl("    void* p = data;")
     cog.outl("")
     cog.outl("    switch (id)")
@@ -416,7 +413,7 @@ namespace etl
         cog.outl("#if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)")
         cog.outl("      pmsg->~imessage();")
         cog.outl("#else")
-        cog.outl("      size_t id = pmsg->message_id;")
+        cog.outl("      size_t id = pmsg->get_message_id();")
         cog.outl("")
         cog.outl("      switch (id)")
         cog.outl("      {")
@@ -431,7 +428,7 @@ namespace etl
         cog.outl("  //********************************************")
         cog.outl("  void add_new_message(const etl::imessage& msg)")
         cog.outl("  {")
-        cog.outl("    const size_t id = msg.message_id;")
+        cog.outl("    const size_t id = msg.get_message_id();")
         cog.outl("    void* p = data;")
         cog.outl("")
         cog.outl("    switch (id)")
@@ -446,7 +443,7 @@ namespace etl
         cog.outl("  //********************************************")
         cog.outl("  void add_new_message(etl::imessage&& msg)")
         cog.outl("  {")
-        cog.outl("    const size_t id = msg.message_id;")
+        cog.outl("    const size_t id = msg.get_message_id();")
         cog.outl("    void* p = data;")
         cog.outl("")
         cog.outl("    switch (id)")
@@ -464,7 +461,5 @@ namespace etl
   ]]]*/
   /*[[[end]]]*/
 }
-
-#undef ETL_FILE
 
 #endif

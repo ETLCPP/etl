@@ -57,9 +57,6 @@ SOFTWARE.
   #include <initializer_list>
 #endif
 
-#undef ETL_FILE
-#define ETL_FILE "25"
-
 //*****************************************************************************
 ///\defgroup unordered_multimap unordered_multimap
 /// A unordered_multimap with the capacity defined at compile time.
@@ -91,7 +88,7 @@ namespace etl
   public:
 
     unordered_multimap_full(string_type file_name_, numeric_type line_number_)
-      : etl::unordered_multimap_exception(ETL_ERROR_TEXT("unordered_multimap:full", ETL_FILE"A"), file_name_, line_number_)
+      : etl::unordered_multimap_exception(ETL_ERROR_TEXT("unordered_multimap:full", ETL_UNORDERED_MULTIMAP_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -105,7 +102,7 @@ namespace etl
   public:
 
     unordered_multimap_out_of_range(string_type file_name_, numeric_type line_number_)
-      : etl::unordered_multimap_exception(ETL_ERROR_TEXT("unordered_multimap:range", ETL_FILE"B"), file_name_, line_number_)
+      : etl::unordered_multimap_exception(ETL_ERROR_TEXT("unordered_multimap:range", ETL_UNORDERED_MULTIMAP_FILE_ID"B"), file_name_, line_number_)
     {}
   };
 
@@ -118,7 +115,7 @@ namespace etl
   public:
 
     unordered_multimap_iterator(string_type file_name_, numeric_type line_number_)
-      : etl::unordered_multimap_exception(ETL_ERROR_TEXT("unordered_multimap:iterator", ETL_FILE"C"), file_name_, line_number_)
+      : etl::unordered_multimap_exception(ETL_ERROR_TEXT("unordered_multimap:iterator", ETL_UNORDERED_MULTIMAP_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -239,7 +236,7 @@ namespace etl
       }
 
       //*********************************
-      iterator operator =(const iterator& other)
+      iterator& operator =(const iterator& other)
       {
         pbuckets_end = other.pbuckets_end;
         pbucket = other.pbucket;
@@ -409,7 +406,7 @@ namespace etl
       }
 
       //*********************************
-      const_iterator operator =(const const_iterator& other)
+      const_iterator& operator =(const const_iterator& other)
       {
         pbuckets_end = other.pbuckets_end;
         pbucket = other.pbucket;
@@ -1572,7 +1569,5 @@ namespace etl
     1U + sizeof...(Ts)>;
 #endif
 }
-
-#undef ETL_FILE
 
 #endif

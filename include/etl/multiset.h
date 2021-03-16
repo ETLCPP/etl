@@ -54,9 +54,6 @@ SOFTWARE.
 
 #include "private/minmax_push.h"
 
-#undef ETL_FILE
-#define ETL_FILE "10"
-
 //*****************************************************************************
 /// A multiset with the capacity defined at compile time.
 ///\ingroup containers
@@ -87,7 +84,7 @@ namespace etl
   public:
 
     multiset_full(string_type file_name_, numeric_type line_number_)
-      : etl::multiset_exception(ETL_ERROR_TEXT("multiset:full", ETL_FILE"A"), file_name_, line_number_)
+      : etl::multiset_exception(ETL_ERROR_TEXT("multiset:full", ETL_MULTISET_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -101,7 +98,7 @@ namespace etl
   public:
 
     multiset_out_of_bounds(string_type file_name_, numeric_type line_number_)
-      : etl::multiset_exception(ETL_ERROR_TEXT("multiset:bounds", ETL_FILE"B"), file_name_, line_number_)
+      : etl::multiset_exception(ETL_ERROR_TEXT("multiset:bounds", ETL_MULTISET_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -115,7 +112,7 @@ namespace etl
   public:
 
     multiset_iterator(string_type file_name_, numeric_type line_number_)
-      : etl::multiset_exception(ETL_ERROR_TEXT("multiset:iterator", ETL_FILE"C"), file_name_, line_number_)
+      : etl::multiset_exception(ETL_ERROR_TEXT("multiset:iterator", ETL_MULTISET_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -777,7 +774,7 @@ namespace etl
         return temp;
       }
 
-      iterator operator =(const iterator& other)
+      iterator& operator =(const iterator& other)
       {
         p_multiset = other.p_multiset;
         p_node = other.p_node;
@@ -904,7 +901,7 @@ namespace etl
         return temp;
       }
 
-      const_iterator operator =(const const_iterator& other)
+      const_iterator& operator =(const const_iterator& other)
       {
         p_multiset = other.p_multiset;
         p_node = other.p_node;
@@ -2229,7 +2226,5 @@ namespace etl
 }
 
 #include "private/minmax_pop.h"
-
-#undef ETL_FILE
 
 #endif

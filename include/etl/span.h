@@ -44,8 +44,7 @@ SOFTWARE.
 /// A wrapper for arrays
 ///\ingroup containers
 
-#undef ETL_FILE
-#define ETL_FILE "41"
+#if ETL_CPP11_SUPPORTED
 
 namespace etl
 {
@@ -359,7 +358,7 @@ namespace etl
 #endif
 }
 
-#undef ETL_FILE
+#endif
 
 #endif
 

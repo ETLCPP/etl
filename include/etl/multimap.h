@@ -55,9 +55,6 @@ SOFTWARE.
 
 #include "private/minmax_push.h"
 
-#undef ETL_FILE
-#define ETL_FILE "9"
-
 //*****************************************************************************
 /// A multimap with the capacity defined at compile time.
 ///\ingroup containers
@@ -88,7 +85,7 @@ namespace etl
   public:
 
     multimap_full(string_type file_name_, numeric_type line_number_)
-      : etl::multimap_exception("multimap:full", file_name_, line_number_)
+      : etl::multimap_exception(ETL_ERROR_TEXT("multimap:full", ETL_MULTIMAP_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -102,7 +99,7 @@ namespace etl
   public:
 
     multimap_out_of_bounds(string_type file_name_, numeric_type line_number_)
-      : etl::multimap_exception("multimap:bounds", file_name_, line_number_)
+      : etl::multimap_exception(ETL_ERROR_TEXT("multimap:bounds", ETL_MULTIMAP_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -116,7 +113,7 @@ namespace etl
   public:
 
     multimap_iterator(string_type file_name_, numeric_type line_number_)
-      : etl::multimap_exception("multimap:iterator", file_name_, line_number_)
+      : etl::multimap_exception(ETL_ERROR_TEXT("multimap:iterator", ETL_MULTIMAP_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -795,7 +792,7 @@ namespace etl
         return temp;
       }
 
-      iterator operator =(const iterator& other)
+      iterator& operator =(const iterator& other)
       {
         p_multimap = other.p_multimap;
         p_node = other.p_node;
@@ -921,7 +918,7 @@ namespace etl
         return temp;
       }
 
-      const_iterator operator =(const const_iterator& other)
+      const_iterator& operator =(const const_iterator& other)
       {
         p_multimap = other.p_multimap;
         p_node = other.p_node;
@@ -2245,7 +2242,5 @@ namespace etl
 }
 
 #include "private/minmax_pop.h"
-
-#undef ETL_FILE
 
 #endif

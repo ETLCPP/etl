@@ -48,6 +48,7 @@ SOFTWARE.
   #define ETL_HAS_ATOMIC 1
 #else
   #define ETL_HAS_ATOMIC 0
+  #pragma message ("ETL atomics not supported")
 #endif
 
 #endif

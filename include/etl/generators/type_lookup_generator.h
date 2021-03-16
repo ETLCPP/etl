@@ -37,9 +37,6 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "null_type.h"
 
-#undef ETL_FILE
-#define ETL_FILE "45"
-
 /*[[[cog
 import cog
 cog.outl("#if 0")
@@ -129,7 +126,7 @@ namespace etl
       static_assert(!(etl::is_same<nulltype, type>::value), "Invalid id");
     };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_CPP11_SUPPORTED
     template <int ID>
     using type_from_id_t = typename type_from_id<ID>::type;
 #endif
@@ -225,7 +222,7 @@ namespace etl
       static_assert(!etl::is_same<type, nulltype>::value, "Type match not found");
     };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_CPP11_SUPPORTED
     // Template alias.
     template <typename T>
     using type_from_type_t = typename type_from_type<T>::type;
@@ -340,7 +337,5 @@ namespace etl
 
 #endif
 }
-
-#undef ETL_FILE
 
 #endif

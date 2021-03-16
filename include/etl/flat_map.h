@@ -41,9 +41,6 @@ SOFTWARE.
 #endif
 #include "utility.h"
 
-#undef ETL_FILE
-#define ETL_FILE "2"
-
 //*****************************************************************************
 ///\defgroup flat_map flat_map
 /// A flat_map based on a sorted vector with the capacity defined at
@@ -1015,7 +1012,5 @@ namespace etl
                1U + sizeof...(Ts)>;
 #endif 
 }
-
-#undef ETL_FILE
 
 #endif

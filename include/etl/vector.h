@@ -249,6 +249,28 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Resizes the vector, but does not initialise new entries.
+    ///\param new_size The new size.
+    //*********************************************************************
+    void uninitialized_resize(size_t new_size)
+    {
+      ETL_ASSERT(new_size <= CAPACITY, ETL_ERROR(vector_full));
+
+#if defined(ETL_DEBUG_COUNT)
+      if (size() < new_size)
+      {
+        ETL_ADD_DEBUG_COUNT(new_size - size())
+      }
+      else
+      {
+        ETL_SUBTRACT_DEBUG_COUNT(size() - new_size)
+      }
+#endif
+
+      p_end = p_buffer + new_size;
+    }
+
+    //*********************************************************************
     /// Does nothing.
     //*********************************************************************
     void reserve(size_t)
@@ -1172,7 +1194,7 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    vector(TIterator first, TIterator last)
+    vector(TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : etl::ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
       this->assign(first, last);
@@ -1345,7 +1367,7 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    vector_ext(TIterator first, TIterator last, void* buffer, size_t max_size)
+    vector_ext(TIterator first, TIterator last, void* buffer, size_t max_size, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : etl::ivector<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       this->assign(first, last);
@@ -1507,7 +1529,7 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    vector(TIterator first, TIterator last)
+    vector(TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : etl::ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
       this->assign(first, last);
@@ -1639,7 +1661,7 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    vector_ext(TIterator first, TIterator last, void* buffer, size_t max_size)
+    vector_ext(TIterator first, TIterator last, void* buffer, size_t max_size, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : etl::ivector<T*>(reinterpret_cast<T**>(buffer), max_size)
     {
       this->assign(first, last);

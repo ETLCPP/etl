@@ -54,9 +54,6 @@ SOFTWARE.
 #include "binary.h"
 #include "flags.h"
 
-#undef ETL_FILE
-#define ETL_FILE "27"
-
 #ifdef ETL_COMPILER_GCC
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
@@ -95,7 +92,7 @@ namespace etl
   public:
 
     string_empty(string_type file_name_, numeric_type line_number_)
-      : string_exception(ETL_ERROR_TEXT("string:empty", ETL_FILE"A"), file_name_, line_number_)
+      : string_exception(ETL_ERROR_TEXT("string:empty", ETL_BASIC_STRING_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -109,7 +106,7 @@ namespace etl
   public:
 
     string_out_of_bounds(string_type file_name_, numeric_type line_number_)
-      : string_exception(ETL_ERROR_TEXT("string:bounds", ETL_FILE"B"), file_name_, line_number_)
+      : string_exception(ETL_ERROR_TEXT("string:bounds", ETL_BASIC_STRING_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -123,7 +120,7 @@ namespace etl
   public:
 
     string_iterator(string_type file_name_, numeric_type line_number_)
-      : string_exception(ETL_ERROR_TEXT("string:iterator", ETL_FILE"C"), file_name_, line_number_)
+      : string_exception(ETL_ERROR_TEXT("string:iterator", ETL_BASIC_STRING_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -137,7 +134,7 @@ namespace etl
   public:
 
     string_truncation(string_type file_name_, numeric_type line_number_)
-      : string_exception(ETL_ERROR_TEXT("string:iterator", ETL_FILE"D"), file_name_, line_number_)
+      : string_exception(ETL_ERROR_TEXT("string:iterator", ETL_BASIC_STRING_FILE_ID"D"), file_name_, line_number_)
     {
     }
   };
@@ -485,6 +482,19 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Resizes the string, but doesn't initialise the free space 
+    /// except for a terminator null.
+    ///\param new_size The new size.
+    //*********************************************************************
+    void uninitialized_resize(size_type new_size)
+    {
+      new_size = etl::min(new_size, CAPACITY);
+
+      current_size = new_size;
+      p_buffer[new_size] = 0;
+    }
+
+    //*********************************************************************
     /// Returns a reference to the value at index 'i'
     ///\param i The index.
     ///\return A reference to the value at index 'i'
@@ -580,6 +590,24 @@ namespace etl
     const_pointer data() const
     {
       return p_buffer;
+    }
+
+    //*********************************************************************
+    /// Returns a pointer to the beginning of the string data.
+    ///\return A pointer to the beginning of the string data.
+    //*********************************************************************
+    pointer data_end()
+    {
+      return p_buffer + current_size;
+    }
+
+    //*********************************************************************
+    /// Returns a const pointer to the beginning of the string data.
+    ///\return A const pointer to the beginning of the string data.
+    //*********************************************************************
+    const_pointer data_end() const
+    {
+      return p_buffer + current_size;
     }
 
     //*********************************************************************
@@ -2184,6 +2212,32 @@ namespace etl
     virtual void repair() = 0;
 #endif
 
+    //*********************************************************************
+    /// Clears the free space to string terminator value.
+    //*********************************************************************
+    void initialize_free_space()
+    {
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      set_truncated(false);
+#endif
+      etl::fill(&p_buffer[current_size], &p_buffer[CAPACITY + 1U], T(0));
+    }
+
+    //*********************************************************************
+    /// Trim the size to the distance to the first null terminator.
+    /// If the last buffer position has a non-null value then the truncated
+    /// flag will be set.
+    //*********************************************************************
+    void trim_to_terminator()
+    {
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      set_truncated(p_buffer[CAPACITY] != T(0));
+#endif
+
+      p_buffer[CAPACITY] = T(0); // Ensure a terminating null.
+      current_size = etl::strlen(p_buffer);
+    }
+
   protected:
 
     //*********************************************************************
@@ -2200,7 +2254,7 @@ namespace etl
     //*********************************************************************
     void initialise()
     {
-      current_size = 0;
+      current_size = 0U;
       cleanup();
       p_buffer[0] = 0;
 #if ETL_STRING_TRUNCATION_CHECKS_ENABLED
@@ -2545,7 +2599,5 @@ namespace etl
 #ifdef ETL_COMPILER_GCC
 #pragma GCC diagnostic pop
 #endif
-
-#undef ETL_FILE
 
 #endif

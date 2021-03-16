@@ -34,6 +34,7 @@ SOFTWARE.
 ///\ingroup string
 
 #include "platform.h"
+#include "to_string.h"
 
 namespace etl
 {

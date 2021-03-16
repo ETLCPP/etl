@@ -1,4 +1,149 @@
 ===============================================================================
+20.6.3
+Updates to unit test CMake files.
+Added missing include for string_utilities.h
+
+===============================================================================
+20.6.2
+C++98/03 compatibility fixes.
+Added 'sanity check' tests for checking for 98/03/11/14/17 issues.
+
+===============================================================================
+20.6.1
+Added missing etl::atomic<bool> from gcc & clang implementations.
+Changed nullptr to ETL_NULLPTR in buffer_descriptors and multi_range.
+Fixed header includes in state_chart.h
+
+===============================================================================
+20.6.0
+Added etl::message_router_registry.
+Changed etl::flat_multimap & etl::flat_multiset to iterate in insertion order, as per C++11 map and set.
+Added ETL_CONSTEXPR to etl::array.
+C++98 compatibility fixes.
+Remove unnecessary template keyword to destroy() call in etl::pool.
+Abstracted unit test framework header.
+
+===============================================================================
+20.5.2
+Fixed template aliases when using STL and below C++14
+
+===============================================================================
+20.5.1
+Fixed ambiguous template error for etl::extent.
+
+===============================================================================
+20.5.0
+Added specialisation of etl::state_chart to allow a parameter to be passed along
+with the event.
+Issue #339 - Fix extent type conversion warning
+Issue #340 - Export headers as system includes
+
+===============================================================================
+20.4.1
+Updates to etl::shared_message example application.
+
+===============================================================================
+20.4.0
+Added uninitialized_resize() to etl::vector and etl::basic_string.
+
+===============================================================================
+20.3.1
+Added ETL_CONSTANT to numeric_limits member functions.
+
+===============================================================================
+20.3.0
+Added initialize_free_space(), trim_to_terminator() and data_end() functions to
+strings for easier integration with C APIs.
+
+=============================================================================== 
+20.2.3
+Fixed indexing error in find_next() for etl::bitset.
+
+===============================================================================
+20.2.2
+Added non-const get_message() member funtions in shared message framework.
+
+===============================================================================
+20.2.1
+Modified reference_counted_message_pool::allocate() return type.
+Changed from etl::ireference_counted_message* to etl::reference_counted_message<TMessage, TCounter>*
+
+===============================================================================
+20.2.0
+Allow default constructed messages for shared messages.
+
+===============================================================================
+20.1.0
+Changed template aliases so they are available for C++11 rather than C++14.
+
+===============================================================================
+20.0.0
+Removed source 'etl::imessage_router&' parameter from the message framework 'receive'
+and 'on_receive' member functions.
+
+===============================================================================
+19.5.3
+Added move constructor and move assignment operator to etl::shared_message.
+
+===============================================================================
+19.5.2
+Fixed rollover error for etl::queue_spsc_atomic
+Added 'required_alignment' parameter to 'allocate' for etl::imemeory_block_allocator.
+Updated QueuedMessageRouter example.
+
+===============================================================================
+19.5.1
+Exclude integral types from being considered for iterator range container constructors.
+
+===============================================================================
+19.5.0
+Added shared messages to the messaging framework + supporting allocator classes.
+Some refactoring of the messaging framework internals.
+Added example application for shared messages.
+Added a lockable queue with locks implemented as pure virtuals.
+Refeactored the other queues.
+Fixed missing virtual destructor for C++11 observer.
+Added etl::successor class for consistant 'chain of responsibilty' pattern generation.
+Added missing constructors to unique_ptr.
+Added nullptr check to unique_ptr destructor.
+Fixed VS2019 warning for etl::deque iterators.
+Added a virtual on_task_added callback to the scheduler.
+Added a runtime multi range nested loop class.
+Added etl::for_each.
+Added is_random_access_iterator and deprecated is_random_iterator.
+Added VS2019 Delegate function interrupt service example.
+
+===============================================================================
+19.4.3
+Added nullptr check to unique_ptr destructor.
+
+===============================================================================
+19.4.2
+Fixed VS2019 warning for etl::deque iterators.
+
+===============================================================================
+19.4.1
+Added constructors with deleters for unique_ptr.
+
+===============================================================================
+19.4.0
+Added virtual function 'void on_task_added()' that is called when a task is added to a scheduler.
+
+===============================================================================
+19.3.7
+Fix some container iterator assignment operators to return a reference, rather than value.
+Fix non-const etl::frame_check_sequence functions are const in all derived classes.
+Make value getter functions const in etl::frame_check_sequence.
+
+===============================================================================
+19.3.6
+Arduino compatibility mods.
+
+===============================================================================
+19.3.5
+Change std::move to etl::move in etl::forward_list
+
+===============================================================================
 19.3.4
 Make etl::span compliant with STL API by adding missing overloads for span::first + span::last
 

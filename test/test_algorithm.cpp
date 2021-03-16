@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/algorithm.h"
 #include "etl/container.h"
@@ -2137,6 +2137,31 @@ namespace
 
       bool is_same = std::equal(std::begin(data), std::end(data), std::begin(expected));
       CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(for_each)
+    {
+      int data[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
+
+      struct Sum
+      {
+        void operator()(int i)
+        {
+          value += i;
+        }
+
+        Sum()
+          : value(0)
+        {
+        }
+
+        int value;
+      };
+
+      Sum sum;
+      sum = etl::for_each(std::begin(data), std::end(data), sum);
+      CHECK_EQUAL(std::accumulate(std::begin(data), std::end(data), 0), sum.value);
     }
   };
 }

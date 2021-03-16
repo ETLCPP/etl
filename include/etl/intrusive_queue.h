@@ -38,9 +38,6 @@ SOFTWARE.
 #include "error_handler.h"
 #include "intrusive_links.h"
 
-#undef ETL_FILE
-#define ETL_FILE "29"
-
 namespace etl
 {
   //***************************************************************************
@@ -66,7 +63,7 @@ namespace etl
   public:
 
     intrusive_queue_empty(string_type file_name_, numeric_type line_number_)
-      : intrusive_queue_exception(ETL_ERROR_TEXT("intrusive_queue:empty", ETL_FILE"A"), file_name_, line_number_)
+      : intrusive_queue_exception(ETL_ERROR_TEXT("intrusive_queue:empty", ETL_INTRUSIVE_QUEUE_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -273,7 +270,5 @@ namespace etl
     intrusive_queue& operator = (const intrusive_queue& rhs);
   };
 }
-
-#undef ETL_FILE
 
 #endif

@@ -196,7 +196,7 @@ namespace etl
     };
   };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_CPP11_SUPPORTED
   template <const size_t LENGTH, const size_t ALIGNMENT>
   using aligned_storage_t = typename aligned_storage<LENGTH, ALIGNMENT>::type;
 #endif
@@ -210,7 +210,7 @@ namespace etl
   {
   };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_CPP11_SUPPORTED
   template <size_t LENGTH, typename T>
   using aligned_storage_as_t = typename aligned_storage_as<LENGTH, T>::type;
 #endif

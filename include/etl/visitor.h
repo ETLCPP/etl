@@ -74,7 +74,7 @@ namespace etl
   {
   public:
 
-    virtual ~visitable() {}
+    virtual ~visitable() = default;
 
     virtual void accept(T1&) = 0;
   };
@@ -173,7 +173,7 @@ namespace etl
   {
   public:
 
-    virtual ~visitor() {}
+    virtual ~visitor() = default;
 
     virtual void visit(T1&) = 0;
   };

@@ -110,7 +110,7 @@ namespace etl
     };
   };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_CPP11_SUPPORTED
   template <typename... T>
   using largest_type_t = typename largest_type<T...>::type;
 #endif
@@ -271,7 +271,7 @@ namespace etl
     typedef typename etl::smallest_int_for_bits<etl::integral_limits<typename etl::make_signed<T>::type>::bits + 1>::type type;
   };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_CPP11_SUPPORTED
   template <typename T>
   using larger_int_type_t = typename larger_int_type<T>::type;
 #endif
@@ -289,7 +289,7 @@ namespace etl
     typedef typename etl::smallest_uint_for_bits<etl::integral_limits<typename etl::make_unsigned<T>::type>::bits + 1>::type type;
   };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_CPP11_SUPPORTED
   template <typename T>
   using larger_uint_type_t = typename larger_uint_type<T>::type;
 #endif
@@ -319,7 +319,7 @@ namespace etl
     typedef typename etl::smallest_int_for_bits<etl::integral_limits<T>::bits + 1>::type type;
   };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_CPP11_SUPPORTED
   template <typename T>
   using larger_type_t = typename larger_type<T>::type;
 #endif
@@ -342,7 +342,7 @@ namespace etl
     };
   };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_CPP11_SUPPORTED
     template <typename... T>
     using largest_t = typename largest<T...>::type;
 #endif

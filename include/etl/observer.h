@@ -58,9 +58,6 @@ SOFTWARE.
 #include "exception.h"
 #include "error_handler.h"
 
-#undef ETL_FILE
-#define ETL_FILE "18"
-
 namespace etl
 {
   //***************************************************************************
@@ -86,7 +83,7 @@ namespace etl
   public:
 
     observer_list_full(string_type file_name_, numeric_type line_number_)
-      : observer_exception(ETL_ERROR_TEXT("observer:full", ETL_FILE"A"), file_name_, line_number_)
+      : observer_exception(ETL_ERROR_TEXT("observer:full", ETL_OBSERVER_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -300,6 +297,8 @@ namespace etl
   {
   public:
 
+    virtual ~observer() = default;
+
     virtual void notification(T1) = 0;
   };
 
@@ -466,7 +465,5 @@ namespace etl
 
 #endif
 }
-
-#undef ETL_FILE
 
 #endif

@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <set>
 #include <array>
@@ -161,23 +161,6 @@ namespace
   typedef std::multiset<D2> Compare2;
   typedef std::multiset<D3> Compare3;
   typedef std::multiset<D4> Compare4;
-
-
-  //*************************************************************************
-  std::ostream& operator <<(std::ostream& os, DataNDC::iterator itr)
-  {
-    os << *itr;
-
-    return os;
-  }
-
-  //*************************************************************************
-  std::ostream& operator <<(std::ostream& os, DataNDC::const_iterator itr)
-  {
-    os << *itr;
-
-    return os;
-  }
 
   SUITE(test_flat_multiset)
   {

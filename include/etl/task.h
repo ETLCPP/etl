@@ -35,9 +35,6 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 
-#undef ETL_FILE
-#define ETL_FILE "37"
-
 namespace etl
 {
   //***************************************************************************
@@ -90,6 +87,14 @@ namespace etl
     virtual void task_process_work() = 0;
 
     //*******************************************
+    /// Called when the task has been added to the scheduler.
+    //*******************************************
+    virtual void on_task_added()
+    {
+      // Do nothing.
+    }
+
+    //*******************************************
     /// Set the running state for the task.
     //*******************************************
     void set_task_running(bool task_running_)
@@ -120,7 +125,5 @@ namespace etl
     etl::task_priority_t task_priority;
   };
 }
-
-#undef ETL_FILE
 
 #endif

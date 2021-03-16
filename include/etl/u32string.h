@@ -146,7 +146,7 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    u32string(TIterator first, TIterator last)
+    u32string(TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : iu32string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
       this->assign(first, last);
@@ -337,7 +337,7 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    u32string_ext(TIterator first, TIterator last, value_type* buffer, size_type buffer_size)
+    u32string_ext(TIterator first, TIterator last, value_type* buffer, size_type buffer_size, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : iu32string(buffer, buffer_size - 1U)
     {
       this->assign(first, last);

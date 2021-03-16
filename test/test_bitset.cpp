@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <limits>
 #include <type_traits>
@@ -1010,6 +1010,39 @@ namespace
       CHECK_EQUAL(0U, data.find_next(true,  0));
       CHECK_EQUAL(1U, data.find_next(false, 0));
       CHECK_EQUAL(4U, data.find_next(true,  1));
+    }
+
+    //*************************************************************************
+    TEST(test_find_next_multi_byte_bitset_github_issue_336)
+    {
+      etl::bitset<24> data;
+      data.set(12);
+      data.set(22);
+      CHECK_EQUAL(12U, data.find_next(true,  3));
+      CHECK_EQUAL(12U, data.find_next(true, 10));
+
+      // set first ten bytes
+      data.set("1111111111");
+      CHECK_EQUAL(10U, data.find_next(false, 3));
+      CHECK_EQUAL(10U, data.find_next(false, 9));
+    }
+
+    //*************************************************************************
+    TEST(test_find_next_github_issue_336)
+    {
+      etl::bitset<16> bits16;
+      bits16.set(12);
+
+      etl::bitset<24> bits24;
+      bits24.set(12);
+
+      CHECK_EQUAL(12, bits16.find_first(true));
+      CHECK_EQUAL(12, bits16.find_next(true, 4));
+      CHECK_EQUAL(etl::ibitset::npos, bits16.find_next(true, 13));
+
+      CHECK_EQUAL(12, bits24.find_first(true));
+      CHECK_EQUAL(12, bits24.find_next(true, 4));
+      CHECK_EQUAL(etl::ibitset::npos, bits24.find_next(true, 13));
     }
 
     //*************************************************************************

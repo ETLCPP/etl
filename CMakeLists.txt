@@ -9,7 +9,7 @@ option(NO_STL "No STL" OFF)
 
 add_library(etl INTERFACE)
 
-target_include_directories(etl INTERFACE include)
+target_include_directories(etl SYSTEM INTERFACE include)
 
 target_compile_definitions(etl INTERFACE)
 

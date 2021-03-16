@@ -43,7 +43,7 @@ SOFTWARE.
 #include <assert.h>
 #include <string.h>
 
-#if ETL_USING_STL
+#if defined(ETL_IN_UNIT_TEST) || ETL_USING_STL
   #include <memory>
 #endif
 
@@ -1256,6 +1256,25 @@ namespace etl
     //*********************************
     unique_ptr(unique_ptr&& p_) ETL_NOEXCEPT
       : p(p_.release())
+      , deleter(etl::move(p_.deleter))
+    {
+    }
+#endif
+
+    //*********************************
+    unique_ptr(pointer p_, typename etl::conditional<etl::is_reference<TDeleter>::value, 
+                                                     TDeleter, 
+                                                     typename etl::add_lvalue_reference<const TDeleter>::type>::type deleter_) ETL_NOEXCEPT
+      : p(p_)
+      , deleter(deleter_)
+    {
+    }
+
+#if ETL_CPP11_SUPPORTED
+    //*********************************
+    unique_ptr(pointer p_, typename etl::remove_reference<TDeleter>::type&& deleter_) ETL_NOEXCEPT
+      : p(p_)
+      , deleter(etl::move(deleter_))
     {
     }
 #endif
@@ -1263,7 +1282,10 @@ namespace etl
     //*********************************
     ~unique_ptr()
     {
-      deleter(p);
+      if (p != ETL_NULLPTR)
+      {
+        deleter(p);
+      }
     }
 
     //*********************************
@@ -1369,9 +1391,8 @@ namespace etl
     unique_ptr(const unique_ptr&) ETL_DELETE;
     unique_ptr&	operator =(const unique_ptr&) ETL_DELETE;
 
+    pointer	 p;
     TDeleter deleter;
-
-    pointer	p;
   };
 
   //*****************************************************************************
@@ -1405,6 +1426,25 @@ namespace etl
     //*********************************
     unique_ptr(unique_ptr&& p_) ETL_NOEXCEPT
       : p(p_.release())
+      , deleter(etl::move(p_.deleter))
+    {
+    }
+#endif
+
+    //*********************************
+    unique_ptr(pointer p_, typename etl::conditional<etl::is_reference<TDeleter>::value,
+                                                     TDeleter,
+                                                     typename etl::add_lvalue_reference<const TDeleter>::type>::type deleter_) ETL_NOEXCEPT
+      : p(p_)
+      , deleter(deleter_)
+    {
+    }
+
+#if ETL_CPP11_SUPPORTED
+    //*********************************
+    unique_ptr(pointer p_, typename etl::remove_reference<TDeleter>::type&& deleter_) ETL_NOEXCEPT
+      : p(p_)
+      , deleter(etl::move(deleter_))
     {
     }
 #endif
@@ -1412,7 +1452,10 @@ namespace etl
     //*********************************
     ~unique_ptr()
     {
-      deleter(p);
+      if (p != ETL_NULLPTR)
+      {
+        deleter(p);
+      }
     }
 
     //*********************************
@@ -1499,45 +1542,44 @@ namespace etl
     unique_ptr(const unique_ptr&) ETL_DELETE;
     unique_ptr&	operator =(const unique_ptr&) ETL_DELETE;
 
+    pointer	p; 
     TDeleter deleter;
-
-    pointer	p;
   };
 }
 
 //*****************************************************************************
 // Global functions for unique_ptr
 //*****************************************************************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator ==(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator ==(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return lhs.get() == rhs.get();
 }
 
 //*********************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator <(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator <(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return reinterpret_cast<char*>(lhs.get()) < reinterpret_cast<char*>(rhs.get());
 }
 
 //*********************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator <=(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator <=(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return !(rhs < lhs);
 }
 
 //*********************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator >(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator >(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return (rhs < lhs);
 }
 
 //*********************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator >=(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator >=(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return !(lhs < rhs);
 }
@@ -1593,7 +1635,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-   void create_value_at(T* p)
+  void create_value_at(T* p)
   {
     ::new (p) T();
   }
@@ -1603,7 +1645,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T, typename TCounter>
-   void create_value_at(T* p, TCounter& count)
+  void create_value_at(T* p, TCounter& count)
   {
     ::new (p) T();
     ++count;
@@ -1614,7 +1656,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-   void create_copy_at(T* p, const T& value)
+  void create_copy_at(T* p, const T& value)
   {
     ::new (p) T(value);
   }
@@ -1901,23 +1943,23 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Declares an aligned buffer of N_OBJECTS x of size OBJECT_SIZE at alignment ALIGNMENT.
+  /// Declares an aligned buffer of N_Objects x of size Object_Size at alignment Alignment.
   ///\ingroup alignment
   //***************************************************************************
-  template <size_t OBJECT_SIZE_, size_t N_OBJECTS_, size_t ALIGNMENT_>
+  template <size_t VObject_Size, size_t VN_Objects, size_t VAlignment>
   class uninitialized_buffer
   {
   public:
 
-    static ETL_CONSTANT size_t OBJECT_SIZE = OBJECT_SIZE_;
-    static ETL_CONSTANT size_t N_OBJECTS   = N_OBJECTS_;
-    static ETL_CONSTANT size_t ALIGNMENT   = ALIGNMENT_;
+    static ETL_CONSTANT size_t Object_Size = VObject_Size;
+    static ETL_CONSTANT size_t N_Objects   = VN_Objects;
+    static ETL_CONSTANT size_t Alignment   = VAlignment;
 
     /// Convert to T reference.
     template <typename T>
     operator T& ()
     {
-      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
       return *reinterpret_cast<T*>(raw);
     }
 
@@ -1925,7 +1967,7 @@ namespace etl
     template <typename T>
     operator const T& () const
     {
-      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
       return *reinterpret_cast<const T*>(raw);
     }
 
@@ -1933,7 +1975,7 @@ namespace etl
     template <typename T>
     operator T* ()
     {
-      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
       return reinterpret_cast<T*>(raw);
     }
 
@@ -1941,26 +1983,26 @@ namespace etl
     template <typename T>
     operator const T* () const
     {
-      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((ALIGNMENT % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
       return reinterpret_cast<const T*>(raw);
     }
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_COMPILER_ARM5) && !defined(ETL_UNINITIALIZED_BUFFER_FORCE_CPP03)
-    alignas(ALIGNMENT) char raw[OBJECT_SIZE * N_OBJECTS];
+    alignas(VAlignment) char raw[Object_Size * N_Objects];
 #else
     union
     {
-      char raw[OBJECT_SIZE * N_OBJECTS];
-      typename etl::type_with_alignment<ALIGNMENT>::type etl_alignment_type; // A POD type that has the same alignment as ALIGNMENT.
+      char raw[VObject_Size * VN_Objects];
+      typename etl::type_with_alignment<Alignment>::type etl_alignment_type; // A POD type that has the same alignment as VAlignment.
     };
 #endif
   };
 
   //***************************************************************************
-  /// Declares an aligned buffer of N_OBJECTS as if they were type T.
+  /// Declares an aligned buffer of VN_Objects as if they were type T.
   ///\ingroup alignment
   //***************************************************************************
-  template <typename T, size_t N_OBJECTS_>
+  template <typename T, size_t VN_Objects>
   class uninitialized_buffer_of
   {
   public:
@@ -1973,9 +2015,9 @@ namespace etl
     typedef T*       iterator;
     typedef const T* const_iterator;
 
-    static ETL_CONSTANT size_t OBJECT_SIZE = sizeof(T);
-    static ETL_CONSTANT size_t N_OBJECTS = N_OBJECTS_;
-    static ETL_CONSTANT size_t ALIGNMENT = etl::alignment_of<T>::value;
+    static ETL_CONSTANT size_t Object_Size = sizeof(T);
+    static ETL_CONSTANT size_t N_Objects   = VN_Objects;
+    static ETL_CONSTANT size_t Alignment   = etl::alignment_of<T>::value;
 
     /// Index operator.
     T& operator [](int i)
@@ -2026,28 +2068,28 @@ namespace etl
 
     T* end()
     {
-      return reinterpret_cast<const T*>(raw + (sizeof(T) * N_OBJECTS));
+      return reinterpret_cast<const T*>(raw + (sizeof(T) * N_Objects));
     }
 
     const T* end() const
     {
-      return reinterpret_cast<const T*>(raw + (sizeof(T) * N_OBJECTS));
+      return reinterpret_cast<const T*>(raw + (sizeof(T) * N_Objects));
     }
 
 #if ETL_CPP11_SUPPORTED && !defined(ETL_COMPILER_ARM5) && !defined(ETL_UNINITIALIZED_BUFFER_FORCE_CPP03)
-    alignas(ALIGNMENT) char raw[sizeof(T) * N_OBJECTS];
+    alignas(Alignment) char raw[sizeof(T) * N_Objects];
 #else
     union
     {
-      char raw[sizeof(T) * N_OBJECTS];
-      typename etl::type_with_alignment<ALIGNMENT>::type etl_alignment_type; // A POD type that has the same alignment as ALIGNMENT.
+      char raw[sizeof(T) * N_Objects];
+      typename etl::type_with_alignment<Alignment>::type etl_alignment_type; // A POD type that has the same alignment as Alignment.
     };
 #endif
   };
 
-#if ETL_CPP14_SUPPORTED
-  template <typename T, size_t N_OBJECTS>
-  using uninitialized_buffer_of_v = typename uninitialized_buffer_of<T, N_OBJECTS>::buffer;
+#if ETL_CPP11_SUPPORTED
+  template <typename T, size_t N_Objects>
+  using uninitialized_buffer_of_t = typename uninitialized_buffer_of<T, N_Objects>::buffer;
 #endif
 }
 

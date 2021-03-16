@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/platform.h"
 
@@ -66,6 +66,15 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_atomic_bool_is_lock_free)
+    {
+      std::atomic<bool> compare;
+      etl::atomic<bool> test;
+
+      CHECK_EQUAL(compare.is_lock_free(), test.is_lock_free());
+    }
+
+    //*************************************************************************
     TEST(test_atomic_integer_load)
     {
       std::atomic<int> compare(1);
@@ -77,12 +86,23 @@ namespace
     //*************************************************************************
     TEST(test_atomic_pointer_load)
     {
-      int i;
+      int i = 1;
 
       std::atomic<int*> compare(&i);
       etl::atomic<int*> test(&i);
 
       CHECK_EQUAL((int*)compare.load(), (int*)test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_bool_load)
+    {
+      bool i = true;
+
+      std::atomic<bool> compare(i);
+      etl::atomic<bool> test(i);
+
+      CHECK_EQUAL((bool)compare.load(), (bool)test.load());
     }
 
     //*************************************************************************
@@ -111,6 +131,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_atomic_bool_store)
+    {
+      bool i = true;
+      bool j = false;
+
+      std::atomic<bool> compare(i);
+      etl::atomic<bool> test(i);
+
+      compare.store(j);
+      test.store(j);
+      CHECK_EQUAL((bool)compare.load(), (bool)test.load());
+    }
+
+    //*************************************************************************
     TEST(test_atomic_integer_assignment)
     {
       std::atomic<int> compare(1);
@@ -133,6 +167,20 @@ namespace
       compare = &j;
       test = &j;
       CHECK_EQUAL((int*)compare.load(), (int*)test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_bool_assignment)
+    {
+      bool i = true;
+      bool j = false;
+
+      std::atomic<bool> compare(i);
+      etl::atomic<bool> test(i);
+
+      compare = j;
+      test = j;
+      CHECK_EQUAL((bool)compare.load(), (bool)test.load());
     }
 
     //*************************************************************************
@@ -400,6 +448,18 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_atomic_bool_exchange)
+    {
+      bool i = true;
+      bool j = false;
+
+      std::atomic<bool> compare(i);
+      etl::atomic<bool> test(i);
+
+      CHECK_EQUAL((bool)compare.exchange(j), (bool)test.exchange(j));
+    }
+
+    //*************************************************************************
     TEST(test_atomic_compare_exchange_weak_fail)
     {
       std::atomic<int> compare;
@@ -511,7 +571,7 @@ namespace
     {
       RAISE_THREAD_PRIORITY;
       FIX_PROCESSOR_AFFINITY1;
-
+       
       while (!start.load());
 
       for (int i = 0; i < 10000000; ++i)

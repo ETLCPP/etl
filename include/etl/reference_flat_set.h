@@ -47,9 +47,6 @@ SOFTWARE.
 #include "vector.h"
 #include "iterator.h"
 
-#undef ETL_FILE
-#define ETL_FILE "32"
-
 namespace etl
 {
   //***************************************************************************
@@ -75,7 +72,7 @@ namespace etl
   public:
 
     flat_set_full(string_type file_name_, numeric_type line_number_)
-      : flat_set_exception(ETL_ERROR_TEXT("flat_set:full", ETL_FILE"A"), file_name_, line_number_)
+      : flat_set_exception(ETL_ERROR_TEXT("flat_set:full", ETL_REFERENCE_FLAT_SET_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -89,7 +86,7 @@ namespace etl
   public:
 
     flat_set_iterator(string_type file_name_, numeric_type line_number_)
-      : flat_set_exception(ETL_ERROR_TEXT("flat_set:iterator", ETL_FILE"C"), file_name_, line_number_)
+      : flat_set_exception(ETL_ERROR_TEXT("flat_set:iterator", ETL_REFERENCE_FLAT_SET_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -869,5 +866,4 @@ namespace etl
   }
 }
 
-#undef ETL_FILE
 #endif

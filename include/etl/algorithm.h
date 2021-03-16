@@ -53,6 +53,8 @@ SOFTWARE.
   #include <functional>
 #endif
 
+#include "private/minmax_push.h"
+
 namespace etl
 {
   // Declare prototypes of the ETL's sort functions
@@ -957,6 +959,29 @@ namespace etl
   ETL_CONSTEXPR const T& max(const T& a, const T& b)
   {
     return std::max(a, b);
+  }
+#endif
+
+#if ETL_NOT_USING_STL
+  //***************************************************************************
+  // for_each
+  template <typename TIterator, typename TUnaryOperation>
+  ETL_CONSTEXPR14 TUnaryOperation for_each(TIterator first, TIterator last, TUnaryOperation unary_operation)
+  {
+    while (first != last)
+    {
+      unary_operation(*first++);
+    }
+
+    return unary_operation;
+  }
+#else
+  //***************************************************************************
+  // for_each
+  template <typename TIterator, typename TUnaryOperation>
+  ETL_CONSTEXPR14 TUnaryOperation for_each(TIterator first, TIterator last, TUnaryOperation unary_operation)
+  {
+    return std::for_each(first, last, unary_operation);
   }
 #endif
 
@@ -3512,5 +3537,7 @@ namespace etl
   }
 #endif
 }
+
+#include "private/minmax_pop.h"
 
 #endif

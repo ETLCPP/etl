@@ -749,6 +749,317 @@ namespace etl
     mutable uintptr_t value;
   };
 
+  //***************************************************************************
+  /// Specialisation for bool
+  //***************************************************************************
+  template <>
+  class atomic<bool>
+  {
+  public:
+
+    atomic()
+      : value(0U)
+    {
+    }
+
+    atomic(bool v)
+      : value(char(v))
+    {
+    }
+
+    // Assignment
+    bool operator =(bool v)
+    {
+      store(v);
+
+      return v;
+    }
+
+    bool operator =(bool v) volatile
+    {
+      store(v);
+
+      return v;
+    }
+
+    // Pre-increment
+    bool operator ++()
+    {
+      return (bool)__sync_add_and_fetch(&value, sizeof(char));
+    }
+
+    bool operator ++() volatile
+    {
+      return (bool)__sync_add_and_fetch(&value, sizeof(char));
+    }
+
+    // Post-increment
+    bool operator ++(int)
+    {
+      return (bool)__sync_fetch_and_add(&value, sizeof(char));
+    }
+
+    bool operator ++(int) volatile
+    {
+      return (bool)__sync_fetch_and_add(&value, sizeof(char));
+    }
+
+    // Pre-decrement
+    bool operator --()
+    {
+      return (bool)__sync_sub_and_fetch(&value, sizeof(char));
+    }
+
+    bool operator --() volatile
+    {
+      return (bool)__sync_sub_and_fetch(&value, sizeof(char));
+    }
+
+    // Post-decrement
+    bool operator --(int)
+    {
+      return (bool)__sync_fetch_and_sub(&value, sizeof(char));
+    }
+
+    bool operator --(int) volatile
+    {
+      return (bool)__sync_fetch_and_sub(&value, sizeof(char));
+    }
+
+    // Add
+    bool operator +=(ptrdiff_t v)
+    {
+      return (bool)__sync_fetch_and_add(&value, v * sizeof(char));
+    }
+
+    bool operator +=(ptrdiff_t v) volatile
+    {
+      return (bool)__sync_fetch_and_add(&value, v * sizeof(char));
+    }
+
+    // Subtract
+    bool operator -=(ptrdiff_t v)
+    {
+      return (bool)__sync_fetch_and_sub(&value, v * sizeof(char));
+    }
+
+    bool operator -=(ptrdiff_t v) volatile
+    {
+      return (bool)__sync_fetch_and_sub(&value, v * sizeof(char));
+    }
+
+    // Conversion operator
+    operator bool () const
+    {
+      return (bool)__sync_fetch_and_add(&value, 0);
+    }
+
+    operator bool() volatile const
+    {
+      return (bool)__sync_fetch_and_add(&value, 0);
+    }
+
+    // Is lock free?
+    bool is_lock_free() const
+    {
+      return true;
+    }
+
+    bool is_lock_free() const volatile
+    {
+      return true;
+    }
+
+    // Store
+    void store(bool v, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      __sync_lock_test_and_set(&value, char(v));
+    }
+
+    void store(bool v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      __sync_lock_test_and_set(&value, char(v));
+    }
+
+    // Load
+    bool load(etl::memory_order order = etl::memory_order_seq_cst) const
+    {
+      return (bool)__sync_fetch_and_add(&value, 0);
+    }
+
+    bool load(etl::memory_order order = etl::memory_order_seq_cst) const volatile
+    {
+      return (bool)__sync_fetch_and_add(&value, 0);
+    }
+
+    // Fetch add
+    bool fetch_add(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      return (bool)__sync_fetch_and_add(&value, v);
+    }
+
+    bool fetch_add(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      return (bool)__sync_fetch_and_add(&value, v);
+    }
+
+    // Fetch subtract
+    bool fetch_sub(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      return (bool)__sync_fetch_and_sub(&value, v);
+    }
+
+    bool fetch_sub(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      return (bool)__sync_fetch_and_sub(&value, v);
+    }
+
+    // Exchange
+    bool exchange(bool v, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      return (bool)__sync_lock_test_and_set(&value, char(v));
+    }
+
+    bool exchange(bool v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      return (bool)__sync_lock_test_and_set(&value, char(v));
+    }
+
+    // Compare exchange weak
+    bool compare_exchange_weak(bool& expected, bool desired, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      bool old = (bool)__sync_val_compare_and_swap(&value, char(expected), char(desired));
+
+      if (old == expected)
+      {
+        return true;
+      }
+      else
+      {
+        expected = old;
+        return false;
+      }
+    }
+
+    bool compare_exchange_weak(bool& expected, bool desired, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      bool old = (bool)__sync_val_compare_and_swap(&value, char(expected), char(desired));
+
+      if (old == expected)
+      {
+        return true;
+      }
+      else
+      {
+        expected = old;
+        return false;
+      }
+    }
+
+    bool compare_exchange_weak(bool& expected, bool desired, etl::memory_order success, etl::memory_order failure)
+    {
+      bool old = (bool)__sync_val_compare_and_swap(&value, char(expected), char(desired));
+
+      if (old == expected)
+      {
+        return true;
+      }
+      else
+      {
+        expected = old;
+        return false;
+      }
+    }
+
+    bool compare_exchange_weak(bool& expected, bool desired, etl::memory_order success, etl::memory_order failure) volatile
+    {
+      bool old = (bool)__sync_val_compare_and_swap(&value, char(expected), char(desired));
+
+      if (old == expected)
+      {
+        return true;
+      }
+      else
+      {
+        expected = old;
+        return false;
+      }
+    }
+
+    // Compare exchange strong
+    bool compare_exchange_strong(bool& expected, bool desired, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      bool old = expected;
+
+      while (!compare_exchange_weak(old, desired))
+      {
+        if (memcmp(&old, &expected, sizeof(bool)))
+        {
+          expected = old;
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    bool compare_exchange_strong(bool& expected, bool desired, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      bool old = expected;
+
+      while (!compare_exchange_weak(old, desired))
+      {
+        if (memcmp(&old, &expected, sizeof(bool)))
+        {
+          expected = old;
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    bool compare_exchange_strong(bool& expected, bool desired, etl::memory_order success, etl::memory_order failure)
+    {
+      bool old = expected;
+
+      while (!compare_exchange_weak(old, desired))
+      {
+        if (memcmp(&old, &expected, sizeof(bool)))
+        {
+          expected = old;
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    bool compare_exchange_strong(bool& expected, bool desired, etl::memory_order success, etl::memory_order failure) volatile
+    {
+      bool old = expected;
+
+      while (!compare_exchange_weak(old, desired))
+      {
+        if (memcmp(&old, &expected, sizeof(bool)))
+        {
+          expected = old;
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+  private:
+
+    atomic& operator =(const atomic&) ETL_DELETE;
+    atomic& operator =(const atomic&) volatile ETL_DELETE;
+
+    mutable char value;
+  };
+
+  typedef etl::atomic<bool>                atomic_bool;
   typedef etl::atomic<char>                atomic_char;
   typedef etl::atomic<signed char>         atomic_schar;
   typedef etl::atomic<unsigned char>       atomic_uchar;

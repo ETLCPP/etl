@@ -53,13 +53,11 @@ Original publication: https://www.codeproject.com/Articles/1170503/The-Impossibl
 #include "exception.h"
 #include "type_traits.h"
 
-#if ETL_CPP11_SUPPORTED == 0
-#error NOT SUPPORTED FOR C++03 OR BELOW
-#endif
-
-#undef ETL_FILE
-#define ETL_FILE "51"
-
+#if ETL_CPP11_NOT_SUPPORTED
+  #if !defined(ETL_IN_UNIT_TEST)
+    #error NOT SUPPORTED FOR C++03 OR BELOW
+  #endif
+#else
 namespace etl
 {
   //***************************************************************************
@@ -83,7 +81,7 @@ namespace etl
   public:
 
     delegate_uninitialised(string_type file_name_, numeric_type line_number_)
-      : delegate_exception(ETL_ERROR_TEXT("delegate:uninitialised", ETL_FILE"A"), file_name_, line_number_)
+      : delegate_exception(ETL_ERROR_TEXT("delegate:uninitialised", ETL_DELEGATE_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -385,6 +383,6 @@ namespace etl
   };
 }
 
-#undef ETL_FILE
+#endif
 
 #endif

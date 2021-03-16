@@ -203,6 +203,15 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Resizes the vector, but does not initialise new entries.
+    ///\param new_size The new size.
+    //*********************************************************************
+    void uninitialized_resize(size_t new_size)
+    {
+      base_t::uninitialized_resize(new_size);
+    }
+
+    //*********************************************************************
     /// Returns a reference to the value at index 'i'
     ///\param i The index.
     ///\return A reference to the value at index 'i'
@@ -622,6 +631,15 @@ namespace etl
     void resize(size_t new_size, value_type value)
     {
       base_t::resize(new_size, const_cast<T*>(value));
+    }
+
+    //*********************************************************************
+    /// Resizes the vector, but does not initialise new entries.
+    ///\param new_size The new size.
+    //*********************************************************************
+    void uninitialized_resize(size_t new_size)
+    {
+      base_t::uninitialized_resize(new_size);
     }
 
     //*********************************************************************

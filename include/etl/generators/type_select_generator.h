@@ -34,9 +34,6 @@ SOFTWARE.
 #include "type_traits.h"
 #include "null_type.h"
 
-#undef ETL_FILE
-#define ETL_FILE "49"
-
 /*[[[cog
 import cog
 cog.outl("#if 0")
@@ -94,7 +91,7 @@ namespace etl
       using type = typename type_select_helper<ID, 0, TTypes...>::type;
     };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_CPP11_SUPPORTED
     template <size_t ID>
     using select_t = typename select<ID>::type;
 #endif
@@ -172,7 +169,5 @@ namespace etl
   /*[[[end]]]*/
 #endif
 }
-
-#undef ETL_FILE
 
 #endif

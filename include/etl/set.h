@@ -55,9 +55,6 @@ SOFTWARE.
 
 #include "private/minmax_push.h"
 
-#undef ETL_FILE
-#define ETL_FILE "14"
-
 //*****************************************************************************
 ///\defgroup set set
 /// A set with the capacity defined at compile time.
@@ -89,7 +86,7 @@ namespace etl
   public:
 
     set_full(string_type file_name_, numeric_type line_number_)
-      : etl::set_exception(ETL_ERROR_TEXT("set:full", ETL_FILE"A"), file_name_, line_number_)
+      : etl::set_exception(ETL_ERROR_TEXT("set:full", ETL_SET_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -103,7 +100,7 @@ namespace etl
   public:
 
     set_out_of_bounds(string_type file_name_, numeric_type line_number_)
-      : etl::set_exception(ETL_ERROR_TEXT("set:bounds", ETL_FILE"B"), file_name_, line_number_)
+      : etl::set_exception(ETL_ERROR_TEXT("set:bounds", ETL_SET_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -117,7 +114,7 @@ namespace etl
   public:
 
     set_iterator(string_type file_name_, numeric_type line_number_)
-      : etl::set_exception(ETL_ERROR_TEXT("set:iterator problem", ETL_FILE"C"), file_name_, line_number_)
+      : etl::set_exception(ETL_ERROR_TEXT("set:iterator problem", ETL_SET_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -615,7 +612,7 @@ namespace etl
         return temp;
       }
 
-      iterator operator =(const iterator& other)
+      iterator& operator =(const iterator& other)
       {
         p_set = other.p_set;
         p_node = other.p_node;
@@ -741,7 +738,7 @@ namespace etl
         return temp;
       }
 
-      const_iterator operator =(const const_iterator& other)
+      const_iterator& operator =(const const_iterator& other)
       {
         p_set = other.p_set;
         p_node = other.p_node;
@@ -2308,7 +2305,5 @@ namespace etl
 }
 
 #include "private/minmax_pop.h"
-
-#undef ETL_FILE
 
 #endif

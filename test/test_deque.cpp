@@ -26,8 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
-#include "ExtraCheckMacros.h"
+#include "unit_test_framework.h"
 
 #include "etl/deque.h"
 
@@ -1984,6 +1983,13 @@ namespace
       CHECK_EQUAL(5U, *(*(data3.begin() + 4)));
 
       CHECK_EQUAL(ACTUAL_SIZE, data3.size());
+    }
+
+    //*************************************************************************
+    TEST(test_two_parameter_constructor_same_type_not_iterator)
+    {
+      // No compilation error.
+      etl::deque<int, 10> v(5, 5);
     }
   };
 }
