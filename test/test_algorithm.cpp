@@ -37,6 +37,7 @@ SOFTWARE.
 #include <vector>
 #include <array>
 #include <list>
+#include <forward_list>
 #include <algorithm>
 #include <functional>
 #include <numeric>
@@ -1957,6 +1958,90 @@ namespace
 
       bool is_same = std::equal(data1.begin(), data1.end(), data2.begin(), NDC::are_identical);
       CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(selection_sort_default_forward_iterators)
+    {
+      std::vector<int> data(100, 0);
+      std::iota(data.begin(), data.end(), 1);
+
+      for (int i = 0; i < 100; ++i)
+      {
+        std::shuffle(data.begin(), data.end(), urng);
+
+        std::forward_list<int> data1(data.begin(), data.end());
+        std::forward_list<int> data2(data.begin(), data.end());
+
+        data1.sort();
+        etl::selection_sort(data2.begin(), data2.end());
+
+        bool is_same = std::equal(data1.begin(), data1.end(), data2.begin());
+        CHECK(is_same);
+      }
+    }
+
+    //*************************************************************************
+    TEST(selection_sort_default_bidirectional_iterators)
+    {
+      std::vector<int> data(100, 0);
+      std::iota(data.begin(), data.end(), 1);
+
+      for (int i = 0; i < 100; ++i)
+      {
+        std::shuffle(data.begin(), data.end(), urng);
+
+        std::list<int> data1(data.begin(), data.end());
+        std::list<int> data2(data.begin(), data.end());
+
+        data1.sort();
+        etl::selection_sort(data2.begin(), data2.end());
+
+        bool is_same = std::equal(data1.begin(), data1.end(), data2.begin());
+        CHECK(is_same);
+      }
+    }
+
+    //*************************************************************************
+    TEST(selection_sort_default_random_access_iterators)
+    {
+      std::vector<int> data(100, 0);
+      std::iota(data.begin(), data.end(), 1);
+
+      for (int i = 0; i < 100; ++i)
+      {
+        std::shuffle(data.begin(), data.end(), urng);
+
+        std::vector<int> data1 = data;
+        std::vector<int> data2 = data;
+
+        std::sort(data1.begin(), data1.end());
+        etl::selection_sort(data2.begin(), data2.end());
+
+        bool is_same = std::equal(data1.begin(), data1.end(), data2.begin());
+        CHECK(is_same);
+      }
+    }
+
+    //*************************************************************************
+    TEST(selection_sort_greater)
+    {
+      std::vector<int> data(100, 0);
+      std::iota(data.begin(), data.end(), 1);
+
+      for (int i = 0; i < 100; ++i)
+      {
+        std::shuffle(data.begin(), data.end(), urng);
+
+        std::vector<int> data1 = data;
+        std::vector<int> data2 = data;
+
+        std::sort(data1.begin(), data1.end(), std::greater<int>());
+        etl::selection_sort(data2.begin(), data2.end(), std::greater<int>());
+
+        bool is_same = std::equal(data1.begin(), data1.end(), data2.begin());
+        CHECK(is_same);
+      }
     }
 
     //*************************************************************************

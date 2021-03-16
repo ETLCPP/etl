@@ -3230,6 +3230,102 @@ namespace etl
   }
 
   //***************************************************************************
+  namespace private_algorithm
+  {
+    template <typename TIterator>
+    typename etl::enable_if<etl::is_forward_iterator<TIterator>::value, TIterator>::type
+      get_before_last(TIterator first_, TIterator last_)
+    {
+      TIterator last      = first_;
+      TIterator lastplus1 = first_;
+      ++lastplus1;
+
+      while (lastplus1 != last_)
+      {
+        ++last;
+        ++lastplus1;
+      }
+
+      return last;
+    }
+
+    template <typename TIterator>
+    typename etl::enable_if<etl::is_bidirectional_iterator<TIterator>::value, TIterator>::type
+      get_before_last(TIterator /*first_*/, TIterator last_)
+    {
+      TIterator last = last_;
+      --last;
+
+      return last;
+    }
+
+    template <typename TIterator>
+    typename etl::enable_if<etl::is_random_access_iterator<TIterator>::value, TIterator>::type
+      get_before_last(TIterator /*first_*/, TIterator last_)
+    {
+      return last_ - 1;
+    }
+  }
+
+  //***************************************************************************
+  /// Sorts the elements using selection sort.
+  /// Uses user defined comparison.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TCompare>
+  void selection_sort(TIterator first, TIterator last, TCompare compare)
+  {
+    TIterator min;
+    const TIterator ilast = private_algorithm::get_before_last(first, last);;
+    const TIterator jlast = last;
+
+    for (TIterator i = first; i != ilast; ++i)
+    {
+      min = i;
+      
+      TIterator j = i;
+      ++j;
+
+      for (; j != jlast; ++j)
+      {
+        if (compare(*j, *min))
+        {
+          min = j;
+        }
+      }
+
+      using ETL_OR_STD::swap; // Allow ADL
+      swap(*i, *min);
+    }
+  }
+
+  //***************************************************************************
+  /// Sorts the elements using selection sort.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator>
+  void selection_sort(TIterator first, TIterator last)
+  {
+    selection_sort(first, last, etl::less<typename etl::iterator_traits<TIterator>::value_type>());
+  }
+
+  //***************************************************************************
+  /// Sorts the elements using heap sort.
+  /// Uses user defined comparison.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TCompare >
+  void heap_sort(TIterator first, TIterator last, TCompare compare)
+  {
+    if (!etl::is_heap(first, last, compare))
+    {
+      etl::make_heap(first, last, compare);
+    }
+
+    etl::sort_heap(first, last, compare);
+  }
+
+  //***************************************************************************
   /// Sorts the elements using heap sort.
   /// Uses user defined comparison.
   ///\ingroup algorithm
