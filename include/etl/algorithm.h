@@ -3352,22 +3352,6 @@ namespace etl
 
   //***************************************************************************
   /// Sorts the elements using heap sort.
-  /// Uses user defined comparison.
-  ///\ingroup algorithm
-  //***************************************************************************
-  template <typename TIterator, typename TCompare >
-  void heap_sort(TIterator first, TIterator last, TCompare compare)
-  {
-    if (!etl::is_heap(first, last, compare))
-    {
-      etl::make_heap(first, last, compare);
-    }
-
-    etl::sort_heap(first, last, compare);
-  }
-
-  //***************************************************************************
-  /// Sorts the elements using heap sort.
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TIterator>
