@@ -143,14 +143,34 @@ class Extended : public etl::hsm::extended<Extended>
      * Definition of the state hierarchy. The numbers are unique unsigned
      * values used to uniquify state types in the case two states have the
      * same parent and message set. */
+
+    typedef std::integer_sequence< etl::message_id_t,
+                                   message::Id::A,
+                                   message::Id::B,
+                                   message::Id::C,
+                                   message::Id::D,
+                                   message::Id::E,
+                                   message::Id::F,
+                                   message::Id::G,
+                                   message::Id::H > allowed_message_ids_t;
+
     using Top  = etl::hsm::composite<Extended, 0>;
+
     using S0   = etl::hsm::composite<Extended, 1, Top, message::E>;
-    using S1   = etl::hsm::composite<Extended, 2, S0 , message::A, message::B, message::C,
-                                     message::D, message::F>;
-    using S11  = etl::hsm::simple   <Extended, 3, S1 , message::G>;
-    using S2   = etl::hsm::composite<Extended, 4, S0 , message::C, message::F>;
-    using S21  = etl::hsm::composite<Extended, 5, S2 , message::B, message::H>;
-    using S211 = etl::hsm::simple   <Extended, 6, S21, message::D, message::G>;
+
+    using S1   = etl::hsm::composite<Extended, 2, S0,
+                                     message::A, message::B, message::C, message::D,
+                                     message::F>;
+
+    using S11  = etl::hsm::simple   <Extended, 3, allowed_message_ids_t, S1,
+                                     message::G>;
+
+    using S2   = etl::hsm::composite<Extended, 4, S0, message::C, message::F>;
+
+    using S21  = etl::hsm::composite<Extended, 5, S2, message::B, message::H>;
+
+    using S211 = etl::hsm::simple   <Extended, 6, allowed_message_ids_t, S21,
+                                     message::D, message::G>;
 
 } // namespace state
 } // namespace test
@@ -428,15 +448,16 @@ on_event(test::message::G const &, test::state::Extended & h, const SIMPLE &) co
 
 int main()
 {
-  test::state::Extended ext {test::router_id};
-  test::state::Top::handle_init(ext);
-  for(;;) {
-    std::cout << "\nEvent: ";
-    char c;
-    std::cin >> c;
-    if (c < 'a' || 'h' < c) {
-      return 0;
+    test::state::Extended ext(test::router_id);
+    test::state::Top::handle_init(ext);
+    for(;;) {
+        std::cout << "\nEvent: ";
+        char c;
+        std::cin >> c;
+        if (c < 'a' || 'h' < c)
+        {
+            return 0;
+        }
+        ext.receive( test::message::factory( c ));
     }
-    ext.receive( test::message::factory( c ));
-  }
 }

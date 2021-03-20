@@ -67,6 +67,17 @@ namespace hsm {
 
 //________________________________________________________________________________________
 //
+//  Function for detecting if integer_sequence contains given value
+//________________________________________________________________________________________
+
+template <etl::message_id_t ... Is>
+bool is_in(etl::message_id_t i, std::integer_sequence< etl::message_id_t, Is... >)
+{
+    return ((i == Is) || ...);
+}
+
+//________________________________________________________________________________________
+//
 // top
 //________________________________________________________________________________________
 
@@ -98,87 +109,87 @@ template<typename E, unsigned ID, typename P = composite<E, 0, top<E> >,
          typename M12, typename M13, typename M14, typename M15>
 class composite : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef composite<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef composite<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14, M15> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended &);
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended &);
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-         case M07::ID:
-         case M08::ID:
-         case M09::ID:
-         case M10::ID:
-         case M11::ID:
-         case M12::ID:
-         case M13::ID:
-         case M14::ID:
-         case M15::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+            case M07::ID:
+            case M08::ID:
+            case M09::ID:
+            case M10::ID:
+            case M11::ID:
+            case M12::ID:
+            case M13::ID:
+            case M14::ID:
+            case M15::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
-         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
-         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
-         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
-         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
-         case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
-         case M13::ID: on_event<SIMPLE>( static_cast<M13 const &>( m ), e, s ); return;
-         case M14::ID: on_event<SIMPLE>( static_cast<M14 const &>( m ), e, s ); return;
-         case M15::ID: on_event<SIMPLE>( static_cast<M15 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+            case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+            case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+            case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+            case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+            case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
+            case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
+            case M13::ID: on_event<SIMPLE>( static_cast<M13 const &>( m ), e, s ); return;
+            case M14::ID: on_event<SIMPLE>( static_cast<M14 const &>( m ), e, s ); return;
+            case M15::ID: on_event<SIMPLE>( static_cast<M15 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   private:
+    private:
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M13 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M14 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M15 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M13 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M14 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M15 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
@@ -189,33 +200,33 @@ class composite : public P
 template<typename E>
 class composite<E, 0> : public top<E>
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef top<E> Parent;
-   typedef composite<E, 0, top<E> > Self;
+    typedef E Extended;
+    typedef top<E> Parent;
+    typedef composite<E, 0, top<E> > Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended &);
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended &);
 
-   virtual bool accepts_event(etl::message_id_t) const override
-   {
-      return false;
-   }
+    static bool me_accepts_event(etl::message_id_t)
+    {
+        return false;
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & ) const
-   {
-      if ( e.has_successor() )
-      {
-         e.get_successor().receive(m);
-      }
-      else
-      {
-         e.on_receive_unknown(m);
-      }
-   }
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & ) const
+    {
+        if ( e.has_successor() )
+        {
+            e.get_successor().receive(m);
+        }
+        else
+        {
+            e.on_receive_unknown(m);
+        }
+    }
 };
 
 //________________________________________________________________________________________
@@ -232,84 +243,84 @@ class composite<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef composite<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef composite<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended &);
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended &);
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-         case M07::ID:
-         case M08::ID:
-         case M09::ID:
-         case M10::ID:
-         case M11::ID:
-         case M12::ID:
-         case M13::ID:
-         case M14::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+            case M07::ID:
+            case M08::ID:
+            case M09::ID:
+            case M10::ID:
+            case M11::ID:
+            case M12::ID:
+            case M13::ID:
+            case M14::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
-         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
-         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
-         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
-         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
-         case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
-         case M13::ID: on_event<SIMPLE>( static_cast<M13 const &>( m ), e, s ); return;
-         case M14::ID: on_event<SIMPLE>( static_cast<M14 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+            case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+            case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+            case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+            case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+            case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
+            case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
+            case M13::ID: on_event<SIMPLE>( static_cast<M13 const &>( m ), e, s ); return;
+            case M14::ID: on_event<SIMPLE>( static_cast<M14 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   private:
+    private:
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M13 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M14 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M13 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M14 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
@@ -326,81 +337,81 @@ class composite<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef composite<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef composite<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended &);
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended &);
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-         case M07::ID:
-         case M08::ID:
-         case M09::ID:
-         case M10::ID:
-         case M11::ID:
-         case M12::ID:
-         case M13::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+            case M07::ID:
+            case M08::ID:
+            case M09::ID:
+            case M10::ID:
+            case M11::ID:
+            case M12::ID:
+            case M13::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
-         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
-         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
-         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
-         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
-         case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
-         case M13::ID: on_event<SIMPLE>( static_cast<M13 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+            case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+            case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+            case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+            case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+            case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
+            case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
+            case M13::ID: on_event<SIMPLE>( static_cast<M13 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   private:
+    private:
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M13 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M13 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
@@ -417,78 +428,78 @@ class composite<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef composite<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef composite<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended &);
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended &);
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-         case M07::ID:
-         case M08::ID:
-         case M09::ID:
-         case M10::ID:
-         case M11::ID:
-         case M12::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+            case M07::ID:
+            case M08::ID:
+            case M09::ID:
+            case M10::ID:
+            case M11::ID:
+            case M12::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
-         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
-         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
-         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
-         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
-         case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+            case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+            case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+            case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+            case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+            case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
+            case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   private:
+    private:
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
@@ -504,75 +515,75 @@ class composite<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef composite<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef composite<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended &);
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended &);
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-         case M07::ID:
-         case M08::ID:
-         case M09::ID:
-         case M10::ID:
-         case M11::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+            case M07::ID:
+            case M08::ID:
+            case M09::ID:
+            case M10::ID:
+            case M11::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
-         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
-         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
-         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
-         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+            case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+            case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+            case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+            case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+            case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   private:
+    private:
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
@@ -588,72 +599,72 @@ class composite<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef composite<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef composite<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended &);
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended &);
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-         case M07::ID:
-         case M08::ID:
-         case M09::ID:
-         case M10::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+            case M07::ID:
+            case M08::ID:
+            case M09::ID:
+            case M10::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
-         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
-         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
-         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+            case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+            case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+            case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+            case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   private:
+    private:
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
@@ -669,69 +680,69 @@ class composite<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef composite<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef composite<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended &);
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended &);
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-         case M07::ID:
-         case M08::ID:
-         case M09::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+            case M07::ID:
+            case M08::ID:
+            case M09::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
-         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
-         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+            case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+            case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+            case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   private:
+    private:
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
@@ -747,66 +758,66 @@ class composite<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef composite<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef composite<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended &);
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended &);
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-         case M07::ID:
-         case M08::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+            case M07::ID:
+            case M08::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
-         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+            case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+            case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   private:
+    private:
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
@@ -820,62 +831,62 @@ template<typename E, unsigned ID, typename P,
 class composite<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef composite<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef composite<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended &);
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended &);
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-         case M07::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+            case M07::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+            case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   private:
+    private:
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
@@ -889,59 +900,59 @@ template<typename E, unsigned ID, typename P,
 class composite<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef composite<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef composite<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended &);
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended &);
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   private:
+    private:
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
@@ -955,56 +966,56 @@ template<typename E, unsigned ID, typename P,
 class composite<E, ID, P,
          M00, M01, M02, M03, M04, M05> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef composite<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef composite<E, ID, P,
          M00, M01, M02, M03, M04, M05> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended &);
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended &);
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   private:
+    private:
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
@@ -1018,53 +1029,53 @@ template<typename E, unsigned ID, typename P,
 class composite<E, ID, P,
          M00, M01, M02, M03, M04> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef composite<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef composite<E, ID, P,
          M00, M01, M02, M03, M04> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended &);
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended &);
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   private:
+    private:
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
@@ -1077,50 +1088,50 @@ template<typename E, unsigned ID, typename P,
 class composite<E, ID, P,
          M00, M01, M02, M03> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef composite<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef composite<E, ID, P,
          M00, M01, M02, M03> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended &);
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended &);
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   private:
+    private:
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
@@ -1133,47 +1144,47 @@ template<typename E, unsigned ID, typename P,
 class composite<E, ID, P,
          M00, M01, M02> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef composite<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef composite<E, ID, P,
          M00, M01, M02> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended &);
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended &);
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   private:
+    private:
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
@@ -1186,44 +1197,44 @@ template<typename E, unsigned ID, typename P,
 class composite<E, ID, P,
          M00, M01> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef composite<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef composite<E, ID, P,
          M00, M01> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended &);
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended &);
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   private:
+    private:
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
@@ -1236,41 +1247,41 @@ template<typename E, unsigned ID, typename P,
 class composite<E, ID, P,
          M00> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef composite<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef composite<E, ID, P,
          M00> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended &);
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended &);
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   private:
+    private:
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
@@ -1281,26 +1292,26 @@ class composite<E, ID, P,
 template<typename E, unsigned ID, typename P>
 class composite<E, ID, P> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef composite<E, ID, P> Self;
+    typedef E Extended;
+    typedef P Parent;
+    typedef composite<E, ID, P> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended &);
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended &);
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      return Parent::accepts_event( id );
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        return Parent::me_accepts_event( id );
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      Parent::handle_event(m, e, s);
-   }
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        Parent::handle_event(m, e, s);
+    }
 };
 
 //________________________________________________________________________________________
@@ -1308,127 +1319,133 @@ class composite<E, ID, P> : public P
 //  simple declaration for 16 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00 = void, typename M01 = void, typename M02 = void, typename M03 = void,
          typename M04 = void, typename M05 = void, typename M06 = void, typename M07 = void,
          typename M08 = void, typename M09 = void, typename M10 = void, typename M11 = void,
          typename M12 = void, typename M13 = void, typename M14 = void, typename M15 = void>
 class simple;
 
-template<typename E, unsigned ID, typename P = composite<E, 0, top<E> >,
+template<typename E, unsigned ID, typename A, typename P = composite<E, 0, top<E> >,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12, typename M13, typename M14, typename M15>
 class simple : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef simple<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef A Allowed_ids;
+    typedef simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14, M15> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended & arg)
-   {
-       arg.set_state(obj);
-   }
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended & arg)
+    {
+        arg.set_state(obj);
+    }
 
-   static const simple obj;
+    static const simple obj;
 
-   virtual unsigned get_id() const override
-   {
-      return ID;
-   }
+    virtual unsigned get_id() const override
+    {
+        return ID;
+    }
 
-   virtual void process_event(etl::imessage const & m, Extended & e) const override
-   {
-      handle_event(m, e, *this);
-   }
+    virtual void process_event(etl::imessage const & m, Extended & e) const override
+    {
+        handle_event(m, e, *this);
+    }
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-         case M07::ID:
-         case M08::ID:
-         case M09::ID:
-         case M10::ID:
-         case M11::ID:
-         case M12::ID:
-         case M13::ID:
-         case M14::ID:
-         case M15::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+            case M07::ID:
+            case M08::ID:
+            case M09::ID:
+            case M10::ID:
+            case M11::ID:
+            case M12::ID:
+            case M13::ID:
+            case M14::ID:
+            case M15::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
-         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
-         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
-         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
-         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
-         case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
-         case M13::ID: on_event<SIMPLE>( static_cast<M13 const &>( m ), e, s ); return;
-         case M14::ID: on_event<SIMPLE>( static_cast<M14 const &>( m ), e, s ); return;
-         case M15::ID: on_event<SIMPLE>( static_cast<M15 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    bool accepts_event(etl::message_id_t arg) const override
+    {                                                                      
+         return is_in( arg, Allowed_ids {} );                                           
+    }                                                                      
 
-   private:
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+            case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+            case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+            case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+            case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+            case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
+            case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
+            case M13::ID: on_event<SIMPLE>( static_cast<M13 const &>( m ), e, s ); return;
+            case M14::ID: on_event<SIMPLE>( static_cast<M14 const &>( m ), e, s ); return;
+            case M15::ID: on_event<SIMPLE>( static_cast<M15 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M13 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M14 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M15 const &, Extended &, SIMPLE const & ) const;
+    private:
+
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M13 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M14 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M15 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12, typename M13, typename M14, typename M15>
-const simple<E, ID, P,
+const simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14, M15>
-      simple<E, ID, P,
+      simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14, M15>::obj;
 
@@ -1437,119 +1454,125 @@ const simple<E, ID, P,
 //  simple specialisation for 15 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12, typename M13, typename M14>
-class simple<E, ID, P,
+class simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef simple<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef A Allowed_ids;
+    typedef simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended & arg)
-   {
-       arg.set_state(obj);
-   }
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended & arg)
+    {
+        arg.set_state(obj);
+    }
 
-   static const simple obj;
+    static const simple obj;
 
-   virtual unsigned get_id() const override
-   {
-      return ID;
-   }
+    virtual unsigned get_id() const override
+    {
+        return ID;
+    }
 
-   virtual void process_event(etl::imessage const & m, Extended & e) const override
-   {
-      handle_event(m, e, *this);
-   }
+    virtual void process_event(etl::imessage const & m, Extended & e) const override
+    {
+        handle_event(m, e, *this);
+    }
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-         case M07::ID:
-         case M08::ID:
-         case M09::ID:
-         case M10::ID:
-         case M11::ID:
-         case M12::ID:
-         case M13::ID:
-         case M14::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+            case M07::ID:
+            case M08::ID:
+            case M09::ID:
+            case M10::ID:
+            case M11::ID:
+            case M12::ID:
+            case M13::ID:
+            case M14::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
-         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
-         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
-         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
-         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
-         case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
-         case M13::ID: on_event<SIMPLE>( static_cast<M13 const &>( m ), e, s ); return;
-         case M14::ID: on_event<SIMPLE>( static_cast<M14 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    bool accepts_event(etl::message_id_t arg) const override
+    {                                                                      
+         return is_in( arg, Allowed_ids {} );                                           
+    }                                                                      
 
-   private:
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+            case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+            case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+            case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+            case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+            case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
+            case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
+            case M13::ID: on_event<SIMPLE>( static_cast<M13 const &>( m ), e, s ); return;
+            case M14::ID: on_event<SIMPLE>( static_cast<M14 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M13 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M14 const &, Extended &, SIMPLE const & ) const;
+    private:
+
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M13 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M14 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12, typename M13, typename M14>
-const simple<E, ID, P,
+const simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14>
-      simple<E, ID, P,
+      simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14>::obj;
 
@@ -1558,116 +1581,122 @@ const simple<E, ID, P,
 //  simple specialisation for 14 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12, typename M13>
-class simple<E, ID, P,
+class simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef simple<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef A Allowed_ids;
+    typedef simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended & arg)
-   {
-       arg.set_state(obj);
-   }
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended & arg)
+    {
+        arg.set_state(obj);
+    }
 
-   static const simple obj;
+    static const simple obj;
 
-   virtual unsigned get_id() const override
-   {
-      return ID;
-   }
+    virtual unsigned get_id() const override
+    {
+        return ID;
+    }
 
-   virtual void process_event(etl::imessage const & m, Extended & e) const override
-   {
-      handle_event(m, e, *this);
-   }
+    virtual void process_event(etl::imessage const & m, Extended & e) const override
+    {
+        handle_event(m, e, *this);
+    }
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-         case M07::ID:
-         case M08::ID:
-         case M09::ID:
-         case M10::ID:
-         case M11::ID:
-         case M12::ID:
-         case M13::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+            case M07::ID:
+            case M08::ID:
+            case M09::ID:
+            case M10::ID:
+            case M11::ID:
+            case M12::ID:
+            case M13::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
-         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
-         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
-         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
-         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
-         case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
-         case M13::ID: on_event<SIMPLE>( static_cast<M13 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    bool accepts_event(etl::message_id_t arg) const override
+    {                                                                      
+         return is_in( arg, Allowed_ids {} );                                           
+    }                                                                      
 
-   private:
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+            case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+            case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+            case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+            case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+            case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
+            case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
+            case M13::ID: on_event<SIMPLE>( static_cast<M13 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M13 const &, Extended &, SIMPLE const & ) const;
+    private:
+
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M13 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12, typename M13>
-const simple<E, ID, P,
+const simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13>
-      simple<E, ID, P,
+      simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13>::obj;
 
@@ -1676,113 +1705,119 @@ const simple<E, ID, P,
 //  simple specialisation for 13 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12>
-class simple<E, ID, P,
+class simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef simple<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef A Allowed_ids;
+    typedef simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended & arg)
-   {
-       arg.set_state(obj);
-   }
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended & arg)
+    {
+        arg.set_state(obj);
+    }
 
-   static const simple obj;
+    static const simple obj;
 
-   virtual unsigned get_id() const override
-   {
-      return ID;
-   }
+    virtual unsigned get_id() const override
+    {
+        return ID;
+    }
 
-   virtual void process_event(etl::imessage const & m, Extended & e) const override
-   {
-      handle_event(m, e, *this);
-   }
+    virtual void process_event(etl::imessage const & m, Extended & e) const override
+    {
+        handle_event(m, e, *this);
+    }
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-         case M07::ID:
-         case M08::ID:
-         case M09::ID:
-         case M10::ID:
-         case M11::ID:
-         case M12::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+            case M07::ID:
+            case M08::ID:
+            case M09::ID:
+            case M10::ID:
+            case M11::ID:
+            case M12::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
-         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
-         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
-         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
-         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
-         case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    bool accepts_event(etl::message_id_t arg) const override
+    {                                                                      
+         return is_in( arg, Allowed_ids {} );                                           
+    }                                                                      
 
-   private:
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+            case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+            case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+            case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+            case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+            case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
+            case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
+    private:
+
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12>
-const simple<E, ID, P,
+const simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12>
-      simple<E, ID, P,
+      simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12>::obj;
 
@@ -1791,108 +1826,114 @@ const simple<E, ID, P,
 //  simple specialisation for 12 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11>
-class simple<E, ID, P,
+class simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef simple<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef A Allowed_ids;
+    typedef simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended & arg)
-   {
-       arg.set_state(obj);
-   }
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended & arg)
+    {
+        arg.set_state(obj);
+    }
 
-   static const simple obj;
+    static const simple obj;
 
-   virtual unsigned get_id() const override
-   {
-      return ID;
-   }
+    virtual unsigned get_id() const override
+    {
+        return ID;
+    }
 
-   virtual void process_event(etl::imessage const & m, Extended & e) const override
-   {
-      handle_event(m, e, *this);
-   }
+    virtual void process_event(etl::imessage const & m, Extended & e) const override
+    {
+        handle_event(m, e, *this);
+    }
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-         case M07::ID:
-         case M08::ID:
-         case M09::ID:
-         case M10::ID:
-         case M11::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+            case M07::ID:
+            case M08::ID:
+            case M09::ID:
+            case M10::ID:
+            case M11::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
-         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
-         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
-         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
-         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    bool accepts_event(etl::message_id_t arg) const override
+    {                                                                      
+         return is_in( arg, Allowed_ids {} );                                           
+    }                                                                      
 
-   private:
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+            case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+            case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+            case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+            case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+            case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
+    private:
+
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11>
-const simple<E, ID, P,
+const simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11>
-      simple<E, ID, P,
+      simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11>::obj;
 
@@ -1901,105 +1942,111 @@ const simple<E, ID, P,
 //  simple specialisation for 11 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10>
-class simple<E, ID, P,
+class simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef simple<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef A Allowed_ids;
+    typedef simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended & arg)
-   {
-       arg.set_state(obj);
-   }
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended & arg)
+    {
+        arg.set_state(obj);
+    }
 
-   static const simple obj;
+    static const simple obj;
 
-   virtual unsigned get_id() const override
-   {
-      return ID;
-   }
+    virtual unsigned get_id() const override
+    {
+        return ID;
+    }
 
-   virtual void process_event(etl::imessage const & m, Extended & e) const override
-   {
-      handle_event(m, e, *this);
-   }
+    virtual void process_event(etl::imessage const & m, Extended & e) const override
+    {
+        handle_event(m, e, *this);
+    }
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-         case M07::ID:
-         case M08::ID:
-         case M09::ID:
-         case M10::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+            case M07::ID:
+            case M08::ID:
+            case M09::ID:
+            case M10::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
-         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
-         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
-         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    bool accepts_event(etl::message_id_t arg) const override
+    {                                                                      
+         return is_in( arg, Allowed_ids {} );                                           
+    }                                                                      
 
-   private:
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+            case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+            case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+            case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+            case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+    private:
+
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10>
-const simple<E, ID, P,
+const simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10>
-      simple<E, ID, P,
+      simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10>::obj;
 
@@ -2008,102 +2055,108 @@ const simple<E, ID, P,
 //  simple specialisation for 10 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09>
-class simple<E, ID, P,
+class simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef simple<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef A Allowed_ids;
+    typedef simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended & arg)
-   {
-       arg.set_state(obj);
-   }
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended & arg)
+    {
+        arg.set_state(obj);
+    }
 
-   static const simple obj;
+    static const simple obj;
 
-   virtual unsigned get_id() const override
-   {
-      return ID;
-   }
+    virtual unsigned get_id() const override
+    {
+        return ID;
+    }
 
-   virtual void process_event(etl::imessage const & m, Extended & e) const override
-   {
-      handle_event(m, e, *this);
-   }
+    virtual void process_event(etl::imessage const & m, Extended & e) const override
+    {
+        handle_event(m, e, *this);
+    }
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-         case M07::ID:
-         case M08::ID:
-         case M09::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+            case M07::ID:
+            case M08::ID:
+            case M09::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
-         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
-         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    bool accepts_event(etl::message_id_t arg) const override
+    {                                                                      
+         return is_in( arg, Allowed_ids {} );                                           
+    }                                                                      
 
-   private:
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+            case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+            case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+            case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+    private:
+
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09>
-const simple<E, ID, P,
+const simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09>
-      simple<E, ID, P,
+      simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09>::obj;
 
@@ -2112,99 +2165,105 @@ const simple<E, ID, P,
 //  simple specialisation for 9 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08>
-class simple<E, ID, P,
+class simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef simple<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef A Allowed_ids;
+    typedef simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended & arg)
-   {
-       arg.set_state(obj);
-   }
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended & arg)
+    {
+        arg.set_state(obj);
+    }
 
-   static const simple obj;
+    static const simple obj;
 
-   virtual unsigned get_id() const override
-   {
-      return ID;
-   }
+    virtual unsigned get_id() const override
+    {
+        return ID;
+    }
 
-   virtual void process_event(etl::imessage const & m, Extended & e) const override
-   {
-      handle_event(m, e, *this);
-   }
+    virtual void process_event(etl::imessage const & m, Extended & e) const override
+    {
+        handle_event(m, e, *this);
+    }
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-         case M07::ID:
-         case M08::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+            case M07::ID:
+            case M08::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
-         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    bool accepts_event(etl::message_id_t arg) const override
+    {                                                                      
+         return is_in( arg, Allowed_ids {} );                                           
+    }                                                                      
 
-   private:
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+            case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+            case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+    private:
+
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08>
-const simple<E, ID, P,
+const simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08>
-      simple<E, ID, P,
+      simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08>::obj;
 
@@ -2213,91 +2272,97 @@ const simple<E, ID, P,
 //  simple specialisation for 8 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07>
-class simple<E, ID, P,
+class simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef simple<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef A Allowed_ids;
+    typedef simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended & arg)
-   {
-       arg.set_state(obj);
-   }
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended & arg)
+    {
+        arg.set_state(obj);
+    }
 
-   static const simple obj;
+    static const simple obj;
 
-   virtual unsigned get_id() const override
-   {
-      return ID;
-   }
+    virtual unsigned get_id() const override
+    {
+        return ID;
+    }
 
-   virtual void process_event(etl::imessage const & m, Extended & e) const override
-   {
-      handle_event(m, e, *this);
-   }
+    virtual void process_event(etl::imessage const & m, Extended & e) const override
+    {
+        handle_event(m, e, *this);
+    }
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-         case M07::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+            case M07::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    bool accepts_event(etl::message_id_t arg) const override
+    {                                                                      
+         return is_in( arg, Allowed_ids {} );                                           
+    }                                                                      
 
-   private:
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+            case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+    private:
+
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07>
-const simple<E, ID, P,
+const simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07>
-      simple<E, ID, P,
+      simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06, M07>::obj;
 
 //________________________________________________________________________________________
@@ -2305,88 +2370,94 @@ const simple<E, ID, P,
 //  simple specialisation for 7 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06>
-class simple<E, ID, P,
+class simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef simple<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef A Allowed_ids;
+    typedef simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended & arg)
-   {
-       arg.set_state(obj);
-   }
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended & arg)
+    {
+        arg.set_state(obj);
+    }
 
-   static const simple obj;
+    static const simple obj;
 
-   virtual unsigned get_id() const override
-   {
-      return ID;
-   }
+    virtual unsigned get_id() const override
+    {
+        return ID;
+    }
 
-   virtual void process_event(etl::imessage const & m, Extended & e) const override
-   {
-      handle_event(m, e, *this);
-   }
+    virtual void process_event(etl::imessage const & m, Extended & e) const override
+    {
+        handle_event(m, e, *this);
+    }
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-         case M06::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+            case M06::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    bool accepts_event(etl::message_id_t arg) const override
+    {                                                                      
+         return is_in( arg, Allowed_ids {} );                                           
+    }                                                                      
 
-   private:
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+            case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+    private:
+
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06>
-const simple<E, ID, P,
+const simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06>
-      simple<E, ID, P,
+      simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05, M06>::obj;
 
 //________________________________________________________________________________________
@@ -2394,85 +2465,91 @@ const simple<E, ID, P,
 //  simple specialisation for 6 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05>
-class simple<E, ID, P,
+class simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef simple<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef A Allowed_ids;
+    typedef simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended & arg)
-   {
-       arg.set_state(obj);
-   }
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended & arg)
+    {
+        arg.set_state(obj);
+    }
 
-   static const simple obj;
+    static const simple obj;
 
-   virtual unsigned get_id() const override
-   {
-      return ID;
-   }
+    virtual unsigned get_id() const override
+    {
+        return ID;
+    }
 
-   virtual void process_event(etl::imessage const & m, Extended & e) const override
-   {
-      handle_event(m, e, *this);
-   }
+    virtual void process_event(etl::imessage const & m, Extended & e) const override
+    {
+        handle_event(m, e, *this);
+    }
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-         case M05::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+            case M05::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    bool accepts_event(etl::message_id_t arg) const override
+    {                                                                      
+         return is_in( arg, Allowed_ids {} );                                           
+    }                                                                      
 
-   private:
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+            case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+    private:
+
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05>
-const simple<E, ID, P,
+const simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05>
-      simple<E, ID, P,
+      simple<E, ID, A, P,
          M00, M01, M02, M03, M04, M05>::obj;
 
 //________________________________________________________________________________________
@@ -2480,82 +2557,88 @@ const simple<E, ID, P,
 //  simple specialisation for 5 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04>
-class simple<E, ID, P,
+class simple<E, ID, A, P,
          M00, M01, M02, M03, M04> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef simple<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef A Allowed_ids;
+    typedef simple<E, ID, A, P,
          M00, M01, M02, M03, M04> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended & arg)
-   {
-       arg.set_state(obj);
-   }
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended & arg)
+    {
+        arg.set_state(obj);
+    }
 
-   static const simple obj;
+    static const simple obj;
 
-   virtual unsigned get_id() const override
-   {
-      return ID;
-   }
+    virtual unsigned get_id() const override
+    {
+        return ID;
+    }
 
-   virtual void process_event(etl::imessage const & m, Extended & e) const override
-   {
-      handle_event(m, e, *this);
-   }
+    virtual void process_event(etl::imessage const & m, Extended & e) const override
+    {
+        handle_event(m, e, *this);
+    }
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-         case M04::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+            case M04::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    bool accepts_event(etl::message_id_t arg) const override
+    {                                                                      
+         return is_in( arg, Allowed_ids {} );                                           
+    }                                                                      
 
-   private:
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+            case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+    private:
+
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04>
-const simple<E, ID, P,
+const simple<E, ID, A, P,
          M00, M01, M02, M03, M04>
-      simple<E, ID, P,
+      simple<E, ID, A, P,
          M00, M01, M02, M03, M04>::obj;
 
 //________________________________________________________________________________________
@@ -2563,77 +2646,83 @@ const simple<E, ID, P,
 //  simple specialisation for 4 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03>
-class simple<E, ID, P,
+class simple<E, ID, A, P,
          M00, M01, M02, M03> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef simple<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef A Allowed_ids;
+    typedef simple<E, ID, A, P,
          M00, M01, M02, M03> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended & arg)
-   {
-       arg.set_state(obj);
-   }
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended & arg)
+    {
+        arg.set_state(obj);
+    }
 
-   static const simple obj;
+    static const simple obj;
 
-   virtual unsigned get_id() const override
-   {
-      return ID;
-   }
+    virtual unsigned get_id() const override
+    {
+        return ID;
+    }
 
-   virtual void process_event(etl::imessage const & m, Extended & e) const override
-   {
-      handle_event(m, e, *this);
-   }
+    virtual void process_event(etl::imessage const & m, Extended & e) const override
+    {
+        handle_event(m, e, *this);
+    }
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-         case M03::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+            case M03::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    bool accepts_event(etl::message_id_t arg) const override
+    {                                                                      
+         return is_in( arg, Allowed_ids {} );                                           
+    }                                                                      
 
-   private:
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+            case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+    private:
+
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02, typename M03>
-const simple<E, ID, P,
+const simple<E, ID, A, P,
          M00, M01, M02, M03>
-      simple<E, ID, P,
+      simple<E, ID, A, P,
          M00, M01, M02, M03>::obj;
 
 //________________________________________________________________________________________
@@ -2641,74 +2730,80 @@ const simple<E, ID, P,
 //  simple specialisation for 3 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02>
-class simple<E, ID, P,
+class simple<E, ID, A, P,
          M00, M01, M02> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef simple<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef A Allowed_ids;
+    typedef simple<E, ID, A, P,
          M00, M01, M02> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended & arg)
-   {
-       arg.set_state(obj);
-   }
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended & arg)
+    {
+        arg.set_state(obj);
+    }
 
-   static const simple obj;
+    static const simple obj;
 
-   virtual unsigned get_id() const override
-   {
-      return ID;
-   }
+    virtual unsigned get_id() const override
+    {
+        return ID;
+    }
 
-   virtual void process_event(etl::imessage const & m, Extended & e) const override
-   {
-      handle_event(m, e, *this);
-   }
+    virtual void process_event(etl::imessage const & m, Extended & e) const override
+    {
+        handle_event(m, e, *this);
+    }
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-         case M02::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+            case M02::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    bool accepts_event(etl::message_id_t arg) const override
+    {                                                                      
+         return is_in( arg, Allowed_ids {} );                                           
+    }                                                                      
 
-   private:
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+            case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+    private:
+
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01, typename M02>
-const simple<E, ID, P,
+const simple<E, ID, A, P,
          M00, M01, M02>
-      simple<E, ID, P,
+      simple<E, ID, A, P,
          M00, M01, M02>::obj;
 
 //________________________________________________________________________________________
@@ -2716,71 +2811,77 @@ const simple<E, ID, P,
 //  simple specialisation for 2 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01>
-class simple<E, ID, P,
+class simple<E, ID, A, P,
          M00, M01> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef simple<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef A Allowed_ids;
+    typedef simple<E, ID, A, P,
          M00, M01> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended & arg)
-   {
-       arg.set_state(obj);
-   }
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended & arg)
+    {
+        arg.set_state(obj);
+    }
 
-   static const simple obj;
+    static const simple obj;
 
-   virtual unsigned get_id() const override
-   {
-      return ID;
-   }
+    virtual unsigned get_id() const override
+    {
+        return ID;
+    }
 
-   virtual void process_event(etl::imessage const & m, Extended & e) const override
-   {
-      handle_event(m, e, *this);
-   }
+    virtual void process_event(etl::imessage const & m, Extended & e) const override
+    {
+        handle_event(m, e, *this);
+    }
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-         case M01::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+            case M01::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    bool accepts_event(etl::message_id_t arg) const override
+    {                                                                      
+         return is_in( arg, Allowed_ids {} );                                           
+    }                                                                      
 
-   private:
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+            case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
-   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+    private:
+
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00, typename M01>
-const simple<E, ID, P,
+const simple<E, ID, A, P,
          M00, M01>
-      simple<E, ID, P,
+      simple<E, ID, A, P,
          M00, M01>::obj;
 
 //________________________________________________________________________________________
@@ -2788,68 +2889,74 @@ const simple<E, ID, P,
 //  simple specialisation for 1 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00>
-class simple<E, ID, P,
+class simple<E, ID, A, P,
          M00> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef simple<E, ID, P,
+    typedef E Extended;
+    typedef P Parent;
+    typedef A Allowed_ids;
+    typedef simple<E, ID, A, P,
          M00> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended & arg)
-   {
-       arg.set_state(obj);
-   }
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended & arg)
+    {
+        arg.set_state(obj);
+    }
 
-   static const simple obj;
+    static const simple obj;
 
-   virtual unsigned get_id() const override
-   {
-      return ID;
-   }
+    virtual unsigned get_id() const override
+    {
+        return ID;
+    }
 
-   virtual void process_event(etl::imessage const & m, Extended & e) const override
-   {
-      handle_event(m, e, *this);
-   }
+    virtual void process_event(etl::imessage const & m, Extended & e) const override
+    {
+        handle_event(m, e, *this);
+    }
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      switch( id )
-      {
-         case M00::ID:
-            return true;
-         default:
-            return Parent::accepts_event( id );
-      };
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        switch( id )
+        {
+            case M00::ID:
+                return true;
+            default:
+                return Parent::accepts_event( id );
+        };
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      switch ( m.get_message_id() )
-      {
-         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
-      }
-      Parent::handle_event(m, e, s);
-   }
+    bool accepts_event(etl::message_id_t arg) const override
+    {                                                                      
+         return is_in( arg, Allowed_ids {} );                                           
+    }                                                                      
 
-   private:
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        switch ( m.get_message_id() )
+        {
+            case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+        }
+        Parent::handle_event(m, e, s);
+    }
 
-   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+    private:
+
+    template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename A, typename P,
          typename M00>
-const simple<E, ID, P,
+const simple<E, ID, A, P,
          M00>
-      simple<E, ID, P,
+      simple<E, ID, A, P,
          M00>::obj;
 
 //________________________________________________________________________________________
@@ -2857,49 +2964,55 @@ const simple<E, ID, P,
 //  simple specialisation for 0 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P>
-class simple<E, ID, P> : public P
+template<typename E, unsigned ID, typename A, typename P>
+class simple<E, ID, A, P> : public P
 {
-   public:
+    public:
 
-   typedef E Extended;
-   typedef P Parent;
-   typedef simple<E, ID, P> Self;
+    typedef E Extended;
+    typedef P Parent;
+    typedef A Allowed_ids;
+    typedef simple<E, ID, A, P> Self;
 
-   static void handle_entry(Extended &) {}
-   static void handle_exit (Extended &) {}
-   static void handle_init (Extended & arg)
-   {
-       arg.set_state(obj);
-   }
+    static void handle_entry(Extended &) {}
+    static void handle_exit (Extended &) {}
+    static void handle_init (Extended & arg)
+    {
+        arg.set_state(obj);
+    }
 
-   static const simple obj;
+    static const simple obj;
 
-   virtual unsigned get_id() const override
-   {
-      return ID;
-   }
+    virtual unsigned get_id() const override
+    {
+        return ID;
+    }
 
-   virtual void process_event(etl::imessage const & m, Extended & e) const override
-   {
-      handle_event(m, e, *this);
-   }
+    virtual void process_event(etl::imessage const & m, Extended & e) const override
+    {
+        handle_event(m, e, *this);
+    }
 
-   virtual bool accepts_event(etl::message_id_t id) const override
-   {
-      return Parent::accepts_event( id );
-   }
+    static bool me_accepts_event(etl::message_id_t id)
+    {
+        return Parent::me_accepts_event( id );
+    }
 
-   template<typename SIMPLE>
-   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-   {
-      Parent::handle_event(m, e, s);
-   }
+    bool accepts_event(etl::message_id_t arg) const override
+    {                                                                      
+         return is_in( arg, Allowed_ids {} );                                           
+    }                                                                      
+
+    template<typename SIMPLE>
+    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
+    {
+        Parent::handle_event(m, e, s);
+    }
 };
 
-template<typename E, unsigned ID, typename P>
-const simple<E, ID, P>
-      simple<E, ID, P>::obj;
+template<typename E, unsigned ID, typename A, typename P>
+const simple<E, ID, A, P>
+      simple<E, ID, A, P>::obj;
 
 //________________________________________________________________________________________
 //
