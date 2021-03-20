@@ -1,4 +1,3 @@
-//________________________________________________________________________________________
 // 
 //  The MIT License(MIT)
 //  
@@ -29,7 +28,7 @@
 
 //________________________________________________________________________________________
 //
-// THIS FILE IS AUTO GENERATED. DO NOT EDIT, CHANGES WILL BE OVERWRITTEN!.
+// THIS FILE IS AUTO-GENERATED. DO NOT EDIT. CHANGES WILL BE OVERWRITTEN !
 //________________________________________________________________________________________
 
 //________________________________________________________________________________________
@@ -82,7 +81,7 @@ struct top
 
 //________________________________________________________________________________________
 //
-// composite declaration for 16 messages
+//  composite declaration for 16 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -137,54 +136,54 @@ class composite : public P
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
-         case M07::ID: on_event<LEAF>( static_cast<M07 const &>( m ), e, l ); return;
-         case M08::ID: on_event<LEAF>( static_cast<M08 const &>( m ), e, l ); return;
-         case M09::ID: on_event<LEAF>( static_cast<M09 const &>( m ), e, l ); return;
-         case M10::ID: on_event<LEAF>( static_cast<M10 const &>( m ), e, l ); return;
-         case M11::ID: on_event<LEAF>( static_cast<M11 const &>( m ), e, l ); return;
-         case M12::ID: on_event<LEAF>( static_cast<M12 const &>( m ), e, l ); return;
-         case M13::ID: on_event<LEAF>( static_cast<M13 const &>( m ), e, l ); return;
-         case M14::ID: on_event<LEAF>( static_cast<M14 const &>( m ), e, l ); return;
-         case M15::ID: on_event<LEAF>( static_cast<M15 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
+         case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
+         case M13::ID: on_event<SIMPLE>( static_cast<M13 const &>( m ), e, s ); return;
+         case M14::ID: on_event<SIMPLE>( static_cast<M14 const &>( m ), e, s ); return;
+         case M15::ID: on_event<SIMPLE>( static_cast<M15 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M07 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M08 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M09 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M10 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M11 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M12 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M13 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M14 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M15 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M13 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M14 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M15 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
 //
-// composite specialisation for top-state which has class top as parent
+//  composite specialisation for top-state which has class top as parent
 //________________________________________________________________________________________
 
 template<typename E>
@@ -205,8 +204,8 @@ class composite<E, 0> : public top<E>
       return false;
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & ) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & ) const
    {
       if ( e.has_successor() )
       {
@@ -221,7 +220,7 @@ class composite<E, 0> : public top<E>
 
 //________________________________________________________________________________________
 //
-// composite specialisation for 15 messages
+//  composite specialisation for 15 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -270,52 +269,52 @@ class composite<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
-         case M07::ID: on_event<LEAF>( static_cast<M07 const &>( m ), e, l ); return;
-         case M08::ID: on_event<LEAF>( static_cast<M08 const &>( m ), e, l ); return;
-         case M09::ID: on_event<LEAF>( static_cast<M09 const &>( m ), e, l ); return;
-         case M10::ID: on_event<LEAF>( static_cast<M10 const &>( m ), e, l ); return;
-         case M11::ID: on_event<LEAF>( static_cast<M11 const &>( m ), e, l ); return;
-         case M12::ID: on_event<LEAF>( static_cast<M12 const &>( m ), e, l ); return;
-         case M13::ID: on_event<LEAF>( static_cast<M13 const &>( m ), e, l ); return;
-         case M14::ID: on_event<LEAF>( static_cast<M14 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
+         case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
+         case M13::ID: on_event<SIMPLE>( static_cast<M13 const &>( m ), e, s ); return;
+         case M14::ID: on_event<SIMPLE>( static_cast<M14 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M07 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M08 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M09 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M10 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M11 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M12 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M13 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M14 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M13 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M14 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
 //
-// composite specialisation for 14 messages
+//  composite specialisation for 14 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -363,50 +362,50 @@ class composite<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
-         case M07::ID: on_event<LEAF>( static_cast<M07 const &>( m ), e, l ); return;
-         case M08::ID: on_event<LEAF>( static_cast<M08 const &>( m ), e, l ); return;
-         case M09::ID: on_event<LEAF>( static_cast<M09 const &>( m ), e, l ); return;
-         case M10::ID: on_event<LEAF>( static_cast<M10 const &>( m ), e, l ); return;
-         case M11::ID: on_event<LEAF>( static_cast<M11 const &>( m ), e, l ); return;
-         case M12::ID: on_event<LEAF>( static_cast<M12 const &>( m ), e, l ); return;
-         case M13::ID: on_event<LEAF>( static_cast<M13 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
+         case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
+         case M13::ID: on_event<SIMPLE>( static_cast<M13 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M07 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M08 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M09 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M10 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M11 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M12 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M13 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M13 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
 //
-// composite specialisation for 13 messages
+//  composite specialisation for 13 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -453,48 +452,48 @@ class composite<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
-         case M07::ID: on_event<LEAF>( static_cast<M07 const &>( m ), e, l ); return;
-         case M08::ID: on_event<LEAF>( static_cast<M08 const &>( m ), e, l ); return;
-         case M09::ID: on_event<LEAF>( static_cast<M09 const &>( m ), e, l ); return;
-         case M10::ID: on_event<LEAF>( static_cast<M10 const &>( m ), e, l ); return;
-         case M11::ID: on_event<LEAF>( static_cast<M11 const &>( m ), e, l ); return;
-         case M12::ID: on_event<LEAF>( static_cast<M12 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
+         case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M07 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M08 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M09 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M10 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M11 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M12 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
 //
-// composite specialisation for 12 messages
+//  composite specialisation for 12 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -539,46 +538,46 @@ class composite<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
-         case M07::ID: on_event<LEAF>( static_cast<M07 const &>( m ), e, l ); return;
-         case M08::ID: on_event<LEAF>( static_cast<M08 const &>( m ), e, l ); return;
-         case M09::ID: on_event<LEAF>( static_cast<M09 const &>( m ), e, l ); return;
-         case M10::ID: on_event<LEAF>( static_cast<M10 const &>( m ), e, l ); return;
-         case M11::ID: on_event<LEAF>( static_cast<M11 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M07 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M08 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M09 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M10 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M11 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
 //
-// composite specialisation for 11 messages
+//  composite specialisation for 11 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -622,44 +621,44 @@ class composite<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
-         case M07::ID: on_event<LEAF>( static_cast<M07 const &>( m ), e, l ); return;
-         case M08::ID: on_event<LEAF>( static_cast<M08 const &>( m ), e, l ); return;
-         case M09::ID: on_event<LEAF>( static_cast<M09 const &>( m ), e, l ); return;
-         case M10::ID: on_event<LEAF>( static_cast<M10 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M07 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M08 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M09 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M10 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
 //
-// composite specialisation for 10 messages
+//  composite specialisation for 10 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -702,42 +701,42 @@ class composite<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
-         case M07::ID: on_event<LEAF>( static_cast<M07 const &>( m ), e, l ); return;
-         case M08::ID: on_event<LEAF>( static_cast<M08 const &>( m ), e, l ); return;
-         case M09::ID: on_event<LEAF>( static_cast<M09 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M07 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M08 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M09 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
 //
-// composite specialisation for 9 messages
+//  composite specialisation for 9 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -779,40 +778,40 @@ class composite<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
-         case M07::ID: on_event<LEAF>( static_cast<M07 const &>( m ), e, l ); return;
-         case M08::ID: on_event<LEAF>( static_cast<M08 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M07 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M08 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
 //
-// composite specialisation for 8 messages
+//  composite specialisation for 8 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -850,38 +849,38 @@ class composite<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
-         case M07::ID: on_event<LEAF>( static_cast<M07 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M07 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
 //
-// composite specialisation for 7 messages
+//  composite specialisation for 7 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -918,36 +917,36 @@ class composite<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
 //
-// composite specialisation for 6 messages
+//  composite specialisation for 6 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -983,34 +982,34 @@ class composite<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
 //
-// composite specialisation for 5 messages
+//  composite specialisation for 5 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -1045,32 +1044,32 @@ class composite<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
 //
-// composite specialisation for 4 messages
+//  composite specialisation for 4 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -1103,30 +1102,30 @@ class composite<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
 //
-// composite specialisation for 3 messages
+//  composite specialisation for 3 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -1158,28 +1157,28 @@ class composite<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
 //
-// composite specialisation for 2 messages
+//  composite specialisation for 2 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -1210,26 +1209,26 @@ class composite<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
 //
-// composite specialisation for 1 messages
+//  composite specialisation for 1 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -1259,24 +1258,24 @@ class composite<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
 };
 
 //________________________________________________________________________________________
 //
-// composite specialisation for 0 messages
+//  composite specialisation for 0 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P>
@@ -1297,16 +1296,16 @@ class composite<E, ID, P> : public P
       return Parent::accepts_event( id );
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 };
 
 //________________________________________________________________________________________
 //
-// leaf declaration for 16 messages
+//  simple declaration for 16 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -1314,20 +1313,20 @@ template<typename E, unsigned ID, typename P,
          typename M04 = void, typename M05 = void, typename M06 = void, typename M07 = void,
          typename M08 = void, typename M09 = void, typename M10 = void, typename M11 = void,
          typename M12 = void, typename M13 = void, typename M14 = void, typename M15 = void>
-class leaf;
+class simple;
 
 template<typename E, unsigned ID, typename P = composite<E, 0, top<E> >,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12, typename M13, typename M14, typename M15>
-class leaf : public P
+class simple : public P
 {
    public:
 
    typedef E Extended;
    typedef P Parent;
-   typedef leaf<E, ID, P,
+   typedef simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14, M15> Self;
 
@@ -1338,7 +1337,7 @@ class leaf : public P
        arg.set_state(obj);
    }
 
-   static const leaf obj;
+   static const simple obj;
 
    virtual unsigned get_id() const override
    {
@@ -1376,49 +1375,49 @@ class leaf : public P
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
-         case M07::ID: on_event<LEAF>( static_cast<M07 const &>( m ), e, l ); return;
-         case M08::ID: on_event<LEAF>( static_cast<M08 const &>( m ), e, l ); return;
-         case M09::ID: on_event<LEAF>( static_cast<M09 const &>( m ), e, l ); return;
-         case M10::ID: on_event<LEAF>( static_cast<M10 const &>( m ), e, l ); return;
-         case M11::ID: on_event<LEAF>( static_cast<M11 const &>( m ), e, l ); return;
-         case M12::ID: on_event<LEAF>( static_cast<M12 const &>( m ), e, l ); return;
-         case M13::ID: on_event<LEAF>( static_cast<M13 const &>( m ), e, l ); return;
-         case M14::ID: on_event<LEAF>( static_cast<M14 const &>( m ), e, l ); return;
-         case M15::ID: on_event<LEAF>( static_cast<M15 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
+         case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
+         case M13::ID: on_event<SIMPLE>( static_cast<M13 const &>( m ), e, s ); return;
+         case M14::ID: on_event<SIMPLE>( static_cast<M14 const &>( m ), e, s ); return;
+         case M15::ID: on_event<SIMPLE>( static_cast<M15 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M07 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M08 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M09 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M10 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M11 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M12 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M13 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M14 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M15 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M13 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M14 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M15 const &, Extended &, SIMPLE const & ) const;
 };
 
 template<typename E, unsigned ID, typename P,
@@ -1426,16 +1425,16 @@ template<typename E, unsigned ID, typename P,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12, typename M13, typename M14, typename M15>
-const leaf<E, ID, P,
+const simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14, M15>
-      leaf<E, ID, P,
+      simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14, M15>::obj;
 
 //________________________________________________________________________________________
 //
-// leaf specialisation for 15 messages
+//  simple specialisation for 15 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -1443,7 +1442,7 @@ template<typename E, unsigned ID, typename P,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12, typename M13, typename M14>
-class leaf<E, ID, P,
+class simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14> : public P
 {
@@ -1451,7 +1450,7 @@ class leaf<E, ID, P,
 
    typedef E Extended;
    typedef P Parent;
-   typedef leaf<E, ID, P,
+   typedef simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14> Self;
 
@@ -1462,7 +1461,7 @@ class leaf<E, ID, P,
        arg.set_state(obj);
    }
 
-   static const leaf obj;
+   static const simple obj;
 
    virtual unsigned get_id() const override
    {
@@ -1499,47 +1498,47 @@ class leaf<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
-         case M07::ID: on_event<LEAF>( static_cast<M07 const &>( m ), e, l ); return;
-         case M08::ID: on_event<LEAF>( static_cast<M08 const &>( m ), e, l ); return;
-         case M09::ID: on_event<LEAF>( static_cast<M09 const &>( m ), e, l ); return;
-         case M10::ID: on_event<LEAF>( static_cast<M10 const &>( m ), e, l ); return;
-         case M11::ID: on_event<LEAF>( static_cast<M11 const &>( m ), e, l ); return;
-         case M12::ID: on_event<LEAF>( static_cast<M12 const &>( m ), e, l ); return;
-         case M13::ID: on_event<LEAF>( static_cast<M13 const &>( m ), e, l ); return;
-         case M14::ID: on_event<LEAF>( static_cast<M14 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
+         case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
+         case M13::ID: on_event<SIMPLE>( static_cast<M13 const &>( m ), e, s ); return;
+         case M14::ID: on_event<SIMPLE>( static_cast<M14 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M07 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M08 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M09 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M10 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M11 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M12 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M13 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M14 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M13 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M14 const &, Extended &, SIMPLE const & ) const;
 };
 
 template<typename E, unsigned ID, typename P,
@@ -1547,16 +1546,16 @@ template<typename E, unsigned ID, typename P,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12, typename M13, typename M14>
-const leaf<E, ID, P,
+const simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14>
-      leaf<E, ID, P,
+      simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14>::obj;
 
 //________________________________________________________________________________________
 //
-// leaf specialisation for 14 messages
+//  simple specialisation for 14 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -1564,7 +1563,7 @@ template<typename E, unsigned ID, typename P,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12, typename M13>
-class leaf<E, ID, P,
+class simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13> : public P
 {
@@ -1572,7 +1571,7 @@ class leaf<E, ID, P,
 
    typedef E Extended;
    typedef P Parent;
-   typedef leaf<E, ID, P,
+   typedef simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13> Self;
 
@@ -1583,7 +1582,7 @@ class leaf<E, ID, P,
        arg.set_state(obj);
    }
 
-   static const leaf obj;
+   static const simple obj;
 
    virtual unsigned get_id() const override
    {
@@ -1619,45 +1618,45 @@ class leaf<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
-         case M07::ID: on_event<LEAF>( static_cast<M07 const &>( m ), e, l ); return;
-         case M08::ID: on_event<LEAF>( static_cast<M08 const &>( m ), e, l ); return;
-         case M09::ID: on_event<LEAF>( static_cast<M09 const &>( m ), e, l ); return;
-         case M10::ID: on_event<LEAF>( static_cast<M10 const &>( m ), e, l ); return;
-         case M11::ID: on_event<LEAF>( static_cast<M11 const &>( m ), e, l ); return;
-         case M12::ID: on_event<LEAF>( static_cast<M12 const &>( m ), e, l ); return;
-         case M13::ID: on_event<LEAF>( static_cast<M13 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
+         case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
+         case M13::ID: on_event<SIMPLE>( static_cast<M13 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M07 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M08 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M09 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M10 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M11 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M12 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M13 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M13 const &, Extended &, SIMPLE const & ) const;
 };
 
 template<typename E, unsigned ID, typename P,
@@ -1665,16 +1664,16 @@ template<typename E, unsigned ID, typename P,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12, typename M13>
-const leaf<E, ID, P,
+const simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13>
-      leaf<E, ID, P,
+      simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13>::obj;
 
 //________________________________________________________________________________________
 //
-// leaf specialisation for 13 messages
+//  simple specialisation for 13 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
@@ -1682,7 +1681,7 @@ template<typename E, unsigned ID, typename P,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12>
-class leaf<E, ID, P,
+class simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12> : public P
 {
@@ -1690,7 +1689,7 @@ class leaf<E, ID, P,
 
    typedef E Extended;
    typedef P Parent;
-   typedef leaf<E, ID, P,
+   typedef simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12> Self;
 
@@ -1701,7 +1700,7 @@ class leaf<E, ID, P,
        arg.set_state(obj);
    }
 
-   static const leaf obj;
+   static const simple obj;
 
    virtual unsigned get_id() const override
    {
@@ -1736,43 +1735,43 @@ class leaf<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
-         case M07::ID: on_event<LEAF>( static_cast<M07 const &>( m ), e, l ); return;
-         case M08::ID: on_event<LEAF>( static_cast<M08 const &>( m ), e, l ); return;
-         case M09::ID: on_event<LEAF>( static_cast<M09 const &>( m ), e, l ); return;
-         case M10::ID: on_event<LEAF>( static_cast<M10 const &>( m ), e, l ); return;
-         case M11::ID: on_event<LEAF>( static_cast<M11 const &>( m ), e, l ); return;
-         case M12::ID: on_event<LEAF>( static_cast<M12 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
+         case M12::ID: on_event<SIMPLE>( static_cast<M12 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M07 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M08 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M09 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M10 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M11 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M12 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
 };
 
 template<typename E, unsigned ID, typename P,
@@ -1780,23 +1779,23 @@ template<typename E, unsigned ID, typename P,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12>
-const leaf<E, ID, P,
+const simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12>
-      leaf<E, ID, P,
+      simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12>::obj;
 
 //________________________________________________________________________________________
 //
-// leaf specialisation for 12 messages
+//  simple specialisation for 12 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11>
-class leaf<E, ID, P,
+class simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11> : public P
 {
@@ -1804,7 +1803,7 @@ class leaf<E, ID, P,
 
    typedef E Extended;
    typedef P Parent;
-   typedef leaf<E, ID, P,
+   typedef simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11> Self;
 
@@ -1815,7 +1814,7 @@ class leaf<E, ID, P,
        arg.set_state(obj);
    }
 
-   static const leaf obj;
+   static const simple obj;
 
    virtual unsigned get_id() const override
    {
@@ -1849,64 +1848,64 @@ class leaf<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
-         case M07::ID: on_event<LEAF>( static_cast<M07 const &>( m ), e, l ); return;
-         case M08::ID: on_event<LEAF>( static_cast<M08 const &>( m ), e, l ); return;
-         case M09::ID: on_event<LEAF>( static_cast<M09 const &>( m ), e, l ); return;
-         case M10::ID: on_event<LEAF>( static_cast<M10 const &>( m ), e, l ); return;
-         case M11::ID: on_event<LEAF>( static_cast<M11 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
+         case M11::ID: on_event<SIMPLE>( static_cast<M11 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M07 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M08 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M09 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M10 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M11 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
 };
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11>
-const leaf<E, ID, P,
+const simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11>
-      leaf<E, ID, P,
+      simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11>::obj;
 
 //________________________________________________________________________________________
 //
-// leaf specialisation for 11 messages
+//  simple specialisation for 11 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10>
-class leaf<E, ID, P,
+class simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10> : public P
 {
@@ -1914,7 +1913,7 @@ class leaf<E, ID, P,
 
    typedef E Extended;
    typedef P Parent;
-   typedef leaf<E, ID, P,
+   typedef simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10> Self;
 
@@ -1925,7 +1924,7 @@ class leaf<E, ID, P,
        arg.set_state(obj);
    }
 
-   static const leaf obj;
+   static const simple obj;
 
    virtual unsigned get_id() const override
    {
@@ -1958,62 +1957,62 @@ class leaf<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
-         case M07::ID: on_event<LEAF>( static_cast<M07 const &>( m ), e, l ); return;
-         case M08::ID: on_event<LEAF>( static_cast<M08 const &>( m ), e, l ); return;
-         case M09::ID: on_event<LEAF>( static_cast<M09 const &>( m ), e, l ); return;
-         case M10::ID: on_event<LEAF>( static_cast<M10 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
+         case M10::ID: on_event<SIMPLE>( static_cast<M10 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M07 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M08 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M09 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M10 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
 };
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10>
-const leaf<E, ID, P,
+const simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10>
-      leaf<E, ID, P,
+      simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10>::obj;
 
 //________________________________________________________________________________________
 //
-// leaf specialisation for 10 messages
+//  simple specialisation for 10 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09>
-class leaf<E, ID, P,
+class simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09> : public P
 {
@@ -2021,7 +2020,7 @@ class leaf<E, ID, P,
 
    typedef E Extended;
    typedef P Parent;
-   typedef leaf<E, ID, P,
+   typedef simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09> Self;
 
@@ -2032,7 +2031,7 @@ class leaf<E, ID, P,
        arg.set_state(obj);
    }
 
-   static const leaf obj;
+   static const simple obj;
 
    virtual unsigned get_id() const override
    {
@@ -2064,60 +2063,60 @@ class leaf<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
-         case M07::ID: on_event<LEAF>( static_cast<M07 const &>( m ), e, l ); return;
-         case M08::ID: on_event<LEAF>( static_cast<M08 const &>( m ), e, l ); return;
-         case M09::ID: on_event<LEAF>( static_cast<M09 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
+         case M09::ID: on_event<SIMPLE>( static_cast<M09 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M07 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M08 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M09 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
 };
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09>
-const leaf<E, ID, P,
+const simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09>
-      leaf<E, ID, P,
+      simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09>::obj;
 
 //________________________________________________________________________________________
 //
-// leaf specialisation for 9 messages
+//  simple specialisation for 9 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08>
-class leaf<E, ID, P,
+class simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08> : public P
 {
@@ -2125,7 +2124,7 @@ class leaf<E, ID, P,
 
    typedef E Extended;
    typedef P Parent;
-   typedef leaf<E, ID, P,
+   typedef simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08> Self;
 
@@ -2136,7 +2135,7 @@ class leaf<E, ID, P,
        arg.set_state(obj);
    }
 
-   static const leaf obj;
+   static const simple obj;
 
    virtual unsigned get_id() const override
    {
@@ -2167,64 +2166,64 @@ class leaf<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
-         case M07::ID: on_event<LEAF>( static_cast<M07 const &>( m ), e, l ); return;
-         case M08::ID: on_event<LEAF>( static_cast<M08 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
+         case M08::ID: on_event<SIMPLE>( static_cast<M08 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M07 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M08 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
 };
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08>
-const leaf<E, ID, P,
+const simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08>
-      leaf<E, ID, P,
+      simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08>::obj;
 
 //________________________________________________________________________________________
 //
-// leaf specialisation for 8 messages
+//  simple specialisation for 8 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07>
-class leaf<E, ID, P,
+class simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07> : public P
 {
    public:
 
    typedef E Extended;
    typedef P Parent;
-   typedef leaf<E, ID, P,
+   typedef simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07> Self;
 
    static void handle_entry(Extended &) {}
@@ -2234,7 +2233,7 @@ class leaf<E, ID, P,
        arg.set_state(obj);
    }
 
-   static const leaf obj;
+   static const simple obj;
 
    virtual unsigned get_id() const override
    {
@@ -2264,59 +2263,59 @@ class leaf<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
-         case M07::ID: on_event<LEAF>( static_cast<M07 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
+         case M07::ID: on_event<SIMPLE>( static_cast<M07 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M07 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
 };
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07>
-const leaf<E, ID, P,
+const simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07>
-      leaf<E, ID, P,
+      simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06, M07>::obj;
 
 //________________________________________________________________________________________
 //
-// leaf specialisation for 7 messages
+//  simple specialisation for 7 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06>
-class leaf<E, ID, P,
+class simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06> : public P
 {
    public:
 
    typedef E Extended;
    typedef P Parent;
-   typedef leaf<E, ID, P,
+   typedef simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06> Self;
 
    static void handle_entry(Extended &) {}
@@ -2326,7 +2325,7 @@ class leaf<E, ID, P,
        arg.set_state(obj);
    }
 
-   static const leaf obj;
+   static const simple obj;
 
    virtual unsigned get_id() const override
    {
@@ -2355,57 +2354,57 @@ class leaf<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
-         case M06::ID: on_event<LEAF>( static_cast<M06 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
+         case M06::ID: on_event<SIMPLE>( static_cast<M06 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M06 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
 };
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06>
-const leaf<E, ID, P,
+const simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06>
-      leaf<E, ID, P,
+      simple<E, ID, P,
          M00, M01, M02, M03, M04, M05, M06>::obj;
 
 //________________________________________________________________________________________
 //
-// leaf specialisation for 6 messages
+//  simple specialisation for 6 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05>
-class leaf<E, ID, P,
+class simple<E, ID, P,
          M00, M01, M02, M03, M04, M05> : public P
 {
    public:
 
    typedef E Extended;
    typedef P Parent;
-   typedef leaf<E, ID, P,
+   typedef simple<E, ID, P,
          M00, M01, M02, M03, M04, M05> Self;
 
    static void handle_entry(Extended &) {}
@@ -2415,7 +2414,7 @@ class leaf<E, ID, P,
        arg.set_state(obj);
    }
 
-   static const leaf obj;
+   static const simple obj;
 
    virtual unsigned get_id() const override
    {
@@ -2443,55 +2442,55 @@ class leaf<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
-         case M05::ID: on_event<LEAF>( static_cast<M05 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
+         case M05::ID: on_event<SIMPLE>( static_cast<M05 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M05 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
 };
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05>
-const leaf<E, ID, P,
+const simple<E, ID, P,
          M00, M01, M02, M03, M04, M05>
-      leaf<E, ID, P,
+      simple<E, ID, P,
          M00, M01, M02, M03, M04, M05>::obj;
 
 //________________________________________________________________________________________
 //
-// leaf specialisation for 5 messages
+//  simple specialisation for 5 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04>
-class leaf<E, ID, P,
+class simple<E, ID, P,
          M00, M01, M02, M03, M04> : public P
 {
    public:
 
    typedef E Extended;
    typedef P Parent;
-   typedef leaf<E, ID, P,
+   typedef simple<E, ID, P,
          M00, M01, M02, M03, M04> Self;
 
    static void handle_entry(Extended &) {}
@@ -2501,7 +2500,7 @@ class leaf<E, ID, P,
        arg.set_state(obj);
    }
 
-   static const leaf obj;
+   static const simple obj;
 
    virtual unsigned get_id() const override
    {
@@ -2528,52 +2527,52 @@ class leaf<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
-         case M04::ID: on_event<LEAF>( static_cast<M04 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
+         case M04::ID: on_event<SIMPLE>( static_cast<M04 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M04 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
 };
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02, typename M03,
          typename M04>
-const leaf<E, ID, P,
+const simple<E, ID, P,
          M00, M01, M02, M03, M04>
-      leaf<E, ID, P,
+      simple<E, ID, P,
          M00, M01, M02, M03, M04>::obj;
 
 //________________________________________________________________________________________
 //
-// leaf specialisation for 4 messages
+//  simple specialisation for 4 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02, typename M03>
-class leaf<E, ID, P,
+class simple<E, ID, P,
          M00, M01, M02, M03> : public P
 {
    public:
 
    typedef E Extended;
    typedef P Parent;
-   typedef leaf<E, ID, P,
+   typedef simple<E, ID, P,
          M00, M01, M02, M03> Self;
 
    static void handle_entry(Extended &) {}
@@ -2583,7 +2582,7 @@ class leaf<E, ID, P,
        arg.set_state(obj);
    }
 
-   static const leaf obj;
+   static const simple obj;
 
    virtual unsigned get_id() const override
    {
@@ -2609,49 +2608,49 @@ class leaf<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
-         case M03::ID: on_event<LEAF>( static_cast<M03 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
+         case M03::ID: on_event<SIMPLE>( static_cast<M03 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M03 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
 };
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02, typename M03>
-const leaf<E, ID, P,
+const simple<E, ID, P,
          M00, M01, M02, M03>
-      leaf<E, ID, P,
+      simple<E, ID, P,
          M00, M01, M02, M03>::obj;
 
 //________________________________________________________________________________________
 //
-// leaf specialisation for 3 messages
+//  simple specialisation for 3 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02>
-class leaf<E, ID, P,
+class simple<E, ID, P,
          M00, M01, M02> : public P
 {
    public:
 
    typedef E Extended;
    typedef P Parent;
-   typedef leaf<E, ID, P,
+   typedef simple<E, ID, P,
          M00, M01, M02> Self;
 
    static void handle_entry(Extended &) {}
@@ -2661,7 +2660,7 @@ class leaf<E, ID, P,
        arg.set_state(obj);
    }
 
-   static const leaf obj;
+   static const simple obj;
 
    virtual unsigned get_id() const override
    {
@@ -2686,47 +2685,47 @@ class leaf<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
-         case M02::ID: on_event<LEAF>( static_cast<M02 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
+         case M02::ID: on_event<SIMPLE>( static_cast<M02 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M02 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
 };
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01, typename M02>
-const leaf<E, ID, P,
+const simple<E, ID, P,
          M00, M01, M02>
-      leaf<E, ID, P,
+      simple<E, ID, P,
          M00, M01, M02>::obj;
 
 //________________________________________________________________________________________
 //
-// leaf specialisation for 2 messages
+//  simple specialisation for 2 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01>
-class leaf<E, ID, P,
+class simple<E, ID, P,
          M00, M01> : public P
 {
    public:
 
    typedef E Extended;
    typedef P Parent;
-   typedef leaf<E, ID, P,
+   typedef simple<E, ID, P,
          M00, M01> Self;
 
    static void handle_entry(Extended &) {}
@@ -2736,7 +2735,7 @@ class leaf<E, ID, P,
        arg.set_state(obj);
    }
 
-   static const leaf obj;
+   static const simple obj;
 
    virtual unsigned get_id() const override
    {
@@ -2760,45 +2759,45 @@ class leaf<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
-         case M01::ID: on_event<LEAF>( static_cast<M01 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
+         case M01::ID: on_event<SIMPLE>( static_cast<M01 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
-   template<typename LEAF> void on_event( M01 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
+   template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
 };
 
 template<typename E, unsigned ID, typename P,
          typename M00, typename M01>
-const leaf<E, ID, P,
+const simple<E, ID, P,
          M00, M01>
-      leaf<E, ID, P,
+      simple<E, ID, P,
          M00, M01>::obj;
 
 //________________________________________________________________________________________
 //
-// leaf specialisation for 1 messages
+//  simple specialisation for 1 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P,
          typename M00>
-class leaf<E, ID, P,
+class simple<E, ID, P,
          M00> : public P
 {
    public:
 
    typedef E Extended;
    typedef P Parent;
-   typedef leaf<E, ID, P,
+   typedef simple<E, ID, P,
          M00> Self;
 
    static void handle_entry(Extended &) {}
@@ -2808,7 +2807,7 @@ class leaf<E, ID, P,
        arg.set_state(obj);
    }
 
-   static const leaf obj;
+   static const simple obj;
 
    virtual unsigned get_id() const override
    {
@@ -2831,41 +2830,41 @@ class leaf<E, ID, P,
       };
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
       switch ( m.get_message_id() )
       {
-         case M00::ID: on_event<LEAF>( static_cast<M00 const &>( m ), e, l ); return;
+         case M00::ID: on_event<SIMPLE>( static_cast<M00 const &>( m ), e, s ); return;
       }
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 
    private:
 
-   template<typename LEAF> void on_event( M00 const &, Extended &, LEAF const & ) const;
+   template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
 };
 
 template<typename E, unsigned ID, typename P,
          typename M00>
-const leaf<E, ID, P,
+const simple<E, ID, P,
          M00>
-      leaf<E, ID, P,
+      simple<E, ID, P,
          M00>::obj;
 
 //________________________________________________________________________________________
 //
-// leaf specialisation for 0 messages
+//  simple specialisation for 0 messages
 //________________________________________________________________________________________
 
 template<typename E, unsigned ID, typename P>
-class leaf<E, ID, P> : public P
+class simple<E, ID, P> : public P
 {
    public:
 
    typedef E Extended;
    typedef P Parent;
-   typedef leaf<E, ID, P> Self;
+   typedef simple<E, ID, P> Self;
 
    static void handle_entry(Extended &) {}
    static void handle_exit (Extended &) {}
@@ -2874,7 +2873,7 @@ class leaf<E, ID, P> : public P
        arg.set_state(obj);
    }
 
-   static const leaf obj;
+   static const simple obj;
 
    virtual unsigned get_id() const override
    {
@@ -2891,16 +2890,16 @@ class leaf<E, ID, P> : public P
       return Parent::accepts_event( id );
    }
 
-   template<typename LEAF>
-   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const
+   template<typename SIMPLE>
+   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
    {
-      Parent::handle_event(m, e, l);
+      Parent::handle_event(m, e, s);
    }
 };
 
 template<typename E, unsigned ID, typename P>
-const leaf<E, ID, P>
-      leaf<E, ID, P>::obj;
+const simple<E, ID, P>
+      simple<E, ID, P>::obj;
 
 //________________________________________________________________________________________
 //

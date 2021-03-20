@@ -1,4 +1,3 @@
-//________________________________________________________________________________________
 // 
 //  The MIT License(MIT)
 //  
@@ -31,7 +30,7 @@
 import cog
 cog.outl('//________________________________________________________________________________________')
 cog.outl('//')
-cog.outl('// THIS FILE IS AUTO GENERATED. DO NOT EDIT, CHANGES WILL BE OVERWRITTEN!.')
+cog.outl('// THIS FILE IS AUTO-GENERATED. DO NOT EDIT. CHANGES WILL BE OVERWRITTEN !')
 cog.outl('//________________________________________________________________________________________')
 cog.outl('')
 ]]]*/
@@ -87,160 +86,161 @@ struct top
 import cog
 
 def message_types(prefix, msgs, nfirstline, notherlines, suffix=''):
-   sep = ','
-   s = ''
-   for sx in range(msgs):
-      linebreak = (sx - nfirstline) % notherlines == 0
-      if linebreak:
-         s += '{}\n{:>9}{}{:02d}{}'.format(sep, '', prefix, sx, suffix)
-      else:
-         s += '{} {}{:02d}{}'.format(sep, prefix, sx, suffix)
-   s += '>'
-   return s
+    sep = ','
+    s = ''
+    for sx in range(msgs):
+        linebreak = (sx - nfirstline) % notherlines == 0
+        if linebreak:
+            s += '{}\n{:>9}{}{:02d}{}'.format(sep, '', prefix, sx, suffix)
+        else:
+            s += '{} {}{:02d}{}'.format(sep, prefix, sx, suffix)
+    s += '>'
+    return s
 
 def typename_M_eq_void(n):
-   return message_types(prefix='typename M', msgs=n, nfirstline=0, notherlines=4,
-                        suffix=' = void')
+    return message_types(prefix='typename M', msgs=n, nfirstline=0, notherlines=4,
+                         suffix=' = void')
 
 def typename_M(n):
-   return message_types(prefix='typename M', msgs=n, nfirstline=0, notherlines=4)
+    return message_types(prefix='typename M', msgs=n, nfirstline=0, notherlines=4)
 
 def M(n):
-   return message_types(prefix='M', msgs=n, nfirstline=0, notherlines=8)
+    return message_types(prefix='M', msgs=n, nfirstline=0, notherlines=8)
 
 def header_comment(text):
-   cog.outl('')
-   cog.outl('//________________________________________________________________________________________')
-   cog.outl('//')
-   cog.outl('// {}'.format(text))
-   cog.outl('//________________________________________________________________________________________')
-   cog.outl('')
+    cog.outl('')
+    cog.outl('//________________________________________________________________________________________')
+    cog.outl('//')
+    cog.outl('//  {}'.format(text))
+    cog.outl('//________________________________________________________________________________________')
+    cog.outl('')
 
-def create_class(classname, is_declaration, is_topspec, is_leaf, n):
-   if is_declaration:
-      cog.outl(      'template<typename E, unsigned ID, typename P = composite<E, 0, top<E> >{}'.format(typename_M(n)))
-      cog.outl(      'class {} : public P'.format(classname))
-   else:
-      if not is_topspec:
-         cog.outl(   'template<typename E, unsigned ID, typename P{}'.format(typename_M(n)))
-         cog.outl(   'class {}<E, ID, P{} : public P'.format(classname, M(n)))
-      else:
-         cog.outl(   'template<typename E>')
-         cog.outl(   'class {}<E, 0> : public top<E>'.format(classname))
-   cog.outl(         '{')
-   cog.outl(         '   public:')
-   cog.outl(         '')
-   cog.outl(         '   typedef E Extended;')
-   if is_topspec:
-      cog.outl(      '   typedef top<E> Parent;')
-      cog.outl(      '   typedef {}<E, 0, top<E> > Self;'.format(classname))
-   else:
-      cog.outl(      '   typedef P Parent;')
-      cog.outl(      '   typedef {}<E, ID, P{} Self;'.format(classname, M(n)))
-   cog.outl(         '')
-   cog.outl(         '   static void handle_entry(Extended &) {}')
-   cog.outl(         '   static void handle_exit (Extended &) {}')
-   if not is_leaf:
-      cog.outl(      '   static void handle_init (Extended &);')
-   else:
-      cog.outl(      '   static void handle_init (Extended & arg)')
-      cog.outl(      '   {\n       arg.set_state(obj);\n   }')
-      cog.outl(      '')
-      cog.outl(      '   static const {} obj;'.format(classname))
-      cog.outl(      '')
-      cog.outl(      '   virtual unsigned get_id() const override')
-      cog.outl(      '   {')
-      cog.outl(      '      return ID;')
-      cog.outl(      '   }')
-      cog.outl(      '')
-      cog.outl(      '   virtual void process_event(etl::imessage const & m, Extended & e) const override')
-      cog.outl(      '   {')
-      cog.outl(      '      handle_event(m, e, *this);')
-      cog.outl(      '   }')
-   cog.outl(         '')
-   if is_topspec:
-      cog.outl(      '   virtual bool accepts_event(etl::message_id_t) const override')
-      cog.outl(      '   {')
-      cog.outl(      '      return false;')
-   else:
-      cog.outl(      '   virtual bool accepts_event(etl::message_id_t id) const override')
-      cog.outl(      '   {')
-      if n > 0:
-         cog.outl(   '      switch( id )')
-         cog.outl(   '      {')
-         for t in range( n ):
-            cog.outl('         case M{:02d}::ID:'.format(t))
-         cog.outl(   '            return true;')
-         cog.outl(   '         default:')
-         cog.outl(   '            return Parent::accepts_event( id );'.format(t))
-         cog.outl(   '      };')
-      else:
-         cog.outl(   '      return Parent::accepts_event( id );')
-   cog.outl(         '   }\n')
-     
-   cog.outl(         '   template<typename LEAF>')
-   if is_topspec:
-     cog.outl(       '   void handle_event(etl::imessage const & m, Extended & e, LEAF const & ) const')
-   else:
-     cog.outl(       '   void handle_event(etl::imessage const & m, Extended & e, LEAF const & l) const')
-   cog.outl(         '   {')
-   if n > 0:
-      cog.outl(      '      switch ( m.get_message_id() )')
-      cog.outl(      '      {')
-   for t in range(n):
-      cog.outl(      '         case M{:02d}::ID: on_event<LEAF>( static_cast<M{:02d} const &>( m ), e, l ); return;'.format(t, t))
-   if n> 0:
-      cog.outl(      '      }')
-   if is_topspec:
-      cog.outl(      '      if ( e.has_successor() )')
-      cog.outl(      '      {')
-      cog.outl(      '         e.get_successor().receive(m);')
-      cog.outl(      '      }')
-      cog.outl(      '      else')
-      cog.outl(      '      {')
-      cog.outl(      '         e.on_receive_unknown(m);')
-      cog.outl(      '      }')
-   else:
-      cog.outl(      '      Parent::handle_event(m, e, l);')
-   cog.outl(         '   }')
-   if n> 0:
-      cog.outl(      '')
-      cog.outl(      '   private:')
-      cog.outl(      '')
-   for t in range(n):
-      cog.outl(      '   template<typename LEAF> void on_event( M{:02d} const &, Extended &, LEAF const & ) const;'.format(t))
-   cog.outl(         '};')
-   if is_leaf:
-      cog.outl(      '')
-      cog.outl(      'template<typename E, unsigned ID, typename P{}'.format(typename_M(n)))
-      cog.outl(      'const {c}<E, ID, P{m}\n      {c}<E, ID, P{m}::obj;'.format(c = classname, m = M(n)))
+def create_class(classname, is_declaration, is_topspec, is_simple, n):
+    if is_declaration:
+        cog.outl(        'template<typename E, unsigned ID, typename P = composite<E, 0, top<E> >{}'.format(typename_M(n)))
+        cog.outl(        'class {} : public P'.format(classname))
+    else:
+        if is_topspec:
+            cog.outl(    'template<typename E>')
+            cog.outl(    'class {}<E, 0> : public top<E>'.format(classname))
+        else:
+            cog.outl(    'template<typename E, unsigned ID, typename P{}'.format(typename_M(n)))
+            cog.outl(    'class {}<E, ID, P{} : public P'.format(classname, M(n)))
+    cog.outl(            '{')
+    cog.outl(            '   public:')
+    cog.outl(            '')
+    cog.outl(            '   typedef E Extended;')
+    if is_topspec:
+        cog.outl(        '   typedef top<E> Parent;')
+        cog.outl(        '   typedef {}<E, 0, top<E> > Self;'.format(classname))
+    else:
+        cog.outl(        '   typedef P Parent;')
+        cog.outl(        '   typedef {}<E, ID, P{} Self;'.format(classname, M(n)))
+    cog.outl(            '')
+    cog.outl(            '   static void handle_entry(Extended &) {}')
+    cog.outl(            '   static void handle_exit (Extended &) {}')
+    if is_simple:
+        cog.outl(        '   static void handle_init (Extended & arg)')
+        cog.outl(        '   {\n       arg.set_state(obj);\n   }')
+        cog.outl(        '')
+        cog.outl(        '   static const {} obj;'.format(classname))
+        cog.outl(        '')
+        cog.outl(        '   virtual unsigned get_id() const override')
+        cog.outl(        '   {')
+        cog.outl(        '      return ID;')
+        cog.outl(        '   }')
+        cog.outl(        '')
+        cog.outl(        '   virtual void process_event(etl::imessage const & m, Extended & e) const override')
+        cog.outl(        '   {')
+        cog.outl(        '      handle_event(m, e, *this);')
+        cog.outl(        '   }')
+    else:
+        cog.outl(        '   static void handle_init (Extended &);')
+    cog.outl(            '')
+    if is_topspec:
+        cog.outl(        '   virtual bool accepts_event(etl::message_id_t) const override')
+        cog.outl(        '   {')
+        cog.outl(        '      return false;')
+    else:
+        cog.outl(        '   virtual bool accepts_event(etl::message_id_t id) const override')
+        cog.outl(        '   {')
+        if n > 0:
+            cog.outl(    '      switch( id )')
+            cog.outl(    '      {')
+            for t in range( n ):
+                cog.outl('         case M{:02d}::ID:'.format(t))
+            cog.outl(    '            return true;')
+            cog.outl(    '         default:')
+            cog.outl(    '            return Parent::accepts_event( id );'.format(t))
+            cog.outl(    '      };')
+        else:
+            cog.outl(    '      return Parent::accepts_event( id );')
+    cog.outl(            '   }\n')
+    cog.outl(            '   template<typename SIMPLE>')
+    if is_topspec:
+        cog.outl(        '   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & ) const')
+    else:
+        cog.outl(        '   void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const')
+    cog.outl(            '   {')
+    if n > 0:
+        cog.outl(        '      switch ( m.get_message_id() )')
+        cog.outl(        '      {')
+    for t in range(n):
+        cog.outl(        '         case M{:02d}::ID: on_event<SIMPLE>( static_cast<M{:02d} const &>( m ), e, s ); return;'.format(t, t))
+    if n> 0:
+        cog.outl(        '      }')
+    if is_topspec:
+        cog.outl(        '      if ( e.has_successor() )')
+        cog.outl(        '      {')
+        cog.outl(        '         e.get_successor().receive(m);')
+        cog.outl(        '      }')
+        cog.outl(        '      else')
+        cog.outl(        '      {')
+        cog.outl(        '         e.on_receive_unknown(m);')
+        cog.outl(        '      }')
+    else:
+        cog.outl(        '      Parent::handle_event(m, e, s);')
+    cog.outl(            '   }')
+    if n> 0:
+        cog.outl(        '')
+        cog.outl(        '   private:')
+        cog.outl(        '')
+    for t in range(n):
+        cog.outl(        '   template<typename SIMPLE> void on_event( M{:02d} const &, Extended &, SIMPLE const & ) const;'.format(t))
+    cog.outl(            '};')
+    if is_simple:
+        cog.outl(        '')
+        cog.outl(        'template<typename E, unsigned ID, typename P{}'.format(typename_M(n)))
+        cog.outl(        'const {c}<E, ID, P{m}\n      {c}<E, ID, P{m}::obj;'.format(c = classname, m = M(n)))
 
-################################################################################
-# Creating classes here
-################################################################################
+#_________________________________________________________________________________________
+#
+#  Creating classes here
+#_________________________________________________________________________________________
+
 h = int(Handlers)
 
-header_comment(      'composite declaration for {} messages'.format(h))
-cog.outl(            'template<typename E, unsigned ID, typename P{}'.format(typename_M_eq_void(h)))
-cog.outl(            'class {};\n'.format('composite'))
-create_class(        'composite', is_declaration=True, is_topspec=False, is_leaf=False, n=h)
+header_comment(          'composite declaration for {} messages'.format(h))
+cog.outl(                'template<typename E, unsigned ID, typename P{}'.format(typename_M_eq_void(h)))
+cog.outl(                'class {};\n'.format('composite'))
+create_class(            'composite', is_declaration=True, is_topspec=False, is_simple=False, n=h)
 
-header_comment('composite specialisation for top-state which has class top as parent')
-create_class('composite', is_declaration=False, is_topspec=True, is_leaf=False, n=0)
-
-for i in range(h - 1, -1, -1):
-   header_comment('composite specialisation for {} messages'.format(i))
-   create_class('composite', is_declaration=False, is_topspec=False, is_leaf=False, n=i)
-
-header_comment('leaf declaration for {} messages'.format(h))
-cog.outl('template<typename E, unsigned ID, typename P{}'.format(typename_M_eq_void(h)))
-cog.outl('class {};\n'.format('leaf'))
-
-create_class('leaf', is_declaration=True, is_topspec=False, is_leaf=True, n=h)
+header_comment(          'composite specialisation for top-state which has class top as parent')
+create_class(            'composite', is_declaration=False, is_topspec=True, is_simple=False, n=0)
 
 for i in range(h - 1, -1, -1):
-   header_comment('leaf specialisation for {} messages'.format(i))
-   create_class('leaf', is_declaration=False, is_topspec=False, is_leaf=True, n = i)
+   header_comment(       'composite specialisation for {} messages'.format(i))
+   create_class(         'composite', is_declaration=False, is_topspec=False, is_simple=False, n=i)
+
+header_comment(          'simple declaration for {} messages'.format(h))
+cog.outl(                'template<typename E, unsigned ID, typename P{}'.format(typename_M_eq_void(h)))
+cog.outl(                'class {};\n'.format('simple'))
+
+create_class(            'simple', is_declaration=True, is_topspec=False, is_simple=True, n=h)
+
+for i in range(h - 1, -1, -1):
+   header_comment(       'simple specialisation for {} messages'.format(i))
+   create_class(         'simple', is_declaration=False, is_topspec=False, is_simple=True, n = i)
 
 ]]]*/
 /*[[[end]]]*/

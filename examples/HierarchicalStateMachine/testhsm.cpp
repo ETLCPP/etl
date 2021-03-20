@@ -18,7 +18,7 @@
 
 namespace test
 {
-    etl::message_router_id_t const state_machine_id = 0;
+    etl::message_router_id_t const router_id = 0;
   
 namespace message
 {
@@ -145,11 +145,12 @@ class Extended : public etl::hsm::extended<Extended>
      * same parent and message set. */
     using Top  = etl::hsm::composite<Extended, 0>;
     using S0   = etl::hsm::composite<Extended, 1, Top, message::E>;
-    using S1   = etl::hsm::composite<Extended, 2, S0,  message::A, message::B, message::C, message::D, message::F>;
-    using S11  = etl::hsm::leaf     <Extended, 3, S1,  message::G>;
-    using S2   = etl::hsm::composite<Extended, 4, S0,  message::C, message::F>;
-    using S21  = etl::hsm::composite<Extended, 5, S2,  message::B, message::H>;
-    using S211 = etl::hsm::leaf     <Extended, 6, S21, message::D, message::G>;
+    using S1   = etl::hsm::composite<Extended, 2, S0 , message::A, message::B, message::C,
+                                     message::D, message::F>;
+    using S11  = etl::hsm::simple   <Extended, 3, S1 , message::G>;
+    using S2   = etl::hsm::composite<Extended, 4, S0 , message::C, message::F>;
+    using S21  = etl::hsm::composite<Extended, 5, S2 , message::B, message::H>;
+    using S211 = etl::hsm::simple   <Extended, 6, S21, message::D, message::G>;
 
 } // namespace state
 } // namespace test
@@ -191,14 +192,14 @@ inline void test::state::S0::handle_exit(test::state::Extended &)
 }
 
 template<>
-template<typename LEAF>
+template<typename SIMPLE>
 void test::state::S0::
-on_event(test::message::E const &, test::state::Extended & h, LEAF const & l) const
+on_event(test::message::E const &, test::state::Extended & h, SIMPLE const &) const
 {
   /* Guard condition (no guard here)*/
   /* optional transition if a state change shall be
    * affected. transition::transition() performs UML exit/ actions.*/
-  etl::hsm::transition<LEAF, Self, test::state::S211> t(h);
+  etl::hsm::transition<SIMPLE, Self, test::state::S211> t(h);
   /* transition action goes here */
   std::cout << "Tran(S0, S211, E) - ";
 }
@@ -228,47 +229,47 @@ inline void test::state::S1::handle_exit(test::state::Extended &)
 }
 
 template<>
-template<typename LEAF>
+template<typename SIMPLE>
 inline void test::state::S1::
-on_event(test::message::A const &, test::state::Extended & h,	const LEAF & l) const
+on_event(test::message::A const &, test::state::Extended & h, const SIMPLE &) const
 {
-  etl::hsm::transition<LEAF, Self, test::state::S1> t(h);
+  etl::hsm::transition<SIMPLE, Self, test::state::S1> t(h);
   std::cout << "Tran(S1, S1, A) - ";
 }
 
 template<>
-template<typename LEAF>
+template<typename SIMPLE>
 inline void test::state::S1::
-on_event(test::message::B const &, test::state::Extended & h,	const LEAF & l) const
+on_event(test::message::B const &, test::state::Extended & h, const SIMPLE &) const
 {
-  etl::hsm::transition<LEAF, Self, test::state::S11> t(h);
+  etl::hsm::transition<SIMPLE, Self, test::state::S11> t(h);
   std::cout << "Tran(S1, S11, B) - ";
 }
 
 template<>
-template<typename LEAF>
+template<typename SIMPLE>
 inline void test::state::S1::
-on_event(test::message::C const &, test::state::Extended & h, const LEAF & l) const
+on_event(test::message::C const &, test::state::Extended & h, const SIMPLE &) const
 {
-  etl::hsm::transition<LEAF, Self, test::state::S2> t(h);
+  etl::hsm::transition<SIMPLE, Self, test::state::S2> t(h);
   std::cout << "Tran(S1, S2, C) - ";
 }
 
 template<>
-template<typename LEAF>
+template<typename SIMPLE>
 inline void test::state::S1::
-on_event(test::message::D const &, test::state::Extended & h, const LEAF & l) const
+on_event(test::message::D const &, test::state::Extended & h, const SIMPLE &) const
 {
-  etl::hsm::transition<LEAF, Self, test::state::S0> t(h);
+  etl::hsm::transition<SIMPLE, Self, test::state::S0> t(h);
   std::cout << "Tran(S1, S0, D) - ";
 }
 
 template<>
-template<typename LEAF>
+template<typename SIMPLE>
 inline void test::state::S1::
-on_event(test::message::F const &, test::state::Extended & h,	const LEAF & l) const
+on_event(test::message::F const &, test::state::Extended & h, const SIMPLE &) const
 {
-  etl::hsm::transition<LEAF, Self, test::state::S211> t(h);
+  etl::hsm::transition<SIMPLE, Self, test::state::S211> t(h);
   std::cout << "Tran(S1, S211, F) - ";
 }
 
@@ -290,11 +291,11 @@ inline void test::state::S11::handle_exit(test::state::Extended &)
 }
 
 template<>
-template<typename LEAF>
+template<typename SIMPLE>
 inline void test::state::S11::
-on_event(test::message::G const &, test::state::Extended & h, LEAF const & l) const
+on_event(test::message::G const &, test::state::Extended & h, SIMPLE const &) const
 {
-  etl::hsm::transition<LEAF, Self, test::state::S211> t(h);
+  etl::hsm::transition<SIMPLE, Self, test::state::S211> t(h);
   std::cout << "Tran(S11, S211, G) - ";
 }
 
@@ -323,20 +324,20 @@ inline void test::state::S2::handle_exit(test::state::Extended &)
 }
 
 template<>
-template<typename LEAF>
+template<typename SIMPLE>
 inline void test::state::S2::
-on_event(test::message::C const &, test::state::Extended & h,	const LEAF & l) const
+on_event(test::message::C const &, test::state::Extended & h, const SIMPLE &) const
 {
-  etl::hsm::transition<LEAF, Self, test::state::S1> t(h);
+  etl::hsm::transition<SIMPLE, Self, test::state::S1> t(h);
   std::cout << "Tran(S2, S1, C) - ";
 }
 
 template<>
-template<typename LEAF>
+template<typename SIMPLE>
 inline void test::state::S2::
-on_event(test::message::F const &, test::state::Extended & h,	const LEAF & l) const
+on_event(test::message::F const &, test::state::Extended & h, const SIMPLE &) const
 {
-  etl::hsm::transition<LEAF, Self, test::state::S11> t(h);
+  etl::hsm::transition<SIMPLE, Self, test::state::S11> t(h);
   std::cout << "Tran(S2, S11, F) - ";
 }
 
@@ -365,21 +366,21 @@ inline void test::state::S21::handle_exit(test::state::Extended &)
 }
 
 template<>
-template<typename LEAF>
+template<typename SIMPLE>
 inline void test::state::S21::
-on_event(test::message::B const &, test::state::Extended & h,	const LEAF & l) const
+on_event(test::message::B const &, test::state::Extended & h, const SIMPLE &) const
 {
-  etl::hsm::transition<LEAF, Self, test::state::S211> t(h);
+  etl::hsm::transition<SIMPLE, Self, test::state::S211> t(h);
   std::cout << "Tran(S21, S211, B) - ";
 }
 
 template<>
-template<typename LEAF>
+template<typename SIMPLE>
 inline void test::state::S21::
-on_event(test::message::H const &, test::state::Extended & h,	const LEAF & l) const
+on_event(test::message::H const &, test::state::Extended & h,	const SIMPLE & l) const
 {
   if (!h.foo()) {
-    etl::hsm::transition<LEAF, Self, test::state::S21> t(h);
+    etl::hsm::transition<SIMPLE, Self, test::state::S21> t(h);
     std::cout << "!foo/Tran(S21, S21, H) - ";
     h.foo(1);
   }
@@ -403,20 +404,20 @@ inline void test::state::S211::handle_exit(test::state::Extended &)
 }
 
 template<>
-template<typename LEAF>
+template<typename SIMPLE>
 inline void test::state::S211::
-on_event(test::message::D const &, test::state::Extended & h,	const LEAF & l) const
+on_event(test::message::D const &, test::state::Extended & h, const SIMPLE &) const
 {
-  etl::hsm::transition<LEAF, Self, test::state::S21> t(h);
+  etl::hsm::transition<SIMPLE, Self, test::state::S21> t(h);
   std::cout << "Tran(S211, S21, D) - ";
 }
 
 template<>
-template<typename LEAF>
+template<typename SIMPLE>
 inline void test::state::S211::
-on_event(test::message::G const &, test::state::Extended & h,	const LEAF & l) const
+on_event(test::message::G const &, test::state::Extended & h, const SIMPLE &) const
 {
-  etl::hsm::transition<LEAF, Self, test::state::S0> t(h);
+  etl::hsm::transition<SIMPLE, Self, test::state::S0> t(h);
   std::cout << "Tran(S211, S0, G) - ";
 }
 
@@ -427,8 +428,8 @@ on_event(test::message::G const &, test::state::Extended & h,	const LEAF & l) co
 
 int main()
 {
-  test::state::Extended hsm {test::state_machine_id};
-  test::state::Top::handle_init(hsm);
+  test::state::Extended ext {test::router_id};
+  test::state::Top::handle_init(ext);
   for(;;) {
     std::cout << "\nEvent: ";
     char c;
@@ -436,6 +437,6 @@ int main()
     if (c < 'a' || 'h' < c) {
       return 0;
     }
-    hsm.receive( test::message::factory( c ));
+    ext.receive( test::message::factory( c ));
   }
 }
