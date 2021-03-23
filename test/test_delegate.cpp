@@ -47,6 +47,20 @@ namespace
   };
 
   //*****************************************************************************
+  // Test moveable only data structure.
+  //*****************************************************************************
+  struct MoveableOnlyData
+  {
+    MoveableOnlyData() = default;
+    ~MoveableOnlyData() = default;
+    MoveableOnlyData(const MoveableOnlyData&) = delete;
+    MoveableOnlyData& operator=(const MoveableOnlyData&) = delete;
+    MoveableOnlyData(MoveableOnlyData&&) = default;
+    MoveableOnlyData& operator=(MoveableOnlyData&&) = default;
+    int d;
+  };
+
+  //*****************************************************************************
   // The free function taking no parameters.
   //*****************************************************************************
   void free_void()
@@ -70,6 +84,15 @@ namespace
   {
     function_called = true;
     parameter_correct = (data.d == VALUE1) && (j == VALUE2);
+  }
+
+  //*****************************************************************************
+  // The free function taking a moveable only parameter.
+  //*****************************************************************************
+  void free_moveableonly(MoveableOnlyData&& data)
+  {
+    function_called = true;
+    parameter_correct = (data.d == VALUE1);
   }
 
   //*****************************************************************************
@@ -117,6 +140,14 @@ namespace
     {
       function_called = true;
       parameter_correct = (data.d == VALUE1) && (j = VALUE2);
+    }
+
+    //*******************************************
+    // moveable only data
+    void member_moveableonly(MoveableOnlyData&& data)
+    {
+      function_called = true;
+      parameter_correct = (data.d == VALUE1);
     }
 
     //*******************************************
@@ -260,6 +291,34 @@ namespace
       data.d = VALUE1;
 
       d(data, VALUE2);
+
+      CHECK(function_called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_free_moveableonly)
+    {
+      auto d = etl::delegate<void(MoveableOnlyData&&)>::create<free_moveableonly>();
+
+      MoveableOnlyData data;
+      data.d = VALUE1;
+
+      d(std::move(data));
+
+      CHECK(function_called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_free_moveableonly_constexpr)
+    {
+      constexpr auto d = etl::delegate<void(MoveableOnlyData&&)>::create<free_moveableonly>();
+
+      MoveableOnlyData data;
+      data.d = VALUE1;
+
+      d(std::move(data));
 
       CHECK(function_called);
       CHECK(parameter_correct);
@@ -548,6 +607,36 @@ namespace
       data.d = VALUE1;
 
       d(data, VALUE2);
+
+      CHECK(function_called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_member_moveableonly)
+    {
+      Test test;
+      auto d = etl::delegate<void(MoveableOnlyData&&)>::create<Test, &Test::member_moveableonly>(test);
+
+      MoveableOnlyData data;
+      data.d = VALUE1;
+
+      d(std::move(data));
+
+      CHECK(function_called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_member_moveableonly_constexpr)
+    {
+      static Test test;
+      constexpr auto d = etl::delegate<void(MoveableOnlyData&&)>::create<Test, &Test::member_moveableonly>(test);
+
+      MoveableOnlyData data;
+      data.d = VALUE1;
+
+      d(std::move(data));
 
       CHECK(function_called);
       CHECK(parameter_correct);
