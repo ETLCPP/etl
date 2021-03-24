@@ -1032,6 +1032,9 @@
     <ClInclude Include="..\..\include\etl\experimental\crc_parameters.h">
       <Filter>ETL\Maths\Experimental</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc_implementation_2.h">
+      <Filter>ETL\Maths\Experimental</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">

@@ -32,21 +32,19 @@ SOFTWARE.
 #define ETL_CRC8_CCITT_EXP_INCLUDED
 
 #include "../platform.h"
-#include "crc_implementation.h"
-
-#if defined(ETL_COMPILER_KEIL)
-#pragma diag_suppress 1300
-#endif
-
-///\defgroup crc8_ccitt 8 bit CRC calculation
-///\ingroup crc
+#include "crc_implementation_2.h"
+#include "crc_parameters.h"
 
 namespace etl
 {
   namespace crc
   {
+#if ETL_CPP11_SUPPORTED
     template <size_t Table_Size>
-    class crc8_ccitt_t : public etl::private_crc::crc_type<uint8_t, 0x07U, 0x00U, 0x00U, false, Table_Size>
+    using crc8_ccitt_t = etl::crc_type<etl::private_crc::crc8_ccitt_parameters, Table_Size>;
+#else
+    template <size_t Table_Size>
+    class crc8_ccitt_t : public etl::crc_type<etl::private_crc::crc8_ccitt_parameters, Table_Size>
     {
     public:
 
@@ -72,11 +70,12 @@ namespace etl
         this->add(begin, end);
       }
     };
-    
-    typedef etl::crc::crc8_ccitt_t<256U> crc8_ccitt_t256;
-    typedef etl::crc::crc8_ccitt_t<16U>  crc8_ccitt_t16;
-    typedef etl::crc::crc8_ccitt_t<4U>   crc8_ccitt_t4;
-    typedef crc8_ccitt_t256              crc8_ccitt;
+#endif
+
+    typedef crc8_ccitt_t<256U> crc8_ccitt_t256;
+    typedef crc8_ccitt_t<16U>  crc8_ccitt_t16;
+    typedef crc8_ccitt_t<4U>   crc8_ccitt_t4;
+    typedef crc8_ccitt_t256    crc8_ccitt;
   }
 }
 

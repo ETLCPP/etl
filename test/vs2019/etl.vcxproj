@@ -1286,6 +1286,7 @@
     <ClInclude Include="..\..\include\etl\experimental\crc8_rohc.h" />
     <ClInclude Include="..\..\include\etl\experimental\crc8_ccitt.h" />
     <ClInclude Include="..\..\include\etl\experimental\crc_implementation.h" />
+    <ClInclude Include="..\..\include\etl\experimental\crc_implementation_2.h" />
     <ClInclude Include="..\..\include\etl\experimental\crc_parameters.h" />
     <ClInclude Include="..\..\include\etl\file_error_numbers.h" />
     <ClInclude Include="..\..\include\etl\flags.h" />
@@ -3793,9 +3794,13 @@
     <ClCompile Include="..\test_circular_buffer.cpp" />
     <ClCompile Include="..\test_circular_buffer_external_buffer.cpp" />
     <ClCompile Include="..\test_compiler_settings.cpp" />
-    <ClCompile Include="..\test_crc_table16.cpp" />
+    <ClCompile Include="..\test_crc_table16.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\test_crc_table256.cpp" />
-    <ClCompile Include="..\test_crc_table4.cpp" />
+    <ClCompile Include="..\test_crc_table4.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\test_cumulative_moving_average.cpp" />
     <ClCompile Include="..\test_delegate.cpp" />
     <ClCompile Include="..\test_delegate_service.cpp" />

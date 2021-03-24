@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../platform.h"
+#include "../integral_limits.h"
 
 namespace etl
 {
@@ -10,10 +11,11 @@ namespace etl
     struct crc_parameters
     {
       typedef TAccumulator accumulator_type;
-      static ETL_CONSTANT TAccumulator Polynomial = Polynomial_;
-      static ETL_CONSTANT TAccumulator Initial    = Initial_;
-      static ETL_CONSTANT TAccumulator Xor_Out    = Xor_Out_;
-      static ETL_CONSTANT bool         Reflect    = Reflect_;
+      static ETL_CONSTANT TAccumulator Polynomial       = Polynomial_;
+      static ETL_CONSTANT TAccumulator Initial          = Initial_;
+      static ETL_CONSTANT TAccumulator Xor_Out          = Xor_Out_;
+      static ETL_CONSTANT bool         Reflect          = Reflect_;
+      static ETL_CONSTANT size_t       Accumulator_Bits = etl::integral_limits<accumulator_type>::bits; 
     };
 
     // 8 bit.

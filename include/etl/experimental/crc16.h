@@ -32,11 +32,8 @@ SOFTWARE.
 #define ETL_CRC16_EX_INCLUDED
 
 #include "../platform.h"
-#include "crc_implementation.h"
-
-#if defined(ETL_COMPILER_KEIL)
-#pragma diag_suppress 1300
-#endif
+#include "crc_implementation_2.h"
+#include "crc_parameters.h"
 
 ///\defgroup crc16 16 bit CRC calculation
 ///\ingroup crc
@@ -45,8 +42,12 @@ namespace etl
 {
   namespace crc
   {
+#if ETL_CPP11_SUPPORTED
     template <size_t Table_Size>
-    class crc16_t : public etl::private_crc::crc_type<uint16_t, 0x8005U, 0x0000U, 0x0000U, true, Table_Size>
+    using crc16_t = etl::crc_type<etl::private_crc::crc16_parameters, Table_Size>;
+#else
+    template <size_t Table_Size>
+    class crc16_t : public etl::private_crc::crc_type<etl::private_crc::crc16_parameters, Table_Size>
     {
     public:
 
@@ -72,6 +73,7 @@ namespace etl
         this->add(begin, end);
       }
     };
+#endif
 
     typedef etl::crc::crc16_t<256U> crc16_t256;
     typedef etl::crc::crc16_t<16U>  crc16_t16;

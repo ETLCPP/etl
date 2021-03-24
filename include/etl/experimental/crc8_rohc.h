@@ -32,11 +32,8 @@ SOFTWARE.
 #define ETL_CRC8_ROHC_EXP_INCLUDED
 
 #include "../platform.h"
-#include "crc_implementation.h"
-
-#if defined(ETL_COMPILER_KEIL)
-#pragma diag_suppress 1300
-#endif
+#include "crc_implementation_2.h"
+#include "crc_parameters.h"
 
 ///\defgroup rohc 8 bit CRC calculation
 ///\ingroup crc
@@ -45,8 +42,12 @@ namespace etl
 {
   namespace crc
   {
+#if ETL_CPP11_SUPPORTED
     template <size_t Table_Size>
-    class crc8_rohc_t : public etl::private_crc::crc_type<uint8_t, 0x07U, 0xFFU, 0x00U, true, Table_Size>
+    using crc8_rohc_t = etl::crc_type<etl::private_crc::crc8_rohc_parameters, Table_Size>;
+#else
+    template <size_t Table_Size>
+    class crc8_rohc_t : public etl::private_crc::crc_type<etl::private_crc::crc8_rohc_parameters, Table_Size>
     {
     public:
 
@@ -72,6 +73,7 @@ namespace etl
         this->add(begin, end);
       }
     };
+#endif
     
     typedef etl::crc::crc8_rohc_t<256U> crc8_rohc_t256;
     typedef etl::crc::crc8_rohc_t<16U>  crc8_rohc_t16;
