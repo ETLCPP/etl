@@ -106,6 +106,9 @@
     <Filter Include="Source Files\Scripts">
       <UniqueIdentifier>{562466b5-677d-4448-9e9e-f70805cd71ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Maths\Experimental">
+      <UniqueIdentifier>{016bd5a6-e277-4aba-8b28-28a9f1348473}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -983,6 +986,51 @@
     </ClInclude>
     <ClInclude Include="..\sanity-check\c++17\etl_profile.h">
       <Filter>Source Files\Sanity Checks\C++17</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc8_ccitt.h">
+      <Filter>ETL\Maths\Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc_implementation.h">
+      <Filter>ETL\Maths\Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc8_rohc.h">
+      <Filter>ETL\Maths\Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc16.h">
+      <Filter>ETL\Maths\Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc32.h">
+      <Filter>ETL\Maths\Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc16_aug_ccitt.h">
+      <Filter>ETL\Maths\Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc16_ccitt.h">
+      <Filter>ETL\Maths\Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc16_kermit.h">
+      <Filter>ETL\Maths\Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc16_modbus.h">
+      <Filter>ETL\Maths\Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc16_usb.h">
+      <Filter>ETL\Maths\Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc64_ecma.h">
+      <Filter>ETL\Maths\Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc16_genibus.h">
+      <Filter>ETL\Maths\Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc16_x25.h">
+      <Filter>ETL\Maths\Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc16_xmodem.h">
+      <Filter>ETL\Maths\Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc_parameters.h">
+      <Filter>ETL\Maths\Experimental</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2101,6 +2149,15 @@
     </ClCompile>
     <ClCompile Include="..\sanity-check\wstring_stream.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc_table256.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc_table16.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc_table4.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

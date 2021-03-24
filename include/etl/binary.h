@@ -472,6 +472,9 @@ namespace etl
     return second ^ ((second ^ first) & MASK);
   }
 
+  template <typename T, T Value>
+  struct reverse_bits_const;
+
 #if ETL_8BIT_SUPPORT
   //***************************************************************************
   /// Reverse 8 bits.
@@ -486,10 +489,39 @@ namespace etl
     return value;
   }
 
+  //***********************************
   inline ETL_CONSTEXPR14 int8_t reverse_bits(int8_t value)
   {
     return int8_t(reverse_bits(uint8_t(value)));
   }
+
+  //***********************************
+  template <uint8_t Value>
+  struct reverse_bits_const<uint8_t, Value>
+  {
+  private:
+
+    static ETL_CONSTANT uint8_t value1 = uint8_t(((Value & 0xAA) >> 1) | ((Value & 0x55) << 1));
+    static ETL_CONSTANT uint8_t value2 = uint8_t(((value1 & 0xCC) >> 2) | ((value1 & 0x33) << 2));
+
+  public:
+
+    static ETL_CONSTANT uint8_t value = uint8_t((value2 >> 4) | (value2 << 4));
+  };
+
+  //***********************************
+  template <int8_t Value>
+  struct reverse_bits_const<int8_t, Value>
+  {
+  private:
+
+    static ETL_CONSTANT int8_t value1 = int8_t(((Value & 0xAA) >> 1) | ((Value & 0x55) << 1));
+    static ETL_CONSTANT int8_t value2 = int8_t(((value1 & 0xCC) >> 2) | ((value1 & 0x33) << 2));
+
+  public:
+
+    static ETL_CONSTANT int8_t value = int8_t((value2 >> 4) | (value2 << 4));
+  };
 #endif
 
   //***************************************************************************
@@ -506,10 +538,41 @@ namespace etl
     return value;
   }
 
+  //***********************************
   inline ETL_CONSTEXPR14 int16_t reverse_bits(int16_t value)
   {
     return int16_t(reverse_bits(uint16_t(value)));
   }
+
+  //***********************************
+  template <uint16_t Value>
+  struct reverse_bits_const<uint16_t, Value>
+  {
+  private:
+
+    static ETL_CONSTANT uint16_t value1 = uint16_t(((Value & 0xAAAA) >> 1)  | ((Value & 0x5555) << 1));
+    static ETL_CONSTANT uint16_t value2 = uint16_t(((value1 & 0xCCCC) >> 2) | ((value1 & 0x3333) << 2));
+    static ETL_CONSTANT uint16_t value3 = uint16_t(((value2 & 0xF0F0) >> 4) | ((value2 & 0x0F0F) << 4));   
+
+  public:
+
+    static ETL_CONSTANT uint16_t value = uint16_t((value3 >> 8) | (value3 << 8));
+  };
+
+  //***********************************
+  template <int16_t Value>
+  struct reverse_bits_const<int16_t, Value>
+  {
+  private:
+
+    static ETL_CONSTANT int16_t value1 = int16_t(((Value & 0xAAAA) >> 1)  | ((Value & 0x5555) << 1));
+    static ETL_CONSTANT int16_t value2 = int16_t(((value1 & 0xCCCC) >> 2) | ((value1 & 0x3333) << 2));
+    static ETL_CONSTANT int16_t value3 = int16_t(((value2 & 0xF0F0) >> 4) | ((value2 & 0x0F0F) << 4));   
+
+  public:
+
+    static ETL_CONSTANT int16_t value = int16_t((value3 >> 8) | (value3 << 8));
+  };
 
   //***************************************************************************
   /// Reverse 32 bits.
@@ -526,10 +589,43 @@ namespace etl
     return value;
   }
 
+  //***********************************
   inline ETL_CONSTEXPR14 int32_t reverse_bits(int32_t value)
   {
     return int32_t(reverse_bits(uint32_t(value)));
   }
+
+  //***********************************
+  template <uint32_t Value>
+  struct reverse_bits_const<uint32_t, Value>
+  {
+  private:
+
+    static ETL_CONSTANT uint32_t value1 = uint32_t(((Value & 0xAAAAAAAA) >>  1) | ((Value & 0x55555555) <<  1));
+    static ETL_CONSTANT uint32_t value2 = uint32_t(((value1 & 0xCCCCCCCC) >>  2) | ((value1 & 0x33333333) <<  2));
+    static ETL_CONSTANT uint32_t value3 = uint32_t(((value2 & 0xF0F0F0F0) >>  4) | ((value2 & 0x0F0F0F0F) <<  4));
+    static ETL_CONSTANT uint32_t value4 = uint32_t(((value3 & 0xFF00FF00) >>  8) | ((value3 & 0x00FF00FF) <<  8));
+    
+  public:
+
+    static ETL_CONSTANT uint32_t value = uint32_t((value4 >> 16) | (value4 << 16));
+  };
+
+  //***********************************
+  template <int32_t Value>
+  struct reverse_bits_const<int32_t, Value>
+  {
+  private:
+
+    static ETL_CONSTANT int32_t value1 = int32_t(((Value & 0xAAAAAAAA) >>  1) | ((Value & 0x55555555) <<  1));
+    static ETL_CONSTANT int32_t value2 = int32_t(((value1 & 0xCCCCCCCC) >>  2) | ((value1 & 0x33333333) <<  2));
+    static ETL_CONSTANT int32_t value3 = int32_t(((value2 & 0xF0F0F0F0) >>  4) | ((value2 & 0x0F0F0F0F) <<  4));
+    static ETL_CONSTANT int32_t value4 = int32_t(((value3 & 0xFF00FF00) >>  8) | ((value3 & 0x00FF00FF) <<  8));
+    
+  public:
+
+    static ETL_CONSTANT int32_t value = int32_t((value4 >> 16) | (value4 << 16));
+  };
 
 #if ETL_USING_64BIT_TYPES
   //***************************************************************************
@@ -548,10 +644,45 @@ namespace etl
     return value;
   }
 
+  //***********************************
   inline ETL_CONSTEXPR14 int64_t reverse_bits(int64_t value)
   {
     return int64_t(reverse_bits(uint64_t(value)));
   }
+
+  //***********************************
+  template <uint64_t Value>
+  struct reverse_bits_const<uint64_t, Value>
+  {
+  private:
+
+    static ETL_CONSTANT uint64_t value1 = uint64_t(((Value & 0xAAAAAAAAAAAAAAAA) >>  1) | ((Value & 0x5555555555555555) <<  1));
+    static ETL_CONSTANT uint64_t value2 = uint64_t(((value1 & 0xCCCCCCCCCCCCCCCC) >>  2) | ((value1 & 0x3333333333333333) <<  2));
+    static ETL_CONSTANT uint64_t value3 = uint64_t(((value2 & 0xF0F0F0F0F0F0F0F0) >>  4) | ((value2 & 0x0F0F0F0F0F0F0F0F) <<  4));
+    static ETL_CONSTANT uint64_t value4 = uint64_t(((value3 & 0xFF00FF00FF00FF00) >>  8) | ((value3 & 0x00FF00FF00FF00FF) <<  8));
+    static ETL_CONSTANT uint64_t value5 = uint64_t(((value4 & 0xFFFF0000FFFF0000) >> 16) | ((value4 & 0x0000FFFF0000FFFF) << 16));
+    
+  public:
+
+    static ETL_CONSTANT uint64_t value = uint64_t((value5 >> 32) | (value5 << 32));
+  };
+
+  //***********************************
+  template <int64_t Value>
+  struct reverse_bits_const<int64_t, Value>
+  {
+  private:
+
+    static ETL_CONSTANT int64_t value1 = int64_t(((Value & 0xAAAAAAAAAAAAAAAA) >>  1) | ((Value & 0x5555555555555555) <<  1));
+    static ETL_CONSTANT int64_t value2 = int64_t(((value1 & 0xCCCCCCCCCCCCCCCC) >>  2) | ((value1 & 0x3333333333333333) <<  2));
+    static ETL_CONSTANT int64_t value3 = int64_t(((value2 & 0xF0F0F0F0F0F0F0F0) >>  4) | ((value2 & 0x0F0F0F0F0F0F0F0F) <<  4));
+    static ETL_CONSTANT int64_t value4 = int64_t(((value3 & 0xFF00FF00FF00FF00) >>  8) | ((value3 & 0x00FF00FF00FF00FF) <<  8));
+    static ETL_CONSTANT int64_t value5 = int64_t(((value4 & 0xFFFF0000FFFF0000) >> 16) | ((value4 & 0x0000FFFF0000FFFF) << 16));
+    
+  public:
+
+    static ETL_CONSTANT int64_t value = int64_t((value5 >> 32) | (value5 << 32));
+  };
 #endif
 
   //***************************************************************************
