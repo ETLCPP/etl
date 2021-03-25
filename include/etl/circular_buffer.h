@@ -199,7 +199,7 @@ namespace etl
       //*************************************************************************
       /// * operator
       //*************************************************************************
-      const_reference operator *() const
+      reference operator *() const
       {
         return picb->pbuffer[current];
       }
@@ -215,7 +215,7 @@ namespace etl
       //*************************************************************************
       /// -> operator
       //*************************************************************************
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return picb->pbuffer[current];
       }

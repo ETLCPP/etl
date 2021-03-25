@@ -253,7 +253,7 @@ namespace etl
       }
 
       //*********************************
-      const_reference operator *() const
+      reference operator *() const
       {
         return inode->key_value_pair;
       }
@@ -265,7 +265,7 @@ namespace etl
       }
 
       //*********************************
-      const_pointer operator &() const
+      pointer operator &() const
       {
         return &(inode->key_value_pair);
       }
@@ -277,7 +277,7 @@ namespace etl
       }
 
       //*********************************
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return &(inode->key_value_pair);
       }

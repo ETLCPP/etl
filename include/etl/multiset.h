@@ -786,7 +786,7 @@ namespace etl
         return imultiset::data_cast(p_node)->value;
       }
 
-      const_reference operator *() const
+      reference operator *() const
       {
         return imultiset::data_cast(p_node)->value;
       }
@@ -796,7 +796,7 @@ namespace etl
         return &(imultiset::data_cast(p_node)->value);
       }
 
-      const_pointer operator &() const
+      pointer operator &() const
       {
         return &(imultiset::data_cast(p_node)->value);
       }
@@ -806,7 +806,7 @@ namespace etl
         return &(imultiset::data_cast(p_node)->value);
       }
 
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return &(imultiset::data_cast(p_node)->value);
       }

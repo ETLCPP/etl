@@ -363,7 +363,7 @@ namespace etl
       }
 
       //***************************************************
-      const_reference operator *() const
+      reference operator *() const
       {
         return p_buffer[index];
       }
@@ -375,7 +375,7 @@ namespace etl
       }
 
       //***************************************************
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return &p_buffer[index];
       }
@@ -623,8 +623,6 @@ namespace etl
       {
         return &p_buffer[index];
       }
-
-
 
       //***************************************************
       friend const_iterator operator +(const const_iterator& lhs, difference_type offset)

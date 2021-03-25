@@ -245,7 +245,7 @@ namespace etl
         return **lookup_itr;
       }
 
-      const_reference operator *() const
+      reference operator *() const
       {
         return **lookup_itr;
       }
@@ -255,7 +255,7 @@ namespace etl
         return &(**lookup_itr);
       }
 
-      const_pointer operator &() const
+      pointer operator &() const
       {
         return &(**lookup_itr);
       }
@@ -265,7 +265,7 @@ namespace etl
         return &(**lookup_itr);
       }
 
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return &(**lookup_itr);
       }

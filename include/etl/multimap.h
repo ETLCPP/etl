@@ -804,7 +804,7 @@ namespace etl
         return imultimap::data_cast(p_node)->value;
       }
 
-      const_reference operator *() const
+      reference operator *() const
       {
         return imultimap::data_cast(p_node)->value;
       }
@@ -814,7 +814,7 @@ namespace etl
         return &(imultimap::data_cast(p_node)->value);
       }
 
-      const_pointer operator &() const
+      pointer operator &() const
       {
         return &(imultimap::data_cast(p_node)->value);
       }
@@ -824,7 +824,7 @@ namespace etl
         return &(imultimap::data_cast(p_node)->value);
       }
 
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return &(imultimap::data_cast(p_node)->value);
       }

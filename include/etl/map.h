@@ -646,7 +646,7 @@ namespace etl
         return imap::data_cast(p_node)->value;
       }
 
-      const_reference operator *() const
+      reference operator *() const
       {
         return imap::data_cast(p_node)->value;
       }
@@ -656,7 +656,7 @@ namespace etl
         return &(imap::data_cast(p_node)->value);
       }
 
-      const_pointer operator &() const
+      pointer operator &() const
       {
         return &(imap::data_cast(p_node)->value);
       }
@@ -666,7 +666,7 @@ namespace etl
         return &(imap::data_cast(p_node)->value);
       }
 
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return &(imap::data_cast(p_node)->value);
       }

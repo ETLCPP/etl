@@ -444,7 +444,7 @@ namespace etl
         return iforward_list::data_cast(p_node)->value;
       }
 
-      const_reference operator *() const
+      reference operator *() const
       {
         return iforward_list::data_cast(p_node)->value;
       }
@@ -454,7 +454,7 @@ namespace etl
         return &(iforward_list::data_cast(p_node)->value);
       }
 
-      const_pointer operator &() const
+      pointer operator &() const
       {
         return &(iforward_list::data_cast(p_node)->value);
       }
@@ -464,7 +464,7 @@ namespace etl
         return &(iforward_list::data_cast(p_node)->value);
       }
 
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return &(iforward_list::data_cast(p_node)->value);
       }
