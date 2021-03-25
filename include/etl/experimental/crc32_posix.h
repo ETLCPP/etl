@@ -28,33 +28,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_CRC16_CCITT_EX_INCLUDED
-#define ETL_CRC16_CCITT_EX_INCLUDED
+#ifndef ETL_CRC32_POSIX_EX_INCLUDED
+#define ETL_CRC32_POSIX_EX_INCLUDED
 
 #include "../platform.h"
 #include "crc_implementation_2.h"
 #include "crc_parameters.h"
 
-///\defgroup crc16_ccitt 16 bit CRC calculation
+///\defgroup crc32_posix 32 bit CRC POSIX calculation
 ///\ingroup crc
 
 namespace etl
 {
   namespace crc
   {
-#if ETL_CPP11_SUPPORTED && !ETL_CRC_FORCE_CPP03
+#if ETL_CPP11_SUPPORTED
     template <size_t Table_Size>
-    using crc16_ccitt_t = etl::crc_type<etl::private_crc::crc16_ccitt_parameters, Table_Size>;
+    using crc32_posix_t = etl::crc_type<etl::private_crc::crc32_posix_parameters, Table_Size>;
 #else
     template <size_t Table_Size>
-    class crc16_ccitt_t : public etl::crc_type<etl::private_crc::crc16_ccitt_parameters, Table_Size>
+    class crc32_posix_t : public etl::crc_type<etl::private_crc::crc32_posix_parameters, Table_Size>
     {
     public:
 
       //*************************************************************************
       /// Default constructor.
       //*************************************************************************
-      crc16_ccitt_t()
+      crc32_posix_t()
       {
         this->reset();
       }
@@ -65,7 +65,7 @@ namespace etl
       /// \param end   End of the range.
       //*************************************************************************
       template<typename TIterator>
-      crc16_ccitt_t(TIterator begin, const TIterator end)
+      crc32_posix_t(TIterator begin, const TIterator end)
       {
         this->reset();
         this->add(begin, end);
@@ -73,10 +73,10 @@ namespace etl
     };
 #endif
 
-    typedef etl::crc::crc16_ccitt_t<256U> crc16_ccitt_t256;
-    typedef etl::crc::crc16_ccitt_t<16U>  crc16_ccitt_t16;
-    typedef etl::crc::crc16_ccitt_t<4U>   crc16_ccitt_t4;
-    typedef crc16_ccitt_t256              crc16_ccitt;
+    typedef etl::crc::crc32_posix_t<256U> crc32_posix_t256;
+    typedef etl::crc::crc32_posix_t<16U>  crc32_posix_t16;
+    typedef etl::crc::crc32_posix_t<4U>   crc32_posix_t4;
+    typedef crc32_posix_t256              crc32_posix;
   }
 }
 #endif

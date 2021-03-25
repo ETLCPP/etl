@@ -32,11 +32,8 @@ SOFTWARE.
 #define ETL_CRC16_KERMIT_EX_INCLUDED
 
 #include "../platform.h"
-#include "crc_implementation.h"
-
-#if defined(ETL_COMPILER_KEIL)
-#pragma diag_suppress 1300
-#endif
+#include "crc_implementation_2.h"
+#include "crc_parameters.h"
 
 ///\defgroup crc16_kermit 16 bit CRC calculation
 ///\ingroup crc
@@ -45,12 +42,14 @@ namespace etl
 {
   namespace crc
   {
+#if ETL_CPP11_SUPPORTED && !ETL_CRC_FORCE_CPP03
+    template <size_t Table_Size>
+    using crc16_kermit_t = etl::crc_type<etl::private_crc::crc16_kermit_parameters, Table_Size>;
+#else
     template <size_t Table_Size>    
-    class crc16_kermit_t : public etl::private_crc::crc_type<uint16_t, 0x1021U,0x0000U, 0x0000U, true, Table_Size>
+    class crc16_kermit_t : public etl::crc_type<etl::private_crc::crc16_kermit_parameters, Table_Size>
     {
     public:
-
-      ETL_STATIC_ASSERT((Table_Size == 4U) || (Table_Size == 16U) || (Table_Size == 256U), "Table size must be 4, 16 or 256");
 
       //*************************************************************************
       /// Default constructor.
@@ -72,6 +71,7 @@ namespace etl
         this->add(begin, end);
       }
     };
+#endif
 
     typedef etl::crc::crc16_kermit_t<256U> crc16_kermit_t256;
     typedef etl::crc::crc16_kermit_t<16U>  crc16_kermit_t16;

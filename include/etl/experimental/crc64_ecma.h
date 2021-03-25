@@ -32,11 +32,8 @@ SOFTWARE.
 #define ETL_CRC64_ECMA_EX_INCLUDED
 
 #include "../platform.h"
-#include "crc_implementation.h"
-
-#if defined(ETL_COMPILER_KEIL)
-#pragma diag_suppress 1300
-#endif
+#include "crc_implementation_2.h"
+#include "crc_parameters.h"
 
 ///\defgroup crc64_ecma 64 bit ECMA CRC calculation
 ///\ingroup crc
@@ -45,12 +42,14 @@ namespace etl
 {
   namespace crc
   {
+#if ETL_CPP11_SUPPORTED
     template <size_t Table_Size>
-    class crc64_ecma_t : public etl::private_crc::crc_type<uint64_t, 0x42F0E1EBA9EA3693U, 0x0000000000000000U, 0x0000000000000000U, false, Table_Size>
+    using crc64_ecma_t = etl::crc_type<etl::private_crc::crc64_ecma_parameters, Table_Size>;
+#else
+    template <size_t Table_Size>
+    class crc64_ecma_t : public etl::crc_type<etl::private_crc::crc64_ecma_parameters, Table_Size>
     {
     public:
-
-      ETL_STATIC_ASSERT((Table_Size == 4U) || (Table_Size == 16U) || (Table_Size == 256U), "Table size must be 4, 16 or 256");
 
       //*************************************************************************
       /// Default constructor.
@@ -72,6 +71,7 @@ namespace etl
         this->add(begin, end);
       }
     };
+#endif
 
     typedef etl::crc::crc64_ecma_t<256U> crc64_ecma_t256;
     typedef etl::crc::crc64_ecma_t<16U>  crc64_ecma_t16;

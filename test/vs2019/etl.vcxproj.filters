@@ -1002,9 +1002,6 @@
     <ClInclude Include="..\..\include\etl\experimental\crc32.h">
       <Filter>ETL\Maths\Experimental</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc16_aug_ccitt.h">
-      <Filter>ETL\Maths\Experimental</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\experimental\crc16_ccitt.h">
       <Filter>ETL\Maths\Experimental</Filter>
     </ClInclude>
@@ -1033,6 +1030,18 @@
       <Filter>ETL\Maths\Experimental</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\experimental\crc_implementation_2.h">
+      <Filter>ETL\Maths\Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc32_bzip2.h">
+      <Filter>ETL\Maths\Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc32_c.h">
+      <Filter>ETL\Maths\Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc32_mpeg2.h">
+      <Filter>ETL\Maths\Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\crc32_posix.h">
       <Filter>ETL\Maths\Experimental</Filter>
     </ClInclude>
   </ItemGroup>

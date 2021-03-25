@@ -31,13 +31,17 @@ namespace etl
     typedef crc_parameters<uint16_t, 0x8005U, 0xFFFFU, 0x0000U, true>  crc16_modbus_parameters;
     typedef crc_parameters<uint16_t, 0x8005U, 0xFFFFU, 0xFFFFU, true>  crc16_usb_parameters;
     typedef crc_parameters<uint16_t, 0x1021U, 0xFFFFU, 0xFFFFU, true>  crc16_x25_parameters;
-    typedef crc_parameters<uint16_t, 0x1021, 0x0000U, 0x0000U, false>  crc16_xmodem_parameters;
+    typedef crc_parameters<uint16_t, 0x1021U, 0x0000U, 0x0000U, false> crc16_xmodem_parameters;
 
     // 32 bit.
-    typedef crc_parameters<uint32_t, 0X04C11DB7U, 0xFFFFFFFFU, 0xFFFFFFFFU, true>  crc32_parameters;
+    typedef crc_parameters<uint32_t, 0x04C11DB7U, 0xFFFFFFFFU, 0xFFFFFFFFU, true>  crc32_parameters;
+    typedef crc_parameters<uint32_t, 0x1EDC6F41U, 0xFFFFFFFFU, 0xFFFFFFFFU, true>  crc32_c_parameters;
+    typedef crc_parameters<uint32_t, 0x04C11DB7U, 0xFFFFFFFFU, 0xFFFFFFFFU, false> crc32_bzip2_parameters;
+    typedef crc_parameters<uint32_t, 0x04C11DB7U, 0xFFFFFFFFU, 0x00000000U, false> crc32_mpeg2_parameters;
+    typedef crc_parameters<uint32_t, 0x04C11DB7U, 0x00000000U, 0xFFFFFFFFU, false> crc32_posix_parameters;
 
     // 64 bit.
-    typedef crc_parameters<uint64_t, 0x42F0E1EBA9EA3693U, 0x0000000000000000U, 0x0000000000000000U, false>  crc64_ecma_parameters;
+    typedef crc_parameters<uint64_t, 0x42F0E1EBA9EA3693U, 0x0000000000000000U, 0x0000000000000000U, false> crc64_ecma_parameters;
   }
 }
 

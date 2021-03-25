@@ -32,11 +32,8 @@ SOFTWARE.
 #define ETL_CRC16_XMODEM_EX_INCLUDED
 
 #include "../platform.h"
-#include "crc_implementation.h"
-
-#if defined(ETL_COMPILER_KEIL)
-#pragma diag_suppress 1300
-#endif
+#include "crc_implementation_2.h"
+#include "crc_parameters.h"
 
 ///\defgroup crc16_xmodem 16 bit CRC calculation
 ///\ingroup crc
@@ -47,14 +44,12 @@ namespace etl
   {
 #if ETL_CPP11_SUPPORTED
     template <size_t Table_Size>
-    using crc16_xmodem_t = etl::private_crc::crc_type<uint16_t, 0x1021, 0x0000U, 0x0000U, false, Table_Size>;
+    using crc16_xmodem_t = etl::crc_type<etl::private_crc::crc16_xmodem_parameters, Table_Size>;
 #else
     template <size_t Table_Size>    
-    class crc16_xmodem_t : public etl::private_crc::crc_type<uint16_t, 0x1021, 0x0000U, 0x0000U, false, Table_Size>
+    class crc16_xmodem_t : public etl::crc_type<etl::private_crc::crc16_xmodem_parameters, Table_Size>
     {
     public:
-
-      ETL_STATIC_ASSERT((Table_Size == 4U) || (Table_Size == 16U) || (Table_Size == 256U), "Table size must be 4, 16 or 256");
 
       //*************************************************************************
       /// Default constructor.

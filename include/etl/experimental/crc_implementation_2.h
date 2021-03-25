@@ -191,13 +191,13 @@ namespace etl
     }
 
     //*****************************************************************************
-    //
+    // CRC Policies.
     //*****************************************************************************
     template <typename TCrcParameters, size_t Table_Size>
     struct crc_policy;
 
     //*********************************
-    // Policy for 256 sized table.
+    // Policy for 256 entry table.
     template <typename TCrcParameters>
     struct crc_policy<TCrcParameters, 256U>
     {
@@ -491,7 +491,7 @@ namespace etl
     };
 
     //*********************************
-    // Policy for 16 sized table.
+    // Policy for 16 entry table.
     template <typename TCrcParameters>
     struct crc_policy<TCrcParameters, 16U>
     {
@@ -560,7 +560,7 @@ namespace etl
     };
 
     //*********************************
-    // Policy for 4 sized table.
+    // Policy for 4 entry table.
     template <typename TCrcParameters>
     struct crc_policy<TCrcParameters, 4U>
     {

@@ -42,7 +42,7 @@ namespace etl
 {
   namespace crc
   {
-#if ETL_CPP11_SUPPORTED
+#if ETL_CPP11_SUPPORTED && !ETL_CRC_FORCE_CPP03
     template <size_t Table_Size>
     using crc8_rohc_t = etl::crc_type<etl::private_crc::crc8_rohc_parameters, Table_Size>;
 #else
@@ -50,8 +50,6 @@ namespace etl
     class crc8_rohc_t : public etl::private_crc::crc_type<etl::private_crc::crc8_rohc_parameters, Table_Size>
     {
     public:
-
-      ETL_STATIC_ASSERT((Table_Size == 4U) || (Table_Size == 16U) || (Table_Size == 256U), "Table size must be 4, 16 or 256");
 
       //*************************************************************************
       /// Default constructor.

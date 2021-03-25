@@ -1273,7 +1273,6 @@
     <ClInclude Include="..\..\include\etl\delegate.h" />
     <ClInclude Include="..\..\include\etl\delegate_service.h" />
     <ClInclude Include="..\..\include\etl\experimental\crc16.h" />
-    <ClInclude Include="..\..\include\etl\experimental\crc16_aug_ccitt.h" />
     <ClInclude Include="..\..\include\etl\experimental\crc16_ccitt.h" />
     <ClInclude Include="..\..\include\etl\experimental\crc16_genibus.h" />
     <ClInclude Include="..\..\include\etl\experimental\crc16_kermit.h" />
@@ -1282,6 +1281,10 @@
     <ClInclude Include="..\..\include\etl\experimental\crc16_x25.h" />
     <ClInclude Include="..\..\include\etl\experimental\crc16_xmodem.h" />
     <ClInclude Include="..\..\include\etl\experimental\crc32.h" />
+    <ClInclude Include="..\..\include\etl\experimental\crc32_bzip2.h" />
+    <ClInclude Include="..\..\include\etl\experimental\crc32_c.h" />
+    <ClInclude Include="..\..\include\etl\experimental\crc32_mpeg2.h" />
+    <ClInclude Include="..\..\include\etl\experimental\crc32_posix.h" />
     <ClInclude Include="..\..\include\etl\experimental\crc64_ecma.h" />
     <ClInclude Include="..\..\include\etl\experimental\crc8_rohc.h" />
     <ClInclude Include="..\..\include\etl\experimental\crc8_ccitt.h" />
