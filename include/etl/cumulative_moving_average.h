@@ -114,16 +114,16 @@ namespace etl
     typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type scale_t;
     typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type sample_t;
 
-    static const sample_t SAMPLES = static_cast<sample_t>(SAMPLE_SIZE_);
-    static const scale_t  SCALE   = static_cast<scale_t>(SCALING_);
+    static ETL_CONSTANT sample_t SAMPLES = static_cast<sample_t>(SAMPLE_SIZE_);
+    static ETL_CONSTANT scale_t  SCALE   = static_cast<scale_t>(SCALING_);
 
   public:
 
     typedef T value_type;
     typedef private_cumulative_moving_average::add_insert_iterator<this_t> add_insert_iterator;
 
-    static const size_t SAMPLE_SIZE = SAMPLE_SIZE_; ///< The number of samples averaged over.
-    static const size_t SCALING     = SCALING_;     ///< The sample scaling factor.
+    static ETL_CONSTANT size_t SAMPLE_SIZE = SAMPLE_SIZE_; ///< The number of samples averaged over.
+    static ETL_CONSTANT size_t SCALING     = SCALING_;     ///< The sample scaling factor.
 
     //*************************************************************************
     /// Constructor
@@ -191,14 +191,14 @@ namespace etl
     typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type scale_t;
     typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type sample_t;
 
-    static const scale_t SCALE = static_cast<scale_t>(SCALING_);
+    static ETL_CONSTANT scale_t SCALE = static_cast<scale_t>(SCALING_);
 
   public:
 
     typedef T value_type;
     typedef private_cumulative_moving_average::add_insert_iterator<this_t> add_insert_iterator;
 
-    static const size_t SCALING = SCALING_;     ///< The sample scaling factor.
+    static ETL_CONSTANT size_t SCALING = SCALING_;     ///< The sample scaling factor.
 
     //*************************************************************************
     /// Constructor
@@ -279,7 +279,7 @@ namespace etl
     typedef T value_type;
     typedef private_cumulative_moving_average::add_insert_iterator<this_t> add_insert_iterator;
 
-    static const size_t SAMPLE_SIZE = SAMPLE_SIZE_;
+    static ETL_CONSTANT size_t SAMPLE_SIZE = SAMPLE_SIZE_;
 
     //*************************************************************************
     /// Constructor

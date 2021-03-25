@@ -137,10 +137,10 @@ namespace etl
 
   public:
 
-    static const element_t ALL_SET = etl::integral_limits<element_t>::max;
-    static const element_t ALL_CLEAR = 0;
+    static ETL_CONSTANT element_t ALL_SET = etl::integral_limits<element_t>::max;
+    static ETL_CONSTANT element_t ALL_CLEAR = 0;
 
-    static const size_t    BITS_PER_ELEMENT = etl::integral_limits<element_t>::bits;
+    static ETL_CONSTANT size_t    BITS_PER_ELEMENT = etl::integral_limits<element_t>::bits;
 
 #if ETL_CPP11_SUPPORTED
     typedef etl::span<element_t>       span_type;
@@ -894,11 +894,11 @@ namespace etl
   class bitset : public etl::ibitset
   {
 
-    static const size_t ARRAY_SIZE = (MAXN % BITS_PER_ELEMENT == 0) ? MAXN / BITS_PER_ELEMENT : MAXN / BITS_PER_ELEMENT + 1;
+    static ETL_CONSTANT size_t ARRAY_SIZE = (MAXN % BITS_PER_ELEMENT == 0) ? MAXN / BITS_PER_ELEMENT : MAXN / BITS_PER_ELEMENT + 1;
 
   public:
 
-    static const size_t ALLOCATED_BITS = ARRAY_SIZE * BITS_PER_ELEMENT;
+    static ETL_CONSTANT size_t ALLOCATED_BITS = ARRAY_SIZE * BITS_PER_ELEMENT;
 
   public:
 

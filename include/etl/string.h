@@ -63,7 +63,7 @@ namespace etl
 
     typedef istring::value_type value_type;
 
-    static const size_t MAX_SIZE = MAX_SIZE_;
+    static ETL_CONSTANT size_t MAX_SIZE = MAX_SIZE_;
 
     //*************************************************************************
     /// Constructor.

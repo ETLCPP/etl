@@ -226,13 +226,13 @@ namespace etl
     value_type hash;
     value_type seed;
 
-    static const uint8_t    FULL_BLOCK = 4;
-    static const value_type CONSTANT1  = 0xCC9E2D51;
-    static const value_type CONSTANT2  = 0x1B873593;
-    static const value_type SHIFT1     = 15;
-    static const value_type SHIFT2     = 13;
-    static const value_type MULTIPLY   = 5;
-    static const value_type ADD        = 0xE6546B64;
+    static ETL_CONSTANT uint8_t    FULL_BLOCK = 4;
+    static ETL_CONSTANT value_type CONSTANT1  = 0xCC9E2D51;
+    static ETL_CONSTANT value_type CONSTANT2  = 0x1B873593;
+    static ETL_CONSTANT value_type SHIFT1     = 15;
+    static ETL_CONSTANT value_type SHIFT2     = 13;
+    static ETL_CONSTANT value_type MULTIPLY   = 5;
+    static ETL_CONSTANT value_type ADD        = 0xE6546B64;
   };
 }
 

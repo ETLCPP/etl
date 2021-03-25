@@ -187,7 +187,7 @@ namespace etl
     ///< The memory for the pool of objects.
     typename etl::aligned_storage<sizeof(Element), etl::alignment_of<Element>::value>::type buffer[VSize];
 
-    static const uint32_t Element_Size = sizeof(Element);
+    static ETL_CONSTANT uint32_t Element_Size = sizeof(Element);
 
     // Should not be copied.
     generic_pool(const generic_pool&);
