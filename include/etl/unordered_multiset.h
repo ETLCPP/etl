@@ -1430,8 +1430,8 @@ namespace etl
 
   public:
 
-    static const size_t MAX_SIZE = MAX_SIZE_;
-    static const size_t MAX_BUCKETS = MAX_BUCKETS_;
+    static ETL_CONSTANT size_t MAX_SIZE = MAX_SIZE_;
+    static ETL_CONSTANT size_t MAX_BUCKETS = MAX_BUCKETS_;
 
 
     //*************************************************************************

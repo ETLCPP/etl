@@ -297,8 +297,8 @@ namespace etl
     {
     }
 
-    static const uint_least8_t IS_TRUNCATED    = etl::bit<0>::value;
-    static const uint_least8_t CLEAR_AFTER_USE = etl::bit<1>::value;
+    static ETL_CONSTANT uint_least8_t IS_TRUNCATED    = etl::bit<0>::value;
+    static ETL_CONSTANT uint_least8_t CLEAR_AFTER_USE = etl::bit<1>::value;
 
     size_type       current_size;   ///< The current number of elements in the string.
     const size_type CAPACITY;       ///< The maximum number of elements in the string.

@@ -320,9 +320,9 @@ namespace etl
   private:
 
     // Determines the index of the best unsigned type for the required number of bits.
-    static const int TYPE_INDEX = ((NBITS >  8) ? 1 : 0) +
-                                  ((NBITS > 16) ? 1 : 0) +
-                                  ((NBITS > 32) ? 1 : 0);
+    static ETL_CONSTANT int TYPE_INDEX = ((NBITS >  8) ? 1 : 0) +
+                                         ((NBITS > 16) ? 1 : 0) +
+                                         ((NBITS > 32) ? 1 : 0);
 
   public:
 
@@ -346,9 +346,9 @@ namespace etl
   private:
 
     // Determines the index of the best unsigned type for the required number of bits.
-    static const int TYPE_INDEX = ((NBITS >  8) ? 1 : 0) +
-                                  ((NBITS > 16) ? 1 : 0) +
-                                  ((NBITS > 32) ? 1 : 0);
+    static ETL_CONSTANT int TYPE_INDEX = ((NBITS >  8) ? 1 : 0) +
+                                         ((NBITS > 16) ? 1 : 0) +
+                                         ((NBITS > 32) ? 1 : 0);
 
   public:
 
@@ -372,9 +372,9 @@ namespace etl
   private:
 
     // Determines the index of the best unsigned type for the required value.
-    static const int TYPE_INDEX = ((VALUE > UINT_LEAST8_MAX)  ? 1 : 0) +
-                                  ((VALUE > UINT16_MAX) ? 1 : 0) +
-                                  ((VALUE > UINT32_MAX) ? 1 : 0);
+    static ETL_CONSTANT int TYPE_INDEX = ((VALUE > UINT_LEAST8_MAX)  ? 1 : 0) +
+                                         ((VALUE > UINT16_MAX) ? 1 : 0) +
+                                         ((VALUE > UINT32_MAX) ? 1 : 0);
 
   public:
 
@@ -398,9 +398,9 @@ namespace etl
   private:
 
     // Determines the index of the best signed type for the required value.
-    static const int TYPE_INDEX = (((VALUE > intmax_t(INT_LEAST8_MAX)) || (VALUE < intmax_t(INT_LEAST8_MIN))) ? 1 : 0) +
-                                  (((VALUE > intmax_t(INT16_MAX))      || (VALUE < intmax_t(INT16_MIN))) ? 1 : 0) +
-                                  (((VALUE > intmax_t(INT32_MAX))      || (VALUE < intmax_t(INT32_MIN))) ? 1 : 0);
+    static ETL_CONSTANT int TYPE_INDEX = (((VALUE > intmax_t(INT_LEAST8_MAX)) || (VALUE < intmax_t(INT_LEAST8_MIN))) ? 1 : 0) +
+                                         (((VALUE > intmax_t(INT16_MAX))      || (VALUE < intmax_t(INT16_MIN))) ? 1 : 0) +
+                                         (((VALUE > intmax_t(INT32_MAX))      || (VALUE < intmax_t(INT32_MIN))) ? 1 : 0);
 
   public:
 

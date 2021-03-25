@@ -85,7 +85,7 @@ namespace etl
   struct max_value_for_nbits
   {
     typedef typename etl::smallest_uint_for_bits<NBITS>::type value_type;
-    static const value_type value = (value_type(1) << (NBITS - 1)) | max_value_for_nbits<NBITS - 1>::value;
+    static ETL_CONSTANT value_type value = (value_type(1) << (NBITS - 1)) | max_value_for_nbits<NBITS - 1>::value;
   };
 
   /// Specialisation for when NBITS == 0.
@@ -93,7 +93,7 @@ namespace etl
   struct max_value_for_nbits<0>
   {
       typedef etl::smallest_uint_for_bits<0>::type value_type;
-      static const value_type value = 0;
+      static ETL_CONSTANT value_type value = 0;
   };
 
   template <const size_t NBITS>
@@ -357,7 +357,7 @@ namespace etl
   struct bit
   {
     typedef typename etl::smallest_uint_for_bits<POSITION + 1>::type value_type;
-    static const value_type value = value_type(1) << POSITION;
+    static ETL_CONSTANT value_type value = value_type(1) << POSITION;
   };
 
   template <const size_t POSITION>

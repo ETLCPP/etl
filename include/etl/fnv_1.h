@@ -75,8 +75,8 @@ namespace etl
       return hash;
     }
 
-    static const uint64_t OFFSET_BASIS = 0xCBF29CE484222325ull;
-    static const uint64_t PRIME        = 0x00000100000001b3ull;
+    static ETL_CONSTANT uint64_t OFFSET_BASIS = 0xCBF29CE484222325ull;
+    static ETL_CONSTANT uint64_t PRIME        = 0x00000100000001b3ull;
   };
 
   //***************************************************************************
@@ -133,8 +133,8 @@ namespace etl
       return hash;
     }
 
-    static const uint64_t OFFSET_BASIS = 0xCBF29CE484222325ull;
-    static const uint64_t PRIME        = 0x00000100000001b3ull;
+    static ETL_CONSTANT uint64_t OFFSET_BASIS = 0xCBF29CE484222325ull;
+    static ETL_CONSTANT uint64_t PRIME        = 0x00000100000001b3ull;
   };
 
   //***************************************************************************
@@ -192,8 +192,8 @@ namespace etl
       return hash;
     }
 
-    static const uint32_t OFFSET_BASIS = 0x811C9DC5;
-    static const uint32_t PRIME        = 0x01000193;
+    static ETL_CONSTANT uint32_t OFFSET_BASIS = 0x811C9DC5;
+    static ETL_CONSTANT uint32_t PRIME        = 0x01000193;
   };
 
   //***************************************************************************
@@ -250,8 +250,8 @@ namespace etl
       return hash;
     }
 
-    static const uint32_t OFFSET_BASIS = 0x811C9DC5;
-    static const uint32_t PRIME        = 0x01000193;
+    static ETL_CONSTANT uint32_t OFFSET_BASIS = 0x811C9DC5;
+    static ETL_CONSTANT uint32_t PRIME        = 0x01000193;
   };
 
   //***************************************************************************
