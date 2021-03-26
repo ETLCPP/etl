@@ -8,43 +8,16 @@
 
 #include "stdint.h"
 
+#include "crc_parameters.h"
+
+#if defined(ETL_COMPILER_KEIL)
+#pragma diag_suppress 1300
+#endif
+
 namespace etl
 {
   namespace private_crc
   {
-    //*****************************************************************************
-    /// CRC Traits
-    //*****************************************************************************
-    template <size_t Table_Size>
-    struct crc_traits;
-
-    //*********************************
-    // Traits for table size of 4.
-    template <>
-    struct crc_traits<4U>
-    {
-      static ETL_CONSTANT uint8_t Chunk_Mask = 0x03U;
-      static ETL_CONSTANT size_t  Chunk_Bits = 2U;
-    };
-
-    //*********************************
-    // Traits for table size of 16.
-    template <>
-    struct crc_traits<16U>
-    {
-      static ETL_CONSTANT uint8_t Chunk_Mask = 0x0FU;
-      static ETL_CONSTANT size_t  Chunk_Bits = 4U;
-    };
-
-    //*********************************
-    // Traits for table size of 256.
-    template <>
-    struct crc_traits<256U>
-    {
-      static ETL_CONSTANT uint8_t Chunk_Mask = 0xFFU;
-      static ETL_CONSTANT size_t  Chunk_Bits = 8U;
-    };
-
     //*****************************************************************************
     /// CRC Entry
     //*****************************************************************************
@@ -53,7 +26,7 @@ namespace etl
     {
     private:
 
-      typename typedef TCrcParameters::accumulator_type accumulator_type;
+      typedef typename TCrcParameters::accumulator_type accumulator_type;
 
       static ETL_CONSTANT size_t           Accumulator_Bits = TCrcParameters::Accumulator_Bits;
       static ETL_CONSTANT accumulator_type Polynomial       = TCrcParameters::Polynomial;
@@ -136,59 +109,59 @@ namespace etl
                                             crc_entry<TCrcParameters, Entry>::value>::value;
     };
 
-    //*************************************************************************
-    // Accumulator_Bits > Chunk_Bits and not reflected
-    template <typename TAccumulator, uint8_t Chunk_Mask, uint8_t Chunk_Bits, uint8_t Accumulator_Bits, bool Reflect>
-    typename etl::enable_if<(Accumulator_Bits > Chunk_Bits) && !Reflect, TAccumulator>::type
-      crc_update_chunk(TAccumulator crc, uint8_t value, const TAccumulator table[])
-    {
-      size_t index = (crc >> (Accumulator_Bits - Chunk_Bits)) ^ value;
+    ////*************************************************************************
+    //// Accumulator_Bits > Chunk_Bits and not reflected
+    //template <typename TAccumulator, uint8_t Chunk_Mask, uint8_t Chunk_Bits, uint8_t Accumulator_Bits, bool Reflect>
+    //typename etl::enable_if<(Accumulator_Bits > Chunk_Bits) && !Reflect, TAccumulator>::type
+    //  crc_update_chunk(TAccumulator crc, uint8_t value, const TAccumulator table[])
+    //{
+    //  size_t index = (crc >> (Accumulator_Bits - Chunk_Bits)) ^ value;
 
-      crc <<= Chunk_Bits;
-      crc ^= table[index];
+    //  crc <<= Chunk_Bits;
+    //  crc ^= table[index];
 
-      return crc;
-    }
+    //  return crc;
+    //}
 
-    //*************************************************************************
-    // Accumulator_Bits > Chunk_Bits and reflected
-    template <typename TAccumulator, uint8_t Chunk_Mask, uint8_t Chunk_Bits, uint8_t Accumulator_Bits, bool Reflect>
-    typename etl::enable_if<(Accumulator_Bits > Chunk_Bits) && Reflect, TAccumulator>::type
-      crc_update_chunk(TAccumulator crc, uint8_t value, const TAccumulator table[])
-    {
-      size_t index = (crc & Chunk_Mask) ^ value;
+    ////*************************************************************************
+    //// Accumulator_Bits > Chunk_Bits and reflected
+    //template <typename TAccumulator, uint8_t Chunk_Mask, uint8_t Chunk_Bits, uint8_t Accumulator_Bits, bool Reflect>
+    //typename etl::enable_if<(Accumulator_Bits > Chunk_Bits) && Reflect, TAccumulator>::type
+    //  crc_update_chunk(TAccumulator crc, uint8_t value, const TAccumulator table[])
+    //{
+    //  size_t index = size_t((crc & Chunk_Mask) ^ value);
 
-      crc >>= Chunk_Bits;
-      crc ^= table[index];
+    //  crc >>= Chunk_Bits;
+    //  crc ^= table[index];
 
-      return crc;
-    }
+    //  return crc;
+    //}
 
-    //*************************************************************************
-    // Accumulator_Bits == Chunk_Bits and not reflected
-    template <typename TAccumulator, uint8_t Chunk_Mask, uint8_t Chunk_Bits, uint8_t Accumulator_Bits, bool Reflect>
-    typename etl::enable_if<(Accumulator_Bits == Chunk_Bits) && !Reflect, TAccumulator>::type
-      crc_update_chunk(TAccumulator crc, uint8_t value, const TAccumulator table[])
-    {
-      size_t index = (crc >> (Accumulator_Bits - Chunk_Bits)) ^ value;
+    ////*************************************************************************
+    //// Accumulator_Bits == Chunk_Bits and not reflected
+    //template <typename TAccumulator, uint8_t Chunk_Mask, uint8_t Chunk_Bits, uint8_t Accumulator_Bits, bool Reflect>
+    //typename etl::enable_if<(Accumulator_Bits == Chunk_Bits) && !Reflect, TAccumulator>::type
+    //  crc_update_chunk(TAccumulator crc, uint8_t value, const TAccumulator table[])
+    //{
+    //  size_t index = size_t((crc >> (Accumulator_Bits - Chunk_Bits)) ^ value);
 
-      crc = table[index];
+    //  crc = table[index];
 
-      return crc;
-    }
+    //  return crc;
+    //}
 
-    //*************************************************************************
-    // Accumulator_Bits == Chunk_Bits and reflected
-    template <typename TAccumulator, uint8_t Chunk_Mask, uint8_t Chunk_Bits, uint8_t Accumulator_Bits, bool Reflect>
-    typename etl::enable_if<(Accumulator_Bits == Chunk_Bits) && Reflect, TAccumulator>::type
-      crc_update_chunk(TAccumulator crc, uint8_t value, const TAccumulator table[])
-    {
-      size_t index = (crc & Chunk_Mask) ^ value;
+    ////*************************************************************************
+    //// Accumulator_Bits == Chunk_Bits and reflected
+    //template <typename TAccumulator, uint8_t Chunk_Mask, uint8_t Chunk_Bits, uint8_t Accumulator_Bits, bool Reflect>
+    //typename etl::enable_if<(Accumulator_Bits == Chunk_Bits) && Reflect, TAccumulator>::type
+    //  crc_update_chunk(TAccumulator crc, uint8_t value, const TAccumulator table[])
+    //{
+    //  size_t index = size_t((crc & Chunk_Mask) ^ value);
 
-      crc = table[index];
+    //  crc = table[index];
 
-      return crc;
-    }
+    //  return crc;
+    //}
 
     //*****************************************************************************
     // CRC Policies.
@@ -205,14 +178,62 @@ namespace etl
       typedef accumulator_type value_type;
 
       static ETL_CONSTANT size_t  Table_Size = 256U;
-      static ETL_CONSTANT uint8_t Chunk_Mask = crc_traits<Table_Size>::Chunk_Mask;
-      static ETL_CONSTANT uint8_t Chunk_Bits = crc_traits<Table_Size>::Chunk_Bits;
+      static ETL_CONSTANT uint8_t Chunk_Mask = Table_Size - 1U;
+      static ETL_CONSTANT size_t  Chunk_Bits = 8U;
       static ETL_CONSTANT size_t  Accumulator_Bits = TCrcParameters::Accumulator_Bits;    
 
       //*************************************************************************
       ETL_CONSTEXPR accumulator_type initial() const
       {
         return TCrcParameters::Initial;
+      }
+
+      //*************************************************************************
+      static accumulator_type update_chunk(accumulator_type crc, uint8_t value, const accumulator_type table[])
+      {
+        //// Extract the most significant nibble of the crc and xor with the value nibble.
+        //size_t index = size_t((crc >> (etl::integral_limits<uint8_t>::bits - Chunk_Bits)) ^ value);
+
+        //crc <<= Chunk_Bits;
+        //crc ^= table[index];
+
+        value &= Chunk_Mask;
+
+        if ETL_IF_CONSTEXPR(TCrcParameters::Reflect)
+        {
+          uint8_t index = (crc & Chunk_Mask) ^ value;
+
+          // special case for when chunk size is same as accumulator size.
+          if ETL_IF_CONSTEXPR(Accumulator_Bits > Chunk_Bits) 
+          {
+            crc >>= Chunk_Bits;
+            crc ^= table[index];
+          } 
+          else 
+          {
+            crc = table[index];
+          }
+
+          return crc;
+        }
+        else
+        {
+          // Extract the most significant nibble of the crc and xor with the value nibble
+          uint8_t index = (crc >> (Accumulator_Bits - Chunk_Bits)) ^ value;
+
+          // special case for when chunk size is same as accumulator size.
+          if ETL_IF_CONSTEXPR(Accumulator_Bits > Chunk_Bits)
+          {
+            crc <<= Chunk_Bits;
+            crc ^= table[index];
+          }
+          else
+          {
+            crc = table[index];
+          }
+
+          return crc;
+        }
       }
 
       //*************************************************************************
@@ -478,7 +499,8 @@ namespace etl
           crc_table_entry<TCrcParameters, 255U, Chunk_Bits>::value
         };
 
-        crc = crc_update_chunk<accumulator_type, Chunk_Mask, Chunk_Bits, Accumulator_Bits, TCrcParameters::Reflect>(crc, value, table);
+        crc = update_chunk(crc, value, table);
+        //crc = crc_update_chunk<accumulator_type, Chunk_Mask, Chunk_Bits, Accumulator_Bits, TCrcParameters::Reflect>(crc, value, table);
 
         return crc;
       }
@@ -499,8 +521,8 @@ namespace etl
       typedef accumulator_type value_type;
 
       static ETL_CONSTANT size_t  Table_Size = 16U;
-      static ETL_CONSTANT uint8_t Chunk_Mask = crc_traits<Table_Size>::Chunk_Mask;
-      static ETL_CONSTANT uint8_t Chunk_Bits = crc_traits<Table_Size>::Chunk_Bits;
+      static ETL_CONSTANT uint8_t Chunk_Mask = Table_Size - 1U;
+      static ETL_CONSTANT size_t  Chunk_Bits = 4U;
       static ETL_CONSTANT size_t  Accumulator_Bits = TCrcParameters::Accumulator_Bits;
 
       typedef accumulator_type value_type;
@@ -514,13 +536,49 @@ namespace etl
       //*************************************************************************
       static accumulator_type update_chunk(accumulator_type crc, uint8_t value, const accumulator_type table[])
       {
-        // Extract the most significant nibble of the crc and xor with the value nibble.
-        size_t index = (crc >> (etl::integral_limits<uint8_t>::bits - Chunk_Bits)) ^ value;
+        //// Extract the most significant nibble of the crc and xor with the value nibble.
+        //size_t index = size_t((crc >> (etl::integral_limits<uint8_t>::bits - Chunk_Bits)) ^ value);
 
-        crc <<= Chunk_Bits;
-        crc ^= table[index];
+        //crc <<= Chunk_Bits;
+        //crc ^= table[index];
 
-        return crc;
+        value &= Chunk_Mask;
+
+        if ETL_IF_CONSTEXPR(TCrcParameters::Reflect)
+        {
+          uint8_t index = (crc & Chunk_Mask) ^ value;
+
+          // special case for when chunk size is same as accumulator size.
+          if ETL_IF_CONSTEXPR(Accumulator_Bits > Chunk_Bits) 
+          {
+            crc >>= Chunk_Bits;
+            crc ^= table[index];
+          } 
+          else  
+          {
+            crc = table[index];
+          }
+
+          return crc;
+        }
+        else
+        {
+          // Extract the most significant nibble of the crc and xor with the value nibble
+          uint8_t index = (crc >> (Accumulator_Bits - Chunk_Bits)) ^ value;
+
+          // special case for when chunk size is same as accumulator size.
+          if ETL_IF_CONSTEXPR(Accumulator_Bits > Chunk_Bits)
+          {
+            crc <<= Chunk_Bits;
+            crc ^= table[index];
+          }
+          else
+          {
+            crc = table[index];
+          }
+
+          return crc;
+        }
       }
 
       //*************************************************************************
@@ -546,8 +604,16 @@ namespace etl
           crc_table_entry<TCrcParameters, 15U, Chunk_Bits>::value
         };
 
-        crc = update_chunk(crc, (value >> Chunk_Bits) & Chunk_Mask, table);
-        crc = update_chunk(crc, value & Chunk_Mask, table);
+        if ETL_IF_CONSTEXPR(TCrcParameters::Reflect)
+        {
+          crc = update_chunk(crc, value & Chunk_Mask, table);
+          crc = update_chunk(crc, value >> Chunk_Bits, table);
+        }
+        else
+        {
+          crc = update_chunk(crc, value >> Chunk_Bits, table);
+          crc = update_chunk(crc, value & Chunk_Mask, table);
+        }
 
         return crc;
       }
@@ -568,8 +634,8 @@ namespace etl
       typedef accumulator_type value_type;
 
       static ETL_CONSTANT size_t  Table_Size = 4U;
-      static ETL_CONSTANT uint8_t Chunk_Mask = crc_traits<Table_Size>::Chunk_Mask;
-      static ETL_CONSTANT uint8_t Chunk_Bits = crc_traits<Table_Size>::Chunk_Bits;
+      static ETL_CONSTANT uint8_t Chunk_Mask = Table_Size - 1U;
+      static ETL_CONSTANT size_t  Chunk_Bits = 2U;
       static ETL_CONSTANT size_t  Accumulator_Bits = TCrcParameters::Accumulator_Bits;
 
       //*************************************************************************
@@ -581,13 +647,43 @@ namespace etl
       //*************************************************************************
       static accumulator_type update_chunk(accumulator_type crc, uint8_t value, const accumulator_type table[])
       {
-        // Extract the most significant nibble of the crc and xor with the value nibble.
-        size_t index = (crc >> (etl::integral_limits<uint8_t>::bits - Chunk_Bits)) ^ value;
+        value &= Chunk_Mask;
 
-        crc <<= Chunk_Bits;
-        crc ^= table[index];
+        if ETL_IF_CONSTEXPR(TCrcParameters::Reflect)
+        {
+          uint8_t index = (crc & Chunk_Mask) ^ value;
 
-        return crc;
+          // special case for when chunk size is same as accumulator size.
+          if ETL_IF_CONSTEXPR(Accumulator_Bits > Chunk_Bits) 
+          {
+            crc >>= Chunk_Bits;
+            crc ^= table[index];
+          } 
+          else 
+          {
+            crc = table[index];
+          }
+
+          return crc;
+        }
+        else
+        {
+          // Extract the most significant nibble of the crc and xor with the value nibble
+          uint8_t index = (crc >> (Accumulator_Bits - Chunk_Bits)) ^ value;
+
+          // special case for when chunk size is same as accumulator size.
+          if ETL_IF_CONSTEXPR(Accumulator_Bits > Chunk_Bits)
+          {
+            crc <<= Chunk_Bits;
+            crc ^= table[index];
+          }
+          else
+          {
+            crc = table[index];
+          }
+
+          return crc;
+        }
       }
 
       //*************************************************************************
@@ -600,11 +696,21 @@ namespace etl
           crc_table_entry<TCrcParameters, 2U, Chunk_Bits>::value,
           crc_table_entry<TCrcParameters, 3U, Chunk_Bits>::value
         };
-
-        crc = update_chunk(crc, (value >> (Chunk_Bits * 3U)) & Chunk_Mask, table);
-        crc = update_chunk(crc, (value >> (Chunk_Bits * 2U)) & Chunk_Mask, table);
-        crc = update_chunk(crc, (value >> (Chunk_Bits * 1U)) & Chunk_Mask, table);
-        crc = update_chunk(crc, value & Chunk_Mask, table);
+        
+        if ETL_IF_CONSTEXPR(TCrcParameters::Reflect)
+        {
+          crc = update_chunk(crc, value & Chunk_Mask, table);
+          crc = update_chunk(crc, (value >> (Chunk_Bits * 1U)) & Chunk_Mask, table);
+          crc = update_chunk(crc, (value >> (Chunk_Bits * 2U)) & Chunk_Mask, table);
+          crc = update_chunk(crc, (value >> (Chunk_Bits * 3U)) & Chunk_Mask, table);          
+        }
+        else
+        {
+          crc = update_chunk(crc, (value >> (Chunk_Bits * 3U)) & Chunk_Mask, table);
+          crc = update_chunk(crc, (value >> (Chunk_Bits * 2U)) & Chunk_Mask, table);
+          crc = update_chunk(crc, (value >> (Chunk_Bits * 1U)) & Chunk_Mask, table);
+          crc = update_chunk(crc, value & Chunk_Mask, table);
+        }
 
         return crc;
       }

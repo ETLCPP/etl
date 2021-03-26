@@ -32,7 +32,7 @@ SOFTWARE.
 #define ETL_CRC16_X25_EX_INCLUDED
 
 #include "../platform.h"
-#include "crc_implementation_2.h"
+#include "crc_implementation.h"
 #include "crc_parameters.h"
 
 ///\defgroup crc16_x25 16 bit CRC calculation

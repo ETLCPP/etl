@@ -32,7 +32,7 @@ SOFTWARE.
 #define ETL_CRC32_BZIP2_EX_INCLUDED
 
 #include "../platform.h"
-#include "crc_implementation_2.h"
+#include "crc_implementation.h"
 #include "crc_parameters.h"
 
 ///\defgroup crc32_bzip2 32 bit CRC BZIP2 calculation

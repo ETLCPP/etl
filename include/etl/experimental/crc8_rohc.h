@@ -32,7 +32,7 @@ SOFTWARE.
 #define ETL_CRC8_ROHC_EXP_INCLUDED
 
 #include "../platform.h"
-#include "crc_implementation_2.h"
+#include "crc_implementation.h"
 #include "crc_parameters.h"
 
 ///\defgroup rohc 8 bit CRC calculation

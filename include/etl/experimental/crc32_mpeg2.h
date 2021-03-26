@@ -28,14 +28,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_CRC32_BZIP2_EX_INCLUDED
-#define ETL_CRC32_BZIP2_EX_INCLUDED
+#ifndef ETL_CRC32_MPEG2_EX_INCLUDED
+#define ETL_CRC32_MPEG2_EX_INCLUDED
 
 #include "../platform.h"
-#include "crc_implementation_2.h"
+#include "crc_implementation.h"
 #include "crc_parameters.h"
 
-///\defgroup crc32_bzip2 32 bit CRC BZIP2 calculation
+///\defgroup crc32_mpeg2 32 bit CRC MPEG2 calculation
 ///\ingroup crc
 
 namespace etl
@@ -44,17 +44,17 @@ namespace etl
   {
 #if ETL_CPP11_SUPPORTED
     template <size_t Table_Size>
-    using crc32_bzip2_t = etl::crc_type<etl::private_crc::crc32_bzip2_parameters, Table_Size>;
+    using crc32_mpeg2_t = etl::crc_type<etl::private_crc::crc32_mpeg2_parameters, Table_Size>;
 #else
     template <size_t Table_Size>
-    class crc32_bzip2_t : public etl::crc_type<etl::private_crc::crc32_bzip2_parameters, Table_Size>
+    class crc32_mpeg2_t : public etl::crc_type<etl::private_crc::crc32_mpeg2_parameters, Table_Size>
     {
     public:
 
       //*************************************************************************
       /// Default constructor.
       //*************************************************************************
-      crc32_bzip2_t()
+      crc32_mpeg2_t()
       {
         this->reset();
       }
@@ -65,7 +65,7 @@ namespace etl
       /// \param end   End of the range.
       //*************************************************************************
       template<typename TIterator>
-      crc32_bzip2_t(TIterator begin, const TIterator end)
+      crc32_mpeg2_t(TIterator begin, const TIterator end)
       {
         this->reset();
         this->add(begin, end);
@@ -73,10 +73,10 @@ namespace etl
     };
 #endif
 
-    typedef etl::crc::crc32_bzip2_t<256U> crc32_bzip2_t256;
-    typedef etl::crc::crc32_bzip2_t<16U>  crc32_bzip2_t16;
-    typedef etl::crc::crc32_bzip2_t<4U>   crc32_bzip2_t4;
-    typedef crc32_bzip2_t256              crc32_bzip2;
+    typedef etl::crc::crc32_mpeg2_t<256U> crc32_mpeg2_t256;
+    typedef etl::crc::crc32_mpeg2_t<16U>  crc32_mpeg2_t16;
+    typedef etl::crc::crc32_mpeg2_t<4U>   crc32_mpeg2_t4;
+    typedef crc32_mpeg2_t256              crc32_mpeg2;
   }
 }
 #endif

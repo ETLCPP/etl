@@ -32,7 +32,7 @@ SOFTWARE.
 #define ETL_CRC64_ECMA_EX_INCLUDED
 
 #include "../platform.h"
-#include "crc_implementation_2.h"
+#include "crc_implementation.h"
 #include "crc_parameters.h"
 
 ///\defgroup crc64_ecma 64 bit ECMA CRC calculation

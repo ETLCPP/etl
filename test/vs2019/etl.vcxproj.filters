@@ -106,9 +106,6 @@
     <Filter Include="Source Files\Scripts">
       <UniqueIdentifier>{562466b5-677d-4448-9e9e-f70805cd71ad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ETL\Maths\Experimental">
-      <UniqueIdentifier>{016bd5a6-e277-4aba-8b28-28a9f1348473}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -168,21 +165,6 @@
     <ClInclude Include="..\..\include\etl\map.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc16.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc16_ccitt.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc32.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc64_ecma.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc8_ccitt.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\log.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
@@ -203,9 +185,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\variant.h">
       <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc16_kermit.h">
-      <Filter>ETL\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\parameter_type.h">
       <Filter>ETL\Utilities</Filter>
@@ -513,9 +492,6 @@
     <ClInclude Include="..\..\include\etl\memory_model.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc32_c.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\XmlTestReporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -654,9 +630,6 @@
     <ClInclude Include="..\..\include\etl\state_chart.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc16_modbus.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\cumulative_moving_average.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
@@ -755,51 +728,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\indirect_vector.h">
       <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\crc8_poly_0x07.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\crc16_poly_0x1021_.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\crc16_poly_0x8005.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\crc32_poly_0x1edc6f41.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\crc32_poly_0x04c11db7.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\crc64_poly_0x42f0e1eba9ea3693.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc8_rohc.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc16_aug_ccitt.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc16_genibus.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc16_usb.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc16_x25.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc16_xmodem.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc32_bzip2.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc32_mpeg2.h">
-      <Filter>ETL\Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc32_posix.h">
-      <Filter>ETL\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\profiles\determine_compiler_version.h">
       <Filter>ETL\Profiles</Filter>
@@ -987,62 +915,62 @@
     <ClInclude Include="..\sanity-check\c++17\etl_profile.h">
       <Filter>Source Files\Sanity Checks\C++17</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc8_ccitt.h">
-      <Filter>ETL\Maths\Experimental</Filter>
+    <ClInclude Include="..\..\include\etl\crc8_ccitt.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc_implementation.h">
-      <Filter>ETL\Maths\Experimental</Filter>
+    <ClInclude Include="..\..\include\etl\crc8_rohc.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc8_rohc.h">
-      <Filter>ETL\Maths\Experimental</Filter>
+    <ClInclude Include="..\..\include\etl\crc16.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc16.h">
-      <Filter>ETL\Maths\Experimental</Filter>
+    <ClInclude Include="..\..\include\etl\crc16_aug_ccitt.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc32.h">
-      <Filter>ETL\Maths\Experimental</Filter>
+    <ClInclude Include="..\..\include\etl\crc16_ccitt.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc16_ccitt.h">
-      <Filter>ETL\Maths\Experimental</Filter>
+    <ClInclude Include="..\..\include\etl\crc16_genibus.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc16_kermit.h">
-      <Filter>ETL\Maths\Experimental</Filter>
+    <ClInclude Include="..\..\include\etl\crc16_kermit.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc16_modbus.h">
-      <Filter>ETL\Maths\Experimental</Filter>
+    <ClInclude Include="..\..\include\etl\crc16_modbus.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc16_usb.h">
-      <Filter>ETL\Maths\Experimental</Filter>
+    <ClInclude Include="..\..\include\etl\crc16_usb.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc64_ecma.h">
-      <Filter>ETL\Maths\Experimental</Filter>
+    <ClInclude Include="..\..\include\etl\crc16_x25.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc16_genibus.h">
-      <Filter>ETL\Maths\Experimental</Filter>
+    <ClInclude Include="..\..\include\etl\crc16_xmodem.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc16_x25.h">
-      <Filter>ETL\Maths\Experimental</Filter>
+    <ClInclude Include="..\..\include\etl\crc32.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc16_xmodem.h">
-      <Filter>ETL\Maths\Experimental</Filter>
+    <ClInclude Include="..\..\include\etl\crc32_bzip2.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc_parameters.h">
-      <Filter>ETL\Maths\Experimental</Filter>
+    <ClInclude Include="..\..\include\etl\crc32_c.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc_implementation_2.h">
-      <Filter>ETL\Maths\Experimental</Filter>
+    <ClInclude Include="..\..\include\etl\crc32_mpeg2.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc32_bzip2.h">
-      <Filter>ETL\Maths\Experimental</Filter>
+    <ClInclude Include="..\..\include\etl\crc32_posix.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc32_c.h">
-      <Filter>ETL\Maths\Experimental</Filter>
+    <ClInclude Include="..\..\include\etl\crc64_ecma.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc32_mpeg2.h">
-      <Filter>ETL\Maths\Experimental</Filter>
+    <ClInclude Include="..\..\include\etl\private\crc_implementation.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\crc32_posix.h">
-      <Filter>ETL\Maths\Experimental</Filter>
+    <ClInclude Include="..\..\include\etl\private\crc_parameters.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1086,9 +1014,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_list.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_crc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_deque.cpp">

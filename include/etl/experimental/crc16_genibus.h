@@ -32,7 +32,7 @@ SOFTWARE.
 #define ETL_CRC16_GENIBUS_EX_INCLUDED
 
 #include "../platform.h"
-#include "crc_implementation_2.h"
+#include "crc_implementation.h"
 #include "crc_parameters.h"
 
 ///\defgroup crc16_genibus 16 bit CRC calculation
