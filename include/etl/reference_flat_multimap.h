@@ -156,7 +156,7 @@ namespace etl
         return *(*ilookup);
       }
 
-      const_reference operator *() const
+      reference operator *() const
       {
         return *(*ilookup);
       }
@@ -166,7 +166,7 @@ namespace etl
         return etl::addressof(*(*ilookup));
       }
 
-      const_pointer operator &() const
+      pointer operator &() const
       {
         return &(*(*ilookup));
       }
@@ -176,7 +176,7 @@ namespace etl
         return etl::addressof(*(*ilookup));
       }
 
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return etl::addressof(*(*ilookup));
       }
@@ -826,7 +826,7 @@ namespace etl
   {
   public:
 
-    static const size_t MAX_SIZE = MAX_SIZE_;
+    static ETL_CONSTANT size_t MAX_SIZE = MAX_SIZE_;
 
     //*************************************************************************
     /// Constructor.

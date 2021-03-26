@@ -529,7 +529,7 @@ namespace etl
   {
   public:
 
-    static const size_t MAX_SIZE = SIZE;
+    static ETL_CONSTANT size_t MAX_SIZE = SIZE;
 
     //*************************************************************************
     /// Default constructor.

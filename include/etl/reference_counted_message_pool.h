@@ -223,7 +223,7 @@ namespace etl
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage1>::value), "TMessage7 not derived from etl::imessage");
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage1>::value), "TMessage8 not derived from etl::imessage");
 
-      static const size_t max_size = etl::largest<etl::reference_counted_message<TMessage1, TCounter>,
+      static ETL_CONSTANT size_t max_size = etl::largest<etl::reference_counted_message<TMessage1, TCounter>,
                                                   etl::reference_counted_message<TMessage2, TCounter>,
                                                   etl::reference_counted_message<TMessage3, TCounter>,
                                                   etl::reference_counted_message<TMessage4, TCounter>,
@@ -233,7 +233,7 @@ namespace etl
                                                   etl::reference_counted_message<TMessage8, TCounter> >::size;
 
 
-      static const size_t max_alignment = etl::largest<etl::reference_counted_message<TMessage1, TCounter>,
+      static ETL_CONSTANT size_t max_alignment = etl::largest<etl::reference_counted_message<TMessage1, TCounter>,
                                                        etl::reference_counted_message<TMessage2, TCounter>,
                                                        etl::reference_counted_message<TMessage3, TCounter>,
                                                        etl::reference_counted_message<TMessage4, TCounter>,

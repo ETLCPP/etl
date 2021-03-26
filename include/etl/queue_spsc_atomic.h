@@ -474,13 +474,13 @@ namespace etl
 
   private:
 
-    static const size_type RESERVED_SIZE = size_type(SIZE + 1);
+    static ETL_CONSTANT size_type RESERVED_SIZE = size_type(SIZE + 1);
 
   public:
 
     ETL_STATIC_ASSERT((SIZE <= (etl::integral_limits<size_type>::max - 1)), "Size too large for memory model");
 
-    static const size_type MAX_SIZE = size_type(SIZE);
+    static ETL_CONSTANT size_type MAX_SIZE = size_type(SIZE);
 
     //*************************************************************************
     /// Default constructor.

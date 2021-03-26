@@ -52,6 +52,7 @@ Original publication: https://www.codeproject.com/Articles/1170503/The-Impossibl
 #include "error_handler.h"
 #include "exception.h"
 #include "type_traits.h"
+#include "utility.h"
 
 #if ETL_CPP11_NOT_SUPPORTED
   #if !defined(ETL_IN_UNIT_TEST)
@@ -198,7 +199,7 @@ namespace etl
     {
       ETL_ASSERT(is_valid(), ETL_ERROR(delegate_uninitialised));
 
-      return (*invocation.stub)(invocation.object, args...);
+      return (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
     }
 
     //*************************************************************************
@@ -315,7 +316,7 @@ namespace etl
     static TReturn method_stub(void* object, TParams... params)
     {
       T* p = static_cast<T*>(object);
-      return (p->*Method)(params...);
+      return (p->*Method)(etl::forward<TParams>(params)...);
     }
 
     //*************************************************************************
@@ -325,7 +326,7 @@ namespace etl
     static TReturn const_method_stub(void* object, TParams... params)
     {
       T* const p = static_cast<T*>(object);
-      return (p->*Method)(params...);
+      return (p->*Method)(etl::forward<TParams>(params)...);
     }
 
     //*************************************************************************
@@ -334,7 +335,7 @@ namespace etl
     template <typename T, T& Instance, TReturn(T::*Method)(TParams...)>
     static TReturn method_instance_stub(void*, TParams... params)
     {
-      return (Instance.*Method)(params...);
+      return (Instance.*Method)(etl::forward<TParams>(params)...);
     }
 
     //*************************************************************************
@@ -343,7 +344,7 @@ namespace etl
     template <typename T, const T& Instance, TReturn(T::*Method)(TParams...) const>
     static TReturn const_method_instance_stub(void*, TParams... params)
     {
-      return (Instance.*Method)(params...);
+      return (Instance.*Method)(etl::forward<TParams>(params)...);
     }
 
 #if !defined(ETL_COMPILER_GCC)
@@ -353,7 +354,7 @@ namespace etl
     template <typename T, T& Instance>
     static TReturn operator_instance_stub(void*, TParams... params)
     {
-      return Instance.operator()(params...);
+      return Instance.operator()(etl::forward<TParams>(params)...);
     }
 #endif
 
@@ -363,7 +364,7 @@ namespace etl
     template <TReturn(*Method)(TParams...)>
     static TReturn function_stub(void*, TParams... params)
     {
-      return (Method)(params...);
+      return (Method)(etl::forward<TParams>(params)...);
     }
 
     //*************************************************************************
@@ -373,7 +374,7 @@ namespace etl
     static TReturn lambda_stub(void* object, TParams... arg)
     {
       TLambda* p = static_cast<TLambda*>(object);
-      return (p->operator())(arg...);
+      return (p->operator())(etl::forward<TParams>(arg)...);
     }
 
     //*************************************************************************

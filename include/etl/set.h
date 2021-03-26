@@ -624,7 +624,7 @@ namespace etl
         return iset::data_cast(p_node)->value;
       }
 
-      const_reference operator *() const
+      reference operator *() const
       {
         return iset::data_cast(p_node)->value;
       }
@@ -634,7 +634,7 @@ namespace etl
         return &(iset::data_cast(p_node)->value);
       }
 
-      const_pointer operator &() const
+      pointer operator &() const
       {
         return &(iset::data_cast(p_node)->value);
       }
@@ -644,7 +644,7 @@ namespace etl
         return &(iset::data_cast(p_node)->value);
       }
 
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return &(iset::data_cast(p_node)->value);
       }
@@ -2101,7 +2101,7 @@ namespace etl
   {
   public:
 
-    static const size_t MAX_SIZE = MAX_SIZE_;
+    static ETL_CONSTANT size_t MAX_SIZE = MAX_SIZE_;
 
     //*************************************************************************
     /// Default constructor.

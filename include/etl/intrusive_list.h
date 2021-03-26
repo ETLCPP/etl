@@ -443,7 +443,7 @@ namespace etl
         return *p_value;
       }
 
-      const_reference operator *() const
+      reference operator *() const
       {
         return *p_value;
       }
@@ -453,7 +453,7 @@ namespace etl
         return p_value;
       }
 
-      const_pointer operator &() const
+      pointer operator &() const
       {
         return p_value;
       }
@@ -463,7 +463,7 @@ namespace etl
         return p_value;
       }
 
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return p_value;
       }

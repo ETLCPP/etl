@@ -601,7 +601,7 @@ namespace etl
 
     ETL_STATIC_ASSERT((SIZE <= etl::integral_limits<size_type>::max), "Size too large for memory model");
 
-    static const size_type MAX_SIZE = size_type(SIZE);
+    static ETL_CONSTANT size_type MAX_SIZE = size_type(SIZE);
 
     //*************************************************************************
     /// Default constructor.

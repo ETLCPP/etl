@@ -1,4 +1,11 @@
 ===============================================================================
+20.7.0
+Added etl::selection_sort.
+etl::delegate accepts moveable parameters.
+Fixed the return type of const iterators for containers from const_iterator to iterator.
+Changed many instances of 'static const' to 'static ETL_CONSTANT'.
+
+===============================================================================
 20.6.3
 Updates to unit test CMake files.
 Added missing include for string_utilities.h

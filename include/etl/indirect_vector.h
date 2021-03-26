@@ -245,7 +245,7 @@ namespace etl
         return **lookup_itr;
       }
 
-      const_reference operator *() const
+      reference operator *() const
       {
         return **lookup_itr;
       }
@@ -255,7 +255,7 @@ namespace etl
         return &(**lookup_itr);
       }
 
-      const_pointer operator &() const
+      pointer operator &() const
       {
         return &(**lookup_itr);
       }
@@ -265,7 +265,7 @@ namespace etl
         return &(**lookup_itr);
       }
 
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return &(**lookup_itr);
       }
@@ -1294,7 +1294,7 @@ namespace etl
 
     ETL_STATIC_ASSERT((MAX_SIZE_ > 0U), "Zero capacity etl::indirect_vector is not valid");
 
-    static const size_t MAX_SIZE = MAX_SIZE_;
+    static ETL_CONSTANT size_t MAX_SIZE = MAX_SIZE_;
 
     //*************************************************************************
     /// Constructor.
