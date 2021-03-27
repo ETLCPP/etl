@@ -1,5 +1,35 @@
+///\file
 
-#pragma once
+/******************************************************************************
+The MIT License(MIT)
+
+Embedded Template Library.
+https://github.com/ETLCPP/etl
+https://www.etlcpp.com
+
+Copyright(c) 2021 jwellbelove
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files(the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions :
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+******************************************************************************/
+
+#ifndef ETL_CRC_IMPLEMENTATION_INCLUDED
+#define ETL_CRC_IMPLEMENTATION_INCLUDED
 
 #include "../platform.h"
 #include "../frame_check_sequence.h"
@@ -109,60 +139,6 @@ namespace etl
                                             crc_entry<TCrcParameters, Entry>::value>::value;
     };
 
-    ////*************************************************************************
-    //// Accumulator_Bits > Chunk_Bits and not reflected
-    //template <typename TAccumulator, uint8_t Chunk_Mask, uint8_t Chunk_Bits, uint8_t Accumulator_Bits, bool Reflect>
-    //typename etl::enable_if<(Accumulator_Bits > Chunk_Bits) && !Reflect, TAccumulator>::type
-    //  crc_update_chunk(TAccumulator crc, uint8_t value, const TAccumulator table[])
-    //{
-    //  size_t index = (crc >> (Accumulator_Bits - Chunk_Bits)) ^ value;
-
-    //  crc <<= Chunk_Bits;
-    //  crc ^= table[index];
-
-    //  return crc;
-    //}
-
-    ////*************************************************************************
-    //// Accumulator_Bits > Chunk_Bits and reflected
-    //template <typename TAccumulator, uint8_t Chunk_Mask, uint8_t Chunk_Bits, uint8_t Accumulator_Bits, bool Reflect>
-    //typename etl::enable_if<(Accumulator_Bits > Chunk_Bits) && Reflect, TAccumulator>::type
-    //  crc_update_chunk(TAccumulator crc, uint8_t value, const TAccumulator table[])
-    //{
-    //  size_t index = size_t((crc & Chunk_Mask) ^ value);
-
-    //  crc >>= Chunk_Bits;
-    //  crc ^= table[index];
-
-    //  return crc;
-    //}
-
-    ////*************************************************************************
-    //// Accumulator_Bits == Chunk_Bits and not reflected
-    //template <typename TAccumulator, uint8_t Chunk_Mask, uint8_t Chunk_Bits, uint8_t Accumulator_Bits, bool Reflect>
-    //typename etl::enable_if<(Accumulator_Bits == Chunk_Bits) && !Reflect, TAccumulator>::type
-    //  crc_update_chunk(TAccumulator crc, uint8_t value, const TAccumulator table[])
-    //{
-    //  size_t index = size_t((crc >> (Accumulator_Bits - Chunk_Bits)) ^ value);
-
-    //  crc = table[index];
-
-    //  return crc;
-    //}
-
-    ////*************************************************************************
-    //// Accumulator_Bits == Chunk_Bits and reflected
-    //template <typename TAccumulator, uint8_t Chunk_Mask, uint8_t Chunk_Bits, uint8_t Accumulator_Bits, bool Reflect>
-    //typename etl::enable_if<(Accumulator_Bits == Chunk_Bits) && Reflect, TAccumulator>::type
-    //  crc_update_chunk(TAccumulator crc, uint8_t value, const TAccumulator table[])
-    //{
-    //  size_t index = size_t((crc & Chunk_Mask) ^ value);
-
-    //  crc = table[index];
-
-    //  return crc;
-    //}
-
     //*****************************************************************************
     // CRC Policies.
     //*****************************************************************************
@@ -191,12 +167,6 @@ namespace etl
       //*************************************************************************
       static accumulator_type update_chunk(accumulator_type crc, uint8_t value, const accumulator_type table[])
       {
-        //// Extract the most significant nibble of the crc and xor with the value nibble.
-        //size_t index = size_t((crc >> (etl::integral_limits<uint8_t>::bits - Chunk_Bits)) ^ value);
-
-        //crc <<= Chunk_Bits;
-        //crc ^= table[index];
-
         value &= Chunk_Mask;
 
         if ETL_IF_CONSTEXPR(TCrcParameters::Reflect)
@@ -536,12 +506,6 @@ namespace etl
       //*************************************************************************
       static accumulator_type update_chunk(accumulator_type crc, uint8_t value, const accumulator_type table[])
       {
-        //// Extract the most significant nibble of the crc and xor with the value nibble.
-        //size_t index = size_t((crc >> (etl::integral_limits<uint8_t>::bits - Chunk_Bits)) ^ value);
-
-        //crc <<= Chunk_Bits;
-        //crc ^= table[index];
-
         value &= Chunk_Mask;
 
         if ETL_IF_CONSTEXPR(TCrcParameters::Reflect)
@@ -754,3 +718,5 @@ namespace etl
     }
   };
 }
+
+#endif
