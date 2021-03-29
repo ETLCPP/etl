@@ -439,27 +439,12 @@ namespace etl
         return *this;
       }
 
-      reference operator *()
-      {
-        return iforward_list::data_cast(p_node)->value;
-      }
-
       reference operator *() const
       {
         return iforward_list::data_cast(p_node)->value;
       }
 
-      pointer operator &()
-      {
-        return &(iforward_list::data_cast(p_node)->value);
-      }
-
       pointer operator &() const
-      {
-        return &(iforward_list::data_cast(p_node)->value);
-      }
-
-      pointer operator ->()
       {
         return &(iforward_list::data_cast(p_node)->value);
       }

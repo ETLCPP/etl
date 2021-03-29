@@ -151,27 +151,12 @@ namespace etl
         return temp;
       }
 
-      reference operator *()
-      {
-        return *(*ilookup);
-      }
-
       reference operator *() const
       {
         return *(*ilookup);
       }
 
-      pointer operator &()
-      {
-        return etl::addressof(*(*ilookup));
-      }
-
       pointer operator &() const
-      {
-        return &(*(*ilookup));
-      }
-
-      pointer operator ->()
       {
         return etl::addressof(*(*ilookup));
       }

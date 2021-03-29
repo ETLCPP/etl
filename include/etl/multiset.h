@@ -781,27 +781,12 @@ namespace etl
         return *this;
       }
 
-      reference operator *()
-      {
-        return imultiset::data_cast(p_node)->value;
-      }
-
       reference operator *() const
       {
         return imultiset::data_cast(p_node)->value;
       }
 
-      pointer operator &()
-      {
-        return &(imultiset::data_cast(p_node)->value);
-      }
-
       pointer operator &() const
-      {
-        return &(imultiset::data_cast(p_node)->value);
-      }
-
-      pointer operator ->()
       {
         return &(imultiset::data_cast(p_node)->value);
       }

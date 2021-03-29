@@ -357,21 +357,9 @@ namespace etl
       }
 
       //***************************************************
-      reference operator *()
-      {
-        return p_buffer[index];
-      }
-
-      //***************************************************
       reference operator *() const
       {
         return p_buffer[index];
-      }
-
-      //***************************************************
-      pointer operator ->()
-      {
-        return &p_buffer[index];
       }
 
       //***************************************************

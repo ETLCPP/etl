@@ -368,27 +368,12 @@ namespace etl
         return *this;
       }
 
-      reference operator *()
-      {
-        return *p_value;
-      }
-
       reference operator *() const
       {
         return *p_value;
       }
 
-      pointer operator &()
-      {
-        return p_value;
-      }
-
       pointer operator &() const
-      {
-        return p_value;
-      }
-
-      pointer operator ->()
       {
         return p_value;
       }

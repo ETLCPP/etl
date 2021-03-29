@@ -240,27 +240,12 @@ namespace etl
         return *this;
       }
 
-      reference operator *()
-      {
-        return **lookup_itr;
-      }
-
       reference operator *() const
       {
         return **lookup_itr;
       }
 
-      pointer operator &()
-      {
-        return &(**lookup_itr);
-      }
-
       pointer operator &() const
-      {
-        return &(**lookup_itr);
-      }
-
-      pointer operator ->()
       {
         return &(**lookup_itr);
       }
