@@ -641,27 +641,12 @@ namespace etl
         return *this;
       }
 
-      reference operator *()
-      {
-        return imap::data_cast(p_node)->value;
-      }
-
       reference operator *() const
       {
         return imap::data_cast(p_node)->value;
       }
 
-      pointer operator &()
-      {
-        return &(imap::data_cast(p_node)->value);
-      }
-
       pointer operator &() const
-      {
-        return &(imap::data_cast(p_node)->value);
-      }
-
-      pointer operator ->()
       {
         return &(imap::data_cast(p_node)->value);
       }

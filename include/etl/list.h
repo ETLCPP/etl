@@ -533,27 +533,12 @@ namespace etl
         return *this;
       }
 
-      reference operator *()
-      {
-        return ilist::data_cast(p_node)->value;
-      }
-
       reference operator *() const
       {
         return ilist::data_cast(p_node)->value;
       }
 
-      pointer operator &()
-      {
-        return &(ilist::data_cast(p_node)->value);
-      }
-
       pointer operator &() const
-      {
-        return &(ilist::data_cast(p_node)->value);
-      }
-
-      pointer operator ->()
       {
         return &(ilist::data_cast(p_node)->value);
       }

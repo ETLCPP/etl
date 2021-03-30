@@ -245,31 +245,13 @@ namespace etl
       }
 
       //*********************************
-      reference operator *()
-      {
-        return inode->key_value_pair;
-      }
-
-      //*********************************
       reference operator *() const
       {
         return inode->key_value_pair;
       }
 
       //*********************************
-      pointer operator &()
-      {
-        return &(inode->key_value_pair);
-      }
-
-      //*********************************
       pointer operator &() const
-      {
-        return &(inode->key_value_pair);
-      }
-
-      //*********************************
-      pointer operator ->()
       {
         return &(inode->key_value_pair);
       }

@@ -619,27 +619,12 @@ namespace etl
         return *this;
       }
 
-      reference operator *()
-      {
-        return iset::data_cast(p_node)->value;
-      }
-
       reference operator *() const
       {
         return iset::data_cast(p_node)->value;
       }
 
-      pointer operator &()
-      {
-        return &(iset::data_cast(p_node)->value);
-      }
-
       pointer operator &() const
-      {
-        return &(iset::data_cast(p_node)->value);
-      }
-
-      pointer operator ->()
       {
         return &(iset::data_cast(p_node)->value);
       }
