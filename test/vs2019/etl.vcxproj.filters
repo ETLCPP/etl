@@ -1017,6 +1017,48 @@
     <ClInclude Include="..\..\include\etl\crc32_xfer.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc8_ebu.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_a.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_arc.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_cdma2000.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_dds110.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_dnp.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_en13757.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_maxim.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_mcrf4xx.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_profibus.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_riello.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_t10dif.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_tms37157.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -2262,6 +2304,93 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_crc32_xfer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_cdma2000.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_darc.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_dvbs2.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_ebu.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_icode.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_itu.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_maxim.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_wcdma.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_a.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_arc.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_buypass.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_cdma2000.h.t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dds110.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dect_r.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dect_x.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dnp.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_en13757.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_maxim.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_mcrf4xx.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_profibus.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_riello.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_t10dif.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_teledisk.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_tms37157.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_d.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_jamcrc.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_q.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_xfer.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_arc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

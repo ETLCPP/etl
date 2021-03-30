@@ -44,7 +44,7 @@ namespace etl
   using crc8_dvbs2_t = etl::crc_type<etl::private_crc::crc8_dvbs2_parameters, Table_Size>;
 #else
   template <size_t Table_Size>
-  class crc8_dvbs2_t : public etl::private_crc::crc_type<etl::private_crc::crc8_dvbs2_parameters, Table_Size>
+  class crc8_dvbs2_t : public etl::crc_type<etl::private_crc::crc8_dvbs2_parameters, Table_Size>
   {
   public:
 

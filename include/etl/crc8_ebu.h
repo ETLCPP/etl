@@ -44,7 +44,7 @@ namespace etl
   using crc8_ebu_t = etl::crc_type<etl::private_crc::crc8_ebu_parameters, Table_Size>;
 #else
   template <size_t Table_Size>
-  class crc8_ebu_t : public etl::private_crc::crc_type<etl::private_crc::crc8_ebu_parameters, Table_Size>
+  class crc8_ebu_t : public etl::crc_type<etl::private_crc::crc8_ebu_parameters, Table_Size>
   {
   public:
 

@@ -48,23 +48,51 @@ target_sources(t98 PRIVATE etl_profile.h
         ../compare.h.t.cpp
         ../constant.h.t.cpp
         ../container.h.t.cpp
-        ../crc16_aug_ccitt.h.t.cpp
-        ../crc16_ccitt.h.t.cpp
-        ../crc16_genibus.h.t.cpp
         ../crc16.h.t.cpp
+        ../crc16_a.h.t.cpp
+        ../crc16_arc.h.t.cpp
+        ../crc16_aug_ccitt.h.t.cpp
+        ../crc16_buypass.h.t.cpp
+        ../crc16_ccitt.h.t.cpp
+        ../crc16_cdma2000.h.t.cpp
+        ../crc16_dds110.h.t.cpp
+        ../crc16_dect_r.h.t.cpp
+        ../crc16_dect_x.h.t.cpp
+        ../crc16_dnp.h.t.cpp
+        ../crc16_en13757.h.t.cpp
+        ../crc16_genibus.h.t.cpp
         ../crc16_kermit.h.t.cpp
+        ../crc16_maxim.h.t.cpp
+        ../crc16_mcrf4xx.h.t.cpp
         ../crc16_modbus.h.t.cpp
+        ../crc16_profibus.h.t.cpp
+        ../crc16_riello.h.t.cpp
+        ../crc16_t10dif.h.t.cpp
+        ../crc16_teledisk.h.t.cpp
+        ../crc16_tms37157.h.t.cpp
         ../crc16_usb.h.t.cpp
         ../crc16_x25.h.t.cpp
         ../crc16_xmodem.h.t.cpp
+        ../crc32.h.t.cpp
         ../crc32_bzip2.h.t.cpp
         ../crc32_c.h.t.cpp
-        ../crc32.h.t.cpp
+        ../crc32_d.h.t.cpp
+        ../crc32_jamcrc.h.t.cpp
         ../crc32_mpeg2.h.t.cpp
         ../crc32_posix.h.t.cpp
+        ../crc32_q.h.t.cpp
+        ../crc32_xfer.h.t.cpp
         ../crc64_ecma.h.t.cpp
         ../crc8_ccitt.h.t.cpp
+        ../crc8_cdma2000.h.t.cpp
+        ../crc8_darc.h.t.cpp
+        ../crc8_dvbs2.h.t.cpp
+        ../crc8_ebu.h.t.cpp
+        ../crc8_icode.h.t.cpp
+        ../crc8_itu.h.t.cpp
+        ../crc8_maxim.h.t.cpp
         ../crc8_rohc.h.t.cpp
+        ../crc8_wcdma.h.t.cpp
         ../cumulative_moving_average.h.t.cpp
         ../cyclic_value.h.t.cpp
         ../debounce.h.t.cpp
@@ -91,8 +119,8 @@ target_sources(t98 PRIVATE etl_profile.h
         ../forward_list.h.t.cpp
         ../frame_check_sequence.h.t.cpp
         ../fsm.h.t.cpp
-        ../functional.h.t.cpp
         ../function.h.t.cpp
+        ../functional.h.t.cpp
         ../generic_pool.h.t.cpp
         ../hash.h.t.cpp
         ../ihash.h.t.cpp
@@ -119,17 +147,17 @@ target_sources(t98 PRIVATE etl_profile.h
         ../math_constants.h.t.cpp
         ../memory.h.t.cpp
         ../memory_model.h.t.cpp
-        ../message_bus.h.t.cpp
         ../message.h.t.cpp
+        ../message_bus.h.t.cpp
         ../message_packet.h.t.cpp
         ../message_router.h.t.cpp
         ../message_router_registry.h.t.cpp
         ../message_timer.h.t.cpp
         ../message_types.h.t.cpp
-        ../multi_array.h.t.cpp
         ../multimap.h.t.cpp
-        ../multi_range.h.t.cpp
         ../multiset.h.t.cpp
+        ../multi_array.h.t.cpp
+        ../multi_range.h.t.cpp
         ../murmur3.h.t.cpp
         ../mutex.h.t.cpp
         ../negative.h.t.cpp
