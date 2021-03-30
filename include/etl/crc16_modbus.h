@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 jwellbelove
+Copyright(c) 2021 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -31,21 +31,48 @@ SOFTWARE.
 #ifndef ETL_CRC16_MODBUS_INCLUDED
 #define ETL_CRC16_MODBUS_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
-#include "private/crc16_poly_0x8005.h"
+#include "private/crc_implementation.h"
 
-#if defined(ETL_COMPILER_KEIL)
-#pragma diag_suppress 1300
-#endif
-
-///\defgroup crc16_modbus 16 bit CRC MODBUS calculation
+//\defgroup crc16_modbus 16 bit CRC calculation
 ///\ingroup crc
 
 namespace etl
 {
-  typedef crc16_poly_0x8005<0xFFFFU, 0x0000U, true> crc16_modbus;
-}
+#if ETL_CPP11_SUPPORTED && !ETL_CRC_FORCE_CPP03
+  template <size_t Table_Size>
+  using crc16_modbus_t = etl::crc_type<etl::private_crc::crc16_modbus_parameters, Table_Size>;
+#else
+  template <size_t Table_Size>    
+  class crc16_modbus_t : public etl::crc_type<etl::private_crc::crc16_modbus_parameters, Table_Size>
+  {
+  public:
 
+    //*************************************************************************
+    /// Default constructor.
+    //*************************************************************************
+    crc16_modbus_t()
+    {
+      this->reset();
+    }
+
+    //*************************************************************************
+    /// Constructor from range.
+    /// \param begin Start of the range.
+    /// \param end   End of the range.
+    //*************************************************************************
+    template<typename TIterator>
+    crc16_modbus_t(TIterator begin, const TIterator end)
+    {
+      this->reset();
+      this->add(begin, end);
+    }
+  };
+#endif
+
+  typedef etl::crc16_modbus_t<256U> crc16_modbus_t256;
+  typedef etl::crc16_modbus_t<16U>  crc16_modbus_t16;
+  typedef etl::crc16_modbus_t<4U>   crc16_modbus_t4;
+  typedef crc16_modbus_t256         crc16_modbus;
+}
 #endif

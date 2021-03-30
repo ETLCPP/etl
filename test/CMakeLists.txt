@@ -45,7 +45,51 @@ set(TEST_SOURCE_FILES
 	test_compiler_settings.cpp
 	test_constant.cpp
 	test_container.cpp
-	test_crc.cpp
+	test_crc.cpp                                                         
+	test_crc16.cpp                                                       
+	test_crc16_a.cpp                                                     
+	test_crc16_aug_ccitt.cpp                                             
+	test_crc16_buypass.cpp                                               
+	test_crc16_ccitt.cpp                                                 
+	test_crc16_cdma2000.cpp                                              
+	test_crc16_dds110.cpp                                                
+	test_crc16_dect_r.cpp                                                
+	test_crc16_dect_x.cpp                                                
+	test_crc16_dnp.cpp                                                   
+	test_crc16_en13757.cpp                                               
+	test_crc16_genibus.cpp                                               
+	test_crc16_kermit.cpp                                                
+	test_crc16_maxim.cpp                                                 
+	test_crc16_mcrf4xx.cpp                                               
+	test_crc16_modbus.cpp                                                
+	test_crc16_profibus.cpp                                              
+	test_crc16_riello.cpp                                                
+	test_crc16_t10dif.cpp                                                
+	test_crc16_teledisk.cpp                                              
+	test_crc16_tms37157.cpp                                              
+	test_crc16_usb.cpp                                                   
+	test_crc16_x25.cpp                                                   
+	test_crc16_xmodem.cpp                                                
+	test_crc32.cpp                                                       
+	test_crc32_bzip2.cpp                                                 
+	test_crc32_c.cpp                                                     
+	test_crc32_d.cpp                                                     
+	test_crc32_jamcrc.cpp                                                
+	test_crc32_mpeg2.cpp                                                 
+	test_crc32_posix.cpp                                                 
+	test_crc32_q.cpp                                                     
+	test_crc32_xfer.cpp                                                  
+	test_crc64_ecma.cpp                                                  
+	test_crc8_ccitt.cpp                                                  
+	test_crc8_cdma2000.cpp                                               
+	test_crc8_darc.cpp                                                   
+	test_crc8_dvbs2.cpp                                                  
+	test_crc8_ebu.cpp                                                    
+	test_crc8_icode.cpp                                                  
+	test_crc8_itu.cpp                                                    
+	test_crc8_maxim.cpp                                                  
+	test_crc8_rohc.cpp                                                   
+	test_crc8_wcdma.cpp
 	test_cumulative_moving_average.cpp
 	test_cyclic_value.cpp
 	test_debounce.cpp

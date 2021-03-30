@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 jwellbelove
+Copyright(c) 2021 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -32,18 +32,47 @@ SOFTWARE.
 #define ETL_CRC32_C_INCLUDED
 
 #include "platform.h"
-#include "private/crc32_poly_0x1edc6f41.h"
+#include "private/crc_implementation.h"
 
-#if defined(ETL_COMPILER_KEIL)
-#pragma diag_suppress 1300
-#endif
-
-///\defgroup crc32_c 32 bit CRC-C calculation (Castagnoli)
+///\defgroup crc32_c 32 bit CRC_C calculation
 ///\ingroup crc
 
 namespace etl
 {
-  typedef crc32_poly_0x1edc6f41<0xFFFFFFFFU, 0xFFFFFFFFU, true> crc32_c;
-}
+#if ETL_CPP11_SUPPORTED
+  template <size_t Table_Size>
+  using crc32_c_t = etl::crc_type<etl::private_crc::crc32_c_parameters, Table_Size>;
+#else
+  template <size_t Table_Size>
+  class crc32_c_t : public etl::crc_type<etl::private_crc::crc32_c_parameters, Table_Size>
+  {
+  public:
 
+    //*************************************************************************
+    /// Default constructor.
+    //*************************************************************************
+    crc32_c_t()
+    {
+      this->reset();
+    }
+
+    //*************************************************************************
+    /// Constructor from range.
+    /// \param begin Start of the range.
+    /// \param end   End of the range.
+    //*************************************************************************
+    template<typename TIterator>
+    crc32_c_t(TIterator begin, const TIterator end)
+    {
+      this->reset();
+      this->add(begin, end);
+    }
+  };
+#endif
+
+  typedef etl::crc32_c_t<256U> crc32_c_t256;
+  typedef etl::crc32_c_t<16U>  crc32_c_t16;
+  typedef etl::crc32_c_t<4U>   crc32_c_t4;
+  typedef crc32_c_t256         crc32_c;
+}
 #endif
