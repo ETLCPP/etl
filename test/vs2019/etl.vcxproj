@@ -1267,8 +1267,8 @@
     <ClInclude Include="..\..\include\etl\crc16_ccitt.h" />
     <ClInclude Include="..\..\include\etl\crc16_cdma2000.h" />
     <ClInclude Include="..\..\include\etl\crc16_dds110.h" />
-    <ClInclude Include="..\..\include\etl\crc16_dect_r.h" />
-    <ClInclude Include="..\..\include\etl\crc16_dect_x.h" />
+    <ClInclude Include="..\..\include\etl\crc16_dectr.h" />
+    <ClInclude Include="..\..\include\etl\crc16_dectx.h" />
     <ClInclude Include="..\..\include\etl\crc16_dnp.h" />
     <ClInclude Include="..\..\include\etl\crc16_en13757.h" />
     <ClInclude Include="..\..\include\etl\crc16_genibus.h" />
@@ -1939,7 +1939,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoSTL|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoSTLForceNoAdvanced|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_dect_r.h.t.cpp">
+    <ClCompile Include="..\sanity-check\crc16_dectr.h.t.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugStringTruncationIsError|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Clang|Win32'">true</ExcludedFromBuild>
@@ -1952,7 +1952,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoSTL|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugNoSTLForceNoAdvanced|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_dect_x.h.t.cpp">
+    <ClCompile Include="..\sanity-check\crc16_dectx.h.t.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugStringTruncationIsError|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Clang|Win32'">true</ExcludedFromBuild>
@@ -4151,8 +4151,8 @@
     <ClCompile Include="..\test_crc16_ccitt.cpp" />
     <ClCompile Include="..\test_crc16_cdma2000.cpp" />
     <ClCompile Include="..\test_crc16_dds110.cpp" />
-    <ClCompile Include="..\test_crc16_dect_r.cpp" />
-    <ClCompile Include="..\test_crc16_dect_x.cpp" />
+    <ClCompile Include="..\test_crc16_dectr.cpp" />
+    <ClCompile Include="..\test_crc16_dectx.cpp" />
     <ClCompile Include="..\test_crc16_dnp.cpp" />
     <ClCompile Include="..\test_crc16_en13757.cpp" />
     <ClCompile Include="..\test_crc16_genibus.cpp" />

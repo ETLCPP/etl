@@ -31,6 +31,17 @@ SOFTWARE.
 #ifndef ETL_CRC_INCLUDED
 #define ETL_CRC_INCLUDED
 
+#include "crc8_ccitt.h"
+#include "crc8_cdma2000.h"
+#include "crc8_darc.h"
+#include "crc8_dvbs2.h"
+#include "crc8_ebu.h"
+#include "crc8_icode.h"
+#include "crc8_itu.h"
+#include "crc8_maxim.h"
+#include "crc8_rohc.h"
+#include "crc8_wcdma.h"
+
 #include "crc16.h"
 #include "crc16_a.h"
 #include "crc16_arc.h"
@@ -39,8 +50,8 @@ SOFTWARE.
 #include "crc16_ccitt.h"
 #include "crc16_cdma2000.h"
 #include "crc16_dds110.h"
-#include "crc16_dect_r.h"
-#include "crc16_dect_x.h"
+#include "crc16_dectr.h"
+#include "crc16_dectx.h"
 #include "crc16_dnp.h"
 #include "crc16_en13757.h"
 #include "crc16_genibus.h"
@@ -56,6 +67,7 @@ SOFTWARE.
 #include "crc16_usb.h"
 #include "crc16_x25.h"
 #include "crc16_xmodem.h"
+
 #include "crc32.h"
 #include "crc32_bzip2.h"
 #include "crc32_c.h"
@@ -65,16 +77,7 @@ SOFTWARE.
 #include "crc32_posix.h"
 #include "crc32_q.h"
 #include "crc32_xfer.h"
+
 #include "crc64_ecma.h"
-#include "crc8_ccitt.h"
-#include "crc8_cdma2000.h"
-#include "crc8_darc.h"
-#include "crc8_dvbs2.h"
-#include "crc8_ebu.h"
-#include "crc8_icode.h"
-#include "crc8_itu.h"
-#include "crc8_maxim.h"
-#include "crc8_rohc.h"
-#include "crc8_wcdma.h"
 
 #endif

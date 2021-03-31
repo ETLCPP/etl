@@ -34,6 +34,10 @@ SOFTWARE.
 #include "../platform.h"
 #include "../integral_limits.h"
 
+//*****************************************************************************
+// The parameters for these CRCs were created from https://crccalc.com/
+//*****************************************************************************
+
 namespace etl
 {
   namespace private_crc

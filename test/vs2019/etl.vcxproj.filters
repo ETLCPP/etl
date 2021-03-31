@@ -996,10 +996,10 @@
     <ClInclude Include="..\..\include\etl\crc16_buypass.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc16_dect_r.h">
+    <ClInclude Include="..\..\include\etl\crc16_dectr.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\crc16_dect_x.h">
+    <ClInclude Include="..\..\include\etl\crc16_dectx.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\crc16_teledisk.h">
@@ -2261,10 +2261,10 @@
     <ClCompile Include="..\test_crc16_dds110.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_crc16_dect_r.cpp">
+    <ClCompile Include="..\test_crc16_dectr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_crc16_dect_x.cpp">
+    <ClCompile Include="..\test_crc16_dectx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_crc16_dnp.cpp">
@@ -2345,10 +2345,10 @@
     <ClCompile Include="..\sanity-check\crc16_dds110.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
     </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_dect_r.h.t.cpp">
+    <ClCompile Include="..\sanity-check\crc16_dectr.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
     </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_dect_x.h.t.cpp">
+    <ClCompile Include="..\sanity-check\crc16_dectx.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_dnp.h.t.cpp">

@@ -56,8 +56,8 @@ target_sources(t98 PRIVATE etl_profile.h
         ../crc16_ccitt.h.t.cpp
         ../crc16_cdma2000.h.t.cpp
         ../crc16_dds110.h.t.cpp
-        ../crc16_dect_r.h.t.cpp
-        ../crc16_dect_x.h.t.cpp
+        ../crc16_dectr.h.t.cpp
+        ../crc16_dectx.h.t.cpp
         ../crc16_dnp.h.t.cpp
         ../crc16_en13757.h.t.cpp
         ../crc16_genibus.h.t.cpp

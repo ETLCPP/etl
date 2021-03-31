@@ -28,30 +28,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_CRC16_DECT_X_INCLUDED
-#define ETL_CRC16_DECT_X_INCLUDED
+#ifndef ETL_CRC16_DECT_R_INCLUDED
+#define ETL_CRC16_DECT_R_INCLUDED
 
 #include "platform.h"
 #include "private/crc_implementation.h"
 
-///\defgroup crc16_dect_x 16 bit CRC calculation
+///\defgroup crc16_dectr 16 bit CRC calculation
 ///\ingroup crc
 
 namespace etl
 {
 #if ETL_CPP11_SUPPORTED && !ETL_CRC_FORCE_CPP03
   template <size_t Table_Size>
-  using crc16_dect_x_t = etl::crc_type<etl::private_crc::crc16_dect_x_parameters, Table_Size>;
+  using crc16_dect_r_t = etl::crc_type<etl::private_crc::crc16_dect_r_parameters, Table_Size>;
 #else
   template <size_t Table_Size>
-  class crc16_dect_x_t : public etl::crc_type<etl::private_crc::crc16_dect_x_parameters, Table_Size>
+  class crc16_dect_r_t : public etl::crc_type<etl::private_crc::crc16_dect_r_parameters, Table_Size>
   {
   public:
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    crc16_dect_x_t()
+    crc16_dect_r_t()
     {
       this->reset();
     }
@@ -62,7 +62,7 @@ namespace etl
     /// \param end   End of the range.
     //*************************************************************************
     template<typename TIterator>
-    crc16_dect_x_t(TIterator begin, const TIterator end)
+    crc16_dect_r_t(TIterator begin, const TIterator end)
     {
       this->reset();
       this->add(begin, end);
@@ -70,9 +70,9 @@ namespace etl
   };
 #endif
 
-  typedef etl::crc16_dect_x_t<256U> crc16_dect_x_t256;
-  typedef etl::crc16_dect_x_t<16U>  crc16_dect_x_t16;
-  typedef etl::crc16_dect_x_t<4U>   crc16_dect_x_t4;
-  typedef crc16_dect_x_t256         crc16_dect_x;
+  typedef etl::crc16_dect_r_t<256U> crc16_dect_r_t256;
+  typedef etl::crc16_dect_r_t<16U>  crc16_dect_r_t16;
+  typedef etl::crc16_dect_r_t<4U>   crc16_dect_r_t4;
+  typedef crc16_dect_r_t256         crc16_dectr;
 }
 #endif

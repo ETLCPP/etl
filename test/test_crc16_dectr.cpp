@@ -33,7 +33,7 @@ SOFTWARE.
 #include <vector>
 #include <stdint.h>
 
-#include "etl/crc16_dect_r.h"
+#include "etl/crc16_dectr.h"
 
 //*****************************************************************************
 // The results for these tests were created from https://crccalc.com/
@@ -50,7 +50,7 @@ namespace
     {
       std::string data("123456789");
 
-      uint16_t crc = etl::crc16_dect_r(data.begin(), data.end());
+      uint16_t crc = etl::crc16_dectr(data.begin(), data.end());
 
       CHECK_EQUAL(0x007EU, crc);
     }
@@ -60,7 +60,7 @@ namespace
     {
       std::string data("123456789");
 
-      etl::crc16_dect_r crc_calculator;
+      etl::crc16_dectr crc_calculator;
 
       for (size_t i = 0; i < data.size(); ++i)
       {
@@ -77,7 +77,7 @@ namespace
     {
       std::string data("123456789");
 
-      etl::crc16_dect_r crc_calculator;
+      etl::crc16_dectr crc_calculator;
 
       crc_calculator.add(data.begin(), data.end());
 
@@ -91,7 +91,7 @@ namespace
     {
       std::string data("123456789");
 
-      etl::crc16_dect_r crc_calculator;
+      etl::crc16_dectr crc_calculator;
 
       std::copy(data.begin(), data.end(), crc_calculator.input());
 
@@ -107,11 +107,11 @@ namespace
       std::vector<uint32_t> data2 = { 0x04030201, 0x08070605 };
       std::vector<uint8_t>  data3 = { 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
 
-      uint16_t crc1 = etl::crc16_dect_r(data1.begin(), data1.end());
-      uint16_t crc2 = etl::crc16_dect_r((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
+      uint16_t crc1 = etl::crc16_dectr(data1.begin(), data1.end());
+      uint16_t crc2 = etl::crc16_dectr((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
       CHECK_EQUAL(crc1, crc2);
 
-      uint16_t crc3 = etl::crc16_dect_r(data3.rbegin(), data3.rend());
+      uint16_t crc3 = etl::crc16_dectr(data3.rbegin(), data3.rend());
       CHECK_EQUAL(crc1, crc3);
     }
 
