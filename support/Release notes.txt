@@ -1,4 +1,10 @@
 ===============================================================================
+20.8.0
+Added more CRCs, generalised table creation.
+Options for table sizes of 4, 16 and 256.
+Removed unnecessary non-const versions of iterators for containers.
+
+===============================================================================
 20.7.0
 Added etl::selection_sort.
 etl::delegate accepts moveable parameters.
