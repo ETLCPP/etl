@@ -551,21 +551,6 @@ namespace etl
           crc_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, 255U, Chunk_Bits>::value
         };
 
-        static ETL_CONSTANT size_t Index = 1;
-
-        const size_t       Shift_Bits  = size_t(Accumulator_Bits - 8U);
-        const TAccumulator Entry       = Reflect ? TAccumulator(Index) : TAccumulator(TAccumulator(Index) << Shift_Bits);
-        TAccumulator Table_Value = crc_partial_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect,
-                                   crc_partial_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect,
-                                   crc_partial_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect,
-                                   crc_partial_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect,
-                                   crc_partial_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect,
-                                   crc_partial_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect,
-                                   crc_partial_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect,
-                                   crc_partial_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, Entry>::value>::value>::value>::value>::value>::value>::value>::value;
-
-        TAccumulator Polynomial_Value = Polynomial;
-
         crc = crc_update_chunk<TAccumulator, Accumulator_Bits, Chunk_Bits, Chunk_Mask, Reflect>(crc, value, table);
 
         return crc;
