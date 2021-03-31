@@ -53,8 +53,8 @@ set(TEST_SOURCE_FILES
 	test_crc16_ccitt.cpp                                                 
 	test_crc16_cdma2000.cpp                                              
 	test_crc16_dds110.cpp                                                
-	test_crc16_dect_r.cpp                                                
-	test_crc16_dect_x.cpp                                                
+	test_crc16_dectr.cpp                                                
+	test_crc16_dectx.cpp                                                
 	test_crc16_dnp.cpp                                                   
 	test_crc16_en13757.cpp                                               
 	test_crc16_genibus.cpp                                               
