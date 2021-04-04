@@ -41,12 +41,12 @@ namespace
   constexpr size_t Size  = 10U;
   constexpr int    Start = -4;
  
-
   using IntRuntimeOffsetHistogram = etl::histogram<int32_t, int8_t, Size>;
   using IntOffset0Histogram       = etl::histogram<int32_t, int8_t, Size, 0>;
   using IntOffsetminus4Histogram  = etl::histogram<int32_t, int8_t, Size, Start>;
   using StringHistogram           = etl::sparce_histogram<std::string, int8_t, Size>;
 
+  //***********************************
   std::array<int8_t, 55> input1 = 
   { 
     5, 5, 5, 5, 5, 5,
@@ -61,6 +61,7 @@ namespace
     0 
   };
 
+  //***********************************
   std::array<int8_t, 55> input2 = 
   { 
     1, 1, 1, 1, 1, 1,
@@ -75,6 +76,7 @@ namespace
     -4 
   };
 
+  //***********************************
   std::array<std::string, 55> input3 = 
   { 
     "5", "5", "5", "5", "5", "5",
@@ -89,8 +91,10 @@ namespace
     "0" 
   };
 
+  //***********************************
   std::array<int8_t, Size> output1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
+  //***********************************
   std::array<ETL_OR_STD::pair<const std::string, int8_t>, Size> output2 = 
   { 
     ETL_OR_STD::pair<const std::string, int8_t>("0",  1),
@@ -105,8 +109,10 @@ namespace
     ETL_OR_STD::pair<const std::string, int8_t>("9", 10),
   };
 
+  //***********************************
   std::array<int8_t, Size> zero1 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
+  //***********************************
   std::array<ETL_OR_STD::pair<const std::string, int8_t>, Size> zero2 = 
   { 
     ETL_OR_STD::pair<const std::string, int8_t>("0", 0),
