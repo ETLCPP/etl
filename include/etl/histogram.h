@@ -20,6 +20,7 @@ namespace etl
   public:
 
     ETL_STATIC_ASSERT(etl::is_integral<TKey>::value, "Only integral keys allowed");
+    ETL_STATIC_ASSERT(etl::is_integral<TCount>::value, "Only integral count allowed");
 
     static ETL_CONSTANT size_t Max_Size = Max_Keys;
 
@@ -210,6 +211,7 @@ namespace etl
   public:
 
     ETL_STATIC_ASSERT(etl::is_integral<TKey>::value, "Only integral keys allowed");
+    ETL_STATIC_ASSERT(etl::is_integral<TCount>::value, "Only integral count allowed");
 
     static ETL_CONSTANT size_t Max_Size = Max_Keys;
 
@@ -404,6 +406,8 @@ namespace etl
     typedef etl::flat_map<TKey, TCount, Max_Keys> accumulator_type;
 
   public:
+
+    ETL_STATIC_ASSERT(etl::is_integral<TCount>::value, "Only integral count allowed");
 
     static ETL_CONSTANT size_t Max_Size = Max_Keys;
 
