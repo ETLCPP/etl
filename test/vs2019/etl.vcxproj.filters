@@ -106,6 +106,9 @@
     <Filter Include="Source Files\Scripts">
       <UniqueIdentifier>{562466b5-677d-4448-9e9e-f70805cd71ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Functors">
+      <UniqueIdentifier>{e2ef7213-8d01-4490-8735-2001456cbd88}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -1058,6 +1061,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\crc.h">
       <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\histogram.h">
+      <Filter>ETL\Functors</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2391,6 +2397,9 @@
       <Filter>Source Files\Sanity Checks</Filter>
     </ClCompile>
     <ClCompile Include="..\test_crc16_arc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_maths_algorithms.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

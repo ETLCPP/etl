@@ -1323,6 +1323,7 @@
     <ClInclude Include="..\..\include\etl\generators\type_traits_generator.h" />
     <ClInclude Include="..\..\include\etl\generators\variant_pool_generator.h" />
     <ClInclude Include="..\..\include\etl\generic_pool.h" />
+    <ClInclude Include="..\..\include\etl\histogram.h" />
     <ClInclude Include="..\..\include\etl\imemory_block_allocator.h" />
     <ClInclude Include="..\..\include\etl\indirect_vector.h" />
     <ClInclude Include="..\..\include\etl\absolute.h" />
@@ -4196,6 +4197,7 @@
     <ClCompile Include="..\test_format_spec.cpp" />
     <ClCompile Include="..\test_forward_list_shared_pool.cpp" />
     <ClCompile Include="..\test_bit_stream.cpp" />
+    <ClCompile Include="..\test_maths_algorithms.cpp" />
     <ClCompile Include="..\test_indirect_vector.cpp" />
     <ClCompile Include="..\test_indirect_vector_external_buffer.cpp" />
     <ClCompile Include="..\test_limits.cpp" />
