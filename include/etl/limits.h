@@ -56,18 +56,26 @@ SOFTWARE.
 #if ETL_NOT_USING_STL
 #define ETL_LOG10_OF_2(x) (((x) * 301) / 1000)
 
-#if defined(ETL_NO_HUGE_VAL_SUPPORT)
-  #ifndef HUGE_VAL
-    #define HUGE_VAL (1.0e999999999)
-  #endif
+#if !defined(LDBL_MIN) && defined(DBL_MIN)
+  // Looks like we don't have these macros defined.
+  // That probably means that 'long double' is the same size as 'double'.
+  #define LDBL_MIN        DBL_MIN
+  #define LDBL_MAX        DBL_MAX
+  #define LDBL_EPSILON    DBL_EPSILON
+  #define LDBL_MANT_DIG   DBL_MANT_DIG
+  #define LDBL_DIG        DBL_DIG
+  #define LDBL_MIN_EXP    DBL_MIN_EXP
+  #define LDBL_MIN_10_EXP DBL_MIN_10_EXP
+  #define LDBL_MAX_EXP    DBL_MAX_EXP
+  #define LDBL_MAX_10_EXP DBL_MAX_10_EXP
+#endif
 
-  #ifndef HUGE_VALF
-    #define HUGE_VALF (1.0e999999999F)
-  #endif
-
-  #ifndef HUGE_VALL
-    #define HUGE_VALL (1.0e999999999L)
-  #endif
+#if !defined(HUGE_VAL)
+  // Looks like we don't have these macros defined.
+  // They're compiler implementation dependent, so we'll make them the same as the max values.
+  #define HUGE_VAL  FLT_MAX
+  #define HUGE_VALF DLB_MAX
+  #define HUGE_VALL LDBL_MAX
 #endif
 
 #if defined(ETL_NO_CPP_NAN_SUPPORT)
@@ -87,21 +95,6 @@ SOFTWARE.
   #define ETL_NANF nanf("")
   #define ETL_NANL nanl("")
   #define ETL_HAS_NAN true
-#endif
-
-#if !defined(LDBL_MIN) && defined(DBL_MIN)
-  // Looks like we don't have those macros defined.
-  // That probably means that 'long double' is the same size as 'double'.
-  #define LDBL_MIN        DBL_MIN
-  #define LDBL_MAX        DBL_MAX
-  #define LDBL_EPSILON    DBL_EPSILON
-  #define HUGE_VALL       HUGE_VAL
-  #define LDBL_MANT_DIG   DBL_MANT_DIG
-  #define LDBL_DIG        DBL_DIG
-  #define LDBL_MIN_EXP    DBL_MIN_EXP
-  #define LDBL_MIN_10_EXP DBL_MIN_10_EXP
-  #define LDBL_MAX_EXP    DBL_MAX_EXP
-  #define LDBL_MAX_10_EXP DBL_MAX_10_EXP
 #endif
 
 namespace etl
