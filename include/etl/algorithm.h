@@ -2578,6 +2578,74 @@ namespace etl
     std::stable_sort(first, last);
   }
 #endif
+
+#if ETL_NOT_USING_STL
+  //***************************************************************************
+  /// Accumulates values.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename T>
+  ETL_CONSTEXPR14 T accumulate(TIterator first, TIterator last, T sum)
+  {
+    while (first != last)
+    {
+      sum = etl::move(sum) + *first++;
+    }
+      
+    return sum;
+  }
+
+  //***************************************************************************
+  /// Accumulates values.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename T, typename TBinaryOperation>
+  ETL_CONSTEXPR14 T accumulate(TIterator first, TIterator last, T sum, TBinaryOperation operation)
+  {
+    while (first != last)
+    {
+      sum = operation(etl::move(sum), *first++);
+    }
+
+    return sum;
+  }
+#else
+  //***************************************************************************
+  /// Accumulates values.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template<typename TIterator, typename T>
+  ETL_CONSTEXPR14 T accumulate(TIterator first, TIterator last, T sum)
+  {
+    return std::accumulate(first, last, sum);
+  }
+
+  //***************************************************************************
+  /// Accumulates values.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template<typename TIterator, typename T, typename TBinaryOperation>
+  ETL_CONSTEXPR14 T accumulate(TIterator first, TIterator last, T sum, TBinaryOperation operation)
+  {
+    return std::accumulate(first, last, sum, operation);
+  }
+#endif
+
+  //***************************************************************************
+  /// Clamp values.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template<typename T, typename TCompare>
+  ETL_CONSTEXPR const T& clamp(const T& value, const T& low, const T& high, TCompare compare)
+  {
+    return compare(value, low) ? low : compare(high, value) ? high : value;
+  }
+  
+  template <typename T>
+  ETL_CONSTEXPR const T& clamp(const T& value, const T& low, const T& high )
+  {
+    return clamp(value, low, high, etl::less<T>());
+  }
 }
 
 //*****************************************************************************
