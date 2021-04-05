@@ -1065,6 +1065,12 @@
     <ClInclude Include="..\..\include\etl\histogram.h">
       <Filter>ETL\Functors</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\correlation.h">
+      <Filter>ETL\Functors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\covariance.h">
+      <Filter>ETL\Functors</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -2399,7 +2405,13 @@
     <ClCompile Include="..\test_crc16_arc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_maths_algorithms.cpp">
+    <ClCompile Include="..\test_histogram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_correlation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_covariance.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

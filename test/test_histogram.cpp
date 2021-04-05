@@ -127,7 +127,7 @@ namespace
     ETL_OR_STD::pair<const std::string, int8_t>("9", 0),
   };
 
-  SUITE(test_maths_algorithms)
+  SUITE(test_histogram)
   {
     //*************************************************************************
     TEST(test_int_offset_0_histogram_constructor)
