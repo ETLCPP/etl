@@ -202,7 +202,7 @@ namespace etl
           double mean1 = sum1 / n;
           double mean2 = sum2 / n;
 
-          covariance_value = inner_product - (n * mean1 * mean2);
+          covariance_value = (inner_product / n) - (mean1 * mean2);
 
           recalulate = false;
         }

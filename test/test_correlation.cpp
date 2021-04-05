@@ -124,7 +124,7 @@ namespace
       correlation_result = correlation1;
       CHECK_CLOSE(-1.0, correlation_result, 0.1);
       covariance_result = correlation1.get_covariance();
-      CHECK_CLOSE(-82.5, covariance_result, 0.1);
+      CHECK_CLOSE(-8.25, covariance_result, 0.1);
 
       // Zero correlation
       etl::correlation<char, int32_t> correlation2(input_c.begin(), input_c.end(), input_c_flat.begin());
@@ -138,7 +138,7 @@ namespace
       correlation_result = correlation3;
       CHECK_CLOSE(1.0, correlation_result, 0.1);
       covariance_result = correlation3.get_covariance();
-      CHECK_CLOSE(82.5, covariance_result, 0.1);
+      CHECK_CLOSE(8.25, covariance_result, 0.1);
     }
 
     //*************************************************************************
@@ -152,7 +152,7 @@ namespace
       correlation_result = correlation1;
       CHECK_CLOSE(-1.0, correlation_result, 0.1);
       covariance_result = correlation1.get_covariance();
-      CHECK_CLOSE(-82.5, covariance_result, 0.1);
+      CHECK_CLOSE(-8.25, covariance_result, 0.1);
 
       // Zero correlation
       etl::correlation<float> correlation2(input_f.begin(), input_f.end(), input_f_flat.begin());
@@ -166,7 +166,7 @@ namespace
       correlation_result = correlation3;
       CHECK_CLOSE(1.0, correlation_result, 0.1);
       covariance_result = correlation3.get_covariance();
-      CHECK_CLOSE(82.5, covariance_result, 0.1);
+      CHECK_CLOSE(8.25, covariance_result, 0.1);
     }
 
     //*************************************************************************
@@ -180,7 +180,7 @@ namespace
       correlation_result = correlation1;
       CHECK_CLOSE(-1.0, correlation_result, 0.1);
       covariance_result = correlation1.get_covariance();
-      CHECK_CLOSE(-82.5, covariance_result, 0.1);
+      CHECK_CLOSE(-8.25, covariance_result, 0.1);
 
       // Zero correlation
       etl::correlation<double> correlation2(input_d.begin(), input_d.end(), input_d_flat.begin());
@@ -194,7 +194,7 @@ namespace
       correlation_result = correlation3;
       CHECK_CLOSE(1.0, correlation_result, 0.1);
       covariance_result = correlation3.get_covariance();
-      CHECK_CLOSE(82.5, covariance_result, 0.1);
+      CHECK_CLOSE(8.25, covariance_result, 0.1);
     }
   };
 }

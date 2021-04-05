@@ -4613,6 +4613,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\test_span.cpp" />
+    <ClCompile Include="..\test_standard_deviation.cpp" />
     <ClCompile Include="..\test_state_chart.cpp" />
     <ClCompile Include="..\test_smallest.cpp" />
     <ClCompile Include="..\test_stack.cpp" />

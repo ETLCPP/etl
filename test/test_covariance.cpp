@@ -121,7 +121,7 @@ namespace
       // Negative covariance.
       etl::covariance<char, int32_t> covariance1(input_c.begin(), input_c.end(), input_c_inv.begin());
       covariance_result = covariance1.get_covariance();
-      CHECK_CLOSE(-82.5, covariance_result, 0.1);
+      CHECK_CLOSE(-8.25, covariance_result, 0.1);
 
       // Zero covariance
       etl::covariance<char, int32_t> covariance2(input_c.begin(), input_c.end(), input_c_flat.begin());
@@ -131,7 +131,7 @@ namespace
       // Positive covariance.
       etl::covariance<char, int32_t> covariance3(input_c.begin(), input_c.end(), input_c.begin());
       covariance_result = covariance3.get_covariance();
-      CHECK_CLOSE(82.5, covariance_result, 0.1);
+      CHECK_CLOSE(8.25, covariance_result, 0.1);
     }
 
     //*************************************************************************
@@ -142,7 +142,7 @@ namespace
       // Negative covariance.
       etl::covariance<float> covariance1(input_f.begin(), input_f.end(), input_f_inv.begin());
       covariance_result = covariance1.get_covariance();
-      CHECK_CLOSE(-82.5, covariance_result, 0.1);
+      CHECK_CLOSE(-8.25, covariance_result, 0.1);
 
       // Zero covariance
       etl::covariance<float> covariance2(input_f.begin(), input_f.end(), input_f_flat.begin());
@@ -152,7 +152,7 @@ namespace
       // Positive covariance.
       etl::covariance<float> covariance3(input_f.begin(), input_f.end(), input_f.begin());
       covariance_result = covariance3.get_covariance();
-      CHECK_CLOSE(82.5, covariance_result, 0.1);
+      CHECK_CLOSE(8.25, covariance_result, 0.1);
     }
 
     //*************************************************************************
@@ -163,7 +163,7 @@ namespace
       // Negative covariance.
       etl::covariance<double> covariance1(input_d.begin(), input_d.end(), input_d_inv.begin());
       covariance_result = covariance1.get_covariance();
-      CHECK_CLOSE(-82.5, covariance_result, 0.1);
+      CHECK_CLOSE(-8.25, covariance_result, 0.1);
 
       // Zero covariance
       etl::covariance<double> covariance2(input_d.begin(), input_d.end(), input_d_flat.begin());
@@ -173,7 +173,7 @@ namespace
       // Positive covariance.
       etl::covariance<double> covariance3(input_d.begin(), input_d.end(), input_d.begin());
       covariance_result = covariance3.get_covariance();
-      CHECK_CLOSE(82.5, covariance_result, 0.1);
+      CHECK_CLOSE(8.25, covariance_result, 0.1);
     }
   };
 }
