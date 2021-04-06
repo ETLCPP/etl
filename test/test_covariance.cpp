@@ -135,6 +135,27 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_char_covariance_constuctor_sample)
+    {
+      double covariance_result;
+
+      // Negative covariance.
+      etl::covariance<etl::covariance_type::Sample, char, int32_t> covariance1(input_c.begin(), input_c.end(), input_c_inv.begin());
+      covariance_result = covariance1.get_covariance();
+      CHECK_CLOSE(-9.17, covariance_result, 0.1);
+
+      // Zero covariance
+      etl::covariance<etl::covariance_type::Sample, char, int32_t> covariance2(input_c.begin(), input_c.end(), input_c_flat.begin());
+      covariance_result = covariance2.get_covariance();
+      CHECK_CLOSE(0.0, covariance_result, 0.1);
+
+      // Positive covariance.
+      etl::covariance<etl::covariance_type::Sample, char, int32_t> covariance3(input_c.begin(), input_c.end(), input_c.begin());
+      covariance_result = covariance3.get_covariance();
+      CHECK_CLOSE(9.17, covariance_result, 0.1);
+    }
+
+    //*************************************************************************
     TEST(test_float_covariance_constuctor_population)
     {
       double covariance_result;
@@ -156,6 +177,27 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_float_covariance_constuctor_sample)
+    {
+      double covariance_result;
+
+      // Negative covariance.
+      etl::covariance<etl::covariance_type::Sample, float> covariance1(input_f.begin(), input_f.end(), input_f_inv.begin());
+      covariance_result = covariance1.get_covariance();
+      CHECK_CLOSE(-9.17, covariance_result, 0.1);
+
+      // Zero covariance
+      etl::covariance<etl::covariance_type::Sample, float> covariance2(input_f.begin(), input_f.end(), input_f_flat.begin());
+      covariance_result = covariance2.get_covariance();
+      CHECK_CLOSE(0.0, covariance_result, 0.1);
+
+      // Positive covariance.
+      etl::covariance<etl::covariance_type::Sample, float> covariance3(input_f.begin(), input_f.end(), input_f.begin());
+      covariance_result = covariance3.get_covariance();
+      CHECK_CLOSE(9.17, covariance_result, 0.1);
+    }
+
+    //*************************************************************************
     TEST(test_double_covariance_constuctor_population)
     {
       double covariance_result;
@@ -174,6 +216,27 @@ namespace
       etl::covariance<etl::covariance_type::Population, double> covariance3(input_d.begin(), input_d.end(), input_d.begin());
       covariance_result = covariance3.get_covariance();
       CHECK_CLOSE(8.25, covariance_result, 0.1);
+    }
+
+    //*************************************************************************
+    TEST(test_double_covariance_constuctor_sample)
+    {
+      double covariance_result;
+
+      // Negative covariance.
+      etl::covariance<etl::covariance_type::Sample, double> covariance1(input_d.begin(), input_d.end(), input_d_inv.begin());
+      covariance_result = covariance1.get_covariance();
+      CHECK_CLOSE(-9.17, covariance_result, 0.1);
+
+      // Zero covariance
+      etl::covariance<etl::covariance_type::Sample, double> covariance2(input_d.begin(), input_d.end(), input_d_flat.begin());
+      covariance_result = covariance2.get_covariance();
+      CHECK_CLOSE(0.0, covariance_result, 0.1);
+
+      // Positive covariance.
+      etl::covariance<etl::covariance_type::Sample, double> covariance3(input_d.begin(), input_d.end(), input_d.begin());
+      covariance_result = covariance3.get_covariance();
+      CHECK_CLOSE(9.17, covariance_result, 0.1);
     }
   };
 }

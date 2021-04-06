@@ -84,7 +84,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_char_standard_deviation_constuctor)
+    TEST(test_char_standard_deviation_constuctor_population)
     {
       double standard_deviation_result;
 
@@ -95,7 +95,18 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_float_standard_deviation_constuctor)
+    TEST(test_char_standard_deviation_constuctor_sample)
+    {
+      double standard_deviation_result;
+
+      // Negative standard_deviation.
+      etl::standard_deviation<etl::standard_deviation_type::Sample, char, int32_t> standard_deviation1(input_c.begin(), input_c.end());
+      standard_deviation_result = standard_deviation1.get_standard_deviation();
+      CHECK_CLOSE(3.0276503540975, standard_deviation_result, 0.1);
+    }
+
+    //*************************************************************************
+    TEST(test_float_standard_deviation_constuctor_population)
     {
       double standard_deviation_result;
 
@@ -106,7 +117,18 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_double_standard_deviation_constuctor)
+    TEST(test_float_standard_deviation_constuctor_sample)
+    {
+      double standard_deviation_result;
+
+      // Negative standard_deviation.
+      etl::standard_deviation<etl::standard_deviation_type::Sample, float> standard_deviation1(input_f.begin(), input_f.end());
+      standard_deviation_result = standard_deviation1.get_standard_deviation();
+      CHECK_CLOSE(3.0276503540975, standard_deviation_result, 0.1);
+    }
+
+    //*************************************************************************
+    TEST(test_double_standard_deviation_constuctor_population)
     {
       double standard_deviation_result;
 
@@ -114,6 +136,17 @@ namespace
       etl::standard_deviation<etl::standard_deviation_type::Population, double> standard_deviation1(input_d.begin(), input_d.end());
       standard_deviation_result = standard_deviation1.get_standard_deviation();
       CHECK_CLOSE(2.872281323269, standard_deviation_result, 0.1);
+    }
+
+    //*************************************************************************
+    TEST(test_double_standard_deviation_constuctor_sample)
+    {
+      double standard_deviation_result;
+
+      // Negative standard_deviation.
+      etl::standard_deviation<etl::standard_deviation_type::Sample, double> standard_deviation1(input_d.begin(), input_d.end());
+      standard_deviation_result = standard_deviation1.get_standard_deviation();
+      CHECK_CLOSE(3.0276503540975, standard_deviation_result, 0.1);
     }
   };
 }
