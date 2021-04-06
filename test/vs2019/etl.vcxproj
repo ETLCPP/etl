@@ -1372,6 +1372,7 @@
     <ClInclude Include="..\..\include\etl\scaled_rounding.h" />
     <ClInclude Include="..\..\include\etl\shared_message.h" />
     <ClInclude Include="..\..\include\etl\span.h" />
+    <ClInclude Include="..\..\include\etl\standard_deviation.h" />
     <ClInclude Include="..\..\include\etl\state_chart.h" />
     <ClInclude Include="..\..\include\etl\math_constants.h" />
     <ClInclude Include="..\..\include\etl\memory_model.h" />

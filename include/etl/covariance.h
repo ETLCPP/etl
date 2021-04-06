@@ -31,6 +31,7 @@ SOFTWARE.
 #ifndef ETL_COVARIANCE_INCLUDED
 #define ETL_COVARIANCE_INCLUDED
 
+#include "platform.h"
 #include "functional.h"
 #include "type_traits.h"
 
@@ -112,13 +113,26 @@ namespace etl
   }
 
   //***************************************************************************
+  /// Covariance Type.
+  //***************************************************************************
+  struct covariance_type
+  {
+    static ETL_CONSTANT bool Sample     = false;
+    static ETL_CONSTANT bool Population = true;
+  };
+
+  //***************************************************************************
   /// Constructor.
   //***************************************************************************
-  template <typename TInput, typename TCalc = TInput>
+  template <bool Covariance_Type, typename TInput, typename TCalc = TInput>
   class covariance 
     : public private_covariance::covariance_types<TInput, TCalc>
     , public etl::binary_function<TInput, TInput, void>
   {
+  private:
+
+    static ETL_CONSTANT int Adjustment = (Covariance_Type == covariance_type::Population) ? 0 : 1;
+
   public:
 
     //*********************************
@@ -198,11 +212,12 @@ namespace etl
         if (counter != 0)
         {
           double n = double(counter);
+          double adjustment = 1.0 / (n - Adjustment);
 
           double mean1 = sum1 / n;
           double mean2 = sum2 / n;
 
-          covariance_value = (inner_product / n) - (mean1 * mean2);
+          covariance_value = (inner_product - (n * mean1 * mean2)) * adjustment;
 
           recalulate = false;
         }

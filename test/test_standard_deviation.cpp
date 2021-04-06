@@ -56,7 +56,7 @@ namespace
     //*************************************************************************
     TEST(test_char_standard_deviation_default_constuctor)
     {
-      etl::standard_deviation<char, int32_t> standard_deviation;
+      etl::standard_deviation<etl::standard_deviation_type::Population, char, int32_t> standard_deviation;
 
       double standard_deviation_result = standard_deviation;
 
@@ -66,7 +66,7 @@ namespace
     //*************************************************************************
     TEST(test_float_standard_deviation_default_constuctor)
     {
-      etl::standard_deviation<float> standard_deviation;
+      etl::standard_deviation<etl::standard_deviation_type::Population, float> standard_deviation;
 
       double standard_deviation_result = standard_deviation;
 
@@ -76,7 +76,7 @@ namespace
     //*************************************************************************
     TEST(test_double_standard_deviation_default_constuctor)
     {
-      etl::standard_deviation<double> standard_deviation;
+      etl::standard_deviation<etl::standard_deviation_type::Population, double> standard_deviation;
 
       double standard_deviation_result = standard_deviation;
 
@@ -89,7 +89,7 @@ namespace
       double standard_deviation_result;
 
       // Negative standard_deviation.
-      etl::standard_deviation<char, int32_t> standard_deviation1(input_c.begin(), input_c.end());
+      etl::standard_deviation<etl::standard_deviation_type::Population, char, int32_t> standard_deviation1(input_c.begin(), input_c.end());
       standard_deviation_result = standard_deviation1.get_standard_deviation();
       CHECK_CLOSE(2.872281323269, standard_deviation_result, 0.1);
     }
@@ -100,7 +100,7 @@ namespace
       double standard_deviation_result;
 
       // Negative standard_deviation.
-      etl::standard_deviation<float> standard_deviation1(input_f.begin(), input_f.end());
+      etl::standard_deviation<etl::standard_deviation_type::Population, float> standard_deviation1(input_f.begin(), input_f.end());
       standard_deviation_result = standard_deviation1.get_standard_deviation();
       CHECK_CLOSE(2.872281323269, standard_deviation_result, 0.1);
     }
@@ -111,7 +111,7 @@ namespace
       double standard_deviation_result;
 
       // Negative standard_deviation.
-      etl::standard_deviation<double> standard_deviation1(input_d.begin(), input_d.end());
+      etl::standard_deviation<etl::standard_deviation_type::Population, double> standard_deviation1(input_d.begin(), input_d.end());
       standard_deviation_result = standard_deviation1.get_standard_deviation();
       CHECK_CLOSE(2.872281323269, standard_deviation_result, 0.1);
     }

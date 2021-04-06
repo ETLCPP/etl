@@ -31,6 +31,7 @@ SOFTWARE.
 #ifndef ETL_STANDARD_DEVIATION_INCLUDED
 #define ETL_STANDARD_DEVIATION_INCLUDED
 
+#include "platform.h"
 #include "functional.h"
 #include "type_traits.h"
 
@@ -106,13 +107,26 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Constructor.
+  /// Standard Deviation Type.
   //***************************************************************************
-  template <typename TInput, typename TCalc = TInput>
+  struct standard_deviation_type
+  {
+    static ETL_CONSTANT bool Sample     = false;
+    static ETL_CONSTANT bool Population = true;
+  };
+
+  //***************************************************************************
+  /// Standard Deviation.
+  //***************************************************************************
+  template <bool Standard_Deviation_Type, typename TInput, typename TCalc = TInput>
   class standard_deviation 
     : public private_standard_deviation::standard_deviation_types<TInput, TCalc>
     , public etl::binary_function<TInput, TInput, void>
   {
+  private:
+
+    static ETL_CONSTANT int Adjustment = (Standard_Deviation_Type == standard_deviation_type::Population) ? 0 : 1;
+
   public:
 
     //*********************************
@@ -191,14 +205,15 @@ namespace etl
         if (counter != 0)
         {
           double n = double(counter);
+          double adjustment = 1.0 / (n - Adjustment);
 
           double mean = sum / n;
 
-          double stddev_squared = (sum_of_squares / n) - (mean * mean);
+          double variance = (sum_of_squares - (n * mean * mean)) * adjustment;
 
-          if (stddev_squared > 0)
+          if (variance > 0)
           {
-            standard_deviation_value = sqrt(stddev_squared);
+            standard_deviation_value = sqrt(variance);
           }
         }
 

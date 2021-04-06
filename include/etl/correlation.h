@@ -31,6 +31,7 @@ SOFTWARE.
 #ifndef ETL_CORRELATION_INCLUDED
 #define ETL_CORRELATION_INCLUDED
 
+#include "platform.h"
 #include "functional.h"
 #include "type_traits.h"
 
@@ -124,13 +125,26 @@ namespace etl
   }
 
   //***************************************************************************
+  /// Correlation Type.
+  //***************************************************************************
+  struct correlation_type
+  {
+    static ETL_CONSTANT bool Sample     = false;
+    static ETL_CONSTANT bool Population = true;
+  };
+
+  //***************************************************************************
   /// Constructor.
   //***************************************************************************
-  template <typename TInput, typename TCalc = TInput>
+  template <bool Correlation_Type, typename TInput, typename TCalc = TInput>
   class correlation 
     : public private_correlation::correlation_types<TInput, TCalc>
     , public etl::binary_function<TInput, TInput, void>
   {
+  private:
+
+    static ETL_CONSTANT int Adjustment = (Correlation_Type == correlation_type::Population) ? 0 : 1;
+
   public:
 
     //*********************************
@@ -212,11 +226,12 @@ namespace etl
         if (counter != 0)
         {
           double n = double(counter);
+          double adjustment = 1.0 / (n - Adjustment);
 
           double mean1 = sum1 / n;
           double mean2 = sum2 / n;
 
-          covariance_value = inner_product - (n * mean1 * mean2);
+          covariance_value = inner_product - (n * mean1 * mean2) * adjustment;
         }
       }
 
@@ -235,27 +250,28 @@ namespace etl
         if (counter != 0)
         {
           double n = double(counter);
+          double adjustment = 1.0 / (n - Adjustment);
 
           double mean1 = sum1 / n;
           double mean2 = sum2 / n;
 
-          double stddev1_squared = (sum_of_squares1 / n) - (mean1 * mean1);
-          double stddev2_squared = (sum_of_squares2 / n) - (mean2 * mean2);
+          double variance1 = (sum_of_squares1 - (n * mean1 * mean1)) * adjustment;
+          double variance2 = (sum_of_squares2 - (n * mean2 * mean2)) * adjustment;
 
           double stddev1 = 0.0;
           double stddev2 = 0.0;
 
-          if (stddev1_squared > 0)
+          if (variance1 > 0)
           {
-            stddev1 = sqrt(stddev1_squared);
+            stddev1 = sqrt(variance1);
           }
 
-          if (stddev2_squared > 0)
+          if (variance2 > 0)
           {
-            stddev2 = sqrt(stddev2_squared);
+            stddev2 = sqrt(variance2);
           }
 
-          covariance_value = (inner_product / n) - (mean1 * mean2);
+          covariance_value = (inner_product - (n * mean1 * mean2)) * adjustment;
 
           if ((stddev1 > 0.0) && (stddev2 > 0.0))
           {            

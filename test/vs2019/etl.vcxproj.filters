@@ -1071,6 +1071,9 @@
     <ClInclude Include="..\..\include\etl\covariance.h">
       <Filter>ETL\Functors</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\standard_deviation.h">
+      <Filter>ETL\Functors</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">

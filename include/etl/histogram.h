@@ -1,5 +1,6 @@
 #pragma once
 
+#include "platform.h"
 #include "functional.h"
 #include "algorithm.h"
 #include "array.h"
