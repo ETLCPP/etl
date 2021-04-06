@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_COVARIANCE_INCLUDED
-#define ETL_COVARIANCE_INCLUDED
+#ifndef ETL_VARIANCE_INCLUDED
+#define ETL_VARIANCE_INCLUDED
 
 #include "platform.h"
 #include "functional.h"
@@ -40,105 +40,99 @@ SOFTWARE.
 
 namespace etl
 {
-  namespace private_covariance
+  namespace private_variance
   {
     //***************************************************************************
-    /// Types for generic covariance.
+    /// Types for generic variance.
     //***************************************************************************
     template <typename TInput, typename TCalc>
-    struct covariance_types
+    struct variance_types
     {
-      TCalc    inner_product;
-      TCalc    sum1;
-      TCalc    sum2;
+      TCalc    sum_of_squares;
+      TCalc    sum;
       uint32_t counter;
 
       //*********************************
-      /// Clear the covariance.
+      /// Clear the variance.
       //*********************************
       void clear()
       {
-        inner_product = TCalc(0);
-        sum1          = TCalc(0);
-        sum2          = TCalc(0);
-        counter       = 0U;
+        sum_of_squares = TCalc(0);
+        sum            = TCalc(0);
+        counter        = 0U;
       }
     };
 
     //***************************************************************************
-    /// Types for float covariance.
+    /// Types for float variance.
     //***************************************************************************
     template <typename TCalc>
-    struct covariance_types<float, TCalc>
+    struct variance_types<float, TCalc>
     {
-      float    inner_product;
-      float    sum1;
-      float    sum2;
+      float    sum_of_squares;
+      float    sum;
       uint32_t counter;
 
       //*********************************
-      /// Clear the covariance.
+      /// Clear the variance.
       //*********************************
       void clear()
       {
-        inner_product = float(0);
-        sum1          = float(0);
-        sum2          = float(0);
-        counter       = 0U;
+        sum_of_squares = float(0);
+        sum            = float(0);
+        counter        = 0U;
       }
     };
 
     //***************************************************************************
-    /// Types for double covariance.
+    /// Types for double variance.
     //***************************************************************************
     template <typename TCalc>
-    struct covariance_types<double, TCalc>
+    struct variance_types<double, TCalc>
     {
-      double   inner_product;
-      double   sum1;
-      double   sum2;
+      double   sum_of_squares;
+      double   sum;
       uint32_t counter;
 
       //*********************************
-      /// Clear the covariance.
+      /// Clear the variance.
       //*********************************
       void clear()
       {
-        inner_product = double(0);
-        sum1          = double(0);
-        sum2          = double(0);
-        counter       = 0U;
+        sum_of_squares = double(0);
+        sum            = double(0);
+        counter        = 0U;
       }
     };
   }
 
   //***************************************************************************
-  /// Covariance Type.
+  /// Standard Deviation Type.
   //***************************************************************************
-  struct covariance_type
+  struct variance_type
   {
     static ETL_CONSTANT bool Sample     = false;
     static ETL_CONSTANT bool Population = true;
   };
 
   //***************************************************************************
-  /// Constructor.
+  /// Standard Deviation.
   //***************************************************************************
-  template <bool Covariance_Type, typename TInput, typename TCalc = TInput>
-  class covariance 
-    : public private_covariance::covariance_types<TInput, TCalc>
+  template <bool Variance_Type, typename TInput, typename TCalc = TInput>
+  class variance 
+    : public private_variance::variance_types<TInput, TCalc>
     , public etl::binary_function<TInput, TInput, void>
   {
   private:
 
-    static ETL_CONSTANT int Adjustment = (Covariance_Type == covariance_type::Population) ? 0 : 1;
+    static ETL_CONSTANT int Adjustment = (Variance_Type == variance_type::Population) ? 0 : 1;
 
   public:
 
     //*********************************
     /// Constructor.
     //*********************************
-    covariance()
+    variance()
       : recalculate(true)
     {
       this->clear();
@@ -148,21 +142,20 @@ namespace etl
     /// Constructor.
     //*********************************
     template <typename TIterator>
-    covariance(TIterator first1, TIterator last1, TIterator first2)
+    variance(TIterator first, TIterator last)
       : recalculate(true)
     {
       this->clear();
-      add(first1, last1, first2);
+      add(first, last);
     }
 
     //*********************************
     /// Add a pair of values.
     //*********************************
-    void add(TInput value1, TInput value2)
+    void add(TInput value)
     {
-      inner_product += TCalc(value1 * value2);
-      sum1          += TCalc(value1);
-      sum2          += TCalc(value2);
+      sum_of_squares += TCalc(value * value);
+      sum            += TCalc(value);
       ++counter;
       recalculate = true;
     }
@@ -172,11 +165,11 @@ namespace etl
     //*********************************
     template <typename TIterator>
     typename etl::enable_if<!etl::is_same<TIterator, TInput>::value, void>::type
-      add(TIterator first1, TIterator last1, TIterator first2)
+      add(TIterator first, TIterator last)
     {
-      while (first1 != last1)
+      while (first != last)
       {
-        add(*first1++, *first2++);
+        add(*first++);
       }
     }
 
@@ -184,9 +177,9 @@ namespace etl
     /// operator ()
     /// Add a pair of values.
     //*********************************
-    void operator ()(TInput value1, TInput value2)
+    void operator ()(TInput value)
     {
-      add(value1, value2);
+      add(value);
     }
 
     //*********************************
@@ -195,43 +188,42 @@ namespace etl
     //*********************************
     template <typename TIterator>
     typename etl::enable_if<!etl::is_same<TIterator, TInput>::value, void>::type
-      operator ()(TIterator first1, TIterator last1, TIterator first2)
+      operator ()(TIterator first, TIterator last)
     {
-      add(first1, last1, first2);
+      add(first, last);
     }
 
     //*********************************
-    /// Get the covaniance.
+    /// Get the variance.
     //*********************************
-    double get_covariance()
+    double get_variance()
     {
       if (recalculate)
       {
-        covariance_value = 0.0;
+        variance_value = 0.0;
 
         if (counter != 0)
         {
           double n = double(counter);
           double adjustment = 1.0 / (n - Adjustment);
 
-          double mean1 = sum1 / n;
-          double mean2 = sum2 / n;
+          double mean = sum / n;
 
-          covariance_value = (inner_product - (n * mean1 * mean2)) * adjustment;
-
-          recalculate = false;
+          variance_value = (sum_of_squares - (n * mean * mean)) * adjustment;
         }
+
+        recalculate = false;
       }
 
-      return covariance_value;
+      return variance_value;
     }
 
     //*********************************
-    /// Get the covariance.
+    /// Get the variance.
     //*********************************
     operator double()
     {
-      return get_covariance();
+      return get_variance();
     }
 
     //*********************************
@@ -244,7 +236,7 @@ namespace etl
 
   private:
   
-    double covariance_value;
+    double variance_value;
     bool   recalculate;
   };
 }

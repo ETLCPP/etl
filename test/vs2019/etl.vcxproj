@@ -4655,6 +4655,7 @@
     <ClCompile Include="..\test_unordered_set.cpp" />
     <ClCompile Include="..\test_user_type.cpp" />
     <ClCompile Include="..\test_utility.cpp" />
+    <ClCompile Include="..\test_variance.cpp" />
     <ClCompile Include="..\test_variant.cpp" />
     <ClCompile Include="..\test_variant_pool.cpp" />
     <ClCompile Include="..\test_vector.cpp" />

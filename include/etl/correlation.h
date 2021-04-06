@@ -43,7 +43,7 @@ namespace etl
   namespace private_correlation
   {
     //***************************************************************************
-    /// Types for generic covariance.
+    /// Types for generic correlation.
     //***************************************************************************
     template <typename TInput, typename TCalc>
     struct correlation_types
@@ -56,7 +56,7 @@ namespace etl
       uint32_t counter;
 
       //*********************************
-      /// Clear the histogram.
+      /// Clear the correlation.
       //*********************************
       void clear()
       {
@@ -70,7 +70,7 @@ namespace etl
     };
 
     //***************************************************************************
-    /// Types for float covariance.
+    /// Types for float correlation.
     //***************************************************************************
     template <typename TCalc>
     struct correlation_types<float, TCalc>
@@ -83,7 +83,7 @@ namespace etl
       uint32_t counter;
 
       //*********************************
-      /// Clear the histogram.
+      /// Clear the correlation.
       //*********************************
       void clear()
       {
@@ -97,7 +97,7 @@ namespace etl
     };
 
     //***************************************************************************
-    /// Types for double covariance.
+    /// Types for double correlation.
     //***************************************************************************
     template <typename TCalc>
     struct correlation_types<double, TCalc>
@@ -110,7 +110,7 @@ namespace etl
       uint32_t counter;
 
       //*********************************
-      /// Clear the histogram.
+      /// Clear the correlation.
       //*********************************
       void clear()
       {
@@ -151,7 +151,7 @@ namespace etl
     /// Constructor.
     //*********************************
     correlation()
-      : recalulate(true)
+      : recalculate(true)
     {
       this->clear();
     }
@@ -161,7 +161,7 @@ namespace etl
     //*********************************
     template <typename TIterator>
     correlation(TIterator first1, TIterator last1, TIterator first2)
-      : recalulate(true)
+      : recalculate(true)
     {
       this->clear();
       add(first1, last1, first2);
@@ -178,7 +178,7 @@ namespace etl
       sum1            += TCalc(value1);
       sum2            += TCalc(value2);
       ++counter;
-      recalulate = true;
+      recalculate = true;
     }
 
     //*********************************
@@ -215,13 +215,14 @@ namespace etl
     }
 
     //*********************************
-    /// Get the covaniance.
+    /// Get the correlation.
     //*********************************
     double get_covariance()
     {
-      if (recalulate)
+      if (recalculate)
       {
         correlation_value = 0.0;
+        covariance_value = 0.0;
 
         if (counter != 0)
         {
@@ -243,9 +244,10 @@ namespace etl
     //*********************************
     double get_correlation()
     {
-      if (recalulate)
+      if (recalculate)
       {
         correlation_value = 0.0;
+        covariance_value  = 0.0;
 
         if (counter != 0)
         {
@@ -279,7 +281,7 @@ namespace etl
           }
         }
 
-        recalulate = false;
+        recalculate = false;
       }
 
       return correlation_value;
@@ -305,7 +307,7 @@ namespace etl
   
     double covariance_value;
     double correlation_value;
-    bool   recalulate;
+    bool   recalculate;
   };
 }
 

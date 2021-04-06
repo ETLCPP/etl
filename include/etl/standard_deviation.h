@@ -133,7 +133,7 @@ namespace etl
     /// Constructor.
     //*********************************
     standard_deviation()
-      : recalulate(true)
+      : recalculate(true)
     {
       this->clear();
     }
@@ -143,7 +143,7 @@ namespace etl
     //*********************************
     template <typename TIterator>
     standard_deviation(TIterator first, TIterator last)
-      : recalulate(true)
+      : recalculate(true)
     {
       this->clear();
       add(first, last);
@@ -157,7 +157,7 @@ namespace etl
       sum_of_squares += TCalc(value * value);
       sum            += TCalc(value);
       ++counter;
-      recalulate = true;
+      recalculate = true;
     }
 
     //*********************************
@@ -194,13 +194,13 @@ namespace etl
     }
 
     //*********************************
-    /// Get the standard_deviation.
+    /// Get the variance.
     //*********************************
-    double get_standard_deviation()
+    double get_variance()
     {
-      if (recalulate)
+      if (recalculate)
       {
-        standard_deviation_value = 0.0;
+        variance_value = 0.0;
 
         if (counter != 0)
         {
@@ -209,15 +209,39 @@ namespace etl
 
           double mean = sum / n;
 
-          double variance = (sum_of_squares - (n * mean * mean)) * adjustment;
+          variance_value = (sum_of_squares - (n * mean * mean)) * adjustment;
+        }
+      }
 
-          if (variance > 0)
+      return variance_value;
+    }
+
+    //*********************************
+    /// Get the standard_deviation.
+    //*********************************
+    double get_standard_deviation()
+    {
+      if (recalculate)
+      {
+        standard_deviation_value = 0.0;
+        variance_value = 0.0;
+
+        if (counter != 0)
+        {
+          double n = double(counter);
+          double adjustment = 1.0 / (n - Adjustment);
+
+          double mean = sum / n;
+
+          variance_value = (sum_of_squares - (n * mean * mean)) * adjustment;
+
+          if (variance_value > 0)
           {
-            standard_deviation_value = sqrt(variance);
+            standard_deviation_value = sqrt(variance_value);
           }
         }
 
-        recalulate = false;
+        recalculate = false;
       }
 
       return standard_deviation_value;
@@ -241,8 +265,9 @@ namespace etl
 
   private:
   
+    double variance_value;
     double standard_deviation_value;
-    bool   recalulate;
+    bool   recalculate;
   };
 }
 
