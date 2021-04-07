@@ -106,9 +106,6 @@
     <Filter Include="Source Files\Scripts">
       <UniqueIdentifier>{562466b5-677d-4448-9e9e-f70805cd71ad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ETL\Functors">
-      <UniqueIdentifier>{e2ef7213-8d01-4490-8735-2001456cbd88}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -1062,17 +1059,26 @@
     <ClInclude Include="..\..\include\etl\crc.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\histogram.h">
-      <Filter>ETL\Functors</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\correlation.h">
-      <Filter>ETL\Functors</Filter>
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\covariance.h">
-      <Filter>ETL\Functors</Filter>
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\histogram.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\standard_deviation.h">
-      <Filter>ETL\Functors</Filter>
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\variance.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\gamma.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\rms.h">
+      <Filter>ETL\Maths</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

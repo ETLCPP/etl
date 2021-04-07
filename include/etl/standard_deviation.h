@@ -164,8 +164,7 @@ namespace etl
     /// Add a range.
     //*********************************
     template <typename TIterator>
-    typename etl::enable_if<!etl::is_same<TIterator, TInput>::value, void>::type
-      add(TIterator first, TIterator last)
+    void add(TIterator first, TIterator last)
     {
       while (first != last)
       {
@@ -187,8 +186,7 @@ namespace etl
     /// Add a range.
     //*********************************
     template <typename TIterator>
-    typename etl::enable_if<!etl::is_same<TIterator, TInput>::value, void>::type
-      operator ()(TIterator first, TIterator last)
+    void operator ()(TIterator first, TIterator last)
     {
       add(first, last);
     }

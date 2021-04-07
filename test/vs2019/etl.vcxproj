@@ -1315,6 +1315,7 @@
     <ClInclude Include="..\..\include\etl\frame_check_sequence.h" />
     <ClInclude Include="..\..\include\etl\fsm.h" />
     <ClInclude Include="..\..\include\etl\callback_service.h" />
+    <ClInclude Include="..\..\include\etl\gamma.h" />
     <ClInclude Include="..\..\include\etl\generators\fsm_generator.h" />
     <ClInclude Include="..\..\include\etl\generators\largest_generator.h" />
     <ClInclude Include="..\..\include\etl\generators\message_packet_generator.h" />
@@ -1369,6 +1370,7 @@
     <ClInclude Include="..\..\include\etl\reference_counted_message_pool.h" />
     <ClInclude Include="..\..\include\etl\reference_counted_object.h" />
     <ClInclude Include="..\..\include\etl\message_router_registry.h" />
+    <ClInclude Include="..\..\include\etl\rms.h" />
     <ClInclude Include="..\..\include\etl\scaled_rounding.h" />
     <ClInclude Include="..\..\include\etl\shared_message.h" />
     <ClInclude Include="..\..\include\etl\span.h" />
@@ -1430,6 +1432,7 @@
     <ClInclude Include="..\..\include\etl\u16string_stream.h" />
     <ClInclude Include="..\..\include\etl\u32format_spec.h" />
     <ClInclude Include="..\..\include\etl\u32string_stream.h" />
+    <ClInclude Include="..\..\include\etl\variance.h" />
     <ClInclude Include="..\..\include\etl\variant_pool.h" />
     <ClInclude Include="..\..\include\etl\version.h" />
     <ClInclude Include="..\..\include\etl\algorithm.h" />
