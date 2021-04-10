@@ -229,6 +229,8 @@ namespace etl
   {
   public:
 
+    using imessage_router::receive;
+
     //*******************************************
     /// Constructor.
     //*******************************************
