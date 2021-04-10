@@ -812,7 +812,7 @@ namespace etl
     //*************************************************************************
     /// Get a reference to the item.
     //*************************************************************************
-    reference operator [](int index)
+    reference operator [](size_t index)
     {
       return pbuffer[(out + index) % BUFFER_SIZE];
     }
@@ -821,7 +821,7 @@ namespace etl
     /// Get a const reference to the item at the back of the buffer.
     /// Asserts an error if the buffer is empty.
     //*************************************************************************
-    const_reference operator [](int index) const
+    const_reference operator [](size_t index) const
     {
       return pbuffer[(out + index) % BUFFER_SIZE];
     }
