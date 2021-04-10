@@ -48,25 +48,7 @@ namespace etl
     template <typename TInput, typename TCalc>
     struct correlation_traits
     {
-      TCalc    inner_product;
-      TCalc    sum_of_squares1;
-      TCalc    sum_of_squares2;
-      TCalc    sum1;
-      TCalc    sum2;
-      uint32_t counter;
-
-      //*********************************
-      /// Clear the correlation.
-      //*********************************
-      void clear()
-      {
-        inner_product   = TCalc(0);
-        sum_of_squares1 = TCalc(0);
-        sum_of_squares2 = TCalc(0);
-        sum1            = TCalc(0);
-        sum2            = TCalc(0);
-        counter         = 0U;
-      }
+      typedef TCalc calc_t;
     };
 
     //***************************************************************************
@@ -75,25 +57,7 @@ namespace etl
     template <typename TCalc>
     struct correlation_traits<float, TCalc>
     {
-      float    inner_product;
-      float    sum_of_squares1;
-      float    sum_of_squares2;
-      float    sum1;
-      float    sum2;
-      uint32_t counter;
-
-      //*********************************
-      /// Clear the correlation.
-      //*********************************
-      void clear()
-      {
-        inner_product   = float(0);
-        sum_of_squares1 = float(0);
-        sum_of_squares2 = float(0);
-        sum1            = float(0);
-        sum2            = float(0);
-        counter         = 0U;
-      }
+      typedef float calc_t;
     };
 
     //***************************************************************************
@@ -102,25 +66,7 @@ namespace etl
     template <typename TCalc>
     struct correlation_traits<double, TCalc>
     {
-      double   inner_product;
-      double   sum_of_squares1;
-      double   sum_of_squares2;
-      double   sum1;
-      double   sum2;
-      uint32_t counter;
-
-      //*********************************
-      /// Clear the correlation.
-      //*********************************
-      void clear()
-      {
-        inner_product   = double(0);
-        sum_of_squares1 = double(0);
-        sum_of_squares2 = double(0);
-        sum1            = double(0);
-        sum2            = double(0);
-        counter         = 0U;
-      }
+      typedef double calc_t;
     };
   }
 
@@ -145,17 +91,16 @@ namespace etl
 
     static ETL_CONSTANT int Adjustment = (Correlation_Type == correlation_type::Population) ? 0 : 1;
 
+    typedef typename private_correlation::correlation_traits<TInput, TCalc>::calc_t calc_t;
+
   public:
 
     //*********************************
     /// Constructor.
     //*********************************
     correlation()
-      : covariance_value(0.0)
-      , correlation_value(0.0)
-      , recalculate(true)
     {
-      this->clear();
+      clear();
     }
 
     //*********************************
@@ -163,11 +108,8 @@ namespace etl
     //*********************************
     template <typename TIterator>
     correlation(TIterator first1, TIterator last1, TIterator first2)
-      : covariance_value(0.0)
-      , correlation_value(0.0)
-      , recalculate(true)
     {
-      this->clear();
+      clear();
       add(first1, last1, first2);
     }
 
@@ -252,6 +194,22 @@ namespace etl
       return size_t(counter);
     }
 
+    //*********************************
+    /// Clear the correlation.
+    //*********************************
+    void clear()
+    {
+      inner_product     = calc_t(0);
+      sum_of_squares1   = calc_t(0);
+      sum_of_squares2   = calc_t(0);
+      sum1              = calc_t(0);
+      sum2              = calc_t(0);
+      counter           = 0U;
+      covariance_value  = 0.0;
+      correlation_value = 0.0;
+      recalculate       = true;
+    }
+
   private:
   
     //*********************************
@@ -300,9 +258,15 @@ namespace etl
       }
     }
 
-    double covariance_value;
-    double correlation_value;
-    bool   recalculate;
+    calc_t   inner_product;
+    calc_t   sum_of_squares1;
+    calc_t   sum_of_squares2;
+    calc_t   sum1;
+    calc_t   sum2;
+    uint32_t counter;
+    double   covariance_value;
+    double   correlation_value;
+    bool     recalculate;
   };
 }
 

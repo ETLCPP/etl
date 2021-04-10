@@ -43,60 +43,30 @@ namespace etl
   namespace private_rms
   {
     //***************************************************************************
-    /// Types for generic covariance.
+    /// Types for generic correlation.
     //***************************************************************************
     template <typename TInput, typename TCalc>
     struct rms_traits
     {
-      TCalc    sum_of_squares;
-      uint32_t counter;
-
-      //*********************************
-      /// Clear the histogram.
-      //*********************************
-      void clear()
-      {
-        sum_of_squares = TCalc(0);
-        counter        = 0U;
-      }
+      typedef TCalc calc_t;
     };
 
     //***************************************************************************
-    /// Types for float covariance.
+    /// Types for float correlation.
     //***************************************************************************
     template <typename TCalc>
     struct rms_traits<float, TCalc>
     {
-      float    sum_of_squares;
-      uint32_t counter;
-
-      //*********************************
-      /// Clear the histogram.
-      //*********************************
-      void clear()
-      {
-        sum_of_squares = float(0);
-        counter        = 0U;
-      }
+      typedef float calc_t;
     };
 
     //***************************************************************************
-    /// Types for double covariance.
+    /// Types for double correlation.
     //***************************************************************************
     template <typename TCalc>
     struct rms_traits<double, TCalc>
     {
-      double   sum_of_squares;
-      uint32_t counter;
-
-      //*********************************
-      /// Clear the histogram.
-      //*********************************
-      void clear()
-      {
-        sum_of_squares = double(0);
-        counter        = 0U;
-      }
+      typedef double calc_t;
     };
   }
 
@@ -108,6 +78,10 @@ namespace etl
     : public private_rms::rms_traits<TInput, TCalc>
     , public etl::binary_function<TInput, TInput, void>
   {
+  private:
+
+    typedef typename private_rms::rms_traits<TInput, TCalc>::calc_t calc_t;
+
   public:
 
     //*********************************
@@ -116,7 +90,7 @@ namespace etl
     rms()
       : recalculate(true)
     {
-      this->clear();
+      clear();
     }
 
     //*********************************
@@ -126,7 +100,7 @@ namespace etl
     rms(TIterator first, TIterator last)
       : recalculate(true)
     {
-      this->clear();
+      clear();
       add(first, last);
     }
 
@@ -135,8 +109,8 @@ namespace etl
     //*********************************
     void add(TInput value)
     {
-      this->sum_of_squares += TCalc(value * value);
-      ++this->counter;
+      sum_of_squares += TCalc(value * value);
+      ++counter;
       recalculate = true;
     }
 
@@ -180,10 +154,10 @@ namespace etl
       {
         rms_value = 0.0;
 
-        if (this->counter != 0)
+        if (counter != 0)
         {
-          double n = double(this->counter);
-          double mean_of_squares = this->sum_of_squares / n;
+          double n = double(counter);
+          double mean_of_squares = sum_of_squares / n;
 
           if (mean_of_squares > 0)
           {
@@ -210,13 +184,26 @@ namespace etl
     //*********************************
     size_t count() const
     {
-      return size_t(this->counter);
+      return size_t(counter);
+    }
+
+    //*********************************
+    /// Clear the histogram.
+    //*********************************
+    void clear()
+    {
+      sum_of_squares = calc_t(0);
+      counter        = 0U;
+      rms_value      = 0.0;
+      recalculate    = true;
     }
 
   private:
   
-    double rms_value;
-    bool   recalculate;
+    calc_t   sum_of_squares;
+    uint32_t counter;
+    double   rms_value;
+    bool     recalculate;
   };
 }
 

@@ -48,17 +48,7 @@ namespace etl
     template <typename TInput, typename TCalc>
     struct mean_traits
     {
-      TCalc    sum;
-      uint32_t counter;
-
-      //*********************************
-      /// Clear the mean.
-      //*********************************
-      void clear()
-      {
-        sum     = TCalc(0);
-        counter = 0U;
-      }
+      typedef TCalc calc_t;
     };
 
     //***************************************************************************
@@ -67,17 +57,7 @@ namespace etl
     template <typename TCalc>
     struct mean_traits<float, TCalc>
     {
-      float    sum;
-      uint32_t counter;
-
-      //*********************************
-      /// Clear the mean.
-      //*********************************
-      void clear()
-      {
-        sum     = float(0);
-        counter = 0U;
-      }
+      typedef float calc_t;
     };
 
     //***************************************************************************
@@ -86,17 +66,7 @@ namespace etl
     template <typename TCalc>
     struct mean_traits<double, TCalc>
     {
-      double   sum;
-      uint32_t counter;
-
-      //*********************************
-      /// Clear the mean.
-      //*********************************
-      void clear()
-      {
-        sum     = double(0);
-        counter = 0U;
-      }
+      typedef double calc_t;
     };
   }
 
@@ -108,16 +78,18 @@ namespace etl
     : public private_mean::mean_traits<TInput, TCalc>
     , public etl::binary_function<TInput, TInput, void>
   {
+  private:
+
+    typedef typename private_mean::mean_traits<TInput, TCalc>::calc_t calc_t;
+
   public:
 
     //*********************************
     /// Constructor.
     //*********************************
     mean()
-      : mean_value(0.0)
-      , recalculate(true)
     {
-      this->clear();
+      clear();
     }
 
     //*********************************
@@ -125,10 +97,8 @@ namespace etl
     //*********************************
     template <typename TIterator>
     mean(TIterator first, TIterator last)
-      : mean_value(0.0)
-      , recalculate(true)
     {
-      this->clear();
+      clear();
       add(first, last);
     }
 
@@ -210,10 +180,23 @@ namespace etl
       return size_t(counter);
     }
 
+    //*********************************
+    /// Clear the correlation.
+    //*********************************
+    void clear()
+    {
+      sum         = calc_t(0);
+      counter     = 0U;
+      mean_value  = 0.0;
+      recalculate = true;
+    }
+
   private:
   
-    double mean_value;
-    bool   recalculate;
+    calc_t   sum;
+    uint32_t counter;
+    double   mean_value;
+    bool     recalculate;
   };
 }
 

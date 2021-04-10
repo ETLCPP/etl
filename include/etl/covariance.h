@@ -48,21 +48,7 @@ namespace etl
     template <typename TInput, typename TCalc>
     struct covariance_traits
     {
-      TCalc    inner_product;
-      TCalc    sum1;
-      TCalc    sum2;
-      uint32_t counter;
-
-      //*********************************
-      /// Clear the covariance.
-      //*********************************
-      void clear()
-      {
-        inner_product = TCalc(0);
-        sum1          = TCalc(0);
-        sum2          = TCalc(0);
-        counter       = 0U;
-      }
+      typedef TCalc calc_t;
     };
 
     //***************************************************************************
@@ -71,21 +57,7 @@ namespace etl
     template <typename TCalc>
     struct covariance_traits<float, TCalc>
     {
-      float    inner_product;
-      float    sum1;
-      float    sum2;
-      uint32_t counter;
-
-      //*********************************
-      /// Clear the covariance.
-      //*********************************
-      void clear()
-      {
-        inner_product = float(0);
-        sum1          = float(0);
-        sum2          = float(0);
-        counter       = 0U;
-      }
+      typedef float calc_t;
     };
 
     //***************************************************************************
@@ -94,21 +66,7 @@ namespace etl
     template <typename TCalc>
     struct covariance_traits<double, TCalc>
     {
-      double   inner_product;
-      double   sum1;
-      double   sum2;
-      uint32_t counter;
-
-      //*********************************
-      /// Clear the covariance.
-      //*********************************
-      void clear()
-      {
-        inner_product = double(0);
-        sum1          = double(0);
-        sum2          = double(0);
-        counter       = 0U;
-      }
+      typedef double calc_t;
     };
   }
 
@@ -133,16 +91,16 @@ namespace etl
 
     static ETL_CONSTANT int Adjustment = (Covariance_Type == covariance_type::Population) ? 0 : 1;
 
+    typedef typename private_covariance::covariance_traits<TInput, TCalc>::calc_t calc_t;
+
   public:
 
     //*********************************
     /// Constructor.
     //*********************************
     covariance()
-      : covariance_value(0.0)
-      , recalculate(true)
     {
-      this->clear();
+      clear();
     }
 
     //*********************************
@@ -150,10 +108,8 @@ namespace etl
     //*********************************
     template <typename TIterator>
     covariance(TIterator first1, TIterator last1, TIterator first2)
-      : covariance_value(0.0)
-      , recalculate(true)
     {
-      this->clear();
+      clear();
       add(first1, last1, first2);
     }
 
@@ -214,9 +170,6 @@ namespace etl
           double n = double(counter);
           double adjustment = 1.0 / (n * (n - Adjustment));
 
-          double mean1 = sum1 / n;
-          double mean2 = sum2 / n;
-
           covariance_value = ((n * inner_product) - (sum1 * sum2)) * adjustment;
 
           recalculate = false;
@@ -242,10 +195,27 @@ namespace etl
       return size_t(counter);
     }
 
+    //*********************************
+    /// Clear the covariance.
+    //*********************************
+    void clear()
+    {
+      inner_product    = calc_t(0);
+      sum1             = calc_t(0);
+      sum2             = calc_t(0);
+      counter          = 0U;
+      covariance_value = 0.0;
+      recalculate      = true;
+    }
+
   private:
   
-    double covariance_value;
-    bool   recalculate;
+    calc_t   inner_product;
+    calc_t   sum1;
+    calc_t   sum2;
+    uint32_t counter;
+    double   covariance_value;
+    bool     recalculate;
   };
 }
 
