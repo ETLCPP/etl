@@ -1330,11 +1330,13 @@
     <ClInclude Include="..\..\include\etl\imemory_block_allocator.h" />
     <ClInclude Include="..\..\include\etl\indirect_vector.h" />
     <ClInclude Include="..\..\include\etl\absolute.h" />
+    <ClInclude Include="..\..\include\etl\invert.h" />
     <ClInclude Include="..\..\include\etl\ipool.h" />
     <ClInclude Include="..\..\include\etl\ireference_counted_message_pool.h" />
     <ClInclude Include="..\..\include\etl\limits.h" />
     <ClInclude Include="..\..\include\etl\macros.h" />
     <ClInclude Include="..\..\include\etl\fixed_sized_memory_block_allocator.h" />
+    <ClInclude Include="..\..\include\etl\mean.h" />
     <ClInclude Include="..\..\include\etl\message_packet.h" />
     <ClInclude Include="..\..\include\etl\message_pool.h" />
     <ClInclude Include="..\..\include\etl\multi_array.h" />
@@ -1364,6 +1366,7 @@
     <ClInclude Include="..\..\include\etl\profiles\gcc_windows_x86_no_stl.h" />
     <ClInclude Include="..\..\include\etl\profiles\msvc_x86_no_stl.h" />
     <ClInclude Include="..\..\include\etl\profiles\ticc_no_stl.h" />
+    <ClInclude Include="..\..\include\etl\quantatize.h" />
     <ClInclude Include="..\..\include\etl\queue_lockable.h" />
     <ClInclude Include="..\..\include\etl\queue_spsc_locked.h" />
     <ClInclude Include="..\..\include\etl\reference_counted_message.h" />
@@ -1421,6 +1424,7 @@
     <ClInclude Include="..\..\include\etl\string_view.h" />
     <ClInclude Include="..\..\include\etl\successor.h" />
     <ClInclude Include="..\..\include\etl\task.h" />
+    <ClInclude Include="..\..\include\etl\threshold.h" />
     <ClInclude Include="..\..\include\etl\timer.h" />
     <ClInclude Include="..\..\include\etl\to_string.h" />
     <ClInclude Include="..\..\include\etl\to_u16string.h" />
@@ -4205,9 +4209,12 @@
     <ClCompile Include="..\test_format_spec.cpp" />
     <ClCompile Include="..\test_forward_list_shared_pool.cpp" />
     <ClCompile Include="..\test_bit_stream.cpp" />
+    <ClCompile Include="..\test_gamma.cpp" />
     <ClCompile Include="..\test_histogram.cpp" />
     <ClCompile Include="..\test_indirect_vector.cpp" />
     <ClCompile Include="..\test_indirect_vector_external_buffer.cpp" />
+    <ClCompile Include="..\test_invert.cpp" />
+    <ClCompile Include="..\test_limiter.cpp" />
     <ClCompile Include="..\test_limits.cpp" />
     <ClCompile Include="..\test_list_shared_pool.cpp" />
     <ClCompile Include="..\test_make_string.cpp" />
@@ -4589,8 +4596,11 @@
     <ClCompile Include="..\test_parity_checksum.cpp" />
     <ClCompile Include="..\test_pearson.cpp" />
     <ClCompile Include="..\test_pool.cpp" />
+    <ClCompile Include="..\test_quantatize.cpp" />
     <ClCompile Include="..\test_queue_lockable.cpp" />
     <ClCompile Include="..\test_queue_lockable_small.cpp" />
+    <ClCompile Include="..\test_rescale.cpp" />
+    <ClCompile Include="..\test_rms.cpp" />
     <ClCompile Include="..\test_shared_message.cpp" />
     <ClCompile Include="..\test_priority_queue.cpp" />
     <ClCompile Include="..\test_queue.cpp" />
@@ -4642,6 +4652,7 @@
     <ClCompile Include="..\test_string_wchar_t.cpp" />
     <ClCompile Include="..\test_string_wchar_t_external_buffer.cpp" />
     <ClCompile Include="..\test_task_scheduler.cpp" />
+    <ClCompile Include="..\test_threshold.cpp" />
     <ClCompile Include="..\test_to_string.cpp" />
     <ClCompile Include="..\test_to_u16string.cpp" />
     <ClCompile Include="..\test_to_u32string.cpp" />

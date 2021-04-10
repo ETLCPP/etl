@@ -46,7 +46,7 @@ namespace etl
     /// Types for generic covariance.
     //***************************************************************************
     template <typename TInput, typename TCalc>
-    struct standard_deviation_types
+    struct standard_deviation_traits
     {
       TCalc    sum_of_squares;
       TCalc    sum;
@@ -67,7 +67,7 @@ namespace etl
     /// Types for float covariance.
     //***************************************************************************
     template <typename TCalc>
-    struct standard_deviation_types<float, TCalc>
+    struct standard_deviation_traits<float, TCalc>
     {
       float    sum_of_squares;
       float    sum;
@@ -88,7 +88,7 @@ namespace etl
     /// Types for double covariance.
     //***************************************************************************
     template <typename TCalc>
-    struct standard_deviation_types<double, TCalc>
+    struct standard_deviation_traits<double, TCalc>
     {
       double   sum_of_squares;
       double   sum;
@@ -120,7 +120,7 @@ namespace etl
   //***************************************************************************
   template <bool Standard_Deviation_Type, typename TInput, typename TCalc = TInput>
   class standard_deviation 
-    : public private_standard_deviation::standard_deviation_types<TInput, TCalc>
+    : public private_standard_deviation::standard_deviation_traits<TInput, TCalc>
     , public etl::binary_function<TInput, TInput, void>
   {
   private:
@@ -133,7 +133,9 @@ namespace etl
     /// Constructor.
     //*********************************
     standard_deviation()
-      : recalculate(true)
+      : variance_value(0.0)
+      , standard_deviation_value(0.0)
+      , recalculate(true)
     {
       this->clear();
     }
@@ -143,7 +145,9 @@ namespace etl
     //*********************************
     template <typename TIterator>
     standard_deviation(TIterator first, TIterator last)
-      : recalculate(true)
+      : variance_value(0.0)
+      , standard_deviation_value(0.0)
+      , recalculate(true)
     {
       this->clear();
       add(first, last);
@@ -154,9 +158,9 @@ namespace etl
     //*********************************
     void add(TInput value)
     {
-      sum_of_squares += TCalc(value * value);
-      sum            += TCalc(value);
-      ++counter;
+      this->sum_of_squares += TCalc(value * value);
+      this->sum            += TCalc(value);
+      ++this->counter;
       recalculate = true;
     }
 
@@ -196,20 +200,7 @@ namespace etl
     //*********************************
     double get_variance()
     {
-      if (recalculate)
-      {
-        variance_value = 0.0;
-
-        if (counter != 0)
-        {
-          double n = double(counter);
-          double adjustment = 1.0 / (n - Adjustment);
-
-          double mean = sum / n;
-
-          variance_value = (sum_of_squares - (n * mean * mean)) * adjustment;
-        }
-      }
+      calculate();
 
       return variance_value;
     }
@@ -219,28 +210,7 @@ namespace etl
     //*********************************
     double get_standard_deviation()
     {
-      if (recalculate)
-      {
-        standard_deviation_value = 0.0;
-        variance_value = 0.0;
-
-        if (counter != 0)
-        {
-          double n = double(counter);
-          double adjustment = 1.0 / (n - Adjustment);
-
-          double mean = sum / n;
-
-          variance_value = (sum_of_squares - (n * mean * mean)) * adjustment;
-
-          if (variance_value > 0)
-          {
-            standard_deviation_value = sqrt(variance_value);
-          }
-        }
-
-        recalculate = false;
-      }
+      calculate();
 
       return standard_deviation_value;
     }
@@ -258,11 +228,40 @@ namespace etl
     //*********************************
     size_t count() const
     {
-      return size_t(counter);
+      return size_t(this->counter);
     }
 
   private:
   
+    //*********************************
+    /// Do the calculation.
+    //*********************************
+    void calculate()
+    {
+      if (recalculate)
+      {
+        standard_deviation_value = 0.0;
+        variance_value = 0.0;
+
+        if (this->counter != 0)
+        {
+          double n = double(this->counter);
+          double adjustment = 1.0 / (n * (n - Adjustment));
+
+          double square_of_sum = (this->sum * this->sum);
+
+          variance_value = ((n * this->sum_of_squares) - square_of_sum) * adjustment;
+
+          if (variance_value > 0)
+          {
+            standard_deviation_value = sqrt(variance_value);
+          }
+        }
+
+        recalculate = false;
+      }
+    }
+
     double variance_value;
     double standard_deviation_value;
     bool   recalculate;

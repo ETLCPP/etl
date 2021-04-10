@@ -38,7 +38,7 @@ SOFTWARE.
 
 namespace
 {
-  constexpr size_t Size  = 10U;
+  constexpr size_t Size = 10U;
   constexpr int    Start = -4;
  
   using IntRuntimeOffsetHistogram = etl::histogram<int32_t, int8_t, Size>;

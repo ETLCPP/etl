@@ -51,6 +51,7 @@ SOFTWARE.
   #include <utility>
   #include <iterator>
   #include <functional>
+  #include <numeric>
 #endif
 
 #include "private/minmax_push.h"

@@ -46,7 +46,7 @@ namespace etl
     /// Types for generic covariance.
     //***************************************************************************
     template <typename TInput, typename TCalc>
-    struct covariance_types
+    struct covariance_traits
     {
       TCalc    inner_product;
       TCalc    sum1;
@@ -69,7 +69,7 @@ namespace etl
     /// Types for float covariance.
     //***************************************************************************
     template <typename TCalc>
-    struct covariance_types<float, TCalc>
+    struct covariance_traits<float, TCalc>
     {
       float    inner_product;
       float    sum1;
@@ -92,7 +92,7 @@ namespace etl
     /// Types for double covariance.
     //***************************************************************************
     template <typename TCalc>
-    struct covariance_types<double, TCalc>
+    struct covariance_traits<double, TCalc>
     {
       double   inner_product;
       double   sum1;
@@ -122,11 +122,11 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Constructor.
+  /// Covariance.
   //***************************************************************************
   template <bool Covariance_Type, typename TInput, typename TCalc = TInput>
   class covariance 
-    : public private_covariance::covariance_types<TInput, TCalc>
+    : public private_covariance::covariance_traits<TInput, TCalc>
     , public etl::binary_function<TInput, TInput, void>
   {
   private:
@@ -139,7 +139,8 @@ namespace etl
     /// Constructor.
     //*********************************
     covariance()
-      : recalculate(true)
+      : covariance_value(0.0)
+      , recalculate(true)
     {
       this->clear();
     }
@@ -149,7 +150,8 @@ namespace etl
     //*********************************
     template <typename TIterator>
     covariance(TIterator first1, TIterator last1, TIterator first2)
-      : recalculate(true)
+      : covariance_value(0.0)
+      , recalculate(true)
     {
       this->clear();
       add(first1, last1, first2);
@@ -210,12 +212,12 @@ namespace etl
         if (counter != 0)
         {
           double n = double(counter);
-          double adjustment = 1.0 / (n - Adjustment);
+          double adjustment = 1.0 / (n * (n - Adjustment));
 
           double mean1 = sum1 / n;
           double mean2 = sum2 / n;
 
-          covariance_value = (inner_product - (n * mean1 * mean2)) * adjustment;
+          covariance_value = ((n * inner_product) - (sum1 * sum2)) * adjustment;
 
           recalculate = false;
         }

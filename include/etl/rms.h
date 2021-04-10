@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_VARIANCE_INCLUDED
-#define ETL_VARIANCE_INCLUDED
+#ifndef ETL_RMS_INCLUDED
+#define ETL_RMS_INCLUDED
 
 #include "platform.h"
 #include "functional.h"
@@ -40,101 +40,81 @@ SOFTWARE.
 
 namespace etl
 {
-  namespace private_variance
+  namespace private_rms
   {
     //***************************************************************************
-    /// Types for generic variance.
+    /// Types for generic covariance.
     //***************************************************************************
     template <typename TInput, typename TCalc>
-    struct variance_traits
+    struct rms_traits
     {
       TCalc    sum_of_squares;
-      TCalc    sum;
       uint32_t counter;
 
       //*********************************
-      /// Clear the variance.
+      /// Clear the histogram.
       //*********************************
       void clear()
       {
         sum_of_squares = TCalc(0);
-        sum            = TCalc(0);
         counter        = 0U;
       }
     };
 
     //***************************************************************************
-    /// Types for float variance.
+    /// Types for float covariance.
     //***************************************************************************
     template <typename TCalc>
-    struct variance_traits<float, TCalc>
+    struct rms_traits<float, TCalc>
     {
       float    sum_of_squares;
-      float    sum;
       uint32_t counter;
 
       //*********************************
-      /// Clear the variance.
+      /// Clear the histogram.
       //*********************************
       void clear()
       {
         sum_of_squares = float(0);
-        sum            = float(0);
         counter        = 0U;
       }
     };
 
     //***************************************************************************
-    /// Types for double variance.
+    /// Types for double covariance.
     //***************************************************************************
     template <typename TCalc>
-    struct variance_traits<double, TCalc>
+    struct rms_traits<double, TCalc>
     {
       double   sum_of_squares;
-      double   sum;
       uint32_t counter;
 
       //*********************************
-      /// Clear the variance.
+      /// Clear the histogram.
       //*********************************
       void clear()
       {
         sum_of_squares = double(0);
-        sum            = double(0);
         counter        = 0U;
       }
     };
   }
 
   //***************************************************************************
-  /// Variance Type.
+  /// Standard Deviation.
   //***************************************************************************
-  struct variance_type
-  {
-    static ETL_CONSTANT bool Sample     = false;
-    static ETL_CONSTANT bool Population = true;
-  };
-
-  //***************************************************************************
-  /// Variance.
-  //***************************************************************************
-  template <bool Variance_Type, typename TInput, typename TCalc = TInput>
-  class variance 
-    : public private_variance::variance_traits<TInput, TCalc>
+  template <typename TInput, typename TCalc = TInput>
+  class rms 
+    : public private_rms::rms_traits<TInput, TCalc>
     , public etl::binary_function<TInput, TInput, void>
   {
-  private:
-
-    static ETL_CONSTANT int Adjustment = (Variance_Type == variance_type::Population) ? 0 : 1;
-
   public:
 
     //*********************************
     /// Constructor.
     //*********************************
-    variance()
-      : variance_value(0.0)
-      , recalculate(true)
+    rms()
+      : recalculate(true)
     {
       this->clear();
     }
@@ -143,9 +123,8 @@ namespace etl
     /// Constructor.
     //*********************************
     template <typename TIterator>
-    variance(TIterator first, TIterator last)
-      : variance_value(0.0)
-      , recalculate(true)
+    rms(TIterator first, TIterator last)
+      : recalculate(true)
     {
       this->clear();
       add(first, last);
@@ -157,7 +136,6 @@ namespace etl
     void add(TInput value)
     {
       this->sum_of_squares += TCalc(value * value);
-      this->sum            += TCalc(value);
       ++this->counter;
       recalculate = true;
     }
@@ -194,36 +172,37 @@ namespace etl
     }
 
     //*********************************
-    /// Get the variance.
+    /// Get the rms.
     //*********************************
-    double get_variance()
+    double get_rms()
     {
       if (recalculate)
       {
-        variance_value = 0.0;
+        rms_value = 0.0;
 
         if (this->counter != 0)
         {
           double n = double(this->counter);
-          double adjustment = 1.0 / (n * (n - Adjustment)) ;
+          double mean_of_squares = this->sum_of_squares / n;
 
-          double square_of_sum = this->sum * this->sum;
-
-          variance_value = (n * this->sum_of_squares - square_of_sum) * adjustment;
+          if (mean_of_squares > 0)
+          {
+            rms_value = sqrt(mean_of_squares);
+          }
         }
 
         recalculate = false;
       }
 
-      return variance_value;
+      return rms_value;
     }
 
     //*********************************
-    /// Get the variance.
+    /// Get the rms.
     //*********************************
     operator double()
     {
-      return get_variance();
+      return get_rms();
     }
 
     //*********************************
@@ -236,7 +215,7 @@ namespace etl
 
   private:
   
-    double variance_value;
+    double rms_value;
     bool   recalculate;
   };
 }

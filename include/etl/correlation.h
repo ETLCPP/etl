@@ -46,7 +46,7 @@ namespace etl
     /// Types for generic correlation.
     //***************************************************************************
     template <typename TInput, typename TCalc>
-    struct correlation_types
+    struct correlation_traits
     {
       TCalc    inner_product;
       TCalc    sum_of_squares1;
@@ -73,7 +73,7 @@ namespace etl
     /// Types for float correlation.
     //***************************************************************************
     template <typename TCalc>
-    struct correlation_types<float, TCalc>
+    struct correlation_traits<float, TCalc>
     {
       float    inner_product;
       float    sum_of_squares1;
@@ -100,7 +100,7 @@ namespace etl
     /// Types for double correlation.
     //***************************************************************************
     template <typename TCalc>
-    struct correlation_types<double, TCalc>
+    struct correlation_traits<double, TCalc>
     {
       double   inner_product;
       double   sum_of_squares1;
@@ -134,11 +134,11 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Constructor.
+  /// Correlation.
   //***************************************************************************
   template <bool Correlation_Type, typename TInput, typename TCalc = TInput>
   class correlation 
-    : public private_correlation::correlation_types<TInput, TCalc>
+    : public private_correlation::correlation_traits<TInput, TCalc>
     , public etl::binary_function<TInput, TInput, void>
   {
   private:
@@ -151,7 +151,9 @@ namespace etl
     /// Constructor.
     //*********************************
     correlation()
-      : recalculate(true)
+      : covariance_value(0.0)
+      , correlation_value(0.0)
+      , recalculate(true)
     {
       this->clear();
     }
@@ -161,7 +163,9 @@ namespace etl
     //*********************************
     template <typename TIterator>
     correlation(TIterator first1, TIterator last1, TIterator first2)
-      : recalculate(true)
+      : covariance_value(0.0)
+      , correlation_value(0.0)
+      , recalculate(true)
     {
       this->clear();
       add(first1, last1, first2);
@@ -217,22 +221,7 @@ namespace etl
     //*********************************
     double get_covariance()
     {
-      if (recalculate)
-      {
-        correlation_value = 0.0;
-        covariance_value = 0.0;
-
-        if (counter != 0)
-        {
-          double n = double(counter);
-          double adjustment = 1.0 / (n - Adjustment);
-
-          double mean1 = sum1 / n;
-          double mean2 = sum2 / n;
-
-          covariance_value = inner_product - (n * mean1 * mean2) * adjustment;
-        }
-      }
+      calculate();
 
       return covariance_value;
     }
@@ -242,45 +231,7 @@ namespace etl
     //*********************************
     double get_correlation()
     {
-      if (recalculate)
-      {
-        correlation_value = 0.0;
-        covariance_value  = 0.0;
-
-        if (counter != 0)
-        {
-          double n = double(counter);
-          double adjustment = 1.0 / (n - Adjustment);
-
-          double mean1 = sum1 / n;
-          double mean2 = sum2 / n;
-
-          double variance1 = (sum_of_squares1 - (n * mean1 * mean1)) * adjustment;
-          double variance2 = (sum_of_squares2 - (n * mean2 * mean2)) * adjustment;
-
-          double stddev1 = 0.0;
-          double stddev2 = 0.0;
-
-          if (variance1 > 0)
-          {
-            stddev1 = sqrt(variance1);
-          }
-
-          if (variance2 > 0)
-          {
-            stddev2 = sqrt(variance2);
-          }
-
-          covariance_value = (inner_product - (n * mean1 * mean2)) * adjustment;
-
-          if ((stddev1 > 0.0) && (stddev2 > 0.0))
-          {            
-            correlation_value = covariance_value / (stddev1 * stddev2);
-          }
-        }
-
-        recalculate = false;
-      }
+      calculate();
 
       return correlation_value;
     }
@@ -303,6 +254,52 @@ namespace etl
 
   private:
   
+    //*********************************
+    /// Do the calculation.
+    //*********************************
+    void calculate()
+    {
+      if (recalculate)
+      {
+        correlation_value = 0.0;
+        covariance_value  = 0.0;
+
+        if (counter != 0)
+        {
+          double n = double(counter);
+          double adjustment = 1.0 / (n * (n - Adjustment));
+
+          double square_of_sum1 = (sum1 * sum1);
+          double square_of_sum2 = (sum2 * sum2);
+
+          double variance1 = ((n * sum_of_squares1) - square_of_sum1) * adjustment;
+          double variance2 = ((n * sum_of_squares2) - square_of_sum2) * adjustment;
+
+          double stddev1 = 0.0;
+          double stddev2 = 0.0;
+
+          if (variance1 > 0)
+          {
+            stddev1 = sqrt(variance1);
+          }
+
+          if (variance2 > 0)
+          {
+            stddev2 = sqrt(variance2);
+          }
+
+          covariance_value = ((n * inner_product) - (sum1 * sum2)) * adjustment;
+
+          if ((stddev1 > 0.0) && (stddev2 > 0.0))
+          {            
+            correlation_value = covariance_value / (stddev1 * stddev2);
+          }
+        }
+
+        recalculate = false;
+      }
+    }
+
     double covariance_value;
     double correlation_value;
     bool   recalculate;
