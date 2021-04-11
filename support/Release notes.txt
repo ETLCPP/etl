@@ -14,7 +14,7 @@ Added maths algorithms and functors.
   etl::mean
   etl::invert
   etl::threshold
-  etl::quantatization
+  etl::quantize
   etl::limiter
   etl::rescale
   etl::rms

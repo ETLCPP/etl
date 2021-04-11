@@ -2447,7 +2447,7 @@
     <ClCompile Include="..\test_limiter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_quantatize.cpp">
+    <ClCompile Include="..\test_quantize.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_cdma2000.h.t.cpp">
@@ -2594,5 +2594,10 @@
     <Image Include="..\..\favicon.ico">
       <Filter>Resource Files\Images</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="NatvisFile.natvis">
+      <Filter>Resource Files</Filter>
+    </Natvis>
   </ItemGroup>
 </Project>

@@ -101,9 +101,9 @@ namespace
     //*************************************************************************
     TEST(test_int_quantatise)
     {
-      IntQuantatise quantatise(thresholds1.data(), quantatisations1.data(), quantatisations1.size());
+      IntQuantatise quantize (thresholds1.data(), quantatisations1.data(), quantatisations1.size());
 
-      std::transform(input1.begin(), input1.end(), output1.begin(), quantatise);
+      std::transform(input1.begin(), input1.end(), output1.begin(), quantize );
 
       bool isEqual = std::equal(output1.begin(), output1.end(), result1a.begin());
       CHECK(isEqual);
@@ -112,9 +112,9 @@ namespace
     //*************************************************************************
     TEST(test_double_quantatise)
     {
-      DoubleQuantatise quantatise(thresholds2.data(), quantatisations2.data(), quantatisations2.size());
+      DoubleQuantatise quantize (thresholds2.data(), quantatisations2.data(), quantatisations2.size());
 
-      std::transform(input2.begin(), input2.end(), output2.begin(), quantatise);
+      std::transform(input2.begin(), input2.end(), output2.begin(), quantize );
 
       bool isEqual = std::equal(output2.begin(), output2.end(), result2a.begin(), Compare());
       CHECK(isEqual);

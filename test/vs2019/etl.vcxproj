@@ -4597,7 +4597,7 @@
     <ClCompile Include="..\test_parity_checksum.cpp" />
     <ClCompile Include="..\test_pearson.cpp" />
     <ClCompile Include="..\test_pool.cpp" />
-    <ClCompile Include="..\test_quantatize.cpp" />
+    <ClCompile Include="..\test_quantize.cpp" />
     <ClCompile Include="..\test_queue_lockable.cpp" />
     <ClCompile Include="..\test_queue_lockable_small.cpp" />
     <ClCompile Include="..\test_rescale.cpp" />
@@ -4729,6 +4729,9 @@
     <Image Include="..\..\etl32.png" />
     <Image Include="..\..\etl48.png" />
     <Image Include="..\..\favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="NatvisFile.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
