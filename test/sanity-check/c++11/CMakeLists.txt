@@ -48,6 +48,8 @@ target_sources(t11 PRIVATE etl_profile.h
         ../compare.h.t.cpp
         ../constant.h.t.cpp
         ../container.h.t.cpp
+        ../correlation.h.t.cpp
+        ../covariance.h.t.cpp
         ../crc16.h.t.cpp
         ../crc16_a.h.t.cpp
         ../crc16_arc.h.t.cpp
@@ -121,9 +123,11 @@ target_sources(t11 PRIVATE etl_profile.h
         ../fsm.h.t.cpp
         ../function.h.t.cpp
         ../functional.h.t.cpp
+        ../gamma.h.t.cpp
         ../generic_pool.h.t.cpp
         ../hash.h.t.cpp
         ../ihash.h.t.cpp
+        ../histogram.h.t.cpp
         ../imemory_block_allocator.h.t.cpp
         ../indirect_vector.h.t.cpp
         ../instance_count.h.t.cpp
@@ -139,12 +143,14 @@ target_sources(t11 PRIVATE etl_profile.h
         ../iterator.h.t.cpp
         ../jenkins.h.t.cpp
         ../largest.h.t.cpp
+        ../limiter.h.t.cpp
         ../limits.h.t.cpp
         ../list.h.t.cpp
         ../log.h.t.cpp
         ../macros.h.t.cpp
         ../map.h.t.cpp
         ../math_constants.h.t.cpp
+        ../mean.h.t.cpp
         ../memory.h.t.cpp
         ../memory_model.h.t.cpp
         ../message.h.t.cpp
@@ -176,6 +182,7 @@ target_sources(t11 PRIVATE etl_profile.h
         ../pool.h.t.cpp
         ../power.h.t.cpp
         ../priority_queue.h.t.cpp
+        ../quantize.h.t.cpp
         ../queue.h.t.cpp
         ../queue_lockable.h.t.cpp
         ../queue_mpmc_mutex.h.t.cpp
@@ -192,6 +199,8 @@ target_sources(t11 PRIVATE etl_profile.h
         ../reference_flat_multimap.h.t.cpp
         ../reference_flat_multiset.h.t.cpp
         ../reference_flat_set.h.t.cpp
+        ../rescale.h.t.cpp
+        ../rms.h.t.cpp
         ../scaled_rounding.h.t.cpp
         ../scheduler.h.t.cpp
         ../set.h.t.cpp
@@ -200,6 +209,7 @@ target_sources(t11 PRIVATE etl_profile.h
         ../span.h.t.cpp
         ../sqrt.h.t.cpp
         ../stack.h.t.cpp
+        ../standard_deviation.h.t.cpp
         ../state_chart.h.t.cpp
         ../static_assert.h.t.cpp
         ../string.h.t.cpp
@@ -208,6 +218,7 @@ target_sources(t11 PRIVATE etl_profile.h
         ../string_view.h.t.cpp
         ../successor.h.t.cpp
         ../task.h.t.cpp
+        ../threshold.h.t.cpp
         ../timer.h.t.cpp
         ../to_string.h.t.cpp
         ../to_u16string.h.t.cpp
@@ -229,6 +240,7 @@ target_sources(t11 PRIVATE etl_profile.h
         ../unordered_set.h.t.cpp
         ../user_type.h.t.cpp
         ../utility.h.t.cpp
+        ../variance.h.t.cpp
         ../variant.h.t.cpp
         ../variant_pool.h.t.cpp
         ../vector.h.t.cpp

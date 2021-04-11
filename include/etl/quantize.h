@@ -41,17 +41,17 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// Quantatize.
+  /// Quantize .
   //***************************************************************************
   template<typename TInput, typename TCompare = etl::less<TInput> >
-  class quantatize : public etl::unary_function<TInput, TInput>
+  class quantize  : public etl::unary_function<TInput, TInput>
   {
   public:
 
     //*****************************************************************
     // Constructor.
     //*****************************************************************
-    quantatize(const TInput* p_thresholds_, const TInput* p_quantizations_, size_t n_quantizations_, TCompare compare_ = TCompare())
+    quantize (const TInput* p_thresholds_, const TInput* p_quantizations_, size_t n_quantizations_, TCompare compare_ = TCompare())
       : p_thresholds(p_thresholds_)
       , p_quantizations(p_quantizations_)
       , n_levels(n_quantizations_ - 1U)
@@ -77,9 +77,9 @@ namespace etl
 
   private:
 
-    const size_t n_levels;
     const TInput* const p_thresholds;
     const TInput* const p_quantizations;
+    const size_t   n_levels;
     const TCompare compare;
   };
 }

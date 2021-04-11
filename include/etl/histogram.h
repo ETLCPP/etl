@@ -258,7 +258,7 @@ namespace etl
     //*********************************
     histogram(const histogram& other)
     {
-      accumulator = other.accumulator;
+      this->accumulator = other.accumulator;
     }
 
 #if ETL_CPP11_SUPPORTED
@@ -387,7 +387,7 @@ namespace etl
     //*********************************
     sparce_histogram(const sparce_histogram& other)
     {
-      accumulator = other.accumulator;
+      this->accumulator = other.accumulator;
     }
 
 #if ETL_CPP11_SUPPORTED

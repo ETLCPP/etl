@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/quantatize.h"
+#include "etl/quantize.h"
 
 #include <array>
 #include <algorithm>
@@ -39,8 +39,8 @@ namespace
   constexpr size_t Size        = 20U;
   constexpr size_t NThresholds = 4U;
 
-  using IntQuantatise    = etl::quantatize<int>;
-  using DoubleQuantatise = etl::quantatize<double>;
+  using IntQuantize     = etl::quantize<int>;
+  using DoubleQuantize  = etl::quantize<double>;
 
   struct Compare
   {
@@ -56,7 +56,7 @@ namespace
     14, 18, 22, 25
   };
 
-  const std::array<int, NThresholds + 1> quantatisations1 = 
+  const std::array<int, NThresholds + 1> quantizations1 = 
   { 
     1, 2, 3, 4, 5
   };
@@ -79,7 +79,7 @@ namespace
     14.0, 18.0, 22.0, 25.0
   };
 
-  const std::array<double, NThresholds + 1> quantatisations2 = 
+  const std::array<double, NThresholds + 1> quantizations2 = 
   { 
     1.0, 2.0, 3.0, 4.0, 5.0
   };
@@ -96,12 +96,12 @@ namespace
 
   std::array<double, Size> output2;
 
-  SUITE(test_quantatise)
+  SUITE(test_quantize)
   {
     //*************************************************************************
-    TEST(test_int_quantatise)
+    TEST(test_int_quantize)
     {
-      IntQuantatise quantize (thresholds1.data(), quantatisations1.data(), quantatisations1.size());
+      IntQuantize quantize(thresholds1.data(), quantizations1.data(), quantizations1.size());
 
       std::transform(input1.begin(), input1.end(), output1.begin(), quantize );
 
@@ -110,9 +110,9 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_double_quantatise)
+    TEST(test_double_quantize)
     {
-      DoubleQuantatise quantize (thresholds2.data(), quantatisations2.data(), quantatisations2.size());
+      DoubleQuantize quantize(thresholds2.data(), quantizations2.data(), quantizations2.size());
 
       std::transform(input2.begin(), input2.end(), output2.begin(), quantize );
 

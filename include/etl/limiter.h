@@ -75,14 +75,13 @@ namespace etl
     //*****************************************************************
     TInput operator ()(TInput value) const
     {
-      return limit(value, lowest, highest);
+      return TLimit()(value, lowest, highest);
     }
 
   private:
 
     const TInput lowest;
     const TInput highest;
-    const TLimit limit;
   };
 }
 

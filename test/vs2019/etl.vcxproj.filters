@@ -1083,13 +1083,19 @@
     <ClInclude Include="..\..\include\etl\threshold.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\quantatize.h">
+    <ClInclude Include="..\..\include\etl\quantize.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\invert.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\mean.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\limiter.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\rescale.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
   </ItemGroup>
@@ -2465,6 +2471,45 @@
     <ClCompile Include="..\test_mean.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\sanity-check\correlation.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\covariance.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\gamma.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\histogram.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\invert.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\limiter.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\mean.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\quantize.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\rescale.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\rms.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\standard_deviation.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\threshold.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\variance.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -2573,6 +2618,9 @@
     </Text>
     <Text Include="..\sanity-check\c++17\CMakeLists.txt">
       <Filter>Source Files\Sanity Checks\C++17</Filter>
+    </Text>
+    <Text Include="..\sanity-check\log.txt">
+      <Filter>Source Files\Sanity Checks</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
