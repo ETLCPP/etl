@@ -1,4 +1,27 @@
 ===============================================================================
+20.9.0
+Fixed #362 'etl::fsm::receive() partial override'.
+Fixed #363 'circular_buffer operator [] takes integer rather than size_type'.
+Added macros for compilers that don't support HUGE_VAL.
+Added etl::accumulate and etl::clamp.
+Added maths algorithms and functors.
+  etl::correlation
+  etl::covariance
+  etl::gamma_encode
+  etl:;gamma_decode
+  etl::histogram
+  etl::sparce_histogram
+  etl::mean
+  etl::invert
+  etl::threshold
+  etl::quantatization
+  etl::limiter
+  etl::rescale
+  etl::rms
+  etl::standard_deviation
+  etl::variance
+
+===============================================================================
 20.8.0
 Added more CRCs, generalised table creation.
 Options for table sizes of 4, 16 and 256.
