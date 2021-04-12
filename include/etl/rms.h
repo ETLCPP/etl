@@ -148,7 +148,7 @@ namespace etl
     //*********************************
     /// Get the rms.
     //*********************************
-    double get_rms()
+    double get_rms() const
     {
       if (recalculate)
       {
@@ -174,7 +174,7 @@ namespace etl
     //*********************************
     /// Get the rms.
     //*********************************
-    operator double()
+    operator double() const
     {
       return get_rms();
     }
@@ -202,8 +202,8 @@ namespace etl
   
     calc_t   sum_of_squares;
     uint32_t counter;
-    double   rms_value;
-    bool     recalculate;
+    mutable double rms_value;
+    mutable bool   recalculate;
   };
 }
 

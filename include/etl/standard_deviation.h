@@ -158,7 +158,7 @@ namespace etl
     //*********************************
     /// Get the variance.
     //*********************************
-    double get_variance()
+    double get_variance() const
     {
       calculate();
 
@@ -168,7 +168,7 @@ namespace etl
     //*********************************
     /// Get the standard_deviation.
     //*********************************
-    double get_standard_deviation()
+    double get_standard_deviation() const
     {
       calculate();
 
@@ -178,7 +178,7 @@ namespace etl
     //*********************************
     /// Get the standard_deviation.
     //*********************************
-    operator double()
+    operator double() const
     {
       return get_standard_deviation();
     }
@@ -209,7 +209,7 @@ namespace etl
     //*********************************
     /// Do the calculation.
     //*********************************
-    void calculate()
+    void calculate() const
     {
       if (recalculate)
       {
@@ -238,9 +238,9 @@ namespace etl
     calc_t   sum_of_squares;
     calc_t   sum;
     uint32_t counter;
-    double   variance_value;
-    double   standard_deviation_value;
-    bool     recalculate;
+    mutable double variance_value;
+    mutable double standard_deviation_value;
+    mutable bool   recalculate;
   };
 }
 

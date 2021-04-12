@@ -159,7 +159,7 @@ namespace etl
     //*********************************
     /// Get the covaniance.
     //*********************************
-    double get_covariance()
+    double get_covariance() const
     {
       if (recalculate)
       {
@@ -182,7 +182,7 @@ namespace etl
     //*********************************
     /// Get the covariance.
     //*********************************
-    operator double()
+    operator double() const
     {
       return get_covariance();
     }
@@ -214,8 +214,8 @@ namespace etl
     calc_t   sum1;
     calc_t   sum2;
     uint32_t counter;
-    double   covariance_value;
-    bool     recalculate;
+    mutable double covariance_value;
+    mutable bool   recalculate;
   };
 }
 

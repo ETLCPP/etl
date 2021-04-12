@@ -158,7 +158,7 @@ namespace etl
     //*********************************
     /// Get the variance.
     //*********************************
-    double get_variance()
+    double get_variance() const
     {
       if (recalculate)
       {
@@ -183,7 +183,7 @@ namespace etl
     //*********************************
     /// Get the variance.
     //*********************************
-    operator double()
+    operator double() const
     {
       return get_variance();
     }
@@ -213,8 +213,8 @@ namespace etl
     calc_t   sum_of_squares;
     calc_t   sum;
     uint32_t counter;
-    double   variance_value;
-    bool     recalculate;
+    mutable double variance_value;
+    mutable bool   recalculate;
   };
 }
 

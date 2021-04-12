@@ -161,7 +161,7 @@ namespace etl
     //*********************************
     /// Get the correlation.
     //*********************************
-    double get_covariance()
+    double get_covariance() const
     {
       calculate();
 
@@ -171,7 +171,7 @@ namespace etl
     //*********************************
     /// Get the correlation.
     //*********************************
-    double get_correlation()
+    double get_correlation() const
     {
       calculate();
 
@@ -181,7 +181,7 @@ namespace etl
     //*********************************
     /// Get the correlation.
     //*********************************
-    operator double()
+    operator double() const
     {
       return get_correlation();
     }
@@ -215,7 +215,7 @@ namespace etl
     //*********************************
     /// Do the calculation.
     //*********************************
-    void calculate()
+    void calculate() const
     {
       if (recalculate)
       {
@@ -264,9 +264,9 @@ namespace etl
     calc_t   sum1;
     calc_t   sum2;
     uint32_t counter;
-    double   covariance_value;
-    double   correlation_value;
-    bool     recalculate;
+    mutable double covariance_value;
+    mutable double correlation_value;
+    mutable bool   recalculate;
   };
 }
 

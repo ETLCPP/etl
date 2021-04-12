@@ -146,7 +146,7 @@ namespace etl
     //*********************************
     /// Get the mean.
     //*********************************
-    double get_mean()
+    double get_mean() const
     {
       if (recalculate)
       {
@@ -167,7 +167,7 @@ namespace etl
     //*********************************
     /// Get the mean.
     //*********************************
-    operator double()
+    operator double() const
     {
       return get_mean();
     }
@@ -195,8 +195,8 @@ namespace etl
   
     calc_t   sum;
     uint32_t counter;
-    double   mean_value;
-    bool     recalculate;
+    mutable double mean_value;
+    mutable bool   recalculate;
   };
 }
 
