@@ -95,14 +95,16 @@ struct top
 //  composite declaration for 16 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
-         typename M00 = void, typename M01 = void, typename M02 = void, typename M03 = void,
-         typename M04 = void, typename M05 = void, typename M06 = void, typename M07 = void,
-         typename M08 = void, typename M09 = void, typename M10 = void, typename M11 = void,
-         typename M12 = void, typename M13 = void, typename M14 = void, typename M15 = void>
+template<typename E, unsigned ID, typename P, 
+         typename M00 = void, typename M01 = void, typename M02 = void,
+         typename M03 = void, typename M04 = void, typename M05 = void,
+         typename M06 = void, typename M07 = void, typename M08 = void,
+         typename M09 = void, typename M10 = void, typename M11 = void,
+         typename M12 = void, typename M13 = void, typename M14 = void,
+         typename M15 = void>
 class composite;
 
-template<typename E, unsigned ID, typename P = composite<E, 0, top<E> >,
+template<typename E, unsigned ID, typename P = composite<E, 0, top<E> >, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
@@ -113,7 +115,7 @@ class composite : public P
 
     typedef E Extended;
     typedef P Parent;
-    typedef composite<E, ID, P,
+    typedef composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14, M15> Self;
 
@@ -234,12 +236,12 @@ class composite<E, 0> : public top<E>
 //  composite specialisation for 15 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12, typename M13, typename M14>
-class composite<E, ID, P,
+class composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14> : public P
 {
@@ -247,7 +249,7 @@ class composite<E, ID, P,
 
     typedef E Extended;
     typedef P Parent;
-    typedef composite<E, ID, P,
+    typedef composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14> Self;
 
@@ -328,12 +330,12 @@ class composite<E, ID, P,
 //  composite specialisation for 14 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12, typename M13>
-class composite<E, ID, P,
+class composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13> : public P
 {
@@ -341,7 +343,7 @@ class composite<E, ID, P,
 
     typedef E Extended;
     typedef P Parent;
-    typedef composite<E, ID, P,
+    typedef composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13> Self;
 
@@ -419,12 +421,12 @@ class composite<E, ID, P,
 //  composite specialisation for 13 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12>
-class composite<E, ID, P,
+class composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12> : public P
 {
@@ -432,7 +434,7 @@ class composite<E, ID, P,
 
     typedef E Extended;
     typedef P Parent;
-    typedef composite<E, ID, P,
+    typedef composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12> Self;
 
@@ -507,11 +509,11 @@ class composite<E, ID, P,
 //  composite specialisation for 12 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11>
-class composite<E, ID, P,
+class composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11> : public P
 {
@@ -519,7 +521,7 @@ class composite<E, ID, P,
 
     typedef E Extended;
     typedef P Parent;
-    typedef composite<E, ID, P,
+    typedef composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11> Self;
 
@@ -591,11 +593,11 @@ class composite<E, ID, P,
 //  composite specialisation for 11 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10>
-class composite<E, ID, P,
+class composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10> : public P
 {
@@ -603,7 +605,7 @@ class composite<E, ID, P,
 
     typedef E Extended;
     typedef P Parent;
-    typedef composite<E, ID, P,
+    typedef composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10> Self;
 
@@ -672,11 +674,11 @@ class composite<E, ID, P,
 //  composite specialisation for 10 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09>
-class composite<E, ID, P,
+class composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09> : public P
 {
@@ -684,7 +686,7 @@ class composite<E, ID, P,
 
     typedef E Extended;
     typedef P Parent;
-    typedef composite<E, ID, P,
+    typedef composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09> Self;
 
@@ -750,11 +752,11 @@ class composite<E, ID, P,
 //  composite specialisation for 9 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08>
-class composite<E, ID, P,
+class composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08> : public P
 {
@@ -762,7 +764,7 @@ class composite<E, ID, P,
 
     typedef E Extended;
     typedef P Parent;
-    typedef composite<E, ID, P,
+    typedef composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08> Self;
 
@@ -825,17 +827,17 @@ class composite<E, ID, P,
 //  composite specialisation for 8 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07>
-class composite<E, ID, P,
+class composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05, M06, M07> : public P
 {
     public:
 
     typedef E Extended;
     typedef P Parent;
-    typedef composite<E, ID, P,
+    typedef composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05, M06, M07> Self;
 
     static void handle_entry(Extended &) {}
@@ -894,17 +896,17 @@ class composite<E, ID, P,
 //  composite specialisation for 7 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06>
-class composite<E, ID, P,
+class composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05, M06> : public P
 {
     public:
 
     typedef E Extended;
     typedef P Parent;
-    typedef composite<E, ID, P,
+    typedef composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05, M06> Self;
 
     static void handle_entry(Extended &) {}
@@ -960,17 +962,17 @@ class composite<E, ID, P,
 //  composite specialisation for 6 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05>
-class composite<E, ID, P,
+class composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05> : public P
 {
     public:
 
     typedef E Extended;
     typedef P Parent;
-    typedef composite<E, ID, P,
+    typedef composite<E, ID, P, 
          M00, M01, M02, M03, M04, M05> Self;
 
     static void handle_entry(Extended &) {}
@@ -1023,17 +1025,17 @@ class composite<E, ID, P,
 //  composite specialisation for 5 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04>
-class composite<E, ID, P,
+class composite<E, ID, P, 
          M00, M01, M02, M03, M04> : public P
 {
     public:
 
     typedef E Extended;
     typedef P Parent;
-    typedef composite<E, ID, P,
+    typedef composite<E, ID, P, 
          M00, M01, M02, M03, M04> Self;
 
     static void handle_entry(Extended &) {}
@@ -1083,16 +1085,16 @@ class composite<E, ID, P,
 //  composite specialisation for 4 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename P, 
          typename M00, typename M01, typename M02, typename M03>
-class composite<E, ID, P,
+class composite<E, ID, P, 
          M00, M01, M02, M03> : public P
 {
     public:
 
     typedef E Extended;
     typedef P Parent;
-    typedef composite<E, ID, P,
+    typedef composite<E, ID, P, 
          M00, M01, M02, M03> Self;
 
     static void handle_entry(Extended &) {}
@@ -1139,16 +1141,16 @@ class composite<E, ID, P,
 //  composite specialisation for 3 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename P, 
          typename M00, typename M01, typename M02>
-class composite<E, ID, P,
+class composite<E, ID, P, 
          M00, M01, M02> : public P
 {
     public:
 
     typedef E Extended;
     typedef P Parent;
-    typedef composite<E, ID, P,
+    typedef composite<E, ID, P, 
          M00, M01, M02> Self;
 
     static void handle_entry(Extended &) {}
@@ -1192,16 +1194,16 @@ class composite<E, ID, P,
 //  composite specialisation for 2 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename P, 
          typename M00, typename M01>
-class composite<E, ID, P,
+class composite<E, ID, P, 
          M00, M01> : public P
 {
     public:
 
     typedef E Extended;
     typedef P Parent;
-    typedef composite<E, ID, P,
+    typedef composite<E, ID, P, 
          M00, M01> Self;
 
     static void handle_entry(Extended &) {}
@@ -1242,16 +1244,16 @@ class composite<E, ID, P,
 //  composite specialisation for 1 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename P,
+template<typename E, unsigned ID, typename P, 
          typename M00>
-class composite<E, ID, P,
+class composite<E, ID, P, 
          M00> : public P
 {
     public:
 
     typedef E Extended;
     typedef P Parent;
-    typedef composite<E, ID, P,
+    typedef composite<E, ID, P, 
          M00> Self;
 
     static void handle_entry(Extended &) {}
@@ -1286,47 +1288,19 @@ class composite<E, ID, P,
 
 //________________________________________________________________________________________
 //
-//  composite specialisation for 0 messages
-//________________________________________________________________________________________
-
-template<typename E, unsigned ID, typename P>
-class composite<E, ID, P> : public P
-{
-    public:
-
-    typedef E Extended;
-    typedef P Parent;
-    typedef composite<E, ID, P> Self;
-
-    static void handle_entry(Extended &) {}
-    static void handle_exit (Extended &) {}
-    static void handle_init (Extended &);
-
-    static bool me_accepts_event(etl::message_id_t id)
-    {
-        return Parent::me_accepts_event( id );
-    }
-
-    template<typename SIMPLE>
-    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-    {
-        Parent::handle_event(m, e, s);
-    }
-};
-
-//________________________________________________________________________________________
-//
 //  simple declaration for 16 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename A, typename P,
-         typename M00 = void, typename M01 = void, typename M02 = void, typename M03 = void,
-         typename M04 = void, typename M05 = void, typename M06 = void, typename M07 = void,
-         typename M08 = void, typename M09 = void, typename M10 = void, typename M11 = void,
-         typename M12 = void, typename M13 = void, typename M14 = void, typename M15 = void>
+template<typename E, unsigned ID, typename A, typename P, 
+         typename M00 = void, typename M01 = void, typename M02 = void,
+         typename M03 = void, typename M04 = void, typename M05 = void,
+         typename M06 = void, typename M07 = void, typename M08 = void,
+         typename M09 = void, typename M10 = void, typename M11 = void,
+         typename M12 = void, typename M13 = void, typename M14 = void,
+         typename M15 = void>
 class simple;
 
-template<typename E, unsigned ID, typename A, typename P = composite<E, 0, top<E> >,
+template<typename E, unsigned ID, typename A, typename P = composite<E, 0, top<E> >, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
@@ -1338,7 +1312,7 @@ class simple : public P
     typedef E Extended;
     typedef P Parent;
     typedef A Allowed_ids;
-    typedef simple<E, ID, A, P,
+    typedef simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14, M15> Self;
 
@@ -1437,15 +1411,15 @@ class simple : public P
     template<typename SIMPLE> void on_event( M15 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12, typename M13, typename M14, typename M15>
-const simple<E, ID, A, P,
+const simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14, M15>
-      simple<E, ID, A, P,
+      simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14, M15>::obj;
 
@@ -1454,12 +1428,12 @@ const simple<E, ID, A, P,
 //  simple specialisation for 15 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12, typename M13, typename M14>
-class simple<E, ID, A, P,
+class simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14> : public P
 {
@@ -1468,7 +1442,7 @@ class simple<E, ID, A, P,
     typedef E Extended;
     typedef P Parent;
     typedef A Allowed_ids;
-    typedef simple<E, ID, A, P,
+    typedef simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14> Self;
 
@@ -1564,15 +1538,15 @@ class simple<E, ID, A, P,
     template<typename SIMPLE> void on_event( M14 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12, typename M13, typename M14>
-const simple<E, ID, A, P,
+const simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14>
-      simple<E, ID, A, P,
+      simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13, M14>::obj;
 
@@ -1581,12 +1555,12 @@ const simple<E, ID, A, P,
 //  simple specialisation for 14 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12, typename M13>
-class simple<E, ID, A, P,
+class simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13> : public P
 {
@@ -1595,7 +1569,7 @@ class simple<E, ID, A, P,
     typedef E Extended;
     typedef P Parent;
     typedef A Allowed_ids;
-    typedef simple<E, ID, A, P,
+    typedef simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13> Self;
 
@@ -1688,15 +1662,15 @@ class simple<E, ID, A, P,
     template<typename SIMPLE> void on_event( M13 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12, typename M13>
-const simple<E, ID, A, P,
+const simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13>
-      simple<E, ID, A, P,
+      simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12, M13>::obj;
 
@@ -1705,12 +1679,12 @@ const simple<E, ID, A, P,
 //  simple specialisation for 13 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12>
-class simple<E, ID, A, P,
+class simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12> : public P
 {
@@ -1719,7 +1693,7 @@ class simple<E, ID, A, P,
     typedef E Extended;
     typedef P Parent;
     typedef A Allowed_ids;
-    typedef simple<E, ID, A, P,
+    typedef simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12> Self;
 
@@ -1809,15 +1783,15 @@ class simple<E, ID, A, P,
     template<typename SIMPLE> void on_event( M12 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11,
          typename M12>
-const simple<E, ID, A, P,
+const simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12>
-      simple<E, ID, A, P,
+      simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11, M12>::obj;
 
@@ -1826,11 +1800,11 @@ const simple<E, ID, A, P,
 //  simple specialisation for 12 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11>
-class simple<E, ID, A, P,
+class simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11> : public P
 {
@@ -1839,7 +1813,7 @@ class simple<E, ID, A, P,
     typedef E Extended;
     typedef P Parent;
     typedef A Allowed_ids;
-    typedef simple<E, ID, A, P,
+    typedef simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11> Self;
 
@@ -1926,14 +1900,14 @@ class simple<E, ID, A, P,
     template<typename SIMPLE> void on_event( M11 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10, typename M11>
-const simple<E, ID, A, P,
+const simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11>
-      simple<E, ID, A, P,
+      simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10, M11>::obj;
 
@@ -1942,11 +1916,11 @@ const simple<E, ID, A, P,
 //  simple specialisation for 11 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10>
-class simple<E, ID, A, P,
+class simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10> : public P
 {
@@ -1955,7 +1929,7 @@ class simple<E, ID, A, P,
     typedef E Extended;
     typedef P Parent;
     typedef A Allowed_ids;
-    typedef simple<E, ID, A, P,
+    typedef simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10> Self;
 
@@ -2039,14 +2013,14 @@ class simple<E, ID, A, P,
     template<typename SIMPLE> void on_event( M10 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09, typename M10>
-const simple<E, ID, A, P,
+const simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10>
-      simple<E, ID, A, P,
+      simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09, M10>::obj;
 
@@ -2055,11 +2029,11 @@ const simple<E, ID, A, P,
 //  simple specialisation for 10 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09>
-class simple<E, ID, A, P,
+class simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09> : public P
 {
@@ -2068,7 +2042,7 @@ class simple<E, ID, A, P,
     typedef E Extended;
     typedef P Parent;
     typedef A Allowed_ids;
-    typedef simple<E, ID, A, P,
+    typedef simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09> Self;
 
@@ -2149,14 +2123,14 @@ class simple<E, ID, A, P,
     template<typename SIMPLE> void on_event( M09 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08, typename M09>
-const simple<E, ID, A, P,
+const simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09>
-      simple<E, ID, A, P,
+      simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08, M09>::obj;
 
@@ -2165,11 +2139,11 @@ const simple<E, ID, A, P,
 //  simple specialisation for 9 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08>
-class simple<E, ID, A, P,
+class simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08> : public P
 {
@@ -2178,7 +2152,7 @@ class simple<E, ID, A, P,
     typedef E Extended;
     typedef P Parent;
     typedef A Allowed_ids;
-    typedef simple<E, ID, A, P,
+    typedef simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08> Self;
 
@@ -2256,14 +2230,14 @@ class simple<E, ID, A, P,
     template<typename SIMPLE> void on_event( M08 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07,
          typename M08>
-const simple<E, ID, A, P,
+const simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08>
-      simple<E, ID, A, P,
+      simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07,
          M08>::obj;
 
@@ -2272,10 +2246,10 @@ const simple<E, ID, A, P,
 //  simple specialisation for 8 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07>
-class simple<E, ID, A, P,
+class simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07> : public P
 {
     public:
@@ -2283,7 +2257,7 @@ class simple<E, ID, A, P,
     typedef E Extended;
     typedef P Parent;
     typedef A Allowed_ids;
-    typedef simple<E, ID, A, P,
+    typedef simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07> Self;
 
     static void handle_entry(Extended &) {}
@@ -2357,12 +2331,12 @@ class simple<E, ID, A, P,
     template<typename SIMPLE> void on_event( M07 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06, typename M07>
-const simple<E, ID, A, P,
+const simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07>
-      simple<E, ID, A, P,
+      simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06, M07>::obj;
 
 //________________________________________________________________________________________
@@ -2370,10 +2344,10 @@ const simple<E, ID, A, P,
 //  simple specialisation for 7 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06>
-class simple<E, ID, A, P,
+class simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06> : public P
 {
     public:
@@ -2381,7 +2355,7 @@ class simple<E, ID, A, P,
     typedef E Extended;
     typedef P Parent;
     typedef A Allowed_ids;
-    typedef simple<E, ID, A, P,
+    typedef simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06> Self;
 
     static void handle_entry(Extended &) {}
@@ -2452,12 +2426,12 @@ class simple<E, ID, A, P,
     template<typename SIMPLE> void on_event( M06 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05, typename M06>
-const simple<E, ID, A, P,
+const simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06>
-      simple<E, ID, A, P,
+      simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05, M06>::obj;
 
 //________________________________________________________________________________________
@@ -2465,10 +2439,10 @@ const simple<E, ID, A, P,
 //  simple specialisation for 6 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05>
-class simple<E, ID, A, P,
+class simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05> : public P
 {
     public:
@@ -2476,7 +2450,7 @@ class simple<E, ID, A, P,
     typedef E Extended;
     typedef P Parent;
     typedef A Allowed_ids;
-    typedef simple<E, ID, A, P,
+    typedef simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05> Self;
 
     static void handle_entry(Extended &) {}
@@ -2544,12 +2518,12 @@ class simple<E, ID, A, P,
     template<typename SIMPLE> void on_event( M05 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04, typename M05>
-const simple<E, ID, A, P,
+const simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05>
-      simple<E, ID, A, P,
+      simple<E, ID, A, P, 
          M00, M01, M02, M03, M04, M05>::obj;
 
 //________________________________________________________________________________________
@@ -2557,10 +2531,10 @@ const simple<E, ID, A, P,
 //  simple specialisation for 5 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04>
-class simple<E, ID, A, P,
+class simple<E, ID, A, P, 
          M00, M01, M02, M03, M04> : public P
 {
     public:
@@ -2568,7 +2542,7 @@ class simple<E, ID, A, P,
     typedef E Extended;
     typedef P Parent;
     typedef A Allowed_ids;
-    typedef simple<E, ID, A, P,
+    typedef simple<E, ID, A, P, 
          M00, M01, M02, M03, M04> Self;
 
     static void handle_entry(Extended &) {}
@@ -2633,12 +2607,12 @@ class simple<E, ID, A, P,
     template<typename SIMPLE> void on_event( M04 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03,
          typename M04>
-const simple<E, ID, A, P,
+const simple<E, ID, A, P, 
          M00, M01, M02, M03, M04>
-      simple<E, ID, A, P,
+      simple<E, ID, A, P, 
          M00, M01, M02, M03, M04>::obj;
 
 //________________________________________________________________________________________
@@ -2646,9 +2620,9 @@ const simple<E, ID, A, P,
 //  simple specialisation for 4 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03>
-class simple<E, ID, A, P,
+class simple<E, ID, A, P, 
          M00, M01, M02, M03> : public P
 {
     public:
@@ -2656,7 +2630,7 @@ class simple<E, ID, A, P,
     typedef E Extended;
     typedef P Parent;
     typedef A Allowed_ids;
-    typedef simple<E, ID, A, P,
+    typedef simple<E, ID, A, P, 
          M00, M01, M02, M03> Self;
 
     static void handle_entry(Extended &) {}
@@ -2718,11 +2692,11 @@ class simple<E, ID, A, P,
     template<typename SIMPLE> void on_event( M03 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02, typename M03>
-const simple<E, ID, A, P,
+const simple<E, ID, A, P, 
          M00, M01, M02, M03>
-      simple<E, ID, A, P,
+      simple<E, ID, A, P, 
          M00, M01, M02, M03>::obj;
 
 //________________________________________________________________________________________
@@ -2730,9 +2704,9 @@ const simple<E, ID, A, P,
 //  simple specialisation for 3 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02>
-class simple<E, ID, A, P,
+class simple<E, ID, A, P, 
          M00, M01, M02> : public P
 {
     public:
@@ -2740,7 +2714,7 @@ class simple<E, ID, A, P,
     typedef E Extended;
     typedef P Parent;
     typedef A Allowed_ids;
-    typedef simple<E, ID, A, P,
+    typedef simple<E, ID, A, P, 
          M00, M01, M02> Self;
 
     static void handle_entry(Extended &) {}
@@ -2799,11 +2773,11 @@ class simple<E, ID, A, P,
     template<typename SIMPLE> void on_event( M02 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01, typename M02>
-const simple<E, ID, A, P,
+const simple<E, ID, A, P, 
          M00, M01, M02>
-      simple<E, ID, A, P,
+      simple<E, ID, A, P, 
          M00, M01, M02>::obj;
 
 //________________________________________________________________________________________
@@ -2811,9 +2785,9 @@ const simple<E, ID, A, P,
 //  simple specialisation for 2 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01>
-class simple<E, ID, A, P,
+class simple<E, ID, A, P, 
          M00, M01> : public P
 {
     public:
@@ -2821,7 +2795,7 @@ class simple<E, ID, A, P,
     typedef E Extended;
     typedef P Parent;
     typedef A Allowed_ids;
-    typedef simple<E, ID, A, P,
+    typedef simple<E, ID, A, P, 
          M00, M01> Self;
 
     static void handle_entry(Extended &) {}
@@ -2877,11 +2851,11 @@ class simple<E, ID, A, P,
     template<typename SIMPLE> void on_event( M01 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00, typename M01>
-const simple<E, ID, A, P,
+const simple<E, ID, A, P, 
          M00, M01>
-      simple<E, ID, A, P,
+      simple<E, ID, A, P, 
          M00, M01>::obj;
 
 //________________________________________________________________________________________
@@ -2889,9 +2863,9 @@ const simple<E, ID, A, P,
 //  simple specialisation for 1 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00>
-class simple<E, ID, A, P,
+class simple<E, ID, A, P, 
          M00> : public P
 {
     public:
@@ -2899,7 +2873,7 @@ class simple<E, ID, A, P,
     typedef E Extended;
     typedef P Parent;
     typedef A Allowed_ids;
-    typedef simple<E, ID, A, P,
+    typedef simple<E, ID, A, P, 
          M00> Self;
 
     static void handle_entry(Extended &) {}
@@ -2952,67 +2926,1139 @@ class simple<E, ID, A, P,
     template<typename SIMPLE> void on_event( M00 const &, Extended &, SIMPLE const & ) const;
 };
 
-template<typename E, unsigned ID, typename A, typename P,
+template<typename E, unsigned ID, typename A, typename P, 
          typename M00>
-const simple<E, ID, A, P,
+const simple<E, ID, A, P, 
          M00>
-      simple<E, ID, A, P,
+      simple<E, ID, A, P, 
          M00>::obj;
 
 //________________________________________________________________________________________
 //
-//  simple specialisation for 0 messages
+//  extended declaration for 16 messages
 //________________________________________________________________________________________
 
-template<typename E, unsigned ID, typename A, typename P>
-class simple<E, ID, A, P> : public P
+template<typename TDerived, 
+         typename M00 = void, typename M01 = void, typename M02 = void,
+         typename M03 = void, typename M04 = void, typename M05 = void,
+         typename M06 = void, typename M07 = void, typename M08 = void,
+         typename M09 = void, typename M10 = void, typename M11 = void,
+         typename M12 = void, typename M13 = void, typename M14 = void,
+         typename M15 = void>
+class extended;
+
+template<typename TDerived, 
+         typename M00, typename M01, typename M02, typename M03,
+         typename M04, typename M05, typename M06, typename M07,
+         typename M08, typename M09, typename M10, typename M11,
+         typename M12, typename M13, typename M14, typename M15>
+class extended : public etl::imessage_router
 {
-    public:
+public:
+    typedef TDerived derived;
+    typedef top<derived> state;
+    typedef etl::message_packet<
+         M00, M01, M02, M03, M04, M05, M06, M07,
+         M08, M09, M10, M11, M12, M13, M14, M15> message_packet;
 
-    typedef E Extended;
-    typedef P Parent;
-    typedef A Allowed_ids;
-    typedef simple<E, ID, A, P> Self;
-
-    static void handle_entry(Extended &) {}
-    static void handle_exit (Extended &) {}
-    static void handle_init (Extended & arg)
+    extended(etl::message_router_id_t id)
+        : etl::imessage_router(id)
     {
-        arg.set_state(obj);
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    extended(etl::message_router_id_t id, etl::imessage_router& successor_)
+        : etl::imessage_router(id, successor_)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    // Non-mutating methods
+    bool          is_started    () const { return _state != nullptr; };
+    state const * get_state     () const { return _state; };
+    bool          is_null_router() const ETL_OVERRIDE { return false; }
+    bool          is_producer   () const ETL_OVERRIDE { return true;  }
+    bool          is_consumer   () const ETL_OVERRIDE { return true;  }
+
+    // Mutating methods
+    void set_state(state const & arg) { _state = &arg; };
+    void receive(etl::imessage const & message) override
+    {
+        get_state()->process_event(message, static_cast<derived&>(* this));
     }
 
-    static const simple obj;
+    virtual void on_receive_unknown(etl::imessage const &) {}
 
-    virtual unsigned get_id() const override
+    using imessage_router::accepts;
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
-        return ID;
+        switch (id)
+        {
+        case M00::ID:
+        case M01::ID:
+        case M02::ID:
+        case M03::ID:
+        case M04::ID:
+        case M05::ID:
+        case M06::ID:
+        case M07::ID:
+        case M08::ID:
+        case M09::ID:
+        case M10::ID:
+        case M11::ID:
+        case M12::ID:
+        case M13::ID:
+        case M14::ID:
+        case M15::ID:
+            return true;
+        default:
+            return false;
+        }
     }
 
-    virtual void process_event(etl::imessage const & m, Extended & e) const override
-    {
-        handle_event(m, e, *this);
-    }
-
-    static bool me_accepts_event(etl::message_id_t id)
-    {
-        return Parent::me_accepts_event( id );
-    }
-
-    bool accepts_event(etl::message_id_t arg) const override
-    {                                                                      
-         return is_in( arg, Allowed_ids {} );                                           
-    }                                                                      
-
-    template<typename SIMPLE>
-    void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & s) const
-    {
-        Parent::handle_event(m, e, s);
-    }
+private:
+    const state* _state { nullptr };
 };
 
-template<typename E, unsigned ID, typename A, typename P>
-const simple<E, ID, A, P>
-      simple<E, ID, A, P>::obj;
+//________________________________________________________________________________________
+//
+//  extended specialisation for 15 messages
+//________________________________________________________________________________________
+
+template<typename TDerived, 
+         typename M00, typename M01, typename M02, typename M03,
+         typename M04, typename M05, typename M06, typename M07,
+         typename M08, typename M09, typename M10, typename M11,
+         typename M12, typename M13, typename M14>
+class extended<TDerived, 
+         M00, M01, M02, M03, M04, M05, M06, M07,
+         M08, M09, M10, M11, M12, M13, M14> : public etl::imessage_router
+{
+public:
+    typedef TDerived derived;
+    typedef top<derived> state;
+    typedef etl::message_packet<
+         M00, M01, M02, M03, M04, M05, M06, M07,
+         M08, M09, M10, M11, M12, M13, M14> message_packet;
+
+    extended(etl::message_router_id_t id)
+        : etl::imessage_router(id)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    extended(etl::message_router_id_t id, etl::imessage_router& successor_)
+        : etl::imessage_router(id, successor_)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    // Non-mutating methods
+    bool          is_started    () const { return _state != nullptr; };
+    state const * get_state     () const { return _state; };
+    bool          is_null_router() const ETL_OVERRIDE { return false; }
+    bool          is_producer   () const ETL_OVERRIDE { return true;  }
+    bool          is_consumer   () const ETL_OVERRIDE { return true;  }
+
+    // Mutating methods
+    void set_state(state const & arg) { _state = &arg; };
+    void receive(etl::imessage const & message) override
+    {
+        get_state()->process_event(message, static_cast<derived&>(* this));
+    }
+
+    virtual void on_receive_unknown(etl::imessage const &) {}
+
+    using imessage_router::accepts;
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+        switch (id)
+        {
+        case M00::ID:
+        case M01::ID:
+        case M02::ID:
+        case M03::ID:
+        case M04::ID:
+        case M05::ID:
+        case M06::ID:
+        case M07::ID:
+        case M08::ID:
+        case M09::ID:
+        case M10::ID:
+        case M11::ID:
+        case M12::ID:
+        case M13::ID:
+        case M14::ID:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+private:
+    const state* _state { nullptr };
+};
+
+//________________________________________________________________________________________
+//
+//  extended specialisation for 14 messages
+//________________________________________________________________________________________
+
+template<typename TDerived, 
+         typename M00, typename M01, typename M02, typename M03,
+         typename M04, typename M05, typename M06, typename M07,
+         typename M08, typename M09, typename M10, typename M11,
+         typename M12, typename M13>
+class extended<TDerived, 
+         M00, M01, M02, M03, M04, M05, M06, M07,
+         M08, M09, M10, M11, M12, M13> : public etl::imessage_router
+{
+public:
+    typedef TDerived derived;
+    typedef top<derived> state;
+    typedef etl::message_packet<
+         M00, M01, M02, M03, M04, M05, M06, M07,
+         M08, M09, M10, M11, M12, M13> message_packet;
+
+    extended(etl::message_router_id_t id)
+        : etl::imessage_router(id)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    extended(etl::message_router_id_t id, etl::imessage_router& successor_)
+        : etl::imessage_router(id, successor_)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    // Non-mutating methods
+    bool          is_started    () const { return _state != nullptr; };
+    state const * get_state     () const { return _state; };
+    bool          is_null_router() const ETL_OVERRIDE { return false; }
+    bool          is_producer   () const ETL_OVERRIDE { return true;  }
+    bool          is_consumer   () const ETL_OVERRIDE { return true;  }
+
+    // Mutating methods
+    void set_state(state const & arg) { _state = &arg; };
+    void receive(etl::imessage const & message) override
+    {
+        get_state()->process_event(message, static_cast<derived&>(* this));
+    }
+
+    virtual void on_receive_unknown(etl::imessage const &) {}
+
+    using imessage_router::accepts;
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+        switch (id)
+        {
+        case M00::ID:
+        case M01::ID:
+        case M02::ID:
+        case M03::ID:
+        case M04::ID:
+        case M05::ID:
+        case M06::ID:
+        case M07::ID:
+        case M08::ID:
+        case M09::ID:
+        case M10::ID:
+        case M11::ID:
+        case M12::ID:
+        case M13::ID:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+private:
+    const state* _state { nullptr };
+};
+
+//________________________________________________________________________________________
+//
+//  extended specialisation for 13 messages
+//________________________________________________________________________________________
+
+template<typename TDerived, 
+         typename M00, typename M01, typename M02, typename M03,
+         typename M04, typename M05, typename M06, typename M07,
+         typename M08, typename M09, typename M10, typename M11,
+         typename M12>
+class extended<TDerived, 
+         M00, M01, M02, M03, M04, M05, M06, M07,
+         M08, M09, M10, M11, M12> : public etl::imessage_router
+{
+public:
+    typedef TDerived derived;
+    typedef top<derived> state;
+    typedef etl::message_packet<
+         M00, M01, M02, M03, M04, M05, M06, M07,
+         M08, M09, M10, M11, M12> message_packet;
+
+    extended(etl::message_router_id_t id)
+        : etl::imessage_router(id)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    extended(etl::message_router_id_t id, etl::imessage_router& successor_)
+        : etl::imessage_router(id, successor_)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    // Non-mutating methods
+    bool          is_started    () const { return _state != nullptr; };
+    state const * get_state     () const { return _state; };
+    bool          is_null_router() const ETL_OVERRIDE { return false; }
+    bool          is_producer   () const ETL_OVERRIDE { return true;  }
+    bool          is_consumer   () const ETL_OVERRIDE { return true;  }
+
+    // Mutating methods
+    void set_state(state const & arg) { _state = &arg; };
+    void receive(etl::imessage const & message) override
+    {
+        get_state()->process_event(message, static_cast<derived&>(* this));
+    }
+
+    virtual void on_receive_unknown(etl::imessage const &) {}
+
+    using imessage_router::accepts;
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+        switch (id)
+        {
+        case M00::ID:
+        case M01::ID:
+        case M02::ID:
+        case M03::ID:
+        case M04::ID:
+        case M05::ID:
+        case M06::ID:
+        case M07::ID:
+        case M08::ID:
+        case M09::ID:
+        case M10::ID:
+        case M11::ID:
+        case M12::ID:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+private:
+    const state* _state { nullptr };
+};
+
+//________________________________________________________________________________________
+//
+//  extended specialisation for 12 messages
+//________________________________________________________________________________________
+
+template<typename TDerived, 
+         typename M00, typename M01, typename M02, typename M03,
+         typename M04, typename M05, typename M06, typename M07,
+         typename M08, typename M09, typename M10, typename M11>
+class extended<TDerived, 
+         M00, M01, M02, M03, M04, M05, M06, M07,
+         M08, M09, M10, M11> : public etl::imessage_router
+{
+public:
+    typedef TDerived derived;
+    typedef top<derived> state;
+    typedef etl::message_packet<
+         M00, M01, M02, M03, M04, M05, M06, M07,
+         M08, M09, M10, M11> message_packet;
+
+    extended(etl::message_router_id_t id)
+        : etl::imessage_router(id)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    extended(etl::message_router_id_t id, etl::imessage_router& successor_)
+        : etl::imessage_router(id, successor_)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    // Non-mutating methods
+    bool          is_started    () const { return _state != nullptr; };
+    state const * get_state     () const { return _state; };
+    bool          is_null_router() const ETL_OVERRIDE { return false; }
+    bool          is_producer   () const ETL_OVERRIDE { return true;  }
+    bool          is_consumer   () const ETL_OVERRIDE { return true;  }
+
+    // Mutating methods
+    void set_state(state const & arg) { _state = &arg; };
+    void receive(etl::imessage const & message) override
+    {
+        get_state()->process_event(message, static_cast<derived&>(* this));
+    }
+
+    virtual void on_receive_unknown(etl::imessage const &) {}
+
+    using imessage_router::accepts;
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+        switch (id)
+        {
+        case M00::ID:
+        case M01::ID:
+        case M02::ID:
+        case M03::ID:
+        case M04::ID:
+        case M05::ID:
+        case M06::ID:
+        case M07::ID:
+        case M08::ID:
+        case M09::ID:
+        case M10::ID:
+        case M11::ID:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+private:
+    const state* _state { nullptr };
+};
+
+//________________________________________________________________________________________
+//
+//  extended specialisation for 11 messages
+//________________________________________________________________________________________
+
+template<typename TDerived, 
+         typename M00, typename M01, typename M02, typename M03,
+         typename M04, typename M05, typename M06, typename M07,
+         typename M08, typename M09, typename M10>
+class extended<TDerived, 
+         M00, M01, M02, M03, M04, M05, M06, M07,
+         M08, M09, M10> : public etl::imessage_router
+{
+public:
+    typedef TDerived derived;
+    typedef top<derived> state;
+    typedef etl::message_packet<
+         M00, M01, M02, M03, M04, M05, M06, M07,
+         M08, M09, M10> message_packet;
+
+    extended(etl::message_router_id_t id)
+        : etl::imessage_router(id)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    extended(etl::message_router_id_t id, etl::imessage_router& successor_)
+        : etl::imessage_router(id, successor_)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    // Non-mutating methods
+    bool          is_started    () const { return _state != nullptr; };
+    state const * get_state     () const { return _state; };
+    bool          is_null_router() const ETL_OVERRIDE { return false; }
+    bool          is_producer   () const ETL_OVERRIDE { return true;  }
+    bool          is_consumer   () const ETL_OVERRIDE { return true;  }
+
+    // Mutating methods
+    void set_state(state const & arg) { _state = &arg; };
+    void receive(etl::imessage const & message) override
+    {
+        get_state()->process_event(message, static_cast<derived&>(* this));
+    }
+
+    virtual void on_receive_unknown(etl::imessage const &) {}
+
+    using imessage_router::accepts;
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+        switch (id)
+        {
+        case M00::ID:
+        case M01::ID:
+        case M02::ID:
+        case M03::ID:
+        case M04::ID:
+        case M05::ID:
+        case M06::ID:
+        case M07::ID:
+        case M08::ID:
+        case M09::ID:
+        case M10::ID:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+private:
+    const state* _state { nullptr };
+};
+
+//________________________________________________________________________________________
+//
+//  extended specialisation for 10 messages
+//________________________________________________________________________________________
+
+template<typename TDerived, 
+         typename M00, typename M01, typename M02, typename M03,
+         typename M04, typename M05, typename M06, typename M07,
+         typename M08, typename M09>
+class extended<TDerived, 
+         M00, M01, M02, M03, M04, M05, M06, M07,
+         M08, M09> : public etl::imessage_router
+{
+public:
+    typedef TDerived derived;
+    typedef top<derived> state;
+    typedef etl::message_packet<
+         M00, M01, M02, M03, M04, M05, M06, M07,
+         M08, M09> message_packet;
+
+    extended(etl::message_router_id_t id)
+        : etl::imessage_router(id)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    extended(etl::message_router_id_t id, etl::imessage_router& successor_)
+        : etl::imessage_router(id, successor_)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    // Non-mutating methods
+    bool          is_started    () const { return _state != nullptr; };
+    state const * get_state     () const { return _state; };
+    bool          is_null_router() const ETL_OVERRIDE { return false; }
+    bool          is_producer   () const ETL_OVERRIDE { return true;  }
+    bool          is_consumer   () const ETL_OVERRIDE { return true;  }
+
+    // Mutating methods
+    void set_state(state const & arg) { _state = &arg; };
+    void receive(etl::imessage const & message) override
+    {
+        get_state()->process_event(message, static_cast<derived&>(* this));
+    }
+
+    virtual void on_receive_unknown(etl::imessage const &) {}
+
+    using imessage_router::accepts;
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+        switch (id)
+        {
+        case M00::ID:
+        case M01::ID:
+        case M02::ID:
+        case M03::ID:
+        case M04::ID:
+        case M05::ID:
+        case M06::ID:
+        case M07::ID:
+        case M08::ID:
+        case M09::ID:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+private:
+    const state* _state { nullptr };
+};
+
+//________________________________________________________________________________________
+//
+//  extended specialisation for 9 messages
+//________________________________________________________________________________________
+
+template<typename TDerived, 
+         typename M00, typename M01, typename M02, typename M03,
+         typename M04, typename M05, typename M06, typename M07,
+         typename M08>
+class extended<TDerived, 
+         M00, M01, M02, M03, M04, M05, M06, M07,
+         M08> : public etl::imessage_router
+{
+public:
+    typedef TDerived derived;
+    typedef top<derived> state;
+    typedef etl::message_packet<
+         M00, M01, M02, M03, M04, M05, M06, M07,
+         M08> message_packet;
+
+    extended(etl::message_router_id_t id)
+        : etl::imessage_router(id)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    extended(etl::message_router_id_t id, etl::imessage_router& successor_)
+        : etl::imessage_router(id, successor_)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    // Non-mutating methods
+    bool          is_started    () const { return _state != nullptr; };
+    state const * get_state     () const { return _state; };
+    bool          is_null_router() const ETL_OVERRIDE { return false; }
+    bool          is_producer   () const ETL_OVERRIDE { return true;  }
+    bool          is_consumer   () const ETL_OVERRIDE { return true;  }
+
+    // Mutating methods
+    void set_state(state const & arg) { _state = &arg; };
+    void receive(etl::imessage const & message) override
+    {
+        get_state()->process_event(message, static_cast<derived&>(* this));
+    }
+
+    virtual void on_receive_unknown(etl::imessage const &) {}
+
+    using imessage_router::accepts;
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+        switch (id)
+        {
+        case M00::ID:
+        case M01::ID:
+        case M02::ID:
+        case M03::ID:
+        case M04::ID:
+        case M05::ID:
+        case M06::ID:
+        case M07::ID:
+        case M08::ID:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+private:
+    const state* _state { nullptr };
+};
+
+//________________________________________________________________________________________
+//
+//  extended specialisation for 8 messages
+//________________________________________________________________________________________
+
+template<typename TDerived, 
+         typename M00, typename M01, typename M02, typename M03,
+         typename M04, typename M05, typename M06, typename M07>
+class extended<TDerived, 
+         M00, M01, M02, M03, M04, M05, M06, M07> : public etl::imessage_router
+{
+public:
+    typedef TDerived derived;
+    typedef top<derived> state;
+    typedef etl::message_packet<
+         M00, M01, M02, M03, M04, M05, M06, M07> message_packet;
+
+    extended(etl::message_router_id_t id)
+        : etl::imessage_router(id)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    extended(etl::message_router_id_t id, etl::imessage_router& successor_)
+        : etl::imessage_router(id, successor_)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    // Non-mutating methods
+    bool          is_started    () const { return _state != nullptr; };
+    state const * get_state     () const { return _state; };
+    bool          is_null_router() const ETL_OVERRIDE { return false; }
+    bool          is_producer   () const ETL_OVERRIDE { return true;  }
+    bool          is_consumer   () const ETL_OVERRIDE { return true;  }
+
+    // Mutating methods
+    void set_state(state const & arg) { _state = &arg; };
+    void receive(etl::imessage const & message) override
+    {
+        get_state()->process_event(message, static_cast<derived&>(* this));
+    }
+
+    virtual void on_receive_unknown(etl::imessage const &) {}
+
+    using imessage_router::accepts;
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+        switch (id)
+        {
+        case M00::ID:
+        case M01::ID:
+        case M02::ID:
+        case M03::ID:
+        case M04::ID:
+        case M05::ID:
+        case M06::ID:
+        case M07::ID:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+private:
+    const state* _state { nullptr };
+};
+
+//________________________________________________________________________________________
+//
+//  extended specialisation for 7 messages
+//________________________________________________________________________________________
+
+template<typename TDerived, 
+         typename M00, typename M01, typename M02, typename M03,
+         typename M04, typename M05, typename M06>
+class extended<TDerived, 
+         M00, M01, M02, M03, M04, M05, M06> : public etl::imessage_router
+{
+public:
+    typedef TDerived derived;
+    typedef top<derived> state;
+    typedef etl::message_packet<
+         M00, M01, M02, M03, M04, M05, M06> message_packet;
+
+    extended(etl::message_router_id_t id)
+        : etl::imessage_router(id)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    extended(etl::message_router_id_t id, etl::imessage_router& successor_)
+        : etl::imessage_router(id, successor_)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    // Non-mutating methods
+    bool          is_started    () const { return _state != nullptr; };
+    state const * get_state     () const { return _state; };
+    bool          is_null_router() const ETL_OVERRIDE { return false; }
+    bool          is_producer   () const ETL_OVERRIDE { return true;  }
+    bool          is_consumer   () const ETL_OVERRIDE { return true;  }
+
+    // Mutating methods
+    void set_state(state const & arg) { _state = &arg; };
+    void receive(etl::imessage const & message) override
+    {
+        get_state()->process_event(message, static_cast<derived&>(* this));
+    }
+
+    virtual void on_receive_unknown(etl::imessage const &) {}
+
+    using imessage_router::accepts;
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+        switch (id)
+        {
+        case M00::ID:
+        case M01::ID:
+        case M02::ID:
+        case M03::ID:
+        case M04::ID:
+        case M05::ID:
+        case M06::ID:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+private:
+    const state* _state { nullptr };
+};
+
+//________________________________________________________________________________________
+//
+//  extended specialisation for 6 messages
+//________________________________________________________________________________________
+
+template<typename TDerived, 
+         typename M00, typename M01, typename M02, typename M03,
+         typename M04, typename M05>
+class extended<TDerived, 
+         M00, M01, M02, M03, M04, M05> : public etl::imessage_router
+{
+public:
+    typedef TDerived derived;
+    typedef top<derived> state;
+    typedef etl::message_packet<
+         M00, M01, M02, M03, M04, M05> message_packet;
+
+    extended(etl::message_router_id_t id)
+        : etl::imessage_router(id)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    extended(etl::message_router_id_t id, etl::imessage_router& successor_)
+        : etl::imessage_router(id, successor_)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    // Non-mutating methods
+    bool          is_started    () const { return _state != nullptr; };
+    state const * get_state     () const { return _state; };
+    bool          is_null_router() const ETL_OVERRIDE { return false; }
+    bool          is_producer   () const ETL_OVERRIDE { return true;  }
+    bool          is_consumer   () const ETL_OVERRIDE { return true;  }
+
+    // Mutating methods
+    void set_state(state const & arg) { _state = &arg; };
+    void receive(etl::imessage const & message) override
+    {
+        get_state()->process_event(message, static_cast<derived&>(* this));
+    }
+
+    virtual void on_receive_unknown(etl::imessage const &) {}
+
+    using imessage_router::accepts;
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+        switch (id)
+        {
+        case M00::ID:
+        case M01::ID:
+        case M02::ID:
+        case M03::ID:
+        case M04::ID:
+        case M05::ID:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+private:
+    const state* _state { nullptr };
+};
+
+//________________________________________________________________________________________
+//
+//  extended specialisation for 5 messages
+//________________________________________________________________________________________
+
+template<typename TDerived, 
+         typename M00, typename M01, typename M02, typename M03,
+         typename M04>
+class extended<TDerived, 
+         M00, M01, M02, M03, M04> : public etl::imessage_router
+{
+public:
+    typedef TDerived derived;
+    typedef top<derived> state;
+    typedef etl::message_packet<
+         M00, M01, M02, M03, M04> message_packet;
+
+    extended(etl::message_router_id_t id)
+        : etl::imessage_router(id)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    extended(etl::message_router_id_t id, etl::imessage_router& successor_)
+        : etl::imessage_router(id, successor_)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    // Non-mutating methods
+    bool          is_started    () const { return _state != nullptr; };
+    state const * get_state     () const { return _state; };
+    bool          is_null_router() const ETL_OVERRIDE { return false; }
+    bool          is_producer   () const ETL_OVERRIDE { return true;  }
+    bool          is_consumer   () const ETL_OVERRIDE { return true;  }
+
+    // Mutating methods
+    void set_state(state const & arg) { _state = &arg; };
+    void receive(etl::imessage const & message) override
+    {
+        get_state()->process_event(message, static_cast<derived&>(* this));
+    }
+
+    virtual void on_receive_unknown(etl::imessage const &) {}
+
+    using imessage_router::accepts;
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+        switch (id)
+        {
+        case M00::ID:
+        case M01::ID:
+        case M02::ID:
+        case M03::ID:
+        case M04::ID:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+private:
+    const state* _state { nullptr };
+};
+
+//________________________________________________________________________________________
+//
+//  extended specialisation for 4 messages
+//________________________________________________________________________________________
+
+template<typename TDerived, 
+         typename M00, typename M01, typename M02, typename M03>
+class extended<TDerived, 
+         M00, M01, M02, M03> : public etl::imessage_router
+{
+public:
+    typedef TDerived derived;
+    typedef top<derived> state;
+    typedef etl::message_packet<
+         M00, M01, M02, M03> message_packet;
+
+    extended(etl::message_router_id_t id)
+        : etl::imessage_router(id)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    extended(etl::message_router_id_t id, etl::imessage_router& successor_)
+        : etl::imessage_router(id, successor_)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    // Non-mutating methods
+    bool          is_started    () const { return _state != nullptr; };
+    state const * get_state     () const { return _state; };
+    bool          is_null_router() const ETL_OVERRIDE { return false; }
+    bool          is_producer   () const ETL_OVERRIDE { return true;  }
+    bool          is_consumer   () const ETL_OVERRIDE { return true;  }
+
+    // Mutating methods
+    void set_state(state const & arg) { _state = &arg; };
+    void receive(etl::imessage const & message) override
+    {
+        get_state()->process_event(message, static_cast<derived&>(* this));
+    }
+
+    virtual void on_receive_unknown(etl::imessage const &) {}
+
+    using imessage_router::accepts;
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+        switch (id)
+        {
+        case M00::ID:
+        case M01::ID:
+        case M02::ID:
+        case M03::ID:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+private:
+    const state* _state { nullptr };
+};
+
+//________________________________________________________________________________________
+//
+//  extended specialisation for 3 messages
+//________________________________________________________________________________________
+
+template<typename TDerived, 
+         typename M00, typename M01, typename M02>
+class extended<TDerived, 
+         M00, M01, M02> : public etl::imessage_router
+{
+public:
+    typedef TDerived derived;
+    typedef top<derived> state;
+    typedef etl::message_packet<
+         M00, M01, M02> message_packet;
+
+    extended(etl::message_router_id_t id)
+        : etl::imessage_router(id)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    extended(etl::message_router_id_t id, etl::imessage_router& successor_)
+        : etl::imessage_router(id, successor_)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    // Non-mutating methods
+    bool          is_started    () const { return _state != nullptr; };
+    state const * get_state     () const { return _state; };
+    bool          is_null_router() const ETL_OVERRIDE { return false; }
+    bool          is_producer   () const ETL_OVERRIDE { return true;  }
+    bool          is_consumer   () const ETL_OVERRIDE { return true;  }
+
+    // Mutating methods
+    void set_state(state const & arg) { _state = &arg; };
+    void receive(etl::imessage const & message) override
+    {
+        get_state()->process_event(message, static_cast<derived&>(* this));
+    }
+
+    virtual void on_receive_unknown(etl::imessage const &) {}
+
+    using imessage_router::accepts;
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+        switch (id)
+        {
+        case M00::ID:
+        case M01::ID:
+        case M02::ID:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+private:
+    const state* _state { nullptr };
+};
+
+//________________________________________________________________________________________
+//
+//  extended specialisation for 2 messages
+//________________________________________________________________________________________
+
+template<typename TDerived, 
+         typename M00, typename M01>
+class extended<TDerived, 
+         M00, M01> : public etl::imessage_router
+{
+public:
+    typedef TDerived derived;
+    typedef top<derived> state;
+    typedef etl::message_packet<
+         M00, M01> message_packet;
+
+    extended(etl::message_router_id_t id)
+        : etl::imessage_router(id)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    extended(etl::message_router_id_t id, etl::imessage_router& successor_)
+        : etl::imessage_router(id, successor_)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    // Non-mutating methods
+    bool          is_started    () const { return _state != nullptr; };
+    state const * get_state     () const { return _state; };
+    bool          is_null_router() const ETL_OVERRIDE { return false; }
+    bool          is_producer   () const ETL_OVERRIDE { return true;  }
+    bool          is_consumer   () const ETL_OVERRIDE { return true;  }
+
+    // Mutating methods
+    void set_state(state const & arg) { _state = &arg; };
+    void receive(etl::imessage const & message) override
+    {
+        get_state()->process_event(message, static_cast<derived&>(* this));
+    }
+
+    virtual void on_receive_unknown(etl::imessage const &) {}
+
+    using imessage_router::accepts;
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+        switch (id)
+        {
+        case M00::ID:
+        case M01::ID:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+private:
+    const state* _state { nullptr };
+};
+
+//________________________________________________________________________________________
+//
+//  extended specialisation for 1 messages
+//________________________________________________________________________________________
+
+template<typename TDerived, 
+         typename M00>
+class extended<TDerived, 
+         M00> : public etl::imessage_router
+{
+public:
+    typedef TDerived derived;
+    typedef top<derived> state;
+    typedef etl::message_packet<
+         M00> message_packet;
+
+    extended(etl::message_router_id_t id)
+        : etl::imessage_router(id)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    extended(etl::message_router_id_t id, etl::imessage_router& successor_)
+        : etl::imessage_router(id, successor_)
+    {
+        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,
+                   ETL_ERROR(etl::message_router_illegal_id));
+    }
+    // Non-mutating methods
+    bool          is_started    () const { return _state != nullptr; };
+    state const * get_state     () const { return _state; };
+    bool          is_null_router() const ETL_OVERRIDE { return false; }
+    bool          is_producer   () const ETL_OVERRIDE { return true;  }
+    bool          is_consumer   () const ETL_OVERRIDE { return true;  }
+
+    // Mutating methods
+    void set_state(state const & arg) { _state = &arg; };
+    void receive(etl::imessage const & message) override
+    {
+        get_state()->process_event(message, static_cast<derived&>(* this));
+    }
+
+    virtual void on_receive_unknown(etl::imessage const &) {}
+
+    using imessage_router::accepts;
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+        switch (id)
+        {
+        case M00::ID:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+private:
+    const state* _state { nullptr };
+};
 
 //________________________________________________________________________________________
 //
@@ -3124,75 +4170,6 @@ struct transition
     private:
     
     Extended & _extended;
-};
-
-//________________________________________________________________________________________
-//
-// hsm: The base class for the finite state machine
-//________________________________________________________________________________________
-
-template<typename DERIVED>
-class extended : public etl::imessage_router
-{
-    public:
-    
-    typedef DERIVED      derived;
-    typedef top<derived> state;
-    
-    extended(etl::message_router_id_t id)
-        : etl::imessage_router(id)
-    {
-    };
-
-    state const * get_state () const
-    {
-        return _state;
-    };
-    
-    void set_state(state const & arg)
-    {
-        _state = &arg;
-    };
-    
-    bool is_started() const
-    {
-        return _state != nullptr;
-    };
-    
-    virtual void on_receive_unknown(etl::imessage const &)
-    {
-        // By default do nothing. Alternative behaviour can be
-        // specified in subclass.
-    };
-
-    //____________________________________________________________________________________
-    //
-    // imessage_router interfaceno
-    //____________________________________________________________________________________
-
-    bool accepts(etl::message_id_t id) const override
-    {
-        return get_state()->accepts_event( id );
-    };
-    
-    bool is_null_router() const override
-    {
-        return false;
-    }
-
-    bool is_producer() const override
-    {
-      return true;
-    }
-
-    bool is_consumer() const override
-    {
-      return true;
-    }
-    
-    private:
-    
-    const state* _state { nullptr };
 };
 
 } // namespace hsm

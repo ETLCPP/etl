@@ -99,16 +99,21 @@ import cog
 def message_types(prefix, msgs, nfirstline, notherlines, suffix=''):
     sep = ','
     s = ''
-    for sx in range(msgs):
-        linebreak = (sx - nfirstline) % notherlines == 0
-        if linebreak:
-            s += '{}\n{:>9}{}{:02d}{}'.format(sep, '', prefix, sx, suffix)
+    for msg_idx in range(0, msgs):
+        if msg_idx == 0:
+            sep = ''
         else:
-            s += '{} {}{:02d}{}'.format(sep, prefix, sx, suffix)
+            sep = ','
+       
+        linebreak = (msg_idx - nfirstline) % notherlines == 0
+        if linebreak:
+            s += '{}\n{:>9}{}{:02d}{}'.format(sep, '', prefix, msg_idx, suffix)
+        else:
+            s += '{} {}{:02d}{}'.format(sep, prefix, msg_idx, suffix)
     return s
 
 def typename_M_eq_void(n):
-    return message_types(prefix='typename M', msgs=n, nfirstline=0, notherlines=4,
+    return message_types(prefix='typename M', msgs=n, nfirstline=0, notherlines=3,
                          suffix=' = void')
 
 def typename_M(n):
@@ -128,9 +133,9 @@ def header_comment(text):
 def create_class(classname, is_declaration, is_topspec, is_simple, n):
     if is_declaration:
         if is_simple:
-            cog.outl(    'template<typename E, unsigned ID, typename A, typename P = composite<E, 0, top<E> >{}>'.format(typename_M(n)))
+            cog.outl(    'template<typename E, unsigned ID, typename A, typename P = composite<E, 0, top<E> >, {}>'.format(typename_M(n)))
         else:
-            cog.outl(    'template<typename E, unsigned ID, typename P = composite<E, 0, top<E> >{}>'.format(typename_M(n)))
+            cog.outl(    'template<typename E, unsigned ID, typename P = composite<E, 0, top<E> >, {}>'.format(typename_M(n)))
         cog.outl(        'class {} : public P'.format(classname))
     else:
         if is_topspec:
@@ -138,11 +143,11 @@ def create_class(classname, is_declaration, is_topspec, is_simple, n):
             cog.outl(    'class {}<E, 0> : public top<E>'.format(classname))
         else:
             if is_simple:
-                cog.outl('template<typename E, unsigned ID, typename A, typename P{}>'.format(typename_M(n)))
-                cog.outl('class {}<E, ID, A, P{}> : public P'.format(classname, M(n)))
+                cog.outl('template<typename E, unsigned ID, typename A, typename P, {}>'.format(typename_M(n)))
+                cog.outl('class {}<E, ID, A, P, {}> : public P'.format(classname, M(n)))
             else:
-                cog.outl('template<typename E, unsigned ID, typename P{}>'.format(typename_M(n)))
-                cog.outl('class {}<E, ID, P{}> : public P'.format(classname, M(n)))
+                cog.outl('template<typename E, unsigned ID, typename P, {}>'.format(typename_M(n)))
+                cog.outl('class {}<E, ID, P, {}> : public P'.format(classname, M(n)))
     cog.outl(            '{')
     cog.outl(            '    public:')
     cog.outl(            '')
@@ -154,9 +159,9 @@ def create_class(classname, is_declaration, is_topspec, is_simple, n):
         cog.outl(        '    typedef P Parent;')
         if is_simple:
             cog.outl(    '    typedef A Allowed_ids;')
-            cog.outl(    '    typedef {}<E, ID, A, P{}> Self;'.format(classname, M(n)))
+            cog.outl(    '    typedef {}<E, ID, A, P, {}> Self;'.format(classname, M(n)))
         else:
-            cog.outl(    '    typedef {}<E, ID, P{}> Self;'.format(classname, M(n)))
+            cog.outl(    '    typedef {}<E, ID, P, {}> Self;'.format(classname, M(n)))
     cog.outl(            '')
     cog.outl(            '    static void handle_entry(Extended &) {}')
     cog.outl(            '    static void handle_exit (Extended &) {}')
@@ -239,9 +244,67 @@ def create_class(classname, is_declaration, is_topspec, is_simple, n):
     cog.outl(            '};')
     if is_simple:
         cog.outl(        '')
-        cog.outl(        'template<typename E, unsigned ID, typename A, typename P{}>'.format(typename_M(n)))
-        cog.outl(        'const {c}<E, ID, A, P{m}>'.format(c = classname, m = M(n)))
-        cog.outl(        '      {c}<E, ID, A, P{m}>::obj;'.format(c = classname, m = M(n)))
+        cog.outl(        'template<typename E, unsigned ID, typename A, typename P, {}>'.format(typename_M(n)))
+        cog.outl(        'const {c}<E, ID, A, P, {m}>'.format(c = classname, m = M(n)))
+        cog.outl(        '      {c}<E, ID, A, P, {m}>::obj;'.format(c = classname, m = M(n)))
+
+def create_extended(is_declaration, n):
+    if is_declaration:
+        cog.outl(        'template<typename TDerived, {}>'.format(typename_M(n)))
+        cog.outl(        'class extended : public etl::imessage_router')
+    else:
+        cog.outl(        'template<typename TDerived, {}>'.format(typename_M(n)))
+        cog.outl(        'class extended<TDerived, {}> : public etl::imessage_router'.format(M(n)))
+    cog.outl(            '{')
+    cog.outl(            'public:')
+    cog.outl(            '    typedef TDerived derived;')
+    cog.outl(            '    typedef top<derived> state;')
+    cog.outl(            '    typedef etl::message_packet<{}> message_packet;'.format(M(n)))
+    cog.outl(            '')
+    cog.outl(            '    extended(etl::message_router_id_t id)')
+    cog.outl(            '        : etl::imessage_router(id)')
+    cog.outl(            '    {')
+    cog.outl(            '        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,')
+    cog.outl(            '                   ETL_ERROR(etl::message_router_illegal_id));')
+    cog.outl(            '    }')
+    cog.outl(            '    extended(etl::message_router_id_t id, etl::imessage_router& successor_)')
+    cog.outl(            '        : etl::imessage_router(id, successor_)')
+    cog.outl(            '    {')
+    cog.outl(            '        ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER,')
+    cog.outl(            '                   ETL_ERROR(etl::message_router_illegal_id));')
+    cog.outl(            '    }')
+    cog.outl(            '    // Non-mutating methods')
+    cog.outl(            '    bool          is_started    () const { return _state != nullptr; };')
+    cog.outl(            '    state const * get_state     () const { return _state; };')
+    cog.outl(            '    bool          is_null_router() const ETL_OVERRIDE { return false; }')
+    cog.outl(            '    bool          is_producer   () const ETL_OVERRIDE { return true;  }')
+    cog.outl(            '    bool          is_consumer   () const ETL_OVERRIDE { return true;  }')
+    cog.outl(            '')
+    cog.outl(            '    // Mutating methods')
+    cog.outl(            '    void set_state(state const & arg) { _state = &arg; };')
+    cog.outl(            '    void receive(etl::imessage const & message) override')
+    cog.outl(            '    {')
+    cog.outl(            '        get_state()->process_event(message, static_cast<derived&>(* this));')
+    cog.outl(            '    }')
+    cog.outl(            '')
+    cog.outl(            '    virtual void on_receive_unknown(etl::imessage const &) {}')
+    cog.outl(            '')
+    cog.outl(            '    using imessage_router::accepts;')
+    cog.outl(            '    bool accepts(etl::message_id_t id) const ETL_OVERRIDE')
+    cog.outl(            '    {')
+    cog.outl(            '        switch (id)')
+    cog.outl(            '        {')
+    for t in range( n ):
+        cog.outl(        '        case M{:02d}::ID:'.format(t))
+    cog.outl(            '            return true;')
+    cog.outl(            '        default:')
+    cog.outl(            '            return false;')
+    cog.outl(            '        }')
+    cog.outl(            '    }')
+    cog.outl(            '')
+    cog.outl(            'private:')
+    cog.outl(            '    const state* _state { nullptr };')
+    cog.outl(            '};')
 
 #_________________________________________________________________________________________
 #
@@ -251,26 +314,37 @@ def create_class(classname, is_declaration, is_topspec, is_simple, n):
 h = int(Handlers)
 
 header_comment(          'composite declaration for {} messages'.format(h))
-cog.outl(                'template<typename E, unsigned ID, typename P{}>'.format(typename_M_eq_void(h)))
+cog.outl(                'template<typename E, unsigned ID, typename P, {}>'.format(typename_M_eq_void(h)))
 cog.outl(                'class {};\n'.format('composite'))
 create_class(            'composite', is_declaration=True, is_topspec=False, is_simple=False, n=h)
 
 header_comment(          'composite specialisation for top-state which has class top as parent')
 create_class(            'composite', is_declaration=False, is_topspec=True, is_simple=False, n=0)
 
-for i in range(h - 1, -1, -1):
+for i in range(h - 1, 0, -1):
     header_comment(      'composite specialisation for {} messages'.format(i))
     create_class(        'composite', is_declaration=False, is_topspec=False, is_simple=False, n=i)
 
 header_comment(          'simple declaration for {} messages'.format(h))
-cog.outl(                'template<typename E, unsigned ID, typename A, typename P{}>'.format(typename_M_eq_void(h)))
+cog.outl(                'template<typename E, unsigned ID, typename A, typename P, {}>'.format(typename_M_eq_void(h)))
 cog.outl(                'class {};\n'.format('simple'))
 
 create_class(            'simple', is_declaration=True, is_topspec=False, is_simple=True, n=h)
 
-for i in range(h - 1, -1, -1):
+for i in range(h - 1, 0, -1):
     header_comment(      'simple specialisation for {} messages'.format(i))
     create_class(        'simple', is_declaration=False, is_topspec=False, is_simple=True, n = i)
+
+
+header_comment(          'extended declaration for {} messages'.format(h))
+cog.outl(                'template<typename TDerived, {}>'.format(typename_M_eq_void(h)))
+cog.outl(                'class {};\n'.format('extended'))
+
+create_extended( is_declaration=True, n = h)
+
+for i in range(h - 1, 0, -1):
+    header_comment( 'extended specialisation for {} messages'.format(i))
+    create_extended( is_declaration=False, n = i)
 
 ]]]*/
 /*[[[end]]]*/
@@ -385,75 +459,6 @@ struct transition
     private:
     
     Extended & _extended;
-};
-
-//________________________________________________________________________________________
-//
-// hsm: The base class for the finite state machine
-//________________________________________________________________________________________
-
-template<typename DERIVED>
-class extended : public etl::imessage_router
-{
-    public:
-    
-    typedef DERIVED      derived;
-    typedef top<derived> state;
-    
-    extended(etl::message_router_id_t id)
-        : etl::imessage_router(id)
-    {
-    };
-
-    state const * get_state () const
-    {
-        return _state;
-    };
-    
-    void set_state(state const & arg)
-    {
-        _state = &arg;
-    };
-    
-    bool is_started() const
-    {
-        return _state != nullptr;
-    };
-    
-    virtual void on_receive_unknown(etl::imessage const &)
-    {
-        // By default do nothing. Alternative behaviour can be
-        // specified in subclass.
-    };
-
-    //____________________________________________________________________________________
-    //
-    // imessage_router interfaceno
-    //____________________________________________________________________________________
-
-    bool accepts(etl::message_id_t id) const override
-    {
-        return get_state()->accepts_event( id );
-    };
-    
-    bool is_null_router() const override
-    {
-        return false;
-    }
-
-    bool is_producer() const override
-    {
-      return true;
-    }
-
-    bool is_consumer() const override
-    {
-      return true;
-    }
-    
-    private:
-    
-    const state* _state { nullptr };
 };
 
 } // namespace hsm

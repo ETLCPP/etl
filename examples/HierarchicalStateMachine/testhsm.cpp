@@ -79,56 +79,59 @@ namespace message
 } // namespace message
 
 namespace state {
+
+typedef std::integer_sequence< etl::message_id_t,
+                               message::Id::A,
+                               message::Id::B,
+                               message::Id::C,
+                               message::Id::D,
+                               message::Id::E,
+                               message::Id::F,
+                               message::Id::G,
+                               message::Id::H > allowed_message_ids_t;
+
 //________________________________________________________________________________________
 //    
 //  Extended declaration
 //________________________________________________________________________________________
 
-class Extended : public etl::hsm::extended<Extended>
+class Extended : public etl::hsm::extended<Extended,
+                                           message::A, message::B, message::C,
+                                           message::D, message::E, message::F,
+                                           message::G, message::H>
 {
-    public:
-    
+public:
+
     Extended(etl::message_router_id_t id)
-        : etl::hsm::extended<Extended>(id) { };
+        : etl::hsm::extended< Extended,
+                              message::A, message::B, message::C, message::D, message::E,
+                              message::F, message::G, message::H > (id)
+    {
+    }
     
     // Non-mutable
     unsigned get_event_cnt() const
     {
         return _event_cnt;
-    };
+    }
     
     int foo() const
     {
         return _foo;
-    };
+    }
     
     // Mutablexo
     void inc_event_cnt()
     {
         _event_cnt++;
-    };
+    }
 
     void foo(int i)
     {
         _foo = i;
-    };
+    }
 
-    virtual void receive(etl::imessage const & message) override
-    {
-        get_state()->process_event(message, * this);
-    };
-
-    virtual void receive(etl::message_router_id_t destination_router_id,
-                         etl::imessage const & message) override
-    {
-        if ( destination_router_id == get_message_router_id()
-             ||   destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS)
-        {
-            receive(message);
-        }
-    };
-
-    private:
+private:
 
     int      _foo       {0};
     unsigned _event_cnt {0};
@@ -143,16 +146,6 @@ class Extended : public etl::hsm::extended<Extended>
      * Definition of the state hierarchy. The numbers are unique unsigned
      * values used to uniquify state types in the case two states have the
      * same parent and message set. */
-
-    typedef std::integer_sequence< etl::message_id_t,
-                                   message::Id::A,
-                                   message::Id::B,
-                                   message::Id::C,
-                                   message::Id::D,
-                                   message::Id::E,
-                                   message::Id::F,
-                                   message::Id::G,
-                                   message::Id::H > allowed_message_ids_t;
 
     using Top  = etl::hsm::composite<Extended, 0>;
 
@@ -458,6 +451,6 @@ int main()
         {
             return 0;
         }
-        ext.receive( test::message::factory( c ));
+        ext.receive( test::message::factory(c));
     }
 }
