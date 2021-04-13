@@ -2647,6 +2647,82 @@ namespace etl
   {
     return clamp(value, low, high, etl::less<T>());
   }
+
+  #if ETL_NOT_USING_STL
+    //***************************************************************************
+    /// Remove
+    ///\ingroup algorithm
+    //***************************************************************************
+    template <typename TIterator, typename T>
+    TIterator remove(TIterator first, TIterator last, const T& value)
+    {
+      first = etl::find(first, last, value);
+      
+      if (first != last)
+      {
+        TIterator itr = first;
+
+        while (itr != last)
+        {
+          if (!(*itr == value))
+          {
+            *first++ = etl::move(*itr);
+          }
+
+          ++itr;
+        }
+      }
+      
+      return first;
+    }
+
+    //***************************************************************************
+    /// Remove If
+    ///\ingroup algorithm
+    //***************************************************************************
+    template <typename TIterator, typename TUnaryPredicate>
+    TIterator remove_if(TIterator first, TIterator last, TUnaryPredicate predicate)
+    {
+      first = etl::find_if(first, last, predicate);
+
+      if (first != last)
+      {
+        TIterator itr = first;
+
+        while (itr != last)
+        {
+          if (!predicate(*itr))
+          {
+            *first++ = etl::move(*itr);
+          }
+
+          ++itr;
+        }
+      }
+
+      return first;
+    }
+  #else
+    //***************************************************************************
+    /// Remove
+    ///\ingroup algorithm
+    //***************************************************************************
+    template <typename TIterator, typename T>
+    TIterator remove(TIterator first, TIterator last, const T& value)
+    {
+      return std::remove(first, last, value);
+    }
+
+    //***************************************************************************
+    /// Remove If
+    ///\ingroup algorithm
+    //***************************************************************************
+    template <typename TIterator, typename TUnaryPredicate>
+    TIterator remove_if(TIterator first, TIterator last, TUnaryPredicate predicate)
+    {
+      return std::remove_if(first, last, predicate);;
+    }
+  #endif
 }
 
 //*****************************************************************************

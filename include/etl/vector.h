@@ -52,6 +52,7 @@ SOFTWARE.
 #include "functional.h"
 #include "static_assert.h"
 #include "placement_new.h"
+#include "algorithm.h"
 
 #if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
@@ -1737,6 +1738,34 @@ namespace etl
       etl::ivector<T*>::repair_buffer(this->p_buffer);
     }
   };
+
+  //***************************************************************************
+  /// erase
+  //***************************************************************************
+  template <typename T, typename U>
+  typename etl::ivector<T>::difference_type
+  erase(etl::ivector<T>& v, const U& value)
+  {
+    typename etl::ivector<T>::iterator itr = etl::remove(v.begin(), v.end(), value);
+    typename etl::ivector<T>::difference_type d = std::distance(itr, v.end());
+    v.erase(itr, v.end());
+
+    return d;
+  }
+
+  //***************************************************************************
+  /// erase_if
+  //***************************************************************************
+  template <typename T, typename TPredicate>
+  typename etl::ivector<T>::difference_type
+  erase_if(etl::ivector<T>& v, TPredicate predicate)
+  {
+    typename etl::ivector<T>::iterator itr = etl::remove_if(v.begin(), v.end(), predicate);
+    typename etl::ivector<T>::difference_type d = std::distance(itr, v.end());
+    v.erase(itr, v.end());
+
+    return d;
+  }
 }
 
 #ifdef ETL_COMPILER_GCC

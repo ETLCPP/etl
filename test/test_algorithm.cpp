@@ -2163,5 +2163,29 @@ namespace
       sum = etl::for_each(std::begin(data), std::end(data), sum);
       CHECK_EQUAL(std::accumulate(std::begin(data), std::end(data), 0), sum.value);
     }
+
+    //*************************************************************************
+    TEST(remove)
+    {
+      std::array<int, 10> data     = { 1, 8, 2, 7, 7, 7, 4, 5, 10, 9 };
+      std::array<int, 7>  expected = { 1, 8, 2, 4, 5, 10, 9 };
+
+      etl::remove(data.begin(), data.end(), 7);
+
+      bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(remove_if)
+    {
+      std::array<int, 10> data     = { 1, 8, 2, 7, 7, 7, 4, 5, 10, 9 };
+      std::array<int, 4>  expected = { 1, 2, 4, 5 };
+
+      etl::remove_if(data.begin(), data.end(), [](int value) { return value >= 7; });
+            
+      bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
+      CHECK(is_same);
+    }
   };
 }
