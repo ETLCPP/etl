@@ -1,7 +1,7 @@
 name: vs2019
 on:
   push:
-    branches: [ master ]
+    branches: [ master hotfix/fix-vs2019-ci-errors]
   pull_request:
     branches: [ master ]
 
