@@ -169,6 +169,7 @@ namespace etl
     imessage_router(etl::message_router_id_t id_, imessage_router& successor_)
       : message_router_id(id_)
     {
+        ETL_UNUSED(successor_);
     }
 
   private:

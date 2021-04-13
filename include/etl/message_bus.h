@@ -418,6 +418,7 @@ namespace etl
                                   etl::imessage_bus&    bus,
                                   const etl::imessage&  message)
   {
+    ETL_UNUSED(source);
     bus.receive(message);
   }
 
@@ -429,6 +430,7 @@ namespace etl
                                   etl::message_router_id_t id,
                                   const etl::imessage&     message)
   {
+    ETL_UNUSED(source);
     bus.receive(id, message);
   }
 }

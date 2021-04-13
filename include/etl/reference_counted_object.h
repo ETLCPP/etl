@@ -127,6 +127,7 @@ namespace etl
     virtual void set_reference_count(int32_t value) ETL_OVERRIDE
     {
       // Do nothing.
+      ETL_UNUSED(value);
     }
 
     //***************************************************************************
