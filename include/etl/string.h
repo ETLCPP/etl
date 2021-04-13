@@ -477,7 +477,7 @@ namespace etl
   template<size_t ARRAY_SIZE>
   etl::string<ARRAY_SIZE - 1> make_string(const char(&text)[ARRAY_SIZE])
   {
-    return etl::string<ARRAY_SIZE - 1>(text, ARRAY_SIZE - 1);
+    return etl::string<ARRAY_SIZE - 1>(text, etl::strlen(text));
   }
 
   //***************************************************************************
@@ -486,7 +486,7 @@ namespace etl
   template<const size_t MAX_SIZE, const size_t SIZE>
   etl::string<MAX_SIZE> make_string_with_capacity(const char(&text)[SIZE])
   {
-    return etl::string<MAX_SIZE>(text, SIZE - 1);
+    return etl::string<MAX_SIZE>(text, etl::strlen(text));
   }
 }
 

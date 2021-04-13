@@ -460,7 +460,7 @@ namespace etl
   template<size_t ARRAY_SIZE>
   etl::wstring<ARRAY_SIZE == 1 ? 1 : ARRAY_SIZE - 1> make_string(const wchar_t(&text)[ARRAY_SIZE])
   {
-    return etl::wstring<ARRAY_SIZE == 1 ? 1 : ARRAY_SIZE - 1>(text, ARRAY_SIZE - 1);
+    return etl::wstring<ARRAY_SIZE == 1 ? 1 : ARRAY_SIZE - 1>(text, etl::strlen(text));
   }
 
   //***************************************************************************
@@ -469,7 +469,7 @@ namespace etl
   template<const size_t MAX_SIZE, const size_t SIZE>
   etl::wstring<MAX_SIZE> make_string_with_capacity(const wchar_t(&text)[SIZE])
   {
-    return etl::wstring<MAX_SIZE>(text, SIZE - 1);
+    return etl::wstring<MAX_SIZE>(text, etl::strlen(text));
   }
 }
 
