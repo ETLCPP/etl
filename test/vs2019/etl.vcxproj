@@ -4418,6 +4418,7 @@
     <ClCompile Include="..\test_algorithm.cpp" />
     <ClCompile Include="..\test_alignment.cpp" />
     <ClCompile Include="..\test_atomic_clang_sync.cpp" />
+    <ClCompile Include="..\test_atomic_gcc_sync.cpp" />
     <ClCompile Include="..\test_bresenham_line.cpp" />
     <ClCompile Include="..\test_buffer_descriptors.cpp" />
     <ClCompile Include="..\test_callback_service.cpp" />

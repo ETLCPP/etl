@@ -2510,6 +2510,9 @@
     <ClCompile Include="..\sanity-check\variance.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_atomic_gcc_sync.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
