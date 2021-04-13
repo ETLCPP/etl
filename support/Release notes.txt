@@ -2,8 +2,9 @@
 20.9.0
 Fixed #362 'etl::fsm::receive() partial override'.
 Fixed #363 'circular_buffer operator [] takes integer rather than size_type'.
+Fixed occasional incorrect string length for etl::make_string.
 Added macros for compilers that don't support HUGE_VAL.
-Added etl::accumulate and etl::clamp.
+Added etl::accumulate, etl::clamp, etl::erase, etl::erase_if, etl::remove, etl::remove_if.
 Added maths algorithms and functors.
   etl::correlation
   etl::covariance
