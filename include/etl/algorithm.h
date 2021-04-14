@@ -1016,7 +1016,7 @@ namespace etl
   template <typename TIteratorIn, typename TIteratorOut, typename TUnaryOperation>
   TIteratorOut transform(TIteratorIn first1, TIteratorIn last1, TIteratorOut d_first, TUnaryOperation unary_operation)
   {
-    return std::transform(first1, last1, d_first, unary_operation);;
+    return std::transform(first1, last1, d_first, unary_operation);
   }
 
   template <typename TIteratorIn1, typename TIteratorIn2, typename TIteratorOut, typename TBinaryOperation>
@@ -2720,7 +2720,7 @@ namespace etl
     template <typename TIterator, typename TUnaryPredicate>
     TIterator remove_if(TIterator first, TIterator last, TUnaryPredicate predicate)
     {
-      return std::remove_if(first, last, predicate);;
+      return std::remove_if(first, last, predicate);
     }
   #endif
 }
@@ -3446,7 +3446,7 @@ namespace etl
   void selection_sort(TIterator first, TIterator last, TCompare compare)
   {
     TIterator min;
-    const TIterator ilast = private_algorithm::get_before_last(first, last);;
+    const TIterator ilast = private_algorithm::get_before_last(first, last);
     const TIterator jlast = last;
 
     for (TIterator i = first; i != ilast; ++i)
