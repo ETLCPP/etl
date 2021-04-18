@@ -372,7 +372,7 @@ namespace etl
     //*******************************************
     /// Start the scheduler.
     //*******************************************
-    void start()
+    void start() override
     {
       ETL_ASSERT(task_list.size() > 0, ETL_ERROR(etl::scheduler_no_tasks_exception));
 
