@@ -1,1 +1,1 @@
-python -m cogapp -d -e -ohsm.h -DHandlers=16 hsm_generator.h 
+python -m cogapp -d -e -o../hsm.h -DHandlers=16 hsm_generator.h

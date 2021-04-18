@@ -1,22 +1,22 @@
-// 
+//
 //  The MIT License(MIT)
-//  
+//
 //  Embedded Template Library.
 //  https://github.com/ETLCPP/etl
 //  https://www.etlcpp.com
-//  
+//
 //  Copyright(c) 2019 Pontus Astrom, 2004 Stefan Heinzmann
-//  
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files(the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions :
-//  
+//
 //  The above copyright notice and this permission notice shall be included in all
 //  copies or substantial portions of the Software.
-//  
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
@@ -104,7 +104,7 @@ def message_types(prefix, msgs, nfirstline, notherlines, suffix=''):
             sep = ''
         else:
             sep = ','
-       
+
         linebreak = (msg_idx - nfirstline) % notherlines == 0
         if linebreak:
             s += '{}\n{:>9}{}{:02d}{}'.format(sep, '', prefix, msg_idx, suffix)
@@ -149,8 +149,7 @@ def create_class(classname, is_declaration, is_topspec, is_simple, n):
                 cog.outl('template<typename E, unsigned ID, typename P, {}>'.format(typename_M(n)))
                 cog.outl('class {}<E, ID, P, {}> : public P'.format(classname, M(n)))
     cog.outl(            '{')
-    cog.outl(            '    public:')
-    cog.outl(            '')
+    cog.outl(            'public:')
     cog.outl(            '    typedef E Extended;')
     if is_topspec:
         cog.outl(        '    typedef top<E> Parent;')
@@ -165,6 +164,7 @@ def create_class(classname, is_declaration, is_topspec, is_simple, n):
     cog.outl(            '')
     cog.outl(            '    static void handle_entry(Extended &) {}')
     cog.outl(            '    static void handle_exit (Extended &) {}')
+    cog.outl(            '    static void handle_do   (Extended &) {}')
     if is_simple:
         cog.outl(        '    static void handle_init (Extended & arg)')
         cog.outl(        '    {')
@@ -186,11 +186,11 @@ def create_class(classname, is_declaration, is_topspec, is_simple, n):
         cog.outl(        '    static void handle_init (Extended &);')
     cog.outl(            '')
     if is_topspec:
-        cog.outl(        '    static bool me_accepts_event(etl::message_id_t)')
+        cog.outl(        '    static bool state_accepts_event(etl::message_id_t)')
         cog.outl(        '    {')
         cog.outl(        '        return false;')
     else:
-        cog.outl(        '    static bool me_accepts_event(etl::message_id_t id)')
+        cog.outl(        '    static bool state_accepts_event(etl::message_id_t id)')
         cog.outl(        '    {')
         if n > 0:
             cog.outl(    '        switch( id )')
@@ -202,7 +202,7 @@ def create_class(classname, is_declaration, is_topspec, is_simple, n):
             cog.outl(    '                return Parent::accepts_event( id );'.format(t))
             cog.outl(    '        };')
         else:
-            cog.outl(    '        return Parent::me_accepts_event( id );')
+            cog.outl(    '        return Parent::state_accepts_event( id );')
     cog.outl(            '    }')
     cog.outl(            '')
     if is_simple:
@@ -221,7 +221,7 @@ def create_class(classname, is_declaration, is_topspec, is_simple, n):
         cog.outl(        '        switch ( m.get_message_id() )')
         cog.outl(        '        {')
         for t in range(n):
-            cog.outl(    '            case M{:02d}::ID: on_event<SIMPLE>( static_cast<M{:02d} const &>( m ), e, s ); return;'.format(t, t))
+            cog.outl(    '            case M{:02d}::ID: handle_do(e); on_event<SIMPLE>( static_cast<M{:02d} const &>( m ), e, s ); return;'.format(t, t))
         cog.outl(        '        }')
     if is_topspec:
         cog.outl(        '        if ( e.has_successor() )')
@@ -237,8 +237,7 @@ def create_class(classname, is_declaration, is_topspec, is_simple, n):
     cog.outl(            '    }')
     if n> 0:
         cog.outl(        '')
-        cog.outl(        '    private:')
-        cog.outl(        '')
+        cog.outl(        'private:')
     for t in range(n):
         cog.outl(        '    template<typename SIMPLE> void on_event( M{:02d} const &, Extended &, SIMPLE const & ) const;'.format(t))
     cog.outl(            '};')
@@ -379,8 +378,7 @@ namespace _private_
 template<typename C, typename P>
 struct Is_child
 {
-    private:
-    
+private:
     typedef C Child;
     typedef P Parent;
 
@@ -388,9 +386,8 @@ struct Is_child
     class  No  { char a[5]; };
     static Yes test(Parent *); // undefined
     static No  test(...);      // undefined
-    
-    public:
 
+public:
     enum { Res =  sizeof(test(static_cast<Child *>(0))) == sizeof(Yes) ? 1 : 0 };
 };
 
@@ -447,7 +444,7 @@ struct transition
         Current::handle_exit(e);
         Trans::exit_actions(e, _private_::Bool<exitStop>());
     };
-    
+
     static void entry_actions(Extended &, _private_::Bool<true>) {}
     static void entry_actions(Extended & e, _private_::Bool<false>)
     {
@@ -456,8 +453,7 @@ struct transition
         Current::handle_entry(e);
     };
 
-    private:
-    
+private:
     Extended & _extended;
 };
 
