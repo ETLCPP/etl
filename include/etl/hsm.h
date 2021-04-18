@@ -85,6 +85,7 @@ template<typename E>
 struct top
 {
     typedef E Extended;
+    virtual void process_do(Extended &) const = 0;
     virtual void process_event(etl::imessage const &, Extended &) const = 0;
     virtual bool accepts_event(etl::message_id_t) const = 0;
     virtual unsigned get_id() const = 0;
@@ -145,8 +146,14 @@ public:
             case M15::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
+    }
+
+    static void topdown_handle_do(Extended & e)
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
     }
 
     template<typename SIMPLE>
@@ -216,6 +223,11 @@ public:
         return false;
     }
 
+    static void topdown_handle_do(Extended & e)
+    {
+        handle_do(e);
+    }
+
     template<typename SIMPLE>
     void handle_event(etl::imessage const & m, Extended & e, SIMPLE const & ) const
     {
@@ -277,8 +289,14 @@ public:
             case M14::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
+    }
+
+    static void topdown_handle_do(Extended & e)
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
     }
 
     template<typename SIMPLE>
@@ -369,8 +387,14 @@ public:
             case M13::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
+    }
+
+    static void topdown_handle_do(Extended & e)
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
     }
 
     template<typename SIMPLE>
@@ -458,8 +482,14 @@ public:
             case M12::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
+    }
+
+    static void topdown_handle_do(Extended & e)
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
     }
 
     template<typename SIMPLE>
@@ -543,8 +573,14 @@ public:
             case M11::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
+    }
+
+    static void topdown_handle_do(Extended & e)
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
     }
 
     template<typename SIMPLE>
@@ -625,8 +661,14 @@ public:
             case M10::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
+    }
+
+    static void topdown_handle_do(Extended & e)
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
     }
 
     template<typename SIMPLE>
@@ -704,8 +746,14 @@ public:
             case M09::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
+    }
+
+    static void topdown_handle_do(Extended & e)
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
     }
 
     template<typename SIMPLE>
@@ -780,8 +828,14 @@ public:
             case M08::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
+    }
+
+    static void topdown_handle_do(Extended & e)
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
     }
 
     template<typename SIMPLE>
@@ -850,8 +904,14 @@ public:
             case M07::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
+    }
+
+    static void topdown_handle_do(Extended & e)
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
     }
 
     template<typename SIMPLE>
@@ -917,8 +977,14 @@ public:
             case M06::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
+    }
+
+    static void topdown_handle_do(Extended & e)
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
     }
 
     template<typename SIMPLE>
@@ -981,8 +1047,14 @@ public:
             case M05::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
+    }
+
+    static void topdown_handle_do(Extended & e)
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
     }
 
     template<typename SIMPLE>
@@ -1042,8 +1114,14 @@ public:
             case M04::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
+    }
+
+    static void topdown_handle_do(Extended & e)
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
     }
 
     template<typename SIMPLE>
@@ -1099,8 +1177,14 @@ public:
             case M03::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
+    }
+
+    static void topdown_handle_do(Extended & e)
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
     }
 
     template<typename SIMPLE>
@@ -1153,8 +1237,14 @@ public:
             case M02::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
+    }
+
+    static void topdown_handle_do(Extended & e)
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
     }
 
     template<typename SIMPLE>
@@ -1204,8 +1294,14 @@ public:
             case M01::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
+    }
+
+    static void topdown_handle_do(Extended & e)
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
     }
 
     template<typename SIMPLE>
@@ -1252,8 +1348,14 @@ public:
             case M00::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
+    }
+
+    static void topdown_handle_do(Extended & e)
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
     }
 
     template<typename SIMPLE>
@@ -1314,9 +1416,19 @@ public:
         return ID;
     }
 
+    virtual void process_do(Extended & e) const override
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
+    }
+
     virtual void process_event(etl::imessage const & m, Extended & e) const override
     {
-        handle_event(m, e, *this);
+        if ( state_accepts_event( m.get_message_id() ))
+        {
+            process_do(e);
+            handle_event(m, e, *this);
+        }
     }
 
     static bool state_accepts_event(etl::message_id_t id)
@@ -1341,7 +1453,7 @@ public:
             case M15::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
     }
 
@@ -1443,9 +1555,19 @@ public:
         return ID;
     }
 
+    virtual void process_do(Extended & e) const override
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
+    }
+
     virtual void process_event(etl::imessage const & m, Extended & e) const override
     {
-        handle_event(m, e, *this);
+        if ( state_accepts_event( m.get_message_id() ))
+        {
+            process_do(e);
+            handle_event(m, e, *this);
+        }
     }
 
     static bool state_accepts_event(etl::message_id_t id)
@@ -1469,7 +1591,7 @@ public:
             case M14::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
     }
 
@@ -1569,9 +1691,19 @@ public:
         return ID;
     }
 
+    virtual void process_do(Extended & e) const override
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
+    }
+
     virtual void process_event(etl::imessage const & m, Extended & e) const override
     {
-        handle_event(m, e, *this);
+        if ( state_accepts_event( m.get_message_id() ))
+        {
+            process_do(e);
+            handle_event(m, e, *this);
+        }
     }
 
     static bool state_accepts_event(etl::message_id_t id)
@@ -1594,7 +1726,7 @@ public:
             case M13::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
     }
 
@@ -1692,9 +1824,19 @@ public:
         return ID;
     }
 
+    virtual void process_do(Extended & e) const override
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
+    }
+
     virtual void process_event(etl::imessage const & m, Extended & e) const override
     {
-        handle_event(m, e, *this);
+        if ( state_accepts_event( m.get_message_id() ))
+        {
+            process_do(e);
+            handle_event(m, e, *this);
+        }
     }
 
     static bool state_accepts_event(etl::message_id_t id)
@@ -1716,7 +1858,7 @@ public:
             case M12::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
     }
 
@@ -1811,9 +1953,19 @@ public:
         return ID;
     }
 
+    virtual void process_do(Extended & e) const override
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
+    }
+
     virtual void process_event(etl::imessage const & m, Extended & e) const override
     {
-        handle_event(m, e, *this);
+        if ( state_accepts_event( m.get_message_id() ))
+        {
+            process_do(e);
+            handle_event(m, e, *this);
+        }
     }
 
     static bool state_accepts_event(etl::message_id_t id)
@@ -1834,7 +1986,7 @@ public:
             case M11::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
     }
 
@@ -1926,9 +2078,19 @@ public:
         return ID;
     }
 
+    virtual void process_do(Extended & e) const override
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
+    }
+
     virtual void process_event(etl::imessage const & m, Extended & e) const override
     {
-        handle_event(m, e, *this);
+        if ( state_accepts_event( m.get_message_id() ))
+        {
+            process_do(e);
+            handle_event(m, e, *this);
+        }
     }
 
     static bool state_accepts_event(etl::message_id_t id)
@@ -1948,7 +2110,7 @@ public:
             case M10::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
     }
 
@@ -2038,9 +2200,19 @@ public:
         return ID;
     }
 
+    virtual void process_do(Extended & e) const override
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
+    }
+
     virtual void process_event(etl::imessage const & m, Extended & e) const override
     {
-        handle_event(m, e, *this);
+        if ( state_accepts_event( m.get_message_id() ))
+        {
+            process_do(e);
+            handle_event(m, e, *this);
+        }
     }
 
     static bool state_accepts_event(etl::message_id_t id)
@@ -2059,7 +2231,7 @@ public:
             case M09::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
     }
 
@@ -2147,9 +2319,19 @@ public:
         return ID;
     }
 
+    virtual void process_do(Extended & e) const override
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
+    }
+
     virtual void process_event(etl::imessage const & m, Extended & e) const override
     {
-        handle_event(m, e, *this);
+        if ( state_accepts_event( m.get_message_id() ))
+        {
+            process_do(e);
+            handle_event(m, e, *this);
+        }
     }
 
     static bool state_accepts_event(etl::message_id_t id)
@@ -2167,7 +2349,7 @@ public:
             case M08::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
     }
 
@@ -2250,9 +2432,19 @@ public:
         return ID;
     }
 
+    virtual void process_do(Extended & e) const override
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
+    }
+
     virtual void process_event(etl::imessage const & m, Extended & e) const override
     {
-        handle_event(m, e, *this);
+        if ( state_accepts_event( m.get_message_id() ))
+        {
+            process_do(e);
+            handle_event(m, e, *this);
+        }
     }
 
     static bool state_accepts_event(etl::message_id_t id)
@@ -2269,7 +2461,7 @@ public:
             case M07::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
     }
 
@@ -2347,9 +2539,19 @@ public:
         return ID;
     }
 
+    virtual void process_do(Extended & e) const override
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
+    }
+
     virtual void process_event(etl::imessage const & m, Extended & e) const override
     {
-        handle_event(m, e, *this);
+        if ( state_accepts_event( m.get_message_id() ))
+        {
+            process_do(e);
+            handle_event(m, e, *this);
+        }
     }
 
     static bool state_accepts_event(etl::message_id_t id)
@@ -2365,7 +2567,7 @@ public:
             case M06::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
     }
 
@@ -2441,9 +2643,19 @@ public:
         return ID;
     }
 
+    virtual void process_do(Extended & e) const override
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
+    }
+
     virtual void process_event(etl::imessage const & m, Extended & e) const override
     {
-        handle_event(m, e, *this);
+        if ( state_accepts_event( m.get_message_id() ))
+        {
+            process_do(e);
+            handle_event(m, e, *this);
+        }
     }
 
     static bool state_accepts_event(etl::message_id_t id)
@@ -2458,7 +2670,7 @@ public:
             case M05::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
     }
 
@@ -2532,9 +2744,19 @@ public:
         return ID;
     }
 
+    virtual void process_do(Extended & e) const override
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
+    }
+
     virtual void process_event(etl::imessage const & m, Extended & e) const override
     {
-        handle_event(m, e, *this);
+        if ( state_accepts_event( m.get_message_id() ))
+        {
+            process_do(e);
+            handle_event(m, e, *this);
+        }
     }
 
     static bool state_accepts_event(etl::message_id_t id)
@@ -2548,7 +2770,7 @@ public:
             case M04::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
     }
 
@@ -2619,9 +2841,19 @@ public:
         return ID;
     }
 
+    virtual void process_do(Extended & e) const override
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
+    }
+
     virtual void process_event(etl::imessage const & m, Extended & e) const override
     {
-        handle_event(m, e, *this);
+        if ( state_accepts_event( m.get_message_id() ))
+        {
+            process_do(e);
+            handle_event(m, e, *this);
+        }
     }
 
     static bool state_accepts_event(etl::message_id_t id)
@@ -2634,7 +2866,7 @@ public:
             case M03::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
     }
 
@@ -2702,9 +2934,19 @@ public:
         return ID;
     }
 
+    virtual void process_do(Extended & e) const override
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
+    }
+
     virtual void process_event(etl::imessage const & m, Extended & e) const override
     {
-        handle_event(m, e, *this);
+        if ( state_accepts_event( m.get_message_id() ))
+        {
+            process_do(e);
+            handle_event(m, e, *this);
+        }
     }
 
     static bool state_accepts_event(etl::message_id_t id)
@@ -2716,7 +2958,7 @@ public:
             case M02::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
     }
 
@@ -2782,9 +3024,19 @@ public:
         return ID;
     }
 
+    virtual void process_do(Extended & e) const override
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
+    }
+
     virtual void process_event(etl::imessage const & m, Extended & e) const override
     {
-        handle_event(m, e, *this);
+        if ( state_accepts_event( m.get_message_id() ))
+        {
+            process_do(e);
+            handle_event(m, e, *this);
+        }
     }
 
     static bool state_accepts_event(etl::message_id_t id)
@@ -2795,7 +3047,7 @@ public:
             case M01::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
     }
 
@@ -2859,9 +3111,19 @@ public:
         return ID;
     }
 
+    virtual void process_do(Extended & e) const override
+    {
+        Parent::topdown_handle_do(e);
+        handle_do(e);
+    }
+
     virtual void process_event(etl::imessage const & m, Extended & e) const override
     {
-        handle_event(m, e, *this);
+        if ( state_accepts_event( m.get_message_id() ))
+        {
+            process_do(e);
+            handle_event(m, e, *this);
+        }
     }
 
     static bool state_accepts_event(etl::message_id_t id)
@@ -2871,7 +3133,7 @@ public:
             case M00::ID:
                 return true;
             default:
-                return Parent::accepts_event( id );
+                return Parent::state_accepts_event( id );
         };
     }
 

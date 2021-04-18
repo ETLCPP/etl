@@ -89,6 +89,7 @@ template<typename E>
 struct top
 {
     typedef E Extended;
+    virtual void process_do(Extended &) const = 0;
     virtual void process_event(etl::imessage const &, Extended &) const = 0;
     virtual bool accepts_event(etl::message_id_t) const = 0;
     virtual unsigned get_id() const = 0;
@@ -178,9 +179,19 @@ def create_class(classname, is_declaration, is_topspec, is_simple, n):
         cog.outl(        '        return ID;')
         cog.outl(        '    }')
         cog.outl(        '')
+        cog.outl(        '    virtual void process_do(Extended & e) const override')
+        cog.outl(        '    {')
+        cog.outl(        '        Parent::topdown_handle_do(e);')
+        cog.outl(        '        handle_do(e);')
+        cog.outl(        '    }')
+        cog.outl(        '')
         cog.outl(        '    virtual void process_event(etl::imessage const & m, Extended & e) const override')
         cog.outl(        '    {')
-        cog.outl(        '        handle_event(m, e, *this);')
+        cog.outl(        '        if ( state_accepts_event( m.get_message_id() ))')
+        cog.outl(        '        {')
+        cog.outl(        '            process_do(e);')
+        cog.outl(        '            handle_event(m, e, *this);')
+        cog.outl(        '        }')
         cog.outl(        '    }')
     else:
         cog.outl(        '    static void handle_init (Extended &);')
@@ -199,11 +210,19 @@ def create_class(classname, is_declaration, is_topspec, is_simple, n):
                 cog.outl('            case M{:02d}::ID:'.format(t))
             cog.outl(    '                return true;')
             cog.outl(    '            default:')
-            cog.outl(    '                return Parent::accepts_event( id );'.format(t))
+            cog.outl(    '                return Parent::state_accepts_event( id );')
             cog.outl(    '        };')
         else:
             cog.outl(    '        return Parent::state_accepts_event( id );')
     cog.outl(            '    }')
+    if not is_simple:
+        cog.outl(        '')
+        cog.outl(        '    static void topdown_handle_do(Extended & e)')
+        cog.outl(        '    {')
+        if not is_topspec:
+            cog.outl(    '        Parent::topdown_handle_do(e);')
+        cog.outl(        '        handle_do(e);')
+        cog.outl(        '    }')
     cog.outl(            '')
     if is_simple:
         cog.outl(        '    bool accepts_event(etl::message_id_t arg) const override')
