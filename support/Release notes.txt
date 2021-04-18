@@ -1,4 +1,8 @@
 ===============================================================================
+20.9.1
+Replaced std::distance with etl::distance in erase() and erase_if() for vector.h
+
+===============================================================================
 20.9.0
 Fixed #362 'etl::fsm::receive() partial override'.
 Fixed #363 'circular_buffer operator [] takes integer rather than size_type'.

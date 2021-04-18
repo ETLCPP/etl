@@ -1747,7 +1747,7 @@ namespace etl
   erase(etl::ivector<T>& v, const U& value)
   {
     typename etl::ivector<T>::iterator itr = etl::remove(v.begin(), v.end(), value);
-    typename etl::ivector<T>::difference_type d = std::distance(itr, v.end());
+    typename etl::ivector<T>::difference_type d = etl::distance(itr, v.end());
     v.erase(itr, v.end());
 
     return d;
@@ -1761,7 +1761,7 @@ namespace etl
   erase_if(etl::ivector<T>& v, TPredicate predicate)
   {
     typename etl::ivector<T>::iterator itr = etl::remove_if(v.begin(), v.end(), predicate);
-    typename etl::ivector<T>::difference_type d = std::distance(itr, v.end());
+    typename etl::ivector<T>::difference_type d = etl::distance(itr, v.end());
     v.erase(itr, v.end());
 
     return d;
