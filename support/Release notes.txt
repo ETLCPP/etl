@@ -1,4 +1,8 @@
 ===============================================================================
+20.9.2
+Fixed ETL_ASSERT for non-class types in etl::pool.
+
+===============================================================================
 20.9.1
 Replaced std::distance with etl::distance in erase() and erase_if() for vector.h
 
