@@ -121,6 +121,7 @@ set(TEST_SOURCE_FILES
 	test_functional.cpp
 	test_gamma.cpp
 	test_hash.cpp
+	test_hfsm.cpp
 	test_histogram.cpp
 	test_indirect_vector.cpp
 	test_indirect_vector_external_buffer.cpp
