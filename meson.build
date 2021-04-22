@@ -54,6 +54,7 @@ etl_test_sources = files(
 	'test/test_fnv_1.cpp',
 	'test/test_forward_list.cpp',
 	'test/test_fsm.cpp',
+	'test/test_hfsm.cpp',
 	'test/test_functional.cpp',
 	'test/test_function.cpp',
 	'test/test_hash.cpp',

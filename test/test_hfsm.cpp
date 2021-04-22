@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2021
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/fsm.h"
+#include "etl/hfsm.h"
 #include "etl/enum_type.h"
 #include "etl/container.h"
 #include "etl/packet.h"
@@ -36,7 +36,29 @@ SOFTWARE.
 
 #include <iostream>
 
-
+// This test implements the following state machine:
+//                +--------------------------------------------+
+//                |                                            |
+//                |     O       running                        |
+//                |     |                                      |
+//   O            |     v                                      |
+//   |            |    +-----------+        +-----------+      |
+//   v            |    |           |Timeout |           |      |
+// +------+ Start |    | windingUp +------->|  atSpeed  |      |
+// | idle +-------+--->|           |        |           |      |
+// +------+       |    +------+----+        +------+----+      |
+//  ^  ^          |           |                    |           |
+//  |  |          |      Stop |                    |           |
+//  |  |          |           v                    |Stop       |
+//  |  |          |        +------------------+    |           |
+//  |  | Stopped  |        |                  |    |           |
+//  |  +----------+--------+   windingDown    |<---+           |
+//  |             |        |                  |                |
+//  | EStop       |        +------------------+                |
+//  +-------------+                                            |
+//                |                                            |
+//                +--------------------------------------------+
+// Created with asciiflow.com
 namespace
 {
   const etl::message_router_id_t MOTOR_CONTROL = 0;
@@ -50,18 +72,22 @@ namespace
     {
       START,
       STOP,
+      ESTOP,
       STOPPED,
       SET_SPEED,
       RECURSIVE,
+      TIMEOUT,
       UNSUPPORTED
     };
 
     ETL_DECLARE_ENUM_TYPE(EventId, etl::message_id_t)
     ETL_ENUM_TYPE(START,       "Start")
     ETL_ENUM_TYPE(STOP,        "Stop")
+    ETL_ENUM_TYPE(ESTOP,       "E-Stop")
     ETL_ENUM_TYPE(STOPPED,     "Stopped")
     ETL_ENUM_TYPE(SET_SPEED,   "Set Speed")
     ETL_ENUM_TYPE(RECURSIVE,   "Recursive")
+    ETL_ENUM_TYPE(TIMEOUT,     "Timeout")
     ETL_ENUM_TYPE(UNSUPPORTED, "Unsupported")
     ETL_END_ENUM_TYPE
   };
@@ -74,12 +100,11 @@ namespace
   //***********************************
   class Stop : public etl::message<EventId::STOP>
   {
-  public:
+  };
 
-    Stop() : isEmergencyStop(false) {}
-    Stop(bool emergency) : isEmergencyStop(emergency) {}
-
-    const bool isEmergencyStop;
+  //***********************************
+  class EStop : public etl::message<EventId::ESTOP>
+  {
   };
 
   //***********************************
@@ -103,6 +128,11 @@ namespace
   };
 
   //***********************************
+  class Timeout : public etl::message<EventId::TIMEOUT>
+  {
+  };
+
+  //***********************************
   class Unsupported : public etl::message<EventId::UNSUPPORTED>
   {
   };
@@ -115,28 +145,30 @@ namespace
     {
       IDLE,
       RUNNING,
+      WINDING_UP,
       WINDING_DOWN,
-      LOCKED,
+      AT_SPEED,
       NUMBER_OF_STATES
     };
 
     ETL_DECLARE_ENUM_TYPE(StateId, etl::fsm_state_id_t)
     ETL_ENUM_TYPE(IDLE,         "Idle")
     ETL_ENUM_TYPE(RUNNING,      "Running")
+    ETL_ENUM_TYPE(WINDING_UP,   "Winding Up")
     ETL_ENUM_TYPE(WINDING_DOWN, "Winding Down")
-    ETL_ENUM_TYPE(LOCKED,       "Locked")
+    ETL_ENUM_TYPE(AT_SPEED,     "At Speed")
     ETL_END_ENUM_TYPE
   };
 
   //***********************************
   // The motor control FSM.
   //***********************************
-  class MotorControl : public etl::fsm
+  class MotorControl : public etl::hfsm
   {
   public:
 
     MotorControl()
-      : fsm(MOTOR_CONTROL)
+      : hfsm(MOTOR_CONTROL)
     {
     }
 
@@ -153,6 +185,8 @@ namespace
       startCount = 0;
       stopCount = 0;
       setSpeedCount = 0;
+      windUpCompleteCount = 0;
+      windUpStartCount = 0;
       unknownCount = 0;
       stoppedCount = 0;
       isLampOn = false;
@@ -184,7 +218,7 @@ namespace
       messageQueue.emplace(message);
     }
 
-    typedef etl::largest<Start, Stop, SetSpeed, Stopped, Recursive> Largest_t;
+    typedef etl::largest<Start, Stop, EStop, SetSpeed, Stopped, Recursive, Timeout> Largest_t;
 
     typedef etl::packet<etl::imessage, Largest_t::size, Largest_t::alignment> Packet_t;
 
@@ -192,6 +226,8 @@ namespace
 
     int startCount;
     int stopCount;
+    int windUpCompleteCount;
+    int windUpStartCount;
     int setSpeedCount;
     int unknownCount;
     int stoppedCount;
@@ -231,45 +267,30 @@ namespace
     etl::fsm_state_id_t on_enter_state()
     {
       get_fsm_context().TurnRunningLampOff();
-      return StateId::LOCKED;
+      return NO_CHANGE;
     }
   };
 
   //***********************************
   // The running state.
   //***********************************
-  class Running : public etl::fsm_state<MotorControl, Running, StateId::RUNNING, Stop, SetSpeed>
+  class Running : public etl::fsm_state<MotorControl, Running, StateId::RUNNING, EStop>
   {
   public:
 
     //***********************************
-    etl::fsm_state_id_t on_event(const Stop& event)
+    etl::fsm_state_id_t on_event(const EStop& event)
     {
       ++get_fsm_context().stopCount;
 
-      if (event.isEmergencyStop)
-      {
-        return StateId::IDLE;
-      }
-      else
-      {
-        return StateId::WINDING_DOWN;
-      }
-    }
-
-    //***********************************
-    etl::fsm_state_id_t on_event(const SetSpeed& event)
-    {
-      ++get_fsm_context().setSpeedCount;
-      get_fsm_context().SetSpeedValue(event.speed);
-      return STATE_ID;
+      return StateId::IDLE;
     }
 
     //***********************************
     etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
-      return STATE_ID;
+      return NO_CHANGE;
     }
 
     //***********************************
@@ -277,7 +298,71 @@ namespace
     {
       get_fsm_context().TurnRunningLampOn();
 
-      return STATE_ID;
+      return NO_CHANGE;
+    }
+  };
+
+  //***********************************
+  // The winding up state.
+  //***********************************
+  class WindingUp : public etl::fsm_state<MotorControl, WindingUp, StateId::WINDING_UP, Stop, Timeout>
+  {
+  public:
+
+    //***********************************
+    etl::fsm_state_id_t on_event(const Stop&)
+    {
+      ++get_fsm_context().stopCount;
+      return StateId::WINDING_DOWN;
+    }
+
+    //***********************************
+    etl::fsm_state_id_t on_event(const Timeout&)
+    {
+      ++get_fsm_context().windUpCompleteCount;
+      return StateId::AT_SPEED;
+    }
+
+    //***********************************
+    etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
+    {
+      ++get_fsm_context().unknownCount;
+      return NO_CHANGE;
+    }
+
+    etl::fsm_state_id_t on_enter_state()
+    {
+      ++get_fsm_context().windUpStartCount;
+      return NO_CHANGE;
+    }
+  };
+
+  //***********************************
+  // The at speed state.
+  //***********************************
+  class AtSpeed : public etl::fsm_state<MotorControl, AtSpeed, StateId::AT_SPEED, SetSpeed, Stop>
+  {
+  public:
+    //***********************************
+    etl::fsm_state_id_t on_event(const Stop&)
+    {
+      ++get_fsm_context().stopCount;
+      return StateId::WINDING_DOWN;
+    }
+
+    //***********************************
+    etl::fsm_state_id_t on_event(const SetSpeed& event)
+    {
+      ++get_fsm_context().setSpeedCount;
+      get_fsm_context().SetSpeedValue(event.speed);
+      return NO_CHANGE;
+    }
+
+    //***********************************
+    etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
+    {
+      ++get_fsm_context().unknownCount;
+      return NO_CHANGE;
     }
   };
 
@@ -299,47 +384,37 @@ namespace
     etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
-      return STATE_ID;
-    }
-  };
-
-  //***********************************
-  // The locked state.
-  //***********************************
-  class Locked : public etl::fsm_state<MotorControl, Locked, StateId::LOCKED>
-  {
-  public:
-
-    //***********************************
-    etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
-    {
-      ++get_fsm_context().unknownCount;
-      return STATE_ID;
+      return NO_CHANGE;
     }
   };
 
   // The states.
   Idle        idle;
   Running     running;
+  WindingUp   windingUp;
   WindingDown windingDown;
-  Locked      locked;
+  AtSpeed     atSpeed;
 
   etl::ifsm_state* stateList[StateId::NUMBER_OF_STATES] =
   {
-    &idle, &running, &windingDown, &locked
+    &idle, &running, &windingUp, &windingDown, &atSpeed
   };
 
   MotorControl motorControl;
 
-  SUITE(test_fsm_states)
+  SUITE(test_hfsm_states)
   {
     //*************************************************************************
-    TEST(test_fsm)
+    TEST(test_hfsm)
     {
       etl::null_message_router nmr;
 
       CHECK(motorControl.is_producer());
       CHECK(motorControl.is_consumer());
+
+      running.add_initial_child(windingUp);
+      running.add_child(atSpeed);
+      running.add_child(windingDown);
 
       motorControl.Initialise(stateList, etl::size(stateList));
       motorControl.reset();
@@ -361,6 +436,8 @@ namespace
       CHECK_EQUAL(0, motorControl.speed);
       CHECK_EQUAL(0, motorControl.startCount);
       CHECK_EQUAL(0, motorControl.stopCount);
+      CHECK_EQUAL(0, motorControl.windUpCompleteCount);
+      CHECK_EQUAL(0, motorControl.windUpStartCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(0, motorControl.unknownCount);
 
@@ -379,14 +456,16 @@ namespace
       CHECK_EQUAL(0, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(3, motorControl.unknownCount);
+      CHECK_EQUAL(0, motorControl.windUpCompleteCount);
+      CHECK_EQUAL(0, motorControl.windUpStartCount);
 
       // Send Start event.
       motorControl.receive(Start());
 
-      // Now in Running state.
+      // Now in WindingUp state.
 
-      CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state_id()));
-      CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state().get_state_id()));
+      CHECK_EQUAL(StateId::WINDING_UP, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::WINDING_UP, int(motorControl.get_state().get_state_id()));
 
       CHECK_EQUAL(true, motorControl.isLampOn);
       CHECK_EQUAL(0, motorControl.setSpeedCount);
@@ -395,13 +474,15 @@ namespace
       CHECK_EQUAL(0, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(3, motorControl.unknownCount);
+      CHECK_EQUAL(0, motorControl.windUpCompleteCount);
+      CHECK_EQUAL(1, motorControl.windUpStartCount);
 
       // Send unhandled events.
       motorControl.receive(Start());
       motorControl.receive(Stopped());
 
-      CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state_id()));
-      CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state().get_state_id()));
+      CHECK_EQUAL(StateId::WINDING_UP, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::WINDING_UP, int(motorControl.get_state().get_state_id()));
 
       CHECK_EQUAL(true, motorControl.isLampOn);
       CHECK_EQUAL(0, motorControl.setSpeedCount);
@@ -410,14 +491,32 @@ namespace
       CHECK_EQUAL(0, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(5, motorControl.unknownCount);
+      CHECK_EQUAL(0, motorControl.windUpCompleteCount);
+      CHECK_EQUAL(1, motorControl.windUpStartCount);
+
+      // Send Timeout event
+      motorControl.receive(Timeout());
+
+      CHECK_EQUAL(StateId::AT_SPEED, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::AT_SPEED, int(motorControl.get_state().get_state_id()));
+
+      CHECK_EQUAL(true, motorControl.isLampOn);
+      CHECK_EQUAL(0, motorControl.setSpeedCount);
+      CHECK_EQUAL(0, motorControl.speed);
+      CHECK_EQUAL(1, motorControl.startCount);
+      CHECK_EQUAL(0, motorControl.stopCount);
+      CHECK_EQUAL(0, motorControl.stoppedCount);
+      CHECK_EQUAL(5, motorControl.unknownCount);
+      CHECK_EQUAL(1, motorControl.windUpCompleteCount);
+      CHECK_EQUAL(1, motorControl.windUpStartCount);
 
       // Send SetSpeed event.
       motorControl.receive(SetSpeed(100));
 
-      // Still in Running state.
+      // Still in at speed state.
 
-      CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state_id()));
-      CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state().get_state_id()));
+      CHECK_EQUAL(StateId::AT_SPEED, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::AT_SPEED, int(motorControl.get_state().get_state_id()));
 
       CHECK_EQUAL(true, motorControl.isLampOn);
       CHECK_EQUAL(1, motorControl.setSpeedCount);
@@ -426,6 +525,8 @@ namespace
       CHECK_EQUAL(0, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(5, motorControl.unknownCount);
+      CHECK_EQUAL(1, motorControl.windUpCompleteCount);
+      CHECK_EQUAL(1, motorControl.windUpStartCount);
 
       // Send Stop event.
       motorControl.receive(Stop());
@@ -442,6 +543,8 @@ namespace
       CHECK_EQUAL(1, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(5, motorControl.unknownCount);
+      CHECK_EQUAL(1, motorControl.windUpCompleteCount);
+      CHECK_EQUAL(1, motorControl.windUpStartCount);
 
       // Send unhandled events.
       motorControl.receive(Start());
@@ -458,13 +561,15 @@ namespace
       CHECK_EQUAL(1, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(8, motorControl.unknownCount);
+      CHECK_EQUAL(1, motorControl.windUpCompleteCount);
+      CHECK_EQUAL(1, motorControl.windUpStartCount);
 
       // Send Stopped event.
       motorControl.receive(Stopped());
 
-      // Now in Locked state via Idle state.
-      CHECK_EQUAL(StateId::LOCKED, int(motorControl.get_state_id()));
-      CHECK_EQUAL(StateId::LOCKED, int(motorControl.get_state().get_state_id()));
+      // Now in Idle state.
+      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state().get_state_id()));
 
       CHECK_EQUAL(false, motorControl.isLampOn);
       CHECK_EQUAL(1, motorControl.setSpeedCount);
@@ -473,10 +578,12 @@ namespace
       CHECK_EQUAL(1, motorControl.stopCount);
       CHECK_EQUAL(1, motorControl.stoppedCount);
       CHECK_EQUAL(8, motorControl.unknownCount);
+      CHECK_EQUAL(1, motorControl.windUpCompleteCount);
+      CHECK_EQUAL(1, motorControl.windUpStartCount);
     }
 
     //*************************************************************************
-    TEST(test_fsm_emergency_stop)
+    TEST(test_hfsm_emergency_stop_from_winding_up)
     {
       etl::null_message_router nmr;
 
@@ -495,10 +602,10 @@ namespace
       // Send Start event.
       motorControl.receive(Start());
 
-      // Now in Running state.
+      // Now in winding up state.
 
-      CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state_id()));
-      CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state().get_state_id()));
+      CHECK_EQUAL(StateId::WINDING_UP, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::WINDING_UP, int(motorControl.get_state().get_state_id()));
 
       CHECK_EQUAL(true, motorControl.isLampOn);
       CHECK_EQUAL(0, motorControl.setSpeedCount);
@@ -507,13 +614,15 @@ namespace
       CHECK_EQUAL(0, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(0, motorControl.unknownCount);
+      CHECK_EQUAL(0, motorControl.windUpCompleteCount);
+      CHECK_EQUAL(1, motorControl.windUpStartCount);
 
       // Send emergency Stop event.
-      motorControl.receive(Stop(true));
+      motorControl.receive(EStop());
 
-      // Now in Locked state via Idle state.
-      CHECK_EQUAL(StateId::LOCKED, int(motorControl.get_state_id()));
-      CHECK_EQUAL(StateId::LOCKED, int(motorControl.get_state().get_state_id()));
+      // Now in Idle state.
+      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state().get_state_id()));
 
       CHECK_EQUAL(false, motorControl.isLampOn);
       CHECK_EQUAL(0, motorControl.setSpeedCount);
@@ -522,10 +631,66 @@ namespace
       CHECK_EQUAL(1, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(0, motorControl.unknownCount);
+      CHECK_EQUAL(0, motorControl.windUpCompleteCount);
+      CHECK_EQUAL(1, motorControl.windUpStartCount);
     }
 
     //*************************************************************************
-    TEST(test_fsm_recursive_event)
+    TEST(test_hfsm_emergency_stop_from_at_speed)
+    {
+      etl::null_message_router nmr;
+
+      motorControl.Initialise(stateList, etl::size(stateList)); 
+      motorControl.reset();
+      motorControl.ClearStatistics();
+
+      CHECK(!motorControl.is_started());
+
+      // Start the FSM.
+      motorControl.start(false);
+      CHECK(motorControl.is_started());
+
+      // Now in Idle state.
+
+      // Send Start event.
+      motorControl.receive(Start());
+      motorControl.receive(Timeout());
+
+      // Now in at speed state.
+
+      CHECK_EQUAL(StateId::AT_SPEED, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::AT_SPEED, int(motorControl.get_state().get_state_id()));
+
+      CHECK_EQUAL(true, motorControl.isLampOn);
+      CHECK_EQUAL(0, motorControl.setSpeedCount);
+      CHECK_EQUAL(0, motorControl.speed);
+      CHECK_EQUAL(1, motorControl.startCount);
+      CHECK_EQUAL(0, motorControl.stopCount);
+      CHECK_EQUAL(0, motorControl.stoppedCount);
+      CHECK_EQUAL(0, motorControl.unknownCount);
+      CHECK_EQUAL(1, motorControl.windUpCompleteCount);
+      CHECK_EQUAL(1, motorControl.windUpStartCount);
+
+      // Send emergency Stop event.
+      motorControl.receive(EStop());
+
+      // Now in Idle state.
+      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state().get_state_id()));
+
+      CHECK_EQUAL(false, motorControl.isLampOn);
+      CHECK_EQUAL(0, motorControl.setSpeedCount);
+      CHECK_EQUAL(0, motorControl.speed);
+      CHECK_EQUAL(1, motorControl.startCount);
+      CHECK_EQUAL(1, motorControl.stopCount);
+      CHECK_EQUAL(0, motorControl.stoppedCount);
+      CHECK_EQUAL(0, motorControl.unknownCount);
+      CHECK_EQUAL(1, motorControl.windUpCompleteCount);
+      CHECK_EQUAL(1, motorControl.windUpStartCount);
+    }
+
+    //*************************************************************************
+    TEST(test_hfsm_recursive_event)
     {
       etl::null_message_router nmr;
 
@@ -548,10 +713,10 @@ namespace
       motorControl.receive(motorControl.messageQueue.front().get());
       motorControl.messageQueue.pop();
 
-      // Now in Running state.
+      // Now in winding up state.
 
-      CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state_id()));
-      CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state().get_state_id()));
+      CHECK_EQUAL(StateId::WINDING_UP, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::WINDING_UP, int(motorControl.get_state().get_state_id()));
 
       CHECK_EQUAL(true, motorControl.isLampOn);
       CHECK_EQUAL(0, motorControl.setSpeedCount);
@@ -563,7 +728,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_fsm_supported)
+    TEST(test_hfsm_supported)
     {
       CHECK(motorControl.accepts(EventId::SET_SPEED));
       CHECK(motorControl.accepts(EventId::START));
@@ -579,7 +744,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_fsm_no_states)
+    TEST(test_hfsm_no_states)
     {
       MotorControl mc;
 
@@ -590,28 +755,28 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_fsm_null_state)
+    TEST(test_hfsm_null_state)
     {
       MotorControl mc;
 
       // Null state.
       etl::ifsm_state* stateList[StateId::NUMBER_OF_STATES] =
       {
-        &idle, &running,& windingDown, nullptr
+        &idle, &running, &windingUp, &windingDown, nullptr
       };
 
       CHECK_THROW(mc.set_states(stateList, StateId::NUMBER_OF_STATES), etl::fsm_null_state_exception);
     }
 
     //*************************************************************************
-    TEST(test_fsm_incorrect_state_order)
+    TEST(test_hfsm_incorrect_state_order)
     {
       MotorControl mc;
 
       // Incorrect order.
       etl::ifsm_state* stateList[StateId::NUMBER_OF_STATES] =
       {
-        &idle, &windingDown, &running, &locked
+        &idle, &running, &windingDown, &windingUp, &atSpeed
       };
 
       CHECK_THROW(mc.set_states(stateList, StateId::NUMBER_OF_STATES), etl::fsm_state_list_order_exception);
