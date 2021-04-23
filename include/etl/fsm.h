@@ -152,6 +152,9 @@ namespace etl
     }
   };
 
+  //***************************************************************************
+  /// Exception for forbidden state changes.
+  //***************************************************************************
   class fsm_state_enter_state_change_forbidden : public etl::fsm_exception
   {
   public:

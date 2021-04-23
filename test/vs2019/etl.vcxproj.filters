@@ -1098,6 +1098,9 @@
     <ClInclude Include="..\..\include\etl\rescale.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\hfsm.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -2511,6 +2514,9 @@
       <Filter>Source Files\Sanity Checks</Filter>
     </ClCompile>
     <ClCompile Include="..\test_atomic_gcc_sync.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_hfsm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

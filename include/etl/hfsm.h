@@ -58,13 +58,13 @@ namespace etl
     {
       etl::fsm_state_id_t next_state_id = p_state->process_event(message);
 
-      if(next_state_id != ifsm_state::NO_CHANGE)
+      if (next_state_id != ifsm_state::NO_CHANGE)
       {
         ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
         etl::ifsm_state* p_next_state = state_list[next_state_id];
 
         // Have we changed state?
-        if(p_next_state != p_state)
+        if (p_next_state != p_state)
         {
           etl::ifsm_state* p_root = common_ancestor(p_state, p_next_state);
           do_exits(p_root, p_state);
@@ -72,7 +72,8 @@ namespace etl
           p_state = p_next_state;
           
           next_state_id = do_enters(p_root, p_next_state, true);
-          if(next_state_id != ifsm_state::NO_CHANGE)
+
+          if (next_state_id != ifsm_state::NO_CHANGE)
           {
             ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
             p_state = state_list[next_state_id];
@@ -81,11 +82,16 @@ namespace etl
       }
     }
 
+  private:
+
+    //*******************************************
+    /// Return the common ancester of the two states.
+    //*******************************************
     static etl::ifsm_state* common_ancestor(etl::ifsm_state* p_one, etl::ifsm_state* p_two)
     {
-      if(p_one == p_two)
+      if (p_one == p_two)
       {
-          return p_one;
+        return p_one;
       }
 
       etl::ifsm_state* p_current_state = p_one;
@@ -100,7 +106,7 @@ namespace etl
         p_current_state = p_current_state->p_parent;
       }
 
-      if(p_two->p_parent != ETL_NULLPTR)
+      if (p_two->p_parent != ETL_NULLPTR)
       {
         return common_ancestor(p_one, p_two->p_parent);
       }
@@ -108,6 +114,9 @@ namespace etl
       return ETL_NULLPTR;
     }
 
+    //*******************************************
+    /// Exiting the state.
+    //*******************************************
     static void do_exits(const etl::ifsm_state* p_root, etl::ifsm_state* p_source)
     {
       etl::ifsm_state* p_current = p_source;
@@ -126,6 +135,9 @@ namespace etl
       }
     }
 
+    //*******************************************
+    /// Entering the state.
+    //*******************************************
     static etl::fsm_state_id_t do_enters(const etl::ifsm_state* p_root, etl::ifsm_state* p_target, bool activate_default_children)
     {
       ETL_ASSERT(p_target != ETL_NULLPTR, ETL_ERROR(etl::fsm_null_state_exception));
@@ -133,7 +145,7 @@ namespace etl
       // We need to go recursively up the tree if the target and root don't match
       if (p_root != p_target && p_target->p_parent != ETL_NULLPTR)
       {
-        if(p_target->p_parent != p_root)
+        if (p_target->p_parent != p_root)
         {
           // The parent we're calling shouldn't activate its defaults, or this state will be deactivated.
           do_enters(p_root, p_target->p_parent, false);
@@ -156,6 +168,7 @@ namespace etl
           next_state = p_target->on_enter_state();
           ETL_ASSERT(ifsm_state::NO_CHANGE == next_state, ETL_ERROR(etl::fsm_state_enter_state_change_forbidden));
         }
+
         next_state = p_target->get_state_id();
       }
 
