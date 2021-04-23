@@ -377,5 +377,40 @@ namespace
       CHECK_EQUAL(1, static_cast<Message1&>(packet1.get()).x);
       CHECK_EQUAL(1, static_cast<Message1&>(packet2.get()).x);
     }
+
+    //*************************************************************************
+    TEST(message_packet_accepts)
+    {
+      Message1 message1(1);
+      Message2 message2(2.2);
+      Message3 message3("3");
+      Message4 message4;
+
+      Packet packet;
+
+      // From message id.
+      CHECK(Packet::accepts(message1.get_message_id()));
+      CHECK(Packet::accepts(message2.get_message_id()));
+      CHECK(Packet::accepts(message3.get_message_id()));
+      CHECK(!Packet::accepts(message4.get_message_id()));
+
+      // From message.
+      CHECK(Packet::accepts(message1));
+      CHECK(Packet::accepts(message2));
+      CHECK(Packet::accepts(message3));
+      CHECK(!Packet::accepts(message4));
+
+      // From message type.
+      CHECK(Packet::accepts<Message1>());
+      CHECK(Packet::accepts<Message2>());
+      CHECK(Packet::accepts<Message3>());
+      CHECK(!Packet::accepts<Message4>());
+
+      // From static message id.
+      CHECK(Packet::accepts<MESSAGE1>());
+      CHECK(Packet::accepts<MESSAGE2>());
+      CHECK(Packet::accepts<MESSAGE3>());
+      CHECK(!Packet::accepts<MESSAGE4>());
+    }
   };
 }

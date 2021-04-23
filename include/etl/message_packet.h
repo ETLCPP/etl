@@ -182,6 +182,28 @@ namespace etl
       }
     }
 
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& msg)
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return accepts(Id);
+    }
+
+    //**********************************************
+    template <typename TMessage>
+    static ETL_CONSTEXPR
+    typename etl::enable_if<!etl::is_integral<TMessage>::value, bool>::type
+      accepts()
+    {
+      return accepts(TMessage::ID);
+    }
+
     enum
     {
       SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::size,
@@ -408,6 +430,28 @@ namespace etl
       }
     }
 
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& msg)
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return accepts(Id);
+    }
+
+    //**********************************************
+    template <typename TMessage>
+    static ETL_CONSTEXPR
+    typename etl::enable_if<!etl::is_integral<TMessage>::value, bool>::type
+      accepts()
+    {
+      return accepts(TMessage::ID);
+    }
+
     enum
     {
       SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::size,
@@ -631,6 +675,28 @@ namespace etl
       }
     }
 
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& msg)
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return accepts(Id);
+    }
+
+    //**********************************************
+    template <typename TMessage>
+    static ETL_CONSTEXPR
+    typename etl::enable_if<!etl::is_integral<TMessage>::value, bool>::type
+      accepts()
+    {
+      return accepts(TMessage::ID);
+    }
+
     enum
     {
       SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::size,
@@ -851,6 +917,28 @@ namespace etl
       }
     }
 
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& msg)
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return accepts(Id);
+    }
+
+    //**********************************************
+    template <typename TMessage>
+    static ETL_CONSTEXPR
+    typename etl::enable_if<!etl::is_integral<TMessage>::value, bool>::type
+      accepts()
+    {
+      return accepts(TMessage::ID);
+    }
+
     enum
     {
       SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::size,
@@ -1067,6 +1155,28 @@ namespace etl
       }
     }
 
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& msg)
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return accepts(Id);
+    }
+
+    //**********************************************
+    template <typename TMessage>
+    static ETL_CONSTEXPR
+    typename etl::enable_if<!etl::is_integral<TMessage>::value, bool>::type
+      accepts()
+    {
+      return accepts(TMessage::ID);
+    }
+
     enum
     {
       SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::size,
@@ -1280,6 +1390,28 @@ namespace etl
       }
     }
 
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& msg)
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return accepts(Id);
+    }
+
+    //**********************************************
+    template <typename TMessage>
+    static ETL_CONSTEXPR
+    typename etl::enable_if<!etl::is_integral<TMessage>::value, bool>::type
+      accepts()
+    {
+      return accepts(TMessage::ID);
+    }
+
     enum
     {
       SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::size,
@@ -1490,6 +1622,28 @@ namespace etl
       }
     }
 
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& msg)
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return accepts(Id);
+    }
+
+    //**********************************************
+    template <typename TMessage>
+    static ETL_CONSTEXPR
+    typename etl::enable_if<!etl::is_integral<TMessage>::value, bool>::type
+      accepts()
+    {
+      return accepts(TMessage::ID);
+    }
+
     enum
     {
       SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::size,
@@ -1697,6 +1851,28 @@ namespace etl
       }
     }
 
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& msg)
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return accepts(Id);
+    }
+
+    //**********************************************
+    template <typename TMessage>
+    static ETL_CONSTEXPR
+    typename etl::enable_if<!etl::is_integral<TMessage>::value, bool>::type
+      accepts()
+    {
+      return accepts(TMessage::ID);
+    }
+
     enum
     {
       SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9>::size,
@@ -1900,6 +2076,28 @@ namespace etl
       }
     }
 
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& msg)
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return accepts(Id);
+    }
+
+    //**********************************************
+    template <typename TMessage>
+    static ETL_CONSTEXPR
+    typename etl::enable_if<!etl::is_integral<TMessage>::value, bool>::type
+      accepts()
+    {
+      return accepts(TMessage::ID);
+    }
+
     enum
     {
       SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8>::size,
@@ -2099,6 +2297,28 @@ namespace etl
       }
     }
 
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& msg)
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return accepts(Id);
+    }
+
+    //**********************************************
+    template <typename TMessage>
+    static ETL_CONSTEXPR
+    typename etl::enable_if<!etl::is_integral<TMessage>::value, bool>::type
+      accepts()
+    {
+      return accepts(TMessage::ID);
+    }
+
     enum
     {
       SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7>::size,
@@ -2295,6 +2515,28 @@ namespace etl
       }
     }
 
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& msg)
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return accepts(Id);
+    }
+
+    //**********************************************
+    template <typename TMessage>
+    static ETL_CONSTEXPR
+    typename etl::enable_if<!etl::is_integral<TMessage>::value, bool>::type
+      accepts()
+    {
+      return accepts(TMessage::ID);
+    }
+
     enum
     {
       SIZE      = etl::largest<T1, T2, T3, T4, T5, T6>::size,
@@ -2488,6 +2730,28 @@ namespace etl
       }
     }
 
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& msg)
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return accepts(Id);
+    }
+
+    //**********************************************
+    template <typename TMessage>
+    static ETL_CONSTEXPR
+    typename etl::enable_if<!etl::is_integral<TMessage>::value, bool>::type
+      accepts()
+    {
+      return accepts(TMessage::ID);
+    }
+
     enum
     {
       SIZE      = etl::largest<T1, T2, T3, T4, T5>::size,
@@ -2677,6 +2941,28 @@ namespace etl
       }
     }
 
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& msg)
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return accepts(Id);
+    }
+
+    //**********************************************
+    template <typename TMessage>
+    static ETL_CONSTEXPR
+    typename etl::enable_if<!etl::is_integral<TMessage>::value, bool>::type
+      accepts()
+    {
+      return accepts(TMessage::ID);
+    }
+
     enum
     {
       SIZE      = etl::largest<T1, T2, T3, T4>::size,
@@ -2863,6 +3149,28 @@ namespace etl
       }
     }
 
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& msg)
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return accepts(Id);
+    }
+
+    //**********************************************
+    template <typename TMessage>
+    static ETL_CONSTEXPR
+    typename etl::enable_if<!etl::is_integral<TMessage>::value, bool>::type
+      accepts()
+    {
+      return accepts(TMessage::ID);
+    }
+
     enum
     {
       SIZE      = etl::largest<T1, T2, T3>::size,
@@ -3046,6 +3354,28 @@ namespace etl
       }
     }
 
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& msg)
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return accepts(Id);
+    }
+
+    //**********************************************
+    template <typename TMessage>
+    static ETL_CONSTEXPR
+    typename etl::enable_if<!etl::is_integral<TMessage>::value, bool>::type
+      accepts()
+    {
+      return accepts(TMessage::ID);
+    }
+
     enum
     {
       SIZE      = etl::largest<T1, T2>::size,
@@ -3224,6 +3554,28 @@ namespace etl
         default:
           return false;
       }
+    }
+
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& msg)
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return accepts(Id);
+    }
+
+    //**********************************************
+    template <typename TMessage>
+    static ETL_CONSTEXPR
+    typename etl::enable_if<!etl::is_integral<TMessage>::value, bool>::type
+      accepts()
+    {
+      return accepts(TMessage::ID);
     }
 
     enum
