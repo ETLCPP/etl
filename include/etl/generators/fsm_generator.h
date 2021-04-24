@@ -164,11 +164,14 @@ namespace etl
     }
   };
 
-  class fsm_state_enter_state_change_forbidden : public etl::fsm_exception
+  //***************************************************************************
+  /// Exception for forbidden state chages.
+  //***************************************************************************
+  class fsm_state_composite_state_change_forbidden : public etl::fsm_exception
   {
   public:
-    fsm_state_enter_state_change_forbidden(string_type file_name_, numeric_type line_number_)
-      : etl::fsm_exception(ETL_ERROR_TEXT("fsm:enter state change in composite state forbidden", ETL_FSM_FILE_ID"E"), file_name_, line_number_)
+    fsm_state_composite_state_change_forbidden(string_type file_name_, numeric_type line_number_)
+      : etl::fsm_exception(ETL_ERROR_TEXT("fsm:change in composite state forbidden", ETL_FSM_FILE_ID"E"), file_name_, line_number_)
     {
     }
   };
@@ -182,16 +185,16 @@ namespace etl
 
     // Pass this whenever no state change is desired.  Specifically cast to
     // Highest unsigned value of fsm_state_id_t.
-    static const fsm_state_id_t NO_CHANGE = static_cast<fsm_state_id_t>(-1);
+    static const fsm_state_id_t No_State_Change = static_cast<fsm_state_id_t>(-1);
 
     /// Allows ifsm_state functions to be private.
     friend class etl::fsm;
     friend class etl::hfsm;
     template <typename, typename, const etl::fsm_state_id_t,
-          typename, typename, typename, typename,
-          typename, typename, typename, typename,
-          typename, typename, typename, typename,
-          typename, typename, typename, typename >
+              typename, typename, typename, typename,
+              typename, typename, typename, typename,
+              typename, typename, typename, typename,
+              typename, typename, typename, typename >
     friend class etl::fsm_state;
 
     //*******************************************
@@ -205,21 +208,56 @@ namespace etl
     //*******************************************
     /// Adds a child to this state.
     //*******************************************
-    void add_child(etl::ifsm_state& state)
+    void add_child_state(etl::ifsm_state& state)
     {
       ETL_ASSERT(state.p_parent == ETL_NULLPTR, ETL_ERROR(etl::fsm_null_state_exception));
       state.p_parent = this;
+
+      if (p_default_child == ETL_NULLPTR)
+      {
+        p_active_child  = &state;
+        p_default_child = &state;
+      }
     }
 
     //*******************************************
-    /// Adds the initial child to this state.
+    /// Adds a list of child states.
     //*******************************************
-    void add_initial_child(etl::ifsm_state& state)
+    template <typename TSize>
+    void set_child_states(etl::ifsm_state** state_list, TSize size)
     {
-      ETL_ASSERT(p_default_active_child == ETL_NULLPTR, ETL_ERROR(etl::fsm_null_state_exception));
-      add_child(state);
-      p_active_child = &state;
-      p_default_active_child = &state;
+      p_active_child  = ETL_NULLPTR;
+      p_default_child = ETL_NULLPTR;
+
+      for (TSize i = 0; i < size; ++i)
+      {
+        ETL_ASSERT(state_list[i] != ETL_NULLPTR, ETL_ERROR(etl::fsm_null_state_exception));
+        add_child_state(*state_list[i]);
+      }
+    }
+
+    //*******************************************
+    /// Get the parent state for this state.
+    //*******************************************
+    etl::ifsm_state* get_parent_state() const
+    {
+      return p_parent;
+    }
+
+    //*******************************************
+    /// Get the active child state for this state.
+    //*******************************************
+    etl::ifsm_state* get_active_child_state() const
+    {
+      return p_active_child;
+    }
+
+    //*******************************************
+    /// Get the default child state for this state.
+    //*******************************************
+    etl::ifsm_state* get_default_child_state() const
+    {
+      return p_default_child;
     }
 
   protected:
@@ -232,7 +270,7 @@ namespace etl
         p_context(ETL_NULLPTR),
         p_parent(ETL_NULLPTR),
         p_active_child(ETL_NULLPTR),
-        p_default_active_child(ETL_NULLPTR)
+        p_default_child(ETL_NULLPTR)
     {
     }
 
@@ -253,7 +291,7 @@ namespace etl
 
     virtual fsm_state_id_t process_event(const etl::imessage& message) = 0;
 
-    virtual fsm_state_id_t on_enter_state() { return NO_CHANGE; } // By default, do nothing.
+    virtual fsm_state_id_t on_enter_state() { return No_State_Change; } // By default, do nothing.
     virtual void on_exit_state() {}  // By default, do nothing.
 
     //*******************************************
@@ -275,7 +313,7 @@ namespace etl
     ifsm_state* p_active_child;
 
     // A pointer to the default active child.
-    ifsm_state* p_default_active_child;
+    ifsm_state* p_default_child;
 
     // Disabled.
     ifsm_state(const ifsm_state&);
@@ -313,7 +351,7 @@ namespace etl
       number_of_states = etl::fsm_state_id_t(size);
 
       ETL_ASSERT(number_of_states > 0, ETL_ERROR(etl::fsm_state_list_exception));
-      ETL_ASSERT(number_of_states < ifsm_state::NO_CHANGE, ETL_ERROR(etl::fsm_state_list_exception));
+      ETL_ASSERT(number_of_states < ifsm_state::No_State_Change, ETL_ERROR(etl::fsm_state_list_exception));
 
       for (etl::fsm_state_id_t i = 0; i < size; ++i)
       {
@@ -346,7 +384,7 @@ namespace etl
           {
             p_last_state = p_state;
             next_state_id = p_state->on_enter_state();
-            if (next_state_id != ifsm_state::NO_CHANGE)
+            if (next_state_id != ifsm_state::No_State_Change)
             {
               ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
               p_state = state_list[next_state_id];
@@ -363,7 +401,7 @@ namespace etl
     {
       etl::fsm_state_id_t next_state_id = p_state->process_event(message);
 
-      if(next_state_id != ifsm_state::NO_CHANGE)
+      if(next_state_id != ifsm_state::No_State_Change)
       {
         ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
         etl::ifsm_state* p_next_state = state_list[next_state_id];
@@ -377,7 +415,7 @@ namespace etl
             p_state = p_next_state;
 
             next_state_id = p_state->on_enter_state();
-            if(next_state_id != ifsm_state::NO_CHANGE)
+            if(next_state_id != ifsm_state::No_State_Change)
             {
               ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
               p_next_state = state_list[next_state_id];

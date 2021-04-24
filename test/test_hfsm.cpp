@@ -260,14 +260,14 @@ namespace
     etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
-      return NO_CHANGE;
+      return No_State_Change;
     }
 
     //***********************************
     etl::fsm_state_id_t on_enter_state()
     {
       get_fsm_context().TurnRunningLampOff();
-      return NO_CHANGE;
+      return No_State_Change;
     }
   };
 
@@ -290,7 +290,7 @@ namespace
     etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
-      return NO_CHANGE;
+      return No_State_Change;
     }
 
     //***********************************
@@ -298,7 +298,7 @@ namespace
     {
       get_fsm_context().TurnRunningLampOn();
 
-      return NO_CHANGE;
+      return No_State_Change;
     }
   };
 
@@ -327,13 +327,13 @@ namespace
     etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
-      return NO_CHANGE;
+      return No_State_Change;
     }
 
     etl::fsm_state_id_t on_enter_state()
     {
       ++get_fsm_context().windUpStartCount;
-      return NO_CHANGE;
+      return No_State_Change;
     }
   };
 
@@ -355,14 +355,14 @@ namespace
     {
       ++get_fsm_context().setSpeedCount;
       get_fsm_context().SetSpeedValue(event.speed);
-      return NO_CHANGE;
+      return No_State_Change;
     }
 
     //***********************************
     etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
-      return NO_CHANGE;
+      return No_State_Change;
     }
   };
 
@@ -384,7 +384,7 @@ namespace
     etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
-      return NO_CHANGE;
+      return No_State_Change;
     }
   };
 
@@ -400,6 +400,11 @@ namespace
     &idle, &running, &windingUp, &windingDown, &atSpeed
   };
 
+  etl::ifsm_state* childStates[] =
+  {
+    &windingUp, &atSpeed, &windingDown
+  };
+
   MotorControl motorControl;
 
   SUITE(test_hfsm_states)
@@ -412,9 +417,7 @@ namespace
       CHECK(motorControl.is_producer());
       CHECK(motorControl.is_consumer());
 
-      running.add_initial_child(windingUp);
-      running.add_child(atSpeed);
-      running.add_child(windingDown);
+      running.set_child_states(childStates, etl::size(childStates));
 
       motorControl.Initialise(stateList, etl::size(stateList));
       motorControl.reset();

@@ -36,6 +36,8 @@ namespace etl
 
   //***************************************************************************
   /// The HFSM class.
+  /// Builds on the FSM class by overriding the receive function and adding
+  /// state hierarchy walking functions.
   //***************************************************************************
   class hfsm : public etl::fsm
   {
@@ -58,7 +60,7 @@ namespace etl
     {
       etl::fsm_state_id_t next_state_id = p_state->process_event(message);
 
-      if (next_state_id != ifsm_state::NO_CHANGE)
+      if (next_state_id != ifsm_state::No_State_Change)
       {
         ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
         etl::ifsm_state* p_next_state = state_list[next_state_id];
@@ -73,7 +75,7 @@ namespace etl
           
           next_state_id = do_enters(p_root, p_next_state, true);
 
-          if (next_state_id != ifsm_state::NO_CHANGE)
+          if (next_state_id != ifsm_state::No_State_Change)
           {
             ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
             p_state = state_list[next_state_id];
@@ -156,17 +158,17 @@ namespace etl
       }
 
       etl::fsm_state_id_t next_state = p_target->on_enter_state();
-      ETL_ASSERT(ifsm_state::NO_CHANGE == next_state, ETL_ERROR(etl::fsm_state_enter_state_change_forbidden));
+      ETL_ASSERT(ifsm_state::No_State_Change == next_state, ETL_ERROR(etl::fsm_state_composite_state_change_forbidden));
 
       // Activate default child if we need to activate any initial states in an active composite state.
       if (activate_default_children)
       {
-        while (p_target->p_default_active_child != ETL_NULLPTR)
+        while (p_target->p_default_child != ETL_NULLPTR)
         {
-          p_target = p_target->p_default_active_child;
+          p_target = p_target->p_default_child;
           p_target->p_parent->p_active_child = p_target;
           next_state = p_target->on_enter_state();
-          ETL_ASSERT(ifsm_state::NO_CHANGE == next_state, ETL_ERROR(etl::fsm_state_enter_state_change_forbidden));
+          ETL_ASSERT(ifsm_state::No_State_Change == next_state, ETL_ERROR(etl::fsm_state_composite_state_change_forbidden));
         }
 
         next_state = p_target->get_state_id();
