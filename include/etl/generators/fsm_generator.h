@@ -183,9 +183,9 @@ namespace etl
   {
   public:
 
-    // Pass this whenever no state change is desired.  Specifically cast to
-    // Highest unsigned value of fsm_state_id_t.
-    static const fsm_state_id_t No_State_Change = static_cast<fsm_state_id_t>(-1);
+    // Pass this whenever no state change is desired.
+    // The highest unsigned value of fsm_state_id_t.
+    static ETL_CONSTANT fsm_state_id_t No_State_Change = etl::integral_limits<fsm_state_id_t>::max;
 
     /// Allows ifsm_state functions to be private.
     friend class etl::fsm;
@@ -401,27 +401,24 @@ namespace etl
     {
       etl::fsm_state_id_t next_state_id = p_state->process_event(message);
 
-      if(next_state_id != ifsm_state::No_State_Change)
+      if (have_changed_state(next_state_id))
       {
         ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
         etl::ifsm_state* p_next_state = state_list[next_state_id];
 
-        // Have we changed state?
-        if (p_next_state != p_state)
+        do
         {
-          do
-          {
-            p_state->on_exit_state();
-            p_state = p_next_state;
+          p_state->on_exit_state();
+          p_state = p_next_state;
 
-            next_state_id = p_state->on_enter_state();
-            if(next_state_id != ifsm_state::No_State_Change)
-            {
-              ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
-              p_next_state = state_list[next_state_id];
-            }
-          } while (p_next_state != p_state); // Have we changed state again?
-        }
+          next_state_id = p_state->on_enter_state();
+
+          if (have_changed_state(next_state_id))
+          {
+            ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
+            p_next_state = state_list[next_state_id];
+          }
+        } while (p_next_state != p_state); // Have we changed state again?
       }
     }
 
@@ -504,6 +501,13 @@ namespace etl
     }
 
   private:
+
+    //********************************************
+    bool have_changed_state(etl::fsm_state_id_t next_state_id) const
+    {
+      return (next_state_id != p_state->get_state_id()) &&
+             (next_state_id != ifsm_state::No_State_Change);
+    }
 
     etl::ifsm_state*    p_state;          ///< A pointer to the current state.
     etl::ifsm_state**   state_list;       ///< The list of added states.

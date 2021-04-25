@@ -171,8 +171,8 @@ namespace etl
   {
   public:
 
-    // Pass this whenever no state change is desired.  Specifically cast to
-    // Highest unsigned value of fsm_state_id_t.
+    // Pass this whenever no state change is desired.
+    // The highest unsigned value of fsm_state_id_t.
     static ETL_CONSTANT fsm_state_id_t No_State_Change = etl::integral_limits<fsm_state_id_t>::max;
 
     /// Allows ifsm_state functions to be private.
