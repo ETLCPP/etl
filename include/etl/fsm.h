@@ -195,6 +195,7 @@ namespace etl
 
     //*******************************************
     /// Adds a child to this state.
+    /// Only of use when part of an HFSM.
     //*******************************************
     void add_child_state(etl::ifsm_state& state)
     {
@@ -210,6 +211,7 @@ namespace etl
 
     //*******************************************
     /// Adds a list of child states.
+    /// Only of use when part of an HFSM.
     //*******************************************
     template <typename TSize>
     void set_child_states(etl::ifsm_state** state_list, TSize size)
@@ -222,30 +224,6 @@ namespace etl
         ETL_ASSERT(state_list[i] != ETL_NULLPTR, ETL_ERROR(etl::fsm_null_state_exception));
         add_child_state(*state_list[i]);
       }
-    }
-
-    //*******************************************
-    /// Get the parent state for this state.
-    //*******************************************
-    etl::ifsm_state* get_parent_state() const
-    {
-      return p_parent;
-    }
-
-    //*******************************************
-    /// Get the active child state for this state.
-    //*******************************************
-    etl::ifsm_state* get_active_child_state() const
-    {
-      return p_active_child;
-    }
-
-    //*******************************************
-    /// Get the default child state for this state.
-    //*******************************************
-    etl::ifsm_state* get_default_child_state() const
-    {
-      return p_default_child;
     }
 
   protected:

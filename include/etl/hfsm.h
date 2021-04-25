@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2021
+Copyright(c) 2021 Jeremy Overesch, John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -88,41 +88,41 @@ namespace etl
     //*******************************************
     /// Return the first common ancester of the two states.
     //*******************************************
-    static etl::ifsm_state* common_ancestor(etl::ifsm_state* p1, etl::ifsm_state* p2)
+    static etl::ifsm_state* common_ancestor(etl::ifsm_state* s1, etl::ifsm_state* s2)
     {
-      size_t depth1 = get_depth(p1);
-      size_t depth2 = get_depth(p2);
+      size_t depth1 = get_depth(s1);
+      size_t depth2 = get_depth(s2);
 
-      // Adjust p1 and p2 to the same depth.
+      // Adjust s1 and s2 to the same depth.
       if (depth1 > depth2)
       {
-        p1 = adjust_depth(p1, depth1 - depth2);
+        s1 = adjust_depth(s1, depth1 - depth2);
       }
       else
       {
-        p2 = adjust_depth(p2, depth2 - depth1);
+        s2 = adjust_depth(s2, depth2 - depth1);
       }
 
       // Now they're aligned to the same depth they can step towards the root together.
-      while (p1 != p2)
+      while (s1 != s2)
       {
-        p1 = p1->p_parent;
-        p2 = p2->p_parent;
+        s1 = s1->p_parent;
+        s2 = s2->p_parent;
       }
 
-      return p1;
+      return s1;
     }
 
     //*******************************************
     /// Find the depth of the state.
     //*******************************************
-    static size_t get_depth(etl::ifsm_state* p)
+    static size_t get_depth(etl::ifsm_state* s)
     {
       size_t depth = 0;
 
-      while (p != ETL_NULLPTR)
+      while (s != ETL_NULLPTR)
       {
-        p = p->p_parent;
+        s = s->p_parent;
         ++depth;
       }
 
@@ -132,15 +132,15 @@ namespace etl
     //*******************************************
     /// Align the depths of the states.
     //*******************************************
-    static etl::ifsm_state* adjust_depth(etl::ifsm_state* p, size_t offset)
+    static etl::ifsm_state* adjust_depth(etl::ifsm_state* s, size_t offset)
     {
       while (offset != 0U)
       {
-        p = p->p_parent;
+        s = s->p_parent;
         --offset;
       }
 
-      return p;
+      return s;
     }
 
     //*******************************************
