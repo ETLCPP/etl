@@ -53,7 +53,7 @@ namespace etl
     using fsm::receive;
 
     //*******************************************
-    /// Top level message handler for the FSM.
+    /// Top level message handler for the HFSM.
     //*******************************************
     void receive(const etl::imessage& message) ETL_OVERRIDE
     {
@@ -93,17 +93,17 @@ namespace etl
       size_t depth1 = get_depth(p1);
       size_t depth2 = get_depth(p2);
 
-      // Align p1 and p2 to the same depth.
+      // Adjust p1 and p2 to the same depth.
       if (depth1 > depth2)
       {
-        p1 = align_depth(p1, depth1 - depth2);
+        p1 = adjust_depth(p1, depth1 - depth2);
       }
       else
       {
-        p2 = align_depth(p2, depth2 - depth1);
+        p2 = adjust_depth(p2, depth2 - depth1);
       }
 
-      // Now they're aligned they can step towards the root together.
+      // Now they're aligned to the same depth they can step towards the root together.
       while (p1 != p2)
       {
         p1 = p1->p_parent;
@@ -132,7 +132,7 @@ namespace etl
     //*******************************************
     /// Align the depths of the states.
     //*******************************************
-    static etl::ifsm_state* align_depth(etl::ifsm_state* p, size_t offset)
+    static etl::ifsm_state* adjust_depth(etl::ifsm_state* p, size_t offset)
     {
       while (offset != 0U)
       {
@@ -151,8 +151,7 @@ namespace etl
       ETL_ASSERT(p_target != ETL_NULLPTR, ETL_ERROR(etl::fsm_null_state_exception));
 
       // We need to go recursively up the tree if the target and root don't match
-      if ((p_root != p_target) && 
-          (p_target->p_parent != ETL_NULLPTR))
+      if ((p_root != p_target) && (p_target->p_parent != ETL_NULLPTR))
       {
         if (p_target->p_parent != p_root)
         {
