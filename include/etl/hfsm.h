@@ -33,7 +33,6 @@ SOFTWARE.
 
 namespace etl
 {
-
   //***************************************************************************
   /// The HFSM class.
   /// Builds on the FSM class by overriding the receive function and adding
@@ -87,54 +86,61 @@ namespace etl
   private:
 
     //*******************************************
-    /// Return the common ancester of the two states.
+    /// Return the first common ancester of the two states.
     //*******************************************
-    static etl::ifsm_state* common_ancestor(etl::ifsm_state* p_one, etl::ifsm_state* p_two)
+    static etl::ifsm_state* common_ancestor(etl::ifsm_state* p1, etl::ifsm_state* p2)
     {
-      if (p_one == p_two)
+      size_t depth1 = get_depth(p1);
+      size_t depth2 = get_depth(p2);
+
+      // Align p1 and p2 to the same depth.
+      if (depth1 > depth2)
       {
-        return p_one;
+        p1 = align_depth(p1, depth1 - depth2);
+      }
+      else
+      {
+        p2 = align_depth(p2, depth2 - depth1);
       }
 
-      etl::ifsm_state* p_current_state = p_one;
-
-      while (p_current_state->p_parent != ETL_NULLPTR)
+      // Now they're aligned they can step towards the root together.
+      while (p1 != p2)
       {
-        if (p_current_state->p_parent == p_two)
-        {
-          return p_current_state->p_parent;
-        }
-
-        p_current_state = p_current_state->p_parent;
+        p1 = p1->p_parent;
+        p2 = p2->p_parent;
       }
 
-      if (p_two->p_parent != ETL_NULLPTR)
-      {
-        return common_ancestor(p_one, p_two->p_parent);
-      }
-
-      return ETL_NULLPTR;
+      return p1;
     }
 
     //*******************************************
-    /// Exiting the state.
+    /// Find the depth of the state.
     //*******************************************
-    static void do_exits(const etl::ifsm_state* p_root, etl::ifsm_state* p_source)
+    static size_t get_depth(etl::ifsm_state* p)
     {
-      etl::ifsm_state* p_current = p_source;
+      size_t depth = 0;
 
-      // Iterate down to the lowest child
-      while(p_current->p_active_child != ETL_NULLPTR)
+      while (p != ETL_NULLPTR)
       {
-        p_current = p_current->p_active_child;
+        p = p->p_parent;
+        ++depth;
       }
 
-      // Run exit state on all states up to the root
-      while (p_current != p_root)
+      return depth;
+    }
+
+    //*******************************************
+    /// Align the depths of the states.
+    //*******************************************
+    static etl::ifsm_state* align_depth(etl::ifsm_state* p, size_t offset)
+    {
+      while (offset != 0U)
       {
-        p_current->on_exit_state();
-        p_current = p_current->p_parent;
+        p = p->p_parent;
+        --offset;
       }
+
+      return p;
     }
 
     //*******************************************
@@ -145,7 +151,8 @@ namespace etl
       ETL_ASSERT(p_target != ETL_NULLPTR, ETL_ERROR(etl::fsm_null_state_exception));
 
       // We need to go recursively up the tree if the target and root don't match
-      if (p_root != p_target && p_target->p_parent != ETL_NULLPTR)
+      if ((p_root != p_target) && 
+          (p_target->p_parent != ETL_NULLPTR))
       {
         if (p_target->p_parent != p_root)
         {
@@ -175,6 +182,27 @@ namespace etl
       }
 
       return next_state;
+    }
+
+    //*******************************************
+    /// Exiting the state.
+    //*******************************************
+    static void do_exits(const etl::ifsm_state* p_root, etl::ifsm_state* p_source)
+    {
+      etl::ifsm_state* p_current = p_source;
+
+      // Iterate down to the lowest child
+      while (p_current->p_active_child != ETL_NULLPTR)
+      {
+        p_current = p_current->p_active_child;
+      }
+
+      // Run exit state on all states up to the root
+      while (p_current != p_root)
+      {
+        p_current->on_exit_state();
+        p_current = p_current->p_parent;
+      }
     }
   };
 }

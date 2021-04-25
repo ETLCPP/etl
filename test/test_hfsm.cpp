@@ -327,6 +327,7 @@ namespace
     etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
+
       return No_State_Change;
     }
 
@@ -355,7 +356,8 @@ namespace
     {
       ++get_fsm_context().setSpeedCount;
       get_fsm_context().SetSpeedValue(event.speed);
-      return No_State_Change;
+      //return No_State_Change;
+      return this->get_state_id();
     }
 
     //***********************************
