@@ -21,6 +21,8 @@ namespace etl
     {
     public:
 
+      ETL_STATIC_ASSERT(etl::is_integral<TCount>::value, "Only integral count allowed"); 
+
       static ETL_CONSTANT size_t Max_Size = Max_Size_;
 
       typedef typename etl::array<TCount, Max_Size>::const_iterator const_iterator;
@@ -46,7 +48,7 @@ namespace etl
       //*********************************
       const_iterator end() const
       {
-        return accumulator.begin();
+        return accumulator.end();
       }
 
       //*********************************
@@ -54,7 +56,7 @@ namespace etl
       //*********************************
       const_iterator cend() const
       {
-        return accumulator.cbegin();
+        return accumulator.cend();
       }
 
       //*********************************
