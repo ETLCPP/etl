@@ -2740,6 +2740,7 @@
     <ClInclude Include="..\..\include\etl\mutex\mutex_cmsis_os2.h" />
     <ClInclude Include="..\..\include\etl\mutex\mutex_freertos.h" />
     <ClInclude Include="..\..\include\etl\negative.h" />
+    <ClInclude Include="..\..\include\etl\percentile.h" />
     <ClInclude Include="..\..\include\etl\nth_type.h" />
     <ClInclude Include="..\..\include\etl\overload.h" />
     <ClInclude Include="..\..\include\etl\placement_new.h" />
@@ -13266,6 +13267,7 @@
     <ClCompile Include="..\test_parameter_type.cpp" />
     <ClCompile Include="..\test_parity_checksum.cpp" />
     <ClCompile Include="..\test_pearson.cpp" />
+    <ClCompile Include="..\test_percentile.cpp" />
     <ClCompile Include="..\test_pool.cpp" />
     <ClCompile Include="..\test_pool_external_buffer.cpp" />
     <ClCompile Include="..\test_quantize.cpp" />

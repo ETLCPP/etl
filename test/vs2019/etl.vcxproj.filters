@@ -891,6 +891,9 @@
     <ClInclude Include="..\..\include\etl\hfsm.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\percentile.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\etl\private\variant_legacy.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
@@ -3406,6 +3409,9 @@
     </ClCompile>
     <ClCompile Include="..\etl_error_handler\log_errors_and_exceptions\test_error_handler.cpp">
       <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_percentile.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
