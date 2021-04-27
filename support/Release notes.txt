@@ -1,4 +1,8 @@
 ===============================================================================
+20.10.1
+Fixed incorrect histogram end() and cend() return values.
+
+===============================================================================
 20.10.0
 Added Hierarchical Finite State Machine (etl::hfsm) derived from etl::fsm
 
