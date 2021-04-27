@@ -1101,6 +1101,9 @@
     <ClInclude Include="..\..\include\etl\hfsm.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\percentile.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -2517,6 +2520,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_hfsm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_percentile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
