@@ -65,8 +65,13 @@ namespace etl
   /// values are at least the specified percentage of the total.
   //***************************************************************************
   template <typename TIterator, typename TPercentile>
-  typename TIterator histogram_percentile(TIterator first, TIterator last, TPercentile percentile)
+  TIterator histogram_percentile(TIterator first, TIterator last, TPercentile percentile)
   {
+    if (percentile == TPercentile(0))
+    {
+      return last;
+    }
+
     uint32_t total = etl::accumulate(first, last, uint32_t(0U));
     uint32_t sum   = 0U;
 
