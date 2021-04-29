@@ -212,7 +212,7 @@ namespace
     {
       histogram(input2.begin(), input2.end());
 
-      CHECK_EQUAL(1, *etl::histogram_percentile(histogram.begin(), histogram.end(), 0U));
+      CHECK((etl::histogram_percentile(histogram.begin(), histogram.end(), 0U)) == histogram.end());
       CHECK_EQUAL(5, *etl::histogram_percentile(histogram.begin(), histogram.end(), 25U));
       CHECK_EQUAL(7, *etl::histogram_percentile(histogram.begin(), histogram.end(), 50U));
       CHECK_EQUAL(9, *etl::histogram_percentile(histogram.begin(), histogram.end(), 75U));
