@@ -897,6 +897,9 @@
     <ClInclude Include="..\..\include\etl\bresenham_line_pointer.h">
       <Filter>ETL\Pseudo Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\singleton.h">
+      <Filter>ETL\Patterns</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\etl\private\variant_legacy.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
