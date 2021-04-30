@@ -54,7 +54,7 @@ namespace
     return os;
   }
 
-  using BresenhamLine = etl::bresenham_line<Value>;
+  using BresenhamLine = etl::bresenham_line<Value, int16_t, Point>;
 
   SUITE(test_bresenham_line)
   {
@@ -73,9 +73,9 @@ namespace
                                    Point{ 1, 5 }, Point{ 2, 5 }, Point{ 3, 5 }, Point{ 4, 5 }, Point{ 5, 5} };
       std::vector<Point> actual;
 
-      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -98,9 +98,9 @@ namespace
                                    Point{-1, 5 }, Point{-2, 5 }, Point{-3, 5 }, Point{-4, 5 }, Point{-5, 5} };
       std::vector<Point> actual;
 
-      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -123,9 +123,9 @@ namespace
                                    Point{ 5,  1 }, Point{ 5,  2 }, Point{ 5,  3 }, Point{ 5,  4 }, Point{ 5,  5} };
       std::vector<Point> actual;
 
-      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -148,9 +148,9 @@ namespace
                                    Point{ 5, -1 }, Point{ 5, -2 }, Point{ 5, -3 }, Point{ 5, -4 }, Point{ 5, -5} };
       std::vector<Point> actual;
 
-      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -173,9 +173,9 @@ namespace
                                    Point{ 1,   1 }, Point{  2,  1 }, Point{  3,  2 }, Point{  4,  2 }, Point{  5,  3 } };
       std::vector<Point> actual;
 
-      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -198,9 +198,9 @@ namespace
                                    Point{ -1, -1 }, Point{ -2, -1 }, Point{ -3, -2 }, Point{ -4, -2 }, Point{ -5, -3 } };
       std::vector<Point> actual;
 
-      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -223,9 +223,9 @@ namespace
                                    Point{ -1,  1 }, Point{ -2,  1 }, Point{ -3,  2 }, Point{ -4,  2 }, Point{ -5,  3 } };
       std::vector<Point> actual;
 
-      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -248,9 +248,9 @@ namespace
                                    Point{  1, -1 }, Point{  2, -1 }, Point{  3, -2 }, Point{  4, -2 }, Point{  5, -3 } };
       std::vector<Point> actual;
 
-      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -273,9 +273,9 @@ namespace
                                    Point{ 1,   1 }, Point{  1,  2 }, Point{  2,  3 }, Point{  2,  4 }, Point{  3,  5 } };
       std::vector<Point> actual;
 
-      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -298,9 +298,9 @@ namespace
                                    Point{ -1, -1 }, Point{ -1, -2 }, Point{ -2, -3 }, Point{ -2, -4 }, Point{ -3, -5 } };
       std::vector<Point> actual;
 
-      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -323,9 +323,9 @@ namespace
                                    Point{ -1,  1 }, Point{ -1,  2 }, Point{ -2,  3 }, Point{ -2,  4 }, Point{ -3,  5 } };
       std::vector<Point> actual;
 
-      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -348,9 +348,9 @@ namespace
                                    Point{  1, -1 }, Point{  1, -2 }, Point{  2, -3 }, Point{  2, -4 }, Point{  3, -5 } };
       std::vector<Point> actual;
 
-      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -378,9 +378,9 @@ namespace
                                    Point{  1, -1 }, Point{  1, -2 }, Point{  2, -3 }, Point{  2, -4 }, Point{  3, -5 } };
       std::vector<Point> actual;
 
-      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -405,9 +405,9 @@ namespace
                                    Point{  1, -1 }, Point{  1, -2 }, Point{  2, -3 }, Point{  2, -4 }, Point{  3, -5 } };
       std::vector<Point> actual;
 
-      for (BresenhamLine::const_iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());

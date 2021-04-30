@@ -337,6 +337,8 @@ namespace etl
   template <typename T>
   struct coordinate_2d
   {
+    typedef T value_type;
+
     coordinate_2d()
       : x(T(0))
       , y(T(0))
