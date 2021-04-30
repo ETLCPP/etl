@@ -56,12 +56,14 @@ namespace etl
     //***************************************************
     /// Standard container types.
     //***************************************************
-    typedef TCoordinate       value_type;
-    typedef size_t            size_type;
-    typedef value_type&       reference;
-    typedef const value_type& const_reference;
-    typedef value_type*       pointer;
-    typedef const value_type* const_pointer;
+    typedef TCoordinate                      value_type;
+    typedef TCoordinate                      coordinate_type;
+    typedef typename TCoordinate::value_type axis_type;
+    typedef size_t                           size_type;
+    typedef value_type&                      reference;
+    typedef const value_type&                const_reference;
+    typedef value_type*                      pointer;
+    typedef const value_type*                const_pointer;
 
     //***************************************************
     /// Const Iterator
@@ -120,7 +122,7 @@ namespace etl
       //***************************************************
       /// De-reference operator
       //***************************************************
-      value_type operator *() const
+      TCoordinate operator *() const
       {
         return p_bresenham_line->get_coordinate();
       }
@@ -146,27 +148,29 @@ namespace etl
       //***************************************************
       /// Constructor for use by bresenham_line
       //***************************************************
-      const_iterator(bresenham_line<T>* pb)
+      const_iterator(bresenham_line<T, TWork, TCoordinate>* pb)
         : p_bresenham_line(pb)
       {
       }
 
-      bresenham_line<T>* p_bresenham_line;
+      bresenham_line<T, TWork, TCoordinate>* p_bresenham_line;
     };
+
+    friend class const_iterator;
 
     //***************************************************
     /// Constructor.
     //***************************************************
     bresenham_line()
     {
-      initialise(TWork(0), TWork(0), TWork(0), TWork(0));
+      initialise(axis_type(0), axis_type(0), axis_type(0), axis_type(0));
     }
 
     //***************************************************
     /// Constructor.
     /// Supplied first and last coordinates
     //***************************************************
-    bresenham_line(value_type first_, value_type last_)
+    bresenham_line(coordinate_type first_, coordinate_type last_)
     {
       initialise(first_.x, first_.y, last_.x, last_.y);
     }
@@ -175,7 +179,7 @@ namespace etl
     /// Constructor.
     /// Supplied first and last coordinates
     //***************************************************
-    bresenham_line(TWork first_x, TWork first_y, TWork last_x, TWork last_y)
+    bresenham_line(axis_type first_x, axis_type first_y, axis_type last_x, axis_type last_y)
     {
       initialise(first_x, first_y, last_x, last_y);
     }
@@ -184,7 +188,7 @@ namespace etl
     /// Resets the line.
     /// Supplied first and last coordinates
     //***************************************************
-    void reset(value_type first_, value_type last_)
+    void reset(coordinate_type first_, coordinate_type last_)
     {
       initialise(first_.x, first_.y, last_.x, last_.y);
     }
@@ -193,7 +197,7 @@ namespace etl
     /// Resets the line.
     /// Supplied first and last coordinates
     //***************************************************
-    void reset(TWork first_x, TWork first_y, TWork last_x, TWork last_y)
+    void reset(axis_type first_x, axis_type first_y, axis_type last_x, axis_type last_y)
     {
       initialise(first_x, first_y, last_x, last_y);
     }
@@ -269,10 +273,10 @@ namespace etl
     //***************************************************
     /// Get the current number of generated points.
     //***************************************************
-    void initialise(TWork first_x, TWork first_y, TWork last_x, TWork last_y)
+    void initialise(axis_type first_x, axis_type first_y, axis_type last_x, axis_type last_y)
     {
-      first              = value_type(first_x, first_y);
-      last               = value_type(last_x,  last_y);
+      first              = coordinate_type(first_x, first_y);
+      last               = coordinate_type(last_x,  last_y);
       coordinate         = first;
       x_increment        = (last_x < first_x) ? -1 : 1;
       y_increment        = (last_y < first_y) ? -1 : 1;
@@ -312,11 +316,11 @@ namespace etl
         // Y is major axis.
         if (do_minor_increment)
         {
-          coordinate.x = TWork(coordinate.x + x_increment);
+          coordinate.x = coordinate.x + x_increment;
           balance -= dy;
         }
 
-        coordinate.y = TWork(coordinate.y + y_increment);
+        coordinate.y = coordinate.y + y_increment;
         balance += dx;
       }
       else
@@ -324,11 +328,11 @@ namespace etl
         // X is major axis.
         if (do_minor_increment)
         {
-          coordinate.y = TWork(coordinate.y + y_increment);
+          coordinate.y = coordinate.y + y_increment;
           balance -= dx;
         }
 
-        coordinate.x = TWork(coordinate.x + x_increment);
+        coordinate.x = coordinate.x + x_increment;
         balance += dy;
       }
 
@@ -338,16 +342,16 @@ namespace etl
     //***************************************************
     /// Get the current coordinate.
     //***************************************************
-    value_type get_coordinate() const
+    coordinate_type get_coordinate() const
     {
       return coordinate;
     }
 
     typedef TWork work_t;
 
-    value_type first;
-    value_type last;
-    value_type coordinate;
+    coordinate_type first;
+    coordinate_type last;
+    coordinate_type coordinate;
     work_t     x_increment;
     work_t     y_increment;
     work_t     dx;

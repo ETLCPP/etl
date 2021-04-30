@@ -129,9 +129,9 @@ namespace
         
       std::vector<Value*> actual;
 
-      for (BresenhamLinePointer::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -158,9 +158,9 @@ namespace
         
       std::vector<const Value*> actual;
 
-      for (BresenhamLinePointerConst::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -187,9 +187,9 @@ namespace
         
       std::vector<Value*> actual;
 
-      for (BresenhamLinePointer::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -216,9 +216,9 @@ namespace
         
       std::vector<Value*> actual;
 
-      for (BresenhamLinePointer::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -245,9 +245,9 @@ namespace
         
       std::vector<Value*> actual;
 
-      for (BresenhamLinePointer::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -274,9 +274,9 @@ namespace
         
       std::vector<Value*> actual;
 
-      for (BresenhamLinePointer::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -303,9 +303,9 @@ namespace
         
       std::vector<Value*> actual;
 
-      for (BresenhamLinePointer::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -332,9 +332,9 @@ namespace
         
       std::vector<Value*> actual;
 
-      for (BresenhamLinePointer::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -361,9 +361,9 @@ namespace
         
       std::vector<Value*> actual;
 
-      for (BresenhamLinePointer::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -390,9 +390,9 @@ namespace
         
       std::vector<Value*> actual;
 
-      for (BresenhamLinePointer::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -419,9 +419,9 @@ namespace
         
       std::vector<Value*> actual;
 
-      for (BresenhamLinePointer::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -448,9 +448,9 @@ namespace
         
       std::vector<Value*> actual;
 
-      for (BresenhamLinePointer::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -477,9 +477,9 @@ namespace
         
       std::vector<Value*> actual;
 
-      for (BresenhamLinePointer::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
@@ -511,9 +511,9 @@ namespace
 
       std::vector<Value*> actual;
 
-      for (BresenhamLinePointer::iterator itr = bl.begin(); itr != bl.end(); ++itr)
+      for (auto p : bl)
       {
-        actual.push_back(*itr);
+        actual.push_back(p);
       }
 
       CHECK_EQUAL(expected.size(), bl.size());
