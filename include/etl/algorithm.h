@@ -3080,6 +3080,28 @@ namespace etl
   }
 
   //***************************************************************************
+  /// Like std::for_each but passes the iterator to the function.
+  /// There is currently no STL equivalent.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator,
+            typename TUnaryFunction,
+            typename TUnaryPredicate>
+  TUnaryFunction for_each_iterator(TIterator       begin,
+                                   const TIterator end,
+                                   TUnaryFunction  function)
+  {
+    while (begin != end)
+    {
+      function(begin);
+
+      ++begin;
+    }
+
+    return function;
+  }
+
+  //***************************************************************************
   /// A safer form of std::transform where the transform returns when the first
   /// range end is reached.
   /// There is currently no STL equivalent.
