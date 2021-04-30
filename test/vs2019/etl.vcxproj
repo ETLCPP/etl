@@ -2622,6 +2622,7 @@
     <ClInclude Include="..\..\include\etl\bitset.h" />
     <ClInclude Include="..\..\include\etl\bit_stream.h" />
     <ClInclude Include="..\..\include\etl\bresenham_line.h" />
+    <ClInclude Include="..\..\include\etl\bresenham_line_pointer.h" />
     <ClInclude Include="..\..\include\etl\buffer_descriptors.h" />
     <ClInclude Include="..\..\include\etl\byte.h" />
     <ClInclude Include="..\..\include\etl\byte_stream.h" />
@@ -12411,6 +12412,7 @@
     <ClCompile Include="..\test_bit_stream_writer_big_endian.cpp" />
     <ClCompile Include="..\test_bit_stream_writer_little_endian.cpp" />
     <ClCompile Include="..\test_bresenham_line.cpp" />
+    <ClCompile Include="..\test_bresenham_line_pointer.cpp" />
     <ClCompile Include="..\test_buffer_descriptors.cpp" />
     <ClCompile Include="..\test_byte.cpp" />
     <ClCompile Include="..\test_byte_stream.cpp" />

@@ -894,6 +894,9 @@
     <ClInclude Include="..\..\include\etl\percentile.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\bresenham_line_pointer.h">
+      <Filter>ETL\Pseudo Containers</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\etl\private\variant_legacy.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
@@ -3411,6 +3414,9 @@
       <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
     </ClCompile>
     <ClCompile Include="..\test_percentile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bresenham_line_pointer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
