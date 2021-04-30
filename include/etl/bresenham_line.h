@@ -46,8 +46,9 @@ namespace etl
   /// line algorithm.
   /// T is the type for the etl::coordinate_2d value type.
   /// TWork is the internal working variable type. Default is int16_t.
+  /// TCoordinate is the coordinate type. Default is etl::coordinate_2d<TWork>
   //***************************************************************************
-  template <typename T, typename TWork = int16_t>
+  template <typename T, typename TWork = int16_t, typename TCoordinate = etl::coordinate_2d<TWork> >
   class bresenham_line
   {
   public:
@@ -55,13 +56,12 @@ namespace etl
     //***************************************************
     /// Standard container types.
     //***************************************************
-    typedef etl::coordinate_2d<T> value_type;
-    typedef size_t                size_type;
-    typedef ptrdiff_t             difference_type;
-    typedef value_type&           reference;
-    typedef const value_type&     const_reference;
-    typedef value_type*           pointer;
-    typedef const value_type*     const_pointer;
+    typedef TCoordinate       value_type;
+    typedef size_t            size_type;
+    typedef value_type&       reference;
+    typedef const value_type& const_reference;
+    typedef value_type*       pointer;
+    typedef const value_type* const_pointer;
 
     //***************************************************
     /// Const Iterator
@@ -159,14 +159,14 @@ namespace etl
     //***************************************************
     bresenham_line()
     {
-      initialise(T(0), T(0), T(0), T(0));
+      initialise(TWork(0), TWork(0), TWork(0), TWork(0));
     }
 
     //***************************************************
     /// Constructor.
     /// Supplied first and last coordinates
     //***************************************************
-    bresenham_line(etl::coordinate_2d<T> first_, etl::coordinate_2d<T> last_)
+    bresenham_line(value_type first_, value_type last_)
     {
       initialise(first_.x, first_.y, last_.x, last_.y);
     }
@@ -175,7 +175,7 @@ namespace etl
     /// Constructor.
     /// Supplied first and last coordinates
     //***************************************************
-    bresenham_line(T first_x, T first_y, T last_x, T last_y)
+    bresenham_line(TWork first_x, TWork first_y, TWork last_x, TWork last_y)
     {
       initialise(first_x, first_y, last_x, last_y);
     }
@@ -184,7 +184,7 @@ namespace etl
     /// Resets the line.
     /// Supplied first and last coordinates
     //***************************************************
-    void reset(etl::coordinate_2d<T> first_, etl::coordinate_2d<T> last_)
+    void reset(value_type first_, value_type last_)
     {
       initialise(first_.x, first_.y, last_.x, last_.y);
     }
@@ -193,7 +193,7 @@ namespace etl
     /// Resets the line.
     /// Supplied first and last coordinates
     //***************************************************
-    void reset(T first_x, T first_y, T last_x, T last_y)
+    void reset(TWork first_x, TWork first_y, TWork last_x, TWork last_y)
     {
       initialise(first_x, first_y, last_x, last_y);
     }
@@ -269,7 +269,7 @@ namespace etl
     //***************************************************
     /// Get the current number of generated points.
     //***************************************************
-    void initialise(T first_x, T first_y, T last_x, T last_y)
+    void initialise(TWork first_x, TWork first_y, TWork last_x, TWork last_y)
     {
       first              = value_type(first_x, first_y);
       last               = value_type(last_x,  last_y);
@@ -312,11 +312,11 @@ namespace etl
         // Y is major axis.
         if (do_minor_increment)
         {
-          coordinate.x = T(coordinate.x + x_increment);
+          coordinate.x = TWork(coordinate.x + x_increment);
           balance -= dy;
         }
 
-        coordinate.y = T(coordinate.y + y_increment);
+        coordinate.y = TWork(coordinate.y + y_increment);
         balance += dx;
       }
       else
@@ -324,11 +324,11 @@ namespace etl
         // X is major axis.
         if (do_minor_increment)
         {
-          coordinate.y = T(coordinate.y + y_increment);
+          coordinate.y = TWork(coordinate.y + y_increment);
           balance -= dx;
         }
 
-        coordinate.x = T(coordinate.x + x_increment);
+        coordinate.x = TWork(coordinate.x + x_increment);
         balance += dy;
       }
 
