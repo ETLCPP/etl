@@ -1107,6 +1107,9 @@
     <ClInclude Include="..\..\include\etl\bresenham_line_pointer.h">
       <Filter>ETL\Pseudo Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\singleton.h">
+      <Filter>ETL\Patterns</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
