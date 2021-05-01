@@ -2165,6 +2165,31 @@ namespace
     }
 
     //*************************************************************************
+    TEST(for_each_iterator)
+    {
+      int data[] = { 1, 8, 2, 7, 3, 6, 4, 5, 10, 9 };
+
+      struct Sum
+      {
+        void operator()(int* i)
+        {
+          value += *i;
+        }
+
+        Sum()
+          : value(0)
+        {
+        }
+
+        int value;
+      };
+
+      Sum sum;
+      sum = etl::for_each_iterator(std::begin(data), std::end(data), sum);
+      CHECK_EQUAL(std::accumulate(std::begin(data), std::end(data), 0), sum.value);
+    }
+
+    //*************************************************************************
     TEST(remove)
     {
       std::array<int, 10> data     = { 1, 8, 2, 7, 7, 7, 4, 5, 10, 9 };

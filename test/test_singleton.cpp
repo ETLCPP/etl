@@ -1,5 +1,3 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -28,47 +26,43 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_SINGLETON_INCLUDED
-#define ETL_SINGLETON_INCLUDED
+#include "unit_test_framework.h"
 
-#include "platform.h"
-#include "static_assert.h"
-#include "type_traits.h"
+#include "etl/singleton.h"
 
-namespace etl
+namespace
 {
-  //***************************************************************************
-  /// Implementation of the Singleton pattern.
-  //***************************************************************************
-  template <typename T>
-  class singleton
+  class Test : public etl::singleton<Test>
   {
   public:
-    
-    //*********************************
-    /// Get the single instance of T.
-    //*********************************
-    static T& get_instance()
+
+    using etl::singleton<Test>::get_instance;
+
+    Test()
+      : called(false)
     {
-      ETL_STATIC_ASSERT((etl::is_base_of<singleton<T>, T>::value), "T is not derived from etl::singleton<T>");
-      static T object;
-      return object;
     }
 
-  protected:
+    void test()
+    {
+      called = true;
+    }
 
-    singleton() {};
-    virtual ~singleton() {};
+    bool called;
+  };
 
-    // Deleted functions.
-    singleton(const singleton&) ETL_DELETE;
-    singleton& operator=(const singleton&) ETL_DELETE;
+  SUITE(test_singleton)
+  {      
+    //*************************************************************************
+    TEST(test_instance)
+    {
+      ::Test& test1 = ::Test::get_instance();
+      ::Test& test2 = ::Test::get_instance();
 
-#if ETL_CPP11_SUPPORTED
-    singleton(singleton&&) ETL_DELETE;
-    singleton& operator=(singleton&&) ETL_DELETE;
-#endif
+      CHECK(&test1 == &test2);
+
+      test1.test();
+      CHECK(test1.called);
+    }
   };
 }
-
-#endif
