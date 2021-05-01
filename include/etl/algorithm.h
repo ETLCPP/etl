@@ -2739,8 +2739,7 @@ namespace etl
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TIterator,
-            typename TUnaryFunction,
-            typename TUnaryPredicate>
+            typename TUnaryFunction>
   TUnaryFunction for_each_iterator(TIterator       begin,
                                    const TIterator end,
                                    TUnaryFunction  function)
