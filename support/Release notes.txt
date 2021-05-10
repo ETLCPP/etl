@@ -1152,6 +1152,10 @@ Fixed misspelled histogram class.
 Fixed incorrect histogram end() and cend() return values.
 
 ===============================================================================
+20.10.2
+Fixed misspelled histogram class.
+
+===============================================================================
 20.10.1
 Fixed incorrect histogram end() and cend() return values.
 
