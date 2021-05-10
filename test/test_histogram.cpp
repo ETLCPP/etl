@@ -44,7 +44,7 @@ namespace
   using IntRuntimeOffsetHistogram = etl::histogram<int32_t, int8_t, Size>;
   using IntOffset0Histogram       = etl::histogram<int32_t, int8_t, Size, 0>;
   using IntOffsetminus4Histogram  = etl::histogram<int32_t, int8_t, Size, Start>;
-  using StringHistogram           = etl::sparce_histogram<std::string, int8_t, Size>;
+  using StringHistogram           = etl::sparse_histogram<std::string, int8_t, Size>;
 
   //***********************************
   std::array<int8_t, 55> input1 = 

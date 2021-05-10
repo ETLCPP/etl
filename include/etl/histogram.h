@@ -346,10 +346,10 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Histogram for sparce keys.
+  /// Histogram for sparse keys.
   //***************************************************************************
   template<typename TKey, typename TCount, size_t Max_Size_>
-  class sparce_histogram : public etl::unary_function<TKey, void>
+  class sparse_histogram : public etl::unary_function<TKey, void>
   {
   private:
 
@@ -371,7 +371,7 @@ namespace etl
     //*********************************
     /// Constructor
     //*********************************
-    sparce_histogram()
+    sparse_histogram()
     {
     }
 
@@ -379,7 +379,7 @@ namespace etl
     /// Constructor
     //*********************************
     template <typename TIterator>
-    sparce_histogram(TIterator first, TIterator last)
+    sparse_histogram(TIterator first, TIterator last)
     {
       add(first, last);
     }
@@ -387,7 +387,7 @@ namespace etl
     //*********************************
     /// Copy constructor
     //*********************************
-    sparce_histogram(const sparce_histogram& other)
+    sparse_histogram(const sparse_histogram& other)
     {
       this->accumulator = other.accumulator;
     }
@@ -396,7 +396,7 @@ namespace etl
     //*********************************
     /// Move constructor
     //*********************************
-    sparce_histogram(sparce_histogram&& other)
+    sparse_histogram(sparse_histogram&& other)
     {
       accumulator = etl::move(other.accumulator);
     }
@@ -405,7 +405,7 @@ namespace etl
     //*********************************
     /// Copy assignment
     //*********************************
-    sparce_histogram& operator =(const sparce_histogram& rhs)
+    sparse_histogram& operator =(const sparse_histogram& rhs)
     {
       accumulator = rhs.accumulator;
       
@@ -416,7 +416,7 @@ namespace etl
     //*********************************
     /// Move assignment
     //*********************************
-    sparce_histogram& operator =(sparce_histogram&& rhs)
+    sparse_histogram& operator =(sparse_histogram&& rhs)
     {
       accumulator = etl::move(rhs.accumulator);
 
