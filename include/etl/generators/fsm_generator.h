@@ -92,12 +92,19 @@ namespace etl
   // For internal FSM use.
   typedef typename etl::larger_type<etl::message_id_t>::type fsm_internal_id_t;
 
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_,
-          typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void,
-          typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void,
-          typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void,
-          typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
-  class fsm_state;
+  /*[[[cog
+  import cog
+  cog.outl("template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_,")
+  cog.out("          ")
+  for n in range(1, int(Handlers)):
+    cog.out("typename T%s = void, " % n)
+    if n % 4 == 0:
+        cog.outl("")
+        cog.out("          ")
+  cog.outl("typename T%s = void>" % int(Handlers))
+  cog.outl("class fsm_state;")
+  ]]]*/
+  /*[[[end]]]*/
 
   //***************************************************************************
   /// Base exception class for FSM.
@@ -190,11 +197,18 @@ namespace etl
     /// Allows ifsm_state functions to be private.
     friend class etl::fsm;
     friend class etl::hfsm;
-    template <typename, typename, const etl::fsm_state_id_t,
-              typename, typename, typename, typename,
-              typename, typename, typename, typename,
-              typename, typename, typename, typename,
-              typename, typename, typename, typename >
+    /*[[[cog
+    import cog
+    cog.outl("  template <typename, typename, const etl::fsm_state_id_t,")
+    cog.out("            ")
+    for n in range(1, int(Handlers)):
+      cog.out("typename, ")
+      if n % 4 == 0:
+          cog.outl("")
+          cog.out("            ")
+    cog.outl("typename>")
+    ]]]*/
+    /*[[[end]]]*/
     friend class etl::fsm_state;
 
     //*******************************************
@@ -207,6 +221,7 @@ namespace etl
 
     //*******************************************
     /// Adds a child to this state.
+    /// Only of use when part of an HFSM.
     //*******************************************
     void add_child_state(etl::ifsm_state& state)
     {
@@ -222,6 +237,7 @@ namespace etl
 
     //*******************************************
     /// Adds a list of child states.
+    /// Only of use when part of an HFSM.
     //*******************************************
     template <typename TSize>
     void set_child_states(etl::ifsm_state** state_list, TSize size)
@@ -234,30 +250,6 @@ namespace etl
         ETL_ASSERT(state_list[i] != ETL_NULLPTR, ETL_ERROR(etl::fsm_null_state_exception));
         add_child_state(*state_list[i]);
       }
-    }
-
-    //*******************************************
-    /// Get the parent state for this state.
-    //*******************************************
-    etl::ifsm_state* get_parent_state() const
-    {
-      return p_parent;
-    }
-
-    //*******************************************
-    /// Get the active child state for this state.
-    //*******************************************
-    etl::ifsm_state* get_active_child_state() const
-    {
-      return p_active_child;
-    }
-
-    //*******************************************
-    /// Get the default child state for this state.
-    //*******************************************
-    etl::ifsm_state* get_default_child_state() const
-    {
-      return p_default_child;
     }
 
   protected:

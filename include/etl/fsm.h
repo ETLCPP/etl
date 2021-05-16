@@ -81,10 +81,10 @@ namespace etl
   typedef typename etl::larger_type<etl::message_id_t>::type fsm_internal_id_t;
 
   template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_,
-          typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void,
-          typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void,
-          typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void,
-          typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
+            typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void, 
+            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void, 
+            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void, 
+            typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
   class fsm_state;
 
   //***************************************************************************
@@ -179,10 +179,10 @@ namespace etl
     friend class etl::fsm;
     friend class etl::hfsm;
     template <typename, typename, const etl::fsm_state_id_t,
-              typename, typename, typename, typename,
-              typename, typename, typename, typename,
-              typename, typename, typename, typename,
-              typename, typename, typename, typename >
+              typename, typename, typename, typename, 
+              typename, typename, typename, typename, 
+              typename, typename, typename, typename, 
+              typename, typename, typename, typename>
     friend class etl::fsm_state;
 
     //*******************************************
