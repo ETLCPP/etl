@@ -38,6 +38,7 @@ namespace etl
 {
   //***************************************************************************
   /// Adds successor traits to a class.
+  /// Also known as 'Chain Of Responsibility'.
   //***************************************************************************
   template <typename T>
   class successor
