@@ -1152,6 +1152,10 @@ Fixed misspelled histogram class.
 Fixed incorrect histogram end() and cend() return values.
 
 ===============================================================================
+20.10.3
+Fixed etl::fsm generator for non-default number of message types.
+
+===============================================================================
 20.10.2
 Fixed misspelled histogram class.
 
