@@ -965,7 +965,7 @@ namespace etl
     //*************************************************************************
     /// Protected constructor.
     //*************************************************************************
-    icircular_buffer<T>(pointer pbuffer_, size_type max_length)
+    icircular_buffer(pointer pbuffer_, size_type max_length)
       : circular_buffer_base(max_length + 1U)
       , pbuffer(pbuffer_)
     {

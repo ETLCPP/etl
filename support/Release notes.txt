@@ -1,4 +1,8 @@
 ===============================================================================
+20.10.4
+Fixed cross compiler compatibility for etl::circular_buffer.
+
+===============================================================================
 20.10.3
 Fixed etl::fsm generator for non-default number of message types.
 
