@@ -2627,6 +2627,7 @@
     <ClInclude Include="..\..\include\etl\byte.h" />
     <ClInclude Include="..\..\include\etl\byte_stream.h" />
     <ClInclude Include="..\..\include\etl\callback_timer.h" />
+    <ClInclude Include="..\..\include\etl\center_of_gravity.h" />
     <ClInclude Include="..\..\include\etl\callback_timer_atomic.h" />
     <ClInclude Include="..\..\include\etl\callback_timer_interrupt.h" />
     <ClInclude Include="..\..\include\etl\callback_timer_locked.h" />
@@ -12417,6 +12418,7 @@
     <ClCompile Include="..\test_byte.cpp" />
     <ClCompile Include="..\test_byte_stream.cpp" />
     <ClCompile Include="..\test_callback_service.cpp" />
+    <ClCompile Include="..\test_center_of_gravity.cpp" />
     <ClCompile Include="..\test_callback_timer_atomic.cpp" />
     <ClCompile Include="..\test_callback_timer_interrupt.cpp" />
     <ClCompile Include="..\test_callback_timer_locked.cpp" />
