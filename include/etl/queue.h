@@ -584,7 +584,8 @@ namespace etl
 
   public:
 
-    typedef typename base_t::size_type size_type;
+    typedef typename base_t::size_type                                                  size_type;
+    typedef typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type container_type;
 
     ETL_STATIC_ASSERT((SIZE <= etl::integral_limits<size_type>::max), "Size too large for memory model");
 
@@ -657,7 +658,7 @@ namespace etl
   private:
 
     /// The uninitialised buffer of T used in the queue.
-    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[SIZE];
+    container_type buffer[SIZE];
   };
 }
 
