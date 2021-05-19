@@ -1255,6 +1255,7 @@
     <ClInclude Include="..\..\include\etl\bresenham_line_pointer.h" />
     <ClInclude Include="..\..\include\etl\buffer_descriptors.h" />
     <ClInclude Include="..\..\include\etl\callback_timer.h" />
+    <ClInclude Include="..\..\include\etl\center_of_gravity.h" />
     <ClInclude Include="..\..\include\etl\circular_buffer.h" />
     <ClInclude Include="..\..\include\etl\combinations.h" />
     <ClInclude Include="..\..\include\etl\compare.h" />
@@ -4427,6 +4428,7 @@
     <ClCompile Include="..\test_bresenham_line_pointer.cpp" />
     <ClCompile Include="..\test_buffer_descriptors.cpp" />
     <ClCompile Include="..\test_callback_service.cpp" />
+    <ClCompile Include="..\test_center_of_gravity.cpp" />
     <ClCompile Include="..\test_circular_buffer.cpp" />
     <ClCompile Include="..\test_circular_buffer_external_buffer.cpp" />
     <ClCompile Include="..\test_compiler_settings.cpp" />

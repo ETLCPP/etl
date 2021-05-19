@@ -95,12 +95,6 @@ namespace
     return &const_image[y][x];
   }
 
-  // Convert a coordinate to an expected value.
-  constexpr Value GetValue(Value x, Value y)
-  {
-    return (x + (y * 10));
-  }
-
   Value* origin             = &image[0][0];
   const Value* const_origin = &const_image[0][0];
   constexpr size_t stride   = image.size();

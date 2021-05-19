@@ -44,7 +44,7 @@ namespace etl
     typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type type;
   };
 
-    //*****************************************************************************
+  //*****************************************************************************
   /// A set of rounding algorithms for scaled integrals.
   /// \tparam T       The integral type.
   /// \tparam SCALING The scaling factor.

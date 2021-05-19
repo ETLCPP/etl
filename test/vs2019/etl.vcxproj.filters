@@ -106,6 +106,9 @@
     <Filter Include="Source Files\Scripts">
       <UniqueIdentifier>{562466b5-677d-4448-9e9e-f70805cd71ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Graphical">
+      <UniqueIdentifier>{e2e177cb-de61-4c55-90ce-56b8b60343fa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -1109,6 +1112,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\singleton.h">
       <Filter>ETL\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\center_of_gravity.h">
+      <Filter>ETL\Graphical</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2535,6 +2541,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_singleton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_center_of_gravity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
