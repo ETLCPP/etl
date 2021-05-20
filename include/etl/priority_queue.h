@@ -418,6 +418,7 @@ namespace etl
   public:
 
     typedef typename TContainer::size_type size_type;
+    typedef TContainer                     container_type;
 
     static ETL_CONSTANT size_type MAX_SIZE = size_type(SIZE);
 
