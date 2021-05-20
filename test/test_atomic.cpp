@@ -725,14 +725,14 @@ namespace
 #endif
 
     etl::atomic_int32_t atomic_value = 0U;
-    etl::atomic<int>    start = false;
+    etl::atomic<int>    start = 0;
 
     void thread1()
     {
       RAISE_THREAD_PRIORITY;
       FIX_PROCESSOR_AFFINITY1;
 
-      while (!start.load());
+      while (start.load() == 0);
 
       for (int i = 0; i < 10000000; ++i)
       {
@@ -745,7 +745,7 @@ namespace
       RAISE_THREAD_PRIORITY;
       FIX_PROCESSOR_AFFINITY2;
 
-      while (!start.load());
+      while (start.load() == 0);
 
       for (int i = 0; i < 10000000; ++i)
       {
@@ -758,7 +758,7 @@ namespace
       std::thread t1(thread1);
       std::thread t2(thread2);
 
-      start.store(true);
+      start.store(1);
 
       t1.join();
       t2.join();

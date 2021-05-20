@@ -56,14 +56,14 @@ namespace etl
     //***************************************************
     /// Standard container types.
     //***************************************************
-    typedef TCoordinate                      value_type;
-    typedef TCoordinate                      coordinate_type;
-    typedef typename TCoordinate::value_type axis_type;
-    typedef size_t                           size_type;
-    typedef value_type&                      reference;
-    typedef const value_type&                const_reference;
-    typedef value_type*                      pointer;
-    typedef const value_type*                const_pointer;
+    typedef TCoordinate                     value_type;
+    typedef TCoordinate                     coordinate_type;
+    typedef typename TCoordinate::axis_type axis_type;
+    typedef size_t                          size_type;
+    typedef value_type&                     reference;
+    typedef const value_type&               const_reference;
+    typedef value_type*                     pointer;
+    typedef const value_type*               const_pointer;
 
     //***************************************************
     /// Const Iterator

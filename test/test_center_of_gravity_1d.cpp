@@ -28,55 +28,36 @@
 
 #include "unit_test_framework.h"
 
-#include "etl/center_of_gravity.h"
+#include "etl/center_of_gravity_1d.h"
 #include "etl/utility.h"
 #include "etl/scaled_rounding.h"
+#include "etl/utility.h"
 
 #include <vector>
 
 namespace
 {
-  using Cog = etl::center_of_gravity<int, int, uint8_t>;
+  using Cog = etl::center_of_gravity_1d<int, int>;
 
   //***********************************
-  struct Point
-  {    
-    int x;
-    int y;
-    uint8_t value;
+  using Pixel = etl::pair<int, uint8_t>;
+
+  //***********************************
+  std::vector<Pixel> pixels =
+  {
+    { 31, 1 }, { 40, 1 }, { 31, 1 }, { 40, 1 }, 
+    { 21, 2 }, { 21, 2 }, { 50, 2 }, { 50, 2 }, 
   };
 
-  //***********************************
-  std::vector<Point> points =
-  {
-    { 31, 21, 1 }, { 40, 21, 1 }, { 31, 30, 1 }, { 40, 30, 1 }, 
-    { 21, 11, 2 }, { 21, 40, 2 }, { 50, 11, 2 }, { 50, 40, 2 }, 
-  };
-
-  //***********************************
-  struct Proxy
-  {
-    void operator()(Point point)
-    {
-      cog(point.x, point.y, point.value);
-    }
-
-    Cog& cog;
-  }; 
-
-  SUITE(test_center_of_gravity)
+  SUITE(test_center_of_gravity_1d)
   {
     //*************************************************************************
     TEST(test_default_constructor)
     {
       Cog cog;
 
-      CHECK_EQUAL(0,   cog.get_x<int>());
-      CHECK_EQUAL(0,   cog.get_y<int>());
-      CHECK_EQUAL(0.0, cog.get_x<double>());
-      CHECK_EQUAL(0.0, cog.get_y<double>());
-      CHECK((std::pair<int, int>(0, 0))     == (cog.get<std::pair<int, int>, int>()));
-      CHECK((etl::coordinate_2d<int>(0, 0)) == (cog.get<etl::coordinate_2d<int>>()));
+      CHECK_EQUAL(0,   cog.get<int>());
+      CHECK_EQUAL(0.0, cog.get<double>());
     }
 
     //*************************************************************************
@@ -86,61 +67,45 @@ namespace
 
       for (int i = 0; i < 10; ++i)
       {
-        cog(1, 2, 3);
+        cog(1, 2);
       }
 
-      CHECK_EQUAL(1,   cog.get_x<int>());
-      CHECK_EQUAL(2,   cog.get_y<int>());
-      CHECK_EQUAL(1.0, cog.get_x<double>());
-      CHECK_EQUAL(2.0, cog.get_y<double>());
-      CHECK((std::pair<int, int>(1, 2))           == (cog.get<std::pair<int, int>, int>()));
-      CHECK((std::pair<double, double>(1.0, 2.0)) == (cog.get<std::pair<double, double>, double>()));
-      CHECK((etl::coordinate_2d<int>(1, 2))       == (cog.get<etl::coordinate_2d<int>>()));
-      CHECK((etl::coordinate_2d<double>(1, 2))    == (cog.get<etl::coordinate_2d<double>>()));
+      CHECK_EQUAL(1,   cog.get<int>());
+      CHECK_EQUAL(1.0, cog.get<double>());
     }
 
     //*************************************************************************
     TEST(test_vector_of_coordinates)
     {
       Cog cog;
-      Proxy proxy{ cog };
-      using coordi = etl::coordinate_2d<int>;
-      using coordd = etl::coordinate_2d<double>;
+      using coordi = etl::pair<int,    uint8_t>;
+      using coordd = etl::pair<double, uint8_t>;
 
-      for (const auto& point : points)
+      for (const auto& pixel : pixels)
       {
-        proxy(point);
+        cog(pixel.first, pixel.second);
       }
 
-      CHECK_EQUAL(35,   cog.get_x<int>());
-      CHECK_EQUAL(25,   cog.get_y<int>());
-
-      CHECK_EQUAL(35.5, cog.get_x<double>());
-      CHECK_EQUAL(25.5, cog.get_y<double>());
-
-      CHECK((coordi(35, 25))     == (cog.get<coordi>()));
-      CHECK((coordd(35.5, 25.5)) == (cog.get<coordd>()));
+      CHECK_EQUAL(35,   cog.get<int>());
+      CHECK_EQUAL(35.5, cog.get<double>());
     }
 
     //*************************************************************************
     TEST(test_vector_of_coordinates_with_round_half_up)
     {
       Cog cog;
-      Proxy proxy{ cog };
       using coord = etl::coordinate_2d<int>;
 
-      for (const auto& point : points)
+      for (const auto& pixel : pixels)
       {
-        proxy(point);
+        cog(pixel.first, pixel.second);
       }
 
       constexpr int Scale = 10;
 
-      int(*rounding)(int) = &etl::round_half_up_scaled<Scale, int>;
+      auto rounding = &etl::round_half_up_scaled<Scale, int>;
 
-      CHECK_EQUAL(36, (cog.get_x<int, Scale>(rounding)));
-      CHECK_EQUAL(26, (cog.get_y<int, Scale>(rounding)));
-      CHECK((coord(36, 26)) == (cog.get<coord, coord::value_type, Scale>(rounding)));
+      CHECK_EQUAL(36, (cog.get<int, Scale>(rounding)));
     }
   };
 }
