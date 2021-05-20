@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_CENTER_OF_GRAVITY_INCLUDED
-#define ETL_CENTER_OF_GRAVITY_INCLUDED
+#ifndef ETL_CENTER_OF_GRAVITY_1D_INCLUDED
+#define ETL_CENTER_OF_GRAVITY_1D_INCLUDED
 
 #include "platform.h"
 #include "functional.h"
@@ -41,21 +41,19 @@ namespace etl
   //***************************************************************************
   /// 
   //***************************************************************************
-  template <typename TSum, typename TProduct, typename TSample>
-  class center_of_gravity
+  template <typename TSum, typename TProduct>
+  class center_of_gravity_1d
   {
   public:
 
     typedef TSum     sum_type;
     typedef TProduct product_type;
-    typedef TSample  sample_type;
 
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    center_of_gravity()
-      : x_product(TProduct(0))
-      , y_product(TProduct(0))
+    center_of_gravity_1d()
+      : product(TProduct(0))
       , sum(TSum(0))
     {
 
@@ -65,10 +63,9 @@ namespace etl
     /// Add a new coordinate to the calculation.
     //*************************************************************************
     template <typename TAxis, typename TValue>
-    void add(TAxis x, TAxis y, TValue value)
+    void add(TAxis x, TValue value = TValue(1))
     {
-      x_product += (x * value);
-      y_product += (y * value);
+      product += (x * value);
       sum       += value;
     }
 
@@ -76,17 +73,18 @@ namespace etl
     /// Added a new coordinate to the calculation.
     //*************************************************************************
     template <typename TAxis, typename TValue>
-    void operator()(TAxis x, TAxis y, TValue value)
+    void operator()(TAxis x, TValue value = TValue(1))
     {
-      add(x, y, value);
+      add(x, value);
     }
 
     //*************************************************************************
     /// Get the x coordinate of the center of gravity.
+    /// Floating point.
     //*************************************************************************
     template <typename T>
     typename etl::enable_if<etl::is_floating_point<T>::value, T>::type
-    get_x() const
+    get() const
     {
       if (sum == T(0))
       {
@@ -94,13 +92,17 @@ namespace etl
       }
       else
       {
-        return T(x_product) / T(sum);
+        return T(product) / T(sum);
       }
     }
 
+    //*************************************************************************
+    /// Get the x coordinate of the center of gravity.
+    /// Not floating point.
+    //*************************************************************************
     template <typename T>
     typename etl::enable_if<!etl::is_floating_point<T>::value, T>::type
-    get_x() const
+    get() const
     {
       if (sum == T(0))
       {
@@ -108,13 +110,17 @@ namespace etl
       }
       else
       {
-        return static_cast<T>(x_product / sum);
+        return static_cast<T>(product / sum);
       }
     }
 
+    //*************************************************************************
+    /// Get the x coordinate of the center of gravity.
+    /// Not floating point, rounding.
+    //*************************************************************************
     template <typename T, typename etl::scaled_rounding_t<T>::type Scale>
     typename etl::enable_if<!etl::is_floating_point<T>::value, T>::type
-    get_x(T(*scaled_rounding)(T)) const
+    get(T(*scaled_rounding)(T)) const
     {
       if (sum == T(0))
       {
@@ -122,68 +128,8 @@ namespace etl
       }
       else
       {
-        return static_cast<T>(scaled_rounding((Scale * x_product) / sum) / Scale);
+        return static_cast<T>(scaled_rounding((Scale * product) / sum) / Scale);
       }
-    }
-
-    //*************************************************************************
-    /// Get the y coordinate of the center of gravity.
-    //*************************************************************************
-    template <typename T>
-    typename etl::enable_if<etl::is_floating_point<T>::value, T>::type
-    get_y() const
-    {
-      if (sum == T(0))
-      {
-        return T(0);
-      }
-      else
-      {
-        return T(y_product) / T(sum);
-      }
-    }
-
-    template <typename T>
-    typename etl::enable_if<!etl::is_floating_point<T>::value, T>::type
-    get_y() const
-    {
-      if (sum == T(0))
-      {
-        return T(0);
-      }
-      else
-      {
-        return static_cast<T>(y_product / sum);
-      }
-    }
-
-    template <typename T, typename etl::scaled_rounding_t<T>::type Scale>
-    typename etl::enable_if<!etl::is_floating_point<T>::value, T>::type
-    get_y(T(*scaled_rounding)(T)) const
-    {
-      if (sum == T(0))
-      {
-        return T(0);
-      }
-      else
-      {
-        return static_cast<T>(scaled_rounding((Scale * y_product) / sum) / Scale);
-      }
-    }
-         
-    //*************************************************************************
-    /// Get the coordinate of the center of gravity.
-    //*************************************************************************
-    template <typename TCoordinate, typename TAxis = typename TCoordinate::value_type>
-    TCoordinate get() const
-    {
-      return TCoordinate(get_x<TAxis>(), get_y<TAxis>());
-    }
-
-    template <typename TCoordinate, typename TAxis = typename TCoordinate::value_type, typename etl::scaled_rounding_t<TAxis>::type Scale>
-    TCoordinate get(TAxis(*scaled_rounding)(TAxis)) const
-    {
-      return TCoordinate(get_x<TAxis, Scale>(scaled_rounding), get_y<TAxis, Scale>(scaled_rounding));
     }
 
     //*************************************************************************
@@ -191,15 +137,13 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-      x_product = TProduct(0);
-      y_product = TProduct(0);
+      product = TProduct(0);
       sum       = TSum(0);
     }
 
   private:
 
-    TProduct x_product;
-    TProduct y_product;
+    TProduct product;
     TSum     sum;
   };
 }

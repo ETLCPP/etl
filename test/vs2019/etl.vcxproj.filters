@@ -1113,7 +1113,16 @@
     <ClInclude Include="..\..\include\etl\singleton.h">
       <Filter>ETL\Patterns</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\center_of_gravity.h">
+    <ClInclude Include="..\..\include\etl\center_of_gravity_2d.h">
+      <Filter>ETL\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\center_of_gravity_1d.h">
+      <Filter>ETL\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\center_of_gravity_3d.h">
+      <Filter>ETL\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\coordinate.h">
       <Filter>ETL\Graphical</Filter>
     </ClInclude>
   </ItemGroup>
@@ -2543,7 +2552,16 @@
     <ClCompile Include="..\test_singleton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_center_of_gravity.cpp">
+    <ClCompile Include="..\test_center_of_gravity_2d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_coordinate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_center_of_gravity_1d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_center_of_gravity_3d.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
