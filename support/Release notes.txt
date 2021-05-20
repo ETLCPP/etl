@@ -1,4 +1,8 @@
 ===============================================================================
+20.10.5
+Added container_type to etl::stack, etl::queue and etl::priority_queue.
+
+===============================================================================
 20.10.4
 Fixed cross compiler compatibility for etl::circular_buffer.
 
