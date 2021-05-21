@@ -112,7 +112,8 @@ namespace etl
     /// Constructor.
     //***************************************************************************
     optional()
-      : valid(false)
+      : storage()
+      , valid(false)
     {
     }
 
@@ -120,7 +121,8 @@ namespace etl
     /// Constructor with nullopt.
     //***************************************************************************
     optional(etl::nullopt_t)
-      : valid(false)
+      : storage()
+      , valid(false)
     {
     }
 
