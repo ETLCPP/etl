@@ -1112,6 +1112,11 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\mem_cast.h">
       <Filter>ETL\Utilities</Filter>
+    <ClInclude Include="..\..\include\etl\private\variant_legacy.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\variant_new.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\experimental\mem_cast.h">
       <Filter>ETL\Utilities</Filter>
