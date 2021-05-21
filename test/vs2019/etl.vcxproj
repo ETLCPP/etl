@@ -1353,6 +1353,8 @@
     <ClInclude Include="..\..\include\etl\private\crc_implementation.h" />
     <ClInclude Include="..\..\include\etl\private\crc_parameters.h" />
     <ClInclude Include="..\..\include\etl\private\to_string_helper.h" />
+    <ClInclude Include="..\..\include\etl\private\variant_legacy.h" />
+    <ClInclude Include="..\..\include\etl\private\variant_new.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv7.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv7_no_stl.h" />
     <ClInclude Include="..\..\include\etl\profiles\clang_generic.h" />
