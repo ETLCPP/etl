@@ -308,6 +308,28 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_assignment_incorrect_type_exception)
+    {
+      std::string text("Some Text");
+      test_variant_3a variant(text);
+
+      int i;
+      CHECK_THROW(etl::get<int>(variant), etl::variant_incorrect_type_exception);
+      (void)i;
+    }
+
+    //*************************************************************************
+    TEST(test_self_assignment)
+    {
+      test_variant_3a variant;
+
+      variant = 1;
+      variant = variant;
+
+      CHECK_EQUAL(1, etl::get<int>(variant));
+    }
+
+    //*************************************************************************
     TEST(test_member_swap_variants)
     {
       std::string text("Some Text");
@@ -342,105 +364,25 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_assignment_incorrect_type_exception)
+    TEST(test_emplace)
     {
-      std::string text("Some Text");
-      test_variant_3a variant(text);
+      test_variant_emplace variant;
 
-      int i;
-      CHECK_THROW(etl::get<int>(variant), etl::variant_incorrect_type_exception);
-      (void)i;
+      variant.emplace<D1>("1");
+      CHECK(etl::holds_alternative<D1>(variant));
+      CHECK_EQUAL(D1("1"), etl::get<D1>(variant));
+
+      variant.emplace<D2>("1", "2");
+      CHECK(etl::holds_alternative<D2>(variant));
+      CHECK_EQUAL(D2("1", "2"), etl::get<D2>(variant));
+
+      variant.emplace<D3>("1", "2", "3");
+      CHECK(etl::holds_alternative<D3>(variant));
+      CHECK_EQUAL(D3("1", "2", "3"), etl::get<D3>(variant));
+
+      variant.emplace<D4>("1", "2", "3", "4");
+      CHECK(etl::holds_alternative<D4>(variant));
+      CHECK_EQUAL(D4("1", "2", "3", "4"), etl::get<D4>(variant));
     }
-
-    ////*************************************************************************
-    //TEST(test_get)
-    //{
-    //  test_variant_3a variant;
-
-    //  variant = 1;
-    //  CHECK_EQUAL(1, variant.get<int>());
-
-    //  variant = 'a';
-    //  CHECK_EQUAL('a', variant.get<char>());
-
-    //  variant = std::string("Some Text");
-    //  CHECK_EQUAL(std::string("Some Text"), variant.get<std::string>());
-    //}
-
-    ////*************************************************************************
-    //TEST(test_get_const)
-    //{
-    //  test_variant_3a variant;
-
-    //  variant = 1;
-    //  const test_variant_3a cvariant1(variant);
-    //  CHECK_EQUAL(1, cvariant1.get<int>());
-
-    //  variant = 'a';
-    //  const test_variant_3a cvariant2(variant);
-    //  CHECK_EQUAL('a', cvariant2.get<char>());
-
-    //  variant = std::string("Some Text");
-    //  const test_variant_3a cvariant3(variant);
-    //  CHECK_EQUAL(std::string("Some Text"), cvariant3.get<std::string>());
-    //}
-
-    ////*************************************************************************
-    //TEST(test_self_assignment)
-    //{
-    //  test_variant_3a variant;
-
-    //  variant = 1;
-    //  variant = variant;
-
-    //  CHECK_EQUAL(1, variant.get<int>());
-    //}
-
-    ////*************************************************************************
-    //TEST(TestGetException)
-    //{
-    //  test_variant_3a variant;
-    //  variant = 1;
-
-    //  char c;
-    //  CHECK_THROW(c = variant.get<char>(), etl::variant_incorrect_type_exception);
-    //  (void)c;
-    //}
-
-    ////*************************************************************************
-    //TEST(TestPolymorphic)
-    //{
-    //  test_variant_polymorphic variant;
-
-    //  variant = derived_1();
-    //  variant.upcast<base>().set();
-    //  CHECK_EQUAL(1, variant.get<derived_1>().value);
-
-    //  variant = derived_2();
-    //  variant.upcast<base>().set();
-    //  CHECK_EQUAL(2, variant.get<derived_2>().value);
-    //}
-
-    ////*************************************************************************
-    //TEST(TestEmplace)
-    //{
-    //  test_variant_emplace variant;
-
-    //  variant.emplace<D1>("1");
-    //  CHECK(variant.is_type<D1>());
-    //  CHECK_EQUAL(D1("1"), variant.get<D1>());
-
-    //  variant.emplace<D2>("1", "2");
-    //  CHECK(variant.is_type<D2>());
-    //  CHECK_EQUAL(D2("1", "2"), variant.get<D2>());
-
-    //  variant.emplace<D3>("1", "2", "3");
-    //  CHECK(variant.is_type<D3>());
-    //  CHECK_EQUAL(D3("1", "2", "3"), variant.get<D3>());
-
-    //  variant.emplace<D4>("1", "2", "3", "4");
-    //  CHECK(variant.is_type<D4>());
-    //  CHECK_EQUAL(D4("1", "2", "3", "4"), variant.get<D4>());
-    //}
   };
 }

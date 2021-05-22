@@ -58,7 +58,15 @@ namespace etl
 {
   static_assert(ETL_CPP11_SUPPORTED, "Only supported for C++11 or above");
 
-  static size_t variant_npos = etl::integral_limits<size_t>::max;
+  constexpr size_t variant_npos = etl::integral_limits<size_t>::max;
+
+  //***************************************************************************
+  /// Monostate for variants.
+  ///\ingroup variant
+  //***************************************************************************
+  struct monostate 
+  {
+  };
 
   //***************************************************************************
   /// Base exception for the variant class.
@@ -193,11 +201,13 @@ namespace etl
     template <typename T, typename... TArgs>
     T& emplace(TArgs&&... args)
     {
-      static_assert(etl::is_one_of<T, TTypes>::value, "Unsupported type");
+      static_assert(etl::is_one_of<T, TTypes...>::value, "Unsupported type");
 
       T temp(etl::forward<TArgs>(args)...);
 
       operation(action_type::Destruct, data, nullptr);
+      
+      operation = do_operation<T>;
       operation(action_type::Construct, data, &temp);
 
       type_id = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
@@ -292,7 +302,7 @@ namespace etl
     template <typename T>
     const T& get() const
     {
-      static_assert(etl::is_one_of<T, TTypes>::value, "Unsupported type");
+      static_assert(etl::is_one_of<T, TTypes...>::value, "Unsupported type");
       ETL_ASSERT(is_type<T>(), ETL_ERROR(variant_incorrect_type_exception));
 
       return static_cast<const T&>(data);
@@ -476,6 +486,56 @@ namespace etl
   }
 
   //***************************************************************************
+  /// get_if
+  //***************************************************************************
+  template < size_t Index, class... Types >
+  constexpr etl::add_pointer_t<etl::variant_alternative_t<Index, etl::variant<Types...>>>
+    get_if(etl::variant<Types...>* pv) noexcept
+  {
+    if ((pv != nullptr) && (pv->index() == Index))
+    {
+      return &etl::get<Index>(*pv);
+    }
+    else
+    {
+      return nullptr;
+    }
+  }
+
+  //***********************************
+  template< size_t Index, class... Types >
+  constexpr etl::add_pointer_t<const etl::variant_alternative_t<Index, etl::variant<Types...>>>
+    get_if(const etl::variant<Types...>* pv) noexcept
+  {
+    if ((pv != nullptr) && (pv->index() == Index))
+    {
+      return &etl::get<Index>(*pv);
+    }
+    else
+    {
+      return nullptr;
+    }
+  }
+
+  //***********************************
+  template< class T, class... Types >
+  constexpr etl::add_pointer_t<T> get_if(etl::variant<Types...>* pv) noexcept
+  {
+    constexpr size_t Index = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
+
+    return etl::get_if<Index>(pv);
+  }
+
+  //***********************************
+  template< class T, class... Types >
+  constexpr etl::add_pointer_t<const T> get_if(const etl::variant<Types...>* pv) noexcept
+  {
+    constexpr size_t Index = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
+
+    return etl::get_if<Index>(pv);
+  }
+
+  //***************************************************************************
   /// swap
   //***************************************************************************
   template <typename... TTypes>
@@ -483,4 +543,23 @@ namespace etl
   {
     lhs.swap(rhs);
   }
+
+  //***************************************************************************
+  /// variant_size
+  //***************************************************************************
+  template <typename T>
+  struct variant_size;
+  
+  template <typename... TTypes>
+  struct variant_size<etl::variant<TTypes...>>
+    : etl::integral_constant<size_t, sizeof...(TTypes)>
+  {
+  };
+
+  template <typename T> 
+  struct variant_size<const T>
+    : etl::integral_constant<size_t, variant_size<T>::value>
+  {
+  };
+
 }
