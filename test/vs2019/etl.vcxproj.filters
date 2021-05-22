@@ -2551,6 +2551,9 @@
     <ClCompile Include="..\sanity-check\mem_cast.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_variant_new.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
