@@ -77,7 +77,7 @@ namespace etl
 
       static_assert(etl::is_one_of<T, TTypes...>::value, "T is not in parameter pack");
 
-      /// The idex value.
+      /// The index value.
       static constexpr size_t value = index_of_type_helper<T, TTypes...>::value - 1;
     };
 

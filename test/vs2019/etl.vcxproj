@@ -4946,7 +4946,8 @@
     <ClCompile Include="..\test_user_type.cpp" />
     <ClCompile Include="..\test_utility.cpp" />
     <ClCompile Include="..\test_variance.cpp" />
-    <ClCompile Include="..\test_variant.cpp" />
+    <ClCompile Include="..\test_variant_legacy.cpp" />
+    <ClCompile Include="..\test_variant_new.cpp" />
     <ClCompile Include="..\test_variant_pool.cpp" />
     <ClCompile Include="..\test_vector.cpp" />
     <ClCompile Include="..\test_vector_external_buffer.cpp" />

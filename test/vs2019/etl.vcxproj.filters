@@ -1160,7 +1160,7 @@
     <ClCompile Include="..\test_bitset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_variant.cpp">
+    <ClCompile Include="..\test_variant_legacy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_smallest.cpp">
@@ -2523,6 +2523,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_hfsm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_variant_new.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

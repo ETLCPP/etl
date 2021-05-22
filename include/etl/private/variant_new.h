@@ -40,7 +40,7 @@ SOFTWARE.
 #include "../static_assert.h"
 #include "../alignment.h"
 #include "../error_handler.h"
-#include "../null_type.h"
+#include "../parameter_pack.h"
 #include "../placement_new.h"
 
 #if defined(ETL_COMPILER_KEIL)
@@ -56,26 +56,9 @@ SOFTWARE.
 
 namespace etl
 {
-  namespace private_variant
-  {
-    //*************************************************************************
-    /// Placeholder for unused template parameters.
-    /// This class is never instantiated.
-    //*************************************************************************
-    template <const size_t ID>
-    struct no_type
-    {
-    };
+  static_assert(ETL_CPP11_SUPPORTED, "Only supported for C++11 or above");
 
-    template <typename T, typename... Ts>
-    struct index_of_type;
-
-    template <typename T, typename... Ts>
-    struct index_of_type<T, T, Ts...> : etl::integral_constant<size_t, 0> {};
-
-    template <typename T, typename U, typename... Ts>
-    struct index_of_type<T, U, Ts...> : etl::integral_constant<size_t, 1 + index_of<T, Ts...>::value> {};
-  }
+  static size_t variant_npos = etl::integral_limits<size_t>::max;
 
   //***************************************************************************
   /// Base exception for the variant class.
@@ -108,14 +91,7 @@ namespace etl
   /// Supports up to 8 types.
   ///\ingroup variant
   //***************************************************************************
-  template <typename T1,
-            typename T2 = etl::null_type<2>,
-            typename T3 = etl::null_type<3>,
-            typename T4 = etl::null_type<4>,
-            typename T5 = etl::null_type<5>,
-            typename T6 = etl::null_type<6>,
-            typename T7 = etl::null_type<7>,
-            typename T8 = etl::null_type<8> >
+  template <typename... TTypes>
   class variant
   {
   public:
@@ -123,413 +99,127 @@ namespace etl
     //***************************************************************************
     /// The type used for ids.
     //***************************************************************************
-    typedef uint_least8_t type_id_t;
-
-    //***************************************************************************
-    /// The id a unsupported types.
-    //***************************************************************************
-    static const type_id_t UNSUPPORTED_TYPE_ID = integral_limits<type_id_t>::max;
+    using type_id_t = uint_least8_t ;
 
   private:
 
+    // The type of actions we can perform.
+    enum class action_type : char
+    {
+      Construct,
+      Destruct,
+      Move
+    };
+
     // All types of variant are friends.
-    template <typename U1, typename U2, typename U3, typename U4, typename U5, typename U6, typename U7, typename U8>
+    template <typename... UTypes>
     friend class variant;
 
     //***************************************************************************
     /// The largest type.
     //***************************************************************************
-    typedef typename largest_type<T1, T2, T3, T4, T5, T6, T7, T8>::type largest_t;
+    using largest_t = typename largest_type<TTypes...>::type;
 
     //***************************************************************************
     /// The largest size.
     //***************************************************************************
-    static const size_t SIZE = sizeof(largest_t);
+    static const size_t Size = sizeof(largest_t);
 
     //***************************************************************************
     /// The largest alignment.
     //***************************************************************************
-    static const size_t ALIGNMENT = etl::largest_alignment<T1, T2, T3, T4, T5, T6, T7, T8>::value;
-
-    //***************************************************************************
-    /// Short form of no_type placeholders.
-    //***************************************************************************
-    typedef etl::null_type<2> no_type2;
-    typedef etl::null_type<3> no_type3;
-    typedef etl::null_type<4> no_type4;
-    typedef etl::null_type<5> no_type5;
-    typedef etl::null_type<6> no_type6;
-    typedef etl::null_type<7> no_type7;
-    typedef etl::null_type<8> no_type8;
-
-    //***************************************************************************
-    /// Lookup the id of type.
-    //***************************************************************************
-    template <typename T>
-    struct Type_Id_Lookup
-    {
-      static const uint_least8_t type_id = etl::is_same<T, T1>::value ? 0 :
-                                           etl::is_same<T, T2>::value ? 1 :
-                                           etl::is_same<T, T3>::value ? 2 :
-                                           etl::is_same<T, T4>::value ? 3 :
-                                           etl::is_same<T, T5>::value ? 4 :
-                                           etl::is_same<T, T6>::value ? 5 :
-                                           etl::is_same<T, T7>::value ? 6 :
-                                           etl::is_same<T, T8>::value ? 7 :
-                                           UNSUPPORTED_TYPE_ID;
-    };
-
-    //***************************************************************************
-    /// Lookup for the id of type.
-    //***************************************************************************
-    template <typename T>
-    struct Type_Is_Supported : public integral_constant<bool,
-                                                       is_same<T, T1>::value ||
-                                                       is_same<T, T2>::value ||
-                                                       is_same<T, T3>::value ||
-                                                       is_same<T, T4>::value ||
-                                                       is_same<T, T5>::value ||
-                                                       is_same<T, T6>::value ||
-                                                       is_same<T, T7>::value ||
-                                                       is_same<T, T8>::value>
-    {
-    };
+    static const size_t Alignment = etl::largest_alignment<TTypes...>::value;
 
   public:
 
     //***************************************************************************
-    /// Destructor.
+    /// The internal storage.
+    /// Aligned on a suitable boundary, which should be good for all types.
     //***************************************************************************
-    ~variant()
-    {
-      destruct_current();
-    }
-
-    //*************************************************************************
-    //**** Reader types *******************************************************
-    //*************************************************************************
-
-    //*************************************************************************
-    /// Base reader type functor class.
-    /// Allows for typesafe access to the stored value types.
-    /// Define the reader type for 8 types.
-    //*************************************************************************
-    template <typename R1, typename R2 = no_type2, typename R3 = no_type3, typename R4 = no_type4, typename R5 = no_type5, typename R6 = no_type6, typename R7 = no_type7, typename R8 = no_type8>
-    class reader_type
-    {
-    public:
-
-      friend class variant;
-
-      virtual void read(typename etl::parameter_type<R1>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R2>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R3>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R4>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R5>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R6>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R7>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R8>::type value) = 0;
-    };
-
-    //*************************************************************************
-    /// Define the reader type for 7 types.
-    //*************************************************************************
-    template <typename R1, typename R2, typename R3, typename R4, typename R5, typename R6, typename R7>
-    class reader_type<R1, R2, R3, R4, R5, R6, R7, no_type8>
-    {
-    public:
-
-      friend class variant;
-
-      virtual void read(typename etl::parameter_type<R1>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R2>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R3>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R4>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R5>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R6>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R7>::type value) = 0;
-
-    private:
-
-      void read(no_type8&) {};
-    };
-
-    //*************************************************************************
-    /// Define the reader type for 6 types.
-    //*************************************************************************
-    template <typename R1, typename R2, typename R3, typename R4, typename R5, typename R6>
-    class reader_type<R1, R2, R3, R4, R5, R6, no_type7, no_type8>
-    {
-    public:
-
-      friend class variant;
-
-      virtual void read(typename etl::parameter_type<R1>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R2>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R3>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R4>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R5>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R6>::type value) = 0;
-
-    private:
-
-      void read(no_type7&) {};
-      void read(no_type8&) {};
-    };
-
-    //*************************************************************************
-    /// Define the reader type for 5 types.
-    //*************************************************************************
-    template <typename R1, typename R2, typename R3, typename R4, typename R5>
-    class reader_type<R1, R2, R3, R4, R5, no_type6, no_type7, no_type8>
-    {
-    public:
-
-      friend class variant;
-
-      virtual void read(typename etl::parameter_type<R1>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R2>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R3>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R4>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R5>::type value) = 0;
-
-    private:
-
-      void read(no_type6&) {};
-      void read(no_type7&) {};
-      void read(no_type8&) {};
-    };
-
-    //*************************************************************************
-    /// Define the reader type for 4 types.
-    //*************************************************************************
-    template <typename R1, typename R2, typename R3, typename R4>
-    class reader_type<R1, R2, R3, R4, no_type5, no_type6, no_type7, no_type8>
-    {
-    public:
-
-      friend class variant;
-
-      virtual void read(typename etl::parameter_type<R1>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R2>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R3>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R4>::type value) = 0;
-
-    private:
-
-      void read(no_type5&) {};
-      void read(no_type6&) {};
-      void read(no_type7&) {};
-      void read(no_type8&) {};
-    };
-
-    //*************************************************************************
-    /// Define the reader type for 3 types.
-    //*************************************************************************
-    template <typename R1, typename R2, typename R3>
-    class reader_type<R1, R2, R3, no_type4, no_type5, no_type6, no_type7, no_type8>
-    {
-    public:
-
-      friend class variant;
-
-      virtual void read(typename etl::parameter_type<R1>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R2>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R3>::type value) = 0;
-
-    private:
-
-      void read(no_type4&) {};
-      void read(no_type5&) {};
-      void read(no_type6&) {};
-      void read(no_type7&) {};
-      void read(no_type8&) {};
-    };
-
-    //*************************************************************************
-    /// Define the reader type for 2 types.
-    //*************************************************************************
-    template <typename R1, typename R2>
-    class reader_type<R1, R2, no_type3, no_type4, no_type5, no_type6, no_type7, no_type8>
-    {
-    public:
-
-      friend class variant;
-
-      virtual void read(typename etl::parameter_type<R1>::type value) = 0;
-      virtual void read(typename etl::parameter_type<R2>::type value) = 0;
-
-    private:
-
-      void read(no_type3&) {};
-      void read(no_type4&) {};
-      void read(no_type5&) {};
-      void read(no_type6&) {};
-      void read(no_type7&) {};
-      void read(no_type8&) {};
-    };
-
-    //*************************************************************************
-    /// Define the reader type for 1 type.
-    //*************************************************************************
-    template <typename R1>
-    class reader_type<R1, no_type2, no_type3, no_type4, no_type5, no_type6, no_type7, no_type8>
-    {
-    public:
-
-      friend class variant;
-
-      virtual void read(typename etl::parameter_type<R1>::type value) = 0;
-
-    private:
-
-      void read(no_type2&) {};
-      void read(no_type3&) {};
-      void read(no_type4&) {};
-      void read(no_type5&) {};
-      void read(no_type6&) {};
-      void read(no_type7&) {};
-      void read(no_type8&) {};
-    };
-
-    //***************************************************************************
-    /// The base type for derived readers.
-    //***************************************************************************
-    typedef reader_type<T1, T2, T3, T4, T5, T6, T7, T8> reader;
+    typename etl::aligned_storage<Size, Alignment>::type data;
 
     //***************************************************************************
     /// Default constructor.
     /// Sets the state of the instance to containing no valid data.
     //***************************************************************************
-    variant()
-      : type_id(UNSUPPORTED_TYPE_ID)
+    constexpr variant()
+      : data()
+      , operation(null_operation)
+      , type_id(variant_npos)
     {
     }
 
     //***************************************************************************
     /// Constructor that catches any types that are not supported.
-    /// Forces a ETL_STATIC_ASSERT.
+    /// Forces a static_assert.
     //***************************************************************************
     template <typename T>
-    variant(const T& value)
+    constexpr variant(const T& value)
+      : data()
+      , operation(do_operation<T>)
+      , type_id(etl::parameter_pack<TTypes...>::index_of_type<T>::value)
     {
-      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+      static_assert(etl::is_one_of<T, TTypes...>::value, "Unsupported type");
 
-      ::new (static_cast<T*>(data)) T(value);
-      type_id = Type_Id_Lookup<T>::type_id;
+      operation(action_type::Construct, data, &value);      
     }
 
     //***************************************************************************
     /// Copy constructor.
     ///\param other The other variant object to copy.
     //***************************************************************************
-    variant(const variant& other)
+    constexpr variant(const variant& other)
+      : data()
+      , operation(other.operation)
+      , type_id(other.type_id)
     {
-      switch (other.type_id)
-      {
-        case 0:  ::new (static_cast<T1*>(data)) T1(other.get<T1>()); break;
-        case 1:  ::new (static_cast<T2*>(data)) T2(other.get<T2>()); break;
-        case 2:  ::new (static_cast<T3*>(data)) T3(other.get<T3>()); break;
-        case 3:  ::new (static_cast<T4*>(data)) T4(other.get<T4>()); break;
-        case 4:  ::new (static_cast<T5*>(data)) T5(other.get<T5>()); break;
-        case 5:  ::new (static_cast<T6*>(data)) T6(other.get<T6>()); break;
-        case 6:  ::new (static_cast<T7*>(data)) T7(other.get<T7>()); break;
-        case 7:  ::new (static_cast<T8*>(data)) T8(other.get<T8>()); break;
-        default: break;
-      }
-
-      type_id = other.type_id;
+      operation(action_type::Construct, data, other.data);
     }
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_VARIANT_FORCE_CPP03)
+    //***************************************************************************
+    /// Destructor.
+    //***************************************************************************
+    ~variant()
+    {
+      operation(action_type::Destruct, data, nullptr);
+      operation = null_operation;
+
+      type_id = variant_npos;
+    }
+
     //*************************************************************************
     /// Emplace with variadic constructor parameters.
     //*************************************************************************
-    template <typename T, typename... Args>
-    T& emplace(Args&&... args)
+    template <typename T, typename... TArgs>
+    T& emplace(TArgs&&... args)
     {
-      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+      static_assert(etl::is_one_of<T, TTypes>::value, "Unsupported type");
 
-      destruct_current();
-      ::new (static_cast<T*>(data)) T(etl::forward<Args>(args)...);
-      type_id = Type_Id_Lookup<T>::type_id;
+      T temp(etl::forward<TArgs>(args)...);
 
-      return *static_cast<T*>(data);
-    }
-#else
-    //***************************************************************************
-    /// Emplace with one constructor parameter.
-    //***************************************************************************
-    template <typename T, typename TP1>
-    T& emplace(const TP1& value1)
-    {
-      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+      operation(action_type::Destruct, data, nullptr);
+      operation(action_type::Construct, data, &temp);
 
-      destruct_current();
-      ::new (static_cast<T*>(data)) T(value1);
-      type_id = Type_Id_Lookup<T>::type_id;
+      type_id = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
 
       return *static_cast<T*>(data);
     }
 
     //***************************************************************************
-    /// Emplace with two constructor parameters.
-    //***************************************************************************
-    template <typename T, typename TP1, typename TP2>
-    T& emplace(const TP1& value1, const TP2& value2)
-    {
-      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
-
-      destruct_current();
-      ::new (static_cast<T*>(data)) T(value1, value2);
-      type_id = Type_Id_Lookup<T>::type_id;
-
-      return *static_cast<T*>(data);
-    }
-
-    //***************************************************************************
-    /// Emplace with three constructor parameters.
-    //***************************************************************************
-    template <typename T, typename TP1, typename TP2, typename TP3>
-    T& emplace(const TP1& value1, const TP2& value2, const TP3& value3)
-    {
-      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
-
-      destruct_current();
-      ::new (static_cast<T*>(data)) T(value1, value2, value3);
-      type_id = Type_Id_Lookup<T>::type_id;
-
-      return *static_cast<T*>(data);
-    }
-
-    //***************************************************************************
-    /// Emplace with four constructor parameters.
-    //***************************************************************************
-    template <typename T, typename TP1, typename TP2, typename TP3, typename TP4>
-    T& emplace(const TP1& value1, const TP2& value2, const TP3& value3, const TP4& value4)
-    {
-      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
-
-      destruct_current();
-      ::new (static_cast<T*>(data)) T(value1, value2, value3, value4);
-      type_id = Type_Id_Lookup<T>::type_id;
-
-      return *static_cast<T*>(data);
-    }
-#endif
-
-    //***************************************************************************
-    /// Assignment operator for T1 type.
+    /// Assignment operator for type.
     ///\param value The value to assign.
     //***************************************************************************
     template <typename T>
     variant& operator =(const T& value)
     {
-      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+      static_assert(etl::is_one_of<T, TTypes...>::value, "Unsupported type");
 
-      destruct_current();
-      ::new (static_cast<T*>(data)) T(value);
-      type_id = Type_Id_Lookup<T>::type_id;
+      operation(action_type::Destruct, data, nullptr);
+
+      operation = do_operation<T>;
+      operation(action_type::Construct, data, &value);
+
+      type_id = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
 
       return *this;
     }
@@ -542,20 +232,10 @@ namespace etl
     {
       if (this != &other)
       {
-        destruct_current();
+        operation(action_type::Destruct, data, nullptr);
 
-        switch (other.type_id)
-        {
-        case 0:  ::new (static_cast<T1*>(data)) T1(other.get<T1>()); break;
-        case 1:  ::new (static_cast<T2*>(data)) T2(other.get<T2>()); break;
-        case 2:  ::new (static_cast<T3*>(data)) T3(other.get<T3>()); break;
-        case 3:  ::new (static_cast<T4*>(data)) T4(other.get<T4>()); break;
-        case 4:  ::new (static_cast<T5*>(data)) T5(other.get<T5>()); break;
-        case 5:  ::new (static_cast<T6*>(data)) T6(other.get<T6>()); break;
-        case 6:  ::new (static_cast<T7*>(data)) T7(other.get<T7>()); break;
-        case 7:  ::new (static_cast<T8*>(data)) T8(other.get<T8>()); break;
-        default: break;
-        }
+        operation = other.operation;
+        operation(action_type::Construct, data, other.data);
 
         type_id = other.type_id;
       }
@@ -564,94 +244,30 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Checks if the type is the same as the current stored type.
-    /// For variants with the same type declarations.
-    ///\return <b>true</b> if the types are the same, otherwise <b>false</b>.
-    //***************************************************************************
-    bool is_same_type(const variant& other) const
-    {
-      return type_id == other.type_id;
-    }
-
-    //***************************************************************************
-    /// Checks if the type is the same as the current stored type.
-    /// For variants with differing declarations.
-    ///\return <b>true</b> if the types are the same, otherwise <b>false</b>.
-    //***************************************************************************
-    template <typename U1, typename U2, typename U3, typename U4, typename U5, typename U6, typename U7, typename U8>
-    bool is_same_type(const variant<U1, U2, U3, U4, U5, U6, U7, U8>& other) const
-    {
-      bool is_same = false;
-
-      switch (other.type_id)
-      {
-        case 0: is_same = (type_id == Type_Id_Lookup<U1>::type_id); break;
-        case 1: is_same = (type_id == Type_Id_Lookup<U2>::type_id); break;
-        case 2: is_same = (type_id == Type_Id_Lookup<U3>::type_id); break;
-        case 3: is_same = (type_id == Type_Id_Lookup<U4>::type_id); break;
-        case 4: is_same = (type_id == Type_Id_Lookup<U5>::type_id); break;
-        case 5: is_same = (type_id == Type_Id_Lookup<U6>::type_id); break;
-        case 6: is_same = (type_id == Type_Id_Lookup<U7>::type_id); break;
-        case 7: is_same = (type_id == Type_Id_Lookup<U8>::type_id); break;
-        default: break;
-      }
-
-      return is_same;
-    }
-
-    //***************************************************************************
-    /// Calls the supplied reader instance.
-    /// The 'read' function appropriate to the current type is called with the stored value.
-    //***************************************************************************
-    void call(reader& r)
-    {
-      switch (type_id)
-      {
-        case 0: r.read(static_cast<T1&>(data)); break;
-        case 1: r.read(static_cast<T2&>(data)); break;
-        case 2: r.read(static_cast<T3&>(data)); break;
-        case 3: r.read(static_cast<T4&>(data)); break;
-        case 4: r.read(static_cast<T5&>(data)); break;
-        case 5: r.read(static_cast<T6&>(data)); break;
-        case 6: r.read(static_cast<T7&>(data)); break;
-        case 7: r.read(static_cast<T8&>(data)); break;
-        default: break;
-      }
-    }
-
-    //***************************************************************************
     /// Checks whether a valid value is currently stored.
     ///\return <b>true</b> if the value is valid, otherwise <b>false</b>.
     //***************************************************************************
-    bool is_valid() const
+    constexpr bool valueless_by_exception() const noexcept
     {
-      return type_id != UNSUPPORTED_TYPE_ID;
+      return type_id != variant_npos;
     }
 
     //***************************************************************************
-    /// Checks to see if the type currently stored is the same as that specified in the template parameter.
-    ///\return <b>true</b> if it is the specified type, otherwise <b>false</b>.
+    /// Gets the index of the type currently stored or variant_npos
     //***************************************************************************
-    template <typename T>
-    bool is_type() const
-    {
-      return type_id == Type_Id_Lookup<T>::type_id;
-    }
-
-    //***************************************************************************
-    /// Gets the index of the type currently stored or UNSUPPORTED_TYPE_ID
-    //***************************************************************************
-    size_t index() const
+    constexpr size_t index() const noexcept
     {
       return type_id;
     }
 
     //***************************************************************************
-    /// Clears the value to 'no valid stored value'.
+    /// Swaps this variant with another.
     //***************************************************************************
-    void clear()
+    void swap(variant& rhs) noexcept
     {
-      destruct_current();
+      variant temp(*this);
+      *this = rhs;
+      rhs = temp;
     }
 
     //***************************************************************************
@@ -662,8 +278,8 @@ namespace etl
     template <typename T>
     T& get()
     {
-      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
-      ETL_ASSERT(is_type<T>(), ETL_ERROR(variant_incorrect_type_exception));
+      static_assert(etl::is_one_of<T, TTypes...>::value, "Unsupported type");
+      ETL_ASSERT(etl::holds_alternative<T>(*this), ETL_ERROR(variant_incorrect_type_exception));
 
       return static_cast<T&>(data);
     }
@@ -676,362 +292,195 @@ namespace etl
     template <typename T>
     const T& get() const
     {
-      ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+      static_assert(etl::is_one_of<T, TTypes>::value, "Unsupported type");
       ETL_ASSERT(is_type<T>(), ETL_ERROR(variant_incorrect_type_exception));
 
       return static_cast<const T&>(data);
     }
 
-    //***************************************************************************
-    /// Gets the value stored as the specified template type.
-    ///\return A reference to the value.
-    //***************************************************************************
-    template <typename TBase>
-    TBase& upcast()
-    {
-      return *upcast_functor<TBase, T1, T2, T3, T4, T5, T6, T7, T8>()(data, type_id);
-    }
-
-    //***************************************************************************
-    /// Gets the value stored as the specified template type.
-    ///\return A const reference to the value.
-    //***************************************************************************
-    template <typename TBase>
-    const TBase& upcast() const
-    {
-      return *upcast_functor<TBase, T1, T2, T3, T4, T5, T6, T7, T8>()(data, type_id);
-    }
-
-    //***************************************************************************
-    /// Conversion operators for each type.
-    //***************************************************************************
-    operator T1&() { return get<T1>(); }
-    operator T2&() { return get<T2>(); }
-    operator T3&() { return get<T3>(); }
-    operator T4&() { return get<T4>(); }
-    operator T5&() { return get<T5>(); }
-    operator T6&() { return get<T6>(); }
-    operator T7&() { return get<T7>(); }
-    operator T8&() { return get<T8>(); }
-
-    //***************************************************************************
-    /// Checks if the template type is supported by the implementation of variant..
-    ///\return <b>true</b> if the type is supported, otherwise <b>false</b>.
-    //***************************************************************************
-    template <typename T>
-    static bool is_supported_type()
-    {
-      return Type_Is_Supported<T>::value;
-    }
-
   private:
 
-    //***************************************************************************
-    /// Destruct the current occupant of the variant.
-    //***************************************************************************
-    void destruct_current()
-    {
-      switch (type_id)
-      {
-        case 0: { static_cast<T1*>(data)->~T1(); break; }
-        case 1: { static_cast<T2*>(data)->~T2(); break; }
-        case 2: { static_cast<T3*>(data)->~T3(); break; }
-        case 3: { static_cast<T4*>(data)->~T4(); break; }
-        case 4: { static_cast<T5*>(data)->~T5(); break; }
-        case 5: { static_cast<T6*>(data)->~T6(); break; }
-        case 6: { static_cast<T7*>(data)->~T7(); break; }
-        case 7: { static_cast<T8*>(data)->~T8(); break; }
-        default: { break; }
-      }
+    using operation_type = void(*)(action_type, void*, const void*);
 
-      type_id = UNSUPPORTED_TYPE_ID;
+    //***************************************************************************
+    /// Do an operation determined by type.
+    //***************************************************************************
+    template <typename T, typename... TArgs>
+    static void do_operation(action_type action, void* pstorage, const void* pvalue)
+    {
+      switch (action)
+      {
+        case action_type::Construct:
+        {
+          ::new (pstorage) T(*reinterpret_cast<const T*>(pvalue));         
+          break;
+        }
+
+        case action_type::Move:
+        {
+          ::new (pstorage) T(etl::move(*reinterpret_cast<const T*>(pvalue)));         
+          break;
+        }
+
+        case action_type::Destruct:
+        {
+          reinterpret_cast<T*>(pstorage)->~T();
+          break;
+        }
+
+        default:
+        {
+          break;
+        }
+      }
     }
 
-    //*************************************************************************
-    //**** Up-cast functors ***************************************************
-    //*************************************************************************
-
-    //*************************************************************************
-    /// Base upcast_functor for eight types.
-    //*************************************************************************
-    template <typename TBase, typename U1, typename U2 = no_type2, typename U3 = no_type3, typename U4 = no_type4, typename U5 = no_type5, typename U6 = no_type6, typename U7 = no_type7, typename U8 = no_type8>
-    class upcast_functor
+    //***************************************************************************
+    /// Default operation.
+    //***************************************************************************
+    template <typename... TArgs>
+    static void null_operation(action_type action, void* pstorage, TArgs... args)
     {
-    public:
-
-      TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId)
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<U1*>(p_data);
-        case 1: return reinterpret_cast<U2*>(p_data);
-        case 2: return reinterpret_cast<U3*>(p_data);
-        case 3: return reinterpret_cast<U4*>(p_data);
-        case 4: return reinterpret_cast<U5*>(p_data);
-        case 5: return reinterpret_cast<U6*>(p_data);
-        case 6: return reinterpret_cast<U7*>(p_data);
-        case 7: return reinterpret_cast<U8*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-
-      const TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId) const
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<const U1*>(p_data);
-        case 1: return reinterpret_cast<const U2*>(p_data);
-        case 2: return reinterpret_cast<const U3*>(p_data);
-        case 3: return reinterpret_cast<const U4*>(p_data);
-        case 4: return reinterpret_cast<const U5*>(p_data);
-        case 5: return reinterpret_cast<const U6*>(p_data);
-        case 6: return reinterpret_cast<const U7*>(p_data);
-        case 7: return reinterpret_cast<const U8*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-    };
-
-    //*************************************************************************
-    /// Upcast_functor for seven types.
-    //*************************************************************************
-    template <typename TBase, typename U1, typename U2, typename U3, typename U4, typename U5, typename U6, typename U7>
-    class upcast_functor<TBase, U1, U2, U3, U4, U5, U6, U7, no_type8>
-    {
-    public:
-
-      TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId)
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<U1*>(p_data);
-        case 1: return reinterpret_cast<U2*>(p_data);
-        case 2: return reinterpret_cast<U3*>(p_data);
-        case 3: return reinterpret_cast<U4*>(p_data);
-        case 4: return reinterpret_cast<U5*>(p_data);
-        case 5: return reinterpret_cast<U6*>(p_data);
-        case 6: return reinterpret_cast<U7*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-
-      const TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId) const
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<const U1*>(p_data);
-        case 1: return reinterpret_cast<const U2*>(p_data);
-        case 2: return reinterpret_cast<const U3*>(p_data);
-        case 3: return reinterpret_cast<const U4*>(p_data);
-        case 4: return reinterpret_cast<const U5*>(p_data);
-        case 5: return reinterpret_cast<const U6*>(p_data);
-        case 6: return reinterpret_cast<const U7*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-    };
-
-    //*************************************************************************
-    /// Upcast_functor for six types.
-    //*************************************************************************
-    template <typename TBase, typename U1, typename U2, typename U3, typename U4, typename U5, typename U6>
-    class upcast_functor<TBase, U1, U2, U3, U4, U5, U6, no_type7, no_type8>
-    {
-    public:
-
-      TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId)
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<U1*>(p_data);
-        case 1: return reinterpret_cast<U2*>(p_data);
-        case 2: return reinterpret_cast<U3*>(p_data);
-        case 3: return reinterpret_cast<U4*>(p_data);
-        case 4: return reinterpret_cast<U5*>(p_data);
-        case 5: return reinterpret_cast<U6*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-
-      const TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId) const
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<const U1*>(p_data);
-        case 1: return reinterpret_cast<const U2*>(p_data);
-        case 2: return reinterpret_cast<const U3*>(p_data);
-        case 3: return reinterpret_cast<const U4*>(p_data);
-        case 4: return reinterpret_cast<const U5*>(p_data);
-        case 5: return reinterpret_cast<const U6*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-    };
-
-    //*************************************************************************
-    /// Upcast_functor for five types.
-    //*************************************************************************
-    template <typename TBase, typename U1, typename U2, typename U3, typename U4, typename U5>
-    class upcast_functor<TBase, U1, U2, U3, U4, U5, no_type6, no_type7, no_type8>
-    {
-    public:
-
-      TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId)
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<U1*>(p_data);
-        case 1: return reinterpret_cast<U2*>(p_data);
-        case 2: return reinterpret_cast<U3*>(p_data);
-        case 3: return reinterpret_cast<U4*>(p_data);
-        case 4: return reinterpret_cast<U5*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-
-      const TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId) const
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<const U1*>(p_data);
-        case 1: return reinterpret_cast<const U2*>(p_data);
-        case 2: return reinterpret_cast<const U3*>(p_data);
-        case 3: return reinterpret_cast<const U4*>(p_data);
-        case 4: return reinterpret_cast<const U5*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-    };
-
-    //*************************************************************************
-    /// Upcast_functor for four types.
-    //*************************************************************************
-    template <typename TBase, typename U1, typename U2, typename U3, typename U4>
-    class upcast_functor<TBase, U1, U2, U3, U4, no_type5, no_type6, no_type7, no_type8>
-    {
-    public:
-
-      TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId)
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<U1*>(p_data);
-        case 1: return reinterpret_cast<U2*>(p_data);
-        case 2: return reinterpret_cast<U3*>(p_data);
-        case 3: return reinterpret_cast<U4*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-
-      const TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId) const
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<const U1*>(p_data);
-        case 1: return reinterpret_cast<const U2*>(p_data);
-        case 2: return reinterpret_cast<const U3*>(p_data);
-        case 3: return reinterpret_cast<const U4*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-    };
-
-    //*************************************************************************
-    /// Upcast_functor for three types.
-    //*************************************************************************
-    template <typename TBase, typename U1, typename U2, typename U3>
-    class upcast_functor<TBase, U1, U2, U3, no_type4, no_type5, no_type6, no_type7, no_type8>
-    {
-    public:
-
-      TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId)
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<U1*>(p_data);
-        case 1: return reinterpret_cast<U2*>(p_data);
-        case 2: return reinterpret_cast<U3*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-
-      const TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId) const
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<const U1*>(p_data);
-        case 1: return reinterpret_cast<const U2*>(p_data);
-        case 2: return reinterpret_cast<const U3*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-    };
-
-    //*************************************************************************
-    /// Upcast_functor for two types.
-    //*************************************************************************
-    template <typename TBase, typename U1, typename U2>
-    class upcast_functor<TBase, U1, U2, no_type3, no_type4, no_type5, no_type6, no_type7, no_type8>
-    {
-    public:
-
-      TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId)
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<U1*>(p_data);
-        case 1: return reinterpret_cast<U2*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-
-      const TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId) const
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<const U1*>(p_data);
-        case 1: return reinterpret_cast<const U2&>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-    };
-
-    //*************************************************************************
-    /// Upcast_functor for one type.
-    //*************************************************************************
-    template <typename TBase, typename U1>
-    class upcast_functor<TBase, U1, no_type2, no_type3, no_type4, no_type5, no_type6, no_type7, no_type8>
-    {
-    public:
-
-      TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId)
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<U1*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-
-      const TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId) const
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<const U1*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-    };
+    }
 
     //***************************************************************************
-    /// The internal storage.
-    /// Aligned on a suitable boundary, which should be good for all types.
+    /// The operation function.
     //***************************************************************************
-    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    operation_type operation;
 
     //***************************************************************************
-    /// The id of the current stored type.
+    /// The id of the current stored type.  
     //***************************************************************************
-    type_id_t type_id;
+    size_t type_id;
   };
+
+  //***************************************************************************
+  /// Checks if the variant v holds the alternative T.
+  //***************************************************************************
+	template <typename T, typename... TTypes>
+	constexpr bool holds_alternative(const etl::variant<TTypes...>& v) noexcept
+	{
+    constexpr size_t Index = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
+		
+    return (Index == variant_npos) ? false : (v.index() == Index);
+	}
+
+  //***************************************************************************
+  /// variant_alternative
+  //***************************************************************************
+  template <size_t Index, typename T>
+  struct variant_alternative;
+
+  template <size_t Index, typename... TTypes>
+  struct variant_alternative<Index, etl::variant<TTypes...>>
+  {
+    using type = typename etl::parameter_pack<TTypes...>::template type_from_index<Index>::type;
+  };
+
+  template <size_t Index, typename T> 
+  struct variant_alternative<Index, const T>
+  {
+    using type = typename variant_alternative<Index, T>::type;
+  };
+
+  template <size_t Index, typename T>
+  using variant_alternative_t = typename variant_alternative<Index, T>::type;
+
+  //***************************************************************************
+  /// get
+  //***************************************************************************
+  template <size_t Index, typename... TTypes>
+  constexpr etl::variant_alternative_t<Index, etl::variant<TTypes...>>&
+    get(etl::variant<TTypes...>& v)
+  {
+    static_assert(Index < sizeof...(TTypes), "Index out of range");
+    ETL_ASSERT(Index == v.index(), ETL_ERROR(etl::variant_incorrect_type_exception));
+
+		using type = etl::variant_alternative_t<Index, etl::variant<TTypes...>>;
+		
+    return *static_cast<type*>(v.data);
+  }
+
+  //***********************************
+  template <size_t Index, typename... TTypes>
+  constexpr etl::variant_alternative_t<Index, etl::variant<TTypes...>>&&
+    get(etl::variant<TTypes...>&& v)
+  {
+    static_assert(Index < sizeof...(TTypes), "Index out of range");
+
+		using type = etl::variant_alternative_t<Index, etl::variant<TTypes...>>;
+		
+    return etl::move(*static_cast<type*>(v.data));
+  }
+
+  //***********************************
+  template <size_t Index, typename... TTypes>
+  constexpr const etl::variant_alternative_t<Index, const etl::variant<TTypes...>>&
+    get(const etl::variant<TTypes...>& v)
+  {
+    static_assert(Index < sizeof...(TTypes), "Index out of range");
+    ETL_ASSERT(Index == v.index(), ETL_ERROR(etl::variant_incorrect_type_exception));
+
+		using type = etl::variant_alternative_t<Index, etl::variant<TTypes...>>;
+		
+    return *static_cast<type*>(v.data);
+  }
+
+  //***********************************
+  template <size_t Index, typename... TTypes>
+  constexpr const etl::variant_alternative_t<Index, const etl::variant<TTypes...>>&&
+    get(const etl::variant<TTypes...>&& v)
+  {
+    static_assert(Index < sizeof...(TTypes), "Index out of range");
+    ETL_ASSERT(Index == v.index(), ETL_ERROR(etl::variant_incorrect_type_exception));
+
+		using type = etl::variant_alternative_t<Index, etl::variant<TTypes...>>;
+		
+    return etl::move(*static_cast<type*>(v.data));
+  }
+
+  //***********************************
+  template <typename T, typename... TTypes>
+  constexpr T& get(etl::variant<TTypes...>& v)
+  {
+    constexpr size_t Index = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
+
+    return get<Index>(v);
+  }
+
+  //***********************************
+  template <typename T, typename... TTypes>
+  constexpr T&& get(etl::variant<TTypes...>&& v)
+  {
+    constexpr size_t Index = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
+
+    return get<Index>(v);
+  }
+
+  //***********************************
+  template <typename T, typename... TTypes>
+  constexpr const T& get(const etl::variant<TTypes...>& v)
+  {
+    constexpr size_t Index = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
+
+    return get<Index>(v);
+  }
+
+  //***********************************
+  template <typename T, typename... TTypes>
+  constexpr const T&& get(const etl::variant<TTypes...>&& v)
+  {
+    constexpr size_t Index = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
+
+    return get<Index>(v);
+  }
+
+  //***************************************************************************
+  /// swap
+  //***************************************************************************
+  template <typename... TTypes>
+  void swap(etl::variant<TTypes...>& lhs, etl::variant<TTypes...>& rhs)
+  {
+    lhs.swap(rhs);
+  }
 }
