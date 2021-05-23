@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2021 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -29,6 +29,7 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/private/variant_new.h"
+#include "etl/visitor.h"
 
 #include <array>
 #include <vector>
@@ -394,6 +395,41 @@ namespace
       test_variant_emplace variant(etl::move(getD1()));
 
       D1 db = etl::move(etl::get<D1>(variant));
+    }
+
+    //*************************************************************************
+    TEST(test_variant_visitor)
+    {
+      struct Visitor : public etl::visitor<char, int, std::string>
+      {
+        void visit(char& c)
+        {
+
+        }
+
+        void visit(int& i)
+        {
+
+        }
+
+        void visit(std::string& s)
+        {
+
+        }
+      };
+
+      Visitor visitor;
+
+      test_variant_3 variant;
+
+      variant = char(1);
+      variant.accept(visitor);
+      
+      variant = int(2);
+      variant.accept(visitor);
+
+      variant = std::string("3");
+      variant.accept(visitor);
     }
   };
 }

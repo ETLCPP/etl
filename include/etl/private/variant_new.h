@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2021 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -43,10 +43,55 @@ SOFTWARE.
 #include "../parameter_pack.h"
 #include "../placement_new.h"
 
+#include <utility>
+
 #if defined(ETL_COMPILER_KEIL)
   #pragma diag_suppress 940
   #pragma diag_suppress 111
 #endif
+
+namespace etl
+{
+  //template <typename T, T... Integers>
+  //class integer_sequence
+  //{
+  //public:
+  //  
+  //  ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Integral types only");
+
+  //  typedef T value_type;
+  //  
+	 // static ETL_CONSTEXPR size_t size() ETL_NOEXCEPT 
+  //  { 
+  //    return sizeof...(Integers);
+  //  }
+  //};
+
+  //namespace private_integer_sequence
+  //{
+  //  template <size_t N, typename IndexSeq>
+  //  struct make_index_sequence;
+
+  //  template <size_t N, size_t... Indices>
+  //  struct make_index_sequence<N, integer_sequence<size_t, Indices...>>
+  //  {
+  //    typedef typename make_index_sequence<N - 1, integer_sequence<size_t, N - 1, Indices...>>::type type;
+  //  };
+
+  //  template <size_t... Indices>
+  //  struct make_index_sequence<0, integer_sequence<size_t, Indices...>>
+  //  {
+  //    typedef integer_sequence<size_t, Indices...> type;
+  //  };
+  //}
+
+  //template <size_t N>
+  //using make_index_sequence = typename private_integer_sequence::make_index_sequence<N, integer_sequence<size_t>>::type;
+
+  //template <size_t... Indices>
+  //using index_sequence = integer_sequence<size_t, Indices...>;
+}
+
 
 //*****************************************************************************
 ///\defgroup variant variant
@@ -67,6 +112,13 @@ namespace etl
   struct monostate 
   {
   };
+
+  constexpr bool operator >(etl::monostate, etl::monostate) noexcept { return false; }
+	constexpr bool operator <(etl::monostate, etl::monostate) noexcept { return false; }
+	constexpr bool operator !=(etl::monostate, etl::monostate) noexcept { return false; }
+	constexpr bool operator <=(etl::monostate, etl::monostate) noexcept { return true; }
+	constexpr bool operator >=(etl::monostate, etl::monostate) noexcept { return true; }
+	constexpr bool operator ==(etl::monostate, etl::monostate) noexcept { return true; }
 
   //***************************************************************************
   /// Base exception for the variant class.
@@ -207,11 +259,11 @@ namespace etl
     {
       static_assert(etl::is_one_of<T, TTypes...>::value, "Unsupported type");
 
-      T temp(etl::forward<TArgs>(args)...);
-
       operation(action_type::Destruct, data, nullptr);
       
       operation = do_operation<T>;
+
+      T temp(etl::forward<TArgs>(args)...);
       operation(action_type::Construct, data, &temp);
 
       type_id = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
@@ -312,6 +364,15 @@ namespace etl
       return static_cast<const T&>(data);
     }
 
+    //***************************************************************************
+    /// Do an operation determined by type.
+    //***************************************************************************
+    template <typename TVisitor>
+    void accept(TVisitor& visitor)
+    {
+      do_accept(visitor, std::make_index_sequence<sizeof...(TTypes)>{});
+    }
+
   private:
 
     using operation_type = void(*)(action_type, void*, const void*);
@@ -340,6 +401,32 @@ namespace etl
         {
           break;
         }
+      }
+    }
+
+    //***************************************************************************
+    /// Loop through the types until a match is found.
+    //***************************************************************************
+    template <typename TVisitor, size_t... I>
+    void do_accept(TVisitor& visitor, std::index_sequence<I...>)
+    {
+      (attempt_visitor<I>(visitor) || ...);
+    }
+
+    //***************************************************************************
+    /// Attempt to call a visitor.
+    //***************************************************************************
+    template <size_t Index, typename TVisitor>
+    bool attempt_visitor(TVisitor& visitor)
+    {
+      if (Index == index())
+      {
+        visitor.visit(etl::get<Index>(*this));
+        return true;
+      }
+      else
+      {
+        return false;
       }
     }
 
@@ -401,7 +488,7 @@ namespace etl
   constexpr etl::variant_alternative_t<Index, etl::variant<TTypes...>>&
     get(etl::variant<TTypes...>& v)
   {
-    static_assert(Index < sizeof...(TTypes), "Index out of range");
+    //static_assert(Index < sizeof...(TTypes), "Index out of range");
     ETL_ASSERT(Index == v.index(), ETL_ERROR(etl::variant_incorrect_type_exception));
 
 		using type = etl::variant_alternative_t<Index, etl::variant<TTypes...>>;
@@ -559,5 +646,4 @@ namespace etl
     : etl::integral_constant<size_t, variant_size<T>::value>
   {
   };
-
 }
