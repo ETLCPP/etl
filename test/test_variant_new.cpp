@@ -37,76 +37,35 @@ SOFTWARE.
 
 namespace
 {
-  // Test classes for polymorphic tests.
-  struct base
-  {
-    virtual ~base()
-    {
-    }
-
-    base()
-      : value(0)
-    {
-    }
-
-    virtual void set() = 0;
-    int value;
-  };
-
-  struct not_base
-  {
-    not_base()
-      : value(0)
-    {
-    }
-
-    virtual void set() = 0;
-    int value;
-  };
-
-  struct derived_1 : public base
-  {
-    void set()
-    {
-      value = 1;
-    }
-  };
-
-  struct derived_2 : public base
-  {
-    void set()
-    {
-      value = 2;
-    }
-  };
-
   // Test variant types.
-  typedef etl::variant<char, int, std::string> test_variant_3a;
-  typedef etl::variant<int, short, double> test_variant_3b;
-
-  typedef etl::variant<int8_t> test_variant_1;
-  typedef etl::variant<int8_t, uint8_t> test_variant_2;
-  typedef etl::variant<int8_t, uint8_t, int16_t> test_variant_3;
-  typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t> test_variant_4;
-  typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t> test_variant_5;
-  typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t> test_variant_6;
-  typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, int64_t> test_variant_7;
-  typedef etl::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, int64_t, uint64_t> test_variant_8;
-
-  typedef etl::variant<derived_1, derived_2> test_variant_polymorphic;
-  typedef etl::variant<char, unsigned char, short, unsigned short, int, unsigned int, long, unsigned long> test_variant_max_types;
-
-  // This line should compile with no errors.
-  test_variant_max_types variant_max;
+  typedef etl::variant<char, int, std::string> test_variant_3;
 
   struct D1
   {
     D1(const std::string& a_)
       : a(a_)
     {
+      copied = false;
+      moved = false;
+    }
+
+    D1(const D1& other)
+      : a(other.a)
+    {
+      copied = true;
+      moved = false;
+    }
+
+    D1(D1&& other)
+      : a(std::move(other.a))
+    {
+      copied = false;
+      moved = true;
     }
 
     std::string a;
+    bool copied;
+    bool moved;
   };
 
   struct D2
@@ -199,7 +158,7 @@ namespace
     return os;
   }
 
-  typedef etl::variant<D1, D2, D3, D4> test_variant_emplace;
+  typedef etl::variant<etl::monostate, D1, D2, D3, D4> test_variant_emplace;
 
   SUITE(test_variant)
   {
@@ -224,11 +183,11 @@ namespace
     //*************************************************************************
     TEST(test_constructor_default)
     {
-      CHECK_NO_THROW(test_variant_3a variant);
+      CHECK_NO_THROW(test_variant_3 variant);
 
-      test_variant_1 variant;
+      test_variant_3 variant;
 
-      CHECK(!etl::holds_alternative<int8_t>(variant));
+      CHECK(etl::holds_alternative<char>(variant));
     }
 
     //*************************************************************************
@@ -236,21 +195,46 @@ namespace
     {
       // Char.
       char c = 'a';
-      test_variant_3a variant_char(c);
+      test_variant_3 variant_char(c);
 
       CHECK(etl::holds_alternative<char>(variant_char));
       CHECK_EQUAL(c, etl::get<char>(variant_char));
 
       // Int.
       int i = 1;
-      test_variant_3a variant_int(i);
+      test_variant_3 variant_int(i);
 
       CHECK(etl::holds_alternative<int>(variant_int));
       CHECK_EQUAL(i, etl::get<int>(variant_int));
 
       // String.
       std::string text("Some Text");
-      test_variant_3a variant_text(text);
+      test_variant_3 variant_text(text);
+
+      CHECK(etl::holds_alternative<std::string>(variant_text));
+      CHECK_EQUAL(text, etl::get<std::string>(variant_text));
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_move_value)
+    {
+      // Char.
+      char c = 'a';
+      test_variant_3 variant_char(etl::move(c));
+
+      CHECK(etl::holds_alternative<char>(variant_char));
+      CHECK_EQUAL(c, etl::get<char>(variant_char));
+
+      // Int.
+      int i = 1;
+      test_variant_3 variant_int(etl::move(i));
+
+      CHECK(etl::holds_alternative<int>(variant_int));
+      CHECK_EQUAL(i, etl::get<int>(variant_int));
+
+      // String.
+      std::string text("Some Text");
+      test_variant_3 variant_text(etl::move(text));
 
       CHECK(etl::holds_alternative<std::string>(variant_text));
       CHECK_EQUAL(text, etl::get<std::string>(variant_text));
@@ -260,9 +244,21 @@ namespace
     TEST(test_copy_constructor)
     {
       std::string text("Some Text");
-      test_variant_3a variant_1(text);
+      test_variant_3 variant_1(text);
 
-      test_variant_3a variant_2(variant_1);
+      test_variant_3 variant_2(variant_1);
+
+      CHECK_EQUAL(variant_1.index(), variant_2.index());
+      CHECK_EQUAL(variant_1.get<std::string>(), variant_2.get<std::string>());
+    }
+
+    //*************************************************************************
+    TEST(test_move_constructor)
+    {
+      std::string text("Some Text");
+      test_variant_3 variant_1(text);
+
+      test_variant_3 variant_2(etl::move(variant_1));
 
       CHECK_EQUAL(variant_1.index(), variant_2.index());
       CHECK_EQUAL(variant_1.get<std::string>(), variant_2.get<std::string>());
@@ -272,7 +268,7 @@ namespace
     TEST(test_assign_from_value)
     {
       std::string text("Some Text");
-      test_variant_3a variant;
+      test_variant_3 variant;
 
       variant = text;
 
@@ -283,8 +279,8 @@ namespace
     TEST(test_assign_from_variant)
     {
       std::string text("Some Text");
-      test_variant_3a variant_1;
-      test_variant_3a variant_2;
+      test_variant_3 variant_1;
+      test_variant_3 variant_2;
 
       variant_1 = text;
       variant_2 = variant_1;
@@ -297,8 +293,8 @@ namespace
     {
       std::string text("Some Text");
       int integer(99);
-      test_variant_3a variant_1;
-      test_variant_3a variant_2;
+      test_variant_3 variant_1;
+      test_variant_3 variant_2;
 
       variant_1 = text;
       variant_2 = integer;
@@ -311,7 +307,7 @@ namespace
     TEST(test_assignment_incorrect_type_exception)
     {
       std::string text("Some Text");
-      test_variant_3a variant(text);
+      test_variant_3 variant(text);
 
       int i;
       CHECK_THROW(etl::get<int>(variant), etl::variant_incorrect_type_exception);
@@ -321,7 +317,7 @@ namespace
     //*************************************************************************
     TEST(test_self_assignment)
     {
-      test_variant_3a variant;
+      test_variant_3 variant;
 
       variant = 1;
       variant = variant;
@@ -334,8 +330,8 @@ namespace
     {
       std::string text("Some Text");
       int integer(99);
-      test_variant_3a variant_1(text);
-      test_variant_3a variant_2(integer);
+      test_variant_3 variant_1(text);
+      test_variant_3 variant_2(integer);
 
       variant_1.swap(variant_2);
 
@@ -351,8 +347,8 @@ namespace
     {
       std::string text("Some Text");
       int integer(99);
-      test_variant_3a variant_1(text);
-      test_variant_3a variant_2(integer);
+      test_variant_3 variant_1(text);
+      test_variant_3 variant_2(integer);
 
       etl::swap(variant_1, variant_2);
 
@@ -383,6 +379,18 @@ namespace
       variant.emplace<D4>("1", "2", "3", "4");
       CHECK(etl::holds_alternative<D4>(variant));
       CHECK_EQUAL(D4("1", "2", "3", "4"), etl::get<D4>(variant));
+    }
+
+    //*************************************************************************
+    TEST(test_move)
+    {
+      test_variant_emplace variant;
+
+      D1 da("1");
+
+      variant = da;
+
+      D1 db = etl::move(etl::get<D1>(variant));
     }
   };
 }

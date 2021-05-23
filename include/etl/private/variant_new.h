@@ -152,14 +152,18 @@ namespace etl
     //***************************************************************************
     constexpr variant()
       : data()
-      , operation(null_operation)
-      , type_id(variant_npos)
     {
+      using type = typename etl::parameter_pack<TTypes...>::type_from_index<0>::type;
+
+      type temp;
+
+      operation = do_operation<type>;
+      operation(action_type::Construct, data, &temp);
+      type_id = 0;
     }
 
     //***************************************************************************
-    /// Constructor that catches any types that are not supported.
-    /// Forces a static_assert.
+    /// Constructor for lvalues
     //***************************************************************************
     template <typename T>
     constexpr variant(const T& value)
@@ -169,7 +173,7 @@ namespace etl
     {
       static_assert(etl::is_one_of<T, TTypes...>::value, "Unsupported type");
 
-      operation(action_type::Construct, data, &value);      
+      operation(action_type::Construct, data, &const_cast<T&>(value));      
     }
 
     //***************************************************************************
@@ -323,12 +327,6 @@ namespace etl
         case action_type::Construct:
         {
           ::new (pstorage) T(*reinterpret_cast<const T*>(pvalue));         
-          break;
-        }
-
-        case action_type::Move:
-        {
-          ::new (pstorage) T(etl::move(*reinterpret_cast<const T*>(pvalue)));         
           break;
         }
 
