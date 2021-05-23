@@ -382,13 +382,16 @@ namespace
     }
 
     //*************************************************************************
+    D1 getD1()
+    {
+      return D1("1");
+    }
+
     TEST(test_move)
     {
-      test_variant_emplace variant;
-
       D1 da("1");
-
-      variant = da;
+      
+      test_variant_emplace variant(etl::move(getD1()));
 
       D1 db = etl::move(etl::get<D1>(variant));
     }
