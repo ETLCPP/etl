@@ -62,15 +62,12 @@ public:
 
   //***************************************************************************
   // Override the base class's receive function.
-  void receive(etl::imessage_router& sender_, const etl::imessage& msg_)
+  void receive(const etl::imessage& msg_)
   {
     if (accepts(msg_))
     {
       // Place in queue.
-
-      Item item(&sender_, msg_);
-
-      queue.emplace(&sender_, msg_);
+      queue.emplace(msg_);
 
       std::cout << "Queueing message " << int(msg_.get_message_id()) << std::endl;
     }
@@ -85,9 +82,8 @@ public:
   {
     while (!queue.empty())
     {
-      Item& item = queue.front();
-      etl::imessage& msg = item.packet.get();
-      etl::imessage_router& sender = *item.sender;
+      message_packet& packet = queue.front();
+      etl::imessage& msg = packet.get();
       std::cout << "Processing message " << int(msg.get_message_id()) << std::endl;
 
       // Call the base class's receive function.
@@ -124,19 +120,7 @@ public:
 
 private:
 
-  struct Item
-  {
-    Item(etl::imessage_router* sender_, const etl::imessage& msg_)
-      : sender(sender_),
-        packet(msg_)
-    {
-    }
-
-    etl::imessage_router* sender;
-    message_packet        packet;
-  };
-
-  etl::queue<Item, 10> queue;
+  etl::queue<message_packet, 10> queue;
 };
 
 //*****************************************************************************
