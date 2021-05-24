@@ -1,4 +1,8 @@
 ===============================================================================
+20.10.6
+Updated QueuedMessageRouter and QueuedFSM examples to use current message frameworks.
+
+===============================================================================
 20.10.5
 Added container_type to etl::stack, etl::queue and etl::priority_queue.
 
