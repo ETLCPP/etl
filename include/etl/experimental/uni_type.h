@@ -6,6 +6,13 @@ public:
 
   static constexpr size_t Size = Size_;
 
+    //***********************************
+  template <typename T>
+  uni_type(const uni_type& other)
+  {
+    memcpy(buffer, other.buffer, Size_);
+  }
+
   //***********************************
   template <typename T>
   T& get()
@@ -20,10 +27,20 @@ public:
     return *reinterpret_cast<T*>(buffer);
   }
 
+  //***********************************
   template <typename T>
   operator T()
   {
     return *reinterpret_cast<T*>(buffer);
+  }
+
+  //***********************************
+  template <typename T>
+  uni_type& operator =(const uni_type& rhs)
+  {
+    memcpy(buffer, rhs.buffer, Size_);
+
+    return *this;
   }
 
   //***********************************
@@ -37,14 +54,24 @@ private:
   char buffer[Size]
 };
 
-
-
 template <size_t Size_>
 class uni_type_ptr
 {
 public:
 
   static constexpr size_t Size = Size_;
+
+  //***********************************
+  uni_type_ptr()
+    : pbuffer(ETL_NULLPTR)
+  {
+  }
+
+  //***********************************
+  uni_type_ptr(void* pbuffer_)
+    : pbuffer(reinterpret_cast<char*>(pbuffer))
+  {
+  }
 
   //***********************************
   template <typename T>
