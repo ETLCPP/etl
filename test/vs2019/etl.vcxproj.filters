@@ -1138,6 +1138,9 @@
     <ClInclude Include="..\..\include\etl\experimental\mem_cast.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\uni_type.h">
+      <Filter>ETL\Experimental</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
