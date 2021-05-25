@@ -1309,7 +1309,7 @@
     <ClInclude Include="..\..\include\etl\cumulative_moving_average.h" />
     <ClInclude Include="..\..\include\etl\delegate.h" />
     <ClInclude Include="..\..\include\etl\delegate_service.h" />
-    <ClInclude Include="..\..\include\etl\experimental\uni_type.h" />
+    <ClInclude Include="..\..\include\etl\experimental\mem_type.h" />
     <ClInclude Include="..\..\include\etl\file_error_numbers.h" />
     <ClInclude Include="..\..\include\etl\flags.h" />
     <ClInclude Include="..\..\include\etl\format_spec.h" />
