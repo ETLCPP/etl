@@ -376,5 +376,18 @@ namespace
       isEqual = std::equal(output2.begin(), output2.end(), histogram.begin());
       CHECK(isEqual);
     }
+
+    TEST(test_string_iterators_histogram)
+    {
+      StringHistogram histogram;
+      histogram(input3.begin(), input3.end());
+      CHECK_EQUAL(Size, histogram.size());
+
+      bool isEqual = (histogram.begin() == histogram.end());
+      CHECK(!isEqual);
+
+      isEqual = (histogram.cbegin() == histogram.cend());
+      CHECK(!isEqual);
+    }
   };
 }
