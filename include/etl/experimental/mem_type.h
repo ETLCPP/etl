@@ -1,4 +1,35 @@
-#pragma once
+///\file
+
+/******************************************************************************
+The MIT License(MIT)
+
+Embedded Template Library.
+https://github.com/ETLCPP/etl
+https://www.etlcpp.com
+
+Copyright(c) 2021 jwellbelove
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files(the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions :
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+******************************************************************************/
+
+#ifndef ETL_MEM_TYPE_INCLUDED
+#define ETL_MEM_TYPE_INCLUDED
 
 #include <stdint.h>
 
@@ -6,181 +37,191 @@
 #include "../memory.h"
 #include "../static_assert.h"
 
-//*****************************************************************************
-/// mem_type
-//*****************************************************************************
-template <size_t Size_ , size_t Alignment_>
-class mem_type
+namespace etl
 {
-public:
-
-  static constexpr size_t Size      = Size_;
-  static constexpr size_t Alignment = Alignment_;
-
-  //***********************************
-  template <size_t Other_Size, size_t Other_Alignment>
-  constexpr mem_type(const mem_type<Other_Size, Other_Alignment>& other)
+  //*****************************************************************************
+  /// mem_type
+  //*****************************************************************************
+  template <size_t Size_, size_t Alignment_>
+  class mem_type
   {
-    ETL_STATIC_ASSERT(Size      >= Other_Size,      "Other size is too large");
-    ETL_STATIC_ASSERT(Alignment >= Other_Alignment, "Other alignment incompatible");
+  public:
 
-    memcpy(buffer, other.buffer, Size_);
-  }
+    static ETL_CONSTANT size_t Size      = Size_;
+    static ETL_CONSTANT size_t Alignment = Alignment_;
 
-  //***********************************
-  template <typename T>
-  constexpr T& get()
+    //***********************************
+    ETL_CONSTEXPR mem_type()
+    {
+    }
+
+    //***********************************
+    template <size_t Other_Size, size_t Other_Alignment>
+    ETL_CONSTEXPR mem_type(const mem_type<Other_Size, Other_Alignment>& other)
+    {
+      ETL_STATIC_ASSERT(Size >= Other_Size, "Other size is too large");
+      ETL_STATIC_ASSERT(Alignment >= Other_Alignment, "Other alignment incompatible");
+
+      memcpy(buffer, other.buffer, Size_);
+    }
+
+    //***********************************
+    template <typename T>
+    ETL_CONSTEXPR T& get()
+    {
+      ETL_STATIC_ASSERT(sizeof(T) <= Size, "Size of T is too large");
+      ETL_STATIC_ASSERT(Alignment >= etl::alignment_of<T>::value, "Alignment of T is incompatible");
+
+      return *reinterpret_cast<T*>(buffer);
+    }
+
+    //***********************************
+    template <typename T>
+    ETL_CONSTEXPR const T& get() const
+    {
+      ETL_STATIC_ASSERT(sizeof(T) <= Size, "Size of T is too large");
+      ETL_STATIC_ASSERT(Alignment >= etl::alignment_of<T>::value, "Alignment of T is incompatible");
+
+      return *reinterpret_cast<T*>(buffer);
+    }
+
+    //***********************************
+    template <typename T>
+    ETL_CONSTEXPR operator T() const
+    {
+      ETL_STATIC_ASSERT(sizeof(T) <= Size, "Size of T is too large");
+      ETL_STATIC_ASSERT(Alignment >= etl::alignment_of<T>::value, "Alignment of T is incompatible");
+
+      return *reinterpret_cast<T*>(buffer);
+    }
+
+    //***********************************
+    template <size_t Other_Size, size_t Other_Alignment>
+    ETL_CONSTEXPR mem_type& operator =(const mem_type<Other_Size, Other_Alignment>& rhs)
+    {
+      ETL_STATIC_ASSERT(Size >= Other_Size, "RHS size is too large");
+      ETL_STATIC_ASSERT(Alignment >= Other_Alignment, "RHS alignment incompatible");
+
+      memcpy(buffer, rhs.buffer, Size_);
+
+      return *this;
+    }
+
+    //***********************************
+    ETL_CONSTEXPR size_t size() const
+    {
+      return Size;
+    }
+
+    //***********************************
+    ETL_CONSTEXPR size_t alignment() const
+    {
+      return Alignment;
+    }
+
+    //***********************************
+    ETL_CONSTEXPR char* data() const
+    {
+      return buffer;
+    }
+
+  private:
+
+    etl::aligned_storage<Size, Alignment> buffer;
+  };
+
+  //*****************************************************************************
+  /// mem_type_ptr
+  //*****************************************************************************
+  template <size_t Size_>
+  class mem_type_ptr
   {
-    ETL_STATIC_ASSERT(sizeof(T) <= Size, "Size of T is too large");
-    ETL_STATIC_ASSERT(Alignment >= etl::alignment_of<T>::value, "Alignment of T is incompatible");
+  public:
 
-    return *reinterpret_cast<T*>(buffer);
-  }
+    static ETL_CONSTANT size_t Size = Size_;
 
-  //***********************************
-  template <typename T>
-  constexpr const T& get() const
-  {
-    ETL_STATIC_ASSERT(sizeof(T) <= Size, "Size of T is too large");
-    ETL_STATIC_ASSERT(Alignment >= etl::alignment_of<T>::value, "Alignment of T is incompatible");
+    //***********************************
+    ETL_CONSTEXPR mem_type_ptr()
+      : pbuffer(ETL_NULLPTR)
+    {
+    }
 
-    return *reinterpret_cast<T*>(buffer);
-  }
+    //***********************************
+    ETL_CONSTEXPR mem_type_ptr(char* pbuffer_)
+      : pbuffer(pbuffer_)
+    {
+    }
 
-  //***********************************
-  template <typename T>
-  constexpr operator T() const
-  {
-    ETL_STATIC_ASSERT(sizeof(T) <= Size, "Size of T is too large");
-    ETL_STATIC_ASSERT(Alignment >= etl::alignment_of<T>::value, "Alignment of T is incompatible");
+    //***********************************
+    template <size_t Other_Size>
+    ETL_CONSTEXPR mem_type_ptr(const mem_type_ptr<Other_Size>& other, char* pbuffer_)
+      : pbuffer(pbuffer_)
+    {
+      ETL_STATIC_ASSERT(Size >= Other_Size, "Other size is too large");
 
-    return *reinterpret_cast<T*>(buffer);
-  }
+      memcpy(buffer, other.buffer, Size_);
+    }
 
-  //***********************************
-  template <size_t Other_Size, size_t Other_Alignment>
-  constexpr mem_type& operator =(const mem_type<Other_Size, Other_Alignment>& rhs)
-  {
-    ETL_STATIC_ASSERT(Size >= Other_Size, "RHS size is too large");
-    ETL_STATIC_ASSERT(Alignment >= Other_Alignment, "RHS alignment incompatible");
+    //***********************************
+    void set(char* pbuffer_)
+    {
+      pbuffer = pbuffer_;
+    }
 
-    memcpy(buffer, rhs.buffer, Size_);
+    //***********************************
+    template <typename T>
+    ETL_CONSTEXPR T& get()
+    {
+      ETL_STATIC_ASSERT((uintptr_t(pbuffer) % etl::alignment_of<T>::value) == 0, "Alignment of T is incompatible");
 
-    return *this;
-  }
+      return *reinterpret_cast<T*>(pbuffer);
+    }
 
-  //***********************************
-  constexpr size_t size() const
-  {
-    return Size;
-  }
+    //***********************************
+    template <typename T>
+    ETL_CONSTEXPR const T& get() const
+    {
+      ETL_STATIC_ASSERT((uintptr_t(pbuffer) % etl::alignment_of<T>::value) == 0, "Alignment of T is incompatible");
 
-  //***********************************
-  constexpr size_t alignment() const
-  {
-    return Alignment;
-  }
+      return *reinterpret_cast<T*>(pbuffer);
+    }
 
-  //***********************************
-  constexpr char* data() const
-  {
-    return buffer;
-  }
+    //***********************************
+    template <typename T>
+    ETL_CONSTEXPR operator T() const
+    {
+      ETL_STATIC_ASSERT((uintptr_t(pbuffer) % etl::alignment_of<T>::value) == 0, "Alignment of T is incompatible");
 
-private:
+      return *reinterpret_cast<T*>(pbuffer);
+    }
 
-  etl::aligned_storage<Size, Alignment> buffer;
-};
+    //***********************************
+    template <size_t Other_Size>
+    mem_type_ptr& operator =(const mem_type_ptr<Other_Size>& rhs)
+    {
+      ETL_STATIC_ASSERT(Size >= Other_Size, "RHS size is too large");
 
-//*****************************************************************************
-/// mem_type_ptr
-//*****************************************************************************
-template <size_t Size_>
-class mem_type_ptr
-{
-public:
+      memcpy(pbuffer, rhs.pbuffer, Size_);
 
-  static constexpr size_t Size = Size_;
+      return *this;
+    }
 
-  //***********************************
-  constexpr mem_type_ptr()
-    : pbuffer(ETL_NULLPTR)
-  {
-  }
+    //***********************************
+    ETL_CONSTEXPR size_t size() const
+    {
+      return Size;
+    }
 
-  //***********************************
-  constexpr mem_type_ptr(char* pbuffer_)
-    : pbuffer(pbuffer_)
-  {
-  }
+    //***********************************
+    ETL_CONSTEXPR char* data() const
+    {
+      return pbuffer;
+    }
 
-  //***********************************
-  template <size_t Other_Size>
-  constexpr mem_type_ptr(const mem_type_ptr<Other_Size& other, char* pbuffer_)
-    : pbuffer(pbuffer_)
-  {
-    ETL_STATIC_ASSERT(Size >= Other_Size, "Other size is too large");
+  private:
 
-    memcpy(buffer, other.buffer, Size_);
-  }
+    char* pbuffer;
+  };
+}
 
-  //***********************************
-  void set(char* pbuffer_)
-  {
-    pbuffer = pbuffer_;
-  }
-
-  //***********************************
-  template <typename T>
-  constexpr T& get()
-  {
-    ETL_STATIC_ASSERT((uintptr_t(pbuffer) % etl::alignment_of<T>::value) == 0, "Alignment of T is incompatible");
-
-    return *reinterpret_cast<T*>(pbuffer);
-  }
-
-  //***********************************
-  template <typename T>
-  constexpr const T& get() const
-  {
-    ETL_STATIC_ASSERT((uintptr_t(pbuffer) % etl::alignment_of<T>::value) == 0, "Alignment of T is incompatible");
-
-    return *reinterpret_cast<T*>(pbuffer);
-  }
-
-  //***********************************
-  template <typename T>
-  constexpr operator T() const
-  {
-    ETL_STATIC_ASSERT((uintptr_t(pbuffer) % etl::alignment_of<T>::value) == 0, "Alignment of T is incompatible");
-
-    return *reinterpret_cast<T*>(pbuffer);
-  }
-
-  //***********************************
-  template <size_t Other_Size>
-  mem_type_ptr& operator =(const mem_type_ptr<Other_Size>& rhs)
-  {
-    ETL_STATIC_ASSERT(Size >= Other_Size, "RHS size is too large");
-
-    memcpy(pbuffer, rhs.pbuffer, Size_);
-
-    return *this;
-  }
-
-  //***********************************
-  constexpr size_t size() const
-  {
-    return Size;
-  }
-
-  //***********************************
-  constexpr char* data() const
-  {
-    return pbuffer;
-  }
-
-private:
-
-  char* pbuffer;
-};
+#endif
