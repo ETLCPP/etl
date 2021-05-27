@@ -36,6 +36,7 @@ SOFTWARE.
 #include "../platform.h"
 #include "../memory.h"
 #include "../static_assert.h"
+#include "../largest.h"
 
 namespace etl
 {
@@ -222,6 +223,17 @@ namespace etl
 
     char* pbuffer;
   };
+
+#if ETL_CPP11_SUPPORTED
+  //*****************************************************************************
+  /// mem_type_var
+  //*****************************************************************************
+  template <typename... TTypes>
+  class mem_type_var : public etl::mem_type<etl::largest<TTypes...>::size,
+                                            etl::largest<TTypes...>::alignment>
+  {
+  };
+#endif
 }
 
 #endif

@@ -45,15 +45,19 @@ namespace
     std::array<int, 10> a;
   };
 
+  constexpr size_t Size      = etl::largest<char, double, Data>::size;
+  constexpr size_t Alignment = etl::largest<char, double, Data>::alignment;
+
   // Test variant types.
-  using MemType = etl::mem_type<etl::largest<char, double, Data>::size, 
-                                etl::largest<char, double, Data>::alignment>;
+  using MemType    = etl::mem_type<Size, Alignment>;
+  using MemTypeVar = etl::mem_type_var<char, double, Data>;
 
   SUITE(test_mem_type)
   {
     TEST(test_alignment)
     {
-      MemType memType;
+      MemType    memType;
+      MemTypeVar memTypeVar;
 
       CHECK(alignof(char)  <= MemType::Alignment);
       CHECK(alignof(short) <= MemType::Alignment);
@@ -66,11 +70,24 @@ namespace
       CHECK(alignof(char)  <= memType.alignment());
       CHECK(alignof(short) <= memType.alignment());
       CHECK(alignof(Data)  <= memType.alignment());
+
+      CHECK(alignof(char)  <= MemTypeVar::Alignment);
+      CHECK(alignof(short) <= MemTypeVar::Alignment);
+      CHECK(alignof(Data)  <= MemTypeVar::Alignment);
+
+      CHECK(alignof(char)  <= memTypeVar.Alignment);
+      CHECK(alignof(short) <= memTypeVar.Alignment);
+      CHECK(alignof(Data)  <= memTypeVar.Alignment);
+
+      CHECK(alignof(char)  <= memTypeVar.alignment());
+      CHECK(alignof(short) <= memTypeVar.alignment());
+      CHECK(alignof(Data)  <= memTypeVar.alignment());
     }
 
     TEST(test_size)
     {
-      MemType memType;
+      MemTypeVar memType;
+      MemTypeVar memTypeVar;
 
       CHECK(sizeof(char)  <= MemType::Size);
       CHECK(sizeof(short) <= MemType::Size);
@@ -83,6 +100,18 @@ namespace
       CHECK(sizeof(char)  <= memType.size());
       CHECK(sizeof(short) <= memType.size());
       CHECK(sizeof(Data)  <= memType.size());
+
+      CHECK(sizeof(char)  <= MemTypeVar::Size);
+      CHECK(sizeof(short) <= MemTypeVar::Size);
+      CHECK(sizeof(Data)  <= MemTypeVar::Size);
+
+      CHECK(sizeof(char)  <= memTypeVar.Size);
+      CHECK(sizeof(short) <= memTypeVar.Size);
+      CHECK(sizeof(Data)  <= memTypeVar.Size);
+
+      CHECK(sizeof(char)  <= memTypeVar.size());
+      CHECK(sizeof(short) <= memTypeVar.size());
+      CHECK(sizeof(Data)  <= memTypeVar.size());
     }
   };
 }
