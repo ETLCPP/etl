@@ -1110,7 +1110,7 @@
     <ClInclude Include="..\..\include\etl\private\variant_new.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\experimental\mem_type.h">
+    <ClInclude Include="..\..\include\etl\experimental\mem_cast.h">
       <Filter>ETL\Experimental</Filter>
     </ClInclude>
   </ItemGroup>
@@ -2534,7 +2534,7 @@
     <ClCompile Include="..\test_variant_new.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_mem_type.cpp">
+    <ClCompile Include="..\test_mem_cast.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
