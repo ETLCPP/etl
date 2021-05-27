@@ -2554,7 +2554,7 @@
     <ClCompile Include="..\test_variant_new.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_mem_type.cpp">
+    <ClCompile Include="..\test_mem_cast.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
