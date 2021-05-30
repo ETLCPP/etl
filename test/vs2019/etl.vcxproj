@@ -4496,6 +4496,7 @@
     <ClCompile Include="..\test_make_string.cpp" />
     <ClCompile Include="..\test_mean.cpp" />
     <ClCompile Include="..\test_mem_cast.cpp" />
+    <ClCompile Include="..\test_mem_cast_ptr.cpp" />
     <ClCompile Include="..\test_message_packet.cpp" />
     <ClCompile Include="..\test_message_router_registry.cpp" />
     <ClCompile Include="..\test_multi_array.cpp" />
