@@ -2560,6 +2560,9 @@
     <ClCompile Include="..\test_mem_cast_ptr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\sanity-check\mem_cast.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
