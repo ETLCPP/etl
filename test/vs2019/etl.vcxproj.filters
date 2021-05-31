@@ -1114,7 +1114,7 @@
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\experimental\mem_cast.h">
-      <Filter>ETL\Experimental</Filter>
+      <Filter>ETL\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
