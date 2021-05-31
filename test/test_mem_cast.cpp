@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/experimental/mem_cast.h"
+#include "etl/mem_cast.h"
 #include "etl/largest.h"
 
 #include <array>

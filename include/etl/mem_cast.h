@@ -34,22 +34,22 @@ SOFTWARE.
 #include <stdint.h>
 #include <string.h>
 
-#include "../platform.h"
-#include "../memory.h"
-#include "../static_assert.h"
-#include "../largest.h"
-#include "../utility.h"
-#include "../placement_new.h"
-#include "../exception.h"
-#include "../error_handler.h"
-#include "../file_error_numbers.h"
+#include "platform.h"
+#include "memory.h"
+#include "static_assert.h"
+#include "largest.h"
+#include "utility.h"
+#include "placement_new.h"
+#include "exception.h"
+#include "error_handler.h"
+#include "file_error_numbers.h"
 
 namespace etl
 {
   //***************************************************************************
   /// The base class for array_wrapper exceptions.
   //***************************************************************************
-  class mem_cast_exception : public exception
+  class mem_cast_exception : public etl::exception
   {
   public:
 
@@ -62,7 +62,7 @@ namespace etl
   //***************************************************************************
   /// The exception thrown when the buffer pointer alignment is not compatible.
   //***************************************************************************
-  class mem_cast_alignment_exception : public mem_cast_exception
+  class mem_cast_alignment_exception : public etl::mem_cast_exception
   {
   public:
 
@@ -75,7 +75,7 @@ namespace etl
   //***************************************************************************
   /// The exception thrown when the pointer is null.
   //***************************************************************************
-  class mem_cast_nullptr_exception : public mem_cast_exception
+  class mem_cast_nullptr_exception : public etl::mem_cast_exception
   {
   public:
 
