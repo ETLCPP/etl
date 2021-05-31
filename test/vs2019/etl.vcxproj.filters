@@ -1101,6 +1101,9 @@
     <ClInclude Include="..\..\include\etl\hfsm.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\mem_cast.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -2518,6 +2521,15 @@
     </ClCompile>
     <ClCompile Include="..\test_hfsm.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_mem_cast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_mem_cast_ptr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\mem_cast.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -151,6 +151,7 @@ target_sources(t11 PRIVATE etl_profile.h
         ../map.h.t.cpp
         ../math_constants.h.t.cpp
         ../mean.h.t.cpp
+        ../mem_cast.h.t.cpp
         ../memory.h.t.cpp
         ../memory_model.h.t.cpp
         ../message.h.t.cpp
