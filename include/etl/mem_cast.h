@@ -601,13 +601,22 @@ namespace etl
     size_t buffer_size;
   };
 
-#if ETL_CPP11_SUPPORTED
   //*****************************************************************************
   /// mem_cast_var
   /// mem_cast from a variadic list of types
   //*****************************************************************************
+#if ETL_CPP11_SUPPORTED && !defined(ETL_MEM_CAST_FORCE_CPP03)
   template <typename... TTypes>
   using mem_cast_types = etl::mem_cast<etl::largest<TTypes...>::size, etl::largest<TTypes...>::alignment>;
+#else
+  template <typename T1,         typename T2  = char, typename T3  = char, typename T4  = char,
+            typename T5 = char,  typename T6  = char, typename T7  = char, typename T8  = char,
+            typename T9 = char,  typename T10 = char, typename T11 = char, typename T12 = char,
+            typename T13 = char, typename T14 = char, typename T15 = char, typename T16 = char>
+  struct mem_cast_types : public etl::mem_cast<etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::size,
+                                               etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::alignment>
+  {
+  };
 #endif
 }
 
