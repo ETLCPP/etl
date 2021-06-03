@@ -131,7 +131,7 @@ namespace etl
     }
 
     //***********************************
-    /// Assign from parameters
+    /// Assign from value
     //***********************************
     template <typename T>
     void assign(const T& value)
@@ -142,7 +142,7 @@ namespace etl
     }
 
     //***********************************
-    /// Assign from parameters at offset
+    /// Assign from value at offset
     //***********************************
     template <typename T>
     void assign_at_offset(size_t offset, const T& value)
@@ -155,7 +155,7 @@ namespace etl
     }
 
     //***********************************
-    /// Assign from parameters at offset
+    /// Assign from value at offset
     //***********************************
     template <typename T, size_t Offset>
     void assign_at_offset(const T& value)
@@ -375,7 +375,7 @@ namespace etl
     }
 
     //***********************************
-    /// Assign from parameters
+    /// Assign from value
     //***********************************
     template <typename T>
     void assign(const T& value)
@@ -388,7 +388,7 @@ namespace etl
     }
 
     //***********************************
-    /// Assign from parameters at offset
+    /// Assign from value at offset
     //***********************************
     template <typename T>
     void assign_at_offset(size_t offset, const T& value)
@@ -402,7 +402,7 @@ namespace etl
     }
 
     //***********************************
-    /// Assign from parameters at offset
+    /// Assign from value at offset
     //***********************************
     template <typename T, size_t Offset>
     void assign_at_offset(const T& value)
