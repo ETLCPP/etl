@@ -110,6 +110,8 @@ namespace etl
     static ETL_CONSTANT size_t Size      = Size_;
     static ETL_CONSTANT size_t Alignment = Alignment_;
 
+    ETL_STATIC_ASSERT(etl::is_power_of_2<Alignment>::value, "Alignment must be a power of 2");
+
     //***********************************
     /// Default constructor
     //***********************************
@@ -125,9 +127,25 @@ namespace etl
     mem_cast(const mem_cast<Other_Size, Other_Alignment>& other)
     {
       ETL_STATIC_ASSERT(Size >= Other_Size, "Other size is too large");
-      ETL_STATIC_ASSERT(Alignment >= Other_Alignment, "Other alignment incompatible");
+      ETL_STATIC_ASSERT(Alignment >= Other_Alignment, "Other alignment is incompatible");
+      ETL_STATIC_ASSERT(etl::is_power_of_2<Other_Alignment>::value, "Other alignment must be a power of 2");
 
       memcpy(buffer, other.buffer, Size_);
+    }
+   
+    //***********************************
+    /// Assignment operator
+    //***********************************
+    template <size_t Other_Size, size_t Other_Alignment>
+    mem_cast& operator =(const mem_cast<Other_Size, Other_Alignment>& rhs)
+    {
+      ETL_STATIC_ASSERT(Size >= Other_Size, "RHS size is too large");
+      ETL_STATIC_ASSERT(Alignment >= Other_Alignment, "RHS alignment is incompatible");
+      ETL_STATIC_ASSERT(etl::is_power_of_2<Other_Alignment>::value, "Other alignment must be a power of 2");
+
+      memcpy(buffer, rhs.buffer, Size_);
+
+      return *this;
     }
 
     //***********************************
@@ -287,20 +305,6 @@ namespace etl
     }
 
     //***********************************
-    /// Assignment operator
-    //***********************************
-    template <size_t Other_Size, size_t Other_Alignment>
-    mem_cast& operator =(const mem_cast<Other_Size, Other_Alignment>& rhs)
-    {
-      ETL_STATIC_ASSERT(Size >= Other_Size, "RHS size is too large");
-      ETL_STATIC_ASSERT(Alignment >= Other_Alignment, "RHS alignment incompatible");
-
-      memcpy(buffer, rhs.buffer, Size_);
-
-      return *this;
-    }
-
-    //***********************************
     /// Get the size of the buffer
     //***********************************
     ETL_NODISCARD static ETL_CONSTEXPR size_t size()
@@ -372,6 +376,17 @@ namespace etl
       : pbuffer(other.pbuffer)
       , buffer_size(other.buffer_size)
     {
+    }
+
+    //***********************************
+    /// Assignment operator
+    //***********************************
+    mem_cast_ptr& operator =(const mem_cast_ptr& rhs)
+    {
+      pbuffer     = rhs.pbuffer;
+      buffer_size = rhs.buffer_size;
+
+      return *this;
     }
 
     //***********************************
@@ -538,17 +553,6 @@ namespace etl
       ETL_ASSERT(sizeof(T) <= (buffer_size - Offset), ETL_ERROR(etl::mem_cast_size_exception));
 
       return *reinterpret_cast<const T*>(p);
-    }
-
-    //***********************************
-    /// Assignment operator
-    //***********************************
-    mem_cast_ptr& operator =(const mem_cast_ptr& rhs)
-    {
-      pbuffer     = rhs.pbuffer;
-      buffer_size = rhs.buffer_size;
-
-      return *this;
     }
 
     //***********************************
