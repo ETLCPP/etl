@@ -38,6 +38,7 @@ SOFTWARE.
 
 namespace
 {
+  #pragma pack(push,1)
   struct Data
   {
     Data()
@@ -58,6 +59,7 @@ namespace
     double d;
     std::array<int, 3> a;
   };
+  #pragma pack(pop)
 
   constexpr size_t Size      = etl::largest<char, double, Data>::size;
   constexpr size_t Alignment = etl::largest<char, double, Data>::alignment;

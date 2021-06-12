@@ -61,19 +61,6 @@ namespace etl
   };
 
   //***************************************************************************
-  /// The exception thrown when the buffer pointer alignment is not compatible.
-  //***************************************************************************
-  class mem_cast_alignment_exception : public etl::mem_cast_exception
-  {
-  public:
-
-    mem_cast_alignment_exception(string_type file_name_, numeric_type line_number_)
-      : mem_cast_exception(ETL_ERROR_TEXT("mem_cast:alignment", ETL_MEM_CAST_FILE_ID"A"), file_name_, line_number_)
-    {
-    }
-  };
-
-  //***************************************************************************
   /// The exception thrown when the type size is too large.
   //***************************************************************************
   class mem_cast_size_exception : public etl::mem_cast_exception
@@ -81,7 +68,7 @@ namespace etl
   public:
 
     mem_cast_size_exception(string_type file_name_, numeric_type line_number_)
-      : mem_cast_exception(ETL_ERROR_TEXT("mem_cast:size", ETL_MEM_CAST_FILE_ID"B"), file_name_, line_number_)
+      : mem_cast_exception(ETL_ERROR_TEXT("mem_cast:size", ETL_MEM_CAST_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -94,7 +81,7 @@ namespace etl
   public:
 
     mem_cast_nullptr_exception(string_type file_name_, numeric_type line_number_)
-      : mem_cast_exception(ETL_ERROR_TEXT("mem_cast:null pointer", ETL_MEM_CAST_FILE_ID"C"), file_name_, line_number_)
+      : mem_cast_exception(ETL_ERROR_TEXT("mem_cast:null pointer", ETL_MEM_CAST_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -110,7 +97,7 @@ namespace etl
     static ETL_CONSTANT size_t Size      = Size_;
     static ETL_CONSTANT size_t Alignment = Alignment_;
 
-    ETL_STATIC_ASSERT(etl::is_power_of_2<Alignment>::value, "Alignment must be a power of 2");
+    ETL_STATIC_ASSERT((Alignment == 1) || etl::is_power_of_2<Alignment>::value, "Alignment must be a power of 2");
 
     //***********************************
     /// Default constructor
@@ -127,8 +114,6 @@ namespace etl
     mem_cast(const mem_cast<Other_Size, Other_Alignment>& other)
     {
       ETL_STATIC_ASSERT(Size >= Other_Size, "Other size is too large");
-      ETL_STATIC_ASSERT(Alignment >= Other_Alignment, "Other alignment is incompatible");
-      ETL_STATIC_ASSERT(etl::is_power_of_2<Other_Alignment>::value, "Other alignment must be a power of 2");
 
       memcpy(buffer, other.buffer, Size_);
     }
@@ -140,8 +125,6 @@ namespace etl
     mem_cast& operator =(const mem_cast<Other_Size, Other_Alignment>& rhs)
     {
       ETL_STATIC_ASSERT(Size >= Other_Size, "RHS size is too large");
-      ETL_STATIC_ASSERT(Alignment >= Other_Alignment, "RHS alignment is incompatible");
-      ETL_STATIC_ASSERT(etl::is_power_of_2<Other_Alignment>::value, "Other alignment must be a power of 2");
 
       memcpy(buffer, rhs.buffer, Size_);
 
@@ -166,7 +149,6 @@ namespace etl
     void assign_at_offset(size_t offset, const T& value)
     {
       char* p = static_cast<char*>(buffer) + offset;
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(p) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
       ETL_ASSERT(sizeof(T) <= (Size - offset), ETL_ERROR(etl::mem_cast_size_exception));
 
       ::new (p) T(value);
@@ -179,7 +161,6 @@ namespace etl
     void assign_at_offset(const T& value)
     {
       char* p = static_cast<char*>(buffer) + Offset;
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(p) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
       ETL_STATIC_ASSERT(sizeof(T) <= (Size - Offset), "Type size is too large");
 
       ::new (p) T(value);
@@ -204,7 +185,6 @@ namespace etl
     void emplace_at_offset(size_t offset, TArgs... args)
     {
       char* p = static_cast<char*>(buffer) + offset;
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(p) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
       ETL_ASSERT(sizeof(T) <= (Size - offset), ETL_ERROR(etl::mem_cast_size_exception));
 
       ::new (p) T(etl::forward<TArgs>(args)...);
@@ -217,7 +197,6 @@ namespace etl
     void emplace_at_offset(TArgs... args)
     {
       char* p = static_cast<char*>(buffer) + Offset;
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(p) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
       ETL_STATIC_ASSERT(sizeof(T) <= (Size - Offset), "Type size is too large");
 
       ::new (p) T(etl::forward<TArgs>(args)...);
@@ -231,7 +210,6 @@ namespace etl
     ETL_NODISCARD T& ref()
     {
       ETL_STATIC_ASSERT(sizeof(T) <= Size, "Size of T is too large");
-      ETL_STATIC_ASSERT(Alignment >= etl::alignment_of<T>::value, "Alignment of T is incompatible");
 
       return *static_cast<T*>(buffer);
     }
@@ -243,7 +221,6 @@ namespace etl
     ETL_NODISCARD const T& ref() const
     {
       ETL_STATIC_ASSERT(sizeof(T) <= Size, "Size of T is too large");
-      ETL_STATIC_ASSERT(Alignment >= etl::alignment_of<T>::value, "Alignment of T is incompatible");
 
       return *static_cast<const T*>(buffer);
     }
@@ -257,7 +234,6 @@ namespace etl
       ETL_ASSERT(sizeof(T) <= (Size - offset), ETL_ERROR(etl::mem_cast_size_exception));
 
       char* p = buffer + offset;
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(p) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
 
       return *static_cast<T*>(p);
     }
@@ -271,7 +247,6 @@ namespace etl
       ETL_ASSERT(sizeof(T) <= (Size - offset), ETL_ERROR(etl::mem_cast_size_exception));
 
       char* p = buffer + offset;
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(p) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
 
       return *static_cast<const T*>(p);
     }
@@ -285,7 +260,6 @@ namespace etl
       ETL_STATIC_ASSERT(sizeof(T) <= (Size - Offset), "Size of T is too large");
 
       char* p = buffer + Offset;
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(p) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
 
       return *static_cast<T*>(p);
     }
@@ -299,7 +273,6 @@ namespace etl
       ETL_STATIC_ASSERT(sizeof(T) <= (Size - Offset), "Size of T is too large");
 
       char* p = buffer + Offset;
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(p) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
 
       return *static_cast<const T*>(p);
     }
@@ -396,7 +369,6 @@ namespace etl
     void assign(const T& value)
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(pbuffer) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
       ETL_ASSERT(sizeof(T) <= buffer_size, ETL_ERROR(etl::mem_cast_size_exception));
 
       ::new (pbuffer) T(value);
@@ -410,7 +382,6 @@ namespace etl
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
       char* p = pbuffer + offset;
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(p) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
       ETL_ASSERT(sizeof(T) <= (buffer_size - offset), ETL_ERROR(etl::mem_cast_size_exception));
 
       ::new (p) T(value);
@@ -424,7 +395,6 @@ namespace etl
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
       char* p = pbuffer + Offset;
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(p) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
       ETL_ASSERT(sizeof(T) <= (buffer_size - Offset), ETL_ERROR(etl::mem_cast_size_exception));
 
       ::new (p) T(value);
@@ -438,7 +408,6 @@ namespace etl
     void emplace(TArgs... args)
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(pbuffer) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
       ETL_ASSERT(sizeof(T) <= buffer_size, ETL_ERROR(etl::mem_cast_size_exception));
 
       ::new (pbuffer) T(etl::forward<TArgs>(args)...);
@@ -452,7 +421,6 @@ namespace etl
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
       char* p = pbuffer + offset;
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(p) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
       ETL_ASSERT(sizeof(T) <= (buffer_size - offset), ETL_ERROR(etl::mem_cast_size_exception));
 
       ::new (p) T(etl::forward<TArgs>(args)...);
@@ -466,7 +434,6 @@ namespace etl
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
       char* p = pbuffer + Offset;
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(p) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
       ETL_ASSERT(sizeof(T) <= (buffer_size - Offset), ETL_ERROR(etl::mem_cast_size_exception));
 
       ::new (p) T(etl::forward<TArgs>(args)...);
@@ -480,7 +447,6 @@ namespace etl
     ETL_NODISCARD T& ref()
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(pbuffer) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
       ETL_ASSERT(sizeof(T) <= buffer_size, ETL_ERROR(etl::mem_cast_size_exception));
 
       return *reinterpret_cast<T*>(pbuffer);
@@ -493,7 +459,6 @@ namespace etl
     ETL_NODISCARD const T& ref() const
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(pbuffer) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
       ETL_ASSERT(sizeof(T) <= buffer_size, ETL_ERROR(etl::mem_cast_size_exception));
 
       return *reinterpret_cast<const T*>(pbuffer);
@@ -507,7 +472,6 @@ namespace etl
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
       char* p = pbuffer + offset;
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(p) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
       ETL_ASSERT(sizeof(T) <= (buffer_size - offset), ETL_ERROR(etl::mem_cast_size_exception));
 
       return *reinterpret_cast<T*>(p);
@@ -521,7 +485,6 @@ namespace etl
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
       char* p = pbuffer + offset;
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(p) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
       ETL_ASSERT(sizeof(T) <= (buffer_size - offset), ETL_ERROR(etl::mem_cast_size_exception));
 
       return *reinterpret_cast<const T*>(p);
@@ -535,7 +498,6 @@ namespace etl
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
       char* p = pbuffer + Offset;
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(p) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
       ETL_ASSERT(sizeof(T) <= (buffer_size - Offset), ETL_ERROR(etl::mem_cast_size_exception));
 
       return *reinterpret_cast<T*>(p);
@@ -549,7 +511,6 @@ namespace etl
     {
       ETL_ASSERT((pbuffer != ETL_NULLPTR), ETL_ERROR(etl::mem_cast_nullptr_exception));
       char* p = pbuffer + Offset;
-      ETL_ASSERT((reinterpret_cast<uintptr_t>(p) % etl::alignment_of<T>::value) == 0, ETL_ERROR(etl::mem_cast_alignment_exception));
       ETL_ASSERT(sizeof(T) <= (buffer_size - Offset), ETL_ERROR(etl::mem_cast_size_exception));
 
       return *reinterpret_cast<const T*>(p);

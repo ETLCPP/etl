@@ -339,25 +339,5 @@ namespace
 
       CHECK_THROW(char c = memCast.ref<char>(), etl::mem_cast_nullptr_exception);
     }
-
-    //*************************************************************************
-    TEST(test_mem_cast_to_type_misaligned_buffer)
-    {
-      double d;
-      char* pbuffer = reinterpret_cast<char*>(&d);
-      MemCast memCast(pbuffer + 1); 
-
-      CHECK_THROW(double d = memCast.ref<double>(), etl::mem_cast_alignment_exception);
-    }
-
-    //*************************************************************************
-    TEST(test_const_mem_cast_to_type_misaligned_buffer)
-    {
-      double d;
-      char* pbuffer = reinterpret_cast<char*>(&d);
-      const MemCast memCast(pbuffer + 1); 
-
-      CHECK_THROW(double d = memCast.ref<double>(), etl::mem_cast_alignment_exception);
-    }
   };
 }
