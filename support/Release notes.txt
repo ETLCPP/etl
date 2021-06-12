@@ -1,4 +1,9 @@
 ===============================================================================
+20.11.0
+Added etl::mem_cast, etl::mem_cast_ptr & etl::mem_cast_types for reinterpretion of memory blocks.
+State tables in etl::debounce are now constexpr in C++11 or above.
+
+===============================================================================
 20.10.6
 Updated QueuedMessageRouter and QueuedFSM examples to use current message frameworks.
 
