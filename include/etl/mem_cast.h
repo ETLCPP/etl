@@ -531,7 +531,7 @@ namespace etl
     {
       typedef typename etl::smallest_uint_for_bits<sizeof(uintptr_t)* CHAR_BIT>::type type;
 
-      const uintptr_t p = reinterpret_cast<type>(pbuffer);    
+      const type p = reinterpret_cast<type>(pbuffer);    
 
       return 1U << etl::count_trailing_zeros(p);
     }

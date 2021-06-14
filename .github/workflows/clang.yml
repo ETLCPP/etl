@@ -27,6 +27,27 @@ jobs:
     - name: Run tests
       run: ./test/etl_tests
 
+  build-clang-10-linux:
+    name: Clang-10 Linux
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        export CC=clang-10
+        export CXX=clang++-10
+        cmake -D BUILD_TESTS=ON ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests
+
   build-clang-9-linux-no-stl:
     name: Clang-9 Linux - No STL
     runs-on: ${{ matrix.os }}
