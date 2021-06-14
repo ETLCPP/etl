@@ -1,7 +1,7 @@
 name: clang
 on:
   push:
-    branches: [ master ]
+    branches: [ feature/mem_cast ]
   pull_request:
     branches: [ master ]
 
@@ -18,6 +18,8 @@ jobs:
 
     - name: Build
       run: |
+        sudo apt-get update
+        sudo apt-get install -y "clang-9" "lldb-9" "lld-9" "clang-format-9"
         export CC=clang-9
         export CXX=clang++-9
         cmake -D BUILD_TESTS=ON ./
