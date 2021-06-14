@@ -1,7 +1,7 @@
 name: clang
 on:
   push:
-    branches: [ master, feature/mem_cast ]
+    branches: [ feature/mem_cast ]
   pull_request:
     branches: [ master ]
 
