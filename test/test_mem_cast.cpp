@@ -38,6 +38,7 @@ SOFTWARE.
 
 namespace
 {
+  #pragma pack(push,1)
   struct Data
   {
     Data()
@@ -58,6 +59,7 @@ namespace
     double d;
     std::array<int, 3> a;
   };
+  #pragma pack(pop)
 
   constexpr size_t Size      = etl::largest<char, double, Data>::size;
   constexpr size_t Alignment = etl::largest<char, double, Data>::alignment;
@@ -135,6 +137,52 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_mem_cast_assign_type)
+    {
+      MemCast memCast;
+
+      memCast.assign<char>(123);
+      CHECK_EQUAL(123, memCast.ref<char>());
+
+      memCast.assign<double>(1.23);
+      CHECK_EQUAL(1.23, memCast.ref<double>());
+
+      Data data(123, 1.23, std::array<int, 3>{ 1, 2, 3 });
+      memCast.assign<Data>(data);
+      CHECK(123 == memCast.ref<Data>().c);
+      CHECK(1.23 == memCast.ref<Data>().d);
+      CHECK((std::array { 1, 2, 3 }) == memCast.ref<Data>().a);
+    }
+
+    //*************************************************************************
+    TEST(test_mem_cast_assign_type_at_dynamic_offset)
+    {
+      MemCast memCast; 
+
+      using Array = std::array<int, 3>;
+      Array a{ 1, 2, 3 };
+
+      size_t offset = offsetof(Data, a);
+
+      memCast.assign_at_offset<Array>(offset, a);
+      CHECK(a == memCast.ref<Data>().a);
+    }
+
+    //*************************************************************************
+    TEST(test_mem_cast_assign_type_at_static_offset)
+    {
+      MemCast memCast; 
+
+      using Array = std::array<int, 3>;
+      Array a{ 1, 2, 3 };
+
+      constexpr size_t Offset = offsetof(Data, a);
+
+      memCast.assign_at_offset<Array, Offset>(a);
+      CHECK(a == memCast.ref<Data>().a);
+    }
+
+    //*************************************************************************
     TEST(test_mem_cast_emplace_type)
     {
       MemCast memCast; 
@@ -149,6 +197,34 @@ namespace
       CHECK(123 == memCast.ref<Data>().c);
       CHECK(1.23 == memCast.ref<Data>().d);
       CHECK((std::array { 1, 2, 3 }) == memCast.ref<Data>().a);
+    }
+
+    //*************************************************************************
+    TEST(test_mem_cast_emplace_type_at_dynamic_offset)
+    {
+      MemCast memCast; 
+
+      using Array = std::array<int, 3>;
+      Array a{ 1, 2, 3 };
+
+      size_t offset = offsetof(Data, a);
+
+      memCast.emplace_at_offset<Array>(offset, a);
+      CHECK(a == memCast.ref<Data>().a);
+    }
+
+    //*************************************************************************
+    TEST(test_mem_cast_emplace_type_at_static_offset)
+    {
+      MemCast memCast; 
+
+      using Array = std::array<int, 3>;
+      Array a{ 1, 2, 3 };
+
+      constexpr size_t Offset = offsetof(Data, a);
+
+      memCast.emplace_at_offset<Array, Offset>(a);
+      CHECK(a == memCast.ref<Data>().a);
     }
 
     //*************************************************************************

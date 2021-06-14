@@ -8,7 +8,7 @@ project('PROJECT_NAME',
 		'cpp_std=c++17', 'build.cpp_std=c++17',
 	],
 	meson_version: '>=0.54.0',
-	version: '20.10.5'
+	version: '20.11.1'
 )
 
 ######################

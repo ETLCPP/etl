@@ -145,6 +145,8 @@ set(TEST_SOURCE_FILES
 	test_map.cpp
 	test_maths.cpp
 	test_mean.cpp
+	test_mem_cast.cpp
+	test_mem_cast_ptr.cpp
 	test_memory.cpp
 	test_message_bus.cpp
 	test_message_packet.cpp
