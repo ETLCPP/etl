@@ -1,4 +1,8 @@
 ===============================================================================
+20.11.1
+Fixed ambiguous function call in etl::mem_cast for clang.
+
+===============================================================================
 20.11.0
 Added etl::mem_cast, etl::mem_cast_ptr & etl::mem_cast_types for reinterpretion of memory blocks.
 State tables in etl::debounce are now constexpr in C++11 or above.
