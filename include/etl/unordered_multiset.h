@@ -242,37 +242,19 @@ namespace etl
       }
 
       //*********************************
-      reference operator *()
+      reference operator *() const
       {
         return inode->key;
       }
 
       //*********************************
-      const_reference operator *() const
-      {
-        return inode->key;
-      }
-
-      //*********************************
-      pointer operator &()
+      pointer operator &() const
       {
         return &(inode->key);
       }
 
       //*********************************
-      const_pointer operator &() const
-      {
-        return &(inode->key);
-      }
-
-      //*********************************
-      pointer operator ->()
-      {
-        return &(inode->key);
-      }
-
-      //*********************************
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return &(inode->key);
       }
@@ -1430,8 +1412,8 @@ namespace etl
 
   public:
 
-    static const size_t MAX_SIZE = MAX_SIZE_;
-    static const size_t MAX_BUCKETS = MAX_BUCKETS_;
+    static ETL_CONSTANT size_t MAX_SIZE = MAX_SIZE_;
+    static ETL_CONSTANT size_t MAX_BUCKETS = MAX_BUCKETS_;
 
 
     //*************************************************************************
@@ -1478,7 +1460,7 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
+    template <typename TIterator>
     unordered_multiset(TIterator first_, TIterator last_)
       : base(node_pool, buckets, MAX_BUCKETS)
     {

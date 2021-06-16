@@ -533,32 +533,17 @@ namespace etl
         return *this;
       }
 
-      reference operator *()
+      reference operator *() const
       {
         return ilist::data_cast(p_node)->value;
       }
 
-      const_reference operator *() const
-      {
-        return ilist::data_cast(p_node)->value;
-      }
-
-      pointer operator &()
+      pointer operator &() const
       {
         return &(ilist::data_cast(p_node)->value);
       }
 
-      const_pointer operator &() const
-      {
-        return &(ilist::data_cast(p_node)->value);
-      }
-
-      pointer operator ->()
-      {
-        return &(ilist::data_cast(p_node)->value);
-      }
-
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return &(ilist::data_cast(p_node)->value);
       }
@@ -2029,7 +2014,7 @@ namespace etl
 
     ETL_STATIC_ASSERT((MAX_SIZE_ > 0U), "Zero capacity etl::list is not valid");
 
-    static const size_t MAX_SIZE = MAX_SIZE_;
+    static ETL_CONSTANT size_t MAX_SIZE = MAX_SIZE_;
 
   public:
 
@@ -2115,8 +2100,8 @@ namespace etl
     //*************************************************************************
     /// Construct from range.
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
-    list(TIterator first, TIterator last)
+    template <typename TIterator>
+    list(TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : ilist<T>(node_pool, MAX_SIZE, false)
     {
       this->assign(first, last);
@@ -2279,8 +2264,8 @@ namespace etl
     //*************************************************************************
     /// Construct from range.
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
-    list_ext(TIterator first, TIterator last, etl::ipool& node_pool)
+    template <typename TIterator>
+    list_ext(TIterator first, TIterator last, etl::ipool& node_pool, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : ilist<T>(node_pool, node_pool.max_size(), true)
     {
       this->assign(first, last);

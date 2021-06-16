@@ -1275,5 +1275,33 @@ namespace
       // No compilation error.
       etl::vector<int, 10> v(5, 5);
     }
+
+    //*************************************************************************
+    TEST(remove)
+    {
+      const int raw[10] = { 1, 8, 2, 7, 7, 7, 4, 5, 10, 9 };
+      etl::vector<int, 10> data(etl::begin(raw), etl::end(raw));
+      std::array<int, 7>   expected = { 1, 8, 2, 4, 5, 10, 9 };
+
+      etl::erase(data, 7);
+
+      CHECK_EQUAL(expected.size(), data.size());
+
+      bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(remove_if)
+    {
+      const int raw[10] = { 1, 8, 2, 7, 7, 7, 4, 5, 10, 9 };
+      etl::vector<int, 10> data(etl::begin(raw), etl::end(raw));
+      std::array<int, 4>  expected = { 1, 2, 4, 5 };
+
+      etl::erase_if(data, [](int value) { return value >= 7; });
+            
+      bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
+      CHECK(is_same);
+    }
   };
 }

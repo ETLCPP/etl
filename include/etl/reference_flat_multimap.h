@@ -151,32 +151,17 @@ namespace etl
         return temp;
       }
 
-      reference operator *()
+      reference operator *() const
       {
         return *(*ilookup);
       }
 
-      const_reference operator *() const
-      {
-        return *(*ilookup);
-      }
-
-      pointer operator &()
+      pointer operator &() const
       {
         return etl::addressof(*(*ilookup));
       }
 
-      const_pointer operator &() const
-      {
-        return &(*(*ilookup));
-      }
-
-      pointer operator ->()
-      {
-        return etl::addressof(*(*ilookup));
-      }
-
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return etl::addressof(*(*ilookup));
       }
@@ -826,7 +811,7 @@ namespace etl
   {
   public:
 
-    static const size_t MAX_SIZE = MAX_SIZE_;
+    static ETL_CONSTANT size_t MAX_SIZE = MAX_SIZE_;
 
     //*************************************************************************
     /// Constructor.
@@ -851,7 +836,7 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
+    template <typename TIterator>
     reference_flat_multimap(TIterator first, TIterator last)
       : ireference_flat_multimap<TKey, TValue, TCompare>(lookup)
     {

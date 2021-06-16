@@ -528,8 +528,9 @@ namespace etl
   class stack : public etl::istack<T>
   {
   public:
+    typedef typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type container_type;
 
-    static const size_t MAX_SIZE = SIZE;
+    static ETL_CONSTANT size_t MAX_SIZE = SIZE;
 
     //*************************************************************************
     /// Default constructor.
@@ -598,7 +599,7 @@ namespace etl
   private:
 
     /// The unintitialised buffer of T used in the stack.
-    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[SIZE];
+    container_type buffer[SIZE];
   };
 }
 

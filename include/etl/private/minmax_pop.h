@@ -32,7 +32,11 @@ SOFTWARE.
  * The header include guard has been intentionally omitted.
  * This file is intended to evaluated multiple times by design.
  */
-
-#pragma pop_macro("min")
-#pragma pop_macro("max")
+#if !defined(ETL_COMPILER_ARM5)
+  #pragma pop_macro("min")
+  #pragma pop_macro("max")
+#else
+  #define min(a,b) ((a)<(b)?(a):(b))
+  #define max(a,b) ((a)<(b)?(b):(a))
+#endif
 

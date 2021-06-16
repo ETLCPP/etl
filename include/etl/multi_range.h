@@ -98,7 +98,7 @@ namespace etl
     {
       ETL_ASSERT(is_valid(inner_range), ETL_ERROR(multi_range_circular_reference));
 
-      if (inner != nullptr)
+      if (inner != ETL_NULLPTR)
       {
         inner->append(inner_range);
       }

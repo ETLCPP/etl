@@ -305,8 +305,8 @@ namespace etl
     //*************************************************************************
     /// Assign from iterators
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
-      void assign(TIterator begin_, TIterator end_)
+    template <typename TIterator>
+      void assign(TIterator begin_, TIterator end_, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
     {
       mbegin = etl::addressof(*begin_);
       mend   = etl::addressof(*begin_) + etl::distance(begin_, end_);

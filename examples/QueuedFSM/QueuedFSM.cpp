@@ -99,18 +99,18 @@ public:
   //***************************************************************************
   // The overridden virtual receive function.
   //***************************************************************************
-  void receive(etl::imessage_router& sender_, const etl::imessage& msg_) override
+  void receive(const etl::imessage& msg_) override
   {
     if (accepts(msg_))
     {
       // Place in queue.
-      queue.emplace(&sender_, msg_);
+      queue.emplace(msg_);
 
-      std::cout << "Queueing message " << int(msg_.message_id) << std::endl;
+      std::cout << "Queueing message " << int(msg_.get_message_id()) << std::endl;
     }
     else
     {
-      std::cout << "Ignoring message " << int(msg_.message_id) << std::endl;
+      std::cout << "Ignoring message " << int(msg_.get_message_id()) << std::endl;
     }
   }
 
@@ -121,14 +121,13 @@ public:
   {
     while (!queue.empty())
     {
-      Item& item = queue.front();
-      etl::imessage& msg = item.packet.get();
-      etl::imessage_router& sender = *item.sender;
-      std::cout << "Processing message " << int(msg.message_id) << std::endl;
+      message_packet& packet = queue.front();
+      etl::imessage& msg = packet.get();
+      std::cout << "Processing message " << int(msg.get_message_id()) << std::endl;
 
       // Call the base class's receive function.
       // This will route it to the correct 'on_event' handler.
-      etl::fsm::receive(sender, msg);
+      etl::fsm::receive(msg);
 
       queue.pop();
     }
@@ -136,23 +135,10 @@ public:
 
 private:
 
-  //***************************************************************************
-  // The item to queue.
-  //***************************************************************************
-  struct Item
-  {
-    Item(etl::imessage_router* sender_, const etl::imessage& msg_)
-      : sender(sender_),
-        packet(msg_)
-    {
-    }
-
-    etl::imessage_router* sender;
-    etl::message_packet< Message1, Message2, Message3, Message4> packet; // Defines a packet suitable for all possible messages.
-  };
+  typedef etl::message_packet< Message1, Message2, Message3, Message4> message_packet;
 
   // The queue of message items.
-  etl::queue<Item, 10> queue;
+  etl::queue<message_packet, 10> queue;
 };
 
 //*****************************************************************************
@@ -178,33 +164,33 @@ public:
   }
 
   //***************************************************************************
-  etl::fsm_state_id_t on_event(etl::imessage_router& sender, const Message1& msg)
+  etl::fsm_state_id_t on_event(const Message1& msg)
   {
-    std::cout << "  S1 : Received message " << int(msg.message_id) << " : '" << msg.i << "'" << std::endl;
+    std::cout << "  S1 : Received message " << int(msg.get_message_id()) << " : '" << msg.i << "'" << std::endl;
     std::cout.flush();
     return STATE1;
   }
 
   //***************************************************************************
-  etl::fsm_state_id_t on_event(etl::imessage_router& sender, const Message2& msg)
+  etl::fsm_state_id_t on_event(const Message2& msg)
   {
-    std::cout << "  S1 : Received message " << int(msg.message_id) << " : '" << msg.d << "'" << std::endl;
+    std::cout << "  S1 : Received message " << int(msg.get_message_id()) << " : '" << msg.d << "'" << std::endl;
     std::cout.flush();
     return STATE1;
   }
 
   //***************************************************************************
-  etl::fsm_state_id_t on_event(etl::imessage_router& sender, const Message3& msg)
+  etl::fsm_state_id_t on_event(const Message3& msg)
   {
-    std::cout << "  S1 : Received message " << int(msg.message_id) << " : '" << msg.s << "'" << std::endl;
+    std::cout << "  S1 : Received message " << int(msg.get_message_id()) << " : '" << msg.s << "'" << std::endl;
     std::cout.flush();
     return STATE1;
   }
 
   //***************************************************************************
-  etl::fsm_state_id_t on_event_unknown(etl::imessage_router& sender, const etl::imessage& msg)
+  etl::fsm_state_id_t on_event_unknown(const etl::imessage& msg)
   {
-    std::cout << "  S1 : Received unknown message " << int(msg.message_id) << std::endl;
+    std::cout << "  S1 : Received unknown message " << int(msg.get_message_id()) << std::endl;
     std::cout.flush();
     return STATE2;
   }
@@ -233,30 +219,30 @@ public:
   }
 
   //***************************************************************************
-  etl::fsm_state_id_t on_event(etl::imessage_router& sender, const Message1& msg)
+  etl::fsm_state_id_t on_event(const Message1& msg)
   {
-    std::cout << "  S2 : Received message " << int(msg.message_id) << " : '" << msg.i << "'" << std::endl;
+    std::cout << "  S2 : Received message " << int(msg.get_message_id()) << " : '" << msg.i << "'" << std::endl;
     return STATE2;
   }
 
   //***************************************************************************
-  etl::fsm_state_id_t on_event(etl::imessage_router& sender, const Message2& msg)
+  etl::fsm_state_id_t on_event(const Message2& msg)
   {
-    std::cout << "  S2 : Received message " << int(msg.message_id) << " : '" << msg.d << "'" << std::endl;
+    std::cout << "  S2 : Received message " << int(msg.get_message_id()) << " : '" << msg.d << "'" << std::endl;
     return STATE2;
   }
 
   //***************************************************************************
-  etl::fsm_state_id_t on_event(etl::imessage_router& sender, const Message3& msg)
+  etl::fsm_state_id_t on_event(const Message3& msg)
   {
-    std::cout << "  S2 : Received message " << int(msg.message_id) << " : '" << msg.s << "'" << std::endl;
+    std::cout << "  S2 : Received message " << int(msg.get_message_id()) << " : '" << msg.s << "'" << std::endl;
     return STATE2;
   }
 
   //***************************************************************************
-  etl::fsm_state_id_t on_event_unknown(etl::imessage_router& sender, const etl::imessage& msg)
+  etl::fsm_state_id_t on_event_unknown(const etl::imessage& msg)
   {
-    std::cout << "  S2 : Received unknown message " << int(msg.message_id) << std::endl;
+    std::cout << "  S2 : Received unknown message " << int(msg.get_message_id()) << std::endl;
     return STATE1;
   }
 };

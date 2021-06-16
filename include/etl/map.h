@@ -641,32 +641,17 @@ namespace etl
         return *this;
       }
 
-      reference operator *()
+      reference operator *() const
       {
         return imap::data_cast(p_node)->value;
       }
 
-      const_reference operator *() const
-      {
-        return imap::data_cast(p_node)->value;
-      }
-
-      pointer operator &()
+      pointer operator &() const
       {
         return &(imap::data_cast(p_node)->value);
       }
 
-      const_pointer operator &() const
-      {
-        return &(imap::data_cast(p_node)->value);
-      }
-
-      pointer operator ->()
-      {
-        return &(imap::data_cast(p_node)->value);
-      }
-
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return &(imap::data_cast(p_node)->value);
       }
@@ -1336,7 +1321,7 @@ namespace etl
     key_compare key_comp() const
     {
       return kcompare;
-    };
+    }
 
     //*************************************************************************
     /// How to compare two value elements.
@@ -1344,7 +1329,7 @@ namespace etl
     value_compare value_comp() const
     {
       return vcompare;
-    };
+    }
 
   protected:
 
@@ -2175,7 +2160,7 @@ namespace etl
   {
   public:
 
-    static const size_t MAX_SIZE = MAX_SIZE_;
+    static ETL_CONSTANT size_t MAX_SIZE = MAX_SIZE_;
 
     //*************************************************************************
     /// Default constructor.
@@ -2223,7 +2208,7 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
+    template <typename TIterator>
     map(TIterator first, TIterator last)
       : etl::imap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {

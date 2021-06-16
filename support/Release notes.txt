@@ -1,4 +1,106 @@
 ===============================================================================
+20.11.1
+Fixed ambiguous function call in etl::mem_cast for clang.
+
+===============================================================================
+20.11.0
+Added etl::mem_cast, etl::mem_cast_ptr & etl::mem_cast_types for reinterpretion of memory blocks.
+State tables in etl::debounce are now constexpr in C++11 or above.
+
+===============================================================================
+20.10.6
+Updated QueuedMessageRouter and QueuedFSM examples to use current message frameworks.
+
+===============================================================================
+20.10.5
+Added container_type to etl::stack, etl::queue and etl::priority_queue.
+
+===============================================================================
+20.10.4
+Fixed cross compiler compatibility for etl::circular_buffer.
+
+===============================================================================
+20.10.3
+Fixed etl::fsm generator for non-default number of message types.
+
+===============================================================================
+20.10.2
+Fixed misspelled histogram class.
+
+===============================================================================
+20.10.1
+Fixed incorrect histogram end() and cend() return values.
+
+===============================================================================
+20.10.0
+Added Hierarchical Finite State Machine (etl::hfsm) derived from etl::fsm
+
+===============================================================================
+20.9.3
+Fixed misspelt DBL_MAX macro.
+
+===============================================================================
+20.9.2
+Fixed ETL_ASSERT for non-class types in etl::pool.
+
+===============================================================================
+20.9.1
+Replaced std::distance with etl::distance in erase() and erase_if() for vector.h
+
+===============================================================================
+20.9.0
+Fixed #362 'etl::fsm::receive() partial override'.
+Fixed #363 'circular_buffer operator [] takes integer rather than size_type'.
+Fixed occasional incorrect string length for etl::make_string.
+Added macros for compilers that don't support HUGE_VAL.
+Added etl::accumulate, etl::clamp, etl::erase, etl::erase_if, etl::remove, etl::remove_if.
+Added maths algorithms and functors.
+  etl::correlation
+  etl::covariance
+  etl::gamma_encode
+  etl:;gamma_decode
+  etl::histogram
+  etl::sparce_histogram
+  etl::mean
+  etl::invert
+  etl::threshold
+  etl::quantize
+  etl::limiter
+  etl::rescale
+  etl::rms
+  etl::standard_deviation
+  etl::variance
+
+===============================================================================
+20.8.0
+Added more CRCs, generalised table creation.
+Options for table sizes of 4, 16 and 256.
+Removed unnecessary non-const versions of iterators for containers.
+
+===============================================================================
+20.7.0
+Added etl::selection_sort.
+etl::delegate accepts moveable parameters.
+Fixed the return type of const iterators for containers from const_iterator to iterator.
+Changed many instances of 'static const' to 'static ETL_CONSTANT'.
+
+===============================================================================
+20.6.3
+Updates to unit test CMake files.
+Added missing include for string_utilities.h
+
+===============================================================================
+20.6.2
+C++98/03 compatibility fixes.
+Added 'sanity check' tests for checking for 98/03/11/14/17 issues.
+
+===============================================================================
+20.6.1
+Added missing etl::atomic<bool> from gcc & clang implementations.
+Changed nullptr to ETL_NULLPTR in buffer_descriptors and multi_range.
+Fixed header includes in state_chart.h
+
+===============================================================================
 20.6.0
 Added etl::message_router_registry.
 Changed etl::flat_multimap & etl::flat_multiset to iterate in insertion order, as per C++11 map and set.

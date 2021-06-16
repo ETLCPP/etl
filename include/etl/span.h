@@ -44,6 +44,8 @@ SOFTWARE.
 /// A wrapper for arrays
 ///\ingroup containers
 
+#if ETL_CPP11_SUPPORTED
+
 namespace etl
 {
   static ETL_CONSTANT size_t dynamic_extent = etl::integral_limits<size_t>::max;
@@ -355,6 +357,8 @@ namespace etl
   };
 #endif
 }
+
+#endif
 
 #endif
 

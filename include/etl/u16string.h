@@ -145,8 +145,8 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
-    u16string(TIterator first, TIterator last)
+    template <typename TIterator>
+    u16string(TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : iu16string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
     {
       this->assign(first, last);
@@ -336,8 +336,8 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
-    u16string_ext(TIterator first, TIterator last, value_type* buffer, size_type buffer_size)
+    template <typename TIterator>
+    u16string_ext(TIterator first, TIterator last, value_type* buffer, size_type buffer_size, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : iu16string(buffer, buffer_size - 1U)
     {
       this->assign(first, last);
@@ -460,7 +460,7 @@ namespace etl
   template<size_t ARRAY_SIZE>
   etl::u16string<ARRAY_SIZE == 1 ? 1 : ARRAY_SIZE - 1> make_string(const char16_t(&text)[ARRAY_SIZE])
   {
-    return etl::u16string<ARRAY_SIZE == 1 ? 1 : ARRAY_SIZE - 1>(text, ARRAY_SIZE - 1);
+    return etl::u16string<ARRAY_SIZE == 1 ? 1 : ARRAY_SIZE - 1>(text, etl::strlen(text));
   }
 
   //***************************************************************************
@@ -469,7 +469,7 @@ namespace etl
   template<const size_t MAX_SIZE, const size_t SIZE>
   etl::u16string<MAX_SIZE> make_string_with_capacity(const char16_t(&text)[SIZE])
   {
-    return etl::u16string<MAX_SIZE>(text, SIZE - 1);
+    return etl::u16string<MAX_SIZE>(text, etl::strlen(text));
   }
 }
 

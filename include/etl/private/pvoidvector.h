@@ -371,7 +371,7 @@ namespace etl
       void** p_first = (void**)(first);
       void** p_last  = (void**)(last);
 
-      p_end = etl::copy(p_first, p_last, p_buffer);;
+      p_end = etl::copy(p_first, p_last, p_buffer);
     }
 
     //*********************************************************************

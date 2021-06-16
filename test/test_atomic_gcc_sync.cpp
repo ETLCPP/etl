@@ -29,6 +29,9 @@ SOFTWARE.
 #include "UnitTest++/UnitTest++.h"
 
 #include "etl/platform.h"
+
+#if defined(ETL_COMPILER_GCC)
+
 #include "etl/atomic/atomic_gcc_sync.h"
 
 #include <atomic>
@@ -524,3 +527,5 @@ namespace
     #endif
   };
 }
+
+#endif

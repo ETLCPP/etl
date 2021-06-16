@@ -92,7 +92,7 @@ namespace etl
   public:
 
     string_empty(string_type file_name_, numeric_type line_number_)
-      : string_exception(ETL_ERROR_TEXT("string:empty", ETL_STRING_FILE_ID"A"), file_name_, line_number_)
+      : string_exception(ETL_ERROR_TEXT("string:empty", ETL_BASIC_STRING_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -106,7 +106,7 @@ namespace etl
   public:
 
     string_out_of_bounds(string_type file_name_, numeric_type line_number_)
-      : string_exception(ETL_ERROR_TEXT("string:bounds", ETL_STRING_FILE_ID"B"), file_name_, line_number_)
+      : string_exception(ETL_ERROR_TEXT("string:bounds", ETL_BASIC_STRING_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -120,7 +120,7 @@ namespace etl
   public:
 
     string_iterator(string_type file_name_, numeric_type line_number_)
-      : string_exception(ETL_ERROR_TEXT("string:iterator", ETL_STRING_FILE_ID"C"), file_name_, line_number_)
+      : string_exception(ETL_ERROR_TEXT("string:iterator", ETL_BASIC_STRING_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -134,7 +134,7 @@ namespace etl
   public:
 
     string_truncation(string_type file_name_, numeric_type line_number_)
-      : string_exception(ETL_ERROR_TEXT("string:iterator", ETL_STRING_FILE_ID"D"), file_name_, line_number_)
+      : string_exception(ETL_ERROR_TEXT("string:iterator", ETL_BASIC_STRING_FILE_ID"D"), file_name_, line_number_)
     {
     }
   };
@@ -297,8 +297,8 @@ namespace etl
     {
     }
 
-    static const uint_least8_t IS_TRUNCATED    = etl::bit<0>::value;
-    static const uint_least8_t CLEAR_AFTER_USE = etl::bit<1>::value;
+    static ETL_CONSTANT uint_least8_t IS_TRUNCATED    = etl::bit<0>::value;
+    static ETL_CONSTANT uint_least8_t CLEAR_AFTER_USE = etl::bit<1>::value;
 
     size_type       current_size;   ///< The current number of elements in the string.
     const size_type CAPACITY;       ///< The maximum number of elements in the string.

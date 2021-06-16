@@ -418,8 +418,9 @@ namespace etl
   public:
 
     typedef typename TContainer::size_type size_type;
+    typedef TContainer                     container_type;
 
-    static const size_type MAX_SIZE = size_type(SIZE);
+    static ETL_CONSTANT size_type MAX_SIZE = size_type(SIZE);
 
     //*************************************************************************
     /// Default constructor.
@@ -455,7 +456,7 @@ namespace etl
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
+    template <typename TIterator>
     priority_queue(TIterator first, TIterator last)
       : etl::ipriority_queue<T, TContainer, TCompare>()
     {

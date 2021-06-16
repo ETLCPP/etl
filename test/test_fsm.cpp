@@ -224,7 +224,7 @@ namespace
     etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
     {
       ++get_fsm_context().unknownCount;
-      return STATE_ID;
+      return StateId::IDLE; //No_State_Change;
     }
 
     //***********************************

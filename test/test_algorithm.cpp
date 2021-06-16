@@ -37,6 +37,7 @@ SOFTWARE.
 #include <vector>
 #include <array>
 #include <list>
+#include <forward_list>
 #include <algorithm>
 #include <functional>
 #include <numeric>
@@ -1960,6 +1961,90 @@ namespace
     }
 
     //*************************************************************************
+    TEST(selection_sort_default_forward_iterators)
+    {
+      std::vector<int> data(100, 0);
+      std::iota(data.begin(), data.end(), 1);
+
+      for (int i = 0; i < 100; ++i)
+      {
+        std::shuffle(data.begin(), data.end(), urng);
+
+        std::forward_list<int> data1(data.begin(), data.end());
+        std::forward_list<int> data2(data.begin(), data.end());
+
+        data1.sort();
+        etl::selection_sort(data2.begin(), data2.end());
+
+        bool is_same = std::equal(data1.begin(), data1.end(), data2.begin());
+        CHECK(is_same);
+      }
+    }
+
+    //*************************************************************************
+    TEST(selection_sort_default_bidirectional_iterators)
+    {
+      std::vector<int> data(100, 0);
+      std::iota(data.begin(), data.end(), 1);
+
+      for (int i = 0; i < 100; ++i)
+      {
+        std::shuffle(data.begin(), data.end(), urng);
+
+        std::list<int> data1(data.begin(), data.end());
+        std::list<int> data2(data.begin(), data.end());
+
+        data1.sort();
+        etl::selection_sort(data2.begin(), data2.end());
+
+        bool is_same = std::equal(data1.begin(), data1.end(), data2.begin());
+        CHECK(is_same);
+      }
+    }
+
+    //*************************************************************************
+    TEST(selection_sort_default_random_access_iterators)
+    {
+      std::vector<int> data(100, 0);
+      std::iota(data.begin(), data.end(), 1);
+
+      for (int i = 0; i < 100; ++i)
+      {
+        std::shuffle(data.begin(), data.end(), urng);
+
+        std::vector<int> data1 = data;
+        std::vector<int> data2 = data;
+
+        std::sort(data1.begin(), data1.end());
+        etl::selection_sort(data2.begin(), data2.end());
+
+        bool is_same = std::equal(data1.begin(), data1.end(), data2.begin());
+        CHECK(is_same);
+      }
+    }
+
+    //*************************************************************************
+    TEST(selection_sort_greater)
+    {
+      std::vector<int> data(100, 0);
+      std::iota(data.begin(), data.end(), 1);
+
+      for (int i = 0; i < 100; ++i)
+      {
+        std::shuffle(data.begin(), data.end(), urng);
+
+        std::vector<int> data1 = data;
+        std::vector<int> data2 = data;
+
+        std::sort(data1.begin(), data1.end(), std::greater<int>());
+        etl::selection_sort(data2.begin(), data2.end(), std::greater<int>());
+
+        bool is_same = std::equal(data1.begin(), data1.end(), data2.begin());
+        CHECK(is_same);
+      }
+    }
+
+    //*************************************************************************
     TEST(heap_sort_default)
     {
       std::vector<NDC> initial_data = { NDC(1, 1), NDC(2, 1), NDC(3, 1), NDC(2, 2), NDC(3, 2), NDC(4, 1), NDC(2, 3), NDC(3, 3), NDC(5, 1) };
@@ -2077,6 +2162,30 @@ namespace
       Sum sum;
       sum = etl::for_each(std::begin(data), std::end(data), sum);
       CHECK_EQUAL(std::accumulate(std::begin(data), std::end(data), 0), sum.value);
+    }
+
+    //*************************************************************************
+    TEST(remove)
+    {
+      std::array<int, 10> data     = { 1, 8, 2, 7, 7, 7, 4, 5, 10, 9 };
+      std::array<int, 7>  expected = { 1, 8, 2, 4, 5, 10, 9 };
+
+      etl::remove(data.begin(), data.end(), 7);
+
+      bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
+      CHECK(is_same);
+    }
+
+    //*************************************************************************
+    TEST(remove_if)
+    {
+      std::array<int, 10> data     = { 1, 8, 2, 7, 7, 7, 4, 5, 10, 9 };
+      std::array<int, 4>  expected = { 1, 2, 4, 5 };
+
+      etl::remove_if(data.begin(), data.end(), [](int value) { return value >= 7; });
+            
+      bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
+      CHECK(is_same);
     }
   };
 }

@@ -45,12 +45,12 @@ namespace etl
 
   typedef std::memory_order memory_order;
 
-  static const etl::memory_order memory_order_relaxed = std::memory_order_relaxed;
-  static const etl::memory_order memory_order_consume = std::memory_order_consume;
-  static const etl::memory_order memory_order_acquire = std::memory_order_acquire;
-  static const etl::memory_order memory_order_release = std::memory_order_release;
-  static const etl::memory_order memory_order_acq_rel = std::memory_order_acq_rel;
-  static const etl::memory_order memory_order_seq_cst = std::memory_order_seq_cst;
+  static ETL_CONSTANT etl::memory_order memory_order_relaxed = std::memory_order_relaxed;
+  static ETL_CONSTANT etl::memory_order memory_order_consume = std::memory_order_consume;
+  static ETL_CONSTANT etl::memory_order memory_order_acquire = std::memory_order_acquire;
+  static ETL_CONSTANT etl::memory_order memory_order_release = std::memory_order_release;
+  static ETL_CONSTANT etl::memory_order memory_order_acq_rel = std::memory_order_acq_rel;
+  static ETL_CONSTANT etl::memory_order memory_order_seq_cst = std::memory_order_seq_cst;
 
   template <typename T>
   class atomic

@@ -34,7 +34,7 @@ SOFTWARE.
 #include "platform.h"
 #include "type_traits.h"
 
-#if ETL_USING_STL
+#if defined(ETL_IN_UNIT_TEST) || ETL_USING_STL
   #if ETL_CPP11_SUPPORTED
     #include <utility>
   #else

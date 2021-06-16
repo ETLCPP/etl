@@ -191,15 +191,7 @@ namespace etl
       //*************************************************************************
       /// * operator
       //*************************************************************************
-      reference operator *()
-      {
-        return picb->pbuffer[current];
-      }
-
-      //*************************************************************************
-      /// * operator
-      //*************************************************************************
-      const_reference operator *() const
+      reference operator *() const
       {
         return picb->pbuffer[current];
       }
@@ -207,15 +199,7 @@ namespace etl
       //*************************************************************************
       /// -> operator
       //*************************************************************************
-      pointer operator ->()
-      {
-        return picb->pbuffer[current];
-      }
-
-      //*************************************************************************
-      /// -> operator
-      //*************************************************************************
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return picb->pbuffer[current];
       }
@@ -828,7 +812,7 @@ namespace etl
     //*************************************************************************
     /// Get a reference to the item.
     //*************************************************************************
-    reference operator [](int index)
+    reference operator [](size_t index)
     {
       return pbuffer[(out + index) % BUFFER_SIZE];
     }
@@ -837,7 +821,7 @@ namespace etl
     /// Get a const reference to the item at the back of the buffer.
     /// Asserts an error if the buffer is empty.
     //*************************************************************************
-    const_reference operator [](int index) const
+    const_reference operator [](size_t index) const
     {
       return pbuffer[(out + index) % BUFFER_SIZE];
     }
@@ -981,7 +965,7 @@ namespace etl
     //*************************************************************************
     /// Protected constructor.
     //*************************************************************************
-    icircular_buffer<T>(pointer pbuffer_, size_type max_length)
+    icircular_buffer(pointer pbuffer_, size_type max_length)
       : circular_buffer_base(max_length + 1U)
       , pbuffer(pbuffer_)
     {
@@ -1064,8 +1048,8 @@ namespace etl
     /// Constructor.
     /// Constructs a buffer from an iterator range.
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
-    circular_buffer(TIterator first, const TIterator& last)
+    template <typename TIterator>
+    circular_buffer(TIterator first, const TIterator& last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : icircular_buffer<T>(reinterpret_cast<T*>(buffer.raw), MAX_SIZE)
     {
       while (first != last)
@@ -1181,8 +1165,8 @@ namespace etl
     /// Constructor.
     /// Constructs a buffer from an iterator range.
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
-    circular_buffer_ext(TIterator first, const TIterator& last, void* buffer, size_t max_size)
+    template <typename TIterator>
+    circular_buffer_ext(TIterator first, const TIterator& last, void* buffer, size_t max_size, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : icircular_buffer<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       while (first != last)

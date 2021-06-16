@@ -438,32 +438,17 @@ namespace etl
         return *this;
       }
 
-      reference operator *()
+      reference operator *() const
       {
         return *p_value;
       }
 
-      const_reference operator *() const
-      {
-        return *p_value;
-      }
-
-      pointer operator &()
+      pointer operator &() const
       {
         return p_value;
       }
 
-      const_pointer operator &() const
-      {
-        return p_value;
-      }
-
-      pointer operator ->()
-      {
-        return p_value;
-      }
-
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return p_value;
       }
@@ -599,8 +584,8 @@ namespace etl
     //*************************************************************************
     /// Constructor from range
     //*************************************************************************
-    template <typename TIterator, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0>
-    intrusive_list(TIterator first, TIterator last)
+    template <typename TIterator>
+    intrusive_list(TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
     {
       this->assign(first, last);
     }

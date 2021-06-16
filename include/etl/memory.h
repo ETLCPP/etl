@@ -43,7 +43,7 @@ SOFTWARE.
 #include <assert.h>
 #include <string.h>
 
-#if ETL_USING_STL
+#if defined(ETL_IN_UNIT_TEST) || ETL_USING_STL
   #include <memory>
 #endif
 
@@ -1542,9 +1542,8 @@ namespace etl
     unique_ptr(const unique_ptr&) ETL_DELETE;
     unique_ptr&	operator =(const unique_ptr&) ETL_DELETE;
 
+    pointer	p; 
     TDeleter deleter;
-
-    pointer	p;
   };
 }
 

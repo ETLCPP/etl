@@ -8,7 +8,7 @@ project('PROJECT_NAME',
 		'cpp_std=c++17', 'build.cpp_std=c++17',
 	],
 	meson_version: '>=0.54.0',
-	version: '19.3.7'
+	version: '20.11.1'
 )
 
 ######################
@@ -54,6 +54,7 @@ etl_test_sources = files(
 	'test/test_fnv_1.cpp',
 	'test/test_forward_list.cpp',
 	'test/test_fsm.cpp',
+	'test/test_hfsm.cpp',
 	'test/test_functional.cpp',
 	'test/test_function.cpp',
 	'test/test_hash.cpp',

@@ -51,6 +51,7 @@ SOFTWARE.
   #include <utility>
   #include <iterator>
   #include <functional>
+  #include <numeric>
 #endif
 
 #include "private/minmax_push.h"
@@ -1018,7 +1019,7 @@ namespace etl
   template <typename TIteratorIn, typename TIteratorOut, typename TUnaryOperation>
   TIteratorOut transform(TIteratorIn first1, TIteratorIn last1, TIteratorOut d_first, TUnaryOperation unary_operation)
   {
-    return std::transform(first1, last1, d_first, unary_operation);;
+    return std::transform(first1, last1, d_first, unary_operation);
   }
 
   template <typename TIteratorIn1, typename TIteratorIn2, typename TIteratorOut, typename TBinaryOperation>
@@ -2581,6 +2582,150 @@ namespace etl
     std::stable_sort(first, last);
   }
 #endif
+
+#if ETL_NOT_USING_STL
+  //***************************************************************************
+  /// Accumulates values.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename T>
+  ETL_CONSTEXPR14 T accumulate(TIterator first, TIterator last, T sum)
+  {
+    while (first != last)
+    {
+      sum = etl::move(sum) + *first++;
+    }
+      
+    return sum;
+  }
+
+  //***************************************************************************
+  /// Accumulates values.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename T, typename TBinaryOperation>
+  ETL_CONSTEXPR14 T accumulate(TIterator first, TIterator last, T sum, TBinaryOperation operation)
+  {
+    while (first != last)
+    {
+      sum = operation(etl::move(sum), *first++);
+    }
+
+    return sum;
+  }
+#else
+  //***************************************************************************
+  /// Accumulates values.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template<typename TIterator, typename T>
+  ETL_CONSTEXPR14 T accumulate(TIterator first, TIterator last, T sum)
+  {
+    return std::accumulate(first, last, sum);
+  }
+
+  //***************************************************************************
+  /// Accumulates values.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template<typename TIterator, typename T, typename TBinaryOperation>
+  ETL_CONSTEXPR14 T accumulate(TIterator first, TIterator last, T sum, TBinaryOperation operation)
+  {
+    return std::accumulate(first, last, sum, operation);
+  }
+#endif
+
+  //***************************************************************************
+  /// Clamp values.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template<typename T, typename TCompare>
+  ETL_CONSTEXPR const T& clamp(const T& value, const T& low, const T& high, TCompare compare)
+  {
+    return compare(value, low) ? low : compare(high, value) ? high : value;
+  }
+  
+  template <typename T>
+  ETL_CONSTEXPR const T& clamp(const T& value, const T& low, const T& high )
+  {
+    return clamp(value, low, high, etl::less<T>());
+  }
+
+  #if ETL_NOT_USING_STL
+    //***************************************************************************
+    /// Remove
+    ///\ingroup algorithm
+    //***************************************************************************
+    template <typename TIterator, typename T>
+    TIterator remove(TIterator first, TIterator last, const T& value)
+    {
+      first = etl::find(first, last, value);
+      
+      if (first != last)
+      {
+        TIterator itr = first;
+
+        while (itr != last)
+        {
+          if (!(*itr == value))
+          {
+            *first++ = etl::move(*itr);
+          }
+
+          ++itr;
+        }
+      }
+      
+      return first;
+    }
+
+    //***************************************************************************
+    /// Remove If
+    ///\ingroup algorithm
+    //***************************************************************************
+    template <typename TIterator, typename TUnaryPredicate>
+    TIterator remove_if(TIterator first, TIterator last, TUnaryPredicate predicate)
+    {
+      first = etl::find_if(first, last, predicate);
+
+      if (first != last)
+      {
+        TIterator itr = first;
+
+        while (itr != last)
+        {
+          if (!predicate(*itr))
+          {
+            *first++ = etl::move(*itr);
+          }
+
+          ++itr;
+        }
+      }
+
+      return first;
+    }
+  #else
+    //***************************************************************************
+    /// Remove
+    ///\ingroup algorithm
+    //***************************************************************************
+    template <typename TIterator, typename T>
+    TIterator remove(TIterator first, TIterator last, const T& value)
+    {
+      return std::remove(first, last, value);
+    }
+
+    //***************************************************************************
+    /// Remove If
+    ///\ingroup algorithm
+    //***************************************************************************
+    template <typename TIterator, typename TUnaryPredicate>
+    TIterator remove_if(TIterator first, TIterator last, TUnaryPredicate predicate)
+    {
+      return std::remove_if(first, last, predicate);
+    }
+  #endif
 }
 
 //*****************************************************************************
@@ -3255,6 +3400,86 @@ namespace etl
   void insertion_sort(TIterator first, TIterator last)
   {
     etl::insertion_sort(first, last, etl::less<typename etl::iterator_traits<TIterator>::value_type>());
+  }
+
+  //***************************************************************************
+  namespace private_algorithm
+  {
+    template <typename TIterator>
+    typename etl::enable_if<etl::is_forward_iterator<TIterator>::value, TIterator>::type
+      get_before_last(TIterator first_, TIterator last_)
+    {
+      TIterator last      = first_;
+      TIterator lastplus1 = first_;
+      ++lastplus1;
+
+      while (lastplus1 != last_)
+      {
+        ++last;
+        ++lastplus1;
+      }
+
+      return last;
+    }
+
+    template <typename TIterator>
+    typename etl::enable_if<etl::is_bidirectional_iterator<TIterator>::value, TIterator>::type
+      get_before_last(TIterator /*first_*/, TIterator last_)
+    {
+      TIterator last = last_;
+      --last;
+
+      return last;
+    }
+
+    template <typename TIterator>
+    typename etl::enable_if<etl::is_random_access_iterator<TIterator>::value, TIterator>::type
+      get_before_last(TIterator /*first_*/, TIterator last_)
+    {
+      return last_ - 1;
+    }
+  }
+
+  //***************************************************************************
+  /// Sorts the elements using selection sort.
+  /// Uses user defined comparison.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TCompare>
+  void selection_sort(TIterator first, TIterator last, TCompare compare)
+  {
+    TIterator min;
+    const TIterator ilast = private_algorithm::get_before_last(first, last);
+    const TIterator jlast = last;
+
+    for (TIterator i = first; i != ilast; ++i)
+    {
+      min = i;
+      
+      TIterator j = i;
+      ++j;
+
+      for (; j != jlast; ++j)
+      {
+        if (compare(*j, *min))
+        {
+          min = j;
+        }
+      }
+
+      using ETL_OR_STD::swap; // Allow ADL
+      swap(*i, *min);
+    }
+  }
+
+  //***************************************************************************
+  /// Sorts the elements using selection sort.
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator>
+  void selection_sort(TIterator first, TIterator last)
+  {
+    selection_sort(first, last, etl::less<typename etl::iterator_traits<TIterator>::value_type>());
   }
 
   //***************************************************************************

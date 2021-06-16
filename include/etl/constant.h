@@ -47,7 +47,7 @@ namespace etl
 
     typedef T value_type;
 
-    static const T value = VALUE;
+    static ETL_CONSTANT T value = VALUE;
   };
 
   template <typename T, const T VALUE>
