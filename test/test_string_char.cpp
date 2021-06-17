@@ -3001,6 +3001,73 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_copy_start_pos_too_large)
+    {
+      Text text(initial_text.c_str());
+
+      value_t buffer1[SIZE];
+
+      size_t length1 = text.copy(buffer1, 5, SIZE);
+
+      CHECK_EQUAL(0U, length1);
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_copy_count_equals_npos)
+    {
+      Compare_Text compare_text(initial_text.c_str());
+      Text text(initial_text.c_str());
+
+      value_t buffer1[SIZE];
+      value_t buffer2[SIZE];
+
+      size_t length1 = compare_text.copy(buffer1, Compare_Text::npos, 2);
+      buffer1[length1] = STR('\0');
+
+      size_t length2 = text.copy(buffer2, Text::npos, 2);
+      buffer2[length2] = STR('\0');
+
+      CHECK_EQUAL(length1, length2);
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
+
+      bool is_equal = std::equal(buffer1,
+                                 buffer1 + length1,
+                                 buffer2);
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_copy_count_too_large)
+    {
+      Compare_Text compare_text(initial_text.c_str());
+      Text text(initial_text.c_str());
+
+      value_t buffer1[SIZE];
+      value_t buffer2[SIZE];
+
+      size_t length1 = compare_text.copy(buffer1, SIZE, 2);
+      buffer1[length1] = STR('\0');
+
+      size_t length2 = text.copy(buffer2, SIZE, 2);
+      buffer2[length2] = STR('\0');
+
+      CHECK_EQUAL(length1, length2);
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
+
+      bool is_equal = std::equal(buffer1,
+                                 buffer1 + length1,
+                                 buffer2);
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_string)
     {
       const value_t* the_haystack = STR("A haystack with a needle and another needle");

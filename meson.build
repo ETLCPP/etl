@@ -8,7 +8,7 @@ project('PROJECT_NAME',
 		'cpp_std=c++17', 'build.cpp_std=c++17',
 	],
 	meson_version: '>=0.54.0',
-	version: '20.11.1'
+	version: '20.11.2'
 )
 
 ######################
@@ -71,6 +71,8 @@ etl_test_sources = files(
 	'test/test_largest.cpp',
 	'test/test_list.cpp',
 	'test/test_maths.cpp',
+	'test/test_mem_cast.cpp',
+	'test/test_mem_cast_ptr.cpp',
 	'test/test_memory.cpp',
 	'test/test_message_bus.cpp',
 	'test/test_message_router.cpp',
