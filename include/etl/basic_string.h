@@ -1296,31 +1296,31 @@ namespace etl
 
     //*********************************************************************
     /// Copies a portion of a string.
-    ///\param s   Pointer to the string to copy.
-    ///\param len The number of characters to copy.
-    ///\param pos The position to start copying from.
+    ///\param s     Pointer to the string to copy.
+    ///\param count The number of characters to copy.
+    ///\param pos   The position to start copying from.
     //*********************************************************************
-    size_type copy(pointer s, size_type len, size_type pos = 0)
+    size_type copy(pointer dest, size_type count, size_type pos = 0) const
     {
-      if ((pos + len > size()))
+      if (pos < size())
       {
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
-        set_truncated(true);
+        if (count != npos)
+        {
+          count = etl::min(count, size() - pos);
+        }
+        else
+        {
+          count = size() - pos;
+        }
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
-        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
-#endif
-#endif
+        etl::copy_n(p_buffer + pos, count, dest);
+
+        return count;
       }
-
-      size_type endpos = etl::min(pos + len, size());
-
-      for (size_type i = pos; i < endpos; ++i)
+      else
       {
-        *s++ = p_buffer[i];
+        return 0U;
       }
-
-      return endpos - pos;
     }
 
     //*********************************************************************
