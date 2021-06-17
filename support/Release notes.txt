@@ -1,6 +1,6 @@
 ===============================================================================
 20.11.2
-etl::basic_string::copy is not const and does not affect truncation flags.
+etl::basic_string::copy is now const and does not affect truncation flags.
 
 ===============================================================================
 20.11.1
