@@ -1,4 +1,8 @@
 ===============================================================================
+20.11.2
+etl::basic_string::copy is not const and does not affect truncation flags.
+
+===============================================================================
 20.11.1
 Fixed ambiguous function call in etl::mem_cast for clang.
 
