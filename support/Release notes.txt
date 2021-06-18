@@ -1,4 +1,8 @@
 ===============================================================================
+20.11.3
+Define missing macro when cross compiling with clang for AVR
+
+===============================================================================
 20.11.2
 etl::basic_string::copy is now const and does not affect truncation flags.
 
