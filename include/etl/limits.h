@@ -332,9 +332,8 @@ namespace etl
     static ETL_CONSTANT bool is_signed = etl::is_signed<wchar_t>::value;
     static ETL_CONSTANT bool is_modulo = etl::is_unsigned<wchar_t>::value;
 
-#if defined(ETL_COMPILER_CLANG) && defined(CROSS_COMPILING_TO_AVR)
-#undef WCHAR_MIN
-#define WCHAR_MIN (-WCHAR_MAX - 1)
+#if defined(ETL_COMPILER_CLANG) && defined(ETL_CROSS_COMPILING_TO_AVR) && !defined(WCHAR_MIN)
+  #define WCHAR_MIN (-WCHAR_MAX - 1)
 #endif
 
     static ETL_CONSTEXPR wchar_t min() { return WCHAR_MIN; }
