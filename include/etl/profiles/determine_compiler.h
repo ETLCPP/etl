@@ -75,6 +75,9 @@ SOFTWARE.
     #if defined(__clang__) || defined(__llvm__)
       #define ETL_COMPILER_CLANG
       #define ETL_COMPILER_TYPE_DETECTED
+      #if __AVR__ == 1
+        #define CROSS_COMPILING_TO_AVR
+      #endif
     #endif
   #endif
 
