@@ -755,15 +755,42 @@ namespace
     //*************************************************************************
     TEST(test_assignment)
     {
-      Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
-      Compare input2{ Ndc("9"), Ndc("8"), Ndc("7"), Ndc("6"), Ndc("5"), Ndc("4"), Ndc("3"), Ndc("2"), Ndc("1"), Ndc("0") };
+      Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8") };
+      Compare input2{ Ndc("8"), Ndc("7"), Ndc("6"), Ndc("5"), Ndc("4"), Ndc("3"), Ndc("2"), Ndc("1"), Ndc("0") };
       Data data1(buffer1.raw, SIZE);
       data1.push(input1.begin(), input1.end());
 
       // Copy construct from data1
       Data data2(buffer2.raw, SIZE);
+      data2.push(Ndc("0"));
       
       data2 = data1;
+
+      // Now change data1
+      data1.clear();
+      data1.push(input2.begin(), input2.end());
+
+      CHECK(data2.begin() != data2.end());
+      CHECK(data2.cbegin() != data2.cend());
+      CHECK_EQUAL(input1.size(), data2.size());
+
+      bool isEqual = std::equal(input1.begin(), input1.end(), data2.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_move_assignment)
+    {
+      Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8") };
+      Compare input2{ Ndc("8"), Ndc("7"), Ndc("6"), Ndc("5"), Ndc("4"), Ndc("3"), Ndc("2"), Ndc("1"), Ndc("0") };
+      Data data1(buffer1.raw, SIZE);
+      data1.push(input1.begin(), input1.end());
+
+      // Copy construct from data1
+      Data data2(buffer2.raw, SIZE);
+      data2.push(Ndc("0"));
+      
+      data2 = etl::move(data1);
 
       // Now change data1
       data1.clear();
