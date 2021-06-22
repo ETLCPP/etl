@@ -1348,6 +1348,7 @@
     <ClInclude Include="..\..\include\etl\mutex\mutex_clang_sync.h" />
     <ClInclude Include="..\..\include\etl\mutex\mutex_freertos.h" />
     <ClInclude Include="..\..\include\etl\negative.h" />
+    <ClInclude Include="..\..\include\etl\overload.h" />
     <ClInclude Include="..\..\include\etl\placement_new.h" />
     <ClInclude Include="..\..\include\etl\null_type.h" />
     <ClInclude Include="..\..\include\etl\parameter_pack.h" />

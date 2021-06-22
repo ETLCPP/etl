@@ -35,6 +35,7 @@ SOFTWARE.
 #include <vector>
 #include <algorithm>
 #include <string>
+#include <variant>
 
 namespace
 {
@@ -399,23 +400,34 @@ namespace
 
     //*************************************************************************
     TEST(test_variant_visitor)
-    {
+    {    
       struct Visitor : public etl::visitor<char, int, std::string>
       {
+        Visitor()
+          : result_c(0)
+          , result_i(0)
+          , result_s("")
+        {
+        }
+
         void visit(char& c)
         {
-
+          result_c = c;
         }
 
         void visit(int& i)
         {
-
+          result_i = i;
         }
 
         void visit(std::string& s)
         {
-
+          result_s = s;
         }
+
+        char result_c;
+        int  result_i;
+        std::string result_s;
       };
 
       Visitor visitor;
@@ -424,12 +436,64 @@ namespace
 
       variant = char(1);
       variant.accept(visitor);
+      CHECK_EQUAL(1, visitor.result_c);
       
       variant = int(2);
       variant.accept(visitor);
+      CHECK_EQUAL(2, visitor.result_i);
 
       variant = std::string("3");
       variant.accept(visitor);
+      CHECK_EQUAL("3", visitor.result_s);
+    }
+
+    //*************************************************************************
+    TEST(test_variant_operator_visit)
+    {
+      struct Visitor
+      {
+        Visitor()
+          : result_c(0)
+          , result_i(0)
+          , result_s("")
+        {
+        }
+
+        void operator()(char& c)
+        {
+          result_c = c;
+        }
+
+        void operator()(int& i)
+        {
+          result_i = i;
+        }
+
+        void operator()(std::string& s)
+        {
+          result_s = s;
+        }
+
+        char result_c;
+        int  result_i;
+        std::string result_s;
+      };
+
+      Visitor visitor;
+
+      test_variant_3 variant;      
+
+      variant = char(1);
+      variant(visitor);
+      CHECK_EQUAL(1, visitor.result_c);
+      
+      variant = int(2);
+      variant(visitor);
+      CHECK_EQUAL(2, visitor.result_i);
+
+      variant = std::string("3");
+      variant(visitor);
+      CHECK_EQUAL("3", visitor.result_s);
     }
   };
 }

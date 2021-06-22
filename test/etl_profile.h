@@ -98,6 +98,8 @@ SOFTWARE.
   #define ETL_MEM_CAST_FORCE_CPP03
 #endif
 
+#define ETL_OVERLOAD_FORCE_CPP11
+
 #if defined(ETL_NO_STL)
   #define ETL_TIMER_SEMAPHORE_TYPE uint32_t
 #endif

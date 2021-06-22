@@ -42,6 +42,7 @@ SOFTWARE.
 #include "../error_handler.h"
 #include "../parameter_pack.h"
 #include "../placement_new.h"
+#include "../visitor.h"
 
 #include <utility>
 
@@ -205,7 +206,7 @@ namespace etl
     constexpr variant()
       : data()
     {
-      using type = typename etl::parameter_pack<TTypes...>::type_from_index<0>::type;
+      using type = typename etl::parameter_pack<TTypes...>::template type_from_index<0>::type;
 
       type temp;
 
@@ -221,7 +222,7 @@ namespace etl
     constexpr variant(const T& value)
       : data()
       , operation(do_operation<T>)
-      , type_id(etl::parameter_pack<TTypes...>::index_of_type<T>::value)
+      , type_id(etl::parameter_pack<TTypes...>::template index_of_type<T>::value)
     {
       static_assert(etl::is_one_of<T, TTypes...>::value, "Unsupported type");
 
@@ -266,7 +267,7 @@ namespace etl
       T temp(etl::forward<TArgs>(args)...);
       operation(action_type::Construct, data, &temp);
 
-      type_id = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
+      type_id = etl::parameter_pack<TTypes...>::template index_of_type<T>::value;
 
       return *static_cast<T*>(data);
     }
@@ -285,7 +286,7 @@ namespace etl
       operation = do_operation<T>;
       operation(action_type::Construct, data, &value);
 
-      type_id = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
+      type_id = etl::parameter_pack<TTypes...>::template index_of_type<T>::value;
 
       return *this;
     }
@@ -365,12 +366,21 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Do an operation determined by type.
+    /// Accept an etl::visitor.
+    //***************************************************************************
+    template <typename... Types>
+    void accept(etl::visitor<TTypes...>& v)
+    {
+      do_accept(v, std::make_index_sequence<sizeof...(TTypes)>{});
+    }
+
+    //***************************************************************************
+    /// Accept a generic visitor.
     //***************************************************************************
     template <typename TVisitor>
-    void accept(TVisitor& visitor)
+    void operator()(TVisitor& v)
     {
-      do_accept(visitor, std::make_index_sequence<sizeof...(TTypes)>{});
+      do_operator(v, std::make_index_sequence<sizeof...(TTypes)>{});
     }
 
   private:
@@ -431,6 +441,32 @@ namespace etl
     }
 
     //***************************************************************************
+    /// Loop through the types until a match is found.
+    //***************************************************************************
+    template <typename TVisitor, size_t... I>
+    void do_operator(TVisitor& visitor, std::index_sequence<I...>)
+    {
+      (attempt_operator<I>(visitor) || ...);
+    }
+
+    //***************************************************************************
+    /// Attempt to call a visitor.
+    //***************************************************************************
+    template <size_t Index, typename TVisitor>
+    bool attempt_operator(TVisitor& visitor)
+    {
+      if (Index == index())
+      {
+        visitor(etl::get<Index>(*this));
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    //***************************************************************************
     /// Default operation.
     //***************************************************************************
     template <typename... TArgs>
@@ -455,7 +491,7 @@ namespace etl
 	template <typename T, typename... TTypes>
 	constexpr bool holds_alternative(const etl::variant<TTypes...>& v) noexcept
 	{
-    constexpr size_t Index = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
+    constexpr size_t Index = etl::parameter_pack<TTypes...>::template index_of_type<T>::value;
 		
     return (Index == variant_npos) ? false : (v.index() == Index);
 	}
@@ -538,7 +574,7 @@ namespace etl
   template <typename T, typename... TTypes>
   constexpr T& get(etl::variant<TTypes...>& v)
   {
-    constexpr size_t Index = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
+    constexpr size_t Index = etl::parameter_pack<TTypes...>::template index_of_type<T>::value;
 
     return get<Index>(v);
   }
@@ -547,7 +583,7 @@ namespace etl
   template <typename T, typename... TTypes>
   constexpr T&& get(etl::variant<TTypes...>&& v)
   {
-    constexpr size_t Index = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
+    constexpr size_t Index = etl::parameter_pack<TTypes...>::template index_of_type<T>::value;
 
     return get<Index>(v);
   }
@@ -556,7 +592,7 @@ namespace etl
   template <typename T, typename... TTypes>
   constexpr const T& get(const etl::variant<TTypes...>& v)
   {
-    constexpr size_t Index = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
+    constexpr size_t Index = etl::parameter_pack<TTypes...>::template index_of_type<T>::value;
 
     return get<Index>(v);
   }
@@ -565,7 +601,7 @@ namespace etl
   template <typename T, typename... TTypes>
   constexpr const T&& get(const etl::variant<TTypes...>&& v)
   {
-    constexpr size_t Index = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
+    constexpr size_t Index = etl::parameter_pack<TTypes...>::template index_of_type<T>::value;
 
     return get<Index>(v);
   }
@@ -573,9 +609,9 @@ namespace etl
   //***************************************************************************
   /// get_if
   //***************************************************************************
-  template < size_t Index, class... Types >
-  constexpr etl::add_pointer_t<etl::variant_alternative_t<Index, etl::variant<Types...>>>
-    get_if(etl::variant<Types...>* pv) noexcept
+  template < size_t Index, typename... TTypes >
+  constexpr etl::add_pointer_t<etl::variant_alternative_t<Index, etl::variant<TTypes...>>>
+    get_if(etl::variant<TTypes...>* pv) noexcept
   {
     if ((pv != nullptr) && (pv->index() == Index))
     {
@@ -588,9 +624,9 @@ namespace etl
   }
 
   //***********************************
-  template< size_t Index, class... Types >
-  constexpr etl::add_pointer_t<const etl::variant_alternative_t<Index, etl::variant<Types...>>>
-    get_if(const etl::variant<Types...>* pv) noexcept
+  template< size_t Index, typename... TTypes >
+  constexpr etl::add_pointer_t<const etl::variant_alternative_t<Index, etl::variant<TTypes...>>>
+    get_if(const etl::variant<TTypes...>* pv) noexcept
   {
     if ((pv != nullptr) && (pv->index() == Index))
     {
@@ -603,19 +639,19 @@ namespace etl
   }
 
   //***********************************
-  template< class T, class... Types >
-  constexpr etl::add_pointer_t<T> get_if(etl::variant<Types...>* pv) noexcept
+  template< class T, typename... TTypes >
+  constexpr etl::add_pointer_t<T> get_if(etl::variant<TTypes...>* pv) noexcept
   {
-    constexpr size_t Index = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
+    constexpr size_t Index = etl::parameter_pack<TTypes...>::template index_of_type<T>::value;
 
     return etl::get_if<Index>(pv);
   }
 
   //***********************************
-  template< class T, class... Types >
-  constexpr etl::add_pointer_t<const T> get_if(const etl::variant<Types...>* pv) noexcept
+  template< class T, typename... TTypes >
+  constexpr etl::add_pointer_t<const T> get_if(const etl::variant<TTypes...>* pv) noexcept
   {
-    constexpr size_t Index = etl::parameter_pack<TTypes...>::index_of_type<T>::value;
+    constexpr size_t Index = etl::parameter_pack<TTypes...>::template index_of_type<T>::value;
 
     return etl::get_if<Index>(pv);
   }
