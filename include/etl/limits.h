@@ -73,8 +73,8 @@ SOFTWARE.
 #if !defined(HUGE_VAL)
   // Looks like we don't have these macros defined.
   // They're compiler implementation dependent, so we'll make them the same as the max values.
-  #define HUGE_VAL  FLT_MAX
-  #define HUGE_VALF DBL_MAX
+  #define HUGE_VALF FLT_MAX
+  #define HUGE_VAL  DBL_MAX
   #define HUGE_VALL LDBL_MAX
 #endif
 
