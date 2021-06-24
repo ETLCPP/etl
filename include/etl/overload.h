@@ -40,44 +40,45 @@ namespace etl
   //*************************************************************************
   /// Variadic template definition of overload.
   //*************************************************************************
-  template<class... Ts>
-  struct overload : Ts...
+  template<class... TOverloads>
+  struct overload : TOverloads...
   {
-    using Ts::operator()...;
+    using TOverloads::operator()...;
   };
 
   //*************************************************************************
   /// Template deduction guide.
   //*************************************************************************
-  template<class... Ts> overload(Ts...)->overload<Ts...>;
+  template<class... TOverloads> overload(TOverloads...)->overload<TOverloads...>;
 
 #else
   //*************************************************************************
   /// Variadic template definition of overload.
   //*************************************************************************
-  template <typename T, typename... Ts>
-  struct overload : T, overload<Ts...>
+  template <typename TOverload, typename... TOthers>
+  struct overload : TOverload, overload<TOthers...>
   {
-    using T::operator();
-    using overload<Ts...>::operator();
+    using TOverload::operator();
+    using overload<TOthers...>::operator();
   };
 
   //*************************************************************************
   /// Template specialisation of overload for one type.
   //*************************************************************************
-  template <typename T> struct overload<T> : T
+  template <typename TOverload> 
+  struct overload<TOverload> : TOverload
   {
-    using T::operator();
+    using TOverload::operator();
   };
 #endif
 
   //*************************************************************************
   /// Make an overload.
   //*************************************************************************
-  template <typename... T>
-  constexpr auto make_overload(T&&... t)
+  template <typename... TOverloads>
+  constexpr auto make_overload(TOverloads&&... overloads)
   {
-    return overload<T...>{ etl::forward<T>(t)... };
+    return overload<TOverloads...>{ etl::forward<TOverloads>(overloads)... };
   }
 }
 
