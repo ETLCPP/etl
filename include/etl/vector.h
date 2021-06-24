@@ -1297,9 +1297,7 @@ namespace etl
       ETL_OVERRIDE
 #endif
     {
-      #if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
       ETL_ASSERT(etl::is_trivially_copyable<T>::value, ETL_ERROR(etl::vector_incompatible_type));
-      #endif
 
       etl::ivector<T>::repair_buffer(buffer);
     }
@@ -1468,9 +1466,7 @@ namespace etl
       ETL_OVERRIDE
 #endif
     {
-#if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
       ETL_ASSERT(etl::is_trivially_copyable<T>::value, ETL_ERROR(etl::vector_incompatible_type));
-#endif
 
       etl::ivector<T>::repair_buffer(this->p_buffer);
     }

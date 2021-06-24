@@ -1148,51 +1148,71 @@ namespace etl
     //***************************************************************************
     /// is_trivially_constructible
     ///\ingroup type_traits
+#if ETL_CPP11_SUPPORTED && ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+    template <typename T> struct is_trivially_constructible : std::is_trivially_constructible<T> {};
+#else
     template <typename T> struct is_trivially_constructible : std::is_pod<T> {};
+#endif
 
   #if ETL_CPP17_SUPPORTED
     template <typename T>
-    inline constexpr bool is_trivially_constructible_v = std::is_pod_v<T>;
+    inline constexpr bool is_trivially_constructible_v = etl::is_trivially_constructible<T>::value;
   #endif
 
     //***************************************************************************
     /// is_trivially_copy_constructible
     ///\ingroup type_traits
+#if ETL_CPP11_SUPPORTED && ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+    template <typename T> struct is_trivially_copy_constructible : std::is_trivially_copy_constructible<T> {};
+#else
     template <typename T> struct is_trivially_copy_constructible : std::is_pod<T> {};
+#endif
 
   #if ETL_CPP17_SUPPORTED
     template <typename T>
-    inline constexpr bool is_trivially_copy_constructible_v = std::is_pod_v<T>;
+    inline constexpr bool is_trivially_copy_constructible_v = etl::is_trivially_copy_constructible<T>::value;
   #endif
 
     //***************************************************************************
     /// is_trivially_destructible
     ///\ingroup type_traits
+#if ETL_CPP11_SUPPORTED && ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+    template <typename T> struct is_trivially_destructible : std::is_trivially_destructible<T> {};
+#else
     template <typename T> struct is_trivially_destructible : std::is_pod<T> {};
+#endif
 
   #if ETL_CPP17_SUPPORTED
     template <typename T>
-    inline constexpr bool is_trivially_destructible_v = std::is_pod_v<T>;
+    inline constexpr bool is_trivially_destructible_v = etl::is_trivially_destructible<T>::value;
   #endif
 
     //***************************************************************************
     /// is_trivially_copy_assignable
     ///\ingroup type_traits
+#if ETL_CPP11_SUPPORTED && ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+    template <typename T> struct is_trivially_copy_assignable : std::is_trivially_copy_assignable<T> {};
+#else
     template <typename T> struct is_trivially_copy_assignable : std::is_pod<T> {};
+#endif
 
   #if ETL_CPP17_SUPPORTED
     template <typename T>
-    inline constexpr bool is_trivially_copy_assignable_v = std::is_pod_v<T>;
+    inline constexpr bool is_trivially_copy_assignable_v = etl::is_trivially_copy_assignable<T>::value;
   #endif
 
     //***************************************************************************
     /// is_trivially_copyable
     ///\ingroup type_traits
+#if ETL_CPP11_SUPPORTED && ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+    template <typename T> struct is_trivially_copyable : std::is_trivially_copyable<T> {};
+#else
     template <typename T> struct is_trivially_copyable : std::is_pod<T> {};
+#endif
 
   #if ETL_CPP17_SUPPORTED
     template <typename T>
-    inline constexpr bool is_trivially_copyable_v = std::is_pod_v<T>;
+    inline constexpr bool is_trivially_copyable_v = etl::is_trivially_copyable<T>::value;
   #endif
 #endif
 
