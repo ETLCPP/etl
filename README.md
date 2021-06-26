@@ -56,3 +56,7 @@ Any help porting the library to work under different platforms and compilers wou
 I am especially interested in people who are using Keil, IAR, Green Hills, TI Code Composer etc, bare metal or RTOS, and DSPs.
 
 See (https://www.etlcpp.com) for up-to-date information.
+
+**Arduino library:**
+
+The content of this repo is available as a library in the Arduino IDE (search for the "Embedded Template Library" in the IDE library manager). The Arduino library repository is available at ```https://github.com/ETLCPP/etl-arduino```, see there for more details.
