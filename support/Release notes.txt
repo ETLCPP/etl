@@ -1,4 +1,8 @@
 ===============================================================================
+20.11.5
+Added Arduino examples.
+
+===============================================================================
 20.11.4
 Fixed etl::circular_buffer copy and move assignment bug where the destination 
 buffer was not cleared before assignment.
