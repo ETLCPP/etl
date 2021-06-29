@@ -312,3 +312,6 @@ test/sanity-check/c++17/cmake_install.cmake
 test/sanity-check/c++17/CMakeCache.txt
 test/sanity-check/c++17/libt17.a
 test/sanity-check/c++17/Makefile
+test/vs2019/Debug LLVM
+test/vs2019/DebugLLVMNoSTL
+test/vs2019/DebugNoSTL

@@ -2,17 +2,22 @@
 #include "etl/vector.h"
 
 template <typename T>
-void print_vector(etl::ivector<T> const & vec_in){
+void print_vector(etl::ivector<T> const & vec_in)
+{
   Serial.print(F("print vector content | size ")); Serial.print(vec_in.size()); Serial.print(F(" | capacity ")); Serial.println(vec_in.capacity());
   Serial.print(F("content | "));
-  for (T const & elem : vec_in) {
+
+  for (T const & elem : vec_in) 
+  {
     Serial.print(elem);
     Serial.print(F(" | "));
   }
+
   Serial.println();
 }
 
-void setup(){
+void setup()
+{
   Serial.begin(115200);
   delay(100);
   Serial.println(F("booted"));
@@ -32,6 +37,7 @@ void setup(){
   print_vector(vec_int);
 }
 
-void loop(){
+void loop()
+{
   
 }
