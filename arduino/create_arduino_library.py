@@ -28,7 +28,7 @@ include_dir = os.path.join(etl_dir, 'include')
 print('include_dir         = ', include_dir)
 
 # Get the ETL arduino_examples folder
-arduino_examples_dir = os.path.join(etl_dir, 'arduino_examples')
+arduino_examples_dir = os.path.join(arduino_dir, 'examples')
 print('examples_dir        = ', arduino_examples_dir)
 
 # Get the root folder of both repositories
@@ -84,7 +84,7 @@ print('')
 # Copy the ETL arduino_examples
 source      = arduino_examples_dir
 destination = etl_arduino_examples_dir
-print('Copy the ETL examples_arduino')
+print('Copy the ETL Arduino examples')
 print('  From :', source)
 print('  To   :', destination)
 shutil.copytree(source, destination, dirs_exist_ok = True)

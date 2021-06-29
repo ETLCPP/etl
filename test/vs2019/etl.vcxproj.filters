@@ -106,6 +106,17 @@
     <Filter Include="Source Files\Scripts">
       <UniqueIdentifier>{562466b5-677d-4448-9e9e-f70805cd71ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Arduino\Examples">
+      <UniqueIdentifier>{1d6ea286-57ad-4960-9343-9d2376087b24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Arduino\Examples\Example_0_import_etl">
+      <UniqueIdentifier>{5eace791-3e53-4205-a04d-2aba3bac6b47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Arduino\Examples\Vector_Examples">
+      <UniqueIdentifier>{2b770849-325e-4ec5-a7f3-9a192cd40dca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Arduino\Examples\Vector_Examples\Example_Vector_1_simple_use">
+      <UniqueIdentifier>{0e4d2126-b9b7-4eef-b5ca-18363b1e01ce}</UniqueIdentifier>
     <Filter Include="ETL\Experimental">
       <UniqueIdentifier>{79c578f6-5400-4b4d-b2a4-9a8c589f7c81}</UniqueIdentifier>
     </Filter>
@@ -2646,6 +2657,12 @@
     </None>
     <None Include="..\runtests.sh">
       <Filter>Source Files\Scripts</Filter>
+    </None>
+    <None Include="..\..\arduino\examples\Example_0_import_etl\Example_0_import_etl.ino">
+      <Filter>ETL\Arduino\Examples\Example_0_import_etl</Filter>
+    </None>
+    <None Include="..\..\arduino\examples\Vector_Examples\Example_Vector_1_simple_use\Example_Vector_1_simple_use.ino">
+      <Filter>ETL\Arduino\Examples\Vector_Examples\Example_Vector_1_simple_use</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
