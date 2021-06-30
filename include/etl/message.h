@@ -35,6 +35,7 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 #include "message_types.h"
+#include "type_traits.h"
 
 namespace etl
 {
@@ -77,9 +78,10 @@ namespace etl
   //***************************************************************************
   // Message type.
   //***************************************************************************
-  template <etl::message_id_t ID_>
-  class message : public imessage
+  template <etl::message_id_t ID_, typename TParent = etl::imessage>
+  class message : public TParent
   {
+    ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TParent>::value), "TParent is not derived from etl::imessage");
   public:
 
     enum
