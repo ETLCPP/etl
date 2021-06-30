@@ -1,3 +1,6 @@
+// make sure that we do not rely on the STL
+#define ETL_NO_STL
+
 #include "Embedded_Template_Library.h"
 #include "etl/vector.h"
 
