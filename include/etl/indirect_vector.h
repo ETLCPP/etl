@@ -856,7 +856,7 @@ namespace etl
     //*********************************************************************
     iterator insert(iterator position, const_reference value)
     {
-      ETL_ASSERT(size() + 1 <= capacity(), ETL_ERROR(vector_full));
+      ETL_ASSERT(size() != capacity(), ETL_ERROR(vector_full));
 
       T* p = storage.create<T>(T(value));
       position = iterator(lookup.insert(position.lookup_itr, p));
@@ -873,7 +873,7 @@ namespace etl
     //*********************************************************************
     iterator insert(iterator position, rvalue_reference value)
     {
-      ETL_ASSERT(size() + 1 <= capacity(), ETL_ERROR(vector_full));
+      ETL_ASSERT(size() != capacity(), ETL_ERROR(vector_full));
 
       T* p = storage.create<T>(T(etl::move(value)));
       position = iterator(lookup.insert(position.lookup_itr, p));

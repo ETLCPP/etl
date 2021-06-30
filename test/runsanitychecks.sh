@@ -8,6 +8,7 @@ export CMAKE_BUILD_PARALLEL_LEVEL=$(nproc --all)
 cd c++03 || exit 1
 cmake -E make_directory bgcc bclang
 { echo ""
+echo "Using "${CMAKE_BUILD_PARALLEL_LEVEL}" jobs"
 echo "-----------------------------------------------"
 echo " C++03"
 echo "-----------------------------------------------"

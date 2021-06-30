@@ -443,7 +443,7 @@ namespace etl
     //*********************************************************************
     iterator insert(iterator position, value_type value)
     {
-      ETL_ASSERT(size() + 1 <= CAPACITY, ETL_ERROR(vector_full));
+      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
 
       if (position != end())
       {
@@ -466,7 +466,7 @@ namespace etl
     //*************************************************************************
     iterator emplace(iterator position, value_type value)
     {
-      ETL_ASSERT(size() + 1 <= CAPACITY, ETL_ERROR(vector_full));
+      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
 
       if (position != end())
       {
@@ -491,7 +491,7 @@ namespace etl
     //*********************************************************************
     void insert(iterator position, size_t n, value_type value)
     {
-      ETL_ASSERT((size() + 1) <= CAPACITY, ETL_ERROR(vector_full));
+      ETL_ASSERT((size() + n) <= CAPACITY, ETL_ERROR(vector_full));
 
       etl::copy_backward(position, p_end, p_end + n);
       etl::fill_n(position, n, value);

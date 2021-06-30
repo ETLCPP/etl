@@ -553,7 +553,7 @@ namespace etl
     //*********************************************************************
     iterator insert(iterator position, const_reference value)
     {
-      ETL_ASSERT(size() + 1 <= CAPACITY, ETL_ERROR(vector_full));
+      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
 
       if (position == end())
       {
@@ -578,7 +578,7 @@ namespace etl
     //*********************************************************************
     iterator insert(iterator position, rvalue_reference value)
     {
-      ETL_ASSERT(size() + 1 <= CAPACITY, ETL_ERROR(vector_full));
+      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
 
       if (position == end())
       {
