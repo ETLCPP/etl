@@ -39,6 +39,7 @@ namespace
 {
   enum
   {
+    MESSAGE0,
     MESSAGE1,
     MESSAGE2,
     MESSAGE3,
@@ -53,16 +54,41 @@ namespace
     ROUTER3
   };
 
-  struct Message1 : public etl::message<MESSAGE1>
+  //***********************************
+  struct NotInterface
+  {
+    virtual int VirtualFunction() const = 0;
+  };
+
+  ////***********************************
+  // Uncomment to demonstrate static assert
+  //struct Message0 : public etl::message<MESSAGE0, NotInterface>
+  //{
+  //};
+
+  //***********************************
+  struct Interface : public etl::imessage
+  {
+    virtual int VirtualFunction() const = 0;
+  };
+
+  //***********************************
+  struct Message1 : public etl::message<MESSAGE1, Interface>
   {
     Message1(etl::imessage_router& callback_)
       : callback(callback_)
     {
     }
 
+    int VirtualFunction() const override
+    {
+      return 1;
+    }
+
     etl::imessage_router& callback;
   };
 
+  //***********************************
   struct Message2 : public etl::message<MESSAGE2>
   {
     Message2(etl::imessage_router& callback_)
@@ -73,6 +99,7 @@ namespace
     etl::imessage_router& callback;
   };
 
+  //***********************************
   struct Message3 : public etl::message<MESSAGE3>
   {
     Message3(etl::imessage_router& callback_)
@@ -84,6 +111,7 @@ namespace
     int value[10];
   };
 
+  //***********************************
   struct Message4 : public etl::message<MESSAGE4>
   {
     Message4(etl::imessage_router& callback_)
@@ -94,6 +122,7 @@ namespace
     etl::imessage_router& callback;
   };
 
+  //***********************************
   struct Message5 : public etl::message<MESSAGE5>
   {
   };
@@ -123,6 +152,7 @@ namespace
     {
       ++message1_count;
       etl::send_message(msg.callback, message5);
+      CHECK_EQUAL(1, msg.VirtualFunction());
     }
 
     void on_receive(const Message2& msg)
@@ -185,6 +215,7 @@ namespace
       ++message1_count;
       sender_id = msg.callback.get_message_router_id();
       etl::send_message(msg.callback, message5);
+      CHECK_EQUAL(1, msg.VirtualFunction());
     }
 
     void on_receive(const Message2& msg)

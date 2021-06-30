@@ -36,6 +36,7 @@ SOFTWARE.
 #include "exception.h"
 #include "message_types.h"
 #include "type_traits.h"
+#include "static_assert.h"
 
 namespace etl
 {
@@ -82,6 +83,7 @@ namespace etl
   class message : public TParent
   {
     ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TParent>::value), "TParent is not derived from etl::imessage");
+
   public:
 
     enum

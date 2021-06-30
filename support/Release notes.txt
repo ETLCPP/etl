@@ -1,4 +1,9 @@
 ===============================================================================
+20.12.0
+Added the option to derived etl::message<> from a parent class other than etl::imessage.
+The parent class must ultimately be derived from etl::imessage.
+
+===============================================================================
 20.11.5
 Added Arduino examples.
 
