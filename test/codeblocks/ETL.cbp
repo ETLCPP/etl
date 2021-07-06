@@ -255,6 +255,7 @@
 		<Unit filename="../../include/etl/basic_string.h" />
 		<Unit filename="../../include/etl/basic_string_stream.h" />
 		<Unit filename="../../include/etl/binary.h" />
+		<Unit filename="../../include/etl/bip_buffer_spsc_atomic.h" />
 		<Unit filename="../../include/etl/bit_stream.h" />
 		<Unit filename="../../include/etl/bitset.h" />
 		<Unit filename="../../include/etl/bloom_filter.h" />
@@ -514,6 +515,7 @@
 		<Unit filename="../test_atomic_gcc_sync.cpp" />
 		<Unit filename="../test_atomic_std.cpp" />
 		<Unit filename="../test_binary.cpp" />
+		<Unit filename="../test_bip_buffer_spsc_atomic.cpp" />
 		<Unit filename="../test_bit_stream.cpp" />
 		<Unit filename="../test_bitset.cpp" />
 		<Unit filename="../test_bloom_filter.cpp" />

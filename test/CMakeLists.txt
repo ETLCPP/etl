@@ -32,6 +32,7 @@ set(TEST_SOURCE_FILES
 	test_atomic_gcc_sync.cpp
 	test_atomic_std.cpp
 	test_binary.cpp
+	test_bip_buffer_spsc_atomic.cpp
 	test_bitset.cpp
 	test_bit_stream.cpp
 	test_bloom_filter.cpp
