@@ -1116,6 +1116,9 @@
     <ClInclude Include="..\..\include\etl\mem_cast.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\bip_buffer_spsc_atomic.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -2487,6 +2490,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_mean.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bip_buffer_spsc_atomic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\correlation.h.t.cpp">
