@@ -1250,6 +1250,7 @@
     <ClInclude Include="..\..\include\etl\atomic\atomic_std.h" />
     <ClInclude Include="..\..\include\etl\basic_format_spec.h" />
     <ClInclude Include="..\..\include\etl\basic_string_stream.h" />
+    <ClInclude Include="..\..\include\etl\bip_buffer_spsc_atomic.h" />
     <ClInclude Include="..\..\include\etl\bit_stream.h" />
     <ClInclude Include="..\..\include\etl\bresenham_line.h" />
     <ClInclude Include="..\..\include\etl\buffer_descriptors.h" />
@@ -4524,6 +4525,7 @@
     <ClCompile Include="..\test_array_wrapper.cpp" />
     <ClCompile Include="..\test_atomic_std.cpp" />
     <ClCompile Include="..\test_binary.cpp" />
+    <ClCompile Include="..\test_bip_buffer_spsc_atomic.cpp" />
     <ClCompile Include="..\test_bitset.cpp" />
     <ClCompile Include="..\test_bloom_filter.cpp" />
     <ClCompile Include="..\test_bsd_checksum.cpp" />
