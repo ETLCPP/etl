@@ -2894,6 +2894,9 @@
     <ClCompile Include="..\sanity-check\wstring_stream.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
     </ClCompile>
+    <ClCompile Include="..\sanity-check\bip_buffer_spsc_atomic.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
