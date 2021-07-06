@@ -33,6 +33,7 @@ target_sources(t11 PRIVATE etl_profile.h
         ../basic_string.h.t.cpp
         ../basic_string_stream.h.t.cpp
         ../binary.h.t.cpp
+        ../bip_buffer_spsc_atomic.h.t.cpp
         ../bitset.h.t.cpp
         ../bit_stream.h.t.cpp
         ../bloom_filter.h.t.cpp
