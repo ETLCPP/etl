@@ -769,6 +769,7 @@ namespace etl
   /// Specialisation of 'alignment_of' for 'void'.
   ///\ingroup type_traits
   template <> struct alignment_of<void> : integral_constant <size_t, 0> {};
+  template <> struct alignment_of<const void> : integral_constant <size_t, 0> {};
 
 #if ETL_CPP17_SUPPORTED
   template <typename T>

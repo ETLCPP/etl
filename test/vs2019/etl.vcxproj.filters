@@ -1137,6 +1137,9 @@
     <ClInclude Include="..\..\include\etl\overload.h">
       <Filter>ETL\Patterns</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\experimental\mem_cast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -2575,6 +2578,18 @@
     </ClCompile>
     <ClCompile Include="..\sanity-check\mem_cast.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\variant_new.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\variant_legacy.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\overload.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_overload.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

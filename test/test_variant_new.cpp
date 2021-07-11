@@ -36,11 +36,13 @@ SOFTWARE.
 #include <algorithm>
 #include <string>
 #include <variant>
+#include <type_traits>
 
 namespace
 {
-  // Test variant types.
-  typedef etl::variant<char, int, std::string> test_variant_3;
+  // Test variant_etl types.
+  using test_variant_etl_3 = etl::variant<char, int, std::string>;
+  using test_variant_std_3 = std::variant<char, int, std::string>;
 
   struct D1
   {
@@ -162,6 +164,67 @@ namespace
 
   typedef etl::variant<etl::monostate, D1, D2, D3, D4> test_variant_emplace;
 
+  //*********************************************
+  struct Copyable
+  {
+    Copyable()
+      : copied_from(false)
+      , copied_to(false)
+    {
+    }
+
+    Copyable(const Copyable& other) noexcept
+    {
+      copied_to = true;
+      copied_from = false;
+    }
+
+    Copyable& operator =(const Copyable& rhs) noexcept
+    {
+      copied_to = true;
+      copied_from = false;
+
+      return *this;
+    }
+
+    bool copied_from;
+    bool copied_to;
+  };
+
+  //*********************************************
+  struct Moveable
+  {
+    Moveable()
+      : moved_from(false)
+      , moved_to(false)
+    {
+    }
+
+    Moveable(Moveable&& other) noexcept
+    {
+      moved_to = true;
+      moved_from = false;
+      other.moved_to = false;
+      other.moved_from = true;
+    }
+
+    Moveable& operator =(Moveable&& rhs) noexcept
+    {
+      moved_to = true;
+      moved_from = false;
+      rhs.moved_to = false;
+      rhs.moved_from = true;
+
+      return *this;
+    }
+
+    Moveable(const Moveable& other) = delete;
+    Moveable& operator =(const Moveable& rhs) = delete;
+
+    bool moved_from;
+    bool moved_to;
+  };
+
   SUITE(test_variant)
   {
     TEST(test_alignment)
@@ -176,20 +239,20 @@ namespace
       static test_variant_c c(3);
       static test_variant_d d(4.5);
 
-      CHECK((uintptr_t(&a.get<char>()) % uintptr_t(etl::alignment_of<char>::value)) == 0);
-      CHECK((uintptr_t(&b.get<short>()) % uintptr_t(etl::alignment_of<short>::value)) == 0);
-      CHECK((uintptr_t(&c.get<int>()) % uintptr_t(etl::alignment_of<int>::value)) == 0);
-      CHECK((uintptr_t(&d.get<double>()) % uintptr_t(etl::alignment_of<double>::value)) == 0);
+      CHECK((uintptr_t(&etl::get<char>(a)) % uintptr_t(etl::alignment_of<char>::value)) == 0);
+      CHECK((uintptr_t(&etl::get<short>(b)) % uintptr_t(etl::alignment_of<short>::value)) == 0);
+      CHECK((uintptr_t(&etl::get<int>(c)) % uintptr_t(etl::alignment_of<int>::value)) == 0);
+      CHECK((uintptr_t(&etl::get<double>(d)) % uintptr_t(etl::alignment_of<double>::value)) == 0);
     }
 
     //*************************************************************************
     TEST(test_constructor_default)
     {
-      CHECK_NO_THROW(test_variant_3 variant);
+      CHECK_NO_THROW(test_variant_etl_3 variant_etl);
 
-      test_variant_3 variant;
+      test_variant_etl_3 variant_etl;
 
-      CHECK(etl::holds_alternative<char>(variant));
+      CHECK(etl::holds_alternative<char>(variant_etl));
     }
 
     //*************************************************************************
@@ -197,24 +260,24 @@ namespace
     {
       // Char.
       char c = 'a';
-      test_variant_3 variant_char(c);
-
-      CHECK(etl::holds_alternative<char>(variant_char));
-      CHECK_EQUAL(c, etl::get<char>(variant_char));
+      test_variant_etl_3 variant_char_etl(c);
+      CHECK(c == 'a');
+      CHECK(etl::holds_alternative<char>(variant_char_etl));
+      CHECK_EQUAL(c, etl::get<char>(variant_char_etl));
 
       // Int.
       int i = 1;
-      test_variant_3 variant_int(i);
-
-      CHECK(etl::holds_alternative<int>(variant_int));
-      CHECK_EQUAL(i, etl::get<int>(variant_int));
+      test_variant_etl_3 variant_int_etl(i);
+      CHECK(i == 1);
+      CHECK(etl::holds_alternative<int>(variant_int_etl));
+      CHECK_EQUAL(i, etl::get<int>(variant_int_etl));
 
       // String.
       std::string text("Some Text");
-      test_variant_3 variant_text(text);
-
-      CHECK(etl::holds_alternative<std::string>(variant_text));
-      CHECK_EQUAL(text, etl::get<std::string>(variant_text));
+      test_variant_etl_3 variant_text_etl(text);
+      CHECK(text == "Some Text");
+      CHECK(etl::holds_alternative<std::string>(variant_text_etl));
+      CHECK_EQUAL(text, etl::get<std::string>(variant_text_etl));
     }
 
     //*************************************************************************
@@ -222,72 +285,122 @@ namespace
     {
       // Char.
       char c = 'a';
-      test_variant_3 variant_char(etl::move(c));
-
-      CHECK(etl::holds_alternative<char>(variant_char));
-      CHECK_EQUAL(c, etl::get<char>(variant_char));
+      test_variant_etl_3 variant_char_etl(etl::move(c));
+      CHECK(etl::holds_alternative<char>(variant_char_etl));
+      CHECK_EQUAL(c, etl::get<char>(variant_char_etl));
 
       // Int.
       int i = 1;
-      test_variant_3 variant_int(etl::move(i));
-
-      CHECK(etl::holds_alternative<int>(variant_int));
-      CHECK_EQUAL(i, etl::get<int>(variant_int));
+      test_variant_etl_3 variant_int_etl(etl::move(i));
+      CHECK(etl::holds_alternative<int>(variant_int_etl));
+      CHECK_EQUAL(i, etl::get<int>(variant_int_etl));
 
       // String.
       std::string text("Some Text");
-      test_variant_3 variant_text(etl::move(text));
+      test_variant_etl_3 variant_text_etl(etl::move(text));
+      CHECK(etl::holds_alternative<std::string>(variant_text_etl));
+      CHECK_EQUAL(std::string("Some Text"), etl::get<std::string>(variant_text_etl));
+    }
 
-      CHECK(etl::holds_alternative<std::string>(variant_text));
-      CHECK_EQUAL(text, etl::get<std::string>(variant_text));
+    //*************************************************************************
+    TEST(test_emplace_value)
+    {
+      // Char.
+      char c = 'a';
+      test_variant_etl_3 variant_char_etl;
+      
+      variant_char_etl.emplace<char>(c);
+      CHECK(c == 'a');
+      CHECK(etl::holds_alternative<char>(variant_char_etl));
+      CHECK_EQUAL(c, etl::get<char>(variant_char_etl));
+
+      // Int.
+      int i = 1;
+      test_variant_etl_3 variant_int_etl;
+
+      variant_int_etl.emplace<int>(i);
+      CHECK(i == 1);
+      CHECK(etl::holds_alternative<int>(variant_int_etl));
+      CHECK_EQUAL(i, etl::get<int>(variant_int_etl));
+
+      // String.
+      std::string text("Some Text");
+      test_variant_etl_3 variant_text_etl;
+
+      variant_text_etl.emplace<std::string>(text);
+      CHECK(text == "Some Text");
+      CHECK(etl::holds_alternative<std::string>(variant_text_etl));
+      CHECK_EQUAL(text, etl::get<std::string>(variant_text_etl));
     }
 
     //*************************************************************************
     TEST(test_copy_constructor)
     {
       std::string text("Some Text");
-      test_variant_3 variant_1(text);
+      test_variant_etl_3 variant_1_etl(text);
 
-      test_variant_3 variant_2(variant_1);
+      test_variant_etl_3 variant_2_etl(variant_1_etl);
 
-      CHECK_EQUAL(variant_1.index(), variant_2.index());
-      CHECK_EQUAL(variant_1.get<std::string>(), variant_2.get<std::string>());
+      CHECK_EQUAL(variant_1_etl.index(), variant_2_etl.index());
+      CHECK_EQUAL(etl::get<std::string>(variant_1_etl), etl::get<std::string>(variant_2_etl));
+    }
+
+    //*************************************************************************
+    TEST(test_copy_constructor_from_empty)
+    {
+      std::string text("Some Text");
+      test_variant_etl_3 variant_1_etl;
+
+      test_variant_etl_3 variant_2_etl(variant_1_etl);
+
+      CHECK_EQUAL(variant_1_etl.index(), variant_2_etl.index());
     }
 
     //*************************************************************************
     TEST(test_move_constructor)
     {
       std::string text("Some Text");
-      test_variant_3 variant_1(text);
+      test_variant_etl_3 variant_1_etl(text);
 
-      test_variant_3 variant_2(etl::move(variant_1));
+      test_variant_etl_3 variant_2_etl(etl::move(variant_1_etl));
 
-      CHECK_EQUAL(variant_1.index(), variant_2.index());
-      CHECK_EQUAL(variant_1.get<std::string>(), variant_2.get<std::string>());
+      CHECK_EQUAL(variant_1_etl.index(), variant_2_etl.index());
+      CHECK_EQUAL(etl::get<std::string>(variant_1_etl), etl::get<std::string>(variant_2_etl));
+    }
+
+    //*************************************************************************
+    TEST(test_move_constructor_from_empty)
+    {
+      std::string text("Some Text");
+      test_variant_etl_3 variant_1_etl;
+
+      test_variant_etl_3 variant_2_etl(etl::move(variant_1_etl));
+
+      CHECK_EQUAL(variant_1_etl.index(), variant_2_etl.index());
     }
 
     //*************************************************************************
     TEST(test_assign_from_value)
     {
       std::string text("Some Text");
-      test_variant_3 variant;
+      test_variant_etl_3 variant_etl;
 
-      variant = text;
+      variant_etl = text;
 
-      CHECK_EQUAL(text, variant.get<std::string>());
+      CHECK_EQUAL(text, etl::get<std::string>(variant_etl));
     }
 
     //*************************************************************************
     TEST(test_assign_from_variant)
     {
       std::string text("Some Text");
-      test_variant_3 variant_1;
-      test_variant_3 variant_2;
+      test_variant_etl_3 variant_1_etl;
+      test_variant_etl_3 variant_2_etl;
 
-      variant_1 = text;
-      variant_2 = variant_1;
+      variant_1_etl = text;
+      variant_2_etl = variant_1_etl;
 
-      CHECK_EQUAL(text, variant_2.get<std::string>());
+      CHECK_EQUAL(text, etl::get<std::string>(variant_2_etl));
     }
 
     //*************************************************************************
@@ -295,36 +408,36 @@ namespace
     {
       std::string text("Some Text");
       int integer(99);
-      test_variant_3 variant_1;
-      test_variant_3 variant_2;
+      test_variant_etl_3 variant_1_etl;
+      test_variant_etl_3 variant_2_etl;
 
-      variant_1 = text;
-      variant_2 = integer;
-      variant_2 = variant_1;
+      variant_1_etl = text;
+      variant_2_etl = integer;
+      variant_2_etl = variant_1_etl;
 
-      CHECK_EQUAL(text, variant_2.get<std::string>());
+      CHECK_EQUAL(text, etl::get<std::string>(variant_2_etl));
     }
 
     //*************************************************************************
     TEST(test_assignment_incorrect_type_exception)
     {
       std::string text("Some Text");
-      test_variant_3 variant(text);
+      test_variant_etl_3 variant_etl(text);
 
       int i;
-      CHECK_THROW(etl::get<int>(variant), etl::variant_incorrect_type_exception);
+      CHECK_THROW(etl::get<int>(variant_etl), etl::variant_incorrect_type_exception);
       (void)i;
     }
 
     //*************************************************************************
     TEST(test_self_assignment)
     {
-      test_variant_3 variant;
+      test_variant_etl_3 variant_etl;
 
-      variant = 1;
-      variant = variant;
+      variant_etl = 1;
+      variant_etl = variant_etl;
 
-      CHECK_EQUAL(1, etl::get<int>(variant));
+      CHECK_EQUAL(1, etl::get<int>(variant_etl));
     }
 
     //*************************************************************************
@@ -332,16 +445,16 @@ namespace
     {
       std::string text("Some Text");
       int integer(99);
-      test_variant_3 variant_1(text);
-      test_variant_3 variant_2(integer);
+      test_variant_etl_3 variant_1_etl(text);
+      test_variant_etl_3 variant_2_etl(integer);
 
-      variant_1.swap(variant_2);
+      variant_1_etl.swap(variant_2_etl);
 
-      CHECK(etl::holds_alternative<int>(variant_1));
-      CHECK_EQUAL(integer, etl::get<int>(variant_1));
+      CHECK(etl::holds_alternative<int>(variant_1_etl));
+      CHECK_EQUAL(integer, etl::get<int>(variant_1_etl));
 
-      CHECK(etl::holds_alternative<std::string>(variant_2));
-      CHECK_EQUAL(text, etl::get<std::string>(variant_2));
+      CHECK(etl::holds_alternative<std::string>(variant_2_etl));
+      CHECK_EQUAL(text, etl::get<std::string>(variant_2_etl));
     }
 
     //*************************************************************************
@@ -349,38 +462,38 @@ namespace
     {
       std::string text("Some Text");
       int integer(99);
-      test_variant_3 variant_1(text);
-      test_variant_3 variant_2(integer);
+      test_variant_etl_3 variant_1_etl(text);
+      test_variant_etl_3 variant_2_etl(integer);
 
-      etl::swap(variant_1, variant_2);
+      etl::swap(variant_1_etl, variant_2_etl);
 
-      CHECK(etl::holds_alternative<int>(variant_1));
-      CHECK_EQUAL(integer, etl::get<int>(variant_1));
+      CHECK(etl::holds_alternative<int>(variant_1_etl));
+      CHECK_EQUAL(integer, etl::get<int>(variant_1_etl));
 
-      CHECK(etl::holds_alternative<std::string>(variant_2));
-      CHECK_EQUAL(text, etl::get<std::string>(variant_2));
+      CHECK(etl::holds_alternative<std::string>(variant_2_etl));
+      CHECK_EQUAL(text, etl::get<std::string>(variant_2_etl));
     }
 
     //*************************************************************************
     TEST(test_emplace)
     {
-      test_variant_emplace variant;
+      test_variant_emplace variant_etl;
 
-      variant.emplace<D1>("1");
-      CHECK(etl::holds_alternative<D1>(variant));
-      CHECK_EQUAL(D1("1"), etl::get<D1>(variant));
+      variant_etl.emplace<D1>("1");
+      CHECK(etl::holds_alternative<D1>(variant_etl));
+      CHECK_EQUAL(D1("1"), etl::get<D1>(variant_etl));
 
-      variant.emplace<D2>("1", "2");
-      CHECK(etl::holds_alternative<D2>(variant));
-      CHECK_EQUAL(D2("1", "2"), etl::get<D2>(variant));
+      variant_etl.emplace<D2>("1", "2");
+      CHECK(etl::holds_alternative<D2>(variant_etl));
+      CHECK_EQUAL(D2("1", "2"), etl::get<D2>(variant_etl));
 
-      variant.emplace<D3>("1", "2", "3");
-      CHECK(etl::holds_alternative<D3>(variant));
-      CHECK_EQUAL(D3("1", "2", "3"), etl::get<D3>(variant));
+      variant_etl.emplace<D3>("1", "2", "3");
+      CHECK(etl::holds_alternative<D3>(variant_etl));
+      CHECK_EQUAL(D3("1", "2", "3"), etl::get<D3>(variant_etl));
 
-      variant.emplace<D4>("1", "2", "3", "4");
-      CHECK(etl::holds_alternative<D4>(variant));
-      CHECK_EQUAL(D4("1", "2", "3", "4"), etl::get<D4>(variant));
+      variant_etl.emplace<D4>("1", "2", "3", "4");
+      CHECK(etl::holds_alternative<D4>(variant_etl));
+      CHECK_EQUAL(D4("1", "2", "3", "4"), etl::get<D4>(variant_etl));
     }
 
     //*************************************************************************
@@ -393,9 +506,9 @@ namespace
     {
       D1 da("1");
       
-      test_variant_emplace variant(etl::move(getD1()));
+      test_variant_emplace variant_etl(etl::move(getD1()));
 
-      D1 db = etl::move(etl::get<D1>(variant));
+      D1 db = etl::move(etl::get<D1>(variant_etl));
     }
 
     //*************************************************************************
@@ -432,18 +545,18 @@ namespace
 
       Visitor visitor;
 
-      test_variant_3 variant;
+      test_variant_etl_3 variant_etl;
 
-      variant = char(1);
-      variant.accept(visitor);
+      variant_etl = char(1);
+      variant_etl.accept(visitor);
       CHECK_EQUAL(1, visitor.result_c);
       
-      variant = int(2);
-      variant.accept(visitor);
+      variant_etl = int(2);
+      variant_etl.accept(visitor);
       CHECK_EQUAL(2, visitor.result_i);
 
-      variant = std::string("3");
-      variant.accept(visitor);
+      variant_etl = std::string("3");
+      variant_etl.accept(visitor);
       CHECK_EQUAL("3", visitor.result_s);
     }
 
@@ -481,19 +594,137 @@ namespace
 
       Visitor visitor;
 
-      test_variant_3 variant;      
+      test_variant_etl_3 variant_etl;      
 
-      variant = char(1);
-      variant(visitor);
+      variant_etl = char(1);
+      variant_etl(visitor);
       CHECK_EQUAL(1, visitor.result_c);
       
-      variant = int(2);
-      variant(visitor);
+      variant_etl = int(2);
+      variant_etl(visitor);
       CHECK_EQUAL(2, visitor.result_i);
 
-      variant = std::string("3");
-      variant(visitor);
+      variant_etl = std::string("3");
+      variant_etl(visitor);
       CHECK_EQUAL("3", visitor.result_s);
+    }
+
+    //*************************************************************************
+    TEST(test_get_if_index)
+    {
+      test_variant_etl_3 variant_etl;
+
+      variant_etl = char(1);
+      CHECK(etl::get_if<0>(&variant_etl) != nullptr);
+      CHECK(etl::get_if<0>(variant_etl)  != nullptr);
+      CHECK(etl::get_if<1>(&variant_etl) == nullptr);
+      CHECK(etl::get_if<1>(variant_etl)  == nullptr);
+      CHECK(etl::get_if<2>(&variant_etl) == nullptr);
+      CHECK(etl::get_if<2>(variant_etl)  == nullptr);
+
+      variant_etl = int(2);
+      CHECK(etl::get_if<0>(&variant_etl) == nullptr);
+      CHECK(etl::get_if<0>(variant_etl)  == nullptr);
+      CHECK(etl::get_if<1>(&variant_etl) != nullptr);
+      CHECK(etl::get_if<1>(variant_etl)  != nullptr);
+      CHECK(etl::get_if<2>(&variant_etl) == nullptr);
+      CHECK(etl::get_if<2>(variant_etl)  == nullptr);
+
+      variant_etl = std::string("3");
+      CHECK(etl::get_if<0>(&variant_etl) == nullptr);
+      CHECK(etl::get_if<0>(variant_etl)  == nullptr);
+      CHECK(etl::get_if<1>(&variant_etl) == nullptr);
+      CHECK(etl::get_if<1>(variant_etl)  == nullptr);
+      CHECK(etl::get_if<2>(&variant_etl) != nullptr);
+      CHECK(etl::get_if<2>(variant_etl)  != nullptr);
+    }
+
+    //*************************************************************************
+    TEST(test_get_if_type)
+    {
+      test_variant_etl_3 variant_etl;
+
+      variant_etl = char(1);
+      CHECK(etl::get_if<char>(&variant_etl) != nullptr);
+      CHECK(etl::get_if<char>(variant_etl)  != nullptr);
+      CHECK(etl::get_if<int>(&variant_etl)  == nullptr);
+      CHECK(etl::get_if<int>(variant_etl)   == nullptr);
+      CHECK(etl::get_if<std::string>(&variant_etl) == nullptr);
+      CHECK(etl::get_if<std::string>(variant_etl)  == nullptr);
+
+      variant_etl = int(2);
+      CHECK(etl::get_if<char>(&variant_etl) == nullptr);
+      CHECK(etl::get_if<char>(variant_etl)  == nullptr);
+      CHECK(etl::get_if<int>(&variant_etl) != nullptr);
+      CHECK(etl::get_if<int>(variant_etl)  != nullptr);
+      CHECK(etl::get_if<std::string>(&variant_etl) == nullptr);
+      CHECK(etl::get_if<std::string>(variant_etl)  == nullptr);
+
+      variant_etl = std::string("3");
+      CHECK(etl::get_if<char>(&variant_etl) == nullptr);
+      CHECK(etl::get_if<char>(variant_etl)  == nullptr);
+      CHECK(etl::get_if<int>(&variant_etl)  == nullptr);
+      CHECK(etl::get_if<int>(variant_etl)   == nullptr);
+      CHECK(etl::get_if<std::string>(&variant_etl) != nullptr);
+      CHECK(etl::get_if<std::string>(variant_etl)  != nullptr);
+    }
+
+    //*************************************************************************
+    TEST(test_variant_size)
+    {
+      test_variant_etl_3 variant_etl;
+
+      CHECK_EQUAL(3U, etl::variant_size_v<test_variant_etl_3>);
+    }
+
+    //*************************************************************************
+    TEST(test_compare_etl_and_stl_variant_with_moveable_type)
+    {
+      Moveable from_etl;
+      Moveable to_etl;
+
+      Moveable from_std;
+      Moveable to_std;
+
+      etl::variant<Moveable> variant_etl;
+      std::variant<Moveable> variant_std;
+
+      variant_etl = etl::move(from_etl);
+      variant_std = etl::move(from_std);
+
+      CHECK_EQUAL(from_std.moved_from, from_etl.moved_from);
+      CHECK_EQUAL(from_std.moved_to,   from_etl.moved_to);
+
+      to_etl = etl::move(etl::get<0>(variant_etl));
+      to_std = etl::move(std::get<0>(variant_std));
+
+      CHECK_EQUAL(to_std.moved_from, to_etl.moved_from);
+      CHECK_EQUAL(to_std.moved_to,   to_etl.moved_to);
+    }
+
+    //*************************************************************************
+    TEST(test_compare_etl_and_stl_variant_with_copyable_type)
+    {
+      Copyable from_etl;
+      Copyable to_etl;
+
+      Copyable from_std;
+      Copyable to_std;
+
+      etl::variant<Copyable> variant_etl;
+      std::variant<Copyable> variant_std;
+
+      variant_etl = from_etl;
+      variant_std = from_std;
+
+      CHECK_EQUAL(from_std.copied_from, from_etl.copied_from);
+      CHECK_EQUAL(from_std.copied_to, from_etl.copied_to);
+
+      to_etl = etl::get<0>(variant_etl);
+      to_std = std::get<0>(variant_std);
+
+      CHECK_EQUAL(to_std.copied_from, to_etl.copied_from);
+      CHECK_EQUAL(to_std.copied_to, to_etl.copied_to);
     }
   };
 }
