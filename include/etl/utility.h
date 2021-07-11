@@ -420,7 +420,7 @@ namespace etl
     explicit ETL_CONSTEXPR in_place_t() {}
   };
 
-  inline ETL_CONSTEXPR in_place_t in_place{};
+  inline ETL_CONSTANT in_place_t in_place;
   
   //*************************
   template <typename T> struct in_place_type_t 
@@ -429,7 +429,7 @@ namespace etl
   };
 
   template <typename T>
-  inline ETL_CONSTEXPR in_place_type_t<T> in_place_type{};
+  inline ETL_CONSTANT in_place_type_t<T> in_place_type;
 
   //*************************
   template <std::size_t I> struct in_place_index_t 
@@ -438,7 +438,7 @@ namespace etl
   };
 
   template <std::size_t I>
-  inline ETL_CONSTEXPR in_place_index_t<I> in_place_index{};
+  inline ETL_CONSTANT in_place_index_t<I> in_place_index;
 }
 
 #endif

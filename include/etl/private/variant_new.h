@@ -103,7 +103,7 @@ namespace etl
 
       public:
 
-        static_assert(etl::is_one_of_v<type, TTypes...>, "T is not in parameter pack");
+        static_assert(etl::is_one_of<type, TTypes...>::value, "T is not in parameter pack");
 
         /// The index value.
         static constexpr size_t value = index_of_type_helper<type, TTypes...>::value - 1;
@@ -294,7 +294,7 @@ namespace etl
     ETL_CONSTEXPR14 explicit variant(etl::in_place_index_t<Index>, TArgs&&... args)
       : data()
     {
-      using type = private_variant::parameter_pack<TTypes...>::type_from_index_t<Index>;
+      using type = typename private_variant::parameter_pack<TTypes...>:: template type_from_index_t<Index>;
 
       type temp(std::forward<TArgs>(args)...);
 
@@ -389,7 +389,7 @@ namespace etl
     /// Move assignment operator for type.
     ///\param value The value to assign.
     //***************************************************************************
-    template <typename T, etl::enable_if_t<!etl::is_same_v<etl::remove_reference_t<T>, variant>, int> = 0>
+    template <typename T, etl::enable_if_t<!etl::is_same<etl::remove_reference_t<T>, variant>::value, int> = 0>
     variant& operator =(T&& value)
     {
       static_assert(etl::is_one_of<etl::remove_reference_t<T>, TTypes...>::value, "Unsupported type");
