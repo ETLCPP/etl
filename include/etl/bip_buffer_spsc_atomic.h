@@ -496,9 +496,20 @@ namespace etl
 
     static ETL_CONSTANT size_type MAX_SIZE = size_type(SIZE);
 
+    //*************************************************************************
+    /// Default constructor.
+    //*************************************************************************
     bip_buffer_spsc_atomic()
       : base_t(reinterpret_cast<T*>(&buffer[0]), RESERVED_SIZE)
     {
+    }
+
+    //*************************************************************************
+    /// Destructor.
+    //*************************************************************************
+    ~bip_buffer_spsc_atomic()
+    {
+      base_t::clear();
     }
 
   private:
