@@ -120,6 +120,14 @@ namespace etl
     template <size_t I>
     using type_from_index_t = typename type_from_index<I>::type;
   };
+
+  template <size_t Index, typename... TTypes>
+  using parameter_pack_t = typename etl::parameter_pack<TTypes...>::template type_from_index_t<Index>;
+
+#if ETL_CPP17_SUPPORTED
+  template <typename T, typename... TTypes>
+  inline constexpr size_t parameter_pack_v = etl::parameter_pack<TTypes...>::template index_of_type<T>::value;
+#endif
 }
 #endif
 #endif

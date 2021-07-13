@@ -50,6 +50,9 @@ SOFTWARE.
   #pragma diag_suppress 111
 #endif
 
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  #include <initializer_list>
+#endif
 
 #if ETL_CPP11_NOT_SUPPORTED
   #if !defined(ETL_IN_UNIT_TEST)
@@ -141,6 +144,88 @@ namespace etl
       template <size_t I>
       using type_from_index_t = typename type_from_index<I>::type;
     };
+
+
+
+    struct operation_type
+    {
+      virtual void move(int action, char* pstorage, const char* pvalue) = 0;
+      virtual void copy(int action, char* pstorage, const char* pvalue) = 0;
+    };
+
+    template <typename T, bool IsCopyable, bool IsMovable>
+    struct operations;
+
+    template <typename T>
+    struct operations<T, false, false> : public operation_type
+    {
+      using type = etl::remove_reference_t<T>;
+
+      void move(int action, char* pstorage, const char* pvalue) override
+      {
+        switch (action)
+        {
+          case 1:
+          {
+            reinterpret_cast<const type*>(pstorage)->~type();
+            break;
+          }
+
+          default:
+          {
+            break;
+        }
+        }
+      }
+    };
+      template <typename T>
+      typename etl::enable_if_t<etl::is_move_constructible<etl::remove_reference_t<T>>::value, void>
+        
+      {
+        using type = etl::remove_reference_t<T>;
+
+        switch (action)
+        {
+        case variant::action_type::Create:
+        {
+          ::new (pstorage) type(etl::move(*reinterpret_cast<type*>(const_cast<char*>(pvalue))));
+          break;
+        }
+
+        case variant::action_type::Destroy:
+        {
+          reinterpret_cast<const type*>(pstorage)->~type();
+          break;
+        }
+
+        default:
+        {
+          break;
+        }
+        }
+      }
+
+      template <typename T>
+      typename etl::enable_if_t<!etl::is_move_constructible<etl::remove_reference_t<T>>::value, void>
+        move(variant::action_type action, char* pstorage, const char* pvalue)
+      {
+        using type = etl::remove_reference_t<T>;
+
+        switch (action)
+        {
+        case variant::action_type::Destroy:
+        {
+          reinterpret_cast<const type*>(pstorage)->~type();
+          break;
+        }
+
+        default:
+        {
+          break;
+        }
+        }
+      }
+    };
   }
 
   /// Definition of variant_npos.
@@ -212,7 +297,7 @@ namespace etl
   private:
 
     // The type of actions we can perform.
-    enum class action_type : char
+    enum class action_type
     {
       Create,
       Destroy
@@ -252,11 +337,12 @@ namespace etl
     ETL_CONSTEXPR14 variant()
       : data()
     {
-      using type = typename etl::private_variant::parameter_pack<TTypes...>::template type_from_index<0>::type;
+      using type = typename etl::private_variant::parameter_pack<TTypes...>::template type_from_index<0U>::type;
 
-      operation = do_operation_default_construct<type>;
-      operation(action_type::Create, data, nullptr);
-      type_id = 0;
+      default_construct_in_place<type>(data);
+      operation_move = operation_type_move<type, etl::is_move_constructible<type>::value>::do_operation;
+      operation_copy = operation_type_copy<type, etl::is_copy_constructible<type>::value>::do_operation;
+      type_id = 0U;
     }
 
     //***************************************************************************
@@ -265,12 +351,20 @@ namespace etl
     template <typename T, etl::enable_if_t<!etl::is_same<etl::remove_reference_t<T>, variant>::value, int> = 0>
     ETL_CONSTEXPR14 variant(T&& value)
       : data()
-      , operation(operation_type<T, etl::is_rvalue_reference<decltype(value)>::value>::do_operation)
+      , operation_move(operation_type_move<T, etl::is_move_constructible<etl::remove_reference_t<T>>::value>::do_operation)
+      , operation_copy(operation_type_copy<T, etl::is_copy_constructible<etl::remove_reference_t<T>>::value>::do_operation)
       , type_id(etl::private_variant::parameter_pack<TTypes...>::template index_of_type<etl::remove_reference_t<T>>::value)
     {
+      bool bc = etl::is_copy_constructible<etl::remove_reference_t<T>>::value;
+      bool bm = etl::is_move_constructible<etl::remove_reference_t<T>>::value;
+
+      etl::remove_reference_t<T> t;
+
+      size_t s = sizeof(operation_move);
+
       static_assert(etl::is_one_of<etl::remove_reference_t<T>, TTypes...>::value, "Unsupported type");
 
-      operation(action_type::Create, data, &value);
+      construct_in_place<etl::remove_reference_t<T>>(data, std::forward<T>(value));
     }
 
     //***************************************************************************
@@ -281,10 +375,10 @@ namespace etl
       : data()
       , type_id(etl::private_variant::parameter_pack<TTypes...>::template index_of_type<etl::remove_reference_t<T>>::value)
     {
-      T temp(std::forward<TArgs>(args)...);
+      construct_in_place<etl::remove_reference_t<T>>(data, std::forward<TArgs>(args)...);
 
-      operation = operation_type<T, etl::is_rvalue_reference<decltype(temp)>::value>::do_operation;
-      operation(action_type::Create, data, &temp);
+      operation_move = operation_type_move<T, etl::is_move_constructible<etl::remove_reference_t<T>>::value>::do_operation;
+      operation_copy = operation_type_copy<T, etl::is_copy_constructible<etl::remove_reference_t<T>>::value>::do_operation;
     }
 
     //***************************************************************************
@@ -293,16 +387,50 @@ namespace etl
     template <size_t Index, typename... TArgs>
     ETL_CONSTEXPR14 explicit variant(etl::in_place_index_t<Index>, TArgs&&... args)
       : data()
+      , type_id(Index)
     {
       using type = typename private_variant::parameter_pack<TTypes...>:: template type_from_index_t<Index>;
 
-      type temp(std::forward<TArgs>(args)...);
+      construct_in_place<etl::remove_reference_t<T>>(data, std::forward<TArgs>(args)...);
 
-      operation = operation_type<type, etl::is_rvalue_reference<decltype(temp)>::value>::do_operation;
-      operation(action_type::Create, data, &temp);
-
-      type_id = Index;
+      operation_move = operation_type_move<T, etl::is_move_constructible<etl::remove_reference_t<T>>::value>::do_operation;
+      operation_copy = operation_type_copy<T, etl::is_copy_constructible<etl::remove_reference_t<T>>::value>::do_operation;
     }
+
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+    //***************************************************************************
+    /// Construct from type, initializer_list and arguments.
+    //***************************************************************************
+    template <typename T, typename U, typename... TArgs >
+    ETL_CONSTEXPR14 explicit variant(etl::in_place_type_t<T>, std::initializer_list<U> init, TArgs&&... args)
+      : data()
+      , type_id(private_variant::parameter_pack<TTypes...>:: template index_of_type<etl::remove_reference_t<T>>::value)
+    {
+      construct_in_place<etl::remove_reference_t<T>>(data, std::forward<TArgs>(args)...);
+
+      operation_move = operation_type_move<T, etl::is_move_constructible<etl::remove_reference_t<T>>::value>::do_operation;
+      operation_copy = operation_type_copy<T, etl::is_copy_constructible<etl::remove_reference_t<T>>::value>::do_operation;
+      operation(action_type::Create, data, reinterpret_cast<char*>(&temp));
+    }
+
+    //***************************************************************************
+    /// Construct from index, initializer_list and arguments.
+    //***************************************************************************
+    template <size_t Index, typename U, class... TArgs >
+    ETL_CONSTEXPR14 explicit variant(etl::in_place_index_t<Index>, std::initializer_list<U> init, TArgs&&... args)
+      : data()
+      , type_id(Index)
+    {
+      using type = typename private_variant::parameter_pack<TTypes...>:: template type_from_index_t<Index>;
+
+      construct_in_place<etl::remove_reference_t<T>>(data, std::forward<TArgs>(args)...);
+
+      type temp(args...);
+
+      operation_move = operation_type_move<T, etl::is_move_constructible<etl::remove_reference_t<type>>::value>::do_operation;
+      operation_copy = operation_type_copy<T, etl::is_copy_constructible<etl::remove_reference_t<type>>::value>::do_operation;
+    }
+#endif
 
     //***************************************************************************
     /// Copy constructor.
@@ -310,7 +438,8 @@ namespace etl
     //***************************************************************************
     ETL_CONSTEXPR14 variant(const variant& other)
       : data()
-      , operation(other.operation)
+      , operation_move(other.operation_move)
+      , operation_copy(other.operation_copy)
       , type_id(other.type_id)
     {
       if (this != &other)
@@ -321,7 +450,7 @@ namespace etl
         }
         else
         {
-          operation(action_type::Create, data, other.data);
+          operation_copy(action_type::Create, data, other.data);
         }
       }
     }
@@ -332,7 +461,8 @@ namespace etl
     //***************************************************************************
     ETL_CONSTEXPR14 variant(variant&& other)
       : data()
-      , operation(other.operation)
+      , operation_move(other.operation_move)
+      , operation_copy(other.operation_copy)
       , type_id(other.type_id)
     {
       if (this != &other)
@@ -343,7 +473,7 @@ namespace etl
         }
         else
         {
-          operation(action_type::Create, data, other.data);
+          operation_move(action_type::Create, data, other.data);
         }
       }
       else
@@ -359,10 +489,11 @@ namespace etl
     {
       if (index() != variant_npos)
       {
-        operation(action_type::Destroy, data, nullptr);        
+        operation_move(action_type::Destroy, data, nullptr);        
       }
 
-      operation = null_operation;
+      operation_move = null_operation;
+      operation_copy = null_operation;
       type_id = variant_npos;
     }
 
@@ -372,15 +503,16 @@ namespace etl
     template <typename T, typename... TArgs>
     T& emplace(TArgs&&... args)
     {
-      static_assert(etl::is_one_of<T, TTypes...>::value, "Unsupported type");
+      //static_assert(etl::is_one_of<T, TTypes...>::value, "Unsupported type");
 
-      operation(action_type::Destroy, data, nullptr);
+      //operation_move(action_type::Destroy, data, nullptr);
      
-      T temp(etl::forward<TArgs>(args)...);
-      operation = operation_type<T, etl::is_rvalue_reference<decltype(temp)>::value>::do_operation;
-      operation(action_type::Create, data, &temp);
+      //construct_in_place<etl::remove_reference_t<T>>(data, std::forward<TArgs>(args)...);
 
-      type_id = etl::private_variant::parameter_pack<TTypes...>::template index_of_type<T>::value;
+      //operation_move = operation_type_move<T, etl::is_move_constructible<etl::remove_reference_t<T>>::value>::do_operation;
+      //operation_copy = operation_type_copy<T, etl::is_copy_constructible<etl::remove_reference_t<T>>::value>::do_operation;
+      //
+      //type_id = etl::private_variant::parameter_pack<TTypes...>::template index_of_type<T>::value;
 
       return *static_cast<T*>(data);
     }
@@ -394,10 +526,12 @@ namespace etl
     {
       static_assert(etl::is_one_of<etl::remove_reference_t<T>, TTypes...>::value, "Unsupported type");
 
-      operation(action_type::Destroy, data, nullptr);
+      operation_move(action_type::Destroy, data, nullptr);
 
-      operation = operation_type<T, etl::is_rvalue_reference<decltype(value)>::value>::do_operation;
-      operation(action_type::Create, data, &value);
+      construct_in_place<etl::remove_reference_t<T>>(data, std::forward<T>(value));
+
+      operation_move = operation_type_move<T, etl::is_move_constructible<etl::remove_reference_t<T>>::value>::do_operation;
+      operation_copy = operation_type_copy<T, etl::is_copy_constructible<etl::remove_reference_t<T>>::value>::do_operation;
 
       type_id = etl::private_variant::parameter_pack<TTypes...>::template index_of_type<T>::value;
 
@@ -418,10 +552,11 @@ namespace etl
         }
         else
         {
-          operation(action_type::Destroy, data, nullptr);
+          operation_copy(action_type::Destroy, data, nullptr);
 
-          operation = other.operation;
-          operation(action_type::Create, data, other.data);
+          operation_move = other.operation_move;
+          operation_copy = other.operation_copy;
+          operation_copy(action_type::Create, data, other.data);
 
           type_id = other.type_id;
         }
@@ -444,10 +579,11 @@ namespace etl
         }
         else
         {
-          operation(action_type::Destroy, data, nullptr);
+          operation_move(action_type::Destroy, data, nullptr);
 
-          operation = other.operation;
-          operation(action_type::Create, data, other.data);
+          operation_move = other.operation_move;
+          operation_copy = other.operation_copy;
+          operation_move(action_type::Create, data, other.data);
 
           type_id = other.type_id;
         }
@@ -486,8 +622,7 @@ namespace etl
     //***************************************************************************
     /// Accept an etl::visitor.
     //***************************************************************************
-    template <typename... Types>
-    void accept(etl::visitor<TTypes...>& v)
+    void accept_visitor(etl::visitor<TTypes...>& v)
     {
 #if ETL_CPP17_SUPPORTED && !defined(ETL_VARIANT_FORCE_CPP11)
       do_accept(v, etl::make_index_sequence<sizeof...(TTypes)>{});
@@ -497,10 +632,10 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Accept a generic visitor.
+    /// Accept a generic functor.
     //***************************************************************************
     template <typename TVisitor>
-    void operator()(TVisitor& v)
+    void accept_functor(TVisitor& v)
     {
 #if ETL_CPP17_SUPPORTED && !defined(ETL_VARIANT_FORCE_CPP11)
       do_operator(v, etl::make_index_sequence<sizeof...(TTypes)>{});
@@ -511,44 +646,104 @@ namespace etl
 
   private:
 
-    using operation_function = void(*)(action_type, void*, const void*);
+    using operation_function = void(*)(action_type, char*, const char*);
+
+    //***************************************************************************
+    /// Construct the type in-place.
+    //***************************************************************************
+    template <typename T>
+    static void construct_in_place(char* pstorage, const T& value)
+    {
+      using type = etl::remove_reference_t<T>;
+
+      ::new (pstorage) type(value);
+    }
+
+    template <typename T>
+    static void construct_in_place(char* pstorage, T&& value)
+    {
+      using type = etl::remove_reference_t<T>;
+
+      ::new (pstorage) type(etl::forward<T>(value));
+    }
 
     //***************************************************************************
     /// Do an operation determined by type.
     //***************************************************************************
     template <typename T>
-    static void do_operation_default_construct(action_type action, void* pstorage, const void* pvalue)
+    static void default_construct_in_place(char* pstorage)
     {
-      switch (action)
-      {
-      case action_type::Create:
-      {
-        ::new (pstorage) T();
-        break;
-      }
-
-      case action_type::Destroy:
-      {
-        reinterpret_cast<const T*>(pstorage)->~T();
-        break;
-      }
-
-      default:
-      {
-        break;
-      }
-      }
+      ::new (pstorage) T();
     }
 
+    //*******************************************
     // Declaration.
-    template <typename T, bool IsRValueRef> 
-    struct operation_type;
+    template <typename T, bool IsMoveable> 
+    struct operation_type_move;
 
-    // Specialisation for lvalue rreferences
-    template <typename T> 
-    struct operation_type<T, false>
+    template <typename T, bool IsCopyable>
+    struct operation_type_copy;
+
+    //*******************************************
+    // Specialisation for rvalue references
+    template <typename T>
+    struct operation_type_move<T, true>
     {
-      static void do_operation(variant::action_type action, void* pstorage, const void* pvalue)
+      static void do_operation(variant::action_type action, char* pstorage, const char* pvalue)
+      {
+        using type = etl::remove_reference_t<T>;
+
+        switch (action)
+        {
+          case variant::action_type::Create:
+          {
+            ::new (pstorage) type(etl::move(*reinterpret_cast<type*>(const_cast<char*>(pvalue))));
+            break;
+          }
+
+          case variant::action_type::Destroy:
+          {
+            reinterpret_cast<const type*>(pstorage)->~type();
+            break;
+          }
+
+          default:
+          {
+            break;
+          }
+        }
+      }
+    };
+
+    template <typename T>
+    struct operation_type_move<T, false>
+    {
+      static void do_operation(variant::action_type action, char* pstorage, const char* pvalue)
+      {
+        using type = etl::remove_reference_t<T>;
+
+        switch (action)
+        {
+          case variant::action_type::Destroy:
+          {
+            reinterpret_cast<const type*>(pstorage)->~type();
+            break;
+          }
+
+          default:
+          {
+            break;
+          }
+        }
+      }
+    };
+
+    //*******************************************
+    // Specialisation for lvalue references
+    template <typename T>
+    struct operation_type_copy<T, true>
+    {
+      static void do_operation(variant::action_type action, char* pstorage, const char* pvalue)
       {
         using type = etl::remove_reference_t<T>;
 
@@ -574,22 +769,15 @@ namespace etl
       }
     };
 
-    // Specialisation for rvalue rreferences
     template <typename T>
-    struct operation_type<T, true>
+    struct operation_type_copy<T, false>
     {
-      static void do_operation(variant::action_type action, void* pstorage, const void* pvalue)
+      static void do_operation(variant::action_type action, char* pstorage, const char* pvalue)
       {
         using type = etl::remove_reference_t<T>;
 
         switch (action)
         {
-          case variant::action_type::Create:
-          {
-            ::new (pstorage) type(etl::move(*reinterpret_cast<type*>(const_cast<void*>(pvalue))));
-            break;
-          }
-
           case variant::action_type::Destroy:
           {
             reinterpret_cast<const type*>(pstorage)->~type();
@@ -608,8 +796,8 @@ namespace etl
     //***************************************************************************
     /// Call the relevent visitor by attemptng each one.
     //***************************************************************************
-    template <typename TVisitor, size_t... I>
-    void do_accept(TVisitor& visitor, etl::index_sequence<I...>)
+    template <size_t... I>
+    void do_accept(etl::visitor<TTypes...>& visitor, etl::index_sequence<I...>)
     {
       (attempt_visitor<I>(visitor) || ...);
     }
@@ -617,8 +805,7 @@ namespace etl
     //***************************************************************************
     /// /// Call the relevent visitor.
     //***************************************************************************
-    template <typename TVisitor>
-    void do_accept(TVisitor& visitor)
+    void do_accept(etl::visitor<TTypes...>& visitor)
     {
       switch (index())
       {
@@ -668,8 +855,8 @@ namespace etl
     //***************************************************************************
     /// Attempt to call a visitor.
     //***************************************************************************
-    template <size_t Index, typename TVisitor>
-    bool attempt_visitor(TVisitor& visitor)
+    template <size_t Index>
+    bool attempt_visitor(etl::visitor<TTypes...>& visitor)
     {
       if (Index == index())
       {
@@ -699,16 +886,18 @@ namespace etl
     void do_operator(TVisitor& visitor)
     {
 #if defined(ETL_VARIANT_CPP11_MAX_8_TYPES)
-      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 8U, "???");
+      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 8U, "There are more than 8 types in this variant");
 #endif
 
 #if defined(ETL_VARIANT_CPP11_MAX_16_TYPES)
-      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 16U, "???");
+      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 16U, "There are more than 16 types in this variant");
 #endif
 
 #if defined(ETL_VARIANT_CPP11_MAX_24_TYPES)
-      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 24U, "???");
+      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 24U, "There are more than 24 types in this variant");
 #endif
+
+      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 32U, "There are more than 32 types in this variant");
 
       switch (index())
       {
@@ -776,14 +965,17 @@ namespace etl
     /// Default operation.
     //***************************************************************************
     template <typename... TArgs>
-    static void null_operation(action_type action, void* pstorage, TArgs... args)
+    static void null_operation(action_type action, char* pstorage, TArgs... args)
     {
     }
 
     //***************************************************************************
     /// The operation function.
     //***************************************************************************
-    operation_function operation;
+    operation_function operation_move;
+    operation_function operation_copy;
+
+    operation_type operations;
 
     //***************************************************************************
     /// The id of the current stored type.  
