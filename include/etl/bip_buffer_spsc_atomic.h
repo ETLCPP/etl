@@ -188,7 +188,7 @@ namespace etl
     }
 
   protected:
-     
+
     //*************************************************************************
     /// Construccts the buffer.
     //*************************************************************************
@@ -344,6 +344,7 @@ namespace etl
 
 #if defined(ETL_POLYMORPHIC_SPSC_BIP_BUFFER_ATOMIC) || defined(ETL_POLYMORPHIC_CONTAINERS)
   public:
+
     virtual ~bip_buffer_spsc_atomic_base()
     {
     }
@@ -363,7 +364,7 @@ namespace etl
   class ibip_buffer_spsc_atomic : public bip_buffer_spsc_atomic_base<MEMORY_MODEL>
   {
   private:
-    
+
     typedef typename etl::bip_buffer_spsc_atomic_base<MEMORY_MODEL> base_t;
     using base_t::get_read_reserve;
     using base_t::apply_read_reserve;
@@ -371,7 +372,7 @@ namespace etl
     using base_t::apply_write_reserve;
 
   public:
-    
+
     typedef T                          value_type;      ///< The type stored in the buffer.
     typedef T&                         reference;       ///< A reference to the type used in the buffer.
     typedef const T&                   const_reference; ///< A const reference to the type used in the buffer.
