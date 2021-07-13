@@ -272,19 +272,12 @@ namespace etl
     {
       using type = etl::remove_reference_t<T>;
 
-      operation = operation_type<T, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
-      type_id   = etl::private_variant::parameter_pack<TTypes...>::template index_of_type<type>::value;
-
-      bool bc = etl::is_copy_constructible<type>::value;
-      bool bm = etl::is_move_constructible<type>::value;
-
-      type t;
-
-      size_t s = sizeof(operation);
-
       static_assert(etl::is_one_of<type, TTypes...>::value, "Unsupported type");
 
       construct_in_place<type>(data, std::forward<T>(value));
+
+      operation = operation_type<T, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
+      type_id   = etl::private_variant::parameter_pack<TTypes...>::template index_of_type<type>::value;
     }
 
     //***************************************************************************
@@ -296,7 +289,7 @@ namespace etl
     {
       using type = etl::remove_reference_t<T>;
 
-      construct_in_place<type>(data, std::forward<TArgs>(args)...);
+      construct_in_place_args<type>(data, std::forward<TArgs>(args)...);
 
       operation = operation_type<T, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
       type_id   = etl::private_variant::parameter_pack<TTypes...>::template index_of_type<type>::value;
@@ -312,9 +305,9 @@ namespace etl
     {
       using type = typename private_variant::parameter_pack<TTypes...>:: template type_from_index_t<Index>;
 
-      construct_in_place<type>(data, std::forward<TArgs>(args)...);
+      construct_in_place_args<type>(data, std::forward<TArgs>(args)...);
 
-      operation_type = operation_type<T, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
+      operation = operation_type<T, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
     }
 
 #if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
@@ -327,12 +320,10 @@ namespace etl
     {
       using type = etl::remove_reference_t<T>;
 
-      construct_in_place<type>(data, std::forward<TArgs>(args)...);
+      construct_in_place_args<type>(data, std::forward<TArgs>(args)...);
 
       operation = operation_type<T, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
-      operation(command::Move, data, reinterpret_cast<char*>(&temp));
-
-      type_id = private_variant::parameter_pack<TTypes...>:: template index_of_type<type>::value;
+      type_id   = private_variant::parameter_pack<TTypes...>:: template index_of_type<type>::value;
     }
 
     //***************************************************************************
@@ -345,7 +336,7 @@ namespace etl
     {
       using type = typename private_variant::parameter_pack<TTypes...>:: template type_from_index_t<Index>;
 
-      construct_in_place<type>(data, std::forward<TArgs>(args)...);
+      construct_in_place_args<type>(data, std::forward<TArgs>(args)...);
 
       operation = operation_type<T, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
     }
@@ -425,7 +416,7 @@ namespace etl
 
       operation(command::Destroy, data, nullptr);
      
-      construct_in_place<type>(data, std::forward<TArgs>(args)...);
+      construct_in_place_args<type>(data, std::forward<TArgs>(args)...);
 
       operation = operation_type<T, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
       
@@ -447,7 +438,7 @@ namespace etl
 
       operation(command::Destroy, data, nullptr);
 
-      construct_in_place<type>(data, std::forward<T>(value));
+      construct_in_place<type>(data, etl::forward<T>(value));
 
       operation = operation_type<T, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
       type_id   = etl::private_variant::parameter_pack<TTypes...>::template index_of_type<type>::value;
@@ -583,18 +574,20 @@ namespace etl
     {
       using type = etl::remove_reference_t<T>;
 
-      ::new (pstorage) type(etl::forward<T>(value));
+      ::new (pstorage) type(etl::move(value));
     }
 
     //***************************************************************************
     /// Construct the type in-place. Variadic args.
     //***************************************************************************
     template <typename T, typename... TArgs>
-    static void construct_in_place(char* pstorage, TArgs&&... args)
+    static void construct_in_place_args(char* pstorage, TArgs&&... args)
     {
       using type = etl::remove_reference_t<T>;
 
-      ::new (pstorage) type(etl::forward<T>(args)...);
+      type t;
+
+      ::new (pstorage) type(etl::forward<type>(args)...);
     }
 
     //***************************************************************************
@@ -747,6 +740,7 @@ namespace etl
 
           default:
           {
+            assert(false);
             break;
           }
         }
