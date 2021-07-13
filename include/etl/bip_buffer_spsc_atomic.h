@@ -444,7 +444,7 @@ namespace etl
     ibip_buffer_spsc_atomic& operator =(ibip_buffer_spsc_atomic&&) = delete;
 #endif
 
-    const T* p_buffer;
+    T* const p_buffer;
   };
 
   //***************************************************************************
