@@ -45,6 +45,7 @@ SOFTWARE.
 #include "alignment.h"
 #include "parameter_type.h"
 #include "atomic.h"
+#include "memory.h"
 #include "memory_model.h"
 #include "integral_limits.h"
 #include "utility.h"
@@ -177,16 +178,6 @@ namespace etl
       return RESERVED;
     }
 
-    //*************************************************************************
-    /// Clears the buffer.
-    //*************************************************************************
-    void clear()
-    {
-      read.store(0, etl::memory_order_release);
-      write.store(0, etl::memory_order_release);
-      last.store(0, etl::memory_order_release);
-    }
-
   protected:
 
     //*************************************************************************
@@ -198,6 +189,14 @@ namespace etl
      , last(0)
      , RESERVED(reserved_)
     {
+    }
+
+    //*************************************************************************
+    void reset()
+    {
+      read.store(0, etl::memory_order_release);
+      write.store(0, etl::memory_order_release);
+      last.store(0, etl::memory_order_release);
     }
 
     //*************************************************************************
@@ -366,6 +365,7 @@ namespace etl
   private:
 
     typedef typename etl::bip_buffer_spsc_atomic_base<MEMORY_MODEL> base_t;
+    using base_t::reset;
     using base_t::get_read_reserve;
     using base_t::apply_read_reserve;
     using base_t::get_write_reserve;
@@ -380,6 +380,8 @@ namespace etl
     typedef T&&                        rvalue_reference;///< An rvalue_reference to the type used in the buffer.
 #endif
     typedef typename base_t::size_type size_type;       ///< The type used for determining the size of the buffer.
+
+    using base_t::max_size;
 
     //*************************************************************************
     // Reserves a memory area for reading up to the max_reserve_size
@@ -423,6 +425,24 @@ namespace etl
     {
       size_type windex = etl::distance(p_buffer, reserve.data());
       apply_write_reserve(windex, reserve.size());
+    }
+
+    //*************************************************************************
+    /// Clears the buffer, destructing any elements that haven't been read.
+    //*************************************************************************
+    void clear()
+    {
+      // the buffer might be split into two contiguous blocks
+      for (auto reader = read_reserve(max_size()); reader.size() > 0; reader = read_reserve(max_size()))
+      {
+        destroy(reader.begin(), reader.end());
+        read_commit(reader);
+      }
+      // now the buffer is already empty
+      // resetting the buffer here is beneficial to have
+      // the whole buffer available for a single block,
+      // but it requires synchronization between the writer and reader threads
+      reset();
     }
 
   protected:
