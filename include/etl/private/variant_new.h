@@ -143,15 +143,206 @@ namespace etl
       template <size_t I>
       using type_from_index_t = typename type_from_index<I>::type;
     };
+
+    //*******************************************
+    // The traits an object may have.
+    //*******************************************
+    static constexpr bool Copyable     = true;
+    static constexpr bool Non_Copyable = false;
+    static constexpr bool Moveable     = true;
+    static constexpr bool Non_Moveable = false;
+
+    //*******************************************
+    // The types of operations we can perform.
+    //*******************************************
+    static constexpr int Copy    = 0;
+    static constexpr int Move    = 1;
+    static constexpr int Destroy = 2;
+
+    //*******************************************
+    // operation_type
+    //*******************************************
+    template <typename T, bool IsCopyable, bool IsMoveable>
+    struct operation_type;
+
+    //*******************************************
+    // Specialisation for null operation.
+    template <>
+    struct operation_type<void, Non_Copyable, Non_Moveable>
+    {
+      static void do_operation(int operation, char* pstorage, const char* pvalue)
+      {
+        // This should never occur.
+#if defined(ETL_IN_UNIT_TEST)
+        assert(false);
+#endif
+      }
+    };
+
+    //*******************************************
+    // Specialisation for no-copyable & non-moveable types.
+    template <typename T>
+    struct operation_type<T, Non_Copyable, Non_Moveable>
+    {
+      static void do_operation(int operation, char* pstorage, const char* pvalue)
+      {
+        switch (operation)
+        {
+          case Destroy:
+          {
+            reinterpret_cast<const T*>(pstorage)->~T();
+            break;
+          }
+
+          default:
+          {
+            // This should never occur.
+  #if defined(ETL_IN_UNIT_TEST)
+            assert(false);
+  #endif
+            break;
+          }
+        }
+      }
+    };
+
+    //*******************************************
+    // Specialisation for no-copyable & moveable types.
+    template <typename T>
+    struct operation_type<T, Non_Copyable, Moveable>
+    {
+      static void do_operation(int operation, char* pstorage, const char* pvalue)
+      {
+        switch (operation)
+        {
+          case Move:
+          {
+            ::new (pstorage) T(etl::move(*reinterpret_cast<T*>(const_cast<char*>(pvalue))));
+            break;
+          }
+
+          case Destroy:
+          {
+            reinterpret_cast<const T*>(pstorage)->~T();
+            break;
+          }
+
+          default:
+          {
+            // This should never occur.
+  #if defined(ETL_IN_UNIT_TEST)
+            assert(false);
+  #endif
+            break;
+          }
+        }
+      }
+    };
+
+    //*******************************************
+    // Specialisation for copyable & non-moveable types.
+    template <typename T>
+    struct operation_type<T, Copyable, Non_Moveable>
+    {
+      static void do_operation(int operation, char* pstorage, const char* pvalue)
+      {
+        switch (operation)
+        {
+          case Copy:
+          {
+            ::new (pstorage) T(*reinterpret_cast<const T*>(pvalue));
+            break;
+          }
+
+          case Destroy:
+          {
+            reinterpret_cast<const T*>(pstorage)->~T();
+            break;
+          }
+
+          default:
+          {
+            // This should never occur.
+  #if defined(ETL_IN_UNIT_TEST)
+            assert(false);
+  #endif
+            break;
+          }
+        }
+      }
+    };
+
+    //*******************************************
+    // Specialisation for copyable & moveable types.
+    template <typename T>
+    struct operation_type<T, Copyable, Moveable>
+    {
+      static void do_operation(int operation, char* pstorage, const char* pvalue)
+      {
+        switch (operation)
+        {
+          case Copy:
+          {
+            ::new (pstorage) T(*reinterpret_cast<const T*>(pvalue));
+            break;
+          }
+
+          case Move:
+          {
+            ::new (pstorage) T(etl::move(*reinterpret_cast<T*>(const_cast<char*>(pvalue))));
+            break;
+          }
+
+          case Destroy:
+          {
+            reinterpret_cast<const T*>(pstorage)->~T();
+            break;
+          }
+
+          default:
+          {
+            // This should never occur.
+#if defined(ETL_IN_UNIT_TEST)
+            assert(false);
+#endif
+            break;
+          }
+        }
+      }
+    };
   }
 
   /// Definition of variant_npos.
   constexpr size_t variant_npos = etl::integral_limits<size_t>::max;
 
-  // Forward declarations.
+  //***********************************
+  // variant. Forward declaration
   template <typename... TTypes>
   class variant;
 
+  //***************************************************************************
+  /// variant_alternative
+  //***************************************************************************
+  template <size_t Index, typename T>
+  struct variant_alternative;
+
+  template <size_t Index, typename... TTypes>
+  struct variant_alternative<Index, etl::variant<TTypes...>>
+  {
+    using type = typename etl::private_variant::parameter_pack<TTypes...>::template type_from_index<Index>::type;
+  };
+
+  template <size_t Index, typename T>
+  struct variant_alternative<Index, const T>
+  {
+    using type = typename variant_alternative<Index, T>::type;
+  };
+
+  template <size_t Index, typename T>
+  using variant_alternative_t = typename variant_alternative<Index, T>::type;
+
+  //***********************************
+  // holds_alternative. Forward declaration
   template <typename T, typename... TTypes>
   ETL_CONSTEXPR14 bool holds_alternative(const etl::variant<TTypes...>& v) noexcept;
 
@@ -213,14 +404,6 @@ namespace etl
 
   private:
 
-    // The type of operations we can perform.
-    enum class command
-    {
-      Copy,
-      Move,
-      Destroy
-    };
-
     // All types of variant are friends.
     template <typename... UTypes>
     friend class variant;
@@ -240,13 +423,20 @@ namespace etl
     //***************************************************************************
     static const size_t Alignment = etl::largest_alignment<TTypes...>::value;
 
-  public:
+    //***************************************************************************
+    /// The operation templates.
+    //***************************************************************************
+    template <typename T, bool IsCopyable, bool IsMoveable>
+    using operation_type = private_variant::operation_type<T, IsCopyable, IsMoveable>;
 
-    //***************************************************************************
-    /// The internal storage.
-    /// Aligned on a suitable boundary, which should be good for all types.
-    //***************************************************************************
-    etl::uninitialized_buffer<Size, 1U, Alignment> data;
+    //*******************************************
+    // The types of operations we can perform.
+    //*******************************************
+    static constexpr int Copy    = private_variant::Copy;
+    static constexpr int Move    = private_variant::Move;
+    static constexpr int Destroy = private_variant::Destroy;
+
+  public:
 
     //***************************************************************************
     /// Default constructor.
@@ -285,7 +475,7 @@ namespace etl
       , operation(operation_type<etl::remove_reference_t<T>, etl::is_copy_constructible<etl::remove_reference_t<T>>::value, etl::is_move_constructible<etl::remove_reference_t<T>>::value>::do_operation)
       , type_id(etl::private_variant::parameter_pack<TTypes...>::template index_of_type<etl::remove_reference_t<T>>::value)
     {
-      static_assert(etl::is_one_of<etl::remove_reference_t<T>>, TTypes...>::value, "Unsupported type");
+      static_assert(etl::is_one_of<etl::remove_reference_t<T>, TTypes...>::value, "Unsupported type");
 
       construct_in_place_args<etl::remove_reference_t<T>>(data, std::forward<TArgs>(args)...);
     }
@@ -299,7 +489,7 @@ namespace etl
       , type_id(Index)
     {
       using type = typename private_variant::parameter_pack<TTypes...>:: template type_from_index_t<Index>;
-      static_assert(etl::is_one_of<type>, TTypes... > ::value, "Unsupported type");
+      static_assert(etl::is_one_of<type, TTypes...> ::value, "Unsupported type");
 
       construct_in_place_args<type>(data, std::forward<TArgs>(args)...);
 
@@ -313,12 +503,12 @@ namespace etl
     template <typename T, typename U, typename... TArgs >
     ETL_CONSTEXPR14 explicit variant(etl::in_place_type_t<T>, std::initializer_list<U> init, TArgs&&... args)
       : data()
-      , operation(operation_type<etl::remove_reference_t<T>>, etl::is_copy_constructible<etl::remove_reference_t<T>>::value, etl::is_move_constructible<type>::etl::remove_reference_t<T>>::do_operation)
+      , operation(operation_type<etl::remove_reference_t<T>, etl::is_copy_constructible<etl::remove_reference_t<T>>::value, etl::is_move_constructible<etl::remove_reference_t<T>>::value>::do_operation)
       , type_id(private_variant::parameter_pack<TTypes...>:: template index_of_type<etl::remove_reference_t<T>>::value)
     {
-      static_assert(etl::is_one_of<etl::remove_reference_t<T>>, TTypes... > ::value, "Unsupported type");
+      static_assert(etl::is_one_of<etl::remove_reference_t<T>, TTypes...> ::value, "Unsupported type");
 
-      construct_in_place_args<etl::remove_reference_t<T>>(data, std::forward<TArgs>(args)...);
+      construct_in_place_args<etl::remove_reference_t<T>>(data, init, std::forward<TArgs>(args)...);
     }
 
     //***************************************************************************
@@ -330,9 +520,9 @@ namespace etl
       , type_id(Index)
     {
       using type = typename private_variant::parameter_pack<TTypes...>:: template type_from_index_t<Index>;
-      static_assert(etl::is_one_of<type>, TTypes... > ::value, "Unsupported type");
+      static_assert(etl::is_one_of<type, TTypes...> ::value, "Unsupported type");
 
-      construct_in_place_args<type>(data, std::forward<TArgs>(args)...);
+      construct_in_place_args<type>(data, init, std::forward<TArgs>(args)...);
 
       operation = operation_type<type, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
     }
@@ -355,7 +545,7 @@ namespace etl
         }
         else
         {
-          operation(command::Copy, data, other.data);
+          operation(private_variant::Copy, data, other.data);
         }
       }
     }
@@ -377,7 +567,7 @@ namespace etl
         }
         else
         {
-          operation(command::Move, data, other.data);
+          operation(private_variant::Move, data, other.data);
         }
       }
       else
@@ -393,7 +583,7 @@ namespace etl
     {
       if (index() != variant_npos)
       {
-        operation(command::Destroy, data, nullptr);        
+        operation(private_variant::Destroy, data, nullptr);        
       }
 
       operation = operation_type<void, false, false>::do_operation; // Null operation.
@@ -410,7 +600,7 @@ namespace etl
 
       using type = etl::remove_reference_t<T>;
 
-      operation(command::Destroy, data, nullptr);
+      operation(private_variant::Destroy, data, nullptr);
      
       construct_in_place_args<type>(data, std::forward<TArgs>(args)...);
 
@@ -432,7 +622,7 @@ namespace etl
 
       static_assert(etl::is_one_of<type, TTypes...>::value, "Unsupported type");
 
-      operation(command::Destroy, data, nullptr);
+      operation(private_variant::Destroy, data, nullptr);
 
       construct_in_place<type>(data, etl::forward<T>(value));
 
@@ -456,10 +646,10 @@ namespace etl
         }
         else
         {
-          operation(command::Destroy, data, nullptr);
+          operation(Destroy, data, nullptr);
 
           operation = other.operation;
-          operation(command::Copy, data, other.data);
+          operation(Copy, data, other.data);
 
           type_id = other.type_id;
         }
@@ -482,10 +672,10 @@ namespace etl
         }
         else
         {
-          operation(command::Destroy, data, nullptr);
+          operation(Destroy, data, nullptr);
 
           operation = other.operation;
-          operation(command::Move, data, other.data);
+          operation(Move, data, other.data);
 
           type_id = other.type_id;
         }
@@ -546,10 +736,41 @@ namespace etl
 #endif
     }
 
+    //***************************************************************************
+    /// get() is a friend function.
+    //***************************************************************************
+    template <size_t Index, typename... VTypes>
+    friend ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<VTypes...>>&
+      get(etl::variant<VTypes...>& v);
+
+    template <size_t Index, typename... VTypes>
+    friend ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<VTypes...>>&&
+      get(etl::variant<VTypes...>&& v);
+
+    template <size_t Index, typename... VTypes>
+    friend ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<VTypes...>>&
+      get(const etl::variant<VTypes...>& v);
+
+    template <size_t Index, typename... VTypes>
+    friend ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<VTypes...>>&&
+      get(const etl::variant<VTypes...>&& v);
+
+    template <typename T, typename... VTypes>
+    friend ETL_CONSTEXPR14 T& get(etl::variant<VTypes...>& v);
+
+    template <typename T, typename... VTypes>
+    friend ETL_CONSTEXPR14 T&& get(etl::variant<VTypes...>&& v);
+
+    template <typename T, typename... VTypes>
+    friend ETL_CONSTEXPR14 const T& get(const etl::variant<VTypes...>& v);
+
+    template <typename T, typename... VTypes>
+    friend ETL_CONSTEXPR14 const T&& get(const etl::variant<VTypes...>&& v);
+
   private:
 
     /// The operation function type.
-    using operation_function = void(*)(command, char*, const char*);
+    using operation_function = void(*)(int, char*, const char*);
 
     //***************************************************************************
     /// Construct the type in-place. lvalue reference.
@@ -595,153 +816,160 @@ namespace etl
       ::new (pstorage) type();
     }
 
-    //*******************************************
-    // Declaration.
-    template <typename T, bool IsCopyable, bool IsMoveable>
-    struct operation_type;
-
-    //*******************************************
-    // Specialisation for null operation.
-    template <>
-    struct operation_type<void, false, false>
-    {
-      static void do_operation(variant::command operation, char* pstorage, const char* pvalue)
-      {
-        // This should never occur.
-#if defined(ETL_IN_UNIT_TEST)
-        assert(false);
-#endif
-      }
-    };
-
-    //*******************************************
-    // Specialisation for no-copyable & non-moveable types.
-    template <typename T>
-    struct operation_type<T, false, false>
-    {
-      static void do_operation(variant::command operation, char* pstorage, const char* pvalue)
-      {
-        switch (operation)
-        {
-          case variant::command::Destroy:
-          {
-            reinterpret_cast<const T*>(pstorage)->~T();
-            break;
-          }
-
-          default:
-          {
-            // This should never occur.
-#if defined(ETL_IN_UNIT_TEST)
-            assert(false);
-#endif
-            break;
-          }
-        }
-      }
-    };
-
-    //*******************************************
-    // Specialisation for no-copyable & moveable types.
-    template <typename T>
-    struct operation_type<T, false, true>
-    {
-      static void do_operation(variant::command operation, char* pstorage, const char* pvalue)
-      {
-        switch (operation)
-        {
-          case variant::command::Move:
-          {
-            ::new (pstorage) T(etl::move(*reinterpret_cast<T*>(const_cast<char*>(pvalue))));
-            break;
-          }
-
-          case variant::command::Destroy:
-          {
-            reinterpret_cast<const T*>(pstorage)->~T();
-            break;
-          }
-
-          default:
-          {
-            // This should never occur.
-#if defined(ETL_IN_UNIT_TEST)
-            assert(false);
-#endif
-            break;
-          }
-        }
-      }
-    };
-
-    //*******************************************
-    // Specialisation for copyable & non-moveable types.
-    template <typename T>
-    struct operation_type<T, true, false>
-    {
-      static void do_operation(variant::command operation, char* pstorage, const char* pvalue)
-      {
-        switch (operation)
-        {
-          case variant::command::Copy:
-          {
-            ::new (pstorage) T(*reinterpret_cast<const T*>(pvalue));
-            break;
-          }
-
-          case variant::command::Destroy:
-          {
-            reinterpret_cast<const T*>(pstorage)->~T();
-            break;
-          }
-
-          default:
-          {
-            // This should never occur.
-#if defined(ETL_IN_UNIT_TEST)
-            assert(false);
-#endif
-            break;
-          }
-        }
-      }
-    };
-
-    //*******************************************
-    // Specialisation for copyable & moveable types.
-    template <typename T>
-    struct operation_type<T, true, true>
-    {
-      static void do_operation(variant::command command, char* pstorage, const char* pvalue)
-      {
-        switch (command)
-        {
-          case variant::command::Copy:
-          {
-            ::new (pstorage) T(*reinterpret_cast<const T*>(pvalue));
-            break;
-          }
-
-          case variant::command::Move:
-          {
-            ::new (pstorage) T(etl::move(*reinterpret_cast<T*>(const_cast<char*>(pvalue))));
-            break;
-          }
-
-          case variant::command::Destroy:
-          {
-            reinterpret_cast<const T*>(pstorage)->~T();
-            break;
-          }
-
-          default:
-          {
-            assert(false);
-            break;
-          }
-        }
-      }
-    };
+//    //*******************************************
+//    // The traits an object may have.
+//    static constexpr bool Copyable     = true;
+//    static constexpr bool Non_Copyable = false;
+//    static constexpr bool Moveable     = true;
+//    static constexpr bool Non_Moveable = false;
+//
+//    //*******************************************
+//    // Declaration.
+//    template <typename T, bool IsCopyable, bool IsMoveable>
+//    struct operation_type;
+//
+//    //*******************************************
+//    // Specialisation for null operation.
+//    template <>
+//    struct operation_type<void, Non_Copyable, Non_Moveable>
+//    {
+//      static void do_operation(variant::int operation, char* pstorage, const char* pvalue)
+//      {
+//        // This should never occur.
+//#if defined(ETL_IN_UNIT_TEST)
+//        assert(false);
+//#endif
+//      }
+//    };
+//
+//    //*******************************************
+//    // Specialisation for no-copyable & non-moveable types.
+//    template <typename T>
+//    struct operation_type<T, Non_Copyable, Non_Moveable>
+//    {
+//      static void do_operation(variant::int operation, char* pstorage, const char* pvalue)
+//      {
+//        switch (operation)
+//        {
+//          case variant::Destroy:
+//          {
+//            reinterpret_cast<const T*>(pstorage)->~T();
+//            break;
+//          }
+//
+//          default:
+//          {
+//            // This should never occur.
+//#if defined(ETL_IN_UNIT_TEST)
+//            assert(false);
+//#endif
+//            break;
+//          }
+//        }
+//      }
+//    };
+//
+//    //*******************************************
+//    // Specialisation for no-copyable & moveable types.
+//    template <typename T>
+//    struct operation_type<T, Non_Copyable, Moveable>
+//    {
+//      static void do_operation(variant::int operation, char* pstorage, const char* pvalue)
+//      {
+//        switch (operation)
+//        {
+//          case variant::Move:
+//          {
+//            ::new (pstorage) T(etl::move(*reinterpret_cast<T*>(const_cast<char*>(pvalue))));
+//            break;
+//          }
+//
+//          case variant::Destroy:
+//          {
+//            reinterpret_cast<const T*>(pstorage)->~T();
+//            break;
+//          }
+//
+//          default:
+//          {
+//            // This should never occur.
+//#if defined(ETL_IN_UNIT_TEST)
+//            assert(false);
+//#endif
+//            break;
+//          }
+//        }
+//      }
+//    };
+//
+//    //*******************************************
+//    // Specialisation for copyable & non-moveable types.
+//    template <typename T>
+//    struct operation_type<T, Copyable, Non_Moveable>
+//    {
+//      static void do_operation(variant::int operation, char* pstorage, const char* pvalue)
+//      {
+//        switch (operation)
+//        {
+//          case variant::Copy:
+//          {
+//            ::new (pstorage) T(*reinterpret_cast<const T*>(pvalue));
+//            break;
+//          }
+//
+//          case variant::Destroy:
+//          {
+//            reinterpret_cast<const T*>(pstorage)->~T();
+//            break;
+//          }
+//
+//          default:
+//          {
+//            // This should never occur.
+//#if defined(ETL_IN_UNIT_TEST)
+//            assert(false);
+//#endif
+//            break;
+//          }
+//        }
+//      }
+//    };
+//
+//    //*******************************************
+//    // Specialisation for copyable & moveable types.
+//    template <typename T>
+//    struct operation_type<T, Copyable, Moveable>
+//    {
+//      static void do_operation(variant::int int, char* pstorage, const char* pvalue)
+//      {
+//        switch (int)
+//        {
+//          case variant::Copy:
+//          {
+//            ::new (pstorage) T(*reinterpret_cast<const T*>(pvalue));
+//            break;
+//          }
+//
+//          case variant::Move:
+//          {
+//            ::new (pstorage) T(etl::move(*reinterpret_cast<T*>(const_cast<char*>(pvalue))));
+//            break;
+//          }
+//
+//          case variant::Destroy:
+//          {
+//            reinterpret_cast<const T*>(pstorage)->~T();
+//            break;
+//          }
+//
+//          default:
+//          {
+//            assert(false);
+//            break;
+//          }
+//        }
+//      }
+//    };
 
 #if ETL_CPP17_SUPPORTED && !defined(ETL_VARIANT_FORCE_CPP11)
     //***************************************************************************
@@ -913,6 +1141,12 @@ namespace etl
     }
 
     //***************************************************************************
+    /// The internal storage.
+    /// Aligned on a suitable boundary, which should be good for all types.
+    //***************************************************************************
+    etl::uninitialized_buffer<Size, 1U, Alignment> data;
+
+    //***************************************************************************
     /// The operation function.
     //***************************************************************************
     operation_function operation;
@@ -951,27 +1185,6 @@ namespace etl
   {
     return (index == v.index());
   }
-
-  //***************************************************************************
-  /// variant_alternative
-  //***************************************************************************
-  template <size_t Index, typename T>
-  struct variant_alternative;
-
-  template <size_t Index, typename... TTypes>
-  struct variant_alternative<Index, etl::variant<TTypes...>>
-  {
-    using type = typename etl::private_variant::parameter_pack<TTypes...>::template type_from_index<Index>::type;
-  };
-
-  template <size_t Index, typename T> 
-  struct variant_alternative<Index, const T>
-  {
-    using type = typename variant_alternative<Index, T>::type;
-  };
-
-  template <size_t Index, typename T>
-  using variant_alternative_t = typename variant_alternative<Index, T>::type;
 
   //***************************************************************************
   /// get

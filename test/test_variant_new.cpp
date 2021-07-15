@@ -416,6 +416,70 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_construct_multiple_parameters_by_type)
+    {
+      test_variant_emplace variant_etl1(etl::in_place_type_t<D1>(), "1");
+      CHECK(etl::holds_alternative<D1>(variant_etl1));
+      CHECK_EQUAL(D1("1"), etl::get<D1>(variant_etl1));
+
+      test_variant_emplace variant_etl2(etl::in_place_type_t<D2>{}, "1", "2");
+      CHECK(etl::holds_alternative<D2>(variant_etl2));
+      CHECK_EQUAL(D2("1", "2"), etl::get<D2>(variant_etl2));
+
+      test_variant_emplace variant_etl3(etl::in_place_type_t<D3>{}, "1", "2", "3");
+      CHECK(etl::holds_alternative<D3>(variant_etl3));
+      CHECK_EQUAL(D3("1", "2", "3"), etl::get<D3>(variant_etl3));
+
+      test_variant_emplace variant_etl4(etl::in_place_type_t<D4>{}, "1", "2", "3", "4");
+      CHECK(etl::holds_alternative<D4>(variant_etl4));
+      CHECK_EQUAL(D4("1", "2", "3", "4"), etl::get<D4>(variant_etl4));
+    }
+
+    //*************************************************************************
+    TEST(test_construct_multiple_parameters_by_index)
+    {
+      test_variant_emplace variant_etl1(etl::in_place_index_t<1U>{}, "1");
+      CHECK(etl::holds_alternative<D1>(variant_etl1));
+      CHECK_EQUAL(D1("1"), etl::get<D1>(variant_etl1));
+
+      test_variant_emplace variant_etl2(etl::in_place_index_t<2>{}, "1", "2");
+      CHECK(etl::holds_alternative<D2>(variant_etl2));
+      CHECK_EQUAL(D2("1", "2"), etl::get<D2>(variant_etl2));
+
+      test_variant_emplace variant_etl3(etl::in_place_index_t<3>{}, "1", "2", "3");
+      CHECK(etl::holds_alternative<D3>(variant_etl3));
+      CHECK_EQUAL(D3("1", "2", "3"), etl::get<D3>(variant_etl3));
+
+      test_variant_emplace variant_etl4(etl::in_place_index_t<4U>{}, "1", "2", "3", "4");
+      CHECK(etl::holds_alternative<D4>(variant_etl4));
+      CHECK_EQUAL(D4("1", "2", "3", "4"), etl::get<D4>(variant_etl4));
+    }
+
+    //*************************************************************************
+    TEST(test_construct_with_initializer_list_by_type)
+    {
+      etl::variant<std::vector<int>, std::string> v(etl::in_place_type_t<std::vector<int>>{}, { 0, 1, 2, 3 });
+
+      std::vector<int> expected = { 0, 1, 2, 3 };
+      std::vector<int> result   = etl::get<std::vector<int>>(v);
+
+      CHECK_EQUAL(expected.size(), result.size());
+      CHECK_ARRAY_EQUAL(expected.data(), result.data(), expected.size());
+    }
+
+    //*************************************************************************
+    TEST(test_construct_with_initializer_list_by_index)
+    {
+      etl::variant<std::vector<int>, std::string> v(etl::in_place_index_t<0U>{}, { 0, 1, 2, 3 });
+
+      std::vector<int> expected = { 0, 1, 2, 3 };
+      std::vector<int> result   = etl::get<std::vector<int>>(v);
+
+      CHECK_EQUAL(expected.size(), result.size());
+      CHECK_ARRAY_EQUAL(expected.data(), result.data(), expected.size());
+    }
+
+    //*************************************************************************
     TEST(test_emplace_value)
     {
       // Char.
