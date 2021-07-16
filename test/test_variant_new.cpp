@@ -455,6 +455,7 @@ namespace
       CHECK_EQUAL(D4("1", "2", "3", "4"), etl::get<D4>(variant_etl4));
     }
 
+#if ETL_USING_STL
     //*************************************************************************
     TEST(test_construct_with_initializer_list_by_type)
     {
@@ -478,6 +479,7 @@ namespace
       CHECK_EQUAL(expected.size(), result.size());
       CHECK_ARRAY_EQUAL(expected.data(), result.data(), expected.size());
     }
+#endif
 
     //*************************************************************************
     TEST(test_emplace_value)
@@ -931,6 +933,32 @@ namespace
       CHECK_EQUAL(to_std.moved_from, to_etl.moved_from);
       CHECK_EQUAL(to_std.moved_to,   to_etl.moved_to);
       CHECK_EQUAL(to_std.copied_to,  to_etl.copied_to);
+    }
+
+    //*************************************************************************
+    TEST(test_get_by_type)
+    {
+      MoveableCopyable movecopyable;
+
+      etl::variant<MoveableCopyable> v(movecopyable);
+
+      const etl::variant<MoveableCopyable> cv(movecopyable);
+
+      etl::variant<MoveableCopyable>& rv(v);
+
+      const etl::variant<MoveableCopyable>& crv(v);
+
+      // From variant reference
+      MoveableCopyable movecopyable_vr   = etl::get<MoveableCopyable>(rv);
+
+      // From variant rvalue reference
+      MoveableCopyable&& movecopyable_vrr  = etl::get<MoveableCopyable>(etl::move(v));
+
+      // From variant const reference
+      const MoveableCopyable& movecopyable_vcr  = etl::get<MoveableCopyable>(crv);
+           
+      // From variant const rvalue reference
+      const MoveableCopyable&& movecopyable_vcrr = etl::get<MoveableCopyable>(etl::move(cv));
     }
 
     //*************************************************************************

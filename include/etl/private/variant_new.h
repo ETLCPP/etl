@@ -346,6 +346,36 @@ namespace etl
   template <typename T, typename... TTypes>
   ETL_CONSTEXPR14 bool holds_alternative(const etl::variant<TTypes...>& v) noexcept;
 
+  //***********************************
+  // get. Forward declarations
+  template <size_t Index, typename... VTypes>
+  ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<VTypes...>>&
+    get(etl::variant<VTypes...>& v);
+
+  template <size_t Index, typename... VTypes>
+  ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<VTypes...>>&&
+    get(etl::variant<VTypes...>&& v);
+
+  template <size_t Index, typename... VTypes>
+  ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<VTypes...>>&
+    get(const etl::variant<VTypes...>& v);
+
+  template <size_t Index, typename... VTypes>
+  ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<VTypes...>>&&
+    get(const etl::variant<VTypes...>&& v);
+
+  template <typename T, typename... VTypes>
+  ETL_CONSTEXPR14 T& get(etl::variant<VTypes...>& v);
+
+  template <typename T, typename... VTypes>
+  ETL_CONSTEXPR14 T&& get(etl::variant<VTypes...>&& v);
+
+  template <typename T, typename... VTypes>
+  ETL_CONSTEXPR14 const T& get(const etl::variant<VTypes...>& v);
+
+  template <typename T, typename... VTypes>
+  ETL_CONSTEXPR14 const T&& get(const etl::variant<VTypes...>&& v);
+
   //***************************************************************************
   /// Monostate for variants.
   ///\ingroup variant
@@ -401,6 +431,37 @@ namespace etl
     /// The type used for ids.
     //***************************************************************************
     using type_id_t = uint_least8_t ;
+
+    //***************************************************************************
+    /// get() is a friend function.
+    //***************************************************************************
+    template <size_t Index, typename... VTypes>
+    friend ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<VTypes...>>&
+      get(etl::variant<VTypes...>& v);
+
+    template <size_t Index, typename... VTypes>
+    friend ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<VTypes...>>&&
+      get(etl::variant<VTypes...>&& v);
+
+    template <size_t Index, typename... VTypes>
+    friend ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<VTypes...>>&
+      get(const etl::variant<VTypes...>& v);
+
+    template <size_t Index, typename... VTypes>
+    friend ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<VTypes...>>&&
+      get(const etl::variant<VTypes...>&& v);
+
+    template <typename T, typename... VTypes>
+    friend ETL_CONSTEXPR14 T& get(etl::variant<VTypes...>& v);
+
+    template <typename T, typename... VTypes>
+    friend ETL_CONSTEXPR14 T&& get(etl::variant<VTypes...>&& v);
+
+    template <typename T, typename... VTypes>
+    friend ETL_CONSTEXPR14 const T& get(const etl::variant<VTypes...>& v);
+
+    template <typename T, typename... VTypes>
+    friend ETL_CONSTEXPR14 const T&& get(const etl::variant<VTypes...>&& v);
 
   private:
 
@@ -736,37 +797,6 @@ namespace etl
 #endif
     }
 
-    //***************************************************************************
-    /// get() is a friend function.
-    //***************************************************************************
-    template <size_t Index, typename... VTypes>
-    friend ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<VTypes...>>&
-      get(etl::variant<VTypes...>& v);
-
-    template <size_t Index, typename... VTypes>
-    friend ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<VTypes...>>&&
-      get(etl::variant<VTypes...>&& v);
-
-    template <size_t Index, typename... VTypes>
-    friend ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<VTypes...>>&
-      get(const etl::variant<VTypes...>& v);
-
-    template <size_t Index, typename... VTypes>
-    friend ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<VTypes...>>&&
-      get(const etl::variant<VTypes...>&& v);
-
-    template <typename T, typename... VTypes>
-    friend ETL_CONSTEXPR14 T& get(etl::variant<VTypes...>& v);
-
-    template <typename T, typename... VTypes>
-    friend ETL_CONSTEXPR14 T&& get(etl::variant<VTypes...>&& v);
-
-    template <typename T, typename... VTypes>
-    friend ETL_CONSTEXPR14 const T& get(const etl::variant<VTypes...>& v);
-
-    template <typename T, typename... VTypes>
-    friend ETL_CONSTEXPR14 const T&& get(const etl::variant<VTypes...>&& v);
-
   private:
 
     /// The operation function type.
@@ -815,161 +845,6 @@ namespace etl
 
       ::new (pstorage) type();
     }
-
-//    //*******************************************
-//    // The traits an object may have.
-//    static constexpr bool Copyable     = true;
-//    static constexpr bool Non_Copyable = false;
-//    static constexpr bool Moveable     = true;
-//    static constexpr bool Non_Moveable = false;
-//
-//    //*******************************************
-//    // Declaration.
-//    template <typename T, bool IsCopyable, bool IsMoveable>
-//    struct operation_type;
-//
-//    //*******************************************
-//    // Specialisation for null operation.
-//    template <>
-//    struct operation_type<void, Non_Copyable, Non_Moveable>
-//    {
-//      static void do_operation(variant::int operation, char* pstorage, const char* pvalue)
-//      {
-//        // This should never occur.
-//#if defined(ETL_IN_UNIT_TEST)
-//        assert(false);
-//#endif
-//      }
-//    };
-//
-//    //*******************************************
-//    // Specialisation for no-copyable & non-moveable types.
-//    template <typename T>
-//    struct operation_type<T, Non_Copyable, Non_Moveable>
-//    {
-//      static void do_operation(variant::int operation, char* pstorage, const char* pvalue)
-//      {
-//        switch (operation)
-//        {
-//          case variant::Destroy:
-//          {
-//            reinterpret_cast<const T*>(pstorage)->~T();
-//            break;
-//          }
-//
-//          default:
-//          {
-//            // This should never occur.
-//#if defined(ETL_IN_UNIT_TEST)
-//            assert(false);
-//#endif
-//            break;
-//          }
-//        }
-//      }
-//    };
-//
-//    //*******************************************
-//    // Specialisation for no-copyable & moveable types.
-//    template <typename T>
-//    struct operation_type<T, Non_Copyable, Moveable>
-//    {
-//      static void do_operation(variant::int operation, char* pstorage, const char* pvalue)
-//      {
-//        switch (operation)
-//        {
-//          case variant::Move:
-//          {
-//            ::new (pstorage) T(etl::move(*reinterpret_cast<T*>(const_cast<char*>(pvalue))));
-//            break;
-//          }
-//
-//          case variant::Destroy:
-//          {
-//            reinterpret_cast<const T*>(pstorage)->~T();
-//            break;
-//          }
-//
-//          default:
-//          {
-//            // This should never occur.
-//#if defined(ETL_IN_UNIT_TEST)
-//            assert(false);
-//#endif
-//            break;
-//          }
-//        }
-//      }
-//    };
-//
-//    //*******************************************
-//    // Specialisation for copyable & non-moveable types.
-//    template <typename T>
-//    struct operation_type<T, Copyable, Non_Moveable>
-//    {
-//      static void do_operation(variant::int operation, char* pstorage, const char* pvalue)
-//      {
-//        switch (operation)
-//        {
-//          case variant::Copy:
-//          {
-//            ::new (pstorage) T(*reinterpret_cast<const T*>(pvalue));
-//            break;
-//          }
-//
-//          case variant::Destroy:
-//          {
-//            reinterpret_cast<const T*>(pstorage)->~T();
-//            break;
-//          }
-//
-//          default:
-//          {
-//            // This should never occur.
-//#if defined(ETL_IN_UNIT_TEST)
-//            assert(false);
-//#endif
-//            break;
-//          }
-//        }
-//      }
-//    };
-//
-//    //*******************************************
-//    // Specialisation for copyable & moveable types.
-//    template <typename T>
-//    struct operation_type<T, Copyable, Moveable>
-//    {
-//      static void do_operation(variant::int int, char* pstorage, const char* pvalue)
-//      {
-//        switch (int)
-//        {
-//          case variant::Copy:
-//          {
-//            ::new (pstorage) T(*reinterpret_cast<const T*>(pvalue));
-//            break;
-//          }
-//
-//          case variant::Move:
-//          {
-//            ::new (pstorage) T(etl::move(*reinterpret_cast<T*>(const_cast<char*>(pvalue))));
-//            break;
-//          }
-//
-//          case variant::Destroy:
-//          {
-//            reinterpret_cast<const T*>(pstorage)->~T();
-//            break;
-//          }
-//
-//          default:
-//          {
-//            assert(false);
-//            break;
-//          }
-//        }
-//      }
-//    };
 
 #if ETL_CPP17_SUPPORTED && !defined(ETL_VARIANT_FORCE_CPP11)
     //***************************************************************************
@@ -1231,7 +1106,7 @@ namespace etl
 
 		using type = etl::variant_alternative_t<Index, etl::variant<TTypes...>>;
 		
-    return *static_cast<type*>(v.data);
+    return *static_cast<const type*>(v.data);
   }
 
   //***********************************
@@ -1247,7 +1122,7 @@ namespace etl
 
 		using type = etl::variant_alternative_t<Index, etl::variant<TTypes...>>;
 		
-    return etl::move(*static_cast<type*>(v.data));
+    return etl::move(*static_cast<const type*>(v.data));
   }
 
   //***********************************
@@ -1265,7 +1140,7 @@ namespace etl
   {
     constexpr size_t Index = etl::private_variant::parameter_pack<TTypes...>::template index_of_type<T>::value;
 
-    return get<Index>(v);
+    return get<Index>(etl::move(v));
   }
 
   //***********************************
@@ -1283,7 +1158,7 @@ namespace etl
   {
     constexpr size_t Index = etl::private_variant::parameter_pack<TTypes...>::template index_of_type<T>::value;
 
-    return get<Index>(v);
+    return get<Index>(etl::move(v));
   }
 
   //***************************************************************************
