@@ -68,9 +68,7 @@ namespace
   using MemCast      = etl::mem_cast<Size, Alignment>;
   using MemCastTypes = etl::mem_cast_types<char, double, Data>;
 
-  char   c;
-  double d;
-  Data   data;
+  Data data;
 
   SUITE(test_mem_cast)
   {

@@ -30,6 +30,7 @@ SOFTWARE.
 
 #include "etl/private/variant_new.h"
 #include "etl/visitor.h"
+#include "etl/overload.h"
 
 #include <array>
 #include <vector>
@@ -675,7 +676,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_variant_visitor)
+    TEST(test_variant_accept_visitor)
     {    
       struct Visitor : public etl::visitor<char, int, std::string>
       {
@@ -724,7 +725,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_variant_operator_visit)
+    TEST(test_variant_accept_functor_with_functor_class)
     {
       struct Visitor
       {
@@ -745,7 +746,7 @@ namespace
           result_i = i;
         }
 
-        void operator()(std::string& s)
+        void operator()(const std::string& s)
         {
           result_s = s;
         }
@@ -773,33 +774,53 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_variant__accept_functor_with_overload)
+    {
+      char result_c;
+      int  result_i;
+      std::string result_s;
+
+      auto visitor = etl::overload
+      {
+        [&result_c](char c) { result_c = 1; },
+        [&result_i](int i) { result_i = 2; },
+        [&result_s](const std::string& s) { result_s = "3"; }
+      };
+
+      test_variant_etl_3 variant_etl;
+
+      variant_etl = char(1);
+      variant_etl.accept_functor(visitor);
+      CHECK_EQUAL(1, result_c);
+
+      variant_etl = int(2);
+      variant_etl.accept_functor(visitor);
+      CHECK_EQUAL(2, result_i);
+
+      variant_etl = std::string("3");
+      variant_etl.accept_functor(visitor);
+      CHECK_EQUAL("3", result_s);
+    }
+
+    //*************************************************************************
     TEST(test_get_if_index)
     {
       test_variant_etl_3 variant_etl;
 
       variant_etl = char(1);
       CHECK(etl::get_if<0>(&variant_etl) != nullptr);
-      CHECK(etl::get_if<0>(variant_etl)  != nullptr);
       CHECK(etl::get_if<1>(&variant_etl) == nullptr);
-      CHECK(etl::get_if<1>(variant_etl)  == nullptr);
       CHECK(etl::get_if<2>(&variant_etl) == nullptr);
-      CHECK(etl::get_if<2>(variant_etl)  == nullptr);
 
       variant_etl = int(2);
       CHECK(etl::get_if<0>(&variant_etl) == nullptr);
-      CHECK(etl::get_if<0>(variant_etl)  == nullptr);
       CHECK(etl::get_if<1>(&variant_etl) != nullptr);
-      CHECK(etl::get_if<1>(variant_etl)  != nullptr);
       CHECK(etl::get_if<2>(&variant_etl) == nullptr);
-      CHECK(etl::get_if<2>(variant_etl)  == nullptr);
 
       variant_etl = std::string("3");
       CHECK(etl::get_if<0>(&variant_etl) == nullptr);
-      CHECK(etl::get_if<0>(variant_etl)  == nullptr);
       CHECK(etl::get_if<1>(&variant_etl) == nullptr);
-      CHECK(etl::get_if<1>(variant_etl)  == nullptr);
       CHECK(etl::get_if<2>(&variant_etl) != nullptr);
-      CHECK(etl::get_if<2>(variant_etl)  != nullptr);
     }
 
     //*************************************************************************
@@ -809,27 +830,18 @@ namespace
 
       variant_etl = char(1);
       CHECK(etl::get_if<char>(&variant_etl) != nullptr);
-      CHECK(etl::get_if<char>(variant_etl)  != nullptr);
       CHECK(etl::get_if<int>(&variant_etl)  == nullptr);
-      CHECK(etl::get_if<int>(variant_etl)   == nullptr);
       CHECK(etl::get_if<std::string>(&variant_etl) == nullptr);
-      CHECK(etl::get_if<std::string>(variant_etl)  == nullptr);
 
       variant_etl = int(2);
       CHECK(etl::get_if<char>(&variant_etl) == nullptr);
-      CHECK(etl::get_if<char>(variant_etl)  == nullptr);
       CHECK(etl::get_if<int>(&variant_etl)  != nullptr);
-      CHECK(etl::get_if<int>(variant_etl)   != nullptr);
       CHECK(etl::get_if<std::string>(&variant_etl) == nullptr);
-      CHECK(etl::get_if<std::string>(variant_etl)  == nullptr);
 
       variant_etl = std::string("3");
       CHECK(etl::get_if<char>(&variant_etl) == nullptr);
-      CHECK(etl::get_if<char>(variant_etl)  == nullptr);
       CHECK(etl::get_if<int>(&variant_etl)  == nullptr);
-      CHECK(etl::get_if<int>(variant_etl)   == nullptr);
       CHECK(etl::get_if<std::string>(&variant_etl) != nullptr);
-      CHECK(etl::get_if<std::string>(variant_etl)  != nullptr);
     }
 
     //*************************************************************************
@@ -938,97 +950,165 @@ namespace
     //*************************************************************************
     TEST(test_get_by_type)
     {
-      MoveableCopyable movecopyable;
+      MoveableCopyable value1;
+      MoveableCopyable value2;
+      MoveableCopyable value3;
 
-      etl::variant<MoveableCopyable> v(movecopyable);
+      etl::variant<MoveableCopyable>        v_etl(value1);
+      const etl::variant<MoveableCopyable>  cv_etl(value2);
+      etl::variant<MoveableCopyable>&       rv_etl(v_etl);
+      const etl::variant<MoveableCopyable>& crv_etl(value3);
 
-      const etl::variant<MoveableCopyable> cv(movecopyable);
-
-      etl::variant<MoveableCopyable>& rv(v);
-
-      const etl::variant<MoveableCopyable>& crv(v);
+      std::variant<MoveableCopyable>        v_std(value1);
+      const std::variant<MoveableCopyable>  cv_std(value2);
+      std::variant<MoveableCopyable>&       rv_std(v_std);
+      const std::variant<MoveableCopyable>& crv_std(value3);
 
       // From variant reference
-      MoveableCopyable movecopyable_vr   = etl::get<MoveableCopyable>(rv);
-
-      // From variant rvalue reference
-      MoveableCopyable&& movecopyable_vrr  = etl::get<MoveableCopyable>(etl::move(v));
+      MoveableCopyable value_vr_etl = etl::get<MoveableCopyable>(rv_etl);
+      MoveableCopyable value_vr_std = std::get<MoveableCopyable>(rv_std);
+      CHECK_EQUAL(value_vr_std.moved_from, value_vr_etl.moved_from);
+      CHECK_EQUAL(value_vr_std.moved_to,   value_vr_etl.moved_to);
+      CHECK_EQUAL(value_vr_std.copied_to,  value_vr_etl.copied_to);
 
       // From variant const reference
-      const MoveableCopyable& movecopyable_vcr  = etl::get<MoveableCopyable>(crv);
-           
+      const MoveableCopyable& value_vcr_etl = etl::get<MoveableCopyable>(crv_etl);
+      const MoveableCopyable& value_vcr_std = std::get<MoveableCopyable>(crv_std);
+      CHECK_EQUAL(value_vcr_std.moved_from, value_vcr_etl.moved_from);
+      CHECK_EQUAL(value_vcr_std.moved_to,   value_vcr_etl.moved_to);
+      CHECK_EQUAL(value_vcr_std.copied_to,  value_vcr_etl.copied_to);
+
+      // From variant rvalue reference
+      MoveableCopyable&& value_vrr_etl = etl::get<MoveableCopyable>(etl::move(v_etl));
+      MoveableCopyable&& value_vrr_std = std::get<MoveableCopyable>(etl::move(v_std));
+      CHECK_EQUAL(value_vrr_std.moved_from, value_vrr_etl.moved_from);
+      CHECK_EQUAL(value_vrr_std.moved_to,   value_vrr_etl.moved_to);
+      CHECK_EQUAL(value_vrr_std.copied_to,  value_vrr_etl.copied_to);
+         
       // From variant const rvalue reference
-      const MoveableCopyable&& movecopyable_vcrr = etl::get<MoveableCopyable>(etl::move(cv));
+      const MoveableCopyable&& value_vcrr_etl = etl::get<MoveableCopyable>(etl::move(cv_etl));
+      const MoveableCopyable&& value_vcrr_std = std::get<MoveableCopyable>(etl::move(cv_std));
+      CHECK_EQUAL(value_vcrr_std.moved_from, value_vcrr_etl.moved_from);
+      CHECK_EQUAL(value_vcrr_std.moved_to,   value_vcrr_etl.moved_to);
+      CHECK_EQUAL(value_vcrr_std.copied_to,  value_vcrr_etl.copied_to);
     }
 
     //*************************************************************************
-    //TEST(test_copyable_vs_moveable_types_etl)
-    //{
-    //  Copyable copyable_from;
-    //  Copyable copyable_to;
+    TEST(test_get_by_index)
+    {
+      MoveableCopyable value1;
+      MoveableCopyable value2;
+      MoveableCopyable value3;
 
-    //  Moveable moveable_from;
-    //  Moveable moveable_to;
+      etl::variant<MoveableCopyable>        v_etl(value1);
+      const etl::variant<MoveableCopyable>  cv_etl(value2);
+      etl::variant<MoveableCopyable>&       rv_etl(v_etl);
+      const etl::variant<MoveableCopyable>& crv_etl(value3);
 
-    //  MoveableCopyable movecopyable_from1;
-    //  MoveableCopyable movecopyable_from2;
-    //  MoveableCopyable movecopyable_to1;
-    //  MoveableCopyable movecopyable_to2;
+      std::variant<MoveableCopyable>        v_std(value1);
+      const std::variant<MoveableCopyable>  cv_std(value2);
+      std::variant<MoveableCopyable>&       rv_std(v_std);
+      const std::variant<MoveableCopyable>& crv_std(value3);
 
-    //  etl::variant<Copyable> variant_c(copyable_from);
-    //  copyable_to = etl::get<0>(variant_c);
+      // From variant reference
+      MoveableCopyable value_vr_etl = etl::get<0U>(rv_etl);
+      MoveableCopyable value_vr_std = std::get<0U>(rv_std);
+      CHECK_EQUAL(value_vr_std.moved_from, value_vr_etl.moved_from);
+      CHECK_EQUAL(value_vr_std.moved_to,   value_vr_etl.moved_to);
+      CHECK_EQUAL(value_vr_std.copied_to,  value_vr_etl.copied_to);
 
-    //  etl::variant<Moveable> variant_m(etl::move(moveable_from));
-    //  moveable_to = etl::move(etl::get<0>(variant_m));
+      // From variant const reference
+      const MoveableCopyable& value_vcr_etl = etl::get<0U>(crv_etl);
+      const MoveableCopyable& value_vcr_std = std::get<0U>(crv_std);
+      CHECK_EQUAL(value_vcr_std.moved_from, value_vcr_etl.moved_from);
+      CHECK_EQUAL(value_vcr_std.moved_to,   value_vcr_etl.moved_to);
+      CHECK_EQUAL(value_vcr_std.copied_to,  value_vcr_etl.copied_to);
 
-    //  etl::variant<MoveableCopyable> variant_mc1(movecopyable_from1);
-    //  movecopyable_to1 = etl::get<0>(variant_mc1);
+      // From variant rvalue reference
+      MoveableCopyable&& value_vrr_etl = etl::get<0U>(etl::move(v_etl));
+      MoveableCopyable&& value_vrr_std = std::get<0U>(etl::move(v_std));
+      CHECK_EQUAL(value_vrr_std.moved_from, value_vrr_etl.moved_from);
+      CHECK_EQUAL(value_vrr_std.moved_to,   value_vrr_etl.moved_to);
+      CHECK_EQUAL(value_vrr_std.copied_to,  value_vrr_etl.copied_to);
 
-    //  etl::variant<MoveableCopyable> variant_mc2(etl::move(movecopyable_from2));
-    //  movecopyable_to2 = etl::move(etl::get<0>(variant_mc2));
-
-    //  etl::variant<MoveableCopyable> variant_mc3(variant_mc1);
-
-    //  etl::variant<MoveableCopyable> variant_mc4(etl::move(variant_mc1));
-
-    //  etl::variant<MoveableCopyable> variant_mc5(variant_mc2);
-
-    //  etl::variant<MoveableCopyable> variant_mc6(etl::move(variant_mc2));
-    //}
+      // From variant const rvalue reference
+      const MoveableCopyable&& value_vcrr_etl = etl::get<0U>(etl::move(cv_etl));
+      const MoveableCopyable&& value_vcrr_std = std::get<0U>(etl::move(cv_std));
+      CHECK_EQUAL(value_vcrr_std.moved_from, value_vcrr_etl.moved_from);
+      CHECK_EQUAL(value_vcrr_std.moved_to,   value_vcrr_etl.moved_to);
+      CHECK_EQUAL(value_vcrr_std.copied_to,  value_vcrr_etl.copied_to);
+    }
 
     //*************************************************************************
-//    TEST(test_copyable_vs_moveable_types_std)
-//    {
-//      Copyable copyable_from;
-//      Copyable copyable_to;
-//
-//      Moveable moveable_from;
-//      Moveable moveable_to;
-//
-//      MoveableCopyable movecopyable_from1;
-//      MoveableCopyable movecopyable_from2;
-//      MoveableCopyable movecopyable_to1;
-//      MoveableCopyable movecopyable_to2;
-//
-//      std::variant<Copyable> variant_c(copyable_from);
-//      copyable_to = std::get<0>(variant_c);
-//
-//      //std::variant<Moveable> variant_m(etl::move(moveable_from));
-//      //moveable_to = std::move(std::get<0>(variant_m));
-//
-//      std::variant<MoveableCopyable> variant_mc1(movecopyable_from1);
-//      movecopyable_to1 = std::get<0>(variant_mc1);
-//
-////      std::variant<MoveableCopyable> variant_mc2(std::move(movecopyable_from2));
-////      movecopyable_to2 = std::move(std::get<0>(variant_mc2));
-//
-////      std::variant<MoveableCopyable> variant_mc3(variant_mc1);
-//
-////      std::variant<MoveableCopyable> variant_mc4(std::move(variant_mc1));
-//
-////      std::variant<MoveableCopyable> variant_mc5(variant_mc2);
-//
-////      std::variant<MoveableCopyable> variant_mc6(std::move(variant_mc2));
-//    }
+    TEST(test_get_if_by_type)
+    {
+      int value;
+
+      etl::variant<int, double> v(value);
+      const etl::variant<int, double> cv(value);
+      etl::variant<int, double>& rv(v);
+      const etl::variant<int, double>& crv(v);
+
+      int* pi;
+      const int* pci;
+      double* pd;
+      const double* pcd;
+
+      etl::variant<int, double>* pv = nullptr;
+
+      // From nullptr
+      pi = etl::get_if<int>(pv);
+      CHECK(pi == nullptr);
+
+      // From variant reference
+      pi = etl::get_if<int>(&rv);
+      CHECK(pi != nullptr);
+
+      pd = etl::get_if<double>(&rv);
+      CHECK(pd == nullptr);
+
+      // From variant const reference
+      pci = etl::get_if<int>(&crv);
+      CHECK(pci != nullptr);
+
+      pcd = etl::get_if<double>(&crv);
+      CHECK(pcd == nullptr);
+    }
+
+    //*************************************************************************
+    TEST(test_get_if_by_index)
+    {
+      int value;
+
+      etl::variant<int, double> v(value);
+      const etl::variant<int, double> cv(value);
+      etl::variant<int, double>& rv(v);
+      const etl::variant<int, double>& crv(v);
+
+      int* pi;
+      const int* pci;
+      double* pd;
+      const double* pcd;
+
+      etl::variant<int, double>* pv = nullptr;
+
+      // From nullptr
+      pi = etl::get_if<0U>(pv);
+      CHECK(pi == nullptr);
+
+      // From variant reference
+      pi = etl::get_if<0U>(&rv);
+      CHECK(pi != nullptr);
+
+      pd = etl::get_if<1U>(&rv);
+      CHECK(pd == nullptr);
+
+      // From variant const reference
+      pci = etl::get_if<0U>(&crv);
+      CHECK(pci != nullptr);
+
+      pcd = etl::get_if<1U>(&crv);
+      CHECK(pcd == nullptr);
+    }
   };
 }

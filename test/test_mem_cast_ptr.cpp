@@ -65,8 +65,6 @@ namespace
   // Test variant types.
   using MemCast = etl::mem_cast_ptr;
   
-  char   c;
-  double d;
   Data   data;
 
   char* Ptr(int i)
@@ -82,8 +80,6 @@ namespace
     TEST(test_alignment)
     {
       MemCast memCast;
-
-      char* p = nullptr;
 
       memCast.data(Ptr(1));
       CHECK_EQUAL(1U , memCast.alignment());

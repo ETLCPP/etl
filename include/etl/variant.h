@@ -31,7 +31,7 @@ SOFTWARE.
 #ifndef ETL_VARIANT_INCLUDED
 #define ETL_VARIANT_INCLUDED
 
-#if ETL_USE_LEGACY_VARIANT
+#if !ETL_CPP11_SUPPORTED || ETL_USE_LEGACY_VARIANT
   #include "private/variant_legacy.h"
 #else
   #include "private/variant_new.h"

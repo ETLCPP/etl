@@ -65,44 +65,6 @@ namespace etl
 
 #else
 
-  //*************************************************************************
-  /// Variadic template definition of overload for C++14.
-  //*************************************************************************
-  //namespace private_overload 
-  //{
-  //  //***********************************
-  //  // Overload helper templates.
-  //  //***********************************
-  //  template <typename... TOverloads>
-  //  struct overload_helper;
-
-  //  template <>
-  //  struct overload_helper<> 
-  //  {
-  //  };
-
-  //  template <typename TFirst, typename... TOthers>
-  //  struct overload_helper<TFirst, TOthers...> : TFirst, overload_helper<TOthers...>
-  //  {
-  //    using TFirst::operator();
-
-  //    template <typename UFirst, typename... UOthers>
-  //    overload_helper(UFirst&& u, UOthers&&... others)
-  //      : TFirst{ etl::forward<UFirst>(u) }, overload_helper<TOthers...>{ etl::forward<UOthers>(others)... }
-  //    {
-  //    }
-  //  };
-  //}
-
-  ////***********************************
-  ///// Make an overload.
-  ////***********************************
-  //template <typename... TOverloads>
-  //constexpr auto make_overload(TOverloads&&... overloads)
-  //{
-  //  return private_overload::overload_helper<TOverloads...>{ etl::forward<TOverloads>(overloads)... };
-  //}
-
   template <typename TFirst, typename... TOthers>
   struct overload : TFirst, overload<TOthers...>
   {
@@ -110,7 +72,8 @@ namespace etl
     using overload<TOthers...>::operator();
   };
 
-  template <typename TFirst> struct overload<TFirst> : TFirst
+  template <typename TFirst> 
+  struct overload<TFirst> : TFirst
   {
     using TFirst::operator();
   };

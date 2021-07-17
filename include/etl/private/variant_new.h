@@ -940,18 +940,18 @@ namespace etl
     void do_operator(TVisitor& visitor)
     {
 #if defined(ETL_VARIANT_CPP11_MAX_8_TYPES)
-      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 8U, "There are more than 8 types in this variant");
+      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 8U, "ETL_VARIANT_CPP11_MAX_8_TYPES - Only a maximum of 8 types are allowed in this variant");
 #endif
 
 #if defined(ETL_VARIANT_CPP11_MAX_16_TYPES)
-      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 16U, "There are more than 16 types in this variant");
+      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 16U, "ETL_VARIANT_CPP11_MAX_16_TYPES - Only a maximum of 16 types are allowed in this variant");
 #endif
 
 #if defined(ETL_VARIANT_CPP11_MAX_24_TYPES)
-      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 24U, "There are more than 24 types in this variant");
+      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 24U, "ETL_VARIANT_CPP11_MAX_24_TYPES - Only a maximum of 24 types are allowed in this variant");
 #endif
 
-      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 32U, "There are more than 32 types in this variant");
+      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 32U, "A maximum of 32 types are allowed in this variant");
 
       switch (index())
       {
@@ -1162,9 +1162,9 @@ namespace etl
   }
 
   //***************************************************************************
-  /// get_if (pointer parameter)
-  //***************************************************************************
-  template < size_t Index, typename... TTypes >
+  /// get_if
+  //***************************************************************************  
+  template< size_t Index, typename... TTypes >
   ETL_CONSTEXPR14 etl::add_pointer_t<etl::variant_alternative_t<Index, etl::variant<TTypes...>>>
     get_if(etl::variant<TTypes...>* pv) noexcept
   {
@@ -1199,7 +1199,14 @@ namespace etl
   {
     constexpr size_t Index = etl::private_variant::parameter_pack<TTypes...>::template index_of_type<T>::value;
 
-    return etl::get_if<Index>(pv);
+    if ((pv != nullptr) && (pv->index() == Index))
+    {
+      return &etl::get<Index>(*pv);
+    }
+    else
+    {
+      return nullptr;
+    }
   }
 
   //***********************************
@@ -1208,81 +1215,14 @@ namespace etl
   {
     constexpr size_t Index = etl::private_variant::parameter_pack<TTypes...>::template index_of_type<T>::value;
 
-    return etl::get_if<Index>(pv);
-  }
-
-  //***************************************************************************
-  /// get_if (reference parameter)
-  //***************************************************************************
-  template < size_t Index, typename... TTypes >
-  ETL_CONSTEXPR14 etl::add_pointer_t<etl::variant_alternative_t<Index, etl::variant<TTypes...>>>
-    get_if(etl::variant<TTypes...>& v) noexcept
-  {
-    if (v.index() == Index)
+    if ((pv != nullptr) && (pv->index() == Index))
     {
-      return &etl::get<Index>(v);
+      return &etl::get<Index>(*pv);
     }
     else
     {
       return nullptr;
     }
-  }
-
-  //***********************************
-  template< size_t Index, typename... TTypes >
-  ETL_CONSTEXPR14 etl::add_pointer_t<const etl::variant_alternative_t<Index, etl::variant<TTypes...>>>
-    get_if(const etl::variant<TTypes...>& v) noexcept
-  {
-    if (v.index() == Index)
-    {
-      return &etl::get<Index>(v);
-    }
-    else
-    {
-      return nullptr;
-    }
-  }
-
-  //***********************************
-  template< size_t Index, typename... TTypes >
-  ETL_CONSTEXPR14 etl::add_pointer_t<const etl::variant_alternative_t<Index, etl::variant<TTypes...>>>
-    get_if(etl::variant<TTypes...>&& v) noexcept
-  {
-    if (v.index() == Index)
-    {
-      return &etl::get<Index>(v);
-    }
-    else
-    {
-      return nullptr;
-    }
-  }
-
-  //***********************************
-  template< class T, typename... TTypes >
-  ETL_CONSTEXPR14 etl::add_pointer_t<T> get_if(etl::variant<TTypes...>& v) noexcept
-  {
-    constexpr size_t Index = etl::private_variant::parameter_pack<TTypes...>::template index_of_type<T>::value;
-
-    return etl::get_if<Index>(v);
-  }
-
-  //***********************************
-  template< class T, typename... TTypes >
-  ETL_CONSTEXPR14 etl::add_pointer_t<const T> get_if(const etl::variant<TTypes...>& v) noexcept
-  {
-    constexpr size_t Index = etl::private_variant::parameter_pack<TTypes...>::template index_of_type<T>::value;
-
-    return etl::get_if<Index>(v);
-  }
-
-  //***********************************
-  template< class T, typename... TTypes >
-  ETL_CONSTEXPR14 etl::add_pointer_t<const T> get_if(etl::variant<TTypes...>&& v) noexcept
-  {
-    constexpr size_t Index = etl::private_variant::parameter_pack<TTypes...>::template index_of_type<T>::value;
-
-    return etl::get_if<Index>(v);
   }
 
   //***************************************************************************
