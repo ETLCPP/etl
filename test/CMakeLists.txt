@@ -236,7 +236,8 @@ set(TEST_SOURCE_FILES
 	test_user_type.cpp
 	test_utility.cpp
 	test_variance.cpp
-	test_variant.cpp
+	test_variant_legacy.cpp
+	test_variant_new.cpp
 	test_variant_pool.cpp
 	test_vector.cpp
 	test_vector_external_buffer.cpp

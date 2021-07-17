@@ -118,6 +118,9 @@
     <Filter Include="ETL\Arduino\Examples\Vector_Examples\Example_Vector_1_simple_use">
       <UniqueIdentifier>{0e4d2126-b9b7-4eef-b5ca-18363b1e01ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Experimental">
+      <UniqueIdentifier>{79c578f6-5400-4b4d-b2a4-9a8c589f7c81}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">

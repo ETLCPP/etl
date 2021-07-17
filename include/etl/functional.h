@@ -232,7 +232,6 @@ namespace etl
   }
 
   //***************************************************************************
-
   template <typename TFunction >
   class binder2nd : public etl::unary_function<typename TFunction::first_argument_type, typename TFunction::result_type>
   {

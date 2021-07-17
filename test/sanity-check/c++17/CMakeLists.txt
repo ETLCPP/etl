@@ -173,6 +173,7 @@ target_sources(t17 PRIVATE etl_profile.h
         ../numeric.h.t.cpp
         ../observer.h.t.cpp
         ../optional.h.t.cpp
+        ../overload.h.t.cpp
         ../packet.h.t.cpp
         ../parameter_pack.h.t.cpp
         ../parameter_type.h.t.cpp
@@ -242,7 +243,8 @@ target_sources(t17 PRIVATE etl_profile.h
         ../user_type.h.t.cpp
         ../utility.h.t.cpp
         ../variance.h.t.cpp
-        ../variant.h.t.cpp
+        ../variant_legacy.h.t.cpp
+        ../variant_new.h.t.cpp
         ../variant_pool.h.t.cpp
         ../vector.h.t.cpp
         ../version.h.t.cpp

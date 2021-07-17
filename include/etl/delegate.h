@@ -107,7 +107,7 @@ namespace etl
     //*************************************************************************
     // Constructor from lambda or functor.
     //*************************************************************************
-    template <typename TLambda, typename = typename etl::enable_if<etl::is_class<TLambda>::value, void>::type>
+    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value, void>>
     delegate(const TLambda& instance)
     {
       assign((void*)(&instance), lambda_stub<TLambda>);
@@ -125,7 +125,7 @@ namespace etl
     //*************************************************************************
     /// Create from Lambda or Functor.
     //*************************************************************************
-    template <typename TLambda, typename = typename etl::enable_if<etl::is_class<TLambda>::value, void>::type>
+    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value, void>>
     constexpr static delegate create(const TLambda& instance)
     {
       return delegate((void*)(&instance), lambda_stub<TLambda>);
@@ -210,7 +210,7 @@ namespace etl
     //*************************************************************************
     /// Create from Lambda or Functor.
     //*************************************************************************
-    template <typename TLambda, typename = typename etl::enable_if<etl::is_class<TLambda>::value, void>::type>
+    template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value, void>>
     delegate& operator =(const TLambda& instance)
     {
       assign((void*)(&instance), lambda_stub<TLambda>);

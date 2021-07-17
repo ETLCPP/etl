@@ -135,6 +135,9 @@ namespace etl
   /// remove_reference
   template <typename T> struct remove_reference { typedef T type; };
   template <typename T> struct remove_reference<T&> { typedef T type; };
+#if ETL_CPP11_SUPPORTED
+  template <typename T> struct remove_reference<T&&> { typedef T type; };
+#endif
 
 #if ETL_CPP11_SUPPORTED
   template <typename T>
@@ -504,6 +507,11 @@ namespace etl
   template <bool B, typename T, typename F>  struct conditional { typedef T type; };
   template <typename T, typename F> struct conditional<false, T, F> { typedef F type; };
 
+#if ETL_CPP11_SUPPORTED
+  template <bool B, typename T, typename F>
+  using conditional_t = typename conditional<B, T, F>::type;
+#endif
+
   //***************************************************************************
   /// make_signed
   template <typename T> struct make_signed { typedef  T type; };
@@ -781,6 +789,7 @@ namespace etl
   /// Specialisation of 'alignment_of' for 'void'.
   ///\ingroup type_traits
   template <> struct alignment_of<void> : integral_constant <size_t, 0> {};
+  template <> struct alignment_of<const void> : integral_constant <size_t, 0> {};
 
 #if ETL_CPP17_SUPPORTED
   template <typename T>
@@ -1222,6 +1231,11 @@ namespace etl
   template <bool B, typename T, typename F>  struct conditional { typedef T type; };
   template <typename T, typename F> struct conditional<false, T, F> { typedef F type; };
 
+#if ETL_CPP11_SUPPORTED
+  template <bool B, typename T, typename F>
+  using conditional_t = typename conditional<B, T, F>::type;
+#endif
+
   //***************************************************************************
   /// make_signed
   ///\ingroup type_traits
@@ -1617,6 +1631,186 @@ namespace etl
 #if ETL_CPP17_SUPPORTED
   template <typename T, typename T1, typename... TRest>
   inline constexpr bool are_all_same_v = are_all_same<T, T1, TRest...>::value;
+#endif
+
+  //***************************************************************************
+  /// conjunction
+#if ETL_CPP11_SUPPORTED
+  template <typename...>
+  struct conjunction : public etl::true_type
+  {
+  };
+
+  template <typename T1, typename... Tn>
+  struct conjunction<T1, Tn...> : public etl::conditional_t<bool(T1::value), etl::conjunction<Tn...>, T1>
+  {
+  };
+
+  template <typename T>
+  struct conjunction<T> : public T
+  {
+  };
+#endif
+
+#if ETL_CPP17_SUPPORTED
+  template <typename... T>
+  inline constexpr bool conjunction_v = conjunction<T...>::value;
+#endif
+
+  //***************************************************************************
+  /// disjunction
+#if ETL_CPP11_SUPPORTED
+  template <typename...>
+  struct disjunction : public etl::false_type
+  {
+  };
+
+  template <typename T1, typename... Tn>
+  struct disjunction<T1, Tn...> : public etl::conditional_t<bool(T1::value), T1, disjunction<Tn...>>
+  {
+  };
+
+  template <typename T1> struct disjunction<T1> : public T1
+  {
+  };
+#endif
+
+#if ETL_CPP17_SUPPORTED
+  template <typename... T>
+  inline constexpr bool disjunction_v = etl::disjunction<T...>::value;
+#endif
+
+  //***************************************************************************
+#if ETL_CPP11_SUPPORTED && ETL_USING_STL && !defined(ETL_USE_TYPE_TRAITS_BUILTINS) && ((!defined(ARDUINO) && ETL_NOT_USING_STLPORT) || defined(ETL_GCC_V5_TYPE_TRAITS_SUPPORTED))
+
+  //*********************************************
+  // Use the STL's definitions.
+  //*********************************************
+  template<typename T1, typename T2>
+  struct is_assignable : public std::is_assignable<T1, T2>
+  {
+  };
+
+  template <typename T1, typename T2>
+  struct is_lvalue_assignable : public etl::is_assignable<typename etl::add_lvalue_reference<T1>::type,
+    typename etl::add_lvalue_reference<typename etl::add_const<T2>::type>::type>
+  {
+  };
+
+  template<typename T, typename... TArgs>
+  struct is_constructible : public std::is_constructible<T, TArgs...>
+  {
+  };
+
+  template <typename T>
+  struct is_copy_constructible : public std::is_copy_constructible<T>
+  {
+  };
+
+  template <typename T>
+  struct is_move_constructible : public std::is_move_constructible<T>
+  {
+  };
+
+  //#if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+  //  template<typename T, typename... TArgs>
+  //  struct is_trivially_constructible : public std::is_trivially_constructible<T, TArgs...>
+  //  {
+  //  };
+  //#endif
+
+#elif defined(ETL_USE_TYPE_TRAITS_BUILTINS)
+
+  //*********************************************
+  // Use the compiler's builtins.
+  //*********************************************
+  template<typename T1, typename T2>
+  struct is_assignable : public bool_constant<__is_assignable(T1, T2)>
+  {
+  };
+
+  template <typename T1, typename T2>
+  struct is_lvalue_assignable : public etl::is_assignable<typename etl::add_lvalue_reference<T1>::type,
+    typename etl::add_lvalue_reference<typename etl::add_const<T2>::type>::type>
+  {
+  };
+
+  template<typename T, typename... TArgs>
+  struct is_constructible : public bool_constant<__is_constructible(T, TArgs...)>
+  {
+  };
+
+  template <typename T>
+  struct is_copy_constructible : public etl::is_constructible<T, etl::add_lvalue_reference_t<const T>>
+  {
+  };
+
+  template <typename T>
+  struct is_move_constructible : public etl::is_constructible<T, T>
+  {
+  };
+
+  //template<typename T, typename... TArgs>
+  //struct is_trivially_constructible : public bool_constant<etl::is_constructible<T, Args...>::value&& __is_trivially_constructible(T, TArgs...)>
+  //{
+  //};
+
+#else
+
+  //*********************************************
+  // Force the user to provide specialisations.
+  //*********************************************
+  template<typename T, typename... TArgs>
+  struct is_assignable : public etl::bool_constant<true>
+  {
+  };
+
+  template <typename T1, typename T2>
+  struct is_lvalue_assignable : public etl::bool_constant<true>
+  {
+  };
+
+  template<typename T, typename... TArgs>
+  struct is_constructible : public etl::bool_constant<true>
+  {
+  };
+
+  template <typename T>
+  struct is_copy_constructible : public etl::bool_constant<etl::is_pod<T>::value>
+  {
+  };
+
+  template <typename T>
+  struct is_move_constructible : public etl::bool_constant<etl::is_pod<T>::value>
+  {
+  };
+
+  //template<typename T, typename... TArgs>
+  //struct is_trivially_constructible : public etl::bool_constant<etl::is_pod<T>::value>
+  //{
+  //};
+
+#endif
+
+#if ETL_CPP17_SUPPORTED
+  template<typename T1, typename T2>
+  inline constexpr size_t is_assignable_v = etl::is_assignable<T1, T2>::value;
+
+  template<typename T1, typename T2>
+  inline constexpr size_t is_lvalue_assignable_v = etl::is_lvalue_assignable<T1, T2>::value;
+
+  template<typename T, typename... TArgs>
+  inline constexpr size_t is_constructible_v = etl::is_constructible<T, TArgs...>::value;
+
+  template<typename T>
+  inline constexpr size_t is_copy_constructible_v = etl::is_copy_constructible<T>::value;
+
+  template<typename T>
+  inline constexpr size_t is_move_constructible_v = etl::is_move_constructible<T>::value;
+
+  //template<typename T, typename... TArgs>
+  //inline constexpr size_t is_trivially_constructible_v = etl::is_trivially_constructible<T, TArgs...>::value;
+
 #endif
 }
 

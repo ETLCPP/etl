@@ -332,8 +332,55 @@ namespace etl
     return t;
   }
 
-  //******************************************************************************
+  //***************************************************************************
+  /// integer_sequence
+  //***************************************************************************
+#if ETL_CPP11_SUPPORTED
+  template <typename T, T... Integers>
+  class integer_sequence
+  {
+  public:
+  
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Integral types only");
+
+    typedef T value_type;
+  
+    static ETL_CONSTEXPR size_t size() ETL_NOEXCEPT 
+    { 
+      return sizeof...(Integers);
+    }
+  };
+
+  namespace private_integer_sequence
+  {
+    template <size_t N, typename IndexSeq>
+    struct make_index_sequence;
+
+    template <size_t N, size_t... Indices>
+    struct make_index_sequence<N, etl::integer_sequence<size_t, Indices...>>
+    {
+      typedef typename make_index_sequence<N - 1, etl::integer_sequence<size_t, N - 1, Indices...>>::type type;
+    };
+
+    template <size_t... Indices>
+    struct make_index_sequence<0, etl::integer_sequence<size_t, Indices...>>
+    {
+      typedef etl::integer_sequence<size_t, Indices...> type;
+    };
+  }
+
+  //***********************************
+  template <size_t N>
+  using make_index_sequence = typename private_integer_sequence::make_index_sequence<N, etl::integer_sequence<size_t>>::type;
+
+  //***********************************
+  template <size_t... Indices>
+  using index_sequence = etl::integer_sequence<size_t, Indices...>;
+#endif
+
+  //***************************************************************************
   /// 2D coordinate type.
+  //***************************************************************************
   template <typename T>
   struct coordinate_2d
   {
@@ -362,6 +409,42 @@ namespace etl
     T x;
     T y;
   };
+
+  //***************************************************************************
+  /// in_place disambiguation tags.
+  //***************************************************************************
+  
+  //*************************
+  struct in_place_t 
+  {
+    explicit ETL_CONSTEXPR in_place_t() {}
+  };
+
+#if ETL_CPP17_SUPPORTED
+  inline constexpr in_place_t in_place;
+#endif
+  
+  //*************************
+  template <typename T> struct in_place_type_t 
+  {
+    explicit ETL_CONSTEXPR in_place_type_t(){};
+  };
+
+#if ETL_CPP17_SUPPORTED
+  template <typename T>
+  inline constexpr in_place_type_t<T> in_place_type;
+#endif
+
+  //*************************
+  template <std::size_t I> struct in_place_index_t 
+  {
+    explicit ETL_CONSTEXPR in_place_index_t() {}
+  };
+
+#if ETL_CPP17_SUPPORTED
+  template <std::size_t I>
+  inline constexpr in_place_index_t<I> in_place_index;
+#endif
 }
 
 #endif
