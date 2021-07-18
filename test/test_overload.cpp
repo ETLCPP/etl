@@ -65,7 +65,7 @@ namespace
   };
 
   template <typename T, typename TOverload>
-  void Function(T value, TOverload& ol)
+  void Function(T value, TOverload&& ol)
   {
     ol(value);
   }

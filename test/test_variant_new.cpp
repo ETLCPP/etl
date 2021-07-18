@@ -774,18 +774,16 @@ namespace
     }
 
     //*************************************************************************
+
     TEST(test_variant__accept_functor_with_overload)
     {
       char result_c;
       int  result_i;
       std::string result_s;
 
-      auto visitor = etl::overload
-      {
-        [&result_c](char c) { result_c = 1; },
-        [&result_i](int i) { result_i = 2; },
-        [&result_s](const std::string& s) { result_s = "3"; }
-      };
+      auto visitor = etl::make_overload([&result_c](char c) { result_c = 1; },
+                                        [&result_i](int i) { result_i = 2; },
+                                        [&result_s](const std::string& s) { result_s = "3"; });
 
       test_variant_etl_3 variant_etl;
 

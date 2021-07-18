@@ -37,7 +37,7 @@ SOFTWARE.
 
 namespace etl
 {
-#if ETL_CPP14_SUPPORTED
+#if ETL_CPP11_SUPPORTED
 #if ETL_CPP17_SUPPORTED && !defined(ETL_OVERLOAD_FORCE_CPP14)
 
   //*************************************************************************
@@ -50,21 +50,15 @@ namespace etl
   };
 
   //*************************************************************************
-  /// Make an overload.
-  //*************************************************************************
-  template <typename... TOverloads>
-  constexpr auto make_overload(TOverloads&&... overloads)
-  {
-    return overload<TOverloads...>{ etl::forward<TOverloads>(overloads)... };
-  }
-
-  //*************************************************************************
   /// Template deduction guide.
   //*************************************************************************
   template<typename... TOverloads> overload(TOverloads...)->overload<TOverloads...>;
 
 #else
 
+  //*************************************************************************
+  /// Variadic template definition of overload for C++14.
+  //*************************************************************************
   template <typename TFirst, typename... TOthers>
   struct overload : TFirst, overload<TOthers...>
   {
@@ -78,16 +72,17 @@ namespace etl
     using TFirst::operator();
   };
 
+#endif
+
   //*************************************************************************
   /// Make an overload.
   //*************************************************************************
-  template <typename... TOthers>
-  constexpr auto make_overload(TOthers&&... overloads)
+  template <typename... TOverloads>
+  constexpr overload<TOverloads...> make_overload(TOverloads&&... overloads)
   {
-    return overload<TOthers...>{ etl::forward<TOthers>(overloads)... };
+    return overload<TOverloads...>{ etl::forward<TOverloads>(overloads)... };
   }
 
-#endif
 #endif
 }
 
