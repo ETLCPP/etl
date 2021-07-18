@@ -133,13 +133,13 @@ namespace
     void member_reference(const Data& data, int j)
     {
       function_called = true;
-      parameter_correct = (data.d == VALUE1) && (j = VALUE2);
+      parameter_correct = (data.d == VALUE1) && (j == VALUE2);
     }
 
     void member_reference_const(const Data& data, int j) const
     {
       function_called = true;
-      parameter_correct = (data.d == VALUE1) && (j = VALUE2);
+      parameter_correct = (data.d == VALUE1) && (j == VALUE2);
     }
 
     //*******************************************
@@ -155,7 +155,7 @@ namespace
     static void member_static(const Data& data, int j)
     {
       function_called = true;
-      parameter_correct = (data.d == VALUE1) && (j = VALUE2);
+      parameter_correct = (data.d == VALUE1) && (j == VALUE2);
     }
 
     //*******************************************
