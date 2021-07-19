@@ -871,4 +871,18 @@ namespace
     CHECK((etl::are_all_same<int, int, int, int, int>::value == true));
     CHECK((etl::are_all_same<int, int, int, char, int>::value == false));
   }
+
+  //*************************************************************************
+  TEST(test_conjunction)
+  {
+    CHECK((etl::conjunction_v<etl::true_type, etl::true_type, etl::true_type>));
+    CHECK((!etl::conjunction_v<etl::true_type, etl::false_type, etl::true_type>));
+  }
+
+  //*************************************************************************
+  TEST(test_disjunction)
+  {
+    CHECK((etl::disjunction_v<etl::false_type, etl::true_type, etl::false_type>));
+    CHECK((!etl::disjunction_v<etl::false_type, etl::false_type, etl::false_type>));
+  }
 }
