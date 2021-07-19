@@ -7,6 +7,7 @@ and etl::is_move_constructible to type_traits.h. Uses STL, compiler built-ins or
 Added etl::conditional_t to type_traits.h
 Added etl::conjunction and etl::disjunction to type_traits.h
 Added etl::integer_sequence to utility.h
+Added etl::in_place, etl::in_place_t and etl::in_place_index_t.
 Fixed missing etl::alignment_of specialisation for const void.
 
 ===============================================================================

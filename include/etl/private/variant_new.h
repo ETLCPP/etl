@@ -575,7 +575,7 @@ namespace etl
     //***************************************************************************
     /// Construct from index, initializer_list and arguments.
     //***************************************************************************
-    template <size_t Index, typename U, class... TArgs >
+    template <size_t Index, typename U, typename... TArgs >
     ETL_CONSTEXPR14 explicit variant(etl::in_place_index_t<Index>, std::initializer_list<U> init, TArgs&&... args)
       : data()
       , type_id(Index)
@@ -1210,7 +1210,7 @@ namespace etl
   }
 
   //***********************************
-  template< class T, typename... TTypes >
+  template< typename T, typename... TTypes >
   ETL_CONSTEXPR14 etl::add_pointer_t<const T> get_if(const etl::variant<TTypes...>* pv) noexcept
   {
     constexpr size_t Index = etl::private_variant::parameter_pack<TTypes...>::template index_of_type<T>::value;
