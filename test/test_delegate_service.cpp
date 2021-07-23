@@ -94,13 +94,13 @@ namespace
   Test test;
 
   // Callback for 'member2'.
-  etl::delegate<void(size_t)> member_callback = etl::delegate<void(size_t)>::create<Test, test, &Test::member2>();
+  constexpr etl::delegate<void(size_t)> member_callback = etl::delegate<void(size_t)>::create<Test, test, &Test::member2>();
 
   // Callback for 'global'.
-  etl::delegate<void(size_t)> global_callback = etl::delegate<void(size_t)>::create<global>();
+  constexpr etl::delegate<void(size_t)> global_callback = etl::delegate<void(size_t)>::create<global>();
 
   // Callback for 'unhandled'.
-  etl::delegate<void(size_t)> unhandled_callback = etl::delegate<void(size_t)>::create<unhandled>();
+  constexpr etl::delegate<void(size_t)> unhandled_callback = etl::delegate<void(size_t)>::create<unhandled>();
 
   //*****************************************************************************
   // Initialises the test results.
@@ -109,10 +109,10 @@ namespace
   {
     SetupFixture()
     {
-      called_id = UINT_MAX;
-      global_called = false;
-      member1_called = false;
-      member2_called = false;
+      called_id        = UINT_MAX;
+      global_called    = false;
+      member1_called   = false;
+      member2_called   = false;
       unhandled_called = false;
     }
   };

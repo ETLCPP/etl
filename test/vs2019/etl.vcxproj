@@ -4493,6 +4493,7 @@
     <ClCompile Include="..\test_cumulative_moving_average.cpp" />
     <ClCompile Include="..\test_delegate.cpp" />
     <ClCompile Include="..\test_delegate_service.cpp" />
+    <ClCompile Include="..\test_delegate_service_compile_time.cpp" />
     <ClCompile Include="..\test_fixed_sized_memory_block_allocator.cpp" />
     <ClCompile Include="..\test_flags.cpp" />
     <ClCompile Include="..\test_format_spec.cpp" />

@@ -100,6 +100,7 @@ set(TEST_SOURCE_FILES
 	test_debounce.cpp
 	test_delegate.cpp
 	test_delegate_service.cpp
+	test_delegate_service_compile_time.cpp
 	test_deque.cpp
 	test_endian.cpp
 	test_enum_type.cpp
