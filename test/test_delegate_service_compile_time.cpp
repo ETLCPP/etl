@@ -33,10 +33,10 @@ SOFTWARE.
 
 namespace
 {
-  const size_t SIZE   = 3U;
-  const size_t OFFSET = 5U;
+  const size_t Size   = 2U;
+  const size_t Offset = 5U;
 
-  using Service = etl::delegate_service<SIZE, OFFSET>;
+  using Service = etl::delegate_service<Size, Offset>;
 
   //*****************************************************************************
   bool global_called    = false;
@@ -82,7 +82,7 @@ namespace
 
   Test test;
 
-  // Callback for 'member2'.
+  // Callback for 'member'.
   constexpr etl::delegate<void(size_t)> member_callback = etl::delegate<void(size_t)>::create<Test, test, &Test::member>();
 
   // Callback for 'global'.
@@ -90,6 +90,13 @@ namespace
 
   // Callback for 'unhandled'.
   constexpr etl::delegate<void(size_t)> unhandled_callback = etl::delegate<void(size_t)>::create<unhandled>();
+
+  constexpr etl::delegate<void(size_t)> delegate_list[]
+  {
+    global_callback,
+    member_callback,
+    unhandled_callback
+  };
 
   //*****************************************************************************
   // Initialises the test results.
@@ -110,9 +117,9 @@ namespace
 {
   enum
   {
-    GLOBAL = OFFSET,
-    MEMBER,
-    OUT_OF_RANGE
+    Global = Offset,
+    Member,
+    Out_Of_Range
   };
 
   SUITE(test_delegate_service)
@@ -120,25 +127,35 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_delegate_compile_time_constexpr)
     {
-      static constexpr etl::delegate<void(size_t)> delegate_list[]
-      {
-        global_callback,
-        member_callback
-      };
+      etl::delegate_service<Size, Offset, delegate_list> service;
 
-      etl::delegate_service<SIZE, OFFSET, delegate_list> service;
-
-      service.call<GLOBAL>();
-      CHECK_EQUAL(GLOBAL, called_id);
+      service.call<Global>();
+      CHECK_EQUAL(Global, called_id);
       CHECK(global_called);
       CHECK(!member_called);
+      CHECK(!unhandled_called);
 
+      called_id = UINT_MAX;
       global_called = false;
+      member_called = false;
+      unhandled_called = false;
 
-      service.call<MEMBER>();
-      CHECK_EQUAL(MEMBER, called_id);
+      service.call<Member>();
+      CHECK_EQUAL(Member, called_id);
       CHECK(!global_called);
       CHECK(member_called);
+      CHECK(!unhandled_called);
+
+      called_id = UINT_MAX;
+      global_called = false;
+      member_called = false;
+      unhandled_called = false;
+
+      service.call(Out_Of_Range);
+      CHECK_EQUAL(Out_Of_Range, called_id);
+      CHECK(!global_called);
+      CHECK(!member_called);
+      CHECK(unhandled_called);
     }
   };
 }

@@ -57,15 +57,6 @@ namespace etl
   public:
 
     //*************************************************************************
-    /// Registers an alternative delegate for unhandled ids.
-    /// \param delegate A reference to the user supplied 'unhandled' delegate.
-    //*************************************************************************
-    void register_unhandled_delegate(etl::delegate<void(size_t)> callback)
-    {
-      unhandled_delegate = callback;
-    }
-
-    //*************************************************************************
     /// Executes the delegate function for the index.
     /// Compile time assert if the id is out of range.
     /// \tparam Id The id of the delegate.
@@ -91,29 +82,9 @@ namespace etl
       }
       else
       {
-        if (unhandled_delegate.is_valid())
-        {
-          unhandled_delegate(id);
-        }
+        Delegates[Range](id);
       }
     }
-
-  private:
-
-    //*************************************************************************
-    /// The default callback function.
-    /// Calls the user defined 'unhandled' callback if it exists.
-    //*************************************************************************
-    void unhandled(size_t id) const
-    {
-      if (unhandled_delegate.is_valid())
-      {
-        unhandled_delegate(id);
-      }
-    }
-
-    /// The default delegate for unhandled ids.
-    etl::delegate<void(size_t)> unhandled_delegate;
   };
 
   //***************************************************************************
