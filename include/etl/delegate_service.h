@@ -46,22 +46,65 @@ namespace etl
 {
   //***************************************************************************
   /// An indexed delegate service.
-  /// \tparam RANGE  The number of delegates to handle.
-  /// \tparam OFFSET The lowest delegate id value.
-  /// The delegate ids must range between OFFSET and OFFSET + RANGE - 1.
+  /// \tparam Range  The number of delegates to handle.
+  /// \tparam Offset The lowest delegate id value.
+  /// \tparam Delegates Pointer to an array of delegate pointers.
+  /// The delegate ids must range between Offset and Offset + Range - 1.
   //***************************************************************************
-  template <const size_t RANGE, const size_t OFFSET = 0U>
+  template <const size_t Range, const size_t Offset = 0U, const etl::delegate<void(size_t)>* Delegates = nullptr>
   class delegate_service
   {
   public:
 
     //*************************************************************************
-    /// Reset the delegate service.
+    /// Executes the delegate function for the index.
+    /// Compile time assert if the id is out of range.
+    /// \tparam Id The id of the delegate.
+    //*************************************************************************
+    template <const size_t Id>
+    void call() const
+    {
+      ETL_STATIC_ASSERT(Id < (Offset + Range), "Callback Id out of range");
+      ETL_STATIC_ASSERT(Id >= Offset,          "Callback Id out of range");
+
+      Delegates[Id - Offset](Id);
+    }
+
+    //*************************************************************************
+    /// Executes the delegate function for the index.
+    /// \param id Id of the delegate.
+    //*************************************************************************
+    void call(const size_t id) const
+    {
+      if ((id >= Offset) && (id < (Offset + Range)))
+      {
+        Delegates[id - Offset](id);
+      }
+      else
+      {
+        Delegates[Range](id);
+      }
+    }
+  };
+
+  //***************************************************************************
+  /// An indexed delegate service.
+  /// \tparam Range  The number of delegates to handle.
+  /// \tparam Offset The lowest delegate id value.
+  /// The delegate ids must range between Offset and Offset + Range - 1.
+  //***************************************************************************
+  template <const size_t Range, const size_t Offset>
+  class delegate_service<Range, Offset, nullptr>
+  {
+  public:
+
+    //*************************************************************************
+    /// Default constructor.
     /// Sets all delegates to the internal default.
     //*************************************************************************
     delegate_service()
     {
-      etl::delegate<void(size_t)> default_delegate = etl::delegate<void(size_t)>::create<delegate_service<RANGE, OFFSET>, &delegate_service<RANGE, OFFSET>::unhandled>(*this);
+      etl::delegate<void(size_t)> default_delegate = etl::delegate<void(size_t)>::create<delegate_service<Range, Offset>, &delegate_service<Range, Offset>::unhandled>(*this);
 
       lookup.fill(default_delegate);
     }
@@ -69,16 +112,16 @@ namespace etl
     //*************************************************************************
     /// Registers a delegate for the specified id.
     /// Compile time assert if the id is out of range.
-    /// \tparam ID The id of the delegate.
+    /// \tparam Id The id of the delegate.
     /// \param delegate Reference to the delegate.
     //*************************************************************************
-    template <const size_t ID>
+    template <const size_t Id>
     void register_delegate(etl::delegate<void(size_t)> callback)
     {
-      ETL_STATIC_ASSERT(ID < (OFFSET + RANGE), "Callback Id out of range");
-      ETL_STATIC_ASSERT(ID >= OFFSET,          "Callback Id out of range");
+      ETL_STATIC_ASSERT(Id < (Offset + Range), "Callback Id out of range");
+      ETL_STATIC_ASSERT(Id >= Offset, "Callback Id out of range");
 
-      lookup[ID - OFFSET] = callback;
+      lookup[Id - Offset] = callback;
     }
 
     //*************************************************************************
@@ -89,9 +132,9 @@ namespace etl
     //*************************************************************************
     void register_delegate(const size_t id, etl::delegate<void(size_t)> callback)
     {
-      if ((id >= OFFSET) && (id < (OFFSET + RANGE)))
+      if ((id >= Offset) && (id < (Offset + Range)))
       {
-        lookup[id - OFFSET] = callback;
+        lookup[id - Offset] = callback;
       }
     }
 
@@ -107,26 +150,26 @@ namespace etl
     //*************************************************************************
     /// Executes the delegate function for the index.
     /// Compile time assert if the id is out of range.
-    /// \tparam ID The id of the delegate.
+    /// \tparam Id The id of the delegate.
     //*************************************************************************
-    template <const size_t ID>
-    void call()
+    template <const size_t Id>
+    void call() const
     {
-      ETL_STATIC_ASSERT(ID < (OFFSET + RANGE), "Callback Id out of range");
-      ETL_STATIC_ASSERT(ID >= OFFSET,          "Callback Id out of range");
+      ETL_STATIC_ASSERT(Id < (Offset + Range), "Callback Id out of range");
+      ETL_STATIC_ASSERT(Id >= Offset, "Callback Id out of range");
 
-      lookup[ID - OFFSET](ID);
+      lookup[Id - Offset](Id);
     }
 
     //*************************************************************************
     /// Executes the delegate function for the index.
     /// \param id Id of the delegate.
     //*************************************************************************
-    void call(const size_t id)
+    void call(const size_t id) const
     {
-      if ((id >= OFFSET) && (id < (OFFSET + RANGE)))
+      if ((id >= Offset) && (id < (Offset + Range)))
       {
-        lookup[id - OFFSET](id);
+        lookup[id - Offset](id);
       }
       else
       {
@@ -143,7 +186,7 @@ namespace etl
     /// The default callback function.
     /// Calls the user defined 'unhandled' callback if it exists.
     //*************************************************************************
-    void unhandled(size_t id)
+    void unhandled(size_t id) const
     {
       if (unhandled_delegate.is_valid())
       {
@@ -155,7 +198,7 @@ namespace etl
     etl::delegate<void(size_t)> unhandled_delegate;
 
     /// Lookup table of delegates.
-    etl::array<etl::delegate<void(size_t)>, RANGE> lookup;
+    etl::array<etl::delegate<void(size_t)>, Range> lookup;
   };
 }
 
