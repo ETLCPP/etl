@@ -2,8 +2,7 @@
 20.14.0
 Added a vaiadic version of etl::variant. Usable for C++11 and up.
 Added etl::overload pattern class. Groups lambdas into a functor class.
-Added etl::is_assignable, etl::is_lvalue_assignable, etl::is_constructible, etl::is_copy_constructible 
-and etl::is_move_constructible to type_traits.h. Uses STL, compiler built-ins or user defined specialisations, dependent on settings.
+Refactored type_traits.h. Uses STL, compiler built-ins or user defined specialisations, dependent on settings.
 Added etl::conditional_t to type_traits.h
 Added etl::conjunction and etl::disjunction to type_traits.h
 Added etl::integer_sequence to utility.h
