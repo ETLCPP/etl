@@ -21,6 +21,14 @@ make -j8
 ./etl_tests | tee log.txt
 echo ""
 echo "-----------------------------------------------" >> log.txt
+echo " GCC - No STL - Builtins" >> log.txt
+echo "-----------------------------------------------" >> log.txt
+gcc --version | grep gcc >> log.txt
+CC=gcc CXX=g++ cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON ..
+make -j8
+./etl_tests | tee log.txt
+echo ""
+echo "-----------------------------------------------" >> log.txt
 echo " Clang" >> log.txt
 echo "-----------------------------------------------" >> log.txt
 clang --version | grep clang >> log.txt
@@ -33,6 +41,14 @@ echo " Clang - No STL" >> log.txt
 echo "-----------------------------------------------" >> log.txt
 clang --version | grep clang >> log.txt
 CC=clang CXX=clang++ cmake --cmake-clean-cache -DNO_STL=ON ..
+make -j8
+./etl_tests | tee log.txt
+echo ""
+echo "-----------------------------------------------" >> log.txt
+echo " Clang - No STL - Builtins" >> log.txt
+echo "-----------------------------------------------" >> log.txt
+clang --version | grep clang >> log.txt
+CC=clang CXX=clang++ cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON ..
 make -j8
 ./etl_tests | tee log.txt
 echo ""

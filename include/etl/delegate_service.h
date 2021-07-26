@@ -51,7 +51,9 @@ namespace etl
   /// \tparam Delegates Pointer to an array of delegate pointers.
   /// The delegate ids must range between Offset and Offset + Range - 1.
   //***************************************************************************
-  template <const size_t Range, const size_t Offset = 0U, const etl::delegate<void(size_t)>* Delegates = nullptr>
+  template <const size_t Range, 
+            const size_t Offset = 0U, 
+            const etl::delegate<void(size_t)>* Delegates = nullptr>
   class delegate_service
   {
   public:
@@ -78,10 +80,12 @@ namespace etl
     {
       if ((id >= Offset) && (id < (Offset + Range)))
       {
+        // Call the delegate with the specified Id.
         Delegates[id - Offset](id);
       }
       else
       {
+        // Call the 'unhandled' delegate.
         Delegates[Range](id);
       }
     }
@@ -93,7 +97,8 @@ namespace etl
   /// \tparam Offset The lowest delegate id value.
   /// The delegate ids must range between Offset and Offset + Range - 1.
   //***************************************************************************
-  template <const size_t Range, const size_t Offset>
+  template <const size_t Range, 
+            const size_t Offset>
   class delegate_service<Range, Offset, nullptr>
   {
   public:
@@ -169,14 +174,13 @@ namespace etl
     {
       if ((id >= Offset) && (id < (Offset + Range)))
       {
+        // Call the delegate with the specified Id.
         lookup[id - Offset](id);
       }
       else
       {
-        if (unhandled_delegate.is_valid())
-        {
-          unhandled_delegate(id);
-        }
+        // Call the 'unhandled' delegate.
+        unhandled(id);
       }
     }
 

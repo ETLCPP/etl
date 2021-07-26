@@ -391,6 +391,18 @@ namespace etl
 	constexpr bool operator >=(etl::monostate, etl::monostate) noexcept { return true; }
 	constexpr bool operator ==(etl::monostate, etl::monostate) noexcept { return true; }
 
+#if ETL_NOT_USING_STL && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
+  template <>
+  struct is_copy_constructible<etl::monostate> : public etl::true_type
+  {
+  };
+
+  template <>
+  struct is_move_constructible<etl::monostate> : public etl::true_type
+  {
+  };
+#endif
+
   //***************************************************************************
   /// Base exception for the variant class.
   ///\ingroup variant

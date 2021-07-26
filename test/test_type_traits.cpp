@@ -56,6 +56,113 @@ namespace
   {
   };
 
+  //*********************************************
+  struct Copyable
+  {
+    Copyable() {}
+    Copyable(const Copyable& other) noexcept {}
+    Copyable& operator =(const Copyable& rhs) noexcept { return *this; }
+
+    Copyable(Copyable&& other) = delete;
+    Copyable& operator =(Copyable& rhs) = delete;
+  };
+
+  //*********************************************
+  struct Moveable
+  {
+    Moveable() {}
+    Moveable(Moveable&& other) noexcept { }
+    Moveable& operator =(Moveable&& rhs) noexcept { return *this; }
+
+    Moveable(const Moveable& other) = delete;
+    Moveable& operator =(const Moveable& rhs) = delete;
+  };
+
+  //*********************************************
+  struct MoveableCopyable
+  {
+    MoveableCopyable() {}
+    MoveableCopyable(MoveableCopyable&& other) noexcept {}
+    MoveableCopyable& operator =(MoveableCopyable&& rhs) noexcept { return *this; }
+    MoveableCopyable(const MoveableCopyable& other) {}
+    MoveableCopyable& operator =(const MoveableCopyable& rhs) { return *this; }
+  };
+}
+
+// Definitions for when the STL and compiler built-ins are not avalable.
+#if ETL_NOT_USING_STL && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
+
+using etl::is_assignable;
+using etl::is_constructible;
+using etl::is_copy_constructible;
+using etl::is_move_constructible;
+
+//*************************
+  template <>
+  struct etl::is_assignable<Copyable, Copyable> : public etl::true_type
+  {
+  };
+
+  template <>
+  struct etl::is_constructible<Copyable> : public etl::true_type
+  {
+  };
+
+  template <>
+  struct etl::is_copy_constructible<Copyable> : public etl::true_type
+  {
+  };
+
+  template <>
+  struct etl::is_move_constructible<Copyable> : public etl::false_type
+  {
+  };
+
+  //*************************
+  template <>
+  struct etl::is_assignable<Moveable, Moveable> : public etl::true_type
+  {
+  };
+
+  template <>
+  struct etl::is_constructible<Moveable> : public etl::true_type
+  {
+  };
+
+  template <>
+  struct etl::is_copy_constructible<Moveable> : public etl::false_type
+  {
+  };
+
+  template <>
+  struct etl::is_move_constructible<Moveable> : public etl::true_type
+  {
+  };
+
+  //*************************
+  template <>
+  struct etl::is_assignable<MoveableCopyable, MoveableCopyable> : public etl::true_type
+  {
+  };
+
+  template <>
+  struct etl::is_constructible<MoveableCopyable> : public etl::true_type
+  {
+  };
+
+  template <>
+  struct etl::is_copy_constructible<MoveableCopyable, false> : public etl::true_type
+  {
+  };
+
+  template <>
+  struct etl::is_move_constructible<MoveableCopyable> : public etl::true_type
+  {
+  };
+#endif
+
+namespace
+{
   SUITE(test_type_traits)
   {
     //*************************************************************************
@@ -884,5 +991,37 @@ namespace
   {
     CHECK((etl::disjunction_v<etl::false_type, etl::true_type, etl::false_type>));
     CHECK((!etl::disjunction_v<etl::false_type, etl::false_type, etl::false_type>));
+  }
+
+  //*************************************************************************
+  TEST(test_is_assignable)
+  {
+    CHECK((etl::is_assignable_v<Copyable, Copyable>) == (std::is_assignable_v<Copyable, Copyable>));
+    CHECK((etl::is_assignable_v<Moveable, Moveable>) == (std::is_assignable_v<Moveable, Moveable>));
+    CHECK((etl::is_assignable_v<MoveableCopyable, MoveableCopyable>) == (std::is_assignable_v<MoveableCopyable, MoveableCopyable>));
+  }
+
+  //*************************************************************************
+  TEST(test_is_constructible)
+  {
+    CHECK((etl::is_constructible_v<Copyable>) == (std::is_constructible_v<Copyable>));
+    CHECK((etl::is_constructible_v<Moveable>) == (std::is_constructible_v<Moveable>));
+    CHECK((etl::is_constructible_v<MoveableCopyable>) == (std::is_constructible_v<MoveableCopyable>));
+  }
+
+  //*************************************************************************
+  TEST(test_is_copy_constructible)
+  {
+    CHECK((etl::is_copy_constructible_v<Copyable>) == (std::is_copy_constructible_v<Copyable>));
+    CHECK((etl::is_copy_constructible_v<Moveable>) == (std::is_copy_constructible_v<Moveable>));
+    CHECK((etl::is_copy_constructible_v<MoveableCopyable>) == (std::is_copy_constructible_v<MoveableCopyable>));
+  }
+
+  //*************************************************************************
+  TEST(test_is_move_constructible)
+  {
+    CHECK((etl::is_move_constructible_v<Copyable>) == (std::is_move_constructible_v<Copyable>));
+    CHECK((etl::is_move_constructible_v<Moveable>) == (std::is_move_constructible_v<Moveable>));
+    CHECK((etl::is_move_constructible_v<MoveableCopyable>) == (std::is_move_constructible_v<MoveableCopyable>));
   }
 }

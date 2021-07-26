@@ -1691,12 +1691,6 @@ namespace etl
   {
   };
 
-  template <typename T1, typename T2>
-  struct is_lvalue_assignable : public etl::is_assignable<typename etl::add_lvalue_reference<T1>::type,
-    typename etl::add_lvalue_reference<typename etl::add_const<T2>::type>::type>
-  {
-  };
-
   template<typename T, typename... TArgs>
   struct is_constructible : public std::is_constructible<T, TArgs...>
   {
@@ -1712,13 +1706,6 @@ namespace etl
   {
   };
 
-  //#if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
-  //  template<typename T, typename... TArgs>
-  //  struct is_trivially_constructible : public std::is_trivially_constructible<T, TArgs...>
-  //  {
-  //  };
-  //#endif
-
 #elif defined(ETL_USE_TYPE_TRAITS_BUILTINS)
 
   //*********************************************
@@ -1729,16 +1716,12 @@ namespace etl
   {
   };
 
-  template <typename T1, typename T2>
-  struct is_lvalue_assignable : public etl::is_assignable<typename etl::add_lvalue_reference<T1>::type,
-    typename etl::add_lvalue_reference<typename etl::add_const<T2>::type>::type>
-  {
-  };
-
+#if ETL_CPP11_SUPPORTED
   template<typename T, typename... TArgs>
   struct is_constructible : public bool_constant<__is_constructible(T, TArgs...)>
   {
   };
+#endif
 
   template <typename T>
   struct is_copy_constructible : public etl::is_constructible<T, etl::add_lvalue_reference_t<const T>>
@@ -1750,54 +1733,74 @@ namespace etl
   {
   };
 
-  //template<typename T, typename... TArgs>
-  //struct is_trivially_constructible : public bool_constant<etl::is_constructible<T, Args...>::value&& __is_trivially_constructible(T, TArgs...)>
-  //{
-  //};
-
 #else
 
   //*********************************************
-  // Force the user to provide specialisations.
+  // Force the user to provide specialisations for
+  // anything other than arithmetics and pointers.
   //*********************************************
-  template<typename T, typename... TArgs>
-  struct is_assignable : public etl::bool_constant<true>
+  template <typename T1,
+            typename T2,
+            bool B = (etl::is_arithmetic<T1>::value || etl::is_pointer<T1>::value) && (etl::is_arithmetic<T2>::value || etl::is_pointer<T2>::value)>
+  struct is_assignable;
+
+  template <typename T1, typename T2>
+  struct is_assignable<T1, T2, true> : public etl::true_type
   {
   };
 
   template <typename T1, typename T2>
-  struct is_lvalue_assignable : public etl::bool_constant<true>
+  struct is_assignable<T1, T2, false>;
+
+#if ETL_CPP11_SUPPORTED
+  //*********************************************
+  template <typename T, bool B, typename... TArgs>
+  struct is_constructible_helper;
+
+  template <typename T, typename... TArgs>
+  struct is_constructible_helper<T, true, TArgs...> : public etl::true_type
   {
   };
 
-  template<typename T, typename... TArgs>
-  struct is_constructible : public etl::bool_constant<true>
+  template <typename T, typename... TArgs>
+  struct is_constructible_helper<T, false, TArgs...>;
+
+  template <typename T, typename... TArgs>
+  struct is_constructible : public is_constructible_helper<T, etl::is_arithmetic<T>::value || etl::is_pointer<T>::value, TArgs...>
+  {
+  };
+#endif
+
+  //*********************************************
+  template <typename T, bool B = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_copy_constructible;
+
+  template <typename T>
+  struct is_copy_constructible<T, true> : public etl::true_type
   {
   };
 
   template <typename T>
-  struct is_copy_constructible : public etl::bool_constant<etl::is_pod<T>::value>
+  struct is_copy_constructible<T, false>;
+
+  //*********************************************
+  template <typename T, bool B = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_move_constructible;
+
+  template <typename T>
+  struct is_move_constructible<T, true> : public etl::true_type
   {
   };
 
   template <typename T>
-  struct is_move_constructible : public etl::bool_constant<etl::is_pod<T>::value>
-  {
-  };
-
-  //template<typename T, typename... TArgs>
-  //struct is_trivially_constructible : public etl::bool_constant<etl::is_pod<T>::value>
-  //{
-  //};
+  struct is_move_constructible<T, false>;
 
 #endif
 
 #if ETL_CPP17_SUPPORTED
-  template<typename T1, typename T2>
-  inline constexpr size_t is_assignable_v = etl::is_assignable<T1, T2>::value;
 
-  template<typename T1, typename T2>
-  inline constexpr size_t is_lvalue_assignable_v = etl::is_lvalue_assignable<T1, T2>::value;
+  template <typename T1, typename T2>
+  inline constexpr size_t is_assignable_v = etl::is_assignable<T1, T2>::value;
 
   template<typename T, typename... TArgs>
   inline constexpr size_t is_constructible_v = etl::is_constructible<T, TArgs...>::value;
@@ -1807,9 +1810,6 @@ namespace etl
 
   template<typename T>
   inline constexpr size_t is_move_constructible_v = etl::is_move_constructible<T>::value;
-
-  //template<typename T, typename... TArgs>
-  //inline constexpr size_t is_trivially_constructible_v = etl::is_trivially_constructible<T, TArgs...>::value;
 
 #endif
 }

@@ -292,38 +292,97 @@ namespace
 
 // Definitions for when the STL and compiler built-ins are not avalable.
 #if ETL_NOT_USING_STL && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
-namespace etl
+
+using etl::is_copy_constructible;
+using etl::is_move_constructible;
+
+//*************************
+template <>
+struct etl::is_copy_constructible<D1> : public etl::true_type
 {
-  template <>
-  struct is_copy_constructible<Copyable> : public etl::bool_constant<true>
-  {
-  };
+};
 
-  template <>
-  struct is_copy_constructible<Moveable> : public etl::bool_constant<false>
-  {
-  };
+template <>
+struct etl::is_move_constructible<D1> : public etl::true_type
+{
+};
 
-  template <>
-  struct is_copy_constructible<MoveableCopyable> : public etl::bool_constant<true>
-  {
-  };
+//*************************
+template <>
+struct etl::is_copy_constructible<D2> : public etl::true_type
+{
+};
 
-  template <>
-  struct is_move_constructible<Copyable> : public etl::bool_constant<false>
-  {
-  };
+template <>
+struct etl::is_move_constructible<D2> : public etl::true_type
+{
+};
 
-  template <>
-  struct is_move_constructible<Moveable> : public etl::bool_constant<true>
-  {
-  };
+//*************************
+template <>
+struct etl::is_copy_constructible<D3> : public etl::true_type
+{
+};
 
-  template <>
-  struct is_move_constructible<MoveableCopyable> : public etl::bool_constant<true>
-  {
-  };
-}
+template <>
+struct etl::is_move_constructible<D3> : public etl::true_type
+{
+};
+
+//*************************
+template <>
+struct etl::is_copy_constructible<D4> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_move_constructible<D4> : public etl::true_type
+{
+};
+
+//*************************
+template <>
+struct etl::is_copy_constructible<std::string> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_move_constructible<std::string> : public etl::true_type
+{
+};
+
+//*************************
+template <>
+struct etl::is_copy_constructible<Copyable> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_move_constructible<Copyable> : public etl::false_type
+{
+};
+
+//*************************
+template <>
+struct etl::is_copy_constructible<Moveable> : public etl::false_type
+{
+};
+
+template <>
+struct etl::is_move_constructible<Moveable> : public etl::true_type
+{
+};
+
+//*************************
+template <>
+struct etl::is_copy_constructible<MoveableCopyable, false> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_move_constructible<MoveableCopyable> : public etl::true_type
+{
+};
 #endif
 
 namespace
