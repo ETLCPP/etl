@@ -375,7 +375,7 @@ struct etl::is_move_constructible<Moveable> : public etl::true_type
 
 //*************************
 template <>
-struct etl::is_copy_constructible<MoveableCopyable, false> : public etl::true_type
+struct etl::is_copy_constructible<MoveableCopyable> : public etl::true_type
 {
 };
 
