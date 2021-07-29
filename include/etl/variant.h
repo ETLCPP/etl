@@ -34,7 +34,7 @@ SOFTWARE.
 #if !ETL_CPP11_SUPPORTED || ETL_USE_LEGACY_VARIANT
   #include "private/variant_legacy.h"
 #else
-  #include "private/variant_new.h"
+  #include "private/variant_variadic.h"
 #endif
 
 #endif

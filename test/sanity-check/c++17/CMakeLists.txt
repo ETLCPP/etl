@@ -244,7 +244,7 @@ target_sources(t17 PRIVATE etl_profile.h
         ../utility.h.t.cpp
         ../variance.h.t.cpp
         ../variant_legacy.h.t.cpp
-        ../variant_new.h.t.cpp
+        ../variant_variadic.h.t.cpp
         ../variant_pool.h.t.cpp
         ../vector.h.t.cpp
         ../version.h.t.cpp
