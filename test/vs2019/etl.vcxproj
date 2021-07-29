@@ -1596,7 +1596,7 @@
     <ClInclude Include="..\..\include\etl\private\crc_parameters.h" />
     <ClInclude Include="..\..\include\etl\private\to_string_helper.h" />
     <ClInclude Include="..\..\include\etl\private\variant_legacy.h" />
-    <ClInclude Include="..\..\include\etl\private\variant_new.h" />
+    <ClInclude Include="..\..\include\etl\private\variant_variadic.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv7.h" />
     <ClInclude Include="..\..\include\etl\profiles\armv7_no_stl.h" />
     <ClInclude Include="..\..\include\etl\profiles\clang_generic.h" />
@@ -6288,7 +6288,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Clang|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MSVCDebugAppveyor|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\sanity-check\variant_new.h.t.cpp">
+    <ClCompile Include="..\sanity-check\variant_variadic.h.t.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Built-ins|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM - No STL - Built-ins|Win32'">true</ExcludedFromBuild>
@@ -7061,7 +7061,7 @@
     <ClCompile Include="..\test_utility.cpp" />
     <ClCompile Include="..\test_variance.cpp" />
     <ClCompile Include="..\test_variant_legacy.cpp" />
-    <ClCompile Include="..\test_variant_new.cpp" />
+    <ClCompile Include="..\test_variant_variadic.cpp" />
     <ClCompile Include="..\test_variant_pool.cpp" />
     <ClCompile Include="..\test_vector.cpp" />
     <ClCompile Include="..\test_vector_external_buffer.cpp" />

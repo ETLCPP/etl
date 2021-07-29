@@ -1119,7 +1119,7 @@
     <ClInclude Include="..\..\include\etl\private\variant_legacy.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\variant_new.h">
+    <ClInclude Include="..\..\include\etl\private\variant_variadic.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\mem_cast.h">
@@ -1874,7 +1874,7 @@
     <ClCompile Include="..\test_hfsm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_variant_new.cpp">
+    <ClCompile Include="..\test_variant_variadic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_mem_cast.cpp">
@@ -2570,7 +2570,7 @@
     <ClCompile Include="..\sanity-check\variant_legacy.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
     </ClCompile>
-    <ClCompile Include="..\sanity-check\variant_new.h.t.cpp">
+    <ClCompile Include="..\sanity-check\variant_variadic.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\variant_old.h.t.cpp">

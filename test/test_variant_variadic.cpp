@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/private/variant_new.h"
+#include "etl/private/variant_variadic.h"
 #include "etl/visitor.h"
 #include "etl/overload.h"
 
