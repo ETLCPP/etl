@@ -2673,7 +2673,7 @@
     <ClCompile Include="..\sanity-check\variant_legacy.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
     </ClCompile>
-    <ClCompile Include="..\sanity-check\variant_new.h.t.cpp">
+    <ClCompile Include="..\sanity-check\variant_variadic.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\variant_old.h.t.cpp">
