@@ -353,6 +353,270 @@ namespace etl
   };
 #else
   //***************************************************************************
+  /// Exception base for message_packet.
+  //***************************************************************************
+  class message_packet_exception : public etl::exception
+  {
+  public:
+
+    message_packet_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// Exception for illegal message type.
+  //***************************************************************************
+  class message_packet_illegal_type : public etl::message_packet_exception
+  {
+  public:
+
+    message_packet_illegal_type(string_type file_name_, numeric_type line_number_)
+      : message_packet_exception(ETL_ERROR_TEXT("message_packet:illegal type", ETL_MESSAGE_PACKET_FILE_ID"A"), file_name_, line_number_)
+    {
+    }
+  };
+
+#if ETL_CPP17_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03)
+  //***************************************************************************
+  // The definition for all message types.
+  //***************************************************************************
+  template <typename... TMessageTypes>
+  class message_packet
+  {
+  public:
+
+    //********************************************
+    message_packet()
+      : valid(false)
+    {
+    }
+
+    //********************************************
+    explicit message_packet(const etl::imessage& msg)
+      : valid(true)
+    {
+      add_new_message(msg);
+    }
+
+    //********************************************
+    explicit message_packet(etl::imessage&& msg)
+      : valid(true)
+    {
+      add_new_message(etl::move(msg));
+    }
+
+    //**********************************************
+    message_packet(const message_packet& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(other.get());
+      }
+    }
+
+    //**********************************************
+    message_packet(message_packet&& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
+    }
+
+    //**********************************************
+    message_packet& operator =(const message_packet& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(rhs.get());
+      }
+
+      return *this;
+    }
+
+    //**********************************************
+    message_packet& operator =(message_packet&& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(etl::move(rhs.get()));
+      }
+
+      return *this;
+    }
+
+    //********************************************
+    ~message_packet()
+    {
+      delete_current_message();
+    }
+
+    //********************************************
+    etl::imessage& get() ETL_NOEXCEPT
+    {
+      return *static_cast<etl::imessage*>(data);
+    }
+
+    //********************************************
+    const etl::imessage& get() const ETL_NOEXCEPT
+    {
+      return *static_cast<const etl::imessage*>(data);
+    }
+
+    //********************************************
+    bool is_valid() const
+    {
+      return valid;
+    }
+
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(etl::message_id_t id)
+    {
+      return (accepts_message<TMessageTypes::ID>(id) || ...);
+    }
+
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& msg)
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return (accepts_message<TMessageTypes::ID, Id>() || ...);
+    }
+
+    //**********************************************
+    template <typename TMessage>
+    static ETL_CONSTEXPR
+      typename etl::enable_if<!etl::is_integral<TMessage>::value, bool>::type
+      accepts()
+    {
+      return accepts(TMessage::ID);
+    }
+
+    enum
+    {
+      SIZE      = etl::largest<TMessageTypes...>::size,
+      ALIGNMENT = etl::largest<TMessageTypes...>::alignment
+    };
+
+  private:
+
+    //**********************************************
+    template <etl::message_id_t Id1, etl::message_id_t Id2>
+    static ETL_CONSTEXPR bool accepts_message()
+    {
+      return Id1 == Id2;
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id1>
+    static ETL_CONSTEXPR bool accepts_message(etl::message_id_t id2)
+    {
+      return Id1 == id2;
+    }
+
+    //********************************************
+    void delete_current_message()
+    {
+      if (valid)
+      {
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+#if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
+        pmsg->~imessage();
+#else
+        if (!(delete_current_message_type<TMessageTypes>(pmsg->get_message_id()) || ...))
+        {
+          ETL_ALWAYS_ASSERT(ETL_ERROR(unhandled_message_exception));
+        }
+#endif
+      }
+    }
+
+    //********************************************
+    void add_new_message(const etl::imessage& msg)
+    {
+      if (!(add_new_message_type<TMessageTypes>(msg) || ...))
+      {
+        ETL_ALWAYS_ASSERT(ETL_ERROR(unhandled_message_exception));
+      }
+    }
+
+    //********************************************
+    void add_new_message(etl::imessage&& msg)
+    {
+      if (!(add_new_message_type<TMessageTypes>(etl::move(msg)) || ...))
+      {
+        ETL_ALWAYS_ASSERT(ETL_ERROR(unhandled_message_exception));
+      }
+    }
+
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    bool valid;
+
+  private:
+
+    //********************************************
+    template <typename TMessage>
+    bool delete_current_message_type(etl::message_id_t Id)
+    {
+      if (TMessage::ID == Id)
+      {
+        static_cast<TMessage*>(data)->~TMessage();
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    } 
+    
+    //********************************************
+    template <typename TMessage>
+    bool add_new_message_type(const etl::imessage& msg)
+    {
+      if (TMessage::ID == msg.get_message_id())
+      {
+        void* p = data;
+        new (p) TMessage(static_cast<const TMessage&>(msg));
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    //********************************************
+    template <typename TMessage>
+    bool add_new_message_type(etl::imessage&& msg)
+    {
+      if (TMessage::ID == msg.get_message_id())
+      {
+        void* p = data;
+        new (p) TMessage(static_cast<TMessage&&>(msg));
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+  };
+#else
+  //***************************************************************************
   // The definition for all 16 message types.
   //***************************************************************************
   template <typename T1, typename T2 = void, typename T3 = void, typename T4 = void, 
