@@ -91,7 +91,7 @@ namespace etl
       ID = ID_
     };
 
-    ETL_NODISCARD etl::message_id_t get_message_id() const ETL_NOEXCEPT ETL_OVERRIDE
+    ETL_CONSTEXPR ETL_NODISCARD etl::message_id_t get_message_id() const ETL_NOEXCEPT ETL_OVERRIDE
     {
       return ID;
     }
