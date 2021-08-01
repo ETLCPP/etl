@@ -1,4 +1,8 @@
 ===============================================================================
+20.14.1
+Changed std::forward to etl::forward in etl::variant (variadic)
+
+===============================================================================
 20.14.0
 Added a vaiadic version of etl::variant. Usable for C++11 and up.
 Added etl::overload pattern class. Groups lambdas into a functor class.
