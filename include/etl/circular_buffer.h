@@ -41,6 +41,10 @@ SOFTWARE.
 #include "iterator.h"
 #include "static_assert.h"
 
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+  #include <initializer_list>
+#endif
+
 namespace etl
 {
   //***************************************************************************

@@ -181,7 +181,7 @@ namespace etl
   protected:
 
     //*************************************************************************
-    /// Construccts the buffer.
+    /// Constructs the buffer.
     //*************************************************************************
     bip_buffer_spsc_atomic_base(size_type reserved_)
      : read(0)

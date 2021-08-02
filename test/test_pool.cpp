@@ -448,6 +448,27 @@ namespace
 
     int* i = pool.allocate();
     pool.release(i);
+  } 
+  
+  //*************************************************************************
+  TEST(test_issue_406_pool_of_c_array)
+  {
+    using elem_type = uint8_t[10];
+
+    etl::pool<elem_type, 3> memPool{};
+
+    CHECK_EQUAL(3, memPool.available());
+    CHECK_EQUAL(0, memPool.size());
+
+    elem_type* memory = memPool.allocate();
+
+    CHECK_EQUAL(2, memPool.available());
+    CHECK_EQUAL(1, memPool.size());
+
+    memPool.release(memory);
+
+    CHECK_EQUAL(3, memPool.available());
+    CHECK_EQUAL(0, memPool.size());
   }
 }
 

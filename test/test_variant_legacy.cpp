@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/variant.h"
+#include "etl/private/variant_legacy.h"
 
 #include <array>
 #include <vector>
