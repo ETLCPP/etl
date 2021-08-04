@@ -1131,9 +1131,6 @@
     <ClInclude Include="..\..\include\etl\private\variant_legacy.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\variant_new.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\overload.h">
       <Filter>ETL\Patterns</Filter>
     </ClInclude>
@@ -1884,9 +1881,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_mem_cast_ptr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_variant_new.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_mem_cast.cpp">
