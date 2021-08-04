@@ -1,4 +1,9 @@
 ===============================================================================
+20.15.0
+Added a Bipartite buffer, by Benedek Kupper.
+etl::bip_buffer_spsc_atomic
+
+===============================================================================
 20.14.1
 Changed std::forward to etl::forward in etl::variant (variadic)
 
