@@ -1,7 +1,7 @@
 name: gcc
 on:
   push:
-    branches: [ master ]
+    branches: [ master, development ]
   pull_request:
     branches: [ master ]
 
@@ -18,7 +18,7 @@ jobs:
 
     - name: Build
       run: |
-        cmake -DBUILD_TESTS=ON ./
+        cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ./
         gcc --version
         make
     
@@ -37,7 +37,7 @@ jobs:
 
     - name: Build
       run: |
-        cmake -DBUILD_TESTS=ON -DNO_STL=ON ./
+        cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ./
         gcc --version
         make
     

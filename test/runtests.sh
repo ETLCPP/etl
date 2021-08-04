@@ -4,54 +4,54 @@ cd build || exit 1
 
 echo "ETL Tests" > log.txt
 echo ""
-echo "-----------------------------------------------" >> log.txt
-echo " GCC" >> log.txt
-echo "-----------------------------------------------" >> log.txt
-gcc --version | grep gcc >> log.txt
-CC=gcc CXX=g++ cmake --cmake-clean-cache -DNO_STL=OFF ..
-make -j8 || echo "****************\n**** Failed ****\n****************" >> ../log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+echo " GCC" | tee -a log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+gcc --version | grep gcc | tee -a log.txt
+CC=gcc CXX=g++ cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
+make -j8 || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
 ./etl_tests | tee log.txt
 echo ""
-echo "-----------------------------------------------" >> log.txt
-echo " GCC - No STL" >> log.txt
-echo "-----------------------------------------------" >> log.txt
-gcc --version | grep gcc >> log.txt
-CC=gcc CXX=g++ cmake --cmake-clean-cache -DNO_STL=ON ..
-make -j8 || echo "****************\n**** Failed ****\n****************" >> ../log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+echo " GCC - No STL" | tee -a log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+gcc --version | grep gcc | tee -a log.txt
+CC=gcc CXX=g++ cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
+make -j8 || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
 ./etl_tests | tee log.txt
 echo ""
-echo "-----------------------------------------------" >> log.txt
-echo " GCC - No STL - Builtins" >> log.txt
-echo "-----------------------------------------------" >> log.txt
-gcc --version | grep gcc >> log.txt
-CC=gcc CXX=g++ cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON ..
-make -j8 || echo "****************\n**** Failed ****\n****************" >> ../log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+echo " GCC - No STL - Builtins" | tee -a log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+gcc --version | grep gcc | tee -a log.txt
+CC=gcc CXX=g++ cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
+make -j8 || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
 ./etl_tests | tee log.txt
 echo ""
-echo "-----------------------------------------------" >> log.txt
-echo " Clang" >> log.txt
-echo "-----------------------------------------------" >> log.txt
-clang --version | grep clang >> log.txt
-CC=clang CXX=clang++ cmake --cmake-clean-cache -DNO_STL=OFF ..
-make -j8 || echo "****************\n**** Failed ****\n****************" >> ../log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+echo " Clang" | tee -a log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+clang --version | grep clang | tee -a log.txt
+CC=clang CXX=clang++ cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
+make -j8 || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
 ./etl_tests | tee log.txt
 echo ""
-echo "-----------------------------------------------" >> log.txt
-echo " Clang - No STL" >> log.txt
-echo "-----------------------------------------------" >> log.txt
-clang --version | grep clang >> log.txt
-CC=clang CXX=clang++ cmake --cmake-clean-cache -DNO_STL=ON ..
-make -j8 || echo "****************\n**** Failed ****\n****************" >> ../log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+echo " Clang - No STL" | tee -a log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+clang --version | grep clang | tee -a log.txt
+CC=clang CXX=clang++ cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
+make -j8 || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
 ./etl_tests | tee log.txt
 echo ""
-echo "-----------------------------------------------" >> log.txt
-echo " Clang - No STL - Builtins" >> log.txt
-echo "-----------------------------------------------" >> log.txt
-clang --version | grep clang >> log.txt
-CC=clang CXX=clang++ cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON ..
-make -j8 || echo "****************\n**** Failed ****\n****************" >> ../log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+echo " Clang - No STL - Builtins" | tee -a log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+clang --version | grep clang | tee -a log.txt
+CC=clang CXX=clang++ cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
+make -j8 || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
 ./etl_tests | tee log.txt
 echo ""
-echo "-----------------------------------------------" >> log.txt
-echo " Tests Completed" >> log.txt
-echo "-----------------------------------------------" >> log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+echo " Tests Completed" | tee -a log.txt
+echo "-----------------------------------------------" | tee -a log.txt

@@ -730,6 +730,7 @@ namespace
       CHECK_EQUAL(1, data[3]);
     }
 
+#if (!(defined(ETL_COMPILER_GCC) && defined(ETL_USE_TYPE_TRAITS_BUILTINS)))
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_unique_ptr)
     {
@@ -754,8 +755,8 @@ namespace
       CHECK_EQUAL(4, *data[0]);
       CHECK_EQUAL(3, *data[1]);
       CHECK_EQUAL(2, *data[2]);
-
     }
+#endif
 
     //*************************************************************************
     // To test the CPP03 versions then ETL_TEST_VECTOR_CPP11 must be set to 0 in vector.h
