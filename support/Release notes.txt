@@ -2,6 +2,8 @@
 20.15.0
 Added a Bipartite buffer, by Benedek Kupper.
 etl::bip_buffer_spsc_atomic
+notify_observers() takes universal reference for C++11 and above.
+Updated type traits generator.
 
 ===============================================================================
 20.14.1
