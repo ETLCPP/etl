@@ -318,3 +318,6 @@ test/vs2019/DebugNoSTL
 test/vs2022/Debug LLVM
 test/vs2019/Debug MSVC - No STL - Built-ins/etl.exe
 test/vs2019/Debug-LLVM-NoSTL-Builtins/etl.exe
+test/vs2019/cmake-build
+test/vs2019/Debug MSVC - No STL - Built-ins
+test/vs2019/Test1

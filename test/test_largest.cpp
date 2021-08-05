@@ -55,6 +55,7 @@ namespace
       CHECK(type);
     }
 
+#if !defined(ETL_LARGEST_TYPE_FORCE_CPP03)
     //*************************************************************************
     TEST(test_pod_type_vt)
     {
@@ -73,6 +74,7 @@ namespace
       CHECK_EQUAL(sizeof(int), size);
       CHECK(type);
     }
+#endif
 
     //*************************************************************************
     TEST(test_non_pod_type)
@@ -97,6 +99,7 @@ namespace
       CHECK(type);
     }
 
+#if !defined(ETL_LARGEST_TYPE_FORCE_CPP03)
     //*************************************************************************
     TEST(test_non_pod_type_vt)
     {
@@ -119,6 +122,7 @@ namespace
       CHECK_EQUAL(sizeof(S3), size);
       CHECK(type);
     }
+#endif
 
     //*************************************************************************
     TEST(test_pod_alignment)
