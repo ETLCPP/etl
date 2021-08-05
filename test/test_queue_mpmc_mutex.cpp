@@ -153,6 +153,7 @@ namespace
       CHECK(!queue.pop(i));
     }
 
+#if !defined(ETL_FORCE_TEST_CPP03)
     //*************************************************************************
     TEST(test_move_push_pop)
     {
@@ -187,6 +188,7 @@ namespace
       queue.pop(pr);
       CHECK_EQUAL(4, pr.value);
     }
+#endif
 
     //*************************************************************************
     TEST(test_multiple_emplace)
