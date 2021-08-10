@@ -111,7 +111,8 @@ etl_test_sources = files(
 	'test/test_type_traits.cpp',
 	'test/test_user_type.cpp',
 	'test/test_utility.cpp',
-	'test/test_variant.cpp',
+	'test/test_variant_legacy.cpp',
+	'test/test_variant_variadic.cpp'
 	'test/test_variant_pool.cpp',
 	'test/test_vector.cpp',
 	'test/test_vector_non_trivial.cpp',
