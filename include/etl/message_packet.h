@@ -54,7 +54,6 @@ SOFTWARE.
 #include "message.h"
 #include "error_handler.h"
 #include "static_assert.h"
-#include "exception.h"
 #include "largest.h"
 #include "alignment.h"
 #include "utility.h"
@@ -94,8 +93,8 @@ namespace etl
 
     //********************************************
     template <typename TMessage, etl::enable_if_t<!etl::is_same_v<etl::remove_reference_t<TMessage>, etl::imessage> &&
-                                                  !etl::is_same_v<etl::remove_reference_t<TMessage>, etl::message_packet<TMessageTypes...>>, int> = 0>
-    explicit message_packet(TMessage&& msg)
+      !etl::is_same_v<etl::remove_reference_t<TMessage>, etl::message_packet<TMessageTypes...>>, int> = 0>
+      explicit message_packet(TMessage&& msg)
       : valid(true)
     {
       add_new_message<TMessage>(etl::forward<TMessage>(msg));
@@ -201,7 +200,7 @@ namespace etl
 
     enum
     {
-      SIZE      = etl::largest<TMessageTypes...>::size,
+      SIZE = etl::largest<TMessageTypes...>::size,
       ALIGNMENT = etl::largest<TMessageTypes...>::alignment
     };
 
@@ -285,8 +284,8 @@ namespace etl
       {
         return false;
       }
-    } 
-    
+    }
+
     //********************************************
     template <typename TType>
     bool add_new_message_type(const etl::imessage& msg)
@@ -498,7 +497,7 @@ namespace etl
 
     enum
     {
-      Size      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::size,
+      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::size,
       ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::alignment
     };
 
@@ -598,7 +597,7 @@ namespace etl
     }
   #endif
 
-    typename etl::aligned_storage<Size, ALIGNMENT>::type data;
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
     bool valid;
   };
 
@@ -746,7 +745,7 @@ namespace etl
 
     enum
     {
-      Size      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::size,
+      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::size,
       ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::alignment
     };
 
@@ -843,7 +842,7 @@ namespace etl
     }
   #endif
 
-    typename etl::aligned_storage<Size, ALIGNMENT>::type data;
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
     bool valid;
   };
 
@@ -991,7 +990,7 @@ namespace etl
 
     enum
     {
-      Size      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::size,
+      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::size,
       ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::alignment
     };
 
@@ -1085,7 +1084,7 @@ namespace etl
     }
   #endif
 
-    typename etl::aligned_storage<Size, ALIGNMENT>::type data;
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
     bool valid;
   };
 
@@ -1233,7 +1232,7 @@ namespace etl
 
     enum
     {
-      Size      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::size,
+      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::size,
       ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::alignment
     };
 
@@ -1324,7 +1323,7 @@ namespace etl
     }
   #endif
 
-    typename etl::aligned_storage<Size, ALIGNMENT>::type data;
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
     bool valid;
   };
 
@@ -1471,7 +1470,7 @@ namespace etl
 
     enum
     {
-      Size      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::size,
+      SIZE      = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::size,
       ALIGNMENT = etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::alignment
     };
 
@@ -1559,7 +1558,7 @@ namespace etl
     }
   #endif
 
-    typename etl::aligned_storage<Size, ALIGNMENT>::type data;
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
     bool valid;
   };
 
