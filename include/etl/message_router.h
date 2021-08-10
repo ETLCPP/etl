@@ -295,7 +295,7 @@ namespace etl
     destination.receive(message);
   }
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_CPP17_SUPPORTED && !defined(ETL_MESSAGE_ROUTER_FORCE_CPP03)
   //***************************************************************************
   // The definition for all message types.
   //***************************************************************************
