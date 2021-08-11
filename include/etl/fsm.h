@@ -80,12 +80,17 @@ namespace etl
   // For internal FSM use.
   typedef typename etl::larger_type<etl::message_id_t>::type fsm_internal_id_t;
 
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_,
-            typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void, 
-            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void, 
-            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void, 
-            typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
+#if ETL_CPP17_SUPPORTED && !defined(ETL_FSM_FORCE_CPP03) // For C++17 and above
+  template <typename, typename, const etl::fsm_state_id_t, typename...>
   class fsm_state;
+#else
+  template <typename, typename, const etl::fsm_state_id_t,
+            typename, typename, typename, typename, 
+            typename, typename, typename, typename, 
+            typename, typename, typename, typename, 
+            typename, typename, typename, typename>
+  class fsm_state;
+#endif
 
   //***************************************************************************
   /// Base exception class for FSM.
@@ -178,12 +183,18 @@ namespace etl
     /// Allows ifsm_state functions to be private.
     friend class etl::fsm;
     friend class etl::hfsm;
+
+#if ETL_CPP17_SUPPORTED && !defined(ETL_FSM_FORCE_CPP03) // For C++17 and above
+    template <typename, typename, const etl::fsm_state_id_t, typename...>
+    friend class fsm_state;
+#else
     template <typename, typename, const etl::fsm_state_id_t,
               typename, typename, typename, typename, 
               typename, typename, typename, typename, 
               typename, typename, typename, typename, 
               typename, typename, typename, typename>
     friend class etl::fsm_state;
+#endif
 
     //*******************************************
     /// Gets the id for this state.
@@ -483,8 +494,8 @@ namespace etl
 #if ETL_CPP17_SUPPORTED && !defined(ETL_FSM_FORCE_CPP03) // For C++17 and above
 
   //***************************************************************************
-// The definition for all types.
-//***************************************************************************
+  // The definition for all types.
+  //***************************************************************************
   template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, typename... TMessageTypes>
   class fsm_state : public ifsm_state
   {
@@ -526,7 +537,6 @@ namespace etl
     etl::fsm_state_id_t process_event(const etl::imessage& message)
     {
       etl::fsm_state_id_t new_state_id;
-      etl::message_id_t event_id = message.get_message_id();
 
       const bool was_handled = (process_event_type<TMessageTypes>(message, new_state_id) || ...);
 
