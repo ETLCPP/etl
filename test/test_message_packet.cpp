@@ -197,9 +197,6 @@ namespace
       Packet packet2(message2);
       Packet packet3(message3);
 
-      // The next line should result in a compile error.
-      //Packet packet4(message4);
-
       CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
       CHECK_EQUAL(MESSAGE2, packet2.get().get_message_id());
       CHECK_EQUAL(MESSAGE3, packet3.get().get_message_id());
@@ -250,9 +247,6 @@ namespace
       const Packet packet1(message1);
       const Packet packet2(message2);
       const Packet packet3(message3);
-
-      // The next line should result in a compile error.
-      //Packet packet4(message4);
 
       CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
       CHECK_EQUAL(MESSAGE2, packet2.get().get_message_id());

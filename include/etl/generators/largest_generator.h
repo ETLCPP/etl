@@ -396,11 +396,8 @@ namespace etl
 #endif
 
 #if ETL_CPP17_SUPPORTED
-  template <typename... T>
-  inline constexpr size_t largest_size_v = largest<T...>::size;
-
-  template <typename... T>
-  inline constexpr size_t largest_alignment_v = largest<T...>::alignment;
+    template <typename... T>
+    inline constexpr size_t largest_size = largest<T...>::size;
 #endif
 
 #else
