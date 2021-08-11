@@ -347,6 +347,11 @@ namespace etl
     using largest_t = typename largest<T...>::type;
 #endif
 
+#if ETL_CPP17_SUPPORTED
+    template <typename... T>
+    inline constexpr size_t largest_size = largest<T...>::size;
+#endif
+
 #else
   //***************************************************************************
   /// Template to determine the largest type, size and alignment.

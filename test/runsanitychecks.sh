@@ -16,42 +16,90 @@ echo "-----------------------------------------------"
 echo "GCC - STL"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
 CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bgcc || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 { echo ""; echo "GCC - No STL"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
 CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bgcc || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 { echo ""; echo "GCC - No STL - Builtins"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
 CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bgcc || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 ##{ echo ""; echo "GCC - No STL - User defined traits"; } | tee -a ../log.txt
 #g++ --version | head --lines=1 | tee -a ../log.txt
 #CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON ..
-#cmake --build bgcc || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+#cmake --build bgcc
+#if [ $? -eq 0 ]; then
+#  echo "Passed"
+#else
+#  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+#  exit $?
+#fi
 
 { echo ""; echo "Clang - STL"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
 CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bclang || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bclang
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 { echo ""; echo "Clang - No STL"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
 CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bclang || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bclang
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 { echo ""; echo "Clang - No STL - Builtins"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
 CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bclang || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bclang
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 ##{ echo ""; echo "Clang - No STL - User defined traits"; } | tee -a ../log.txt
 #clang++ --version | head --lines=1 | tee -a ../log.txt
 #CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON ..
-#cmake --build bclang || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+#cmake --build bclang
+#if [ $? -eq 0 ]; then
+#  echo "Passed"
+#else
+#  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+#  exit $?
+#fi
 
 ###############################################################################
 cd ../c++11 || exit 1
@@ -64,42 +112,90 @@ echo "-----------------------------------------------"
 echo "GCC - STL"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
 CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bgcc || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 { echo ""; echo "GCC - No STL"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
 CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bgcc || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 { echo ""; echo "GCC - No STL - Builtins"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
 CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bgcc || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 ##{ echo ""; echo "GCC - No STL - User defined traits"; } | tee -a ../log.txt
 #g++ --version | head --lines=1 | tee -a ../log.txt
 #CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON ..
-#cmake --build bgcc || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+#cmake --build bgcc
+#if [ $? -eq 0 ]; then
+#  echo "Passed"
+#else
+#  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+#  exit $?
+#fi
 
 { echo ""; echo "Clang - STL"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
 CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bclang || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bclang
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 { echo ""; echo "Clang - No STL"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
 CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bclang || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bclang
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 { echo ""; echo "Clang - No STL - Builtins"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
 CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bclang || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bclang
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 ##{ echo ""; echo "Clang - No STL - User defined traits"; } | tee -a ../log.txt
 #clang++ --version | head --lines=1 | tee -a ../log.txt
 #CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON ..
-#cmake --build bclang || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+#cmake --build bclang
+#if [ $? -eq 0 ]; then
+#  echo "Passed"
+#else
+#  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+#  exit $?
+#fi
 
 ###############################################################################
 cd ../c++14 || exit 1
@@ -112,42 +208,90 @@ echo "-----------------------------------------------"
 echo "GCC - STL"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
 CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bgcc || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 { echo ""; echo "GCC - No STL"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
 CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bgcc || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 { echo ""; echo "GCC - No STL - Builtins"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
 CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bgcc || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 ##{ echo ""; echo "GCC - No STL - User defined traits"; } | tee -a ../log.txt
 #g++ --version | head --lines=1 | tee -a ../log.txt
 #CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON ..
-#cmake --build bgcc || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+#cmake --build bgcc
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 { echo ""; echo "Clang - STL"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
 CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bclang || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bclang
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 { echo ""; echo "Clang - No STL"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
 CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bclang || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bclang
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 { echo ""; echo "Clang - No STL - Builtins"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
 CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bclang || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bclang
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 ##{ echo ""; echo "Clang - No STL - User defined traits"; } | tee -a ../log.txt
 #clang++ --version | head --lines=1 | tee -a ../log.txt
 #CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON ..
-#cmake --build bclang || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+#cmake --build bclang
+#if [ $? -eq 0 ]; then
+#  echo "Passed"
+#else
+#  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+#  exit $?
+#fi
 
 ###############################################################################
 cd ../c++17 || exit 1
@@ -160,42 +304,90 @@ echo "-----------------------------------------------"
 echo "GCC - STL"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
 CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bgcc || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 { echo ""; echo "GCC - No STL"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
 CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bgcc || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 { echo ""; echo "GCC - No STL - Builtins"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
 CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bgcc || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 ##{ echo ""; echo "GCC - No STL - User defined traits"; } | tee -a ../log.txt
 #g++ --version | head --lines=1 | tee -a ../log.txt
 #CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON ..
-#cmake --build bgcc || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+#cmake --build bgcc
+#if [ $? -eq 0 ]; then
+#  echo "Passed"
+#else
+#  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+#  exit $?
+#fi
 
 { echo ""; echo "Clang - STL"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
 CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bclang || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bclang
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 { echo ""; echo "Clang - No STL"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
 CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bclang || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bclang
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 { echo ""; echo "Clang - No STL - Builtins"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
 CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF ..
-cmake --build bclang || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+cmake --build bclang
+if [ $? -eq 0 ]; then
+  echo "Passed"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
 
 ##{ echo ""; echo "Clang - No STL - User defined traits"; } | tee -a ../log.txt
 #clang++ --version | head --lines=1 | tee -a ../log.txt
 #CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=ON ..
-#cmake --build bclang || echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+#cmake --build bclang
+#if [ $? -eq 0 ]; then
+#  echo "Passed"
+#else
+#  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+#  exit $?
+#fi
 
 { echo ""
 echo "-----------------------------------------------"
