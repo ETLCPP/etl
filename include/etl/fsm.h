@@ -72,9 +72,9 @@ namespace etl
 
   /// Allow alternative type for state id.
 #if !defined(ETL_FSM_STATE_ID_TYPE)
-    typedef uint_least8_t fsm_state_id_t;
+  typedef uint_least8_t fsm_state_id_t;
 #else
-    typedef ETL_FSM_STATE_ID_TYPE fsm_state_id_t;
+  typedef ETL_FSM_STATE_ID_TYPE fsm_state_id_t;
 #endif
 
   // For internal FSM use.
@@ -215,7 +215,7 @@ namespace etl
 
       if (p_default_child == ETL_NULLPTR)
       {
-        p_active_child  = &state;
+        p_active_child = &state;
         p_default_child = &state;
       }
     }
@@ -227,7 +227,7 @@ namespace etl
     template <typename TSize>
     void set_child_states(etl::ifsm_state** state_list, TSize size)
     {
-      p_active_child  = ETL_NULLPTR;
+      p_active_child = ETL_NULLPTR;
       p_default_child = ETL_NULLPTR;
 
       for (TSize i = 0; i < size; ++i)
@@ -244,10 +244,10 @@ namespace etl
     //*******************************************
     ifsm_state(etl::fsm_state_id_t state_id_)
       : state_id(state_id_),
-        p_context(ETL_NULLPTR),
-        p_parent(ETL_NULLPTR),
-        p_active_child(ETL_NULLPTR),
-        p_default_child(ETL_NULLPTR)
+      p_context(ETL_NULLPTR),
+      p_parent(ETL_NULLPTR),
+      p_active_child(ETL_NULLPTR),
+      p_default_child(ETL_NULLPTR)
     {
     }
 
@@ -355,7 +355,7 @@ namespace etl
         if (call_on_enter_state)
         {
           etl::fsm_state_id_t next_state_id;
-          etl::ifsm_state*    p_last_state;
+          etl::ifsm_state* p_last_state;
 
           do
           {
@@ -483,11 +483,11 @@ namespace etl
     bool have_changed_state(etl::fsm_state_id_t next_state_id) const
     {
       return (next_state_id != p_state->get_state_id()) &&
-             (next_state_id != ifsm_state::No_State_Change);
+        (next_state_id != ifsm_state::No_State_Change);
     }
 
-    etl::ifsm_state*    p_state;          ///< A pointer to the current state.
-    etl::ifsm_state**   state_list;       ///< The list of added states.
+    etl::ifsm_state* p_state;          ///< A pointer to the current state.
+    etl::ifsm_state** state_list;       ///< The list of added states.
     etl::fsm_state_id_t number_of_states; ///< The number of states.
   };
 
@@ -570,10 +570,10 @@ namespace etl
   // The definition for all 16 message types.
   //***************************************************************************
   template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
-            typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
-            typename T9, typename T10, typename T11, typename T12, 
-            typename T13, typename T14, typename T15, typename T16>
+            typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void, 
+            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void, 
+            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void, 
+            typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
   class fsm_state : public ifsm_state
   {
   public:
