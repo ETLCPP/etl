@@ -389,7 +389,8 @@ namespace
       CHECK_EQUAL(0, router.sender_id);
 
       // Send from the producer.
-      etl::send_message(router, message1);
+      router.receive(message1);
+      //etl::send_message(router, message1);
       CHECK_EQUAL(1, router.message1_count);
       CHECK_EQUAL(0, router.message2_count);
       CHECK_EQUAL(0, router.message4_count);

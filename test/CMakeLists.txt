@@ -22,6 +22,11 @@ if (ETL_USER_DEFINED_TYPE_TRAITS)
 	add_definitions(-DETL_USER_DEFINED_TYPE_TRAITS)
 endif()
 
+if (ETL_FORCE_TEST_CPP03)
+	message(STATUS "Compiling for C++03 tests")
+	add_definitions(-DETL_FORCE_TEST_CPP03)
+endif()
+
 if(NOT UnitTest++_FOUND)
   # Add unittest-cpp as an ExternalProject
   include(cmake/unit-test_external_project.cmake)

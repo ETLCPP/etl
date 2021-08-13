@@ -322,3 +322,4 @@ test/vs2019/cmake-build
 test/vs2019/Debug MSVC - No STL - Built-ins
 test/vs2019/Test1
 test/vs2019/Test2
+test/vs2019/Debug MSVC - Force C++03
