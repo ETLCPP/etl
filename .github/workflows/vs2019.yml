@@ -21,7 +21,7 @@ jobs:
 
     - name: Build
       run: |
-        cmake -G "Visual Studio 16 2019" -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ./
+        cmake -G "Visual Studio 16 2019" -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
         MSBuild.exe -version
         MSBuild.exe etl.sln
         
@@ -43,7 +43,7 @@ jobs:
 
     - name: Build
       run: |
-        cmake -G "Visual Studio 16 2019" -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ./
+        cmake -G "Visual Studio 16 2019" -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
         MSBuild.exe -version
         MSBuild.exe etl.sln
         

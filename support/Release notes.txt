@@ -1,6 +1,10 @@
 ===============================================================================
 20.16.0
-Added C++17 variadic versions of etl::message_router ans etl::fsm
+Added C++17 variadic versions of etl::message_router and etl::fsm
+
+===============================================================================
+20.15.1
+Fixed etl::fsm C++03 template definition that was corrupted in 20.10.0
 Fixed meson.build
 
 ===============================================================================

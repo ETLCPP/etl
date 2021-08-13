@@ -22,7 +22,7 @@ jobs:
         sudo apt-get install -y "clang-9" "lldb-9" "lld-9" "clang-format-9"
         export CC=clang-9
         export CXX=clang++-9
-        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ./
+        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
         clang --version
         make
 
@@ -41,7 +41,7 @@ jobs:
 
     - name: Build
       run: |
-        cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ./
+        cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
         gcc --version
         make
     
@@ -62,7 +62,7 @@ jobs:
       run: |
         export CC=clang
         export CXX=clang++
-        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ./
+        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
         clang --version
         make
 
@@ -83,7 +83,7 @@ jobs:
       run: |
         export CC=clang
         export CXX=clang++
-        cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF ./
+        cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
         clang --version
         make
 

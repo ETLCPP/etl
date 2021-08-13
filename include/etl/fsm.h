@@ -491,8 +491,10 @@ namespace etl
     etl::fsm_state_id_t number_of_states; ///< The number of states.
   };
 
+//*************************************************************************************************
+// For C++17 and above.
+//*************************************************************************************************
 #if ETL_CPP17_SUPPORTED && !defined(ETL_FSM_FORCE_CPP03) // For C++17 and above
-
   //***************************************************************************
   // The definition for all types.
   //***************************************************************************
@@ -563,17 +565,18 @@ namespace etl
       }
     }
   };
-
-#else // For C++03, C++11 & C++14
-
+#else
+//*************************************************************************************************
+// For C++14 and below.
+//*************************************************************************************************
   //***************************************************************************
   // The definition for all 16 message types.
   //***************************************************************************
   template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
-            typename T1, typename T2, typename T3, typename T4, 
-            typename T5, typename T6, typename T7, typename T8, 
-            typename T9, typename T10, typename T11, typename T12, 
-            typename T13, typename T14, typename T15, typename T16>
+            typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void, 
+            typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void, 
+            typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void, 
+            typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
   class fsm_state : public ifsm_state
   {
   public:
@@ -1497,7 +1500,6 @@ namespace etl
       return p_parent ? p_parent->process_event(message) : static_cast<TDerived*>(this)->on_event_unknown(message);
     }
   };
-
 #endif
 }
 

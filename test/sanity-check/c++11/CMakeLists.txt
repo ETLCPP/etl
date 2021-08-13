@@ -22,6 +22,11 @@ if (ETL_USER_DEFINED_TYPE_TRAITS)
 	add_definitions(-DETL_USER_DEFINED_TYPE_TRAITS)
 endif()
 
+if (ETL_FORCE_TEST_CPP03)
+	message(STATUS "Compiling for C++03 tests")
+	add_definitions(-DETL_FORCE_TEST_CPP03)
+endif()
+
 add_library(t11 OBJECT)
 target_compile_definitions(t11 PRIVATE __STDC_LIMIT_MACROS __STDC_CONSTANT_MACROS __STDC_FORMAT_MACROS)
 target_include_directories(t11 PRIVATE "")

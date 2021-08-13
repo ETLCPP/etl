@@ -517,8 +517,10 @@ namespace etl
     etl::fsm_state_id_t number_of_states; ///< The number of states.
   };
 
+//*************************************************************************************************
+// For C++17 and above.
+//*************************************************************************************************
 #if ETL_CPP17_SUPPORTED && !defined(ETL_FSM_FORCE_CPP03) // For C++17 and above
-
   //***************************************************************************
   // The definition for all types.
   //***************************************************************************
@@ -589,9 +591,10 @@ namespace etl
       }
     }
   };
-
-#else // For C++03, C++11 & C++14
-
+#else
+//*************************************************************************************************
+// For C++14 and below.
+//*************************************************************************************************
   /*[[[cog
   import cog
   ################################################
@@ -603,11 +606,11 @@ namespace etl
   cog.outl("template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, ")
   cog.out("          ")
   for n in range(1, int(Handlers)):
-      cog.out("typename T%s, " % n)
+      cog.out("typename T%s = void, " % n)
       if n % 4 == 0:
           cog.outl("")
           cog.out("          ")
-  cog.outl("typename T%s>" % Handlers)
+  cog.outl("typename T%s = void>" % Handlers)
   cog.outl("class fsm_state : public ifsm_state")
   cog.outl("{")
   cog.outl("public:")
@@ -778,7 +781,6 @@ namespace etl
   cog.outl("};")
   ]]]*/
   /*[[[end]]]*/
-
 #endif
 }
 
