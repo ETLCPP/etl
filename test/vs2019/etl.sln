@@ -41,8 +41,8 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug LLVM - No STL - Built-ins|Win32.ActiveCfg = Test2|Win32
-		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug LLVM - No STL - Built-ins|Win32.Build.0 = Test2|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug LLVM - No STL - Built-ins|Win32.ActiveCfg = Debug|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug LLVM - No STL - Built-ins|Win32.Build.0 = Debug|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug LLVM - No STL - Built-ins|x64.ActiveCfg = Test2|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug LLVM - No STL - Built-ins|x64.Build.0 = Test2|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug LLVM - No STL|Win32.ActiveCfg = DebugLLVMNoSTL|Win32
