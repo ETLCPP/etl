@@ -74,23 +74,13 @@ namespace etl
 #if ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST)
   //***************************************************************************
   // swap
-#if ETL_CPP11_SUPPORTED
   template <typename T>
   void swap(T& a, T& b) ETL_NOEXCEPT
   {
-    T temp(etl::move(a));
-    a = etl::move(b);
-    b = etl::move(temp);
+    T temp(ETL_MOVE(a));
+    a = ETL_MOVE(b);
+    b = ETL_MOVE(temp);
   }
-#else
-  template <typename T>
-  void swap(T& a, T& b) ETL_NOEXCEPT
-  {
-    T temp(a);
-    a = b;
-    b = temp;
-  }
-#endif
 
   template< class T, size_t N >
   void swap(T(&a)[N], T(&b)[N]) ETL_NOEXCEPT

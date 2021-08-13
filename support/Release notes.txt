@@ -1,6 +1,9 @@
 ===============================================================================
 20.16.0
 Added C++17 variadic versions of etl::message_router and etl::fsm
+pop_into in queue and stack will move if possible.
+Added Force C++03 option to Github CI
+Expanded compiled variants for scripts
 
 ===============================================================================
 20.15.1
