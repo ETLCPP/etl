@@ -398,7 +398,7 @@ namespace etl
     //*************************************************************************
     void pop_into(reference destination)
     {
-      destination = top();
+      destination = ETL_MOVE(top());
       pop();
     }
 
@@ -410,7 +410,7 @@ namespace etl
     template <typename TContainer>
     void pop_into(TContainer& destination)
     {
-      destination.push(top());
+      destination.push(ETL_MOVE(top()));
       pop();
     }
 

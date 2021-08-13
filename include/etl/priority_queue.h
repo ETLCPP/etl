@@ -308,7 +308,7 @@ namespace etl
     //*************************************************************************
     void pop_into(reference destination)
     {
-      destination = top();
+      destination = ETL_MOVE(top());
       pop();
     }
 

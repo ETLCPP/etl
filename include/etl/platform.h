@@ -146,6 +146,7 @@ SOFTWARE.
   #define ETL_OVERRIDE override
   #define ETL_FINAL final
   #define ETL_NORETURN [[noreturn]]
+  #define ETL_MOVE(x) etl::move(x)
 
   #if defined(ETL_THROW_EXCEPTIONS)
     #define ETL_NOEXCEPT  noexcept
@@ -164,6 +165,7 @@ SOFTWARE.
   #define ETL_NORETURN
   #define ETL_NOEXCEPT
   #define ETL_NOEXCEPT_EXPR(expression)
+  #define ETL_MOVE(x) x
 #endif
 
 // C++14
