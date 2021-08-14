@@ -5,7 +5,7 @@ branches:
 image: Visual Studio 2019
 configuration:
 - Debug
-- Debug - NoSTL
+- Debug - No STL
 - Debug MSVC - No STL - Built-ins
 - Debug MSVC - Force C++03
 clone_folder: c:\projects\etl
