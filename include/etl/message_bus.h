@@ -225,6 +225,16 @@ namespace etl
           break;
         }
       }
+
+      if (has_successor())
+      {
+        etl::imessage_router& successor = get_successor();
+
+        if (successor.accepts(shared_msg.get_message().get_message_id()))
+        {
+          successor.receive(destination_router_id, shared_msg);
+        }
+      }
     }
 
     //*******************************************
@@ -294,6 +304,16 @@ namespace etl
           }
 
           break;
+        }
+      }
+
+      if (has_successor())
+      {
+        etl::imessage_router& successor = get_successor();
+
+        if (successor.accepts(message.get_message_id()))
+        {
+          successor.receive(destination_router_id, message);
         }
       }
     }
