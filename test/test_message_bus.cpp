@@ -81,6 +81,7 @@ namespace
   {
     Message3(etl::imessage_router& callback_)
       : callback(callback_)
+      , value()
     {
     }
 
@@ -120,9 +121,9 @@ namespace
         message3_count(0),
         message4_count(0),
         message5_count(0),
-        message_unknown_count(0)
+        message_unknown_count(0),
+        order(0)
     {
-
     }
 
     void on_receive(const Message1& msg)
@@ -185,7 +186,6 @@ namespace
         message5_count(0),
         message_unknown_count(0)
     {
-
     }
 
     void on_receive(const Message1& msg)
@@ -766,6 +766,122 @@ namespace
       CHECK_EQUAL(2, router4b.order);
       CHECK_EQUAL(3, router4a.order);
       CHECK_EQUAL(4, router3.order);
+    }
+
+    //*************************************************************************
+    TEST(message_bus_broadcast_addressed_successor_bus)
+    {
+      etl::message_bus<3> bus1;
+      etl::message_bus<2> bus2;
+
+      RouterA router1(ROUTER1);
+      RouterA router2(ROUTER2);
+      RouterA router3(ROUTER3);
+      RouterA router4(ROUTER4);
+
+      RouterA callback(ROUTER5);
+
+      bus1.subscribe(router1);
+      bus1.subscribe(router2);
+      bus1.set_successor(bus2);
+
+      bus2.subscribe(router3);
+      bus2.subscribe(router4);
+
+      Message1 message1(callback);
+      Message2 message2(callback);
+      Message3 message3(callback);
+      Message4 message4(callback);
+
+      // Broadcast to bus1
+      bus1.receive(message1);
+
+      CHECK_EQUAL(1, router1.message1_count);
+      CHECK_EQUAL(0, router1.message2_count);
+      CHECK_EQUAL(0, router1.message3_count);
+      CHECK_EQUAL(0, router1.message4_count);
+      CHECK_EQUAL(0, router1.message5_count);
+      CHECK_EQUAL(0, router1.message_unknown_count);
+
+      CHECK_EQUAL(1, router2.message1_count);
+      CHECK_EQUAL(0, router2.message2_count);
+      CHECK_EQUAL(0, router2.message4_count);
+      CHECK_EQUAL(0, router2.message5_count);
+      CHECK_EQUAL(0, router2.message_unknown_count);
+
+      CHECK_EQUAL(1, router3.message1_count);
+      CHECK_EQUAL(0, router3.message2_count);
+      CHECK_EQUAL(0, router3.message4_count);
+      CHECK_EQUAL(0, router3.message5_count);
+      CHECK_EQUAL(0, router3.message_unknown_count);
+
+      CHECK_EQUAL(1, router4.message1_count);
+      CHECK_EQUAL(0, router4.message2_count);
+      CHECK_EQUAL(0, router4.message4_count);
+      CHECK_EQUAL(0, router4.message5_count);
+      CHECK_EQUAL(0, router4.message_unknown_count);
+
+      CHECK_EQUAL(4, callback.message5_count);
+
+      // Addressed to ROUTER2
+      bus1.receive(ROUTER2, message1);
+
+      CHECK_EQUAL(1, router1.message1_count);
+      CHECK_EQUAL(0, router1.message2_count);
+      CHECK_EQUAL(0, router1.message3_count);
+      CHECK_EQUAL(0, router1.message4_count);
+      CHECK_EQUAL(0, router1.message5_count);
+      CHECK_EQUAL(0, router1.message_unknown_count);
+
+      CHECK_EQUAL(2, router2.message1_count);
+      CHECK_EQUAL(0, router2.message2_count);
+      CHECK_EQUAL(0, router2.message4_count);
+      CHECK_EQUAL(0, router2.message5_count);
+      CHECK_EQUAL(0, router2.message_unknown_count);
+
+      CHECK_EQUAL(1, router3.message1_count);
+      CHECK_EQUAL(0, router3.message2_count);
+      CHECK_EQUAL(0, router3.message4_count);
+      CHECK_EQUAL(0, router3.message5_count);
+      CHECK_EQUAL(0, router3.message_unknown_count);
+
+      CHECK_EQUAL(1, router4.message1_count);
+      CHECK_EQUAL(0, router4.message2_count);
+      CHECK_EQUAL(0, router4.message4_count);
+      CHECK_EQUAL(0, router4.message5_count);
+      CHECK_EQUAL(0, router4.message_unknown_count);
+
+      CHECK_EQUAL(5, callback.message5_count);
+
+      // Addressed to ROUTER3 via bus2
+      bus1.receive(ROUTER3, message1);
+
+      CHECK_EQUAL(1, router1.message1_count);
+      CHECK_EQUAL(0, router1.message2_count);
+      CHECK_EQUAL(0, router1.message3_count);
+      CHECK_EQUAL(0, router1.message4_count);
+      CHECK_EQUAL(0, router1.message5_count);
+      CHECK_EQUAL(0, router1.message_unknown_count);
+
+      CHECK_EQUAL(2, router2.message1_count);
+      CHECK_EQUAL(0, router2.message2_count);
+      CHECK_EQUAL(0, router2.message4_count);
+      CHECK_EQUAL(0, router2.message5_count);
+      CHECK_EQUAL(0, router2.message_unknown_count);
+
+      CHECK_EQUAL(2, router3.message1_count);
+      CHECK_EQUAL(0, router3.message2_count);
+      CHECK_EQUAL(0, router3.message4_count);
+      CHECK_EQUAL(0, router3.message5_count);
+      CHECK_EQUAL(0, router3.message_unknown_count);
+
+      CHECK_EQUAL(1, router4.message1_count);
+      CHECK_EQUAL(0, router4.message2_count);
+      CHECK_EQUAL(0, router4.message4_count);
+      CHECK_EQUAL(0, router4.message5_count);
+      CHECK_EQUAL(0, router4.message_unknown_count);
+
+      CHECK_EQUAL(6, callback.message5_count);
     }
   };
 }
