@@ -500,7 +500,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     bip_buffer_spsc_atomic()
-      : base_t(reinterpret_cast<T*>(&buffer[0]), RESERVED_SIZE)
+      : base_t(reinterpret_cast<T*>(buffer.raw), RESERVED_SIZE)
     {
     }
 
