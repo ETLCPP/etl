@@ -196,8 +196,12 @@ namespace etl
     //********************************************
     using etl::imessage_router::receive;
 
-    void receive(const etl::imessage&) ETL_OVERRIDE
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
+      if (has_successor())
+      {
+        get_successor().receive(msg);
+      }
     }
 
     //********************************************
@@ -256,8 +260,12 @@ namespace etl
     //********************************************
     using etl::imessage_router::receive;
 
-    void receive(const etl::imessage&) ETL_OVERRIDE
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
+      if (has_successor())
+      {
+        get_successor().receive(msg);
+      }
     }
 
     //********************************************
