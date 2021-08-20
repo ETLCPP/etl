@@ -1140,6 +1140,9 @@
     <ClInclude Include="..\..\include\etl\experimental\mem_cast.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\byte_stream.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -2994,6 +2997,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\test_bip_buffer_spsc_atomic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_byte_stream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

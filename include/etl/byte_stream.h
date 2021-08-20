@@ -31,12 +31,10 @@ SOFTWARE.
 #ifndef ETL_BYTE_STREAM_INCLUDED
 #define ETL_BYTE_STREAM_INCLUDED
 
-#include "platform.h"
-
-#if ETL_USING_8BIT_TYPES
 #include <stdint.h>
 #include <limits.h>
 
+#include "platform.h"
 #include "type_traits.h"
 #include "nullptr.h"
 #include "endianness.h"
@@ -45,196 +43,135 @@ SOFTWARE.
 #include "iterator.h"
 #include "memory.h"
 #include "span.h"
+#include "iterator.h"
+#include "optional.h"
 
 namespace etl
 {
-  class byte_stream_base
+  namespace private_byte_stream
   {
-  public:
-
-    typedef const int8_t* const_iterator;
-
-    //***************************************************************************
-    /// Construct from begin and length.
-    //***************************************************************************
-    void set_stream(int8_t* begin_, size_t length_)
+    class byte_stream_base
     {
-      pdata    = begin_;
-      pcurrent = begin_;
-      length   = length_;
-    }
+    public:
 
-    //***************************************************************************
-    /// Construct from begin and length.
-    //***************************************************************************
-    void set_stream(uint8_t* begin_, size_t length_)
-    {
-      pdata    = reinterpret_cast<int8_t*>(begin_);
-      pcurrent = begin_;
-      length   = length_;
-    }
+      typedef const char* const_iterator;
 
-    //***************************************************************************
-    /// Construct from range.
-    //***************************************************************************
-    void set_stream(int8_t* begin_, int8_t* end_)
-    {
-      set_stream(begin_, etl::distance(begin_, end_));
-    }
-
-    //***************************************************************************
-    /// Construct from range.
-    //***************************************************************************
-    void set_stream(uint8_t* begin_, uint8_t* end_)
-    {
-      set_stream(begin_, etl::distance(begin_, end_));
-    }
-
-
-    //***************************************************************************
-    /// Sets the index back to the beginning of the stream.
-    //***************************************************************************
-    void restart()
-    {
-      pcurrent = pdata;
-    }
-
-    //***************************************************************************
-    /// Returns <b>true</b> if the byte stream index has reached the end.
-    //***************************************************************************
-    bool at_end() const
-    {
-      return (pcurrent == (pdata + length));
-    }
-
-    //***************************************************************************
-    /// Returns <b>true</b> if the byte stream index has reached the end.
-    //***************************************************************************
-    bool full() const
-    {
-      return at_end();
-    }
-
-    //***************************************************************************
-    /// Returns the number of bytes used in the stream.
-    //***************************************************************************
-    size_t size() const
-    {
-      return etl::distance(pdata, pcurrent);
-    }
-
-    //***************************************************************************
-    /// Returns the maximum number of bytes in the stream.
-    //***************************************************************************
-    size_t capacity() const
-    {
-      return length;
-    }
-
-    //***************************************************************************
-    /// The number of bytes left in the stream.
-    //***************************************************************************
-    size_t available() const
-    {
-      return capacity() - size();
-    }
-
-    //***************************************************************************
-    /// Returns start of the stream.
-    //***************************************************************************
-    const_iterator begin() const
-    {
-      return pdata;
-    }
-
-    //***************************************************************************
-    /// Returns end of the stream.
-    //***************************************************************************
-    const_iterator end() const
-    {
-      return pcurrent;
-    }
-
-  protected:
-
-    byte_stream_base(int8_t* pdata_, size_t length_)
-      : pdata(pdata_)
-      , pcurrent(pdata_)
-      , length(length_)
-    {
-    }
-
-    byte_stream_base(uint8_t* pdata_, size_t length_)
-      : pdata(reinterpret_cast<int8_t*>(pdata_))
-      , pcurrent(pdata_)
-      , length(length_)
-    {
-    }
-
-    void copy_value(const int8_t* sb, const int8_t* se, int8_t* db)
-    {
-      etl::endian platform_endianness = etl::endianness::value();
-
-      if (network_endianness == platform_endianness)
+      //***************************************************************************
+      /// Sets the index back to the beginning of the stream.
+      //***************************************************************************
+      void restart()
       {
-        etl::copy(sb, se, db);
+        pcurrent = const_cast<char*>(pdata);
       }
-      else
-      {
-        etl::reverse_copy(sb, se, db);
-      }
-    }
 
-    const int8_t*     pdata;    ///< The start of the byte stream buffer.
-    mutable int8_t*   pcurrent; ///< The current position in the byte stream buffer.
-    const size_t      length;   ///< The length of the byte stream buffer.
-    const etl::endian network_endianness;
-  };
+      //***************************************************************************
+      /// Returns <b>true</b> if the byte stream index has reached the end.
+      //***************************************************************************
+      bool full() const
+      {
+        return size() == capacity();
+      }
+
+      //***************************************************************************
+      /// Returns <b>true</b> if the byte stream is empty.
+      //***************************************************************************
+      bool empty() const
+      {
+        return size() == 0U;
+      }
+
+      //***************************************************************************
+      /// Returns the number of bytes used in the stream.
+      //***************************************************************************
+      size_t size() const
+      {
+        return etl::distance(pdata, static_cast<char* const>(pcurrent));
+      }
+
+      //***************************************************************************
+      /// Returns the maximum number of bytes in the stream.
+      //***************************************************************************
+      size_t capacity() const
+      {
+        return length;
+      }
+
+      //***************************************************************************
+      /// The number of T left in the stream.
+      //***************************************************************************
+      template <typename T>
+      size_t available() const
+      {
+        return (capacity() - size()) / sizeof(T);
+      }
+
+      //***************************************************************************
+      /// Returns start of the stream.
+      //***************************************************************************
+      const_iterator begin() const
+      {
+        return pdata;
+      }
+
+      //***************************************************************************
+      /// Returns end of the stream.
+      //***************************************************************************
+      const_iterator end() const
+      {
+        return pcurrent;
+      }
+
+    protected:
+
+      byte_stream_base(char* pdata_, size_t length_, etl::endian buffer_endianness_)
+        : pdata(pdata_)
+        , pcurrent(pdata_)
+        , length(length_)
+        , buffer_endianness(buffer_endianness_)
+      {
+      }
+
+      void copy_value(const char* source, char* destination, size_t length) const
+      {
+        const etl::endian platform_endianness = etl::endianness::value();
+
+        if (buffer_endianness == platform_endianness)
+        {
+          etl::copy(source, source + length, destination);
+        }
+        else
+        {
+          etl::reverse_copy(source, source + length, destination);
+        }
+      }
+
+      char* const       pdata;             ///< The start of the byte stream buffer.
+      char*             pcurrent;          ///< The current position in the byte stream buffer.
+      const size_t      length;            ///< The length of the byte stream buffer.
+      const etl::endian buffer_endianness; ///< The endianness of the buffer data.
+    };
+  }
 
   //***************************************************************************
   /// Encodes a byte stream.
   //***************************************************************************
-  class byte_stream_writer : public byte_stream_base
+  class byte_stream_writer : public private_byte_stream::byte_stream_base
   {
   public:
 
     //***************************************************************************
-    /// Default constructor.
-    //***************************************************************************
-    byte_stream_writer()
-      : byte_stream_base()
-    {
-    }
-
-    //***************************************************************************
     /// Construct from range.
     //***************************************************************************
-    byte_stream_writer(int8_t* begin_, int8_t* end_)
-      : byte_stream_base(begin_, etl::distance(begin_, end_))
-    {
-    }
-
-    //***************************************************************************
-    /// Construct from range.
-    //***************************************************************************
-    byte_stream_writer(uint8_t* begin_, uint8_t* end_)
-      : byte_stream_base(begin_), etl::distance(begin_, end_))
+    byte_stream_writer(char* begin_, char* end_, etl::endian buffer_endianness_ = etl::endian::big)
+      : byte_stream_base(begin_, etl::distance(begin_, end_), buffer_endianness_)
     {
     }
 
     //***************************************************************************
     /// Construct from begin and length.
     //***************************************************************************
-    byte_stream_writer(int8_t* begin_, size_t length_)
-      : byte_stream_base(begin_), length_)
-    {
-    }
-
-    //***************************************************************************
-    /// Construct from begin and length.
-    //***************************************************************************
-    byte_stream_writer(uint8_t* begin_, size_t length_)
-      : byte_stream_base(begin_), length_)
+    byte_stream_writer(char* begin_, size_t length_, etl::endian buffer_endianness_ = etl::endian::big)
+      : byte_stream_base(begin_, length_, buffer_endianness_)
     {
     }
 
@@ -245,9 +182,9 @@ namespace etl
     {
       bool success = false;
 
-      if (available() > 0)
+      if (available<bool>() > 0U)
       {
-        *pdata++ = value ? 1 : 0;
+        *pcurrent++ = value ? 1 : 0;
         success = true;
       }
  
@@ -263,10 +200,9 @@ namespace etl
     {
       bool success = false;
 
-      if (available() >= sizeof(T))
+      if (available<T>() > 0U)
       {
-        to_bytes(value, pdata);
-        pdata += sizeof(T);
+        to_bytes<T>(value);
         success = true;
       }
 
@@ -278,13 +214,13 @@ namespace etl
     //***************************************************************************
     template <typename T>
     typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, bool>::type
-    bool write(const etl::span<T>& range)
+      write(const etl::span<T>& range)
     {
       bool success = false;
 
-      size_t length = range.size_bytes();
+      size_t span_length = range.size();
 
-      if (available() >= length)
+      if (available<T>() >= span_length)
       {
         etl::span<int8_t>::const_iterator itr = range.begin();
 
@@ -292,6 +228,8 @@ namespace etl
         {
           to_bytes(*itr++);
         }
+
+        success = true;
       }
 
       return success;
@@ -302,23 +240,20 @@ namespace etl
     //***************************************************************************
     /// to_bytes
     //***************************************************************************
-    void to_bytes(int8_t value)
-    {
-      *pcurrent++ = value;
-    }
-
-    void to_bytes(uint8_t value)
-    {
-      *pcurrent++ = value;
-    }
-
     template <typename T>
-    void to_bytes(T value)
+    typename etl::enable_if<sizeof(T) == 1U, void>::type
+      to_bytes(const T value)
     {
-      const int8_t* pv = reinterpret_cast<int8_t*>(&value);
+      *pcurrent++ = static_cast<const char>(value);
+    }
 
-      copy_value(pv, pv + sizeof(T), pcurrent);
-
+    //*********************************
+    template <typename T>
+    typename etl::enable_if<sizeof(T) != 1U, void>::type
+      to_bytes(const T value)
+    {
+      const char* pv = reinterpret_cast<const char*>(&value);
+      copy_value(pv, pcurrent, sizeof(T));
       pcurrent += sizeof(T);
     }
   };
@@ -327,39 +262,23 @@ namespace etl
   /// Decodes byte streams.
   /// Data must be stored in the stream in network order.
   //***************************************************************************
-  class byte_stream_reader : public byte_stream_base
+  class byte_stream_reader : public private_byte_stream::byte_stream_base
   {
   public:
 
     //***************************************************************************
     /// Construct from range.
     //***************************************************************************
-    byte_stream_reader(int8_t* begin_, int8_t* end_)
-      : byte_stream_base(begin_, etl::distance(begin_, end_))
-    {
-    }
-
-    //***************************************************************************
-    /// Construct from range.
-    //***************************************************************************
-    byte_stream_reader(uint8_t* begin_, uint8_t* end_)
-      : byte_stream_base(begin_), etl::distance(begin_, end_))
+    byte_stream_reader(char* begin_, char* end_, etl::endian buffer_endianness_ = etl::endian::big)
+      : byte_stream_base(begin_, etl::distance(begin_, end_), buffer_endianness_)
     {
     }
 
     //***************************************************************************
     /// Construct from begin and length.
     //***************************************************************************
-    byte_stream_reader(int8_t* begin_, size_t length_)
-      : byte_stream_base(begin_), length_)
-    {
-    }
-
-    //***************************************************************************
-    /// Construct from begin and length.
-    //***************************************************************************
-    byte_stream_reader(uint8_t* begin_, size_t length_)
-      : byte_stream_base(begin_), length_)
+    byte_stream_reader(char* begin_, size_t length_, etl::endian buffer_endianness_ = etl::endian::big)
+      : byte_stream_base(begin_, length_, buffer_endianness_)
     {
     }
 
@@ -367,13 +286,13 @@ namespace etl
     /// Read a value from the stream.
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_bool<T>::value || etl::is_integral<T>::value || etl::is_floating_point<T>::value, etl::optional<T>>::type
-      read() const
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, etl::optional<T>>::type
+      read()
     {
       etl::optional<T> result;
 
-      // Do we have enough bytes?
-      if (available() >= size_t(T))
+      // Do we have enough room?
+      if (available<T>() > 0U)
       {
         result = from_bytes<T>();
       }
@@ -385,17 +304,20 @@ namespace etl
     /// Read a range from the stream.
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_bool<T>::value || etl::is_integral<T>::value || etl::is_floating_point<T>::value, etl::span<T>>::type
-    etl::span<T> read(size_t length) const
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, etl::span<T>>::type
+      read(size_t length)
     {
       etl::span<T> result;
 
-      if (available() >= (length * sizeof(T)))
+      const size_t buffer_length = length * sizeof(T);
+
+      // Do we have enough room?
+      if (available<T>() >= buffer_length)
       {
-        const int8_t* pend = pcurrent + (length * sizeof(T));
+        const char* pend = pcurrent + buffer_length;
 
         result = etl::span<T>(reinterpret_cast<const T*>(pcurrent), reinterpret_cast<const T*>(pend));
-        pcurrent += length * sizeof(T);
+        pcurrent += buffer_length;
       }
 
       return result;
@@ -407,26 +329,26 @@ namespace etl
     /// from_bytes
     //***************************************************************************
     template <typename T>
-    T from_bytes() const
+    typename etl::enable_if<sizeof(T) == 1U, T>::type
+      from_bytes()
+    {
+      return static_cast<T>(*pcurrent++);
+    }
+
+    //*********************************
+    template <typename T>
+    typename etl::enable_if<sizeof(T) != 1U, T>::type
+      from_bytes()
     {
       T value;
 
-      int8_t* pv = reinterpret_cast<int8_t*>(&value);
-
-      if ETL_IF_CONSTEXPR(sizeof(T) == 1U)
-      {
-        *pv = *pcurrent;
-      }
-      else
-      {
-        copy_value(pcurrent, pcurrent + sizeof(T), pv);
-      }
-
+      char* pv = reinterpret_cast<char*>(&value);
+      copy_value(pcurrent, pv, sizeof(T));
       pcurrent += sizeof(T);
+
+      return value;
     }
   };
 }
-
-#endif
 
 #endif
