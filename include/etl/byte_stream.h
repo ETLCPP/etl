@@ -183,7 +183,7 @@ namespace etl
 
         while (itr != range.end())
         {
-          to_bytes(*itr++);
+          *pcurrent++ = static_cast<char>(*itr++);
         }
 
         success = true;
@@ -242,7 +242,7 @@ namespace etl
     typename etl::enable_if<sizeof(T) == 1U, void>::type
       to_bytes(const T value)
     {
-      *pcurrent++ = static_cast<const char>(value);
+      *pcurrent++ = static_cast<char>(value);
     }
 
     //*********************************
