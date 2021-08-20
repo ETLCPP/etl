@@ -292,6 +292,7 @@ namespace etl
     /// Construct from begin and length.
     //***************************************************************************
     byte_stream_reader(char* begin_, size_t length_, etl::endian buffer_endianness_ = etl::endian::big)
+      : byte_stream_base(begin_, length_, buffer_endianness_)
       : byte_stream_common(begin_, length_, buffer_endianness_)
     {
     }
