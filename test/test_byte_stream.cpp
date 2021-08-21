@@ -40,9 +40,9 @@ namespace
   //***********************************
   struct Object
   {
-    etl::optional<int16_t> i;
-    etl::optional<double>  d;
-    etl::optional<uint8_t> c;
+    int16_t i;
+    double  d;
+    uint8_t c;
   };
 
   bool operator ==(const Object& lhs, const Object& rhs)
@@ -54,7 +54,7 @@ namespace
 
   std::ostream& operator << (std::ostream& os, const Object& object)
   {
-    os << object.i.value() << "," << object.d.value() << "," << (int)object.c.value();
+    os << object.i << "," << object.d << "," << (int)object.c;
     return os;
   }
 }
@@ -62,23 +62,31 @@ namespace
 namespace etl
 {
   //***********************************
-  bool byte_stream_write(etl::byte_stream_writer& stream, const Object& object)
+  template <>
+  bool write<Object>(etl::byte_stream_writer& stream, const Object& object)
   {
-    bool success_i = stream.write(object.i.value());
-    bool success_d = stream.write(object.d.value());
-    bool success_c = stream.write(object.c.value());
+    bool success_i = stream.write(object.i);
+    bool success_d = stream.write(object.d);
+    bool success_c = stream.write(object.c);
 
     return success_i && success_d && success_c;
   }
 
   //***********************************
-  bool byte_stream_read(etl::byte_stream_reader& stream, Object& object)
+  template <>
+  etl::optional<Object> read<Object>(etl::byte_stream_reader& stream)
   {
-    bool success_i = bool(object.i = stream.read<int16_t>());
-    bool success_d = bool(object.d = stream.read<double>());
-    bool success_c = bool(object.c = stream.read<uint8_t>());
+    etl::optional<Object> result;
 
-    return success_i && success_d && success_c;
+    etl::optional<int16_t> i = stream.read<int16_t>();
+    etl::optional<double>  d = stream.read<double>();
+    etl::optional<uint8_t> c = stream.read<uint8_t>();
+
+    Object object { i.value(), d.value(), c.value() };
+
+    result = object;
+
+    return result;
   }
 }
 
@@ -928,8 +936,8 @@ namespace
     }
 
     //*************************************************************************
-    TEST(write_read_object_global)
-    {
+    TEST(write_read_object)
+    {    
       std::array<char, 2 * sizeof(Object)> storage;
 
       etl::byte_stream_writer writer(storage.data(), storage.size());
@@ -937,24 +945,24 @@ namespace
       Object object1 = { -1234, 2.71578369, 250 };
       Object object2 = {  5678, 5.24685744, 126 };
 
-      CHECK(etl::byte_stream_write(writer, object1));
-      CHECK(etl::byte_stream_write(writer, object2));
+      CHECK(etl::write(writer, object1));
+      CHECK(etl::write(writer, object2));
 
-      Object object1a;
-      Object object2a;
+      etl::optional<Object> object1a;
+      etl::optional<Object> object2a;
 
       etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
 
-      CHECK(etl::byte_stream_read(reader, object1a));
-      CHECK(etl::byte_stream_read(reader, object2a));
+      CHECK(object1a = etl::read<Object>(reader));
+      CHECK(object2a = etl::read<Object>(reader));
 
-      CHECK_EQUAL(object1.i.value(), object1a.i.value());
-      CHECK_EQUAL(object1.d.value(), object1a.d.value());
-      CHECK_EQUAL(int(object1.c.value()), int(object1a.c.value()));
+      CHECK_EQUAL(object1.i, object1a.value().i);
+      CHECK_EQUAL(object1.d, object1a.value().d);
+      CHECK_EQUAL(int(object1.c), int(object1a.value().c));
 
-      CHECK_EQUAL(object2.i.value(), object2a.i.value());
-      CHECK_EQUAL(object2.d.value(), object2a.d.value());
-      CHECK_EQUAL(int(object2.c.value()), int(object2a.c.value()));
+      CHECK_EQUAL(object2.i, object2a.value().i);
+      CHECK_EQUAL(object2.d, object2a.value().d);
+      CHECK_EQUAL(int(object2.c), int(object2a.value().c));
     }
 
     //*************************************************************************

@@ -169,10 +169,10 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Write a byte range to the stream.
+    /// Write a range of T to the stream.
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<sizeof(T) == 1U, bool>::type
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, bool>::type
       write(const etl::span<T>& range)
     {
       bool success = false;
@@ -183,7 +183,7 @@ namespace etl
 
         while (itr != range.end())
         {
-          *pcurrent++ = static_cast<char>(*itr++);
+          to_bytes(*itr++);
         }
 
         success = true;
@@ -370,6 +370,26 @@ namespace etl
       return value;
     }
   };
+
+  //***************************************************************************
+  /// Default implementation of the write function.
+  /// Overload this to support custom types.
+  //***************************************************************************
+  template <typename T>
+  bool write(etl::byte_stream_writer& stream, const T& value)
+  {
+    return stream.write(value);
+  }
+
+  //***************************************************************************
+  /// Default implementation of the read function.
+  /// Overload this to support custom types.
+  //***************************************************************************
+  template <typename T>
+  etl::optional<T> read(etl::byte_stream_reader& stream)
+  {
+    return stream.read<T>();
+  }
 }
 
 #endif
