@@ -40,7 +40,7 @@ namespace
 {
   SUITE(test_array)
   {
-    static const size_t SIZE = 10;
+    static const size_t SIZE = 10UL;
 
     typedef etl::array<int, SIZE> Data;
     typedef std::array<int, SIZE> Compare_Data;
@@ -87,7 +87,7 @@ namespace
     {
       Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.at(i), compare_data.at(i));
       }
@@ -100,7 +100,7 @@ namespace
     {
       Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.at(i), compare_data.at(i));
       }
@@ -113,7 +113,7 @@ namespace
     {
       Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
@@ -124,7 +124,7 @@ namespace
     {
       Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }

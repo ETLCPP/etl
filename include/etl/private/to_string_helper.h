@@ -151,7 +151,7 @@ namespace etl
 
       if (value == 0)
       {
-        // If number is negative, append '-' (a negative zero might occure for fractional numbers > -1.0) 
+        // If number is negative, append '-' (a negative zero might occure for fractional numbers > -1.0)
         if ((format.get_base() == 10U) && negative)
         {
           str.push_back(type('-'));
@@ -294,7 +294,7 @@ namespace etl
 
         workspace_t multiplier = 1;
 
-        for (uint32_t i = 0; i < fractional_format.get_precision(); ++i)
+        for (uint32_t i = 0U; i < fractional_format.get_precision(); ++i)
         {
           multiplier *= 10U;
         }

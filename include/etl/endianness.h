@@ -91,7 +91,7 @@ namespace etl
       static const union U
       {
         U()
-          : ui32(0x12345678)
+          : ui32(0x12345678UL)
         {
         }
 
@@ -99,7 +99,7 @@ namespace etl
         uint16_t ui16[2];
       } u;
 
-      return (u.ui16[0] == 0x5678) ? etl::endian::little : etl::endian::big;
+      return (u.ui16[0] == 0x5678U) ? etl::endian::little : etl::endian::big;
     }
   };
 

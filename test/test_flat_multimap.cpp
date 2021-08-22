@@ -42,7 +42,7 @@ SOFTWARE.
 
 namespace
 {
-  static const size_t SIZE = 10;
+  static const size_t SIZE = 10UL;
 
   typedef TestDataDC<std::string>  DC;
   typedef TestDataNDC<std::string> NDC;
@@ -270,7 +270,7 @@ namespace
     {
       DataDC data;
 
-      CHECK(data.size() == size_t(0));
+      CHECK(data.size() == size_t(0UL));
       CHECK(data.empty());
       CHECK(data.capacity() == SIZE);
       CHECK(data.max_size() == SIZE);
@@ -809,13 +809,13 @@ namespace
 
       DataNDC data(compare_data.begin(), compare_data.end());
       data.clear();
-      CHECK(data.size() == size_t(0));
+      CHECK(data.size() == size_t(0UL));
 
       // Do it again to check that clear() didn't screw up the internals.
       data.assign(compare_data.begin(), compare_data.end());
       CHECK(data.size() == compare_data.size());
       data.clear();
-      CHECK(data.size() == size_t(0));
+      CHECK(data.size() == size_t(0UL));
     }
 
     //*************************************************************************
@@ -824,13 +824,13 @@ namespace
       DataInt data(int_data.begin(), int_data.end());
 
       data.clear();
-      CHECK(data.size() == size_t(0));
+      CHECK(data.size() == size_t(0UL));
 
       // Do it again to check that clear() didn't screw up the internals.
       data.assign(int_data.begin(), int_data.end());
       CHECK(data.size() == int_data.size());
       data.clear();
-      CHECK(data.size() == size_t(0));
+      CHECK(data.size() == size_t(0UL));
     }
 
     //*************************************************************************

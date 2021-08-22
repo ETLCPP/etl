@@ -28,8 +28,8 @@ uint64_t StopTimer()
   return (end.QuadPart - begin.QuadPart) / frequency.QuadPart;
 }
 
-const size_t TESTSIZE = 10000000;
-const size_t TESTINTERATIONS = 16;
+const size_t TESTSIZE = 10000000UL;
+const size_t TESTINTERATIONS = 16UL;
 
 typedef std::unordered_map<uint64_t, uint16_t> Stdmap;
 typedef etl::unordered_map<uint64_t, uint16_t, TESTSIZE> Etlmap;
@@ -41,14 +41,14 @@ int main()
 {
   StartTimer();
 
-  for (size_t i = 0; i < TESTINTERATIONS; ++i)
+  for (size_t i = 0UL; i < TESTINTERATIONS; ++i)
   {
-    for (size_t j = 0; j < TESTSIZE; ++j)
+    for (size_t j = 0UL; j < TESTSIZE; ++j)
     {
       std::pair<Stdmap::iterator, bool> ok = stdmap.insert(std::make_pair(uint64_t(j), uint16_t(j)));
     }
 
-    for (size_t j = 0; j < TESTSIZE; ++j)
+    for (size_t j = 0UL; j < TESTSIZE; ++j)
     {
       stdmap.erase(j);
     }
@@ -61,14 +61,14 @@ int main()
 
   StartTimer();
 
-  for (size_t i = 0; i < TESTINTERATIONS; ++i)
+  for (size_t i = 0UL; i < TESTINTERATIONS; ++i)
   {
-    for (size_t j = 0; j < TESTSIZE; ++j)
+    for (size_t j = 0UL; j < TESTSIZE; ++j)
     {
       std::pair<Etlmap::iterator, bool> ok = etlmap.insert(std::make_pair(uint64_t(j), uint16_t(j)));
     }
 
-    for (size_t j = 0; j < TESTSIZE; ++j)
+    for (size_t j = 0UL; j < TESTSIZE; ++j)
     {
       etlmap.erase(j);
     }

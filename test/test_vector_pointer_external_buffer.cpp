@@ -37,7 +37,7 @@ SOFTWARE.
 
 namespace
 {
-  static const size_t SIZE = 10;
+  static const size_t SIZE = 10UL;
 
   int* buffer1[SIZE];
   int* buffer2[SIZE];
@@ -103,7 +103,7 @@ namespace
     {
       Data data(buffer1, SIZE);
 
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK_EQUAL(data.size(), size_t(0UL));
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
@@ -114,7 +114,7 @@ namespace
     {
       CData data(buffer1, SIZE);
 
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK_EQUAL(data.size(), size_t(0UL));
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
@@ -145,7 +145,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_size)
     {
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       Data data(INITIAL_SIZE, buffer1, SIZE);
 
       CHECK(data.size() == INITIAL_SIZE);
@@ -155,7 +155,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_constructor_size)
     {
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       CData data(INITIAL_SIZE, buffer1, SIZE);
 
       CHECK(data.size() == INITIAL_SIZE);
@@ -165,7 +165,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_size_value)
     {
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       int INITIAL_VALUE = 1;
 
       std::array<int*, INITIAL_SIZE> compare_data;
@@ -184,7 +184,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_constructor_size_value)
     {
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       int INITIAL_VALUE = 1;
 
       std::array<const int*, INITIAL_SIZE> compare_data;
@@ -457,8 +457,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_up)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 8;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = 8UL;
 
       Data data(INITIAL_SIZE, buffer1, SIZE);
       data.resize(NEW_SIZE);
@@ -469,8 +469,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_resize_up)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 8;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = 8UL;
 
       CData data(INITIAL_SIZE, buffer1, SIZE);
       data.resize(NEW_SIZE);
@@ -481,8 +481,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_up_value)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 8;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = 8UL;
       int INITIAL_VALUE = 1;
 
       Data data(INITIAL_SIZE, &INITIAL_VALUE, buffer1, SIZE);
@@ -499,8 +499,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_resize_up_value)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 8;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = 8UL;
       int INITIAL_VALUE = 1;
 
       CData data(INITIAL_SIZE, &INITIAL_VALUE, buffer1, SIZE);
@@ -517,8 +517,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_excess)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = SIZE + 1;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = SIZE + 1UL;
 
       Data data(INITIAL_SIZE, buffer1, SIZE);
 
@@ -528,8 +528,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_resize_excess)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = SIZE + 1;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = SIZE + 1UL;
 
       CData data(INITIAL_SIZE, buffer1, SIZE);
 
@@ -539,8 +539,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_down)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 2;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = 2UL;
 
       Data data(INITIAL_SIZE, buffer1, SIZE);
       data.resize(NEW_SIZE);
@@ -551,8 +551,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_resize_down)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 2;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = 2UL;
 
       CData data(INITIAL_SIZE, buffer1, SIZE);
       data.resize(NEW_SIZE);
@@ -563,8 +563,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_down_value)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 2;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = 2UL;
       int INITIAL_VALUE = 1;
 
       Data data(INITIAL_SIZE, buffer1, SIZE);
@@ -576,8 +576,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_resize_down_value)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 2;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = 2UL;
       int INITIAL_VALUE = 1;
 
       CData data(INITIAL_SIZE, buffer1, SIZE);
@@ -631,7 +631,7 @@ namespace
 
       Data data(compare_data.begin(), compare_data.end(), buffer1, SIZE);
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
@@ -644,7 +644,7 @@ namespace
 
       CData data(compare_data.begin(), compare_data.end(), buffer1, SIZE);
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
@@ -657,7 +657,7 @@ namespace
 
       const Data data(compare_data.begin(), compare_data.end(), buffer1, SIZE);
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
@@ -670,7 +670,7 @@ namespace
 
       const CData data(compare_data.begin(), compare_data.end(), buffer1, SIZE);
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
@@ -682,7 +682,7 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.at(i), compare_data.at(i));
       }
@@ -696,7 +696,7 @@ namespace
       CCompare_Data compare_data(initial_data.begin(), initial_data.end());
       CData data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.at(i), compare_data.at(i));
       }
@@ -710,7 +710,7 @@ namespace
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
       const Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.at(i), compare_data.at(i));
       }
@@ -724,7 +724,7 @@ namespace
       const CCompare_Data compare_data(initial_data.begin(), initial_data.end());
       const CData data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.at(i), compare_data.at(i));
       }
@@ -883,7 +883,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_size_value)
     {
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       int INITIAL_VALUE = 1;
       std::array<int*, INITIAL_SIZE> compare_data;
       compare_data.fill(&INITIAL_VALUE);
@@ -899,7 +899,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_assign_size_value)
     {
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       int INITIAL_VALUE = 1;
       std::array<const int*, INITIAL_SIZE> compare_data;
       compare_data.fill(&INITIAL_VALUE);
@@ -916,7 +916,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_assign_size_value_excess)
     {
       const size_t INITIAL_SIZE = SIZE;
-      const size_t EXCESS_SIZE = SIZE + 1;
+      const size_t EXCESS_SIZE = SIZE + 1UL;
       int INITIAL_VALUE = 1;
       std::array<int*, INITIAL_SIZE> compare_data;
       compare_data.fill(&INITIAL_VALUE);
@@ -930,7 +930,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_const_assign_size_value_excess)
     {
       const size_t INITIAL_SIZE = SIZE;
-      const size_t EXCESS_SIZE = SIZE + 1;
+      const size_t EXCESS_SIZE = SIZE + 1UL;
       int INITIAL_VALUE = 1;
       std::array<const int*, INITIAL_SIZE> compare_data;
       compare_data.fill(&INITIAL_VALUE);
@@ -948,12 +948,12 @@ namespace
 
       int d;
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         compare_data.push_back(&d);
       }
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         data.push_back(&d);
       }
@@ -971,12 +971,12 @@ namespace
 
       const int d = 0;
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         compare_data.push_back(&d);
       }
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         data.push_back(&d);
       }
@@ -993,7 +993,7 @@ namespace
 
       int d;
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         data.push_back(&d);
       }
@@ -1008,7 +1008,7 @@ namespace
 
       const int d = 0;
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         data.push_back(&d);
       }
@@ -1024,12 +1024,12 @@ namespace
 
       int d;
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         compare_data.emplace_back(&d);
       }
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         data.emplace_back(&d);
       }
@@ -1102,10 +1102,10 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_value)
     {
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       int INITIAL_VALUE   = 1;
 
-      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
         Compare_Data compare_data;
         Data data(buffer1, SIZE);
@@ -1127,10 +1127,10 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_insert_position_value)
     {
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       int INITIAL_VALUE = 1;
 
-      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
         CCompare_Data compare_data;
         CData data(buffer1, SIZE);
@@ -1157,7 +1157,7 @@ namespace
 
       Data data(INITIAL_SIZE, &INITIAL_VALUE, buffer1, SIZE);
 
-      size_t offset = 2;
+      size_t offset = 2UL;
 
       CHECK_THROW(data.insert(data.begin() + offset, &INITIAL_VALUE), etl::vector_full);
 
@@ -1173,10 +1173,10 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_emplace_position_value)
     {
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       int INITIAL_VALUE = 1;
 
-      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
         Compare_Data compare_data;
         Data data(buffer1, SIZE);
@@ -1198,11 +1198,11 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_n_value)
     {
-      const size_t INITIAL_SIZE     = 5;
-      const size_t INSERT_SIZE      = 3;
+      const size_t INITIAL_SIZE     = 5UL;
+      const size_t INSERT_SIZE      = 3UL;
       int INITIAL_VALUE = 11;
 
-      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
         Compare_Data compare_data;
         Data data(buffer1, SIZE);
@@ -1221,11 +1221,11 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_insert_position_n_value)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t INSERT_SIZE = 3;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t INSERT_SIZE = 3UL;
       int INITIAL_VALUE = 11;
 
-      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
         CCompare_Data compare_data;
         CData data(buffer1, SIZE);
@@ -1245,12 +1245,12 @@ namespace
     TEST_FIXTURE(SetupFixture, test_insert_position_n_value_excess)
     {
       const size_t INITIAL_SIZE = SIZE;
-      const size_t INSERT_SIZE  = 4;
+      const size_t INSERT_SIZE  = 4UL;
       int INITIAL_VALUE   = 1;
 
       Data data(INITIAL_SIZE, &INITIAL_VALUE, buffer1, SIZE);
 
-      size_t offset = 0;
+      size_t offset = 0UL;
 
       CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, &INITIAL_VALUE), etl::vector_full);
 
@@ -1271,12 +1271,12 @@ namespace
     TEST_FIXTURE(SetupFixture, test_const_insert_position_n_value_excess)
     {
       const size_t INITIAL_SIZE = SIZE;
-      const size_t INSERT_SIZE = 4;
+      const size_t INSERT_SIZE = 4UL;
       const int INITIAL_VALUE = 1;
 
       CData data(INITIAL_SIZE, &INITIAL_VALUE, buffer1, SIZE);
 
-      size_t offset = 0;
+      size_t offset = 0UL;
 
       CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, &INITIAL_VALUE), etl::vector_full);
 
@@ -1296,9 +1296,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_range)
     {
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
 
-      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
         Compare_Data compare_data;
         Data data(buffer1, SIZE);
@@ -1319,9 +1319,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_insert_position_range)
     {
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
 
-      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
         CCompare_Data compare_data;
         CData data(buffer1, SIZE);
@@ -1342,12 +1342,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_range_excess)
     {
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       int INITIAL_VALUE   = 1;
 
       Data data(INITIAL_SIZE, &INITIAL_VALUE, buffer1, SIZE);
 
-      size_t offset = 0;
+      size_t offset = 0UL;
 
       CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
 
@@ -1367,12 +1367,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_insert_position_range_excess)
     {
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       const int INITIAL_VALUE = 1;
 
       CData data(INITIAL_SIZE, &INITIAL_VALUE, buffer1, SIZE);
 
-      size_t offset = 0;
+      size_t offset = 0UL;
 
       CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
 
@@ -1457,7 +1457,7 @@ namespace
       Data data(compare_data.begin(), compare_data.end(), buffer1, SIZE);
       data.clear();
 
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK_EQUAL(data.size(), size_t(0UL));
     }
 
     //*************************************************************************
@@ -1468,7 +1468,7 @@ namespace
       CData data(compare_data.begin(), compare_data.end(), buffer1, SIZE);
       data.clear();
 
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK_EQUAL(data.size(), size_t(0UL));
     }
 
     //*************************************************************************

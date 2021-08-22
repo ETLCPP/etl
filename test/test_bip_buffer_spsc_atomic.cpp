@@ -301,14 +301,14 @@ namespace
 
     etl::bip_buffer_spsc_atomic<int, 10> stream;
 
-    const size_t LENGTH = 1000000;
+    const size_t LENGTH = 1000000UL;
 
     void timer_event()
     {
       FIX_PROCESSOR_AFFINITY1;
 
-      const size_t write_chunk_size = 7;
-      size_t tick = 0;
+      const size_t write_chunk_size = 7UL;
+      size_t tick = 0UL;
 
       while (tick < LENGTH)
       {
@@ -344,7 +344,7 @@ namespace
 
       CHECK_EQUAL(LENGTH, tick_list.size());
 
-      for (size_t i = 0; i < LENGTH; i++)
+      for (size_t i = 0UL; i < LENGTH; i++)
       {
         CHECK_EQUAL(i, tick_list[i]);
       }

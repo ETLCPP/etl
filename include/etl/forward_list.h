@@ -835,7 +835,7 @@ namespace etl
       }
       else
       {
-        size_t i = 0;
+        size_t i = 0UL;
         iterator i_node = begin();
         iterator i_last_node;
 
@@ -966,7 +966,7 @@ namespace etl
     {
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
-      for (size_t i = 0; !full() && (i < n); ++i)
+      for (size_t i = 0UL; !full() && (i < n); ++i)
       {
         // Set up the next free node.
         data_node_t& data_node = allocate_data_node(value);

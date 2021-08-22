@@ -58,7 +58,7 @@ namespace etl
   template <>
   struct fibonacci<1>
   {
-    static ETL_CONSTANT size_t value = 1;
+    static ETL_CONSTANT size_t value = 1UL;
   };
 
   //***************************************************************************
@@ -67,7 +67,7 @@ namespace etl
   template <>
   struct fibonacci<0>
   {
-    static ETL_CONSTANT size_t value = 0;
+    static ETL_CONSTANT size_t value = 0UL;
   };
 
 #if ETL_CPP17_SUPPORTED

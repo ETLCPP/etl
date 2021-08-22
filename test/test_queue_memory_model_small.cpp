@@ -298,7 +298,7 @@ namespace
     {
       QueueInt queue;
 
-      for (size_t i = 0; i < queue.max_size(); ++i)
+      for (size_t i = 0UL; i < queue.max_size(); ++i)
       {
         queue.push(1);
       }

@@ -138,7 +138,7 @@ namespace etl
 
       if (first)
       {
-        for (size_t i = 0; i < HASH_LENGTH; ++i)
+        for (size_t i = 0UL; i < HASH_LENGTH; ++i)
         {
           hash[i] = PEARSON_LOOKUP[(uint32_t(value_) + i) % 256];
         }
@@ -147,7 +147,7 @@ namespace etl
       }
       else
       {
-        for (size_t i = 0; i < HASH_LENGTH; ++i)
+        for (size_t i = 0UL; i < HASH_LENGTH; ++i)
         {
           hash[i] = PEARSON_LOOKUP[hash[i] ^ value_];
         }

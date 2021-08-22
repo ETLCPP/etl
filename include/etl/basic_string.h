@@ -227,7 +227,7 @@ namespace etl
     /// Deprecated. Use is_truncated()
     ///\return Whether the string was truncated by the last operation.
     //*************************************************************************
-    ETL_DEPRECATED 
+    ETL_DEPRECATED
     bool truncated() const
     {
       return flags.test<IS_TRUNCATED>();
@@ -482,7 +482,7 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Resizes the string, but doesn't initialise the free space 
+    /// Resizes the string, but doesn't initialise the free space
     /// except for a terminator null.
     ///\param new_size The new size.
     //*********************************************************************

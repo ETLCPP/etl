@@ -668,8 +668,8 @@ namespace
       int data1[10];
       int data2[10];
 
-      std::fill(std::begin(data1), std::end(data1), 0x12345678);
-      etl::fill(std::begin(data2), std::end(data2), 0x12345678);
+      std::fill(std::begin(data1), std::end(data1), 0x12345678UL);
+      etl::fill(std::begin(data2), std::end(data2), 0x12345678UL);
 
       bool isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
       CHECK(isEqual);
@@ -681,8 +681,8 @@ namespace
       unsigned char data1[10];
       unsigned char data2[10];
 
-      std::fill(std::begin(data1), std::end(data1), char(0x12));
-      etl::fill(std::begin(data2), std::end(data2), char(0x12));
+      std::fill(std::begin(data1), std::end(data1), char(0x12U));
+      etl::fill(std::begin(data2), std::end(data2), char(0x12U));
 
       bool isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
       CHECK(isEqual);
@@ -1108,7 +1108,7 @@ namespace
     {
       std::vector<int> initial_data = { 1, 2, 3, 4, 5, 6, 7 };
 
-      for (size_t i = 0; i < initial_data.size(); ++i)
+      for (size_t i = 0UL; i < initial_data.size(); ++i)
       {
         std::vector<int> data1(initial_data);
         std::vector<int> data2(initial_data);
@@ -1127,7 +1127,7 @@ namespace
     {
       std::vector<NDC> initial_data = { NDC(1), NDC(2), NDC(3), NDC(4), NDC(5), NDC(6), NDC(7) };
 
-      for (size_t i = 0; i < initial_data.size(); ++i)
+      for (size_t i = 0UL; i < initial_data.size(); ++i)
       {
         std::vector<NDC> data1(initial_data);
         std::vector<NDC> data2(initial_data);
@@ -2183,7 +2183,7 @@ namespace
       std::array<int, 4>  expected = { 1, 2, 4, 5 };
 
       etl::remove_if(data.begin(), data.end(), [](int value) { return value >= 7; });
-            
+
       bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
       CHECK(is_same);
     }

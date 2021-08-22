@@ -93,18 +93,18 @@ namespace etl
     typedef crc_parameters<uint16_t, 0x8005U, 0x0000U, 0x0000U, true>  crc16_arc_parameters;
 
     // 32 bit.
-    typedef crc_parameters<uint32_t, 0x04C11DB7U, 0xFFFFFFFFU, 0xFFFFFFFFU, true>  crc32_parameters;
-    typedef crc_parameters<uint32_t, 0x1EDC6F41U, 0xFFFFFFFFU, 0xFFFFFFFFU, true>  crc32_c_parameters;
-    typedef crc_parameters<uint32_t, 0x04C11DB7U, 0xFFFFFFFFU, 0xFFFFFFFFU, false> crc32_bzip2_parameters;
-    typedef crc_parameters<uint32_t, 0x04C11DB7U, 0xFFFFFFFFU, 0x00000000U, false> crc32_mpeg2_parameters;
-    typedef crc_parameters<uint32_t, 0x04C11DB7U, 0x00000000U, 0xFFFFFFFFU, false> crc32_posix_parameters;
-    typedef crc_parameters<uint32_t, 0xA833982BU, 0xFFFFFFFFU, 0xFFFFFFFFU, true>  crc32_d_parameters;
-    typedef crc_parameters<uint32_t, 0x814141ABU, 0x00000000U, 0x00000000U, false> crc32_q_parameters;
-    typedef crc_parameters<uint32_t, 0x04C11DB7U, 0xFFFFFFFFU, 0x00000000U, true>  crc32_jamcrc_parameters;
-    typedef crc_parameters<uint32_t, 0x000000AFU, 0x00000000U, 0x00000000U, false> crc32_xfer_parameters;
+    typedef crc_parameters<uint32_t, 0x04C11DB7UL, 0xFFFFFFFFUL, 0xFFFFFFFFUL, true>  crc32_parameters;
+    typedef crc_parameters<uint32_t, 0x1EDC6F41UL, 0xFFFFFFFFUL, 0xFFFFFFFFUL, true>  crc32_c_parameters;
+    typedef crc_parameters<uint32_t, 0x04C11DB7UL, 0xFFFFFFFFUL, 0xFFFFFFFFUL, false> crc32_bzip2_parameters;
+    typedef crc_parameters<uint32_t, 0x04C11DB7UL, 0xFFFFFFFFUL, 0x00000000UL, false> crc32_mpeg2_parameters;
+    typedef crc_parameters<uint32_t, 0x04C11DB7UL, 0x00000000UL, 0xFFFFFFFFUL, false> crc32_posix_parameters;
+    typedef crc_parameters<uint32_t, 0xA833982BUL, 0xFFFFFFFFUL, 0xFFFFFFFFUL, true>  crc32_d_parameters;
+    typedef crc_parameters<uint32_t, 0x814141ABUL, 0x00000000UL, 0x00000000UL, false> crc32_q_parameters;
+    typedef crc_parameters<uint32_t, 0x04C11DB7UL, 0xFFFFFFFFUL, 0x00000000UL, true>  crc32_jamcrc_parameters;
+    typedef crc_parameters<uint32_t, 0x000000AFUL, 0x00000000UL, 0x00000000UL, false> crc32_xfer_parameters;
 
     // 64 bit.
-    typedef crc_parameters<uint64_t, 0x42F0E1EBA9EA3693U, 0x0000000000000000U, 0x0000000000000000U, false> crc64_ecma_parameters;
+    typedef crc_parameters<uint64_t, 0x42F0E1EBA9EA3693ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, false> crc64_ecma_parameters;
   }
 }
 
