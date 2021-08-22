@@ -193,28 +193,6 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Write a range of T to the stream.
-    //***************************************************************************
-    template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, bool>::type
-      write(const T* pstart_, size_t length_)
-    {
-      bool success = false;
-
-      if (available<T>() >= length_)
-      {
-        while (length_-- > 0U)
-        {
-          to_bytes(*pstart_++);
-        }
-
-        success = true;
-      }
-
-      return success;
-    }
-
-    //***************************************************************************
     /// Returns <b>true</b> if the byte stream index has reached the end.
     //***************************************************************************
     bool full() const
@@ -324,15 +302,15 @@ namespace etl
     /// Read a byte range from the stream.
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<sizeof(T) == 1U, etl::span<T> >::type
-      read(size_t required_length)
+    typename etl::enable_if<sizeof(T) == 1U, etl::optional<etl::span<T> > >::type
+      read(size_t n)
     {
-      etl::span<T> result;
+      etl::optional<etl::span<T> > result;
 
       // Do we have enough room?
-      if (available<T>() >= required_length)
+      if (available<T>() >= n)
       {
-        char* pend = pcurrent + (required_length * sizeof(T));
+        char* pend = pcurrent + (n * sizeof(T));
 
         result = etl::span<T>(reinterpret_cast<T*>(pcurrent), reinterpret_cast<T*>(pend));
         pcurrent = pend;
@@ -345,23 +323,25 @@ namespace etl
     /// Read a range of T from the stream.
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, bool>::type
-      read(T* pdata_, size_t length_)
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, etl::optional<etl::span<T> > >::type
+      read(etl::span<T> range)
     {
+      etl::optional<etl::span<T> > result;
+
       // Do we have enough room?
-      if (available<T>() >= length_)
+      if (available<T>() >= range.size())
       {
-        while (length_-- > 0)
+        typename etl::span<T>::iterator destination = range.begin();
+
+        while (destination != range.end())
         {
-          *pdata_++ = from_bytes<T>();
+          *destination++ = from_bytes<T>();
         }
 
-        return true;
+        result = range;
       }
-      else
-      {
-        return false;
-      }
+
+      return result;
     }
 
     //***************************************************************************
@@ -431,9 +411,9 @@ namespace etl
   /// Overload this to support custom types.
   //***************************************************************************
   template <typename T>
-  bool write(etl::byte_stream_writer& stream, const T* pdata_, size_t length_)
+  bool write(etl::byte_stream_writer& stream, const etl::span<T>& range)
   {
-    return stream.write(pdata_, length_);
+    return stream.write(range);
   }
 
   //***************************************************************************
@@ -451,9 +431,19 @@ namespace etl
   /// Overload this to support custom types.
   //***************************************************************************
   template <typename T>
-  bool read(etl::byte_stream_reader& stream, T* pdata_, size_t length_)
+  etl::optional<etl::span<T> > read(etl::byte_stream_reader& stream, size_t n)
   {
-    return stream.read<T>(pdata_, length_);
+    return stream.read<T>(n);
+  }
+
+  //***************************************************************************
+  /// Default implementation of the read function.
+  /// Overload this to support custom types.
+  //***************************************************************************
+  template <typename T>
+  etl::optional<etl::span<T> > read(etl::byte_stream_reader& stream, etl::span<T> range)
+  {
+    return stream.read<T>(range);
   }
 }
 
