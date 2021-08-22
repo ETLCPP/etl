@@ -193,6 +193,28 @@ namespace etl
     }
 
     //***************************************************************************
+    /// Write a range of T to the stream.
+    //***************************************************************************
+    template <typename T>
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, bool>::type
+      write(const T* pstart_, size_t length_)
+    {
+      bool success = false;
+
+      if (available<T>() >= length_)
+      {
+        while (length_-- > 0U)
+        {
+          to_bytes(*pstart_++);
+        }
+
+        success = true;
+      }
+
+      return success;
+    }
+
+    //***************************************************************************
     /// Returns <b>true</b> if the byte stream index has reached the end.
     //***************************************************************************
     bool full() const
@@ -320,6 +342,29 @@ namespace etl
     }
 
     //***************************************************************************
+    /// Read a range of T from the stream.
+    //***************************************************************************
+    template <typename T>
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, bool>::type
+      read(T* pdata_, size_t length_)
+    {
+      // Do we have enough room?
+      if (available<T>() >= length_)
+      {
+        while (length_-- > 0)
+        {
+          *pdata_++ = from_bytes<T>();
+        }
+
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    //***************************************************************************
     /// Returns <b>true</b> if the byte stream is empty.
     //***************************************************************************
     bool empty() const
@@ -382,6 +427,16 @@ namespace etl
   }
 
   //***************************************************************************
+  /// Default implementation of the write function.
+  /// Overload this to support custom types.
+  //***************************************************************************
+  template <typename T>
+  bool write(etl::byte_stream_writer& stream, const T* pdata_, size_t length_)
+  {
+    return stream.write(pdata_, length_);
+  }
+
+  //***************************************************************************
   /// Default implementation of the read function.
   /// Overload this to support custom types.
   //***************************************************************************
@@ -389,6 +444,16 @@ namespace etl
   etl::optional<T> read(etl::byte_stream_reader& stream)
   {
     return stream.read<T>();
+  }
+
+  //***************************************************************************
+  /// Default implementation of the read function.
+  /// Overload this to support custom types.
+  //***************************************************************************
+  template <typename T>
+  bool read(etl::byte_stream_reader& stream, T* pdata_, size_t length_)
+  {
+    return stream.read<T>(pdata_, length_);
   }
 }
 
