@@ -2,7 +2,9 @@ Embedded Template Library (ETL)
 -------------------------
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/jwellbelove/etl)
+[![Standard](https://img.shields.io/badge/c%2B%2B-98/03/11/14/17-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 ![CI](https://github.com/ETLCPP/etl/workflows/vs2019/badge.svg)
 ![CI](https://github.com/ETLCPP/etl/workflows/gcc/badge.svg)
 ![CI](https://github.com/ETLCPP/etl/workflows/clang/badge.svg)
