@@ -40,7 +40,7 @@ namespace
 {
   SUITE(test_span)
   {
-    static const size_t SIZE = 10;
+    static const size_t SIZE = 10UL;
 
     typedef etl::array<int, SIZE> EtlData;
     typedef std::array<int, SIZE> StlData;
@@ -399,7 +399,7 @@ namespace
       View  view(etldata.begin(), etldata.end());
       CView cview(etldata.begin(), etldata.end());
 
-      for (size_t i = 0; i < etldata.size(); ++i)
+      for (size_t i = 0UL; i < etldata.size(); ++i)
       {
         CHECK_EQUAL(etldata[i], view[i]);
         CHECK_EQUAL(etldata[i], cview[i]);

@@ -59,12 +59,12 @@ SOFTWARE.
 #endif
 
 #if ETL_CPP11_SUPPORTED
-  #define ETL_STR(x)  x  
+  #define ETL_STR(x)  x
   #define ETL_STRL(x) L##x
   #define ETL_STRu(x) u##x
   #define ETL_STRU(x) U##x
 #else
-  #define ETL_STR(x)  x  
+  #define ETL_STR(x)  x
   #define ETL_STRL(x) x
   #define ETL_STRu(x) x
   #define ETL_STRU(x) x
@@ -241,9 +241,9 @@ namespace etl
     //*************************************************************************
     size_t count() const
     {
-      size_t n = 0;
+      size_t n = 0UL;
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         n += etl::count_bits(pdata[i]);
       }
@@ -279,7 +279,7 @@ namespace etl
     //*************************************************************************
     ibitset& set()
     {
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         pdata[i] = ALL_SET;
       }
@@ -422,7 +422,7 @@ namespace etl
       {
         T shift = T(0);
 
-        for (size_t i = 0; i < SIZE; ++i)
+        for (size_t i = 0UL; i < SIZE; ++i)
         {
           v |= T(pdata[i]) << shift;
           shift += T(BITS_PER_ELEMENT);
@@ -437,7 +437,7 @@ namespace etl
     //*************************************************************************
     ibitset& reset()
     {
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         pdata[i] = ALL_CLEAR;
       }
@@ -474,7 +474,7 @@ namespace etl
     //*************************************************************************
     ibitset& flip()
     {
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         pdata[i] = ~pdata[i];
       }
@@ -517,7 +517,7 @@ namespace etl
     bool all() const
     {
       // All but the last.
-      for (size_t i = 0; i < (SIZE - 1); ++i)
+      for (size_t i = 0UL; i < (SIZE - 1); ++i)
       {
         if (pdata[i] != ALL_SET)
         {
@@ -547,7 +547,7 @@ namespace etl
     //*************************************************************************
     bool none() const
     {
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         if (pdata[i] != 0)
         {
@@ -653,7 +653,7 @@ namespace etl
     //*************************************************************************
     ibitset& operator &=(const ibitset& other)
     {
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         pdata[i] &= other.pdata[i];
       }
@@ -666,7 +666,7 @@ namespace etl
     //*************************************************************************
     ibitset& operator |=(const ibitset& other)
     {
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         pdata[i] |= other.pdata[i];
       }
@@ -679,7 +679,7 @@ namespace etl
     //*************************************************************************
     ibitset& operator ^=(const ibitset& other)
     {
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         pdata[i] ^= other.pdata[i];
       }
@@ -701,12 +701,12 @@ namespace etl
         size_t source = NBITS - shift - 1;
         size_t destination = NBITS - 1;
 
-        for (size_t i = 0; i < (NBITS - shift); ++i)
+        for (size_t i = 0UL; i < (NBITS - shift); ++i)
         {
           set(destination--, test(source--));
         }
 
-        for (size_t i = 0; i < shift; ++i)
+        for (size_t i = 0UL; i < shift; ++i)
         {
           reset(destination--);
         }
@@ -729,12 +729,12 @@ namespace etl
         size_t source = shift;
         size_t destination = 0;
 
-        for (size_t i = 0; i < (NBITS - shift); ++i)
+        for (size_t i = 0UL; i < (NBITS - shift); ++i)
         {
           set(destination++, test(source++));
         }
 
-        for (size_t i = 0; i < shift; ++i)
+        for (size_t i = 0UL; i < shift; ++i)
         {
           reset(destination++);
         }
@@ -802,7 +802,7 @@ namespace etl
       }
       else
       {
-        size_t i = 0;
+        size_t i = 0UL;
 
         while ((value != 0) && (i < SIZE))
         {
@@ -821,7 +821,7 @@ namespace etl
     //*************************************************************************
     void invert()
     {
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         pdata[i] = ~pdata[i];
       }

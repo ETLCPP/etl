@@ -253,7 +253,7 @@ namespace etl
     };
 
   public:
-   
+
     //*************************************************************************
     /// Iterator
     //*************************************************************************
@@ -646,7 +646,7 @@ namespace etl
         const difference_type lhs_index = lhs.get_index();
         const difference_type rhs_index = rhs.get_index();
         const difference_type reference_index = lhs.container().begin().get_index();
-        const size_t buffer_size = lhs.container().max_size() + 1;
+        const size_t buffer_size = lhs.container().max_size() + 1UL;
 
         const difference_type lhs_distance = (lhs_index < reference_index) ? buffer_size + lhs_index - reference_index : lhs_index - reference_index;
         const difference_type rhs_distance = (rhs_index < reference_index) ? buffer_size + rhs_index - reference_index : rhs_index - reference_index;
@@ -1405,7 +1405,7 @@ namespace etl
 
       if (insert_position == begin())
       {
-        for (size_t i = 0; i < n; ++i)
+        for (size_t i = 0UL; i < n; ++i)
         {
           create_element_front(value);
         }
@@ -1414,7 +1414,7 @@ namespace etl
       }
       else if (insert_position == end())
       {
-        for (size_t i = 0; i < n; ++i)
+        for (size_t i = 0UL; i < n; ++i)
         {
           create_element_back(value);
         }
@@ -1441,13 +1441,13 @@ namespace etl
           iterator to;
 
           // Create new.
-          for (size_t i = 0; i < n_create_new; ++i)
+          for (size_t i = 0UL; i < n_create_new; ++i)
           {
             create_element_front(value);
           }
 
           // Create copy.
-          for (size_t i = 0; i < n_create_copy; ++i)
+          for (size_t i = 0UL; i < n_create_copy; ++i)
           {
             create_element_front(*from--);
           }
@@ -1473,7 +1473,7 @@ namespace etl
           size_t n_copy_old = n_move - n_create_copy;
 
           // Create new.
-          for (size_t i = 0; i < n_create_new; ++i)
+          for (size_t i = 0UL; i < n_create_new; ++i)
           {
             create_element_back(value);
           }
@@ -1481,7 +1481,7 @@ namespace etl
           // Create copy.
           const_iterator from = position + n_copy_old;
 
-          for (size_t i = 0; i < n_create_copy; ++i)
+          for (size_t i = 0UL; i < n_create_copy; ++i)
           {
             create_element_back(*from++);
           }
@@ -1577,7 +1577,7 @@ namespace etl
 
           // Create new.
           TIterator item = range_begin + (n - n_create_new);
-          for (size_t i = 0; i < n_create_new; ++i)
+          for (size_t i = 0UL; i < n_create_new; ++i)
           {
             create_element_back(*item++);
           }
@@ -1585,7 +1585,7 @@ namespace etl
           // Create copy.
           const_iterator from = position + n_copy_old;
 
-          for (size_t i = 0; i < n_create_copy; ++i)
+          for (size_t i = 0UL; i < n_create_copy; ++i)
           {
             create_element_back(*from++);
           }
@@ -1660,7 +1660,7 @@ namespace etl
       // At the beginning?
       if (position == _begin)
       {
-        for (size_t i = 0; i < length; ++i)
+        for (size_t i = 0UL; i < length; ++i)
         {
           destroy_element_front();
         }
@@ -1670,7 +1670,7 @@ namespace etl
       // At the end?
       else if (position == _end - length)
       {
-        for (size_t i = 0; i < length; ++i)
+        for (size_t i = 0UL; i < length; ++i)
         {
           destroy_element_back();
         }
@@ -1686,7 +1686,7 @@ namespace etl
           // Move the items.
           etl::move_backward(_begin, position, position + length);
 
-          for (size_t i = 0; i < length; ++i)
+          for (size_t i = 0UL; i < length; ++i)
           {
             destroy_element_front();
           }
@@ -1699,7 +1699,7 @@ namespace etl
           // Move the items.
           etl::move(position + length, _end, position);
 
-          for (size_t i = 0; i < length; ++i)
+          for (size_t i = 0UL; i < length; ++i)
           {
             destroy_element_back();
           }
@@ -1988,7 +1988,7 @@ namespace etl
       {
         size_t count = new_size - current_size;
 
-        for (size_t i = 0; i < count; ++i)
+        for (size_t i = 0UL; i < count; ++i)
         {
           create_element_back(value);
         }
@@ -2458,7 +2458,7 @@ namespace etl
   template <typename T, typename... Ts>
   deque(T, Ts...)
     ->deque<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
-#endif  
+#endif
 
   //***************************************************************************
   /// Equal operator.

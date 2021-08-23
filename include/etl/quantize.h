@@ -64,7 +64,7 @@ namespace etl
     //*****************************************************************
     TInput operator ()(TInput value) const
     {
-      for (size_t i = 0; i < n_levels; ++i)
+      for (size_t i = 0UL; i < n_levels; ++i)
       {
         if (compare(value, p_thresholds[i]))
         {

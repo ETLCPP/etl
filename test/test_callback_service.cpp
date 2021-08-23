@@ -33,8 +33,8 @@ SOFTWARE.
 
 namespace
 {
-  const size_t SIZE   = 3U;
-  const size_t OFFSET = 5U;
+  const size_t SIZE   = 3UL;
+  const size_t OFFSET = 5UL;
 
   typedef etl::callback_service<SIZE, OFFSET> Service;
 

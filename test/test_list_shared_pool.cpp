@@ -47,7 +47,7 @@ namespace
     typedef TestDataDC<std::string> ItemDC;
     typedef TestDataNDC<std::string> ItemNDC;
 
-    const size_t SIZE = 10;
+    const size_t SIZE = 10UL;
 
     typedef etl::list_ext<ItemDC>  DataDC;
     typedef etl::list_ext<ItemNDC> DataNDC;
@@ -106,7 +106,7 @@ namespace
 
       CHECK_EQUAL(data.max_size(), 0U);
       CHECK_EQUAL(data.size(), 0U);
-      CHECK(data.empty());     
+      CHECK(data.empty());
       CHECK(data.has_shared_pool());
     }
 
@@ -126,7 +126,7 @@ namespace
       Pool pool;
       DataNDC data(pool);
 
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK_EQUAL(data.size(), size_t(0UL));
       CHECK(data.empty());
       CHECK(!data.full());
       CHECK_EQUAL(data.available(), SIZE);
@@ -143,12 +143,12 @@ namespace
       DataNDC data1(pool);
       DataNDC data2(pool);
 
-      CHECK_EQUAL(data1.size(), size_t(0));
+      CHECK_EQUAL(data1.size(), size_t(0UL));
       CHECK(data1.empty());
       CHECK_EQUAL(data1.max_size(), SIZE);
       CHECK(data1.begin() == data1.end());
 
-      CHECK_EQUAL(data2.size(), size_t(0));
+      CHECK_EQUAL(data2.size(), size_t(0UL));
       CHECK(data2.empty());
       CHECK_EQUAL(data2.max_size(), SIZE);
       CHECK(data2.begin() == data2.end());
@@ -160,7 +160,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_constructor_size_shared_pool)
     {
       Pool pool;
-      const size_t INITIAL_SIZE = SIZE / 2;
+      const size_t INITIAL_SIZE = SIZE / 2UL;
       DataDC data1(INITIAL_SIZE, pool);
       DataDC data2(INITIAL_SIZE, pool);
 
@@ -189,7 +189,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_constructor_size_value)
     {
       Pool pool;
-      const size_t INITIAL_SIZE = SIZE / 2;
+      const size_t INITIAL_SIZE = SIZE / 2UL;
       const ItemNDC INITIAL_VALUE = ItemNDC("1");
 
       std::array<ItemNDC, INITIAL_SIZE> compare_data = { ItemNDC("1"), ItemNDC("1"), ItemNDC("1"), ItemNDC("1"), ItemNDC("1") };
@@ -228,10 +228,10 @@ namespace
       DataNDC data1(half_data.begin(), half_data.end(), pool);
       DataNDC data2(half_data.begin(), half_data.end(), pool);
 
-      CHECK_EQUAL(SIZE / 2, data1.size());
+      CHECK_EQUAL(SIZE / 2UL, data1.size());
       CHECK(!data1.empty());
 
-      CHECK_EQUAL(SIZE / 2, data2.size());
+      CHECK_EQUAL(SIZE / 2UL, data2.size());
       CHECK(!data2.empty());
 
       CHECK(pool.full());
@@ -420,8 +420,8 @@ namespace
     TEST_FIXTURE(SetupFixture, test_resize_up)
     {
       Pool pool;
-      const size_t INITIAL_SIZE = 4;
-      const size_t NEW_SIZE     = 8;
+      const size_t INITIAL_SIZE = 4UL;
+      const size_t NEW_SIZE     = 8UL;
 
       DataDC data(INITIAL_SIZE, pool);
       data.resize(NEW_SIZE);
@@ -433,8 +433,8 @@ namespace
     TEST_FIXTURE(SetupFixture, test_resize_up_value)
     {
       Pool pool;
-      const size_t INITIAL_SIZE = 4;
-      const size_t NEW_SIZE     = 8;
+      const size_t INITIAL_SIZE = 4UL;
+      const size_t NEW_SIZE     = 8UL;
       const ItemNDC VALUE = ItemNDC("1");
 
       DataNDC data(INITIAL_SIZE, VALUE, pool);
@@ -454,7 +454,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_resize_excess)
     {
       Pool pool;
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       const ItemNDC VALUE = ItemNDC("1");
 
       DataNDC data(INITIAL_SIZE, VALUE, pool);
@@ -466,8 +466,8 @@ namespace
     TEST_FIXTURE(SetupFixture, test_resize_down)
     {
       Pool pool;
-      const size_t INITIAL_SIZE = 4;
-      const size_t NEW_SIZE     = 2;
+      const size_t INITIAL_SIZE = 4UL;
+      const size_t NEW_SIZE     = 2UL;
       const ItemNDC VALUE = ItemNDC("1");
 
       DataNDC data(INITIAL_SIZE, VALUE, pool);
@@ -492,7 +492,7 @@ namespace
 
       // Do it again to check that clear() didn't screw up the internals.
       data1.assign(half_data.begin(), half_data.end());
-      CHECK_EQUAL(SIZE / 2, data1.size());
+      CHECK_EQUAL(SIZE / 2UL, data1.size());
       data1.clear();
       CHECK_EQUAL(0U, data1.size());
       CHECK_EQUAL(half_data.size(), data2.size());
@@ -505,20 +505,20 @@ namespace
     TEST_FIXTURE(SetupFixture, test_clear_pod)
     {
       Pool pool;
-      DataInt data1(SIZE / 2, 1, pool);
-      DataInt data2(SIZE / 2, 2, pool);
+      DataInt data1(SIZE / 2UL, 1, pool);
+      DataInt data2(SIZE / 2UL, 2, pool);
 
       data1.clear();
-      CHECK_EQUAL(size_t(0), data1.size());
-      CHECK_EQUAL(SIZE / 2, data2.size());
+      CHECK_EQUAL(size_t(0UL), data1.size());
+      CHECK_EQUAL(SIZE / 2UL, data2.size());
 
       // Do it again to check that clear() didn't screw up the internals.
-      data1.resize(SIZE / 2);
-      CHECK_EQUAL(SIZE / 2, data1.size());
-      CHECK_EQUAL(SIZE / 2, data2.size());
+      data1.resize(SIZE / 2UL);
+      CHECK_EQUAL(SIZE / 2UL, data1.size());
+      CHECK_EQUAL(SIZE / 2UL, data2.size());
       data1.clear();
-      CHECK_EQUAL(size_t(0), data1.size());
-      CHECK_EQUAL(SIZE / 2, data2.size());
+      CHECK_EQUAL(size_t(0UL), data1.size());
+      CHECK_EQUAL(SIZE / 2UL, data2.size());
     }
 
     //*************************************************************************
@@ -590,7 +590,7 @@ namespace
       DataNDC data1(pool);
       DataNDC data2(pool);
 
-      data1.assign(SIZE / 2, VALUE);
+      data1.assign(SIZE / 2UL, VALUE);
 
       CHECK_THROW(data2.assign((SIZE / 2) + 1, VALUE), etl::list_full);
     }
@@ -607,7 +607,7 @@ namespace
       DataNDC data1(INITIAL_SIZE, VALUE, pool);
       DataNDC data2(INITIAL_SIZE, VALUE, pool);
 
-      size_t offset = 2;
+      size_t offset = 2UL;
 
       DataNDC::iterator i_data1 = data1.begin();
       std::advance(i_data1, offset);
@@ -670,14 +670,14 @@ namespace
     TEST_FIXTURE(SetupFixture, test_emplace_position_value)
     {
       Pool pool;
-      const size_t INITIAL_SIZE = 4;
+      const size_t INITIAL_SIZE = 4UL;
       const ItemNDC VALUE = ItemNDC("1");
       const std::string INSERT_VALUE = "2";
 
       CompareData compare_data(INITIAL_SIZE, VALUE);
       DataNDC data(INITIAL_SIZE, VALUE, pool);
 
-      size_t offset = 2;
+      size_t offset = 2UL;
 
       DataNDC::iterator i_data = data.begin();
       std::advance(i_data, offset);
@@ -889,7 +889,7 @@ namespace
       DataNDC data1(pool);
       DataNDC data2(pool);
 
-      for (size_t i = 0; i < data1.max_size(); ++i)
+      for (size_t i = 0UL; i < data1.max_size(); ++i)
       {
         CHECK_NO_THROW(data1.push_front(ItemNDC("1")));
         CHECK_NO_THROW(data2.push_front(ItemNDC("2")));
@@ -908,7 +908,7 @@ namespace
       DataNDC data1(pool);
       DataNDC data2(pool);
 
-      for (size_t i = 0; i < data1.max_size(); ++i)
+      for (size_t i = 0UL; i < data1.max_size(); ++i)
       {
         CHECK_NO_THROW(data1.push_front(ItemNDC("1")));
         CHECK_NO_THROW(data2.push_front(ItemNDC("2")));
@@ -927,7 +927,7 @@ namespace
       DataNDC data1(pool);
       DataNDC data2(pool);
 
-      for (size_t i = 0; i < data1.max_size(); ++i)
+      for (size_t i = 0UL; i < data1.max_size(); ++i)
       {
         CHECK_NO_THROW(data1.push_front(ItemNDC("1")));
         CHECK_NO_THROW(data2.push_front(ItemNDC("2")));
@@ -946,7 +946,7 @@ namespace
       DataNDC data1(pool);
       DataNDC data2(pool);
 
-      for (size_t i = 0; i < data1.max_size(); ++i)
+      for (size_t i = 0UL; i < data1.max_size(); ++i)
       {
         CHECK_NO_THROW(data1.push_front(ItemNDC("1")));
         CHECK_NO_THROW(data2.push_front(ItemNDC("2")));

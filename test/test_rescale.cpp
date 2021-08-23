@@ -36,8 +36,8 @@ SOFTWARE.
 
 namespace
 {
-  constexpr size_t Size = 10U;
- 
+  constexpr size_t Size = 10UL;
+
   using CharIntRescale    = etl::rescale<char, int>;
   using CharDoubleRescale = etl::rescale<char, double>;
 
@@ -50,21 +50,21 @@ namespace
   };
 
   //***********************************
-  const std::array<char, Size> input1 = 
-  { 
+  const std::array<char, Size> input1 =
+  {
     10, 11, 12, 13, 14, 15, 16, 17, 18, 19
   };
 
   //***********************************
-  const std::array<int, Size> result1 = 
-  { 
+  const std::array<int, Size> result1 =
+  {
     40000, 40211, 40422, 40633, 40844, 41055, 41266, 41477, 41688, 41900
   };
 
   std::array<int, Size> output1;
 
-  const std::array<double, Size> result2 = 
-  { 
+  const std::array<double, Size> result2 =
+  {
     40000.0, 40211.0, 40422.0, 40633.0, 40844.0, 41055.0, 41266.0, 41477.0, 41688.0, 41900.0
   };
 

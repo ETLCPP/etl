@@ -48,9 +48,9 @@ SOFTWARE.
 
 namespace
 {
-  constexpr size_t BUFFER_SIZE = 16U;
-  constexpr size_t N_BUFFERS   = 4U;
-  constexpr size_t DATA_COUNT  = BUFFER_SIZE / 2;
+  constexpr size_t BUFFER_SIZE = 16UL;
+  constexpr size_t N_BUFFERS   = 4UL;
+  constexpr size_t DATA_COUNT  = BUFFER_SIZE / 2UL;
 
   using BD = etl::buffer_descriptors<char, BUFFER_SIZE, N_BUFFERS, std::atomic_char>;
 
@@ -121,7 +121,7 @@ namespace
     {
       BD bd(&buffers[0][0]);
 
-      for (size_t i = 0U; i < N_BUFFERS; ++i)
+      for (size_t i = 0UL; i < N_BUFFERS; ++i)
       {
         BD::descriptor desc = bd.allocate();
 
@@ -139,14 +139,14 @@ namespace
       BD bd(&buffers[0][0]);
       BD::descriptor desc[4];
 
-      for (size_t i = 0U; i < N_BUFFERS; ++i)
+      for (size_t i = 0UL; i < N_BUFFERS; ++i)
       {
         desc[i] = bd.allocate();
       }
 
       bd.clear();
 
-      for (size_t i = 0U; i < N_BUFFERS; ++i)
+      for (size_t i = 0UL; i < N_BUFFERS; ++i)
       {
         CHECK(desc[i].is_valid());
         CHECK(!desc[i].is_allocated());
@@ -157,17 +157,17 @@ namespace
     //*************************************************************************
     TEST(test_buffers_with_allocate_fill)
     {
-      std::array<char, BUFFER_SIZE> test = 
-      { 
-        char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), 
-        char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF) 
+      std::array<char, BUFFER_SIZE> test =
+      {
+        char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU),
+        char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU)
       };
 
       BD bd(&buffers[0][0]);
 
-      for (size_t i = 0U; i < N_BUFFERS; ++i)
+      for (size_t i = 0UL; i < N_BUFFERS; ++i)
       {
-        BD::descriptor desc = bd.allocate(char(0xFF));
+        BD::descriptor desc = bd.allocate(char(0xFFU));
 
         CHECK_EQUAL(BUFFER_SIZE, desc.max_size());
         CHECK_EQUAL(uintptr_t(&buffers[i][0]), uintptr_t(desc.data()));
@@ -187,7 +187,7 @@ namespace
 
       BD bd(&buffers[0][0], callback);
 
-      for (size_t i = 0U; i < N_BUFFERS; ++i)
+      for (size_t i = 0UL; i < N_BUFFERS; ++i)
       {
         BD::descriptor desc = bd.allocate();
 
@@ -209,7 +209,7 @@ namespace
       BD bd(&buffers[0][0]);
 
       // Use up all of the descriptors.
-      for (size_t i = 0U; i < N_BUFFERS; ++i)
+      for (size_t i = 0UL; i < N_BUFFERS; ++i)
       {
         BD::descriptor desc = bd.allocate();
         CHECK(desc.is_valid());
@@ -227,7 +227,7 @@ namespace
       BD bd(&buffers[0][0]);
 
       // Use up all of the descriptors, then release/allocate for the rest.
-      for (size_t i = 0U; i < (N_BUFFERS * 2); ++i)
+      for (size_t i = 0UL; i < (N_BUFFERS * 2); ++i)
       {
         BD::descriptor desc = bd.allocate();
         desc_queue.push(desc);

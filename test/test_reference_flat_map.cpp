@@ -44,7 +44,7 @@ SOFTWARE.
 
 namespace
 {
-  static const size_t SIZE = 10;
+  static const size_t SIZE = 10UL;
 
   typedef TestDataDC<std::string>  DC;
   typedef TestDataNDC<std::string> NDC;
@@ -178,7 +178,7 @@ namespace
     {
       DataDC data;
 
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK_EQUAL(data.size(), size_t(0UL));
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
@@ -591,7 +591,7 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       data.clear();
 
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK_EQUAL(data.size(), size_t(0UL));
     }
 
     //*************************************************************************

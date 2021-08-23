@@ -36,8 +36,8 @@ SOFTWARE.
 
 namespace
 {
-  const size_t SAMPLE_SIZE = 10U;
-  const size_t SCALING = 100U;
+  const size_t SAMPLE_SIZE = 10UL;
+  const size_t SCALING = 100UL;
 
   SUITE(test_cumulative_moving_average)
   {

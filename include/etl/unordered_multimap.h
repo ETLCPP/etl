@@ -822,7 +822,7 @@ namespace etl
     //*********************************************************************
     size_t erase(key_parameter_t key)
     {
-      size_t n = 0;
+      size_t n = 0UL;
       size_t bucket_id = get_bucket_index(key);
 
       bucket_t& bucket = pbuckets[bucket_id];
@@ -962,7 +962,7 @@ namespace etl
     //*********************************************************************
     size_t count(key_parameter_t key) const
     {
-      size_t n = 0;
+      size_t n = 0UL;
       const_iterator f = find(key);
       const_iterator l = f;
 
@@ -1227,7 +1227,7 @@ namespace etl
       if (!empty())
       {
         // For each bucket...
-        for (size_t i = 0; i < number_of_buckets; ++i)
+        for (size_t i = 0UL; i < number_of_buckets; ++i)
         {
           bucket_t& bucket = pbuckets[i];
 

@@ -395,7 +395,7 @@ namespace
 
     etl::queue_mpmc_mutex<int, 10> queue;
 
-    const size_t LENGTH = 100000;
+    const size_t LENGTH = 100000UL;
 
     std::vector<int> push1;
     std::vector<int> push2;
@@ -410,7 +410,7 @@ namespace
       FIX_PROCESSOR_AFFINITY1;
       SET_THREAD_PRIORITY;
 
-      size_t count = 0;
+      size_t count = 0UL;
       int value = 0;
 
       while (!start.load());
@@ -431,7 +431,7 @@ namespace
       FIX_PROCESSOR_AFFINITY2;
       SET_THREAD_PRIORITY;
 
-      size_t count = 0;
+      size_t count = 0UL;
       int value = LENGTH / 2;
 
       while (!start.load());
@@ -452,7 +452,7 @@ namespace
       FIX_PROCESSOR_AFFINITY3;
       SET_THREAD_PRIORITY;
 
-      size_t count = 0;
+      size_t count = 0UL;
 
       while (!start.load());
 
@@ -473,7 +473,7 @@ namespace
       FIX_PROCESSOR_AFFINITY4;
       SET_THREAD_PRIORITY;
 
-      size_t count = 0;
+      size_t count = 0UL;
 
       while (!start.load());
 
@@ -527,7 +527,7 @@ namespace
       CHECK_EQUAL(LENGTH, push.size());
       CHECK_EQUAL(LENGTH, pop.size());
 
-      for (size_t i = 0; i < LENGTH; ++i)
+      for (size_t i = 0UL; i < LENGTH; ++i)
       {
         CHECK_EQUAL(push[i], pop[i]);
         CHECK_EQUAL(i, pop[i]);

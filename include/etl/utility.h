@@ -85,7 +85,7 @@ namespace etl
   template< class T, size_t N >
   void swap(T(&a)[N], T(&b)[N]) ETL_NOEXCEPT
   {
-    for (size_t i = 0; i < N; ++i)
+    for (size_t i = 0UL; i < N; ++i)
     {
       swap(a[i], b[i]);
     }

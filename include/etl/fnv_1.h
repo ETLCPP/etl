@@ -192,8 +192,8 @@ namespace etl
       return hash;
     }
 
-    static ETL_CONSTANT uint32_t OFFSET_BASIS = 0x811C9DC5;
-    static ETL_CONSTANT uint32_t PRIME        = 0x01000193;
+    static ETL_CONSTANT uint32_t OFFSET_BASIS = 0x811C9DC5UL;
+    static ETL_CONSTANT uint32_t PRIME        = 0x01000193UL;
   };
 
   //***************************************************************************
@@ -250,8 +250,8 @@ namespace etl
       return hash;
     }
 
-    static ETL_CONSTANT uint32_t OFFSET_BASIS = 0x811C9DC5;
-    static ETL_CONSTANT uint32_t PRIME        = 0x01000193;
+    static ETL_CONSTANT uint32_t OFFSET_BASIS = 0x811C9DC5UL;
+    static ETL_CONSTANT uint32_t PRIME        = 0x01000193UL;
   };
 
   //***************************************************************************

@@ -356,7 +356,7 @@ namespace etl
     //*************************************************************************
     size_type copy(T* destination, size_type count, size_type position = 0) const
     {
-      size_t n = 0;
+      size_t n = 0UL;
 
       if (position < size())
       {
@@ -573,7 +573,7 @@ namespace etl
         {
           const size_t lengthview = view.size();
 
-          for (size_t j = 0; j < lengthview; ++j)
+          for (size_t j = 0UL; j < lengthview; ++j)
           {
             if (mbegin[i] == view[j])
             {
@@ -619,7 +619,7 @@ namespace etl
       {
         const size_t viewlength = view.size();
 
-        for (size_t j = 0; j < viewlength; ++j)
+        for (size_t j = 0UL; j < viewlength; ++j)
         {
           if (mbegin[position] == view[j])
           {
@@ -664,7 +664,7 @@ namespace etl
 
           const size_t viewlength = view.size();
 
-          for (size_t j = 0; j < viewlength; ++j)
+          for (size_t j = 0UL; j < viewlength; ++j)
           {
             if (mbegin[i] == view[j])
             {
@@ -717,7 +717,7 @@ namespace etl
 
         const size_t viewlength = view.size();
 
-        for (size_t j = 0; j < viewlength; ++j)
+        for (size_t j = 0UL; j < viewlength; ++j)
         {
           if (mbegin[position] == view[j])
           {

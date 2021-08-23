@@ -100,7 +100,7 @@ namespace etl
         template <typename Type, typename T1>
         struct index_of_type_helper<Type, T1>
         {
-          static constexpr size_t value = 1;
+          static constexpr size_t value = 1UL;
         };
 
       public:
@@ -380,7 +380,7 @@ namespace etl
   /// Monostate for variants.
   ///\ingroup variant
   //***************************************************************************
-  struct monostate 
+  struct monostate
   {
   };
 
@@ -656,7 +656,7 @@ namespace etl
     {
       if (index() != variant_npos)
       {
-        operation(private_variant::Destroy, data, nullptr);        
+        operation(private_variant::Destroy, data, nullptr);
       }
 
       operation = operation_type<void, false, false>::do_operation; // Null operation.
@@ -674,11 +674,11 @@ namespace etl
       using type = etl::remove_reference_t<T>;
 
       operation(private_variant::Destroy, data, nullptr);
-     
+
       construct_in_place_args<type>(data, etl::forward<TArgs>(args)...);
 
       operation = operation_type<type, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
-      
+
       type_id = etl::private_variant::parameter_pack<TTypes...>::template index_of_type<T>::value;
 
       return *static_cast<T*>(data);
@@ -1039,7 +1039,7 @@ namespace etl
     operation_function operation;
 
     //***************************************************************************
-    /// The id of the current stored type.  
+    /// The id of the current stored type.
     //***************************************************************************
     size_t type_id;
   };
@@ -1051,7 +1051,7 @@ namespace etl
 	ETL_CONSTEXPR14 bool holds_alternative(const etl::variant<TTypes...>& v) noexcept
 	{
     constexpr size_t Index = etl::private_variant::parameter_pack<TTypes...>::template index_of_type<T>::value;
-		
+
     return (Index == variant_npos) ? false : (v.index() == Index);
 	}
 
@@ -1087,7 +1087,7 @@ namespace etl
     ETL_ASSERT(Index == v.index(), ETL_ERROR(etl::variant_incorrect_type_exception));
 
 		using type = etl::variant_alternative_t<Index, etl::variant<TTypes...>>;
-		
+
     return *static_cast<type*>(v.data);
   }
 
@@ -1101,7 +1101,7 @@ namespace etl
 #endif
 
 		using type = etl::variant_alternative_t<Index, etl::variant<TTypes...>>;
-		
+
     return etl::move(*static_cast<type*>(v.data));
   }
 
@@ -1117,7 +1117,7 @@ namespace etl
     ETL_ASSERT(Index == v.index(), ETL_ERROR(etl::variant_incorrect_type_exception));
 
 		using type = etl::variant_alternative_t<Index, etl::variant<TTypes...>>;
-		
+
     return *static_cast<const type*>(v.data);
   }
 
@@ -1133,7 +1133,7 @@ namespace etl
     ETL_ASSERT(Index == v.index(), ETL_ERROR(etl::variant_incorrect_type_exception));
 
 		using type = etl::variant_alternative_t<Index, etl::variant<TTypes...>>;
-		
+
     return etl::move(*static_cast<const type*>(v.data));
   }
 
@@ -1175,7 +1175,7 @@ namespace etl
 
   //***************************************************************************
   /// get_if
-  //***************************************************************************  
+  //***************************************************************************
   template< size_t Index, typename... TTypes >
   ETL_CONSTEXPR14 etl::add_pointer_t<etl::variant_alternative_t<Index, etl::variant<TTypes...>>>
     get_if(etl::variant<TTypes...>* pv) noexcept
@@ -1251,14 +1251,14 @@ namespace etl
   //***************************************************************************
   template <typename T>
   struct variant_size;
-  
+
   template <typename... TTypes>
   struct variant_size<etl::variant<TTypes...>>
     : etl::integral_constant<size_t, sizeof...(TTypes)>
   {
   };
 
-  template <typename T> 
+  template <typename T>
   struct variant_size<const T>
     : etl::integral_constant<size_t, variant_size<T>::value>
   {

@@ -319,7 +319,7 @@ namespace etl
     {
       using ETL_OR_STD::swap; // Allow ADL
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         swap(ARRAY_[i], other.begin()[i]);
       }

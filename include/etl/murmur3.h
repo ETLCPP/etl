@@ -90,7 +90,7 @@ namespace etl
       reset();
       while (begin != end)
       {
-        block |= (*begin++) << (block_fill_count * 8);
+        block |= (*begin++) << (block_fill_count * 8U);
 
         if (++block_fill_count == FULL_BLOCK)
         {
@@ -128,7 +128,7 @@ namespace etl
 
       while (begin != end)
       {
-        block |= (*begin++) << (block_fill_count * 8);
+        block |= (*begin++) << (block_fill_count * 8U);
 
         if (++block_fill_count == FULL_BLOCK)
         {
@@ -151,7 +151,7 @@ namespace etl
       // We can't add to a finalised hash!
       ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
 
-      block |= value_ << (block_fill_count * 8);
+      block |= value_ << (block_fill_count * 8U);
 
       if (++block_fill_count == FULL_BLOCK)
       {
@@ -209,11 +209,11 @@ namespace etl
 
         hash ^= block;
         hash ^= char_count;
-        hash ^= (hash >> 16);
-        hash *= 0x85EBCA6B;
-        hash ^= (hash >> 13);
-        hash *= 0xC2B2AE35;
-        hash ^= (hash >> 16);
+        hash ^= (hash >> 16U);
+        hash *= 0x85EBCA6BUL;
+        hash ^= (hash >> 13U);
+        hash *= 0xC2B2AE35UL;
+        hash ^= (hash >> 16U);
 
         is_finalised = true;
       }
@@ -226,13 +226,13 @@ namespace etl
     value_type hash;
     value_type seed;
 
-    static ETL_CONSTANT uint8_t    FULL_BLOCK = 4;
-    static ETL_CONSTANT value_type CONSTANT1  = 0xCC9E2D51;
-    static ETL_CONSTANT value_type CONSTANT2  = 0x1B873593;
+    static ETL_CONSTANT uint8_t    FULL_BLOCK = 4U;
+    static ETL_CONSTANT value_type CONSTANT1  = 0xCC9E2D51UL;
+    static ETL_CONSTANT value_type CONSTANT2  = 0x1B873593UL;
     static ETL_CONSTANT value_type SHIFT1     = 15;
     static ETL_CONSTANT value_type SHIFT2     = 13;
     static ETL_CONSTANT value_type MULTIPLY   = 5;
-    static ETL_CONSTANT value_type ADD        = 0xE6546B64;
+    static ETL_CONSTANT value_type ADD        = 0xE6546B64UL;
   };
 }
 

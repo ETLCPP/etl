@@ -40,7 +40,7 @@ namespace
 {
   SUITE(test_array_view)
   {
-    static const size_t SIZE = 10;
+    static const size_t SIZE = 10UL;
 
     typedef etl::array<int, SIZE> EtlData;
     typedef std::array<int, SIZE> StlData;
@@ -288,7 +288,7 @@ namespace
     TEST(test_cpp17_deduced_constructor)
     {
       etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      
+
       etl::array_view view1{ data };
       etl::array_view view2{ data.begin(), data.end() };
       etl::array_view view3{ data.begin(), data.size() };
@@ -470,7 +470,7 @@ namespace
       View  view(etldata.begin(), etldata.end());
       CView cview(etldata.begin(), etldata.end());
 
-      for (size_t i = 0; i < etldata.size(); ++i)
+      for (size_t i = 0UL; i < etldata.size(); ++i)
       {
         CHECK_EQUAL(etldata[i], view[i]);
         CHECK_EQUAL(etldata[i], cview[i]);
@@ -483,7 +483,7 @@ namespace
       View  view(etldata.begin(), etldata.end());
       CView cview(etldata.begin(), etldata.end());
 
-      for (size_t i = 0; i < etldata.size(); ++i)
+      for (size_t i = 0UL; i < etldata.size(); ++i)
       {
         CHECK_EQUAL(etldata[i], view.at(i));
         CHECK_EQUAL(etldata[i], cview.at(i));

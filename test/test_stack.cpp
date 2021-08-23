@@ -247,7 +247,7 @@ namespace
     {
       etl::stack<int, 4> stack;
 
-      for (size_t i = 0; i < stack.max_size(); ++i)
+      for (size_t i = 0UL; i < stack.max_size(); ++i)
       {
         stack.push(1);
       }
@@ -342,12 +342,12 @@ namespace
     {
       etl::stack<int, 4> stack;
 
-      for (size_t i = 0; i < stack.max_size(); ++i)
+      for (size_t i = 0UL; i < stack.max_size(); ++i)
       {
         stack.push(1);
       }
 
-      for (size_t i = 0; i < stack.max_size(); ++i)
+      for (size_t i = 0UL; i < stack.max_size(); ++i)
       {
         stack.pop();
       }

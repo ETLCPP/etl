@@ -92,7 +92,7 @@ namespace etl
     {
       enum
       {
-        INACTIVE = 0xFFFFFFFF
+        INACTIVE = 0xFFFFFFFFUL
       };
     };
   };

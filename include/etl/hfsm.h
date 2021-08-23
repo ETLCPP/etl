@@ -71,7 +71,7 @@ namespace etl
           do_exits(p_root, p_state);
 
           p_state = p_next_state;
-          
+
           next_state_id = do_enters(p_root, p_next_state, true);
 
           if (next_state_id != ifsm_state::No_State_Change)
@@ -118,7 +118,7 @@ namespace etl
     //*******************************************
     static size_t get_depth(etl::ifsm_state* s)
     {
-      size_t depth = 0;
+      size_t depth = 0UL;
 
       while (s != ETL_NULLPTR)
       {

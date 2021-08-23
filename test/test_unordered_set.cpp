@@ -317,7 +317,7 @@ namespace
 
       DataNDC::iterator idata;
 
-      for (size_t i = 0; i < 10; ++i)
+      for (size_t i = 0UL; i < 10; ++i)
       {
         idata = data.find(initial_data[i]);
         CHECK(idata != data.end());
@@ -371,7 +371,7 @@ namespace
 
       data.insert(initial_data.begin(), initial_data.end());
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         DataNDC::iterator idata = data.find(initial_data[i]);
         CHECK(idata != data.end());
