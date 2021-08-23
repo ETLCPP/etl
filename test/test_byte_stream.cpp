@@ -858,28 +858,32 @@ namespace
     //*************************************************************************
     TEST(write_read_char_range)
     {
-      std::array<char, 4 * sizeof(char)> storage;
+      std::array<char, 5 * sizeof(char)> storage;
       std::array<char, 4> put_data = { char(0x01), char(0x5A), char(0xA5), char(0xFF) };
 
       etl::span<char> input(put_data.begin(), put_data.end());
 
       etl::byte_stream_writer writer(storage.data(), storage.size());
       CHECK(writer.write(input));
+      CHECK(writer.write(char(0x99))); // Write an extra value.
 
       etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
 
       etl::optional<etl::span<char>> output = reader.read<char>(4U);
       CHECK_EQUAL(4U, output.value().size());
-      CHECK_EQUAL(put_data[0], output.value()[0]);
-      CHECK_EQUAL(put_data[1], output.value()[1]);
-      CHECK_EQUAL(put_data[2], output.value()[2]);
-      CHECK_EQUAL(put_data[3], output.value()[3]);
+      CHECK_EQUAL(int(put_data[0]), int(output.value()[0]));
+      CHECK_EQUAL(int(put_data[1]), int(output.value()[1]));
+      CHECK_EQUAL(int(put_data[2]), int(output.value()[2]));
+      CHECK_EQUAL(int(put_data[3]), int(output.value()[3]));
+
+      etl::optional<char> i = reader.read<char>();  // Read back the extra value to ensure that the current index is correct.
+      CHECK_EQUAL(int(char(0x99)), int(i.value()));
     }
 
     //*************************************************************************
     TEST(write_read_int32_t_range)
     {
-      std::array<char, 4 * sizeof(int32_t)> storage;
+      std::array<char, 5 * sizeof(int32_t)> storage;
       std::array<int32_t, 4> put_data = { int32_t(0x00000001), int32_t(0xA55AA55A), int32_t(0x5AA55AA5), int32_t(0xFFFFFFFF) };
       std::array<int32_t, 4> get_data = { int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000) };
 
@@ -887,6 +891,7 @@ namespace
 
       etl::byte_stream_writer writer(storage.data(), storage.size());
       CHECK(writer.write(input));
+      CHECK(writer.write(0x12345678)); // Write an extra value.
 
       etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
 
@@ -898,6 +903,9 @@ namespace
       CHECK_EQUAL(put_data[1], get_data[1]);
       CHECK_EQUAL(put_data[2], get_data[2]);
       CHECK_EQUAL(put_data[3], get_data[3]);
+
+      etl::optional<int32_t> i = reader.read<int32_t>();  // Read back the extra value to ensure that the current index is correct.
+      CHECK_EQUAL(0x12345678, i.value());
     }
 
     //*************************************************************************
