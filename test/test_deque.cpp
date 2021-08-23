@@ -45,7 +45,7 @@ namespace
 {
   SUITE(test_deque)
   {
-    const size_t SIZE = 14;
+    const size_t SIZE = 14UL;
 
     typedef TestDataDC<std::string>  DC;
     typedef TestDataNDC<std::string> NDC;
@@ -183,7 +183,7 @@ namespace
     //*************************************************************************
     TEST(test_move_constructor)
     {
-      const size_t SIZE = 10U;
+      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
 
       std::unique_ptr<uint32_t> p1(new uint32_t(1U));
@@ -212,7 +212,7 @@ namespace
     //*************************************************************************
     TEST(test_move_insert_erase)
     {
-      const size_t SIZE = 10U;
+      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
 
       std::unique_ptr<uint32_t> p1(new uint32_t(1U));
@@ -265,7 +265,7 @@ namespace
     //*************************************************************************
     TEST(test_move_assignment)
     {
-      const size_t SIZE = 10U;
+      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
 
       std::unique_ptr<uint32_t> p1(new uint32_t(1U));
@@ -308,7 +308,7 @@ namespace
     //*************************************************************************
     TEST(test_move_assignment_interface)
     {
-      const size_t SIZE = 10U;
+      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
       typedef etl::ideque<std::unique_ptr<uint32_t>> IData;
 
@@ -870,7 +870,7 @@ namespace
     TEST(test_insert_to_empty)
     {
       const int value(5);
-      const size_t insertCount = 2;
+      const size_t insertCount = 2UL;
       etl::deque<int, 2> valuesToInsert(insertCount, value);
       etl::deque<int, 10> data;
 
@@ -1000,9 +1000,9 @@ namespace
     {
       size_t max_insert = SIZE - initial_data_small.size();
 
-      for (size_t insert_size = 1; insert_size <= max_insert; ++insert_size)
+      for (size_t insert_size = 1UL; insert_size <= max_insert; ++insert_size)
       {
-        for (size_t offset = 0; offset <= initial_data_small.size(); ++offset)
+        for (size_t offset = 0UL; offset <= initial_data_small.size(); ++offset)
         {
           Compare_Data compare_data(initial_data_small.begin(), initial_data_small.end());
           DataNDC data(compare_data.begin(), compare_data.end());
@@ -1033,11 +1033,11 @@ namespace
     {
       size_t max_insert = SIZE - initial_data_small.size();
 
-      for (size_t insert_size = 1; insert_size <= max_insert; ++insert_size)
+      for (size_t insert_size = 1UL; insert_size <= max_insert; ++insert_size)
       {
         Compare_Data range(insert_data.begin(), insert_data.begin() + insert_size);
 
-        for (size_t offset = 0; offset <= initial_data_small.size(); ++offset)
+        for (size_t offset = 0UL; offset <= initial_data_small.size(); ++offset)
         {
           Compare_Data compare_data(initial_data_small.begin(), initial_data_small.end());
           DataNDC data(blank_data.begin(), blank_data.end());
@@ -1511,7 +1511,7 @@ namespace
     {
       DataNDC data;
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         CHECK_NO_THROW(data.push_back(N0));
       }
@@ -1623,7 +1623,7 @@ namespace
     {
       DataNDC data;
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         CHECK_NO_THROW(data.push_front(N1));
       }
@@ -1930,7 +1930,7 @@ namespace
     //*************************************************************************
     TEST(test_move)
     {
-      const size_t SIZE = 10U;
+      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
 
       Data data1;

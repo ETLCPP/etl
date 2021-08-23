@@ -42,7 +42,7 @@ namespace
 {
   SUITE(test_circular_buffer)
   {
-    static const size_t SIZE = 10;
+    static const size_t SIZE = 10UL;
 
     using ItemM    = TestDataM<std::string>;
     using DataM    = etl::circular_buffer<ItemM, SIZE>;
@@ -155,7 +155,7 @@ namespace
       DataM data;
       CompareM compare;
 
-      for (uint32_t i = 0; i < SIZE; ++i)
+      for (uint32_t i = 0U; i < SIZE; ++i)
       {
         data.push(ItemM(std::to_string(i)));
         compare.push_back(ItemM(std::to_string(i)));
@@ -712,7 +712,7 @@ namespace
       CompareM input2;
       CompareM compare;
 
-      for (uint32_t i = 0; i < SIZE; ++i)
+      for (uint32_t i = 0U; i < SIZE; ++i)
       {
         input1.push_back(ItemM(std::to_string(i)));
         input2.push_back(ItemM(std::to_string(SIZE - i)));
@@ -754,7 +754,7 @@ namespace
       // Copy construct from data1
       Data data2;
       data2.push(Ndc("0"));
-      
+
       data2 = data1;
 
       // Now change data1
@@ -780,7 +780,7 @@ namespace
       // Copy construct from data1
       Data data2;
       data2.push(Ndc("0"));
-      
+
       data2 = etl::move(data1);
 
       // Now change data1
@@ -849,14 +849,14 @@ namespace
       Data::iterator begin = data.begin();
       Data::iterator end   = data.begin();
 
-      for (uint32_t i = 0; i < data.size(); ++i)
+      for (uint32_t i = 0U; i < data.size(); ++i)
       {
         CHECK_EQUAL(i, end - begin);
         CHECK_EQUAL(i, -(begin - end));
         ++end;
       }
 
-      for (uint32_t i = 0; i < data.size(); ++i)
+      for (uint32_t i = 0U; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.size() - i, end - begin);
         CHECK_EQUAL(data.size() - i, -(begin - end));
@@ -874,14 +874,14 @@ namespace
       Data::const_iterator begin = data.begin();
       Data::const_iterator end   = data.begin();
 
-      for (uint32_t i = 0; i < data.size(); ++i)
+      for (uint32_t i = 0U; i < data.size(); ++i)
       {
         CHECK_EQUAL(i, end - begin);
         CHECK_EQUAL(i, -(begin - end));
         ++end;
       }
 
-      for (uint32_t i = 0; i < data.size(); ++i)
+      for (uint32_t i = 0U; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.size() - i, end - begin);
         CHECK_EQUAL(data.size() - i, -(begin - end));
@@ -899,7 +899,7 @@ namespace
       Data data2;
       data1.push(input.begin(), input.end());
       data2.push(input.rbegin(), input.rend());
-      
+
       swap(data1, data2);
 
       CHECK(std::equal(output.rbegin() + 3, output.rend(), data1.begin()));

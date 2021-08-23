@@ -645,7 +645,7 @@ namespace
 
       Data data(compare_data.begin(), compare_data.end());
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
@@ -658,7 +658,7 @@ namespace
 
       CData data(compare_data.begin(), compare_data.end());
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
@@ -671,7 +671,7 @@ namespace
 
       const Data data(compare_data.begin(), compare_data.end());
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
@@ -684,7 +684,7 @@ namespace
 
       const CData data(compare_data.begin(), compare_data.end());
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
@@ -696,7 +696,7 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data data(initial_data.begin(), initial_data.end());
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.at(i), compare_data.at(i));
       }
@@ -710,7 +710,7 @@ namespace
       CCompare_Data compare_data(initial_data.begin(), initial_data.end());
       CData data(initial_data.begin(), initial_data.end());
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.at(i), compare_data.at(i));
       }
@@ -724,7 +724,7 @@ namespace
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
       const Data data(initial_data.begin(), initial_data.end());
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.at(i), compare_data.at(i));
       }
@@ -738,7 +738,7 @@ namespace
       const CCompare_Data compare_data(initial_data.begin(), initial_data.end());
       const CData data(initial_data.begin(), initial_data.end());
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.at(i), compare_data.at(i));
       }
@@ -962,12 +962,12 @@ namespace
 
       int d;
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         compare_data.push_back(&d);
       }
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         data.push_back(&d);
       }
@@ -985,12 +985,12 @@ namespace
 
       const int d = 0;
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         compare_data.push_back(&d);
       }
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         data.push_back(&d);
       }
@@ -1007,7 +1007,7 @@ namespace
 
       int d;
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         data.push_back(&d);
       }
@@ -1022,7 +1022,7 @@ namespace
 
       const int d = 0;
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         data.push_back(&d);
       }
@@ -1038,12 +1038,12 @@ namespace
 
       int d;
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         compare_data.emplace_back(&d);
       }
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         data.emplace_back(&d);
       }

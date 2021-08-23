@@ -98,7 +98,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_make_string_with_capacity)
     {
-      constexpr size_t CAPACITY = 20;
+      constexpr size_t CAPACITY = 20UL;
       size_t length = strlen("Hello World");
 
       auto ctext   = etl::make_string_with_capacity<CAPACITY>("Hello World");
@@ -139,7 +139,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_make_string_with_capacity_truncated)
     {
-      constexpr size_t CAPACITY = 10;
+      constexpr size_t CAPACITY = 10UL;
       size_t length = strlen("Hello World");
 
 #if defined(ETL_STRING_TRUNCATION_IS_ERROR)

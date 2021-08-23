@@ -49,7 +49,7 @@ namespace
 
   SUITE(test_string_char)
   {
-    static const size_t SIZE = 11;
+    static const size_t SIZE = 11UL;
 
     typedef etl::string<SIZE> Text;
     typedef etl::istring      IText;
@@ -124,7 +124,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_size_value)
     {
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       const value_t   INITIAL_VALUE = STR('A');
 
       Compare_Text compare_text(INITIAL_SIZE, INITIAL_VALUE);
@@ -595,8 +595,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_up)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 8;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = 8UL;
 
       Text text(initial_text.c_str(), INITIAL_SIZE);
       text.resize(NEW_SIZE);
@@ -610,8 +610,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_up_value)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 8;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = 8UL;
       const value_t INITIAL_VALUE = STR('A');
 
       Text text(INITIAL_SIZE, INITIAL_VALUE);
@@ -631,8 +631,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_excess)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = SIZE + 1;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = SIZE + 1UL;
 
       Text text(INITIAL_SIZE, STR('A'));
       text.resize(NEW_SIZE, STR('A'));
@@ -645,8 +645,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_down)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 2;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = 2UL;
 
       Text text(INITIAL_SIZE, STR('A'));
       text.resize(NEW_SIZE);
@@ -660,8 +660,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_down_value)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 2;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = 2UL;
       const value_t INITIAL_VALUE = STR('A');
 
       Text text(INITIAL_SIZE, INITIAL_VALUE);
@@ -682,8 +682,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_uninitialized_resize_up)
     {
-      const size_t  INITIAL_SIZE = 5;
-      const size_t  NEW_SIZE = 8;
+      const size_t  INITIAL_SIZE = 5UL;
+      const size_t  NEW_SIZE = 8UL;
       const value_t INITIAL_VALUE = STR('A');
       const value_t FILL_VALUE = STR('B');
 
@@ -711,8 +711,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_uninitialized_resize_up_excess)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = SIZE + 1;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = SIZE + 1UL;
 
       Text text(INITIAL_SIZE, STR('A'));
 
@@ -724,8 +724,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_uninitialized_resize_down)
     {
-      const size_t  INITIAL_SIZE = 5;
-      const size_t  NEW_SIZE = 2;
+      const size_t  INITIAL_SIZE = 5UL;
+      const size_t  NEW_SIZE = 2UL;
       const value_t INITIAL_VALUE = STR('A');
       const value_t FILL_VALUE = STR('B');
 
@@ -825,7 +825,7 @@ namespace
       Compare_Text compare_text(initial_text.c_str());
       Text text(initial_text.c_str());
 
-      for (size_t i = 0; i < text.size(); ++i)
+      for (size_t i = 0UL; i < text.size(); ++i)
       {
         CHECK_EQUAL(text[i], compare_text[i]);
       }
@@ -841,7 +841,7 @@ namespace
       const Compare_Text compare_text(initial_text.c_str());
       const Text text(initial_text.c_str());
 
-      for (size_t i = 0; i < text.size(); ++i)
+      for (size_t i = 0UL; i < text.size(); ++i)
       {
         CHECK_EQUAL(text[i], compare_text[i]);
       }
@@ -857,7 +857,7 @@ namespace
       Compare_Text compare_text(initial_text.c_str());
       Text text(initial_text.c_str());
 
-      for (size_t i = 0; i < text.size(); ++i)
+      for (size_t i = 0UL; i < text.size(); ++i)
       {
         CHECK_EQUAL(text.at(i), compare_text.at(i));
       }
@@ -875,7 +875,7 @@ namespace
       const Compare_Text compare_text(initial_text.c_str());
       const Text text(initial_text.c_str());
 
-      for (size_t i = 0; i < text.size(); ++i)
+      for (size_t i = 0UL; i < text.size(); ++i)
       {
         CHECK_EQUAL(text.at(i), compare_text.at(i));
       }
@@ -1104,7 +1104,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_size_value)
     {
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       const value_t INITIAL_VALUE = STR('A');
 
       std::array<value_t, INITIAL_SIZE> compare_text;
@@ -1126,7 +1126,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_assign_size_value_excess)
     {
       const size_t INITIAL_SIZE = SIZE;
-      const size_t EXCESS_SIZE = SIZE + 1;
+      const size_t EXCESS_SIZE = SIZE + 1UL;
       const value_t INITIAL_VALUE = STR('A');
       std::array<value_t, INITIAL_SIZE> compare_text;
       compare_text.fill(INITIAL_VALUE);
@@ -1147,12 +1147,12 @@ namespace
       Compare_Text compare_text;
       Text text;
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         compare_text.push_back(STR('A') + value_t(i));
       }
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         text.push_back(STR('A') + value_t(i));
       }
@@ -1173,12 +1173,12 @@ namespace
       Compare_Text compare_text;
       Text text;
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         compare_text.push_back(STR('A') + value_t(i));
       }
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         text.push_back(STR('A') + value_t(i));
 #if ETL_STRING_TRUNCATION_CHECKS_ENABLED
@@ -1220,10 +1220,10 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_value)
     {
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       const value_t INITIAL_VALUE  = STR('A');
 
-      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
         Compare_Text compare_text;
         Text text;
@@ -1250,7 +1250,7 @@ namespace
 
       const value_t INITIAL_VALUE = STR('A');
 
-      size_t offset = 2;
+      size_t offset = 2UL;
       text.insert(text.begin() + offset, INITIAL_VALUE);
       compare_text.insert(compare_text.begin() + offset, INITIAL_VALUE);
       compare_text.erase(compare_text.end() - 1);
@@ -1293,11 +1293,11 @@ namespace
       Compare_Text compare_text;
       Text text;
 
-      const size_t INITIAL_SIZE     = 5;
-      const size_t INSERT_SIZE      = 3;
+      const size_t INITIAL_SIZE     = 5UL;
+      const size_t INSERT_SIZE      = 3UL;
       const value_t INITIAL_VALUE      = STR('A');
 
-      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
         text.assign(initial_text.begin(), initial_text.begin() + INITIAL_SIZE);
         compare_text.assign(initial_text.begin(), initial_text.begin() + INITIAL_SIZE);
@@ -1319,10 +1319,10 @@ namespace
       Compare_Text compare_text;
       Text text;
 
-      const size_t INSERT_SIZE = 4;
+      const size_t INSERT_SIZE = 4UL;
       const value_t INSERT_VALUE  = STR('A');
 
-      size_t offset = 0;
+      size_t offset = 0UL;
       compare_text.assign(initial_text.begin(), initial_text.end());
       text.assign(initial_text.begin(), initial_text.end());
       compare_text.insert(compare_text.begin() + offset, INSERT_SIZE, INSERT_VALUE);
@@ -1385,9 +1385,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_range)
     {
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
 
-      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
         Compare_Text compare_text;
         Text text;
@@ -1409,13 +1409,13 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_range_excess)
     {
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       const value_t INITIAL_VALUE  = STR('A');
 
       Compare_Text compare_text;
       Text text;
 
-      size_t offset = 0;
+      size_t offset = 0UL;
 
       compare_text.assign(INITIAL_SIZE, INITIAL_VALUE);
       text.assign(INITIAL_SIZE, INITIAL_VALUE);
@@ -1466,9 +1466,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_range_self)
     {
-      size_t length = TextL::MAX_SIZE / 2;
+      size_t length = TextL::MAX_SIZE / 2UL;
 
-      for (size_t offset = 10; offset < length; ++offset)
+      for (size_t offset = 10UL; offset < length; ++offset)
       {
         Compare_Text compare_text = STR("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
         TextL text = STR("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -1487,7 +1487,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_size_t_position_string)
     {
-      for (size_t offset = 0; offset <= short_text.size(); ++offset)
+      for (size_t offset = 0UL; offset <= short_text.size(); ++offset)
       {
         Compare_Text compare_text(short_text.begin(), short_text.end());
         Text text(short_text.begin(), short_text.end());
@@ -1508,7 +1508,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_size_t_position_string_excess)
     {
-      for (size_t offset = 0; offset <= initial_text.size(); ++offset)
+      for (size_t offset = 0UL; offset <= initial_text.size(); ++offset)
       {
         Compare_Text compare_text(initial_text.begin(), initial_text.end());
         Text text(initial_text.begin(), initial_text.end());
@@ -1529,7 +1529,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_size_t_position_string_from_truncated)
     {
-      for (size_t offset = 0; offset <= short_text.size(); ++offset)
+      for (size_t offset = 0UL; offset <= short_text.size(); ++offset)
       {
         Compare_Text compare_text(short_text.begin(), short_text.end());
         Text text(short_text.begin(), short_text.end());
@@ -3078,8 +3078,8 @@ namespace
       std::string compare_haystack(the_haystack);
       etl::string<50> haystack(the_haystack);
 
-      size_t position1 = 0;
-      size_t position2 = 0;
+      size_t position1 = 0UL;
+      size_t position2 = 0UL;
 
       position1 = compare_haystack.find(compare_needle, position1);
       position2 = haystack.find(needle, position2);
@@ -3107,8 +3107,8 @@ namespace
       std::string compare_haystack(the_haystack);
       etl::string<50> haystack(the_haystack);
 
-      size_t position1 = 0;
-      size_t position2 = 0;
+      size_t position1 = 0UL;
+      size_t position2 = 0UL;
 
       position1 = compare_haystack.find(needle, position1);
       position2 = haystack.find(needle, position2);
@@ -3136,8 +3136,8 @@ namespace
       std::string compare_haystack(the_haystack);
       etl::string<50> haystack(the_haystack);
 
-      size_t position1 = 0;
-      size_t position2 = 0;
+      size_t position1 = 0UL;
+      size_t position2 = 0UL;
 
       position1 = compare_haystack.find(needle, position1, 3);
       position2 = haystack.find(needle, position2, 3);
@@ -4338,7 +4338,9 @@ namespace
       std::fill(text.data(), text.data() + text.max_size(), STR('A'));
       text.trim_to_terminator();
 
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
       CHECK(!text.is_truncated());
+#endif
       CHECK_EQUAL(text.max_size(), text.size());
     }
 
@@ -4351,7 +4353,9 @@ namespace
       std::fill(text.data(), text.data() + text.max_size() - 1, STR('A'));
       text.trim_to_terminator();
 
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
       CHECK(!text.is_truncated());
+#endif
       CHECK_EQUAL(text.max_size() - 1, text.size());
     }
 
@@ -4364,7 +4368,9 @@ namespace
       std::fill(text.data(), text.data() + text.max_size() + 1, STR('A')); // Overwrites to terminating null.
       text.trim_to_terminator();
 
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
       CHECK(text.is_truncated());
+#endif
       CHECK_EQUAL(text.max_size(), text.size());
     }
   };

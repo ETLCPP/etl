@@ -116,7 +116,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 static size_t length(const char_type* str)
     {
-      size_t count = 0;
+      size_t count = 0UL;
 
       if (str != 0)
       {
@@ -174,7 +174,7 @@ namespace etl
     //*************************************************************************
     static int compare(const char_type* s1, const char_type* s2, size_t count)
     {
-      for (size_t i = 0; i < count; ++i)
+      for (size_t i = 0UL; i < count; ++i)
       {
         if (*s1 < *s2)
         {
@@ -195,7 +195,7 @@ namespace etl
     //*************************************************************************
     static const char_type* find(const char_type* p, size_t count, const char_type& ch)
     {
-      for (size_t i = 0; i < count; ++i)
+      for (size_t i = 0UL; i < count; ++i)
       {
         if (*p == ch)
         {

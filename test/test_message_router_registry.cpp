@@ -46,7 +46,7 @@ namespace
     ROUTER5 = 50
   };
 
-  constexpr size_t Registry_Size = 4U;
+  constexpr size_t Registry_Size = 4UL;
 
   struct Message1 : public etl::message<1>
   {

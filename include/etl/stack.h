@@ -443,7 +443,7 @@ namespace etl
     istack& operator = (istack&& rhs)
     {
       if (&rhs != this)
-      {        
+      {
         clone(etl::move(rhs));
       }
 
@@ -460,9 +460,9 @@ namespace etl
     {
       clear();
 
-      size_t index = 0;
+      size_t index = 0UL;
 
-      for (size_t i = 0; i < other.size(); ++i)
+      for (size_t i = 0UL; i < other.size(); ++i)
       {
         push(other.p_buffer[index++]);
       }
@@ -476,9 +476,9 @@ namespace etl
     {
       clear();
 
-      size_t index = 0;
+      size_t index = 0UL;
 
-      for (size_t i = 0; i < other.size(); ++i)
+      for (size_t i = 0UL; i < other.size(); ++i)
       {
         push(etl::move(other.p_buffer[index++]));
       }

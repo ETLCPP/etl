@@ -67,7 +67,7 @@ namespace
   typedef int* pointer;
   typedef const int* const_pointer;
 
-  const size_t SIZE = 10;
+  const size_t SIZE = 10UL;
   int dataA[SIZE] = { 2, 1, 4, 3, 6, 5, 8, 7, 10, 9 };
 
   SUITE(test_iterator)
@@ -125,11 +125,11 @@ namespace
     {
       int data[] = { 1, 2, 3, 4, 5, 6, 7 };
 
-      size_t length = 6U;
+      size_t length = 6UL;
 
       int* itr = &data[0] + length;
 
-      for (size_t i = 1; i <= length; ++i)
+      for (size_t i = 1UL; i <= length; ++i)
       {
         CHECK_EQUAL(data[length - i], *etl::prev(itr, i));
       }
@@ -140,11 +140,11 @@ namespace
     {
       int data[] = { 1, 2, 3, 4, 5, 6, 7 };
 
-      size_t length = 6U;
+      size_t length = 6UL;
 
       int* itr = &data[0];
 
-      for (size_t i = 1; i <= length; ++i)
+      for (size_t i = 1UL; i <= length; ++i)
       {
         CHECK_EQUAL(data[i], *etl::next(itr, i));
       }

@@ -223,7 +223,7 @@ namespace
     {
       View  view(text.c_str(), text.size());
 
-      for (size_t i = 0; i < text.size(); ++i)
+      for (size_t i = 0UL; i < text.size(); ++i)
       {
         CHECK(text[i] == view[i]);
       }
@@ -234,7 +234,7 @@ namespace
     {
       View  view(text.c_str(), text.size());
 
-      for (size_t i = 0; i < text.size(); ++i)
+      for (size_t i = 0UL; i < text.size(); ++i)
       {
         CHECK(text[i] == view.at(i));
       }

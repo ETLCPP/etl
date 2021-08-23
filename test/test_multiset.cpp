@@ -41,7 +41,7 @@ SOFTWARE.
 
 #include "data.h"
 
-static const size_t MAX_SIZE = 10;
+static const size_t MAX_SIZE = 10UL;
 
 #define TEST_GREATER_THAN
 #ifdef TEST_GREATER_THAN
@@ -203,7 +203,7 @@ namespace
     {
       Data data;
 
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK_EQUAL(data.size(), size_t(0UL));
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), MAX_SIZE);
       CHECK_EQUAL(data.max_size(), MAX_SIZE);
@@ -797,7 +797,7 @@ namespace
       Data data(compare_data.begin(), compare_data.end());
       data.clear();
 
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK_EQUAL(data.size(), size_t(0UL));
     }
 
     //*************************************************************************

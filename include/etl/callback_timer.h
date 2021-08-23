@@ -394,7 +394,7 @@ namespace etl
       if (is_space)
       {
         // Search for the free space.
-        for (uint_least8_t i = 0; i < MAX_TIMERS; ++i)
+        for (uint_least8_t i = 0U; i < MAX_TIMERS; ++i)
         {
           etl::callback_timer_data& timer = timer_array[i];
 
@@ -426,7 +426,7 @@ namespace etl
       if (is_space)
       {
         // Search for the free space.
-        for (uint_least8_t i = 0; i < MAX_TIMERS; ++i)
+        for (uint_least8_t i = 0U; i < MAX_TIMERS; ++i)
         {
           etl::callback_timer_data& timer = timer_array[i];
 
@@ -459,7 +459,7 @@ namespace etl
           if (is_space)
           {
               // Search for the free space.
-              for (uint_least8_t i = 0; i < MAX_TIMERS; ++i)
+              for (uint_least8_t i = 0U; i < MAX_TIMERS; ++i)
               {
                   etl::callback_timer_data& timer = timer_array[i];
 

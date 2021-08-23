@@ -216,7 +216,7 @@ namespace etl
       unsigned char data[sizeof(T)];
       to_bytes(value, data);
 
-      for (size_t i = 0; i < sizeof(T); ++i)
+      for (size_t i = 0UL; i < sizeof(T); ++i)
       {
         if (!put_integral(uint32_t(data[i]), CHAR_BIT))
         {
@@ -307,7 +307,7 @@ namespace etl
           // Temporary storage.
           unsigned char data[sizeof(T)];
 
-          for (size_t i = 0; i < sizeof(T); ++i)
+          for (size_t i = 0UL; i < sizeof(T); ++i)
           {
              get(data[i], CHAR_BIT);
           }
@@ -478,7 +478,7 @@ namespace etl
     //***************************************************************************
     bool get_bit()
     {
-      bool result = (pdata[byte_index] & (1 << (bits_in_byte - 1))) != 0;
+      bool result = (pdata[byte_index] & (1U << (bits_in_byte - 1U))) != 0U;
 
       step(1U);
 

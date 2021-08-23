@@ -36,8 +36,8 @@ SOFTWARE.
 
 namespace
 {
-  constexpr size_t Size        = 20U;
-  constexpr size_t NThresholds = 4U;
+  constexpr size_t Size        = 20UL;
+  constexpr size_t NThresholds = 4UL;
 
   using IntQuantize     = etl::quantize<int>;
   using DoubleQuantize  = etl::quantize<double>;
@@ -51,46 +51,46 @@ namespace
   };
 
   //***********************************
-  const std::array<int, NThresholds> thresholds1 = 
-  { 
+  const std::array<int, NThresholds> thresholds1 =
+  {
     14, 18, 22, 25
   };
 
-  const std::array<int, NThresholds + 1> quantizations1 = 
-  { 
+  const std::array<int, NThresholds + 1> quantizations1 =
+  {
     1, 2, 3, 4, 5
   };
 
-  const std::array<int, Size> input1 = 
-  { 
+  const std::array<int, Size> input1 =
+  {
     10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29
   };
 
-  const std::array<int, Size> result1a = 
-  { 
+  const std::array<int, Size> result1a =
+  {
     1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5
   };
 
   std::array<int, Size> output1;
 
   //***********************************
-  const std::array<double, NThresholds> thresholds2 = 
-  { 
+  const std::array<double, NThresholds> thresholds2 =
+  {
     14.0, 18.0, 22.0, 25.0
   };
 
-  const std::array<double, NThresholds + 1> quantizations2 = 
-  { 
+  const std::array<double, NThresholds + 1> quantizations2 =
+  {
     1.0, 2.0, 3.0, 4.0, 5.0
   };
 
-  const std::array<double, Size> input2 = 
-  { 
+  const std::array<double, Size> input2 =
+  {
     10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0
   };
 
-  const std::array<double, Size> result2a = 
-  { 
+  const std::array<double, Size> result2a =
+  {
     1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 3.0, 4.0, 4.0, 4.0, 5.0, 5.0, 5.0, 5.0, 5.0
   };
 

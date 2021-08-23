@@ -33,8 +33,8 @@ SOFTWARE.
 
 namespace
 {
-  const size_t Size   = 3U;
-  const size_t Offset = 5U;
+  const size_t Size   = 3UL;
+  const size_t Offset = 5UL;
 
   using Service = etl::delegate_service<Size, Offset>;
 
