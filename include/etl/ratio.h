@@ -41,7 +41,7 @@ SOFTWARE.
 
 namespace etl
 {
-  template <const size_t NUM, const size_t DEN = 1>
+  template <const size_t NUM, const size_t DEN = 1UL>
   struct ratio
   {
     static ETL_CONSTANT intmax_t num = NUM;

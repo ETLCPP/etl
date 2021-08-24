@@ -49,9 +49,9 @@ namespace
 
   SUITE(test_string_char)
   {
-    static constexpr size_t SIZE   = 11;
-    static constexpr size_t SIZE_L = 52;
-    static constexpr size_t SIZE_S = 4;
+    static constexpr size_t SIZE   = 11UL;
+    static constexpr size_t SIZE_L = 52UL;
+    static constexpr size_t SIZE_S = 4UL;
 
     using Text         = etl::string_ext;
     using IText        = etl::istring;
@@ -73,7 +73,7 @@ namespace
     Compare_Text short_text;
 
     const value_t* pinitial_text = STR("Hello World");
- 
+
     value_t  array_text[12];
     value_t* p_text = array_text;
 
@@ -197,7 +197,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_size_value)
     {
-      const size_t  INITIAL_SIZE = 5;
+      const size_t  INITIAL_SIZE = 5UL;
       const value_t INITIAL_VALUE = STR('A');
       TextBuffer    buffer;
 
@@ -390,7 +390,7 @@ namespace
     {
       TextBuffer buffer;
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
-      
+
       TextBuffer buffer2;
       Text text2(text, buffer2.data(), buffer2.size());
       CHECK(text2 == text);
@@ -419,10 +419,10 @@ namespace
     {
       TextBuffer buffer;
       Text  text(initial_text.c_str(), buffer.data(), buffer.size());
-      
+
       TextBufferL bufferl;
       Text textl(longer_text.c_str(), bufferl.data(), bufferl.size());
-      
+
       TextBuffer buffer2;
       Text  text2(textl, buffer2.data(), buffer2.size());
       CHECK(text2 == text);
@@ -525,7 +525,7 @@ namespace
     {
       TextBuffer buffer;
       Text text(initial_text.begin(), initial_text.end(), buffer.data(), buffer.size());
-      
+
       TextBuffer buffer2;
       Text other_text(buffer2.data(), buffer2.size());
 
@@ -544,7 +544,7 @@ namespace
     {
       TextBuffer buffer;
       Text text(longer_text.begin(), longer_text.end(), buffer.data(), buffer.size());
-      
+
       TextBuffer buffer2;
       Text other_text(buffer2.data(), buffer2.size());
 
@@ -828,7 +828,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_uninitialized_resize_up)
     {
-      const size_t  INITIAL_SIZE = 5;
+      const size_t  INITIAL_SIZE = 5UL;
       const size_t  NEW_SIZE = 8;
       const value_t INITIAL_VALUE = STR('A');
       const value_t FILL_VALUE = STR('B');
@@ -872,7 +872,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_uninitialized_resize_down)
     {
-      const size_t  INITIAL_SIZE = 5;
+      const size_t  INITIAL_SIZE = 5UL;
       const size_t  NEW_SIZE = 2;
       const value_t INITIAL_VALUE = STR('A');
       const value_t FILL_VALUE = STR('B');
@@ -982,7 +982,7 @@ namespace
       TextBuffer buffer;
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
 
-      for (size_t i = 0; i < text.size(); ++i)
+      for (size_t i = 0UL; i < text.size(); ++i)
       {
         CHECK_EQUAL(text[i], compare_text[i]);
       }
@@ -1000,7 +1000,7 @@ namespace
       TextBuffer buffer;
       const Text text(initial_text.c_str(), buffer.data(), buffer.size());
 
-      for (size_t i = 0; i < text.size(); ++i)
+      for (size_t i = 0UL; i < text.size(); ++i)
       {
         CHECK_EQUAL(text[i], compare_text[i]);
       }
@@ -1018,7 +1018,7 @@ namespace
       TextBuffer buffer;
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
 
-      for (size_t i = 0; i < text.size(); ++i)
+      for (size_t i = 0UL; i < text.size(); ++i)
       {
         CHECK_EQUAL(text.at(i), compare_text.at(i));
       }
@@ -1038,7 +1038,7 @@ namespace
       TextBuffer buffer;
       const Text text(initial_text.c_str(), buffer.data(), buffer.size());
 
-      for (size_t i = 0; i < text.size(); ++i)
+      for (size_t i = 0UL; i < text.size(); ++i)
       {
         CHECK_EQUAL(text.at(i), compare_text.at(i));
       }
@@ -1338,12 +1338,12 @@ namespace
       TextBuffer buffer;
       Text text(buffer.data(), buffer.size());
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         compare_text.push_back(STR('A') + value_t(i));
       }
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         text.push_back(STR('A') + value_t(i));
       }
@@ -1366,12 +1366,12 @@ namespace
       TextBuffer buffer;
       Text text(buffer.data(), buffer.size());
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         compare_text.push_back(STR('A') + value_t(i));
       }
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         text.push_back(STR('A') + value_t(i));
 #if ETL_STRING_TRUNCATION_CHECKS_ENABLED
@@ -2552,7 +2552,7 @@ namespace
     {
       // Non-overflow short text.
       Compare_Text compare_text(short_text.c_str());
-      
+
       TextBuffer buffer;
       Text text(short_text.c_str(), buffer.data(), buffer.size());
 
@@ -3290,7 +3290,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_copy)
     {
       Compare_Text compare_text(initial_text.c_str());
-      
+
       TextBuffer buffer;
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
 
@@ -3392,7 +3392,7 @@ namespace
       const value_t* the_haystack = STR("A haystack with a needle and another needle");
 
       std::string compare_needle(STR("needle"));
-      
+
       TextBuffer buffer;
       Text needle(STR("needle"), buffer.data(), buffer.size());
 
@@ -3428,7 +3428,7 @@ namespace
       const value_t* needle = STR("needle");
 
       std::string compare_haystack(the_haystack);
-      
+
       TextBufferL buffer;
       Text haystack(the_haystack, buffer.data(), buffer.size());
 
@@ -3493,7 +3493,7 @@ namespace
       Text needle(STR("needle"), buffer.data(), buffer.size());
 
       std::string compare_haystack(the_haystack);
-      
+
       TextBufferL buffer2;
       Text haystack(the_haystack, buffer2.data(), buffer2.size());
 
@@ -4541,7 +4541,7 @@ namespace
     {
       char buffer[sizeof(Text)];
       std::fill_n(buffer, sizeof(Text), 0);
-      
+
       TextBuffer buffer2;
       ::new (buffer) Text(STR("ABCDEF"), buffer2.data(), buffer2.size());
 
@@ -4713,7 +4713,9 @@ namespace
       std::fill(text.data(), text.data() + text.max_size(), STR('A'));
       text.trim_to_terminator();
 
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
       CHECK(!text.is_truncated());
+#endif
       CHECK_EQUAL(text.max_size(), text.size());
     }
 
@@ -4727,7 +4729,9 @@ namespace
       std::fill(text.data(), text.data() + text.max_size() - 1, STR('A'));
       text.trim_to_terminator();
 
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
       CHECK(!text.is_truncated());
+#endif
       CHECK_EQUAL(text.max_size() - 1, text.size());
     }
 
@@ -4741,7 +4745,9 @@ namespace
       std::fill(text.data(), text.data() + text.max_size() + 1, STR('A')); // Overwrites to terminating null.
       text.trim_to_terminator();
 
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
       CHECK(text.is_truncated());
+#endif
       CHECK_EQUAL(text.max_size(), text.size());
     }
   };

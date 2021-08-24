@@ -948,7 +948,7 @@ namespace etl
     //*********************************************************************
     size_t erase(key_parameter_t key)
     {
-      size_t n = 0;
+      size_t n = 0UL;
       size_t index = get_bucket_index(key);
 
       bucket_t& bucket = pbuckets[index];
@@ -1320,7 +1320,7 @@ namespace etl
       if (!empty())
       {
         // For each bucket...
-        for (size_t i = 0; i < number_of_buckets; ++i)
+        for (size_t i = 0UL; i < number_of_buckets; ++i)
         {
           bucket_t& bucket = pbuckets[i];
 
@@ -1638,7 +1638,7 @@ namespace etl
     ->unordered_map<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), typename T::first_type>,
                     typename T::second_type,
                     1U + sizeof...(Ts)>;
-#endif 
+#endif
 }
 
 #endif

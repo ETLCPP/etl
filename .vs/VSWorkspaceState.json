@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\arduino",
+    "\\include",
+    "\\include\\etl",
+    "\\include\\etl\\private",
+    "\\test"
+  ],
+  "SelectedNode": "\\test\\test_unordered_map.cpp",
+  "PreviewInSolutionExplorer": false
+}

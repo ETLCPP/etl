@@ -982,7 +982,7 @@ namespace
       TextBuffer buffer;
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
 
-      for (size_t i = 0; i < text.size(); ++i)
+      for (size_t i = 0UL; i < text.size(); ++i)
       {
         CHECK_EQUAL(text[i], compare_text[i]);
       }
@@ -1000,7 +1000,7 @@ namespace
       TextBuffer buffer;
       const Text text(initial_text.c_str(), buffer.data(), buffer.size());
 
-      for (size_t i = 0; i < text.size(); ++i)
+      for (size_t i = 0UL; i < text.size(); ++i)
       {
         CHECK_EQUAL(text[i], compare_text[i]);
       }
@@ -1018,7 +1018,7 @@ namespace
       TextBuffer buffer;
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
 
-      for (size_t i = 0; i < text.size(); ++i)
+      for (size_t i = 0UL; i < text.size(); ++i)
       {
         CHECK_EQUAL(text.at(i), compare_text.at(i));
       }
@@ -1038,7 +1038,7 @@ namespace
       TextBuffer buffer;
       const Text text(initial_text.c_str(), buffer.data(), buffer.size());
 
-      for (size_t i = 0; i < text.size(); ++i)
+      for (size_t i = 0UL; i < text.size(); ++i)
       {
         CHECK_EQUAL(text.at(i), compare_text.at(i));
       }
@@ -1338,12 +1338,12 @@ namespace
       TextBuffer buffer;
       Text text(buffer.data(), buffer.size());
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         compare_text.push_back(STR('A') + value_t(i));
       }
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         text.push_back(STR('A') + value_t(i));
       }
@@ -1366,12 +1366,12 @@ namespace
       TextBuffer buffer;
       Text text(buffer.data(), buffer.size());
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         compare_text.push_back(STR('A') + value_t(i));
       }
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         text.push_back(STR('A') + value_t(i));
 #if ETL_STRING_TRUNCATION_CHECKS_ENABLED
@@ -4696,7 +4696,9 @@ namespace
       std::fill(text.data(), text.data() + text.max_size(), STR('A'));
       text.trim_to_terminator();
 
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
       CHECK(!text.is_truncated());
+#endif
       CHECK_EQUAL(text.max_size(), text.size());
     }
 
@@ -4710,7 +4712,9 @@ namespace
       std::fill(text.data(), text.data() + text.max_size() - 1, STR('A'));
       text.trim_to_terminator();
 
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
       CHECK(!text.is_truncated());
+#endif
       CHECK_EQUAL(text.max_size() - 1, text.size());
     }
 
@@ -4724,7 +4728,9 @@ namespace
       std::fill(text.data(), text.data() + text.max_size() + 1, STR('A')); // Overwrites to terminating null.
       text.trim_to_terminator();
 
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
       CHECK(text.is_truncated());
+#endif
       CHECK_EQUAL(text.max_size(), text.size());
     }
   };

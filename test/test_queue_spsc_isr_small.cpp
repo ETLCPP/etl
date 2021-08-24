@@ -609,7 +609,7 @@ namespace
     #define FIX_PROCESSOR_AFFINITY
   #endif
 
-    size_t ticks = 0;
+    size_t ticks = 0UL;
 
     struct ThreadLock
     {
@@ -630,14 +630,14 @@ namespace
 
     etl::queue_spsc_isr<int, 10, ThreadLock> queue;
 
-    const size_t LENGTH = 1000;
+    const size_t LENGTH = 1000UL;
 
     void timer_thread()
     {
       RAISE_THREAD_PRIORITY;
       FIX_PROCESSOR_AFFINITY;
 
-      const size_t TICK = 1;
+      const size_t TICK = 1UL;
       size_t tick = TICK;
       ticks = 1;
 
@@ -681,7 +681,7 @@ namespace
 
       CHECK_EQUAL(LENGTH, tick_list.size());
 
-      for (size_t i = 0; i < LENGTH; ++i)
+      for (size_t i = 0UL; i < LENGTH; ++i)
       {
         CHECK_EQUAL(i + 1, tick_list[i]);
       }

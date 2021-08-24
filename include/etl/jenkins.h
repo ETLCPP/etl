@@ -71,17 +71,17 @@ namespace etl
       ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
 
       hash += value;
-      hash += (hash << 10);
-      hash ^= (hash >> 6);
+      hash += (hash << 10U);
+      hash ^= (hash >> 6U);
 
       return hash;
     }
 
     inline uint32_t final(value_type hash) const
     {
-      hash += (hash << 3);
-      hash ^= (hash >> 11);
-      hash += (hash << 15);
+      hash += (hash << 3U);
+      hash ^= (hash >> 11U);
+      hash += (hash << 15U);
       is_finalised = true;
 
       return hash;

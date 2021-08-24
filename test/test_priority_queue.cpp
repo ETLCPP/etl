@@ -72,14 +72,14 @@ namespace
 
   SUITE(test_priority_queue)
   {
-    static const size_t SIZE = 4;
+    static const size_t SIZE = 4UL;
 
     //*************************************************************************
     TEST(test_default_constructor)
     {
       etl::priority_queue<int, SIZE> priority_queue;
 
-      CHECK_EQUAL(priority_queue.size(), size_t(0));
+      CHECK_EQUAL(priority_queue.size(), size_t(0UL));
       CHECK_EQUAL(priority_queue.available(), SIZE);
       CHECK_EQUAL(priority_queue.max_size(), SIZE);
     }
@@ -382,7 +382,7 @@ namespace
     {
       etl::priority_queue<int, SIZE> priority_queue;
 
-      for (size_t i = 0; i < priority_queue.max_size(); ++i)
+      for (size_t i = 0UL; i < priority_queue.max_size(); ++i)
       {
         priority_queue.push(1);
       }

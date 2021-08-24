@@ -58,7 +58,7 @@ namespace etl
     {
       uint32_t h = fnv_1a_32(begin, end);
 
-      return static_cast<size_t>(h ^ (h >> 16));
+      return static_cast<size_t>(h ^ (h >> 16U));
     }
 
     //*************************************************************************

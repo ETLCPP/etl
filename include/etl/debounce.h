@@ -106,7 +106,7 @@ namespace etl
         ON        = 1,
         HELD      = 2,
         REPEATING = 3,
-        STATE     = 0x03,
+        STATE     = 0x03U,
         SAMPLE    = 4,
         CHANGE    = 8
       };

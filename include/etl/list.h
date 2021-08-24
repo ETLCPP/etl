@@ -1179,7 +1179,7 @@ namespace etl
     //*************************************************************************
     void insert(iterator position, size_t n, const_reference value)
     {
-      for (size_t i = 0; i < n; ++i)
+      for (size_t i = 0UL; i < n; ++i)
       {
         ETL_ASSERT(!full(), ETL_ERROR(list_full));
 

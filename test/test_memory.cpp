@@ -48,7 +48,7 @@ namespace
   typedef uint32_t    trivial_t;
   typedef TestDataM<int> moveable_t;
 
-  const size_t SIZE = 10;
+  const size_t SIZE = 10UL;
 
   std::array<non_trivial_t, SIZE> test_data_non_trivial =
   {
@@ -58,13 +58,13 @@ namespace
 
   std::array<trivial_t, SIZE> test_data_trivial =
   {
-    0x11223344, 0x22334455, 0x33445566, 0x44556677, 0x55667788,
-    0x66778899, 0x778899AA, 0x8899AABB, 0x99AABBCC, 0xAABBCCDD
+    0x11223344UL, 0x22334455UL, 0x33445566UL, 0x44556677UL, 0x55667788UL,
+    0x66778899UL, 0x778899AAUL, 0x8899AABBUL, 0x99AABBCCUL, 0xAABBCCDDUL
   };
 
   non_trivial_t test_item_non_trivial("eleven");
   non_trivial_t test_item_non_trivial_null("");
-  trivial_t test_item_trivial(0xBBCCDDEE);
+  trivial_t test_item_trivial(0xBBCCDDEEUL);
 
   char buffer_non_trivial[sizeof(non_trivial_t) * SIZE];
   char buffer_trivial[sizeof(trivial_t) * SIZE];
@@ -132,44 +132,44 @@ namespace
       trivial_t* pn = reinterpret_cast<trivial_t*>(n);
 
       // Non count.
-      std::fill(std::begin(n), std::end(n), 0xFF);
+      std::fill(std::begin(n), std::end(n), 0xFFU);
       etl::create_default_at(pn);
-      CHECK_EQUAL(0xFFFFFFFF, *pn);
+      CHECK_EQUAL(0xFFFFFFFFUL, *pn);
       etl::destroy_at(pn);
-      CHECK_EQUAL(0xFFFFFFFF, *pn);
+      CHECK_EQUAL(0xFFFFFFFFUL, *pn);
 
-      std::fill(std::begin(n), std::end(n), 0xFF);
+      std::fill(std::begin(n), std::end(n), 0xFFU);
       etl::create_value_at(pn);
-      CHECK_EQUAL(0x0000000U, *pn);
+      CHECK_EQUAL(0x00000000UL, *pn);
       etl::destroy_at(pn);
-      CHECK_EQUAL(0x0000000U, *pn);
+      CHECK_EQUAL(0x00000000UL, *pn);
 
-      std::fill(std::begin(n), std::end(n), 0xFF);
+      std::fill(std::begin(n), std::end(n), 0xFFU);
       etl::create_copy_at(pn, test_item_trivial);
       CHECK_EQUAL(test_item_trivial, *pn);
       etl::destroy_at(pn);
       CHECK_EQUAL(test_item_trivial, *pn);
 
       // Count.
-      size_t count = 0;
+      size_t count = 0UL;
 
-      std::fill(std::begin(n), std::end(n), 0xFF);
+      std::fill(std::begin(n), std::end(n), 0xFFU);
       etl::create_default_at(pn, count);
-      CHECK_EQUAL(0xFFFFFFFF, *pn);
+      CHECK_EQUAL(0xFFFFFFFFUL, *pn);
       CHECK_EQUAL(1U, count);
       etl::destroy_at(pn, count);
-      CHECK_EQUAL(0xFFFFFFFF, *pn);
+      CHECK_EQUAL(0xFFFFFFFFUL, *pn);
       CHECK_EQUAL(0U, count);
 
-      std::fill(std::begin(n), std::end(n), 0xFF);
+      std::fill(std::begin(n), std::end(n), 0xFFU);
       etl::create_value_at(pn, count);
-      CHECK_EQUAL(0x0000000U, *pn);
+      CHECK_EQUAL(0x00000000UL, *pn);
       CHECK_EQUAL(1U, count);
       etl::destroy_at(pn, count);
-      CHECK_EQUAL(0x0000000U, *pn);
+      CHECK_EQUAL(0x00000000UL, *pn);
       CHECK_EQUAL(0U, count);
 
-      std::fill(std::begin(n), std::end(n), 0xFF);
+      std::fill(std::begin(n), std::end(n), 0xFFU);
       etl::create_copy_at(pn, test_item_trivial, count);
       CHECK_EQUAL(test_item_trivial, *pn);
       CHECK_EQUAL(1U, count);
@@ -185,25 +185,25 @@ namespace
       non_trivial_t* pn = reinterpret_cast<non_trivial_t*>(n);
 
       // Non count.
-      std::fill(std::begin(n), std::end(n), 0xFF);
+      std::fill(std::begin(n), std::end(n), 0xFFU);
       etl::create_default_at(pn);
       CHECK_EQUAL(test_item_non_trivial_null, *pn);
       etl::destroy_at(pn);
 
-      std::fill(std::begin(n), std::end(n), 0xFF);
+      std::fill(std::begin(n), std::end(n), 0xFFU);
       etl::create_value_at(pn);
       CHECK_EQUAL(test_item_non_trivial_null, *pn);
       etl::destroy_at(pn);
 
-      std::fill(std::begin(n), std::end(n), 0xFF);
+      std::fill(std::begin(n), std::end(n), 0xFFU);
       etl::create_copy_at(pn, test_item_non_trivial);
       CHECK_EQUAL(test_item_non_trivial, *pn);
       etl::destroy_at(pn);
 
       // Count.
-      size_t count = 0;
+      size_t count = 0UL;
 
-      std::fill(std::begin(n), std::end(n), 0xFF);
+      std::fill(std::begin(n), std::end(n), 0xFFU);
       etl::create_default_at(pn, count);
       CHECK_EQUAL(test_item_non_trivial_null, *pn);
       CHECK_EQUAL(1U, count);
@@ -211,7 +211,7 @@ namespace
       CHECK_EQUAL(0U, count);
 
       count = 0;
-      std::fill(std::begin(n), std::end(n), 0xFF);
+      std::fill(std::begin(n), std::end(n), 0xFFU);
       etl::create_value_at(pn, count);
       CHECK_EQUAL(test_item_non_trivial_null, *pn);
       CHECK_EQUAL(1U, count);
@@ -219,7 +219,7 @@ namespace
       CHECK_EQUAL(0U, count);
 
       count = 0;
-      std::fill(std::begin(n), std::end(n), 0xFF);
+      std::fill(std::begin(n), std::end(n), 0xFFU);
       etl::create_copy_at(pn, test_item_non_trivial, count);
       CHECK_EQUAL(test_item_non_trivial, *pn);
       CHECK_EQUAL(1U, count);
@@ -246,7 +246,7 @@ namespace
       etl::destroy(p, p + SIZE);
 
       // Count.
-      size_t count = 0;
+      size_t count = 0UL;
       std::fill(std::begin(buffer_trivial), std::end(buffer_trivial), 0);
       etl::uninitialized_fill_n(p, SIZE, test_item_trivial, count);
 
@@ -278,7 +278,7 @@ namespace
       etl::destroy(p, p + SIZE);
 
       // Count.
-      size_t count = 0;
+      size_t count = 0UL;
       std::fill(std::begin(buffer_non_trivial), std::end(buffer_non_trivial), 0);
       etl::uninitialized_fill_n(p, SIZE, test_item_non_trivial, count);
 
@@ -311,7 +311,7 @@ namespace
       etl::destroy(p, p + SIZE);
 
       // Count.
-      size_t count = 0;
+      size_t count = 0UL;
       std::fill(std::begin(buffer_trivial), std::end(buffer_trivial), 0);
       etl::uninitialized_copy_n(test_data_trivial.begin(), SIZE, p, count);
 
@@ -340,7 +340,7 @@ namespace
       etl::destroy(p, p + SIZE);
 
       // Count.
-      size_t count = 0;
+      size_t count = 0UL;
       std::fill(std::begin(buffer_non_trivial), std::end(buffer_non_trivial), 0);
       etl::uninitialized_copy_n(test_data_non_trivial.begin(), SIZE, p, count);
 
@@ -386,7 +386,7 @@ namespace
       etl::destroy(p, p + SIZE);
 
       // Count.
-      size_t count = 0;
+      size_t count = 0UL;
       std::fill(std::begin(buffer_non_trivial), std::end(buffer_non_trivial), 0);
 
       {
@@ -451,7 +451,7 @@ namespace
       etl::destroy(p, p + SIZE);
 
       // Count.
-      size_t count = 0;
+      size_t count = 0UL;
       std::fill(std::begin(buffer_non_trivial), std::end(buffer_non_trivial), 0);
 
       {
@@ -489,22 +489,22 @@ namespace
       // Non count.
       trivial_t* p = reinterpret_cast<trivial_t*>(buffer_trivial);
 
-      std::fill(std::begin(buffer_trivial), std::end(buffer_trivial), 0xFF);
+      std::fill(std::begin(buffer_trivial), std::end(buffer_trivial), 0xFFU);
       etl::uninitialized_default_construct_n(p, SIZE);
 
       trivial_t* result;
 
-      result = std::find_if_not(output_trivial, output_trivial + SIZE, [](trivial_t i) { return i == 0xFFFFFFFF; });
+      result = std::find_if_not(output_trivial, output_trivial + SIZE, [](trivial_t i) { return i == 0xFFFFFFFFUL; });
 
       CHECK(result == output_trivial + SIZE);
       etl::destroy(p, p + SIZE);
 
       // Count.
-      size_t count = 0;
-      std::fill(std::begin(buffer_trivial), std::end(buffer_trivial), 0xFF);
+      size_t count = 0UL;
+      std::fill(std::begin(buffer_trivial), std::end(buffer_trivial), 0xFFU);
       etl::uninitialized_default_construct_n(p, SIZE, count);
 
-      result = std::find_if_not(output_trivial, output_trivial + SIZE, [](trivial_t i) { return i == 0xFFFFFFFF; });
+      result = std::find_if_not(output_trivial, output_trivial + SIZE, [](trivial_t i) { return i == 0xFFFFFFFFUL; });
 
       CHECK(result == output_trivial + SIZE);
       CHECK_EQUAL(SIZE, count);
@@ -521,7 +521,7 @@ namespace
       // Non count.
       non_trivial_t* p = reinterpret_cast<non_trivial_t*>(buffer_non_trivial);
 
-      std::fill(std::begin(buffer_non_trivial), std::end(buffer_non_trivial), 0xFF);
+      std::fill(std::begin(buffer_non_trivial), std::end(buffer_non_trivial), 0xFFU);
       etl::uninitialized_default_construct_n(p, SIZE);
 
       non_trivial_t* result;
@@ -532,8 +532,8 @@ namespace
       etl::destroy(p, p + SIZE);
 
       // Count.
-      size_t count = 0;
-      std::fill(std::begin(buffer_non_trivial), std::end(buffer_non_trivial), 0xFF);
+      size_t count = 0UL;
+      std::fill(std::begin(buffer_non_trivial), std::end(buffer_non_trivial), 0xFFU);
       etl::uninitialized_default_construct_n(p, SIZE, count);
 
       result = std::find_if_not(output_non_trivial, output_non_trivial + SIZE, [](non_trivial_t i) { return i == test_item_non_trivial_null; });
@@ -553,7 +553,7 @@ namespace
       // Non count.
       trivial_t* p = reinterpret_cast<trivial_t*>(buffer_trivial);
 
-      std::fill(std::begin(buffer_trivial), std::end(buffer_trivial), 0xFF);
+      std::fill(std::begin(buffer_trivial), std::end(buffer_trivial), 0xFFU);
       etl::uninitialized_value_construct_n(p, SIZE);
 
       trivial_t* result;
@@ -564,8 +564,8 @@ namespace
       etl::destroy(p, p + SIZE);
 
       // Count.
-      size_t count = 0;
-      std::fill(std::begin(buffer_trivial), std::end(buffer_trivial), 0xFF);
+      size_t count = 0UL;
+      std::fill(std::begin(buffer_trivial), std::end(buffer_trivial), 0xFFU);
       etl::uninitialized_value_construct_n(p, SIZE, count);
 
       result = std::find_if_not(output_trivial, output_trivial + SIZE, [](trivial_t i) { return i == trivial_t(); });
@@ -585,7 +585,7 @@ namespace
       // Non count.
       non_trivial_t* p = reinterpret_cast<non_trivial_t*>(buffer_non_trivial);
 
-      std::fill(std::begin(buffer_non_trivial), std::end(buffer_non_trivial), 0xFF);
+      std::fill(std::begin(buffer_non_trivial), std::end(buffer_non_trivial), 0xFFU);
       etl::uninitialized_value_construct_n(p, SIZE);
 
       non_trivial_t* result;
@@ -596,8 +596,8 @@ namespace
       etl::destroy(p, p + SIZE);
 
       // Count.
-      size_t count = 0;
-      std::fill(std::begin(buffer_non_trivial), std::end(buffer_non_trivial), 0xFF);
+      size_t count = 0UL;
+      std::fill(std::begin(buffer_non_trivial), std::end(buffer_non_trivial), 0xFFU);
       etl::uninitialized_value_construct_n(p, SIZE, count);
 
       result = std::find_if_not(output_non_trivial, output_non_trivial + SIZE, [](non_trivial_t i) { return i == non_trivial_t(); });
@@ -666,28 +666,28 @@ namespace
       trivial_t* pn = reinterpret_cast<trivial_t*>(n);
 
       // Non count.
-      std::fill(std::begin(n), std::end(n), 0xFF);
-      CHECK_EQUAL(0x00000000U, etl::make_default_at(pn));
+      std::fill(std::begin(n), std::end(n), 0xFFU);
+      CHECK_EQUAL(0x00000000UL, etl::make_default_at(pn));
 
-      std::fill(std::begin(n), std::end(n), 0x00);
-      CHECK_EQUAL(0xFFFFFFFFU, etl::make_value_at(pn, 0xFFFFFFFFU));
+      std::fill(std::begin(n), std::end(n), 0x00U);
+      CHECK_EQUAL(0xFFFFFFFFUL, etl::make_value_at(pn, 0xFFFFFFFFU));
 
-      std::fill(std::begin(n), std::end(n), 0xFF);
+      std::fill(std::begin(n), std::end(n), 0xFFU);
       etl::make_copy_at(pn, test_item_trivial);
       CHECK_EQUAL(test_item_trivial, etl::make_copy_at(pn, test_item_trivial));
 
       // Count.
-      size_t count = 0;
+      size_t count = 0UL;
 
-      std::fill(std::begin(n), std::end(n), 0xFF);
-      CHECK_EQUAL(0x00000000U, etl::make_default_at(pn, count));
+      std::fill(std::begin(n), std::end(n), 0xFFU);
+      CHECK_EQUAL(0x00000000UL, etl::make_default_at(pn, count));
       CHECK_EQUAL(1U, count);
 
-      std::fill(std::begin(n), std::end(n), 0x00);
-      CHECK_EQUAL(0xFFFFFFFFU, etl::make_value_at(pn, 0xFFFFFFFFU, count));
+      std::fill(std::begin(n), std::end(n), 0x00U);
+      CHECK_EQUAL(0xFFFFFFFFUL, etl::make_value_at(pn, 0xFFFFFFFFUL, count));
       CHECK_EQUAL(2U, count);
 
-      std::fill(std::begin(n), std::end(n), 0xFF);
+      std::fill(std::begin(n), std::end(n), 0xFFU);
       CHECK_EQUAL(test_item_trivial, etl::make_copy_at(pn, test_item_trivial, count));
       CHECK_EQUAL(3U, count);
     }
@@ -701,11 +701,11 @@ namespace
         char     d2;
       };
 
-      Data data = { 0xFFFFFFFF, char(0xFF) };
+      Data data = { 0xFFFFFFFFUL, char(0xFFU) };
 
       etl::memory_clear(data);
 
-      CHECK_EQUAL(0x00000000, data.d1);
+      CHECK_EQUAL(0x00000000UL, data.d1);
       CHECK_EQUAL(0x00, data.d2);
     }
 
@@ -718,18 +718,18 @@ namespace
         char     d2;
       };
 
-      Data data[3] = { { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) } };
+      Data data[3] = { { 0xFFFFFFFFUL, char(0xFFU) }, { 0xFFFFFFFFUL, char(0xFFU) }, { 0xFFFFFFFFUL, char(0xFFU) } };
 
       etl::memory_clear_range(data, 3);
 
-      CHECK_EQUAL(0x00000000, data[0].d1);
-      CHECK_EQUAL(0x00, data[0].d2);
+      CHECK_EQUAL(0x00000000UL, data[0].d1);
+      CHECK_EQUAL(0x00U, data[0].d2);
 
-      CHECK_EQUAL(0x00000000, data[1].d1);
-      CHECK_EQUAL(0x00, data[1].d2);
+      CHECK_EQUAL(0x00000000UL, data[1].d1);
+      CHECK_EQUAL(0x00U, data[1].d2);
 
-      CHECK_EQUAL(0x00000000, data[2].d1);
-      CHECK_EQUAL(0x00, data[2].d2);
+      CHECK_EQUAL(0x00000000UL, data[2].d1);
+      CHECK_EQUAL(0x00U, data[2].d2);
     }
 
     //*************************************************************************
@@ -741,18 +741,18 @@ namespace
         char     d2;
       };
 
-      Data data[3] = { { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) } };
+      Data data[3] = { { 0xFFFFFFFFUL, char(0xFFU) }, { 0xFFFFFFFFUL, char(0xFFU) }, { 0xFFFFFFFFUL, char(0xFFU) } };
 
       etl::memory_clear_range(std::begin(data), std::end(data));
 
-      CHECK_EQUAL(0x00000000, data[0].d1);
-      CHECK_EQUAL(0x00, data[0].d2);
+      CHECK_EQUAL(0x00000000UL, data[0].d1);
+      CHECK_EQUAL(0x00U, data[0].d2);
 
-      CHECK_EQUAL(0x00000000, data[1].d1);
-      CHECK_EQUAL(0x00, data[1].d2);
+      CHECK_EQUAL(0x00000000UL, data[1].d1);
+      CHECK_EQUAL(0x00U, data[1].d2);
 
-      CHECK_EQUAL(0x00000000, data[2].d1);
-      CHECK_EQUAL(0x00, data[2].d2);
+      CHECK_EQUAL(0x00000000UL, data[2].d1);
+      CHECK_EQUAL(0x00U, data[2].d2);
     }
 
     //*************************************************************************
@@ -764,12 +764,12 @@ namespace
         char     d2;
       };
 
-      Data data = { 0xFFFFFFFF, char(0xFF) };
+      Data data = { 0xFFFFFFFFUL, char(0xFFU) };
 
       etl::memory_set(data, 0x5A);
 
-      CHECK_EQUAL(0x5A5A5A5A, data.d1);
-      CHECK_EQUAL(0x5A, data.d2);
+      CHECK_EQUAL(0x5A5A5A5AUL, data.d1);
+      CHECK_EQUAL(0x5AU, data.d2);
     }
 
     //*************************************************************************
@@ -781,18 +781,18 @@ namespace
         char     d2;
       };
 
-      Data data[3] = { { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) } };
+      Data data[3] = { { 0xFFFFFFFFUL, char(0xFFU) }, { 0xFFFFFFFFUL, char(0xFFU) }, { 0xFFFFFFFFUL, char(0xFFU) } };
 
       etl::memory_set_range(data, 3, 0x5A);
 
-      CHECK_EQUAL(0x5A5A5A5A, data[0].d1);
-      CHECK_EQUAL(0x5A, data[0].d2);
+      CHECK_EQUAL(0x5A5A5A5AUL, data[0].d1);
+      CHECK_EQUAL(0x5AU, data[0].d2);
 
-      CHECK_EQUAL(0x5A5A5A5A, data[1].d1);
-      CHECK_EQUAL(0x5A, data[1].d2);
+      CHECK_EQUAL(0x5A5A5A5AUL, data[1].d1);
+      CHECK_EQUAL(0x5AU, data[1].d2);
 
-      CHECK_EQUAL(0x5A5A5A5A, data[2].d1);
-      CHECK_EQUAL(0x5A, data[2].d2);
+      CHECK_EQUAL(0x5A5A5A5AUL, data[2].d1);
+      CHECK_EQUAL(0x5AU, data[2].d2);
     }
 
     //*************************************************************************
@@ -804,18 +804,18 @@ namespace
         char     d2;
       };
 
-      Data data[3] = { { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) }, { 0xFFFFFFFF, char(0xFF) } };
+      Data data[3] = { { 0xFFFFFFFFUL, char(0xFFU) }, { 0xFFFFFFFFUL, char(0xFFU) }, { 0xFFFFFFFFUL, char(0xFFU) } };
 
       etl::memory_set_range(std::begin(data), std::end(data), 0x5A);
 
-      CHECK_EQUAL(0x5A5A5A5A, data[0].d1);
-      CHECK_EQUAL(0x5A, data[0].d2);
+      CHECK_EQUAL(0x5A5A5A5AUL, data[0].d1);
+      CHECK_EQUAL(0x5AU, data[0].d2);
 
-      CHECK_EQUAL(0x5A5A5A5A, data[1].d1);
-      CHECK_EQUAL(0x5A, data[1].d2);
+      CHECK_EQUAL(0x5A5A5A5AUL, data[1].d1);
+      CHECK_EQUAL(0x5AU, data[1].d2);
 
-      CHECK_EQUAL(0x5A5A5A5A, data[2].d1);
-      CHECK_EQUAL(0x5A, data[2].d2);
+      CHECK_EQUAL(0x5A5A5A5AUL, data[2].d1);
+      CHECK_EQUAL(0x5AU, data[2].d2);
     }
 
     //*************************************************************************
@@ -1061,11 +1061,11 @@ namespace
       };
 
       //*******************************
-      struct Deleter 
+      struct Deleter
       {
-        void operator()(Object* p) 
-        { 
-          p->Delete(); 
+        void operator()(Object* p)
+        {
+          p->Delete();
         }
       };
 

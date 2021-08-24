@@ -36,8 +36,8 @@ SOFTWARE.
 
 namespace
 {
-  constexpr size_t Size = 10U;
- 
+  constexpr size_t Size = 10UL;
+
   using IntLimiter    = etl::limiter<int>;
   using DoubleLimiter = etl::limiter<double>;
 
@@ -50,26 +50,26 @@ namespace
   };
 
   //***********************************
-  const std::array<int, Size> input1 = 
-  { 
+  const std::array<int, Size> input1 =
+  {
     10, 11, 12, 13, 14, 15, 16, 17, 18, 19
   };
 
-  const std::array<int, Size> result1a = 
-  { 
+  const std::array<int, Size> result1a =
+  {
     13, 13, 13, 13, 14, 15, 16, 16, 16, 16
   };
 
   std::array<int, Size> output1;
 
   //***********************************
-  const std::array<double, Size> input2 = 
-  { 
+  const std::array<double, Size> input2 =
+  {
     10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0
   };
 
-  const std::array<double, Size> result2a = 
-  { 
+  const std::array<double, Size> result2a =
+  {
     13.0, 13.0, 13.0, 13.0, 14.0, 15.0, 16.0, 16.0, 16.0, 16.0
   };
 

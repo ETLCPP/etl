@@ -62,7 +62,7 @@ namespace
 
       etl::crc16_xmodem crc_calculator;
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         crc_calculator.add(data[i]);
       }
@@ -103,9 +103,9 @@ namespace
     //*************************************************************************
     TEST(test_crc16_xmodem_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
-      std::vector<uint32_t> data2 = { 0x04030201, 0x08070605 };
-      std::vector<uint8_t>  data3 = { 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
+      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint32_t> data2 = { 0x04030201UL, 0x08070605UL };
+      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
 
       uint16_t crc1 = etl::crc16_xmodem(data1.begin(), data1.end());
       uint16_t crc2 = etl::crc16_xmodem((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
@@ -134,7 +134,7 @@ namespace
 
       etl::crc16_xmodem_t16 crc_calculator;
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         crc_calculator.add(data[i]);
       }
@@ -175,9 +175,9 @@ namespace
     //*************************************************************************
     TEST(test_crc16_xmodem_16_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
-      std::vector<uint32_t> data2 = { 0x04030201, 0x08070605 };
-      std::vector<uint8_t>  data3 = { 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
+      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint32_t> data2 = { 0x04030201UL, 0x08070605UL };
+      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
 
       uint16_t crc1 = etl::crc16_xmodem_t16(data1.begin(), data1.end());
       uint16_t crc2 = etl::crc16_xmodem_t16((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
@@ -206,7 +206,7 @@ namespace
 
       etl::crc16_xmodem_t4 crc_calculator;
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         crc_calculator.add(data[i]);
       }
@@ -247,9 +247,9 @@ namespace
     //*************************************************************************
     TEST(test_crc16_xmodem_4_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
-      std::vector<uint32_t> data2 = { 0x04030201, 0x08070605 };
-      std::vector<uint8_t>  data3 = { 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
+      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint32_t> data2 = { 0x04030201UL, 0x08070605UL };
+      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
 
       uint16_t crc1 = etl::crc16_xmodem_t4(data1.begin(), data1.end());
       uint16_t crc2 = etl::crc16_xmodem_t4((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));

@@ -40,7 +40,7 @@ SOFTWARE.
 
 #include "data.h"
 
-static const size_t MAX_SIZE = 10;
+static const size_t MAX_SIZE = 10UL;
 
 #define TEST_GREATER_THAN
 #ifdef TEST_GREATER_THAN
@@ -186,7 +186,7 @@ namespace
     {
       Data data;
 
-      CHECK(data.size() == size_t(0));
+      CHECK(data.size() == size_t(0UL));
       CHECK(data.empty());
       CHECK(data.capacity() == MAX_SIZE);
       CHECK(data.max_size() == MAX_SIZE);
@@ -197,7 +197,7 @@ namespace
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
-      etl::map data{ std::pair<std::string, int>("0", 0), std::pair<std::string, int>("1", 1), std::pair<std::string, int>("2", 2), std::pair<std::string, int>("3", 3), std::pair<std::string, int>("4", 4), 
+      etl::map data{ std::pair<std::string, int>("0", 0), std::pair<std::string, int>("1", 1), std::pair<std::string, int>("2", 2), std::pair<std::string, int>("3", 3), std::pair<std::string, int>("4", 4),
                      std::pair<std::string, int>("5", 5), std::pair<std::string, int>("6", 6), std::pair<std::string, int>("7", 7), std::pair<std::string, int>("8", 8), std::pair<std::string, int>("9", 9) };
       etl::map<std::string, int, 10U> check = { std::pair<std::string, int>("0", 0), std::pair<std::string, int>("1", 1), std::pair<std::string, int>("2", 2), std::pair<std::string, int>("3", 3), std::pair<std::string, int>("4", 4),
                                                 std::pair<std::string, int>("5", 5), std::pair<std::string, int>("6", 6), std::pair<std::string, int>("7", 7), std::pair<std::string, int>("8", 8), std::pair<std::string, int>("9", 9) };
@@ -926,7 +926,7 @@ namespace
       Data data(compare_data.begin(), compare_data.end());
       data.clear();
 
-      CHECK(data.size() == size_t(0));
+      CHECK(data.size() == size_t(0UL));
     }
 
     //*************************************************************************
@@ -934,9 +934,9 @@ namespace
     {
       const Data data(initial_data.begin(), initial_data.end());
 
-      CHECK(data.count("3") == size_t(1));
+      CHECK(data.count("3") == size_t(1UL));
 
-      CHECK(data.count("A") == size_t(0));
+      CHECK(data.count("A") == size_t(0UL));
     }
 
     //*************************************************************************

@@ -37,7 +37,7 @@ SOFTWARE.
 /// permutations<N, K> : Calculates K permutations from N.
 ///\ingroup maths
 
-namespace etl 
+namespace etl
 {
   //***************************************************************************
   ///\ingroup permutations
@@ -56,7 +56,7 @@ namespace etl
   template <const size_t NV>
   struct permutations<NV, 0>
   {
-    static ETL_CONSTANT size_t value = 1;
+    static ETL_CONSTANT size_t value = 1UL;
   };
 
 #if ETL_CPP17_SUPPORTED
