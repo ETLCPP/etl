@@ -124,7 +124,7 @@ namespace etl
     //***************************************************************************
     /// Set the reference count.
     //***************************************************************************
-    virtual void set_reference_count(int32_t value) ETL_OVERRIDE
+    virtual void set_reference_count(int32_t /*value*/) ETL_OVERRIDE
     {
       // Do nothing.
     }

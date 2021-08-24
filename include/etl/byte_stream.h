@@ -80,6 +80,22 @@ namespace etl
         return pcurrent;
       }
 
+      //***************************************************************************
+      /// Returns start of the stream.
+      //***************************************************************************
+      const_iterator cbegin() const
+      {
+        return pdata;
+      }
+
+      //***************************************************************************
+      /// Returns end of the stream.
+      //***************************************************************************
+      const_iterator cend() const
+      {
+        return pcurrent;
+      }
+
     protected:
 
       byte_stream_common(char* pdata_, size_t length_, etl::endian buffer_endianness_)

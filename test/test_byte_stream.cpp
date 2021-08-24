@@ -127,10 +127,10 @@ namespace
 
       etl::byte_stream_writer writer(storage, std::size(storage));
 
-      CHECK(writer.write(uint8_t(0x12)));         // 1 written.
-      CHECK(writer.write(uint16_t(0x1234)));      // 2 more written.
-      CHECK(writer.write(uint32_t(0x12345678)));  // 4 more written.
-      CHECK(!writer.write(uint32_t(0x12345678))); // Can't write 4 more.
+      CHECK(writer.write(uint8_t(0x12U)));         // 1 written.
+      CHECK(writer.write(uint16_t(0x1234U)));      // 2 more written.
+      CHECK(writer.write(uint32_t(0x12345678U)));  // 4 more written.
+      CHECK(!writer.write(uint32_t(0x12345678U))); // Can't write 4 more.
 
       CHECK(!writer.empty());
       CHECK(!writer.full());
@@ -202,15 +202,15 @@ namespace
 
       etl::byte_stream_writer byte_stream(storage.data(), storage.size());
 
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0U; i < 256U; ++i)
       {
         CHECK(byte_stream.write(uint8_t(i)));
       }
 
       // One too many.
-      CHECK(!byte_stream.write(uint8_t(0)));
+      CHECK(!byte_stream.write(uint8_t(0U)));
 
-      for (size_t i = 0; i < storage.size(); ++i)
+      for (size_t i = 0U; i < storage.size(); ++i)
       {
         CHECK_EQUAL(int(compare_data[i]), int(storage[i]));
       }
@@ -252,13 +252,13 @@ namespace
 
       etl::byte_stream_writer byte_stream(storage.data(), storage.size());
 
-      CHECK(byte_stream.write(uint16_t(0x0001)));
-      CHECK(byte_stream.write(uint16_t(0x5AA5)));
-      CHECK(byte_stream.write(uint16_t(0xA55A)));
-      CHECK(byte_stream.write(uint16_t(0xFFFF)));
+      CHECK(byte_stream.write(uint16_t(0x0001U)));
+      CHECK(byte_stream.write(uint16_t(0x5AA5U)));
+      CHECK(byte_stream.write(uint16_t(0xA55AU)));
+      CHECK(byte_stream.write(uint16_t(0xFFFFU)));
 
       // One too many.
-      CHECK(!byte_stream.write(uint16_t(0)));
+      CHECK(!byte_stream.write(uint16_t(0U)));
 
       for (size_t i = 0; i < storage.size(); ++i)
       {
@@ -288,7 +288,7 @@ namespace
       // One too many.
       CHECK(!byte_stream.write(int32_t(0)));
 
-      for (size_t i = 0; i < storage.size(); ++i)
+      for (size_t i = 0U; i < storage.size(); ++i)
       {
         CHECK_EQUAL(int(compare_data[i]), int(storage[i]));
       }
@@ -308,15 +308,15 @@ namespace
 
       etl::byte_stream_writer byte_stream(storage.data(), storage.size());
 
-      CHECK(byte_stream.write(uint32_t(0x00000001)));
-      CHECK(byte_stream.write(uint32_t(0x5AA5A55A)));
-      CHECK(byte_stream.write(uint32_t(0xA55A5AA5)));
-      CHECK(byte_stream.write(uint32_t(0xFFFFFFFF)));
+      CHECK(byte_stream.write(uint32_t(0x00000001U)));
+      CHECK(byte_stream.write(uint32_t(0x5AA5A55AU)));
+      CHECK(byte_stream.write(uint32_t(0xA55A5AA5U)));
+      CHECK(byte_stream.write(uint32_t(0xFFFFFFFFU)));
 
       // One too many.
       CHECK(!byte_stream.write(uint32_t(0)));
 
-      for (size_t i = 0; i < storage.size(); ++i)
+      for (size_t i = 0U; i < storage.size(); ++i)
       {
         CHECK_EQUAL(int(compare_data[i]), int(storage[i]));
       }
@@ -344,7 +344,7 @@ namespace
       // One too many.
       CHECK(!byte_stream.write(int64_t(0)));
 
-      for (size_t i = 0; i < storage.size(); ++i)
+      for (size_t i = 0U; i < storage.size(); ++i)
       {
         CHECK_EQUAL(int(compare_data[i]), int(storage[i]));
       }
@@ -364,15 +364,15 @@ namespace
 
       etl::byte_stream_writer byte_stream(storage.data(), storage.size());
 
-      CHECK(byte_stream.write(uint64_t(0x0000000000000001)));
-      CHECK(byte_stream.write(uint64_t(0x5AA5A55AA55A5AA5)));
-      CHECK(byte_stream.write(uint64_t(0xA55A5AA55AA5A55A)));
-      CHECK(byte_stream.write(uint64_t(0xFFFFFFFFFFFFFFFF)));
+      CHECK(byte_stream.write(uint64_t(0x0000000000000001U)));
+      CHECK(byte_stream.write(uint64_t(0x5AA5A55AA55A5AA5U)));
+      CHECK(byte_stream.write(uint64_t(0xA55A5AA55AA5A55AU)));
+      CHECK(byte_stream.write(uint64_t(0xFFFFFFFFFFFFFFFFU)));
 
       // One too many.
       CHECK(!byte_stream.write(uint64_t(0)));
 
-      for (size_t i = 0; i < storage.size(); ++i)
+      for (size_t i = 0U; i < storage.size(); ++i)
       {
         CHECK_EQUAL(int(compare_data[i]), int(storage[i]));
       }
@@ -389,7 +389,7 @@ namespace
       char storage[8];
       etl::byte_stream_writer writer(storage, 8);
 
-      for (size_t i = 0; i < flags.size(); ++i)
+      for (size_t i = 0U; i < flags.size(); ++i)
       {
         writer.write(flags[i]);
       }
@@ -465,8 +465,8 @@ namespace
     TEST(write_read_uint8_t)
     {
       std::array<char, 4 * sizeof(uint8_t)> storage;
-      std::array<uint8_t, 4> put_data = { uint8_t(0x01), uint8_t(0x5A), uint8_t(0xA5), uint8_t(0xFF) };
-      std::array<etl::optional<uint8_t>, 4> get_data = { uint8_t(0x00), uint8_t(0x00), uint8_t(0x00), uint8_t(0x00) };
+      std::array<uint8_t, 4> put_data = { uint8_t(0x01U), uint8_t(0x5AU), uint8_t(0xA5U), uint8_t(0xFFU) };
+      std::array<etl::optional<uint8_t>, 4> get_data = { uint8_t(0x00U), uint8_t(0x00U), uint8_t(0x00U), uint8_t(0x00U) };
 
       etl::byte_stream_writer writer(storage.data(), storage.size());
 
@@ -577,8 +577,8 @@ namespace
     TEST(write_read_uint16_t)
     {
       std::array<char, 4 * sizeof(uint16_t)> storage;
-      std::array<uint16_t, 4> put_data = { uint16_t(0x0001), uint16_t(0xA55A), uint16_t(0x5AA5), uint16_t(0xFFFF) };
-      std::array<etl::optional<uint16_t>, 4> get_data = { uint16_t(0x0000), uint16_t(0x0000), uint16_t(0x0000), uint16_t(0x0000) };
+      std::array<uint16_t, 4> put_data = { uint16_t(0x0001U), uint16_t(0xA55AU), uint16_t(0x5AA5U), uint16_t(0xFFFFU) };
+      std::array<etl::optional<uint16_t>, 4> get_data = { uint16_t(0x0000U), uint16_t(0x0000U), uint16_t(0x0000U), uint16_t(0x0000U) };
 
       etl::byte_stream_writer writer(storage.data(), storage.size());
 
@@ -689,8 +689,8 @@ namespace
     TEST(write_read_uint32_t)
     {
       std::array<char, 4 * sizeof(uint32_t)> storage;
-      std::array<uint32_t, 4> put_data = { uint32_t(0x00000001), uint32_t(0xA55AA55A), uint32_t(0x5AA55AA5), uint32_t(0xFFFFFFFF) };
-      std::array<etl::optional<uint32_t>, 4> get_data = { uint32_t(0x00000000), uint32_t(0x00000000), uint32_t(0x00000000), uint32_t(0x00000000) };
+      std::array<uint32_t, 4> put_data = { uint32_t(0x00000001U), uint32_t(0xA55AA55AU), uint32_t(0x5AA55AA5U), uint32_t(0xFFFFFFFFU) };
+      std::array<etl::optional<uint32_t>, 4> get_data = { uint32_t(0x00000000U), uint32_t(0x00000000U), uint32_t(0x00000000U), uint32_t(0x00000000U) };
 
       etl::byte_stream_writer writer(storage.data(), storage.size());
 
@@ -802,9 +802,9 @@ namespace
     TEST(write_read_uint64_t)
     {
       std::array<char, 4 * sizeof(uint64_t)> storage;
-      std::array<uint64_t, 4> put_data = { uint64_t(0x0000000000000001), uint64_t(0xA55AA55AA55AA55A), uint64_t(0x5AA55AA55AA55AA5), uint64_t(0xFFFFFFFFFFFFFFFF) };
-      std::array<uint64_t, 4> expect_data = { uint64_t(0x0000000000000001), uint64_t(0xA55AA55AA55AA55A), uint64_t(0x5AA55AA55AA55AA5), uint64_t(0xFFFFFFFFFFFFFFFF) };
-      std::array<etl::optional<uint64_t>, 4> get_data = { uint64_t(0x0000000000000000), uint64_t(0x0000000000000000), uint64_t(0x0000000000000000), uint64_t(0x0000000000000000) };
+      std::array<uint64_t, 4> put_data = { uint64_t(0x0000000000000001U), uint64_t(0xA55AA55AA55AA55AU), uint64_t(0x5AA55AA55AA55AA5U), uint64_t(0xFFFFFFFFFFFFFFFFU) };
+      std::array<uint64_t, 4> expect_data = { uint64_t(0x0000000000000001U), uint64_t(0xA55AA55AA55AA55AU), uint64_t(0x5AA55AA55AA55AA5U), uint64_t(0xFFFFFFFFFFFFFFFFU) };
+      std::array<etl::optional<uint64_t>, 4> get_data = { uint64_t(0x0000000000000000U), uint64_t(0x0000000000000000U), uint64_t(0x0000000000000000U), uint64_t(0x0000000000000000U) };
 
       etl::byte_stream_writer writer(storage.data(), storage.size());
 
