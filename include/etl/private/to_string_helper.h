@@ -320,6 +320,73 @@ namespace etl
     }
 
     //***************************************************************************
+    /// Helper function for divided integers.
+    //***************************************************************************
+    template <typename T, typename TIString>
+    void add_integral_denominated(T value,
+                                  typename etl::make_unsigned<T>::type denominator,
+                                  TIString& str,
+                                  const etl::basic_format_spec<TIString>& format,
+                                  bool append = false)
+    {
+      typedef typename TIString::iterator   iterator;
+      typedef typename TIString::value_type type;
+
+      if (!append)
+      {
+        str.clear();
+      }
+
+      iterator start = str.end();
+
+      {
+        // split to integral and fractional parts using the denominator
+        T integral = value / static_cast<T>(denominator);
+        T fractional = absolute(value) % denominator;
+
+        // find the number of useful (non-0) digits
+        size_t digits = 0;
+        for (auto div = denominator; div >= 10; div /= 10)
+        {
+          // this resolution doesn't yield meaningful digits, abort here
+          if ((fractional % div) == 0)
+          {
+            fractional /= div;
+            break;
+          }
+          digits++;
+        }
+
+        etl::basic_format_spec<TIString> integral_format = format;
+        integral_format.decimal().width(0);
+        etl::private_to_string::add_integral(integral, str, integral_format, true, etl::is_negative(integral));
+
+        // consider user-supplied minimum resolution
+        digits = max(digits, size_t(format.get_precision()));
+        if (digits)
+        {
+          str.push_back(type('.'));
+          etl::basic_format_spec<TIString> fractional_format = integral_format;
+          fractional_format.width(digits).fill(type('0')).right();
+          etl::private_to_string::add_integral(fractional, str, fractional_format, true, false);
+        }
+      }
+
+      etl::private_to_string::add_alignment(str, start, format);
+    }
+
+    template <typename T, typename TIString>
+    void add_integral_denominated(T value,
+                                  typename etl::make_unsigned<T>::type denominator,
+                                  TIString& str,
+                                  bool append = false)
+    {
+      etl::basic_format_spec<TIString> format;
+
+      etl::private_to_string::add_integral_denominated(value, denominator, str, format, append);
+    }
+
+    //***************************************************************************
     /// Helper function for pointers.
     //***************************************************************************
     template <typename TIString>
