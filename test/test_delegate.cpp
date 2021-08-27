@@ -29,6 +29,7 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/delegate.h"
+#include "etl/vector.h"
 
 namespace
 {
@@ -170,6 +171,12 @@ namespace
       function_called = true;
     }
   };
+
+  //*******************************************
+  int times_2(int a) 
+  {
+    return a * 2;
+  }
 
   Test test_static;
   const Test const_test_static;
@@ -876,6 +883,16 @@ namespace
       auto d2 = etl::delegate<void(int, int)>::create<Test, &Test::member_int_const>(test);;
 
       CHECK(d1 != d2);
+    }
+
+    //*************************************************************************
+    TEST(test_issue_418)
+    {
+      etl::vector<etl::delegate<int(int)>, 5> vector_of_delegates;
+
+      vector_of_delegates.push_back(etl::delegate<int(int)>::create<times_2>());
+
+      CHECK_EQUAL(42, vector_of_delegates.front()(21));
     }
   };
 }
