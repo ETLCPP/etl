@@ -67,6 +67,31 @@ namespace etl
 
   //***************************************************************************
   /// Default format spec.
+  /// !etl::iu16string && !etl::u16string_view
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<!etl::is_same<T, etl::iu16string>::value && !etl::is_same<T, etl::u16string_view>::value, const etl::iu16string&>::type
+    to_string(const T value, typename etl::make_unsigned<T>::type denominator, etl::iu16string& str, bool append = false)
+  {
+    etl::u16format_spec format;
+
+    return private_to_string::to_string(value, denominator, str, format, append);
+  }
+
+  //***************************************************************************
+  /// Supplied format spec.
+  /// !etl::u16string_view && !etl::u16string_view
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<!etl::is_same<T, etl::iu16string>::value && !etl::is_same<T, etl::u16string_view>::value, const etl::iu16string&>::type
+    to_string(const T value, typename etl::make_unsigned<T>::type denominator, etl::iu16string& str, const etl::u16format_spec& format, bool append = false)
+  {
+    return private_to_string::to_string(value, denominator, str, format, append);
+  }
+
+
+  //***************************************************************************
+  /// Default format spec.
   /// etl::iu16string
   //***************************************************************************
   template <typename T>

@@ -415,6 +415,42 @@ namespace
       to_string(&cvi, str, Format().hex().width(10).left().fill(STR('0')), true);
       CHECK(compare == str);
     }
+
+    ////*************************************************************************
+    //TEST(test_integer_denominator_shorter_width)
+    //{
+    //  etl::wstring<20> result_i;
+    //  int value_i = -1234567;
+
+    //  etl::wstring<20> result_d;
+    //  double value_d = -2.9543;
+
+    //  etl::wformat_spec format = Format().precision(4).width(6).right();
+
+    //  etl::to_string(value_i, 1000000, result_i, format);
+    //  etl::to_string(value_d, result_d, format);
+
+    //  CHECK_EQUAL(etl::wstring<20>(STR("-1.2345")).c_str(), result_i.c_str());
+    //  CHECK_EQUAL(result_d.c_str(), result_i.c_str());
+    //}
+
+    ////*************************************************************************
+    //TEST(test_integer_denominator_larger_width)
+    //{
+    //  etl::wstring<20> result_i;
+    //  int value_i = -1234567;
+
+    //  etl::wstring<20> result_d;
+    //  double value_d = -2.9543;
+
+    //  etl::wformat_spec format = Format().precision(4).width(15).right();
+
+    //  etl::to_string(value_i, 1000000, result_i, format);
+    //  etl::to_string(value_d, result_d, format);
+
+    //  CHECK_EQUAL(etl::wstring<20>(STR("      -1.2345")).c_str(), result_i.c_str());
+    //  CHECK_EQUAL(result_d.c_str(), result_i.c_str());
+    //}
   };
 }
 
