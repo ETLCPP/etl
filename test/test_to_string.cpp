@@ -278,6 +278,14 @@ namespace
 
       CHECK(etl::string<20>(STR(" -0.123456")) == etl::to_string(-0.123456, str, Format().precision(6).width(10).right()));
       CHECK(etl::string<20>(STR("-0.123456 ")) == etl::to_string(-0.123456, str, Format().precision(6).width(10).left()));
+
+      // Positive rollover
+      CHECK(etl::string<20>(STR("  2.000000")) == etl::to_string(1.9999996, str, Format().precision(6).width(10).right()));
+      CHECK(etl::string<20>(STR("2.000000  ")) == etl::to_string(1.9999996, str, Format().precision(6).width(10).left()));
+
+      // Negative rollover
+      CHECK(etl::string<20>(STR(" -2.000000")) == etl::to_string(-1.9999996, str, Format().precision(6).width(10).right()));
+      CHECK(etl::string<20>(STR("-2.000000 ")) == etl::to_string(-1.9999996, str, Format().precision(6).width(10).left()));
     }
 
     //*************************************************************************
@@ -424,6 +432,102 @@ namespace
       str.assign(STR("Result "));
       to_string(&cvi, str, Format().hex().width(10).left().fill(STR('0')), true);
       CHECK(compare == str);
+    }
+
+    //*************************************************************************
+    TEST(test_integer_denominator_default_format)
+    {
+      etl::string<20> result;
+      int value = -1234567;
+
+      etl::to_string(value, 1000000, result);
+
+      CHECK_EQUAL(etl::string<20>("-1").c_str(), result.c_str());
+    }
+
+    //*************************************************************************
+    TEST(test_integer_denominator_huge_precision)
+    {
+      etl::string<20> result;
+      int value = -1234560;
+
+      etl::format_spec format = Format().precision(100);
+
+      etl::to_string(value, 1000000, result, format);
+
+      CHECK_EQUAL(etl::string<20>("-1.234560").c_str(), result.c_str());
+    }
+
+    //*************************************************************************
+    TEST(test_integer_denominator_shorter_width)
+    {
+      etl::string<20> result_i;
+      int value_i = -1234560;
+
+      etl::string<20> result_d;
+      double value_d = -1.234560;
+
+      etl::format_spec format = Format().precision(4).width(6).right();
+
+      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_d, result_d, format);
+
+      CHECK_EQUAL(etl::string<20>(STR("-1.2346")).c_str(), result_i.c_str());
+      CHECK_EQUAL(result_d.c_str(), result_i.c_str());
+    }
+
+    //*************************************************************************
+    TEST(test_integer_denominator_larger_width)
+    {
+      etl::string<20> result_i;
+      int value_i = -1234560;
+
+      etl::string<20> result_d;
+      double value_d = -1.234560;
+
+      etl::format_spec format = Format().precision(4).width(15).right();
+
+      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_d, result_d, format);
+
+      CHECK_EQUAL(etl::string<20>(STR("        -1.2346")).c_str(), result_i.c_str());
+      CHECK_EQUAL(result_d.c_str(), result_i.c_str());
+    }
+
+    //*************************************************************************
+    TEST(test_integer_denominator_positive_rollover)
+    {
+      etl::string<20> result_i;
+      int value_i = 1999990;
+
+      etl::string<20> result_d;
+      double value_d = 1.999990;
+
+      etl::format_spec format = Format().precision(4).right();
+
+      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_d, result_d, format);
+
+      CHECK_EQUAL(etl::string<20>(STR("2.0000")).c_str(), result_i.c_str());
+      CHECK_EQUAL(result_d.c_str(), result_i.c_str());
+    }
+
+    //*************************************************************************
+    TEST(test_integer_denominator_negative_rollover)
+    {
+      etl::string<20> result_i;
+      int value_i = -1999990;
+
+      etl::string<20> result_d;
+      double value_d = -1.999990;
+
+      etl::format_spec format = Format().precision(4).right();
+
+      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_d, result_d, format);
+
+      CHECK_EQUAL(etl::string<20>(STR("-2.0000")).c_str(), result_i.c_str());
+      CHECK_EQUAL(result_d.c_str(), result_i.c_str());
     }
   };
 }
