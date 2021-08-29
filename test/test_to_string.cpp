@@ -451,7 +451,7 @@ namespace
       etl::string<20> result;
       int value = -1234560;
 
-      etl::format_spec format = Format().precision(100);
+      Format format = Format().precision(100);
 
       etl::to_string(value, 1000000, result, format);
 
@@ -459,20 +459,128 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_integer_denominator_shorter_width)
+    TEST(test_integer_denominator_zero_fractional)
     {
       etl::string<20> result_i;
-      int value_i = -1234560;
+      int value_i = -1000000;
 
       etl::string<20> result_d;
-      double value_d = -1.234560;
+      double value_d = -1.000000;
 
-      etl::format_spec format = Format().precision(4).width(6).right();
+      Format format = Format().precision(4);
 
       etl::to_string(value_i, 1000000, result_i, format);
       etl::to_string(value_d, result_d, format);
 
-      CHECK_EQUAL(etl::string<20>(STR("-1.2346")).c_str(), result_i.c_str());
+      CHECK_EQUAL(etl::string<20>(STR("-1.0000")).c_str(), result_i.c_str());
+      CHECK_EQUAL(result_d.c_str(), result_i.c_str());
+    }
+
+    //*************************************************************************
+    TEST(test_integer_denominator_zero_value)
+    {
+      etl::string<20> result_i;
+      int value_i = 0;
+
+      etl::string<20> result_d;
+      double value_d = -0.000000;
+
+      Format format = Format().precision(4);
+
+      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_d, result_d, format);
+
+      CHECK_EQUAL(etl::string<20>(STR("0.0000")).c_str(), result_i.c_str());
+      CHECK_EQUAL(result_d.c_str(), result_i.c_str());
+    }
+
+    //*************************************************************************
+    TEST(test_integer_denominator_zero_integral_small_fractional)
+    {
+      etl::string<20> result_i;
+      int value_i = -400;
+
+      etl::string<20> result_d;
+      double value_d = -0.000400;
+
+      Format format = Format().precision(4);
+
+      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_d, result_d, format);
+
+      CHECK_EQUAL(etl::string<20>(STR("-0.0004")).c_str(), result_i.c_str());
+      CHECK_EQUAL(result_d.c_str(), result_i.c_str());
+    }
+
+    //*************************************************************************
+    TEST(test_integer_denominator_small_fractional)
+    {
+      etl::string<20> result_i;
+      int value_i = -123000400;
+
+      etl::string<20> result_d;
+      double value_d = -123.000400;
+
+      Format format = Format().precision(4);
+
+      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_d, result_d, format);
+
+      CHECK_EQUAL(etl::string<20>(STR("-123.0004")).c_str(), result_i.c_str());
+      CHECK_EQUAL(result_d.c_str(), result_i.c_str());
+    }
+
+    //*************************************************************************
+    TEST(test_integer_denominator_very_small_fractional)
+    {
+      etl::string<20> result_i;
+      int value_i = -123000004;
+
+      etl::string<20> result_d;
+      double value_d = -123.000004;
+
+      Format format = Format().precision(4);
+
+      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_d, result_d, format);
+
+      CHECK_EQUAL(etl::string<20>(STR("-123.0000")).c_str(), result_i.c_str());
+      CHECK_EQUAL(result_d.c_str(), result_i.c_str());
+    }
+
+    //*************************************************************************
+    TEST(test_integer_denominator_very_small_fractional_rounded_up)
+    {
+      etl::string<20> result_i;
+      int value_i = -123000050;
+
+      etl::string<20> result_d;
+      double value_d = -123.000050;
+
+      Format format = Format().precision(4);
+
+      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_d, result_d, format);
+
+      CHECK_EQUAL(etl::string<20>(STR("-123.0001")).c_str(), result_i.c_str());
+      CHECK_EQUAL(result_d.c_str(), result_i.c_str());
+    }
+
+    //*************************************************************************
+    TEST(test_integer_denominator_shorter_width)
+    {
+      etl::string<20> result_i;
+      int value_i = -123456780;
+
+      etl::string<20> result_d;
+      double value_d = -123.456780;
+
+      Format format = Format().precision(4).width(6).right();
+
+      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_d, result_d, format);
+
+      CHECK_EQUAL(etl::string<20>(STR("-123.4568")).c_str(), result_i.c_str());
       CHECK_EQUAL(result_d.c_str(), result_i.c_str());
     }
 
@@ -480,17 +588,17 @@ namespace
     TEST(test_integer_denominator_larger_width)
     {
       etl::string<20> result_i;
-      int value_i = -1234560;
+      int value_i = -123456780;
 
       etl::string<20> result_d;
-      double value_d = -1.234560;
+      double value_d = -123.456780;
 
-      etl::format_spec format = Format().precision(4).width(15).right();
+      Format format = Format().precision(4).width(15).right();
 
       etl::to_string(value_i, 1000000, result_i, format);
       etl::to_string(value_d, result_d, format);
 
-      CHECK_EQUAL(etl::string<20>(STR("        -1.2346")).c_str(), result_i.c_str());
+      CHECK_EQUAL(etl::string<20>(STR("      -123.4568")).c_str(), result_i.c_str());
       CHECK_EQUAL(result_d.c_str(), result_i.c_str());
     }
 
@@ -498,17 +606,17 @@ namespace
     TEST(test_integer_denominator_positive_rollover)
     {
       etl::string<20> result_i;
-      int value_i = 1999990;
+      int value_i = 123999990;
 
       etl::string<20> result_d;
-      double value_d = 1.999990;
+      double value_d = 123.999990;
 
-      etl::format_spec format = Format().precision(4).right();
+      Format format = Format().precision(4).right();
 
       etl::to_string(value_i, 1000000, result_i, format);
       etl::to_string(value_d, result_d, format);
 
-      CHECK_EQUAL(etl::string<20>(STR("2.0000")).c_str(), result_i.c_str());
+      CHECK_EQUAL(etl::string<20>(STR("124.0000")).c_str(), result_i.c_str());
       CHECK_EQUAL(result_d.c_str(), result_i.c_str());
     }
 
@@ -516,17 +624,17 @@ namespace
     TEST(test_integer_denominator_negative_rollover)
     {
       etl::string<20> result_i;
-      int value_i = -1999990;
+      int value_i = -123999990;
 
       etl::string<20> result_d;
-      double value_d = -1.999990;
+      double value_d = -123.999990;
 
-      etl::format_spec format = Format().precision(4).right();
+      Format format = Format().precision(4).right();
 
       etl::to_string(value_i, 1000000, result_i, format);
       etl::to_string(value_d, result_d, format);
 
-      CHECK_EQUAL(etl::string<20>(STR("-2.0000")).c_str(), result_i.c_str());
+      CHECK_EQUAL(etl::string<20>(STR("-124.0000")).c_str(), result_i.c_str());
       CHECK_EQUAL(result_d.c_str(), result_i.c_str());
     }
   };

@@ -240,8 +240,8 @@ namespace etl
     /// Helper function for floating point integral and fractional.
     //***************************************************************************
     template <typename TIString>
-    void add_integral_fractional(const workspace_t integral,
-                                 const workspace_t fractional,
+    void add_integral_fractional(const uint32_t integral,
+                                 const uint32_t fractional,
                                  TIString& str,
                                  const etl::basic_format_spec<TIString>& integral_format,
                                  const etl::basic_format_spec<TIString>& fractional_format,
@@ -292,7 +292,7 @@ namespace etl
         etl::basic_format_spec<TIString> fractional_format = integral_format;
         fractional_format.width(integral_format.get_precision()).fill(type('0')).right();
 
-        workspace_t multiplier = 1;
+        uint32_t multiplier = 1U;
 
         for (uint32_t i = 0U; i < fractional_format.get_precision(); ++i)
         {
@@ -300,17 +300,17 @@ namespace etl
         }
 
         // Find the integral part of the floating point
-        T f_integral = (value < T(0.0) ? ceil(value) : floor(value));
-        workspace_t integral   = etl::absolute(static_cast<workspace_t>(f_integral));
+        T f_integral = floor(etl::absolute(value));
+        uint32_t integral = static_cast<uint32_t>(f_integral);
 
         // Find the fractional part of the floating point.
-        workspace_t fractional = etl::absolute(static_cast<workspace_t>(round((value - f_integral) * multiplier)));
+        uint32_t fractional = static_cast<uint32_t>(round((etl::absolute(value) - f_integral) * multiplier));
 
         // Check for a rounding carry to the integral.
         if (fractional == multiplier)
         {
           ++integral;
-          fractional = 0;
+          fractional = 0U;
         }
 
         etl::private_to_string::add_integral_fractional(integral, fractional, str, integral_format, fractional_format, etl::is_negative(value));
@@ -324,7 +324,7 @@ namespace etl
     //***************************************************************************
     template <typename T, typename TIString>
     void add_integral_denominated(T value,
-                                  workspace_t denominator,
+                                  uint32_t denominator,
                                   TIString& str,
                                   const etl::basic_format_spec<TIString>& format,
                                   bool append = false)
@@ -339,69 +339,62 @@ namespace etl
 
       iterator start = str.end();
 
-      // Split to integral and fractional parts using the denominator
-      workspace_t integral   = absolute(value) / denominator;
-      workspace_t fractional = absolute(value) % denominator;
+      uint32_t abs_value = etl::absolute(value);
 
-      uint32_t denominator_digits = 0U;
+      // Figure out how many decimal digits we have in the value.
+      uint32_t original_decimal_digits = 0U;
       uint32_t multiplier = 1U;
 
-      while (multiplier < fractional)
+      while (multiplier < denominator)
       {
         multiplier *= 10U;
-        ++denominator_digits;
+        ++original_decimal_digits;
       }
 
+      // How many decimal digits are we displaying.
+      uint32_t displayed_decimal_digits = (format.get_precision() > original_decimal_digits) ? original_decimal_digits : format.get_precision();
+
+      // Format for the integral part.
       etl::basic_format_spec<TIString> integral_format = format;
-      integral_format.decimal().width(0U).precision(format.get_precision() > denominator_digits ? denominator_digits : format.get_precision());
+      integral_format.decimal().width(0U);
 
+      // Format for the fractional part.      
       etl::basic_format_spec<TIString> fractional_format = integral_format;
-      fractional_format.width(integral_format.get_precision()).fill(type('0')).left();
+      fractional_format.precision(displayed_decimal_digits).width(displayed_decimal_digits).fill(type('0')).right();
 
-      if (fractional != 0U)
+      // We don't need to do this if the fractional part is zero.
+      if ((abs_value % denominator) != 0U)
       {
-        // Adjust the fractional with rounding.
-        uint32_t fractional_digits = 0U;
-        uint32_t multiplier = 1U;
-
-        while (multiplier < fractional)
+        // Do we need to check for rounding?
+        if (original_decimal_digits > displayed_decimal_digits)
         {
-          multiplier *= 10U;
-          ++fractional_digits;
-        }      
+          // Which digit to adjust?
+          uint32_t count = original_decimal_digits - fractional_format.get_width();
 
-        // Do we need to round?
-        if (fractional_digits > fractional_format.get_width())
-        {
-          uint32_t count = fractional_digits - fractional_format.get_width();
+          // The 'round-away-from-zero' value.
+          uint32_t rounding = 5U;
 
-          while (count > 0U)
+          while (count-- > 1U)
           {
-            // Check the last digit.
-            if (count == 1U)
-            {
-              // Round up?
-              if ((fractional % 10U) >= 5U)
-              {
-                fractional += 10U;
-              }
-            }
-
-            fractional /= 10U;
-            multiplier /= 10U;
-
-            --count;
+            rounding *= 10U;
           }
-        }      
 
-        // Check for a rounding carry to the integral.
-        if (fractional == multiplier)
-        {
-          ++integral;
-          fractional = 0U;
-        }
+          abs_value += rounding;
+        }      
       }
 
+      // Split the value into integral and fractional.
+      uint32_t integral   = abs_value / denominator;
+      uint32_t fractional = abs_value % denominator;
+
+      // Move the fractional part to the right place.
+      uint32_t count = original_decimal_digits - fractional_format.get_width();
+      while (count-- > 0U)
+      {
+        fractional /= 10U;
+      }    
+
+      // Create the string.
       etl::private_to_string::add_integral_fractional(integral, fractional, str, integral_format, fractional_format, etl::is_negative(value));
       etl::private_to_string::add_alignment(str, start, format);
     }
