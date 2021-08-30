@@ -440,9 +440,9 @@ namespace
       etl::string<20> result;
       int value = -1234567;
 
-      etl::to_string(value, 1000000, result);
+      etl::to_string(value, 6U, result);
 
-      CHECK_EQUAL(etl::string<20>("-1").c_str(), result.c_str());
+      CHECK_EQUAL(etl::string<20>(STR("-1")).c_str(), result.c_str());
     }
 
     //*************************************************************************
@@ -453,9 +453,22 @@ namespace
 
       Format format = Format().precision(100);
 
-      etl::to_string(value, 1000000, result, format);
+      etl::to_string(value, 6U, result, format);
 
-      CHECK_EQUAL(etl::string<20>("-1.234560").c_str(), result.c_str());
+      CHECK_EQUAL(etl::string<20>(STR("-1.234560")).c_str(), result.c_str());
+    }
+
+    //*************************************************************************
+    TEST(test_integer_denominator_huge_precision_64bit)
+    {
+      etl::string<20> result;
+      int64_t value = -9223372036854775808LL;
+
+      Format format = Format().precision(100);
+
+      etl::to_string(value, 12U, result, format);
+
+      CHECK_EQUAL(etl::string<20>(STR("-9223372.036854775808")).c_str(), result.c_str());
     }
 
     //*************************************************************************
@@ -469,7 +482,7 @@ namespace
 
       Format format = Format().precision(4);
 
-      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
       CHECK_EQUAL(etl::string<20>(STR("-1.0000")).c_str(), result_i.c_str());
@@ -487,7 +500,7 @@ namespace
 
       Format format = Format().precision(4);
 
-      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
       CHECK_EQUAL(etl::string<20>(STR("0.0000")).c_str(), result_i.c_str());
@@ -505,7 +518,7 @@ namespace
 
       Format format = Format().precision(4);
 
-      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
       CHECK_EQUAL(etl::string<20>(STR("-0.0004")).c_str(), result_i.c_str());
@@ -523,7 +536,7 @@ namespace
 
       Format format = Format().precision(4);
 
-      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
       CHECK_EQUAL(etl::string<20>(STR("-123.0004")).c_str(), result_i.c_str());
@@ -541,7 +554,7 @@ namespace
 
       Format format = Format().precision(4);
 
-      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
       CHECK_EQUAL(etl::string<20>(STR("-123.0000")).c_str(), result_i.c_str());
@@ -559,7 +572,7 @@ namespace
 
       Format format = Format().precision(4);
 
-      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
       CHECK_EQUAL(etl::string<20>(STR("-123.0001")).c_str(), result_i.c_str());
@@ -577,7 +590,7 @@ namespace
 
       Format format = Format().precision(4).width(6).right();
 
-      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
       CHECK_EQUAL(etl::string<20>(STR("-123.4568")).c_str(), result_i.c_str());
@@ -595,7 +608,7 @@ namespace
 
       Format format = Format().precision(4).width(15).right();
 
-      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
       CHECK_EQUAL(etl::string<20>(STR("      -123.4568")).c_str(), result_i.c_str());
@@ -613,7 +626,7 @@ namespace
 
       Format format = Format().precision(4).right();
 
-      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
       CHECK_EQUAL(etl::string<20>(STR("124.0000")).c_str(), result_i.c_str());
@@ -631,7 +644,7 @@ namespace
 
       Format format = Format().precision(4).right();
 
-      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
       CHECK_EQUAL(etl::string<20>(STR("-124.0000")).c_str(), result_i.c_str());
