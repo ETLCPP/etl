@@ -355,6 +355,61 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_integer_denominator_default_format)
+    {
+      etl::u32string<20> result;
+      int value = -1234567;
+
+      etl::to_string(value, 6U, result);
+
+      CHECK(etl::u32string<20>(STR("-1")) == result);
+    }
+
+    //*************************************************************************
+    TEST(test_integer_denominator_huge_precision)
+    {
+      etl::u32string<20> result;
+      int value = -1234560;
+
+      Format format = Format().precision(100);
+
+      etl::to_string(value, 6U, result, format);
+
+      CHECK(etl::u32string<20>(STR("-1.234560")) == result);
+    }
+
+    //*************************************************************************
+    TEST(test_integer_denominator_huge_precision_64bit)
+    {
+      etl::u32string<20> result;
+      int64_t value = -9223372036854775808LL;
+
+      Format format = Format().precision(100);
+
+      etl::to_string(value, 12U, result, format);
+
+      CHECK(etl::u32string<20>(STR("-9223372.036854775808")) == result);
+    }
+
+    //*************************************************************************
+    TEST(test_integer_denominator_zero_fractional)
+    {
+      etl::u32string<20> result_i;
+      int value_i = -1000000;
+
+      etl::u32string<20> result_d;
+      double value_d = -1.000000;
+
+      Format format = Format().precision(4);
+
+      etl::to_string(value_i, 6U, result_i, format);
+      etl::to_string(value_d, result_d, format);
+
+      CHECK(etl::u32string<20>(STR("-1.0000")) == result_i);
+      CHECK(result_d == result_i);
+    }
+
+    //*************************************************************************
     TEST(test_integer_denominator_zero_value)
     {
       etl::u32string<20> result_i;
@@ -365,7 +420,7 @@ namespace
 
       Format format = Format().precision(4);
 
-      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
       CHECK(etl::u32string<20>(STR("0.0000")) == result_i);
@@ -383,7 +438,7 @@ namespace
 
       Format format = Format().precision(4);
 
-      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
       CHECK(etl::u32string<20>(STR("-0.0004")) == result_i);
@@ -401,7 +456,7 @@ namespace
 
       Format format = Format().precision(4);
 
-      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
       CHECK(etl::u32string<20>(STR("-123.0004")) == result_i);
@@ -419,7 +474,7 @@ namespace
 
       Format format = Format().precision(4);
 
-      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
       CHECK(etl::u32string<20>(STR("-123.0000")) == result_i);
@@ -437,7 +492,7 @@ namespace
 
       Format format = Format().precision(4);
 
-      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
       CHECK(etl::u32string<20>(STR("-123.0001")) == result_i);
@@ -455,7 +510,7 @@ namespace
 
       Format format = Format().precision(4).width(6).right();
 
-      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
       CHECK(etl::u32string<20>(STR("-123.4568")) == result_i);
@@ -473,7 +528,7 @@ namespace
 
       Format format = Format().precision(4).width(15).right();
 
-      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
       CHECK(etl::u32string<20>(STR("      -123.4568")) == result_i);
@@ -491,7 +546,7 @@ namespace
 
       Format format = Format().precision(4).right();
 
-      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
       CHECK(etl::u32string<20>(STR("124.0000")) == result_i);
@@ -509,10 +564,10 @@ namespace
 
       Format format = Format().precision(4).right();
 
-      etl::to_string(value_i, 1000000, result_i, format);
+      etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
-      CHECK(etl::u32string<20>(STR("-124.0000")) == result_i.c_str());
+      CHECK(etl::u32string<20>(STR("-124.0000")) == result_i);
       CHECK(result_d == result_i);
     }
   };
