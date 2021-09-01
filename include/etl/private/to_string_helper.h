@@ -88,7 +88,7 @@ namespace etl
     void add_boolean(const bool value,
                      TIString& str,
                      const etl::basic_format_spec<TIString>& format,
-                     bool append)
+                     const bool append)
     {
       typedef typename TIString::value_type type;
       typedef typename TIString::iterator   iterator;
@@ -240,8 +240,31 @@ namespace etl
     /// Helper function for floating point integral and fractional.
     //***************************************************************************
     template <typename TIString>
-    void add_integral_fractional(const workspace_t integral,
-                                 const workspace_t fractional,
+    void add_integral_and_fractional(const uint32_t integral,
+                                     const uint32_t fractional,
+                                     TIString& str,
+                                     const etl::basic_format_spec<TIString>& integral_format,
+                                     const etl::basic_format_spec<TIString>& fractional_format,
+                                     const bool negative)
+    {
+      typedef typename TIString::value_type type;
+
+      etl::private_to_string::add_integral(integral, str, integral_format, true, negative);
+
+      if (fractional_format.get_precision() > 0)
+      {
+        str.push_back(type('.'));
+        etl::private_to_string::add_integral(fractional, str, fractional_format, true, false);
+      }
+    }
+
+#if ETL_USING_64BIT_TYPES
+    //***************************************************************************
+    /// Helper function for floating point integral and fractional.
+    //***************************************************************************
+    template <typename TIString>
+    void add_integral_and_fractional(const uint64_t integral,
+                                 const uint64_t fractional,
                                  TIString& str,
                                  const etl::basic_format_spec<TIString>& integral_format,
                                  const etl::basic_format_spec<TIString>& fractional_format,
@@ -257,15 +280,16 @@ namespace etl
         etl::private_to_string::add_integral(fractional, str, fractional_format, true, false);
       }
     }
+#endif
 
     //***************************************************************************
     /// Helper function for floating point.
     //***************************************************************************
     template <typename T, typename TIString>
-    void add_floating_point(T value,
+    void add_floating_point(const T value,
                             TIString& str,
                             const etl::basic_format_spec<TIString>& format,
-                            bool append)
+                            const bool append)
     {
       typedef typename TIString::iterator   iterator;
       typedef typename TIString::value_type type;
@@ -292,7 +316,7 @@ namespace etl
         etl::basic_format_spec<TIString> fractional_format = integral_format;
         fractional_format.width(integral_format.get_precision()).fill(type('0')).right();
 
-        workspace_t multiplier = 1;
+        uint32_t multiplier = 1U;
 
         for (uint32_t i = 0U; i < fractional_format.get_precision(); ++i)
         {
@@ -300,22 +324,100 @@ namespace etl
         }
 
         // Find the integral part of the floating point
-        T f_integral = (value < T(0.0) ? ceil(value) : floor(value));
-        workspace_t integral   = static_cast<workspace_t>(f_integral);
+        T f_integral = floor(etl::absolute(value));
+        uint32_t integral = static_cast<uint32_t>(f_integral);
 
         // Find the fractional part of the floating point.
-        workspace_t fractional = etl::absolute(static_cast<workspace_t>(round((value - f_integral) * multiplier)));
+        uint32_t fractional = static_cast<uint32_t>(round((etl::absolute(value) - f_integral) * multiplier));
 
         // Check for a rounding carry to the integral.
         if (fractional == multiplier)
         {
           ++integral;
-          fractional = 0;
+          fractional = 0U;
         }
 
-        etl::private_to_string::add_integral_fractional(integral, fractional, str, integral_format, fractional_format, etl::is_negative(value));
+        etl::private_to_string::add_integral_and_fractional(integral, fractional, str, integral_format, fractional_format, etl::is_negative(value));
       }
 
+      etl::private_to_string::add_alignment(str, start, format);
+    }
+
+    //***************************************************************************
+    /// Helper function for denominated integers.
+    //***************************************************************************
+    template <typename T, typename TIString>
+    void add_integral_denominated(const T value,
+                                  const uint32_t denominator_exponent,
+                                  TIString& str,
+                                  const etl::basic_format_spec<TIString>& format,
+                                  const bool append = false)
+    {
+      typedef typename TIString::iterator          iterator;
+      typedef typename TIString::value_type        type;
+      typedef typename etl::make_unsigned<T>::type working_t;
+
+      if (!append)
+      {
+        str.clear();
+      }
+
+      iterator start = str.end();
+
+      // Caculate the denominator.
+      working_t denominator = 1U;
+
+      for (uint32_t i = 0U; i < denominator_exponent; ++i)
+      {
+        denominator *= 10U;
+      }
+
+      working_t abs_value = etl::absolute(value);
+
+      // Figure out how many decimal digits we have in the value.
+      const uint32_t& original_decimal_digits = denominator_exponent;
+
+      // How many decimal digits are we displaying.
+      const uint32_t displayed_decimal_digits = (format.get_precision() > original_decimal_digits) ? original_decimal_digits : format.get_precision();
+
+      // Format for the integral part.
+      etl::basic_format_spec<TIString> integral_format = format;
+      integral_format.decimal().width(0U);
+
+      // Format for the fractional part.      
+      etl::basic_format_spec<TIString> fractional_format = integral_format;
+      fractional_format.precision(displayed_decimal_digits).width(displayed_decimal_digits).fill(type('0')).right();
+
+      // Do we need to check for rounding?
+      if (original_decimal_digits > displayed_decimal_digits)
+      {
+        // Which digit to adjust?
+        uint32_t count = original_decimal_digits - fractional_format.get_width();
+
+        // The 'round-away-from-zero' value.
+        uint32_t rounding = 5U;
+
+        while (count-- > 1U)
+        {
+          rounding *= 10U;
+        }
+
+        abs_value += rounding;
+      }
+
+      // Split the value into integral and fractional.
+      working_t integral   = abs_value / denominator;
+      working_t fractional = abs_value % denominator;
+
+      // Move the fractional part to the right place.
+      uint32_t count = original_decimal_digits - fractional_format.get_width();
+      while (count-- > 0U)
+      {
+        fractional /= 10U;
+      }    
+
+      // Create the string.
+      etl::private_to_string::add_integral_and_fractional(integral, fractional, str, integral_format, fractional_format, etl::is_negative(value));
       etl::private_to_string::add_alignment(str, start, format);
     }
 
@@ -326,7 +428,7 @@ namespace etl
     void add_pointer(const volatile void* value,
                      TIString& str,
                      const etl::basic_format_spec<TIString>& format,
-                     bool append)
+                     const bool append)
     {
       uintptr_t p = reinterpret_cast<uintptr_t>(value);
 
@@ -340,7 +442,7 @@ namespace etl
     void add_string(const TIString& value,
                     TIString& str,
                     const etl::basic_format_spec<TIString>& format,
-                    bool append)
+                    const bool append)
     {
       if (!append)
       {
@@ -361,7 +463,7 @@ namespace etl
     void add_string_view(const TSringView& value,
                          TIString& str,
                          const etl::basic_format_spec<TIString>& format,
-                         bool append)
+                         const bool append)
     {
       if (!append)
       {
@@ -378,28 +480,13 @@ namespace etl
     //*********************************************************************************************************
 
     //***************************************************************************
-    /// For booleans. Default format spec.
-    //***************************************************************************
-    template <typename TIString>
-    const TIString& to_string(const bool value,
-                              TIString& str,
-                              bool append = false)
-    {
-      etl::basic_format_spec<TIString> format;
-
-      etl::private_to_string::add_boolean(value, str, format, append);
-
-      return str;
-    }
-
-    //***************************************************************************
-    /// For booleans. Supplied format spec.
+    /// For booleans.
     //***************************************************************************
     template <typename TIString>
     const TIString& to_string(const bool value,
                               TIString& str,
                               const etl::basic_format_spec<TIString>& format,
-                              bool append = false)
+                              const bool append = false)
     {
       etl::private_to_string::add_boolean(value, str, format, append);
 
@@ -407,244 +494,115 @@ namespace etl
     }
 
     //***************************************************************************
-    /// For pointers. Default format spec.
-    //***************************************************************************
-    template <typename TIString>
-    const TIString& to_string(const volatile void* value,
-                              TIString& str,
-                              bool append = false)
-    {
-      etl::basic_format_spec<TIString> format;
-
-      etl::private_to_string::add_pointer(value, str, format, append);
-
-      return str;
-    }
-
-    //***************************************************************************
-    /// For pointers. Supplied format spec.
+    /// For pointers.
     //***************************************************************************
     template <typename TIString>
     const TIString& to_string(const volatile void* value,
                               TIString& str,
                               const etl::basic_format_spec<TIString>& format,
-                              bool append = false)
+                              const bool append = false)
     {
       etl::private_to_string::add_pointer(value, str, format, append);
 
       return str;
     }
 
-#if ETL_NOT_USING_64BIT_TYPES
+#if ETL_USING_64BIT_TYPES
     //***************************************************************************
-    /// For signed integrals less than 64 bits. Default format spec.
+    /// For integrals less than 64 bits.
     //***************************************************************************
     template <typename T, typename TIString>
     typename etl::enable_if<etl::is_integral<T>::value &&
-                            etl::is_signed<T>::value &&
-                            !etl::is_same<T, bool>::value>::value, const TIString& > ::type
-      to_string(const T value, TIString& str, bool append = false)
+                            !etl::is_same<T, bool>::value &&
+                            !etl::is_one_of<T, int64_t, uint64_t>::value, const TIString&>::type
+      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
     {
-      etl::basic_format_spec<TIString> format;
+      typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type type;
 
-      etl::private_to_string::add_integral(int32_t(value), str, format, append, etl::is_negative(value));
+      etl::private_to_string::add_integral(type(value), str, format, append, etl::is_negative(value));
 
       return str;
     }
 
     //***************************************************************************
-    /// For signed integrals less than 64 bits. Supplied format spec.
+    /// For 64 bit integrals.
     //***************************************************************************
     template <typename T, typename TIString>
     typename etl::enable_if<etl::is_integral<T>::value &&
-                            etl::is_signed<T>::value &&
-                            !etl::is_same<T, bool>::value>::value, const TIString& > ::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
+                            !etl::is_same<T, bool>::value &&
+                            etl::is_one_of<T, int64_t, uint64_t>::value, const TIString&>::type
+      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
     {
-      etl::private_to_string::add_integral(int32_t(value), str, format, append, etl::is_negative(value));
+      etl::private_to_string::add_integral(value, str, format, append, etl::is_negative(value));
 
       return str;
     }
 
     //***************************************************************************
-    /// For unsigned integrals less than 64 bits. Default format spec.
+    /// For denominated integrals less than 64 bits.
     //***************************************************************************
     template <typename T, typename TIString>
     typename etl::enable_if<etl::is_integral<T>::value &&
-                            etl::is_unsigned<T>::value &&
-                            !etl::is_same<T, bool>::value>::value, const TIString& > ::type
-      to_string(const T value, TIString& str, bool append = false)
+                            !etl::is_same<T, bool>::value &&
+                            !etl::is_one_of<T, int64_t, uint64_t>::value, const TIString&>::type
+      to_string(const T value, uint32_t denominator_exponant, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
     {
-      etl::basic_format_spec<TIString> format;
+      typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type type;
 
-      etl::private_to_string::add_integral(uint32_t(value), str, format, append, false);
+      etl::private_to_string::add_integral_denominated(type(value), denominator_exponant, str, format, append);
 
       return str;
     }
 
     //***************************************************************************
-    /// For unsigned integrals less than 64 bits. Supplied format spec.
+    /// For denominated 64 bit integrals.
     //***************************************************************************
     template <typename T, typename TIString>
-    typename etl::enable_if<etl::is_integral<T>::value &&
-                            etl::is_unsigned<T>::value &&
-                            !etl::is_same<T, bool>::value>::value, const TIString& > ::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
+    typename etl::enable_if<etl::is_integral<T>::value&&
+                            !etl::is_same<T, bool>::value&&
+                            etl::is_one_of<T, int64_t, uint64_t>::value, const TIString&>::type
+      to_string(const T value, uint32_t denominator_exponant, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
     {
-      etl::private_to_string::add_integral(uint32_t(value), str, format, append, false);
+      etl::private_to_string::add_integral_denominated(value, denominator_exponant, str, format, append);
 
       return str;
     }
 #else
     //***************************************************************************
-    /// For signed integrals less than 64 bits. Default format spec.
+    /// For integrals less than 64 bits.
     //***************************************************************************
     template <typename T, typename TIString>
     typename etl::enable_if<etl::is_integral<T>::value &&
-                            etl::is_signed<T>::value &&
-                            !etl::is_same<T, bool>::value &&
-                            !etl::is_same<T, int64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, bool append = false)
+      !etl::is_same<T, bool>::value>::value, const TIString& > ::type
+      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
     {
-      etl::basic_format_spec<TIString> format;
+      typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type type;
 
-      etl::private_to_string::add_integral(int32_t(value), str, format, append, etl::is_negative(value));
+      etl::private_to_string::add_integral(type(value), str, format, append, false);
 
       return str;
     }
 
     //***************************************************************************
-    /// For signed integrals less than 64 bits. Supplied format spec.
+    /// For denominated integrals less than 64 bits.
     //***************************************************************************
     template <typename T, typename TIString>
     typename etl::enable_if<etl::is_integral<T>::value &&
-                            etl::is_signed<T>::value &&
-                            !etl::is_same<T, bool>::value &&
-                            !etl::is_same<T, int64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
+      !etl::is_same<T, bool>::value>::value, const TIString& > ::type
+      to_string(const T value, uint32_t denominator_exponant, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
     {
-      etl::private_to_string::add_integral(int32_t(value), str, format, append, etl::is_negative(value));
-
-      return str;
-    }
-
-    //***************************************************************************
-    /// For unsigned integrals less than 64 bits. Default format spec.
-    //***************************************************************************
-    template <typename T, typename TIString>
-    typename etl::enable_if<etl::is_integral<T>::value &&
-                            etl::is_unsigned<T>::value &&
-                            !etl::is_same<T, bool>::value &&
-                            !etl::is_same<T, uint64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, bool append = false)
-    {
-      etl::basic_format_spec<TIString> format;
-
-      etl::private_to_string::add_integral(uint32_t(value), str, format, append, false);
-
-      return str;
-    }
-
-    //***************************************************************************
-    /// For unsigned integrals less than 64 bits. Supplied format spec.
-    //***************************************************************************
-    template <typename T, typename TIString>
-    typename etl::enable_if<etl::is_integral<T>::value &&
-                            etl::is_unsigned<T>::value &&
-                            !etl::is_same<T, bool>::value &&
-                            !etl::is_same<T, uint64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
-    {
-      etl::private_to_string::add_integral(uint32_t(value), str, format, append, false);
-
-      return str;
-    }
-
-    //***************************************************************************
-    /// For signed 64 bit integrals. Default format spec.
-    //***************************************************************************
-    template <typename T, typename TIString>
-    typename etl::enable_if<etl::is_integral<T>::value &&
-                            etl::is_signed<T>::value &&
-                            !etl::is_same<T, bool>::value &&
-                            etl::is_same<T, int64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, bool append = false)
-    {
-      etl::basic_format_spec<TIString> format;
-
-      etl::private_to_string::add_integral(int64_t(value), str, format, append, etl::is_negative(value));
-
-      return str;
-    }
-
-    //***************************************************************************
-    /// For signed 64 bit integrals. Supplied format spec.
-    //***************************************************************************
-    template <typename T, typename TIString>
-    typename etl::enable_if<etl::is_integral<T>::value &&
-                            etl::is_signed<T>::value &&
-                            !etl::is_same<T, bool>::value &&
-                            etl::is_same<T, int64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
-    {
-      etl::private_to_string::add_integral(int64_t(value), str, format, append, etl::is_negative(value));
-
-      return str;
-    }
-
-    //***************************************************************************
-    /// For unsigned 64 bit integrals. Default format spec.
-    //***************************************************************************
-    template <typename T, typename TIString>
-    typename etl::enable_if<etl::is_integral<T>::value &&
-                            etl::is_unsigned<T>::value &&
-                            !etl::is_same<T, bool>::value &&
-                            etl::is_same<T, uint64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, bool append = false)
-    {
-      etl::basic_format_spec<TIString> format;
-
-      etl::private_to_string::add_integral(uint64_t(value), str, format, append, false);
-
-      return str;
-    }
-
-    //***************************************************************************
-    /// For unsigned 64 bit integrals. Supplied format spec.
-    //***************************************************************************
-    template <typename T, typename TIString>
-    typename etl::enable_if<etl::is_integral<T>::value &&
-                            etl::is_unsigned<T>::value &&
-                            !etl::is_same<T, bool>::value &&
-                            etl::is_same<T, uint64_t>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
-    {
-      etl::private_to_string::add_integral(uint64_t(value), str, format, append, false);
+      etl::private_to_string::add_integral_denominated(type(value), denominator_exponant, str, format, append, false);
 
       return str;
     }
 #endif
 
     //***************************************************************************
-    /// For floating point. Default format spec.
+    /// For floating point.
     //***************************************************************************
     template <typename T, typename TIString>
     typename etl::enable_if<etl::is_floating_point<T>::value, const TIString&>::type
-      to_string(const T value, TIString& str, bool append = false)
-    {
-      etl::basic_format_spec<TIString> format;
-
-      etl::private_to_string::add_floating_point(value, str, format, append);
-
-      return str;
-    }
-
-    //***************************************************************************
-    /// For floating point. Supplied format spec.
-    //***************************************************************************
-    template <typename T, typename TIString>
-    typename etl::enable_if<etl::is_floating_point<T>::value, const TIString&>::type
-      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, bool append = false)
+      to_string(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
     {
       etl::private_to_string::add_floating_point(value, str, format, append);
 

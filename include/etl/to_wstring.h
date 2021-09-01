@@ -67,6 +67,30 @@ namespace etl
 
   //***************************************************************************
   /// Default format spec.
+  /// !etl::iu32string && !etl::u16string_view
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<!etl::is_same<T, etl::iwstring>::value && !etl::is_same<T, etl::u16string_view>::value, const etl::iwstring&>::type
+    to_string(const T value, uint32_t denominator_exponent, etl::iwstring& str, bool append = false)
+  {
+    etl::wformat_spec format;
+
+    return private_to_string::to_string(value, denominator_exponent, str, format, append);
+  }
+
+  //***************************************************************************
+  /// Supplied format spec.
+  /// !etl::u16string_view && !etl::u16string_view
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<!etl::is_same<T, etl::iwstring>::value && !etl::is_same<T, etl::u16string_view>::value, const etl::iwstring&>::type
+    to_string(const T value, uint32_t denominator_exponent, etl::iwstring& str, const etl::wformat_spec& format, bool append = false)
+  {
+    return private_to_string::to_string(value, denominator_exponent, str, format, append);
+  }
+
+  //***************************************************************************
+  /// Default format spec.
   /// etl::iwstring
   //***************************************************************************
   template <typename T>
