@@ -97,6 +97,46 @@ namespace
   }
 
   //*****************************************************************************
+  // The normal function.
+  //*****************************************************************************
+  int normal(int i, int j)
+  {
+    function_called = true;
+    parameter_correct = (i == VALUE1) && (j == VALUE2);
+
+    return i + j;
+  }
+
+  //*****************************************************************************
+  // The normal function returning void.
+  //*****************************************************************************
+  void normal_returning_void(int i, int j)
+  {
+    function_called = true;
+    parameter_correct = (i == VALUE1) && (j == VALUE2);
+  }
+
+  //*****************************************************************************
+  // The alternative function.
+  //*****************************************************************************
+  int alternative(int i, int j)
+  {
+    function_called = true;
+    parameter_correct = (i == VALUE1) && (j == VALUE2);
+
+    return i + j + 1;
+  }
+
+  //*****************************************************************************
+  // The alternative function returning void.
+  //*****************************************************************************
+  void alternative_returning_void(int i, int j)
+  {
+    function_called = true;
+    parameter_correct = (i == VALUE1) && (j == VALUE2);
+  }
+
+  //*****************************************************************************
   // The test class with member functions.
   //*****************************************************************************
   class Test
@@ -893,6 +933,93 @@ namespace
       vector_of_delegates.push_back(etl::delegate<int(int)>::create<times_2>());
 
       CHECK_EQUAL(42, vector_of_delegates.front()(21));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_call_or_run_time_normal)
+    {
+      auto d = etl::delegate<int(int, int)>::create<normal>();
+
+      int result = d.call_or(alternative, VALUE1, VALUE2);
+
+      CHECK_EQUAL(VALUE1 + VALUE2, result);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_call_or_run_time_alternative)
+    {
+      etl::delegate<int(int, int)> d;
+
+      int result = d.call_or(alternative, VALUE1, VALUE2);
+
+      CHECK_EQUAL(VALUE1 + VALUE2 + 1, result);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_call_or_compile_time_alternative)
+    {
+      etl::delegate<int(int, int)> d;
+
+      int result = d.call_or<alternative>(VALUE1, VALUE2);
+
+      CHECK_EQUAL(VALUE1 + VALUE2 + 1, result);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_call_or_delegate_alternative)
+    {
+      etl::delegate<int(int, int)> d;
+
+      auto alt = etl::delegate<int(int, int)>::create<alternative>();
+
+      int result = d.call_or(alt, VALUE1, VALUE2);
+
+      CHECK_EQUAL(VALUE1 + VALUE2 + 1, result);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_call_if_and_valid)
+    {
+      auto d = etl::delegate<int(int, int)>::create<normal>();
+
+      etl::optional<int> result = d.call_if(VALUE1, VALUE2);
+
+      CHECK(bool(result));
+      CHECK_EQUAL(VALUE1 + VALUE2, result.value());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_call_if_and_not_valid)
+    {
+      etl::delegate<int(int, int)> d;
+
+      etl::optional<int> result = d.call_if(VALUE1, VALUE2);
+
+      CHECK(!bool(result));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_call_if_and_valid_returning_void)
+    {
+      auto d = etl::delegate<void(int, int)>::create<normal_returning_void>();
+
+      bool was_called = d.call_if(VALUE1, VALUE2);
+
+      CHECK(was_called);
+      CHECK(function_called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_call_if_and_not_valid_returning_void)
+    {
+      etl::delegate<void(int, int)> d;
+
+      bool was_called = d.call_if(VALUE1, VALUE2);
+
+      CHECK(!was_called);
+      CHECK(!function_called);
+      CHECK(!parameter_correct);
     }
   };
 }
