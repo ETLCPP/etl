@@ -50,6 +50,7 @@ set(TEST_SOURCE_FILES
 	test_bip_buffer_spsc_atomic.cpp
 	test_bitset.cpp
 	test_bit_stream.cpp
+	test_byte_stream.cpp
 	test_bloom_filter.cpp
 	test_bresenham_line.cpp
 	test_bsd_checksum.cpp

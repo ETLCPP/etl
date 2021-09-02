@@ -51,6 +51,7 @@ target_sources(t98 PRIVATE etl_profile.h
         ../bip_buffer_spsc_atomic.h.t.cpp
         ../bitset.h.t.cpp
         ../bit_stream.h.t.cpp
+        ../byte_stream.h.t.cpp
         ../bloom_filter.h.t.cpp
         ../bresenham_line.h.t.cpp
         ../buffer_descriptors.h.t.cpp
