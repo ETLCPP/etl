@@ -53,6 +53,7 @@ Original publication: https://www.codeproject.com/Articles/1170503/The-Impossibl
 #include "exception.h"
 #include "type_traits.h"
 #include "utility.h"
+#include "optional.h"
 
 #if ETL_CPP11_NOT_SUPPORTED
   #if !defined(ETL_IN_UNIT_TEST)
@@ -200,6 +201,77 @@ namespace etl
       ETL_ASSERT(is_valid(), ETL_ERROR(delegate_uninitialised));
 
       return (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+    }
+
+    //*************************************************************************
+    /// Execute the delegate if valid.
+    /// 'void' return.
+    //*************************************************************************
+    template <typename TRet = TReturn>
+    typename etl::enable_if_t<etl::is_same<TRet, void>::value, bool>
+      call_if(TParams... args) const
+    {
+      if (is_valid())
+      {
+        (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    //*************************************************************************
+    /// Execute the delegate if valid.
+    /// Non 'void' return.
+    //*************************************************************************
+    template <typename TRet = TReturn>
+    typename etl::enable_if_t<!etl::is_same<TRet, void>::value, etl::optional<TReturn>>
+      call_if(TParams... args) const
+    {
+      etl::optional<TReturn> result;
+
+      if (is_valid())
+      {
+        result = (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+      }
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Execute the delegate if valid or call alternative.
+    /// Run time alternative.
+    //*************************************************************************
+    template <typename TAlternative>
+    TReturn call_or(TAlternative alternative, TParams... args) const
+    {
+      if (is_valid())
+      {
+        return (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+      }
+      else
+      {
+        return alternative(etl::forward<TParams>(args)...);
+      }
+    }
+
+    //*************************************************************************
+    /// Execute the delegate if valid or call alternative.
+    /// Compile time alternative.
+    //*************************************************************************
+    template <TReturn(*Method)(TParams...)>
+    TReturn call_or(TParams... args) const
+    {
+      if (is_valid())
+      {
+        return (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+      }
+      else
+      {
+        return Method(etl::forward<TParams>(args)...);
+      }
     }
 
     //*************************************************************************
