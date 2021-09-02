@@ -96,6 +96,30 @@ namespace etl
         return pcurrent;
       }
 
+      //***************************************************************************
+      /// Returns a span of the used portion of the stream.
+      //***************************************************************************
+      etl::span<char> used_data() const
+      {
+        return etl::span<char>(pdata, pcurrent);
+      }
+
+      //***************************************************************************
+      /// Returns a span of the free portion of the stream.
+      //***************************************************************************
+      etl::span<char> free_data() const
+      {
+        return etl::span<char>(pcurrent, pdata + length);
+      }
+
+      //***************************************************************************
+      /// Returns a span of whole the stream.
+      //***************************************************************************
+      etl::span<char> data() const
+      {
+        return etl::span<char>(pdata, pdata + length);
+      }
+
     protected:
 
       byte_stream_common(char* pdata_, size_t length_, etl::endian buffer_endianness_)
@@ -135,6 +159,14 @@ namespace etl
   public:
 
     //***************************************************************************
+    /// Construct from span.
+    //***************************************************************************
+    byte_stream_writer(etl::span<char> span_, etl::endian buffer_endianness_ = etl::endian::big)
+      : byte_stream_common(span_.begin(), span_.size_bytes(), buffer_endianness_)
+    {
+    }
+
+    //***************************************************************************
     /// Construct from range.
     //***************************************************************************
     byte_stream_writer(char* begin_, char* end_, etl::endian buffer_endianness_ = etl::endian::big)
@@ -147,6 +179,15 @@ namespace etl
     //***************************************************************************
     byte_stream_writer(char* begin_, size_t length_, etl::endian buffer_endianness_ = etl::endian::big)
       : byte_stream_common(begin_, length_, buffer_endianness_)
+    {
+    }
+
+    //***************************************************************************
+    /// Construct from array.
+    //***************************************************************************
+    template <typename T, size_t Size>
+    byte_stream_writer(T(&begin_)[Size], etl::endian buffer_endianness_ = etl::endian::big)
+      : byte_stream_common(begin_, begin_ + (Size * sizeof(T)), buffer_endianness_)
     {
     }
 
@@ -281,6 +322,14 @@ namespace etl
   public:
 
     //***************************************************************************
+    /// Construct from span.
+    //***************************************************************************
+    byte_stream_reader(etl::span<char> span_, etl::endian buffer_endianness_ = etl::endian::big)
+      : byte_stream_common(span_.begin(), span_.size_bytes(), buffer_endianness_)
+    {
+    }
+
+    //***************************************************************************
     /// Construct from range.
     //***************************************************************************
     byte_stream_reader(char* begin_, char* end_, etl::endian buffer_endianness_ = etl::endian::big)
@@ -292,8 +341,16 @@ namespace etl
     /// Construct from begin and length.
     //***************************************************************************
     byte_stream_reader(char* begin_, size_t length_, etl::endian buffer_endianness_ = etl::endian::big)
-      : byte_stream_base(begin_, length_, buffer_endianness_)
       : byte_stream_common(begin_, length_, buffer_endianness_)
+    {
+    }
+
+    //***************************************************************************
+    /// Construct from array.
+    //***************************************************************************
+    template <typename T, size_t Size>
+    byte_stream_reader(T(&begin_)[Size], etl::endian buffer_endianness_ = etl::endian::big)
+      : byte_stream_common(begin_, begin_ + (Size * sizeof(T)), buffer_endianness_)
     {
     }
 
@@ -359,6 +416,26 @@ namespace etl
       }
 
       return result;
+    }
+
+    //***************************************************************************
+    /// Skip n items of T, up to the maximum space available.
+    //***************************************************************************
+    template <typename T>
+    bool skip(size_t n)
+    {
+      size_t maximum = available<T>();
+
+      if (n < maximum)
+      {
+        pcurrent += (n * sizeof(T));
+        return true;
+      }
+      else
+      {
+        pcurrent += (maximum * sizeof(T));
+        return false;
+      }
     }
 
     //***************************************************************************

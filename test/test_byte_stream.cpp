@@ -127,8 +127,20 @@ namespace
 
       etl::byte_stream_writer writer(storage, std::size(storage));
 
+      etl::span<char> storage_span(storage, storage + std::size(storage));
+      etl::span<char> writer_span = writer.data();
+      CHECK(writer_span.begin() == storage_span.begin());
+      CHECK(writer_span.end()   == storage_span.end());
+
       CHECK(writer.write(uint8_t(0x12U)));         // 1 written.
       CHECK(writer.write(uint16_t(0x1234U)));      // 2 more written.
+
+      etl::span<char> used_span = writer.used_data();
+      etl::span<char> free_span = writer.free_data();
+
+      CHECK_EQUAL(sizeof(uint8_t) + sizeof(uint16_t), (std::distance(used_span.begin(), used_span.end())));
+      CHECK_EQUAL(std::size(storage) - sizeof(uint8_t) - sizeof(uint16_t), (std::distance(free_span.begin(), free_span.end())));
+
       CHECK(writer.write(uint32_t(0x12345678U)));  // 4 more written.
       CHECK(!writer.write(uint32_t(0x12345678U))); // Can't write 4 more.
 
@@ -1025,6 +1037,39 @@ namespace
 
       CHECK(rd = reader.read<double>());
       CHECK_CLOSE(d, rd.value(), 0.1);
+    }
+
+    //*************************************************************************
+    TEST(write_read_int16_t_with_skip)
+    {
+      std::array<char, 4 * sizeof(int16_t)> storage;
+      std::array<int16_t, 4> put_data = { int16_t(0x0001), int16_t(0xA55A), int16_t(0x5AA5), int16_t(0xFFFF) };
+      std::array<etl::optional<int16_t>, 4> get_data = { int16_t(0x0000), int16_t(0x0000), int16_t(0x0000), int16_t(0x0000) };
+
+      etl::byte_stream_writer writer(storage.data(), storage.size());
+
+      // Insert into the stream
+      writer.write(put_data[0]);
+      writer.write(put_data[1]);
+      writer.write(put_data[2]);
+      writer.write(put_data[3]);
+
+      etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
+      CHECK(get_data[0] = reader.read<int16_t>());
+      CHECK_EQUAL(put_data[0], int(get_data[0].value()));
+
+      // Skip two int16_t
+      CHECK(reader.skip<int16_t>(2U));
+
+      CHECK(get_data[3] = reader.read<int16_t>());
+      CHECK_EQUAL(put_data[3], int(get_data[3].value()));
+
+      CHECK_EQUAL(int16_t(0x0000), int(get_data[1].value()));
+      CHECK_EQUAL(int16_t(0x0000), int(get_data[2].value()));
+
+      reader.restart();
+      // Skip five int16_t (too many)
+      CHECK(!reader.skip<int16_t>(5U));
     }
   };
 }
