@@ -1143,6 +1143,9 @@
     <ClInclude Include="..\..\include\etl\byte_stream.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\result.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -3004,6 +3007,9 @@
     </ClCompile>
     <ClCompile Include="..\sanity-check\byte_stream.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_result.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

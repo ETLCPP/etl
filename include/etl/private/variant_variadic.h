@@ -44,6 +44,8 @@ SOFTWARE.
 #include "../visitor.h"
 #include "../memory.h"
 
+#include <type_traits>
+
 #if defined(ETL_COMPILER_KEIL)
   #pragma diag_suppress 940
   #pragma diag_suppress 111
@@ -87,7 +89,7 @@ namespace etl
       {
       private:
 
-        using type = etl::remove_reference_t<T>;
+        using type = etl::remove_cvref_t<T>;
 
         //***********************************
         template <typename Type, typename T1, typename... TRest>
@@ -528,15 +530,15 @@ namespace etl
     //***************************************************************************
     /// Constructor from a value.
     //***************************************************************************
-    template <typename T, etl::enable_if_t<!etl::is_same<etl::remove_reference_t<T>, variant>::value, int> = 0>
+    template <typename T, etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value, int> = 0>
     ETL_CONSTEXPR14 variant(T&& value)
       : data()
-      , operation(operation_type<etl::remove_reference_t<T>, etl::is_copy_constructible<etl::remove_reference_t<T>>::value, etl::is_move_constructible<etl::remove_reference_t<T>>::value>::do_operation)
-      , type_id(etl::private_variant::parameter_pack<TTypes...>::template index_of_type<etl::remove_reference_t<T>>::value)
+      , operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T>>::value, etl::is_move_constructible<etl::remove_cvref_t<T>>::value>::do_operation)
+      , type_id(etl::private_variant::parameter_pack<TTypes...>::template index_of_type<etl::remove_cvref_t<T>>::value)
     {
-      static_assert(etl::is_one_of<etl::remove_reference_t<T>, TTypes...>::value, "Unsupported type");
+      static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, "Unsupported type");
 
-      construct_in_place<etl::remove_reference_t<T>>(data, etl::forward<T>(value));
+      construct_in_place<etl::remove_cvref_t<T>>(data, etl::forward<T>(value));
     }
 
     //***************************************************************************
@@ -545,12 +547,12 @@ namespace etl
     template <typename T, typename... TArgs>
     ETL_CONSTEXPR14 explicit variant(etl::in_place_type_t<T>, TArgs&&... args)
       : data()
-      , operation(operation_type<etl::remove_reference_t<T>, etl::is_copy_constructible<etl::remove_reference_t<T>>::value, etl::is_move_constructible<etl::remove_reference_t<T>>::value>::do_operation)
-      , type_id(etl::private_variant::parameter_pack<TTypes...>::template index_of_type<etl::remove_reference_t<T>>::value)
+      , operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T>>::value, etl::is_move_constructible<etl::remove_cvref_t<T>>::value>::do_operation)
+      , type_id(etl::private_variant::parameter_pack<TTypes...>::template index_of_type<etl::remove_cvref_t<T>>::value)
     {
-      static_assert(etl::is_one_of<etl::remove_reference_t<T>, TTypes...>::value, "Unsupported type");
+      static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, "Unsupported type");
 
-      construct_in_place_args<etl::remove_reference_t<T>>(data, etl::forward<TArgs>(args)...);
+      construct_in_place_args<etl::remove_cvref_t<T>>(data, etl::forward<TArgs>(args)...);
     }
 
     //***************************************************************************
@@ -576,12 +578,12 @@ namespace etl
     template <typename T, typename U, typename... TArgs >
     ETL_CONSTEXPR14 explicit variant(etl::in_place_type_t<T>, std::initializer_list<U> init, TArgs&&... args)
       : data()
-      , operation(operation_type<etl::remove_reference_t<T>, etl::is_copy_constructible<etl::remove_reference_t<T>>::value, etl::is_move_constructible<etl::remove_reference_t<T>>::value>::do_operation)
-      , type_id(private_variant::parameter_pack<TTypes...>:: template index_of_type<etl::remove_reference_t<T>>::value)
+      , operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T>>::value, etl::is_move_constructible<etl::remove_cvref_t<T>>::value>::do_operation)
+      , type_id(private_variant::parameter_pack<TTypes...>:: template index_of_type<etl::remove_cvref_t<T>>::value)
     {
-      static_assert(etl::is_one_of<etl::remove_reference_t<T>, TTypes...> ::value, "Unsupported type");
+      static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...> ::value, "Unsupported type");
 
-      construct_in_place_args<etl::remove_reference_t<T>>(data, init, etl::forward<TArgs>(args)...);
+      construct_in_place_args<etl::remove_cvref_t<T>>(data, init, etl::forward<TArgs>(args)...);
     }
 
     //***************************************************************************
@@ -671,7 +673,7 @@ namespace etl
     {
       static_assert(etl::is_one_of<T, TTypes...>::value, "Unsupported type");
 
-      using type = etl::remove_reference_t<T>;
+      using type = etl::remove_cvref_t<T>;
 
       operation(private_variant::Destroy, data, nullptr);
 
@@ -688,10 +690,10 @@ namespace etl
     /// Move assignment operator for type.
     ///\param value The value to assign.
     //***************************************************************************
-    template <typename T, etl::enable_if_t<!etl::is_same<etl::remove_reference_t<T>, variant>::value, int> = 0>
+    template <typename T, etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value, int> = 0>
     variant& operator =(T&& value)
     {
-      using type = etl::remove_reference_t<T>;
+      using type = etl::remove_cvref_t<T>;
 
       static_assert(etl::is_one_of<type, TTypes...>::value, "Unsupported type");
 
@@ -820,7 +822,7 @@ namespace etl
     template <typename T>
     static void construct_in_place(char* pstorage, const T& value)
     {
-      using type = etl::remove_reference_t<T>;
+      using type = etl::remove_cvref_t<T>;
 
       ::new (pstorage) type(value);
     }
@@ -831,7 +833,7 @@ namespace etl
     template <typename T>
     static void construct_in_place(char* pstorage, T&& value)
     {
-      using type = etl::remove_reference_t<T>;
+      using type = etl::remove_cvref_t<T>;
 
       ::new (pstorage) type(etl::move(value));
     }
@@ -842,7 +844,7 @@ namespace etl
     template <typename T, typename... TArgs>
     static void construct_in_place_args(char* pstorage, TArgs&&... args)
     {
-      using type = etl::remove_reference_t<T>;
+      using type = etl::remove_cvref_t<T>;
 
       ::new (pstorage) type(etl::forward<TArgs>(args)...);
     }
@@ -853,7 +855,7 @@ namespace etl
     template <typename T>
     static void default_construct_in_place(char* pstorage)
     {
-      using type = etl::remove_reference_t<T>;
+      using type = etl::remove_cvref_t<T>;
 
       ::new (pstorage) type();
     }

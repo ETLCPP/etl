@@ -245,6 +245,18 @@ namespace etl
 #endif
 
   //***************************************************************************
+  /// remove_cvref
+  template <typename T> struct remove_cvref
+  {
+    typedef typename remove_cv<typename remove_reference<T>::type>::type type;
+  };
+
+#if ETL_CPP11_SUPPORTED
+  template <typename T>
+  using remove_cvref_t = typename remove_cvref<T>::type;
+#endif
+
+  //***************************************************************************
   /// is_integral
   template <typename T> struct is_integral : false_type {};
   template <> struct is_integral<bool> : true_type {};
@@ -578,8 +590,8 @@ namespace etl
   {
     typedef typename etl::remove_reference<T>::type U;
     typedef typename etl::conditional<etl::is_array<U>::value,
-      typename etl::remove_extent<U>::type*,
-      typename etl::remove_cv<U>::type>::type type;
+                                      typename etl::remove_extent<U>::type*,
+                                      typename etl::remove_cv<U>::type>::type type;
   };
 
 #if ETL_CPP11_SUPPORTED
@@ -882,6 +894,19 @@ namespace etl
 #if ETL_CPP11_SUPPORTED
   template <typename T>
   using add_cv_t = typename std::add_cv<T>::type;
+#endif
+
+  //***************************************************************************
+  /// remove_cvref
+  ///\ingroup type_traits
+  template <typename T> struct remove_cvref
+  {
+    typedef typename std::remove_cv<typename std::remove_reference<T>::type>::type type;
+  };
+
+#if ETL_CPP11_SUPPORTED
+  template <typename T>
+  using remove_cvref_t = typename etl::remove_cvref<T>::type;
 #endif
 
   //***************************************************************************
