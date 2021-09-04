@@ -44,8 +44,6 @@ SOFTWARE.
 #include "../visitor.h"
 #include "../memory.h"
 
-#include <type_traits>
-
 #if defined(ETL_COMPILER_KEIL)
   #pragma diag_suppress 940
   #pragma diag_suppress 111

@@ -35,7 +35,6 @@ SOFTWARE.
 ///\ingroup utilities
 
 #include "platform.h"
-#include "optional.h"
 #include "variant.h"
 
 #if ETL_CPP11_NOT_SUPPORTED
