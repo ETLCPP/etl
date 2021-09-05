@@ -46,34 +46,16 @@ namespace
     {
     }
 
-    ValueM(const std::string& v_) : v(v_)
+    ValueM(const std::string& v_) 
+      : v(v_)
     {
     }
 
-    ValueM(ValueM&& other)
-      : v(etl::move(other.v))
-    {
-    }
+    ValueM(ValueM&&) = default;
+    ValueM& operator =(ValueM&&) = default;
 
-    ValueM& operator =(ValueM&& rhs)
-    {
-      v = etl::move(rhs.v);
-      return *this;
-    }
-
-    //ValueM(const ValueM&) = delete;
-    //ValueM& operator =(const ValueM&) = delete;
-
-    ValueM(const ValueM& other)
-      : v(other.v)
-    {
-    }
-
-    ValueM& operator =(const ValueM& rhs)
-    {
-      v = rhs.v;
-      return *this;
-    }
+    ValueM(const ValueM&) = delete;
+    ValueM& operator =(const ValueM&) = delete;
 
     std::string v;
   };
@@ -94,27 +76,11 @@ namespace
     {
     }
 
-    ErrorM(ErrorM&& other)
-      : e(etl::move(other.e))
-    {
-    }
+    ErrorM(ErrorM&& other) = default;
+    ErrorM& operator =(ErrorM&& rhs) = default;
 
-    ErrorM& operator =(ErrorM&& rhs)
-    {
-      e = etl::move(rhs.e);
-      return *this;
-    }
-
-    ErrorM(const ErrorM& other)
-      : e(other.e)
-    {
-    }
-
-    ErrorM& operator =(const ErrorM& rhs)
-    {
-      e = rhs.e;
-      return *this;
-    }
+    ErrorM(const ErrorM& other) = delete;
+    ErrorM& operator =(const ErrorM& rhs) = delete;
 
     std::string e;
   };
@@ -217,19 +183,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_constructor_for_moveable_const_result_with_value)
-    {
-      ValueM input = { "value 1" };
-      const ResultM result(etl::move(input));
-
-      ValueM output = etl::move(result.value());
-
-      CHECK(result.is_value());
-      CHECK(!result.is_error());
-      CHECK(output.v == std::string("value 1"));
-    }
-
-    //*************************************************************************
     TEST(test_constructor_for_result_with_error)
     {
       Error input = { "error 1" };
@@ -260,19 +213,6 @@ namespace
     {
       ErrorM input = { "error 1" };
       ResultM result(etl::move(input));
-
-      ErrorM output = etl::move(result.error());
-
-      CHECK(!result.is_value());
-      CHECK(result.is_error());
-      CHECK(output.e == std::string("error 1"));
-    }
-
-    //*************************************************************************
-    TEST(test_constructor_for_moveable_const_result_with_error)
-    {
-      ErrorM input = { "error 1" };
-      const ResultM result(etl::move(input));
 
       ErrorM output = etl::move(result.error());
 
