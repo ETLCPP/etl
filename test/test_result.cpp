@@ -29,101 +29,154 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/result.h"
+#include "etl/type_traits.h"
 
 #include <string>
 
 namespace
 {
+  struct Value
+  {
+    std::string v;
+  };
+
+  struct ValueM
+  {
+    ValueM()
+    {
+    }
+
+    ValueM(const std::string& v_) : v(v_)
+    {
+    }
+
+    ValueM(ValueM&& other)
+      : v(etl::move(other.v))
+    {
+    }
+
+    ValueM& operator =(ValueM&& rhs)
+    {
+      v = etl::move(rhs.v);
+      return *this;
+    }
+
+    //ValueM(const ValueM&) = delete;
+    //ValueM& operator =(const ValueM&) = delete;
+
+    ValueM(const ValueM& other)
+      : v(other.v)
+    {
+    }
+
+    ValueM& operator =(const ValueM& rhs)
+    {
+      v = rhs.v;
+      return *this;
+    }
+
+    std::string v;
+  };
+
+  struct Error
+  {
+    std::string e;
+  };
+
+  struct ErrorM
+  {
+    ErrorM()
+    {
+    }
+
+    ErrorM(const std::string& e_)
+      : e(e_)
+    {
+    }
+
+    ErrorM(ErrorM&& other)
+      : e(etl::move(other.e))
+    {
+    }
+
+    ErrorM& operator =(ErrorM&& rhs)
+    {
+      e = etl::move(rhs.e);
+      return *this;
+    }
+
+    ErrorM(const ErrorM& other)
+      : e(other.e)
+    {
+    }
+
+    ErrorM& operator =(const ErrorM& rhs)
+    {
+      e = rhs.e;
+      return *this;
+    }
+
+    std::string e;
+  };
+
+  using Result  = etl::result<Value, Error>;
+  using ResultV = etl::result<void, Error>;
+  using ResultM = etl::result<ValueM, ErrorM>;
+}
+
+// Definitions for when the STL and compiler built-ins are not avalable.
+#if ETL_NOT_USING_STL && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
+
+using etl::is_copy_constructible;
+using etl::is_move_constructible;
+
+//*************************
+template <>
+struct etl::is_copy_constructible<Value> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_move_constructible<Value> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_copy_constructible<Error> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_move_constructible<Error> : public etl::true_type
+{
+};
+
+//*************************
+template <>
+struct etl::is_copy_constructible<ValueM> : public etl::false_type
+{
+};
+
+template <>
+struct etl::is_move_constructible<ValueM> : public etl::false_type
+{
+};
+
+template <>
+struct etl::is_copy_constructible<ErrorM> : public etl::false_type
+{
+};
+
+template <>
+struct etl::is_move_constructible<ErrorM> : public etl::false_type
+{
+};
+#endif
+
+namespace
+{
   SUITE(test_result)
   {
-    struct Value
-    {
-      std::string v;
-    };
-
-    struct ValueM
-    {
-      ValueM() 
-      {
-      }
-
-      ValueM(const std::string& v_) : v(v_) 
-      {
-      }
-
-      ValueM(ValueM&& other)
-        : v(etl::move(other.v))
-      {
-      }
-
-      ValueM& operator =(ValueM&& rhs)
-      {
-        v = etl::move(rhs.v);
-        return *this;
-      }
-
-      //ValueM(const ValueM&) = delete;
-      //ValueM& operator =(const ValueM&) = delete;
-
-      ValueM(const ValueM& other)
-        : v(other.v)
-      {
-      }
-
-      ValueM& operator =(const ValueM& rhs)
-      {
-        v = rhs.v;
-        return *this;
-      }
-
-      std::string v;
-    };
-
-    struct Error
-    {
-      std::string e;
-    };
-
-    struct ErrorM
-    {
-      ErrorM() 
-      {
-      }
-
-      ErrorM(const std::string& e_) 
-        : e(e_) 
-      {
-      }
-
-      ErrorM(ErrorM&& other)
-        : e(etl::move(other.e))
-      {
-      }
-
-      ErrorM& operator =(ErrorM&& rhs)
-      {
-        e = etl::move(rhs.e);
-        return *this;
-      }
-
-      ErrorM(const ErrorM& other)
-        : e(other.e)
-      {
-      }
-      
-      ErrorM& operator =(const ErrorM& rhs)
-      {
-        e = rhs.e;
-        return *this;
-      }
-
-      std::string e;
-    };
-
-    using Result  = etl::result<Value, Error>;
-    using ResultV = etl::result<void, Error>;
-    using ResultM = etl::result<ValueM, ErrorM>;
-
     //*************************************************************************
     TEST(test_constructor_for_result_with_value)
     {
@@ -283,6 +336,15 @@ namespace
     //*************************************************************************
     TEST(test_copy_construct_result)
     {
+      bool b1 = etl::is_copy_constructible_v<Result>;
+      bool b2 = etl::is_copy_constructible_v<ResultV>;
+      bool b3 = etl::is_copy_constructible_v<ResultM>;
+
+      bool b4 = etl::is_move_constructible_v<Result>;
+      bool b5 = etl::is_move_constructible_v<ResultV>;
+      bool b6 = etl::is_move_constructible_v<ResultM>;
+
+
       Value input = { "value 1" };
       Result result(input);
 

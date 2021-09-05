@@ -1,5 +1,17 @@
 ===============================================================================
-20.16.2 Fixed incomplete template specialisations in type_traits.h for C++11
+20.17.0
+Added etl::result type
+Added etl::byte_stream
+Added denominated etl::to_string overloads
+Added etl::remove_cvref to type traits
+Replaced etl::remove_reference_t with etl::remove_cvref_t in variadic etl::variant
+Added call_if and call_or member functions to etl::delegate
+Improved compliance with MISRA rules
+Extended 'successor' handling for all derived message router types
+
+===============================================================================
+20.16.2 
+Fixed incomplete template specialisations in type_traits.h for C++11
 
 ===============================================================================
 20.16.1
