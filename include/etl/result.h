@@ -191,7 +191,7 @@ namespace etl
     //*******************************************
     TValue&& value()
     {
-      return etl::get<TValue>(etl::move(data));
+      return etl::move(etl::get<TValue>(etl::move(data)));
     }
 
     //*******************************************
@@ -209,7 +209,7 @@ namespace etl
     //*******************************************
     TError&& error()
     {
-      return etl::get<TError>(etl::move(data));
+      return etl::move(etl::get<TError>(etl::move(data)));
     }
 
   private:
