@@ -336,15 +336,6 @@ namespace
     //*************************************************************************
     TEST(test_copy_construct_result)
     {
-      bool b1 = etl::is_copy_constructible_v<Result>;
-      bool b2 = etl::is_copy_constructible_v<ResultV>;
-      bool b3 = etl::is_copy_constructible_v<ResultM>;
-
-      bool b4 = etl::is_move_constructible_v<Result>;
-      bool b5 = etl::is_move_constructible_v<ResultV>;
-      bool b6 = etl::is_move_constructible_v<ResultM>;
-
-
       Value input = { "value 1" };
       Result result(input);
 
