@@ -219,9 +219,16 @@ namespace etl
     //********************************************
     using etl::imessage_router::accepts;
 
-    bool accepts(etl::message_id_t) const ETL_OVERRIDE
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
-      return false;
+      if (has_successor())
+      {
+        return get_successor().accepts(id);
+      }
+      else
+      {
+        return false;
+      }
     }
 
     //********************************************
@@ -283,9 +290,16 @@ namespace etl
     //********************************************
     using etl::imessage_router::accepts;
 
-    bool accepts(etl::message_id_t) const ETL_OVERRIDE
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
-      return false;
+      if (has_successor())
+      {
+        return get_successor().accepts(id);
+      }
+      else
+      {
+        return false;
+      }
     }
 
     //********************************************
@@ -369,11 +383,18 @@ namespace etl
     {
       if constexpr (etl::is_one_of<TMessage, TMessageTypes...>::value)
       {
-        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        static_cast<TDerived*>(this)->on_receive(msg);
       }
       else
       {
-        static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
       }
     }
 
@@ -430,7 +451,14 @@ namespace etl
       }
       else
       {
-        return false;
+        if (has_successor())
+        {
+          return get_successor().accepts(id);
+        }
+        else
+        {
+          return false;
+        }
       }
     }
   };
@@ -518,11 +546,18 @@ namespace etl
               cog.out("                                                  ")
       cog.outl("T%s>::value)" % int(Handlers))
       cog.outl("    {")     
-      cog.outl("      static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));")
+      cog.outl("      static_cast<TDerived*>(this)->on_receive(msg);")
       cog.outl("    }")
       cog.outl("    else")
       cog.outl("    {")
-      cog.outl("      static_cast<TDerived*>(this)->on_receive_unknown(msg);")
+      cog.outl("      if (has_successor())")
+      cog.outl("      {")
+      cog.outl("        get_successor().receive(msg);")
+      cog.outl("      }")
+      cog.outl("      else")
+      cog.outl("      {")
+      cog.outl("        static_cast<TDerived*>(this)->on_receive_unknown(msg);")
+      cog.outl("      }")
       cog.outl("    }")
       cog.outl("  }")
       cog.outl("")
@@ -541,7 +576,17 @@ namespace etl
               cog.out("      ")
       cog.outl("  return true;")
       cog.outl("      default:")
-      cog.outl("        return false;")
+      cog.outl("      {")
+      cog.outl("        if (has_successor())")
+      cog.outl("        {")
+      cog.outl("          return get_successor().accepts(id);")
+      cog.outl("        }")
+      cog.outl("        else")
+      cog.outl("        {")
+      cog.outl("          return false;")
+      cog.outl("        }")
+      cog.outl("        break;")
+      cog.outl("      }")
       cog.outl("    }")
       cog.outl("  }")
       cog.outl("")
@@ -657,14 +702,20 @@ namespace etl
                   cog.out("                                                  ")
           cog.outl("T%s>::value)" % n)
           cog.outl("    {")
-          cog.outl("      static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));")
+          cog.outl("      static_cast<TDerived*>(this)->on_receive(msg);")
           cog.outl("    }")
           cog.outl("    else")
           cog.outl("    {")
-          cog.outl("      static_cast<TDerived*>(this)->on_receive_unknown(msg);")
+          cog.outl("      if (has_successor())")
+          cog.outl("      {")
+          cog.outl("        get_successor().receive(msg);")
+          cog.outl("      }")
+          cog.outl("      else")
+          cog.outl("      {")
+          cog.outl("        static_cast<TDerived*>(this)->on_receive_unknown(msg);")
+          cog.outl("      }")
           cog.outl("    }")
           cog.outl("  }")
-          cog.outl("")
           cog.outl("")
           cog.outl("  //**********************************************")
           cog.outl("  using imessage_router::accepts;")
@@ -682,7 +733,17 @@ namespace etl
           cog.outl("")
           cog.outl("        return true;")
           cog.outl("      default:")
-          cog.outl("        return false;")
+          cog.outl("      {")
+          cog.outl("        if (has_successor())")
+          cog.outl("        {")
+          cog.outl("          return get_successor().accepts(id);")
+          cog.outl("        }")
+          cog.outl("        else")
+          cog.outl("        {")
+          cog.outl("          return false;")
+          cog.outl("        }")
+          cog.outl("        break;")
+          cog.outl("      }")
           cog.outl("    }")
           cog.outl("  }")
           cog.outl("")

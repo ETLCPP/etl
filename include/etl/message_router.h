@@ -207,9 +207,16 @@ namespace etl
     //********************************************
     using etl::imessage_router::accepts;
 
-    bool accepts(etl::message_id_t) const ETL_OVERRIDE
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
-      return false;
+      if (has_successor())
+      {
+        return get_successor().accepts(id);
+      }
+      else
+      {
+        return false;
+      }
     }
 
     //********************************************
@@ -271,9 +278,16 @@ namespace etl
     //********************************************
     using etl::imessage_router::accepts;
 
-    bool accepts(etl::message_id_t) const ETL_OVERRIDE
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
-      return false;
+      if (has_successor())
+      {
+        return get_successor().accepts(id);
+      }
+      else
+      {
+        return false;
+      }
     }
 
     //********************************************
@@ -357,11 +371,18 @@ namespace etl
     {
       if constexpr (etl::is_one_of<TMessage, TMessageTypes...>::value)
       {
-        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        static_cast<TDerived*>(this)->on_receive(msg);
       }
       else
       {
-        static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
       }
     }
 
@@ -418,7 +439,14 @@ namespace etl
       }
       else
       {
-        return false;
+        if (has_successor())
+        {
+          return get_successor().accepts(id);
+        }
+        else
+        {
+          return false;
+        }
       }
     }
   };
@@ -502,11 +530,18 @@ namespace etl
                                                     T9, T10, T11, T12, 
                                                     T13, T14, T15, T16>::value)
       {
-        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        static_cast<TDerived*>(this)->on_receive(msg);
       }
       else
       {
-        static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
       }
     }
 
@@ -521,7 +556,17 @@ namespace etl
         case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID: case T16::ID: 
           return true;
         default:
-          return false;
+        {
+          if (has_successor())
+          {
+            return get_successor().accepts(id);
+          }
+          else
+          {
+            return false;
+          }
+          break;
+        }
       }
     }
 
@@ -620,11 +665,18 @@ namespace etl
                                                     T9, T10, T11, T12, 
                                                     T13, T14, T15>::value)
       {
-        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        static_cast<TDerived*>(this)->on_receive(msg);
       }
       else
       {
-        static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
       }
     }
 
@@ -640,7 +692,17 @@ namespace etl
         case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID: 
           return true;
         default:
-          return false;
+        {
+          if (has_successor())
+          {
+            return get_successor().accepts(id);
+          }
+          else
+          {
+            return false;
+          }
+          break;
+        }
       }
     }
 
@@ -738,11 +800,18 @@ namespace etl
                                                     T9, T10, T11, T12, 
                                                     T13, T14>::value)
       {
-        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        static_cast<TDerived*>(this)->on_receive(msg);
       }
       else
       {
-        static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
       }
     }
 
@@ -758,7 +827,17 @@ namespace etl
         case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: 
           return true;
         default:
-          return false;
+        {
+          if (has_successor())
+          {
+            return get_successor().accepts(id);
+          }
+          else
+          {
+            return false;
+          }
+          break;
+        }
       }
     }
 
@@ -855,11 +934,18 @@ namespace etl
                                                     T9, T10, T11, T12, 
                                                     T13>::value)
       {
-        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        static_cast<TDerived*>(this)->on_receive(msg);
       }
       else
       {
-        static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
       }
     }
 
@@ -875,7 +961,17 @@ namespace etl
         case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: 
           return true;
         default:
-          return false;
+        {
+          if (has_successor())
+          {
+            return get_successor().accepts(id);
+          }
+          else
+          {
+            return false;
+          }
+          break;
+        }
       }
     }
 
@@ -969,11 +1065,18 @@ namespace etl
                                                     T5, T6, T7, T8, 
                                                     T9, T10, T11, T12>::value)
       {
-        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        static_cast<TDerived*>(this)->on_receive(msg);
       }
       else
       {
-        static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
       }
     }
 
@@ -989,7 +1092,17 @@ namespace etl
         case T9::ID: case T10::ID: case T11::ID: case T12::ID: 
           return true;
         default:
-          return false;
+        {
+          if (has_successor())
+          {
+            return get_successor().accepts(id);
+          }
+          else
+          {
+            return false;
+          }
+          break;
+        }
       }
     }
 
@@ -1082,11 +1195,18 @@ namespace etl
                                                     T5, T6, T7, T8, 
                                                     T9, T10, T11>::value)
       {
-        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        static_cast<TDerived*>(this)->on_receive(msg);
       }
       else
       {
-        static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
       }
     }
 
@@ -1102,7 +1222,17 @@ namespace etl
         case T9::ID: case T10::ID: case T11::ID: 
           return true;
         default:
-          return false;
+        {
+          if (has_successor())
+          {
+            return get_successor().accepts(id);
+          }
+          else
+          {
+            return false;
+          }
+          break;
+        }
       }
     }
 
@@ -1194,11 +1324,18 @@ namespace etl
                                                     T5, T6, T7, T8, 
                                                     T9, T10>::value)
       {
-        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        static_cast<TDerived*>(this)->on_receive(msg);
       }
       else
       {
-        static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
       }
     }
 
@@ -1214,7 +1351,17 @@ namespace etl
         case T9::ID: case T10::ID: 
           return true;
         default:
-          return false;
+        {
+          if (has_successor())
+          {
+            return get_successor().accepts(id);
+          }
+          else
+          {
+            return false;
+          }
+          break;
+        }
       }
     }
 
@@ -1305,11 +1452,18 @@ namespace etl
                                                     T5, T6, T7, T8, 
                                                     T9>::value)
       {
-        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        static_cast<TDerived*>(this)->on_receive(msg);
       }
       else
       {
-        static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
       }
     }
 
@@ -1325,7 +1479,17 @@ namespace etl
         case T9::ID: 
           return true;
         default:
-          return false;
+        {
+          if (has_successor())
+          {
+            return get_successor().accepts(id);
+          }
+          else
+          {
+            return false;
+          }
+          break;
+        }
       }
     }
 
@@ -1413,11 +1577,18 @@ namespace etl
       if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3, T4, 
                                                     T5, T6, T7, T8>::value)
       {
-        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        static_cast<TDerived*>(this)->on_receive(msg);
       }
       else
       {
-        static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
       }
     }
 
@@ -1433,7 +1604,17 @@ namespace etl
         
           return true;
         default:
-          return false;
+        {
+          if (has_successor())
+          {
+            return get_successor().accepts(id);
+          }
+          else
+          {
+            return false;
+          }
+          break;
+        }
       }
     }
 
@@ -1520,11 +1701,18 @@ namespace etl
       if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3, T4, 
                                                     T5, T6, T7>::value)
       {
-        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        static_cast<TDerived*>(this)->on_receive(msg);
       }
       else
       {
-        static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
       }
     }
 
@@ -1539,7 +1727,17 @@ namespace etl
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: 
           return true;
         default:
-          return false;
+        {
+          if (has_successor())
+          {
+            return get_successor().accepts(id);
+          }
+          else
+          {
+            return false;
+          }
+          break;
+        }
       }
     }
 
@@ -1625,11 +1823,18 @@ namespace etl
       if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3, T4, 
                                                     T5, T6>::value)
       {
-        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        static_cast<TDerived*>(this)->on_receive(msg);
       }
       else
       {
-        static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
       }
     }
 
@@ -1644,7 +1849,17 @@ namespace etl
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: 
           return true;
         default:
-          return false;
+        {
+          if (has_successor())
+          {
+            return get_successor().accepts(id);
+          }
+          else
+          {
+            return false;
+          }
+          break;
+        }
       }
     }
 
@@ -1729,11 +1944,18 @@ namespace etl
       if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3, T4, 
                                                     T5>::value)
       {
-        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        static_cast<TDerived*>(this)->on_receive(msg);
       }
       else
       {
-        static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
       }
     }
 
@@ -1748,7 +1970,17 @@ namespace etl
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: 
           return true;
         default:
-          return false;
+        {
+          if (has_successor())
+          {
+            return get_successor().accepts(id);
+          }
+          else
+          {
+            return false;
+          }
+          break;
+        }
       }
     }
 
@@ -1830,11 +2062,18 @@ namespace etl
     {
       if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3, T4>::value)
       {
-        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        static_cast<TDerived*>(this)->on_receive(msg);
       }
       else
       {
-        static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
       }
     }
 
@@ -1849,7 +2088,17 @@ namespace etl
         case T1::ID: case T2::ID: case T3::ID: case T4::ID: 
           return true;
         default:
-          return false;
+        {
+          if (has_successor())
+          {
+            return get_successor().accepts(id);
+          }
+          else
+          {
+            return false;
+          }
+          break;
+        }
       }
     }
 
@@ -1930,11 +2179,18 @@ namespace etl
     {
       if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3>::value)
       {
-        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        static_cast<TDerived*>(this)->on_receive(msg);
       }
       else
       {
-        static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
       }
     }
 
@@ -1949,7 +2205,17 @@ namespace etl
         case T1::ID: case T2::ID: case T3::ID: 
           return true;
         default:
-          return false;
+        {
+          if (has_successor())
+          {
+            return get_successor().accepts(id);
+          }
+          else
+          {
+            return false;
+          }
+          break;
+        }
       }
     }
 
@@ -2029,11 +2295,18 @@ namespace etl
     {
       if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2>::value)
       {
-        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        static_cast<TDerived*>(this)->on_receive(msg);
       }
       else
       {
-        static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
       }
     }
 
@@ -2048,7 +2321,17 @@ namespace etl
         case T1::ID: case T2::ID: 
           return true;
         default:
-          return false;
+        {
+          if (has_successor())
+          {
+            return get_successor().accepts(id);
+          }
+          else
+          {
+            return false;
+          }
+          break;
+        }
       }
     }
 
@@ -2127,11 +2410,18 @@ namespace etl
     {
       if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1>::value)
       {
-        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        static_cast<TDerived*>(this)->on_receive(msg);
       }
       else
       {
-        static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
       }
     }
 
@@ -2146,7 +2436,17 @@ namespace etl
         case T1::ID: 
           return true;
         default:
-          return false;
+        {
+          if (has_successor())
+          {
+            return get_successor().accepts(id);
+          }
+          else
+          {
+            return false;
+          }
+          break;
+        }
       }
     }
 

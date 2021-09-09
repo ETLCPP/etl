@@ -473,6 +473,37 @@ namespace
     }
 
     //*************************************************************************
+    TEST(message_router_accepts_successors)
+    {
+      Router1 r1; // M1, M2, M3, M4, M5
+      Router2 r2; // M1, M2, M4, M5
+
+      r2.set_successor(r1);
+
+      etl::null_message_router null_router;
+
+      Message1 message1(null_router);
+      Message2 message2(null_router);
+      Message3 message3(null_router);
+      Message4 message4(null_router);
+
+      CHECK(r2.accepts(message1));
+      CHECK(r2.accepts(message1.get_message_id()));
+
+      CHECK(r2.accepts(message2));
+      CHECK(r2.accepts(message2.get_message_id()));
+
+      CHECK(r2.accepts(message3));
+      CHECK(r2.accepts(message3.get_message_id()));
+
+      CHECK(r2.accepts(message4));
+      CHECK(r2.accepts(message4.get_message_id()));
+
+      CHECK(r2.accepts(message5));
+      CHECK(r2.accepts(message5.get_message_id()));
+    }
+
+    //*************************************************************************
     TEST(message_router_queue)
     {
       Router1 r1;
@@ -584,7 +615,7 @@ namespace
       CHECK_EQUAL(0, r1.message4_count);
       CHECK_EQUAL(0, r1.message_unknown_count);
 
-      etl::send_message(r2, message3);
+      r2.receive(message3);
       CHECK_EQUAL(1, r2.message1_count);
       CHECK_EQUAL(1, r2.message2_count);
       CHECK_EQUAL(0, r2.message4_count);
