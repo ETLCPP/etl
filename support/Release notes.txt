@@ -1,5 +1,5 @@
 ===============================================================================
-20.18.0
+20.17.1
 Added successor handling for accepts()
 Added successor handling for pre-C++17 message router
 
