@@ -1,4 +1,9 @@
 ===============================================================================
+20.18.0
+Added successor handling for accepts()
+Added successor handling for pre-C++17 message router
+
+===============================================================================
 20.17.0
 Added etl::result type
 Added etl::byte_stream
