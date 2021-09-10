@@ -1146,6 +1146,9 @@
     <ClInclude Include="..\..\include\etl\result.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\multi_vector.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
@@ -3009,6 +3012,9 @@
       <Filter>Source Files\Sanity Checks</Filter>
     </ClCompile>
     <ClCompile Include="..\test_result.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_multi_vector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2019 jwellbelove
+Copyright(c) 2021 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,10 +28,10 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/array.h"
-#include "etl/multi_array.h"
+#include "etl/vector.h"
+#include "etl/multi_vector.h"
 
-#include <array>
+#include <vector>
 #include <algorithm>
 #include <iterator>
 
@@ -39,13 +39,13 @@ SOFTWARE.
 
 namespace
 {
-  SUITE(test_array)
+  SUITE(test_vector)
   {
     static const size_t SIZE1 = 4UL;
     static const size_t SIZE2 = 3UL;
 
-    using Data         = etl::multi_array<int, SIZE1, SIZE2>;
-    using Compare_Data = std::array<std::array<int, SIZE2>, SIZE1>;
+    using Data         = etl::multi_vector<int, SIZE1, SIZE2>;
+    using Compare_Data = std::vector<std::vector<int>>;
 
     Compare_Data compare_data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
 
@@ -87,8 +87,8 @@ namespace
         }
       }
 
-      CHECK_THROW(data.at(data.size()), etl::array_out_of_range);
-      CHECK_THROW(data[0].at(data[0].size()), etl::array_out_of_range);
+      CHECK_THROW(data.at(data.size()), etl::vector_out_of_bounds);
+      CHECK_THROW(data[0].at(data[0].size()), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -103,7 +103,7 @@ namespace
           CHECK_EQUAL(data[i].at(j), compare_data[i].at(j));
         }
 
-        CHECK_THROW(data.at(data.size()), etl::array_out_of_range);
+        CHECK_THROW(data.at(data.size()), etl::vector_out_of_bounds);
       }
     }
 
@@ -244,7 +244,7 @@ namespace
     {
       Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
 
-      typedef etl::multi_array<int, SIZE2> Inner;
+      typedef etl::multi_vector<int, SIZE2> Inner;
 
       CHECK(data.rbegin() == Data::reverse_iterator(&data[SIZE1]));
       CHECK(data[0].rbegin() == Inner::reverse_iterator(&data[0][SIZE2]));
@@ -258,7 +258,7 @@ namespace
     {
       Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
 
-      typedef etl::multi_array<int, SIZE2> Inner;
+      typedef etl::multi_vector<int, SIZE2> Inner;
 
       CHECK(data.rend() == Data::reverse_iterator(&data[0]));
       CHECK(data[0].rend() == Inner::reverse_iterator(&data[0][0]));
@@ -272,7 +272,7 @@ namespace
     {
       const Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
 
-      typedef etl::multi_array<int, SIZE2> Inner;
+      typedef etl::multi_vector<int, SIZE2> Inner;
 
       CHECK(data.rbegin() == Data::const_reverse_iterator(&data[SIZE1]));
       CHECK(data[0].rbegin() == Inner::const_reverse_iterator(&data[0][SIZE2]));
@@ -286,7 +286,7 @@ namespace
     {
       const Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
 
-      typedef etl::multi_array<int, SIZE2> Inner;
+      typedef etl::multi_vector<int, SIZE2> Inner;
 
       CHECK(data.rend() == Data::const_reverse_iterator(&data[0]));
       CHECK(data[0].rend() == Inner::const_reverse_iterator(&data[0][0]));
@@ -300,8 +300,8 @@ namespace
     {
       Data data;
 
-      CHECK(!data.empty());
-      CHECK(!data[0].empty());
+      CHECK(data.empty());
+      CHECK(data[0].empty());
     }
 
     //*************************************************************************
@@ -309,11 +309,8 @@ namespace
     {
       Data data;
 
-      CHECK_EQUAL(SIZE1, data.size());
-      CHECK_EQUAL(SIZE2, data[0].size());
-
-      CHECK_EQUAL(SIZE1, data.SIZE);
-      CHECK_EQUAL(SIZE2, data[0].SIZE);
+      CHECK_EQUAL(0, data.size());
+      CHECK_EQUAL(0, data[0].size());
     }
 
     //*************************************************************************
@@ -321,23 +318,10 @@ namespace
     {
       Data data;
 
+      data.resize(1);
+
       CHECK_EQUAL(SIZE1, data.max_size());
       CHECK_EQUAL(SIZE2, data[0].max_size());
-    }
-
-    //*************************************************************************
-    TEST(test_fill)
-    {
-      Data data;
-      typedef etl::multi_array<int, SIZE2> Inner;
-      const Inner fillData = { { 12, 13, 14 } };
-
-      data.fill(fillData);
-
-      CHECK(fillData == data[0]);
-      CHECK(fillData == data[1]);
-      CHECK(fillData == data[2]);
-      CHECK(fillData == data[3]);
     }
 
     //*************************************************************************
@@ -364,7 +348,7 @@ namespace
       Data check1  = { { { 0, 1, 2 }, { 3, 4, 5 }, { -1, -1, -1 }, { -1, -1, -1 } } };
       Data check2  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 99, 99, 99 }, { 99, 99, 99 } } };
 
-      typedef etl::multi_array<int, SIZE2> Inner;
+      typedef etl::multi_vector<int, SIZE2> Inner;
       const Inner ninetynine = { { 99, 99, 99 } };
 
       Data data;
@@ -379,45 +363,39 @@ namespace
       data.assign(&source[0], &source[2]);
       isEqual = std::equal(data.begin(), data.end(), std::begin(check1));
       CHECK(isEqual);
-
-      // Assign smaller + default.
-      data.assign(std::begin(initial), std::end(initial));
-      data.assign(&source[0], &source[2], ninetynine);
-      isEqual = std::equal(data.begin(), data.end(), std::begin(check2));
-      CHECK(isEqual);
     }
 
     //*************************************************************************
     TEST(test_insert_value)
     {
-      Data initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data check1  = { { { 12, 13, 14 }, { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } } };
-      Data check2  = { { { 0, 1, 2 }, { 12, 13, 14 }, { 3, 4, 5 }, { 6, 7, 8 } } };
-      Data check3  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 12, 13, 14 } } };
+      Data initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } } };
+      Data check1  = { { { 9, 10, 11 }, { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } } };
+      Data check2  = { { { 0, 1, 2 }, { 9, 10, 11 }, { 3, 4, 5 }, { 6, 7, 8 } } };
+      Data check3  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
 
-      typedef etl::multi_array<int, SIZE2> Inner;
-      const Inner inserted = { { 12, 13, 14 } };
+      typedef etl::multi_vector<int, SIZE2> Inner;
+      const Inner inserted = { { 9, 10, 11 } };
 
       Data data;
       Data::iterator result;
 
       // Insert beginning.
       data.assign(std::begin(initial), std::end(initial));
-      result = data.insert_at(0, inserted);
+      result = data.insert(data.begin(), inserted);
       CHECK(data[0] == *result);
       bool isEqual = std::equal(data.begin(), data.end(), check1.begin());
       CHECK(isEqual);
 
       // Insert middle.
       data.assign(std::begin(initial), std::end(initial));
-      result = data.insert_at(1, inserted);
+      result = data.insert(data.begin() + 1U, inserted);
       CHECK(data[1] == *result);
       isEqual = std::equal(data.begin(), data.end(), check2.begin());
       CHECK(isEqual);
 
       // Insert end.
       data.assign(std::begin(initial), std::end(initial));
-      result = data.insert_at(3, inserted);
+      result = data.insert(data.begin() + 3U, inserted);
       CHECK(data[3] == *result);
       isEqual = std::equal(data.begin(), data.end(), check3.begin());
       CHECK(isEqual);
