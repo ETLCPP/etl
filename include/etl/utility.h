@@ -426,13 +426,13 @@ namespace etl
 #endif
 
   //*************************
-  template <std::size_t I> struct in_place_index_t 
+  template <size_t I> struct in_place_index_t 
   {
     explicit ETL_CONSTEXPR in_place_index_t() {}
   };
 
 #if ETL_CPP17_SUPPORTED
-  template <std::size_t I>
+  template <size_t I>
   inline constexpr in_place_index_t<I> in_place_index;
 #endif
 }
