@@ -1,4 +1,8 @@
 ===============================================================================
+20.17.2
+Replaced std::size_t with size_t in etl::in_place_index
+
+===============================================================================
 20.17.1
 Added successor handling for accepts()
 Added successor handling for pre-C++17 message router
