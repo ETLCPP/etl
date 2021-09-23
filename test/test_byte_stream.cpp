@@ -881,7 +881,7 @@ namespace
 
       etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
 
-      etl::optional<etl::span<char>> output = reader.read<char>(4U);
+      etl::optional<etl::span<const char>> output = reader.read<char>(4U);
       CHECK_EQUAL(4U, output.value().size());
       CHECK_EQUAL(int(put_data[0]), int(output.value()[0]));
       CHECK_EQUAL(int(put_data[1]), int(output.value()[1]));
@@ -909,8 +909,8 @@ namespace
 
       etl::span<int32_t> output(get_data.begin(), get_data.end());
 
-      etl::optional<etl::span<int32_t>> result = reader.read<int32_t>(output);
-      CHECK_EQUAL(4U, result.value().size());
+      bool result = reader.read<int32_t>(output);
+      CHECK(result);
       CHECK_EQUAL(put_data[0], get_data[0]);
       CHECK_EQUAL(put_data[1], get_data[1]);
       CHECK_EQUAL(put_data[2], get_data[2]);
@@ -1070,6 +1070,17 @@ namespace
       reader.restart();
       // Skip five int16_t (too many)
       CHECK(!reader.skip<int16_t>(5U));
+    }
+
+    //*************************************************************************
+    TEST(read_span_int32_t)
+    {
+      std::array<const int32_t, 4> storage = { int32_t(0x00000001), int32_t(0xA55AA55A), int32_t(0x5AA55AA5), int32_t(0xFFFFFFFF) };
+      std::array<int32_t, 4>       get_data = { int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000) };
+
+      etl::byte_stream_reader reader(reinterpret_cast<const char*>(storage.data()), storage.size() * sizeof(int32_t));
+
+      bool result = reader.read(etl::span<int32_t>(get_data.begin(), get_data.end()));
     }
   };
 }
