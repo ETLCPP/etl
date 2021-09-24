@@ -909,8 +909,8 @@ namespace
 
       etl::span<int32_t> output(get_data.begin(), get_data.end());
 
-      bool result = reader.read<int32_t>(output);
-      CHECK(result);
+      etl::optional<etl::span<const int32_t> > result = reader.read<int32_t>(output);
+      CHECK(result.has_value());
       CHECK_EQUAL(put_data[0], get_data[0]);
       CHECK_EQUAL(put_data[1], get_data[1]);
       CHECK_EQUAL(put_data[2], get_data[2]);
@@ -1075,12 +1075,31 @@ namespace
     //*************************************************************************
     TEST(read_span_int32_t)
     {
-      std::array<const int32_t, 4> storage = { int32_t(0x00000001), int32_t(0xA55AA55A), int32_t(0x5AA55AA5), int32_t(0xFFFFFFFF) };
-      std::array<int32_t, 4>       get_data = { int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000) };
+      std::array<char, 4 * sizeof(int32_t)> storage;
+      std::array<int32_t, 4> put_data = { int32_t(0x00000001), int32_t(0xA55AA55A), int32_t(0x5AA55AA5), int32_t(0xFFFFFFFF) };
+      std::array<int32_t, 4> get_data = { int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000) };
 
-      etl::byte_stream_reader reader(reinterpret_cast<const char*>(storage.data()), storage.size() * sizeof(int32_t));
+      etl::span<int32_t> input(put_data.begin(), put_data.end());
 
-      bool result = reader.read(etl::span<int32_t>(get_data.begin(), get_data.end()));
+      etl::byte_stream_writer writer(storage.data(), storage.size());
+      writer.write(input);
+
+      const char* read_only_storage = reinterpret_cast<const char*>(storage.data());
+      etl::byte_stream_reader reader(read_only_storage, storage.size() * sizeof(int32_t));
+
+      etl::optional<etl::span<const int32_t> > result = reader.read(etl::span<int32_t>(get_data.begin(), get_data.end()));
+
+      CHECK(result.has_value());
+
+      CHECK_EQUAL(int32_t(0x00000001), result.value()[0]);
+      CHECK_EQUAL(int32_t(0xA55AA55A), result.value()[1]);
+      CHECK_EQUAL(int32_t(0x5AA55AA5), result.value()[2]);
+      CHECK_EQUAL(int32_t(0xFFFFFFFF), result.value()[3]);
+
+      CHECK_EQUAL(int32_t(0x00000001), get_data[0]);
+      CHECK_EQUAL(int32_t(0xA55AA55A), get_data[1]);
+      CHECK_EQUAL(int32_t(0x5AA55AA5), get_data[2]);
+      CHECK_EQUAL(int32_t(0xFFFFFFFF), get_data[3]);
     }
   };
 }
