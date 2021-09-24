@@ -417,11 +417,9 @@ namespace etl
     /// Read a range of T from the stream.
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, bool>::type
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, etl::optional<etl::span<const T> > >::type
       read(etl::span<T> range)
     {
-      bool result = false;
-
       // Do we have enough room?
       if (available<T>() >= range.size())
       {
@@ -432,14 +430,16 @@ namespace etl
           *destination++ = from_bytes<T>();
         }
 
-        result = true;
+        return etl::optional<etl::span<const T> >(etl::span<const T>(range.begin(), range.end()));
       }
 
-      return result;
+      return etl::optional<etl::span<const T> >();
     }
 
     //***************************************************************************
     /// Skip n items of T, up to the maximum space available.
+    /// Returns <b>true</b> if the skip was possible.
+    /// Returns <b>false</b> if the full skip size was not possible.
     //***************************************************************************
     template <typename T>
     bool skip(size_t n)
