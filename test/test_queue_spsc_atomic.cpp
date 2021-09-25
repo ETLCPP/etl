@@ -271,6 +271,52 @@ namespace
       CHECK(!queue.pop());
     }
 
+    TEST(test_size_push_peek_pop)
+    {
+      etl::queue_spsc_atomic<int, 4> queue;
+
+      CHECK_EQUAL(0U, queue.size());
+
+      queue.push(1);
+      queue.push(2);
+      queue.push(3);
+      queue.push(4);
+      CHECK_EQUAL(4U, queue.size());
+
+      int i;
+
+      CHECK(queue.peek(i));
+      CHECK_EQUAL(1, i);
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK(queue.peek(i));
+      CHECK_EQUAL(1, i);
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(3U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(2U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK(queue.peek(i));
+      CHECK_EQUAL(4, i);
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK(queue.peek(i));
+      CHECK_EQUAL(4, i);
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(0U, queue.size());
+
+      CHECK(!queue.peek(i));
+      CHECK(!queue.peek(i));
+    }
+
     //*************************************************************************
     TEST(test_multiple_emplace)
     {
