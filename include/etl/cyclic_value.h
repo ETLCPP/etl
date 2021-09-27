@@ -49,14 +49,20 @@ namespace etl
 {
   //***************************************************************************
   /// Provides a value that cycles between two limits.
+  //***************************************************************************
+  template <typename T, T FIRST = 0, T LAST = 0, bool EtlRuntimeSpecialisation = ((FIRST == 0) && (LAST == 0))>
+  class cyclic_value;
+
+  //***************************************************************************
+  /// Provides a value that cycles between two limits.
   /// Supports incrementing and decrementing.
   ///\tparam T     The type of the variable.
   ///\tparam FIRST The first value of the range.
   ///\tparam LAST  The last value of the range.
   ///\ingroup cyclic_value
   //***************************************************************************
-  template <typename T, T FIRST = 0, T LAST = 0, typename = void>
-  class cyclic_value
+  template <typename T, T FIRST, T LAST>
+  class cyclic_value<T, FIRST, LAST, false>
   {
   public:
 
@@ -299,8 +305,8 @@ namespace etl
   ///\tparam LAST  The last value of the range.
   ///\ingroup cyclic_value
   //***************************************************************************
-  template <typename T, const T FIRST, const T LAST>
-  class cyclic_value<T, FIRST, LAST, typename etl::enable_if<(FIRST == 0) && (LAST == 0)>::type>
+  template <typename T, T FIRST, T LAST>
+  class cyclic_value<T, FIRST, LAST, true>
   {
   public:
 
