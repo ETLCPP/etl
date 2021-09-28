@@ -1149,6 +1149,9 @@
     <ClInclude Include="..\..\include\etl\multi_vector.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\mutex\mutex_cmsis_os2.h">
+      <Filter>ETL\Utilities\Mutex</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">

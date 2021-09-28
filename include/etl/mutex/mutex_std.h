@@ -65,6 +65,9 @@ namespace etl
 
   private:
 
+    mutex(const mutex&) ETL_DELETE;
+    mutex& operator=(const mutex&) ETL_DELETE;
+
     std::mutex access;
   };
 }

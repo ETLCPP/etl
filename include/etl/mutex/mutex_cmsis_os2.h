@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 jwellbelove
+Copyright(c) 2021 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -26,31 +26,52 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_MUTEX_INCLUDED
-#define ETL_MUTEX_INCLUDED
+#ifndef ETL_MUTEX_CMSIS_RTOS2_INCLUDED
+#define ETL_MUTEX_CMSIS_RTOS2_INCLUDED
 
-#include "platform.h"
+#include "../platform.h"
 
-#if ETL_CPP11_SUPPORTED && ETL_USING_STL
-  #include "mutex/mutex_std.h"
-  #define ETL_HAS_MUTEX 1
-#elif defined(ETL_TARGET_OS_CMSIS_OS2)
-  #include "mutex/mutex_cmsis_os2.h"
-  #define ETL_HAS_MUTEX 1
-#elif defined(ETL_TARGET_OS_FREERTOS)
-  #include "mutex/mutex_freertos.h"
-  #define ETL_HAS_MUTEX 1
-#elif defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_ARM7) || defined(ETL_COMPILER_ARM8)
-  #include "mutex/mutex_arm.h"
-  #define ETL_HAS_MUTEX 1
-#elif defined(ETL_COMPILER_GCC)
-  #include "mutex/mutex_gcc_sync.h"
-  #define ETL_HAS_MUTEX 1
-#elif defined(ETL_COMPILER_CLANG)
-  #include "mutex/mutex_clang_sync.h"
-  #define ETL_HAS_MUTEX 1
-#else
-  #define ETL_HAS_MUTEX 0
-#endif
+#include <cmsis_os2.h>
+
+namespace etl
+{
+  //***************************************************************************
+  ///\ingroup mutex
+  ///\brief This mutex class is implemented using CMSIS's RTOS2 mutexes
+  //***************************************************************************
+  class mutex
+  {
+  public:
+
+    mutex()
+      : id(0)
+    {
+      osMutexAttr_t attr = { "ETL", osMutexRecursive | osMutexPrioInherit | osMutexRobust, 0, 0 };
+      id = osMutexNew(&attr);
+    }
+
+    void lock()
+    {
+      osMutexAcquire(id, osWaitForever);
+    }
+
+    bool try_lock()
+    {
+      return osMutexAcquire(id, 0) == osOK;
+    }
+
+    void unlock()
+    {
+      osMutexRelease(id);
+    }
+
+  private:
+
+    mutex(const mutex&) ETL_DELETE;
+    mutex& operator=(const mutex&) ETL_DELETE;
+
+    osMutexId_t id;
+  };
+}
 
 #endif

@@ -1818,6 +1818,7 @@
     <ClInclude Include="..\..\include\etl\multi_range.h" />
     <ClInclude Include="..\..\include\etl\multi_vector.h" />
     <ClInclude Include="..\..\include\etl\mutex\mutex_clang_sync.h" />
+    <ClInclude Include="..\..\include\etl\mutex\mutex_cmsis_os2.h" />
     <ClInclude Include="..\..\include\etl\mutex\mutex_freertos.h" />
     <ClInclude Include="..\..\include\etl\negative.h" />
     <ClInclude Include="..\..\include\etl\overload.h" />
