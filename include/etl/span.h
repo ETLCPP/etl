@@ -41,10 +41,9 @@ SOFTWARE.
 #include "array.h"
 
 ///\defgroup span span
-/// A wrapper for arrays
 ///\ingroup containers
 
-#if ETL_USING_STL
+#if ETL_CPP11_SUPPORTED && ETL_USING_STL
   #include <array>
 #endif
 
@@ -93,7 +92,7 @@ namespace etl
     {
     }
 
-#if ETL_USING_STL
+#if ETL_CPP11_SUPPORTED && ETL_USING_STL
     //*************************************************************************
     /// Construct from std::array.
     //*************************************************************************
