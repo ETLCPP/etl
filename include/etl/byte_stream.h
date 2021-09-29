@@ -375,6 +375,18 @@ namespace etl
     }
 
     //***************************************************************************
+    /// Construct from const array.
+    //***************************************************************************
+    template <typename T, size_t Size>
+    byte_stream_reader(const T(&begin_)[Size], etl::endian buffer_endianness_ = etl::endian::big)
+      : pdata(begin_)
+      , pcurrent(begin_)
+      , length(begin_ + (Size * sizeof(T)))
+      , buffer_endianness(buffer_endianness_)
+    {
+    }
+
+    //***************************************************************************
     /// Read a value from the stream.
     //***************************************************************************
     template <typename T>
