@@ -222,20 +222,20 @@ namespace
   const Test const_test_static;
 }
 
-//*****************************************************************************
-// Initialises the test results.
-//*****************************************************************************
-struct SetupFixture
-{
-  SetupFixture()
-  {
-    function_called   = false;
-    parameter_correct = false;
-  }
-};
-
 namespace
 {
+  //*****************************************************************************
+  // Initialises the test results.
+  //*****************************************************************************
+  struct SetupFixture
+  {
+    SetupFixture()
+    {
+      function_called   = false;
+      parameter_correct = false;
+    }
+  };
+
   SUITE(test_delegate)
   {
     //*************************************************************************
