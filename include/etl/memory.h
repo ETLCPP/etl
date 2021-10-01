@@ -58,7 +58,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-  T* addressof(T& t)
+  ETL_CONSTEXPR T* addressof(T& t)
   {
 #if ETL_CPP11_SUPPORTED && ETL_USING_STL
     return std::addressof(t);

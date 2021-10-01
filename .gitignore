@@ -325,3 +325,12 @@ test/vs2019/Test2
 test/vs2019/Debug MSVC - Force C++03
 test/vs2019/Debug LLVM - No STL
 test/vs2019/Debug - No STL
+test/meson-info
+test/etl_unit_tests.p
+test/meson-logs
+test/meson-private
+test/.ninja_deps
+test/.ninja_log
+test/build.ninja
+test/compile_commands.json
+test/etl_unit_tests
