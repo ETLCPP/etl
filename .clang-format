@@ -1,0 +1,25 @@
+---
+Language: Cpp
+
+SortIncludes: false
+
+BasedOnStyle: Chromium
+
+BreakBeforeBraces: Stroustrup
+
+AllowShortBlocksOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: false
+
+ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
+ConstructorInitializerIndentWidth: '2'
+
+ColumnLimit: '150'
+ContinuationIndentWidth: '2'
+TabWidth: '2'
+IndentWidth: '2'
+AccessModifierOffset : '-2'
+IndentCaseLabels: false
+Cpp11BracedListStyle: 'true'
+...
