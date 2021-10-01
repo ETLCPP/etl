@@ -58,9 +58,6 @@
     <Filter Include="Resource Files\Generators">
       <UniqueIdentifier>{7371282e-fddc-4269-891b-e909f74ff8e9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Make">
-      <UniqueIdentifier>{3353062c-e8dc-4095-b7cf-d11fc952263e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\Images">
       <UniqueIdentifier>{4d08353c-b393-47c7-a9eb-c9f2f8c25887}</UniqueIdentifier>
     </Filter>
@@ -120,6 +117,15 @@
     </Filter>
     <Filter Include="Source Files\Sanity Checks\Logs">
       <UniqueIdentifier>{5b76fd56-eb83-489f-b9a6-798c07c5fa76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Meson">
+      <UniqueIdentifier>{690ab671-31ea-446a-bd63-a7a2bf05b409}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\CMake">
+      <UniqueIdentifier>{3353062c-e8dc-4095-b7cf-d11fc952263e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Conan">
+      <UniqueIdentifier>{49e974a8-2dcc-40e6-b4ca-bad29f0cde52}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -3074,7 +3080,7 @@
       <Filter>Resource Files\CI\CircleCI</Filter>
     </None>
     <None Include="..\cmake\unit-test_external_project.cmake">
-      <Filter>Resource Files\Make</Filter>
+      <Filter>Resource Files\CMake</Filter>
     </None>
     <None Include="..\..\appveyor.yml">
       <Filter>Resource Files\CI\Appveyor</Filter>
@@ -3087,12 +3093,6 @@
     </None>
     <None Include="..\..\.github\workflows\vs2019.yml">
       <Filter>Resource Files\CI\Github</Filter>
-    </None>
-    <None Include="..\..\meson.build">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\..\conanfile.py">
-      <Filter>Resource Files</Filter>
     </None>
     <None Include="..\..\arduino\create_arduino_library.py">
       <Filter>ETL\Arduino</Filter>
@@ -3109,19 +3109,22 @@
     <None Include="..\..\arduino\examples\Vector_Examples\Example_Vector_1_simple_use\Example_Vector_1_simple_use.ino">
       <Filter>ETL\Arduino\Examples\Vector_Examples\Example_Vector_1_simple_use</Filter>
     </None>
+    <None Include="..\..\meson.build">
+      <Filter>Resource Files\Meson</Filter>
+    </None>
+    <None Include="..\..\conanfile.py">
+      <Filter>Resource Files\Conan</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\support\Release notes.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="..\CMakeLists.txt">
-      <Filter>Source Files</Filter>
-    </Text>
     <Text Include="..\..\todo.txt">
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="..\..\CMakeLists.txt">
-      <Filter>Resource Files\Make</Filter>
+      <Filter>Resource Files\CMake</Filter>
     </Text>
     <Text Include="..\sanity-check\c++03\CMakeLists.txt">
       <Filter>Source Files\Sanity Checks\C++03</Filter>
@@ -3137,6 +3140,9 @@
     </Text>
     <Text Include="..\sanity-check\log.txt">
       <Filter>Source Files\Sanity Checks\Logs</Filter>
+    </Text>
+    <Text Include="..\CMakeLists.txt">
+      <Filter>Resource Files\CMake</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

@@ -57,6 +57,7 @@ namespace
   //***********************************
   struct NotInterface
   {
+    virtual ~NotInterface() {}
     virtual int VirtualFunction() const = 0;
   };
 
@@ -210,6 +211,18 @@ namespace
 
     }
 
+    Router2(etl::imessage_router& successor_)
+      : message_router(ROUTER2, successor_),
+        message1_count(0),
+        message2_count(0),
+        message4_count(0),
+        message_unknown_count(0),
+        callback_count(0),
+        sender_id(0)
+    {
+
+    }
+
     void on_receive(const Message1& msg)
     {
       ++message1_count;
@@ -232,7 +245,7 @@ namespace
       etl::send_message(msg.callback, message5);
     }
 
-    void on_receive(const Message5& msg)
+    void on_receive(const Message5&)
     {
       ++callback_count;
     }
@@ -580,7 +593,7 @@ namespace
     TEST(message_router_successor)
     {
       Router1 r1;
-      Router2 r2;
+      Router2 r2(r1);
 
       etl::null_message_router null_router;
 
@@ -588,8 +601,6 @@ namespace
       Message2 message2(r2);
       Message3 message3(r2);
       Message4 message4(r2);
-
-      r2.set_successor(r1);
 
       etl::send_message(r2, message1);
       CHECK_EQUAL(1, r2.message1_count);

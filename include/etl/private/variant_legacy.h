@@ -212,6 +212,10 @@ namespace etl
 
       friend class variant;
 
+      virtual ~reader_type()
+      {
+      }
+
       virtual void read(typename etl::parameter_type<R1>::type value) = 0;
       virtual void read(typename etl::parameter_type<R2>::type value) = 0;
       virtual void read(typename etl::parameter_type<R3>::type value) = 0;
@@ -231,6 +235,10 @@ namespace etl
     public:
 
       friend class variant;
+
+      virtual ~reader_type()
+      {
+      }
 
       virtual void read(typename etl::parameter_type<R1>::type value) = 0;
       virtual void read(typename etl::parameter_type<R2>::type value) = 0;
@@ -255,6 +263,10 @@ namespace etl
 
       friend class variant;
 
+      virtual ~reader_type()
+      {
+      }
+
       virtual void read(typename etl::parameter_type<R1>::type value) = 0;
       virtual void read(typename etl::parameter_type<R2>::type value) = 0;
       virtual void read(typename etl::parameter_type<R3>::type value) = 0;
@@ -277,6 +289,10 @@ namespace etl
     public:
 
       friend class variant;
+
+      virtual ~reader_type()
+      {
+      }
 
       virtual void read(typename etl::parameter_type<R1>::type value) = 0;
       virtual void read(typename etl::parameter_type<R2>::type value) = 0;
@@ -301,6 +317,10 @@ namespace etl
 
       friend class variant;
 
+      virtual ~reader_type()
+      {
+      }
+
       virtual void read(typename etl::parameter_type<R1>::type value) = 0;
       virtual void read(typename etl::parameter_type<R2>::type value) = 0;
       virtual void read(typename etl::parameter_type<R3>::type value) = 0;
@@ -323,6 +343,10 @@ namespace etl
     public:
 
       friend class variant;
+
+      virtual ~reader_type()
+      {
+      }
 
       virtual void read(typename etl::parameter_type<R1>::type value) = 0;
       virtual void read(typename etl::parameter_type<R2>::type value) = 0;
@@ -347,6 +371,10 @@ namespace etl
 
       friend class variant;
 
+      virtual ~reader_type()
+      {
+      }
+
       virtual void read(typename etl::parameter_type<R1>::type value) = 0;
       virtual void read(typename etl::parameter_type<R2>::type value) = 0;
 
@@ -369,6 +397,10 @@ namespace etl
     public:
 
       friend class variant;
+
+      virtual ~reader_type()
+      {
+      }
 
       virtual void read(typename etl::parameter_type<R1>::type value) = 0;
 

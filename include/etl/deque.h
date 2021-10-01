@@ -2272,7 +2272,7 @@ namespace etl
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-#if defined(ETL_POLYMORPHIC_DEQUE) || defined(ETL_POLYMORPHIC_CONTAINERS)
+#if defined(ETL_POLYMORPHIC_DEQUE) || defined(ETL_POLYMORPHIC_CONTAINERS) || defined(ETL_IDEQUE_REPAIR_ENABLE)
   public:
     virtual ~ideque()
     {
@@ -2430,11 +2430,11 @@ namespace etl
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
-#ifdef ETL_ISTRING_REPAIR_ENABLE
+#ifdef ETL_IDEQUE_REPAIR_ENABLE
       virtual
 #endif
       void repair()
-#ifdef ETL_ISTRING_REPAIR_ENABLE
+#ifdef ETL_IDEQUE_REPAIR_ENABLE
       ETL_OVERRIDE
 #endif
     {

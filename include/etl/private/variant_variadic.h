@@ -170,7 +170,7 @@ namespace etl
     template <>
     struct operation_type<void, Non_Copyable, Non_Moveable>
     {
-      static void do_operation(int operation, char* pstorage, const char* pvalue)
+      static void do_operation(int , char* , const char* )
       {
         // This should never occur.
 #if defined(ETL_IN_UNIT_TEST)

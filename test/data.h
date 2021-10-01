@@ -123,6 +123,9 @@ public:
   {
   }
 
+  TestDataNDC(const TestDataNDC&) = default;
+  TestDataNDC& operator =(const TestDataNDC&) = default;
+
   bool operator < (const TestDataNDC& other) const
   {
     return value < other.value;

@@ -144,45 +144,45 @@ namespace
       std::string d;
     };
 
-    bool operator == (const D1& lhs, const D1& rhs)
-    {
-      return (lhs.a == rhs.a);
-    }
+    //bool operator == (const D1& lhs, const D1& rhs)
+    //{
+    //  return (lhs.a == rhs.a);
+    //}
 
-    bool operator == (const D2& lhs, const D2& rhs)
-    {
-      return (lhs.a == rhs.a) && (lhs.b == rhs.b);
-    }
+    //bool operator == (const D2& lhs, const D2& rhs)
+    //{
+    //  return (lhs.a == rhs.a) && (lhs.b == rhs.b);
+    //}
 
-    bool operator == (const D3& lhs, const D3& rhs)
-    {
-      return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c);
-    }
+    //bool operator == (const D3& lhs, const D3& rhs)
+    //{
+    //  return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c);
+    //}
 
-    bool operator == (const D4& lhs, const D4& rhs)
-    {
-      return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
-    }
+    //bool operator == (const D4& lhs, const D4& rhs)
+    //{
+    //  return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
+    //}
 
-    bool operator != (const D1& lhs, const D1& rhs)
-    {
-      return !(lhs == rhs);
-    }
+    //bool operator != (const D1& lhs, const D1& rhs)
+    //{
+    //  return !(lhs == rhs);
+    //}
 
-    bool operator != (const D2& lhs, const D2& rhs)
-    {
-      return !(lhs == rhs);
-    }
+    //bool operator != (const D2& lhs, const D2& rhs)
+    //{
+    //  return !(lhs == rhs);
+    //}
 
-    bool operator != (const D3& lhs, const D3& rhs)
-    {
-      return !(lhs == rhs);
-    }
+    //bool operator != (const D3& lhs, const D3& rhs)
+    //{
+    //  return !(lhs == rhs);
+    //}
 
-    bool operator != (const D4& lhs, const D4& rhs)
-    {
-      return !(lhs == rhs);
-    }
+    //bool operator != (const D4& lhs, const D4& rhs)
+    //{
+    //  return !(lhs == rhs);
+    //}
 
     bool operator < (const D1& lhs, const D1& rhs)
     {

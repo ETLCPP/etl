@@ -110,8 +110,8 @@ namespace etl
   public:
 
     virtual ~imessage_router() {}
-    virtual void receive(const etl::imessage& message) = 0;
-    virtual bool accepts(etl::message_id_t id) const = 0;
+    virtual void receive(const etl::imessage&) = 0;
+    virtual bool accepts(etl::message_id_t) const = 0;
     virtual bool is_null_router() const = 0;
     virtual bool is_producer() const = 0;
     virtual bool is_consumer() const = 0;
@@ -168,7 +168,8 @@ namespace etl
     }
 
     imessage_router(etl::message_router_id_t id_, imessage_router& successor_)
-      : message_router_id(id_)
+      : successor(successor_)
+      , message_router_id(id_)
     {
     }
 
@@ -680,7 +681,6 @@ namespace etl
       }
     }
 
-
     //**********************************************
     using imessage_router::accepts;
 
@@ -815,7 +815,6 @@ namespace etl
       }
     }
 
-
     //**********************************************
     using imessage_router::accepts;
 
@@ -949,7 +948,6 @@ namespace etl
       }
     }
 
-
     //**********************************************
     using imessage_router::accepts;
 
@@ -1080,7 +1078,6 @@ namespace etl
       }
     }
 
-
     //**********************************************
     using imessage_router::accepts;
 
@@ -1210,7 +1207,6 @@ namespace etl
       }
     }
 
-
     //**********************************************
     using imessage_router::accepts;
 
@@ -1339,7 +1335,6 @@ namespace etl
       }
     }
 
-
     //**********************************************
     using imessage_router::accepts;
 
@@ -1467,7 +1462,6 @@ namespace etl
       }
     }
 
-
     //**********************************************
     using imessage_router::accepts;
 
@@ -1592,7 +1586,6 @@ namespace etl
       }
     }
 
-
     //**********************************************
     using imessage_router::accepts;
 
@@ -1716,7 +1709,6 @@ namespace etl
       }
     }
 
-
     //**********************************************
     using imessage_router::accepts;
 
@@ -1838,7 +1830,6 @@ namespace etl
       }
     }
 
-
     //**********************************************
     using imessage_router::accepts;
 
@@ -1959,7 +1950,6 @@ namespace etl
       }
     }
 
-
     //**********************************************
     using imessage_router::accepts;
 
@@ -2077,7 +2067,6 @@ namespace etl
       }
     }
 
-
     //**********************************************
     using imessage_router::accepts;
 
@@ -2194,7 +2183,6 @@ namespace etl
       }
     }
 
-
     //**********************************************
     using imessage_router::accepts;
 
@@ -2310,7 +2298,6 @@ namespace etl
       }
     }
 
-
     //**********************************************
     using imessage_router::accepts;
 
@@ -2424,7 +2411,6 @@ namespace etl
         }
       }
     }
-
 
     //**********************************************
     using imessage_router::accepts;

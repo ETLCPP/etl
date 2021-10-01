@@ -324,16 +324,20 @@ namespace
     TEST(test_mem_cast_to_type_no_buffer)
     {
       MemCast memCast; 
+      char c = 0;
 
-      CHECK_THROW(char c = memCast.ref<char>(), etl::mem_cast_nullptr_exception);
+      CHECK_THROW(c = memCast.ref<char>(), etl::mem_cast_nullptr_exception);
+      CHECK(c == 0);
     }
 
     //*************************************************************************
     TEST(test_const_mem_cast_to_type_no_buffer)
     {
       const MemCast memCast; 
-
-      CHECK_THROW(char c = memCast.ref<char>(), etl::mem_cast_nullptr_exception);
+      char c = 0;
+      
+      CHECK_THROW(c = memCast.ref<char>(), etl::mem_cast_nullptr_exception);
+      CHECK(c == 0);
     }
   };
 }

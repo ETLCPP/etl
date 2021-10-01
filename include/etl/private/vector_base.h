@@ -155,9 +155,17 @@ namespace etl
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
+#if defined(ETL_POLYMORPHIC_VECTOR) || defined(ETL_POLYMORPHIC_CONTAINERS) || defined(ETL_IVECTOR_REPAIR_ENABLE)
+  public:
+    virtual ~vector_base()
+    {
+    }
+#else
+  protected:
     ~vector_base()
     {
     }
+#endif
 
     const size_type CAPACITY; ///<The maximum number of elements in the vector.
     ETL_DECLARE_DEBUG_COUNT   ///< Internal debugging.

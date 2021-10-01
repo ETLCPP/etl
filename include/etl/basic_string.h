@@ -2338,7 +2338,7 @@ namespace etl
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-#if defined(ETL_POLYMORPHIC_STRINGS) || defined(ETL_POLYMORPHIC_CONTAINERS)
+#if defined(ETL_POLYMORPHIC_STRINGS) || defined(ETL_POLYMORPHIC_CONTAINERS) || defined(ETL_ISTRING_REPAIR_ENABLE)
   public:
     virtual
 #else

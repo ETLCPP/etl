@@ -284,7 +284,7 @@ namespace
   public:
 
     //***********************************
-    etl::fsm_state_id_t on_event(const EStop& event)
+    etl::fsm_state_id_t on_event(const EStop&)
     {
       ++get_fsm_context().stopCount;
 

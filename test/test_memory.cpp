@@ -90,7 +90,7 @@ namespace
     {
     }
 
-    void operator()(T* p) const
+    void operator()(T*) const
     {
     }
   };

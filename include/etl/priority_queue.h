@@ -363,6 +363,34 @@ namespace etl
       container.clear();
     }
 
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    ipriority_queue& operator = (const ipriority_queue& rhs)
+    {
+      if (&rhs != this)
+      {
+        clone(rhs);
+      }
+
+      return *this;
+    }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    ipriority_queue& operator = (ipriority_queue&& rhs)
+    {
+      if (&rhs != this)
+      {
+        move(etl::move(rhs));
+      }
+
+      return *this;
+    }
+#endif
+
   protected:
 
     //*************************************************************************

@@ -1,6 +1,7 @@
 #!/bin/sh
 #sudo ntpdate ntp.ubuntu.com
-cd build || exit 1
+mkdir -p build-make || exit 1
+cd build-make || exit 1
 
 echo "ETL Tests" > log.txt
 

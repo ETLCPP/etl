@@ -179,17 +179,19 @@ unittestcpp_dep = dependency('UnitTest++',
 	disabler: true,
 )
 
+threads_dep = dependency('threads')
+
 etl_unit_tests = executable('etl_unit_tests',
-	include_directories: [
-		include_directories('test'),
+    include_directories: [
+	    include_directories('test'),
 		# Included here instead of with the dependency so we can see
 		# header-induced warnings when building the tests
 		include_directories('include')
 	],
 	sources: etl_test_sources,
-	dependencies: unittestcpp_dep,
+	dependencies: [unittestcpp_dep, threads_dep],
 	cpp_args: [
-		'-fexceptions',
+	    '-fexceptions',
 		'-DENABLE_ETL_UNIT_TESTS',
 		'-DETL_DEBUG',
 	],

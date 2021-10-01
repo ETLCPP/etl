@@ -89,7 +89,7 @@ public:
     visitor.visit(*this);
   }
 
-  void accept(LogVisitorType& visitor)
+  void accept(LogVisitorType&)
   {
   }
 };

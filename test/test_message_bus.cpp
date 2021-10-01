@@ -211,7 +211,7 @@ namespace
       ++message5_count;
     }
 
-    void on_receive_unknown(const etl::imessage& msg)
+    void on_receive_unknown(const etl::imessage&)
     {
       ++message_unknown_count;
       //etl::send_message(msg.callback, response);

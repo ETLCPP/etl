@@ -193,21 +193,21 @@ namespace
     return true;
   }
 
-  //*************************************************************************
-  std::ostream& operator <<(std::ostream& os, const DataNDC::iterator& itr)
-  {
-    os << itr->first;
+  ////*************************************************************************
+  //std::ostream& operator <<(std::ostream& os, const DataNDC::iterator& itr)
+  //{
+  //  os << itr->first;
 
-    return os;
-  }
+  //  return os;
+  //}
 
-  //*************************************************************************
-  std::ostream& operator <<(std::ostream& os, const DataNDC::const_iterator& itr)
-  {
-    os << itr->first;
+  ////*************************************************************************
+  //std::ostream& operator <<(std::ostream& os, const DataNDC::const_iterator& itr)
+  //{
+  //  os << itr->first;
 
-    return os;
-  }
+  //  return os;
+  //}
 
   SUITE(test_flat_map)
   {

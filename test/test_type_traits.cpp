@@ -60,32 +60,32 @@ namespace
   struct Copyable
   {
     Copyable() {}
-    Copyable(const Copyable& other) noexcept {}
-    Copyable& operator =(const Copyable& rhs) noexcept { return *this; }
+    Copyable(const Copyable&) noexcept {}
+    Copyable& operator =(const Copyable&) noexcept { return *this; }
 
-    Copyable(Copyable&& other) = delete;
-    Copyable& operator =(Copyable& rhs) = delete;
+    Copyable(Copyable&&) = delete;
+    Copyable& operator =(Copyable&) = delete;
   };
 
   //*********************************************
   struct Moveable
   {
     Moveable() {}
-    Moveable(Moveable&& other) noexcept { }
-    Moveable& operator =(Moveable&& rhs) noexcept { return *this; }
+    Moveable(Moveable&&) noexcept { }
+    Moveable& operator =(Moveable&&) noexcept { return *this; }
 
-    Moveable(const Moveable& other) = delete;
-    Moveable& operator =(const Moveable& rhs) = delete;
+    Moveable(const Moveable&) = delete;
+    Moveable& operator =(const Moveable&) = delete;
   };
 
   //*********************************************
   struct MoveableCopyable
   {
     MoveableCopyable() {}
-    MoveableCopyable(MoveableCopyable&& other) noexcept {}
-    MoveableCopyable& operator =(MoveableCopyable&& rhs) noexcept { return *this; }
-    MoveableCopyable(const MoveableCopyable& other) {}
-    MoveableCopyable& operator =(const MoveableCopyable& rhs) { return *this; }
+    MoveableCopyable(MoveableCopyable&&) noexcept {}
+    MoveableCopyable& operator =(MoveableCopyable&&) noexcept { return *this; }
+    MoveableCopyable(const MoveableCopyable&) {}
+    MoveableCopyable& operator =(const MoveableCopyable&) { return *this; }
   };
 }
 

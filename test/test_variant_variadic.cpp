@@ -175,14 +175,14 @@ namespace
     {
     }
 
-    Copyable(const Copyable& other) noexcept
+    Copyable(const Copyable&) noexcept
     {
       moved_from = false;
       moved_to = false;
       copied_to = true;
     }
 
-    Copyable& operator =(const Copyable& rhs) noexcept
+    Copyable& operator =(const Copyable&) noexcept
     {
       moved_from = false;
       moved_to = false;
@@ -268,14 +268,14 @@ namespace
       return *this;
     }
 
-    MoveableCopyable(const MoveableCopyable& other)
+    MoveableCopyable(const MoveableCopyable&)
     {
       moved_from = false;
       moved_to = false;
       copied_to = true;
     }
 
-    MoveableCopyable& operator =(const MoveableCopyable& rhs)
+    MoveableCopyable& operator =(const MoveableCopyable&)
     {
       moved_to = false;
       moved_from = false;
@@ -840,9 +840,9 @@ namespace
       int  result_i;
       std::string result_s;
 
-      auto visitor = etl::make_overload([&result_c](char c) { result_c = 1; },
-                                        [&result_i](int i) { result_i = 2; },
-                                        [&result_s](const std::string& s) { result_s = "3"; });
+      auto visitor = etl::make_overload([&result_c](char) { result_c = 1; },
+                                        [&result_i](int) { result_i = 2; },
+                                        [&result_s](const std::string&) { result_s = "3"; });
 
       test_variant_etl_3 variant_etl;
 

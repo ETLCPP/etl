@@ -128,15 +128,6 @@ namespace
   }
 
   //*****************************************************************************
-  // The alternative function returning void.
-  //*****************************************************************************
-  void alternative_returning_void(int i, int j)
-  {
-    function_called = true;
-    parameter_correct = (i == VALUE1) && (j == VALUE2);
-  }
-
-  //*****************************************************************************
   // The test class with member functions.
   //*****************************************************************************
   class Test
@@ -222,20 +213,20 @@ namespace
   const Test const_test_static;
 }
 
-//*****************************************************************************
-// Initialises the test results.
-//*****************************************************************************
-struct SetupFixture
-{
-  SetupFixture()
-  {
-    function_called   = false;
-    parameter_correct = false;
-  }
-};
-
 namespace
 {
+  //*****************************************************************************
+  // Initialises the test results.
+  //*****************************************************************************
+  struct SetupFixture
+  {
+    SetupFixture()
+    {
+      function_called   = false;
+      parameter_correct = false;
+    }
+  };
+
   SUITE(test_delegate)
   {
     //*************************************************************************

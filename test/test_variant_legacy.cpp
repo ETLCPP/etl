@@ -60,6 +60,7 @@ namespace
     {
     }
 
+    virtual ~not_base() {}
     virtual void set() = 0;
     int value;
   };
