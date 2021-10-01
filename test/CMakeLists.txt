@@ -185,6 +185,7 @@ set(TEST_SOURCE_FILES
 	test_parity_checksum.cpp
 	test_pearson.cpp
 	test_pool.cpp
+	test_pool_external_buffer.cpp
 	test_priority_queue.cpp
 	test_quantize.cpp
 	test_queue.cpp
@@ -257,6 +258,7 @@ set(TEST_SOURCE_FILES
 	test_variant_legacy.cpp
 	test_variant_variadic.cpp
 	test_variant_pool.cpp
+	test_variant_pool_external_buffer.cpp
 	test_vector.cpp
 	test_vector_external_buffer.cpp
 	test_vector_non_trivial.cpp
