@@ -366,6 +366,24 @@ namespace etl
 #endif
 
     //*************************************************************************
+    /// Peek the next value in the queue without removing it.
+    //*************************************************************************
+    bool peek(reference value)
+    {
+      size_type read_index = read.load(etl::memory_order_relaxed);
+
+      if (read_index == write.load(etl::memory_order_acquire))
+      {
+        // Queue is empty
+        return false;
+      }
+
+      value = p_buffer[read_index];
+
+      return true;
+    }
+
+    //*************************************************************************
     /// Pop a value from the queue.
     //*************************************************************************
     bool pop(reference value)
