@@ -432,6 +432,52 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Peek a value from the front of the queue.
+    /// Unlocked
+    //*************************************************************************
+    reference front_from_unlocked()
+    {
+      return front_implementation();
+    }
+
+    //*************************************************************************
+    /// Peek a value from the front of the queue.
+    /// Unlocked
+    //*************************************************************************
+    const_reference front_from_unlocked() const
+    {
+      return front_implementation();
+    }
+
+    //*************************************************************************
+    /// Peek a value from the front of the queue.
+    //*************************************************************************
+    reference front()
+    {
+      lock();
+
+      reference result = front_implementation();
+
+      unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Peek a value from the front of the queue.
+    //*************************************************************************
+    const_reference front() const
+    {
+      lock();
+
+      const_reference result = front_implementation();
+
+      unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
     /// Clear the queue from the ISR.
     //*************************************************************************
     void clear_from_unlocked()
@@ -704,6 +750,24 @@ namespace etl
       --this->current_size;
 
       return true;
+    }
+
+    //*************************************************************************
+    /// Peek a value from the front of the queue.
+    /// Unlocked
+    //*************************************************************************
+    reference front_implementation()
+    {
+      return p_buffer[this->read_index];
+    }
+
+    //*************************************************************************
+    /// Peek a value from the front of the queue.
+    /// Unlocked
+    //*************************************************************************
+    const_reference front_implementation() const
+    {
+      return p_buffer[this->read_index];
     }
 
     //*************************************************************************

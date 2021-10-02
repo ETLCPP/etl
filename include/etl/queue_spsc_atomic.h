@@ -368,7 +368,7 @@ namespace etl
     //*************************************************************************
     /// Peek the next value in the queue without removing it.
     //*************************************************************************
-    bool peek(reference value)
+    bool front(reference value)
     {
       size_type read_index = read.load(etl::memory_order_relaxed);
 
@@ -431,6 +431,26 @@ namespace etl
       read.store(next_index, etl::memory_order_release);
 
       return true;
+    }
+
+    //*************************************************************************
+    /// Peek a value from the front of the queue.
+    //*************************************************************************
+    reference front()
+    {
+      size_type read_index = read.load(etl::memory_order_relaxed);
+
+      return p_buffer[read_index];
+    }
+
+    //*************************************************************************
+    /// Peek a value from the front of the queue.
+    //*************************************************************************
+    const_reference front() const
+    {
+      size_type read_index = read.load(etl::memory_order_relaxed);
+
+      return p_buffer[read_index];
     }
 
     //*************************************************************************
