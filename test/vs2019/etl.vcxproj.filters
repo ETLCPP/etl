@@ -121,6 +121,9 @@
     <Filter Include="Source Files\Sanity Checks\Logs">
       <UniqueIdentifier>{5b76fd56-eb83-489f-b9a6-798c07c5fa76}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Git">
+      <UniqueIdentifier>{ffb65df4-d5c7-44ab-a9c7-1150ddce2d6f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -3105,6 +3108,18 @@
     </None>
     <None Include="..\..\arduino\examples\Vector_Examples\Example_Vector_1_simple_use\Example_Vector_1_simple_use.ino">
       <Filter>ETL\Arduino\Examples\Vector_Examples\Example_Vector_1_simple_use</Filter>
+    </None>
+    <None Include="..\..\.clang-format">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\.gitattributes">
+      <Filter>Resource Files\Git</Filter>
+    </None>
+    <None Include="..\..\.gitignore">
+      <Filter>Resource Files\Git</Filter>
+    </None>
+    <None Include="..\..\.gitmodules">
+      <Filter>Resource Files\Git</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
