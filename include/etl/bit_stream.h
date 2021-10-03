@@ -66,27 +66,18 @@ namespace etl
     //***************************************************************************
     /// Construct from range.
     //***************************************************************************
-    bit_stream(char* begin_, char* end_)
+    bit_stream(void* begin_, void* end_)
       : pdata(reinterpret_cast<unsigned char*>(begin_)),
-        length(etl::distance(begin_, end_))
+        length(etl::distance(reinterpret_cast<unsigned char*>(begin_), reinterpret_cast<unsigned char*>(end_)))
     {
       restart();
     }
 
-    //***************************************************************************
-    /// Construct from range.
-    //***************************************************************************
-    bit_stream(unsigned char* begin_, unsigned char* end_)
-      : pdata(begin_),
-        length(etl::distance(begin_, end_))
-    {
-      restart();
-    }
 
     //***************************************************************************
     /// Construct from begin and length.
     //***************************************************************************
-    bit_stream(char* begin_, size_t length_)
+    bit_stream(void* begin_, size_t length_)
       : pdata(reinterpret_cast<unsigned char*>(begin_)),
         length(length_)
     {
@@ -96,17 +87,7 @@ namespace etl
     //***************************************************************************
     /// Construct from begin and length.
     //***************************************************************************
-    bit_stream(unsigned char* begin_, size_t length_)
-      : pdata(begin_),
-        length(length_)
-    {
-      restart();
-    }
-
-    //***************************************************************************
-    /// Construct from begin and length.
-    //***************************************************************************
-    void set_stream(char* begin_, size_t length_)
+    void set_stream(void* begin_, size_t length_)
     {
       pdata  = reinterpret_cast<unsigned char*>(begin_);
       length = length_;
@@ -114,29 +95,11 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Construct from begin and length.
-    //***************************************************************************
-    void set_stream(unsigned char* begin_, size_t length_)
-    {
-      pdata  = begin_;
-      length = length_;
-      restart();
-    }
-
-    //***************************************************************************
     /// Construct from range.
     //***************************************************************************
-    void set_stream(char* begin_, char* end_)
+    void set_stream(void* begin_, void* end_)
     {
-      set_stream(begin_, etl::distance(begin_, end_));
-    }
-
-    //***************************************************************************
-    /// Construct from range.
-    //***************************************************************************
-    void set_stream(unsigned char* begin_, unsigned char* end_)
-    {
-      set_stream(begin_, etl::distance(begin_, end_));
+      set_stream(begin_, etl::distance(reinterpret_cast<char*>(begin_), reinterpret_cast<char*>(end_)));
     }
 
     //***************************************************************************

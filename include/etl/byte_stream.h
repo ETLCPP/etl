@@ -167,18 +167,26 @@ namespace etl
     }
 
     //***************************************************************************
+    /// Construct from span.
+    //***************************************************************************
+    byte_stream_writer(etl::span<unsigned char> span_, etl::endian buffer_endianness_ = etl::endian::big)
+      : byte_stream_common(reinterpret_cast<char*>(span_.begin()), span_.size_bytes(), buffer_endianness_)
+    {
+    }
+
+    //***************************************************************************
     /// Construct from range.
     //***************************************************************************
-    byte_stream_writer(char* begin_, char* end_, etl::endian buffer_endianness_ = etl::endian::big)
-      : byte_stream_common(begin_, etl::distance(begin_, end_), buffer_endianness_)
+    byte_stream_writer(void* begin_, void* end_, etl::endian buffer_endianness_ = etl::endian::big)
+      : byte_stream_common(reinterpret_cast<char*>(begin_), etl::distance(reinterpret_cast<char*>(begin_), reinterpret_cast<char*>(end_)), buffer_endianness_)
     {
     }
 
     //***************************************************************************
     /// Construct from begin and length.
     //***************************************************************************
-    byte_stream_writer(char* begin_, size_t length_, etl::endian buffer_endianness_ = etl::endian::big)
-      : byte_stream_common(begin_, length_, buffer_endianness_)
+    byte_stream_writer(void* begin_, size_t length_, etl::endian buffer_endianness_ = etl::endian::big)
+      : byte_stream_common(reinterpret_cast<char*>(begin_), length_, buffer_endianness_)
     {
     }
 
@@ -330,18 +338,26 @@ namespace etl
     }
 
     //***************************************************************************
+    /// Construct from span.
+    //***************************************************************************
+    byte_stream_reader(etl::span<unsigned char> span_, etl::endian buffer_endianness_ = etl::endian::big)
+        : byte_stream_common(reinterpret_cast<char*>(span_.begin()), span_.size_bytes(), buffer_endianness_)
+    {
+    }
+
+    //***************************************************************************
     /// Construct from range.
     //***************************************************************************
-    byte_stream_reader(char* begin_, char* end_, etl::endian buffer_endianness_ = etl::endian::big)
-      : byte_stream_common(begin_, etl::distance(begin_, end_), buffer_endianness_)
+    byte_stream_reader(void* begin_, void* end_, etl::endian buffer_endianness_ = etl::endian::big)
+      : byte_stream_common(reinterpret_cast<char*>(begin_), etl::distance(reinterpret_cast<char*>(begin_), reinterpret_cast<char*>(end_)), buffer_endianness_)
     {
     }
 
     //***************************************************************************
     /// Construct from begin and length.
     //***************************************************************************
-    byte_stream_reader(char* begin_, size_t length_, etl::endian buffer_endianness_ = etl::endian::big)
-      : byte_stream_common(begin_, length_, buffer_endianness_)
+    byte_stream_reader(void* begin_, size_t length_, etl::endian buffer_endianness_ = etl::endian::big)
+      : byte_stream_common(reinterpret_cast<char*>(begin_), length_, buffer_endianness_)
     {
     }
 
