@@ -190,15 +190,22 @@ namespace etl
     static ETL_CONSTANT uint32_t Element_Size = sizeof(Element);
 
     // Should not be copied.
-    generic_pool(const generic_pool&);
-    generic_pool& operator =(const generic_pool&);
+    generic_pool(const generic_pool&) ETL_DELETE;
+    generic_pool& operator =(const generic_pool&) ETL_DELETE;
   };
 
+  //*************************************************************************
+  /// A templated abstract pool implementation that uses a fixed size pool.
+  /// The storage for the pool is supplied externally.
+  ///\ingroup pool
+  //*************************************************************************
   template <const size_t VTypeSize, const size_t VAlignment>
-  class generic_pool_ext : public etl::ipool {
+  class generic_pool_ext : public etl::ipool 
+  {
   private:
     // The pool element.
-    union element_internal {
+    union element_internal 
+    {
       char* next;                                                 ///< Pointer to the next free element.
       char value[VTypeSize];                                      ///< Storage for value type.
       typename etl::type_with_alignment<VAlignment>::type dummy;  ///< Dummy item to get correct alignment.
@@ -210,12 +217,15 @@ namespace etl
     static ETL_CONSTANT size_t ALIGNMENT = VAlignment;
     static ETL_CONSTANT size_t TYPE_SIZE = VTypeSize;
 
-    using element = typename etl::aligned_storage<sizeof(element_internal), etl::alignment_of<element_internal>::value>::type;
+    typedef typename etl::aligned_storage<sizeof(element_internal), etl::alignment_of<element_internal>::value>::type element;
 
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    generic_pool_ext(element* buffer, size_t size) : etl::ipool(reinterpret_cast<char*>(&buffer[0]), ELEMENT_INTERNAL_SIZE, size) {}
+    generic_pool_ext(element* buffer, size_t size) 
+      : etl::ipool(reinterpret_cast<char*>(&buffer[0]), ELEMENT_INTERNAL_SIZE, size) 
+    {
+    }
 
     //*************************************************************************
     /// Allocate an object from the pool.
@@ -325,8 +335,8 @@ namespace etl
 
   private:
     // Should not be copied.
-    generic_pool_ext(const generic_pool_ext&);
-    generic_pool_ext& operator=(const generic_pool_ext&);
+    generic_pool_ext(const generic_pool_ext&) ETL_DELETE;
+    generic_pool_ext& operator=(const generic_pool_ext&) ETL_DELETE;
   };
 }
 

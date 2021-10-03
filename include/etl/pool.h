@@ -179,8 +179,14 @@ namespace etl
     pool& operator =(const pool&) ETL_DELETE;
   };
 
+  //*************************************************************************
+  /// A templated pool implementation that uses a fixed size pool.
+  /// The storage for the pool is supplied externally.
+  ///\ingroup pool
+  //*************************************************************************
   template <typename T>
-  class pool_ext : public etl::generic_pool_ext<sizeof(T), etl::alignment_of<T>::value> {
+  class pool_ext : public etl::generic_pool_ext<sizeof(T), etl::alignment_of<T>::value> 
+  {
   private:
     typedef etl::generic_pool_ext<sizeof(T), etl::alignment_of<T>::value> base_t;
 
@@ -191,7 +197,10 @@ namespace etl
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    pool_ext(typename base_t::element* buffer, size_t size) : base_t(buffer, size) {}
+    pool_ext(typename base_t::element* buffer, size_t size) 
+      : base_t(buffer, size) 
+    {
+    }
 
     //*************************************************************************
     /// Allocate an object from the pool.
@@ -200,7 +209,10 @@ namespace etl
     /// etl::pool_no_allocation if thrown, otherwise a null pointer is returned.
     /// Static asserts if the specified type is too large for the pool.
     //*************************************************************************
-    T* allocate() { return base_t::template allocate<T>(); }
+    T* allocate() 
+    { 
+      return base_t::template allocate<T>(); 
+    }
 
 #if ETL_CPP11_NOT_SUPPORTED || ETL_POOL_CPP03_CODE || ETL_USING_STLPORT
     //*************************************************************************
@@ -208,7 +220,10 @@ namespace etl
     /// If asserts or exceptions are enabled and there are no more free items an
     /// etl::pool_no_allocation if thrown, otherwise a null pointer is returned.
     //*************************************************************************
-    T* create() { return base_t::template create<T>(); }
+    T* create() 
+    { 
+      return base_t::template create<T>(); 
+    }
 
     //*************************************************************************
     /// Allocate storage for an object from the pool and create with 1 parameter.

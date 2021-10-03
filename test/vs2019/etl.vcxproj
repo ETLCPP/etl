@@ -8276,6 +8276,7 @@
     <ClCompile Include="..\test_parity_checksum.cpp" />
     <ClCompile Include="..\test_pearson.cpp" />
     <ClCompile Include="..\test_pool.cpp" />
+    <ClCompile Include="..\test_pool_external_buffer.cpp" />
     <ClCompile Include="..\test_quantize.cpp" />
     <ClCompile Include="..\test_queue_lockable.cpp" />
     <ClCompile Include="..\test_queue_lockable_small.cpp" />
