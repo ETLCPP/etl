@@ -48,106 +48,138 @@ namespace etl
   {
   public:
     
-    typedef T                                element_type;
-    typedef typename etl::remove_cv<T>::type value_type;
-    typedef size_t                           size_type;
-    typedef T&                               reference;
-    typedef const T&                         const_reference;
-    typedef T*                               pointer;
-    typedef const T*                         const_pointer;
+    typedef T                                 element_type;
+    typedef typename etl::remove_cv<T>::type  value_type;
+    typedef size_t                            size_type;
+    typedef T&                                reference;
+    typedef const T&                          const_reference;
+    typedef T*                                pointer;
+    typedef const T*                          const_pointer;
 
-    typedef etl::span<T>                     span_type;
-    typedef etl::span<const span_type>       span_list_type;
+    typedef etl::span<T>                      span_type;
+    typedef etl::span<const span_type>        span_list_type;
 
     //*************************************************************************
     /// Iterator
     //*************************************************************************
-    //class iterator : etl::iterator<etl::forward_iterator_tag, T>
-    //{
-    //public:
+    class iterator : public etl::iterator<ETL_OR_STD::forward_iterator_tag, element_type>
+    {
+    public:
 
-    //  friend class const_iterator;
+      friend class multi_span;
 
-    //  iterator()
-    //    : p_current()
-    //    , p_end()
-    //    , p_value(ETL_NULLPTR)
-    //  {
-    //  }
+      iterator()
+        : p_current(ETL_NULLPTR)
+        , p_end(ETL_NULLPTR)
+        , p_value(ETL_NULLPTR)
+      {
+      }
 
-    //  //*****************************************
-    //  iterator& operator ++()
-    //  {
-    //    if (p_current != p_end)
-    //    {
-    //      ++p_value;
+      //*****************************************
+      iterator& operator ++()
+      {
+        if (p_current != p_end)
+        {
+          ++p_value;
 
-    //      if (p_value == p_current->end())
-    //      {
-    //        while (pcurrent.empty() && (p_current != p_end))
-    //        {
-    //          ++p_current;
-    //        }
+          if (p_value == p_current->end())
+          {
+            do
+            {
+              ++p_current;
+            } while (p_current->empty() && (p_current != p_end));
 
-    //        if (p_current != p_end)
-    //        {
-    //          p_value = p_current->begin();
-    //        }
-    //        else
-    //        {
-    //          p_value = ETL_NULLPTR;
-    //        }
-    //      }
-    //    }
+            if (p_current != p_end)
+            {
+              p_value = p_current->begin();
+            }
+            else
+            {
+              p_value = ETL_NULLPTR;
+            }
+          }
+        }
 
-    //    return *this;
-    //  }
+        return *this;
+      }
 
-    //  //*****************************************
-    //  iterator operator ++(int)
-    //  {
-    //    iterator temp = *this;
+      //*****************************************
+      iterator operator ++(int)
+      {
+        iterator temp = *this;
 
-    //    operator ++();
+        operator ++();
 
-    //    return temp;
-    //  }
+        return temp;
+      }
 
-    //private:
+      //*************************************************************************
+      /// * operator
+      //*************************************************************************
+      reference operator *()
+      {
+        return *p_value;
+      }
 
-    //  //*****************************************
-    //  iterator(span_list_iterator p_current_, span_list_iterator p_end_)
-    //    : p_current(p_current_)
-    //    , p_end(p_end_)
-    //    , p_value(ETL_NULLPTR)
-    //  {
-    //    p_value = p_current->begin();
-    //  }
+      //*************************************************************************
+      /// * operator
+      //*************************************************************************
+      const_reference operator *() const
+      {
+        return *p_value;
+      }
 
-    //  typedef const span_type* span_list_pointer;
+      //*************************************************************************
+      /// -> operator
+      //*************************************************************************
+      pointer operator ->()
+      {
+        return *p_value;
+      }
 
-    //  span_list_pointer p_current;
-    //  span_list_pointer p_end;
-    //  pointer           p_value;
-    //};
+      //*************************************************************************
+      /// -> operator
+      //*************************************************************************
+      const_pointer operator ->() const
+      {
+        return *p_value;
+      }
 
-    ////*************************************************************************
-    ///// Const Iterator
-    ////*************************************************************************
-    //class const_iterator : etl::iterator<etl::forward_iterator_tag, const T>
-    //{
-    //public:
+      //*************************************************************************
+      /// == operator
+      //*************************************************************************
+      friend bool operator ==(const iterator& lhs, const iterator& rhs)
+      {
+        return (lhs.p_current == rhs.p_current);
+      }
 
-    //  friend class imulti_span;
+      //*************************************************************************
+      /// != operator
+      //*************************************************************************
+      friend bool operator !=(const iterator& lhs, const iterator& rhs)
+      {
+        return !(lhs == rhs);
+      }
 
+    private:
 
+      typedef typename span_list_type::iterator span_list_iterator;
 
-    //private:
+      //*****************************************
+      iterator(span_list_iterator p_current_, span_list_iterator p_end_)
+        : p_current(p_current_)
+        , p_end(p_end_)
+        , p_value(ETL_NULLPTR)
+      {
+        p_value = p_current->begin();
+      }
 
-    //};
+      typedef const span_type* span_list_pointer;
 
-    //typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
-    //typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
+      span_list_pointer p_current;
+      span_list_pointer p_end;
+      pointer           p_value;
+    };
 
     //*************************************************************************
     /// Constructor.
@@ -163,8 +195,7 @@ namespace etl
     //*************************************************************************
     template <typename TContainer>
     ETL_CONSTEXPR multi_span(TContainer& a) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
+      : span_list(a.data(), a.data() + a.size())
     {
     }
 
@@ -174,8 +205,7 @@ namespace etl
     //*************************************************************************
     template <typename TContainer>
     ETL_CONSTEXPR multi_span(const TContainer& a) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
+      : span_list(a.data(), a.data() + a.size())
     {
     }
 
@@ -213,60 +243,20 @@ namespace etl
       span_list = other.span_list;
     }
 
-    ////*************************************************************************
-    ///// 
-    ////*************************************************************************
-    //ETL_CONSTEXPR iterator begin() const
-    //{
-    //  return iterator();
-    //}
-
-    ////*************************************************************************
-    ///// 
-    ////*************************************************************************
-    //ETL_CONSTEXPR iterator end() const
-    //{
-    //  return iterator();
-    //}
-
     //*************************************************************************
-    /// copy
+    /// 
     //*************************************************************************
-    template <typename TIterator>
-    void copy(TIterator destination)
+    ETL_CONSTEXPR iterator begin() const
     {
-      for (span_list_type::iterator sp = span_list.begin(); sp != span_list.end(); ++sp)
-      {
-        etl::copy(sp->begin(), sp->end(), destination);
-        etl::advance(destination, sp->size());
-      }
+      return iterator(span_list.begin(), span_list.end());
     }
 
     //*************************************************************************
-    /// for_each
+    /// 
     //*************************************************************************
-    template <typename TFunctor>
-    void for_each(TFunctor functor)
+    ETL_CONSTEXPR iterator end() const
     {
-      for (span_list_type::iterator sp = span_list.begin(); sp != span_list.end(); ++sp)
-      {
-        etl::for_each(sp->begin(), sp->end(), functor);
-      }
-    }
-
-    //*************************************************************************
-    /// transform
-    //*************************************************************************
-    template <typename TIterator, typename TFunction>
-    void transform(TIterator destination, TFunction function)
-    {
-      for (span_list_type::iterator sp = span_list.begin(); 
-           sp != span_list.end(); 
-           ++sp)
-      {
-        etl::transform(sp->begin(), sp->end(), destination, function);
-        etl::advance(destination, sp->size());
-      }
+      return iterator(span_list.end(), span_list.end());
     }
 
     //*************************************************************************
