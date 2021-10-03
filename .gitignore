@@ -334,3 +334,4 @@ test/.ninja_log
 test/build.ninja
 test/compile_commands.json
 test/etl_unit_tests
+test/build-make
