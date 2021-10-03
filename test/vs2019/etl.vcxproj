@@ -1816,6 +1816,7 @@
     <ClInclude Include="..\..\include\etl\message_pool.h" />
     <ClInclude Include="..\..\include\etl\multi_array.h" />
     <ClInclude Include="..\..\include\etl\multi_range.h" />
+    <ClInclude Include="..\..\include\etl\multi_span.h" />
     <ClInclude Include="..\..\include\etl\multi_vector.h" />
     <ClInclude Include="..\..\include\etl\mutex\mutex_clang_sync.h" />
     <ClInclude Include="..\..\include\etl\mutex\mutex_cmsis_os2.h" />
@@ -8220,6 +8221,7 @@
     <ClCompile Include="..\test_multimap.cpp" />
     <ClCompile Include="..\test_multiset.cpp" />
     <ClCompile Include="..\test_multi_range.cpp" />
+    <ClCompile Include="..\test_multi_span.cpp" />
     <ClCompile Include="..\test_multi_vector.cpp" />
     <ClCompile Include="..\test_murmur3.cpp" />
     <ClCompile Include="..\test_numeric.cpp" />

@@ -84,7 +84,7 @@ namespace etl
     //********************************************
     /// Iterator
     //********************************************
-    class iterator : etl::iterator<ETL_OR_STD::forward_iterator_tag, etl::imessage_router*>
+    class iterator : public etl::iterator<ETL_OR_STD::forward_iterator_tag, etl::imessage_router*>
     {
     public:
 
