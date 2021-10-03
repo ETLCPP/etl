@@ -71,10 +71,10 @@ namespace etl
     //***************************************************************************
     /// Construct from range.
     //***************************************************************************
-    byte_stream_writer(char* begin_, char* end_, etl::endian buffer_endianness_ = etl::endian::big)
-      : pdata(begin_)
-      , pcurrent(begin_)
-      , length(etl::distance(begin_, end_))
+    byte_stream_writer(void* begin_, void* end_, etl::endian buffer_endianness_ = etl::endian::big)
+      : pdata(reinterpret_cast<char*>(begin_))
+      , pcurrent(reinterpret_cast<char*>(begin_))
+      , length(etl::distance(reinterpret_cast<char*>(begin_), reinterpret_cast<char*>(end_)))
       , buffer_endianness(buffer_endianness_)
     {
     }
@@ -82,9 +82,9 @@ namespace etl
     //***************************************************************************
     /// Construct from begin and length.
     //***************************************************************************
-    byte_stream_writer(char* begin_, size_t length_, etl::endian buffer_endianness_ = etl::endian::big)
-      : pdata(begin_)
-      , pcurrent(begin_)
+    byte_stream_writer(void* begin_, size_t length_, etl::endian buffer_endianness_ = etl::endian::big)
+      : pdata(reinterpret_cast<char*>(begin_))
+      , pcurrent(reinterpret_cast<char*>(begin_))
       , length(length_)
       , buffer_endianness(buffer_endianness_)
     {
@@ -343,10 +343,10 @@ namespace etl
     //***************************************************************************
     /// Construct from range.
     //***************************************************************************
-    byte_stream_reader(const char* begin_, const char* end_, etl::endian buffer_endianness_ = etl::endian::big)
-      : pdata(begin_)
-      , pcurrent(begin_)
-      , length(etl::distance(begin_, end_))
+    byte_stream_reader(const void* begin_, const void* end_, etl::endian buffer_endianness_ = etl::endian::big)
+      : pdata(reinterpret_cast<const char*>(begin_))
+      , pcurrent(reinterpret_cast<const char*>(begin_))
+      , length(etl::distance(reinterpret_cast<const char*>(begin_), reinterpret_cast<const char*>(end_)))
       , buffer_endianness(buffer_endianness_)
     {
     }
@@ -354,9 +354,9 @@ namespace etl
     //***************************************************************************
     /// Construct from begin and length.
     //***************************************************************************
-    byte_stream_reader(const char* begin_, size_t length_, etl::endian buffer_endianness_ = etl::endian::big)
-      : pdata(begin_)
-      , pcurrent(begin_)
+    byte_stream_reader(const void* begin_, size_t length_, etl::endian buffer_endianness_ = etl::endian::big)
+      : pdata(reinterpret_cast<const char*>(begin_))
+      , pcurrent(reinterpret_cast<const char*>(begin_))
       , length(length_)
       , buffer_endianness(buffer_endianness_)
     {

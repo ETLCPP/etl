@@ -45,18 +45,18 @@ namespace
     uint8_t c;
   };
 
-  bool operator ==(const Object& lhs, const Object& rhs)
-  {
-    return (lhs.i == rhs.i) &&
-           (lhs.d == rhs.d) &&
-           (lhs.c == rhs.c);
-  }
+  //bool operator ==(const Object& lhs, const Object& rhs)
+  //{
+  //  return (lhs.i == rhs.i) &&
+  //         (lhs.d == rhs.d) &&
+  //         (lhs.c == rhs.c);
+  //}
 
-  std::ostream& operator << (std::ostream& os, const Object& object)
-  {
-    os << object.i << "," << object.d << "," << (int)object.c;
-    return os;
-  }
+  //std::ostream& operator << (std::ostream& os, const Object& object)
+  //{
+  //  os << object.i << "," << object.d << "," << (int)object.c;
+  //  return os;
+  //}
 }
 
 namespace etl
@@ -758,7 +758,6 @@ namespace
     {
       std::array<char, 4 * sizeof(int64_t)> storage;
       std::array<int64_t, 4> put_data    = { int64_t(0x0000000000000001), int64_t(0xA55AA55AA55AA55A), int64_t(0x5AA55AA55AA55AA5), int64_t(0xFFFFFFFFFFFFFFFF) };
-      std::array<int64_t, 4> expect_data = { int64_t(0x0000000000000001), int64_t(0xA55AA55AA55AA55A), int64_t(0x5AA55AA55AA55AA5), int64_t(0xFFFFFFFFFFFFFFFF) };
       std::array<etl::optional<int64_t>, 4> get_data = { int64_t(0x0000000000000000), int64_t(0x0000000000000000), int64_t(0x0000000000000000), int64_t(0x0000000000000000) };
 
       etl::byte_stream_writer writer(storage.data(), storage.size());
@@ -815,7 +814,6 @@ namespace
     {
       std::array<char, 4 * sizeof(uint64_t)> storage;
       std::array<uint64_t, 4> put_data = { uint64_t(0x0000000000000001U), uint64_t(0xA55AA55AA55AA55AU), uint64_t(0x5AA55AA55AA55AA5U), uint64_t(0xFFFFFFFFFFFFFFFFU) };
-      std::array<uint64_t, 4> expect_data = { uint64_t(0x0000000000000001U), uint64_t(0xA55AA55AA55AA55AU), uint64_t(0x5AA55AA55AA55AA5U), uint64_t(0xFFFFFFFFFFFFFFFFU) };
       std::array<etl::optional<uint64_t>, 4> get_data = { uint64_t(0x0000000000000000U), uint64_t(0x0000000000000000U), uint64_t(0x0000000000000000U), uint64_t(0x0000000000000000U) };
 
       etl::byte_stream_writer writer(storage.data(), storage.size());
