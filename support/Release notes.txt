@@ -1,4 +1,16 @@
 ===============================================================================
+20.18.0
+Added front() access to locked queues.
+Added .clang-format rules.
+Added etl::pool_ext and etl::generic_pool_ext.
+Added etl::multi_span.
+Added CMSIS RTOS2 mutex variant.
+Added 'unchecked' read and write membvers functions to byte_stream_reader and byte_stream_writer.
+Fixed byte_stream_reader to be able to use const buffers.
+Removed compiler warning messages.
+Fixed missing 'public' access for message_router_registry iterator.
+
+===============================================================================
 20.17.3
 Modified etl::cyclic_value for ARMCC v5 compatibility
 

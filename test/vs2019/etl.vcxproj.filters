@@ -121,9 +121,6 @@
     <Filter Include="Resource Files\Git">
       <UniqueIdentifier>{ffb65df4-d5c7-44ab-a9c7-1150ddce2d6f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Meson">
-      <UniqueIdentifier>{690ab671-31ea-446a-bd63-a7a2bf05b409}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\CMake">
       <UniqueIdentifier>{3353062c-e8dc-4095-b7cf-d11fc952263e}</UniqueIdentifier>
     </Filter>
@@ -3034,7 +3031,7 @@
     </ClCompile>
     <ClCompile Include="..\test_pool_external_buffer.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>    
+    </ClCompile>
     <ClCompile Include="..\test_multi_span.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -3133,11 +3130,11 @@
     <None Include="..\..\.gitmodules">
       <Filter>Resource Files\Git</Filter>
     </None>
-    <None Include="..\..\meson.build">
-      <Filter>Resource Files\Meson</Filter>
-    </None>
     <None Include="..\..\conanfile.py">
       <Filter>Resource Files\Conan</Filter>
+    </None>
+    <None Include="..\..\meson.build">
+      <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
