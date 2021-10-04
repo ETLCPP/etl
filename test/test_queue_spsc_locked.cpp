@@ -459,6 +459,46 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_size_push_front_pop)
+    {
+      access.clear();
+
+      etl::queue_spsc_locked<int, 4> queue(lock, unlock);
+
+      CHECK_EQUAL(0U, queue.size());
+
+      queue.push(1);
+      queue.push(2);
+      queue.push(3);
+      queue.push(4);
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(3U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(2U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK_EQUAL(4, queue.front());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK_EQUAL(4, queue.front());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(0U, queue.size());
+    }
+
+    //*************************************************************************
     TEST(test_multiple_emplace)
     {
       etl::queue_spsc_locked<Data, 4> queue(lock, unlock);

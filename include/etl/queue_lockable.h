@@ -476,6 +476,50 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Peek a value at the front of the queue without locking.
+    //*************************************************************************
+    reference front_unlocked()
+    {
+      return front_implementation();
+    }
+
+    //*************************************************************************
+    /// Peek a value at the front of the queue without locking.
+    //*************************************************************************
+    const_reference front_unlocked() const
+    {
+      return front_implementation();
+    }
+
+    //*************************************************************************
+    /// Peek a value at the front of the queue.
+    //*************************************************************************
+    reference front()
+    {
+      this->lock();
+
+      reference result = front_implementation();
+
+      this->unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Peek a value at the front of the queue.
+    //*************************************************************************
+    const_reference front() const
+    {
+      this->lock();
+
+      const_reference result = front_implementation();
+
+      this->unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
     /// Clear the queue, unlocked.
     //*************************************************************************
     void clear_unlocked()
@@ -707,6 +751,22 @@ namespace etl
       --this->current_size;
 
       return true;
+    }
+
+    //*************************************************************************
+    /// Peek a value at the front of the queue without locking
+    //*************************************************************************
+    reference front_implementation()
+    {
+      return p_buffer[this->read_index];;
+    }
+
+    //*************************************************************************
+    /// Peek a value at the front of the queue without locking
+    //*************************************************************************
+    const_reference front_implementation() const
+    {
+      return p_buffer[this->read_index];;
     }
 
     // Disable copy construction and assignment.

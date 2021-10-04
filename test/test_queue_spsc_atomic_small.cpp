@@ -290,6 +290,44 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_size_push_front_pop)
+    {
+      etl::queue_spsc_atomic<int, 4, etl::memory_model::MEMORY_MODEL_SMALL> queue;
+
+      CHECK_EQUAL(0U, queue.size());
+
+      queue.push(1);
+      queue.push(2);
+      queue.push(3);
+      queue.push(4);
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(3U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(2U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK_EQUAL(4, queue.front());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK_EQUAL(4, queue.front());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(0U, queue.size());
+    }
+
+    //*************************************************************************
     TEST(test_multiple_emplace)
     {
       etl::queue_spsc_atomic<Data, 4, etl::memory_model::MEMORY_MODEL_SMALL> queue;

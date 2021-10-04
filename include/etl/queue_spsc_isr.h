@@ -107,6 +107,22 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Peek a value at the front of the queue from an ISR
+    //*************************************************************************
+    reference front_from_isr()
+    {
+      return front_implementation();
+    }
+
+    //*************************************************************************
+    /// Peek a value at the front of the queue from an ISR
+    //*************************************************************************
+    const_reference front_from_isr() const
+    {
+      return front_implementation();
+    }
+
+    //*************************************************************************
     /// How much free space available in the queue.
     /// Called from ISR.
     //*************************************************************************
@@ -363,6 +379,22 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Peek a value at the front of the queue.
+    //*************************************************************************
+    reference front_implementation()
+    {
+      return p_buffer[read_index];
+    }
+
+    //*************************************************************************
+    /// Peek a value at the front of the queue.
+    //*************************************************************************
+    const_reference front_implementation() const
+    {
+      return p_buffer[read_index];
+    }
+
+    //*************************************************************************
     /// Pop a value from the queue and discard.
     //*************************************************************************
     bool pop_implementation()
@@ -583,6 +615,34 @@ namespace etl
       TAccess::lock();
 
       bool result = this->pop_implementation();
+
+      TAccess::unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Peek a value at the front of the queue.
+    //*************************************************************************
+    reference front()
+    {
+      TAccess::lock();
+
+      reference result = this->front_implementation();
+
+      TAccess::unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Peek a value at the front of the queue.
+    //*************************************************************************
+    const_reference front() const
+    {
+      TAccess::lock();
+
+      const_reference result = this->front_implementation();
 
       TAccess::unlock();
 

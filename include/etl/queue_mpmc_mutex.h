@@ -293,6 +293,34 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Peek a value at the front of the queue.
+    //*************************************************************************
+    reference front()
+    {
+      access.lock();
+
+      reference result = front_implementation();
+
+      access.unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Peek a value at the front of the queue.
+    //*************************************************************************
+    const_reference front() const
+    {
+      access.lock();
+
+      const_reference result = front_implementation();
+
+      access.unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
     /// Clear the queue.
     //*************************************************************************
     void clear()
@@ -569,6 +597,22 @@ namespace etl
       --current_size;
 
       return true;
+    }
+
+    //*************************************************************************
+    /// Peek a value at the front of the queue.
+    //*************************************************************************
+    reference front_implementation()
+    {
+      return p_buffer[read_index];
+    }
+
+    //*************************************************************************
+    /// Peek a value at the front of the queue.
+    //*************************************************************************
+    const_reference front_implementation() const
+    {
+      return p_buffer[read_index];
     }
 
     // Disable copy construction and assignment.
