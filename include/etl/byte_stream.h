@@ -105,17 +105,35 @@ namespace etl
     //***************************************************************************
     /// Writes a boolean to the stream
     //***************************************************************************
+    void write_unchecked(bool value)
+    {
+      *pcurrent++ = value ? 1 : 0;
+    }
+
+    //***************************************************************************
+    /// Writes a boolean to the stream
+    //***************************************************************************
     bool write(bool value)
     {
       bool success = false;
 
       if (available<bool>() > 0U)
       {
-        *pcurrent++ = value ? 1 : 0;
+        write_unchecked(value);
         success = true;
       }
  
       return success;
+    }
+
+    //***************************************************************************
+    /// Write a value to the stream.
+    //***************************************************************************
+    template <typename T>
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, void>::type
+      write_unchecked(T value)
+    {
+      to_bytes<T>(value);
     }
 
     //***************************************************************************
@@ -129,11 +147,26 @@ namespace etl
 
       if (available<T>() > 0U)
       {
-        to_bytes<T>(value);
+        write_unchecked(value);
         success = true;
       }
 
       return success;
+    }
+
+    //***************************************************************************
+    /// Write a range of T to the stream.
+    //***************************************************************************
+    template <typename T>
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, void>::type
+      write_unchecked(const etl::span<T>& range)
+    {
+      typename etl::span<T>::const_iterator itr = range.begin();
+
+      while (itr != range.end())
+      {
+        to_bytes(*itr++);
+      }
     }
 
     //***************************************************************************
@@ -147,12 +180,7 @@ namespace etl
 
       if (available<T>() >= range.size())
       {
-        typename etl::span<T>::const_iterator itr = range.begin();
-
-        while (itr != range.end())
-        {
-          to_bytes(*itr++);
-        }
+        write_unchecked(range);
 
         success = true;
       }
@@ -390,6 +418,16 @@ namespace etl
     /// Read a value from the stream.
     //***************************************************************************
     template <typename T>
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, T>::type
+      read_unchecked()
+    {
+      return from_bytes<T>();
+    }
+
+    //***************************************************************************
+    /// Read a value from the stream.
+    //***************************************************************************
+    template <typename T>
     typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, etl::optional<T> >::type
       read()
     {
@@ -400,6 +438,23 @@ namespace etl
       {
         result = from_bytes<T>();
       }
+
+      return result;
+    }
+
+    //***************************************************************************
+    /// Read a byte range from the stream.
+    //***************************************************************************
+    template <typename T>
+    typename etl::enable_if<sizeof(T) == 1U, etl::span<const T> >::type
+      read_unchecked(size_t n)
+    {
+      etl::span<const T> result;
+
+      const char* pend = pcurrent + (n * sizeof(T));
+
+      result = etl::span<const T>(reinterpret_cast<const T*>(pcurrent), reinterpret_cast<const T*>(pend));
+      pcurrent = pend;
 
       return result;
     }
@@ -423,6 +478,23 @@ namespace etl
       }
 
       return result;
+    }
+
+    //***************************************************************************
+    /// Read a range of T from the stream.
+    //***************************************************************************
+    template <typename T>
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, etl::span<const T> >::type
+      read_unchecked(etl::span<T> range)
+    {
+      typename etl::span<T>::iterator destination = range.begin();
+
+      while (destination != range.end())
+      {
+        *destination++ = from_bytes<T>();
+      }
+
+      return etl::optional<etl::span<const T> >(etl::span<const T>(range.begin(), range.end()));
     }
 
     //***************************************************************************
@@ -611,9 +683,29 @@ namespace etl
   /// Overload this to support custom types.
   //***************************************************************************
   template <typename T>
+  void write_unchecked(etl::byte_stream_writer& stream, const T& value)
+  {
+    stream.write_unchecked(value);
+  }
+
+  //***************************************************************************
+  /// Default implementation of the write function.
+  /// Overload this to support custom types.
+  //***************************************************************************
+  template <typename T>
   bool write(etl::byte_stream_writer& stream, const T& value)
   {
     return stream.write(value);
+  }
+
+  //***************************************************************************
+  /// Default implementation of the write function.
+  /// Overload this to support custom types.
+  //***************************************************************************
+  template <typename T>
+  void write_unchecked(etl::byte_stream_writer& stream, const etl::span<T>& range)
+  {
+    return stream.write_unchecked(range);
   }
 
   //***************************************************************************
@@ -631,6 +723,16 @@ namespace etl
   /// Overload this to support custom types.
   //***************************************************************************
   template <typename T>
+  T read_unchecked(etl::byte_stream_reader& stream)
+  {
+    return stream.read_unchecked<T>();
+  }
+
+  //***************************************************************************
+  /// Default implementation of the read function.
+  /// Overload this to support custom types.
+  //***************************************************************************
+  template <typename T>
   etl::optional<T> read(etl::byte_stream_reader& stream)
   {
     return stream.read<T>();
@@ -641,9 +743,29 @@ namespace etl
   /// Overload this to support custom types.
   //***************************************************************************
   template <typename T>
+  etl::span<T> read_unchecked(etl::byte_stream_reader& stream, size_t n)
+  {
+    return stream.read_unchecked<T>(n);
+  }
+
+  //***************************************************************************
+  /// Default implementation of the read function.
+  /// Overload this to support custom types.
+  //***************************************************************************
+  template <typename T>
   etl::optional<etl::span<T> > read(etl::byte_stream_reader& stream, size_t n)
   {
     return stream.read<T>(n);
+  }
+
+  //***************************************************************************
+  /// Default implementation of the read function.
+  /// Overload this to support custom types.
+  //***************************************************************************
+  template <typename T>
+  etl::span<T> read_unchecked(etl::byte_stream_reader& stream, etl::span<T> range)
+  {
+    return stream.read_unchecked<T>(range);
   }
 
   //***************************************************************************

@@ -74,6 +74,15 @@ namespace etl
 
   //***********************************
   template <>
+  void write_unchecked<Object>(etl::byte_stream_writer& stream, const Object& object)
+  {
+    stream.write(object.i);
+    stream.write(object.d);
+    stream.write(object.c);
+  }
+
+  //***********************************
+  template <>
   etl::optional<Object> read<Object>(etl::byte_stream_reader& stream)
   {
     etl::optional<Object> result;
@@ -83,6 +92,23 @@ namespace etl
     etl::optional<uint8_t> c = stream.read<uint8_t>();
 
     Object object { i.value(), d.value(), c.value() };
+
+    result = object;
+
+    return result;
+  }
+
+  //***********************************
+  template <>
+  Object read_unchecked<Object>(etl::byte_stream_reader& stream)
+  {
+    Object result;
+
+    int16_t i = stream.read_unchecked<int16_t>();
+    double  d = stream.read_unchecked<double>();
+    uint8_t c = stream.read_unchecked<uint8_t>();
+
+    Object object{ i, d, c };
 
     result = object;
 
@@ -1009,6 +1035,36 @@ namespace
       CHECK_EQUAL(object2.i, object2a.value().i);
       CHECK_EQUAL(object2.d, object2a.value().d);
       CHECK_EQUAL(int(object2.c), int(object2a.value().c));
+    }
+
+    //*************************************************************************
+    TEST(write_read_object_unchecked)
+    {
+      std::array<char, 2 * sizeof(Object)> storage;
+
+      etl::byte_stream_writer writer(storage.data(), storage.size());
+
+      Object object1 = { -1234, 2.71578369, 250 };
+      Object object2 = { 5678, 5.24685744, 126 };
+
+      etl::write_unchecked(writer, object1);
+      etl::write_unchecked(writer, object2);
+
+      Object object1a;
+      Object object2a;
+
+      etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
+
+      object1a = etl::read_unchecked<Object>(reader);
+      object2a = etl::read_unchecked<Object>(reader);
+
+      CHECK_EQUAL(object1.i, object1a.i);
+      CHECK_EQUAL(object1.d, object1a.d);
+      CHECK_EQUAL(int(object1.c), int(object1a.c));
+
+      CHECK_EQUAL(object2.i, object2a.i);
+      CHECK_EQUAL(object2.d, object2a.d);
+      CHECK_EQUAL(int(object2.c), int(object2a.c));
     }
 
     //*************************************************************************
