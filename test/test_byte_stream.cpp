@@ -63,6 +63,15 @@ namespace etl
 {
   //***********************************
   template <>
+  void write_unchecked<Object>(etl::byte_stream_writer& stream, const Object& object)
+  {
+    stream.write_unchecked(object.i);
+    stream.write_unchecked(object.d);
+    stream.write_unchecked(object.c);
+  }
+
+  //***********************************
+  template <>
   bool write<Object>(etl::byte_stream_writer& stream, const Object& object)
   {
     bool success_i = stream.write(object.i);
@@ -74,11 +83,15 @@ namespace etl
 
   //***********************************
   template <>
-  void write_unchecked<Object>(etl::byte_stream_writer& stream, const Object& object)
+  Object read_unchecked<Object>(etl::byte_stream_reader& stream)
   {
-    stream.write(object.i);
-    stream.write(object.d);
-    stream.write(object.c);
+    int16_t i = stream.read_unchecked<int16_t>();
+    double  d = stream.read_unchecked<double>();
+    uint8_t c = stream.read_unchecked<uint8_t>();
+
+    Object object{ i, d, c };
+
+    return object;
   }
 
   //***********************************
@@ -91,24 +104,7 @@ namespace etl
     etl::optional<double>  d = stream.read<double>();
     etl::optional<uint8_t> c = stream.read<uint8_t>();
 
-    Object object { i.value(), d.value(), c.value() };
-
-    result = object;
-
-    return result;
-  }
-
-  //***********************************
-  template <>
-  Object read_unchecked<Object>(etl::byte_stream_reader& stream)
-  {
-    Object result;
-
-    int16_t i = stream.read_unchecked<int16_t>();
-    double  d = stream.read_unchecked<double>();
-    uint8_t c = stream.read_unchecked<uint8_t>();
-
-    Object object{ i, d, c };
+    Object object{ i.value(), d.value(), c.value() };
 
     result = object;
 

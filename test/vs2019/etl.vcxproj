@@ -8356,6 +8356,7 @@
     <ClCompile Include="..\test_utility.cpp" />
     <ClCompile Include="..\test_variance.cpp" />
     <ClCompile Include="..\test_variant_legacy.cpp" />
+    <ClCompile Include="..\test_variant_pool_external_buffer.cpp" />
     <ClCompile Include="..\test_variant_variadic.cpp" />
     <ClCompile Include="..\test_variant_pool.cpp" />
     <ClCompile Include="..\test_vector.cpp" />
