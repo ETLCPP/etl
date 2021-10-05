@@ -182,6 +182,7 @@ target_sources(t98 PRIVATE etl_profile.h
         ../multiset.h.t.cpp
         ../multi_array.h.t.cpp
         ../multi_range.h.t.cpp
+        ../multi_span.h.t.cpp
         ../murmur3.h.t.cpp
         ../mutex.h.t.cpp
         ../negative.h.t.cpp
