@@ -913,7 +913,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(write_read_int32_t_range)
+    TEST(write_read_int32_t_span_range)
     {
       std::array<char, 5 * sizeof(int32_t)> storage;
       std::array<int32_t, 4> put_data = { int32_t(0x00000001), int32_t(0xA55AA55A), int32_t(0x5AA55AA5), int32_t(0xFFFFFFFF) };
@@ -930,6 +930,30 @@ namespace
       etl::span<int32_t> output(get_data.begin(), get_data.end());
 
       etl::optional<etl::span<const int32_t> > result = reader.read<int32_t>(output);
+      CHECK(result.has_value());
+      CHECK_EQUAL(put_data[0], get_data[0]);
+      CHECK_EQUAL(put_data[1], get_data[1]);
+      CHECK_EQUAL(put_data[2], get_data[2]);
+      CHECK_EQUAL(put_data[3], get_data[3]);
+
+      etl::optional<int32_t> i = reader.read<int32_t>();  // Read back the extra value to ensure that the current index is correct.
+      CHECK_EQUAL(0x12345678, i.value());
+    }
+
+    //*************************************************************************
+    TEST(write_read_int32_t_start_length_range)
+    {
+      std::array<char, 5 * sizeof(int32_t)> storage;
+      std::array<int32_t, 4> put_data = { int32_t(0x00000001), int32_t(0xA55AA55A), int32_t(0x5AA55AA5), int32_t(0xFFFFFFFF) };
+      std::array<int32_t, 4> get_data = { int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000) };
+
+      etl::byte_stream_writer writer(storage.data(), storage.size());
+      CHECK(writer.write(put_data.data(), put_data.size()));
+      CHECK(writer.write(0x12345678)); // Write an extra value.
+
+      etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
+
+      etl::optional<etl::span<const int32_t> > result = reader.read<int32_t>(get_data.data(), get_data.size());
       CHECK(result.has_value());
       CHECK_EQUAL(put_data[0], get_data[0]);
       CHECK_EQUAL(put_data[1], get_data[1]);

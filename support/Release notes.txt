@@ -1,4 +1,9 @@
 ===============================================================================
+20.18.1
+Added missing 'start, length' read() variants for byte_stream_reader.
+Added multi_span to 'sanity checks'.
+
+===============================================================================
 20.18.0
 Added front() access to locked queues.
 Added .clang-format rules.

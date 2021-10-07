@@ -181,7 +181,6 @@ namespace etl
       if (available<T>() >= range.size())
       {
         write_unchecked(range);
-
         success = true;
       }
 
@@ -213,7 +212,6 @@ namespace etl
       if (available<T>() >= length)
       {
         write_unchecked(start, length);
-
         success = true;
       }
 
@@ -472,7 +470,7 @@ namespace etl
       // Do we have enough room?
       if (available<T>() > 0U)
       {
-        result = from_bytes<T>();
+        result = read_unchecked<T>();
       }
 
       return result;
@@ -507,10 +505,7 @@ namespace etl
       // Do we have enough room?
       if (available<T>() >= n)
       {
-        const char* pend = pcurrent + (n * sizeof(T));
-
-        result = etl::span<const T>(reinterpret_cast<const T*>(pcurrent), reinterpret_cast<const T*>(pend));
-        pcurrent = pend;
+        result = read_unchecked<T>(n);
       }
 
       return result;
@@ -530,7 +525,7 @@ namespace etl
         *destination++ = from_bytes<T>();
       }
 
-      return etl::optional<etl::span<const T> >(etl::span<const T>(range.begin(), range.end()));
+      return etl::span<const T>(range.begin(), range.end());
     }
 
     //***************************************************************************
@@ -543,14 +538,40 @@ namespace etl
       // Do we have enough room?
       if (available<T>() >= range.size())
       {
-        typename etl::span<T>::iterator destination = range.begin();
+        return etl::optional<etl::span<const T> >(read_unchecked<T>(range));
+      }
 
-        while (destination != range.end())
-        {
-          *destination++ = from_bytes<T>();
-        }
+      return etl::optional<etl::span<const T> >();
+    }
 
-        return etl::optional<etl::span<const T> >(etl::span<const T>(range.begin(), range.end()));
+    //***************************************************************************
+    /// Read a range of T from the stream.
+    //***************************************************************************
+    template <typename T>
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, etl::span<const T> >::type
+      read_unchecked(T* start,  size_t length)
+    {
+      T* destination = start;
+
+      while (length-- != 0U)
+      {
+        *destination++ = from_bytes<T>();
+      }
+
+      return etl::span<const T>(start, length);
+    }
+
+    //***************************************************************************
+    /// Read a range of T from the stream.
+    //***************************************************************************
+    template <typename T>
+    typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, etl::optional<etl::span<const T> > >::type
+      read(T* start, size_t length)
+    {
+      // Do we have enough room?
+      if (available<T>() >= length)
+      {
+        return etl::optional<etl::span<const T> >(read_unchecked<T>(start, length));
       }
 
       return etl::optional<etl::span<const T> >();
