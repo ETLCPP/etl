@@ -57,8 +57,31 @@ namespace
   char ctext[] = { 'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '\0' };
   char* pctext = ctext;
 
+  constexpr etl::string_view string_view_assign()
+  {
+    etl::string_view a;
+
+    const char* text = "Hello";
+    a = etl::string_view(text, text + 5);
+
+    if (a.ends_with("o"))
+    {
+      return a;
+    }
+    else
+    {
+      return etl::string_view("World");
+    }
+  }
+
   SUITE(test_string_view)
   {
+    //*************************************************************************
+    TEST(test_constexpr)
+    {
+      constexpr etl::string_view b(string_view_assign());
+    }
+
     //*************************************************************************
     TEST(test_default_constructor)
     {
