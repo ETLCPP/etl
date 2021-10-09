@@ -848,6 +848,98 @@ namespace
       CHECK(function_called);
       CHECK(parameter_correct);
     }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_set_free_int)
+    {
+      etl::delegate<void(int, int)> d;
+      
+      d.set<free_int>();
+
+      d(VALUE1, VALUE2);
+
+      CHECK(function_called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_set_lambda_int)
+    {
+      etl::delegate<void(int, int)> d;
+      
+      d.set([](int i, int j) { function_called = true; parameter_correct = (i == VALUE1) && (j == VALUE2); });
+
+      d(VALUE1, VALUE2);
+
+      CHECK(function_called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_set_member_reference)
+    {
+      Test test;
+      etl::delegate<void(const Data&, int)> d;
+      
+      d.set<Test, &Test::member_reference>(test);
+
+      Data data;
+      data.d = VALUE1;
+
+      d(data, VALUE2);
+
+      CHECK(function_called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_set_const_member_reference)
+    {
+      Test test;
+      etl::delegate<void(const Data&, int)> d;
+
+      d.set<Test, &Test::member_reference_const>(test);
+
+      Data data;
+      data.d = VALUE1;
+
+      d(data, VALUE2);
+
+      CHECK(function_called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_set_member_reference_compile_time)
+    {
+      etl::delegate<void(const Data&, int)> d;
+
+      d.set<Test, test_static, &Test::member_reference>();
+
+      Data data;
+      data.d = VALUE1;
+
+      d(data, VALUE2);
+
+      CHECK(function_called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_set_member_reference_const_compile_time)
+    {
+      etl::delegate<void(const Data&, int)> d;
+
+      d.set<Test, const_test_static, &Test::member_reference_const>();
+
+      Data data;
+      data.d = VALUE1;
+
+      d(data, VALUE2);
+
+      CHECK(function_called);
+      CHECK(parameter_correct);
+    }
 #endif
 
     //*************************************************************************
