@@ -88,8 +88,14 @@ namespace etl
     }
   };
 
+  //*************************************************************************
+  /// Declaration.
+  //*************************************************************************
   template <typename T> class delegate;
 
+  //*************************************************************************
+  /// Specialisation.
+  //*************************************************************************
   template <typename TReturn, typename... TParams>
   class delegate<TReturn(TParams...)> final
   {
@@ -106,7 +112,7 @@ namespace etl
     delegate(const delegate& other) = default;
 
     //*************************************************************************
-    // Constructor from lambda or functor.
+    // Construct from lambda or functor.
     //*************************************************************************
     template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value, void>>
     delegate(const TLambda& instance)
