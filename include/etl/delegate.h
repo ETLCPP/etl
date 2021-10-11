@@ -48,6 +48,8 @@ Original publication: https://www.codeproject.com/Articles/1170503/The-Impossibl
 #ifndef ETL_DELEGATE_INCLUDED
 #define ETL_DELEGATE_INCLUDED
 
+#include <string.h> //we need memmove() and memcmp()
+
 #include "platform.h"
 #include "error_handler.h"
 #include "exception.h"
@@ -88,10 +90,10 @@ namespace etl
     }
   };
 
-  template <typename T> class delegate;
+  template <typename T, size_t ADDITIONAL_STORAGE_SIZE=0*sizeof(void *)> class delegate;
 
-  template <typename TReturn, typename... TParams>
-  class delegate<TReturn(TParams...)> final
+  template <typename TReturn, typename... TParams, size_t ADDITIONAL_STORAGE_SIZE>
+  class delegate<TReturn(TParams...), ADDITIONAL_STORAGE_SIZE> final
   {
   public:
 
@@ -111,7 +113,7 @@ namespace etl
     template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value, void>>
     delegate(const TLambda& instance)
     {
-      assign((void*)(&instance), lambda_stub<TLambda>);
+      assign<sizeof(TLambda)>((void *)(&instance), lambda_stub<TLambda>);
     }
 
     //*************************************************************************
@@ -129,7 +131,7 @@ namespace etl
     template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value, void>>
     constexpr static delegate create(const TLambda& instance)
     {
-      return delegate((void*)(&instance), lambda_stub<TLambda>);
+      return delegate(instance);
     }
 
     //*************************************************************************
@@ -146,8 +148,7 @@ namespace etl
     /// Deleted for rvalue references.
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...)>
-    static delegate create(T&& instance) = delete;
-
+    static delegate create(T&& instance) = delete; //should be fine now that we copy
     //*************************************************************************
     /// Create from const instance method (Run time).
     //*************************************************************************
@@ -161,7 +162,7 @@ namespace etl
     /// Disable create from rvalue instance method (Run time).
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...) const>
-    constexpr static delegate create(T&& instance) = delete;
+    constexpr static delegate create(T&& instance) = delete; //same
 
     //*************************************************************************
     /// Create from instance method (Compile time).
@@ -200,7 +201,7 @@ namespace etl
     {
       ETL_ASSERT(is_valid(), ETL_ERROR(delegate_uninitialised));
 
-      return (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+      return (*invocation.stub)((void *)&invocation.object, etl::forward<TParams>(args)...);
     }
 
     //*************************************************************************
@@ -213,7 +214,7 @@ namespace etl
     {
       if (is_valid())
       {
-        (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+        (*invocation.stub)((void *)&invocation.object, etl::forward<TParams>(args)...);
         return true;
       }
       else
@@ -234,7 +235,7 @@ namespace etl
 
       if (is_valid())
       {
-        result = (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+        result = (*invocation.stub)((void *)&invocation.object, etl::forward<TParams>(args)...);
       }
 
       return result;
@@ -249,7 +250,7 @@ namespace etl
     {
       if (is_valid())
       {
-        return (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+        return (*invocation.stub)((void *)&invocation.object, etl::forward<TParams>(args)...);
       }
       else
       {
@@ -266,7 +267,7 @@ namespace etl
     {
       if (is_valid())
       {
-        return (*invocation.stub)(invocation.object, etl::forward<TParams>(args)...);
+        return (*invocation.stub)((void *)&invocation.object, etl::forward<TParams>(args)...);
       }
       else
       {
@@ -285,7 +286,7 @@ namespace etl
     template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value, void>>
     delegate& operator =(const TLambda& instance)
     {
-      assign((void*)(&instance), lambda_stub<TLambda>);
+      assign<sizeof(TLambda)>((void *)(&instance), lambda_stub<TLambda>);
       return *this;
     }
 
@@ -337,22 +338,25 @@ namespace etl
         : object(object_)
         , stub(stub_)
       {
+        if (ADDITIONAL_STORAGE_SIZE>0)
+          memset(data, 0xff, ADDITIONAL_STORAGE_SIZE);
       }
 
       //***********************************************************************
       bool operator ==(const invocation_element& rhs) const
       {
-        return (rhs.stub == stub) && (rhs.object == object);
+        return (rhs.stub == stub) && (memcmp(&rhs.object, &object, sizeof(object)+ADDITIONAL_STORAGE_SIZE)==0);
       }
 
       //***********************************************************************
       bool operator !=(const invocation_element& rhs) const
       {
-        return (rhs.stub != stub) || (rhs.object != object);
+        return (rhs.stub != stub) || (memcmp(&rhs.object, &object, sizeof(object)+ADDITIONAL_STORAGE_SIZE)!=0);
       }
 
       //***********************************************************************
       void*     object = ETL_NULLPTR;
+      char data[ADDITIONAL_STORAGE_SIZE];
       stub_type stub   = ETL_NULLPTR;
     };
 
@@ -375,9 +379,13 @@ namespace etl
     //*************************************************************************
     /// Assign from an object and stub.
     //*************************************************************************
+    template <size_t object_size>
     void assign(void* object, stub_type stub)
     {
-      invocation.object = object;
+      static_assert(object_size<=sizeof(invocation.object)+ADDITIONAL_STORAGE_SIZE);
+      if (sizeof(invocation.object)+ADDITIONAL_STORAGE_SIZE>object_size) //some memset fail with size==0
+        memset((uint8_t *)&invocation.object+object_size, 0xff, sizeof(invocation.object)+ADDITIONAL_STORAGE_SIZE-object_size);
+      memmove(&invocation.object, object, object_size);
       invocation.stub   = stub;
     }
 
@@ -387,7 +395,7 @@ namespace etl
     template <typename T, TReturn(T::*Method)(TParams...)>
     static TReturn method_stub(void* object, TParams... params)
     {
-      T* p = static_cast<T*>(object);
+      T* p = *static_cast<T**>(object);
       return (p->*Method)(etl::forward<TParams>(params)...);
     }
 
@@ -397,7 +405,7 @@ namespace etl
     template <typename T, TReturn(T::*Method)(TParams...) const>
     static TReturn const_method_stub(void* object, TParams... params)
     {
-      T* const p = static_cast<T*>(object);
+      T* const p = *static_cast<T**>(object);
       return (p->*Method)(etl::forward<TParams>(params)...);
     }
 
