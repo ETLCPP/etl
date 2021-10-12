@@ -883,5 +883,24 @@ namespace
 
       CHECK_EQUAL(6, callback.message5_count);
     }
+
+    //*************************************************************************
+    TEST(message_bus_successor_to_message_producer)
+    {
+      etl::message_bus<2> bus;
+      etl::message_producer producer(ROUTER2);
+      RouterA router(ROUTER1);
+      Response message;
+
+      bus.subscribe(router);
+      bus.subscribe(producer);
+      producer.set_successor(bus);
+
+      CHECK_EQUAL(0U, router.message5_count);
+
+      producer.receive(message);
+
+      CHECK_EQUAL(1U, router.message5_count);
+    }
   };
 }
