@@ -411,18 +411,18 @@ namespace etl
   };
 
 #if ETL_CPP17_SUPPORTED
-  inline constexpr in_place_t in_place;
+  inline constexpr in_place_t in_place{};
 #endif
   
   //*************************
   template <typename T> struct in_place_type_t 
   {
-    explicit ETL_CONSTEXPR in_place_type_t(){};
+    explicit ETL_CONSTEXPR in_place_type_t() {};
   };
 
 #if ETL_CPP17_SUPPORTED
   template <typename T>
-  inline constexpr in_place_type_t<T> in_place_type;
+  inline constexpr in_place_type_t<T> in_place_type{};
 #endif
 
   //*************************
@@ -433,7 +433,7 @@ namespace etl
 
 #if ETL_CPP17_SUPPORTED
   template <size_t I>
-  inline constexpr in_place_index_t<I> in_place_index;
+  inline constexpr in_place_index_t<I> in_place_index{};
 #endif
 }
 
