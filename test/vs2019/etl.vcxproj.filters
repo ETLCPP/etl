@@ -3136,9 +3136,6 @@
     <None Include="..\..\.gitmodules">
       <Filter>Resource Files\Git</Filter>
     </None>
-    <None Include="..\..\conanfile.py">
-      <Filter>Resource Files\Conan</Filter>
-    </None>
     <None Include="..\..\meson.build">
       <Filter>Resource Files</Filter>
     </None>

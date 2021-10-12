@@ -246,7 +246,7 @@ namespace etl
       assign(ETL_NULLPTR, const_method_instance_stub<T, Instance, Method>);
     }
 
-#if !(defined(ETL_COMPILER_GCC) && (__GNUC__ <= 5))
+#if !(defined(ETL_COMPILER_GCC) && (__GNUC__ <= 8))
     //*************************************************************************
     /// Create from instance function operator (Compile time).
     /// At the time of writing, GCC appears to have trouble with this.
@@ -484,7 +484,7 @@ namespace etl
       return (Instance.*Method)(etl::forward<TParams>(params)...);
     }
 
-#if !(defined(ETL_COMPILER_GCC) && (__GNUC__ <= 5))
+#if !(defined(ETL_COMPILER_GCC) && (__GNUC__ <= 8))
     //*************************************************************************
     /// Stub call for a function operator. Compile time instance.
     //*************************************************************************

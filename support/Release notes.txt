@@ -1,4 +1,12 @@
 ===============================================================================
+20.19.0
+Updates to etl::delegate. Added more constexpr and set() functions.
+Removed conanfile.py. Now controlled by conan repository.
+Fixed missing 'typename' keyword in etl::multi_span.
+Added missing explicit initialisation from in_place structures.
+Fixed hidden parameter warning in unordered_map, unordered_multimap, unordered_set, unordered_multiset.
+
+===============================================================================
 20.18.1
 Added missing 'start, length' read() variants for byte_stream_reader.
 Added multi_span to 'sanity checks'.
