@@ -14,11 +14,11 @@ etl_test_sources = files(
 	'test_bip_buffer_spsc_atomic.cpp',
 	'test_bitset.cpp',
 	'test_bit_stream.cpp',
-	'test_byte_stream.cpp',
 	'test_bloom_filter.cpp',
 	'test_bresenham_line.cpp',
 	'test_bsd_checksum.cpp',
 	'test_buffer_descriptors.cpp',
+	'test_byte_stream.cpp',
 	'test_callback_service.cpp',
 	'test_callback_timer.cpp',
 	'test_checksum.cpp',
@@ -127,9 +127,10 @@ etl_test_sources = files(
 	'test_map.cpp',
 	'test_maths.cpp',
 	'test_mean.cpp',
+	'test_memory.cpp',
 	'test_mem_cast.cpp',
 	'test_mem_cast_ptr.cpp',
-	'test_memory.cpp',
+#	'test_mem_type.cpp',
 	'test_message_bus.cpp',
 	'test_message_packet.cpp',
 	'test_message_router.cpp',
@@ -139,10 +140,13 @@ etl_test_sources = files(
 	'test_multiset.cpp',
 	'test_multi_array.cpp',
 	'test_multi_range.cpp',
+	'test_multi_span.cpp',
+	'test_multi_vector.cpp',
 	'test_murmur3.cpp',
 	'test_numeric.cpp',
 	'test_observer.cpp',
 	'test_optional.cpp',
+	'test_overload.cpp',
 	'test_packet.cpp',
 	'test_parameter_pack.cpp',
 	'test_parameter_type.cpp',
@@ -170,6 +174,7 @@ etl_test_sources = files(
 	'test_reference_flat_multiset.cpp',
 	'test_reference_flat_set.cpp',
 	'test_rescale.cpp',
+	'test_result.cpp',
 	'test_rms.cpp',
 	'test_scaled_rounding.cpp',
 	'test_set.cpp',
@@ -220,9 +225,9 @@ etl_test_sources = files(
 	'test_utility.cpp',
 	'test_variance.cpp',
 	'test_variant_legacy.cpp',
-	'test_variant_variadic.cpp',
 	'test_variant_pool.cpp',
 	'test_variant_pool_external_buffer.cpp',
+	'test_variant_variadic.cpp',
 	'test_vector.cpp',
 	'test_vector_external_buffer.cpp',
 	'test_vector_non_trivial.cpp',
@@ -239,14 +244,13 @@ compile_args = [
 ]
 
 if get_option('use_stl')
-    compile_args += '-DNO_STL=0'
+    compile_args += '-DETL_NO_STL=0'
 elif
-    compile_args += '-DNO_STL=1'
+    compile_args += '-DETL_NO_STL=1'
 endif
 
 if meson.get_compiler('cpp').get_id() == 'gcc'
 	etl_test_sources += files('test/test_atomic_gcc_sync.cpp')
-
     compile_args += '-fexceptions'
 endif
 
@@ -260,6 +264,4 @@ etl_unit_tests = executable('etl_unit_tests',
 	sources: etl_test_sources,
 	dependencies: [etl_dep, unittestcpp_dep, threads_dep],
 	cpp_args: compile_args,
-	native: true,
-	install: false,
 )
