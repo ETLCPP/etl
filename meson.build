@@ -9,7 +9,7 @@ project('etl',
     ],
     meson_version: '>=0.54.0',
     version: '20.18.1'
-)
+) test
 
 compile_args = []
 if get_option('use_stl')
