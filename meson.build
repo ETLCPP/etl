@@ -13,9 +13,9 @@ project('etl',
 
 compile_args = []
 if get_option('use_stl')
-    compile_args += '-DNO_STL=0'
+    compile_args += '-DETL_NO_STL=0'
 elif
-    compile_args += '-DNO_STL=1'
+    compile_args += '-DETL_NO_STL=1'
 endif
 
 etl_dep = declare_dependency(
