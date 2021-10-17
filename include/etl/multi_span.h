@@ -266,7 +266,7 @@ namespace etl
     {
       size_t total_n_spans = 0U;
 
-      for (span_list_type::iterator itr = span_list.begin();
+      for (typename span_list_type::iterator itr = span_list.begin();
            itr != span_list.end(); 
            ++itr)
       {
@@ -298,7 +298,7 @@ namespace etl
     {
       size_t total_n_spans_bytes = 0U;
 
-      for (span_list_type::iterator itr = span_list.begin(); 
+      for (typename span_list_type::iterator itr = span_list.begin(); 
            itr != span_list.end(); 
            ++itr)
       {
