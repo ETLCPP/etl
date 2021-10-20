@@ -174,5 +174,5 @@ else
 fi
 echo ""
 echo "-----------------------------------------------" | tee -a log.txt
-echo " Tests Completed" | tee -a log.txt
+echo " All Tests Completed OK" | tee -a log.txt
 echo "-----------------------------------------------" | tee -a log.txt

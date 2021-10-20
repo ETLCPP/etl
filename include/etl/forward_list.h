@@ -39,7 +39,6 @@ SOFTWARE.
 #include "functional.h"
 #include "utility.h"
 #include "pool.h"
-#include "container.h"
 #include "exception.h"
 #include "error_handler.h"
 #include "debug_count.h"

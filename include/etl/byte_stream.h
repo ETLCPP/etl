@@ -320,10 +320,6 @@ namespace etl
     template <typename T>
     size_t available() const
     {
-      size_t cap = capacity();
-      size_t size_b = size_bytes();
-      size_t size_of_T = sizeof(T);
-
       return (capacity() - size_bytes()) / sizeof(T);
     }
 

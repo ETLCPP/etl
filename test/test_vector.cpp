@@ -1221,7 +1221,7 @@ namespace
 
       const S raw[6] = { 1, 2, 3, 4, 5, 6 };
 
-      etl::vector<S, 10> dest(etl::begin(raw), etl::end(raw));
+      etl::vector<S, 10> dest(ETL_OR_STD11::begin(raw), ETL_OR_STD11::end(raw));
       etl::vector<S, 10> src((size_t) 2, S(8));
 
       dest.insert(dest.begin(), src.begin(), src.end());
@@ -1254,7 +1254,7 @@ namespace
 
       const S raw[6] = { 1, 2, 3, 4, 5, 6 };
 
-      etl::vector<S, 10> dest(etl::begin(raw), etl::end(raw));
+      etl::vector<S, 10> dest(ETL_OR_STD11::begin(raw), ETL_OR_STD11::end(raw));
 
       dest.insert(dest.begin(), 2, S(8));
 
@@ -1280,7 +1280,7 @@ namespace
     TEST(remove)
     {
       const int raw[10] = { 1, 8, 2, 7, 7, 7, 4, 5, 10, 9 };
-      etl::vector<int, 10> data(etl::begin(raw), etl::end(raw));
+      etl::vector<int, 10> data(ETL_OR_STD11::begin(raw), ETL_OR_STD11::end(raw));
       std::array<int, 7>   expected = { 1, 8, 2, 4, 5, 10, 9 };
 
       etl::erase(data, 7);
@@ -1295,7 +1295,7 @@ namespace
     TEST(remove_if)
     {
       const int raw[10] = { 1, 8, 2, 7, 7, 7, 4, 5, 10, 9 };
-      etl::vector<int, 10> data(etl::begin(raw), etl::end(raw));
+      etl::vector<int, 10> data(ETL_OR_STD11::begin(raw), ETL_OR_STD11::end(raw));
       std::array<int, 4>  expected = { 1, 2, 4, 5 };
 
       etl::erase_if(data, [](int value) { return value >= 7; });

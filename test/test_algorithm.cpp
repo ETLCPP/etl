@@ -274,7 +274,7 @@ namespace
 
       int* p1 = std::is_sorted_until(std::begin(data), std::end(data), std::greater<int>());
       int* p2 = etl::is_sorted_until(std::begin(data), std::end(data), std::greater<int>());
-      CHECK_EQUAL(std::distance(etl::begin(data), p1), std::distance(std::begin(data), p2));
+      CHECK_EQUAL(std::distance(std::begin(data), p1), std::distance(std::begin(data), p2));
     }
 
     //*************************************************************************
@@ -1601,7 +1601,7 @@ namespace
       etl::transform_s(std::begin(input),
                        std::end(input),
                        std::begin(output),
-                       std::begin(output) + (etl::size(output) / 2),
+                       std::begin(output) + (std::size(output) / 2),
                        std::bind(std::multiplies<int>(), std::placeholders::_1, 2));
 
       bool is_same = std::equal(std::begin(output), std::end(output), std::begin(compare));
@@ -1610,7 +1610,7 @@ namespace
       std::fill(std::begin(output), std::end(output), 0);
 
       etl::transform_s(std::begin(input),
-                       std::begin(input) + (etl::size(input) / 2),
+                       std::begin(input) + (std::size(input) / 2),
                        std::begin(output),
                        std::end(output),
                        std::bind(std::multiplies<int>(), std::placeholders::_1, 2));

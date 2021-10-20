@@ -38,7 +38,6 @@ SOFTWARE.
 #include "iterator.h"
 #include "functional.h"
 #include "utility.h"
-#include "container.h"
 #include "pool.h"
 #include "vector.h"
 #include "intrusive_forward_list.h"
