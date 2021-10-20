@@ -1149,7 +1149,7 @@ namespace
 
       const S raw[6] = { 1, 2, 3, 4, 5, 6 };
 
-      etl::vector_ext<S> dest(etl::begin(raw), etl::end(raw), sbuffer1, SIZE);
+      etl::vector_ext<S> dest(std::begin(raw), std::end(raw), sbuffer1, SIZE);
       etl::vector_ext<S> src((size_t) 2, S(8), sbuffer2, SIZE);
 
       dest.insert(dest.begin(), src.begin(), src.end());
@@ -1184,7 +1184,7 @@ namespace
 
       const S raw[6] = { 1, 2, 3, 4, 5, 6 };
 
-      etl::vector_ext<S> dest(etl::begin(raw), etl::end(raw), sbuffer1, SIZE);
+      etl::vector_ext<S> dest(ETL_OR_STD11::begin(raw), ETL_OR_STD11::end(raw), sbuffer1, SIZE);
 
       dest.insert(dest.begin(), 2, S(8));
 

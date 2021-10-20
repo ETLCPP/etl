@@ -41,7 +41,6 @@ SOFTWARE.
 #include "iterator.h"
 #include "functional.h"
 #include "char_traits.h"
-#include "container.h"
 #include "alignment.h"
 #include "array.h"
 #include "algorithm.h"

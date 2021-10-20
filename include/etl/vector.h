@@ -42,7 +42,6 @@ SOFTWARE.
 #include "type_traits.h"
 #include "error_handler.h"
 #include "memory.h"
-#include "container.h"
 #include "alignment.h"
 #include "array.h"
 #include "exception.h"

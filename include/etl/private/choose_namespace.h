@@ -32,6 +32,7 @@ SOFTWARE.
 #define ETL_CHOOSE_NAMESPACE_INCLUDED
 
 #undef ETL_OR_STD
+#undef ETL_OR_STD11
 
 #if ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST)
   // If we're not using the STL and we are not unit testing, then use the ETL's definitions under the etl namespace
@@ -39,6 +40,14 @@ SOFTWARE.
 #else
   // We will use the STL's definitions under the std namespace
   #define ETL_OR_STD std
+#endif
+
+#if (ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST)) || ETL_CPP11_NOT_SUPPORTED
+  // If we're not using the STL and we are not unit testing or C++11 is not supported, then use the ETL's definitions under the etl namespace
+#define ETL_OR_STD11 etl
+#else
+  // We will use the STL's definitions under the std namespace
+#define ETL_OR_STD11 std
 #endif
 
 #endif

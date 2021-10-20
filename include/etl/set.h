@@ -34,7 +34,6 @@ SOFTWARE.
 #include <stddef.h>
 
 #include "platform.h"
-#include "container.h"
 #include "pool.h"
 #include "exception.h"
 #include "error_handler.h"

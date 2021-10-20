@@ -46,6 +46,10 @@ SOFTWARE.
 #include "../iterator.h"
 #include "../limits.h"
 
+#if ETL_USING_STL && ETL_CPP11_SUPPORTED
+  #include <iterator> // For std::begin, std::end and std::size
+#endif
+
 namespace etl
 {
   namespace private_to_string
@@ -107,11 +111,11 @@ namespace etl
       {
         if (value)
         {
-          str.insert(str.end(), etl::begin(t), etl::end(t));
+          str.insert(str.end(), ETL_OR_STD11::begin(t), ETL_OR_STD11::end(t));
         }
         else
         {
-          str.insert(str.end(), etl::begin(f), etl::end(f));
+          str.insert(str.end(), ETL_OR_STD11::begin(f), ETL_OR_STD11::end(f));
         }
       }
       else
@@ -228,11 +232,11 @@ namespace etl
 
       if (not_a_number)
       {
-        str.insert(str.end(), etl::begin(n), etl::end(n));
+        str.insert(str.end(), ETL_OR_STD11::begin(n), ETL_OR_STD11::end(n));
       }
       else if (infinity)
       {
-        str.insert(str.end(), etl::begin(i), etl::end(i));
+        str.insert(str.end(), ETL_OR_STD11::begin(i), ETL_OR_STD11::end(i));
       }
     }
 

@@ -38,7 +38,6 @@ SOFTWARE.
 #include "algorithm.h"
 #include "iterator.h"
 #include "utility.h"
-#include "container.h"
 #include "memory.h"
 #include "exception.h"
 #include "error_handler.h"

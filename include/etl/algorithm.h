@@ -41,7 +41,6 @@ SOFTWARE.
 
 #include "platform.h"
 #include "type_traits.h"
-#include "container.h"
 #include "iterator.h"
 #include "functional.h"
 #include "utility.h"

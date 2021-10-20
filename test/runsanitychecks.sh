@@ -468,5 +468,5 @@ fi
 
 { echo ""
 echo "-----------------------------------------------"
-echo " Completed"
+echo " All Checks Completed OK"
 echo "-----------------------------------------------"; } | tee -a ../log.txt

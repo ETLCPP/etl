@@ -38,7 +38,6 @@ SOFTWARE.
 #include "iterator.h"
 #include "functional.h"
 #include "parameter_type.h"
-#include "container.h"
 #include "pool.h"
 #include "exception.h"
 #include "error_handler.h"

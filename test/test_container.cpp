@@ -32,6 +32,8 @@ SOFTWARE.
 
 #include <list>
 
+#if ETL_NOT_USING_STL
+
 namespace
 {
   SUITE(test_container)
@@ -145,3 +147,5 @@ namespace
     }
   };
 }
+
+#endif
