@@ -60,7 +60,7 @@ namespace etl
     //***************************************************************************
     /// Construct from span.
     //***************************************************************************
-    byte_stream_writer(etl::span<char> span_, etl::endian buffer_endianness_ = etl::endian::big)
+    byte_stream_writer(etl::span<char> span_, etl::endian buffer_endianness_)
       : pdata(span_.begin())
       , pcurrent(span_.begin())
       , length(span_.size_bytes())
@@ -71,7 +71,7 @@ namespace etl
     //***************************************************************************
     /// Construct from range.
     //***************************************************************************
-    byte_stream_writer(void* begin_, void* end_, etl::endian buffer_endianness_ = etl::endian::big)
+    byte_stream_writer(void* begin_, void* end_, etl::endian buffer_endianness_)
       : pdata(reinterpret_cast<char*>(begin_))
       , pcurrent(reinterpret_cast<char*>(begin_))
       , length(etl::distance(reinterpret_cast<char*>(begin_), reinterpret_cast<char*>(end_)))
@@ -82,7 +82,7 @@ namespace etl
     //***************************************************************************
     /// Construct from begin and length.
     //***************************************************************************
-    byte_stream_writer(void* begin_, size_t length_, etl::endian buffer_endianness_ = etl::endian::big)
+    byte_stream_writer(void* begin_, size_t length_, etl::endian buffer_endianness_)
       : pdata(reinterpret_cast<char*>(begin_))
       , pcurrent(reinterpret_cast<char*>(begin_))
       , length(length_)
@@ -94,7 +94,7 @@ namespace etl
     /// Construct from array.
     //***************************************************************************
     template <typename T, size_t Size>
-    byte_stream_writer(T(&begin_)[Size], etl::endian buffer_endianness_ = etl::endian::big)
+    byte_stream_writer(T(&begin_)[Size], etl::endian buffer_endianness_)
       : pdata(begin_)
       , pcurrent(begin_)
       , length(begin_ + (Size * sizeof(T)))
@@ -323,6 +323,14 @@ namespace etl
       return (capacity() - size_bytes()) / sizeof(T);
     }
 
+    //***************************************************************************
+    /// The number of bytes left in the stream.
+    //***************************************************************************
+    size_t available_bytes() const
+    {
+      return available<char>();
+    }
+
   private:
 
     //***************************************************************************
@@ -361,7 +369,7 @@ namespace etl
     }
 
     char* const       pdata;             ///< The start of the byte stream buffer.
-    char* pcurrent;                      ///< The current position in the byte stream buffer.
+    char*             pcurrent;          ///< The current position in the byte stream buffer.
     const size_t      length;            ///< The length of the byte stream buffer.
     const etl::endian buffer_endianness; ///< The endianness of the buffer data.
   };
@@ -379,7 +387,7 @@ namespace etl
     //***************************************************************************
     /// Construct from span.
     //***************************************************************************
-    byte_stream_reader(etl::span<char> span_, etl::endian buffer_endianness_ = etl::endian::big)
+    byte_stream_reader(etl::span<char> span_, etl::endian buffer_endianness_)
       : pdata(span_.begin())
       , pcurrent(span_.begin())
       , length(span_.size_bytes())
@@ -390,7 +398,7 @@ namespace etl
     //***************************************************************************
     /// Construct from span.
     //***************************************************************************
-    byte_stream_reader(etl::span<const char> span_, etl::endian buffer_endianness_ = etl::endian::big)
+    byte_stream_reader(etl::span<const char> span_, etl::endian buffer_endianness_)
       : pdata(span_.begin())
       , pcurrent(span_.begin())
       , length(span_.size_bytes())
@@ -401,7 +409,7 @@ namespace etl
     //***************************************************************************
     /// Construct from range.
     //***************************************************************************
-    byte_stream_reader(const void* begin_, const void* end_, etl::endian buffer_endianness_ = etl::endian::big)
+    byte_stream_reader(const void* begin_, const void* end_, etl::endian buffer_endianness_)
       : pdata(reinterpret_cast<const char*>(begin_))
       , pcurrent(reinterpret_cast<const char*>(begin_))
       , length(etl::distance(reinterpret_cast<const char*>(begin_), reinterpret_cast<const char*>(end_)))
@@ -412,7 +420,7 @@ namespace etl
     //***************************************************************************
     /// Construct from begin and length.
     //***************************************************************************
-    byte_stream_reader(const void* begin_, size_t length_, etl::endian buffer_endianness_ = etl::endian::big)
+    byte_stream_reader(const void* begin_, size_t length_, etl::endian buffer_endianness_)
       : pdata(reinterpret_cast<const char*>(begin_))
       , pcurrent(reinterpret_cast<const char*>(begin_))
       , length(length_)
@@ -424,7 +432,7 @@ namespace etl
     /// Construct from array.
     //***************************************************************************
     template <typename T, size_t Size>
-    byte_stream_reader(T(&begin_)[Size], etl::endian buffer_endianness_ = etl::endian::big)
+    byte_stream_reader(T(&begin_)[Size], etl::endian buffer_endianness_)
       : pdata(begin_)
       , pcurrent(begin_)
       , length(begin_ + (Size * sizeof(T)))
@@ -436,7 +444,7 @@ namespace etl
     /// Construct from const array.
     //***************************************************************************
     template <typename T, size_t Size>
-    byte_stream_reader(const T(&begin_)[Size], etl::endian buffer_endianness_ = etl::endian::big)
+    byte_stream_reader(const T(&begin_)[Size], etl::endian buffer_endianness_)
       : pdata(begin_)
       , pcurrent(begin_)
       , length(begin_ + (Size * sizeof(T)))
@@ -682,9 +690,16 @@ namespace etl
     size_t available() const
     {
       size_t used = etl::distance(pdata, reinterpret_cast<const char* const>(pcurrent));
-      size_t size_of_T = sizeof(T);
 
       return (length - used) / sizeof(T);
+    }
+
+    //***************************************************************************
+    /// The number of bytes left in the stream.
+    //***************************************************************************
+    size_t available_bytes() const
+    {
+      return available<char>();
     }
 
   private:

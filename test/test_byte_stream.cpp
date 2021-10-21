@@ -121,8 +121,8 @@ namespace
     {
       char storage[7];
 
-      etl::byte_stream_writer writer(storage, std::size(storage));
-      etl::byte_stream_reader reader(storage, writer.size_bytes()); // Capacity is zero.
+      etl::byte_stream_writer writer(storage, std::size(storage), etl::endian::big);
+      etl::byte_stream_reader reader(storage, writer.size_bytes(), etl::endian::big); // Capacity is zero.
 
       CHECK(writer.empty());
       CHECK(reader.empty());
@@ -136,6 +136,7 @@ namespace
 
       CHECK_EQUAL(0U, reader.available<int8_t>());
 
+      CHECK_EQUAL(7U, writer.available_bytes());
       CHECK_EQUAL(7U, writer.available<int8_t>());
       CHECK_EQUAL(3U, writer.available<int16_t>());
       CHECK_EQUAL(1U, writer.available<int32_t>());
@@ -147,7 +148,7 @@ namespace
     {
       char storage[8];
 
-      etl::byte_stream_writer writer(storage, std::size(storage));
+      etl::byte_stream_writer writer(storage, std::size(storage), etl::endian::big);
 
       etl::span<char> storage_span(storage, storage + std::size(storage));
       etl::span<char> writer_span = writer.data();
@@ -172,7 +173,7 @@ namespace
       CHECK_EQUAL(7U, writer.size_bytes());
       CHECK_EQUAL(8U, writer.capacity());
 
-      etl::byte_stream_reader reader(storage, writer.size_bytes());
+      etl::byte_stream_reader reader(storage, writer.size_bytes(), etl::endian::big);
 
       CHECK(!reader.empty());
       CHECK_EQUAL(7U, reader.available<int8_t>());
@@ -185,7 +186,7 @@ namespace
       char storage[8];
       char result[8] = { 0, 1, 0, 1, 1, 0, 1, 0 };
       
-      etl::byte_stream_writer byte_stream(storage, 8U);
+      etl::byte_stream_writer byte_stream(storage, 8U, etl::endian::big);
 
       CHECK(byte_stream.write(false));
       CHECK(byte_stream.write(true));
@@ -210,7 +211,7 @@ namespace
       std::array<char, 256> compare_data;
       std::iota(compare_data.begin(), compare_data.end(), 0);
 
-      etl::byte_stream_writer byte_stream(storage.data(), storage.size());
+      etl::byte_stream_writer byte_stream(storage.data(), storage.size(), etl::endian::big);
 
       for (size_t i = 0; i < 256; ++i)
       {
@@ -234,7 +235,7 @@ namespace
       std::array<char, 256> compare_data;
       std::iota(compare_data.begin(), compare_data.end(), 0);
 
-      etl::byte_stream_writer byte_stream(storage.data(), storage.size());
+      etl::byte_stream_writer byte_stream(storage.data(), storage.size(), etl::endian::big);
 
       for (size_t i = 0U; i < 256U; ++i)
       {
@@ -259,7 +260,7 @@ namespace
 
       CHECK(compare_data.size() == storage.size());
 
-      etl::byte_stream_writer byte_stream(storage.data(), storage.size());
+      etl::byte_stream_writer byte_stream(storage.data(), storage.size(), etl::endian::big);
 
       CHECK(byte_stream.write(int16_t(0x0001)));
       CHECK(byte_stream.write(int16_t(0x5AA5)));
@@ -284,7 +285,7 @@ namespace
 
       CHECK(compare_data.size() == storage.size());
 
-      etl::byte_stream_writer byte_stream(storage.data(), storage.size());
+      etl::byte_stream_writer byte_stream(storage.data(), storage.size(), etl::endian::big);
 
       CHECK(byte_stream.write(uint16_t(0x0001U)));
       CHECK(byte_stream.write(uint16_t(0x5AA5U)));
@@ -312,7 +313,7 @@ namespace
 
       CHECK(compare_data.size() == storage.size());
 
-      etl::byte_stream_writer byte_stream(storage.data(), storage.size());
+      etl::byte_stream_writer byte_stream(storage.data(), storage.size(), etl::endian::big);
 
       CHECK(byte_stream.write(int32_t(0x00000001)));
       CHECK(byte_stream.write(int32_t(0x5AA5A55A)));
@@ -340,7 +341,7 @@ namespace
 
       CHECK(compare_data.size() == storage.size());
 
-      etl::byte_stream_writer byte_stream(storage.data(), storage.size());
+      etl::byte_stream_writer byte_stream(storage.data(), storage.size(), etl::endian::big);
 
       CHECK(byte_stream.write(uint32_t(0x00000001U)));
       CHECK(byte_stream.write(uint32_t(0x5AA5A55AU)));
@@ -368,7 +369,7 @@ namespace
 
       CHECK(compare_data.size() == storage.size());
 
-      etl::byte_stream_writer byte_stream(storage.data(), storage.size());
+      etl::byte_stream_writer byte_stream(storage.data(), storage.size(), etl::endian::big);
 
       CHECK(byte_stream.write(int64_t(0x0000000000000001)));
       CHECK(byte_stream.write(int64_t(0x5AA5A55AA55A5AA5)));
@@ -396,7 +397,7 @@ namespace
 
       CHECK(compare_data.size() == storage.size());
 
-      etl::byte_stream_writer byte_stream(storage.data(), storage.size());
+      etl::byte_stream_writer byte_stream(storage.data(), storage.size(), etl::endian::big);
 
       CHECK(byte_stream.write(uint64_t(0x0000000000000001U)));
       CHECK(byte_stream.write(uint64_t(0x5AA5A55AA55A5AA5U)));
@@ -421,14 +422,14 @@ namespace
       };
 
       char storage[8];
-      etl::byte_stream_writer writer(storage, 8);
+      etl::byte_stream_writer writer(storage, 8, etl::endian::big);
 
       for (size_t i = 0U; i < flags.size(); ++i)
       {
         writer.write(flags[i]);
       }
 
-      etl::byte_stream_reader reader(storage, 8);
+      etl::byte_stream_reader reader(storage, 8, etl::endian::big);
 
       for (size_t i = 0; i < flags.size(); ++i)
       {
@@ -446,7 +447,7 @@ namespace
       std::array<int8_t, 4> put_data = { int8_t(0x01), int8_t(0x5A), int8_t(0xA5), int8_t(0xFF) };
       std::array<etl::optional<int8_t>, 4> get_data = { int8_t(0x00), int8_t(0x00), int8_t(0x00), int8_t(0x00) };
 
-      etl::byte_stream_writer writer(storage.data(), storage.size());
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big);
 
       // Insert into the stream
       CHECK(writer.empty());
@@ -474,9 +475,10 @@ namespace
       CHECK(writer.full());
       CHECK_EQUAL(0U, writer.available<int8_t>());
 
-      etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
+      etl::byte_stream_reader reader(storage.data(), writer.size_bytes(), etl::endian::big);
       CHECK(!reader.empty());
       CHECK_EQUAL(4U, reader.available<int8_t>());
+      CHECK_EQUAL(4U, reader.available_bytes());
 
       CHECK(get_data[0] = reader.read<int8_t>());
       CHECK_EQUAL(3U, reader.available<int8_t>());
@@ -502,7 +504,7 @@ namespace
       std::array<uint8_t, 4> put_data = { uint8_t(0x01U), uint8_t(0x5AU), uint8_t(0xA5U), uint8_t(0xFFU) };
       std::array<etl::optional<uint8_t>, 4> get_data = { uint8_t(0x00U), uint8_t(0x00U), uint8_t(0x00U), uint8_t(0x00U) };
 
-      etl::byte_stream_writer writer(storage.data(), storage.size());
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big);
 
       // Insert into the stream
       CHECK(writer.empty());
@@ -530,7 +532,7 @@ namespace
       CHECK(writer.full());
       CHECK_EQUAL(0U, writer.available<uint8_t>());
 
-      etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
+      etl::byte_stream_reader reader(storage.data(), writer.size_bytes(), etl::endian::big);
       CHECK(!reader.empty());
       CHECK_EQUAL(4U, reader.available<uint8_t>());
 
@@ -558,7 +560,7 @@ namespace
       std::array<int16_t, 4> put_data = { int16_t(0x0001), int16_t(0xA55A), int16_t(0x5AA5), int16_t(0xFFFF) };
       std::array<etl::optional<int16_t>, 4> get_data = { int16_t(0x0000), int16_t(0x0000), int16_t(0x0000), int16_t(0x0000) };
 
-      etl::byte_stream_writer writer(storage.data(), storage.size());
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big);
 
       // Insert into the stream
       CHECK(writer.empty());
@@ -586,7 +588,7 @@ namespace
       CHECK(writer.full());
       CHECK_EQUAL(0U, writer.available<int16_t>());
 
-      etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
+      etl::byte_stream_reader reader(storage.data(), writer.size_bytes(), etl::endian::big);
       CHECK(!reader.empty());
       CHECK_EQUAL(4U, reader.available<int16_t>());
 
@@ -614,7 +616,7 @@ namespace
       std::array<uint16_t, 4> put_data = { uint16_t(0x0001U), uint16_t(0xA55AU), uint16_t(0x5AA5U), uint16_t(0xFFFFU) };
       std::array<etl::optional<uint16_t>, 4> get_data = { uint16_t(0x0000U), uint16_t(0x0000U), uint16_t(0x0000U), uint16_t(0x0000U) };
 
-      etl::byte_stream_writer writer(storage.data(), storage.size());
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big);
 
       // Insert into the stream
       CHECK(writer.empty());
@@ -642,7 +644,7 @@ namespace
       CHECK(writer.full());
       CHECK_EQUAL(0U, writer.available<uint16_t>());
 
-      etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
+      etl::byte_stream_reader reader(storage.data(), writer.size_bytes(), etl::endian::big);
       CHECK(!reader.empty());
       CHECK_EQUAL(4U, reader.available<uint16_t>());
 
@@ -670,7 +672,7 @@ namespace
       std::array<int32_t, 4> put_data = { int32_t(0x00000001), int32_t(0xA55AA55A), int32_t(0x5AA55AA5), int32_t(0xFFFFFFFF) };
       std::array<etl::optional<int32_t>, 4> get_data = { int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000) };
 
-      etl::byte_stream_writer writer(storage.data(), storage.size());
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big);
 
       // Insert into the stream
       CHECK(writer.empty());
@@ -698,7 +700,7 @@ namespace
       CHECK(writer.full());
       CHECK_EQUAL(0U, writer.available<int32_t>());
 
-      etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
+      etl::byte_stream_reader reader(storage.data(), writer.size_bytes(), etl::endian::big);
       CHECK(!reader.empty());
       CHECK_EQUAL(4U, reader.available<int32_t>());
 
@@ -726,7 +728,7 @@ namespace
       std::array<uint32_t, 4> put_data = { uint32_t(0x00000001U), uint32_t(0xA55AA55AU), uint32_t(0x5AA55AA5U), uint32_t(0xFFFFFFFFU) };
       std::array<etl::optional<uint32_t>, 4> get_data = { uint32_t(0x00000000U), uint32_t(0x00000000U), uint32_t(0x00000000U), uint32_t(0x00000000U) };
 
-      etl::byte_stream_writer writer(storage.data(), storage.size());
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big);
 
       // Insert into the stream
       CHECK(writer.empty());
@@ -754,7 +756,7 @@ namespace
       CHECK(writer.full());
       CHECK_EQUAL(0U, writer.available<uint32_t>());
 
-      etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
+      etl::byte_stream_reader reader(storage.data(), writer.size_bytes(), etl::endian::big);
       CHECK(!reader.empty());
       CHECK_EQUAL(4U, reader.available<uint32_t>());
 
@@ -782,7 +784,7 @@ namespace
       std::array<int64_t, 4> put_data    = { int64_t(0x0000000000000001), int64_t(0xA55AA55AA55AA55A), int64_t(0x5AA55AA55AA55AA5), int64_t(0xFFFFFFFFFFFFFFFF) };
       std::array<etl::optional<int64_t>, 4> get_data = { int64_t(0x0000000000000000), int64_t(0x0000000000000000), int64_t(0x0000000000000000), int64_t(0x0000000000000000) };
 
-      etl::byte_stream_writer writer(storage.data(), storage.size());
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big);
 
       // Insert into the stream
       CHECK(writer.empty());
@@ -810,7 +812,7 @@ namespace
       CHECK(writer.full());
       CHECK_EQUAL(0U, writer.available<int64_t>());
 
-      etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
+      etl::byte_stream_reader reader(storage.data(), writer.size_bytes(), etl::endian::big);
       CHECK(!reader.empty());
       CHECK_EQUAL(4U, reader.available<int64_t>());
 
@@ -838,7 +840,7 @@ namespace
       std::array<uint64_t, 4> put_data = { uint64_t(0x0000000000000001U), uint64_t(0xA55AA55AA55AA55AU), uint64_t(0x5AA55AA55AA55AA5U), uint64_t(0xFFFFFFFFFFFFFFFFU) };
       std::array<etl::optional<uint64_t>, 4> get_data = { uint64_t(0x0000000000000000U), uint64_t(0x0000000000000000U), uint64_t(0x0000000000000000U), uint64_t(0x0000000000000000U) };
 
-      etl::byte_stream_writer writer(storage.data(), storage.size());
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big);
 
       // Insert into the stream
       CHECK(writer.empty());
@@ -866,7 +868,7 @@ namespace
       CHECK(writer.full());
       CHECK_EQUAL(0U, writer.available<uint64_t>());
 
-      etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
+      etl::byte_stream_reader reader(storage.data(), writer.size_bytes(), etl::endian::big);
       CHECK(!reader.empty());
       CHECK_EQUAL(4U, reader.available<uint64_t>());
 
@@ -895,11 +897,11 @@ namespace
 
       etl::span<char> input(put_data.begin(), put_data.end());
 
-      etl::byte_stream_writer writer(storage.data(), storage.size());
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big);
       CHECK(writer.write(input));
       CHECK(writer.write(char(0x99))); // Write an extra value.
 
-      etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
+      etl::byte_stream_reader reader(storage.data(), writer.size_bytes(), etl::endian::big);
 
       etl::optional<etl::span<const char>> output = reader.read<char>(4U);
       CHECK_EQUAL(4U, output.value().size());
@@ -921,11 +923,11 @@ namespace
 
       etl::span<int32_t> input(put_data.begin(), put_data.end());
 
-      etl::byte_stream_writer writer(storage.data(), storage.size());
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big);
       CHECK(writer.write(input));
       CHECK(writer.write(0x12345678)); // Write an extra value.
 
-      etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
+      etl::byte_stream_reader reader(storage.data(), writer.size_bytes(), etl::endian::big);
 
       etl::span<int32_t> output(get_data.begin(), get_data.end());
 
@@ -947,11 +949,11 @@ namespace
       std::array<int32_t, 4> put_data = { int32_t(0x00000001), int32_t(0xA55AA55A), int32_t(0x5AA55AA5), int32_t(0xFFFFFFFF) };
       std::array<int32_t, 4> get_data = { int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000), int32_t(0x00000000) };
 
-      etl::byte_stream_writer writer(storage.data(), storage.size());
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big);
       CHECK(writer.write(put_data.data(), put_data.size()));
       CHECK(writer.write(0x12345678)); // Write an extra value.
 
-      etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
+      etl::byte_stream_reader reader(storage.data(), writer.size_bytes(), etl::endian::big);
 
       etl::optional<etl::span<const int32_t> > result = reader.read<int32_t>(get_data.data(), get_data.size());
       CHECK(result.has_value());
@@ -965,7 +967,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(write_read_multiple)
+    TEST(write_read_multiple_big_endian)
     {
       char c1 = 90;
       char c2 = -91;
@@ -978,7 +980,7 @@ namespace
 
       std::array<char, 100> storage;
 
-      etl::byte_stream_writer writer(storage.data(), storage.size());
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big);
 
       // Insert into the stream.
       writer.write(c1);
@@ -990,7 +992,70 @@ namespace
       writer.write(s2);
       writer.write(c2);
 
-      etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
+      etl::byte_stream_reader reader(storage.data(), writer.size_bytes(), etl::endian::big);
+
+      etl::optional<char> rc1;
+      etl::optional<char> rc2;
+      etl::optional<unsigned short> rs1;
+      etl::optional<unsigned short> rs2;
+      etl::optional<int32_t> ri1;
+      etl::optional<int32_t> ri2;
+      etl::optional<float> rf;
+      etl::optional<double> rd;
+
+      // Read them all back.
+      CHECK(rc1 = reader.read<char>());
+      CHECK_EQUAL(int(c1), int(rc1.value()));
+
+      CHECK(rs1 = reader.read<unsigned short>());
+      CHECK_EQUAL(s1, rs1.value());
+
+      CHECK(ri1 = reader.read<int32_t>());
+      CHECK_EQUAL(i1, ri1.value());
+
+      CHECK(rf = reader.read<float>());
+      CHECK_CLOSE(f, rf.value(), 0.1f);
+
+      CHECK(ri2 = reader.read<int32_t>());
+      CHECK_EQUAL(i2, ri2.value());
+
+      CHECK(rd = reader.read<double>());
+      CHECK_CLOSE(d, rd.value(), 0.1);
+
+      CHECK(rs2 = reader.read<unsigned short>());
+      CHECK_EQUAL(s2, rs2.value());
+
+      CHECK(rc2 = reader.read<char>());
+      CHECK_EQUAL(int(c2), int(rc2.value()));
+    }
+
+    //*************************************************************************
+    TEST(write_read_multiple_little_endian)
+    {
+      char c1 = 90;
+      char c2 = -91;
+      unsigned short s1 = 23205;
+      unsigned short s2 = 42330;
+      int32_t i1 = 1520786085;   // 0x5AA55AA5
+      int32_t i2 = -1520786086;  // 0xA55AA55A
+      float f = 3.1415927f;
+      double d = 3.1415927;
+
+      std::array<char, 100> storage;
+
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::little);
+
+      // Insert into the stream.
+      writer.write(c1);
+      writer.write(s1);
+      writer.write(i1);
+      writer.write(f);
+      writer.write(i2);
+      writer.write(d);
+      writer.write(s2);
+      writer.write(c2);
+
+      etl::byte_stream_reader reader(storage.data(), writer.size_bytes(), etl::endian::little);
 
       etl::optional<char> rc1;
       etl::optional<char> rc2;
@@ -1032,7 +1097,7 @@ namespace
     {    
       std::array<char, 2 * sizeof(Object)> storage;
 
-      etl::byte_stream_writer writer(storage.data(), storage.size());
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big);
 
       Object object1 = { -1234, 2.71578369, 250 };
       Object object2 = {  5678, 5.24685744, 126 };
@@ -1043,7 +1108,7 @@ namespace
       etl::optional<Object> object1a;
       etl::optional<Object> object2a;
 
-      etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
+      etl::byte_stream_reader reader(storage.data(), writer.size_bytes(), etl::endian::big);
 
       CHECK(object1a = etl::read<Object>(reader));
       CHECK(object2a = etl::read<Object>(reader));
@@ -1062,7 +1127,7 @@ namespace
     {
       std::array<char, 2 * sizeof(Object)> storage;
 
-      etl::byte_stream_writer writer(storage.data(), storage.size());
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big);
 
       Object object1 = { -1234, 2.71578369, 250 };
       Object object2 = { 5678, 5.24685744, 126 };
@@ -1073,7 +1138,7 @@ namespace
       Object object1a;
       Object object2a;
 
-      etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
+      etl::byte_stream_reader reader(storage.data(), writer.size_bytes(), etl::endian::big);
 
       object1a = etl::read_unchecked<Object>(reader);
       object2a = etl::read_unchecked<Object>(reader);
@@ -1096,12 +1161,12 @@ namespace
 
       std::array<char, 12> storage;
 
-      etl::byte_stream_writer writer(storage.data(), storage.size());
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big);
 
       writer.write(f);
       writer.write(d);
 
-      etl::byte_stream_reader reader(storage.data(), storage.size());
+      etl::byte_stream_reader reader(storage.data(), storage.size(), etl::endian::big);
 
       etl::optional<float>  rf;
       etl::optional<double> rd;
@@ -1120,7 +1185,7 @@ namespace
       std::array<int16_t, 4> put_data = { int16_t(0x0001), int16_t(0xA55A), int16_t(0x5AA5), int16_t(0xFFFF) };
       std::array<etl::optional<int16_t>, 4> get_data = { int16_t(0x0000), int16_t(0x0000), int16_t(0x0000), int16_t(0x0000) };
 
-      etl::byte_stream_writer writer(storage.data(), storage.size());
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big);
 
       // Insert into the stream
       writer.write(put_data[0]);
@@ -1128,7 +1193,7 @@ namespace
       writer.write(put_data[2]);
       writer.write(put_data[3]);
 
-      etl::byte_stream_reader reader(storage.data(), writer.size_bytes());
+      etl::byte_stream_reader reader(storage.data(), writer.size_bytes(), etl::endian::big);
       CHECK(get_data[0] = reader.read<int16_t>());
       CHECK_EQUAL(put_data[0], int(get_data[0].value()));
 
@@ -1155,11 +1220,11 @@ namespace
 
       etl::span<int32_t> input(put_data.begin(), put_data.end());
 
-      etl::byte_stream_writer writer(storage.data(), storage.size());
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big);
       writer.write(input);
 
       const char* read_only_storage = reinterpret_cast<const char*>(storage.data());
-      etl::byte_stream_reader reader(read_only_storage, storage.size() * sizeof(int32_t));
+      etl::byte_stream_reader reader(read_only_storage, storage.size() * sizeof(int32_t), etl::endian::big);
 
       etl::optional<etl::span<const int32_t> > result = reader.read(etl::span<int32_t>(get_data.begin(), get_data.end()));
 
