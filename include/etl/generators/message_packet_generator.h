@@ -367,6 +367,16 @@ namespace etl
 
   /*[[[cog
     import cog
+    def joined_elements(prefix, suffix, elem_fmt, joiner, elem_range, indent = None, chunk_size = 4):
+        if indent is None:
+            indent = ''
+        lines = [joiner.join([elem_fmt % i for i in r]) for r in [
+            elem_range[i:i + chunk_size] for i in range(0, len(elem_range), chunk_size)
+        ]]
+        for ix, line in enumerate(lines):
+            line = (prefix if ix == 0 else indent) + line
+            line += suffix if ix == len(lines) - 1 else joiner.rstrip()
+            cog.outl(line)
     ################################################
     # The first definition for all of the messages.
     ################################################
@@ -484,18 +494,7 @@ namespace etl
     cog.outl("  //**********************************************")
     cog.outl("  static ETL_CONSTEXPR bool accepts(etl::message_id_t id)")
     cog.outl("  {")
-    cog.outl("    switch (id)")
-    cog.outl("    {")
-    cog.out("      ")
-    for n in range(1, int(Handlers) + 1):
-        cog.out("case T%d::ID: " % n)
-        if n % 8 == 0:
-            cog.outl("")
-            cog.out("      ")
-    cog.outl("  return true;")
-    cog.outl("      default:")
-    cog.outl("        return false;")
-    cog.outl("    }")
+    joined_elements('    return ', ';', 'T%d::ID == id', ' || ', range(1, int(Handlers) + 1), ' '*11)
     cog.outl("  }")
     cog.outl("")
     cog.outl("  //**********************************************")
@@ -722,19 +721,7 @@ namespace etl
         cog.outl("  //**********************************************")
         cog.outl("  static ETL_CONSTEXPR bool accepts(etl::message_id_t id)")
         cog.outl("  {")
-        cog.outl("    switch (id)")
-        cog.outl("    {")
-        cog.out("      ")
-        for t in range(1, n + 1):
-            cog.out("case T%d::ID: " % t)
-            if t % 8 == 0:
-                cog.outl("")
-                cog.out("      ")
-        cog.outl("")
-        cog.outl("        return true;")
-        cog.outl("      default:")
-        cog.outl("        return false;")
-        cog.outl("    }")
+        joined_elements('    return ', ';', 'T%d::ID == id', ' || ', range(1, n + 1), ' '*11)
         cog.outl("  }")
         cog.outl("")
         cog.outl("  //**********************************************")
