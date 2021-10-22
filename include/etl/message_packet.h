@@ -463,14 +463,10 @@ namespace etl
     //**********************************************
     static ETL_CONSTEXPR bool accepts(etl::message_id_t id)
     {
-      switch (id)
-      {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID: case T16::ID: 
-          return true;
-        default:
-          return false;
-      }
+      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
+             T5::ID == id || T6::ID == id || T7::ID == id || T8::ID == id ||
+             T9::ID == id || T10::ID == id || T11::ID == id || T12::ID == id ||
+             T13::ID == id || T14::ID == id || T15::ID == id || T16::ID == id;
     }
 
     //**********************************************
@@ -711,14 +707,10 @@ namespace etl
     //**********************************************
     static ETL_CONSTEXPR bool accepts(etl::message_id_t id)
     {
-      switch (id)
-      {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: case T15::ID: 
-          return true;
-        default:
-          return false;
-      }
+      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
+             T5::ID == id || T6::ID == id || T7::ID == id || T8::ID == id ||
+             T9::ID == id || T10::ID == id || T11::ID == id || T12::ID == id ||
+             T13::ID == id || T14::ID == id || T15::ID == id;
     }
 
     //**********************************************
@@ -956,14 +948,10 @@ namespace etl
     //**********************************************
     static ETL_CONSTEXPR bool accepts(etl::message_id_t id)
     {
-      switch (id)
-      {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: case T14::ID: 
-          return true;
-        default:
-          return false;
-      }
+      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
+             T5::ID == id || T6::ID == id || T7::ID == id || T8::ID == id ||
+             T9::ID == id || T10::ID == id || T11::ID == id || T12::ID == id ||
+             T13::ID == id || T14::ID == id;
     }
 
     //**********************************************
@@ -1198,14 +1186,10 @@ namespace etl
     //**********************************************
     static ETL_CONSTEXPR bool accepts(etl::message_id_t id)
     {
-      switch (id)
-      {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID: case T13::ID: 
-          return true;
-        default:
-          return false;
-      }
+      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
+             T5::ID == id || T6::ID == id || T7::ID == id || T8::ID == id ||
+             T9::ID == id || T10::ID == id || T11::ID == id || T12::ID == id ||
+             T13::ID == id;
     }
 
     //**********************************************
@@ -1436,14 +1420,9 @@ namespace etl
     //**********************************************
     static ETL_CONSTEXPR bool accepts(etl::message_id_t id)
     {
-      switch (id)
-      {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
-        case T9::ID: case T10::ID: case T11::ID: case T12::ID: 
-          return true;
-        default:
-          return false;
-      }
+      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
+             T5::ID == id || T6::ID == id || T7::ID == id || T8::ID == id ||
+             T9::ID == id || T10::ID == id || T11::ID == id || T12::ID == id;
     }
 
     //**********************************************
@@ -1671,14 +1650,9 @@ namespace etl
     //**********************************************
     static ETL_CONSTEXPR bool accepts(etl::message_id_t id)
     {
-      switch (id)
-      {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
-        case T9::ID: case T10::ID: case T11::ID: 
-          return true;
-        default:
-          return false;
-      }
+      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
+             T5::ID == id || T6::ID == id || T7::ID == id || T8::ID == id ||
+             T9::ID == id || T10::ID == id || T11::ID == id;
     }
 
     //**********************************************
@@ -1903,14 +1877,9 @@ namespace etl
     //**********************************************
     static ETL_CONSTEXPR bool accepts(etl::message_id_t id)
     {
-      switch (id)
-      {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
-        case T9::ID: case T10::ID: 
-          return true;
-        default:
-          return false;
-      }
+      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
+             T5::ID == id || T6::ID == id || T7::ID == id || T8::ID == id ||
+             T9::ID == id || T10::ID == id;
     }
 
     //**********************************************
@@ -2132,14 +2101,9 @@ namespace etl
     //**********************************************
     static ETL_CONSTEXPR bool accepts(etl::message_id_t id)
     {
-      switch (id)
-      {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
-        case T9::ID: 
-          return true;
-        default:
-          return false;
-      }
+      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
+             T5::ID == id || T6::ID == id || T7::ID == id || T8::ID == id ||
+             T9::ID == id;
     }
 
     //**********************************************
@@ -2357,14 +2321,8 @@ namespace etl
     //**********************************************
     static ETL_CONSTEXPR bool accepts(etl::message_id_t id)
     {
-      switch (id)
-      {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: case T8::ID: 
-        
-          return true;
-        default:
-          return false;
-      }
+      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
+             T5::ID == id || T6::ID == id || T7::ID == id || T8::ID == id;
     }
 
     //**********************************************
@@ -2579,13 +2537,8 @@ namespace etl
     //**********************************************
     static ETL_CONSTEXPR bool accepts(etl::message_id_t id)
     {
-      switch (id)
-      {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: case T7::ID: 
-          return true;
-        default:
-          return false;
-      }
+      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
+             T5::ID == id || T6::ID == id || T7::ID == id;
     }
 
     //**********************************************
@@ -2797,13 +2750,8 @@ namespace etl
     //**********************************************
     static ETL_CONSTEXPR bool accepts(etl::message_id_t id)
     {
-      switch (id)
-      {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: case T6::ID: 
-          return true;
-        default:
-          return false;
-      }
+      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
+             T5::ID == id || T6::ID == id;
     }
 
     //**********************************************
@@ -3012,13 +2960,8 @@ namespace etl
     //**********************************************
     static ETL_CONSTEXPR bool accepts(etl::message_id_t id)
     {
-      switch (id)
-      {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: case T5::ID: 
-          return true;
-        default:
-          return false;
-      }
+      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
+             T5::ID == id;
     }
 
     //**********************************************
@@ -3223,13 +3166,7 @@ namespace etl
     //**********************************************
     static ETL_CONSTEXPR bool accepts(etl::message_id_t id)
     {
-      switch (id)
-      {
-        case T1::ID: case T2::ID: case T3::ID: case T4::ID: 
-          return true;
-        default:
-          return false;
-      }
+      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id;
     }
 
     //**********************************************
@@ -3431,13 +3368,7 @@ namespace etl
     //**********************************************
     static ETL_CONSTEXPR bool accepts(etl::message_id_t id)
     {
-      switch (id)
-      {
-        case T1::ID: case T2::ID: case T3::ID: 
-          return true;
-        default:
-          return false;
-      }
+      return T1::ID == id || T2::ID == id || T3::ID == id;
     }
 
     //**********************************************
@@ -3636,13 +3567,7 @@ namespace etl
     //**********************************************
     static ETL_CONSTEXPR bool accepts(etl::message_id_t id)
     {
-      switch (id)
-      {
-        case T1::ID: case T2::ID: 
-          return true;
-        default:
-          return false;
-      }
+      return T1::ID == id || T2::ID == id;
     }
 
     //**********************************************
@@ -3838,13 +3763,7 @@ namespace etl
     //**********************************************
     static ETL_CONSTEXPR bool accepts(etl::message_id_t id)
     {
-      switch (id)
-      {
-        case T1::ID: 
-          return true;
-        default:
-          return false;
-      }
+      return T1::ID == id;
     }
 
     //**********************************************
