@@ -1,0 +1,9 @@
+[wrap-file]
+directory = unittest-cpp-2.0.0
+source_url = https://github.com/unittest-cpp/unittest-cpp/archive/v2.0.0.zip
+source_filename = unittest-cpp-2.0.0.zip
+source_hash = 3ba4f8b6c6e75ca8c79dd6008c78e95fb08554fbf2e0f1195fb78a4bf5a8a805
+patch_url = https://wrapdb.mesonbuild.com/v2/unittest-cpp_2.0.0-1/get_patch
+patch_filename = unittest-cpp-2.0.0-1-wrap.zip
+patch_hash = a887de2b619c13fc4fd8bff844ca7015a2046dc613ae0765dd4452ff70db12ca
+
