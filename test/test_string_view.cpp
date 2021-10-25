@@ -79,7 +79,9 @@ namespace
     //*************************************************************************
     TEST(test_constexpr)
     {
+#if ETL_USE_BUILTIN_MEMMOVE
       constexpr etl::string_view b(string_view_assign());
+#endif
     }
 
     //*************************************************************************

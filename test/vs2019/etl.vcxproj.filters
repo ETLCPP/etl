@@ -1161,6 +1161,9 @@
     <ClInclude Include="..\..\include\etl\multi_span.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\determine_builtin_support.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">

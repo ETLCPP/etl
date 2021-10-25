@@ -2017,4 +2017,14 @@ namespace etl
 #endif
 }
 
+// Helper macros
+#define ETL_IS_CHAR_TYPE(type)        (etl::is_same<char, type>::value || etl::is_same<signed char, type>::value || etl::is_same<unsigned char, type>::value)
+#define ETL_IS_NOT_CHAR_TYPE(type)    (!ETL_IS_CHAR_TYPE(type))
+
+#define ETL_IS_POINTER_TYPE(type)     (etl::is_pointer<type>::value)
+#define ETL_IS_NOT_POINTER_TYPE(type) (!ETL_IS_POINTER_TYPE(type))
+
+#define ETL_TARGET_IS_TRIVIALLY_COPYABLE(type)     (etl::is_trivially_copyable<typename etl::iterator_traits<type>::value_type>::value)
+#define ETL_TARGET_IS_NOT_TRIVIALLY_COPYABLE(type) (!ETL_TARGET_IS_TRIVIALLY_COPYABLE(type))
+
 #endif // ETL_TYPE_TRAITS_INCLUDED

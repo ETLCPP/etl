@@ -211,6 +211,9 @@ SOFTWARE.
   #define ETL_CONSTINIT
 #endif
 
+// Check for availability of certain builtins
+#include "profiles/determine_builtin_support.h"
+
 // Sort out namespaces for STL/No STL options.
 #include "private/choose_namespace.h"
 

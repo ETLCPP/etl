@@ -300,7 +300,7 @@ namespace etl
     //*************************************************************************
     /// Assign from iterators
     //*************************************************************************
-    ETL_CONSTEXPR void assign(const_pointer begin_, const_pointer end_)
+    ETL_CONSTEXPR14 void assign(const_pointer begin_, const_pointer end_)
     {
       mbegin = begin_;
       mend   = end_;
@@ -309,7 +309,7 @@ namespace etl
     //*************************************************************************
     /// Assign from iterator and size.
     //*************************************************************************
-    ETL_CONSTEXPR void assign(const_pointer begin_, size_t size_)
+    ETL_CONSTEXPR14 void assign(const_pointer begin_, size_t size_)
     {
       mbegin = begin_;
       mend   = begin_ + size_;
@@ -751,7 +751,7 @@ namespace etl
     friend ETL_CONSTEXPR14 bool operator == (const etl::basic_string_view<T, TTraits>& lhs, const etl::basic_string_view<T, TTraits>& rhs)
     {
       return (lhs.size() == rhs.size()) &&
-        etl::equal(lhs.begin(), lhs.end(), rhs.begin());
+              etl::equal(lhs.begin(), lhs.end(), rhs.begin());
     }
 
     //*************************************************************************

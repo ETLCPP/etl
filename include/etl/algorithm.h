@@ -45,30 +45,22 @@ SOFTWARE.
 #include "functional.h"
 #include "utility.h"
 
-#if ETL_USING_STL
-  #include <algorithm>
-  #include <utility>
-  #include <iterator>
-  #include <functional>
-  #include <numeric>
-#endif
-
 #include "private/minmax_push.h"
 
 namespace etl
 {
   // Declare prototypes of the ETL's sort functions
   template <typename TIterator>
-  void shell_sort(TIterator first, TIterator last);
+  ETL_CONSTEXPR14 void shell_sort(TIterator first, TIterator last);
 
   template <typename TIterator, typename TCompare>
-  void shell_sort(TIterator first, TIterator last, TCompare compare);
+  ETL_CONSTEXPR14 void shell_sort(TIterator first, TIterator last, TCompare compare);
 
   template <typename TIterator>
-  void insertion_sort(TIterator first, TIterator last);
+  ETL_CONSTEXPR14 void insertion_sort(TIterator first, TIterator last);
 
   template <typename TIterator, typename TCompare>
-  void insertion_sort(TIterator first, TIterator last, TCompare compare);
+  ETL_CONSTEXPR14 void insertion_sort(TIterator first, TIterator last, TCompare compare);
 }
 
 //*****************************************************************************
@@ -76,29 +68,20 @@ namespace etl
 //*****************************************************************************
 namespace etl
 {
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // iter_swap
   template <typename TIterator1, typename TIterator2>
+  ETL_CONSTEXPR14
   void iter_swap(TIterator1 a, TIterator2 b)
   {
     using ETL_OR_STD::swap; // Allow ADL
     swap(*a, *b);
   }
-#else
-  //***************************************************************************
-  // iter_swap
-  template <typename TIterator1, typename TIterator2>
-  void iter_swap(TIterator1 a, TIterator2 b)
-  {
-    std::iter_swap(a, b);
-  }
-#endif
 
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // swap_ranges
   template <typename T1terator1, typename TIterator2>
+  ETL_CONSTEXPR14
   TIterator2 swap_ranges(T1terator1 first1,
                          T1terator1 last1,
                          TIterator2 first2)
@@ -110,41 +93,17 @@ namespace etl
 
     return first2;
   }
-#else
-  //***************************************************************************
-  // swap_ranges
-  template <typename T1terator1, typename TIterator2>
-  TIterator2 swap_ranges(T1terator1 first1,
-                         T1terator1 last1,
-                         TIterator2 first2)
-  {
-    return std::swap_ranges(first1, last1, first2);
-  }
-#endif
 
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // copy
-  // Pointer
-  template <typename TIterator1, typename TIterator2>
-  typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
-                             etl::is_pointer<TIterator2>::value &&
-                             etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
-    copy(TIterator1 sb, TIterator1 se, TIterator2 db)
-  {
-    typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
-    typedef typename etl::iterator_traits<TIterator1>::difference_type difference_t;
-
-    difference_t count = (se - sb);
-
-    return TIterator2(memmove(db, sb, sizeof(value_t) * count)) + count;
-  }
 
   // Other iterator
   template <typename TIterator1, typename TIterator2>
-  typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
-                             !etl::is_pointer<TIterator2>::value ||
-                             !etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+  ETL_CONSTEXPR14
+  typename etl::enable_if<ETL_IS_NOT_POINTER_TYPE(TIterator1) ||
+                          ETL_IS_NOT_POINTER_TYPE(TIterator2) ||
+                          ETL_TARGET_IS_NOT_TRIVIALLY_COPYABLE(TIterator1) ||
+                          ETL_TARGET_IS_NOT_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
     copy(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
     while (sb != se)
@@ -154,20 +113,61 @@ namespace etl
 
     return db;
   }
-#else
-  //***************************************************************************
-  // copy
+
+  // Pointer
+#if ETL_USE_BUILTIN_MEMMOVE
   template <typename TIterator1, typename TIterator2>
-  TIterator2 copy(TIterator1 sb, TIterator1 se, TIterator2 db)
+  ETL_CONSTEXPR14
+  typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
+                          ETL_IS_POINTER_TYPE(TIterator2) &&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator1) &&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
+    copy(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
-    return std::copy(sb, se, db);
+    typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
+    typedef typename etl::iterator_traits<TIterator1>::difference_type difference_t;
+
+    difference_t count = (se - sb);
+
+    return TIterator2(__builtin_memmove(db, sb, sizeof(value_t) * count)) + count;
+  }
+#elif ETL_FORCE_CONSTEXPR_ALGORITHMS
+  template <typename TIterator1, typename TIterator2>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
+    ETL_IS_POINTER_TYPE(TIterator2) &&
+    ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator1) &&
+    ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
+    copy(TIterator1 sb, TIterator1 se, TIterator2 db)
+  {
+    typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
+    typedef typename etl::iterator_traits<TIterator1>::difference_type difference_t;
+
+    difference_t count = (se - sb);
+
+    return TIterator2(__builtin_memmove(db, sb, sizeof(value_t) * count)) + count;
+  }
+#else
+  template <typename TIterator1, typename TIterator2>
+  typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
+                          ETL_IS_POINTER_TYPE(TIterator2) &&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator1) &&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
+    copy(TIterator1 sb, TIterator1 se, TIterator2 db)
+  {
+    typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
+    typedef typename etl::iterator_traits<TIterator1>::difference_type difference_t;
+
+    difference_t count = (se - sb);
+
+    return TIterator2(memmove(db, sb, sizeof(value_t) * count)) + count;
   }
 #endif
 
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // reverse_copy
   template <typename TIterator1, typename TIterator2>
+  ETL_CONSTEXPR14
   TIterator2 reverse_copy(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
     while (sb != se)
@@ -177,36 +177,49 @@ namespace etl
 
     return db;
   }
-#else
-  //***************************************************************************
-  // reverse_copy
-  template <typename TIterator1, typename TIterator2>
-  TIterator2 reverse_copy(TIterator1 sb, TIterator1 se, TIterator2 db)
-  {
-    return std::reverse_copy(sb, se, db);
-  }
-#endif
 
-#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   // copy_n
-  // Pointer
+  
+  // Normal iterator
   template <typename TIterator1, typename TSize, typename TIterator2>
-  typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
-                          etl::is_pointer<TIterator2>::value &&
-                          etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+  ETL_CONSTEXPR14
+  typename etl::enable_if<ETL_IS_NOT_POINTER_TYPE(TIterator1) ||
+                          ETL_IS_NOT_POINTER_TYPE(TIterator2) ||
+                          ETL_TARGET_IS_NOT_TRIVIALLY_COPYABLE(TIterator1) ||
+                          ETL_TARGET_IS_NOT_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
+    copy_n(TIterator1 sb, TSize count, TIterator2 db)
+  {
+    while (count != 0)
+    {
+      *db++ = *sb++;
+      --count;
+    }
+
+    return db;
+  }
+  
+  // Pointer
+#if ETL_USE_BUILTIN_MEMMOVE
+  template <typename TIterator1, typename TSize, typename TIterator2>
+  ETL_CONSTEXPR14
+  typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
+                          ETL_IS_POINTER_TYPE(TIterator2) &&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator1) &&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
     copy_n(TIterator1 sb, TSize count, TIterator2 db)
   {
     typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
 
-    return TIterator2(memmove(db, sb, sizeof(value_t) * count)) + count;
+    return TIterator2(__builtin_memmove(db, sb, sizeof(value_t) * count)) + count;
   }
-
-  // Other iterator
+#elif defined(ETL_FORCE_CONSTEXPR_ALGORITHMS)
   template <typename TIterator1, typename TSize, typename TIterator2>
-  typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
-                          !etl::is_pointer<TIterator2>::value ||
-                          !etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+  ETL_CONSTEXPR14
+  typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
+                          ETL_IS_POINTER_TYPE(TIterator2) &&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator1) &&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
     copy_n(TIterator1 sb, TSize count, TIterator2 db)
   {
     while (count != 0)
@@ -218,17 +231,16 @@ namespace etl
     return db;
   }
 #else
-  //***************************************************************************
-  /// copy_n
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/copy_n"></a>
-  //***************************************************************************
-  template <typename TInputIterator, typename TSize, typename TOutputIterator>
-  TOutputIterator copy_n(TInputIterator  i_begin,
-                         TSize           n,
-                         TOutputIterator o_begin)
+  template <typename TIterator1, typename TSize, typename TIterator2>
+  typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
+                          ETL_IS_POINTER_TYPE(TIterator2) &&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator1) &&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
+    copy_n(TIterator1 sb, TSize count, TIterator2 db)
   {
-    return std::copy_n(i_begin, n, o_begin);
+    typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
+
+    return TIterator2(memmove(db, sb, sizeof(value_t) * count)) + count;
   }
 #endif
 
@@ -236,10 +248,25 @@ namespace etl
   //***************************************************************************
   // copy_backward
   // Pointer
+#if ETL_USE_BUILTIN_MEMMOVE
   template <typename TIterator1, typename TIterator2>
-  typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
-                          etl::is_pointer<TIterator2>::value &&
-                          etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+  ETL_CONSTEXPR14
+  typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
+                          ETL_IS_POINTER_TYPE(TIterator2) &&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
+    copy_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
+  {
+    typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
+
+    const size_t length = (se - sb);
+
+    return TIterator2(__builtin_memmove(de - length, sb, sizeof(value_t) * length));
+  }
+#else
+  template <typename TIterator1, typename TIterator2>
+  typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1)&&
+                          ETL_IS_POINTER_TYPE(TIterator2)&&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
     copy_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
     typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
@@ -248,12 +275,14 @@ namespace etl
 
     return TIterator2(memmove(de - length, sb, sizeof(value_t) * length));
   }
+#endif
 
   // Other iterator
   template <typename TIterator1, typename TIterator2>
-  typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
-                          !etl::is_pointer<TIterator2>::value ||
-                          !etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+  ETL_CONSTEXPR14
+  typename etl::enable_if<!ETL_IS_POINTER_TYPE(TIterator1) ||
+                          !ETL_IS_POINTER_TYPE(TIterator2) ||
+                          !ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
     copy_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
     while (se != sb)
@@ -279,9 +308,10 @@ namespace etl
   // move
   // non-pointer or not trivially copyable
   template <typename TIterator1, typename TIterator2>
-  typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
-                          !etl::is_pointer<TIterator2>::value ||
-                          !etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+  ETL_CONSTEXPR14
+  typename etl::enable_if<!ETL_IS_POINTER_TYPE(TIterator1) ||
+                          !ETL_IS_POINTER_TYPE(TIterator2) ||
+                          !ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
     move(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
     while (sb != se)
@@ -292,11 +322,28 @@ namespace etl
     return db;
   }
 
+#if ETL_USE_BUILTIN_MEMMOVE
   // pointer and trivially copyable
   template <typename TIterator1, typename TIterator2>
-  typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
-                          etl::is_pointer<TIterator2>::value &&
-                          etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+  ETL_CONSTEXPR14
+  typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
+                          ETL_IS_POINTER_TYPE(TIterator2) &&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
+    move(TIterator1 sb, TIterator1 se, TIterator2 db)
+  {
+    typedef typename etl::iterator_traits<TIterator1>::value_type      value_t;
+    typedef typename etl::iterator_traits<TIterator1>::difference_type difference_t;
+
+    difference_t count = (se - sb);
+
+    return TIterator2(__builtin_memmove(db, sb, sizeof(value_t) * count)) + count;
+  }
+#else
+  // pointer and trivially copyable
+  template <typename TIterator1, typename TIterator2>
+  typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1)&&
+                          ETL_IS_POINTER_TYPE(TIterator2)&&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
     move(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
     typedef typename etl::iterator_traits<TIterator1>::value_type      value_t;
@@ -306,11 +353,12 @@ namespace etl
 
     return TIterator2(memmove(db, sb, sizeof(value_t) * count)) + count;
   }
+#endif
 #else
   //***************************************************************************
   // move
   template <typename TIterator1, typename TIterator2>
-  TIterator2 move(TIterator1 sb, TIterator1 se, TIterator2 db)
+  ETL_CONSTEXPR20 TIterator2 move(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
     return std::move(sb, se, db);
   }
@@ -333,9 +381,10 @@ namespace etl
   // move_backward
   // non-pointer, non-pod
   template <typename TIterator1, typename TIterator2>
-  typename etl::enable_if<!etl::is_pointer<TIterator1>::value ||
-                          !etl::is_pointer<TIterator2>::value ||
-                          !etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+  ETL_CONSTEXPR14
+  typename etl::enable_if<!ETL_IS_POINTER_TYPE(TIterator1) ||
+                          !ETL_IS_POINTER_TYPE(TIterator2) ||
+                          !ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
     move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
     while (sb != se)
@@ -346,11 +395,29 @@ namespace etl
     return de;
   }
 
+#if ETL_USE_BUILTIN_MEMMOVE
   // pointer and pod
   template <typename TIterator1, typename TIterator2>
-  typename etl::enable_if<etl::is_pointer<TIterator1>::value &&
-                          etl::is_pointer<TIterator2>::value &&
-                          etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, TIterator2>::type
+  ETL_CONSTEXPR14
+  typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
+                          ETL_IS_POINTER_TYPE(TIterator2) &&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
+    move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
+  {
+    typedef typename etl::iterator_traits<TIterator1>::value_type      value_t;
+    typedef typename etl::iterator_traits<TIterator1>::difference_type difference_t;
+
+    difference_t count = (se - sb);
+    TIterator2 db = de - count;
+
+    return TIterator2(__builin_memmove(db, sb, sizeof(value_t) * count)) + count;
+  }
+#else
+  // pointer and pod
+  template <typename TIterator1, typename TIterator2>
+  typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1)&&
+                          ETL_IS_POINTER_TYPE(TIterator2)&&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
     move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
     typedef typename etl::iterator_traits<TIterator1>::value_type      value_t;
@@ -361,16 +428,19 @@ namespace etl
 
     return TIterator2(memmove(db, sb, sizeof(value_t) * count)) + count;
   }
+#endif
 #else
   //***************************************************************************
   // move_backward
   template <typename TIterator1, typename TIterator2>
+  ETL_CONSTEXPR20
   TIterator2 move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
     return std::move_backward(sb, se, de);
   }
 #endif
 #else
+  // C++03
   //***************************************************************************
   // move_backward
   template <typename TIterator1, typename TIterator2>
@@ -419,11 +489,11 @@ namespace etl
   }
 #endif
 
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // lower_bound
   template<typename TIterator, typename TValue, typename TCompare>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   TIterator lower_bound(TIterator first, TIterator last, const TValue& value, TCompare compare)
   {
     typedef typename etl::iterator_traits<TIterator>::difference_type difference_t;
@@ -453,35 +523,19 @@ namespace etl
 
   template<typename TIterator, typename TValue>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   TIterator lower_bound(TIterator first, TIterator last, const TValue& value)
   {
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
 
     return etl::lower_bound(first, last, value, compare());
   }
-#else
-  //***************************************************************************
-  // lower_bound
-  template<typename TIterator, typename TValue, typename TCompare>
-  ETL_NODISCARD
-  TIterator lower_bound(TIterator first, TIterator last, const TValue& value, TCompare compare)
-  {
-    return std::lower_bound(first, last, value, compare);
-  }
 
-  template<typename TIterator, typename TValue>
-  ETL_NODISCARD
-  TIterator lower_bound(TIterator first, TIterator last, const TValue& value)
-  {
-    return std::lower_bound(first, last, value);
-  }
-#endif
-
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // upper_bound
   template<typename TIterator, typename TValue, typename TCompare>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   TIterator upper_bound(TIterator first, TIterator last, const TValue& value, TCompare compare)
   {
     typedef typename etl::iterator_traits<TIterator>::difference_type difference_t;
@@ -511,35 +565,19 @@ namespace etl
 
   template<typename TIterator, typename TValue>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   TIterator upper_bound(TIterator first, TIterator last, const TValue& value)
   {
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
 
     return etl::upper_bound(first, last, value, compare());
   }
-#else
-  //***************************************************************************
-  // upper_bound
-  template<typename TIterator, typename TValue, typename TCompare>
-  ETL_NODISCARD
-  TIterator upper_bound(TIterator first, TIterator last, const TValue& value, TCompare compare)
-  {
-    return std::upper_bound(first, last, value, compare);
-  }
 
-  template<typename TIterator, typename TValue>
-  ETL_NODISCARD
-  TIterator upper_bound(TIterator first, TIterator last, const TValue& value)
-  {
-    return std::upper_bound(first, last, value);
-  }
-#endif
-
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // equal_range
   template<typename TIterator, typename TValue, typename TCompare>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   ETL_OR_STD::pair<TIterator, TIterator> equal_range(TIterator first, TIterator last, const TValue& value, TCompare compare)
   {
     return ETL_OR_STD::make_pair(etl::lower_bound(first, last, value, compare),
@@ -555,29 +593,12 @@ namespace etl
     return ETL_OR_STD::make_pair(etl::lower_bound(first, last, value, compare()),
                                  etl::upper_bound(first, last, value, compare()));
   }
-#else
-  //***************************************************************************
-  // equal_range
-  template<typename TIterator, typename TValue, typename TCompare>
-  ETL_NODISCARD
-  std::pair<TIterator, TIterator> equal_range(TIterator first, TIterator last, const TValue& value, TCompare compare)
-  {
-    return std::equal_range(first, last, value, compare);
-  }
 
-  template<typename TIterator, typename TValue>
-  ETL_NODISCARD
-  std::pair<TIterator, TIterator> equal_range(TIterator first, TIterator last, const TValue& value)
-  {
-    return std::equal_range(first, last, value);
-  }
-#endif
-
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // find_if
   template <typename TIterator, typename TUnaryPredicate>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   TIterator find_if(TIterator first, TIterator last, TUnaryPredicate predicate)
   {
     while (first != last)
@@ -592,22 +613,12 @@ namespace etl
 
     return last;
   }
-#else
-  //***************************************************************************
-  // find_if
-  template <typename TIterator, typename TUnaryPredicate>
-  ETL_NODISCARD
-  TIterator find_if(TIterator first, TIterator last, TUnaryPredicate predicate)
-  {
-    return std::find_if(first, last, predicate);
-  }
-#endif
 
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // find
   template <typename TIterator, typename T>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   TIterator find(TIterator first, TIterator last, const T& value)
   {
     while (first != last)
@@ -622,22 +633,12 @@ namespace etl
 
     return last;
   }
-#else
-  //***************************************************************************
-  // find
-  template <typename TIterator, typename T>
-  ETL_NODISCARD
-  TIterator find(TIterator first, TIterator last, const T& value)
-  {
-    return std::find(first, last, value);
-  }
-#endif
 
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // fill
   template<typename TIterator, typename TValue>
-  typename etl::enable_if<!(etl::is_same<char, TValue>::value || etl::is_same<unsigned char, TValue>::value) || !etl::is_pointer<TIterator>::value, void>::type
+  ETL_CONSTEXPR14
+  typename etl::enable_if<ETL_IS_NOT_CHAR_TYPE(TValue) || ETL_IS_NOT_POINTER_TYPE(TIterator), void>::type
     fill(TIterator first, TIterator last, const TValue& value)
   {
     while (first != last)
@@ -646,64 +647,86 @@ namespace etl
     }
   }
 
+#if ETL_USE_BUILTIN_MEMSET
   template<typename TIterator, typename TValue>
-  typename etl::enable_if<(etl::is_same<char, TValue>::value || etl::is_same<unsigned char, TValue>::value) && etl::is_pointer<TIterator>::value, void>::type
+  ETL_CONSTEXPR14
+  typename etl::enable_if<ETL_IS_CHAR_TYPE(TValue) && ETL_IS_POINTER_TYPE(TIterator), void>::type
+    fill(TIterator first, TIterator last, const TValue& value)
+  {
+    __builtin_memset(first, value, last - first);
+  }
+#elif defined(ETL_FORCE_CONSTEXPR_ALGORITHMS)
+  template<typename TIterator, typename TValue>
+  ETL_CONSTEXPR14
+  typename etl::enable_if<ETL_IS_CHAR_TYPE(TValue) && ETL_IS_POINTER_TYPE(TIterator), void>::type
+    fill(TIterator first, TIterator last, const TValue& value)
+  {
+    while (first != last)
+    {
+      *first++ = value;
+    }
+  }
+#else
+  template<typename TIterator, typename TValue>
+  typename etl::enable_if<ETL_IS_CHAR_TYPE(TValue) && ETL_IS_POINTER_TYPE(TIterator), void>::type
     fill(TIterator first, TIterator last, const TValue& value)
   {
     memset(first, value, last - first);
   }
-#else
-  //***************************************************************************
-  // fill
-  template<typename TIterator, typename TValue>
-  void fill(TIterator first, TIterator last, const TValue& value)
-  {
-    std::fill(first, last, value);
-  }
 #endif
 
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // fill_n
   template<typename TIterator, typename TSize, typename TValue>
-  typename etl::enable_if<!(etl::is_same<char, TValue>::value || etl::is_same<unsigned char, TValue>::value) || !etl::is_pointer<TIterator>::value, TIterator>::type
+  ETL_CONSTEXPR14
+  typename etl::enable_if<ETL_IS_NOT_CHAR_TYPE(TValue) || ETL_IS_NOT_POINTER_TYPE(TIterator), TIterator>::type
     fill_n(TIterator first, TSize count, const TValue& value)
   {
-    for (TSize i = 0; i < count; ++i)
+    while (count != 0)
     {
       *first++ = value;
+      --count;
     }
 
     return first;
   }
 
+#if ETL_USE_BUILTIN_MEMSET
   template<typename TIterator, typename TSize, typename TValue>
-  typename etl::enable_if<(etl::is_same<char, TValue>::value || etl::is_same<unsigned char, TValue>::value) && etl::is_pointer<TIterator>::value, void>::type
+  ETL_CONSTEXPR14
+  typename etl::enable_if<ETL_IS_CHAR_TYPE(TValue) && ETL_IS_POINTER_TYPE(TIterator), TIterator>::type
     fill_n(TIterator first, TSize count, const TValue& value)
   {
-    memset(first, value, count);
+    return TIterator(__builtin_memset(first, value, count));
+  }
+#elif defined(ETL_FORCE_CONSTEXPR_ALGORITHMS)
+  template<typename TIterator, typename TSize, typename TValue>
+  ETL_CONSTEXPR14
+  typename etl::enable_if<ETL_IS_CHAR_TYPE(TValue) && ETL_IS_NOT_POINTER_TYPE(TIterator), TIterator>::type
+    fill_n(TIterator first, TSize count, const TValue& value)
+  {
+    while (count != 0)
+    {
+      *first++ = value;
+      --count;
+    }
+
+    return first;
   }
 #else
-  //***************************************************************************
-  // fill_n
   template<typename TIterator, typename TSize, typename TValue>
-  TIterator fill_n(TIterator first, TSize count, const TValue& value)
+  typename etl::enable_if<ETL_IS_CHAR_TYPE(TValue) && ETL_IS_POINTER_TYPE(TIterator), TIterator>::type
+    fill_n(TIterator first, TSize count, const TValue& value)
   {
-#if ETL_CPP11_SUPPORTED
-    return std::fill_n(first, count, value);
-#else
-    std::fill_n(first, count, value);
-    std::advance(first, count);
-    return first;
-#endif
+    return TIterator(memset(first, value, count));
   }
 #endif
 
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // count
   template <typename TIterator, typename T>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   typename etl::iterator_traits<TIterator>::difference_type count(TIterator first, TIterator last, const T& value)
   {
     typename iterator_traits<TIterator>::difference_type n = 0;
@@ -720,23 +743,14 @@ namespace etl
 
     return n;
   }
-#else
-  //***************************************************************************
-  // count
-  template <typename TIterator, typename T>
-  ETL_NODISCARD
-  typename std::iterator_traits<TIterator>::difference_type count(TIterator first, TIterator last, const T& value)
-  {
-    return std::count(first, last, value);
-  }
-#endif
 
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // count_if
   template <typename TIterator, typename TUnaryPredicate>
   ETL_NODISCARD
-  typename etl::iterator_traits<TIterator>::difference_type count_if(TIterator first, TIterator last, TUnaryPredicate predicate)
+  ETL_CONSTEXPR14
+  typename etl::iterator_traits<TIterator>::difference_type 
+    count_if(TIterator first, TIterator last, TUnaryPredicate predicate)
   {
     typename iterator_traits<TIterator>::difference_type n = 0;
 
@@ -752,23 +766,16 @@ namespace etl
 
     return n;
   }
-#else
-  //***************************************************************************
-  // count_if
-  template <typename TIterator, typename TUnaryPredicate>
-  ETL_NODISCARD
-  typename std::iterator_traits<TIterator>::difference_type count_if(TIterator first, TIterator last, TUnaryPredicate predicate)
-  {
-    return std::count_if(first, last, predicate);
-  }
-#endif
 
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // equal
   template <typename TIterator1, typename TIterator2>
   ETL_NODISCARD
-  typename etl::enable_if<!etl::is_pointer<TIterator1>::value || !etl::is_pointer<TIterator2>::value || !etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, bool>::type
+  ETL_CONSTEXPR14
+  typename etl::enable_if<ETL_IS_NOT_POINTER_TYPE(TIterator1) || 
+                          ETL_IS_NOT_POINTER_TYPE(TIterator2) || 
+                          ETL_TARGET_IS_NOT_TRIVIALLY_COPYABLE(TIterator1) ||
+                          ETL_TARGET_IS_NOT_TRIVIALLY_COPYABLE(TIterator2), bool>::type
     equal(TIterator1 first1, TIterator1 last1, TIterator2 first2)
   {
     while (first1 != last1)
@@ -782,57 +789,76 @@ namespace etl
     return true;
   }
 
+#if ETL_USE_BUILTIN_MEMCMP
   template <typename TIterator1, typename TIterator2>
   ETL_NODISCARD
-  typename etl::enable_if<etl::is_pointer<TIterator1>::value && etl::is_pointer<TIterator2>::value && etl::is_trivially_copyable<typename etl::iterator_traits<TIterator1>::value_type>::value, bool>::type
+  ETL_CONSTEXPR14
+  typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) && 
+                          ETL_IS_POINTER_TYPE(TIterator2) && 
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator1) && 
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), bool>::type
+    equal(TIterator1 first1, TIterator1 last1, TIterator2 first2)
+  {
+    typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
+
+    return (__builtin_memcmp(first1, first2, sizeof(value_t) * (last1 - first1)) == 0);
+  }
+#elif ETL_FORCE_CONSTEXPR_ALGORITHMS
+  template <typename TIterator1, typename TIterator2>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14
+  typename etl::enable_if<ETL_IS_NOT_POINTER_TYPE(TIterator1) ||
+                          ETL_IS_NOT_POINTER_TYPE(TIterator2) ||
+                          ETL_TARGET_IS_NOT_TRIVIALLY_COPYABLE(TIterator1) ||
+                          ETL_TARGET_IS_NOT_TRIVIALLY_COPYABLE(TIterator2), bool>::type
+    equal(TIterator1 first1, TIterator1 last1, TIterator2 first2)
+  {
+    while (first1 != last1)
+    {
+      if (*first1++ != *first2++)
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+#else
+  template <typename TIterator1, typename TIterator2>
+  ETL_NODISCARD
+  typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
+                          ETL_IS_POINTER_TYPE(TIterator2) &&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator1) &&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), bool>::type
     equal(TIterator1 first1, TIterator1 last1, TIterator2 first2)
   {
     typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
 
     return (memcmp(first1, first2, sizeof(value_t) * (last1 - first1)) == 0);
   }
+#endif
 
   template <typename TIterator1, typename TIterator2>
   ETL_NODISCARD
-    bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2, TIterator2 last2)
-  {
-    return (etl::distance(first1, last1) == etl::distance(first2, last2)) &&
-            etl::equal(first1, last1, first2);
-  }
-
-#else
-  //***************************************************************************
-  // equal
-  template <typename TIterator1, typename TIterator2>
-  ETL_NODISCARD
-  bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2)
-  {
-    return std::equal(first1, last1, first2);
-  }
-
-#if ETL_CPP14_SUPPORTED
-  template <typename TIterator1, typename TIterator2>
-  ETL_NODISCARD
-    bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2, TIterator2 last2)
-  {
-    return std::equal(first1, last1, first2, last2);
-  }
-#else
-  template <typename TIterator1, typename TIterator2>
-  ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2, TIterator2 last2)
   {
-    return (etl::distance(first1, last1) == etl::distance(first2, last2)) &&
-            etl::equal(first1, last1, first2);
-  }
-#endif
-#endif
+    while ((first1 != last1) && (first2 != last2))
+    {
+      if (*first1++ != *first2++)
+      {
+        return false;
+      }
+    }
 
-#if ETL_NOT_USING_STL
+    return (first1 == last1) && (first2 == last2);
+  }
+
   //***************************************************************************
   // lexicographical_compare
   template <typename TIterator1, typename TIterator2, typename TCompare>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool lexicographical_compare(TIterator1 first1, TIterator1 last1,
                                TIterator2 first2, TIterator2 last2,
                                TCompare compare)
@@ -860,6 +886,7 @@ namespace etl
   // lexicographical_compare
   template <typename TIterator1, typename TIterator2>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool lexicographical_compare(TIterator1 first1, TIterator1 last1,
                                TIterator2 first2, TIterator2 last2)
   {
@@ -867,106 +894,52 @@ namespace etl
 
     return etl::lexicographical_compare(first1, last1, first2, last2, compare());
   }
-#else
-  //***************************************************************************
-  // lexicographical_compare
-  template <typename TIterator1, typename TIterator2, typename TCompare>
-  ETL_NODISCARD
-  bool lexicographical_compare(TIterator1 first1, TIterator1 last1,
-                               TIterator2 first2, TIterator2 last2,
-                               TCompare compare)
-  {
-    return std::lexicographical_compare(first1, last1, first2, last2, compare);
-  }
 
-  //***************************************************************************
-  // lexicographical_compare
-  template <typename TIterator1, typename TIterator2>
-  ETL_NODISCARD
-  bool lexicographical_compare(TIterator1 first1, TIterator1 last1,
-                               TIterator2 first2, TIterator2 last2)
-  {
-    return std::lexicographical_compare(first1, last1, first2, last2);
-  }
-#endif
-
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // min
   template <typename T, typename TCompare>
   ETL_NODISCARD
-  ETL_CONSTEXPR const T& min(const T& a, const T& b, TCompare compare)
+  ETL_CONSTEXPR 
+  const T& min(const T& a, const T& b, TCompare compare)
   {
     return (compare(a, b)) ? a : b;
   }
 
   template <typename T>
   ETL_NODISCARD
-  ETL_CONSTEXPR const T& min(const T& a, const T& b)
+  ETL_CONSTEXPR 
+  const T& min(const T& a, const T& b)
   {
     typedef etl::less<T> compare;
 
     return etl::min(a, b, compare());
   }
-#else
-  //***************************************************************************
-  // min
-  template <typename T, typename TCompare>
-  ETL_NODISCARD
-  ETL_CONSTEXPR const T& min(const T& a, const T& b, TCompare compare)
-  {
-    return std::min(a, b, compare);
-  }
 
-  template <typename T>
-  ETL_NODISCARD
-  ETL_CONSTEXPR const T& min(const T& a, const T& b)
-  {
-    return std::min(a, b);
-  }
-#endif
-
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // max
   template <typename T, typename TCompare>
   ETL_NODISCARD
-  ETL_CONSTEXPR const T& max(const T& a, const T& b, TCompare compare)
+  ETL_CONSTEXPR 
+  const T& max(const T& a, const T& b, TCompare compare)
   {
     return (compare(a, b)) ? b : a;
   }
 
   template <typename T>
   ETL_NODISCARD
-  ETL_CONSTEXPR const T& max(const T& a, const T& b)
+  ETL_CONSTEXPR 
+  const T& max(const T& a, const T& b)
   {
     typedef etl::less<T> compare;
 
     return etl::max(a, b, compare());
   }
-#else
-  //***************************************************************************
-  // max
-  template <typename T, typename TCompare>
-  ETL_NODISCARD
-  ETL_CONSTEXPR const T& max(const T& a, const T& b, TCompare compare)
-  {
-    return std::max(a, b, compare);
-  }
 
-  template <typename T>
-  ETL_NODISCARD
-  ETL_CONSTEXPR const T& max(const T& a, const T& b)
-  {
-    return std::max(a, b);
-  }
-#endif
-
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // for_each
   template <typename TIterator, typename TUnaryOperation>
-  ETL_CONSTEXPR14 TUnaryOperation for_each(TIterator first, TIterator last, TUnaryOperation unary_operation)
+  ETL_CONSTEXPR14 
+  TUnaryOperation for_each(TIterator first, TIterator last, TUnaryOperation unary_operation)
   {
     while (first != last)
     {
@@ -975,20 +948,11 @@ namespace etl
 
     return unary_operation;
   }
-#else
-  //***************************************************************************
-  // for_each
-  template <typename TIterator, typename TUnaryOperation>
-  ETL_CONSTEXPR14 TUnaryOperation for_each(TIterator first, TIterator last, TUnaryOperation unary_operation)
-  {
-    return std::for_each(first, last, unary_operation);
-  }
-#endif
 
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // transform
   template <typename TIteratorIn, typename TIteratorOut, typename TUnaryOperation>
+  ETL_CONSTEXPR14
   TIteratorOut transform(TIteratorIn first1, TIteratorIn last1, TIteratorOut d_first, TUnaryOperation unary_operation)
   {
     while (first1 != last1)
@@ -1000,6 +964,7 @@ namespace etl
   }
 
   template <typename TIteratorIn1, typename TIteratorIn2, typename TIteratorOut, typename TBinaryOperation>
+  ETL_CONSTEXPR14
   TIteratorOut transform(TIteratorIn1 first1, TIteratorIn1 last1, TIteratorIn2 first2, TIteratorOut d_first, TBinaryOperation binary_operation)
   {
     while (first1 != last1)
@@ -1009,23 +974,7 @@ namespace etl
 
     return d_first;
   }
-#else
-  //***************************************************************************
-  // transform
-  template <typename TIteratorIn, typename TIteratorOut, typename TUnaryOperation>
-  TIteratorOut transform(TIteratorIn first1, TIteratorIn last1, TIteratorOut d_first, TUnaryOperation unary_operation)
-  {
-    return std::transform(first1, last1, d_first, unary_operation);
-  }
 
-  template <typename TIteratorIn1, typename TIteratorIn2, typename TIteratorOut, typename TBinaryOperation>
-  TIteratorOut transform(TIteratorIn1 first1, TIteratorIn1 last1, TIteratorIn2 first2, TIteratorOut d_first, TBinaryOperation binary_operation)
-  {
-    return std::transform(first1, last1, first2, d_first, binary_operation);
-  }
-#endif
-
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // replace
   template <typename TIterator, typename T>
@@ -1057,23 +1006,6 @@ namespace etl
       ++first;
     }
   }
-#else
-  //***************************************************************************
-  // replace
-  template <typename TIterator, typename T>
-  ETL_CONSTEXPR14 void replace(TIterator first, TIterator last, const T& old_value, const T& new_value)
-  {
-    std::replace(first, last, old_value, new_value);
-  }
-
-  //***************************************************************************
-  // replace_if
-  template <typename TIterator, typename TPredicate, typename T>
-  ETL_CONSTEXPR14 void replace_if(TIterator first, TIterator last, TPredicate predicate, const T& new_value)
-  {
-    std::replace_if(first, last, predicate, new_value);
-  }
-#endif
 
   //***************************************************************************
   // Heap
@@ -1146,7 +1078,6 @@ namespace etl
     }
   }
 
-  #if ETL_NOT_USING_STL
   // Pop Heap
   template <typename TIterator, typename TCompare>
   void pop_heap(TIterator first, TIterator last, TCompare compare)
@@ -1262,97 +1193,11 @@ namespace etl
     }
   }
 
-#else
-  //***************************************************************************
-  // Heap
-  // Pop Heap
-  template <typename TIterator, typename TCompare>
-  void pop_heap(TIterator first, TIterator last, TCompare compare)
-  {
-    std::pop_heap(first, last, compare);
-  }
-
-  // Pop Heap
-  template <typename TIterator>
-  void pop_heap(TIterator first, TIterator last)
-  {
-    std::pop_heap(first, last);
-  }
-
-  // Push Heap
-  template <typename TIterator, typename TCompare>
-  void push_heap(TIterator first, TIterator last, TCompare compare)
-  {
-    std::push_heap(first, last, compare);
-  }
-
-  // Push Heap
-  template <typename TIterator>
-  void push_heap(TIterator first, TIterator last)
-  {
-    std::push_heap(first, last);
-  }
-
-  // Make Heap
-  template <typename TIterator, typename TCompare>
-  void make_heap(TIterator first, TIterator last, TCompare compare)
-  {
-    std::make_heap(first, last, compare);
-  }
-
-  // Make Heap
-  template <typename TIterator>
-  void make_heap(TIterator first, TIterator last)
-  {
-    std::make_heap(first, last);
-  }
-
-  // Is Heap
-  template <typename TIterator, typename TCompare>
-  ETL_NODISCARD
-    bool is_heap(TIterator first, TIterator last, TCompare compare)
-  {
-#if ETL_CPP11_SUPPORTED
-    return std::is_heap(first, last, compare);
-#else
-    return private_heap::is_heap(first, last - first, compare());
-#endif
-  }
-
-  // Is Heap
-  template <typename TIterator>
-  ETL_NODISCARD
-  bool is_heap(TIterator first, TIterator last)
-  {
-#if ETL_CPP11_SUPPORTED
-    return std::is_heap(first, last);
-#else
-    typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
-    return private_heap::is_heap(first, last - first, compare());
-#endif
-  }
-
-  // Sort Heap
-  template <typename TIterator, typename TCompare>
-  void sort_heap(TIterator first, TIterator last, TCompare compare)
-  {
-    std::sort_heap(first, last, compare);
-  }
-
-  // Sort Heap
-  template <typename TIterator>
-  void sort_heap(TIterator first, TIterator last)
-  {
-    std::sort_heap(first, last);
-  }
-
-#endif
-
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // Search
   template<typename TIterator1, typename TIterator2, typename TCompare>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   TIterator1 search(TIterator1 first, TIterator1 last, TIterator2 search_first, TIterator2 search_last, TCompare compare)
   {
     while (true)
@@ -1388,38 +1233,21 @@ namespace etl
   // Search
   template<typename TIterator1, typename TIterator2>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   TIterator1 search(TIterator1 first, TIterator1 last, TIterator2 search_first, TIterator2 search_last)
   {
     typedef etl::equal_to<typename etl::iterator_traits<TIterator1>::value_type> compare;
 
     return etl::search(first, last, search_first, search_last, compare());
   }
-#else
-  //***************************************************************************
-  // Search
-  template<typename TIterator1, typename TIterator2, typename TCompare>
-  ETL_NODISCARD
-  TIterator1 search(TIterator1 first, TIterator1 last, TIterator2 search_first, TIterator2 search_last, TCompare compare)
-  {
-    return std::search(first, last, search_first, search_last, compare);
-  }
 
-  // Search
-  template<typename TIterator1, typename TIterator2>
-  ETL_NODISCARD
-  TIterator1 search(TIterator1 first, TIterator1 last, TIterator2 search_first, TIterator2 search_last)
-  {
-    return std::search(first, last, search_first, search_last);
-  }
-#endif
-
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // Rotate
   namespace private_algorithm
   {
     //*********************************
     template <typename TIterator>
+    ETL_CONSTEXPR14
     TIterator rotate_general(TIterator first, TIterator middle, TIterator last)
     {
       TIterator next = middle;
@@ -1445,6 +1273,7 @@ namespace etl
 
     //*********************************
     template <typename TIterator>
+    ETL_CONSTEXPR14
     TIterator rotate_left_by_one(TIterator first, TIterator last)
     {
       typedef typename etl::iterator_traits<TIterator>::value_type value_type;
@@ -1464,6 +1293,7 @@ namespace etl
 
     //*********************************
     template <typename TIterator>
+    ETL_CONSTEXPR14
     TIterator rotate_right_by_one(TIterator first, TIterator last)
     {
       typedef typename etl::iterator_traits<TIterator>::value_type value_type;
@@ -1485,6 +1315,7 @@ namespace etl
 
   //*********************************
   template<typename TIterator>
+  ETL_CONSTEXPR14
   TIterator rotate(TIterator first, TIterator middle, TIterator last)
   {
     if (etl::next(first) == middle)
@@ -1499,22 +1330,13 @@ namespace etl
 
     return private_algorithm::rotate_general(first, middle, last);
   }
-#else
-  //***************************************************************************
-  // Rotate
-  template<typename TIterator>
-  TIterator rotate(TIterator first, TIterator middle, TIterator last)
-  {
-    return std::rotate(first, middle, last);
-  }
-#endif
 
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // find_end
   // Predicate
   template <typename TIterator1, typename TIterator2, typename TPredicate>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   TIterator1 find_end(TIterator1 b, TIterator1 e,
                       TIterator2 sb, TIterator2 se,
                       TPredicate predicate)
@@ -1547,6 +1369,7 @@ namespace etl
   // Default
   template <typename TIterator1, typename TIterator2>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   TIterator1 find_end(TIterator1 b, TIterator1 e,
                       TIterator2 sb, TIterator2 se)
   {
@@ -1554,30 +1377,7 @@ namespace etl
 
     return find_end(b, e, sb, se, predicate());
   }
-#else
-  //***************************************************************************
-  // find_end
-  // Predicate
-  template <typename TIterator1, typename TIterator2, typename TPredicate>
-  ETL_NODISCARD
-  TIterator1 find_end(TIterator1 b, TIterator1 e,
-                      TIterator2 sb, TIterator2 se,
-                      TPredicate predicate)
-  {
-    return std::find_end(b, e, sb, se, predicate);
-  }
 
-  // Default
-  template <typename TIterator1, typename TIterator2>
-  ETL_NODISCARD
-  TIterator1 find_end(TIterator1 b, TIterator1 e,
-                      TIterator2 sb, TIterator2 se)
-  {
-    return std::find_end(b, e, sb, se);
-  }
-#endif
-
-#if ETL_NOT_USING_STL
   //***************************************************************************
   /// Finds the iterator to the smallest element in the range (begin, end).<br>
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/min_element"></a>
@@ -1585,6 +1385,7 @@ namespace etl
   //***************************************************************************
   template <typename TIterator, typename TCompare>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   TIterator min_element(TIterator begin,
                         TIterator end,
                         TCompare  compare)
@@ -1611,6 +1412,7 @@ namespace etl
   //***************************************************************************
   template <typename TIterator>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   TIterator min_element(TIterator begin,
                         TIterator end)
   {
@@ -1618,36 +1420,7 @@ namespace etl
 
     return etl::min_element(begin, end, etl::less<value_t>());
   }
-#else
-  //***************************************************************************
-  /// Finds the iterator to the smallest element in the range (begin, end).<br>
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/min_element"></a>
-  ///\ingroup algorithm
-  //***************************************************************************
-  template <typename TIterator, typename TCompare>
-  ETL_NODISCARD
-  TIterator min_element(TIterator begin,
-                        TIterator end,
-                        TCompare  compare)
-  {
-    return std::min_element(begin, end, compare);
-  }
 
-  //***************************************************************************
-  /// min_element
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/min_element"></a>
-  //***************************************************************************
-  template <typename TIterator>
-  ETL_NODISCARD
-  TIterator min_element(TIterator begin,
-                        TIterator end)
-  {
-    return std::min_element(begin, end);
-  }
-#endif
-
-#if ETL_NOT_USING_STL
   //***************************************************************************
   /// Finds the iterator to the largest element in the range (begin, end).<br>
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/max_element"></a>
@@ -1655,9 +1428,10 @@ namespace etl
   //***************************************************************************
   template <typename TIterator, typename TCompare>
   ETL_NODISCARD
-    TIterator max_element(TIterator begin,
-                          TIterator end,
-                          TCompare  compare)
+  ETL_CONSTEXPR14
+  TIterator max_element(TIterator begin,
+                        TIterator end,
+                        TCompare  compare)
   {
     TIterator maximum = begin;
 
@@ -1681,43 +1455,15 @@ namespace etl
   //***************************************************************************
   template <typename TIterator>
   ETL_NODISCARD
-    TIterator max_element(TIterator begin,
-                          TIterator end)
+  ETL_CONSTEXPR14
+  TIterator max_element(TIterator begin,
+                        TIterator end)
   {
     typedef typename etl::iterator_traits<TIterator>::value_type value_t;
 
     return etl::max_element(begin, end, etl::less<value_t>());
   }
-#else
-  //***************************************************************************
-  /// Finds the iterator to the largest element in the range (begin, end).<br>
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/max_element"></a>
-  ///\ingroup algorithm
-  //***************************************************************************
-  template <typename TIterator, typename TCompare>
-  ETL_NODISCARD
-    TIterator max_element(TIterator begin,
-                          TIterator end,
-                          TCompare  compare)
-  {
-    return std::max_element(begin, end, compare);
-  }
 
-  //***************************************************************************
-  /// max_element
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/max_element"></a>
-  //***************************************************************************
-  template <typename TIterator>
-  ETL_NODISCARD
-    TIterator max_element(TIterator begin,
-                          TIterator end)
-  {
-    return std::max_element(begin, end);
-  }
-#endif
-
-#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// Finds the greatest and the smallest element in the range (begin, end).<br>
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/minmax_element"></a>
@@ -1725,6 +1471,7 @@ namespace etl
   //***************************************************************************
   template <typename TIterator, typename TCompare>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   ETL_OR_STD::pair<TIterator, TIterator> minmax_element(TIterator begin,
                                                         TIterator end,
                                                         TCompare  compare)
@@ -1757,6 +1504,7 @@ namespace etl
   //***************************************************************************
   template <typename TIterator>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   ETL_OR_STD::pair<TIterator, TIterator> minmax_element(TIterator begin,
                                                         TIterator end)
   {
@@ -1764,36 +1512,7 @@ namespace etl
 
     return etl::minmax_element(begin, end, etl::less<value_t>());
   }
-#else
-  //***************************************************************************
-/// Finds the greatest and the smallest element in the range (begin, end).<br>
-///<a href="http://en.cppreference.com/w/cpp/algorithm/minmax_element"></a>
-///\ingroup algorithm
-//***************************************************************************
-  template <typename TIterator, typename TCompare>
-  ETL_NODISCARD
-  std::pair<TIterator, TIterator> minmax_element(TIterator begin,
-                                                 TIterator end,
-                                                 TCompare  compare)
-  {
-    return std::minmax_element(begin, end, compare);
-  }
 
-  //***************************************************************************
-  /// minmax_element
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/minmax_element"></a>
-  //***************************************************************************
-  template <typename TIterator>
-  ETL_NODISCARD
-  std::pair<TIterator, TIterator> minmax_element(TIterator begin,
-                                                 TIterator end)
-  {
-    return std::minmax_element(begin, end);
-  }
-#endif
-
-#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// minmax
   ///\ingroup algorithm
@@ -1801,6 +1520,7 @@ namespace etl
   //***************************************************************************
   template <typename T>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   ETL_OR_STD::pair<const T&, const T&> minmax(const T& a,
                                               const T& b)
   {
@@ -1814,42 +1534,14 @@ namespace etl
   //***************************************************************************
   template <typename T, typename TCompare>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   ETL_OR_STD::pair<const T&, const T&> minmax(const T& a,
                                               const T& b,
                                               TCompare compare)
   {
     return compare(b, a) ? ETL_OR_STD::pair<const T&, const T&>(b, a) : ETL_OR_STD::pair<const T&, const T&>(a, b);
   }
-#else
-  //***************************************************************************
-  /// minmax
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/minmax"></a>
-  //***************************************************************************
-  template <typename T>
-  ETL_NODISCARD
-  std::pair<const T&, const T&> minmax(const T& a,
-                                       const T& b)
-  {
-    return std::minmax(a, b);
-  }
 
-  //***************************************************************************
-  /// minmax
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/minmax"></a>
-  //***************************************************************************
-  template <typename T, typename TCompare>
-  ETL_NODISCARD
-  std::pair<const T&, const T&> minmax(const T& a,
-                                       const T& b,
-                                       TCompare compare)
-  {
-    return std::minmax(a, b, compare);
-  }
-#endif
-
-#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// is_sorted_until
   ///\ingroup algorithm
@@ -1857,6 +1549,7 @@ namespace etl
   //***************************************************************************
   template <typename TIterator>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   TIterator is_sorted_until(TIterator begin,
                             TIterator end)
   {
@@ -1885,6 +1578,7 @@ namespace etl
   //***************************************************************************
   template <typename TIterator, typename TCompare>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   TIterator is_sorted_until(TIterator begin,
                             TIterator end,
                             TCompare  compare)
@@ -1906,36 +1600,7 @@ namespace etl
 
     return end;
   }
-#else
-  //***************************************************************************
-  /// is_sorted_until
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/is_sorted_until"></a>
-  //***************************************************************************
-  template <typename TIterator>
-  ETL_NODISCARD
-  TIterator is_sorted_until(TIterator begin,
-                            TIterator end)
-  {
-    return std::is_sorted_until(begin, end);
-  }
 
-  //***************************************************************************
-  /// is_sorted_until
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/is_sorted_until"></a>
-  //***************************************************************************
-  template <typename TIterator, typename TCompare>
-  ETL_NODISCARD
-  TIterator is_sorted_until(TIterator begin,
-                            TIterator end,
-                            TCompare  compare)
-  {
-    return std::is_sorted_until(begin, end, compare);
-  }
-#endif
-
-#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// is_sorted
   ///\ingroup algorithm
@@ -1943,6 +1608,7 @@ namespace etl
   //***************************************************************************
   template<typename TIterator>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool is_sorted(TIterator begin,
                  TIterator end)
   {
@@ -1956,42 +1622,14 @@ namespace etl
   //***************************************************************************
   template<typename TIterator, typename TCompare>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool is_sorted(TIterator begin,
                  TIterator end,
                  TCompare  compare)
   {
     return etl::is_sorted_until(begin, end, compare) == end;
   }
-#else
-  //***************************************************************************
-  /// is_sorted
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/is_sorted"></a>
-  //***************************************************************************
-  template<typename TIterator>
-  ETL_NODISCARD
-  bool is_sorted(TIterator begin,
-                 TIterator end)
-  {
-    return std::is_sorted(begin, end);
-  }
 
-  //***************************************************************************
-  /// is_sorted
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/is_sorted"></a>
-  //***************************************************************************
-  template<typename TIterator, typename TCompare>
-  ETL_NODISCARD
-  bool is_sorted(TIterator begin,
-                 TIterator end,
-                 TCompare  compare)
-  {
-    return std::is_sorted(begin, end, compare);
-  }
-#endif
-
-#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// find_if_not
   ///\ingroup algorithm
@@ -1999,6 +1637,7 @@ namespace etl
   //***************************************************************************
   template <typename TIterator, typename TUnaryPredicate>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   TIterator find_if_not(TIterator       begin,
                         TIterator       end,
                         TUnaryPredicate predicate)
@@ -2015,23 +1654,7 @@ namespace etl
 
     return end;
   }
-#else
-  //***************************************************************************
-  /// find_if_not
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/find"></a>
-  //***************************************************************************
-  template <typename TIterator, typename TUnaryPredicate>
-  ETL_NODISCARD
-  TIterator find_if_not(TIterator       begin,
-                        TIterator       end,
-                        TUnaryPredicate predicate)
-  {
-    return std::find_if_not(begin, end, predicate);
-  }
-#endif
 
-#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// is_permutation
   ///\ingroup algorithm
@@ -2039,6 +1662,7 @@ namespace etl
   //***************************************************************************
   template <typename TIterator1, typename TIterator2>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool is_permutation(TIterator1 begin1,
                       TIterator1 end1,
                       TIterator2 begin2)
@@ -2073,6 +1697,7 @@ namespace etl
   //***************************************************************************
   template <typename TIterator1, typename TIterator2, typename TBinaryPredicate>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool is_permutation(TIterator1       begin1,
                       TIterator1       end1,
                       TIterator2       begin2,
@@ -2108,6 +1733,7 @@ namespace etl
   //***************************************************************************
   template <typename TIterator1, typename TIterator2>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool is_permutation(TIterator1 begin1,
                       TIterator1 end1,
                       TIterator2 begin2,
@@ -2163,71 +1789,7 @@ namespace etl
 
     return true;
   }
-#else
-  //***************************************************************************
-  /// is_permutation
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/is_permutation"></a>
-  //***************************************************************************
-  template <typename TIterator1, typename TIterator2>
-  ETL_NODISCARD
-  bool is_permutation(TIterator1 begin1,
-                      TIterator1 end1,
-                      TIterator2 begin2)
-  {
-    return std::is_permutation(begin1, end1, begin2);
-  }
 
-  //***************************************************************************
-  /// is_permutation
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/is_permutation"></a>
-  //***************************************************************************
-  template <typename TIterator1, typename TIterator2, typename TBinaryPredicate>
-  ETL_NODISCARD
-  bool is_permutation(TIterator1       begin1,
-                      TIterator1       end1,
-                      TIterator2       begin2,
-                      TBinaryPredicate predicate)
-  {
-    return std::is_permutation(begin1, end1, begin2, predicate);
-  }
-
-  #if ETL_CPP14_SUPPORTED
-  //***************************************************************************
-  /// is_permutation
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/is_permutation"></a>
-  //***************************************************************************
-  template <typename TIterator1, typename TIterator2>
-  ETL_NODISCARD
-  bool is_permutation(TIterator1 begin1,
-                      TIterator1 end1,
-                      TIterator2 begin2,
-                      TIterator2 end2)
-  {
-    return std::is_permutation(begin1, end1, begin2, end2);
-  }
-
-  //***************************************************************************
-  /// is_permutation
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/is_permutation"></a>
-  //***************************************************************************
-  template <typename TIterator1, typename TIterator2, typename TBinaryPredicate>
-  ETL_NODISCARD
-  bool is_permutation(TIterator1       begin1,
-                      TIterator1       end1,
-                      TIterator2       begin2,
-                      TIterator2       end2,
-                      TBinaryPredicate predicate)
-  {
-    return std::is_permutation(begin1, end1, begin2, end2, predicate);
-  }
-  #endif
-#endif
-
-#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// is_partitioned
   ///\ingroup algorithm
@@ -2235,6 +1797,7 @@ namespace etl
   //***************************************************************************
   template <typename TIterator, typename TUnaryPredicate>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool is_partitioned(TIterator       begin,
                       TIterator       end,
                       TUnaryPredicate predicate)
@@ -2257,23 +1820,7 @@ namespace etl
 
     return true;
   }
-#else
-  //***************************************************************************
-  /// is_partitioned
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/is_partitioned"></a>
-  //***************************************************************************
-  template <typename TIterator, typename TUnaryPredicate>
-  ETL_NODISCARD
-  bool is_partitioned(TIterator       begin,
-                      TIterator       end,
-                      TUnaryPredicate predicate)
-  {
-    return std::is_partitioned(begin, end, predicate);
-  }
-#endif
 
-#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// partition_point
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/partition_point"></a>
@@ -2281,6 +1828,7 @@ namespace etl
   //***************************************************************************
   template <typename TIterator, typename TUnaryPredicate>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   TIterator partition_point(TIterator       begin,
                             TIterator       end,
                             TUnaryPredicate predicate)
@@ -2297,23 +1845,7 @@ namespace etl
 
     return begin;
   }
-#else
-  //***************************************************************************
-  /// partition_point
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/partition_point"></a>
-  ///\ingroup algorithm
-  //***************************************************************************
-  template <typename TIterator, typename TUnaryPredicate>
-  ETL_NODISCARD
-  TIterator partition_point(TIterator       begin,
-                            TIterator       end,
-                            TUnaryPredicate predicate)
-  {
-    return std::partition_point(begin, end, predicate);
-  }
-#endif
 
-#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// Copies the elements from the range (begin, end) to two different ranges
   /// depending on the value returned by the predicate.<br>
@@ -2321,6 +1853,7 @@ namespace etl
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TSource, typename TDestinationTrue, typename TDestinationFalse, typename TUnaryPredicate>
+  ETL_CONSTEXPR14
   ETL_OR_STD::pair<TDestinationTrue, TDestinationFalse> partition_copy(TSource           begin,
                                                                        TSource           end,
                                                                        TDestinationTrue  destination_true,
@@ -2341,31 +1874,14 @@ namespace etl
 
     return ETL_OR_STD::pair<TDestinationTrue, TDestinationFalse>(destination_true, destination_false);
   }
-#else
-  //***************************************************************************
-  /// Copies the elements from the range (begin, end) to two different ranges
-  /// depending on the value returned by the predicate.<br>
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/partition_copy"></a>
-  ///\ingroup algorithm
-  //***************************************************************************
-  template <typename TSource, typename TDestinationTrue, typename TDestinationFalse, typename TUnaryPredicate>
-  std::pair<TDestinationTrue, TDestinationFalse> partition_copy(TSource           begin,
-                                                                TSource           end,
-                                                                TDestinationTrue  destination_true,
-                                                                TDestinationFalse destination_false,
-                                                                TUnaryPredicate   predicate)
-  {
-    return std::partition_copy(begin, end, destination_true, destination_false, predicate);
-  }
-#endif
 
-#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// copy_if
   ///\ingroup algorithm
   ///<a href="http://en.cppreference.com/w/cpp/algorithm/copy"></a>
   //***************************************************************************
   template <typename TIterator, typename TOutputIterator, typename TUnaryPredicate>
+  ETL_CONSTEXPR14
   TOutputIterator copy_if(TIterator       begin,
                           TIterator       end,
                           TOutputIterator out,
@@ -2383,23 +1899,7 @@ namespace etl
 
     return out;
   }
-#else
-  //***************************************************************************
-  /// copy_if
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/copy"></a>
-  //***************************************************************************
-  template <typename TIterator, typename TOutputIterator, typename TUnaryPredicate>
-  TOutputIterator copy_if(TIterator       begin,
-                          TIterator       end,
-                          TOutputIterator out,
-                          TUnaryPredicate predicate)
-  {
-    return std::copy_if(begin, end, out, predicate);
-  }
-#endif
 
-#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// all_of
   ///\ingroup algorithm
@@ -2407,29 +1907,14 @@ namespace etl
   //***************************************************************************
   template <typename TIterator, typename TUnaryPredicate>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool all_of(TIterator       begin,
               TIterator       end,
               TUnaryPredicate predicate)
   {
     return etl::find_if_not(begin, end, predicate) == end;
   }
-#else
-  //***************************************************************************
-  /// all_of
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/all_any_none_of"></a>
-  //***************************************************************************
-  template <typename TIterator, typename TUnaryPredicate>
-  ETL_NODISCARD
-  bool all_of(TIterator       begin,
-              TIterator       end,
-              TUnaryPredicate predicate)
-  {
-    return std::all_of(begin, end, predicate);
-  }
-#endif
 
-#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// any_of
   ///\ingroup algorithm
@@ -2437,29 +1922,14 @@ namespace etl
   //***************************************************************************
   template <typename TIterator, typename TUnaryPredicate>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool any_of(TIterator       begin,
               TIterator       end,
               TUnaryPredicate predicate)
   {
     return etl::find_if(begin, end, predicate) != end;
   }
-#else
-  //***************************************************************************
-  /// any_of
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/all_any_none_of"></a>
-  //***************************************************************************
-  template <typename TIterator, typename TUnaryPredicate>
-  ETL_NODISCARD
-  bool any_of(TIterator       begin,
-              TIterator       end,
-              TUnaryPredicate predicate)
-  {
-    return std::any_of(begin, end, predicate);
-  }
-#endif
 
-#if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// none_of
   ///\ingroup algorithm
@@ -2467,27 +1937,13 @@ namespace etl
   //***************************************************************************
   template <typename TIterator, typename TUnaryPredicate>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   bool none_of(TIterator       begin,
                TIterator       end,
                TUnaryPredicate predicate)
   {
     return etl::find_if(begin, end, predicate) == end;
   }
-#else
-  //***************************************************************************
-  /// none_of
-  ///\ingroup algorithm
-  ///<a href="http://en.cppreference.com/w/cpp/algorithm/all_any_none_of"></a>
-  //***************************************************************************
-  template <typename TIterator, typename TUnaryPredicate>
-  ETL_NODISCARD
-  bool none_of(TIterator       begin,
-               TIterator       end,
-               TUnaryPredicate predicate)
-  {
-    return std::none_of(begin, end, predicate);
-  }
-#endif
 
 #if ETL_NOT_USING_STL
   //***************************************************************************
@@ -2579,13 +2035,13 @@ namespace etl
   }
 #endif
 
-#if ETL_NOT_USING_STL
   //***************************************************************************
   /// Accumulates values.
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TIterator, typename T>
-  ETL_CONSTEXPR14 T accumulate(TIterator first, TIterator last, T sum)
+  ETL_CONSTEXPR14 
+  T accumulate(TIterator first, TIterator last, T sum)
   {
     while (first != last)
     {
@@ -2600,7 +2056,8 @@ namespace etl
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TIterator, typename T, typename TBinaryOperation>
-  ETL_CONSTEXPR14 T accumulate(TIterator first, TIterator last, T sum, TBinaryOperation operation)
+  ETL_CONSTEXPR14 
+  T accumulate(TIterator first, TIterator last, T sum, TBinaryOperation operation)
   {
     while (first != last)
     {
@@ -2609,119 +2066,80 @@ namespace etl
 
     return sum;
   }
-#else
-  //***************************************************************************
-  /// Accumulates values.
-  ///\ingroup algorithm
-  //***************************************************************************
-  template<typename TIterator, typename T>
-  ETL_CONSTEXPR14 T accumulate(TIterator first, TIterator last, T sum)
-  {
-    return std::accumulate(first, last, sum);
-  }
-
-  //***************************************************************************
-  /// Accumulates values.
-  ///\ingroup algorithm
-  //***************************************************************************
-  template<typename TIterator, typename T, typename TBinaryOperation>
-  ETL_CONSTEXPR14 T accumulate(TIterator first, TIterator last, T sum, TBinaryOperation operation)
-  {
-    return std::accumulate(first, last, sum, operation);
-  }
-#endif
 
   //***************************************************************************
   /// Clamp values.
   ///\ingroup algorithm
   //***************************************************************************
   template<typename T, typename TCompare>
-  ETL_CONSTEXPR const T& clamp(const T& value, const T& low, const T& high, TCompare compare)
+  ETL_CONSTEXPR 
+  const T& clamp(const T& value, const T& low, const T& high, TCompare compare)
   {
     return compare(value, low) ? low : compare(high, value) ? high : value;
   }
   
   template <typename T>
-  ETL_CONSTEXPR const T& clamp(const T& value, const T& low, const T& high )
+  ETL_CONSTEXPR 
+  const T& clamp(const T& value, const T& low, const T& high )
   {
     return clamp(value, low, high, etl::less<T>());
   }
 
-  #if ETL_NOT_USING_STL
-    //***************************************************************************
-    /// Remove
-    ///\ingroup algorithm
-    //***************************************************************************
-    template <typename TIterator, typename T>
-    TIterator remove(TIterator first, TIterator last, const T& value)
-    {
-      first = etl::find(first, last, value);
+  //***************************************************************************
+  /// Remove
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename T>
+  ETL_CONSTEXPR14
+  TIterator remove(TIterator first, TIterator last, const T& value)
+  {
+    first = etl::find(first, last, value);
       
-      if (first != last)
+    if (first != last)
+    {
+      TIterator itr = first;
+
+      while (itr != last)
       {
-        TIterator itr = first;
-
-        while (itr != last)
+        if (!(*itr == value))
         {
-          if (!(*itr == value))
-          {
-            *first++ = etl::move(*itr);
-          }
-
-          ++itr;
+          *first++ = etl::move(*itr);
         }
+
+        ++itr;
       }
+    }
       
-      return first;
-    }
+    return first;
+  }
 
-    //***************************************************************************
-    /// Remove If
-    ///\ingroup algorithm
-    //***************************************************************************
-    template <typename TIterator, typename TUnaryPredicate>
-    TIterator remove_if(TIterator first, TIterator last, TUnaryPredicate predicate)
+  //***************************************************************************
+  /// Remove If
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TIterator, typename TUnaryPredicate>
+  ETL_CONSTEXPR14
+  TIterator remove_if(TIterator first, TIterator last, TUnaryPredicate predicate)
+  {
+    first = etl::find_if(first, last, predicate);
+
+    if (first != last)
     {
-      first = etl::find_if(first, last, predicate);
+      TIterator itr = first;
 
-      if (first != last)
+      while (itr != last)
       {
-        TIterator itr = first;
-
-        while (itr != last)
+        if (!predicate(*itr))
         {
-          if (!predicate(*itr))
-          {
-            *first++ = etl::move(*itr);
-          }
-
-          ++itr;
+          *first++ = etl::move(*itr);
         }
+
+        ++itr;
       }
-
-      return first;
-    }
-  #else
-    //***************************************************************************
-    /// Remove
-    ///\ingroup algorithm
-    //***************************************************************************
-    template <typename TIterator, typename T>
-    TIterator remove(TIterator first, TIterator last, const T& value)
-    {
-      return std::remove(first, last, value);
     }
 
-    //***************************************************************************
-    /// Remove If
-    ///\ingroup algorithm
-    //***************************************************************************
-    template <typename TIterator, typename TUnaryPredicate>
-    TIterator remove_if(TIterator first, TIterator last, TUnaryPredicate predicate)
-    {
-      return std::remove_if(first, last, predicate);
-    }
-  #endif
+    return first;
+  }
 }
 
 //*****************************************************************************
@@ -2742,6 +2160,7 @@ namespace etl
   //***************************************************************************
   template <typename TInputIterator,
             typename TOutputIterator>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_random_iterator<TInputIterator>::value &&
                           etl::is_random_iterator<TOutputIterator>::value, TOutputIterator>::type
    copy_s(TInputIterator  i_begin,
@@ -2769,6 +2188,7 @@ namespace etl
   //***************************************************************************
   template <typename TInputIterator,
             typename TOutputIterator>
+  ETL_CONSTEXPR14
   typename etl::enable_if<!etl::is_random_iterator<TInputIterator>::value ||
                           !etl::is_random_iterator<TOutputIterator>::value, TOutputIterator>::type
    copy_s(TInputIterator  i_begin,
@@ -2792,6 +2212,7 @@ namespace etl
   template <typename TInputIterator,
             typename TSize,
             typename TOutputIterator>
+  ETL_CONSTEXPR14
   TOutputIterator copy_n_s(TInputIterator  i_begin,
                            TSize           n,
                            TOutputIterator o_begin,
@@ -2814,6 +2235,7 @@ namespace etl
             typename TSize1,
             typename TOutputIterator,
             typename TSize2>
+  ETL_CONSTEXPR14
   TOutputIterator copy_n_s(TInputIterator  i_begin,
                            TSize1          n1,
                            TOutputIterator o_begin,
@@ -2836,6 +2258,7 @@ namespace etl
   template <typename TInputIterator,
             typename TOutputIterator,
             typename TUnaryPredicate>
+  ETL_CONSTEXPR14
   TOutputIterator copy_if_s(TInputIterator  i_begin,
                             TInputIterator  i_end,
                             TOutputIterator o_begin,
@@ -2864,6 +2287,7 @@ namespace etl
             typename TSize,
             typename TOutputIterator,
             typename TUnaryPredicate>
+  ETL_CONSTEXPR14
   TOutputIterator copy_n_if(TInputIterator  i_begin,
                             TSize           n,
                             TOutputIterator o_begin,
@@ -2894,8 +2318,8 @@ namespace etl
   ///\param o_end   End of the output range.
   ///\ingroup algorithm
   //***************************************************************************
-  template <typename TInputIterator,
-  typename TOutputIterator>
+  template <typename TInputIterator, typename TOutputIterator>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_random_iterator<TInputIterator>::value &&
                           etl::is_random_iterator<TOutputIterator>::value, TOutputIterator>::type
   move_s(TInputIterator  i_begin,
@@ -2921,8 +2345,8 @@ namespace etl
   ///\param o_end   End of the output range.
   ///\ingroup algorithm
   //***************************************************************************
-  template <typename TInputIterator,
-  typename TOutputIterator>
+  template <typename TInputIterator, typename TOutputIterator>
+  ETL_CONSTEXPR14
   typename etl::enable_if<!etl::is_random_iterator<TInputIterator>::value ||
                           !etl::is_random_iterator<TOutputIterator>::value, TOutputIterator>::type
   move_s(TInputIterator  i_begin,
@@ -2968,6 +2392,7 @@ namespace etl
   //***************************************************************************
   template <typename TIterator, typename TValue>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   TIterator binary_find(TIterator     begin,
                         TIterator     end,
                         const TValue& value)
@@ -2992,6 +2417,7 @@ namespace etl
             typename TBinaryPredicate,
             typename TBinaryEquality>
   ETL_NODISCARD
+  ETL_CONSTEXPR14
   TIterator binary_find(TIterator        begin,
                         TIterator        end,
                         const TValue&    value,
@@ -3015,6 +2441,7 @@ namespace etl
   template <typename TIterator,
             typename TUnaryFunction,
             typename TUnaryPredicate>
+  ETL_CONSTEXPR14
   TUnaryFunction for_each_if(TIterator       begin,
                              const TIterator end,
                              TUnaryFunction  function,
@@ -3040,6 +2467,7 @@ namespace etl
   template <typename TIterator,
             typename TSize,
             typename TUnaryFunction>
+  ETL_CONSTEXPR14
   TIterator for_each_n(TIterator       begin,
                        TSize           n,
                        TUnaryFunction  function)
@@ -3060,6 +2488,7 @@ namespace etl
             typename TSize,
             typename TUnaryFunction,
             typename TUnaryPredicate>
+  ETL_CONSTEXPR14
   TIterator for_each_n_if(TIterator       begin,
                           TSize           n,
                           TUnaryFunction  function,
@@ -3085,6 +2514,7 @@ namespace etl
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TInputIterator, typename TOutputIterator, typename TUnaryFunction>
+  ETL_CONSTEXPR14
   TOutputIterator transform_s(TInputIterator  i_begin,
                               TInputIterator  i_end,
                               TOutputIterator o_begin,
@@ -3109,6 +2539,7 @@ namespace etl
             typename TSize,
             typename TOutputIterator,
             typename TUnaryFunction>
+  ETL_CONSTEXPR14
   void transform_n(TInputIterator  i_begin,
                    TSize           n,
                    TOutputIterator o_begin,
@@ -3131,6 +2562,7 @@ namespace etl
             typename TSize,
             typename TOutputIterator,
             typename TBinaryFunction>
+  ETL_CONSTEXPR14
   void transform_n(TInputIterator1 i_begin1,
                    TInputIterator2 i_begin2,
                    TSize           n,
@@ -3151,6 +2583,7 @@ namespace etl
             typename TOutputIterator,
             typename TUnaryFunction,
             typename TUnaryPredicate>
+  ETL_CONSTEXPR14
   TOutputIterator transform_if(TInputIterator       i_begin,
                                const TInputIterator i_end,
                                TOutputIterator      o_begin,
@@ -3179,6 +2612,7 @@ namespace etl
             typename TOutputIterator,
             typename TBinaryFunction,
             typename TBinaryPredicate>
+  ETL_CONSTEXPR14
   TOutputIterator transform_if(TInputIterator1       i_begin1,
                                const TInputIterator1 i_end1,
                                TInputIterator2       i_begin2,
@@ -3209,6 +2643,7 @@ namespace etl
             typename TOutputIterator,
             typename TUnaryFunction,
             typename TUnaryPredicate>
+  ETL_CONSTEXPR14
   TOutputIterator transform_n_if(TInputIterator  i_begin,
                                  TSize           n,
                                  TOutputIterator o_begin,
@@ -3238,6 +2673,7 @@ namespace etl
             typename TOutputIterator,
             typename TBinaryFunction,
             typename TBinaryPredicate>
+  ETL_CONSTEXPR14
   TOutputIterator transform_n_if(TInputIterator1  i_begin1,
                                  TInputIterator2  i_begin2,
                                  TSize            n,
@@ -3267,6 +2703,7 @@ namespace etl
   template <typename TSource, typename TDestinationTrue, typename TDestinationFalse,
             typename TUnaryFunctionTrue, typename TUnaryFunctionFalse,
             typename TUnaryPredicate>
+  ETL_CONSTEXPR14
   ETL_OR_STD::pair<TDestinationTrue, TDestinationFalse> partition_transform(TSource             begin,
                                                                             TSource             end,
                                                                             TDestinationTrue    destination_true,
@@ -3302,6 +2739,7 @@ namespace etl
             typename TBinaryFunctionTrue,
             typename TBinaryFunctionFalse,
             typename TBinaryPredicate>
+  ETL_CONSTEXPR14
   ETL_OR_STD::pair<TDestinationTrue, TDestinationFalse> partition_transform(TSource1             begin1,
                                                                             TSource1             end1,
                                                                             TSource2             begin2,
@@ -3332,6 +2770,7 @@ namespace etl
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TIterator, typename TCompare>
+  ETL_CONSTEXPR14
   void shell_sort(TIterator first, TIterator last, TCompare compare)
   {
     if (first == last)
@@ -3369,6 +2808,7 @@ namespace etl
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TIterator>
+  ETL_CONSTEXPR14
   void shell_sort(TIterator first, TIterator last)
   {
     etl::shell_sort(first, last, etl::less<typename etl::iterator_traits<TIterator>::value_type>());
@@ -3380,6 +2820,7 @@ namespace etl
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TIterator, typename TCompare>
+  ETL_CONSTEXPR14
   void insertion_sort(TIterator first, TIterator last, TCompare compare)
   {
     for (TIterator itr = first; itr != last; ++itr)
@@ -3393,6 +2834,7 @@ namespace etl
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TIterator>
+  ETL_CONSTEXPR14
   void insertion_sort(TIterator first, TIterator last)
   {
     etl::insertion_sort(first, last, etl::less<typename etl::iterator_traits<TIterator>::value_type>());
@@ -3402,6 +2844,7 @@ namespace etl
   namespace private_algorithm
   {
     template <typename TIterator>
+    ETL_CONSTEXPR14
     typename etl::enable_if<etl::is_forward_iterator<TIterator>::value, TIterator>::type
       get_before_last(TIterator first_, TIterator last_)
     {
@@ -3419,6 +2862,7 @@ namespace etl
     }
 
     template <typename TIterator>
+    ETL_CONSTEXPR14
     typename etl::enable_if<etl::is_bidirectional_iterator<TIterator>::value, TIterator>::type
       get_before_last(TIterator /*first_*/, TIterator last_)
     {
@@ -3429,6 +2873,7 @@ namespace etl
     }
 
     template <typename TIterator>
+    ETL_CONSTEXPR14
     typename etl::enable_if<etl::is_random_access_iterator<TIterator>::value, TIterator>::type
       get_before_last(TIterator /*first_*/, TIterator last_)
     {
@@ -3442,6 +2887,7 @@ namespace etl
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TIterator, typename TCompare>
+  ETL_CONSTEXPR14
   void selection_sort(TIterator first, TIterator last, TCompare compare)
   {
     TIterator min;
@@ -3473,6 +2919,7 @@ namespace etl
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TIterator>
+  ETL_CONSTEXPR14
   void selection_sort(TIterator first, TIterator last)
   {
     selection_sort(first, last, etl::less<typename etl::iterator_traits<TIterator>::value_type>());
@@ -3483,7 +2930,8 @@ namespace etl
   /// Uses user defined comparison.
   ///\ingroup algorithm
   //***************************************************************************
-  template <typename TIterator, typename TCompare >
+  template <typename TIterator, typename TCompare>
+  ETL_CONSTEXPR14
   void heap_sort(TIterator first, TIterator last, TCompare compare)
   {
     if (!etl::is_heap(first, last, compare))
@@ -3499,6 +2947,7 @@ namespace etl
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TIterator>
+  ETL_CONSTEXPR14
   void heap_sort(TIterator first, TIterator last)
   {
     if (!etl::is_heap(first, last))
