@@ -367,16 +367,16 @@ namespace etl
 
   /*[[[cog
     import cog
-    def joined_elements(prefix, suffix, elem_fmt, joiner, elem_range, indent = None, chunk_size = 4):
-        if indent is None:
-            indent = ''
-        lines = [joiner.join([elem_fmt % i for i in r]) for r in [
-            elem_range[i:i + chunk_size] for i in range(0, len(elem_range), chunk_size)
-        ]]
-        for ix, line in enumerate(lines):
-            line = (prefix if ix == 0 else indent) + line
-            line += suffix if ix == len(lines) - 1 else joiner.rstrip()
-            cog.outl(line)
+    def accepts_return(num_id):
+        cog.out("    return")
+        for i in range(1, num_id + 1):
+            cog.out(" T%d::ID == id" % i)
+            if i < num_id:
+                cog.out(" ||")
+                if i % 4 == 0:
+                    cog.outl("")
+                    cog.out("          ")
+        cog.outl(";")
     ################################################
     # The first definition for all of the messages.
     ################################################
@@ -494,7 +494,7 @@ namespace etl
     cog.outl("  //**********************************************")
     cog.outl("  static ETL_CONSTEXPR bool accepts(etl::message_id_t id)")
     cog.outl("  {")
-    joined_elements('    return ', ';', 'T%d::ID == id', ' || ', range(1, int(Handlers) + 1), ' '*11)
+    accepts_return(int(Handlers))
     cog.outl("  }")
     cog.outl("")
     cog.outl("  //**********************************************")
@@ -721,7 +721,7 @@ namespace etl
         cog.outl("  //**********************************************")
         cog.outl("  static ETL_CONSTEXPR bool accepts(etl::message_id_t id)")
         cog.outl("  {")
-        joined_elements('    return ', ';', 'T%d::ID == id', ' || ', range(1, n + 1), ' '*11)
+        accepts_return(n)
         cog.outl("  }")
         cog.outl("")
         cog.outl("  //**********************************************")
