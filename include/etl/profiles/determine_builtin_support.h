@@ -32,7 +32,6 @@ SOFTWARE.
 #define ETL_DETERMINE_BUILTIN_SUPPORT_H_INCLUDED
 
 #if defined(ETL_USE_MEM_BUILTINS) // Set all of them to be true if not already defined
-
   #if !defined(ETL_USE_BUILTIN_MEMCMP)
     #define ETL_USE_BUILTIN_MEMCMP 1
   #endif
@@ -44,11 +43,9 @@ SOFTWARE.
   #if !defined(ETL_USE_BUILTIN_MEMSET)
     #define ETL_USE_BUILTIN_MEMSET 1
   #endif
-
 #endif
 
 #if defined(ETL_USE_TYPE_TRAITS_BUILTINS) // Set all of them to be true if not already defined
-
   #if !defined(ETL_USE_BUILTIN_IS_ASSIGNABLE)
     #define ETL_USE_BUILTIN_IS_ASSIGNABLE 1
   #endif
@@ -68,11 +65,9 @@ SOFTWARE.
   #if !defined(ETL_USE_BUILTIN_IS_TRIVIALLY_COPYABLE)
     #define ETL_USE_BUILTIN_IS_TRIVIALLY_COPYABLE 1
   #endif
-
 #endif
 
 #if defined(__has_builtin) && (!defined(ETL_USE_MEM_BUILTINS) || !defined(ETL_USE_TYPE_TRAITS_BUILTINS)) // Use __has_builtin to check for existence of builtin functions, if not already defined
-
   #if !defined(ETL_USE_BUILTIN_MEMCMP)
     #define ETL_USE_BUILTIN_MEMCMP  __has_builtin(__builtin_memcmp)
   #endif
@@ -104,9 +99,7 @@ SOFTWARE.
   #if !defined(ETL_USE_BUILTIN_IS_TRIVIALLY_COPYABLE)
     #define ETL_USE_BUILTIN_IS_TRIVIALLY_COPYABLE (__has_builtin(__has_trivial_copy) || __has_builtin(__is_trivially_copyable))
   #endif
-
-#if !defined(__has_builtin) && !defined(ETL_USE_MEM_BUILTINS) && !defined(ETL_USE_TYPE_TRAITS_BUILTINS) // Set all of them to be false if not already defined
-
+#else
   #if !defined(ETL_USE_BUILTIN_MEMCMP)
     #define ETL_USE_BUILTIN_MEMCMP 0
   #endif
@@ -138,7 +131,6 @@ SOFTWARE.
   #if !defined(ETL_USE_BUILTIN_IS_TRIVIALLY_COPYABLE)
     #define ETL_USE_BUILTIN_IS_TRIVIALLY_COPYABLE 0
   #endif
-
 #endif
 
 #endif
