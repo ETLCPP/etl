@@ -367,6 +367,16 @@ namespace etl
 
   /*[[[cog
     import cog
+    def accepts_return(num_id):
+        cog.out("    return")
+        for i in range(1, num_id + 1):
+            cog.out(" T%d::ID == id" % i)
+            if i < num_id:
+                cog.out(" ||")
+                if i % 4 == 0:
+                    cog.outl("")
+                    cog.out("          ")
+        cog.outl(";")
     ################################################
     # The first definition for all of the messages.
     ################################################
@@ -484,18 +494,7 @@ namespace etl
     cog.outl("  //**********************************************")
     cog.outl("  static ETL_CONSTEXPR bool accepts(etl::message_id_t id)")
     cog.outl("  {")
-    cog.outl("    switch (id)")
-    cog.outl("    {")
-    cog.out("      ")
-    for n in range(1, int(Handlers) + 1):
-        cog.out("case T%d::ID: " % n)
-        if n % 8 == 0:
-            cog.outl("")
-            cog.out("      ")
-    cog.outl("  return true;")
-    cog.outl("      default:")
-    cog.outl("        return false;")
-    cog.outl("    }")
+    accepts_return(int(Handlers))
     cog.outl("  }")
     cog.outl("")
     cog.outl("  //**********************************************")
@@ -722,19 +721,7 @@ namespace etl
         cog.outl("  //**********************************************")
         cog.outl("  static ETL_CONSTEXPR bool accepts(etl::message_id_t id)")
         cog.outl("  {")
-        cog.outl("    switch (id)")
-        cog.outl("    {")
-        cog.out("      ")
-        for t in range(1, n + 1):
-            cog.out("case T%d::ID: " % t)
-            if t % 8 == 0:
-                cog.outl("")
-                cog.out("      ")
-        cog.outl("")
-        cog.outl("        return true;")
-        cog.outl("      default:")
-        cog.outl("        return false;")
-        cog.outl("    }")
+        accepts_return(n)
         cog.outl("  }")
         cog.outl("")
         cog.outl("  //**********************************************")
