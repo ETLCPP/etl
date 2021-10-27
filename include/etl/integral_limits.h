@@ -92,14 +92,16 @@ namespace etl
   //***************************************************************************
   ///\ingroup integral_limits
   //***************************************************************************
+#pragma warning( disable : 4309 )
   template <>
   struct integral_limits<char>
   {
     static ETL_CONSTANT char min       = (etl::is_signed<char>::value) ? SCHAR_MIN : 0;
-    static ETL_CONSTANT char max       = (etl::is_signed<char>::value) ? SCHAR_MAX : char(UCHAR_MAX);
+    static ETL_CONSTANT char max       = (etl::is_signed<char>::value) ? SCHAR_MAX : static_cast<char>(UCHAR_MAX);
     static ETL_CONSTANT int bits       = CHAR_BIT;
     static ETL_CONSTANT bool is_signed = etl::is_signed<char>::value;
   };
+#pragma warning( default : 4309 )
 
   //***************************************************************************
   ///\ingroup integral_limits
