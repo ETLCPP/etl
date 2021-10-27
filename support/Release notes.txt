@@ -5,6 +5,11 @@ Removed conanfile.py. Now controlled by conan repository.
 Fixed missing 'typename' keyword in etl::multi_span.
 Added missing explicit initialisation from in_place structures.
 Fixed hidden parameter warning in unordered_map, unordered_multimap, unordered_set, unordered_multiset.
+Disable etl::begin(), etl::end() and  etl::size() for STL & >= C++11.
+Add available_bytes to byte_stream_reader & byte_stream_writer.
+Meson tests & style fix (#447).
+Fix constexpr accepts() implementation to be C++11 compliant (#451, #452)
+Fix-compiler-error-msvc-16 #454
 
 ===============================================================================
 20.18.1
