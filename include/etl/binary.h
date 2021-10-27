@@ -870,7 +870,7 @@ namespace etl
     count = ((count >> 4U) + count) & 0x0F0FU;
     count = ((count >> 8U) + count) & 0x00FFU;
 
-    return count;
+    return static_cast<uint_least8_t>(count);
   }
 
   inline ETL_CONSTEXPR14 uint_least8_t count_bits(int16_t value)
@@ -892,7 +892,7 @@ namespace etl
     count = ((count >> 8U)  + count) & 0x00FF00FFUL;
     count = ((count >> 16U) + count) & 0x0000FFUL;
 
-    return uint_least8_t(count);
+    return static_cast<uint_least8_t>(count);;
   }
 
   inline ETL_CONSTEXPR14 uint_least8_t count_bits(int32_t value)
@@ -916,7 +916,7 @@ namespace etl
     count = ((count >> 16U) + count) & 0x0000FFFF0000FFFFULL;
     count = ((count >> 32U) + count) & 0x00000000FFFFFFFFULL;
 
-    return uint_least8_t(count);
+    return static_cast<uint_least8_t>(count);
   }
 
   inline ETL_CONSTEXPR14 uint_least8_t count_bits(int64_t value)
