@@ -92,7 +92,10 @@ namespace etl
   //***************************************************************************
   ///\ingroup integral_limits
   //***************************************************************************
-#pragma warning( disable : 4309 )
+#if defined(ETL_COMPILER_MICROSOFT)
+  #pragma warning(push)
+  #pragma warning(disable : 4309)
+#endif
   template <>
   struct integral_limits<char>
   {
@@ -101,7 +104,9 @@ namespace etl
     static ETL_CONSTANT int bits       = CHAR_BIT;
     static ETL_CONSTANT bool is_signed = etl::is_signed<char>::value;
   };
-#pragma warning( default : 4309 )
+#if defined(ETL_COMPILER_MICROSOFT)
+  #pragma warning(pop)
+#endif
 
   //***************************************************************************
   ///\ingroup integral_limits
