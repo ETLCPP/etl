@@ -353,7 +353,7 @@ namespace etl
         p_value = p_next;
 
         ++items_allocated;
-        if (items_allocated != Max_Size)
+        if (items_allocated < Max_Size)
         {
           // Set up the pointer to the next free item
           p_next = *reinterpret_cast<char**>(p_next);
