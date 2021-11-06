@@ -46,6 +46,7 @@ namespace etl
     typedef TFormat                          format_spec_type;
     typedef TIString                         istring_type;
     typedef typename TIString::value_type    value_type;
+    typedef typename TIString::pointer       pointer;
     typedef typename TIString::const_pointer const_pointer;
 
     //*************************************************************************
@@ -218,7 +219,17 @@ namespace etl
     }
 
     //*********************************
-    /// From a const pointer to a string
+    /// From a character pointer to a string
+    //*********************************
+    friend basic_string_stream& operator <<(basic_string_stream& ss, pointer p)
+    {
+      TStringView view(p);
+      ss << view;
+      return ss;
+    }
+
+    //*********************************
+    /// From a const character pointer to a string
     //*********************************
     friend basic_string_stream& operator <<(basic_string_stream& ss, const_pointer p)
     {

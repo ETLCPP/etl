@@ -561,14 +561,14 @@ namespace etl
       -> array<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
 #endif  
 
-#if ETL_CPP11_SUPPORTED
-  template <typename... T>
-  constexpr auto make_array(T&&... t)
-    -> etl::array<std::common_type_t<T...>, sizeof...(T)>
-  {
-    return { { etl::forward<T>(t)... } };
-  }
-#endif
+//#if ETL_CPP11_SUPPORTED
+//  template <typename... T>
+//  constexpr auto make_array(T&&... t)
+//    -> etl::array<std::common_type_t<T...>, sizeof...(T)>
+//  {
+//    return { { etl::forward<T>(t)... } };
+//  }
+//#endif
 
   //*************************************************************************
   /// Overloaded swap for etl::array<T, SIZE>
