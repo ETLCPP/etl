@@ -1466,7 +1466,7 @@ namespace etl
       base::assign(first_, last_);
     }
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+#if ETL_USING_INITIALIZER_LIST
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
@@ -1528,10 +1528,22 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
-  template <typename T, typename... Ts>
-  unordered_multiset(T, Ts...)
-    ->unordered_multiset<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
+#if ETL_CPP17_SUPPORTED
+  template <typename... T>
+  unordered_multiset(T...) -> unordered_multiset<typename etl::common_type_t<T...>,
+                                                 sizeof...(T)>;
+#endif
+
+  //*************************************************************************
+  /// Make
+  //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
+  template <typename... T>
+  constexpr auto make_unordered_multiset(T... t) -> etl::unordered_multiset<typename etl::common_type_t<T...>,
+                                                                            sizeof...(T)>
+  {
+    return { { etl::forward<T>(t)... } };
+  }
 #endif
 }
 

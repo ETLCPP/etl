@@ -237,7 +237,7 @@ namespace
       CHECK(pool.full());
     }
 
-#if ETL_USING_STL
+#if ETL_USING_INITIALIZER_LIST
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {

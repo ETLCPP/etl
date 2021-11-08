@@ -2057,7 +2057,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+#if ETL_USING_INITIALIZER_LIST
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************
@@ -2121,11 +2121,23 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
-  template <typename T, typename... Ts>
-  multiset(T, Ts...)
-    ->multiset<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
-#endif 
+#if ETL_CPP17_SUPPORTED
+  template <typename... T>
+  multiset(T...) -> multiset<typename etl::common_type_t<T...>,
+                             sizeof...(T)>;
+#endif
+
+  //*************************************************************************
+  /// Make
+  //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
+  template <typename... T>
+  constexpr auto make_multiset(T... t) -> etl::multiset<typename etl::common_type_t<T...>,
+                                                        sizeof...(T)>
+  {
+    return { { etl::forward<T>(t)... } };
+  }
+#endif
 
   //***************************************************************************
   /// Equal operator.

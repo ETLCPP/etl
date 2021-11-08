@@ -287,7 +287,7 @@ namespace
       CHECK(!data.empty());
     }
 
-#if ETL_USING_STL
+#if ETL_USING_INITIALIZER_LIST
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -1020,5 +1020,65 @@ namespace
       CHECK_EQUAL(compare_data.count(N3), data.count(N3));
       CHECK_EQUAL(compare_data.count(N4), data.count(N4));
     }
+
+    //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
+    TEST(test_flat_set_template_deduction)
+    {
+      using Pair = ETL_OR_STD::pair<const int, NDC>;
+
+      etl::flat_multiset data{ NDC("A"), NDC("B"), NDC("B2"), NDC("C"), NDC("D"), NDC("E"), NDC("F") };
+
+      auto v = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same_v<NDC, Type>));
+
+      decltype(data)::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(NDC("A"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("B"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("B2"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("C"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("D"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("E"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("F"), *itr);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
+    TEST(test_make_flat_multiset)
+    {
+      using Pair = ETL_OR_STD::pair<const int, NDC>;
+
+      auto data = etl::make_flat_multiset(NDC("A"), NDC("B"), NDC("B2"), NDC("C"), NDC("D"), NDC("E"), NDC("F"));
+
+      auto v = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same_v<NDC, Type>));
+
+      decltype(data)::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(NDC("A"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("B"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("B2"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("C"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("D"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("E"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("F"), *itr);
+    }
+#endif
   };
 }

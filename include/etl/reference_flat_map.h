@@ -962,6 +962,28 @@ namespace etl
     etl::vector<node_t*, MAX_SIZE> lookup;
   };
 
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED
+  template <typename... T>
+  reference_flat_map(T...) -> reference_flat_map<typename etl::common_type_t<typename T::first_type...>,
+                                                 typename etl::common_type_t<typename T::second_type...>,
+                                                 sizeof...(T)>;
+#endif
+
+  //*************************************************************************
+  /// Make
+  //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
+  template <typename... T>
+  constexpr auto make_reference_flat_map(T... t) -> etl::reference_flat_map<typename etl::common_type_t<typename T::first_type...>,
+                                                                            typename etl::common_type_t<typename T::second_type...>,
+                                                                            sizeof...(T)>
+  {
+    return { { etl::forward<T>(t)... } };
+  }
+#endif
 }
 
 #endif

@@ -2015,6 +2015,93 @@ namespace etl
   inline constexpr bool is_trivially_copyable_v = etl::is_trivially_copyable<T>::value;
 
 #endif
+
+  //*********************************************
+  // common_type
+  // Based on the implementation detailed on
+  // https://en.cppreference.com/w/cpp/types/common_type
+  //*********************************************
+#if ETL_CPP11_SUPPORTED
+  // Primary template
+  template<typename...>
+  struct common_type 
+  {
+  };
+
+  //***********************************
+  // One type
+  template <typename T>
+  struct common_type<T> : common_type<T, T> 
+  {
+  };
+
+  namespace private_common_type 
+  {
+    template <typename...>
+    using void_t = void;
+
+    template <typename T1, typename T2>
+    using conditional_result_t = decltype(false ? declval<T1>() : declval<T2>());
+
+    template <typename, typename, typename = void>
+    struct decay_conditional_result 
+    {
+    };
+
+    template <typename T1, typename T2>
+    struct decay_conditional_result<T1, T2, void_t<conditional_result_t<T1, T2>>>
+      : etl::decay<conditional_result_t<T1, T2>> 
+    {
+    };
+
+    template <typename T1, typename T2, typename = void>
+    struct common_type_2_impl : decay_conditional_result<const T1&, const T2&> 
+    {
+    };
+
+    template <typename T1, typename T2>
+    struct common_type_2_impl<T1, T2, void_t<conditional_result_t<T1, T2>>>
+      : decay_conditional_result<T1, T2> 
+    {
+    };
+  }
+
+  //***********************************
+  // Two types
+  template <typename T1, typename T2>
+  struct common_type<T1, T2>
+    : etl::conditional<etl::is_same<T1, typename etl::decay<T1>::type>::value && etl::is_same<T2, typename etl::decay<T2>::type>::value,
+                       private_common_type::common_type_2_impl<T1, T2>,
+                       common_type<typename etl::decay<T2>::type,
+                       typename etl::decay<T2>::type>>::type
+  {
+  };
+
+  //***********************************
+  // Three or more types
+  namespace private_common_type 
+  {
+    template <typename AlwaysVoid, typename T1, typename T2, typename... TRest>
+    struct common_type_multi_impl 
+    {
+    };
+
+    template <typename T1, typename T2, typename... TRest>
+    struct common_type_multi_impl<void_t<typename common_type<T1, T2>::type>, T1, T2, TRest...>
+      : common_type<typename common_type<T1, T2>::type, TRest...> 
+    {
+    };
+  }
+
+  template<typename T1, typename T2, typename... TRest>
+  struct common_type<T1, T2, TRest...>
+    : private_common_type::common_type_multi_impl<void, T1, T2, TRest...> 
+  {
+  };
+
+  template <typename... T>
+  using common_type_t = typename common_type<T...>::type;
+#endif
 }
 
 #endif // ETL_TYPE_TRAITS_INCLUDED
