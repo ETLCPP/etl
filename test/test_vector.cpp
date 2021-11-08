@@ -160,7 +160,7 @@ namespace
       CHECK(!data.empty());
     }
 
-#if ETL_USING_STL
+#if ETL_USING_INITIALIZER_LIST
     //*************************************************************************
     TEST(test_constructor_initializer_list)
     {
@@ -1303,5 +1303,27 @@ namespace
       bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
       CHECK(is_same);
     }
+
+    //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
+    TEST(test_make_vector)
+    {
+      auto data = etl::make_vector(char(0), short(1), int(2), long(3), 4, 5, 6, 7, 8, 9);
+
+      using Type = std::remove_reference_t<decltype(data[0])>;
+      CHECK((std::is_same_v<long, Type>));
+
+      CHECK_EQUAL(0, data[0]);
+      CHECK_EQUAL(1, data[1]);
+      CHECK_EQUAL(2, data[2]);
+      CHECK_EQUAL(3, data[3]);
+      CHECK_EQUAL(4, data[4]);
+      CHECK_EQUAL(5, data[5]);
+      CHECK_EQUAL(6, data[6]);
+      CHECK_EQUAL(7, data[7]);
+      CHECK_EQUAL(8, data[8]);
+      CHECK_EQUAL(9, data[9]);
+    }
+#endif
   };
 }

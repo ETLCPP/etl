@@ -2022,6 +2022,63 @@ namespace etl
   inline constexpr bool is_trivially_copyable_v = etl::is_trivially_copyable<T>::value;
 
 #endif
+
+#if ETL_CPP11_SUPPORTED
+  // primary template (used for zero types)
+  template<class...>
+  struct common_type {};
+
+  //////// one type
+  template <class T>
+  struct common_type<T> : common_type<T, T> {};
+
+  namespace detail {
+    template<class...>
+    using void_t = void;
+
+    template<class T1, class T2>
+    using conditional_result_t = decltype(false ? std::declval<T1>() : std::declval<T2>());
+
+    template<class, class, class = void>
+    struct decay_conditional_result {};
+    template<class T1, class T2>
+    struct decay_conditional_result<T1, T2, void_t<conditional_result_t<T1, T2>>>
+      : std::decay<conditional_result_t<T1, T2>> {};
+
+    template<class T1, class T2, class = void>
+    struct common_type_2_impl : decay_conditional_result<const T1&, const T2&> {};
+
+    // C++11 implementation:
+    // template<class, class, class = void>
+    // struct common_type_2_impl {};
+
+    template<class T1, class T2>
+    struct common_type_2_impl<T1, T2, void_t<conditional_result_t<T1, T2>>>
+      : decay_conditional_result<T1, T2> {};
+  }
+
+  //////// two types
+  template<class T1, class T2>
+  struct common_type<T1, T2>
+    : std::conditional<std::is_same<T1, typename std::decay<T1>::type>::value&&
+    std::is_same<T2, typename std::decay<T2>::type>::value,
+    detail::common_type_2_impl<T1, T2>,
+    common_type<typename std::decay<T2>::type,
+    typename std::decay<T2>::type>>::type{};
+
+  //////// 3+ types
+  namespace detail {
+    template<class AlwaysVoid, class T1, class T2, class...R>
+    struct common_type_multi_impl {};
+    template<class T1, class T2, class...R>
+    struct common_type_multi_impl<void_t<typename common_type<T1, T2>::type>, T1, T2, R...>
+      : common_type<typename common_type<T1, T2>::type, R...> {};
+  }
+
+  template<class T1, class T2, class... R>
+  struct common_type<T1, T2, R...>
+    : detail::common_type_multi_impl<void, T1, T2, R...> {};
+#endif
 }
 
 #endif // ETL_TYPE_TRAITS_INCLUDED

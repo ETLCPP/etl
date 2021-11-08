@@ -314,7 +314,7 @@ namespace
       CHECK(isEqual);
     }
 
-#if ETL_USING_STL
+#if ETL_USING_INITIALIZER_LIST
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -1199,5 +1199,57 @@ namespace
             }
         }
     }
+
+    //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
+    TEST(test_set_template_deduction)
+    {
+      etl::set data{ std::string("A"), std::string("B"), std::string("C"), std::string("D"), std::string("E"), std::string("F") };
+
+      auto v = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same_v<std::string, Type>));
+
+      decltype(data)::const_iterator itr = data.begin();
+
+      CHECK_EQUAL("A", *itr);
+      ++itr;
+      CHECK_EQUAL("B", *itr);
+      ++itr;
+      CHECK_EQUAL("C", *itr);
+      ++itr;
+      CHECK_EQUAL("D", *itr);
+      ++itr;
+      CHECK_EQUAL("E", *itr);
+      ++itr;
+      CHECK_EQUAL("F", *itr);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
+    TEST(test_make_flat_set)
+    {
+      auto data = etl::make_set(std::string("A"), std::string("B"), std::string("C"), std::string("D"), std::string("E"), std::string("F"));
+
+      auto v = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same_v<std::string, Type>));
+
+      decltype(data)::const_iterator itr = data.begin();
+
+      CHECK_EQUAL("A", *itr);
+      ++itr;
+      CHECK_EQUAL("B", *itr);
+      ++itr;
+      CHECK_EQUAL("C", *itr);
+      ++itr;
+      CHECK_EQUAL("D", *itr);
+      ++itr;
+      CHECK_EQUAL("E", *itr);
+      ++itr;
+      CHECK_EQUAL("F", *itr);
+    }
+#endif
   };
 }

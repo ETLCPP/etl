@@ -43,6 +43,7 @@ SOFTWARE.
 #include "parameter_type.h"
 #include "static_assert.h"
 #include "error_handler.h"
+#include "type_lookup.h"
 
 ///\defgroup array array
 /// A replacement for std::array if you haven't got C++0x11.
@@ -566,14 +567,16 @@ namespace etl
   /// Template deduction guides.
   //*************************************************************************
 #if ETL_CPP17_SUPPORTED
-  template <typename T, typename... Ts>
-  array(T, Ts...)
-      -> array<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
+  template <typename... T>
+  array(T...) -> array<typename etl::common_type<T...>::type, sizeof...(T)>;
 #endif  
 
-#if ETL_CPP11_SUPPORTED
+  //*************************************************************************
+  /// Make
+  //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
   template <typename... T>
-  constexpr auto make_array(T&&... t) -> etl::array<std::common_type_t<T...>, sizeof...(T)>
+  constexpr auto make_array(T&&... t) -> etl::array<typename etl::common_type_t<T...>, sizeof...(T)>
   {
     return { { etl::forward<T>(t)... } };
   }

@@ -185,7 +185,7 @@ namespace
       CHECK(!data.empty());
     }
 
-#if ETL_USING_STL
+#if ETL_USING_INITIALIZER_LIST
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -2027,5 +2027,47 @@ namespace
       CHECK_EQUAL(3U, (*itr++).value); // 3
       CHECK_EQUAL(4U, (*itr++).value); // 4
     }
+
+    //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
+    TEST(test_forward_list_template_deduction)
+    {
+      etl::list data{ ItemNDC("A"), ItemNDC("B"), ItemNDC("C"), ItemNDC("D"), ItemNDC("E"), ItemNDC("F") };
+
+      auto v = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same_v<ItemNDC, Type>));
+
+      decltype(data)::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(ItemNDC("A"), *itr++);
+      CHECK_EQUAL(ItemNDC("B"), *itr++);
+      CHECK_EQUAL(ItemNDC("C"), *itr++);
+      CHECK_EQUAL(ItemNDC("D"), *itr++);
+      CHECK_EQUAL(ItemNDC("E"), *itr++);
+      CHECK_EQUAL(ItemNDC("F"), *itr++);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
+    TEST(test_make_flat_map)
+    {
+      auto data = etl::make_list(ItemNDC("A"), ItemNDC("B"), ItemNDC("C"), ItemNDC("D"), ItemNDC("E"), ItemNDC("F"));
+
+      auto v = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same_v<ItemNDC, Type>));
+
+      decltype(data)::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(ItemNDC("A"), *itr++);
+      CHECK_EQUAL(ItemNDC("B"), *itr++);
+      CHECK_EQUAL(ItemNDC("C"), *itr++);
+      CHECK_EQUAL(ItemNDC("D"), *itr++);
+      CHECK_EQUAL(ItemNDC("E"), *itr++);
+      CHECK_EQUAL(ItemNDC("F"), *itr++);
+    }
+#endif
   };
 }

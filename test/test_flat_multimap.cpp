@@ -327,7 +327,7 @@ namespace
       CHECK(isEqual);
     }
 
-#if ETL_USING_STL
+#if ETL_USING_INITIALIZER_LIST
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -1130,5 +1130,64 @@ namespace
       CHECK(compare_data.count(4) == data.count(4));
       CHECK(compare_data.count(5) == data.count(5));
     }
+
+    //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
+    TEST(test_flat_multimap_template_deduction)
+    {
+      using Pair = ETL_OR_STD::pair<const int, NDC>;
+
+      etl::flat_multimap data{ Pair(0, NDC("A")), Pair(1, NDC("B")), Pair(1, NDC("B2")), Pair(2, NDC("C")), Pair(3, NDC("D")), Pair(4, NDC("E")), Pair(5, NDC("F")) };
+      auto v = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same_v<Pair, Type>));
+
+      decltype(data)::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(NDC("A"), itr->second);
+      ++itr;
+      CHECK_EQUAL(NDC("B"), itr->second);
+      ++itr;
+      CHECK_EQUAL(NDC("B2"), itr->second);
+      ++itr;
+      CHECK_EQUAL(NDC("C"), itr->second);
+      ++itr;
+      CHECK_EQUAL(NDC("D"), itr->second);
+      ++itr;
+      CHECK_EQUAL(NDC("E"), itr->second);
+      ++itr;
+      CHECK_EQUAL(NDC("F"), itr->second);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
+    TEST(test_make_flat_multimap)
+    {
+      using Pair = ETL_OR_STD::pair<const int, NDC>;
+
+      auto data = etl::make_flat_multimap(Pair(0, NDC("A")), Pair(1, NDC("B")), Pair(1, NDC("B2")), Pair(2, NDC("C")), Pair(3, NDC("D")), Pair(4, NDC("E")), Pair(5, NDC("F")));
+
+      auto v = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same_v<Pair, Type>));
+
+      decltype(data)::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(NDC("A"), itr->second);
+      ++itr;
+      CHECK_EQUAL(NDC("B"), itr->second);
+      ++itr;
+      CHECK_EQUAL(NDC("B2"), itr->second);
+      ++itr;
+      CHECK_EQUAL(NDC("C"), itr->second);
+      ++itr;
+      CHECK_EQUAL(NDC("D"), itr->second);
+      ++itr;
+      CHECK_EQUAL(NDC("E"), itr->second);
+      ++itr;
+      CHECK_EQUAL(NDC("F"), itr->second);
+    }
+#endif
   };
 }

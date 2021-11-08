@@ -833,6 +833,27 @@ namespace etl
     etl::vector<value_type*, MAX_SIZE> lookup;
   };
 
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED
+  template <typename... T>
+  reference_flat_set(T...) -> reference_flat_set<typename etl::common_type_t<T...>,
+                                                 sizeof...(T)>;
+#endif
+
+  //*************************************************************************
+  /// Make
+  //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
+  template <typename... T>
+  constexpr auto make_reference_flat_set(T... t) -> etl::reference_flat_set<typename etl::common_type_t<T...>,
+                                                                            sizeof...(T)>
+  {
+    return { { etl::forward<T>(t)... } };
+  }
+#endif
+
   //***************************************************************************
   /// Equal operator.
   ///\param lhs Reference to the first reference_flat_set.

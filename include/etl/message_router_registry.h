@@ -530,7 +530,7 @@ namespace etl
       }
     }
 
-#if ETL_CPP11_SUPPORTED && ETL_USING_STL
+#if ETL_USING_INITIALIZER_LIST
     //********************************************
     // Initializer_list constructor.
     //********************************************
