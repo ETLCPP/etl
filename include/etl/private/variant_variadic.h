@@ -569,7 +569,7 @@ namespace etl
       operation = operation_type<type, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
     }
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+#if ETL_USING_INITIALIZER_LIST
     //***************************************************************************
     /// Construct from type, initializer_list and arguments.
     //***************************************************************************

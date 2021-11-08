@@ -1569,7 +1569,7 @@ namespace etl
       base::assign(first_, last_);
     }
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+#if ETL_USING_INITIALIZER_LIST
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
@@ -1631,12 +1631,24 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
-  template <typename T, typename... Ts>
-  unordered_map(T, Ts...)
-    ->unordered_map<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), typename T::first_type>,
-                    typename T::second_type,
-                    1U + sizeof...(Ts)>;
+#if ETL_CPP17_SUPPORTED
+  template <typename... T>
+  unordered_map(T...) -> unordered_map<typename etl::common_type_t<typename T::first_type...>,
+                                       typename etl::common_type_t<typename T::second_type...>,
+                                       sizeof...(T)>;
+#endif
+
+  //*************************************************************************
+  /// Make
+  //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
+  template <typename... T>
+  constexpr auto make_unordered_map(T... t) -> etl::unordered_map<typename etl::common_type_t<typename T::first_type...>,
+                                                                  typename etl::common_type_t<typename T::second_type...>,
+                                                                  sizeof...(T)>
+  {
+    return { { etl::forward<T>(t)... } };
+  }
 #endif
 }
 

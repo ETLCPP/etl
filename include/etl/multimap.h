@@ -2076,7 +2076,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+#if ETL_USING_INITIALIZER_LIST
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************
@@ -2145,6 +2145,26 @@ namespace etl
                 typename T::second_type,
                 1U + sizeof...(Ts)>;
 #endif 
+
+#if ETL_CPP17_SUPPORTED
+  template <typename... T>
+  multimap(T...) -> multimap<typename etl::common_type_t<typename T::first_type...>,
+                             typename etl::common_type_t<typename T::second_type...>,
+    sizeof...(T)>;
+#endif
+
+  //*************************************************************************
+  /// Make
+  //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
+  template <typename... T>
+  constexpr auto make_multimap(T... t) -> etl::multimap<typename etl::common_type_t<typename T::first_type...>,
+                                                        typename etl::common_type_t<typename T::second_type...>,
+                                                        sizeof...(T)>
+  {
+    return { { etl::forward<T>(t)... } };
+  }
+#endif
 
   //***************************************************************************
   /// Equal operator.
