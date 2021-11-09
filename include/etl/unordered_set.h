@@ -43,6 +43,7 @@ SOFTWARE.
 #include "intrusive_forward_list.h"
 #include "hash.h"
 #include "type_traits.h"
+#include "type_lookup.h"
 #include "parameter_type.h"
 #include "nullptr.h"
 #include "error_handler.h"
@@ -1526,21 +1527,19 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
   template <typename... T>
-  unordered_set(T...) -> unordered_set<typename etl::common_type_t<T...>,
-                                       sizeof...(T)>;
+  unordered_set(T...) -> unordered_set<etl::nth_type_t<0, T...>, sizeof...(T)>;
 #endif
 
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_INITIALIZER_LIST
-  template <typename... T>
-  constexpr auto make_unordered_set(T... t) -> etl::unordered_set<typename etl::common_type_t<T...>,
-                                                                  sizeof...(T)>
+#if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
+  template <typename TKey, typename... T>
+  constexpr auto make_unordered_set(T&&... keys) -> etl::unordered_set<TKey, sizeof...(T)>
   {
-    return { { etl::forward<T>(t)... } };
+    return { {etl::forward<T>(keys)...} };
   }
 #endif
 }

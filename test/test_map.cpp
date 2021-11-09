@@ -1288,7 +1288,7 @@ namespace
     {
       using Pair = std::pair<const std::string, int>;
 
-      etl::map data{ Pair("0", 0), Pair("1", 1), Pair("2", 2), Pair("3", 3), Pair("4", 4), Pair("5", 5) };
+      etl::map data { Pair{"0", 0}, Pair{"1", 1}, Pair{"2", 2}, Pair{"3", 3}, Pair{"4", 4}, Pair{"5", 5} };
 
       auto v = *data.begin();
       using Type = decltype(v);
@@ -1309,7 +1309,7 @@ namespace
     {
       using Pair = ETL_OR_STD::pair<const std::string, int>;
 
-      auto data = etl::make_map(Pair("0", 0), Pair("1", 1), Pair("2", 2), Pair("3", 3), Pair("4", 4), Pair("5", 5));
+      auto data = etl::make_map<std::string, int, std::less<std::string>>(Pair{ "0", 0 }, Pair{ "1", 1 }, Pair{ "2", 2 }, Pair{ "3", 3 }, Pair{ "4", 4 }, Pair{ "5", 5 });
 
       auto v = *data.begin();
       using Type = decltype(v);

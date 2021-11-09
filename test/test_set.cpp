@@ -1228,9 +1228,9 @@ namespace
 
     //*************************************************************************
 #if ETL_USING_INITIALIZER_LIST
-    TEST(test_make_flat_set)
+    TEST(test_make_set)
     {
-      auto data = etl::make_set(std::string("A"), std::string("B"), std::string("C"), std::string("D"), std::string("E"), std::string("F"));
+      auto data = etl::make_set< std::string>(std::string("A"), std::string("B"), std::string("C"), std::string("D"), std::string("E"), std::string("F"));
 
       auto v = *data.begin();
       using Type = decltype(v);

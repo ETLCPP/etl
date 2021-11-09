@@ -1166,7 +1166,7 @@ namespace
     {
       using Pair = ETL_OR_STD::pair<const int, NDC>;
 
-      auto data = etl::make_flat_multimap(Pair(0, NDC("A")), Pair(1, NDC("B")), Pair(1, NDC("B2")), Pair(2, NDC("C")), Pair(3, NDC("D")), Pair(4, NDC("E")), Pair(5, NDC("F")));
+      auto data = etl::make_flat_multimap<const int, NDC>(Pair(0, NDC("A")), Pair(1, NDC("B")), Pair(1, NDC("B2")), Pair(2, NDC("C")), Pair(3, NDC("D")), Pair(4, NDC("E")), Pair(5, NDC("F")));
 
       auto v = *data.begin();
       using Type = decltype(v);

@@ -1042,9 +1042,7 @@ namespace
 #if ETL_USING_INITIALIZER_LIST
     TEST(test_make_flat_set)
     {
-      using Pair = ETL_OR_STD::pair<const int, NDC>;
-
-      auto data = etl::make_flat_set(NDC("A"), NDC("B"), NDC("C"), NDC("D"), NDC("E"), NDC("F"));
+      auto data = etl::make_flat_set<NDC>(NDC("A"), NDC("B"), NDC("C"), NDC("D"), NDC("E"), NDC("F"));
 
       auto v = *data.begin();
       using Type = decltype(v);

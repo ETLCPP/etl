@@ -36,6 +36,7 @@ SOFTWARE.
 #include "pool.h"
 #include "utility.h"
 #include "placement_new.h"
+#include "type_lookup.h"
 
 #if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
@@ -919,23 +920,21 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED
-  template <typename... T>
-  flat_multimap(T...) -> flat_multimap<typename etl::common_type_t<typename T::first_type...>,
-                                       typename etl::common_type_t<typename T::second_type...>,
-                                       sizeof...(T)>;
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
+  template <typename... TPairs>
+  flat_multimap(TPairs...) -> flat_multimap<typename etl::nth_type_t<0, TPairs...>::first_type,
+                                            typename etl::nth_type_t<0, TPairs...>::second_type,
+                                            sizeof...(TPairs)>;
 #endif
 
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_INITIALIZER_LIST
-  template <typename... T>
-  constexpr auto make_flat_multimap(T... t) -> etl::flat_multimap<typename etl::common_type_t<typename T::first_type...>,
-                                                                  typename etl::common_type_t<typename T::second_type...>,
-                                                                  sizeof...(T)>
+#if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
+  template <typename TKey, typename TMapped, typename TKeyCompare = etl::less<TKey>, typename... TPairs>
+  constexpr auto make_flat_multimap(TPairs&&... pairs) -> etl::flat_multimap<TKey, TMapped, sizeof...(TPairs), TKeyCompare>
   {
-    return { { etl::forward<T>(t)... } };
+    return { {etl::forward<TPairs>(pairs)...} };
   }
 #endif
 }

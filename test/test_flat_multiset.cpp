@@ -1113,9 +1113,7 @@ namespace
 #if ETL_USING_INITIALIZER_LIST
     TEST(test_make_flat_multiset)
     {
-      using Pair = ETL_OR_STD::pair<const int, NDC>;
-
-      auto data = etl::make_flat_multiset(NDC("A"), NDC("B"), NDC("B2"), NDC("C"), NDC("D"), NDC("E"), NDC("F"));
+      auto data = etl::make_flat_multiset<NDC>(NDC("A"), NDC("B"), NDC("B2"), NDC("C"), NDC("D"), NDC("E"), NDC("F"));
 
       auto v = *data.begin();
       using Type = decltype(v);

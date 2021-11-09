@@ -44,6 +44,7 @@ SOFTWARE.
 #include "debug_count.h"
 #include "nullptr.h"
 #include "type_traits.h"
+#include "type_lookup.h"
 #include "utility.h"
 #include "placement_new.h"
 
@@ -2081,21 +2082,19 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
   template <typename... T>
-  multiset(T...) -> multiset<typename etl::common_type_t<T...>,
-                             sizeof...(T)>;
+  multiset(T...) -> multiset<etl::nth_type_t<0, T...>, sizeof...(T)>;
 #endif
 
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_INITIALIZER_LIST
-  template <typename... T>
-  constexpr auto make_multiset(T... t) -> etl::multiset<typename etl::common_type_t<T...>,
-                                                        sizeof...(T)>
+#if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
+  template <typename TKey, typename TKeyCompare = etl::less<TKey>, typename... T>
+  constexpr auto make_multiset(T&&... keys) -> etl::multiset<TKey, sizeof...(T), TKeyCompare>
   {
-    return { { etl::forward<T>(t)... } };
+    return { {etl::forward<T>(keys)...} };
   }
 #endif
 

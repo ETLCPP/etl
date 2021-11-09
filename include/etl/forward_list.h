@@ -1749,8 +1749,7 @@ namespace etl
   //*************************************************************************
 #if ETL_CPP17_SUPPORTED
   template <typename... T>
-  forward_list(T...) ->forward_list<typename etl::common_type_t<T...>,
-    sizeof...(T)>;
+  forward_list(T...) ->forward_list<typename etl::common_type_t<T...>, sizeof...(T)>;
 #endif
 
   //*************************************************************************
@@ -1758,8 +1757,7 @@ namespace etl
   //*************************************************************************
 #if ETL_USING_INITIALIZER_LIST
   template <typename... T>
-  constexpr auto make_forward_list(T... t) -> etl::forward_list<typename etl::common_type_t<T...>,
-                                                                sizeof...(T)>
+  constexpr auto make_forward_list(T... t) -> etl::forward_list<typename etl::common_type_t<T...>, sizeof...(T)>
   {
     return { { etl::forward<T>(t)... } };
   }
