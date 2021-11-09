@@ -237,6 +237,9 @@ namespace etl
     using type = typename private_nth_type::nth_type_helper<N, TTypes...>::type;
   };
 
+  template <size_t N, typename... TTypes>
+  using nth_type_t = typename nth_type<N, TTypes...>::type;
+
 #else
 
   //***************************************************************************

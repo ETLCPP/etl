@@ -2051,9 +2051,9 @@ namespace
 
     //*************************************************************************
 #if ETL_USING_INITIALIZER_LIST
-    TEST(test_make_flat_map)
+    TEST(test_make_list)
     {
-      auto data = etl::make_list(ItemNDC("A"), ItemNDC("B"), ItemNDC("C"), ItemNDC("D"), ItemNDC("E"), ItemNDC("F"));
+      auto data = etl::make_list<ItemNDC>(ItemNDC("A"), ItemNDC("B"), ItemNDC("C"), ItemNDC("D"), ItemNDC("E"), ItemNDC("F"));
 
       auto v = *data.begin();
       using Type = decltype(v);

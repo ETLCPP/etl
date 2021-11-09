@@ -43,6 +43,7 @@ SOFTWARE.
 #include "intrusive_forward_list.h"
 #include "hash.h"
 #include "type_traits.h"
+#include "type_lookup.h"
 #include "parameter_type.h"
 #include "nullptr.h"
 #include "pool.h"
@@ -1542,23 +1543,21 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED
-  template <typename... T>
-  unordered_multimap(T...) ->unordered_multimap<typename etl::common_type_t<typename T::first_type...>,
-                                                typename etl::common_type_t<typename T::second_type...>,
-                                                sizeof...(T)>;
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
+  template <typename... TPairs>
+  unordered_multimap(TPairs...) -> unordered_multimap<typename etl::nth_type_t<0, TPairs...>::first_type,
+                                                      typename etl::nth_type_t<0, TPairs...>::second_type,
+                                                      sizeof...(TPairs)>;
 #endif
 
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_INITIALIZER_LIST
-  template <typename... T>
-  constexpr auto make_unordered_multimap(T... t) -> etl::unordered_multimap<typename etl::common_type_t<typename T::first_type...>,
-                                                                            typename etl::common_type_t<typename T::second_type...>,
-                                                                            sizeof...(T)>
+#if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
+  template <typename TKey, typename TMapped, typename... TPairs>
+  constexpr auto make_unordered_multimap(TPairs&&... pairs) -> etl::unordered_multimap<TKey, TMapped, sizeof...(TPairs)>
   {
-    return { { etl::forward<T>(t)... } };
+    return { {etl::forward<TPairs>(pairs)...} };
   }
 #endif
 }

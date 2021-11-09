@@ -1921,12 +1921,9 @@ namespace
 #if ETL_USING_INITIALIZER_LIST
     TEST(test_make_vector)
     {
-      const long values[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      const int values[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      auto data = etl::make_vector( &values[0], &values[1], &values[2], &values[3], &values[4], &values[5], &values[6], &values[7], &values[8], &values[9] );
-
-      using Type = std::remove_reference_t<decltype(data[0])>;
-      CHECK((std::is_same_v<const long*, Type>));
+      auto data = etl::make_vector<const int*>( &values[0], &values[1], &values[2], &values[3], &values[4], &values[5], &values[6], &values[7], &values[8], &values[9] );
 
       CHECK_EQUAL(0, *data[0]);
       CHECK_EQUAL(1, *data[1]);

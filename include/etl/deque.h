@@ -2462,10 +2462,10 @@ namespace etl
   /// Make
   //*************************************************************************
 #if ETL_USING_INITIALIZER_LIST
-  template <typename... T>
-  constexpr auto make_deque(T&&... t) -> etl::deque<typename etl::common_type<T...>::type, sizeof...(T)>
+  template <typename T, typename... TValues>
+  constexpr auto make_deque(TValues&&... values) -> etl::deque<T, sizeof...(TValues)>
   {
-    return { { etl::forward<T>(t)... } };
+    return { { etl::forward<T>(values)... } };
   }
 #endif
 

@@ -565,10 +565,10 @@ namespace etl
   /// Make
   //*************************************************************************
 #if ETL_USING_INITIALIZER_LIST
-  template <typename... T>
-  constexpr auto make_array(T&&... t) -> etl::array<typename etl::common_type_t<T...>, sizeof...(T)>
+  template <typename T, typename... TValues>
+  constexpr auto make_array(TValues&&... values) -> etl::array<T, sizeof...(TValues)>
   {
-    return { { etl::forward<T>(t)... } };
+    return { { etl::forward<T>(values)... } };
   }
 #endif
 
