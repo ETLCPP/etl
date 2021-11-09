@@ -1275,11 +1275,11 @@ namespace
 
     //*************************************************************************
 #if ETL_USING_INITIALIZER_LIST
-    TEST(test_make_map)
+    TEST(test_make_multimap)
     {
       using Pair = ETL_OR_STD::pair<const std::string, int>;
 
-      auto data = etl::make_multimap(Pair("0", 0), Pair("1", 1), Pair("2", 2), Pair("3", 3), Pair("4", 4), Pair("5", 5));
+      auto data = etl::make_multimap<std::string, int, std::less<std::string>>(Pair("0", 0), Pair("1", 1), Pair("2", 2), Pair("3", 3), Pair("4", 4), Pair("5", 5));
 
       auto v = *data.begin();
       using Type = decltype(v);

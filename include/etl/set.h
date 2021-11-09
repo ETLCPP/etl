@@ -47,6 +47,7 @@ SOFTWARE.
 #include "iterator.h"
 #include "functional.h"
 #include "placement_new.h"
+#include "type_lookup.h"
 
 #if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
@@ -2203,21 +2204,19 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
   template <typename... T>
-  set(T...) -> set<typename etl::common_type_t<T...>,
-                   sizeof...(T)>;
+  set(T...) -> set<etl::nth_type_t<0, T...>, sizeof...(T)>;
 #endif
 
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_INITIALIZER_LIST
-  template <typename... T>
-  constexpr auto make_set(T... t) -> etl::set<typename etl::common_type_t<T...>,
-                                              sizeof...(T)>
+#if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
+  template <typename TKey, typename TKeyCompare = etl::less<TKey>, typename... T>
+  constexpr auto make_set(T&&... keys) -> etl::set<TKey, sizeof...(T), TKeyCompare>
   {
-    return { { etl::forward<T>(t)... } };
+    return { {etl::forward<T>(keys)...} };
   }
 #endif
 

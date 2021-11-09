@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove, rlindeman
+Copyright(c) 2021 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -43,6 +43,7 @@ SOFTWARE.
 #include "debug_count.h"
 #include "nullptr.h"
 #include "type_traits.h"
+#include "type_lookup.h"
 #include "parameter_type.h"
 #include "iterator.h"
 #include "utility.h"
@@ -2279,23 +2280,21 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED
-  template <typename... T>
-  map(T...) -> map<typename etl::common_type_t<typename T::first_type...>,
-                   typename etl::common_type_t<typename T::second_type...>,
-                   sizeof...(T)>;
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
+  template <typename... TPairs>
+  map(TPairs...) -> map<typename etl::nth_type_t<0, TPairs...>::first_type, 
+                        typename etl::nth_type_t<0, TPairs...>::second_type, 
+                        sizeof...(TPairs)>;
 #endif
 
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_INITIALIZER_LIST
-  template <typename... T>
-  constexpr auto make_map(T... t) -> etl::map<typename etl::common_type_t<typename T::first_type...>,
-                                              typename etl::common_type_t<typename T::second_type...>,
-                                              sizeof...(T)>
+#if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
+  template <typename TKey, typename TMapped, typename TKeyCompare = etl::less<TKey>, typename... TPairs>
+  constexpr auto make_map(TPairs&&... pairs) -> etl::map<TKey, TMapped, sizeof...(TPairs), TKeyCompare>
   {
-    return { { etl::forward<T>(t)... } };
+    return { {etl::forward<TPairs>(pairs)...} };
   }
 #endif
 

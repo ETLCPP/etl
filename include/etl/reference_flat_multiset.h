@@ -39,8 +39,8 @@ SOFTWARE.
 #include "iterator.h"
 #include "functional.h"
 #include "utility.h"
-
 #include "type_traits.h"
+#include "type_lookup.h"
 #include "vector.h"
 #include "pool.h"
 #include "error_handler.h"
@@ -843,21 +843,19 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
   template <typename... T>
-  reference_flat_multiset(T...) -> reference_flat_multiset<typename etl::common_type_t<T...>,
-                                                           sizeof...(T)>;
+  reference_flat_multiset(T...)->reference_flat_multiset<etl::nth_type_t<0, T...>, sizeof...(T)>;
 #endif
 
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_INITIALIZER_LIST
-  template <typename... T>
-  constexpr auto make_reference_flat_multiset(T... t) -> etl::reference_flat_multiset<typename etl::common_type_t<T...>,
-                                                                                      sizeof...(T)>
+#if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
+  template <typename TKey, typename TKeyCompare = etl::less<TKey>, typename... T>
+  constexpr auto make_reference_flat_multiset(T&&... keys) -> etl::reference_flat_multiset<TKey, sizeof...(T), TKeyCompare>
   {
-    return { { etl::forward<T>(t)... } };
+    return { {etl::forward<T>(keys)...} };
   }
 #endif
 

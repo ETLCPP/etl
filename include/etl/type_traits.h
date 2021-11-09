@@ -2018,10 +2018,11 @@ namespace etl
 
   //*********************************************
   // common_type
-  // Based on the implementation detailed on
+  // Based on the sample implementation detailed on
   // https://en.cppreference.com/w/cpp/types/common_type
   //*********************************************
 #if ETL_CPP11_SUPPORTED
+  //***********************************
   // Primary template
   template<typename...>
   struct common_type 
