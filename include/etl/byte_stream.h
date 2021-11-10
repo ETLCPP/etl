@@ -303,7 +303,7 @@ namespace etl
     //***************************************************************************
     size_t size_bytes() const
     {
-      return etl::distance(pdata, static_cast<char* const>(pcurrent));
+      return etl::distance(pdata, pcurrent);
     }
 
     //***************************************************************************
@@ -689,7 +689,7 @@ namespace etl
     template <typename T>
     size_t available() const
     {
-      size_t used = etl::distance(pdata, reinterpret_cast<const char* const>(pcurrent));
+      size_t used = etl::distance(pdata, pcurrent);
 
       return (length - used) / sizeof(T);
     }
