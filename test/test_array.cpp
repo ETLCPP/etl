@@ -28,6 +28,8 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include "data.h"
+
 #include "etl/array.h"
 
 #include <array>
@@ -39,6 +41,8 @@ SOFTWARE.
 
 namespace
 {
+  using Moveable = TestDataM<int>;
+
   SUITE(test_array)
   {
     static const size_t SIZE = 10UL;
@@ -669,6 +673,28 @@ namespace
 #endif
 
     //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
+    TEST(test_array_template_deduction_for_movable)
+    {
+      etl::array data{ Moveable(0), Moveable(1), Moveable(2), Moveable(3), Moveable(4), Moveable(5), Moveable(6), Moveable(7), Moveable(8), Moveable(9) };
+
+      using Type = std::remove_reference_t<decltype(data[0])>;
+      CHECK((std::is_same_v<Moveable, Type>));
+
+      CHECK_EQUAL(Moveable(0), data[0]);
+      CHECK_EQUAL(Moveable(1), data[1]);
+      CHECK_EQUAL(Moveable(2), data[2]);
+      CHECK_EQUAL(Moveable(3), data[3]);
+      CHECK_EQUAL(Moveable(4), data[4]);
+      CHECK_EQUAL(Moveable(5), data[5]);
+      CHECK_EQUAL(Moveable(6), data[6]);
+      CHECK_EQUAL(Moveable(7), data[7]);
+      CHECK_EQUAL(Moveable(8), data[8]);
+      CHECK_EQUAL(Moveable(9), data[9]);
+    }
+#endif
+
+    //*************************************************************************
 #if ETL_USING_INITIALIZER_LIST
     TEST(test_make_array)
     {
@@ -687,6 +713,28 @@ namespace
       CHECK_EQUAL(7, data[7]);
       CHECK_EQUAL(8, data[8]);
       CHECK_EQUAL(9, data[9]);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
+    TEST(test_make_array_for_movable)
+    {
+      auto data = etl::make_array<Moveable>(Moveable(0), Moveable(1), Moveable(2), Moveable(3), Moveable(4), Moveable(5), Moveable(6), Moveable(7), Moveable(8), Moveable(9));
+
+      using Type = std::remove_reference_t<decltype(data[0])>;
+      CHECK((std::is_same_v<Moveable, Type>));
+
+      CHECK_EQUAL(Moveable(0), data[0]);
+      CHECK_EQUAL(Moveable(1), data[1]);
+      CHECK_EQUAL(Moveable(2), data[2]);
+      CHECK_EQUAL(Moveable(3), data[3]);
+      CHECK_EQUAL(Moveable(4), data[4]);
+      CHECK_EQUAL(Moveable(5), data[5]);
+      CHECK_EQUAL(Moveable(6), data[6]);
+      CHECK_EQUAL(Moveable(7), data[7]);
+      CHECK_EQUAL(Moveable(8), data[8]);
+      CHECK_EQUAL(Moveable(9), data[9]);
     }
 #endif
   };
