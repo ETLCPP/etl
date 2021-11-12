@@ -839,8 +839,9 @@ namespace etl
     ///\param i_element Iterator to the element.
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
-    iterator erase(iterator i_element)
+    iterator erase(const_iterator i_const_element)
     {
+      iterator i_element(const_cast<iterator>(i_const_element));
       etl::move(i_element + 1, end(), i_element);
       destroy_back();
 

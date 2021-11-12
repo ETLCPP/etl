@@ -913,11 +913,41 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data data(initial_data.begin(), initial_data.end());
 
-      compare_data.erase(compare_data.begin() + 2);
+      Compare_Data::iterator i_compare = compare_data.begin();
+      Data::iterator i_data            = data.begin();
 
-      data.erase(data.begin() + 2);
+      std::advance(i_compare, 2);
+      std::advance(i_data,    2);
+
+      Compare_Data::iterator i_compare1 = compare_data.erase(i_compare);
+      Data::iterator i_data1 = data.erase(i_data);
+
+      CHECK_EQUAL(*i_compare1, *i_data1);
+
+      bool is_equal = std::equal(data.begin(),
+                                data.end(),
+                                compare_data.begin());
+
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_const_erase_single)
+    {
+      Compare_Data compare_data(initial_data.begin(), initial_data.end());
+      Data data(initial_data.begin(), initial_data.end());
+
+      Compare_Data::const_iterator i_compare = compare_data.cbegin();
+      Data::const_iterator i_data = data.cbegin();
+
+      std::advance(i_compare, 2);
+      std::advance(i_data, 2);
+
+      Compare_Data::const_iterator i_compare1 = compare_data.erase(i_compare);
+      Data::const_iterator i_data1 = data.erase(i_data);
 
       CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK_EQUAL(*i_compare1, *i_data1);
 
       bool is_equal = std::equal(data.begin(),
                                 data.end(),
