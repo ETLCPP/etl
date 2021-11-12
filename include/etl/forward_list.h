@@ -866,12 +866,12 @@ namespace etl
     //*************************************************************************
     /// Inserts a value to the forward_list after the specified position.
     //*************************************************************************
-    iterator insert_after(iterator position, const T& value)
+    iterator insert_after(const_iterator position, const T& value)
     {
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
       data_node_t& data_node = allocate_data_node(value);
-      insert_node_after(*position.p_node, data_node);
+      insert_node_after(*const_cast<node_t*>(position.p_node), data_node);
 
       return iterator(&data_node);
     }
@@ -881,14 +881,14 @@ namespace etl
     /// Emplaces a value to the forward_list after the specified position.
     //*************************************************************************
     template <typename ... Args>
-    iterator emplace_after(iterator position, Args && ... args)
+    iterator emplace_after(const_iterator position, Args && ... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
       data_node_t* p_data_node = create_data_node();
       ::new (&(p_data_node->value)) T(etl::forward<Args>(args)...);
       ETL_INCREMENT_DEBUG_COUNT
-      insert_node_after(*position.p_node, *p_data_node);
+      insert_node_after(*const_cast<node_t*>(position.p_node), *p_data_node);
 
       return iterator(p_data_node);
     }
@@ -897,14 +897,14 @@ namespace etl
     /// Emplaces a value to the forward_list after the specified position.
     //*************************************************************************
     template <typename T1>
-    iterator emplace_after(iterator position, const T1& value1)
+    iterator emplace_after(const_iterator position, const T1& value1)
     {
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
       data_node_t* p_data_node = create_data_node();
       ::new (&(p_data_node->value)) T(value1);
       ETL_INCREMENT_DEBUG_COUNT
-      insert_node_after(*position.p_node, *p_data_node);
+      insert_node_after(*const_cast<node_t*>(position.p_node), *p_data_node);
 
       return iterator(p_data_node);
     }
@@ -913,14 +913,14 @@ namespace etl
     /// Emplaces a value to the forward_list after the specified position.
     //*************************************************************************
     template <typename T1, typename T2>
-    iterator emplace_after(iterator position, const T1& value1, const T2& value2)
+    iterator emplace_after(const_iterator position, const T1& value1, const T2& value2)
     {
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
       data_node_t* p_data_node = create_data_node();
       ::new (&(p_data_node->value)) T(value1, value2);
       ETL_INCREMENT_DEBUG_COUNT
-      insert_node_after(*position.p_node, *p_data_node);
+      insert_node_after(*const_cast<node_t*>(position.p_node), *p_data_node);
 
       return iterator(p_data_node);
     }
@@ -929,14 +929,14 @@ namespace etl
     /// Emplaces a value to the forward_list after the specified position.
     //*************************************************************************
     template <typename T1, typename T2, typename T3>
-    iterator emplace_after(iterator position, const T1& value1, const T2& value2, const T3& value3)
+    iterator emplace_after(const_iterator position, const T1& value1, const T2& value2, const T3& value3)
     {
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
       data_node_t* p_data_node = create_data_node();
       ::new (&(p_data_node->value)) T(value1, value2, value3);
       ETL_INCREMENT_DEBUG_COUNT
-      insert_node_after(*position.p_node, *p_data_node);
+      insert_node_after(*const_cast<node_t*>(position.p_node), *p_data_node);
 
       return iterator(p_data_node);
     }
@@ -945,14 +945,14 @@ namespace etl
     /// Emplaces a value to the forward_list after the specified position.
     //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
-    iterator emplace_after(iterator position, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    iterator emplace_after(const_iterator position, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
       data_node_t* p_data_node = create_data_node();
       ::new (&(p_data_node->value)) T(value1, value2, value3, value4);
       ETL_INCREMENT_DEBUG_COUNT
-      insert_node_after(*position.p_node, *p_data_node);
+      insert_node_after(*const_cast<node_t*>(position.p_node), *p_data_node);
 
       return iterator(p_data_node);
     }
@@ -961,7 +961,7 @@ namespace etl
     //*************************************************************************
     /// Inserts 'n' copies of a value to the forward_list after the specified position.
     //*************************************************************************
-    void insert_after(iterator position, size_t n, const T& value)
+    void insert_after(const_iterator position, size_t n, const T& value)
     {
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
@@ -969,7 +969,7 @@ namespace etl
       {
         // Set up the next free node.
         data_node_t& data_node = allocate_data_node(value);
-        insert_node_after(*position.p_node, data_node);
+        insert_node_after(*const_cast<node_t*>(position.p_node), data_node);
       }
     }
 
@@ -977,7 +977,7 @@ namespace etl
     /// Inserts a range of values to the forward_list after the specified position.
     //*************************************************************************
     template <typename TIterator>
-    void insert_after(iterator position, TIterator first, TIterator last)
+    void insert_after(const_iterator position, TIterator first, TIterator last)
     {
 #if defined(ETL_DEBUG)
       difference_type d = etl::distance(first, last);
@@ -988,7 +988,7 @@ namespace etl
       {
         // Set up the next free node.
         data_node_t& data_node = allocate_data_node(*first++);
-        insert_node_after(*position.p_node, data_node);
+        insert_node_after(*const_cast<node_t*>(position.p_node), data_node);
         ++position;
       }
     }
@@ -996,16 +996,16 @@ namespace etl
     //*************************************************************************
     /// Erases the value at the specified position.
     //*************************************************************************
-    iterator erase_after(iterator position)
+    iterator erase_after(const_iterator position)
     {
-      iterator next(position);
+      iterator next(const_cast<node_t*>(position.p_node));
       if (next != end())
       {
         ++next;
         if (next != end())
         {
           ++next;
-          remove_node_after(*position.p_node);
+          remove_node_after(*const_cast<node_t*>(position.p_node));
         }
       }
 
@@ -1015,13 +1015,13 @@ namespace etl
     //*************************************************************************
     /// Erases a range of elements.
     //*************************************************************************
-    iterator erase_after(iterator first, iterator last)
+    iterator erase_after(const_iterator first, const_iterator last)
     {
       if (first != end() && (first != last))
       {
-        node_t* p_first = first.p_node;
-        node_t* p_last = last.p_node;
-        node_t* p_next = p_first->next;
+        node_t* p_first = const_cast<node_t*>(first.p_node);
+        node_t* p_last = const_cast<node_t*>(last.p_node);
+        node_t* p_next = const_cast<node_t*>(p_first->next);
 
         // Join the ends.
         join(p_first, p_last);
