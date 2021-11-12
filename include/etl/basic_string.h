@@ -1050,14 +1050,17 @@ namespace etl
     ///\param last     The last + 1 element to add.
     //*********************************************************************
     template <class TIterator>
-    void insert(iterator position, TIterator first, TIterator last)
+    void insert(const_iterator position, TIterator first, TIterator last)
     {
+      // Quick hack, as iterators are pointers.
+      iterator insert_position = const_cast<iterator>(position);
+
       if (first == last)
       {
         return;
       }
 
-      const size_type start = etl::distance(begin(), position);
+      const size_type start = etl::distance(cbegin(), position);
       const size_type n = etl::distance(first, last);
 
       // No effect.
@@ -1089,9 +1092,9 @@ namespace etl
 
         current_size = CAPACITY;
 
-        while (position != end())
+        while (insert_position != end())
         {
-          *position++ = *first++;
+          *insert_position++ = *first++;
         }
       }
       else
@@ -1121,11 +1124,11 @@ namespace etl
           current_size += shift_amount;
         }
 
-        etl::copy_backward(position, position + characters_to_shift, begin() + to_position + characters_to_shift);
+        etl::copy_backward(insert_position, insert_position + characters_to_shift, begin() + to_position + characters_to_shift);
 
         while (first != last)
         {
-          *position++ = *first++;
+          *insert_position++ = *first++;
         }
       }
 
@@ -1252,12 +1255,15 @@ namespace etl
     ///\param i_element Iterator to the element.
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
-    iterator erase(iterator i_element)
+    iterator erase(const_iterator i_element)
     {
-      etl::copy(i_element + 1, end(), i_element);
+      // Quick hack, as iterators are pointers.
+      iterator i_element_ = const_cast<iterator>(i_element);
+
+      etl::copy(i_element_ + 1, end(), i_element_);
       p_buffer[--current_size] = 0;
 
-      return i_element;
+      return i_element_;
     }
 
     //*********************************************************************
@@ -1268,21 +1274,25 @@ namespace etl
     ///\param last  Iterator to the last element.
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
-    iterator erase(iterator first, iterator last)
+    iterator erase(const_iterator first, const_iterator last)
     {
-      if (first == last)
+      // Quick hack, as iterators are pointers.
+      iterator first_ = const_cast<iterator>(first);
+      iterator last_ = const_cast<iterator>(last);
+
+      if (first_ == last_)
       {
-        return first;
+        return const_cast<iterator>(first);
       }
 
-      etl::copy(last, end(), first);
+      etl::copy(last_, end(), first_);
       size_type n_delete = etl::distance(first, last);
 
       current_size -= n_delete;
       p_buffer[current_size] = 0;
       cleanup();
 
-      return first;
+      return first_;
     }
 
     //*********************************************************************
