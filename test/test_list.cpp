@@ -971,6 +971,58 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_const_erase_single)
+    {
+      CompareData compare_data(sorted_data.begin(), sorted_data.end());
+      DataNDC data(sorted_data.begin(), sorted_data.end());
+
+      DataNDC::const_iterator i_data = data.begin();
+      std::advance(i_data, 2);
+
+      CompareData::const_iterator i_compare_data = compare_data.begin();
+      std::advance(i_compare_data, 2);
+
+      i_compare_data = compare_data.erase(i_compare_data);
+      i_data         = data.erase(i_data);
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+      CHECK(*i_compare_data == *i_data);
+
+      i_compare_data = compare_data.erase(compare_data.begin());
+      i_data         = data.erase(data.begin());
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+
+      are_equal = i_data == data.begin();
+      CHECK(are_equal);
+
+      // Move to the last value and erase.
+      i_compare_data = compare_data.begin();
+      std::advance(i_compare_data, compare_data.size() - 1);
+      i_compare_data = compare_data.erase(i_compare_data);
+
+      i_data = data.begin();
+      std::advance(i_data, data.size() - 1);
+      i_data = data.erase(i_data);
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+      are_equal = i_data == data.end();
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_range)
     {
       CompareData compare_data(sorted_data.begin(), sorted_data.end());

@@ -1205,20 +1205,20 @@ namespace etl
     //*************************************************************************
     /// Erases the value at the specified position.
     //*************************************************************************
-    iterator erase(iterator position)
+    iterator erase(const_iterator position)
     {
       ++position;
       remove_node(*position.p_node->previous);
-      return position;
+      return iterator(*const_cast<node_t*>(position.p_node));
     }
 
     //*************************************************************************
     /// Erases a range of elements.
     //*************************************************************************
-    iterator erase(iterator first, iterator last)
+    iterator erase(const_iterator first, const_iterator last)
     {
-      node_t* p_first = first.p_node;
-      node_t* p_last = last.p_node;
+      node_t* p_first = const_cast<node_t*>(first.p_node);
+      node_t* p_last = const_cast<node_t*>(last.p_node);
       node_t* p_next;
 
       // Join the ends.
@@ -1232,7 +1232,7 @@ namespace etl
         p_first = p_next;                                       // Move to the next node.
       }
 
-      return last;
+      return iterator(*const_cast<node_t*>(last.p_node));
     }
 
     //*************************************************************************
