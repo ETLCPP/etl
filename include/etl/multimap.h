@@ -43,7 +43,7 @@ SOFTWARE.
 #include "debug_count.h"
 #include "nullptr.h"
 #include "type_traits.h"
-#include "type_lookup.h"
+#include "nth_type.h"
 #include "parameter_type.h"
 #include "iterator.h"
 #include "utility.h"

@@ -44,7 +44,7 @@ SOFTWARE.
 #include "debug_count.h"
 #include "nullptr.h"
 #include "type_traits.h"
-#include "type_lookup.h"
+#include "nth_type.h"
 #include "utility.h"
 #include "placement_new.h"
 

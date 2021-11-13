@@ -40,7 +40,7 @@ SOFTWARE.
 #include "functional.h"
 #include "utility.h"
 #include "type_traits.h"
-#include "type_lookup.h"
+#include "nth_type.h"
 #include "pool.h"
 #include "error_handler.h"
 #include "exception.h"

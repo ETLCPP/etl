@@ -79,11 +79,15 @@ namespace etl
       using type = typename type_select_helper<ID, 0, TTypes...>::type;
     };
 
-#if ETL_CPP11_SUPPORTED
     template <size_t ID>
     using select_t = typename select<ID>::type;
-#endif
   };
+
+  //***************************************************************************
+  // Select type alias
+  //***************************************************************************
+  template <size_t N, typename... TTypes>
+  using type_select_t = typename etl::type_select<TTypes...>:: template select_t<N>;
 
 #else
 
