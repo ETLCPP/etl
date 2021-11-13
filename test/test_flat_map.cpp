@@ -360,7 +360,7 @@ namespace
       CHECK(!data.empty());
     }
 
-#if ETL_USING_STL
+#if ETL_USING_INITIALIZER_LIST
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -1261,5 +1261,47 @@ namespace
 
       CHECK(initial1 != different);
     }
+
+    //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
+    TEST(test_flat_map_template_deduction)
+    {
+      using Pair = ETL_OR_STD::pair<const int, NDC>;
+
+      etl::flat_map data{ Pair(0, NDC("A")), Pair(1, NDC("B")), Pair(2, NDC("C")), Pair(3, NDC("D")), Pair(4, NDC("E")), Pair(5, NDC("F")) };
+
+      auto v = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same_v<Pair, Type>));
+
+      CHECK_EQUAL(NDC("A"), data.at(0));
+      CHECK_EQUAL(NDC("B"), data.at(1));
+      CHECK_EQUAL(NDC("C"), data.at(2));
+      CHECK_EQUAL(NDC("D"), data.at(3));
+      CHECK_EQUAL(NDC("E"), data.at(4));
+      CHECK_EQUAL(NDC("F"), data.at(5));
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
+    TEST(test_make_flat_map)
+    {
+      using Pair = ETL_OR_STD::pair<const int, NDC>;
+
+      auto data = etl::make_flat_map<const int, NDC>(Pair(0, NDC("A")), Pair(1, NDC("B")), Pair(2, NDC("C")), Pair(3, NDC("D")), Pair(4, NDC("E")), Pair(5, NDC("F")));
+      
+      auto v = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same_v<Pair, Type>));
+
+      CHECK_EQUAL(NDC("A"), data.at(0));
+      CHECK_EQUAL(NDC("B"), data.at(1));
+      CHECK_EQUAL(NDC("C"), data.at(2));
+      CHECK_EQUAL(NDC("D"), data.at(3));
+      CHECK_EQUAL(NDC("E"), data.at(4));
+      CHECK_EQUAL(NDC("F"), data.at(5));
+    }
+#endif
   };
 }

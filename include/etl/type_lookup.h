@@ -114,10 +114,8 @@ namespace etl
       static_assert(!(etl::is_same<nulltype, type>::value), "Invalid id");
     };
 
-#if ETL_CPP11_SUPPORTED
     template <int ID>
     using type_from_id_t = typename type_from_id<ID>::type;
-#endif
 
   private:
 
@@ -210,11 +208,9 @@ namespace etl
       static_assert(!etl::is_same<type, nulltype>::value, "Type match not found");
     };
 
-#if ETL_CPP11_SUPPORTED
     // Template alias.
     template <typename T>
     using type_from_type_t = typename type_from_type<T>::type;
-#endif
   };
 
 #else

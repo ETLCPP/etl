@@ -244,7 +244,7 @@ namespace
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
     }
 
-#if ETL_USING_STL
+#if ETL_USING_INITIALIZER_LIST
     //*************************************************************************
     TEST(test_constructor_initializer_list)
     {
@@ -1916,5 +1916,26 @@ namespace
       CHECK(i1 == *i2);
       CHECK(&i1 == i2);
     }
+
+    //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
+    TEST(test_make_vector)
+    {
+      const int values[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      auto data = etl::make_vector<const int*>( &values[0], &values[1], &values[2], &values[3], &values[4], &values[5], &values[6], &values[7], &values[8], &values[9] );
+
+      CHECK_EQUAL(0, *data[0]);
+      CHECK_EQUAL(1, *data[1]);
+      CHECK_EQUAL(2, *data[2]);
+      CHECK_EQUAL(3, *data[3]);
+      CHECK_EQUAL(4, *data[4]);
+      CHECK_EQUAL(5, *data[5]);
+      CHECK_EQUAL(6, *data[6]);
+      CHECK_EQUAL(7, *data[7]);
+      CHECK_EQUAL(8, *data[8]);
+      CHECK_EQUAL(9, *data[9]);
+    }
+#endif
   };
 }

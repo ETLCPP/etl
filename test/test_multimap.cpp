@@ -282,7 +282,7 @@ namespace
       CHECK(!data.empty());
     }
 
-#if ETL_USING_STL
+#if ETL_USING_INITIALIZER_LIST
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -1244,5 +1244,61 @@ namespace
 
       CHECK(pass);
     }
+
+    //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
+    TEST(test_multimap_template_deduction)
+    {
+      using Pair = std::pair<const std::string, int>;
+
+      etl::multimap data{ Pair("0", 0), Pair("1", 1), Pair("2", 2), Pair("3", 3), Pair("4", 4), Pair("5", 5) };
+
+      auto v = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same_v<Pair, Type>));
+
+      decltype(data)::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(0, itr->second);
+      ++itr;
+      CHECK_EQUAL(1, itr->second);
+      ++itr;
+      CHECK_EQUAL(2, itr->second);
+      ++itr;
+      CHECK_EQUAL(3, itr->second);
+      ++itr;
+      CHECK_EQUAL(4, itr->second);
+      ++itr;
+      CHECK_EQUAL(5, itr->second);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
+    TEST(test_make_multimap)
+    {
+      using Pair = ETL_OR_STD::pair<const std::string, int>;
+
+      auto data = etl::make_multimap<std::string, int, std::less<std::string>>(Pair("0", 0), Pair("1", 1), Pair("2", 2), Pair("3", 3), Pair("4", 4), Pair("5", 5));
+
+      auto v = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same_v<Pair, Type>));
+
+      decltype(data)::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(0, itr->second);
+      ++itr;
+      CHECK_EQUAL(1, itr->second);
+      ++itr;
+      CHECK_EQUAL(2, itr->second);
+      ++itr;
+      CHECK_EQUAL(3, itr->second);
+      ++itr;
+      CHECK_EQUAL(4, itr->second);
+      ++itr;
+      CHECK_EQUAL(5, itr->second);
+    }
+#endif
   };
 }

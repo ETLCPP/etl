@@ -283,7 +283,7 @@ namespace
       CHECK(!data.empty());
     }
 
-#if ETL_USING_STL
+#if ETL_USING_INITIALIZER_LIST
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -1224,60 +1224,102 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_compare_lower_upper_bound)
     {
-        Data data(initial_data_even.begin(), initial_data_even.end());
-        Compare_Data compare(initial_data_even.begin(), initial_data_even.end());
+      Data data(initial_data_even.begin(), initial_data_even.end());
+      Compare_Data compare(initial_data_even.begin(), initial_data_even.end());
 
-        std::vector<ETL_OR_STD::pair<std::string, int> > tab(test_data.begin(), test_data.end());
+      std::vector<ETL_OR_STD::pair<std::string, int> > tab(test_data.begin(), test_data.end());
 
-        //make sure both data and compare contain same elements
-        std::vector<ETL_OR_STD::pair<std::string, int> > data_elements(data.begin(), data.end());
-        std::vector<ETL_OR_STD::pair<std::string, int> > compare_data_elements(compare.begin(), compare.end());
+      //make sure both data and compare contain same elements
+      std::vector<ETL_OR_STD::pair<std::string, int> > data_elements(data.begin(), data.end());
+      std::vector<ETL_OR_STD::pair<std::string, int> > compare_data_elements(compare.begin(), compare.end());
 
-        CHECK(data_elements == compare_data_elements);
-        CHECK(data_elements.size() == MAX_SIZE);
+      CHECK(data_elements == compare_data_elements);
+      CHECK(data_elements.size() == MAX_SIZE);
 
-        for(std::vector<ETL_OR_STD::pair<std::string, int> >::iterator it = tab.begin() ; it != tab.end() ; ++it)
+      for(std::vector<ETL_OR_STD::pair<std::string, int> >::iterator it = tab.begin() ; it != tab.end() ; ++it)
+      {
+        std::string i = it->first;
+
+        //lower_bound
+        CHECK((compare.lower_bound(i) == compare.end()) == (data.lower_bound(i) == data.end()));
+        //if both end, or none
+        if((compare.lower_bound(i) == compare.end()) == (data.lower_bound(i) == data.end()))
         {
-            std::string i = it->first;
+          //if both are not end
+          if(compare.lower_bound(i) != compare.end())
+          {
+            CHECK((*compare.lower_bound(i)) == (*data.lower_bound(i)));
+          }
 
-            //lower_bound
-            CHECK((compare.lower_bound(i) == compare.end()) == (data.lower_bound(i) == data.end()));
-            //if both end, or none
-            if((compare.lower_bound(i) == compare.end()) == (data.lower_bound(i) == data.end()))
-            {
-                //if both are not end
-                if(compare.lower_bound(i) != compare.end())
-                {
-                    CHECK((*compare.lower_bound(i)) == (*data.lower_bound(i)));
-                }
+          ETL_OR_STD::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> stlret = compare.equal_range(i);
+          ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> etlret = data.equal_range(i);
 
-                ETL_OR_STD::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> stlret = compare.equal_range(i);
-                ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> etlret = data.equal_range(i);
-
-                CHECK((stlret.first == compare.end()) == (etlret.first == data.end()));
-                if((stlret.first != compare.end()) && (etlret.first != data.end()))
-                {
-                    CHECK((*stlret.first) == (*etlret.first));
-                }
-                CHECK((stlret.second == compare.end()) == (etlret.second == data.end()));
-                if((stlret.second != compare.end()) && (etlret.second != data.end()))
-                {
-                    CHECK((*stlret.second) == (*etlret.second));
-                }
-            }
-
-            //upper_bound
-            CHECK((compare.upper_bound(i) == compare.end()) == (data.upper_bound(i) == data.end()));
-            //if both end, or none
-            if((compare.upper_bound(i) == compare.end()) == (data.upper_bound(i) == data.end()))
-            {
-                //if both are not end
-                if(compare.upper_bound(i) != compare.end())
-                {
-                    CHECK((*compare.upper_bound(i)) == (*data.upper_bound(i)));
-                }
-            }
+          CHECK((stlret.first == compare.end()) == (etlret.first == data.end()));
+          if((stlret.first != compare.end()) && (etlret.first != data.end()))
+          {
+            CHECK((*stlret.first) == (*etlret.first));
+          }
+          CHECK((stlret.second == compare.end()) == (etlret.second == data.end()));
+          if((stlret.second != compare.end()) && (etlret.second != data.end()))
+          {
+            CHECK((*stlret.second) == (*etlret.second));
+          }
         }
+
+        //upper_bound
+        CHECK((compare.upper_bound(i) == compare.end()) == (data.upper_bound(i) == data.end()));
+        //if both end, or none
+        if((compare.upper_bound(i) == compare.end()) == (data.upper_bound(i) == data.end()))
+        {
+          //if both are not end
+          if(compare.upper_bound(i) != compare.end())
+          {
+            CHECK((*compare.upper_bound(i)) == (*data.upper_bound(i)));
+          }
+        }
+      }
     }
+
+    //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
+    TEST(test_map_template_deduction)
+    {
+      using Pair = std::pair<const std::string, int>;
+
+      etl::map data { Pair{"0", 0}, Pair{"1", 1}, Pair{"2", 2}, Pair{"3", 3}, Pair{"4", 4}, Pair{"5", 5} };
+
+      auto v = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same_v<Pair, Type>));
+
+      CHECK_EQUAL(0, data.at("0"));
+      CHECK_EQUAL(1, data.at("1"));
+      CHECK_EQUAL(2, data.at("2"));
+      CHECK_EQUAL(3, data.at("3"));
+      CHECK_EQUAL(4, data.at("4"));
+      CHECK_EQUAL(5, data.at("5"));
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
+    TEST(test_make_map)
+    {
+      using Pair = ETL_OR_STD::pair<const std::string, int>;
+
+      auto data = etl::make_map<std::string, int, std::less<std::string>>(Pair{ "0", 0 }, Pair{ "1", 1 }, Pair{ "2", 2 }, Pair{ "3", 3 }, Pair{ "4", 4 }, Pair{ "5", 5 });
+
+      auto v = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same_v<Pair, Type>));
+
+      CHECK_EQUAL(0, data.at("0"));
+      CHECK_EQUAL(1, data.at("1"));
+      CHECK_EQUAL(2, data.at("2"));
+      CHECK_EQUAL(3, data.at("3"));
+      CHECK_EQUAL(4, data.at("4"));
+      CHECK_EQUAL(5, data.at("5"));
+    }
+#endif
   };
 }

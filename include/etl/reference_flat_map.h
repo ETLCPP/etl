@@ -38,6 +38,7 @@ SOFTWARE.
 #include "error_handler.h"
 #include "debug_count.h"
 #include "type_traits.h"
+#include "nth_type.h"
 #include "parameter_type.h"
 #include "exception.h"
 #include "static_assert.h"
@@ -962,6 +963,26 @@ namespace etl
     etl::vector<node_t*, MAX_SIZE> lookup;
   };
 
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
+  template <typename... TPairs>
+  reference_flat_map(TPairs...) -> reference_flat_map<typename etl::nth_type_t<0, TPairs...>::first_type,
+                                                      typename etl::nth_type_t<0, TPairs...>::second_type,
+                                                      sizeof...(TPairs)>;
+#endif
+
+  //*************************************************************************
+  /// Make
+  //*************************************************************************
+#if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
+  template <typename TKey, typename TMapped, typename TKeyCompare = etl::less<TKey>, typename... TPairs>
+  constexpr auto make_reference_flat_map(TPairs&&... pairs) -> etl::reference_flat_map<TKey, TMapped, sizeof...(TPairs), TKeyCompare>
+  {
+    return { {etl::forward<TPairs>(pairs)...} };
+  }
+#endif
 }
 
 #endif
