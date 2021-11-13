@@ -43,7 +43,7 @@ SOFTWARE.
 #include "intrusive_forward_list.h"
 #include "hash.h"
 #include "type_traits.h"
-#include "type_lookup.h"
+#include "nth_type.h"
 #include "parameter_type.h"
 #include "nullptr.h"
 #include "pool.h"
@@ -1554,8 +1554,8 @@ namespace etl
   /// Make
   //*************************************************************************
 #if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
-  template <typename TKey, typename TMapped, typename... TPairs>
-  constexpr auto make_unordered_multimap(TPairs&&... pairs) -> etl::unordered_multimap<TKey, TMapped, sizeof...(TPairs)>
+  template <typename TKey, typename T, typename THash = etl::hash<TKey>, typename TKeyEqual = etl::equal_to<TKey>, typename... TPairs>
+  constexpr auto make_unordered_multimap(TPairs&&... pairs) -> etl::unordered_multimap<TKey, T, sizeof...(TPairs), sizeof...(TPairs), THash, TKeyEqual>
   {
     return { {etl::forward<TPairs>(pairs)...} };
   }

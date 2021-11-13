@@ -43,7 +43,7 @@ SOFTWARE.
 #include "intrusive_forward_list.h"
 #include "hash.h"
 #include "type_traits.h"
-#include "type_lookup.h"
+#include "nth_type.h"
 #include "parameter_type.h"
 #include "nullptr.h"
 #include "vector.h"
@@ -1491,8 +1491,8 @@ namespace etl
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
   ///\ingroup unordered_map
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator ==(const etl::iunordered_map<TKey, TMapped, TKeyCompare>& lhs, const etl::iunordered_map<TKey, TMapped, TKeyCompare>& rhs)
+  template <typename TKey, typename T, typename TKeyCompare>
+  bool operator ==(const etl::iunordered_map<TKey, T, TKeyCompare>& lhs, const etl::iunordered_map<TKey, T, TKeyCompare>& rhs)
   {
     return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
@@ -1504,8 +1504,8 @@ namespace etl
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
   ///\ingroup unordered_map
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator !=(const etl::iunordered_map<TKey, TMapped, TKeyCompare>& lhs, const etl::iunordered_map<TKey, TMapped, TKeyCompare>& rhs)
+  template <typename TKey, typename T, typename TKeyCompare>
+  bool operator !=(const etl::iunordered_map<TKey, T, TKeyCompare>& lhs, const etl::iunordered_map<TKey, T, TKeyCompare>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -1643,8 +1643,8 @@ namespace etl
   /// Make
   //*************************************************************************
 #if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
-  template <typename TKey, typename TMapped, typename... TPairs>
-  constexpr auto make_unordered_map(TPairs&&... pairs) -> etl::unordered_map<TKey, TMapped, sizeof...(TPairs)>
+  template <typename TKey, typename T, typename THash = etl::hash<TKey>, typename TKeyEqual = etl::equal_to<TKey>, typename... TPairs>
+  constexpr auto make_unordered_map(TPairs&&... pairs) -> etl::unordered_map<TKey, T, sizeof...(TPairs), sizeof...(TPairs), THash, TKeyEqual>
   {
     return { {etl::forward<TPairs>(pairs)...} };
   }

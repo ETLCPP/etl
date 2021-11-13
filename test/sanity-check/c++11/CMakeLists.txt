@@ -186,6 +186,7 @@ target_sources(t11 PRIVATE etl_profile.h
         ../murmur3.h.t.cpp
         ../mutex.h.t.cpp
         ../negative.h.t.cpp
+        ../nth_type.h.t.cpp
         ../nullptr.h.t.cpp
         ../null_type.h.t.cpp
         ../numeric.h.t.cpp

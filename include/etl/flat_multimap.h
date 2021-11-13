@@ -36,7 +36,7 @@ SOFTWARE.
 #include "pool.h"
 #include "utility.h"
 #include "placement_new.h"
-#include "type_lookup.h"
+#include "nth_type.h"
 
 #if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
