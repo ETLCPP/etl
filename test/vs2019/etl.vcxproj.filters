@@ -1161,6 +1161,9 @@
     <ClInclude Include="..\..\include\etl\multi_span.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\nth_type.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\etl\profiles\determine_builtin_support.h">
       <Filter>ETL\Profiles</Filter>
     </ClInclude>
@@ -3042,6 +3045,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\multi_span.h.t.cpp">
+      <Filter>Source Files\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\nth_type.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
     </ClCompile>
   </ItemGroup>

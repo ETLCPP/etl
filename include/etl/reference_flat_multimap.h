@@ -39,7 +39,7 @@ SOFTWARE.
 #include "debug_count.h"
 #include "vector.h"
 #include "iterator.h"
-#include "type_lookup.h"
+#include "nth_type.h"
 
 namespace etl
 {

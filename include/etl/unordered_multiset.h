@@ -43,7 +43,7 @@ SOFTWARE.
 #include "intrusive_forward_list.h"
 #include "hash.h"
 #include "type_traits.h"
-#include "type_lookup.h"
+#include "nth_type.h"
 #include "parameter_type.h"
 #include "nullptr.h"
 #include "error_handler.h"
@@ -1538,8 +1538,8 @@ namespace etl
   /// Make
   //*************************************************************************
 #if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
-  template <typename TKey, typename... T>
-  constexpr auto make_unordered_multiset(T&&... keys) -> etl::unordered_multiset<TKey, sizeof...(T)>
+  template <typename TKey, typename THash = etl::hash<TKey>, typename TKeyEqual = etl::equal_to<TKey>, typename... T>
+  constexpr auto make_unordered_multiset(T&&... keys) -> etl::unordered_multiset<TKey, sizeof...(T), sizeof...(T), THash, TKeyEqual>
   {
     return { {etl::forward<T>(keys)...} };
   }

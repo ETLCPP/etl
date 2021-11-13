@@ -43,7 +43,7 @@ SOFTWARE.
 #include "parameter_type.h"
 #include "static_assert.h"
 #include "error_handler.h"
-#include "type_lookup.h"
+#include "nth_type.h"
 
 ///\defgroup array array
 /// A replacement for std::array if you haven't got C++0x11.

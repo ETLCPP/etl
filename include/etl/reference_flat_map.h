@@ -38,7 +38,7 @@ SOFTWARE.
 #include "error_handler.h"
 #include "debug_count.h"
 #include "type_traits.h"
-#include "type_lookup.h"
+#include "nth_type.h"
 #include "parameter_type.h"
 #include "exception.h"
 #include "static_assert.h"
