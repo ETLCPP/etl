@@ -47,6 +47,14 @@ SOFTWARE.
 
 #include "private/minmax_push.h"
 
+#if ETL_USING_STL
+  #include <algorithm>
+  #include <utility>
+  #include <iterator>
+  #include <functional>
+  #include <numeric>
+#endif
+
 namespace etl
 {
   // Declare prototypes of the ETL's sort functions
