@@ -211,6 +211,14 @@ SOFTWARE.
   #define ETL_CONSTINIT
 #endif
 
+#if !defined(ETL_USING_INITIALIZER_LIST)
+  #if ETL_CPP11_SUPPORTED && ETL_USING_STL && ETL_NOT_USING_STLPORT
+    #define ETL_USING_INITIALIZER_LIST 1
+  #else
+    #define ETL_USING_INITIALIZER_LIST 0
+  #endif
+#endif
+
 // Check for availability of certain builtins
 #include "profiles/determine_builtin_support.h"
 

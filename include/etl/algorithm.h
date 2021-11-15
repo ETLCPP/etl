@@ -142,18 +142,18 @@ namespace etl
 #elif ETL_FORCE_CONSTEXPR_ALGORITHMS
   template <typename TIterator1, typename TIterator2>
   ETL_CONSTEXPR14
-    typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
-    ETL_IS_POINTER_TYPE(TIterator2) &&
-    ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator1) &&
-    ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
+  typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
+                          ETL_IS_POINTER_TYPE(TIterator2) &&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator1) &&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
     copy(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
-    typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
-    typedef typename etl::iterator_traits<TIterator1>::difference_type difference_t;
+    while (sb != se)
+    {
+      *db++ = *sb++;
+    }
 
-    difference_t count = (se - sb);
-
-    return TIterator2(__builtin_memmove(db, sb, sizeof(value_t) * count)) + count;
+    return db;
   }
 #else
   template <typename TIterator1, typename TIterator2>
@@ -418,7 +418,7 @@ namespace etl
     difference_t count = (se - sb);
     TIterator2 db = de - count;
 
-    return TIterator2(__builin_memmove(db, sb, sizeof(value_t) * count)) + count;
+    return TIterator2(__builtin_memmove(db, sb, sizeof(value_t) * count)) + count;
   }
 #else
   // pointer and pod
@@ -710,7 +710,7 @@ namespace etl
 #elif defined(ETL_FORCE_CONSTEXPR_ALGORITHMS)
   template<typename TIterator, typename TSize, typename TValue>
   ETL_CONSTEXPR14
-  typename etl::enable_if<ETL_IS_CHAR_TYPE(TValue) && ETL_IS_NOT_POINTER_TYPE(TIterator), TIterator>::type
+  typename etl::enable_if<ETL_IS_CHAR_TYPE(TValue) && ETL_IS_POINTER_TYPE(TIterator), TIterator>::type
     fill_n(TIterator first, TSize count, const TValue& value)
   {
     while (count != 0)
@@ -777,6 +777,7 @@ namespace etl
 
   //***************************************************************************
   // equal
+  // Not pointer types or not trivially copyable.
   template <typename TIterator1, typename TIterator2>
   ETL_NODISCARD
   ETL_CONSTEXPR14
@@ -798,6 +799,8 @@ namespace etl
   }
 
 #if ETL_USE_BUILTIN_MEMCMP
+  // Using builtins.
+  // Pointer types and trivially copyable.
   template <typename TIterator1, typename TIterator2>
   ETL_NODISCARD
   ETL_CONSTEXPR14
@@ -812,13 +815,15 @@ namespace etl
     return (__builtin_memcmp(first1, first2, sizeof(value_t) * (last1 - first1)) == 0);
   }
 #elif ETL_FORCE_CONSTEXPR_ALGORITHMS
+  // Forced constexpr.
+  // Not pointer types or not trivially copyable.
   template <typename TIterator1, typename TIterator2>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  typename etl::enable_if<ETL_IS_NOT_POINTER_TYPE(TIterator1) ||
-                          ETL_IS_NOT_POINTER_TYPE(TIterator2) ||
-                          ETL_TARGET_IS_NOT_TRIVIALLY_COPYABLE(TIterator1) ||
-                          ETL_TARGET_IS_NOT_TRIVIALLY_COPYABLE(TIterator2), bool>::type
+  typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
+                          ETL_IS_POINTER_TYPE(TIterator2) &&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator1) &&
+                          ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), bool>::type
     equal(TIterator1 first1, TIterator1 last1, TIterator2 first2)
   {
     while (first1 != last1)
@@ -832,6 +837,7 @@ namespace etl
     return true;
   }
 #else
+  // Pointer types and trivially copyable.
   template <typename TIterator1, typename TIterator2>
   ETL_NODISCARD
   typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
@@ -846,6 +852,7 @@ namespace etl
   }
 #endif
 
+  // 
   template <typename TIterator1, typename TIterator2>
   ETL_NODISCARD
   ETL_CONSTEXPR14
