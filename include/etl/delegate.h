@@ -111,10 +111,7 @@ namespace etl
     //*************************************************************************
     // Copy constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14 delegate(const delegate& other)
-      : invocation(other.invocation)
-    {
-    }
+    ETL_CONSTEXPR14 delegate(const delegate& other) = default;
 
     //*************************************************************************
     // Construct from lambda or functor.
