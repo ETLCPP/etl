@@ -956,10 +956,10 @@ namespace etl
     //*************************************************************************
     /// Erases the value at the specified position.
     //*************************************************************************
-    void erase(iterator position)
+    iterator erase(iterator position)
     {
-      // Remove the node by its key
-      erase((*position));
+      // Remove the node by its node specified in iterator position
+      return erase(const_iterator(position));
     }
 
     //*************************************************************************
