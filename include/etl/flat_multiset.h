@@ -268,7 +268,7 @@ namespace etl
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, const_reference value)
+    iterator insert(const_iterator position, const_reference value)
     {
       return insert(value).first;
     }
@@ -280,7 +280,7 @@ namespace etl
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, rvalue_reference value)
+    iterator insert(const_iterator position, rvalue_reference value)
     {
       return insert(etl::move(value)).first;
     }
@@ -428,12 +428,24 @@ namespace etl
     /// Erases an element.
     ///\param i_element Iterator to the element.
     //*********************************************************************
-    void erase(iterator i_element)
+    iterator erase(iterator i_element)
     {
       etl::destroy_at(etl::addressof(*i_element));
       storage.release(etl::addressof(*i_element));
-      refset_t::erase(i_element);
       ETL_DECREMENT_DEBUG_COUNT
+      return refset_t::erase(i_element);
+    }
+
+    //*********************************************************************
+    /// Erases an element.
+    ///\param i_element Iterator to the element.
+    //*********************************************************************
+    iterator erase(const_iterator i_element)
+    {
+      etl::destroy_at(etl::addressof(*i_element));
+      storage.release(etl::addressof(*i_element));
+      ETL_DECREMENT_DEBUG_COUNT
+      return refset_t::erase(i_element);
     }
 
     //*********************************************************************
@@ -443,9 +455,9 @@ namespace etl
     ///\param first Iterator to the first element.
     ///\param last  Iterator to the last element.
     //*********************************************************************
-    void erase(iterator first, iterator last)
+    iterator erase(const_iterator first, const_iterator last)
     {
-      iterator itr = first;
+      const_iterator itr = first;
 
       while (itr != last)
       {
@@ -455,7 +467,7 @@ namespace etl
         ETL_DECREMENT_DEBUG_COUNT
       }
 
-      refset_t::erase(first, last);
+      return refset_t::erase(first, last);
     }
 
     //*************************************************************************

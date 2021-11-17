@@ -441,22 +441,24 @@ namespace etl
     ///\param position The position to insert before.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, value_type value)
+    iterator insert(const_iterator position, value_type value)
     {
+      iterator position_ = to_iterator(position);
+
       ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
 
-      if (position != end())
+      if (position_ != end())
       {
         ++p_end;
-        etl::copy_backward(position, end() - 1, end());
-        *position = value;
+        etl::copy_backward(position_, end() - 1, end());
+        *position_ = value;
       }
       else
       {
         *p_end++ = value;
       }
 
-      return position;
+      return position_;
     }
 
 
@@ -464,22 +466,24 @@ namespace etl
     /// Emplaces a value to the vector at the specified position.
     /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
     //*************************************************************************
-    iterator emplace(iterator position, value_type value)
+    iterator emplace(const_iterator position, value_type value)
     {
       ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
 
-      if (position != end())
+      iterator position_ = to_iterator(position);
+
+      if (position_ != end())
       {
         ++p_end;
-        etl::copy_backward(position, end() - 1, end());
-        *position = value;
+        etl::copy_backward(position_, end() - 1, end());
+        *position_ = value;
       }
       else
       {
         *p_end++ = value;
       }
 
-      return position;
+      return position_;
     }
 
     //*********************************************************************
@@ -489,12 +493,14 @@ namespace etl
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
     //*********************************************************************
-    void insert(iterator position, size_t n, value_type value)
+    void insert(const_iterator position, size_t n, value_type value)
     {
       ETL_ASSERT((size() + n) <= CAPACITY, ETL_ERROR(vector_full));
 
-      etl::copy_backward(position, p_end, p_end + n);
-      etl::fill_n(position, n, value);
+      iterator position_ = to_iterator(position);
+
+      etl::copy_backward(position_, p_end, p_end + n);
+      etl::fill_n(position_, n, value);
 
       p_end += n;
     }
@@ -508,14 +514,16 @@ namespace etl
     ///\param last     The last + 1 element to add.
     //*********************************************************************
     template <typename TIterator>
-    void insert(iterator position, TIterator first, TIterator last)
+    void insert(const_iterator position, TIterator first, TIterator last)
     {
       size_t count = etl::distance(first, last);
 
+      iterator position_ = to_iterator(position);
+
       ETL_ASSERT((size() + count) <= CAPACITY, ETL_ERROR(vector_full));
 
-      etl::copy_backward(position, p_end, p_end + count);
-      etl::copy(first, last, position);
+      etl::copy_backward(position_, p_end, p_end + count);
+      etl::copy(first, last, position_);
       p_end += count;
     }
 
@@ -533,6 +541,21 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Erases an element.
+    ///\param i_element Iterator to the element.
+    ///\return An iterator pointing to the element that followed the erased element.
+    //*********************************************************************
+    iterator erase(const_iterator i_element)
+    {
+      iterator i_element_ = to_iterator(i_element);
+
+      etl::copy(i_element_ + 1, end(), i_element_);
+      --p_end;
+
+      return i_element_;
+    }
+
+    //*********************************************************************
     /// Erases a range of elements.
     /// The range includes all the elements between first and last, including the
     /// element pointed by first, but not the one pointed by last.
@@ -540,15 +563,18 @@ namespace etl
     ///\param last  Iterator to the last element.
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
-    iterator erase(iterator first, iterator last)
+    iterator erase(const_iterator first, const_iterator last)
     {
-      etl::copy(last, end(), first);
+      iterator first_ = to_iterator(first);
+      iterator last_  = to_iterator(last);
+
+      etl::copy(last_, end(), first_);
       size_t n_delete = etl::distance(first, last);
 
       // Just adjust the count.
       p_end -= n_delete;
 
-      return first;
+      return first_;
     }
 
     //*************************************************************************
@@ -655,6 +681,14 @@ namespace etl
     void** p_end;
 
   private:
+
+    //*************************************************************************
+    /// Convert from const_iterator to iterator
+    //*************************************************************************
+    iterator to_iterator(const_iterator itr) const
+    {
+      return const_cast<iterator>(itr);
+    }
 
     // Disable copy construction.
     pvoidvector(const pvoidvector&);

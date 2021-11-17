@@ -854,14 +854,14 @@ namespace etl
     ///\param position The position to insert before.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, const_reference value)
+    iterator insert(const_iterator position, const_reference value)
     {
       ETL_ASSERT(size() != capacity(), ETL_ERROR(vector_full));
 
       T* p = storage.create<T>(T(value));
       position = iterator(lookup.insert(position.lookup_itr, p));
 
-      return position;
+      return to_iterator(position);
     }
 
 #if ETL_CPP11_SUPPORTED
@@ -871,14 +871,14 @@ namespace etl
     ///\param position The position to insert before.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, rvalue_reference value)
+    iterator insert(const_iterator position, rvalue_reference value)
     {
       ETL_ASSERT(size() != capacity(), ETL_ERROR(vector_full));
 
       T* p = storage.create<T>(T(etl::move(value)));
       position = iterator(lookup.insert(position.lookup_itr, p));
 
-      return position;
+      return to_iterator(position);
     }
 #endif
 
@@ -949,12 +949,14 @@ namespace etl
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
     //*********************************************************************
-    void insert(iterator position, size_t n, parameter_t value)
+    void insert(const_iterator position, size_t n, parameter_t value)
     {
       ETL_ASSERT((size() + n) <= capacity(), ETL_ERROR(vector_full));
 
+      iterator position_ = to_iterator(position);
+
       // Make space for the new lookup pointers.
-      typename etl::ivector<T*>::iterator lookup_itr = position.lookup_itr;
+      typename etl::ivector<T*>::iterator lookup_itr = position_.lookup_itr;
       lookup.insert(lookup_itr, n, ETL_NULLPTR);
 
       while (n-- != 0U)
@@ -972,14 +974,14 @@ namespace etl
     ///\param last     The last + 1 element to add.
     //*********************************************************************
     template <class TIterator>
-    void insert(iterator position, TIterator first, TIterator last)
+    void insert(const_iterator position, TIterator first, TIterator last)
     {
       size_t count = size_t(etl::distance(first, last));
 
       ETL_ASSERT((size() + count) <= capacity(), ETL_ERROR(vector_full));
 
       // Make space for the new lookup pointers.
-      typename etl::ivector<T*>::iterator lookup_itr = position.lookup_itr;
+      typename etl::ivector<T*>::iterator lookup_itr = to_iterator(position).lookup_itr;
       lookup.insert(lookup_itr, count, ETL_NULLPTR);
 
       while (first != last)
@@ -1003,6 +1005,18 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Erases an element.
+    ///\param i_element Iterator to the element.
+    ///\return An iterator pointing to the element that followed the erased element.
+    //*********************************************************************
+    iterator erase(const_iterator i_element)
+    {
+      storage.destroy<T>(etl::addressof(*i_element));
+
+      return iterator(lookup.erase(i_element.lookup_itr));
+    }
+
+    //*********************************************************************
     /// Erases a range of elements.
     /// The range includes all the elements between first and last, including the
     /// element pointed by first, but not the one pointed by last.
@@ -1010,9 +1024,9 @@ namespace etl
     ///\param last  Iterator to the last element.
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
-    iterator erase(iterator first, iterator last)
+    iterator erase(const_iterator first, const_iterator last)
     {
-      iterator element = first;
+      iterator element = to_iterator(first);
 
       while (element != last)
       {
@@ -1022,7 +1036,7 @@ namespace etl
 
       lookup.erase(first.lookup_itr, last.lookup_itr);
 
-      return last;
+      return to_iterator(last);
     }
 
     //*************************************************************************
@@ -1185,6 +1199,16 @@ namespace etl
     ~iindirect_vector()
     {
       initialise();
+    }
+
+  protected:
+
+    //*************************************************************************
+    /// Convert from const_iterator to iterator.
+    //*************************************************************************
+    iterator to_iterator(const_iterator itr) const
+    {
+      return iterator(const_cast<indirect_iterator>(itr.lookup_itr));
     }
   };
 

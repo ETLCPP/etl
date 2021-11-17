@@ -543,7 +543,7 @@ namespace etl
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, reference value)
+    iterator insert(const_iterator position, reference value)
     {
       return insert(value).first;
     }
@@ -588,9 +588,18 @@ namespace etl
     /// Erases an element.
     ///\param i_element Iterator to the element.
     //*********************************************************************
-    void erase(iterator i_element)
+    iterator erase(iterator i_element)
     {
-      lookup.erase(i_element.ilookup);
+      return lookup.erase(i_element.ilookup);
+    }
+
+    //*********************************************************************
+    /// Erases an element.
+    ///\param i_element Iterator to the element.
+    //*********************************************************************
+    iterator erase(const_iterator i_element)
+    {
+      return lookup.erase(i_element.ilookup);
     }
 
     //*********************************************************************
@@ -600,9 +609,9 @@ namespace etl
     ///\param first Iterator to the first element.
     ///\param last  Iterator to the last element.
     //*********************************************************************
-    void erase(iterator first, iterator last)
+    iterator erase(const_iterator first, const_iterator last)
     {
-      lookup.erase(first.ilookup, last.ilookup);
+      return lookup.erase(first.ilookup, last.ilookup);
     }
 
     //*************************************************************************

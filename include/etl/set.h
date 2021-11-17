@@ -989,20 +989,6 @@ namespace etl
     //*************************************************************************
     /// Erases a range of elements.
     //*************************************************************************
-    iterator erase(iterator first, iterator last)
-    {
-      iterator next;
-      while (first != last)
-      {
-        next = erase(const_iterator(first++));
-      }
-
-      return next;
-    }
-
-    //*************************************************************************
-    /// Erases a range of elements.
-    //*************************************************************************
     iterator erase(const_iterator first, const_iterator last)
     {
       iterator next;
@@ -1081,54 +1067,6 @@ namespace etl
 
       // Insert node into tree and return iterator to new node location in tree
       return ETL_OR_STD::make_pair(iterator(*this, inserted_node), inserted);
-    }
-#endif
-
-    //*********************************************************************
-    /// Inserts a value to the set starting at the position recommended.
-    /// If asserts or exceptions are enabled, emits set_full if the set is already full.
-    ///\param position The position that would precede the value to insert.
-    ///\param value    The value to insert.
-    //*********************************************************************
-    iterator insert(iterator, const_reference value)
-    {
-      // Default to no inserted node
-      Node* inserted_node = ETL_NULLPTR;
-
-      ETL_ASSERT(!full(), ETL_ERROR(set_full));
-
-      // Get next available free node
-      Data_Node& node = allocate_data_node(value);
-
-      // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
-      inserted_node = insert_node(root_node, node);
-
-      // Insert node into tree and return iterator to new node location in tree
-      return iterator(*this, inserted_node);
-    }
-
-#if ETL_CPP11_SUPPORTED
-    //*********************************************************************
-    /// Inserts a value to the set starting at the position recommended.
-    /// If asserts or exceptions are enabled, emits set_full if the set is already full.
-    ///\param position The position that would precede the value to insert.
-    ///\param value    The value to insert.
-    //*********************************************************************
-    iterator insert(iterator, rvalue_reference value)
-    {
-      // Default to no inserted node
-      Node* inserted_node = ETL_NULLPTR;
-
-      ETL_ASSERT(!full(), ETL_ERROR(set_full));
-
-      // Get next available free node
-      Data_Node& node = allocate_data_node(etl::move(value));
-
-      // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
-      inserted_node = insert_node(root_node, node);
-
-      // Insert node into tree and return iterator to new node location in tree
-      return iterator(*this, inserted_node);
     }
 #endif
 

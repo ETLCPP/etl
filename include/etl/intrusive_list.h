@@ -673,7 +673,7 @@ namespace etl
     //*************************************************************************
     /// Inserts a value to the intrusive_list before the specified position.
     //*************************************************************************
-    iterator insert(iterator position, value_type& value)
+    iterator insert(const_iterator position, value_type& value)
     {
       this->insert_link(position.p_value->link_type::etl_previous, value);
       return iterator(value);
@@ -683,7 +683,7 @@ namespace etl
     /// Inserts a range of values to the intrusive_list after the specified position.
     //*************************************************************************
     template <typename TIterator>
-    void insert(iterator position, TIterator first, TIterator last)
+    void insert(const_iterator position, TIterator first, TIterator last)
     {
       while (first != last)
       {
@@ -706,13 +706,29 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Erases the value at the specified position.
+    //*************************************************************************
+    iterator erase(const_iterator position)
+    {
+      iterator next(position);
+      ++next;
+
+      this->remove_link(*position.p_value);
+
+      return next;
+    }
+
+    //*************************************************************************
     /// Erases a range of elements.
     /// Clears the links after erasing if AUTO or CHECKED.
     //*************************************************************************
-    iterator erase(iterator first, iterator last)
+    iterator erase(const_iterator first, const_iterator last)
     {
-      link_type* p_first = first.p_value;
-      link_type* p_last  = last.p_value;
+      const link_type* cp_first = first.p_value;
+      const link_type* cp_last  = last.p_value;
+
+      link_type* p_first = const_cast<link_type*>(cp_first);
+      link_type* p_last  = const_cast<link_type*>(cp_last);
 
       // Join the ends.
       etl::link<link_type>(p_first->etl_previous, p_last);

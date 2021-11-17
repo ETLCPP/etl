@@ -1133,20 +1133,6 @@ namespace etl
     //*************************************************************************
     /// Erases a range of elements.
     //*************************************************************************
-    iterator erase(iterator first, iterator last)
-    {
-      iterator next;
-      while (first != last)
-      {
-        next = erase(const_iterator(first++));
-      }
-
-      return next;
-    }
-
-    //*************************************************************************
-    /// Erases a range of elements.
-    //*************************************************************************
     iterator erase(const_iterator first, const_iterator last)
     {
       iterator next;
@@ -1221,32 +1207,6 @@ namespace etl
 
       // Insert node into tree and return iterator to new node location in tree
       return iterator(*this, inserted_node);
-    }
-#endif
-
-    //*********************************************************************
-    /// Inserts a value to the multiset starting at the position recommended.
-    /// If asserts or exceptions are enabled, emits set_full if the multiset is already full.
-    ///\param position The position that would precede the value to insert.
-    ///\param value    The value to insert.
-    //*********************************************************************
-    iterator insert(iterator /*position*/, const_reference value)
-    {
-      // Ignore position provided and just do a normal insert
-      return insert(value);
-    }
-
-#if ETL_CPP11_SUPPORTED
-    //*********************************************************************
-    /// Inserts a value to the multiset starting at the position recommended.
-    /// If asserts or exceptions are enabled, emits set_full if the multiset is already full.
-    ///\param position The position that would precede the value to insert.
-    ///\param value    The value to insert.
-    //*********************************************************************
-    iterator insert(iterator /*position*/, rvalue_reference value)
-    {
-      // Ignore position provided and just do a normal insert
-      return insert(etl::move(value));
     }
 #endif
 
