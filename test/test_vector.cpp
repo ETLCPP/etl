@@ -1277,6 +1277,22 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_two_parameter_assign_same_type_not_iterator)
+    {
+      // No compilation error.
+      etl::vector<int, 10> v;
+      v.assign(5, 5);
+    }
+
+    //*************************************************************************
+    TEST(test_three_parameter_insert_same_type_not_iterator)
+    {
+      // No compilation error.
+      etl::vector<int, 10> v;
+      v.insert(v.end(), 5, 5);
+    }
+
+    //*************************************************************************
     TEST(remove)
     {
       const int raw[10] = { 1, 8, 2, 7, 7, 7, 4, 5, 10, 9 };
