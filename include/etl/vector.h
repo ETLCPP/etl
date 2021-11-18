@@ -1064,7 +1064,7 @@ namespace etl
     //*********************************************************************
     /// Destroy an element at the back.
     //*********************************************************************
-    inline void destroy_back()
+    void destroy_back()
     {
       --p_end;
 

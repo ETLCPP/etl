@@ -2009,6 +2009,9 @@ namespace etl
 
   private:
 
+    //*************************************************************************
+    /// Convert from const_iterator to iterator.
+    //*************************************************************************
     iterator to_iterator(const_iterator itr) const
     {
       return iterator(*(const_cast<node_t*>(itr.p_node)));
