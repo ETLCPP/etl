@@ -2027,5 +2027,15 @@ namespace
       CHECK_EQUAL(3U, (*itr++).value); // 3
       CHECK_EQUAL(4U, (*itr++).value); // 4
     }
+
+    TEST(test_same_type_non_iterator)
+    {
+      etl::list<int, 10> l(10, 1);
+      CHECK(l.size() == 10);
+      l.assign(5, 2);
+      CHECK(l.size() == 5);
+      l.insert(l.begin(), 5, 3);
+      CHECK(l.size() == l.max_size());
+    }
   };
 }

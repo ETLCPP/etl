@@ -590,9 +590,9 @@ namespace
       DataNDC data1(pool);
       DataNDC data2(pool);
 
-      data1.assign(SIZE / 2UL, VALUE);
+      data1.assign(SIZE, VALUE);
 
-      CHECK_THROW(data2.assign((SIZE / 2) + 1, VALUE), etl::list_full);
+      CHECK_THROW(data2.assign(SIZE + 1, VALUE), etl::list_full);
     }
 
     //*************************************************************************
