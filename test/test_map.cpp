@@ -830,8 +830,10 @@ namespace
       std::advance(i_compare, 2);
       std::advance(i_data,    2);
 
-      compare_data.erase(i_compare);
-      data.erase(i_data);
+      Compare_Data::iterator i_compare1 = compare_data.erase(i_compare);
+      Data::iterator i_data1 = data.erase(i_data);
+
+      CHECK(i_compare1->second == i_data1->second);
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),

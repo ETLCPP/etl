@@ -8421,8 +8421,6 @@
     <None Include="..\..\.gitmodules" />
     <None Include="..\..\appveyor.yml" />
     <None Include="..\..\arduino\create_arduino_library.py" />
-    <None Include="..\..\arduino\examples\Example_0_import_etl\Example_0_import_etl.ino" />
-    <None Include="..\..\arduino\examples\Vector_Examples\Example_Vector_1_simple_use\Example_Vector_1_simple_use.ino" />
     <None Include="..\..\etl.pspimage" />
     <None Include="..\..\etl.xar" />
     <None Include="..\..\include\etl\generators\generate.bat" />

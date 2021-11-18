@@ -403,7 +403,7 @@ namespace etl
     //*************************************************************************
     iterator insert(const_iterator position, parameter_t value)
     {
-      iterator p = const_cast<iterator>(position);
+      iterator p = to_iterator(position);
 
       etl::move_backward(p, end() - 1, end());
       *p = value;
@@ -432,7 +432,7 @@ namespace etl
     template <typename TIterator>
     iterator insert(const_iterator position, TIterator first, const TIterator last)
     {
-      iterator p = const_cast<iterator>(position);
+      iterator p = to_iterator(position);
       iterator result(p);
 
       size_t source_size       = etl::distance(first, last);
@@ -468,7 +468,7 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator position)
     {
-      iterator p = const_cast<iterator>(position);
+      iterator p = to_iterator(position);
       etl::move(p + 1, end(), p);
 
       return p;
@@ -493,7 +493,7 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator first, const_iterator last)
     {
-      iterator p = const_cast<iterator>(first);
+      iterator p = to_iterator(first);
       etl::move(last, cend(), p);
       return p;
     }
@@ -515,7 +515,7 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator position, parameter_t value)
     {
-      iterator p = const_cast<iterator>(position);
+      iterator p = to_iterator(position);
 
       etl::move(p + 1, end(), p);
       back() = value;
@@ -541,16 +541,26 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator first, const_iterator last, parameter_t value)
     {
-      iterator p = const_cast<iterator>(first);
+      iterator p = to_iterator(first);
 
       p = etl::move(last, cend(), p);
       etl::fill(p, end(), value);
 
-      return const_cast<iterator>(first);
+      return to_iterator(first);
     }
 
     /// The array data.
     T _buffer[SIZE];
+
+  private:
+
+    //*************************************************************************
+    /// Convert from const_iterator to iterator
+    //*************************************************************************
+    iterator to_iterator(const_iterator itr) const
+    {
+      return const_cast<iterator>(itr);
+    }
   };
 
   //*************************************************************************

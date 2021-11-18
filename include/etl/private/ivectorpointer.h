@@ -374,7 +374,7 @@ namespace etl
     ///\param position The position to insert before.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, parameter_t value)
+    iterator insert(const_iterator position, parameter_t value)
     {
       return iterator(base_t::insert(base_t::iterator(position), value));
     }
@@ -382,7 +382,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the vector at the specified position.
     //*************************************************************************
-    iterator emplace(iterator position, parameter_t value)
+    iterator emplace(const_iterator position, parameter_t value)
     {
       return iterator(base_t::emplace(base_t::iterator(position), value));
     }
@@ -394,7 +394,7 @@ namespace etl
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
     //*********************************************************************
-    void insert(iterator position, size_t n, parameter_t value)
+    void insert(const_iterator position, size_t n, parameter_t value)
     {
       base_t::insert(base_t::iterator(position), n, value);
     }
@@ -407,7 +407,7 @@ namespace etl
     ///\param last     The last + 1 element to add.
     //*********************************************************************
     template <class TIterator>
-    void insert(iterator position, TIterator first, TIterator last)
+    void insert(const_iterator position, TIterator first, TIterator last)
     {
       base_t::insert(base_t::iterator(position), first, last);
     }
@@ -423,6 +423,16 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Erases an element.
+    ///\param i_element Iterator to the element.
+    ///\return An iterator pointing to the element that followed the erased element.
+    //*********************************************************************
+    iterator erase(const_iterator i_element)
+    {
+      return iterator(base_t::erase(base_t::const_iterator(i_element)));
+    }
+
+    //*********************************************************************
     /// Erases a range of elements.
     /// The range includes all the elements between first and last, including the
     /// element pointed by first, but not the one pointed by last.
@@ -430,9 +440,9 @@ namespace etl
     ///\param last  Iterator to the last element.
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
-    iterator erase(iterator first, iterator last)
+    iterator erase(const_iterator first, const_iterator last)
     {
-      return iterator(base_t::erase(base_t::iterator(first), base_t::iterator(last)));
+      return iterator(base_t::erase(base_t::const_iterator(first), base_t::const_iterator(last)));
     }
 
     //*************************************************************************
@@ -795,7 +805,7 @@ namespace etl
     ///\param position The position to insert before.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, parameter_t value)
+    iterator insert(const_iterator position, parameter_t value)
     {
       return iterator(base_t::insert(base_t::iterator(position), const_cast<T*>(value)));
     }
@@ -807,7 +817,7 @@ namespace etl
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
     //*********************************************************************
-    void insert(iterator position, size_t n, parameter_t value)
+    void insert(const_iterator position, size_t n, parameter_t value)
     {
       base_t::insert(base_t::iterator(position), n, const_cast<T*>(value));
     }
@@ -820,7 +830,7 @@ namespace etl
     ///\param last     The last + 1 element to add.
     //*********************************************************************
     template <class TIterator>
-    void insert(iterator position, TIterator first, TIterator last)
+    void insert(const_iterator position, TIterator first, TIterator last)
     {
       base_t::insert(base_t::iterator(position), first, last);
     }
@@ -836,6 +846,16 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Erases an element.
+    ///\param i_element Iterator to the element.
+    ///\return An iterator pointing to the element that followed the erased element.
+    //*********************************************************************
+    iterator erase(const_iterator i_element)
+    {
+      return iterator(base_t::erase(base_t::iterator(i_element)));
+    }
+
+    //*********************************************************************
     /// Erases a range of elements.
     /// The range includes all the elements between first and last, including the
     /// element pointed by first, but not the one pointed by last.
@@ -843,7 +863,7 @@ namespace etl
     ///\param last  Iterator to the last element.
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
-    iterator erase(iterator first, iterator last)
+    iterator erase(const_iterator first, const_iterator last)
     {
       return iterator(base_t::erase(base_t::iterator(first), base_t::iterator(last)));
     }
