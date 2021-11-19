@@ -2029,6 +2029,17 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_same_type_non_iterator)
+    {
+      etl::list<int, 10> l(10, 1);
+      CHECK(l.size() == 10);
+      l.assign(5, 2);
+      CHECK(l.size() == 5);
+      l.insert(l.begin(), 5, 3);
+      CHECK(l.size() == l.max_size());
+    }
+    
+    //*************************************************************************
 #if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
     TEST(test_forward_list_template_deduction)
     {

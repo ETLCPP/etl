@@ -1351,6 +1351,18 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_two_parameter_same_type_non_iterator)
+    {
+      // No compile error.
+      etl::forward_list<int, 10> fl(10, 1);
+      CHECK(fl.size() == 10);
+      fl.assign(5, 2);
+      CHECK(fl.size() == 5);
+      fl.insert_after(fl.before_begin(), 5, 3);
+      CHECK(fl.size() == fl.max_size());
+    }
+    
+    //*************************************************************************
 #if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
     TEST(test_forward_list_template_deduction)
     {
