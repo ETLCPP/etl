@@ -797,7 +797,7 @@ namespace etl
     /// If ETL_THROW_EXCEPTIONS & ETL_DEBUG are defined throws list_iterator if the iterators are reversed.
     //*************************************************************************
     template <typename TIterator>
-    void assign(TIterator first, TIterator last)
+    void assign(TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
     {
 #if defined(ETL_DEBUG)
       difference_type d = etl::distance(first, last);
@@ -822,7 +822,7 @@ namespace etl
     void assign(size_t n, const T& value)
     {
 #if defined(ETL_DEBUG)
-      ETL_ASSERT(n <= available(), ETL_ERROR(list_full));
+      ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(list_full));
 #endif
 
       initialise();
@@ -1191,7 +1191,7 @@ namespace etl
     /// Inserts a range of values to the list at the specified position.
     //*************************************************************************
     template <typename TIterator>
-    void insert(iterator position, TIterator first, TIterator last)
+    void insert(iterator position, TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
     {
       while (first != last)
       {
