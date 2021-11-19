@@ -1349,5 +1349,16 @@ namespace
       CHECK(data1 < data3);
       CHECK(data3 > data1);
     }
+
+    TEST(test_two_parameter_same_type_non_iterator)
+    {
+      // No compile error.
+      etl::forward_list<int, 10> fl(10, 1);
+      CHECK(fl.size() == 10);
+      fl.assign(5, 2);
+      CHECK(fl.size() == 5);
+      fl.insert_after(fl.before_begin(), 5, 3);
+      CHECK(fl.size() == fl.max_size());
+    }
   };
 }
