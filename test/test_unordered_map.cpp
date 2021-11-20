@@ -599,7 +599,23 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_erase_single)
+    TEST_FIXTURE(SetupFixture, test_erase_single_iterator)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      DataNDC::iterator idata = data.find(K5);
+      DataNDC::iterator inext = idata;
+      ++inext;
+
+      DataNDC::iterator iafter = data.erase(idata);
+      idata = data.find(K5);
+
+      CHECK(idata == data.end());
+      CHECK(inext == iafter);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_single_const_iterator)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
@@ -607,7 +623,7 @@ namespace
       DataNDC::const_iterator inext = idata;
       ++inext;
 
-      DataNDC::const_iterator iafter = data.erase(idata);
+      DataNDC::iterator iafter = data.erase(idata);
       idata = data.find(K5);
 
       CHECK(idata == data.end());
@@ -619,10 +635,10 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      DataNDC::iterator idata     = data.begin();
+      DataNDC::const_iterator idata     = data.begin();
       std::advance(idata, 2);
 
-      DataNDC::iterator idata_end = data.begin();
+      DataNDC::const_iterator idata_end = data.begin();
       std::advance(idata_end, 5);
 
       data.erase(idata, idata_end);
@@ -670,10 +686,10 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      DataNDC::iterator end = data.begin();
+      DataNDC::const_iterator end = data.cbegin();
       etl::advance(end, data.size() / 2);
 
-      auto itr = data.erase(data.begin(), end);
+      auto itr = data.erase(data.cbegin(), end);
 
       CHECK_EQUAL(initial_data.size() / 2, data.size());
       CHECK(!data.full());
@@ -686,10 +702,10 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      DataNDC::iterator begin = data.begin();
+      DataNDC::const_iterator begin = data.cbegin();
       etl::advance(begin, data.size() / 2);
 
-      auto itr = data.erase(begin, data.end());
+      auto itr = data.erase(begin, data.cend());
 
       CHECK_EQUAL(initial_data.size() / 2, data.size());
       CHECK(!data.full());
@@ -702,7 +718,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      auto itr = data.erase(data.begin(), data.end());
+      auto itr = data.erase(data.cbegin(), data.cend());
 
       CHECK_EQUAL(0U, data.size());
       CHECK(!data.full());

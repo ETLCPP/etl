@@ -967,11 +967,13 @@ namespace etl
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
     //*********************************************************************
-    void insert(const_iterator position, size_type n, T value)
+    iterator insert(const_iterator position, size_type n, T value)
     {
+      iterator position_ = to_iterator(position);
+
       if (n == 0)
       {
-        return;
+        return position_;
       }
 
       // Quick hack, as iterators are pointers.
@@ -988,7 +990,7 @@ namespace etl
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
 #endif
-        return;
+        return to_iterator(position);;
       }
 
       // Fills the string to the end?
@@ -1040,6 +1042,8 @@ namespace etl
       }
 
       p_buffer[current_size] = 0;
+
+      return position_;
     }
 
     //*********************************************************************
@@ -1049,14 +1053,14 @@ namespace etl
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
     //*********************************************************************
-    template <class TIterator>
-    void insert(const_iterator position, TIterator first, TIterator last)
+    template <typename TIterator>
+    iterator insert(const_iterator position, TIterator first, TIterator last)
     {
       iterator position_ = to_iterator(position);
 
       if (first == last)
       {
-        return;
+        return position_;
       }
 
       const size_type start = etl::distance(begin(), position_);
@@ -1072,7 +1076,7 @@ namespace etl
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
 #endif
-        return;
+        return position_;
       }
 
       // Fills the string to the end?
@@ -1132,6 +1136,8 @@ namespace etl
       }
 
       p_buffer[current_size] = 0;
+
+      return position_;
     }
 
     //*********************************************************************
@@ -1263,6 +1269,21 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Erases an element.
+    ///\param i_element Iterator to the element.
+    ///\return An iterator pointing to the element that followed the erased element.
+    //*********************************************************************
+    iterator erase(const_iterator i_element)
+    {
+      iterator i_element_(to_iterator(i_element));
+
+      etl::copy(i_element_ + 1, end(), i_element_);
+      p_buffer[--current_size] = 0;
+
+      return i_element_;
+    }
+
+    //*********************************************************************
     /// Erases a range of elements.
     /// The range includes all the elements between first and last, including the
     /// element pointed by first, but not the one pointed by last.
@@ -1270,21 +1291,24 @@ namespace etl
     ///\param last  Iterator to the last element.
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
-    iterator erase(iterator first, iterator last)
+    iterator erase(const_iterator first, const_iterator last)
     {
-      if (first == last)
+      iterator first_ = to_iterator(first);
+      iterator last_  = to_iterator(last);
+
+      if (first_ == last_)
       {
-        return first;
+        return first_;
       }
 
-      etl::copy(last, end(), first);
-      size_type n_delete = etl::distance(first, last);
+      etl::copy(last_, end(), first_);
+      size_type n_delete = etl::distance(first_, last_);
 
       current_size -= n_delete;
       p_buffer[current_size] = 0;
       cleanup();
 
-      return first;
+      return first_;
     }
 
     //*********************************************************************

@@ -961,7 +961,7 @@ namespace etl
     //*************************************************************************
     /// Inserts 'n' copies of a value to the forward_list after the specified position.
     //*************************************************************************
-    void insert_after(const_iterator position, size_t n, const T& value)
+    iterator insert_after(const_iterator position, size_t n, const T& value)
     {
       ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
@@ -971,13 +971,20 @@ namespace etl
         data_node_t& data_node = allocate_data_node(value);
         insert_node_after(*to_iterator(position).p_node, data_node);
       }
+
+      if (n > 0U)
+      {
+        ++position;
+      }
+
+      return to_iterator(position);
     }
 
     //*************************************************************************
     /// Inserts a range of values to the forward_list after the specified position.
     //*************************************************************************
     template <typename TIterator>
-    void insert_after(iterator position, TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
+    iterator insert_after(const_iterator position, TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
     {
 #if defined(ETL_DEBUG)
       difference_type d = etl::distance(first, last);
@@ -991,6 +998,8 @@ namespace etl
         insert_node_after(*to_iterator(position).p_node, data_node);
         ++position;
       }
+
+      return to_iterator(position);
     }
 
     //*************************************************************************

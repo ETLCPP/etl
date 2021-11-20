@@ -2704,13 +2704,31 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_erase_single)
+    TEST_FIXTURE(SetupFixture, test_erase_single_iterator)
     {
       Compare_Text compare_text(initial_text.c_str());
       Text text(initial_text.c_str());
 
-      compare_text.erase(compare_text.begin() + 2);
-      text.erase(text.begin() + 2);
+      Compare_Text::iterator citr = compare_text.erase(compare_text.begin() + 2);
+      Text::iterator ditr = text.erase(text.begin() + 2);
+      CHECK(*citr == *ditr);
+
+      bool is_equal = Equal(compare_text, text);
+      CHECK(is_equal);
+#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+      CHECK(!text.is_truncated());
+#endif
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_single_const_iterator)
+    {
+      Compare_Text compare_text(initial_text.c_str());
+      Text text(initial_text.c_str());
+
+      Compare_Text::iterator citr = compare_text.erase(compare_text.cbegin() + 2);
+      Text::iterator ditr = text.erase(text.cbegin() + 2);
+      CHECK(*citr == *ditr);
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2725,9 +2743,9 @@ namespace
       Compare_Text compare_text(initial_text.c_str());
       Text text(initial_text.c_str());
 
-      compare_text.erase(compare_text.begin() + 2, compare_text.begin() + 4);
-
-      text.erase(text.begin() + 2, text.begin() + 4);
+      Compare_Text::iterator citr = compare_text.erase(compare_text.cbegin() + 2, compare_text.cbegin() + 4);
+      Text::iterator ditr = text.erase(text.cbegin() + 2, text.cbegin() + 4);
+      CHECK(*citr == *ditr);
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);

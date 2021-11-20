@@ -1409,9 +1409,10 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data data(initial_data.begin(), initial_data.end());
 
-      compare_data.erase(compare_data.begin() + 2);
+      Compare_Data::iterator citr = compare_data.erase(compare_data.begin() + 2);
+      Data::iterator ditr = data.erase(data.begin() + 2);
 
-      data.erase(data.begin() + 2);
+      CHECK(*citr == *ditr);
 
       bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
@@ -1419,14 +1420,31 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_const_erase_single)
+    TEST_FIXTURE(SetupFixture, test_const_erase_single_iterator)
     {
       CCompare_Data compare_data(initial_data.begin(), initial_data.end());
       CData data(initial_data.begin(), initial_data.end());
 
-      compare_data.erase(compare_data.begin() + 2);
+      CCompare_Data::iterator citr = compare_data.erase(compare_data.begin() + 2);
+      CData::iterator ditr = data.erase(data.begin() + 2);
 
-      data.erase(data.begin() + 2);
+      CHECK(*citr == *ditr);
+
+      bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_const_erase_single_const_iterator)
+    {
+      CCompare_Data compare_data(initial_data.begin(), initial_data.end());
+      CData data(initial_data.begin(), initial_data.end());
+
+      CCompare_Data::iterator citr = compare_data.erase(compare_data.cbegin() + 2);
+      CData::iterator ditr = data.erase(data.cbegin() + 2);
+
+      CHECK(*citr == *ditr);
 
       bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
@@ -1439,9 +1457,10 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data data(initial_data.begin(), initial_data.end());
 
-      compare_data.erase(compare_data.begin() + 2, compare_data.begin() + 4);
+      Compare_Data::iterator citr = compare_data.erase(compare_data.cbegin() + 2, compare_data.cbegin() + 4);
+      Data::iterator ditr = data.erase(data.cbegin() + 2, data.cbegin() + 4);
 
-      data.erase(data.begin() + 2, data.begin() + 4);
+      CHECK(*citr == *ditr);
 
       bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 

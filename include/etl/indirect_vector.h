@@ -949,7 +949,7 @@ namespace etl
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
     //*********************************************************************
-    void insert(const_iterator position, size_t n, parameter_t value)
+    iterator insert(const_iterator position, size_t n, parameter_t value)
     {
       ETL_ASSERT((size() + n) <= capacity(), ETL_ERROR(vector_full));
 
@@ -964,6 +964,8 @@ namespace etl
         T* p = storage.create<T>(value);
         *lookup_itr++ = p;
       }
+
+      return position_;
     }
 
     //*********************************************************************
@@ -974,7 +976,7 @@ namespace etl
     ///\param last     The last + 1 element to add.
     //*********************************************************************
     template <class TIterator>
-    void insert(const_iterator position, TIterator first, TIterator last)
+    iterator insert(const_iterator position, TIterator first, TIterator last)
     {
       size_t count = size_t(etl::distance(first, last));
 
@@ -990,6 +992,8 @@ namespace etl
         *lookup_itr++ =  p;
         ++first;
       }
+
+      return to_iterator(position);
     }
 
     //*********************************************************************

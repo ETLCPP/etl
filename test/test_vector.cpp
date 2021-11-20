@@ -740,14 +740,14 @@ namespace
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
 
-        data.insert(data.begin() + offset, INITIAL_VALUE);
-        compare_data.insert(compare_data.begin() + offset, INITIAL_VALUE);
+        data.insert(data.cbegin() + offset, INITIAL_VALUE);
+        compare_data.insert(compare_data.cbegin() + offset, INITIAL_VALUE);
 
         CHECK_EQUAL(compare_data.size(), data.size());
 
-        bool is_equal = std::equal(data.begin(),
-                                   data.end(),
-                                   compare_data.begin());
+        bool is_equal = std::equal(data.cbegin(),
+                                   data.cend(),
+                                   compare_data.cbegin());
 
         CHECK(is_equal);
       }
@@ -767,14 +767,14 @@ namespace
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
 
-        data.emplace(data.begin() + offset, INITIAL_VALUE);
-        compare_data.emplace(compare_data.begin() + offset, INITIAL_VALUE);
+        data.emplace(data.cbegin() + offset, INITIAL_VALUE);
+        compare_data.emplace(compare_data.cbegin() + offset, INITIAL_VALUE);
 
         CHECK_EQUAL(compare_data.size(), data.size());
 
-        bool is_equal = std::equal(data.begin(),
-          data.end(),
-          compare_data.begin());
+        bool is_equal = std::equal(data.cbegin(),
+                                   data.cend(),
+                                   compare_data.cbegin());
 
         CHECK(is_equal);
       }
@@ -790,15 +790,15 @@ namespace
 
       size_t offset = 2;
 
-      CHECK_THROW(data.insert(data.begin() + offset, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.cbegin() + offset, INITIAL_VALUE), etl::vector_full);
 
       offset = 0;
 
-      CHECK_THROW(data.insert(data.begin() + offset, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.cbegin() + offset, INITIAL_VALUE), etl::vector_full);
 
       offset = data.size();
 
-      CHECK_THROW(data.insert(data.begin() + offset, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.cbegin() + offset, INITIAL_VALUE), etl::vector_full);
     }
 
     //*************************************************************************
@@ -815,14 +815,14 @@ namespace
 
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
-        data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE);
-        compare_data.insert(compare_data.begin() + offset, INSERT_SIZE, INITIAL_VALUE);
+        data.insert(data.cbegin() + offset, INSERT_SIZE, INITIAL_VALUE);
+        compare_data.insert(compare_data.cbegin() + offset, INSERT_SIZE, INITIAL_VALUE);
 
         CHECK_EQUAL(compare_data.size(), data.size());
 
-        bool is_equal = std::equal(data.begin(),
-                                   data.end(),
-                                   compare_data.begin());
+        bool is_equal = std::equal(data.cbegin(),
+                                   data.cend(),
+                                   compare_data.cbegin());
 
         CHECK(is_equal);
       }
@@ -839,19 +839,19 @@ namespace
 
       size_t offset = 0;
 
-      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.cbegin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
 
       offset = 2;
 
-      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.cbegin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
 
       offset = 4;
 
-      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.cbegin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
 
       offset = data.size();
 
-      CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
+      CHECK_THROW(data.insert(data.cbegin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
     }
 
     //*************************************************************************
@@ -868,14 +868,14 @@ namespace
 
         data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
         compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
-        data.insert(data.begin() + offset, insert_data.begin(), insert_data.end());
-        compare_data.insert(compare_data.begin() + offset, insert_data.begin(), insert_data.end());
+        data.insert(data.cbegin() + offset, insert_data.cbegin(), insert_data.cend());
+        compare_data.insert(compare_data.cbegin() + offset, insert_data.cbegin(), insert_data.cend());
 
         CHECK_EQUAL(compare_data.size(), data.size());
 
-        bool is_equal = std::equal(data.begin(),
-                                   data.end(),
-                                   compare_data.begin());
+        bool is_equal = std::equal(data.cbegin(),
+                                   data.cend(),
+                                   compare_data.cbegin());
 
         CHECK(is_equal);
       }
@@ -891,31 +891,61 @@ namespace
 
       size_t offset = 0;
 
-      CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
+      CHECK_THROW(data.insert(data.cbegin() + offset, initial_data.cbegin(), initial_data.cend()), etl::vector_full);
 
       offset = 2;
 
-      CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
+      CHECK_THROW(data.insert(data.cbegin() + offset, initial_data.cbegin(), initial_data.cend()), etl::vector_full);
 
       offset = 4;
 
-      CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
+      CHECK_THROW(data.insert(data.cbegin() + offset, initial_data.cbegin(), initial_data.cend()), etl::vector_full);
 
       offset = data.size();
 
-      CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
+      CHECK_THROW(data.insert(data.cbegin() + offset, initial_data.cbegin(), initial_data.cend()), etl::vector_full);
     }
 
-
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_erase_single)
+    TEST_FIXTURE(SetupFixture, test_erase_single_iterator)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data data(initial_data.begin(), initial_data.end());
 
-      compare_data.erase(compare_data.begin() + 2);
+      Compare_Data::iterator const_cdi = compare_data.begin() + 2U;
+      int compare_value = *(const_cdi + 1U);
+      Compare_Data::iterator cdi = compare_data.erase(const_cdi);
+      CHECK_EQUAL(compare_value, *cdi);
 
-      data.erase(data.begin() + 2);
+      Data::iterator const_di = data.begin() + 2U;
+      int data_value = *(const_di + 1U);
+      Data::iterator di = data.erase(const_di);
+      CHECK_EQUAL(data_value, *di);
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      bool is_equal = std::equal(data.begin(),
+        data.end(),
+        compare_data.begin());
+
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_single_const_iterator)
+    {
+      Compare_Data compare_data(initial_data.begin(), initial_data.end());
+      Data data(initial_data.begin(), initial_data.end());
+
+      Compare_Data::const_iterator const_cdi = compare_data.cbegin() + 2U;
+      int compare_value = *(const_cdi + 1U);
+      Compare_Data::iterator cdi = compare_data.erase(const_cdi);
+      CHECK_EQUAL(compare_value, *cdi);
+
+      Data::const_iterator const_di = data.cbegin() + 2U;
+      int data_value = *(const_di + 1U);
+      Data::iterator di = data.erase(const_di);
+      CHECK_EQUAL(data_value, *di);
 
       CHECK_EQUAL(compare_data.size(), data.size());
 
@@ -932,9 +962,15 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data data(initial_data.begin(), initial_data.end());
 
-      compare_data.erase(compare_data.begin() + 2, compare_data.begin() + 4);
+      Compare_Data::const_iterator const_cdi = compare_data.cbegin() + 2U;
+      int compare_value = *(const_cdi + 2U);
+      Compare_Data::iterator cdi = compare_data.erase(const_cdi, const_cdi + 2U);
+      CHECK_EQUAL(compare_value, *cdi);
 
-      data.erase(data.begin() + 2, data.begin() + 4);
+      Data::const_iterator const_di = data.cbegin() + 2U;
+      int data_value = *(const_di + 2U);
+      Data::iterator di = data.erase(const_di, const_di + 2U);
+      CHECK_EQUAL(data_value, *di);
 
       CHECK_EQUAL(compare_data.size(), data.size());
 
