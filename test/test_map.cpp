@@ -1283,7 +1283,7 @@ namespace
     }
 
     //*************************************************************************
-#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST && !(defined(ETL_COMPILER_GCC) && (ETL_COMPILER_VERSION < 8))
     TEST(test_map_template_deduction)
     {
       using Pair = std::pair<const std::string, int>;

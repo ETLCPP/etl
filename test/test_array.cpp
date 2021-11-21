@@ -651,7 +651,7 @@ namespace
     }
 
     //*************************************************************************
-#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST && !(defined(ETL_COMPILER_GCC) && (ETL_COMPILER_VERSION < 8))
     TEST(test_array_template_deduction)
     {
       etl::array data{ char(0), short(1), int(2), long(3), 4, 5, 6, 7, 8, 9 };
