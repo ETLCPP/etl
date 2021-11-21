@@ -2452,7 +2452,7 @@ namespace etl
   //*************************************************************************
 #if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
   template <typename... T>
-  deque(T...) -> deque<int, sizeof...(T)>;
+  deque(T...) -> deque<typename etl::common_type_t<T...>, sizeof...(T)>;
 #endif
 
   //*************************************************************************
