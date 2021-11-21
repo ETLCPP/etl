@@ -47,8 +47,6 @@ SOFTWARE.
 #include "iterator.h"
 #include "placement_new.h"
 
-#include "nth_type.h"
-
 #if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
   #include <initializer_list>
 #endif
@@ -2454,7 +2452,7 @@ namespace etl
   //*************************************************************************
 #if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
   template <typename... T>
-  deque(T...) -> deque<typename etl::nth_type_t<0U, T...>, sizeof...(T)>;
+  deque(T...) -> deque<typename etl::common_type_t<T...>, sizeof...(T)>;
 #endif
 
   //*************************************************************************
