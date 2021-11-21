@@ -101,24 +101,6 @@ namespace
       CHECK_EQUAL(SIZE, data.max_size());
     }
 
-#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED) && !defined(ETL_COMPILER_GCC)
-    //*************************************************************************
-    TEST(test_cpp17_deduced_constructor)
-    {
-      etl::deque data{ N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13 };
-      etl::deque<NDC, 14> check = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13 };
-
-      CHECK(!data.empty());
-      CHECK(data.full());
-      CHECK(data.begin() != data.end());
-      CHECK_EQUAL(14U, data.size());
-      CHECK_EQUAL(0U, data.available());
-      CHECK_EQUAL(14U, data.capacity());
-      CHECK_EQUAL(14U, data.max_size());
-      CHECK(data == check);
-    }
-#endif
-
     //*************************************************************************
     TEST(test_constructor_fill)
     {
@@ -2010,14 +1992,13 @@ namespace
     }
 
     //*************************************************************************
-#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST && !defined(ETL_COMPILER_GCC)
     TEST(test_deque_template_deduction)
     {
-      //etl::deque data{ char(0), short(1), int(2), long(3), 4, 5, 6, 7, 8, 9 };
-      etl::deque data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::deque data{ char(0), short(1), int(2), long(3), 4, 5, 6, 7, 8, 9 };
 
       using Type = std::remove_reference_t<decltype(data[0])>;
-      //CHECK((std::is_same_v<long, Type>));
+      CHECK((std::is_same_v<long, Type>));
 
       CHECK_EQUAL(0, data[0]);
       CHECK_EQUAL(1, data[1]);
