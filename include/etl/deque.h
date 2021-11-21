@@ -2452,7 +2452,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
   template <typename... T>
   deque(T...) -> deque<typename etl::nth_type_t<0U, T...>, sizeof...(T)>;
 #endif
@@ -2460,7 +2460,7 @@ namespace etl
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
   template <typename T, typename... TValues>
   constexpr auto make_deque(TValues&&... values) -> etl::deque<T, sizeof...(TValues)>
   {
