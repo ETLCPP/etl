@@ -1756,7 +1756,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
   template <typename... T>
   forward_list(T...) ->forward_list<typename etl::common_type_t<T...>, sizeof...(T)>;
 #endif
@@ -1764,7 +1764,7 @@ namespace etl
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
   template <typename... T>
   constexpr auto make_forward_list(T... t) -> etl::forward_list<typename etl::common_type_t<T...>, sizeof...(T)>
   {

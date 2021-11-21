@@ -1422,11 +1422,22 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
   template <typename T, typename... Ts>
   indirect_vector(T, Ts...)
     ->indirect_vector<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
 #endif 
+
+  //*************************************************************************
+  /// Make
+  //*************************************************************************
+#if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
+  template <typename... T>
+  constexpr auto make_indirect_vector(T... t) -> etl::indirect_vector<typename etl::common_type_t<T...>, sizeof...(T)>
+  {
+    return { { etl::forward<T>(t)... } };
+  }
+#endif
 
   //***************************************************************************
   /// A indirect_vector implementation that uses a fixed size buffer.

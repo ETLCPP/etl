@@ -2166,7 +2166,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
   template <typename... T>
   list(T...) -> list<typename etl::common_type_t<T...>,
                      sizeof...(T)>;
@@ -2175,7 +2175,7 @@ namespace etl
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
   template <typename... T>
   constexpr auto make_list(T... t) -> etl::list<typename etl::common_type_t<T...>, sizeof...(T)>
   {
