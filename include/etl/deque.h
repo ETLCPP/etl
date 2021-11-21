@@ -2454,7 +2454,7 @@ namespace etl
   //*************************************************************************
 #if ETL_CPP17_SUPPORTED
   template <typename... T>
-  deque(T...) -> deque<typename etl::nth_type<0U, T...>::type, sizeof...(T)>;
+  deque(T...) -> deque<typename etl::nth_type_t<0U, T...>, sizeof...(T)>;
 #endif
 
   //*************************************************************************
