@@ -105,16 +105,28 @@ namespace
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
-      etl::deque data{ N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13 };
-      etl::deque<NDC, 14> check = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13 };
+      //etl::deque data{ N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13 };
+      //etl::deque<NDC, 14> check = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13 };
+
+      //CHECK(!data.empty());
+      //CHECK(data.full());
+      //CHECK(data.begin() != data.end());
+      //CHECK_EQUAL(14U, data.size());
+      //CHECK_EQUAL(0U, data.available());
+      //CHECK_EQUAL(14U, data.capacity());
+      //CHECK_EQUAL(14U, data.max_size());
+      //CHECK(data == check);
+
+      etl::deque data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::deque<int, 10U> check = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
       CHECK(!data.empty());
       CHECK(data.full());
       CHECK(data.begin() != data.end());
-      CHECK_EQUAL(14U, data.size());
       CHECK_EQUAL(0U, data.available());
-      CHECK_EQUAL(14U, data.capacity());
-      CHECK_EQUAL(14U, data.max_size());
+      CHECK_EQUAL(10U, data.capacity());
+      CHECK_EQUAL(10U, data.size());
+      CHECK_EQUAL(10U, data.max_size());
       CHECK(data == check);
     }
 #endif
