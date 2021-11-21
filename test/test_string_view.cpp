@@ -144,6 +144,7 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     TEST(test_template_deduction)
     {
       etl::basic_string_view cview{ "Hello World" };
@@ -156,6 +157,7 @@ namespace
       CHECK(std::equal(u16view.begin(), u16view.end(), text.begin()));
       CHECK(std::equal(u32view.begin(), u32view.end(), text.begin()));
     }
+#endif
 
     //*************************************************************************
     TEST(test_assign_from_string_view)
