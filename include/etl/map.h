@@ -510,7 +510,7 @@ namespace etl
     };
 
     /// Defines the key value parameter type
-    typedef typename etl::parameter_type<TKey>::type key_parameter_t;
+    typedef typename TKey key_parameter_t;
 
     //*************************************************************************
     /// How to compare node elements.
@@ -519,11 +519,25 @@ namespace etl
     {
       return kcompare(node1.value.first, node2.value.first);
     }
+
     bool node_comp(const Data_Node& node, key_parameter_t key) const
     {
       return kcompare(node.value.first, key);
     }
+
     bool node_comp(key_parameter_t key, const Data_Node& node) const
+    {
+      return kcompare(key, node.value.first);
+    }
+
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    bool node_comp(const Data_Node& node, const K& key) const
+    {
+      return kcompare(node.value.first, key);
+    }
+
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    bool node_comp(const K& key, const Data_Node& node) const
     {
       return kcompare(key, node.value.first);
     }
@@ -1034,9 +1048,17 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    iterator find(key_parameter_t key)
+    iterator find(const key_parameter_t& key)
     {
       return iterator(*this, find_node(root_node, key));
+    }
+
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    iterator find(const K& k)
+    {
+      Node* pn = find_node(root_node, k);
+
+      return iterator(*this, pn);
     }
 
     //*********************************************************************
@@ -1044,9 +1066,17 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    const_iterator find(key_parameter_t key) const
+    const_iterator find(const key_parameter_t& key) const
     {
       return const_iterator(*this, find_node(root_node, key));
+    }
+
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    const_iterator find(const K& k) const
+    {
+      const Node* pn = find_node(root_node, k);
+
+      return const_iterator(*this, pn);
     }
 
     //*********************************************************************
@@ -1260,6 +1290,17 @@ namespace etl
       return vcompare;
     }
 
+    bool contains(const TKey& key) const
+    {
+      return find(key) != end();
+    }
+
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    bool contains(const K& k) const
+    {
+      return find(k) != end();
+    }
+
   protected:
 
     //*************************************************************************
@@ -1362,10 +1403,72 @@ namespace etl
       return found;
     }
 
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    Node* find_node(Node* position, const K& key)
+    {
+      Node* found = position;
+      while (found)
+      {
+        // Downcast found to Data_Node class for comparison and other operations
+        Data_Node& found_data_node = imap::data_cast(*found);
+
+        // Compare the node value to the current position value
+        if (node_comp(key, found_data_node))
+        {
+          // Keep searching for the node on the left
+          found = found->children[kLeft];
+        }
+        else if (node_comp(found_data_node, key))
+        {
+          // Keep searching for the node on the right
+          found = found->children[kRight];
+        }
+        else
+        {
+          // Node that matches the key provided was found, exit loop
+          break;
+        }
+      }
+
+      // Return the node found (might be ETL_NULLPTR)
+      return found;
+    }
+
     //*************************************************************************
     /// Find the value matching the node provided
     //*************************************************************************
     const Node* find_node(const Node* position, key_parameter_t key) const
+    {
+      const Node* found = position;
+      while (found)
+      {
+        // Downcast found to Data_Node class for comparison and other operations
+        const Data_Node& found_data_node = imap::data_cast(*found);
+
+        // Compare the node value to the current position value
+        if (node_comp(key, found_data_node))
+        {
+          // Keep searching for the node on the left
+          found = found->children[kLeft];
+        }
+        else if (node_comp(found_data_node, key))
+        {
+          // Keep searching for the node on the right
+          found = found->children[kRight];
+        }
+        else
+        {
+          // Node that matches the key provided was found, exit loop
+          break;
+        }
+      }
+
+      // Return the node found (might be ETL_NULLPTR)
+      return found;
+    }
+
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    const Node* find_node(const Node* position, const K& key) const
     {
       const Node* found = position;
       while (found)

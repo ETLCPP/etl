@@ -118,6 +118,26 @@ namespace etl
     }
   };
 
+  template <>
+  struct less<void> 
+  {
+    typedef int is_transparent;
+
+#if ETL_CPP11_SUPPORTED
+    template <typename T1, typename T2>
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    {
+      return static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs);
+    }
+#else
+    template <typename T1, typename T2>
+    bool operator()(T1&& lhs, T2&& rhs) const
+    {
+      return static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs);
+    }
+#endif
+  };
+
   //***************************************************************************
   template <typename T = void>
   struct less_equal
@@ -128,6 +148,26 @@ namespace etl
     {
       return !(rhs < lhs);
     }
+  };
+
+  template <>
+  struct less_equal<void>
+  {
+    typedef int is_transparent;
+
+#if ETL_CPP11_SUPPORTED
+    template <typename T1, typename T2>
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    {
+      return !(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs));
+    }
+#else
+    template <typename T1, typename T2>
+    bool operator()(T1&& lhs, T2&& rhs) const
+    {
+      return !(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs));
+    }
+#endif
   };
 
   //***************************************************************************
@@ -142,6 +182,26 @@ namespace etl
     }
   };
 
+  template <>
+  struct greater<void>
+  {
+    typedef int is_transparent;
+
+#if ETL_CPP11_SUPPORTED
+    template <typename T1, typename T2>
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    {
+      return static_cast<T1&&>(rhs) < static_cast<T2&&>(lhs);
+    }
+#else
+    template <typename T1, typename T2>
+    bool operator()(T1&& lhs, T2&& rhs) const
+    {
+      return static_cast<T1&&>(rhs) < static_cast<T2&&>(lhs);
+    }
+#endif
+  };
+
   //***************************************************************************
   template <typename T = void>
   struct greater_equal
@@ -152,6 +212,26 @@ namespace etl
     {
       return !(lhs < rhs);
     }
+  };
+
+  template <>
+  struct greater_equal<void>
+  {
+    typedef int is_transparent;
+
+#if ETL_CPP11_SUPPORTED
+    template <typename T1, typename T2>
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    {
+      return static_cast<T1&&>(rhs) < static_cast<T2&&>(lhs);
+    }
+#else
+    template <typename T1, typename T2>
+    bool operator()(T1&& lhs, T2&& rhs) const
+    {
+      return !(static_cast<T1&&>(rhs) < static_cast<T2&&>(lhs));
+    }
+#endif
   };
 
   //***************************************************************************
@@ -166,6 +246,27 @@ namespace etl
     }
   };
 
+  template <>
+  struct equal_to<void>
+  {
+    typedef void value_type;
+    typedef int is_transparent;
+
+#if ETL_CPP11_SUPPORTED
+    template <typename T1, typename T2>
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    {
+      return static_cast<T1&&>(lhs) == static_cast<T2&&>(rhs);
+    }
+#else
+    template <typename T1, typename T2>
+    bool operator()(T1&& lhs, T2&& rhs) const
+    {
+      return !(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs));
+    }
+#endif
+  };
+
   //***************************************************************************
   template <typename T = void>
   struct not_equal_to
@@ -176,6 +277,26 @@ namespace etl
     {
       return !(lhs == rhs);
     }
+  };
+
+  template <>
+  struct not_equal_to<void>
+  {
+    typedef int is_transparent;
+
+#if ETL_CPP11_SUPPORTED
+    template <typename T1, typename T2>
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    {
+      return !(static_cast<T1&&>(lhs) == static_cast<T2&&>(rhs));
+    }
+#else
+    template <typename T1, typename T2>
+    bool operator()(T1&& lhs, T2&& rhs) const
+    {
+      return !(static_cast<T1&&>(lhs) == static_cast<T2&&>(rhs));
+    }
+#endif
   };
 
   //***************************************************************************

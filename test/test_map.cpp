@@ -61,6 +61,26 @@ using Data_const_iterator         = Data::const_iterator;
 using Compare_Data_iterator       = Compare_Data::iterator;
 using Compare_Data_const_iterator = Compare_Data::const_iterator;
 
+struct Key
+{
+  Key(const char* k_)
+    : k(k_)
+  {
+  }
+
+  std::string k;
+};
+
+bool operator <(const Key& lhs, const std::string& rhs)
+{
+  return (lhs.k < rhs);
+}
+
+bool operator <(const std::string& lhs, const Key& rhs)
+{
+  return (lhs < rhs.k);
+}
+
 namespace
 {
   SUITE(test_map)
@@ -180,6 +200,18 @@ namespace
         test_data["19"] = 19;
       }
     };
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_contains)
+    {
+      etl::map<std::string, int, MAX_SIZE, etl::less<>> data(initial_data.begin(), initial_data.end());
+
+      CHECK(data.contains(std::string("1")));
+      CHECK(data.contains(Key("1")));
+
+      CHECK(!data.contains(std::string("99")));
+      CHECK(!data.contains(Key("99")));
+    }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_default_constructor)
