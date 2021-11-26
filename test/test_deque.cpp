@@ -101,24 +101,6 @@ namespace
       CHECK_EQUAL(SIZE, data.max_size());
     }
 
-#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
-    //*************************************************************************
-    TEST(test_cpp17_deduced_constructor)
-    {
-      etl::deque data{ N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13 };
-      etl::deque<NDC, 14> check = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10, N11, N12, N13 };
-
-      CHECK(!data.empty());
-      CHECK(data.full());
-      CHECK(data.begin() != data.end());
-      CHECK_EQUAL(14U, data.size());
-      CHECK_EQUAL(0U, data.available());
-      CHECK_EQUAL(14U, data.capacity());
-      CHECK_EQUAL(14U, data.max_size());
-      CHECK(data == check);
-    }
-#endif
-
     //*************************************************************************
     TEST(test_constructor_fill)
     {
@@ -874,7 +856,7 @@ namespace
       etl::deque<int, 2> valuesToInsert(insertCount, value);
       etl::deque<int, 10> data;
 
-      data.insert(data.begin(), valuesToInsert.begin(), valuesToInsert.end());
+      data.insert(data.cbegin(), valuesToInsert.begin(), valuesToInsert.end());
 
       CHECK_EQUAL(insertCount, std::distance(data.begin(), data.end()));
       CHECK(data.size() == insertCount);
@@ -889,8 +871,8 @@ namespace
       Compare_Data compare_data(initial_data_under.begin(), initial_data_under.end());
       DataNDC data(compare_data.begin(), compare_data.end());
 
-      Compare_Data::iterator cposition = compare_data.insert(compare_data.begin(), N14);
-      DataNDC::iterator      position  = data.insert(data.begin(), N14);
+      Compare_Data::iterator cposition = compare_data.insert(compare_data.cbegin(), N14);
+      DataNDC::iterator      position  = data.insert(data.cbegin(), N14);
 
       CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
@@ -919,8 +901,8 @@ namespace
       Compare_Data compare_data(initial_data_under.begin(), initial_data_under.end());
       DataNDC data(compare_data.begin(), compare_data.end());
 
-      Compare_Data::iterator cposition = compare_data.insert(compare_data.end(), N14);
-      DataNDC::iterator      position  = data.insert(data.end(), N14);
+      Compare_Data::iterator cposition = compare_data.insert(compare_data.cend(), N14);
+      DataNDC::iterator      position  = data.insert(data.cend(), N14);
 
       CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
@@ -949,8 +931,8 @@ namespace
       Compare_Data compare_data(initial_data_under.begin(), initial_data_under.end());
       DataNDC data(compare_data.begin(), compare_data.end());
 
-      Compare_Data::iterator cposition = compare_data.insert(compare_data.begin() + 3, N14);
-      DataNDC::iterator         position  = data.insert(data.begin() + 3, N14);
+      Compare_Data::iterator cposition = compare_data.insert(compare_data.cbegin() + 3, N14);
+      DataNDC::iterator         position  = data.insert(data.cbegin() + 3, N14);
 
       CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
@@ -960,8 +942,8 @@ namespace
       compare_data.assign(initial_data_under.begin(), initial_data_under.end());
       data.assign(compare_data.begin(), compare_data.end());
 
-      cposition = compare_data.insert(compare_data.begin() + 4, N14);
-      position  = data.insert(data.begin() + 4, N14);
+      cposition = compare_data.insert(compare_data.cbegin() + 4, N14);
+      position  = data.insert(data.cbegin() + 4, N14);
 
       CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
       CHECK_EQUAL(compare_data.size(), data.size());
@@ -1007,8 +989,8 @@ namespace
           Compare_Data compare_data(initial_data_small.begin(), initial_data_small.end());
           DataNDC data(compare_data.begin(), compare_data.end());
 
-          compare_data.insert(compare_data.begin() + offset, insert_size, N14);
-          data.insert(data.begin() + offset, insert_size, N14);
+          compare_data.insert(compare_data.cbegin() + offset, insert_size, N14);
+          data.insert(data.cbegin() + offset, insert_size, N14);
 
           CHECK_EQUAL(compare_data.size(), data.size());
           CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
@@ -1023,9 +1005,9 @@ namespace
 
       size_t insert_size = SIZE - initial_data_under.size() + 1;
 
-      CHECK_THROW(data.insert(data.begin(),     insert_size, N14), etl::deque_full);
-      CHECK_THROW(data.insert(data.end(),       insert_size, N14), etl::deque_full);
-      CHECK_THROW(data.insert(data.begin() + 6, insert_size, N14), etl::deque_full);
+      CHECK_THROW(data.insert(data.cbegin(),     insert_size, N14), etl::deque_full);
+      CHECK_THROW(data.insert(data.cend(),       insert_size, N14), etl::deque_full);
+      CHECK_THROW(data.insert(data.cbegin() + 6, insert_size, N14), etl::deque_full);
     }
 
     //*************************************************************************
@@ -1043,8 +1025,8 @@ namespace
           DataNDC data(blank_data.begin(), blank_data.end());
           data.assign(compare_data.begin(), compare_data.end());
 
-          compare_data.insert(compare_data.begin() + offset, range.begin(), range.end());
-          data.insert(data.begin() + offset, range.begin(), range.end());
+          compare_data.insert(compare_data.cbegin() + offset, range.begin(), range.end());
+          data.insert(data.cbegin() + offset, range.begin(), range.end());
 
           CHECK_EQUAL(compare_data.size(), std::distance(data.begin(), data.end()));
           CHECK_EQUAL(compare_data.size(), data.size());
@@ -1059,9 +1041,9 @@ namespace
       Compare_Data range = { N12, N13, N14, N15 };
       DataNDC data(initial_data_under.begin(), initial_data_under.end());
 
-      CHECK_THROW(data.insert(data.begin(),     range.begin(), range.end()), etl::deque_full);
-      CHECK_THROW(data.insert(data.end(),       range.begin(), range.end()), etl::deque_full);
-      CHECK_THROW(data.insert(data.begin() + 6, range.begin(), range.end()), etl::deque_full);
+      CHECK_THROW(data.insert(data.cbegin(),     range.begin(), range.end()), etl::deque_full);
+      CHECK_THROW(data.insert(data.cend(),       range.begin(), range.end()), etl::deque_full);
+      CHECK_THROW(data.insert(data.cbegin() + 6, range.begin(), range.end()), etl::deque_full);
     }
 
     //*************************************************************************
@@ -1103,12 +1085,12 @@ namespace
       compare_data.push_back(N9);
       compare_data.push_back(N10);
 
-      DataNDC::iterator i_next          = data.erase(data.begin());
-      Compare_Data::iterator i_cnext = compare_data.erase(compare_data.begin());
+      DataNDC::const_iterator i_next = data.erase(data.cbegin());
+      Compare_Data::const_iterator i_cnext = compare_data.erase(compare_data.cbegin());
 
       CHECK_EQUAL(DataNDC::difference_type(data.size()), std::distance(data.begin(), data.end()));
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
-      CHECK_EQUAL(std::distance(compare_data.begin(), i_cnext), std::distance(data.begin(), i_next));
+      CHECK_EQUAL(std::distance(compare_data.cbegin(), i_cnext), std::distance(data.cbegin(), i_next));
     }
 
     //*************************************************************************
@@ -1153,7 +1135,7 @@ namespace
       DataNDC::iterator i_erase = data.end() - 1;
       DataNDC::iterator i_next = data.erase(i_erase);
 
-      Compare_Data::iterator i_cerase = compare_data.end() - 1;
+      Compare_Data::const_iterator i_cerase = compare_data.cend() - 1U;
       Compare_Data::iterator i_cnext = compare_data.erase(i_cerase);
 
       CHECK_EQUAL(DataNDC::difference_type(compare_data.size()), std::distance(data.begin(), data.end()));
@@ -1203,10 +1185,10 @@ namespace
       compare_data.push_back(N10);
 
       // Erase near beginning.
-      DataNDC::iterator i_erase = data.begin() + 2;
+      DataNDC::const_iterator i_erase = data.begin() + 2;
       DataNDC::iterator i_next = data.erase(i_erase);
 
-      Compare_Data::iterator i_cerase = compare_data.begin() + 2;
+      Compare_Data::const_iterator i_cerase = compare_data.begin() + 2;
       Compare_Data::iterator i_cnext = compare_data.erase(i_cerase);
 
       CHECK_EQUAL(DataNDC::difference_type(compare_data.size()), std::distance(data.begin(), data.end()));
@@ -1303,8 +1285,8 @@ namespace
       compare_data.push_back(N9);
       compare_data.push_back(N10);
 
-      DataNDC::iterator i_next       = data.erase(data.begin(), data.begin() + 3);
-      Compare_Data::iterator i_cnext = compare_data.erase(compare_data.begin(), compare_data.begin() + 3);
+      DataNDC::iterator i_next       = data.erase(data.cbegin(), data.cbegin() + 3);
+      Compare_Data::iterator i_cnext = compare_data.erase(compare_data.cbegin(), compare_data.cbegin() + 3);
 
       CHECK_EQUAL(DataNDC::difference_type(compare_data.size()), std::distance(data.begin(), data.end()));
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
@@ -1352,8 +1334,8 @@ namespace
       compare_data.push_back(N9);
       compare_data.push_back(N10);
 
-      DataNDC::iterator i_next = data.erase(data.end() - 3, data.end());
-      Compare_Data::iterator i_cnext = compare_data.erase(compare_data.end() - 3, compare_data.end());
+      DataNDC::iterator i_next = data.erase(data.cend() - 3, data.cend());
+      Compare_Data::iterator i_cnext = compare_data.erase(compare_data.cend() - 3, compare_data.cend());
 
       CHECK_EQUAL(DataNDC::difference_type(compare_data.size()), std::distance(data.begin(), data.end()));
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
@@ -1401,8 +1383,8 @@ namespace
       compare_data.push_back(N9);
       compare_data.push_back(N10);
 
-      DataNDC::iterator         i_next  = data.erase(data.begin() + 1, data.begin() + 3);
-      Compare_Data::iterator i_cnext = compare_data.erase(compare_data.begin() + 1, compare_data.begin() + 3);
+      DataNDC::iterator         i_next  = data.erase(data.cbegin() + 1, data.cbegin() + 3);
+      Compare_Data::iterator i_cnext = compare_data.erase(compare_data.cbegin() + 1, compare_data.cbegin() + 3);
 
       CHECK_EQUAL(DataNDC::difference_type(compare_data.size()), std::distance(data.begin(), data.end()));
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
@@ -1444,8 +1426,8 @@ namespace
       compare_data.push_back(N9);
       compare_data.push_back(N10);
 
-      i_next  = data.erase(data.begin() + 3, data.begin() + 5);
-      i_cnext = compare_data.erase(compare_data.begin() + 3, compare_data.begin() + 5);
+      i_next  = data.erase(data.cbegin() + 3, data.cbegin() + 5);
+      i_cnext = compare_data.erase(compare_data.cbegin() + 3, compare_data.cbegin() + 5);
 
       CHECK_EQUAL(DataNDC::difference_type(compare_data.size()), std::distance(data.begin(), data.end()));
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
@@ -2010,7 +1992,7 @@ namespace
     }
 
     //*************************************************************************
-#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     TEST(test_deque_template_deduction)
     {
       etl::deque data{ char(0), short(1), int(2), long(3), 4, 5, 6, 7, 8, 9 };
@@ -2032,7 +2014,7 @@ namespace
 #endif
 
     //*************************************************************************
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
     TEST(test_make_deque)
     {
       auto data = etl::make_deque<int>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);

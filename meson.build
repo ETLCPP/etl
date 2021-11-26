@@ -8,7 +8,7 @@ project('etl',
         'cpp_std=c++17', 'build.cpp_std=c++17',
     ],
     meson_version: '>=0.54.0',
-    version: '20.19.0'
+    version: '20.20.0'
 )
 
 compile_args = []

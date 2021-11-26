@@ -226,7 +226,7 @@ namespace
       CHECK(data.begin() == data.end());
     }
 
-#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
@@ -754,8 +754,10 @@ namespace
       std::advance(i_compare, 2);
       std::advance(i_data,    2);
 
-      compare_data.erase(i_compare);
-      data.erase(i_data);
+      Compare_Data::iterator i_compare1 = compare_data.erase(i_compare);
+      Data::iterator i_data1 = data.erase(i_data);
+
+      CHECK_EQUAL(*i_compare1, *i_data1);
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
@@ -1199,7 +1201,7 @@ namespace
     }
 
     //*************************************************************************
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     TEST(test_set_template_deduction)
     {
       etl::set data{ std::string("A"), std::string("B"), std::string("C"), std::string("D"), std::string("E"), std::string("F") };

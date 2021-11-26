@@ -62,7 +62,7 @@ namespace
       CHECK_EQUAL(data.max_size(), SIZE);
     }
 
-#if !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
@@ -651,7 +651,7 @@ namespace
     }
 
     //*************************************************************************
-#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     TEST(test_array_template_deduction)
     {
       etl::array data{ char(0), short(1), int(2), long(3), 4, 5, 6, 7, 8, 9 };

@@ -107,7 +107,7 @@ namespace
     }
 #endif
 
-#if !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED) && ETL_USING_STL
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
@@ -121,8 +121,10 @@ namespace
       bool isEqual = std::equal(data.begin(), data.end(), compare.begin());
       CHECK(isEqual);
     }
+#endif
 
     //*************************************************************************
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     TEST(test_cpp17_deduced_constructor_excess)
     {
       Data data({ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") }, buffer1.raw, SIZE);

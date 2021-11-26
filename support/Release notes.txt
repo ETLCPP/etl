@@ -1,4 +1,16 @@
 ===============================================================================
+20.20.0
+Updated container 'insert' and 'erase' to C++11 style const_iterator parameters. (#463)
+Fixed container template function overload abiguity. (#466)
+Harmonize copy ctor and assignment for etl::delegate. (#465)
+Added constexpr support for etl::enum_type. (#462)
+Added 'make' functions to construct containers.
+Remove unnecessary casts that causes warnings. (#461)
+Added non-const string pointer overload. (#449)
+Changed != to < in etl::ipool to get rid of erroneous clang-tidy nullptr dereference warning. (#457)
+Added ifdef guard for MSVC pragma (#455)
+
+===============================================================================
 20.19.0
 Updates to etl::delegate. Added more constexpr and set() functions.
 Removed conanfile.py. Now controlled by conan repository.

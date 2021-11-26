@@ -241,18 +241,6 @@ namespace etl
     typedef const T* const_pointer;
     typedef typename etl::iterator_traits<pointer>::difference_type difference_type;
 
-  protected:
-
-    //*************************************************************************
-    /// Test for an iterator.
-    //*************************************************************************
-    template <typename TIterator>
-    struct is_iterator : public etl::integral_constant<bool, !etl::is_integral<TIterator>::value && !etl::is_floating_point<TIterator>::value>
-    {
-    };
-
-  public:
-
     //*************************************************************************
     /// Iterator
     //*************************************************************************
@@ -730,7 +718,7 @@ namespace etl
     /// Assigns a range to the deque.
     //*************************************************************************
     template<typename TIterator>
-    typename etl::enable_if<is_iterator<TIterator>::value, void>::type
+    typename etl::enable_if<!etl::is_integral<TIterator>::value, void>::type
       assign(TIterator range_begin, TIterator range_end)
     {
       initialise();
@@ -962,7 +950,7 @@ namespace etl
     //*************************************************************************
     iterator insert(const_iterator insert_position, const value_type& value)
     {
-      iterator position(insert_position.index, *this, p_buffer);
+      iterator position(to_iterator(insert_position));
 
       ETL_ASSERT(!full(), ETL_ERROR(deque_full));
 
@@ -1504,7 +1492,7 @@ namespace etl
     ///\param range_end   The end of the range to insert.
     //*************************************************************************
     template<typename TIterator>
-    typename enable_if<is_iterator<TIterator>::value, iterator>::type
+    typename enable_if<!etl::is_integral<TIterator>::value, iterator>::type
       insert(const_iterator insert_position, TIterator range_begin, TIterator range_end)
     {
       iterator position;
@@ -1608,7 +1596,8 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator erase_position)
     {
-      iterator position(erase_position.index, *this, p_buffer);
+      iterator position(to_iterator(erase_position));
+      //iterator position(erase_position.index, *this, p_buffer);
 
       ETL_ASSERT(distance(position) <= difference_type(current_size), ETL_ERROR(deque_out_of_bounds));
 
@@ -1649,7 +1638,7 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator range_begin, const_iterator range_end)
     {
-      iterator position(range_begin.index, *this, p_buffer);
+      iterator position(to_iterator(range_begin));
 
       ETL_ASSERT((distance(range_begin) <= difference_type(current_size)) && (distance(range_end) <= difference_type(current_size)), ETL_ERROR(deque_out_of_bounds));
 
@@ -2265,6 +2254,14 @@ namespace etl
       }
     }
 
+    //*************************************************************************
+    /// Converts from const_iterator to iterator.
+    //*************************************************************************
+    iterator to_iterator(const_iterator itr) const
+    {
+      return iterator(itr.index, const_cast<ideque&>(*this), p_buffer);
+    }
+
     // Disable copy construction.
     ideque(const ideque&);
 
@@ -2453,15 +2450,15 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
   template <typename... T>
-  deque(T...) -> deque<typename etl::common_type<T...>::type, sizeof...(T)>;
+  deque(T...) -> deque<typename etl::common_type_t<T...>, sizeof...(T)>;
 #endif
 
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
   template <typename T, typename... TValues>
   constexpr auto make_deque(TValues&&... values) -> etl::deque<T, sizeof...(TValues)>
   {

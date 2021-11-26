@@ -994,15 +994,6 @@ namespace etl
     //*************************************************************************
     /// Erases the value at the specified position.
     //*************************************************************************
-    void erase(iterator position)
-    {
-      // Remove the node by its key
-      erase((*position).first);
-    }
-
-    //*************************************************************************
-    /// Erases the value at the specified position.
-    //*************************************************************************
     iterator erase(const_iterator position)
     {
       // Find the parent node to be removed
@@ -1022,20 +1013,6 @@ namespace etl
     {
       // Return 1 if key value was found and removed
       return remove_node(root_node, key) ? 1 : 0;
-    }
-
-    //*************************************************************************
-    /// Erases a range of elements.
-    //*************************************************************************
-    iterator erase(iterator first, iterator last)
-    {
-      iterator next;
-      while (first != last)
-      {
-        next = erase(const_iterator(first++));
-      }
-
-      return next;
     }
 
     //*************************************************************************
@@ -1128,7 +1105,7 @@ namespace etl
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator, const_reference value)
+    iterator insert(const_iterator /*position*/, const_reference value)
     {
       // Default to no inserted node
       Node* inserted_node = ETL_NULLPTR;
@@ -1152,55 +1129,7 @@ namespace etl
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator, rvalue_reference value)
-    {
-      // Default to no inserted node
-      Node* inserted_node = ETL_NULLPTR;
-
-      ETL_ASSERT(!full(), ETL_ERROR(map_full));
-
-      // Get next available free node
-      Data_Node& node = allocate_data_node(etl::move(value));
-
-      // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
-      inserted_node = insert_node(root_node, node);
-
-      // Insert node into tree and return iterator to new node location in tree
-      return iterator(*this, inserted_node);
-    }
-#endif
-
-    //*********************************************************************
-    /// Inserts a value to the map starting at the position recommended.
-    /// If asserts or exceptions are enabled, emits map_full if the map is already full.
-    ///\param position The position that would precede the value to insert.
-    ///\param value    The value to insert.
-    //*********************************************************************
-    iterator insert(const_iterator, const_reference value)
-    {
-      // Default to no inserted node
-      Node* inserted_node = ETL_NULLPTR;
-
-      ETL_ASSERT(!full(), ETL_ERROR(map_full));
-
-      // Get next available free node
-      Data_Node& node = allocate_data_node(value);
-
-      // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
-      inserted_node = insert_node(root_node, node);
-
-      // Insert node into tree and return iterator to new node location in tree
-      return iterator(*this, inserted_node);
-    }
-
-#if ETL_CPP11_SUPPORTED
-    //*********************************************************************
-    /// Inserts a value to the map starting at the position recommended.
-    /// If asserts or exceptions are enabled, emits map_full if the map is already full.
-    ///\param position The position that would precede the value to insert.
-    ///\param value    The value to insert.
-    //*********************************************************************
-    iterator insert(const_iterator, rvalue_reference value)
+    iterator insert(const_iterator /*position*/, rvalue_reference value)
     {
       // Default to no inserted node
       Node* inserted_node = ETL_NULLPTR;

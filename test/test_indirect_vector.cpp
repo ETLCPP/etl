@@ -136,7 +136,7 @@ namespace
       CHECK_EQUAL(data.max_size(), SIZE);
     }
 
-#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
@@ -1105,15 +1105,15 @@ namespace
       CompareDataNDC compare_data(initial_data.begin(), initial_data.end());
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      compare_data.erase(compare_data.begin() + 2);
+      compare_data.erase(compare_data.cbegin() + 2);
 
-      data.erase(data.begin() + 2);
+      data.erase(data.cbegin() + 2);
 
       CHECK_EQUAL(compare_data.size(), data.size());
 
-      bool is_equal = std::equal(data.begin(),
-                                data.end(),
-                                compare_data.begin());
+      bool is_equal = std::equal(data.cbegin(),
+                                 data.cend(),
+                                 compare_data.cbegin());
 
       CHECK(is_equal);
     }
@@ -1124,15 +1124,15 @@ namespace
       CompareDataNDC compare_data(initial_data.begin(), initial_data.end());
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      compare_data.erase(compare_data.begin() + 2, compare_data.begin() + 4);
+      compare_data.erase(compare_data.cbegin() + 2, compare_data.cbegin() + 4);
 
-      data.erase(data.begin() + 2, data.begin() + 4);
+      data.erase(data.cbegin() + 2, data.cbegin() + 4);
 
       CHECK_EQUAL(compare_data.size(), data.size());
 
-      bool is_equal = std::equal(data.begin(),
-                                data.end(),
-                                compare_data.begin());
+      bool is_equal = std::equal(data.cbegin(),
+                                 data.cend(),
+                                 compare_data.cbegin());
 
       CHECK(is_equal);
     }

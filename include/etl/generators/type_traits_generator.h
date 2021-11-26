@@ -2024,60 +2024,92 @@ namespace etl
 #endif
 
 #if ETL_CPP11_SUPPORTED
-  // primary template (used for zero types)
-  template<class...>
-  struct common_type {};
+  //*********************************************
+  // common_type
+  // Based on the sample implementation detailed on
+  // https://en.cppreference.com/w/cpp/types/common_type
+  //*********************************************
+#if ETL_CPP11_SUPPORTED
+  //***********************************
+  // Primary template
+  template<typename...>
+  struct common_type
+  {
+  };
 
-  //////// one type
-  template <class T>
-  struct common_type<T> : common_type<T, T> {};
+  //***********************************
+  // One type
+  template <typename T>
+  struct common_type<T> : common_type<T, T>
+  {
+  };
 
-  namespace detail {
-    template<class...>
+  namespace private_common_type
+  {
+    template <typename...>
     using void_t = void;
 
-    template<class T1, class T2>
-    using conditional_result_t = decltype(false ? std::declval<T1>() : std::declval<T2>());
+    template <typename T1, typename T2>
+    using conditional_result_t = decltype(false ? declval<T1>() : declval<T2>());
 
-    template<class, class, class = void>
-    struct decay_conditional_result {};
-    template<class T1, class T2>
+    template <typename, typename, typename = void>
+    struct decay_conditional_result
+    {
+    };
+
+    template <typename T1, typename T2>
     struct decay_conditional_result<T1, T2, void_t<conditional_result_t<T1, T2>>>
-      : std::decay<conditional_result_t<T1, T2>> {};
+      : etl::decay<conditional_result_t<T1, T2>>
+    {
+    };
 
-    template<class T1, class T2, class = void>
-    struct common_type_2_impl : decay_conditional_result<const T1&, const T2&> {};
+    template <typename T1, typename T2, typename = void>
+    struct common_type_2_impl : decay_conditional_result<const T1&, const T2&>
+    {
+    };
 
-    // C++11 implementation:
-    // template<class, class, class = void>
-    // struct common_type_2_impl {};
-
-    template<class T1, class T2>
+    template <typename T1, typename T2>
     struct common_type_2_impl<T1, T2, void_t<conditional_result_t<T1, T2>>>
-      : decay_conditional_result<T1, T2> {};
+      : decay_conditional_result<T1, T2>
+    {
+    };
   }
 
-  //////// two types
-  template<class T1, class T2>
+  //***********************************
+  // Two types
+  template <typename T1, typename T2>
   struct common_type<T1, T2>
-    : std::conditional<std::is_same<T1, typename std::decay<T1>::type>::value&&
-    std::is_same<T2, typename std::decay<T2>::type>::value,
-    detail::common_type_2_impl<T1, T2>,
-    common_type<typename std::decay<T2>::type,
-    typename std::decay<T2>::type>>::type{};
+    : etl::conditional<etl::is_same<T1, typename etl::decay<T1>::type>::value&& etl::is_same<T2, typename etl::decay<T2>::type>::value,
+                       private_common_type::common_type_2_impl<T1, T2>,
+                       common_type<typename etl::decay<T2>::type,
+                       typename etl::decay<T2>::type>>::type
+  {
+  };
 
-  //////// 3+ types
-  namespace detail {
-    template<class AlwaysVoid, class T1, class T2, class...R>
-    struct common_type_multi_impl {};
-    template<class T1, class T2, class...R>
-    struct common_type_multi_impl<void_t<typename common_type<T1, T2>::type>, T1, T2, R...>
-      : common_type<typename common_type<T1, T2>::type, R...> {};
+  //***********************************
+  // Three or more types
+  namespace private_common_type
+  {
+    template <typename AlwaysVoid, typename T1, typename T2, typename... TRest>
+    struct common_type_multi_impl
+    {
+    };
+
+    template <typename T1, typename T2, typename... TRest>
+    struct common_type_multi_impl<void_t<typename common_type<T1, T2>::type>, T1, T2, TRest...>
+      : common_type<typename common_type<T1, T2>::type, TRest...>
+    {
+    };
   }
 
-  template<class T1, class T2, class... R>
-  struct common_type<T1, T2, R...>
-    : detail::common_type_multi_impl<void, T1, T2, R...> {};
+  template<typename T1, typename T2, typename... TRest>
+  struct common_type<T1, T2, TRest...>
+    : private_common_type::common_type_multi_impl<void, T1, T2, TRest...>
+  {
+  };
+
+  template <typename... T>
+  using common_type_t = typename common_type<T...>::type;
 #endif
 }
 

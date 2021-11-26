@@ -221,7 +221,7 @@ namespace
       CHECK(data.begin() == data.end());
     }
 
-#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
@@ -510,7 +510,27 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_erase_single)
+    TEST_FIXTURE(SetupFixture, test_erase_single_iterator)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      DataNDC::iterator idata = data.find(K5);
+      DataNDC::iterator inext = idata;
+      ++inext;
+
+      DataNDC::iterator iafter = data.erase(idata);
+      idata = data.find(K5);
+
+      CHECK(idata == data.end());
+      CHECK(inext == iafter);
+
+      // Test that erase really does erase from the pool.
+      CHECK(!data.full());
+      CHECK(!data.empty());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_single_const_iterator)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
@@ -518,10 +538,10 @@ namespace
       DataNDC::const_iterator inext = idata;
       ++inext;
 
-      DataNDC::const_iterator iafter = data.erase(idata);
+      DataNDC::iterator iafter = data.erase(idata);
       idata = data.find(K5);
 
-      CHECK(idata == data.end());
+      CHECK(idata == data.cend());
       CHECK(inext == iafter);
 
       // Test that erase really does erase from the pool.
@@ -534,10 +554,10 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      DataNDC::iterator idata = data.begin();
+      DataNDC::const_iterator idata = data.cbegin();
       std::advance(idata, 2);
 
-      DataNDC::iterator idata_end = data.begin();
+      DataNDC::const_iterator idata_end = data.cbegin();
       std::advance(idata_end, 5);
 
       data.erase(idata, idata_end);
@@ -585,10 +605,10 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      DataNDC::iterator end = data.begin();
+      DataNDC::const_iterator end = data.cbegin();
       etl::advance(end, data.size() / 2);
 
-      auto itr = data.erase(data.begin(), end);
+      auto itr = data.erase(data.cbegin(), end);
 
       CHECK_EQUAL(initial_data.size() / 2, data.size());
       CHECK(!data.full());
@@ -601,10 +621,10 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      DataNDC::iterator begin = data.begin();
+      DataNDC::const_iterator begin = data.cbegin();
       etl::advance(begin, data.size() / 2);
 
-      auto itr = data.erase(begin, data.end());
+      auto itr = data.erase(begin, data.cend());
 
       CHECK_EQUAL(initial_data.size() / 2, data.size());
       CHECK(!data.full());
@@ -617,14 +637,13 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      auto itr = data.erase(data.begin(), data.end());
+      auto itr = data.erase(data.cbegin(), data.cend());
 
       CHECK_EQUAL(0U, data.size());
       CHECK(!data.full());
       CHECK(data.empty());
       CHECK(itr == data.end());
     }
-
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_clear)
