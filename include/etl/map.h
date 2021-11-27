@@ -905,7 +905,7 @@ namespace etl
 
     //*********************************************************************
     /// Returns a reference to the value at index 'key'
-    ///\param i The index.
+    ///\param key The key.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
     mapped_type& operator [](key_parameter_t key)
@@ -924,7 +924,7 @@ namespace etl
     //*********************************************************************
     /// Returns a reference to the value at index 'key'
     /// If asserts or exceptions are enabled, emits an etl::lookup_out_of_bounds if the key is not in the range.
-    ///\param i The index.
+    ///\param key The key.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
     mapped_type& at(key_parameter_t key)
@@ -937,12 +937,34 @@ namespace etl
     }
 
     //*********************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    mapped_type& at(const K& key)
+    {
+      iterator i_element = find(key);
+
+      ETL_ASSERT(i_element.p_node != ETL_NULLPTR, ETL_ERROR(map_out_of_bounds));
+
+      return i_element->second;
+    }
+
+    //*********************************************************************
     /// Returns a const reference to the value at index 'key'
     /// If asserts or exceptions are enabled, emits an etl::lookup_out_of_bounds if the key is not in the range.
-    ///\param i The index.
+    ///\param key The key.
     ///\return A const reference to the value at index 'key'
     //*********************************************************************
     const mapped_type& at(key_parameter_t key) const
+    {
+      const_iterator i_element = find(key);
+
+      ETL_ASSERT(i_element.p_node != ETL_NULLPTR, ETL_ERROR(map_out_of_bounds));
+
+      return i_element->second;
+    }
+
+    //*********************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    const mapped_type& at(const K& key) const
     {
       const_iterator i_element = find(key);
 
@@ -983,15 +1005,29 @@ namespace etl
       return find_node(root_node, key) ? 1 : 0;
     }
 
+    //*********************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    size_type count(const K& key) const
+    {
+      return find_node(root_node, key) ? 1 : 0;
+    }
+
     //*************************************************************************
     /// Returns two iterators with bounding (lower bound, upper bound) the key
     /// provided
     //*************************************************************************
     ETL_OR_STD::pair<iterator, iterator> equal_range(key_parameter_t key)
     {
-      return ETL_OR_STD::make_pair<iterator, iterator>(
-        iterator(*this, find_lower_node(root_node, key)),
-        iterator(*this, find_upper_node(root_node, key)));
+      return ETL_OR_STD::make_pair<iterator, iterator>(iterator(*this, find_lower_node(root_node, key)),
+                                                       iterator(*this, find_upper_node(root_node, key)));
+    }
+
+    //*************************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    ETL_OR_STD::pair<iterator, iterator> equal_range(const K& key)
+    {
+      return ETL_OR_STD::make_pair<iterator, iterator>(iterator(*this, find_lower_node(root_node, key)),
+                                                       iterator(*this, find_upper_node(root_node, key)));
     }
 
     //*************************************************************************
@@ -1000,9 +1036,16 @@ namespace etl
     //*************************************************************************
     ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
     {
-      return ETL_OR_STD::make_pair<const_iterator, const_iterator>(
-        const_iterator(*this, find_lower_node(root_node, key)),
-        const_iterator(*this, find_upper_node(root_node, key)));
+      return ETL_OR_STD::make_pair<const_iterator, const_iterator>(const_iterator(*this, find_lower_node(root_node, key)),
+                                                                   const_iterator(*this, find_upper_node(root_node, key)));
+    }
+
+    //*************************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const K& key) const
+    {
+      return ETL_OR_STD::make_pair<const_iterator, const_iterator>(const_iterator(*this, find_lower_node(root_node, key)),
+                                                                   const_iterator(*this, find_upper_node(root_node, key)));
     }
 
     //*************************************************************************
@@ -1024,6 +1067,14 @@ namespace etl
     // Erase the key specified.
     //*************************************************************************
     size_type erase(key_parameter_t key)
+    {
+      // Return 1 if key value was found and removed
+      return remove_node(root_node, key) ? 1 : 0;
+    }
+
+    //*********************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    size_type erase(const K& key)
     {
       // Return 1 if key value was found and removed
       return remove_node(root_node, key) ? 1 : 0;
@@ -1056,9 +1107,7 @@ namespace etl
     template <typename K, typename = typename TKeyCompare::is_transparent>
     iterator find(const K& k)
     {
-      Node* pn = find_node(root_node, k);
-
-      return iterator(*this, pn);
+      return iterator(*this, find_node(root_node, k));
     }
 
     //*********************************************************************
@@ -1074,9 +1123,7 @@ namespace etl
     template <typename K, typename = typename TKeyCompare::is_transparent>
     const_iterator find(const K& k) const
     {
-      const Node* pn = find_node(root_node, k);
-
-      return const_iterator(*this, pn);
+      return const_iterator(*this, find_node(root_node, k));
     }
 
     //*********************************************************************
@@ -1205,12 +1252,26 @@ namespace etl
     }
 
     //*********************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    iterator lower_bound(const K& key)
+    {
+      return iterator(*this, find_lower_node(root_node, key));
+    }
+
+    //*********************************************************************
     /// Returns a const_iterator pointing to the first element in the
     /// container whose key is not considered to go before the key provided
     /// or end() if all keys are considered to go before the key provided.
     ///\return An const_iterator pointing to the element not before key or end()
     //*********************************************************************
     const_iterator lower_bound(key_parameter_t key) const
+    {
+      return const_iterator(*this, find_lower_node(root_node, key));
+    }
+
+    //*********************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    const_iterator lower_bound(const K& key) const
     {
       return const_iterator(*this, find_lower_node(root_node, key));
     }
@@ -1227,12 +1288,26 @@ namespace etl
     }
 
     //*********************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    iterator upper_bound(const K& key)
+    {
+      return iterator(*this, find_upper_node(root_node, key));
+    }
+
+    //*********************************************************************
     /// Returns a const_iterator pointing to the first element in the
     /// container whose key is not considered to go after the key provided
     /// or end() if all keys are considered to go after the key provided.
     ///\return An const_iterator pointing to the element after key or end()
     //*********************************************************************
     const_iterator upper_bound(key_parameter_t key) const
+    {
+      return const_iterator(*this, find_upper_node(root_node, key));
+    }
+
+    //*********************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    const_iterator upper_bound(const K& key) const
     {
       return const_iterator(*this, find_upper_node(root_node, key));
     }
@@ -1290,6 +1365,9 @@ namespace etl
       return vcompare;
     }
 
+    //*************************************************************************
+    /// Check if the map contains the key.
+    //*************************************************************************
     bool contains(const TKey& key) const
     {
       return find(key) != end();
@@ -1403,6 +1481,7 @@ namespace etl
       return found;
     }
 
+    //*********************************************************************
     template <typename K, typename = typename TKeyCompare::is_transparent>
     Node* find_node(Node* position, const K& key)
     {
@@ -1467,6 +1546,7 @@ namespace etl
       return found;
     }
 
+    //*********************************************************************
     template <typename K, typename = typename TKeyCompare::is_transparent>
     const Node* find_node(const Node* position, const K& key) const
     {
@@ -1681,9 +1761,86 @@ namespace etl
     }
 
     //*************************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    Node* find_lower_node(Node* position, const K& key) const
+    {
+      // Something at this position? keep going
+      Node* lower_node = ETL_NULLPTR;
+      while (position)
+      {
+        // Downcast lower node to Data_Node reference for key comparisons
+        Data_Node& data_node = imap::data_cast(*position);
+        // Compare the key value to the current lower node key value
+        if (node_comp(key, data_node))
+        {
+          lower_node = position;
+          if (position->children[kLeft])
+          {
+            position = position->children[kLeft];
+          }
+          else
+          {
+            // Found lowest node
+            break;
+          }
+        }
+        else if (node_comp(data_node, key))
+        {
+          position = position->children[kRight];
+        }
+        else
+        {
+          // Make note of current position, but keep looking to left for more
+          lower_node = position;
+          position = position->children[kLeft];
+        }
+      }
+
+      // Return the lower_node position found
+      return lower_node;
+    }
+
+    //*************************************************************************
     /// Find the node whose key is considered to go after the key provided
     //*************************************************************************
     Node* find_upper_node(Node* position, key_parameter_t key) const
+    {
+      // Keep track of parent of last upper node
+      Node* upper_node = ETL_NULLPTR;
+      // Start with position provided
+      Node* node = position;
+      while (node)
+      {
+        // Downcast position to Data_Node reference for key comparisons
+        Data_Node& data_node = imap::data_cast(*node);
+        // Compare the key value to the current upper node key value
+        if (node_comp(key, data_node))
+        {
+          upper_node = node;
+          node = node->children[kLeft];
+        }
+        else if (node_comp(data_node, key))
+        {
+          node = node->children[kRight];
+        }
+        else if (node->children[kRight])
+        {
+          upper_node = find_limit_node(node->children[kRight], kLeft);
+          break;
+        }
+        else
+        {
+          break;
+        }
+      }
+
+      // Return the upper node position found (might be ETL_NULLPTR)
+      return upper_node;
+    }
+
+    //*************************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    Node* find_upper_node(Node* position, const K& key) const
     {
       // Keep track of parent of last upper node
       Node* upper_node = ETL_NULLPTR;
@@ -1976,6 +2133,201 @@ namespace etl
     /// provided
     //*************************************************************************
     Node* remove_node(Node*& position, key_parameter_t key)
+    {
+      // Step 1: Find the target node that matches the key provided, the
+      // replacement node (might be the same as target node), and the critical
+      // node to start rebalancing the tree from (up to the replacement node)
+      Node* found_parent = ETL_NULLPTR;
+      Node* found = ETL_NULLPTR;
+      Node* replace_parent = ETL_NULLPTR;
+      Node* replace = position;
+      Node* balance_parent = ETL_NULLPTR;
+      Node* balance = root_node;
+      while (replace)
+      {
+        // Downcast found to Data_Node class for comparison and other operations
+        Data_Node& replace_data_node = imap::data_cast(*replace);
+
+        // Compare the key provided to the replace data node key
+        if (node_comp(key, replace_data_node))
+        {
+          // Update the direction to the target/replace node
+          replace->dir = kLeft;
+        }
+        else if (node_comp(replace_data_node, key))
+        {
+          // Update the direction to the target/replace node
+          replace->dir = kRight;
+        }
+        else
+        {
+          // Update the direction to the replace node (target node found here)
+          replace->dir = replace->children[kLeft] ? kLeft : kRight;
+
+          // Note the target node was found (and its parent)
+          found_parent = replace_parent;
+          found = replace;
+        }
+        // Replacement node found if its missing a child in the replace->dir
+        // value set above
+        if (replace->children[replace->dir] == ETL_NULLPTR)
+        {
+          // Exit loop once replace node is found (target might not have been)
+          break;
+        }
+
+        // If replacement node weight is kNeither or we are taking the shorter
+        // path of replacement node and our sibling (on longer path) is
+        // balanced then we need to update the balance node to match this
+        // replacement node but all our ancestors will not require rebalancing
+        if ((replace->weight == kNeither) ||
+          (replace->weight == (1 - replace->dir) &&
+            replace->children[1 - replace->dir]->weight == kNeither))
+        {
+          // Update balance node (and its parent) to replacement node
+          balance_parent = replace_parent;
+          balance = replace;
+        }
+
+        // Keep searching for the replacement node
+        replace_parent = replace;
+        replace = replace->children[replace->dir];
+      }
+
+      // If target node was found, proceed with rebalancing and replacement
+      if (found)
+      {
+        // Step 2: Update weights from critical node to replacement parent node
+        while (balance)
+        {
+          if (balance->children[balance->dir] == ETL_NULLPTR)
+          {
+            break;
+          }
+
+          if (balance->weight == kNeither)
+          {
+            balance->weight = 1 - balance->dir;
+          }
+          else if (balance->weight == balance->dir)
+          {
+            balance->weight = kNeither;
+          }
+          else
+          {
+            int weight = balance->children[1 - balance->dir]->weight;
+            // Perform a 3 node rotation if weight is same as balance->dir
+            if (weight == balance->dir)
+            {
+              // Is the root node being rebalanced (no parent)
+              if (balance_parent == ETL_NULLPTR)
+              {
+                rotate_3node(root_node, 1 - balance->dir,
+                  balance->children[1 - balance->dir]->children[balance->dir]->weight);
+              }
+              else
+              {
+                rotate_3node(balance_parent->children[balance_parent->dir], 1 - balance->dir,
+                  balance->children[1 - balance->dir]->children[balance->dir]->weight);
+              }
+            }
+            // Already balanced, rebalance and make it heavy in opposite
+            // direction of the node being removed
+            else if (weight == kNeither)
+            {
+              // Is the root node being rebalanced (no parent)
+              if (balance_parent == ETL_NULLPTR)
+              {
+                rotate_2node(root_node, 1 - balance->dir);
+                root_node->weight = balance->dir;
+              }
+              else
+              {
+                rotate_2node(balance_parent->children[balance_parent->dir], 1 - balance->dir);
+                balance_parent->children[balance_parent->dir]->weight = balance->dir;
+              }
+              // Update balance node weight in opposite direction of node removed
+              balance->weight = 1 - balance->dir;
+            }
+            // Rebalance and leave it balanced
+            else
+            {
+              // Is the root node being rebalanced (no parent)
+              if (balance_parent == ETL_NULLPTR)
+              {
+                rotate_2node(root_node, 1 - balance->dir);
+              }
+              else
+              {
+                rotate_2node(balance_parent->children[balance_parent->dir], 1 - balance->dir);
+              }
+            }
+
+            // Is balance node the same as the target node found? then update
+            // its parent after the rotation performed above
+            if (balance == found)
+            {
+              if (balance_parent)
+              {
+                found_parent = balance_parent->children[balance_parent->dir];
+                // Update dir since it is likely stale
+                found_parent->dir = found_parent->children[kLeft] == found ? kLeft : kRight;
+              }
+              else
+              {
+                found_parent = root_node;
+                root_node->dir = root_node->children[kLeft] == found ? kLeft : kRight;
+              }
+            }
+          }
+
+          // Next balance node to consider
+          balance_parent = balance;
+          balance = balance->children[balance->dir];
+        } // while(balance)
+
+          // Step 3: Swap found node with replacement node
+        if (found_parent)
+        {
+          // Handle traditional case
+          detach_node(found_parent->children[found_parent->dir],
+            replace_parent->children[replace_parent->dir]);
+        }
+        // Handle root node removal
+        else
+        {
+          // Valid replacement node for root node being removed?
+          if (replace_parent)
+          {
+            detach_node(root_node, replace_parent->children[replace_parent->dir]);
+          }
+          else
+          {
+            // Target node and replacement node are both root node
+            detach_node(root_node, root_node);
+          }
+        }
+
+        // Downcast found into data node
+        Data_Node& found_data_node = imap::data_cast(*found);
+
+        // One less.
+        --current_size;
+
+        // Destroy the node removed
+        destroy_data_node(found_data_node);
+      } // if(found)
+
+        // Return node found (might be ETL_NULLPTR)
+      return found;
+    }
+
+    //*************************************************************************
+    /// Remove the node specified from somewhere starting at the position
+    /// provided
+    //*************************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    Node* remove_node(Node*& position, const K& key)
     {
       // Step 1: Find the target node that matches the key provided, the
       // replacement node (might be the same as target node), and the critical
