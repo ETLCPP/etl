@@ -670,6 +670,19 @@ namespace etl
       return compare(key, node.value);
     }
 
+    template <typename K, typename = typename TCompare::is_transparent>
+    bool node_comp(const Data_Node& node, const K& key) const
+    {
+      return compare(node.value, key);
+    }
+
+    template <typename K, typename = typename TCompare::is_transparent>
+    bool node_comp(const K& key, const Data_Node& node) const
+
+    {
+      return compare(key, node.value);
+    }
+
   private:
 
     /// The pool of data nodes used in the multiset.
@@ -1059,6 +1072,13 @@ namespace etl
     size_type count(key_parameter_t key) const
     {
       return count_nodes(key);
+    } 
+    
+    //*********************************************************************
+    template <typename K, typename = typename TCompare::is_transparent>
+    size_type count(const K& key) const
+    {
+      return count_nodes(key);
     }
 
     //*************************************************************************
@@ -1132,6 +1152,47 @@ namespace etl
     }
 
     //*************************************************************************
+#if ETL_CPP11_SUPPORTED
+    template <typename K, typename = typename TCompare::is_transparent>
+    size_type erase(K&& key_value)
+    {
+      // Number of nodes removed
+      size_type d = 0;
+      const_iterator lower(*this, find_lower_node(root_node, etl::forward<K>(key_value)));
+      const_iterator upper(*this, find_upper_node(root_node, etl::forward<K>(key_value)));
+      while (lower != upper)
+      {
+        // Increment count for each node removed
+        ++d;
+        // Remove node using the other erase method
+        (void)erase(lower++);
+      }
+
+      // Return the total count erased
+      return d;
+    }
+#else
+    template <typename K, typename = typename TCompare::is_transparent>
+    size_type erase(const K& key_value)
+    {
+      // Number of nodes removed
+      size_type d = 0;
+      const_iterator lower(*this, find_lower_node(root_node, key_value));
+      const_iterator upper(*this, find_upper_node(root_node, key_value));
+      while (lower != upper)
+      {
+        // Increment count for each node removed
+        ++d;
+        // Remove node using the other erase method
+        (void)erase(lower++);
+      }
+
+      // Return the total count erased
+      return d;
+    }
+#endif
+
+    //*************************************************************************
     /// Erases a range of elements.
     //*************************************************************************
     iterator erase(const_iterator first, const_iterator last)
@@ -1156,6 +1217,13 @@ namespace etl
     }
 
     //*********************************************************************
+    template <typename K, typename = typename TCompare::is_transparent>
+    iterator find(const K& k)
+    {
+      return iterator(*this, find_node(root_node, k));
+    }
+
+    //*********************************************************************
     /// Finds an element.
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
@@ -1163,6 +1231,13 @@ namespace etl
     const_iterator find(key_parameter_t key_value) const
     {
       return const_iterator(*this, find_node(root_node, key_value));
+    }
+
+    //*********************************************************************
+    template <typename K, typename = typename TCompare::is_transparent>
+    const_iterator find(const K& k) const
+    {
+      return const_iterator(*this, find_node(root_node, k));
     }
 
     //*********************************************************************
@@ -1265,12 +1340,26 @@ namespace etl
     }
 
     //*********************************************************************
+    template <typename K, typename = typename TCompare::is_transparent>
+    iterator lower_bound(const K& key)
+    {
+      return iterator(*this, find_lower_node(root_node, key));
+    }
+
+    //*********************************************************************
     /// Returns a const_iterator pointing to the first element in the
     /// container whose key is not considered to go before the key provided
     /// or end() if all keys are considered to go before the key provided.
     ///\return An const_iterator pointing to the element not before key or end()
     //*********************************************************************
     const_iterator lower_bound(key_parameter_t key) const
+    {
+      return const_iterator(*this, find_lower_node(root_node, key));
+    }
+
+    //*********************************************************************
+    template <typename K, typename = typename TCompare::is_transparent>
+    const_iterator lower_bound(const K& key) const
     {
       return const_iterator(*this, find_lower_node(root_node, key));
     }
@@ -1287,12 +1376,26 @@ namespace etl
     }
 
     //*********************************************************************
+    template <typename K, typename = typename TCompare::is_transparent>
+    iterator upper_bound(const K& key)
+    {
+      return iterator(*this, find_upper_node(root_node, key));
+    }
+
+    //*********************************************************************
     /// Returns a const_iterator pointing to the first element in the
     /// container whose key is not considered to go after the key provided
     /// or end() if all keys are considered to go after the key provided.
     ///\return An const_iterator pointing to the element after key or end()
     //*********************************************************************
     const_iterator upper_bound(key_parameter_t key) const
+    {
+      return const_iterator(*this, find_upper_node(root_node, key));
+    }
+
+    //*********************************************************************
+    template <typename K, typename = typename TCompare::is_transparent>
+    const_iterator upper_bound(const K& key) const
     {
       return const_iterator(*this, find_upper_node(root_node, key));
     }
@@ -1347,6 +1450,20 @@ namespace etl
     {
       return compare;
     };
+
+    //*************************************************************************
+    /// Check if the set contains the key.
+    //*************************************************************************
+    bool contains(const TKey& key) const
+    {
+      return find(key) != end();
+    }
+
+    template <typename K, typename = typename TCompare::is_transparent>
+    bool contains(const K& k) const
+    {
+      return find(k) != end();
+    }
 
   protected:
 
@@ -1450,9 +1567,72 @@ namespace etl
     }
 
     //*************************************************************************
+    template <typename K, typename = typename TCompare::is_transparent>
+    size_type count_nodes(const K& key) const
+    {
+      // Number of nodes that match the key provided result
+      size_type result = 0;
+
+      // Find lower and upper nodes for the key provided
+      const Node* lower = find_lower_node(root_node, key);
+      const Node* upper = find_upper_node(root_node, key);
+
+      // Loop from lower node to upper node and find nodes that match
+      while (lower != upper)
+      {
+        // Downcast found to Data_Node class for comparison and other operations
+        const Data_Node& data_node = imultiset::data_cast(*lower);
+
+        if (!node_comp(key, data_node) && !node_comp(data_node, key))
+        {
+          // This node matches the key provided
+          ++result;
+        }
+
+        // Move on to the next node
+        next_node(lower);
+      }
+
+      // Return the number of nodes that match
+      return result;
+    }
+
+    //*************************************************************************
     /// Find the value matching the node provided
     //*************************************************************************
-    Node* find_node(Node* position, key_parameter_t key) const
+    Node* find_node(Node* position, key_parameter_t key)
+    {
+      Node* found = ETL_NULLPTR;
+      while (position)
+      {
+        // Downcast found to Data_Node class for comparison and other operations
+        Data_Node& data_node = imultiset::data_cast(*position);
+        // Compare the node value to the current position value
+        if (node_comp(key, data_node))
+        {
+          // Keep searching for the node on the left
+          position = position->children[kLeft];
+        }
+        else if (node_comp(data_node, key))
+        {
+          // Keep searching for the node on the right
+          position = position->children[kRight];
+        }
+        else
+        {
+          // We found one, keep looking for more on the left
+          found = position;
+          position = position->children[kLeft];
+        }
+      }
+
+      // Return the node found (might be ETL_NULLPTR)
+      return found;
+    }
+
+    //*************************************************************************
+    template <typename K, typename = typename TCompare::is_transparent>
+    Node* find_node(Node* position, const K& key)
     {
       Node* found = ETL_NULLPTR;
       while (position)
@@ -1486,6 +1666,38 @@ namespace etl
     /// Find the value matching the node provided
     //*************************************************************************
     const Node* find_node(const Node* position, key_parameter_t key) const
+    {
+      const Node* found = ETL_NULLPTR;
+      while (position)
+      {
+        // Downcast found to Data_Node class for comparison and other operations
+        const Data_Node& data_node = imultiset::data_cast(*position);
+        // Compare the node value to the current position value
+        if (node_comp(key, data_node))
+        {
+          // Keep searching for the node on the left
+          position = position->children[kLeft];
+        }
+        else if (node_comp(data_node, key))
+        {
+          // Keep searching for the node on the right
+          position = position->children[kRight];
+        }
+        else
+        {
+          // We found one, keep looking for more on the left
+          found = position;
+          position = position->children[kLeft];
+        }
+      }
+
+      // Return the node found (might be ETL_NULLPTR)
+      return found;
+    }
+
+    //*************************************************************************
+    template <typename K, typename = typename TCompare::is_transparent>
+    const Node* find_node(const Node* position, const K& key) const
     {
       const Node* found = ETL_NULLPTR;
       while (position)
@@ -1557,9 +1769,91 @@ namespace etl
     }
 
     //*************************************************************************
+    template <typename K, typename = typename TCompare::is_transparent>
+    Node* find_lower_node(Node* position, const K& key) const
+    {
+      // Something at this position? keep going
+      Node* lower_node = ETL_NULLPTR;
+      while (position)
+      {
+        // Downcast lower node to Data_Node reference for key comparisons
+        Data_Node& data_node = imultiset::data_cast(*position);
+        // Compare the key value to the current lower node key value
+        if (node_comp(key, data_node))
+        {
+          lower_node = position;
+          if (position->children[kLeft])
+          {
+            position = position->children[kLeft];
+          }
+          else
+          {
+            // Found lowest node
+            break;
+          }
+        }
+        else if (node_comp(data_node, key))
+        {
+          position = position->children[kRight];
+        }
+        else
+        {
+          // Make note of current position, but keep looking to left for more
+          lower_node = position;
+          position = position->children[kLeft];
+        }
+      }
+
+      // Return the lower_node position found
+      return lower_node;
+    }
+
+    //*************************************************************************
     /// Find the node whose key is considered to go after the key provided
     //*************************************************************************
     Node* find_upper_node(Node* position, key_parameter_t key) const
+    {
+      // Keep track of parent of last upper node
+      Node* upper_node = ETL_NULLPTR;
+      // Has an equal node been found? start with no
+      bool found = false;
+      while (position)
+      {
+        // Downcast position to Data_Node reference for key comparisons
+        Data_Node& data_node = imultiset::data_cast(*position);
+        // Compare the key value to the current upper node key value
+        if (node_comp(data_node, key))
+        {
+          position = position->children[kRight];
+        }
+        else if (node_comp(key, data_node))
+        {
+          upper_node = position;
+          // If a node equal to key hasn't been found go left
+          if (!found && position->children[kLeft])
+          {
+            position = position->children[kLeft];
+          }
+          else
+          {
+            break;
+          }
+        }
+        else
+        {
+          // We found an equal item, break on next bigger item
+          found = true;
+          next_node(position);
+        }
+      }
+
+      // Return the upper node position found (might be ETL_NULLPTR)
+      return upper_node;
+    }
+
+    //*************************************************************************
+    template <typename K, typename = typename TCompare::is_transparent>
+    Node* find_upper_node(Node* position, const K& key) const
     {
       // Keep track of parent of last upper node
       Node* upper_node = ETL_NULLPTR;

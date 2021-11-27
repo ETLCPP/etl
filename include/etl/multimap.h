@@ -1181,6 +1181,26 @@ namespace etl
     }
 
     //*************************************************************************
+#if ETL_CPP11_SUPPORTED
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    size_type erase(K&& key)
+    {
+      // Number of nodes removed
+      size_type d = 0;
+      const_iterator lower(*this, find_lower_node(root_node, etl::forward<K>(key)));
+      const_iterator upper(*this, find_upper_node(root_node, etl::forward<K>(key)));
+      while (lower != upper)
+      {
+        // Increment count for each node removed
+        ++d;
+        // Remove node using the other erase method
+        (void)erase(lower++);
+      }
+
+      // Return the total count erased
+      return d;
+    }
+#else
     template <typename K, typename = typename TKeyCompare::is_transparent>
     size_type erase(const K& key)
     {
@@ -1199,6 +1219,7 @@ namespace etl
       // Return the total count erased
       return d;
     }
+#endif
 
     //*************************************************************************
     /// Erases a range of elements.

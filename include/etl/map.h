@@ -1073,12 +1073,21 @@ namespace etl
     }
 
     //*********************************************************************
+#if ETL_CPP11_SUPPORTED
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    size_type erase(K&& key)
+    {
+      // Return 1 if key value was found and removed
+      return remove_node(root_node, etl::forward<K>(key)) ? 1 : 0;
+    }
+#else
     template <typename K, typename = typename TKeyCompare::is_transparent>
     size_type erase(const K& key)
     {
       // Return 1 if key value was found and removed
       return remove_node(root_node, key) ? 1 : 0;
     }
+#endif
 
     //*************************************************************************
     /// Erases a range of elements.
