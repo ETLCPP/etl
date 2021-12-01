@@ -1382,6 +1382,7 @@ namespace etl
       return find(key) != end();
     }
 
+    //*************************************************************************
     template <typename K, typename = typename TKeyCompare::is_transparent>
     bool contains(const K& k) const
     {

@@ -750,7 +750,7 @@ namespace etl
       friend class imultimap;
       friend class const_iterator;
 
-      iterator()
+      iterator() 
         : p_multimap(ETL_NULLPTR)
         , p_node(ETL_NULLPTR)
       {

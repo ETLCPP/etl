@@ -661,10 +661,12 @@ namespace etl
     {
       return compare(node1.value, node2.value);
     }
+
     bool node_comp(const Data_Node& node, key_parameter_t key) const
     {
       return compare(node.value, key);
     }
+
     bool node_comp(key_parameter_t key, const Data_Node& node) const
     {
       return compare(key, node.value);
@@ -678,7 +680,6 @@ namespace etl
 
     template <typename K, typename = typename TCompare::is_transparent>
     bool node_comp(const K& key, const Data_Node& node) const
-
     {
       return compare(key, node.value);
     }
@@ -1085,22 +1086,36 @@ namespace etl
     /// Returns two iterators with bounding (lower bound, upper bound) the key
     /// provided
     //*************************************************************************
-    ETL_OR_STD::pair<iterator, iterator> equal_range(const_reference key)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(key_parameter_t key)
     {
-      return ETL_OR_STD::make_pair<iterator, iterator>(
-        iterator(*this, find_lower_node(root_node, key)),
-        iterator(*this, find_upper_node(root_node, key)));
+      return ETL_OR_STD::make_pair<iterator, iterator>(iterator(*this, find_lower_node(root_node, key)),
+                                                       iterator(*this, find_upper_node(root_node, key)));
+    }
+
+    //*************************************************************************
+    template <typename K, typename = typename TCompare::is_transparent>
+    ETL_OR_STD::pair<iterator, iterator> equal_range(const K& key)
+    {
+      return ETL_OR_STD::make_pair<iterator, iterator>(iterator(*this, find_lower_node(root_node, key)),
+                                                       iterator(*this, find_upper_node(root_node, key)));
     }
 
     //*************************************************************************
     /// Returns two const iterators with bounding (lower bound, upper bound)
     /// the key provided.
     //*************************************************************************
-    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const_reference key) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
     {
-      return ETL_OR_STD::make_pair<const_iterator, const_iterator>(
-        const_iterator(*this, find_lower_node(root_node, key)),
-        const_iterator(*this, find_upper_node(root_node, key)));
+      return ETL_OR_STD::make_pair<const_iterator, const_iterator>(const_iterator(*this, find_lower_node(root_node, key)),
+                                                                   const_iterator(*this, find_upper_node(root_node, key)));
+    }
+
+    //*************************************************************************
+    template <typename K, typename = typename TCompare::is_transparent>
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
+    {
+      return ETL_OR_STD::make_pair<const_iterator, const_iterator>(const_iterator(*this, find_lower_node(root_node, key)),
+                                                                   const_iterator(*this, find_upper_node(root_node, key)));
     }
 
     //*************************************************************************
@@ -1454,7 +1469,7 @@ namespace etl
     //*************************************************************************
     /// Check if the set contains the key.
     //*************************************************************************
-    bool contains(const TKey& key) const
+    bool contains(key_parameter_t key) const
     {
       return find(key) != end();
     }
