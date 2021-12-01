@@ -495,6 +495,41 @@ namespace etl
     }
 
     //*********************************************************************
+#if ETL_CPP11_SUPPORTED
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    size_t erase(K&& key)
+    {
+      iterator i_element = find(etl::forward<K>(key));
+
+      if (i_element == end())
+      {
+        return 0;
+      }
+      else
+      {
+        lookup.erase(i_element.ilookup);
+        return 1;
+      }
+    }
+#else
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    size_t erase(const K& key)
+    {
+      iterator i_element = find(key);
+
+      if (i_element == end())
+      {
+        return 0;
+      }
+      else
+      {
+        lookup.erase(i_element.ilookup);
+        return 1;
+      }
+    }
+#endif
+
+    //*********************************************************************
     /// Erases an element.
     ///\param i_element Iterator to the element.
     //*********************************************************************
@@ -557,11 +592,53 @@ namespace etl
     }
 
     //*********************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    iterator find(const K& key)
+    {
+      iterator itr = etl::lower_bound(begin(), end(), key, compare);
+
+      if (itr != end())
+      {
+        if (!key_compare()(*itr, key) && !key_compare()(key, *itr))
+        {
+          return itr;
+        }
+        else
+        {
+          return end();
+        }
+      }
+
+      return end();
+    }
+
+    //*********************************************************************
     /// Finds an element.
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
     const_iterator find(parameter_t key) const
+    {
+      const_iterator itr = etl::lower_bound(begin(), end(), key, compare);
+
+      if (itr != end())
+      {
+        if (!key_compare()(*itr, key) && !key_compare()(key, *itr))
+        {
+          return itr;
+        }
+        else
+        {
+          return end();
+        }
+      }
+
+      return end();
+    }
+
+    //*********************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    const_iterator find(const K& key) const
     {
       const_iterator itr = etl::lower_bound(begin(), end(), key, compare);
 
@@ -591,11 +668,25 @@ namespace etl
     }
 
     //*********************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    size_t count(const K& key) const
+    {
+      return (find(key) == end()) ? 0 : 1;
+    }
+
+    //*********************************************************************
     /// Finds the lower bound of a key
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
     iterator lower_bound(parameter_t key)
+    {
+      return etl::lower_bound(begin(), end(), key, compare);
+    }
+
+    //*********************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    iterator lower_bound(const K& key)
     {
       return etl::lower_bound(begin(), end(), key, compare);
     }
@@ -611,11 +702,25 @@ namespace etl
     }
 
     //*********************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    const_iterator lower_bound(const K& key) const
+    {
+      return etl::lower_bound(cbegin(), cend(), key, compare);
+    }
+
+    //*********************************************************************
     /// Finds the upper bound of a key
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
     iterator upper_bound(parameter_t key)
+    {
+      return etl::upper_bound(begin(), end(), key, compare);
+    }
+
+    //*********************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    iterator upper_bound(const K& key)
     {
       return etl::upper_bound(begin(), end(), key, compare);
     }
@@ -631,11 +736,25 @@ namespace etl
     }
 
     //*********************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    const_iterator upper_bound(const K& key) const
+    {
+      return etl::upper_bound(cbegin(), cend(), key, compare);
+    }
+
+    //*********************************************************************
     /// Finds the range of equal elements of a key
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
     ETL_OR_STD::pair<iterator, iterator> equal_range(parameter_t key)
+    {
+      return etl::equal_range(begin(), end(), key, compare);
+    }
+
+    //*********************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    ETL_OR_STD::pair<iterator, iterator> equal_range(const K& key)
     {
       return etl::equal_range(begin(), end(), key, compare);
     }
@@ -648,6 +767,28 @@ namespace etl
     ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(parameter_t key) const
     {
       return etl::upper_bound(cbegin(), cend(), key, compare);
+    }
+
+    //*********************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const K& key) const
+    {
+      return etl::upper_bound(cbegin(), cend(), key, compare);
+    }
+
+    //*************************************************************************
+    /// Check if the set contains the key.
+    //*************************************************************************
+    bool contains(parameter_t key) const
+    {
+      return find(key) != end();
+    }
+
+    //*************************************************************************
+    template <typename K, typename = typename TKeyCompare::is_transparent>
+    bool contains(const K& k) const
+    {
+      return find(k) != end();
     }
 
     //*************************************************************************
