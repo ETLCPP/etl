@@ -20,7 +20,6 @@ endif
 
 etl_dep = declare_dependency(
     include_directories: include_directories('include'),
-    extra_files: ['meson.build'],
     compile_args: compile_args
 )
 
