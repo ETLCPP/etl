@@ -43,6 +43,7 @@ SOFTWARE.
 #include "exception.h"
 #include "static_assert.h"
 #include "iterator.h"
+#include "type_traits.h"
 
 #include "private/comparator_is_transparent.h"
 
@@ -311,7 +312,7 @@ namespace etl
 
   protected:
 
-    typedef typename etl::parameter_type<TKey>::type key_parameter_t;
+    typedef const TKey& key_parameter_t;
 
   private:
 
@@ -1046,12 +1047,14 @@ namespace etl
       return !key_compare()(key1, key2) && !key_compare()(key2, key1);
     }
 
+#if ETL_CPP11_SUPPORTED
     //*********************************************************************
-    template <typename K1, typename K2, typename = typename TKeyCompare::is_transparent>
+    template <typename K1, typename K2, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     bool keys_are_equal(const K1& key1, const K2& key2) const
     {
       return !key_compare()(key1, key2) && !key_compare()(key2, key1);
     }
+#endif
 
   private:
 

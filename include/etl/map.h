@@ -513,7 +513,7 @@ namespace etl
     };
 
     /// Defines the key value parameter type
-    typedef typename TKey key_parameter_t;
+    typedef const TKey& key_parameter_t;
 
     //*************************************************************************
     /// How to compare node elements.
@@ -1116,7 +1116,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    iterator find(const key_parameter_t& key)
+    iterator find(key_parameter_t key)
     {
       return iterator(*this, find_node(root_node, key));
     }
@@ -1135,7 +1135,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    const_iterator find(const key_parameter_t& key) const
+    const_iterator find(key_parameter_t key) const
     {
       return const_iterator(*this, find_node(root_node, key));
     }

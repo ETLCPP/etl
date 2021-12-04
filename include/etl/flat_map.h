@@ -37,6 +37,7 @@ SOFTWARE.
 #include "placement_new.h"
 #include "nth_type.h"
 #include "utility.h"
+#include "type_traits.h"
 
 #include "private/comparator_is_transparent.h"
 
@@ -57,31 +58,6 @@ SOFTWARE.
 
 namespace etl
 {
-  namespace impl
-  {
-    template <typename T, typename ...P>
-    struct dependent_type 
-    { 
-      using type = T; 
-    };
-
-    template <typename A, typename ...B>
-    using void_type = typename dependent_type<void, A, B...>::type;
-
-    template <typename DummyVoid, template <typename...> class A, typename ...B>
-    struct is_detected : std::false_type 
-    {
-    };
-
-    template <template <typename...> class A, typename ...B>
-    struct is_detected<void_type<A<B...>>, A, B...> : std::true_type 
-    {
-    };
-  }
-
-  template <template <typename...> class A, typename ...B>
-  inline constexpr bool is_detected_v = impl::is_detected<void, A, B...>::value;
-
   //***************************************************************************
   /// The base class for specifically sized flat_maps.
   /// Can be used as a reference type for all flat_maps containing a specific type.

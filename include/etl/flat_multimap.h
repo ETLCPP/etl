@@ -37,6 +37,7 @@ SOFTWARE.
 #include "utility.h"
 #include "placement_new.h"
 #include "nth_type.h"
+#include "type_traits.h"
 
 #include "private/comparator_is_transparent.h"
 

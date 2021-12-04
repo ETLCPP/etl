@@ -146,7 +146,7 @@ namespace etl
     typedef size_t            size_type;
 
 
-    typedef typename etl::parameter_type<TKey>::type key_parameter_t;
+    typedef const TKey& key_parameter_t;
 
     typedef etl::forward_link<0> link_t; // Default link.
 

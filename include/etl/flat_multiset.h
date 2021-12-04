@@ -36,6 +36,7 @@ SOFTWARE.
 #include "pool.h"
 #include "placement_new.h"
 #include "nth_type.h"
+#include "type_traits.h"
 
 #include "private/comparator_is_transparent.h"
 
@@ -67,7 +68,7 @@ namespace etl
     typedef typename refset_t::lookup_t lookup_t;
     typedef etl::ipool storage_t;
 
-    typedef typename etl::parameter_type<T>::type key_parameter_t;
+    typedef const T& key_parameter_t;
 
   public:
 

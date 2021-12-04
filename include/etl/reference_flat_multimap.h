@@ -40,6 +40,8 @@ SOFTWARE.
 #include "vector.h"
 #include "iterator.h"
 #include "nth_type.h"
+#include "type_traits.h"
+#include "type_traits.h"
 
 #include "private/comparator_is_transparent.h"
 
@@ -284,7 +286,7 @@ namespace etl
 
   protected:
 
-    typedef typename etl::parameter_type<TKey>::type key_parameter_t;
+    typedef const TKey& key_parameter_t;
 
   private:
 
