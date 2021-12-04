@@ -1828,6 +1828,7 @@
     <ClInclude Include="..\..\include\etl\null_type.h" />
     <ClInclude Include="..\..\include\etl\parameter_pack.h" />
     <ClInclude Include="..\..\include\etl\private\choose_namespace.h" />
+    <ClInclude Include="..\..\include\etl\private\comparator_is_transparent.h" />
     <ClInclude Include="..\..\include\etl\private\crc_implementation.h" />
     <ClInclude Include="..\..\include\etl\private\crc_parameters.h" />
     <ClInclude Include="..\..\include\etl\private\to_string_helper.h" />

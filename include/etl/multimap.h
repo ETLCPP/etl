@@ -54,6 +54,7 @@ SOFTWARE.
 #endif
 
 #include "private/minmax_push.h"
+#include "private/comparator_is_transparent.h"
 
 //*****************************************************************************
 /// A multimap with the capacity defined at compile time.
@@ -196,9 +197,12 @@ namespace etl
       /// Constructor
       //***********************************************************************
       Node() :
+        parent(ETL_NULLPTR),
         weight((uint_least8_t) kNeither),
         dir((uint_least8_t) kNeither)
       {
+        children[0] = ETL_NULLPTR;
+        children[1] = ETL_NULLPTR;
       }
 
       //***********************************************************************
@@ -687,17 +691,19 @@ namespace etl
       return kcompare(key, node.value.first);
     }
 
-    template <typename K, typename = typename TKeyCompare::is_transparent>
+#if ETL_CPP11_SUPPORTED
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     bool node_comp(const Data_Node& node, const K& key) const
     {
       return kcompare(node.value.first, key);
     }
 
-    template <typename K, typename = typename TKeyCompare::is_transparent>
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     bool node_comp(const K& key, const Data_Node& node) const
     {
       return kcompare(key, node.value.first);
     }
+#endif
 
   private:
 
@@ -1089,12 +1095,14 @@ namespace etl
       return count_nodes(key);
     }
 
+#if ETL_CPP11_SUPPORTED
     //*********************************************************************
-    template <typename K, typename = typename TKeyCompare::is_transparent>
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     size_type count(const K& key) const
     {
       return count_nodes(key);
     }
+#endif
 
     //*************************************************************************
     /// Returns two iterators with bounding (lower bound, upper bound) the key
@@ -1106,13 +1114,15 @@ namespace etl
                                                        iterator(*this, find_upper_node(root_node, key)));
     }
 
+#if ETL_CPP11_SUPPORTED
     //*************************************************************************
-    template <typename K, typename = typename TKeyCompare::is_transparent>
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     ETL_OR_STD::pair<iterator, iterator> equal_range(const K& key)
     {
       return ETL_OR_STD::make_pair<iterator, iterator>(iterator(*this, find_lower_node(root_node, key)),
                                                        iterator(*this, find_upper_node(root_node, key)));
     }
+#endif
 
     //*************************************************************************
     /// Returns two const iterators with bounding (lower bound, upper bound)
@@ -1124,13 +1134,15 @@ namespace etl
                                                                    const_iterator(*this, find_upper_node(root_node, key)));
     }
 
+#if ETL_CPP11_SUPPORTED
     //*************************************************************************
-    template <typename K, typename = typename TKeyCompare::is_transparent>
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const K& key) const
     {
       return ETL_OR_STD::make_pair<const_iterator, const_iterator>(const_iterator(*this, find_lower_node(root_node, key)),
                                                                    const_iterator(*this, find_upper_node(root_node, key)));
     }
+#endif
 
     //*************************************************************************
     /// Erases the value at the specified position.
@@ -1182,32 +1194,13 @@ namespace etl
 
     //*************************************************************************
 #if ETL_CPP11_SUPPORTED
-    template <typename K, typename = typename TKeyCompare::is_transparent>
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     size_type erase(K&& key)
     {
       // Number of nodes removed
       size_type d = 0;
       const_iterator lower(*this, find_lower_node(root_node, etl::forward<K>(key)));
       const_iterator upper(*this, find_upper_node(root_node, etl::forward<K>(key)));
-      while (lower != upper)
-      {
-        // Increment count for each node removed
-        ++d;
-        // Remove node using the other erase method
-        (void)erase(lower++);
-      }
-
-      // Return the total count erased
-      return d;
-    }
-#else
-    template <typename K, typename = typename TKeyCompare::is_transparent>
-    size_type erase(const K& key)
-    {
-      // Number of nodes removed
-      size_type d = 0;
-      const_iterator lower(*this, find_lower_node(root_node, key));
-      const_iterator upper(*this, find_upper_node(root_node, key));
       while (lower != upper)
       {
         // Increment count for each node removed
@@ -1245,12 +1238,14 @@ namespace etl
       return iterator(*this, find_node(root_node, key));
     }
 
+#if ETL_CPP11_SUPPORTED
     //*********************************************************************
-    template <typename K, typename = typename TKeyCompare::is_transparent>
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     iterator find(const K& k)
     {
       return iterator(*this, find_node(root_node, k));
     }
+#endif
 
     //*********************************************************************
     /// Finds an element.
@@ -1262,12 +1257,14 @@ namespace etl
       return const_iterator(*this, find_node(root_node, key));
     }
 
+#if ETL_CPP11_SUPPORTED
     //*********************************************************************
-    template <typename K, typename = typename TKeyCompare::is_transparent>
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     const_iterator find(const K& k) const
     {
       return const_iterator(*this, find_node(root_node, k));
     }
+#endif
 
     //*********************************************************************
     /// Inserts a value to the multimap.
@@ -1368,12 +1365,14 @@ namespace etl
       return iterator(*this, find_lower_node(root_node, key));
     }
 
+#if ETL_CPP11_SUPPORTED
     //*********************************************************************
-    template <typename K, typename = typename TKeyCompare::is_transparent>
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     iterator lower_bound(const K& key)
     {
       return iterator(*this, find_lower_node(root_node, key));
     }
+#endif
 
     //*********************************************************************
     /// Returns a const_iterator pointing to the first element in the
@@ -1386,12 +1385,14 @@ namespace etl
       return const_iterator(*this, find_lower_node(root_node, key));
     }
 
+#if ETL_CPP11_SUPPORTED
     //*********************************************************************
-    template <typename K, typename = typename TKeyCompare::is_transparent>
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     const_iterator lower_bound(const K& key) const
     {
       return const_iterator(*this, find_lower_node(root_node, key));
     }
+#endif
 
     //*********************************************************************
     /// Returns an iterator pointing to the first element in the container
@@ -1404,12 +1405,14 @@ namespace etl
       return iterator(*this, find_upper_node(root_node, key));
     }
 
+#if ETL_CPP11_SUPPORTED
     //*********************************************************************
-    template <typename K, typename = typename TKeyCompare::is_transparent>
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     iterator upper_bound(const K& key)
     {
       return iterator(*this, find_upper_node(root_node, key));
     }
+#endif
 
     //*********************************************************************
     /// Returns a const_iterator pointing to the first element in the
@@ -1422,12 +1425,14 @@ namespace etl
       return const_iterator(*this, find_upper_node(root_node, key));
     }
 
+#if ETL_CPP11_SUPPORTED
     //*********************************************************************
-    template <typename K, typename = typename TKeyCompare::is_transparent>
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     const_iterator upper_bound(const K& key) const
     {
       return const_iterator(*this, find_upper_node(root_node, key));
     }
+#endif
 
     //*************************************************************************
     /// Assignment operator.
@@ -1490,12 +1495,14 @@ namespace etl
       return find(key) != end();
     }
 
+#if ETL_CPP11_SUPPORTED
     //*************************************************************************
-    template <typename K, typename = typename TKeyCompare::is_transparent>
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     bool contains(const K& k) const
     {
       return find(k) != end();
     }
+#endif
 
   protected:
 
@@ -1598,8 +1605,9 @@ namespace etl
       return result;
     }
 
+#if ETL_CPP11_SUPPORTED
     //*************************************************************************
-    template <typename K, typename = typename TKeyCompare::is_transparent>
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     size_type count_nodes(const K& key) const
     {
       // Number of nodes that match the key provided result
@@ -1628,6 +1636,7 @@ namespace etl
       // Return the number of nodes that match
       return result;
     }
+#endif
 
     //*************************************************************************
     /// Find the value matching the node provided
@@ -1662,8 +1671,9 @@ namespace etl
       return found;
     }
 
+#if ETL_CPP11_SUPPORTED
     //*************************************************************************
-    template <typename K, typename = typename TKeyCompare::is_transparent>
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     Node* find_node(Node* position, const K& key)
     {
       Node* found = ETL_NULLPTR;
@@ -1693,6 +1703,7 @@ namespace etl
       // Return the node found (might be ETL_NULLPTR)
       return found;
     }
+#endif
 
     //*************************************************************************
     /// Find the value matching the node provided
@@ -1727,10 +1738,11 @@ namespace etl
       return found;
     }
 
+#if ETL_CPP11_SUPPORTED
     //*************************************************************************
     /// Find the value matching the node provided
     //*************************************************************************
-    template <typename K, typename = typename TKeyCompare::is_transparent>
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     const Node* find_node(const Node* position, const K& key) const
     {
       const Node* found = ETL_NULLPTR;
@@ -1760,6 +1772,7 @@ namespace etl
       // Return the node found (might be ETL_NULLPTR)
       return found;
     }
+#endif
 
     //*************************************************************************
     /// Find the node whose key is not considered to go before the key provided
@@ -1802,8 +1815,9 @@ namespace etl
       return lower_node;
     }
 
+#if ETL_CPP11_SUPPORTED
     //*************************************************************************
-    template <typename K, typename = typename TKeyCompare::is_transparent>
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     Node* find_lower_node(Node* position, const K& key) const
     {
       // Something at this position? keep going
@@ -1841,6 +1855,7 @@ namespace etl
       // Return the lower_node position found
       return lower_node;
     }
+#endif
 
     //*************************************************************************
     /// Find the node whose key is considered to go after the key provided
@@ -1885,8 +1900,9 @@ namespace etl
       return upper_node;
     }
 
+#if ETL_CPP11_SUPPORTED
     //*************************************************************************
-    template <typename K, typename = typename TKeyCompare::is_transparent>
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     Node* find_upper_node(Node* position, const K& key) const
     {
       // Keep track of parent of last upper node
@@ -1926,6 +1942,7 @@ namespace etl
       // Return the upper node position found (might be ETL_NULLPTR)
       return upper_node;
     }
+#endif
 
     //*************************************************************************
     /// Insert a node.

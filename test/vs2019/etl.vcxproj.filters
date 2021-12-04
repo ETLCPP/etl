@@ -1152,6 +1152,9 @@
     <ClInclude Include="..\..\include\etl\nth_type.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\comparator_is_transparent.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp">
