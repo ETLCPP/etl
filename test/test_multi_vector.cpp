@@ -402,16 +402,22 @@ namespace
     //  CHECK(std::equal(initial2b.begin(), initial2b.end(), std::begin(data2)));
     //}
 
+#if ETL_USING_INITIALIZER_LIST
     //*************************************************************************
     TEST(test_assign)
     {
-      Data initial = { { { -1, -1, -1 }, { -1, -1, -1 }, { -1, -1, -1 }, { -1, -1, -1 } } };
-      Data source  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data check1  = { { { 0, 1, 2 }, { 3, 4, 5 }, { -1, -1, -1 }, { -1, -1, -1 } } };
-      Data check2  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 99, 99, 99 }, { 99, 99, 99 } } };
+      Array initial = { { { -1, -1, -1 }, { -1, -1, -1 }, { -1, -1, -1 }, { -1, -1, -1 } } };
+      Array initial_source  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Array initial_check1  = { { { 0, 1, 2 }, { 3, 4, 5 }, { -1, -1, -1 }, { -1, -1, -1 } } };
+      Array initial_check2  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 99, 99, 99 }, { 99, 99, 99 } } };
 
-      typedef etl::multi_vector<int, SIZE2> Inner;
-      const Inner ninetynine = { { 99, 99, 99 } };
+      Data source;
+      Data check1;
+      Data check2;
+
+      Copy(initial_source, source);
+      Copy(initial_check1, check1);
+      Copy(initial_check2, check2);
 
       Data data;
 
@@ -426,14 +432,24 @@ namespace
       isEqual = std::equal(data.begin(), data.end(), std::begin(check1));
       CHECK(isEqual);
     }
+#endif
 
+#if ETL_USING_INITIALIZER_LIST
     //*************************************************************************
     TEST(test_insert_value)
     {
-      Data initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } } };
-      Data check1  = { { { 9, 10, 11 }, { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } } };
-      Data check2  = { { { 0, 1, 2 }, { 9, 10, 11 }, { 3, 4, 5 }, { 6, 7, 8 } } };
-      Data check3  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } } };
+      Array initial_check1  = { { { 9, 10, 11 }, { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } } };
+      Array initial_check2  = { { { 0, 1, 2 }, { 9, 10, 11 }, { 3, 4, 5 }, { 6, 7, 8 } } };
+      Array initial_check3  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+
+      Data check1;
+      Data check2;
+      Data check3;
+
+      Copy(initial_check1, check1);
+      Copy(initial_check2, check2);
+      Copy(initial_check3, check3);
 
       typedef etl::multi_vector<int, SIZE2> Inner;
       const Inner inserted = { { 9, 10, 11 } };
@@ -462,6 +478,7 @@ namespace
       isEqual = std::equal(data.begin(), data.end(), check3.begin());
       CHECK(isEqual);
     }
+#endif
 
     //*************************************************************************
     TEST(test_equal)
@@ -484,9 +501,17 @@ namespace
     //*************************************************************************
     TEST(test_less_than)
     {
-      Data data    = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data lesser  = { { { 0, 1, 2 }, { 3, 4, 4 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data greater = { { { 0, 1, 2 }, { 3, 4, 6 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Array initial_data    = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Array initial_lesser  = { { { 0, 1, 2 }, { 3, 4, 4 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Array initial_greater = { { { 0, 1, 2 }, { 3, 4, 6 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+
+      Data data;
+      Data lesser;
+      Data greater;
+
+      Copy(initial_data, data);
+      Copy(initial_lesser, lesser);
+      Copy(initial_greater, greater);
 
       CHECK(lesser    < data);
       CHECK(!(data    < data));
@@ -496,9 +521,17 @@ namespace
     //*************************************************************************
     TEST(test_less_than_equal)
     {
-      Data data    = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data lesser  = { { { 0, 1, 2 }, { 3, 4, 4 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data greater = { { { 0, 1, 2 }, { 3, 4, 6 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Array initial_data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Array initial_lesser = { { { 0, 1, 2 }, { 3, 4, 4 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Array initial_greater = { { { 0, 1, 2 }, { 3, 4, 6 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+
+      Data data;
+      Data lesser;
+      Data greater;
+
+      Copy(initial_data, data);
+      Copy(initial_lesser, lesser);
+      Copy(initial_greater, greater);
 
       CHECK(lesser    <= data);
       CHECK(data      <= data);
@@ -508,9 +541,17 @@ namespace
     //*************************************************************************
     TEST(test_greater_than)
     {
-      Data data    = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data lesser  = { { { 0, 1, 2 }, { 3, 4, 4 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data greater = { { { 0, 1, 2 }, { 3, 4, 6 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Array initial_data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Array initial_lesser = { { { 0, 1, 2 }, { 3, 4, 4 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Array initial_greater = { { { 0, 1, 2 }, { 3, 4, 6 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+
+      Data data;
+      Data lesser;
+      Data greater;
+
+      Copy(initial_data, data);
+      Copy(initial_lesser, lesser);
+      Copy(initial_greater, greater);
 
       CHECK(greater  > data);
       CHECK(!(data   > data));
@@ -520,9 +561,17 @@ namespace
     //*************************************************************************
     TEST(test_greater_than_equal)
     {
-      Data data    = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data lesser  = { { { 0, 1, 2 }, { 3, 4, 4 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Data greater = { { { 0, 1, 2 }, { 3, 4, 6 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Array initial_data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Array initial_lesser = { { { 0, 1, 2 }, { 3, 4, 4 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Array initial_greater = { { { 0, 1, 2 }, { 3, 4, 6 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+
+      Data data;
+      Data lesser;
+      Data greater;
+
+      Copy(initial_data, data);
+      Copy(initial_lesser, lesser);
+      Copy(initial_greater, greater);
 
       CHECK(greater  >= data);
       CHECK(data     >= data);
