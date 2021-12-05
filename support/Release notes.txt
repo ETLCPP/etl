@@ -1,7 +1,7 @@
 ===============================================================================
 20.21.0
 Added contains() method to etl::map and etl::set + variants.
-Added support for 
+Added support for transparent comparators.
 When ETL_NO_ATOMICS is defined the timer.h file does not define timer_semaphore_t.
 etl::deque::resize throws etl::deque_full instead of etl::deque_out_of_bounds, if requested size is too large.
 
