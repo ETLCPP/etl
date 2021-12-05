@@ -1785,7 +1785,7 @@ namespace
     {
       DataDC data;
 
-      CHECK_THROW(data.resize(SIZE + 1), etl::deque_out_of_bounds);
+      CHECK_THROW(data.resize(SIZE + 1), etl::deque_full);
     }
 
     //*************************************************************************

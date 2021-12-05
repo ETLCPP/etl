@@ -1961,7 +1961,7 @@ namespace etl
     //*************************************************************************
     void resize(size_t new_size, const value_type& value = value_type())
     {
-      ETL_ASSERT(new_size <= CAPACITY, ETL_ERROR(deque_out_of_bounds));
+      ETL_ASSERT(new_size <= CAPACITY, ETL_ERROR(deque_full));
 
       // Make it smaller?
       if (new_size < current_size)

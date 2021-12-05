@@ -57,7 +57,7 @@ SOFTWARE.
   #include "etl_profile.h"
 #endif
 
-// Helper macro, so we don't have to use double negatives.
+// Helper macros, so we don't have to use double negatives.
 // The ETL will use the STL, unless ETL_NO_STL is defined.
 // With this macro we can use '#if ETL_USING_STL' instead of '#if !ETL_NO_STL' in the code.
 #if defined(ETL_NO_STL)
@@ -217,6 +217,11 @@ SOFTWARE.
   #else
     #define ETL_USING_INITIALIZER_LIST 0
   #endif
+#endif
+
+// Determine if the ETL should support atomics.
+#if defined(ETL_NO_ATOMICS) || defined(ETL_TARGET_DEVICE_ARM_CORTEX_M0) || defined(ETL_TARGET_DEVICE_ARM_CORTEX_M0_PLUS)
+  #define ETL_HAS_ATOMIC 0
 #endif
 
 // Sort out namespaces for STL/No STL options.
