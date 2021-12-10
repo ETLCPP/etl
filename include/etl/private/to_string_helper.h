@@ -56,8 +56,10 @@ namespace etl
   {
 #if ETL_NOT_USING_64BIT_TYPES
     typedef int32_t workspace_t;
+    typedef uint32_t uworkspace_t;
 #else
     typedef int64_t workspace_t;
+    typedef uint64_t uworkspace_t;
 #endif
 
     //***************************************************************************
@@ -314,13 +316,20 @@ namespace etl
         // Make sure we format the two halves correctly.
         uint32_t max_precision = etl::numeric_limits<T>::digits10;
 
+#if ETL_NOT_USING_64BIT_TYPES
+        if (max_precision > 9)
+        {
+          max_precision = 9;
+        }
+#endif
+
         etl::basic_format_spec<TIString> integral_format = format;
         integral_format.decimal().width(0).precision(format.get_precision() > max_precision ? max_precision : format.get_precision());
 
         etl::basic_format_spec<TIString> fractional_format = integral_format;
         fractional_format.width(integral_format.get_precision()).fill(type('0')).right();
 
-        uint32_t multiplier = 1U;
+        uworkspace_t multiplier = 1U;
 
         for (uint32_t i = 0U; i < fractional_format.get_precision(); ++i)
         {
@@ -329,10 +338,10 @@ namespace etl
 
         // Find the integral part of the floating point
         T f_integral = floor(etl::absolute(value));
-        uint32_t integral = static_cast<uint32_t>(f_integral);
+        uworkspace_t integral = static_cast<uworkspace_t>(f_integral);
 
         // Find the fractional part of the floating point.
-        uint32_t fractional = static_cast<uint32_t>(round((etl::absolute(value) - f_integral) * multiplier));
+        uworkspace_t fractional = static_cast<uworkspace_t>(round((etl::absolute(value) - f_integral) * multiplier));
 
         // Check for a rounding carry to the integral.
         if (fractional == multiplier)
