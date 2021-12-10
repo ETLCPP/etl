@@ -596,6 +596,18 @@ namespace
       CHECK_EQUAL(etl::string<20>(STR("-123.4568")).c_str(), result_i.c_str());
       CHECK_EQUAL(result_d.c_str(), result_i.c_str());
     }
+    
+    //*************************************************************************
+    TEST(test_double_regression_issue_479)
+    {
+      etl::string<20> result_d;
+      double value_d = 1.2345;
+      
+      Format format = Format().precision(10);
+      etl::to_string(value_d, result_d, format);
+
+      CHECK_EQUAL(etl::string<20>(STR("1.2345000000")).c_str(), result_d.c_str());
+    }
 
     //*************************************************************************
     TEST(test_integer_denominator_larger_width)
