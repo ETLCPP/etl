@@ -598,7 +598,7 @@ namespace
     }
     
     //*************************************************************************
-    TEST(test_double_regression_issue_479)
+    TEST(test_double_formatting_10_decimal_point)
     {
       etl::string<20> result_d;
       double value_d = 1.2345;
