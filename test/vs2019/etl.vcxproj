@@ -1725,6 +1725,8 @@
     <ClInclude Include="..\..\include\etl\buffer_descriptors.h" />
     <ClInclude Include="..\..\include\etl\byte_stream.h" />
     <ClInclude Include="..\..\include\etl\callback_timer.h" />
+    <ClInclude Include="..\..\include\etl\callback_timer_atomic.h" />
+    <ClInclude Include="..\..\include\etl\callback_timer_locked.h" />
     <ClInclude Include="..\..\include\etl\circular_buffer.h" />
     <ClInclude Include="..\..\include\etl\combinations.h" />
     <ClInclude Include="..\..\include\etl\compare.h" />
@@ -1814,6 +1816,8 @@
     <ClInclude Include="..\..\include\etl\mem_cast.h" />
     <ClInclude Include="..\..\include\etl\message_packet.h" />
     <ClInclude Include="..\..\include\etl\message_pool.h" />
+    <ClInclude Include="..\..\include\etl\message_timer_atomic.h" />
+    <ClInclude Include="..\..\include\etl\message_timer_locked.h" />
     <ClInclude Include="..\..\include\etl\multi_array.h" />
     <ClInclude Include="..\..\include\etl\multi_range.h" />
     <ClInclude Include="..\..\include\etl\multi_span.h" />
@@ -1831,6 +1835,8 @@
     <ClInclude Include="..\..\include\etl\private\comparator_is_transparent.h" />
     <ClInclude Include="..\..\include\etl\private\crc_implementation.h" />
     <ClInclude Include="..\..\include\etl\private\crc_parameters.h" />
+    <ClInclude Include="..\..\include\etl\private\delegate_cpp03.h" />
+    <ClInclude Include="..\..\include\etl\private\delegate_cpp11.h" />
     <ClInclude Include="..\..\include\etl\private\to_string_helper.h" />
     <ClInclude Include="..\..\include\etl\private\variant_legacy.h" />
     <ClInclude Include="..\..\include\etl\private\variant_variadic.h" />
@@ -2542,6 +2548,26 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Clang|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MSVC Debug - Appveyor|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\callback_timer_atomic.h.t.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Small Strings|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MSVC Debug - Appveyor|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MSVC Debug - No STL - Appveyor|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - No Unit Tests|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Built-ins|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM - No STL - Built-ins|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug64|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - String Truncation Is Error|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Clang|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - No STL - Force No Advanced|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Force cpp03|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC  - No Checks|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Force C++03|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\sanity-check\char_traits.h.t.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Built-ins|Win32'">true</ExcludedFromBuild>
@@ -5423,6 +5449,26 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Clang|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MSVC Debug - Appveyor|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\sanity-check\message_timer_atomic.h.t.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Small Strings|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MSVC Debug - Appveyor|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MSVC Debug - No STL - Appveyor|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - No Unit Tests|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Built-ins|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM - No STL - Built-ins|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug64|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - String Truncation Is Error|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Clang|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - No STL - Force No Advanced|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Force cpp03|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC  - No Checks|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Force C++03|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\sanity-check\message_types.h.t.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Built-ins|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM|Win32'">true</ExcludedFromBuild>
@@ -5544,6 +5590,26 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MSVC Debug - Appveyor|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\sanity-check\multi_span.h.t.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Small Strings|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MSVC Debug - Appveyor|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MSVC Debug - No STL - Appveyor|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - No Unit Tests|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Built-ins|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM - No STL - Built-ins|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug64|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - String Truncation Is Error|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Clang|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - No STL - Force No Advanced|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Force cpp03|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC  - No Checks|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Force C++03|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\multi_vector.h.t.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Small Strings|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - No STL|Win32'">true</ExcludedFromBuild>
@@ -7727,6 +7793,8 @@
     <ClCompile Include="..\test_buffer_descriptors.cpp" />
     <ClCompile Include="..\test_byte_stream.cpp" />
     <ClCompile Include="..\test_callback_service.cpp" />
+    <ClCompile Include="..\test_callback_timer_atomic.cpp" />
+    <ClCompile Include="..\test_callback_timer_locked.cpp" />
     <ClCompile Include="..\test_circular_buffer.cpp" />
     <ClCompile Include="..\test_circular_buffer_external_buffer.cpp" />
     <ClCompile Include="..\test_compiler_settings.cpp" />
@@ -7779,8 +7847,10 @@
     <ClCompile Include="..\test_crc8_wcdma.cpp" />
     <ClCompile Include="..\test_cumulative_moving_average.cpp" />
     <ClCompile Include="..\test_delegate.cpp" />
+    <ClCompile Include="..\test_delegate_cpp03.cpp" />
     <ClCompile Include="..\test_delegate_service.cpp" />
     <ClCompile Include="..\test_delegate_service_compile_time.cpp" />
+    <ClCompile Include="..\test_delegate_service_cpp03.cpp" />
     <ClCompile Include="..\test_fixed_sized_memory_block_allocator.cpp" />
     <ClCompile Include="..\test_flags.cpp" />
     <ClCompile Include="..\test_format_spec.cpp" />
@@ -7801,6 +7871,8 @@
     <ClCompile Include="..\test_mem_cast_ptr.cpp" />
     <ClCompile Include="..\test_message_packet.cpp" />
     <ClCompile Include="..\test_message_router_registry.cpp" />
+    <ClCompile Include="..\test_message_timer_atomic.cpp" />
+    <ClCompile Include="..\test_message_timer_locked.cpp" />
     <ClCompile Include="..\test_multi_array.cpp" />
     <ClCompile Include="..\test_array.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../unittest-cpp</AdditionalIncludeDirectories>

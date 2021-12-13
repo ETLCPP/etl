@@ -58,6 +58,7 @@ target_sources(t98 PRIVATE etl_profile.h
         ../callback.h.t.cpp
         ../callback_service.h.t.cpp
         ../callback_timer.h.t.cpp
+        ../callback_timer_atomic.h.t.cpp
         ../char_traits.h.t.cpp
         ../checksum.h.t.cpp
         ../circular_buffer.h.t.cpp
@@ -177,12 +178,14 @@ target_sources(t98 PRIVATE etl_profile.h
         ../message_router.h.t.cpp
         ../message_router_registry.h.t.cpp
         ../message_timer.h.t.cpp
+        ../message_timer_atomic.h.t.cpp
         ../message_types.h.t.cpp
         ../multimap.h.t.cpp
         ../multiset.h.t.cpp
         ../multi_array.h.t.cpp
         ../multi_range.h.t.cpp
         ../multi_span.h.t.cpp
+        ../multi_vector.h.t.cpp
         ../murmur3.h.t.cpp
         ../mutex.h.t.cpp
         ../negative.h.t.cpp

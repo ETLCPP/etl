@@ -203,12 +203,14 @@ SOFTWARE.
   #define ETL_CONSTEXPR20 constexpr
   #define ETL_CONSTEVAL consteval
   #define ETL_CONSTINIT constinit
+  #define ETL_NO_UNIQUE_ADDRESS [[no_unique_address]]
 #else
   #define ETL_LIKELY
   #define ETL_UNLIKELY
   #define ETL_CONSTEXPR20
   #define ETL_CONSTEVAL
   #define ETL_CONSTINIT
+  #define ETL_NO_UNIQUE_ADDRESS
 #endif
 
 #if !defined(ETL_USING_INITIALIZER_LIST)
@@ -220,8 +222,20 @@ SOFTWARE.
 #endif
 
 // Determine if the ETL should support atomics.
-#if defined(ETL_NO_ATOMICS) || defined(ETL_TARGET_DEVICE_ARM_CORTEX_M0) || defined(ETL_TARGET_DEVICE_ARM_CORTEX_M0_PLUS)
+#if defined(ETL_NO_ATOMICS) || \
+    defined(ETL_TARGET_DEVICE_ARM_CORTEX_M0) || \
+    defined(ETL_TARGET_DEVICE_ARM_CORTEX_M0_PLUS)
   #define ETL_HAS_ATOMIC 0
+#else
+  #if ((ETL_CPP11_SUPPORTED && (ETL_USING_STL || defined(ETL_IN_UNIT_TEST))) || \
+        defined(ETL_COMPILER_ARM5)  || \
+        defined(ETL_COMPILER_ARM6)  || \
+        defined(ETL_COMPILER_GCC)   || \
+        defined(ETL_COMPILER_CLANG))
+    #define ETL_HAS_ATOMIC 1
+  #else
+    #define ETL_HAS_ATOMIC 0
+  #endif
 #endif
 
 // Sort out namespaces for STL/No STL options.

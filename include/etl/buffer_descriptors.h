@@ -196,7 +196,11 @@ namespace etl
     };
 
     // The type of the callback function.
+#if ETL_CPP11_SUPPORTED & !defined(ETL_DELEGATE_FORCE_CPP03)
     typedef etl::delegate<void(notification)> callback_type;
+#else
+    typedef etl::delegate<void, notification> callback_type;
+#endif
 
     //*********************************
     buffer_descriptors(TBuffer* pbuffers_, callback_type callback_ = callback_type())

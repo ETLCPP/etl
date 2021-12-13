@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2021 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -30,6 +30,8 @@ SOFTWARE.
 
 #include "etl/delegate.h"
 #include "etl/vector.h"
+
+#if !defined(ETL_CRC_FORCE_CPP03)
 
 namespace
 {
@@ -240,18 +242,15 @@ namespace
       CHECK_THROW(d(), etl::delegate_uninitialised);
     }
 
-    SUITE(test_constexpr_delegate)
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_constexpr_is_valid_false)
     {
-      //*************************************************************************
-      TEST_FIXTURE(SetupFixture, test_is_valid_false)
-      {
-        constexpr etl::delegate<void(void)> d;
+      constexpr etl::delegate<void(void)> d;
 
-        CHECK(!d.is_valid());
-        CHECK(!d);
+      CHECK(!d.is_valid());
+      CHECK(!d);
 
-        CHECK_THROW(d(), etl::delegate_uninitialised);
-      }
+      CHECK_THROW(d(), etl::delegate_uninitialised);
     }
 
     //*************************************************************************
@@ -1106,3 +1105,5 @@ namespace
     }
   };
 }
+
+#endif

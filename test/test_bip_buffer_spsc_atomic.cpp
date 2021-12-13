@@ -299,9 +299,9 @@ namespace
       #error No thread priority modifier defined
     #endif
 
-    etl::bip_buffer_spsc_atomic<int, 10> stream;
+    etl::bip_buffer_spsc_atomic<int, 100> stream;
 
-    const size_t LENGTH = 1000000UL;
+    const size_t LENGTH = 100UL;
 
     void timer_event()
     {
@@ -312,7 +312,7 @@ namespace
 
       while (tick < LENGTH)
       {
-        auto writer = stream.write_reserve(std::min(write_chunk_size, LENGTH - tick));
+        auto writer = stream.write_reserve(min(write_chunk_size, LENGTH - tick));
         for (auto& item : writer)
         {
           item = tick++;
@@ -334,7 +334,7 @@ namespace
 
       while (tick_list.size() < LENGTH)
       {
-        reader = stream.read_reserve(read_chunk_size);
+        etl::span<int> reader = stream.read_reserve(read_chunk_size);
         tick_list.insert(tick_list.end(), reader.begin(), reader.end());
         stream.read_commit(reader);
       }

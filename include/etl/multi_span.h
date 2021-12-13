@@ -241,6 +241,8 @@ namespace etl
     ETL_CONSTEXPR multi_span& operator = (const multi_span & other)
     {
       span_list = other.span_list;
+
+      return *this;
     }
 
     //*************************************************************************

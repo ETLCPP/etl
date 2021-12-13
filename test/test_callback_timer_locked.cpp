@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2021 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,16 +28,17 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/callback_timer.h"
-#include "etl/function.h"
+#include "etl/callback_timer_locked.h"
+#include "etl/delegate.h"
 
 #include <iostream>
 #include <vector>
 #include <thread>
 #include <chrono>
+#include <mutex>
 
 #if defined(ETL_COMPILER_MICROSOFT)
-#include <Windows.h>
+  #include <Windows.h>
 #endif
 
 #define REALTIME_TEST 0
@@ -45,6 +46,33 @@ SOFTWARE.
 namespace
 {
   uint64_t ticks = 0ULL;
+
+  //***************************************************************************
+  struct Locks
+  {
+    Locks()
+      : lock_count(0)
+    {
+    }
+
+    bool try_lock()
+    {
+      ++lock_count;
+      return true;
+    }
+
+    void lock()
+    {
+      ++lock_count;
+    }
+
+    void unlock()
+    {
+      --lock_count;
+    }
+
+    int lock_count;
+  };
 
   //***************************************************************************
   // Class callback via etl::function
@@ -71,19 +99,24 @@ namespace
       p_controller->start(1);
     }
 
-    void set_controller(etl::callback_timer<3>& controller)
+    void set_controller(etl::callback_timer_locked<3>& controller)
     {
       p_controller = &controller;
     }
 
     std::vector<uint64_t> tick_list;
 
-    etl::callback_timer<3>* p_controller;
+    etl::callback_timer_locked<3>* p_controller;
   };
 
+  using callback_type = etl::icallback_timer_locked::callback_type;
+  using try_lock_type = etl::icallback_timer_locked::try_lock_type;
+  using lock_type     = etl::icallback_timer_locked::lock_type;
+  using unlock_type   = etl::icallback_timer_locked::unlock_type;
+
   Test test;
-  etl::function_imv<Test, test, &Test::callback>  member_callback;
-  etl::function_imv<Test, test, &Test::callback2> member_callback2;
+  callback_type member_callback  = callback_type::create<Test, test, &Test::callback>();
+  callback_type member_callback2 = callback_type::create<Test, test, &Test::callback2>();
 
   //***************************************************************************
   // Free function callback via etl::function
@@ -95,7 +128,7 @@ namespace
     free_tick_list1.push_back(ticks);
   }
 
-  etl::function_fv<free_callback1> free_function_callback;
+  callback_type free_function_callback = callback_type::create<free_callback1>();
 
   //***************************************************************************
   // Free function callback via function pointer
@@ -107,34 +140,48 @@ namespace
     free_tick_list2.push_back(ticks);
   }
 
-  SUITE(test_callback_timer)
+  callback_type free_function_callback2 = callback_type::create<free_callback2>();
+
+  SUITE(test_callback_timer_locked)
   {
     //*************************************************************************
-    TEST(callback_timer_too_many_timers)
+    TEST(callback_timer_locked_too_many_timers)
     {
-      etl::callback_timer<2> timer_controller;
+      static Locks locks;
+      try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
+      lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
+      unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
 
-      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,        37, etl::timer::mode::SINGLE_SHOT);
-      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::SINGLE_SHOT);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2,         11, etl::timer::mode::SINGLE_SHOT);
+      etl::callback_timer_locked<2> timer_controller(try_lock, lock, unlock);
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::SINGLE_SHOT);
 
       CHECK(id1 != etl::timer::id::NO_TIMER);
       CHECK(id2 != etl::timer::id::NO_TIMER);
       CHECK(id3 == etl::timer::id::NO_TIMER);
 
       timer_controller.clear();
-      id3 = timer_controller.register_timer(free_callback2, 11, etl::timer::mode::SINGLE_SHOT);
+      id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::SINGLE_SHOT);
       CHECK(id3 != etl::timer::id::NO_TIMER);
+
+      CHECK_EQUAL(0U, locks.lock_count);
     }
 
     //*************************************************************************
-    TEST(callback_timer_one_shot)
+    TEST(callback_timer_locked_one_shot)
     {
-      etl::callback_timer<4> timer_controller;
+      static Locks locks;
+      try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
+      lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
+      unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
 
-      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,        37, etl::timer::mode::SINGLE_SHOT);
-      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::SINGLE_SHOT);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2,         11, etl::timer::mode::SINGLE_SHOT);
+      etl::callback_timer_locked<4> timer_controller(try_lock, lock, unlock);
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::SINGLE_SHOT);
 
       test.tick_list.clear();
       free_tick_list1.clear();
@@ -167,12 +214,19 @@ namespace
       CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
+
+      CHECK_EQUAL(0U, locks.lock_count);
     }
 
     //*************************************************************************
     TEST(message_timer_one_shot_after_timeout)
     {
-      etl::callback_timer<1> timer_controller;
+      static Locks locks;
+      try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
+      lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
+      unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
+
+      etl::callback_timer_locked<1> timer_controller(try_lock, lock, unlock);
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::SINGLE_SHOT);
       test.tick_list.clear();
@@ -213,16 +267,23 @@ namespace
       CHECK(!timer_controller.unregister_timer(id1));
       CHECK(!timer_controller.start(id1));
       CHECK(!timer_controller.stop(id1));
+
+      CHECK_EQUAL(0U, locks.lock_count);
     }
 
     //*************************************************************************
-    TEST(callback_timer_repeating)
+    TEST(callback_timer_locked_repeating)
     {
-      etl::callback_timer<3> timer_controller;
+      static Locks locks;
+      try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
+      lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
+      unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
 
-      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,        37, etl::timer::mode::REPEATING);
-      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::REPEATING);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2,         11, etl::timer::mode::REPEATING);
+      etl::callback_timer_locked<3> timer_controller(try_lock, lock, unlock);
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::REPEATING);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::REPEATING);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::REPEATING);
 
       test.tick_list.clear();
       free_tick_list1.clear();
@@ -255,16 +316,23 @@ namespace
       CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
+
+      CHECK_EQUAL(0U, locks.lock_count);
     }
 
     //*************************************************************************
-    TEST(callback_timer_repeating_bigger_step)
+    TEST(callback_timer_locked_repeating_bigger_step)
     {
-      etl::callback_timer<3> timer_controller;
+      static Locks locks;
+      try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
+      lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
+      unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
 
-      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,        37, etl::timer::mode::REPEATING);
-      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::REPEATING);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2,         11, etl::timer::mode::REPEATING);
+      etl::callback_timer_locked<3> timer_controller(try_lock, lock, unlock);
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::REPEATING);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::REPEATING);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::REPEATING);
 
       test.tick_list.clear();
       free_tick_list1.clear();
@@ -301,16 +369,23 @@ namespace
       CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
+
+      CHECK_EQUAL(0U, locks.lock_count);
     }
 
     //*************************************************************************
-    TEST(callback_timer_repeating_stop_start)
+    TEST(callback_timer_locked_repeating_stop_start)
     {
-      etl::callback_timer<3> timer_controller;
+      static Locks locks;
+      try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
+      lock_type lock         = lock_type::create<Locks, locks, &Locks::lock>();
+      unlock_type unlock     = unlock_type::create<Locks, locks, &Locks::unlock>();
 
-      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,        37, etl::timer::mode::REPEATING);
-      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::REPEATING);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2,         11, etl::timer::mode::REPEATING);
+      etl::callback_timer_locked<3> timer_controller(try_lock, lock, unlock);
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::REPEATING);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::REPEATING);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::REPEATING);
 
       test.tick_list.clear();
       free_tick_list1.clear();
@@ -354,12 +429,19 @@ namespace
       CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
+
+      CHECK_EQUAL(0U, locks.lock_count);
     }
 
     //*************************************************************************
-    TEST(callback_timer_timer_starts_timer_small_step)
+    TEST(callback_timer_locked_timer_starts_timer_small_step)
     {
-      etl::callback_timer<3> timer_controller;
+      static Locks locks;
+      try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
+      lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
+      unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
+
+      etl::callback_timer_locked<3> timer_controller(try_lock, lock, unlock);
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback2, 100, etl::timer::mode::SINGLE_SHOT);
       etl::timer::id::type id2 = timer_controller.register_timer(member_callback, 10, etl::timer::mode::SINGLE_SHOT);
@@ -391,12 +473,19 @@ namespace
       CHECK(test.tick_list.size() != 0);
 
       CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(), compare1.size());
+
+      CHECK_EQUAL(0U, locks.lock_count);
     }
 
     //*************************************************************************
-    TEST(callback_timer_timer_starts_timer_big_step)
+    TEST(callback_timer_locked_timer_starts_timer_big_step)
     {
-      etl::callback_timer<3> timer_controller;
+      static Locks locks;
+      try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
+      lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
+      unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
+
+      etl::callback_timer_locked<3> timer_controller(try_lock, lock, unlock);
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback2, 100, etl::timer::mode::SINGLE_SHOT);
       etl::timer::id::type id2 = timer_controller.register_timer(member_callback,   10, etl::timer::mode::SINGLE_SHOT);
@@ -428,16 +517,23 @@ namespace
       CHECK(test.tick_list.size() != 0);
 
       CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
+
+      CHECK_EQUAL(0U, locks.lock_count);
     }
 
     //*************************************************************************
-    TEST(callback_timer_repeating_register_unregister)
+    TEST(callback_timer_locked_repeating_register_unregister)
     {
-      etl::callback_timer<3> timer_controller;
+      static Locks locks;
+      try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
+      lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
+      unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
+
+      etl::callback_timer_locked<3> timer_controller(try_lock, lock, unlock);
 
       etl::timer::id::type id1;
-      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::REPEATING);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2,         11, etl::timer::mode::REPEATING);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::REPEATING);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::REPEATING);
 
       test.tick_list.clear();
       free_tick_list1.clear();
@@ -477,16 +573,23 @@ namespace
       CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
+
+      CHECK_EQUAL(0U, locks.lock_count);
     }
 
     //*************************************************************************
-    TEST(callback_timer_repeating_clear)
+    TEST(callback_timer_locked_repeating_clear)
     {
-      etl::callback_timer<3> timer_controller;
+      static Locks locks;
+      try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
+      lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
+      unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
 
-      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,        37, etl::timer::mode::REPEATING);
-      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::REPEATING);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2,         11, etl::timer::mode::REPEATING);
+      etl::callback_timer_locked<3> timer_controller(try_lock, lock, unlock);
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::REPEATING);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::REPEATING);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::REPEATING);
 
       test.tick_list.clear();
       free_tick_list1.clear();
@@ -525,16 +628,23 @@ namespace
       CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
+
+      CHECK_EQUAL(0U, locks.lock_count);
     }
 
     //*************************************************************************
-    TEST(callback_timer_delayed_immediate)
+    TEST(callback_timer_locked_delayed_immediate)
     {
-      etl::callback_timer<3> timer_controller;
+      static Locks locks;
+      try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
+      lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
+      unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
 
-      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,        37, etl::timer::mode::REPEATING);
-      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::REPEATING);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2,         11, etl::timer::mode::REPEATING);
+      etl::callback_timer_locked<3> timer_controller(try_lock, lock, unlock);
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::REPEATING);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::REPEATING);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::REPEATING);
 
       test.tick_list.clear();
       free_tick_list1.clear();
@@ -568,15 +678,22 @@ namespace
       CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
       CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
+
+      CHECK_EQUAL(0U, locks.lock_count);
     }
 
     //*************************************************************************
-    TEST(callback_timer_one_shot_big_step_short_delay_insert)
+    TEST(callback_timer_locked_one_shot_big_step_short_delay_insert)
     {
-      etl::callback_timer<3> timer_controller;
+      static Locks locks;
+      try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
+      lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
+      unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
 
-      etl::timer::id::type id1 = timer_controller.register_timer(free_callback1, 15, etl::timer::mode::SINGLE_SHOT);
-      etl::timer::id::type id2 = timer_controller.register_timer(free_callback2, 5,  etl::timer::mode::REPEATING);
+      etl::callback_timer_locked<3> timer_controller(try_lock, lock, unlock);
+
+      etl::timer::id::type id1 = timer_controller.register_timer(free_function_callback,  15, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback2, 5,  etl::timer::mode::REPEATING);
 
       free_tick_list1.clear();
       free_tick_list2.clear();
@@ -604,14 +721,21 @@ namespace
 
       CHECK_ARRAY_EQUAL(compare1.data(), free_tick_list1.data(), compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list2.data(), compare2.size());
+
+      CHECK_EQUAL(0U, locks.lock_count);
     }
 
     //*************************************************************************
-    TEST(callback_timer_one_shot_empty_list_huge_tick_before_insert)
+    TEST(callback_timer_locked_one_shot_empty_list_huge_tick_before_insert)
     {
-      etl::callback_timer<3> timer_controller;
+      static Locks locks;
+      try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
+      lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
+      unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
 
-      etl::timer::id::type id1 = timer_controller.register_timer(free_callback1, 5, etl::timer::mode::SINGLE_SHOT);
+      etl::callback_timer_locked<3> timer_controller(try_lock, lock, unlock);
+
+      etl::timer::id::type id1 = timer_controller.register_timer(free_function_callback, 5, etl::timer::mode::SINGLE_SHOT);
 
       free_tick_list1.clear();
 
@@ -644,6 +768,8 @@ namespace
       CHECK(free_tick_list1.size() != 0);
 
       CHECK_ARRAY_EQUAL(compare1.data(), free_tick_list1.data(), compare1.size());
+
+      CHECK_EQUAL(0U, locks.lock_count);
     }
 
     //*************************************************************************
@@ -659,13 +785,17 @@ namespace
       size_t called = 0UL;
     };
 
-    using callback_type = etl::icallback_timer::callback_type;
-
-    TEST(callback_timer_call_etl_delegate)
+    TEST(callback_timer_locked_call_etl_delegate)
     {
         test_object test_obj;
         callback_type delegate_callback = callback_type::create<test_object, &test_object::call>(test_obj);
-        etl::callback_timer<1> timer_controller;
+        
+        static Locks locks;
+        try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
+        lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
+        unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
+
+        etl::callback_timer_locked<1> timer_controller(try_lock, lock, unlock);
 
         timer_controller.enable(true);
 
@@ -677,6 +807,8 @@ namespace
 
         timer_controller.tick(2);
         CHECK(test_obj.called == 1);
+
+        CHECK_EQUAL(0U, locks.lock_count);
     }
 
     //*************************************************************************
@@ -690,8 +822,47 @@ namespace
     #define FIX_PROCESSOR_AFFINITY
   #endif
 
-    etl::callback_timer<3> controller;
+    etl::callback_timer_locked<3> controller;
 
+    //*********************************
+    struct ThreadLock
+    {
+      ThreadLock()
+        : lock_count(0)
+      {
+      }
+
+      bool try_lock()
+      {
+        if (mutex.try_lock())
+        {
+          ++lock_count;
+
+          return true;
+        }
+
+        return false;
+      }
+
+      void lock()
+      {
+        mutex.lock();
+        ++lock_count;
+      }
+
+      void unlock()
+      {
+        mutex.unlock();
+        --lock_count;
+      }
+
+      std::mutex mutex;
+      int lock_count;
+    };
+
+    ThreadLock threadLock;
+
+    //*********************************
     void timer_event()
     {
       const uint32_t TICK = 1U;
@@ -718,17 +889,23 @@ namespace
       }
     }
 
-    TEST(callback_timer_threads)
+    TEST(callback_timer_locked_threads)
     {
       FIX_PROCESSOR_AFFINITY;
 
-      etl::timer::id::type id1 = controller.register_timer(member_callback,        400, etl::timer::mode::SINGLE_SHOT);
-      etl::timer::id::type id2 = controller.register_timer(free_function_callback, 100, etl::timer::mode::REPEATING);
-      etl::timer::id::type id3 = controller.register_timer(free_callback2,          10, etl::timer::mode::REPEATING);
+      etl::timer::id::type id1 = controller.register_timer(member_callback,         400, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id2 = controller.register_timer(free_function_callback,  100, etl::timer::mode::REPEATING);
+      etl::timer::id::type id3 = controller.register_timer(free_function_callback2,  10, etl::timer::mode::REPEATING);
 
       test.tick_list.clear();
       free_tick_list1.clear();
       free_tick_list2.clear();
+
+      try_lock_type try_lock_callback = try_lock_type::create<ThreadLock, threadLock, &ThreadLock::try_lock>();
+      lock_type     lock_callback     = lock_type::create<ThreadLock, threadLock, &ThreadLock::lock>();
+      unlock_type   unlock_callback   = unlock_type::create<ThreadLock, threadLock, &ThreadLock::unlock>();
+
+      controller.set_locks(try_lock_callback, lock_callback, unlock_callback);
 
       controller.start(id1);
       controller.start(id2);
@@ -777,6 +954,8 @@ namespace
 
       //CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  min(compare1.size(), test.tick_list.size()));
       //CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), min(compare2.size(), free_tick_list1.size()));
+
+      CHECK_EQUAL(0U, threadLock.lock_count);
     }
 #endif
   };

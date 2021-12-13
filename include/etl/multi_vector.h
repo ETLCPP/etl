@@ -38,10 +38,10 @@
 /// A multi dimentional vector.
 ///\ingroup containers
 
-namespace etl
-{
 #if ETL_CPP11_SUPPORTED
 
+namespace etl
+{
   namespace private_multi_vector
   {
     template <class T, size_t TD1, size_t... TDn>

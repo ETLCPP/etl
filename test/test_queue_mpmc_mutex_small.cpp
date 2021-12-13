@@ -45,7 +45,7 @@ SOFTWARE.
   #include <Windows.h>
 #endif
 
-#define REALTIME_TEST 1
+#define REALTIME_TEST 0
 
 namespace
 {

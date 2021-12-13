@@ -57,6 +57,8 @@ set(TEST_SOURCE_FILES
 	test_buffer_descriptors.cpp
 	test_callback_service.cpp
 	test_callback_timer.cpp
+	test_callback_timer_atomic.cpp
+	test_callback_timer_locked.cpp
 	test_checksum.cpp
 	test_circular_buffer.cpp
 	test_circular_buffer_external_buffer.cpp
@@ -116,6 +118,7 @@ set(TEST_SOURCE_FILES
 	test_cyclic_value.cpp
 	test_debounce.cpp
 	test_delegate.cpp
+	test_delegate_cpp03.cpp
 	test_delegate_service.cpp
 	test_delegate_service_compile_time.cpp
 	test_deque.cpp
@@ -171,10 +174,13 @@ set(TEST_SOURCE_FILES
 	test_message_router.cpp
 	test_message_router_registry.cpp
 	test_message_timer.cpp
+	test_message_timer_atomic.cpp
+    test_message_timer_locked.cpp
 	test_multimap.cpp
 	test_multiset.cpp
 	test_multi_array.cpp
 	test_multi_range.cpp
+	test_multi_vector.cpp
 	test_murmur3.cpp
 	test_numeric.cpp
 	test_observer.cpp

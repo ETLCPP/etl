@@ -31,6 +31,8 @@ SOFTWARE.
 #include "etl/delegate.h"
 #include "etl/delegate_service.h"
 
+#if !defined(ETL_DELEGATE_FORCE_CPP03)
+
 namespace
 {
   const size_t Size   = 2UL;
@@ -159,3 +161,5 @@ namespace
     }
   };
 }
+
+#endif

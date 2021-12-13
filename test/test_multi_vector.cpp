@@ -381,43 +381,36 @@ namespace
       CHECK_EQUAL(SIZE2, data[0].max_size());
     }
 
+#if ETL_USING_INITIALIZER_LIST
     //*************************************************************************
-    //TEST(test_swap)
-    //{
-    //  Array initial1 = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-    //  Array initial2 = { { { 12, 13, 14 }, { 15, 16, 17 }, { 18, 19, 20 }, { 21, 22, 23 } } };
+    TEST(test_swap)
+    {
+      Data initial1 = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data initial2 = { { { 12, 13, 14 }, { 15, 16, 17 }, { 18, 19, 20 }, { 21, 22, 23 } } };
 
-    //  Array initial1b = { { { 12, 13, 14 }, { 15, 16, 17 }, { 18, 19, 20 }, { 21, 22, 23 } } };
-    //  Array initial2b = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data data1 = initial1;
+      Data data2 = initial2;
 
-    //  Data data1;
-    //  Data data2;
-    //  Copy(initial1, data1);
-    //  Copy(initial2, data2);
+      using ETL_OR_STD::swap;
+      swap(data1, data2);
 
-    //  using ETL_OR_STD::swap;
-    //  swap(data1, data2);
-
-    //  CHECK(std::equal(initial1b.begin(), initial1b.end(), std::begin(data1)));
-    //  CHECK(std::equal(initial2b.begin(), initial2b.end(), std::begin(data2)));
-    //}
+      CHECK(std::equal(initial2.begin(), initial2.end(), data1.begin()));
+      CHECK(std::equal(initial1.begin(), initial1.end(), data2.begin()));
+    }
+#endif
 
 #if ETL_USING_INITIALIZER_LIST
     //*************************************************************************
     TEST(test_assign)
     {
-      Array initial = { { { -1, -1, -1 }, { -1, -1, -1 }, { -1, -1, -1 }, { -1, -1, -1 } } };
-      Array initial_source  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Array initial_check1  = { { { 0, 1, 2 }, { 3, 4, 5 }, { -1, -1, -1 }, { -1, -1, -1 } } };
-      Array initial_check2  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 99, 99, 99 }, { 99, 99, 99 } } };
+      Data initial = { { { -1, -1, -1 }, { -1, -1, -1 }, { -1, -1, -1 }, { -1, -1, -1 } } };
+      Data initial_source  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data initial_check1  = { { { 0, 1, 2 }, { 3, 4, 5 }, { -1, -1, -1 }, { -1, -1, -1 } } };
+      Data initial_check2  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 99, 99, 99 }, { 99, 99, 99 } } };
 
-      Data source;
-      Data check1;
-      Data check2;
-
-      Copy(initial_source, source);
-      Copy(initial_check1, check1);
-      Copy(initial_check2, check2);
+      Data source = initial_source;
+      Data check1 = initial_check1;
+      Data check2 = initial_check2;
 
       Data data;
 
@@ -438,18 +431,14 @@ namespace
     //*************************************************************************
     TEST(test_insert_value)
     {
-      Array initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } } };
-      Array initial_check1  = { { { 9, 10, 11 }, { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } } };
-      Array initial_check2  = { { { 0, 1, 2 }, { 9, 10, 11 }, { 3, 4, 5 }, { 6, 7, 8 } } };
-      Array initial_check3  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data initial = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } } };
+      Data initial_check1  = { { { 9, 10, 11 }, { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } } };
+      Data initial_check2  = { { { 0, 1, 2 }, { 9, 10, 11 }, { 3, 4, 5 }, { 6, 7, 8 } } };
+      Data initial_check3  = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
 
-      Data check1;
-      Data check2;
-      Data check3;
-
-      Copy(initial_check1, check1);
-      Copy(initial_check2, check2);
-      Copy(initial_check3, check3);
+      Data check1 = initial_check1;
+      Data check2 = initial_check2;
+      Data check3 = initial_check3;
 
       typedef etl::multi_vector<int, SIZE2> Inner;
       const Inner inserted = { { 9, 10, 11 } };
@@ -481,15 +470,18 @@ namespace
 #endif
 
     //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
     TEST(test_equal)
     {
-      Array initial1 = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
-      Array initial2 = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data initial1 = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
+      Data initial2 = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
 
       CHECK(initial1 == initial2);
     }
+#endif
 
     //*************************************************************************
+#if ETL_USING_INITIALIZER_LIST
     TEST(test_not_equal)
     {
       Array initial1 = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
@@ -497,6 +489,7 @@ namespace
 
       CHECK(initial1 != initial2);
     }
+#endif
 
     //*************************************************************************
     TEST(test_less_than)
