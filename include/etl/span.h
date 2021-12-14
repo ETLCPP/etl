@@ -104,6 +104,29 @@ namespace etl
     }
 #endif
 
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Construct from a container or other type that supports
+    /// data() and size() member functions.
+    //*************************************************************************
+    template <typename TContainer, typename = typename etl::enable_if<!etl::is_array<TContainer>::value, int>::type>
+    ETL_CONSTEXPR span(TContainer& a) ETL_NOEXCEPT
+      : mbegin(a.data())
+      , mend(a.data() + a.size())
+    {
+    }
+
+    //*************************************************************************
+    /// Construct from a container or other type that supports
+    /// data() and size() member functions.
+    //*************************************************************************
+    template <typename TContainer, typename = typename etl::enable_if<!etl::is_array<TContainer>::value, int>::type>
+    ETL_CONSTEXPR span(const TContainer& a) ETL_NOEXCEPT
+      : mbegin(a.data())
+      , mend(a.data() + a.size())
+    {
+    }
+#else
     //*************************************************************************
     /// Construct from a container or other type that supports
     /// data() and size() member functions.
@@ -125,6 +148,7 @@ namespace etl
       , mend(a.data() + a.size())
     {
     }
+#endif
 
     //*************************************************************************
     /// Construct from iterators
@@ -149,7 +173,7 @@ namespace etl
     //*************************************************************************
     /// Construct from C array
     //*************************************************************************
-    template<const size_t ARRAY_SIZE>
+    template<size_t ARRAY_SIZE>
     ETL_CONSTEXPR span(element_type(&begin_)[ARRAY_SIZE]) ETL_NOEXCEPT
       : mbegin(begin_)
       , mend(begin_ + ARRAY_SIZE)

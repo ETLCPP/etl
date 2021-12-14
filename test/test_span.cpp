@@ -629,5 +629,17 @@ namespace
       CHECK_EQUAL(hashdata, hashview);
       CHECK_EQUAL(hashdata, hashcview);
     }
+
+    //*************************************************************************
+    void f(etl::span<const char, 10> value)
+    {
+    }
+
+    TEST(test_issue_481)
+    {
+      char c[10];
+
+      f(c);
+    }
   };
 }
