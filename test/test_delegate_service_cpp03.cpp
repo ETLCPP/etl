@@ -31,7 +31,7 @@ SOFTWARE.
 #include "etl/delegate.h"
 #include "etl/delegate_service.h"
 
-#if defined(ETL_DELEGATE_FORCE_CPP03)
+#if defined(ETL_DELEGATE_FORCE_CPP03_IMPLEMENTATION)
 
 namespace
 {
@@ -73,7 +73,7 @@ namespace
   public:
 
     Test()
-      : callback(etl::delegate<void, size_t>::create<Test, &Test::member1>(*this))
+      : callback(Service::delegate_type::create<Test, &Test::member1>(*this))
     {
     }
 

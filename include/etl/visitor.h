@@ -50,7 +50,7 @@ SOFTWARE.
 
 namespace etl
 {
-#if ETL_CPP11_SUPPORTED && !defined(ETL_VISITOR_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_VISITOR_FORCE_CPP03_IMPLEMENTATION)
 
   //*****************************************************************
   /// The visitable class for N types.
@@ -149,7 +149,7 @@ namespace etl
 
 #endif
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_VISITOR_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_VISITOR_FORCE_CPP03_IMPLEMENTATION)
 
   //*****************************************************************
   /// The visitor class for N types.

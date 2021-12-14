@@ -28,10 +28,10 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/delegate.h"
+#include "etl/private/delegate_cpp11.h"
 #include "etl/vector.h"
 
-#if !defined(ETL_CRC_FORCE_CPP03)
+#if !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
 
 namespace
 {

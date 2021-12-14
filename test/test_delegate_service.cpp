@@ -31,7 +31,7 @@ SOFTWARE.
 #include "etl/delegate.h"
 #include "etl/delegate_service.h"
 
-#if !defined(ETL_DELEGATE_FORCE_CPP03)
+#if !defined(ETL_DELEGATE_FORCE_CPP03_IMPLEMENTATION)
 
 namespace
 {

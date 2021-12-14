@@ -55,11 +55,7 @@ namespace etl
   {
   public:
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_DELEGATE_FORCE_CPP03)
     typedef etl::delegate<void(void)> callback_type;
-#else
-    typedef etl::delegate<void, void> callback_type;
-#endif
 
     //*******************************************
     /// Register a timer.

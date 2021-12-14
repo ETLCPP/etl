@@ -75,7 +75,7 @@ cog.outl("//********************************************************************
 
 namespace etl
 {
-#if ETL_CPP11_SUPPORTED && !defined(ETL_LARGEST_TYPE_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_LARGEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   /// Template to determine the largest type and size.
   /// Defines 'value_type' which is the type of the largest parameter.
@@ -197,7 +197,7 @@ namespace etl
   /*[[[end]]]*/
 #endif
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_LARGEST_ALIGNMENT_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_LARGEST_ALIGNMENT_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   /// Template to determine the largest alignment.
   /// Defines <b>value</b> which is the largest alignment of all the parameters.
@@ -372,7 +372,7 @@ namespace etl
   using larger_type_t = typename larger_type<T>::type;
 #endif
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_LARGEST_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_LARGEST_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   /// Template to determine the largest type, size and alignment.
   /// Defines <b>value</b> which is the largest type, size and alignment of all the parameters.

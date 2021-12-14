@@ -572,7 +572,7 @@ namespace etl
   /// mem_cast_var
   /// mem_cast from a variadic list of types
   //*****************************************************************************
-#if ETL_CPP11_SUPPORTED && !defined(ETL_MEM_CAST_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_MEM_CAST_FORCE_CPP03_IMPLEMENTATION)
   template <typename... TTypes>
   using mem_cast_types = etl::mem_cast<etl::largest<TTypes...>::size, etl::largest<TTypes...>::alignment>;
 #else

@@ -1987,7 +1987,7 @@ namespace etl
       return reinterpret_cast<const T*>(raw);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_COMPILER_ARM5) && !defined(ETL_UNINITIALIZED_BUFFER_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_COMPILER_ARM5) && !defined(ETL_UNINITIALIZED_BUFFER_FORCE_CPP03_IMPLEMENTATION)
     alignas(VAlignment) char raw[Object_Size * N_Objects];
 #else
     union
@@ -2076,7 +2076,7 @@ namespace etl
       return reinterpret_cast<const T*>(raw + (sizeof(T) * N_Objects));
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_COMPILER_ARM5) && !defined(ETL_UNINITIALIZED_BUFFER_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_COMPILER_ARM5) && !defined(ETL_UNINITIALIZED_BUFFER_FORCE_CPP03_IMPLEMENTATION)
     alignas(Alignment) char raw[sizeof(T) * N_Objects];
 #else
     union

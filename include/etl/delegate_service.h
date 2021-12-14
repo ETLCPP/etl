@@ -46,7 +46,7 @@ namespace etl
   /// \tparam Delegates Pointer to an array of delegate pointers.
   /// The delegate ids must range between Offset and Offset + Range - 1.
   //***************************************************************************
-#if ETL_CPP11_SUPPORTED && !defined(ETL_DELEGATE_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_DELEGATE_FORCE_CPP03_IMPLEMENTATION)
   template <const size_t Range, 
             const size_t Offset = 0U,
             const etl::delegate<void(size_t)>* Delegates = nullptr>
@@ -98,7 +98,7 @@ namespace etl
   //***************************************************************************
   template <const size_t Range, 
             const size_t Offset>
-#if ETL_CPP11_SUPPORTED && !defined(ETL_DELEGATE_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_DELEGATE_FORCE_CPP03_IMPLEMENTATION)
   class delegate_service<Range, Offset, nullptr>
 #else
   class delegate_service
@@ -106,11 +106,7 @@ namespace etl
   {
   public:
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_DELEGATE_FORCE_CPP03)
     typedef etl::delegate<void(size_t)> delegate_type;
-#else
-    typedef etl::delegate<void, size_t> delegate_type;
-#endif
 
     //*************************************************************************
     /// Default constructor.

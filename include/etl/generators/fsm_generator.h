@@ -92,7 +92,7 @@ namespace etl
   // For internal FSM use.
   typedef typename etl::larger_type<etl::message_id_t>::type fsm_internal_id_t;
 
-#if ETL_CPP17_SUPPORTED && !defined(ETL_FSM_FORCE_CPP03) // For C++17 and above
+#if ETL_CPP17_SUPPORTED && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
   template <typename, typename, const etl::fsm_state_id_t, typename...>
   class fsm_state;
 #else
@@ -203,7 +203,7 @@ namespace etl
     friend class etl::fsm;
     friend class etl::hfsm;
 
-#if ETL_CPP17_SUPPORTED && !defined(ETL_FSM_FORCE_CPP03) // For C++17 and above
+#if ETL_CPP17_SUPPORTED && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
     template <typename, typename, const etl::fsm_state_id_t, typename...>
     friend class fsm_state;
 #else
@@ -520,7 +520,7 @@ namespace etl
 //*************************************************************************************************
 // For C++17 and above.
 //*************************************************************************************************
-#if ETL_CPP17_SUPPORTED && !defined(ETL_FSM_FORCE_CPP03) // For C++17 and above
+#if ETL_CPP17_SUPPORTED && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
   //***************************************************************************
   // The definition for all types.
   //***************************************************************************

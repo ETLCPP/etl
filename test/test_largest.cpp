@@ -55,7 +55,7 @@ namespace
       CHECK(type);
     }
 
-#if !defined(ETL_LARGEST_TYPE_FORCE_CPP03)
+#if !defined(ETL_LARGEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_pod_type_vt)
     {
@@ -99,7 +99,7 @@ namespace
       CHECK(type);
     }
 
-#if !defined(ETL_LARGEST_TYPE_FORCE_CPP03)
+#if !defined(ETL_LARGEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_non_pod_type_vt)
     {

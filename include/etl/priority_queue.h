@@ -180,7 +180,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_PRIORITY_QUEUE_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_PRIORITY_QUEUE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Emplaces a value to the queue.
     /// If asserts or exceptions are enabled, throws an etl::priority_queue_full

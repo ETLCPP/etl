@@ -40,10 +40,7 @@ SOFTWARE.
 #include "atomic.h"
 #include "error_handler.h"
 #include "placement_new.h"
-
-#if ETL_CPP11_SUPPORTED
-  #include "delegate.h"
-#endif
+#include "delegate.h"
 
 #if defined(ETL_IN_UNIT_TEST) && ETL_NOT_USING_STL
   #define ETL_DISABLE_TIMER_UPDATES
@@ -84,11 +81,7 @@ namespace etl
   /// The configuration of a timer.
   struct callback_timer_data
   {
-#if ETL_CPP11_SUPPORTED && !defined(ETL_DELEGATE_FORCE_CPP03)
     typedef etl::delegate<void(void)> callback_type;
-#else
-    typedef etl::delegate<void, void> callback_type;
-#endif
 
     enum callback_type_id
     {
@@ -386,11 +379,7 @@ namespace etl
   {
   public:
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_DELEGATE_FORCE_CPP03)
     typedef etl::delegate<void(void)> callback_type;
-#else
-    typedef etl::delegate<void, void> callback_type;
-#endif
 
     //*******************************************
     /// Register a timer.

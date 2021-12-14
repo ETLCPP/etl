@@ -55,7 +55,11 @@
 #include "../utility.h"
 #include "../optional.h"
 
+#if defined(ETL_IN_DELEGATE_CPP03_UNIT_TEST)
+namespace etl_cpp03
+#else
 namespace etl
+#endif
 {
   namespace private_delegate
   {
@@ -167,12 +171,17 @@ namespace etl
   //*************************************************************************
   /// Declaration.
   //*************************************************************************
-  template <typename TReturn, typename TParam = void>
-  class delegate : public private_delegate::call_if_impl<delegate<TReturn, TParam>, TReturn, TParam>
+  template <typename T>
+  class delegate;
+
+
+
+  template <typename TReturn, typename TParam>
+  class delegate<TReturn(TParam)> : public private_delegate::call_if_impl<delegate<TReturn(TParam)>, TReturn, TParam>
   {
   public:
 
-    using private_delegate::call_if_impl< delegate<TReturn, TParam>, TReturn, TParam>::call_if;
+    using private_delegate::call_if_impl<delegate<TReturn(TParam)>, TReturn, TParam>::call_if;
 
     //*************************************************************************
     /// Default constructor.
@@ -368,7 +377,11 @@ namespace etl
     //*************************************************************************
     /// Create from function (Compile time).
     //*************************************************************************
-    delegate& operator =(const delegate& rhs) = default;
+    delegate& operator =(const delegate& rhs)
+    {
+      invocation = rhs.invocation;
+      return *this;
+    }
 
     //*************************************************************************
     /// Create from Lambda or Functor.
@@ -551,11 +564,12 @@ namespace etl
   /// Specialisation for void parameter.
   //*************************************************************************
   template <typename TReturn>
-  class delegate<TReturn, void> : public private_delegate::call_if_impl<delegate<TReturn, void>, TReturn, void>
+  class delegate<TReturn(void)> 
+    : public private_delegate::call_if_impl<delegate<TReturn(void)>, TReturn, void>
   {
   public:
 
-    using private_delegate::call_if_impl< delegate<TReturn, void>, TReturn, void>::call_if;
+    using private_delegate::call_if_impl< delegate<TReturn(void)>, TReturn, void>::call_if;
 
     //*************************************************************************
     /// Default constructor.

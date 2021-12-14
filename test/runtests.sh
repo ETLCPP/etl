@@ -1,5 +1,6 @@
 #!/bin/sh
-#sudo ntpdate ntp.ubuntu.com
+clear
+
 mkdir -p build-make || exit 1
 cd build-make || exit 1
 

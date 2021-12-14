@@ -1,4 +1,6 @@
 #!/bin/sh
+clear
+
 cd sanity-check || exit 1
 echo "" > log.txt
 

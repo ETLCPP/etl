@@ -74,7 +74,7 @@ cog.outl("//********************************************************************
 
 namespace etl
 {
-#if ETL_CPP17_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03)
+#if ETL_CPP17_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   // The definition for all message types.
   //***************************************************************************

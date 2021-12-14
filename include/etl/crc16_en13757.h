@@ -39,7 +39,7 @@ SOFTWARE.
 
 namespace etl
 {
-#if ETL_CPP11_SUPPORTED && !defined(ETL_CRC_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
   template <size_t Table_Size>
   using crc16_en13757_t = etl::crc_type<etl::private_crc::crc16_en13757_parameters, Table_Size>;
 #else
