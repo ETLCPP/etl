@@ -45,6 +45,15 @@ SOFTWARE.
 
 #if ETL_CPP11_SUPPORTED && ETL_USING_STL
   #include <array>
+  #include <iterator>
+
+  #define ETL_BEGIN(x) std::begin(x)
+  #define ETL_END(x)   std::end(x)
+#else
+  #include "iterator.h"
+
+  #define ETL_BEGIN(x) etl::begin(x)
+  #define ETL_END(x)   etl::end(x)
 #endif
 
 namespace etl
@@ -104,37 +113,14 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED
-    //*************************************************************************
-    /// Construct from a container or other type that supports
-    /// data() and size() member functions.
-    //*************************************************************************
-    template <typename TContainer, typename = typename etl::enable_if<!etl::is_array<TContainer>::value, int>::type>
-    ETL_CONSTEXPR span(TContainer& a) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
-    {
-    }
-
-    //*************************************************************************
-    /// Construct from a container or other type that supports
-    /// data() and size() member functions.
-    //*************************************************************************
-    template <typename TContainer, typename = typename etl::enable_if<!etl::is_array<TContainer>::value, int>::type>
-    ETL_CONSTEXPR span(const TContainer& a) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
-    {
-    }
-#else
     //*************************************************************************
     /// Construct from a container or other type that supports
     /// data() and size() member functions.
     //*************************************************************************
     template <typename TContainer>
     ETL_CONSTEXPR span(TContainer& a) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
+      : mbegin(etl::addressof(*ETL_BEGIN(a)))
+      , mend(etl::addressof(*ETL_END(a)))
     {
     }
 
@@ -144,11 +130,10 @@ namespace etl
     //*************************************************************************
     template <typename TContainer>
     ETL_CONSTEXPR span(const TContainer& a) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
+      : mbegin(etl::addressof(*ETL_BEGIN(a)))
+      , mend(etl::addressof(*ETL_END(a)))
     {
     }
-#endif
 
     //*************************************************************************
     /// Construct from iterators
