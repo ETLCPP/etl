@@ -638,7 +638,6 @@ namespace
     TEST(test_issue_481)
     {
       char c[10];
-
       f(c);
     }
   };
