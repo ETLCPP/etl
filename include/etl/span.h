@@ -40,8 +40,6 @@ SOFTWARE.
 #include "memory.h"
 #include "array.h"
 
-#include "class_traits.h"
-
 ///\defgroup span span
 ///\ingroup containers
 
@@ -70,13 +68,6 @@ namespace etl
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
     static ETL_CONSTANT size_t extent = EXTENT;
-
-    template <typename U,
-              typename = typename etl::enable_if_t<etl::has_data<U>::value/* && etl::has_size<U>::value*/, int>>
-    void test(U u)
-    {
-
-    }
 
     //*************************************************************************
     /// Default constructor.
