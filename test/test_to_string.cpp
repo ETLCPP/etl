@@ -598,15 +598,15 @@ namespace
     }
     
     //*************************************************************************
-    TEST(test_double_formatting_15_decimal_point)
+    TEST(test_double_formatting_10_decimal_point)
     {
       etl::string<20> result_d;
-      double value_d = 1.234567890123456;
+      double value_d = 1.2345;
       
-      Format format = Format().precision(15);
+      Format format = Format().precision(10);
       etl::to_string(value_d, result_d, format);
 
-      CHECK_EQUAL(etl::string<20>(STR("1.234567890123456")).c_str(), result_d.c_str());
+      CHECK_EQUAL(etl::string<20>(STR("1.2345000000")).c_str(), result_d.c_str());
     }
 
     //*************************************************************************
