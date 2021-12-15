@@ -270,11 +270,11 @@ namespace etl
     //***************************************************************************
     template <typename TIString>
     void add_integral_and_fractional(const uint64_t integral,
-                                 const uint64_t fractional,
-                                 TIString& str,
-                                 const etl::basic_format_spec<TIString>& integral_format,
-                                 const etl::basic_format_spec<TIString>& fractional_format,
-                                 const bool negative)
+                                     const uint64_t fractional,
+                                     TIString& str,
+                                     const etl::basic_format_spec<TIString>& integral_format,
+                                     const etl::basic_format_spec<TIString>& fractional_format,
+                                     const bool negative)
     {
       typedef typename TIString::value_type type;
 
