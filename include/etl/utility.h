@@ -435,6 +435,14 @@ namespace etl
   template <size_t I>
   inline constexpr in_place_index_t<I> in_place_index{};
 #endif
+
+  //***************************************************************************
+  /// declval
+  //***************************************************************************
+#if ETL_CPP11_SUPPORTED
+  template <typename T>
+  typename etl::add_rvalue_reference<T>::type declval() ETL_NOEXCEPT;
+#endif
 }
 
 #endif

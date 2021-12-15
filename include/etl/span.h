@@ -40,21 +40,10 @@ SOFTWARE.
 #include "memory.h"
 #include "array.h"
 
+#include "class_traits.h"
+
 ///\defgroup span span
 ///\ingroup containers
-
-#if ETL_CPP11_SUPPORTED && ETL_USING_STL
-  #include <array>
-  #include <iterator>
-
-  #define ETL_BEGIN(x) std::begin(x)
-  #define ETL_END(x)   std::end(x)
-#else
-  #include "iterator.h"
-
-  #define ETL_BEGIN(x) etl::begin(x)
-  #define ETL_END(x)   etl::end(x)
-#endif
 
 namespace etl
 {
@@ -71,16 +60,23 @@ namespace etl
     typedef T                                            element_type;
     typedef typename etl::remove_cv<T>::type             value_type;
     typedef size_t                                       size_type;
-    typedef T&                                           reference;
-    typedef const T&                                     const_reference;
-    typedef T*                                           pointer;
-    typedef const T*                                     const_pointer;
-    typedef T*                                           iterator;
-    typedef const T*                                     const_iterator;
+    typedef T& reference;
+    typedef const T& const_reference;
+    typedef T* pointer;
+    typedef const T* const_pointer;
+    typedef T* iterator;
+    typedef const T* const_iterator;
     typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
     static ETL_CONSTANT size_t extent = EXTENT;
+
+    template <typename U,
+              typename = typename etl::enable_if_t<etl::has_data<U>::value/* && etl::has_size<U>::value*/, int>>
+    void test(U u)
+    {
+
+    }
 
     //*************************************************************************
     /// Default constructor.
@@ -88,6 +84,46 @@ namespace etl
     ETL_CONSTEXPR span() ETL_NOEXCEPT
       : mbegin(ETL_NULLPTR)
       , mend(ETL_NULLPTR)
+    {
+    }
+
+    //*************************************************************************
+    /// Construct from pointer + size
+    //*************************************************************************
+    template <typename TIterator, typename TSize>
+    ETL_CONSTEXPR span(const TIterator begin_, const TSize size_) ETL_NOEXCEPT
+      : mbegin(etl::addressof(*begin_))
+      , mend(etl::addressof(*begin_) + size_)
+    {
+    }
+
+    //*************************************************************************
+    /// Construct from iterators
+    //*************************************************************************
+    template <typename TIterator>
+    ETL_CONSTEXPR span(const TIterator begin_, const TIterator end_)
+      : mbegin(etl::addressof(*begin_))
+      , mend(etl::addressof(*begin_) + etl::distance(begin_, end_))
+    {
+    }
+
+    //*************************************************************************
+    /// Construct from C array
+    //*************************************************************************
+    template<size_t ARRAY_SIZE>
+    ETL_CONSTEXPR span(element_type(&begin_)[ARRAY_SIZE]) ETL_NOEXCEPT
+      : mbegin(begin_)
+      , mend(begin_ + ARRAY_SIZE)
+    {
+    }
+
+    //*************************************************************************
+    /// Construct from etl::array.
+    //*************************************************************************
+    template <typename U, size_t N>
+    ETL_CONSTEXPR span(etl::array<U, N>& a) ETL_NOEXCEPT
+      : mbegin(a.data())
+      , mend(a.data() + a.size())
     {
     }
 
@@ -106,6 +142,16 @@ namespace etl
     /// Construct from std::array.
     //*************************************************************************
     template <typename U, size_t N>
+    ETL_CONSTEXPR span(std::array<U, N>& a) ETL_NOEXCEPT
+      : mbegin(a.data())
+      , mend(a.data() + a.size())
+    {
+    }
+
+    //*************************************************************************
+    /// Construct from std::array.
+    //*************************************************************************
+    template <typename U, size_t N>
     ETL_CONSTEXPR span(const std::array<U, N>& a) ETL_NOEXCEPT
       : mbegin(a.data())
       , mend(a.data() + a.size())
@@ -113,14 +159,37 @@ namespace etl
     }
 #endif
 
+#if ETL_CPP11_SUPPORTED
     //*************************************************************************
     /// Construct from a container or other type that supports
     /// data() and size() member functions.
     //*************************************************************************
-    template <typename TContainer>
+    template <typename TContainer, typename = typename etl::enable_if<!etl::is_array<TContainer>::value, int>::type>
     ETL_CONSTEXPR span(TContainer& a) ETL_NOEXCEPT
-      : mbegin(etl::addressof(*ETL_BEGIN(a)))
-      , mend(etl::addressof(*ETL_END(a)))
+      : mbegin(a.data())
+      , mend(a.data() + a.size())
+    {
+    }
+
+    //*************************************************************************
+    /// Construct from a container or other type that supports
+    /// data() and size() member functions.
+    //*************************************************************************
+    template <typename TContainer, typename = typename etl::enable_if<!etl::is_array<TContainer>::value, int>::type>
+    ETL_CONSTEXPR span(const TContainer& a) ETL_NOEXCEPT
+      : mbegin(a.data())
+      , mend(a.data() + a.size())
+    {
+    }
+#else
+    //*************************************************************************
+    /// Construct from a container or other type that supports
+    /// data() and size() member functions.
+    //*************************************************************************
+    template <typename TContainer>
+    ETL_CONSTEXPR span(TContainer& a, typename etl::enable_if<!etl::is_array<TContainer>::value, int>::type = 0) ETL_NOEXCEPT
+      : mbegin(a.data())
+      , mend(a.data() + a.size())
     {
     }
 
@@ -129,41 +198,12 @@ namespace etl
     /// data() and size() member functions.
     //*************************************************************************
     template <typename TContainer>
-    ETL_CONSTEXPR span(const TContainer& a) ETL_NOEXCEPT
-      : mbegin(etl::addressof(*ETL_BEGIN(a)))
-      , mend(etl::addressof(*ETL_END(a)))
+    ETL_CONSTEXPR span(const TContainer& a, typename etl::enable_if<!etl::is_array<TContainer>::value, int>::type = 0) ETL_NOEXCEPT
+      : mbegin(a.data())
+      , mend(a.data() + a.size())
     {
     }
-
-    //*************************************************************************
-    /// Construct from iterators
-    //*************************************************************************
-    template <typename TIterator>
-    ETL_CONSTEXPR span(const TIterator begin_, const TIterator end_)
-      : mbegin(etl::addressof(*begin_))
-      , mend(etl::addressof(*begin_) + etl::distance(begin_, end_))
-    {
-    }
-
-    //*************************************************************************
-    /// Construct from pointer + size
-    //*************************************************************************
-    template <typename TIterator, typename TSize>
-    ETL_CONSTEXPR span(const TIterator begin_, const TSize size_) ETL_NOEXCEPT
-      : mbegin(etl::addressof(*begin_))
-      , mend(etl::addressof(*begin_) + size_)
-    {
-    }
-
-    //*************************************************************************
-    /// Construct from C array
-    //*************************************************************************
-    template<size_t ARRAY_SIZE>
-    ETL_CONSTEXPR span(element_type(&begin_)[ARRAY_SIZE]) ETL_NOEXCEPT
-      : mbegin(begin_)
-      , mend(begin_ + ARRAY_SIZE)
-    {
-    }
+#endif
 
     //*************************************************************************
     /// Copy constructor
@@ -268,7 +308,7 @@ namespace etl
     ETL_CONSTEXPR14 span& operator =(const span& other) ETL_NOEXCEPT
     {
       mbegin = other.mbegin;
-      mend   = other.mend;
+      mend = other.mend;
       return *this;
     }
 
@@ -321,7 +361,7 @@ namespace etl
     //*************************************************************************
     template <const size_t OFFSET, const size_t COUNT = etl::dynamic_extent>
     ETL_CONSTEXPR
-    typename etl::enable_if<COUNT == etl::dynamic_extent, etl::span<element_type, ((EXTENT != etl::dynamic_extent) ? EXTENT - OFFSET : etl::dynamic_extent)> >::type
+      typename etl::enable_if<COUNT == etl::dynamic_extent, etl::span<element_type, ((EXTENT != etl::dynamic_extent) ? EXTENT - OFFSET : etl::dynamic_extent)> >::type
       subspan() const
     {
       return etl::span<element_type, ((EXTENT != etl::dynamic_extent) ? EXTENT - OFFSET : etl::dynamic_extent)>(mbegin + OFFSET, mend);
@@ -333,7 +373,7 @@ namespace etl
     //*************************************************************************
     template <const size_t OFFSET, const size_t COUNT = etl::dynamic_extent>
     ETL_CONSTEXPR
-    typename etl::enable_if<COUNT != etl::dynamic_extent, etl::span<element_type, COUNT> >::type
+      typename etl::enable_if<COUNT != etl::dynamic_extent, etl::span<element_type, COUNT> >::type
       subspan() const
     {
       return etl::span<element_type, COUNT>(mbegin + OFFSET, mbegin + OFFSET + COUNT);
@@ -395,7 +435,7 @@ namespace etl
     ->span<etl::remove_pointer_t<TIterator>>;
 
   template <typename TIterator,
-            typename TSize>
+    typename TSize>
     span(const TIterator begin_, const TSize size_)
     ->span<etl::remove_pointer_t<TIterator>>;
 #endif 
@@ -410,7 +450,7 @@ namespace etl
     size_t operator()(const etl::span<T>& view) const
     {
       return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&view[0]),
-                                                     reinterpret_cast<const uint8_t*>(&view[view.size()]));
+        reinterpret_cast<const uint8_t*>(&view[view.size()]));
     }
   };
 #endif
