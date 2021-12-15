@@ -358,6 +358,8 @@ namespace
       Data data;
 
       CHECK(data.empty());
+
+      data.resize(1);
       CHECK(data[0].empty());
     }
 
@@ -367,6 +369,9 @@ namespace
       Data data;
 
       CHECK_EQUAL(0, data.size());
+
+      data.resize(1);
+      CHECK_EQUAL(1, data.size());
       CHECK_EQUAL(0, data[0].size());
     }
 
@@ -374,7 +379,6 @@ namespace
     TEST(test_max_size)
     {
       Data data;
-
       data.resize(1);
 
       CHECK_EQUAL(SIZE1, data.max_size());

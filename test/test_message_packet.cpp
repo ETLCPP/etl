@@ -197,6 +197,9 @@ namespace
       Packet packet2(message2);
       Packet packet3(message3);
 
+      // Should causes a static assert.
+      //Packet packet4(message4);
+
       CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
       CHECK_EQUAL(MESSAGE2, packet2.get().get_message_id());
       CHECK_EQUAL(MESSAGE3, packet3.get().get_message_id());
@@ -214,6 +217,7 @@ namespace
       CHECK_EQUAL("3", static_cast<Message3&>(packet3.get()).x);
     }
 
+#if !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(message_packet_move_construction)
     {
@@ -235,6 +239,7 @@ namespace
       CHECK_EQUAL(1, static_cast<Message1&>(packet1.get()).x);
       CHECK_EQUAL(2.2, static_cast<Message2&>(packet2.get()).x);
     }
+#endif
 
     //*************************************************************************
     TEST(message_constant_packet_construction)
@@ -302,6 +307,7 @@ namespace
       CHECK_EQUAL(1, static_cast<Message1&>(packet2.get()).x);
     }
 
+#if !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(message_packet_move_consructor)
     {
@@ -323,6 +329,7 @@ namespace
       CHECK_EQUAL(1, static_cast<Message1&>(packet1.get()).x);
       CHECK_EQUAL(1, static_cast<Message1&>(packet2.get()).x);
     }
+#endif
 
     //*************************************************************************
     TEST(message_packet_assignment)
@@ -348,6 +355,7 @@ namespace
       CHECK_EQUAL(1, static_cast<Message1&>(packet2.get()).x);
     }
 
+#if !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(message_packet_move_assignment)
     {
@@ -371,6 +379,7 @@ namespace
       CHECK_EQUAL(1, static_cast<Message1&>(packet1.get()).x);
       CHECK_EQUAL(1, static_cast<Message1&>(packet2.get()).x);
     }
+#endif
 
     //*************************************************************************
     TEST(message_packet_accepts)

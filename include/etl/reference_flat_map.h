@@ -538,8 +538,6 @@ namespace etl
     {
       const_iterator i_element = lower_bound(key);
 
-      bool b = keys_are_equal(1, 1);
-
       ETL_ASSERT((i_element != end()) && keys_are_equal(i_element->first, key), ETL_ERROR(flat_map_out_of_bounds));
 
       return i_element->second;

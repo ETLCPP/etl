@@ -221,6 +221,15 @@ SOFTWARE.
   #endif
 #endif
 
+// Determine if the ETL can use std::array
+#if !defined(ETL_HAS_STD_ARRAY)
+  #if ETL_CPP11_SUPPORTED && ETL_USING_STL
+    #define ETL_HAS_STD_ARRAY 1
+  #else
+    #define ETL_HAS_STD_ARRAY 0
+  #endif
+#endif
+
 // Determine if the ETL should support atomics.
 #if defined(ETL_NO_ATOMICS) || \
     defined(ETL_TARGET_DEVICE_ARM_CORTEX_M0) || \

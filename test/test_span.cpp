@@ -631,14 +631,31 @@ namespace
     }
 
     //*************************************************************************
-    void f(etl::span<const char, 10> value)
+    void f_issue_481(etl::span<const char, 10> value)
     {
     }
 
     TEST(test_issue_481)
     {
+      // Should compile.
       char c[10];
-      f(c);
+      f_issue_481(c);
+    }
+
+    //*************************************************************************
+    void f_issue_486(etl::span<const char, 11> value)
+    {
+    }
+
+    TEST(test_issue_486)
+    {
+      //std::array<char, 10> c;
+
+      // Should not compile.
+      //etl::span<char, 11> value(c);
+
+      // Should not compile.
+      //f_issue_486(c);
     }
   };
 }
