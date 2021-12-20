@@ -395,6 +395,7 @@ namespace etl
   /*[[[cog
     import cog
 
+    ################################################
     def generate_accepts_return(n):
         cog.out("    return")
         for i in range(1, n + 1):
@@ -406,6 +407,7 @@ namespace etl
                     cog.out("          ")
         cog.outl(";")
 
+    ################################################
     def generate_accepts_return_compile_time(n):
         cog.out("    return")
         for i in range(1, n + 1):
@@ -417,6 +419,7 @@ namespace etl
                     cog.out("          ")
         cog.outl(";")
 
+    ################################################
     def generate_accepts_return_compile_time_TMessage(n):
         cog.outl("    ETL_CONSTANT etl::message_id_t id = TMessage::ID;")
         cog.outl("")
@@ -430,6 +433,7 @@ namespace etl
                     cog.out("          ")
         cog.outl(";")
 
+    ################################################
     def generate_static_assert_cpp03(n):
         cog.outl("    // Not etl::message_packet, not etl::imessage and in typelist.")
         cog.out("    static const bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<")
@@ -444,11 +448,18 @@ namespace etl
         cog.outl("")
         cog.outl("    ETL_STATIC_ASSERT(Enabled, \"Message not in packet type list\");")   
 
-    def generate_static_assert_cpp11():
+    ################################################
+    def generate_static_assert_cpp11(n):
         cog.outl("    // Not etl::message_packet, not etl::imessage and in typelist.")
-        cog.outl("    constexpr bool Enabled = (!etl::is_same<etl::remove_reference_t<TMessage>, etl::message_packet<TMessageTypes...>>::value &&")
-        cog.outl("                              !etl::is_same<etl::remove_reference_t<TMessage>, etl::imessage>::value &&")
-        cog.outl("                              etl::is_one_of<etl::remove_reference_t<TMessage>, TMessageTypes...>::value);")
+        cog.out("    static constexpr bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<")
+        for i in range(1, n):
+            cog.out("T%d, " % i)
+        cog.outl("T%s> >::value &&" % n)
+        cog.outl("                                     !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&")
+        cog.out("                                     etl::is_one_of<typename etl::remove_reference<TMessage>::type,")
+        for i in range(1, n):
+            cog.out("T%d, " % i)
+        cog.outl("T%s>::value);" % n)
         cog.outl("")
         cog.outl("    ETL_STATIC_ASSERT(Enabled, \"Message not in packet type list\");")
 
@@ -515,14 +526,20 @@ namespace etl
     cog.outl("")
     cog.outl("#if ETL_CPP11_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
     cog.outl("  //********************************************")
-    cog.outl("  template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<etl::remove_reference_t<TMessage>, etl::message_packet<TMessageHandlers...>>::value &&")
-    cog.outl("                                                                  !etl::is_same<etl::remove_reference_t<TMessage>, etl::imessage>::value &&")
-    cog.outl("                                                                  !etl::is_one_of<etl::remove_reference_t<TMessage>, TMessageHandlers...>>::value, int>::type>")
+    cog.out("  template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<")
+    for n in range(1, int(Handlers)):
+        cog.out("T%s, " % n)
+    cog.outl("T%s> >::value &&" % int(Handlers))
+    cog.outl("                                                                  !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&")
+    cog.out("                                                                  !etl::is_one_of<typename etl::remove_reference<TMessage>::type, ")
+    for n in range(1, int(Handlers)):
+        cog.out("T%s, " % n)
+    cog.outl("T%s>::value, int>::type>" % int(Handlers))
     cog.outl("  explicit message_packet(TMessage&& msg)")
     cog.outl("    : data()")
     cog.outl("    , valid(true)")
     cog.outl("  {")
-    generate_static_assert_cpp11()
+    generate_static_assert_cpp11(int(Handlers))
     cog.outl("  }")
     cog.outl("#else")
     cog.outl("  //********************************************")
@@ -795,14 +812,20 @@ namespace etl
         cog.outl("")
         cog.outl("#if ETL_CPP11_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
         cog.outl("  //********************************************")
-        cog.outl("  template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<etl::remove_reference_t<TMessage>, etl::message_packet<TMessageHandlers...>>::value &&")
-        cog.outl("                                                                  !etl::is_same<etl::remove_reference_t<TMessage>, etl::imessage>::value &&")
-        cog.outl("                                                                  !etl::is_one_of<etl::remove_reference_t<TMessage>::type, TMessageHandlers...>::value, int>::type>")
-        cog.outl("  explicit message_packet(TMessage&& msg)")
+        cog.out("  template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<")
+        for t in range(1, n):
+            cog.out("T%s, " % t)
+        cog.outl("T%s> >::value &&" % n)
+        cog.outl("                                                                  !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&")
+        cog.out("                                                                  !etl::is_one_of<typename etl::remove_reference<TMessage>::type, ")
+        for t in range(1, n):
+            cog.out("T%s, " % t)
+        cog.outl("T%s>::value, int>::type>" % n)
+        cog.outl("  explicit message_packet(etl::imessage&& msg)")
         cog.outl("    : data()")
         cog.outl("    , valid(true)")
         cog.outl("  {")
-        generate_static_assert_cpp11()
+        generate_static_assert_cpp11(n)
         cog.outl("  }")
         cog.outl("#else")
         cog.outl("  //********************************************")
