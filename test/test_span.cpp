@@ -643,6 +643,42 @@ namespace
     }
 
     //*************************************************************************
+    struct C_issue_482 {};
+
+    void f_issue_482(etl::span<char>)
+    {
+    }
+
+    void f_issue_482(etl::span<C_issue_482>)
+    {
+    }
+
+    TEST(test_issue_482)
+    {
+      etl::array<C_issue_482, 10> c;
+
+      // Should compile without ambiguous function error.
+      f_issue_482(c);
+    }
+
+    //*************************************************************************
+    void f_issue_482_2(etl::span<char, 10>)
+    {
+    }
+
+    void f_issue_482_2(etl::span<C_issue_482, 10>)
+    {
+    }
+
+    TEST(test_issue_482_2)
+    {
+      etl::array<C_issue_482, 10> c;
+
+      // Should compile without ambiguous function error.
+      f_issue_482(c);
+    }
+
+    //*************************************************************************
     void f_issue_486(etl::span<const char, 11> value)
     {
     }

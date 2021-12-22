@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "memory.h"
+#include "array.h"
 #include "iterator.h"
 #include "error_handler.h"
 #include "exception.h"
@@ -41,6 +42,10 @@ SOFTWARE.
 #include "algorithm.h"
 #include "memory.h"
 #include "type_traits.h"
+
+#if ETL_CPP11_SUPPORTED && ETL_USING_STL
+#include <array>
+#endif
 
 ///\defgroup array array
 /// A wrapper for arrays
@@ -125,16 +130,110 @@ namespace etl
     {
     }
 
+#if ETL_CPP11_SUPPORTED
     //*************************************************************************
-    /// Construct from std::array or etl::array or other type that supports
-    /// data() and size() member functions.
+    /// Construct from etl::array.
     //*************************************************************************
-    template <typename TArray>
-    ETL_CONSTEXPR array_view(TArray& a)
-      : mbegin(a.data()),
-        mend(a.data() + a.size())
+    template <typename U, size_t N, typename = typename etl::enable_if<etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
+    ETL_CONSTEXPR array_view(etl::array<U, N>& a) ETL_NOEXCEPT
+      : mbegin(a.data())
+      , mend(a.data() + a.size())
     {
     }
+
+    //*************************************************************************
+    /// Construct from etl::array.
+    //*************************************************************************
+    template <typename U, size_t N, typename = typename etl::enable_if<etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
+    ETL_CONSTEXPR array_view(const etl::array<U, N>& a) ETL_NOEXCEPT
+      : mbegin(a.data())
+      , mend(a.data() + a.size())
+    {
+    }
+#else
+    //*************************************************************************
+    /// Construct from etl::array.
+    //*************************************************************************
+    template <typename U, size_t N>
+    ETL_CONSTEXPR array_view(etl::array<U, N>& a, typename etl::enable_if<etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type) ETL_NOEXCEPT
+      : mbegin(a.data())
+      , mend(a.data() + a.size())
+    {
+    }
+
+    //*************************************************************************
+    /// Construct from etl::array.
+    //*************************************************************************
+    template <typename U, size_t N>
+    ETL_CONSTEXPR array_view(const etl::array<U, N>& a, typename etl::enable_if<etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type) ETL_NOEXCEPT
+      : mbegin(a.data())
+      , mend(a.data() + a.size())
+    {
+    }
+#endif
+
+#if ETL_CPP11_SUPPORTED && ETL_USING_STL
+    //*************************************************************************
+    /// Construct from std::array.
+    //*************************************************************************
+    template <typename U, size_t N, typename = typename etl::enable_if<etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
+    ETL_CONSTEXPR array_view(std::array<U, N>& a) ETL_NOEXCEPT
+      : mbegin(a.data())
+      , mend(a.data() + a.size())
+    {
+    }
+
+    //*************************************************************************
+    /// Construct from std::array.
+    //*************************************************************************
+    template <typename U, size_t N, typename = typename etl::enable_if<etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
+    ETL_CONSTEXPR array_view(const std::array<U, N>& a) ETL_NOEXCEPT
+      : mbegin(a.data())
+      , mend(a.data() + a.size())
+    {
+    }
+#endif
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// Construct from a container or other type that supports
+    /// data() and size() member functions.
+    //*************************************************************************
+    template <typename TContainer, typename = typename etl::enable_if<!etl::is_pointer<etl::remove_reference_t<TContainer>>::value &&
+                                                                      !etl::is_array<etl::remove_reference_t<TContainer>>::value &&
+                                                                      etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<typename etl::remove_reference_t<TContainer>::value_type>>::value, void>::type>
+      ETL_CONSTEXPR array_view(TContainer&& a) ETL_NOEXCEPT
+      : mbegin(a.data())
+      , mend(a.data() + a.size())
+    {
+    }
+#else
+    //*************************************************************************
+    /// Construct from a container or other type that supports
+    /// data() and size() member functions.
+    //*************************************************************************
+    template <typename TContainer>
+    ETL_CONSTEXPR array_view(TContainer& a, typename etl::enable_if<!etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
+                                                                    !etl::is_array<TContainer>::value &&
+                                                                    etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type) ETL_NOEXCEPT
+      : mbegin(a.data())
+      , mend(a.data() + a.size())
+    {
+    }
+
+    //*************************************************************************
+    /// Construct from a container or other type that supports
+    /// data() and size() member functions.
+    //*************************************************************************
+    template <typename TContainer>
+    ETL_CONSTEXPR array_view(const TContainer& a, typename etl::enable_if<!etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
+                                                                          !etl::is_array<TContainer>::value &&
+                                                                          etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type) ETL_NOEXCEPT
+      : mbegin(a.data())
+      , mend(a.data() + a.size())
+    {
+    }
+#endif
 
     //*************************************************************************
     /// Construct from iterators
