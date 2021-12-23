@@ -1,4 +1,14 @@
 ===============================================================================
+20.22.0
+Split callback and message timer to atomic and locked interrupt versions.
+#480 Fixed: Double formatting with precision > 9
+#481 Fixed: etl::span const datacannot be created from non const c array of data.
+#482 Fixed: Two or more etl::span/array_view of different types create ambiguous overloading set 
+#483 Fixed: Added Green Hills compiler to minmax push and pop.
+#484 Fixed: etl::vector test_uninitialized_resize_excess not calling uninitialized_resize.
+#485 Fixed: etl::message_packet takes message types that are not in its list.
+
+===============================================================================
 20.21.0
 Added contains() method to etl::map and etl::set + variants.
 Added support for transparent comparators.
