@@ -58,6 +58,11 @@ namespace
     {
     }
 
+    void clear()
+    {
+      lock_count = 0;
+    }
+
     bool try_lock()
     {
       ++lock_count;
@@ -76,6 +81,8 @@ namespace
 
     int lock_count;
   };
+
+  Locks locks;
 
   enum
   {
@@ -170,7 +177,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_too_many_timers)
     {
-      static Locks locks;
+      locks.clear();
       try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
       lock_type lock     = lock_type::create<Locks, locks, &Locks::lock>();
       unlock_type unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
@@ -195,7 +202,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_one_shot)
     {
-      static Locks locks;
+      locks.clear();
       try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
       lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
       unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
@@ -238,7 +245,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_one_shot_after_timeout)
     {
-      static Locks locks;
+      locks.clear();
       try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
       lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
       unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
@@ -291,7 +298,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_repeating)
     {
-      static Locks locks;
+      locks.clear();
       try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
       lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
       unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
@@ -334,7 +341,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_repeating_bigger_step)
     {
-      static Locks locks;
+      locks.clear();
       try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
       lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
       unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
@@ -381,7 +388,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_repeating_stop_start)
     {
-      static Locks locks;
+      locks.clear();
       try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
       lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
       unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
@@ -435,7 +442,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_repeating_register_unregister)
     {
-      static Locks locks;
+      locks.clear();
       try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
       lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
       unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
@@ -485,7 +492,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_repeating_clear)
     {
-      static Locks locks;
+      locks.clear();
       try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
       lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
       unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
@@ -534,7 +541,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_route_through_bus)
     {
-      static Locks locks;
+      locks.clear();
       try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
       lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
       unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
@@ -579,7 +586,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_immediate_delayed)
     {
-      static Locks locks;
+      locks.clear();
       try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
       lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
       unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
@@ -627,7 +634,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_one_shot_big_step_short_delay_insert)
     {
-      static Locks locks;
+      locks.clear();
       try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
       lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
       unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
@@ -666,7 +673,7 @@ namespace
     //*************************************************************************
     TEST(callback_timer_one_shot_empty_list_huge_tick_before_insert)
     {
-      static Locks locks;
+      locks.clear();
       try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
       lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
       unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
@@ -719,7 +726,7 @@ namespace
     #define FIX_PROCESSOR_AFFINITY
   #endif
 
-    static Locks locks;
+    locks.clear();
     try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
     lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
     unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
