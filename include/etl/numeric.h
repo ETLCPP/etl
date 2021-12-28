@@ -33,6 +33,12 @@ SOFTWARE.
 
 #include "platform.h"
 #include "type_traits.h"
+#include "limits.h"
+#include "iterator.h"
+
+#if ETL_USING_STL
+  #include <iterator>
+#endif
 
 ///\defgroup numeric numeric
 ///\ingroup utilities
@@ -57,62 +63,155 @@ namespace etl
   }
 
   //***************************************************************************
-  /// 
+  /// midpoint
+  /// For floating point.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_floating_point<T>::value, T>::type
+  ETL_CONSTEXPR14 typename etl::enable_if<!etl::is_pointer<T>::value &&
+                                          !etl::is_integral<T>::value &&
+                                          etl::is_floating_point<T>::value, T>::type
     midpoint(T a, T b) ETL_NOEXCEPT
   {
     T lo = etl::numeric_limits<T>::min() * T(2);
     T hi = etl::numeric_limits<T>::max() * T(2);
 
     return ((abs(a) <= hi) && (abs(b) <= hi)) ?
-      (a + b) / T(2) :
-      (abs(a) < lo) ?
-      a + (b / T(2)) :
-      (abs(b) < lo) ?
-      (a / T(2)) + b) :
-      (a / T(2)) + (b / T(2));
+              (a + b) / T(2) :
+              (abs(a) < lo) ?
+                a + (b / T(2)) :
+                (abs(b) < lo) ?
+                  ((a / T(2)) + b) :
+                  (a / T(2)) + (b / T(2));
   }
 
   //***************************************************************************
-  /// 
+  /// midpoint
+  /// For unsigned integrals.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value, T>::type
+  ETL_CONSTEXPR14 typename etl::enable_if<!etl::is_pointer<T>::value &&
+                                          etl::is_integral<T>::value &&
+                                          !etl::is_floating_point<T>::value &&
+                                          etl::is_unsigned<T>::value, T>::type
     midpoint(T a, T b) ETL_NOEXCEPT
   {
-    typedef typename etl::make_unsigned<T>::type type;
-
-    int sign;
-    type lo;
-    type hi;
-
     if (a > b)
     {
-      sign = -1;
-      lo = type(b);
-      hi = type(a);
+      return a - ((a - b) >> 1);
     }
     else
     {
-      sign = 1;
-      lo = type(a);
-      hi = type(b);
+      return a + ((b - a) >> 1);
     }
-
-    return a + sign * T(type(M - m) >> 1);
   }
 
   //***************************************************************************
-  /// 
+  /// midpoint
+  /// For signed integrals.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR typename etl::enable_if<etl::is_pointer<T>::value, T>::type
-    midpoint(T a, T b)
+  ETL_CONSTEXPR14 typename etl::enable_if<!etl::is_pointer<T>::value&&
+                                          etl::is_integral<T>::value &&
+                                          !etl::is_floating_point<T>::value&&
+                                          etl::is_signed<T>::value, T>::type
+    midpoint(T a, T b) ETL_NOEXCEPT
   {
-    return a + midpoint(ptrdiff_t{ 0 }, b - a);
+    typedef typename etl::make_unsigned<T>::type utype;
+
+    if (a > b)
+    {
+      return a - T(utype(utype(a) - utype(b)) >> 1);
+    }
+    else
+    {
+      return a + T((utype(b) - utype(a)) >> 1);
+    }
   }
+
+  //***************************************************************************
+  /// midpoint
+  /// For pointers.
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR typename etl::enable_if<etl::is_pointer<T>::value&&
+                                        !etl::is_integral<T>::value &&
+                                        !etl::is_floating_point<T>::value, T>::type
+    midpoint(T a, T b) ETL_NOEXCEPT
+  {
+    if (a > b)
+    {
+      return b + (etl::distance(b, a) / 2U);
+    }
+    else
+    {
+      return a + (etl::distance(a, b) / 2U);
+    }
+  }
+
+  //***************************************************************************
+  /// midpoint
+  /// For ETL random access iterators.
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR typename etl::enable_if<!etl::is_pointer<T>::value &&
+                                        !etl::is_integral<T>::value && 
+                                        !etl::is_floating_point<T>::value, T>::type
+    midpoint(T a, T b, typename etl::enable_if<etl::is_same<typename etl::iterator_traits<T>::iterator_category, etl::random_access_iterator_tag>::value, void>::type)
+  {
+    if (a > b)
+    {
+      return b + (etl::distance(b, a) / 2U);
+    }
+    else
+    {
+      return a + (etl::distance(a, b) / 2U);
+    }
+  }
+
+  //***************************************************************************
+  /// midpoint
+  /// For ETL forward and bidirectional iterators.
+  /// Parameter 'a' must be before 'b', otherwise the result is undefined.
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR T midpoint(T a, T b, typename etl::enable_if<(etl::is_same<typename std::iterator_traits<T>::iterator_category, std::forward_iterator_tag>::value ||
+                                                              etl::is_same<typename etl::iterator_traits<T>::iterator_category, etl::bidirectional_iterator_tag>::value) && !etl::is_pointer<T>::value, void>::type)
+  {
+    etl::advance(a, etl::distance(a, b) / 2U);
+    return a;
+  }
+
+#if ETL_USING_STL
+  //***************************************************************************
+  /// midpoint
+  /// For STL random access iterators
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR T midpoint(T a, T b, typename etl::enable_if<etl::is_same<typename std::iterator_traits<T>::iterator_category, std::random_access_iterator_tag>::value && !etl::is_pointer<T>::value, int>::type = 0)
+  {
+    if (a > b)
+    {
+      return b + (etl::distance(b, a) / 2U);
+    }
+    else
+    {
+      return a + (etl::distance(a, b) / 2U);
+    }
+  }
+
+  //***************************************************************************
+  /// midpoint
+  /// For ETL forward and bidirectional iterators.
+  /// Parameter 'a' must be before 'b', otherwise the result is undefined.
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR T midpoint(T a, T b, typename etl::enable_if<(etl::is_same<typename std::iterator_traits<T>::iterator_category, std::forward_iterator_tag>::value ||
+                                                              etl::is_same<typename std::iterator_traits<T>::iterator_category, std::bidirectional_iterator_tag>::value) && !etl::is_pointer<T>::value, int>::type = 0)
+  {
+    etl::advance(a, etl::distance(a, b) / 2U);
+    return a;
+  }
+#endif
 
   //***************************************************************************
   /// Linear interpolation
@@ -122,7 +221,7 @@ namespace etl
   ETL_CONSTEXPR typename etl::enable_if<etl::is_floating_point<T>::value, T>::type
     lerp(T a, T b, T t) ETL_NOEXCEPT
   {
-    return a + (t * (b ? a));
+    return a + (etl::distance(a, b) / 2U);
   }
 
   //***************************************************************************
@@ -141,7 +240,7 @@ namespace etl
     typename etl::conditional<etl::is_integral<TArithmetic2>::value, double, TArithmetic2>::type typecast_b;
     typename etl::conditional<etl::is_integral<TArithmetic3>::value, double, TArithmetic3>::type typecast_t;
 
-    return typecast_a(a) + (typecast_t(t) * (typecast_b(b) ? typecast_a(a));
+    return typecast_a(a) + (typecast_t(t) * (typecast_b(b) ? typecast_a(a)));
   }
 }
 
