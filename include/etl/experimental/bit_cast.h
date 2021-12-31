@@ -3,7 +3,6 @@
 #include "platform.h"
 
 template <typename TDestination, typename TSource>
-ETL_CONSTEXPR
 typename etl::enable_if<(sizeof(TDestination) == sizeof(TSource))   && 
                          etl::is_trivially_copyable<TSource>::value && 
                          etl::is_trivially_copyable<TDestination>::value, TDestination>::type

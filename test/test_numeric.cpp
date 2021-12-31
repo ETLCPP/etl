@@ -128,13 +128,43 @@ namespace
     //*************************************************************************
     TEST(test_lerp_floating_point)
     {
-      CHECK(false);
+      CHECK_CLOSE(-10.0, etl::lerp(-10.0, 10.0, 0.0), 0.001);
+      CHECK_CLOSE( -8.0, etl::lerp(-10.0, 10.0, 0.1), 0.001);
+      CHECK_CLOSE( -6.0, etl::lerp(-10.0, 10.0, 0.2), 0.001);
+      CHECK_CLOSE( -4.0, etl::lerp(-10.0, 10.0, 0.3), 0.001);
+      CHECK_CLOSE( -2.0, etl::lerp(-10.0, 10.0, 0.4), 0.001);
+      CHECK_CLOSE(  0.0, etl::lerp(-10.0, 10.0, 0.5), 0.001);
+      CHECK_CLOSE(  2.0, etl::lerp(-10.0, 10.0, 0.6), 0.001);
+      CHECK_CLOSE(  4.0, etl::lerp(-10.0, 10.0, 0.7), 0.001);
+      CHECK_CLOSE(  6.0, etl::lerp(-10.0, 10.0, 0.8), 0.001);
+      CHECK_CLOSE(  8.0, etl::lerp(-10.0, 10.0, 0.9), 0.001);
+      CHECK_CLOSE( 10.0, etl::lerp(-10.0, 10.0, 1.0), 0.001);
+
+      // Equal a & b
+      CHECK_CLOSE(10.0, etl::lerp(10.0, 10.0, 1.0), 0.001);
     }
 
     //*************************************************************************
     TEST(test_lerp_at_least_one_integral)
     {
-      CHECK(false);
+      CHECK_CLOSE(-10.0, etl::lerp(-10.0, 10.0, 0),   0.001);
+      CHECK_CLOSE( -8.0, etl::lerp(-10,   10.0, 0.1), 0.001);
+      CHECK_CLOSE( -6.0, etl::lerp(-10.0, 10,   0.2), 0.001);
+      CHECK_CLOSE( -4.0, etl::lerp(-10,   10,   0.3), 0.001);
+      CHECK_CLOSE( -2.0, etl::lerp(-10,   10.0, 0.4), 0.001);
+      CHECK_CLOSE(  0.0, etl::lerp(-10.0, 10,   0.5), 0.001);
+      CHECK_CLOSE(  2.0, etl::lerp(-10,   10,   0.6), 0.001);
+      CHECK_CLOSE(  4.0, etl::lerp(-10,   10.0, 0.7), 0.001);
+      CHECK_CLOSE(  6.0, etl::lerp(-10.0, 10,   0.8), 0.001);
+      CHECK_CLOSE(  8.0, etl::lerp(-10,   10,   0.9), 0.001);
+      CHECK_CLOSE( 10.0, etl::lerp(-10.0, 10.0, 1),   0.001);
+
+      // Equal a & b
+      CHECK_CLOSE(10.0, etl::lerp(10.0, 10.0, 1.0), 0.001);
+      CHECK_CLOSE(10.0, etl::lerp(10,   10.0, 1.0), 0.001);
+      CHECK_CLOSE(10.0, etl::lerp(10.0, 10,   1.0), 0.001);
+      CHECK_CLOSE(10.0, etl::lerp(10.0, 10.0, 1),   0.001);
+      CHECK_CLOSE(10.0, etl::lerp(10,   10,   1),   0.001);
     }
   };
 }

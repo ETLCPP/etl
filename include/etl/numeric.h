@@ -221,7 +221,7 @@ namespace etl
   ETL_CONSTEXPR typename etl::enable_if<etl::is_floating_point<T>::value, T>::type
     lerp(T a, T b, T t) ETL_NOEXCEPT
   {
-    return a + (etl::distance(a, b) / 2U);
+    return a + (t * (b - a));
   }
 
   //***************************************************************************
@@ -236,11 +236,11 @@ namespace etl
                                                                                                                   etl::is_same<TArithmetic3, long double>::value, long double, double>::type>
     lerp(TArithmetic1 a, TArithmetic2 b, TArithmetic3 t) ETL_NOEXCEPT
   {
-    typename etl::conditional<etl::is_integral<TArithmetic1>::value, double, TArithmetic1>::type typecast_a;
-    typename etl::conditional<etl::is_integral<TArithmetic2>::value, double, TArithmetic2>::type typecast_b;
-    typename etl::conditional<etl::is_integral<TArithmetic3>::value, double, TArithmetic3>::type typecast_t;
+    typedef typename etl::conditional<etl::is_integral<TArithmetic1>::value, double, TArithmetic1>::type typecast_a;
+    typedef typename etl::conditional<etl::is_integral<TArithmetic2>::value, double, TArithmetic2>::type typecast_b;
+    typedef typename etl::conditional<etl::is_integral<TArithmetic3>::value, double, TArithmetic3>::type typecast_t;
 
-    return typecast_a(a) + (typecast_t(t) * (typecast_b(b) ? typecast_a(a)));
+    return typecast_a(a) + (typecast_t(t) * (typecast_b(b) - typecast_a(a)));
   }
 }
 

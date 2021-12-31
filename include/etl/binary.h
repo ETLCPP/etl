@@ -1307,6 +1307,17 @@ namespace etl
   }
 
   //***************************************************************************
+  /// Checks if is power of 2.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, bool>::type
+    is_power_of_2(const T value)
+  {
+    return (value & (value - 1)) == 0;
+  }
+
+  //***************************************************************************
   /// 8 bit binary byte constants.
   ///\ingroup binary
   //***************************************************************************
