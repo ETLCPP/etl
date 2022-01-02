@@ -41,7 +41,7 @@ SOFTWARE.
       #define ETL_CPP11_SUPPORTED (_MSC_VER >= 1600)
       #define ETL_CPP14_SUPPORTED (_MSC_VER >= 1900)
       #define ETL_CPP17_SUPPORTED (_MSC_VER >= 1914)
-      #define ETL_CPP20_SUPPORTED 0
+      #define ETL_CPP20_SUPPORTED (_MSC_VER >= 1929)
     #elif defined(ETL_COMPILER_ARM5)
       #define ETL_CPP11_SUPPORTED 0
       #define ETL_CPP14_SUPPORTED 0
@@ -51,7 +51,7 @@ SOFTWARE.
       #define ETL_CPP11_SUPPORTED (__cplusplus >= 201103L)
       #define ETL_CPP14_SUPPORTED (__cplusplus >= 201402L)
       #define ETL_CPP17_SUPPORTED (__cplusplus >= 201703L)
-      #define ETL_CPP20_SUPPORTED 0
+      #define ETL_CPP20_SUPPORTED (__cplusplus >= 202002L)
     #endif
   #else
     #define ETL_CPP11_SUPPORTED 0
