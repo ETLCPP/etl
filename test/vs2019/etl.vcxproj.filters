@@ -3086,6 +3086,9 @@
     <ClCompile Include="..\test_delegate_service_cpp03.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_bit.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
