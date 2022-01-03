@@ -28,14 +28,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_BIT_CAST_INCLUDED
-#define ETL_BIT_CAST_INCLUDED
+#ifndef ETL_BIT_INCLUDED
+#define ETL_BIT_INCLUDED
 
 #include <string.h>
 
 #include "platform.h"
 #include "type_traits.h"
 #include "binary.h"
+#include "integral_limits.h"
+#include "endianness.h"
 
 namespace etl
 {
@@ -56,7 +58,7 @@ namespace etl
   }
 
   //template <typename TDestination, typename TSource>
-  //ETL_CONSTEXPR
+  //ETL_CONSTEXPR14
   //typename etl::enable_if<(sizeof(TDestination) == sizeof(TSource))   &&
   //                         etl::is_trivially_copyable<TSource>::value &&
   //                         etl::is_trivially_copyable<TDestination>::value, TDestination>::type
@@ -77,131 +79,145 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value, T>::type
     byteswap(T value) ETL_NOEXCEPT
   {
-    return 0;
-    //return etl::reverse_bytes(value);
+    return etl::reverse_bytes(value);
   }
 
   //***************************************************************************
   /// has_single_bit
   //***************************************************************************
   template <typename T>
-  ETL_NODISCARD ETL_CONSTEXPR
-    typename etl::enable_if<etl::is_unsigned<T>::value, bool>::type has_single_bit(T x) ETL_NOEXCEPT
+  ETL_NODISCARD ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_unsigned<T>::value, bool>::type has_single_bit(T value) ETL_NOEXCEPT
   {
-    return false;
-    //return etl::is_power_of_2(x);
+    return (value & (value - 1)) == 0;
   }
 
   //***************************************************************************
   /// bit_ceil
   //***************************************************************************
   template <typename T>
-  ETL_NODISCARD ETL_CONSTEXPR
+  ETL_NODISCARD ETL_CONSTEXPR14
     typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
-    bit_ceil(T x)
+    bit_ceil(T value)
   {
-    return 0;
+    return 1;
   }
 
   //***************************************************************************
   /// bit_floor
   //***************************************************************************
   template <typename T>
-  ETL_NODISCARD ETL_CONSTEXPR
+  ETL_NODISCARD ETL_CONSTEXPR14
     typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
-    bit_floor(T x) ETL_NOEXCEPT
+    bit_floor(T value) ETL_NOEXCEPT
   {
-    return 0;
+    return 1;
   }
 
   //***************************************************************************
   /// bit_width
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR
+  ETL_CONSTEXPR14
     typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
-    bit_width(T x) ETL_NOEXCEPT
+    bit_width(T value) ETL_NOEXCEPT
   {
-    return 0;
+    return 1;
   }
 
   //***************************************************************************
   /// rotl
   //***************************************************************************
   template <typename T>
-  ETL_NODISCARD ETL_CONSTEXPR
+  ETL_NODISCARD ETL_CONSTEXPR14
     typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
-    rotl(T x, int s) ETL_NOEXCEPT
+    rotl(T value, int s) ETL_NOEXCEPT
   {
-    return 0;
+    ETL_CONSTANT size_t N = etl::integral_limits<T>::bits;
+
+    if (s < 0)
+    {
+      return etl::rotate_right(value, -s);
+    }
+    else
+    {
+      return etl::rotate_left(value, s);
+    }
   }
 
   //***************************************************************************
   /// rotr
   //***************************************************************************
   template <typename T>
-  ETL_NODISCARD ETL_CONSTEXPR
+  ETL_NODISCARD ETL_CONSTEXPR14
     typename etl::enable_if<etl::is_unsigned<T>::value, T>::type 
-    rotr(T x, int s) ETL_NOEXCEPT
+    rotr(T value, int s) ETL_NOEXCEPT
   {
-    return 0;
+    ETL_CONSTANT size_t N = etl::integral_limits<T>::bits;
+
+    if (s < 0)
+    {
+      return etl::rotate_left(value, -s);
+    }
+    else
+    {
+      return etl::rotate_right(value, s);
+    }
   }
 
   //***************************************************************************
   /// countl_zero
   //***************************************************************************
   template <typename T>
-  ETL_NODISCARD ETL_CONSTEXPR
+  ETL_NODISCARD ETL_CONSTEXPR14
     typename etl::enable_if<etl::is_unsigned<T>::value, int>::type
-    countl_zero(T x) ETL_NOEXCEPT
+    countl_zero(T value) ETL_NOEXCEPT
   {
-    return 0;
+    return 1;
   }
   
   //***************************************************************************
   /// countl_one
   //***************************************************************************
   template <typename T>
-  ETL_NODISCARD ETL_CONSTEXPR
+  ETL_NODISCARD ETL_CONSTEXPR14
     typename etl::enable_if<etl::is_unsigned<T>::value, int>::type 
-    countl_one(T x) ETL_NOEXCEPT
+    countl_one(T value) ETL_NOEXCEPT
   {
-    return 0;
+    return 1;
   }
 
   //***************************************************************************
   /// countr_zero
   //***************************************************************************
   template <typename T>
-  ETL_NODISCARD ETL_CONSTEXPR 
+  ETL_NODISCARD ETL_CONSTEXPR14 
     typename etl::enable_if<etl::is_unsigned<T>::value, int>::type
-    countr_zero(T x) ETL_NOEXCEPT
+    countr_zero(T value) ETL_NOEXCEPT
   {
-    return 0;
-    //return etl::count_trailing_zeros(x);
+    return etl::count_trailing_zeros(value);
   }
   
   //***************************************************************************
   /// countr_one
   //***************************************************************************
   template <typename T>
-  ETL_NODISCARD ETL_CONSTEXPR
+  ETL_NODISCARD ETL_CONSTEXPR14
     typename etl::enable_if<etl::is_unsigned<T>::value, int>::type 
-    countr_one(T x) ETL_NOEXCEPT
+    countr_one(T value) ETL_NOEXCEPT
   {
-    return 0;
+    return 1;
   }
   
   //***************************************************************************
   /// popcount
   //***************************************************************************
   template <typename T>
-  ETL_NODISCARD ETL_CONSTEXPR
+  ETL_NODISCARD ETL_CONSTEXPR14
     typename etl::enable_if<etl::is_unsigned<T>::value, int>::type
-    popcount(T x) ETL_NOEXCEPT
+    popcount(T value) ETL_NOEXCEPT
   {
-    return 0;
-    //return etl::count_bits(x);
+    return etl::count_bits(value);
   }
 }
 
