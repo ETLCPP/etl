@@ -37,6 +37,10 @@ SOFTWARE.
 #include "enum_type.h"
 #include "binary.h"
 
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+  #include <bit>
+#endif
+
 ///\defgroup endian endian
 /// Constants & utilities for endianess
 ///\ingroup utilities
@@ -49,12 +53,36 @@ namespace etl
   //***************************************************************************
   struct endian
   {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    enum enum_type
+    {
+      little = static_cast<int>(std::endian::little),
+      big    = static_cast<int>(std::endian::big),
+      native = static_cast<int>(std::endian::native)
+    };
+#elif defined(__BYTE_ORDER__)
+    #if defined(__ORDER_LITTLE_ENDIAN__)
+      #defined ETL_LITTLE_ENDIAN   __ORDER_LITTLE_ENDIAN__
+      #defined ETL_BIG_ENDIAN      __ORDER_BIG_ENDIAN__
+    #elif defined(__LITTLE_ENDIAN__)
+        #defined ETL_LITTLE_ENDIAN __LITTLE_ENDIAN__
+        #defined ETL_BIG_ENDIAN    __BIG_ENDIAN__
+    #endif
+
+    enum enum_type
+    {
+      little = ETL_LITTLE_ENDIAN,
+      big    = ETL_BIG_ENDIAN,
+      native = __BYTE_ORDER__
+    };
+#else
     enum enum_type
     {
       little,
       big,
       native
     };
+#endif
 
     ETL_DECLARE_ENUM_TYPE(endian, int)
     ETL_ENUM_TYPE(little, "little")
