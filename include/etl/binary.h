@@ -1001,7 +1001,7 @@ namespace etl
 
 #if ETL_8BIT_SUPPORT
   //***************************************************************************
-  /// Count trailing zeros. bit.
+  /// Count trailing zeros.
   /// Uses a binary search.
   ///\ingroup binary
   //***************************************************************************
@@ -1029,7 +1029,13 @@ namespace etl
         count += 2U;
       }
 
-      count -= value & 0x1U;
+      if ((value & 0x1U) == 0U)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
+      count -= (value & 0x1U);
     }
 
     return count;
@@ -1074,6 +1080,12 @@ namespace etl
       {
         value >>= 2U;
         count += 2U;
+      }
+
+      if ((value & 0x1U) == 0U)
+      {
+        value >>= 1U;
+        count += 1U;
       }
 
       count -= value & 0x1U;
@@ -1126,6 +1138,12 @@ namespace etl
       {
         value >>= 2U;
         count += 2U;
+      }
+
+      if ((value & 0x1U) == 0U)
+      {
+        value >>= 1U;
+        count += 1U;
       }
 
       count -= value & 0x1UL;
@@ -1187,6 +1205,12 @@ namespace etl
           count += 2U;
         }
 
+        if ((value & 0x1U) == 0U)
+        {
+          value >>= 1U;
+          count += 1U;
+        }
+
         count -= value & 0x1ULL;
       }
 
@@ -1196,6 +1220,666 @@ namespace etl
   inline ETL_CONSTEXPR14 uint_least8_t count_trailing_zeros(int64_t value)
   {
     return count_trailing_zeros(uint64_t(value));
+  }
+#endif
+
+#if ETL_8BIT_SUPPORT
+  //***************************************************************************
+  /// Count trailing zeros. bit.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_ones(uint8_t value)
+  {
+    uint_least8_t count = 0U;
+
+    if ((value & 0x1U) == 0x0U)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFU) == 0xFU)
+      {
+        value >>= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0x3U) == 0x3U)
+      {
+        value >>= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x1U) == 0x1U)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x1U) == 0x0U);
+    }
+
+    return count;
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_ones(int8_t value)
+  {
+    return count_trailing_ones(uint8_t(value));
+  }
+#endif
+
+  //***************************************************************************
+  /// Count trailing zeros. 16bit.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_ones(uint16_t value)
+  {
+    uint_least8_t count = 0U;
+
+    if ((value & 0x1U) == 0x0U)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFU) == 0xFFU)
+      {
+        value >>= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xFU) == 0xFU)
+      {
+        value >>= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0x3U) == 0x3U)
+      {
+        value >>= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x1U) == 0x1U)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x1U) == 0x0U);
+    }
+
+    return count;
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_ones(int16_t value)
+  {
+    return count_trailing_ones(uint16_t(value));
+  }
+
+  //***************************************************************************
+  /// Count trailing zeros. 32bit.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_ones(uint32_t value)
+  {
+    uint_least8_t count = 0U;
+
+    if ((value & 0x1UL) == 0x0UL)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFFFUL) == 0xFFFFUL)
+      {
+        value >>= 16U;
+        count += 16U;
+      }
+
+      if ((value & 0xFFUL) == 0xFFUL)
+      {
+        value >>= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xFUL) == 0xFUL)
+      {
+        value >>= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0x3UL) == 0x3UL)
+      {
+        value >>= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x1UL) == 0x1UL)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x1UL) == 0x0UL);
+    }
+
+    return count;
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_ones(int32_t value)
+  {
+    return count_trailing_ones(uint32_t(value));
+  }
+
+#if ETL_USING_64BIT_TYPES
+  //***************************************************************************
+  /// Count trailing zeros. 64bit.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  ETL_CONSTEXPR14 inline uint_least8_t count_trailing_ones(uint64_t value)
+  {
+    uint_least8_t count = 0U;
+
+    if ((value & 0x1ULL) == 0x0ULL)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFFFULL) == 0xFFFFULL)
+      {
+        value >>= 16U;
+        count += 16U;
+      }
+
+      if ((value & 0xFFULL) == 0xFFULL)
+      {
+        value >>= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xFULL) == 0xFULL)
+      {
+        value >>= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0x3ULL) == 0x3ULL)
+      {
+        value >>= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x1ULL) == 0x1ULL)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x1ULL) == 0x0ULL);
+    }
+
+    return count;
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_ones(int64_t value)
+  {
+    return count_trailing_ones(uint64_t(value));
+  }
+#endif
+
+#if ETL_8BIT_SUPPORT
+  //***************************************************************************
+  /// Count leading zeros.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_zeros(uint8_t value)
+  {
+    uint_least8_t count = 0U;
+
+    if (value & 0x80U)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xF0U) == 0U)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC0U) == 0U)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x80U) == 0U)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x80U) == 0x80U);
+    }
+
+    return count;
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_zeros(int8_t value)
+  {
+    return count_leading_zeros(uint8_t(value));
+  }
+#endif
+
+  //***************************************************************************
+  /// Count leading zeros.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_zeros(uint16_t value)
+  {
+    uint_least8_t count = 0U;
+
+    if (value & 0x8000U)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFF00U) == 0U)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xF000U) == 0U)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC000U) == 0U)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x8000U) == 0U)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x8000U) == 0x8000U);
+    }
+
+    return count;
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_zeros(int16_t value)
+  {
+    return count_leading_zeros(uint16_t(value));
+  }
+
+  //***************************************************************************
+  /// Count leading zeros.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_zeros(uint32_t value)
+  {
+    uint_least8_t count = 0U;
+
+    if (value & 0x80000000UL)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFFF0000UL) == 0U)
+      {
+        value <<= 16U;
+        count += 16U;
+      }
+
+      if ((value & 0xFF000000UL) == 0U)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xF0000000UL) == 0U)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC0000000UL) == 0U)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x80000000UL) == 0U)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x80000000UL) == 0x80000000UL);
+    }
+
+    return count;
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_zeros(int32_t value)
+  {
+    return count_leading_zeros(uint32_t(value));
+  }
+
+#if ETL_USING_64BIT_TYPES
+  //***************************************************************************
+  /// Count leading zeros.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_zeros(uint64_t value)
+  {
+    uint_least8_t count = 0U;
+
+    if (value & 0x8000000000000000ULL)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFFF000000000000ULL) == 0U)
+      {
+        value <<= 16U;
+        count += 16U;
+      }
+
+      if ((value & 0xFF00000000000000ULL) == 0U)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xF000000000000000ULL) == 0U)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC000000000000000ULL) == 0U)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x8000000000000000ULL) == 0U)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x8000000000000000ULL) == 0x8000000000000000ULL);
+    }
+
+    return count;
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_zeros(int64_t value)
+  {
+    return count_leading_zeros(uint64_t(value));
+  }
+#endif
+
+#if ETL_8BIT_SUPPORT
+  //***************************************************************************
+  /// Count leading ones.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_ones(uint8_t value)
+  {
+    uint_least8_t count = 0U;
+
+    if ((value & 0x80U) == 0U)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xF0U) == 0xF0U)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC0U) == 0xC0U)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x80U) == 0x80U)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x80U) == 0x0U);
+    }
+
+    return count;
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_ones(int8_t value)
+  {
+    return count_leading_ones(uint8_t(value));
+  }
+#endif
+
+  //***************************************************************************
+  /// Count leading ones.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_ones(uint16_t value)
+  {
+    uint_least8_t count = 0U;
+
+    if ((value & 0x8000U) == 0U)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFF00U) == 0xFF00U)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xF000U) == 0xF000U)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC000U) == 0xC000U)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x8000U) == 0x8000U)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x8000U) == 0U);
+    }
+
+    return count;
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_ones(int16_t value)
+  {
+    return count_leading_ones(uint16_t(value));
+  }
+
+  //***************************************************************************
+  /// Count leading ones.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_ones(uint32_t value)
+  {
+    uint_least8_t count = 0U;
+
+    if ((value & 0x80000000UL) == 0UL)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFFF0000UL) == 0xFFFF0000UL)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xFF000000UL) == 0xFF000000UL)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xF0000000UL) == 0xF0000000UL)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC0000000UL) == 0xC0000000UL)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x80000000UL) == 0x80000000UL)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x80000000UL) == 0UL);
+    }
+
+    return count;
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_ones(int32_t value)
+  {
+    return count_leading_ones(uint32_t(value));
+  }
+
+#if ETL_USING_64BIT_TYPES
+  //***************************************************************************
+  /// Count leading ones.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_ones(uint64_t value)
+  {
+    uint_least8_t count = 0U;
+
+    if ((value & 0x8000000000000000ULL) == 0ULL)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFFFFFFF00000000ULL) == 0xFFFFFFFF00000000ULL)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xFFFF000000000000ULL) == 0xFFFF000000000000ULL)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xFF00000000000000ULL) == 0xFF00000000000000ULL)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xF000000000000000ULL) == 0xF000000000000000ULL)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC000000000000000ULL) == 0xC000000000000000ULL)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x8000000000000000ULL) == 0x8000000000000000ULL)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x8000000000000000ULL) == 0ULL);
+    }
+
+    return count;
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_ones(int64_t value)
+  {
+    return count_leading_ones(uint64_t(value));
   }
 #endif
 
@@ -1304,17 +1988,6 @@ namespace etl
     is_even(const T value)
   {
     return ((static_cast<typename etl::make_unsigned<T>::type>(value) & 1U) == 0U);
-  }
-
-  //***************************************************************************
-  /// Checks if is power of 2.
-  ///\ingroup binary
-  //***************************************************************************
-  template <typename T>
-  ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, bool>::type
-    is_power_of_2(const T value)
-  {
-    return (value & (value - 1)) == 0;
   }
 
   //***************************************************************************

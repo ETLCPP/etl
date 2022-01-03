@@ -40,6 +40,7 @@ SOFTWARE.
 
 namespace
 {
+  //***********************************
   // Count bits the easy way.
   template <typename T>
   size_t test_count(T value)
@@ -57,6 +58,73 @@ namespace
     return count;
   }
 
+  //***********************************
+  // Count trailing zeros the long way.
+  template <typename T>
+  size_t test_trailing_zeros(T value)
+  {
+    size_t count = 0UL;
+
+    for (int i = 0; i < etl::integral_limits<T>::bits; ++i)
+    {
+      if ((value & 1) == 0)
+      {
+        ++count;
+      }
+      else
+      {
+        return count;
+      }
+
+      value >>= 1;
+    }
+
+    return count;
+  }
+
+  //***********************************
+  // Count leading zeros the long way.
+  template <typename T>
+  size_t test_leading_zeros(T value)
+  {
+    value = etl::reverse_bits(value);
+    return test_trailing_zeros(value);
+  }
+
+  //***********************************
+  // Count trailing ones the long way.
+  template <typename T>
+  size_t test_trailing_ones(T value)
+  {
+    size_t count = 0UL;
+
+    for (int i = 0; i < etl::integral_limits<T>::bits; ++i)
+    {
+      if ((value & 1) == 1)
+      {
+        ++count;
+      }
+      else
+      {
+        return count;
+      }
+
+      value >>= 1;
+    }
+
+    return count;
+  }
+
+  //***********************************
+  // Count leading ones the long way.
+  template <typename T>
+  size_t test_leading_ones(T value)
+  {
+    value = etl::reverse_bits(value);
+    return test_trailing_ones(value);
+  }
+
+  //***********************************
   // Check parity the easy way.
   template <typename T>
   size_t test_parity(T value)
@@ -66,6 +134,7 @@ namespace
     return count & 1;
   }
 
+  //***********************************
   // Power of 2.
   uint64_t test_power_of_2(int power)
   {
@@ -79,6 +148,7 @@ namespace
     return result;
   }
 
+  //***********************************
   // Fold bits.
   template <typename TReturn>
   TReturn test_fold_bits(uint64_t value, int size)
@@ -99,6 +169,7 @@ namespace
     return result;
   }
 
+  //***********************************
   // Slow gray to binary
   template <typename T>
   T compare_gray_to_binary(T value_)
@@ -1822,6 +1893,453 @@ namespace
 		  CHECK(!etl::is_even(1));
 		  CHECK(etl::is_even(2));
 	  }
+
+    //*************************************************************************
+    TEST(test_count_trailing_zeros_8)
+    {
+      for (size_t i = 0; i < 256; ++i)
+      {
+        uint8_t value = uint8_t(i);
+
+        CHECK_EQUAL(int(test_trailing_zeros(value)), int(etl::count_trailing_zeros(value)));
+
+        if (test_trailing_zeros(value) != etl::count_trailing_zeros(value))
+        {
+          break;
+        }
+      }
+    }
+
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+    //*************************************************************************
+    TEST(test_count_trailing_zeros_8_constexpr)
+    {
+      char temp[etl::count_trailing_zeros(uint8_t(0x08))];
+
+      CHECK_EQUAL(test_trailing_zeros(uint8_t(0x08)), sizeof(temp));
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_count_trailing_zeros_16)
+    {
+      for (size_t i = 0; i < 65536; ++i)
+      {
+        uint16_t value = uint16_t(i);
+
+        CHECK_EQUAL(test_trailing_zeros(value), etl::count_trailing_zeros(value));
+
+        if (test_trailing_zeros(value) != etl::count_trailing_zeros(value))
+        {
+          break;
+        }
+      }
+    }
+
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+    //*************************************************************************
+    TEST(test_count_trailing_zeros_16_constexpr)
+    {
+      char temp[etl::count_trailing_zeros(uint16_t(0x08))];
+
+      CHECK_EQUAL(test_trailing_zeros(uint16_t(0x08)), sizeof(temp));
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_count_trailing_zeros_32)
+    {
+      etl::fnv_1a_32 hash;
+
+      for (size_t i = 0UL; i < 100000UL; ++i)
+      {
+        hash.add(1);
+
+        uint32_t value = hash.value();
+
+        CHECK_EQUAL(test_trailing_zeros(value), etl::count_trailing_zeros(value));
+
+        if (test_trailing_zeros(value) != etl::count_trailing_zeros(value))
+        {
+          break;
+        }
+      }
+    }
+
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+    //*************************************************************************
+    TEST(test_count_trailing_zeros_32_constexpr)
+    {
+      char temp[etl::count_trailing_zeros(uint32_t(0x08))];
+
+      CHECK_EQUAL(test_trailing_zeros(uint32_t(0x08)), sizeof(temp));
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_count_trailing_zeros_64)
+    {
+      etl::fnv_1a_64 hash;
+
+      for (size_t i = 0UL; i < 100000UL; ++i)
+      {
+        hash.add(1);
+
+        uint64_t value = hash.value();
+
+        CHECK_EQUAL(test_trailing_zeros(value), etl::count_trailing_zeros(value));
+
+        if (test_trailing_zeros(value) != etl::count_trailing_zeros(value))
+        {
+          break;
+        }
+      }
+    }
+
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+    //*************************************************************************
+    TEST(test_count_trailing_zeros_64_constexpr)
+    {
+      char temp[etl::count_trailing_zeros(uint64_t(0x08))];
+
+      CHECK_EQUAL(etl::count_trailing_zeros(uint64_t(0x08)), sizeof(temp));
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_count_trailing_ones_8)
+    {
+      for (size_t i = 0; i < 256; ++i)
+      {
+        uint8_t value = uint8_t(i);
+
+        CHECK_EQUAL(int(test_trailing_ones(value)), int(etl::count_trailing_ones(value)));
+
+        if (test_trailing_ones(value) != etl::count_trailing_ones(value))
+        {
+          break;
+        }
+      }
+    }
+
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+    //*************************************************************************
+    TEST(test_count_trailing_ones_8_constexpr)
+    {
+      char temp[etl::count_trailing_ones(uint8_t(0x0F))];
+
+      CHECK_EQUAL(test_trailing_ones(uint8_t(0x0F)), sizeof(temp));
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_count_trailing_ones_16)
+    {
+      for (size_t i = 0; i < 65536; ++i)
+      {
+        uint16_t value = uint16_t(i);
+
+        CHECK_EQUAL(int(test_trailing_ones(value)), int(etl::count_trailing_ones(value)));
+
+        if (test_trailing_ones(value) != etl::count_trailing_ones(value))
+        {
+          break;
+        }
+      }
+    }
+
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+    //*************************************************************************
+    TEST(test_count_trailing_ones_16_constexpr)
+    {
+      char temp[etl::count_trailing_ones(uint16_t(0x000F))];
+
+      CHECK_EQUAL(test_trailing_ones(uint16_t(0x000F)), sizeof(temp));
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_count_trailing_ones_32)
+    {
+      etl::fnv_1a_32 hash;
+
+      for (size_t i = 0UL; i < 100000UL; ++i)
+      {
+        hash.add(1);
+
+        uint32_t value = hash.value();
+
+        CHECK_EQUAL(test_trailing_ones(value), etl::count_trailing_ones(value));
+
+        if (test_trailing_ones(value) != etl::count_trailing_ones(value))
+        {
+          break;
+        }
+      }
+    }
+
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+    //*************************************************************************
+    TEST(test_count_trailing_ones_32_constexpr)
+    {
+      char temp[etl::count_trailing_ones(uint32_t(0x0000000F))];
+
+      CHECK_EQUAL(test_trailing_ones(uint32_t(0x0000000F)), sizeof(temp));
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_count_trailing_ones_64)
+    {
+      etl::fnv_1a_64 hash;
+
+      for (size_t i = 0UL; i < 100000UL; ++i)
+      {
+        hash.add(1);
+
+        uint64_t value = hash.value();
+
+        CHECK_EQUAL(test_trailing_ones(value), etl::count_trailing_ones(value));
+
+        if (test_trailing_ones(value) != etl::count_trailing_ones(value))
+        {
+          break;
+        }
+      }
+    }
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+    //*************************************************************************
+    TEST(test_count_trailing_ones_64_constexpr)
+    {
+      char temp[etl::count_trailing_ones(uint64_t(0x000000000000000F))];
+
+      CHECK_EQUAL(test_trailing_ones(uint64_t(0x000000000000000F)), sizeof(temp));
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_count_leading_zeros_8)
+    {
+      for (size_t i = 0; i < 256; ++i)
+      {
+        uint8_t value = uint8_t(i);
+
+        CHECK_EQUAL(int(test_leading_zeros(value)), int(etl::count_leading_zeros(value)));
+
+        if (test_leading_zeros(value) != etl::count_leading_zeros(value))
+        {
+          break;
+        }
+      }
+    }
+
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+    //*************************************************************************
+    TEST(test_count_leading_zeros_8_constexpr)
+    {
+      char temp[etl::count_leading_zeros(uint8_t(0x01U))];
+      
+      CHECK_EQUAL(test_leading_zeros(uint8_t(0x01U)), sizeof(temp));
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_count_leading_zeros_16)
+    {
+      for (size_t i = 0; i < 65536; ++i)
+      {
+        uint16_t value = uint16_t(i);
+
+        CHECK_EQUAL(int(test_leading_zeros(value)), int(etl::count_leading_zeros(value)));
+
+        if (test_leading_zeros(value) != etl::count_leading_zeros(value))
+        {
+          break;
+        }
+      }
+    }
+
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+    //*************************************************************************
+    TEST(test_count_leading_zeros_16_constexpr)
+    {
+      char temp[etl::count_leading_zeros(uint16_t(0x0800U))];
+
+      CHECK_EQUAL(test_leading_zeros(uint16_t(0x0800U)), sizeof(temp));
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_count_leading_zeros_32)
+    {
+      etl::fnv_1a_32 hash;
+
+      for (size_t i = 0; i < 100000; ++i)
+      {
+        hash.add(1);
+
+        uint32_t value = hash.value();
+
+        CHECK_EQUAL(int(test_leading_zeros(value)), int(etl::count_leading_zeros(value)));
+
+        if (test_leading_zeros(value) != etl::count_leading_zeros(value))
+        {
+          break;
+        }
+      }
+    }
+
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+    //*************************************************************************
+    TEST(test_count_leading_zeros_32_constexpr)
+    {
+      char temp[etl::count_leading_zeros(uint32_t(0x08000000U))];
+
+      CHECK_EQUAL(test_leading_zeros(uint32_t(0x08000000U)), sizeof(temp));
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_count_leading_zeros_64)
+    {
+      etl::fnv_1a_64 hash;
+
+      for (size_t i = 0; i < 100000; ++i)
+      {
+        hash.add(1);
+
+        uint64_t value = hash.value();
+
+        CHECK_EQUAL(int(test_leading_zeros(value)), int(etl::count_leading_zeros(value)));
+
+        if (test_leading_zeros(value) != etl::count_leading_zeros(value))
+        {
+          break;
+        }
+      }
+    }
+
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+    //*************************************************************************
+    TEST(test_count_leading_zeros_64_constexpr)
+    {
+      char temp[etl::count_leading_zeros(uint64_t(0x0800000000000000U))];
+
+      CHECK_EQUAL(test_leading_zeros(uint64_t(0x0800000000000000U)), sizeof(temp));
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_count_leading_ones_8)
+    {
+      for (size_t i = 0; i < 256; ++i)
+      {
+        uint8_t value = uint8_t(i);
+
+        CHECK_EQUAL(int(test_leading_ones(value)), int(etl::count_leading_ones(value)));
+
+        if (test_leading_ones(value) != etl::count_leading_ones(value))
+        {
+          break;
+        }
+      }
+    }
+
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+    //*************************************************************************
+    TEST(test_count_leading_ones_8_constexpr)
+    {
+      char temp[etl::count_leading_ones(uint8_t(0xF0U))];
+
+      CHECK_EQUAL(test_leading_ones(uint8_t(0xF0U)), sizeof(temp));
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_count_leading_ones_16)
+    {
+      for (size_t i = 0; i < 65536; ++i)
+      {
+        uint16_t value = uint16_t(i);
+
+        CHECK_EQUAL(int(test_leading_ones(value)), int(etl::count_leading_ones(value)));
+
+        if (test_leading_ones(value) != etl::count_leading_ones(value))
+        {
+          break;
+        }
+      }
+    }
+
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+    //*************************************************************************
+    TEST(test_count_leading_ones_16_constexpr)
+    {
+      char temp[etl::count_leading_ones(uint16_t(0xF000U))];
+
+      CHECK_EQUAL(test_leading_ones(uint16_t(0xF000U)), sizeof(temp));
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_count_leading_ones_32)
+    {
+      etl::fnv_1a_32 hash;
+
+      for (size_t i = 0; i < 100000; ++i)
+      {
+        hash.add(1);
+
+        uint32_t value = hash.value();
+
+        CHECK_EQUAL(int(test_leading_ones(value)), int(etl::count_leading_ones(value)));
+
+        if (test_leading_ones(value) != etl::count_leading_ones(value))
+        {
+          break;
+        }
+      }
+    }
+
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+    //*************************************************************************
+    TEST(test_count_leading_ones_32_constexpr)
+    {
+      char temp[etl::count_leading_ones(uint32_t(0xF0000000UL))];
+
+      CHECK_EQUAL(test_leading_ones(uint32_t(0xF0000000UL)), sizeof(temp));
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_count_leading_ones_64)
+    {
+      etl::fnv_1a_64 hash;
+
+      for (size_t i = 0; i < 100000; ++i)
+      {
+        hash.add(1);
+
+        uint64_t value = hash.value();
+
+        CHECK_EQUAL(int(test_leading_ones(value)), int(etl::count_leading_ones(value)));
+
+        if (test_leading_ones(value) != etl::count_leading_ones(value))
+        {
+          break;
+        }
+      }
+    }
+
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+    //*************************************************************************
+    TEST(test_count_leading_ones_64_constexpr)
+    {
+      char temp[etl::count_leading_ones(uint64_t(0xF000000000000000UL))];
+
+      CHECK_EQUAL(test_leading_ones(uint64_t(0xF000000000000000UL)), sizeof(temp));
+    }
+#endif
   };
 }
 
