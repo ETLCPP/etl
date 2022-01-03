@@ -51,10 +51,13 @@ namespace etl
   struct forward_iterator_tag : public input_iterator_tag {};
   struct bidirectional_iterator_tag : public forward_iterator_tag {};
   struct random_access_iterator_tag : public bidirectional_iterator_tag {};
+  struct contiguous_iterator_tag : public random_access_iterator_tag {};
 
   //***************************************************************************
   // iterator_traits
-  template <typename TIterator>
+
+  // For anything not a fundamental type.
+  template <typename TIterator, typename = typename etl::enable_if<!etl::is_fundamental<TIterator>::value, void>::type>
   struct iterator_traits
   {
     typedef typename TIterator::iterator_category iterator_category;
@@ -63,25 +66,27 @@ namespace etl
     typedef typename TIterator::pointer           pointer;
     typedef typename TIterator::reference         reference;
   };
-
+ 
+  // For pointers.
   template <typename T>
-  struct iterator_traits<T*>
+  struct iterator_traits<T*, void>
   {
     typedef ETL_OR_STD::random_access_iterator_tag iterator_category;
-    typedef T                              value_type;
-    typedef ptrdiff_t                      difference_type;
-    typedef T*                             pointer;
-    typedef T&                             reference;
+    typedef T                                      value_type;
+    typedef ptrdiff_t                              difference_type;
+    typedef typename etl::remove_cv<T>::type*      pointer;
+    typedef T&                                     reference;
   };
 
+  // For const pointers.
   template <typename T>
-  struct iterator_traits<const T*>
+  struct iterator_traits<const T*, void>
   {
-    typedef ETL_OR_STD::random_access_iterator_tag iterator_category;
-    typedef T                              value_type;
-    typedef ptrdiff_t                      difference_type;
-    typedef const T*                       pointer;
-    typedef const T&                       reference;
+    typedef ETL_OR_STD::random_access_iterator_tag  iterator_category;
+    typedef T                                       value_type;
+    typedef ptrdiff_t                               difference_type;
+    typedef const typename etl::remove_cv<T>::type* pointer;
+    typedef const T&                                reference;
   };
 
   //***************************************************************************

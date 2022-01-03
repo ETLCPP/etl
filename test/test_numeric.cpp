@@ -29,6 +29,8 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/numeric.h"
+#include "etl/deque.h"
+#include "etl/list.h"
 
 #include <algorithm>
 #include <numeric>
@@ -100,7 +102,36 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_midpoint_random_access_iterator)
+    TEST(test_midpoint_etl_random_access_iterator)
+    {
+      etl::deque<int, 10> data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      etl::deque<int, 10>::iterator b = data.begin();
+      etl::deque<int, 10>::iterator e = data.end();
+
+      CHECK_EQUAL(data[5], (*etl::midpoint(b, e)));
+      CHECK_EQUAL(data[5], (*etl::midpoint(e, b)));
+    }
+
+    //*************************************************************************
+    TEST(test_midpoint_etl_bidirectional_iterator)
+    {
+      etl::list<int, 10> data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      etl::list<int, 10>::iterator b = data.begin();
+      etl::list<int, 10>::iterator e = data.end();
+
+      etl::list<int, 10>::iterator c = data.begin();
+      etl::advance(c, 5);
+
+      int v = *etl::midpoint(b, e);
+
+      CHECK_EQUAL(*c, v);
+    }
+
+#if ETL_USING_STL
+    //*************************************************************************
+    TEST(test_midpoint_std_random_access_iterator)
     {
       std::deque<int> data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
@@ -112,7 +143,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_midpoint_bidirectional_iterator)
+    TEST(test_midpoint_std_bidirectional_iterator)
     {
       std::list<int> data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
@@ -122,8 +153,11 @@ namespace
       std::list<int>::iterator c = data.begin();
       std::advance(c, 5);
 
-      CHECK_EQUAL(*c, *etl::midpoint(b, e));
+      int v = *etl::midpoint(b, e);
+
+      CHECK_EQUAL(*c, v);
     }
+#endif
 
     //*************************************************************************
     TEST(test_lerp_floating_point)

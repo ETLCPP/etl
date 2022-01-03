@@ -153,10 +153,10 @@ namespace etl
   /// For ETL random access iterators.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR typename etl::enable_if<!etl::is_pointer<T>::value &&
-                                        !etl::is_integral<T>::value && 
-                                        !etl::is_floating_point<T>::value, T>::type
-    midpoint(T a, T b, typename etl::enable_if<etl::is_same<typename etl::iterator_traits<T>::iterator_category, etl::random_access_iterator_tag>::value, void>::type)
+  ETL_CONSTEXPR T midpoint(T a, T b, typename etl::enable_if<!etl::is_pointer<T>::value &&
+    !etl::is_integral<T>::value &&
+    !etl::is_floating_point<T>::value &&
+    etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::random_access_iterator_tag>::value , int>::type = 0)
   {
     if (a > b)
     {
@@ -174,44 +174,16 @@ namespace etl
   /// Parameter 'a' must be before 'b', otherwise the result is undefined.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR T midpoint(T a, T b, typename etl::enable_if<(etl::is_same<typename std::iterator_traits<T>::iterator_category, std::forward_iterator_tag>::value ||
-                                                              etl::is_same<typename etl::iterator_traits<T>::iterator_category, etl::bidirectional_iterator_tag>::value) && !etl::is_pointer<T>::value, void>::type)
+  ETL_CONSTEXPR T midpoint(T a, T b, typename etl::enable_if<(!etl::is_pointer<T>::value &&
+    !etl::is_integral<T>::value &&
+    !etl::is_floating_point<T>::value &&
+    etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::forward_iterator_tag>::value ||
+                                                              etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::bidirectional_iterator_tag>::value)
+                                                              , int>::type = 0)
   {
     etl::advance(a, etl::distance(a, b) / 2U);
     return a;
   }
-
-#if ETL_USING_STL
-  //***************************************************************************
-  /// midpoint
-  /// For STL random access iterators
-  //***************************************************************************
-  template <typename T>
-  ETL_CONSTEXPR T midpoint(T a, T b, typename etl::enable_if<etl::is_same<typename std::iterator_traits<T>::iterator_category, std::random_access_iterator_tag>::value && !etl::is_pointer<T>::value, int>::type = 0)
-  {
-    if (a > b)
-    {
-      return b + (etl::distance(b, a) / 2U);
-    }
-    else
-    {
-      return a + (etl::distance(a, b) / 2U);
-    }
-  }
-
-  //***************************************************************************
-  /// midpoint
-  /// For ETL forward and bidirectional iterators.
-  /// Parameter 'a' must be before 'b', otherwise the result is undefined.
-  //***************************************************************************
-  template <typename T>
-  ETL_CONSTEXPR T midpoint(T a, T b, typename etl::enable_if<(etl::is_same<typename std::iterator_traits<T>::iterator_category, std::forward_iterator_tag>::value ||
-                                                              etl::is_same<typename std::iterator_traits<T>::iterator_category, std::bidirectional_iterator_tag>::value) && !etl::is_pointer<T>::value, int>::type = 0)
-  {
-    etl::advance(a, etl::distance(a, b) / 2U);
-    return a;
-  }
-#endif
 
   //***************************************************************************
   /// Linear interpolation
