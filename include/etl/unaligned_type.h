@@ -48,8 +48,20 @@ namespace etl
 
     typedef type T;
 
+    static ETL_CONSTANT size_t Size = sizeof(T);
+
     //*************************************************************************
-    /// 
+    /// Default constructor
+    //*************************************************************************
+    unaligned_type()
+    {
+      T value = T(0);
+
+      mempy(storage, &value, sizeof(T));
+    }
+
+    //*************************************************************************
+    /// Constructor
     //*************************************************************************
     unaligned_type(T value)
     {
@@ -63,7 +75,39 @@ namespace etl
     }
 
     //*************************************************************************
-    /// 
+    /// Copy constructor
+    //*************************************************************************
+    unaligned_type(const unaligned_type& other)
+    {
+      mempy(storage, other.storage, sizeof(T));
+    }
+
+    //*************************************************************************
+    /// Assignment operator
+    //*************************************************************************
+    unaligned_type& operator =(const unaligned_type& other)
+    {
+      mempy(storage, other.storage, sizeof(T));
+    }
+
+    //*************************************************************************
+    /// Equality operator
+    //*************************************************************************
+    friend bool operator ==(const unaligned_type& lhs, const unaligned_type& rhs)
+    {
+      return memcmp(lhs.storage, rhs.storage, sizeof(T)) == 0;
+    }
+
+    //*************************************************************************
+    /// Inequality operator
+    //*************************************************************************
+    friend bool operator !=(const unaligned_type& lhs, const unaligned_type& rhs)
+    {
+      return !(lhs == rhs);
+    }
+
+    //*************************************************************************
+    /// Conversion operator
     //*************************************************************************
     operator T() const
     {
@@ -145,7 +189,7 @@ namespace etl
 
 #if ETL_CPP11_SUPPORTED
   template <typename T>
-  using unaligned_type_t = typename etl::unaligned_type<T>::type
+  using unaligned_type_t = typename etl::unaligned_type<T>::type;
 #endif
 }
 
