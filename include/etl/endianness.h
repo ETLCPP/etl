@@ -86,9 +86,9 @@ namespace etl
 
   private:
 
-    static etl::endian get()
+    ETL_CONSTEXPR static etl::endian get()
     {
-      static const union U
+      static ETL_CONSTANT union U
       {
         U()
           : ui32(0x12345678UL)
