@@ -86,9 +86,9 @@ namespace etl
 
   private:
 
-    ETL_CONSTEXPR static etl::endian get()
+    static etl::endian get()
     {
-      static ETL_CONSTANT union U
+      static union U
       {
         U()
           : ui32(0x12345678UL)
@@ -101,6 +101,23 @@ namespace etl
 
       return (u.ui16[0] == 0x5678U) ? etl::endian::little : etl::endian::big;
     }
+
+//    constexpr static auto check() 
+//    {
+//#if defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+//
+//      return etl::endian::big;
+//
+//#elif   defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
+//
+//      return etl::endian::little;
+//
+//#else
+//
+//      return Endian::UNKNOWN;
+//
+//#endif
+//    }
   };
 
   //***************************************************************************

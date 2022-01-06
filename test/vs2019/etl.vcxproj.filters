@@ -3083,6 +3083,9 @@
     <ClCompile Include="..\test_delegate_service_cpp03.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_unaligned_type.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
