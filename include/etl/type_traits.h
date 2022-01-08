@@ -71,11 +71,17 @@ SOFTWARE.
 
 namespace etl
 {
+#if ETL_CPP11_SUPPORTED
+  template <typename...>
+  using void_t = void;
+#endif
+
 #if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
 
   //*****************************************************************************
   // Traits are defined by the ETL
   //*****************************************************************************
+  
   //***************************************************************************
   /// integral_constant
   template <typename T, const T VALUE>
@@ -1257,7 +1263,6 @@ namespace etl
     static const T value = FALSE_VALUE;
   };
 
-
 #if ETL_CPP11_SUPPORTED
   //***************************************************************************
   /// Template to determine if a type is one of a specified list.
@@ -2016,53 +2021,50 @@ namespace etl
 
 #endif
 
+#if ETL_CPP11_SUPPORTED
   //*********************************************
   // common_type
   // Based on the sample implementation detailed on
   // https://en.cppreference.com/w/cpp/types/common_type
   //*********************************************
-#if ETL_CPP11_SUPPORTED
   //***********************************
   // Primary template
   template<typename...>
-  struct common_type 
+  struct common_type
   {
   };
 
   //***********************************
   // One type
   template <typename T>
-  struct common_type<T> : common_type<T, T> 
+  struct common_type<T> : common_type<T, T>
   {
   };
 
-  namespace private_common_type 
+  namespace private_common_type
   {
-    template <typename...>
-    using void_t = void;
-
     template <typename T1, typename T2>
     using conditional_result_t = decltype(false ? declval<T1>() : declval<T2>());
 
     template <typename, typename, typename = void>
-    struct decay_conditional_result 
+    struct decay_conditional_result
     {
     };
 
     template <typename T1, typename T2>
     struct decay_conditional_result<T1, T2, void_t<conditional_result_t<T1, T2>>>
-      : etl::decay<conditional_result_t<T1, T2>> 
+      : etl::decay<conditional_result_t<T1, T2>>
     {
     };
 
     template <typename T1, typename T2, typename = void>
-    struct common_type_2_impl : decay_conditional_result<const T1&, const T2&> 
+    struct common_type_2_impl : decay_conditional_result<const T1&, const T2&>
     {
     };
 
     template <typename T1, typename T2>
     struct common_type_2_impl<T1, T2, void_t<conditional_result_t<T1, T2>>>
-      : decay_conditional_result<T1, T2> 
+      : decay_conditional_result<T1, T2>
     {
     };
   }
@@ -2071,7 +2073,7 @@ namespace etl
   // Two types
   template <typename T1, typename T2>
   struct common_type<T1, T2>
-    : etl::conditional<etl::is_same<T1, typename etl::decay<T1>::type>::value && etl::is_same<T2, typename etl::decay<T2>::type>::value,
+    : etl::conditional<etl::is_same<T1, typename etl::decay<T1>::type>::value&& etl::is_same<T2, typename etl::decay<T2>::type>::value,
                        private_common_type::common_type_2_impl<T1, T2>,
                        common_type<typename etl::decay<T2>::type,
                        typename etl::decay<T2>::type>>::type
@@ -2080,23 +2082,23 @@ namespace etl
 
   //***********************************
   // Three or more types
-  namespace private_common_type 
+  namespace private_common_type
   {
     template <typename AlwaysVoid, typename T1, typename T2, typename... TRest>
-    struct common_type_multi_impl 
+    struct common_type_multi_impl
     {
     };
 
     template <typename T1, typename T2, typename... TRest>
     struct common_type_multi_impl<void_t<typename common_type<T1, T2>::type>, T1, T2, TRest...>
-      : common_type<typename common_type<T1, T2>::type, TRest...> 
+      : common_type<typename common_type<T1, T2>::type, TRest...>
     {
     };
   }
 
   template<typename T1, typename T2, typename... TRest>
   struct common_type<T1, T2, TRest...>
-    : private_common_type::common_type_multi_impl<void, T1, T2, TRest...> 
+    : private_common_type::common_type_multi_impl<void, T1, T2, TRest...>
   {
   };
 
