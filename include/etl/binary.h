@@ -46,6 +46,10 @@ SOFTWARE.
 #include "exception.h"
 #include "error_handler.h"
 
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+  #include <bit>
+#endif
+
 namespace etl
 {
   //***************************************************************************
@@ -111,11 +115,15 @@ namespace etl
   template <typename T>
   ETL_CONSTEXPR14 T rotate_left(T value)
   {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::rotl(value, 1);
+#else
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
     const size_t SHIFT = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits - 1;
 
     return (value << 1U) | (value >> SHIFT);
+#endif
   }
 
   //***************************************************************************
@@ -125,6 +133,9 @@ namespace etl
   template <typename T>
   ETL_CONSTEXPR14 T rotate_left(T value, size_t distance)
   {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::rotl(value, distance);
+#else
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
     const size_t BITS = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits;
@@ -132,6 +143,7 @@ namespace etl
     const size_t SHIFT = BITS - distance;
 
     return (value << distance) | (value >> SHIFT);
+#endif
   }
 
   //***************************************************************************
@@ -141,11 +153,15 @@ namespace etl
   template <typename T>
   ETL_CONSTEXPR14 T rotate_right(T value)
   {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::rotr(value, 1);
+#else
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
     const size_t SHIFT = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits - 1;
 
     return (value >> 1U) | (value << SHIFT);
+#endif
   }
 
   //***************************************************************************
@@ -155,6 +171,9 @@ namespace etl
   template <typename T>
   ETL_CONSTEXPR14 T rotate_right(T value, size_t distance)
   {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::rotr(value, distance);
+#else
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
     const size_t BITS = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits;
@@ -162,6 +181,7 @@ namespace etl
     const size_t SHIFT = BITS - distance;
 
     return (value >> distance) | (value << SHIFT);
+#endif
   }
 
   //***************************************************************************
@@ -209,7 +229,7 @@ namespace etl
   {
     ETL_STATIC_ASSERT(integral_limits<TReturn>::bits >= NBITS, "Return type too small to hold result");
 
-    const TValue mask  = etl::power<2, NBITS>::value - 1;
+    const TValue mask  = etl::power<2, NBITS>::value - 1U;
     const size_t shift = NBITS;
 
     // Fold the value down to fit the width.
@@ -707,7 +727,11 @@ namespace etl
   //***************************************************************************
   inline ETL_CONSTEXPR uint16_t reverse_bytes(uint16_t value)
   {
+#if ETL_CPP23_SUPPORTED && ETL_USING_STL
+    return std::byteswap(value);
+#else
     return (value >> 8U) | (value << 8U);
+#endif
   }
 
   inline ETL_CONSTEXPR int16_t reverse_bytes(int16_t value)
@@ -721,10 +745,14 @@ namespace etl
   //***************************************************************************
   inline ETL_CONSTEXPR14 uint32_t reverse_bytes(uint32_t value)
   {
+#if ETL_CPP23_SUPPORTED && ETL_USING_STL
+    return std::byteswap(value);
+#else
     value = ((value & 0xFF00FF00UL) >> 8U) | ((value & 0x00FF00FFUL) << 8U);
     value = (value >> 16U) | (value << 16U);
 
     return value;
+#endif
   }
 
   inline ETL_CONSTEXPR14 int32_t reverse_bytes(int32_t value)
@@ -739,11 +767,15 @@ namespace etl
   //***************************************************************************
   inline ETL_CONSTEXPR14 uint64_t reverse_bytes(uint64_t value)
   {
+#if ETL_CPP23_SUPPORTED && ETL_USING_STL
+    return std::byteswap(value);
+#else
     value = ((value & 0xFF00FF00FF00FF00ULL) >> 8U)  | ((value & 0x00FF00FF00FF00FFULL) << 8U);
     value = ((value & 0xFFFF0000FFFF0000ULL) >> 16U) | ((value & 0x0000FFFF0000FFFFULL) << 16U);
     value = (value >> 32U) | (value << 32U);
 
     return value;
+#endif
   }
 
   inline ETL_CONSTEXPR14 int64_t reverse_bytes(int64_t value)
@@ -759,11 +791,17 @@ namespace etl
   //***************************************************************************
   inline ETL_CONSTEXPR14 uint8_t gray_to_binary(uint8_t value)
   {
-    value ^= (value >> 4U);
-    value ^= (value >> 2U);
-    value ^= (value >> 1U);
+    uint8_t value1 = value  ^ (value >> 4U);
+    uint8_t value2 = value1 ^ (value1 >> 2U);
+    uint8_t value3 = value2 ^ (value2 >> 1U);
 
-    return value;
+    return value3;
+
+    //value ^= (value >> 4U);
+    //value ^= (value >> 2U);
+    //value ^= (value >> 1U);
+
+    //return value;
   }
 
   inline ETL_CONSTEXPR14 int8_t gray_to_binary(int8_t value)
@@ -841,6 +879,9 @@ namespace etl
   //***************************************************************************
   inline ETL_CONSTEXPR14 uint_least8_t count_bits(uint8_t value)
   {
+#if ETL_CPP23_SUPPORTED && ETL_USING_STL
+    return std::popcount(value);
+#else
     uint32_t count = 0U;
 
     count = value - ((value >> 1U) & 0x55U);
@@ -848,6 +889,7 @@ namespace etl
     count = ((count >> 4U) + count) & 0x0FU;
 
     return uint_least8_t(count);
+#endif
   }
 
   inline ETL_CONSTEXPR14 uint_least8_t count_bits(int8_t value)
@@ -863,6 +905,9 @@ namespace etl
   //***************************************************************************
   inline ETL_CONSTEXPR14 uint_least8_t count_bits(uint16_t value)
   {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::popcount(value);
+#else
     uint32_t count = 0U;
 
     count = value - ((value >> 1U) & 0x5555U);
@@ -871,6 +916,7 @@ namespace etl
     count = ((count >> 8U) + count) & 0x00FFU;
 
     return static_cast<uint_least8_t>(count);
+#endif
   }
 
   inline ETL_CONSTEXPR14 uint_least8_t count_bits(int16_t value)
@@ -884,6 +930,9 @@ namespace etl
   //***************************************************************************
   inline ETL_CONSTEXPR14 uint_least8_t count_bits(uint32_t value)
   {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::popcount(value);
+#else
     uint32_t count = 0U;
 
     count = value - ((value >> 1U) & 0x55555555UL);
@@ -892,7 +941,8 @@ namespace etl
     count = ((count >> 8U)  + count) & 0x00FF00FFUL;
     count = ((count >> 16U) + count) & 0x0000FFUL;
 
-    return static_cast<uint_least8_t>(count);;
+    return static_cast<uint_least8_t>(count);
+#endif
   }
 
   inline ETL_CONSTEXPR14 uint_least8_t count_bits(int32_t value)
@@ -907,6 +957,9 @@ namespace etl
   //***************************************************************************
   inline ETL_CONSTEXPR14 uint_least8_t count_bits(uint64_t value)
   {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::popcount(value);
+#else
     uint64_t count = 0U;
 
     count = value - ((value >> 1U) & 0x5555555555555555ULL);
@@ -917,6 +970,7 @@ namespace etl
     count = ((count >> 32U) + count) & 0x00000000FFFFFFFFULL;
 
     return static_cast<uint_least8_t>(count);
+#endif
   }
 
   inline ETL_CONSTEXPR14 uint_least8_t count_bits(int64_t value)
@@ -1001,12 +1055,15 @@ namespace etl
 
 #if ETL_8BIT_SUPPORT
   //***************************************************************************
-  /// Count trailing zeros. bit.
+  /// Count trailing zeros.
   /// Uses a binary search.
   ///\ingroup binary
   //***************************************************************************
   inline ETL_CONSTEXPR14 uint_least8_t count_trailing_zeros(uint8_t value)
   {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::countr_zero(value);
+#else
     uint_least8_t count = 0U;
 
     if (value & 0x1U)
@@ -1029,10 +1086,17 @@ namespace etl
         count += 2U;
       }
 
-      count -= value & 0x1U;
+      if ((value & 0x1U) == 0U)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
+      count -= (value & 0x1U);
     }
 
     return count;
+#endif
   }
 
   inline ETL_CONSTEXPR14 uint_least8_t count_trailing_zeros(int8_t value)
@@ -1048,6 +1112,9 @@ namespace etl
   //***************************************************************************
   inline ETL_CONSTEXPR14 uint_least8_t count_trailing_zeros(uint16_t value)
   {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::countr_zero(value);
+#else
     uint_least8_t count = 0U;
 
     if (value & 0x1U)
@@ -1076,10 +1143,17 @@ namespace etl
         count += 2U;
       }
 
+      if ((value & 0x1U) == 0U)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
       count -= value & 0x1U;
     }
 
     return count;
+#endif
   }
 
   inline ETL_CONSTEXPR14 uint_least8_t count_trailing_zeros(int16_t value)
@@ -1094,6 +1168,9 @@ namespace etl
   //***************************************************************************
   inline ETL_CONSTEXPR14 uint_least8_t count_trailing_zeros(uint32_t value)
   {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::countr_zero(value);
+#else
     uint_least8_t count = 0U;
 
     if (value & 0x1UL)
@@ -1128,10 +1205,17 @@ namespace etl
         count += 2U;
       }
 
+      if ((value & 0x1U) == 0U)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
       count -= value & 0x1UL;
     }
 
     return count;
+#endif
   }
 
   inline ETL_CONSTEXPR14 uint_least8_t count_trailing_zeros(int32_t value)
@@ -1147,6 +1231,9 @@ namespace etl
   //***************************************************************************
   ETL_CONSTEXPR14 inline uint_least8_t count_trailing_zeros(uint64_t value)
   {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::countr_zero(value);
+#else
       uint_least8_t count = 0U;
 
       if (value & 0x1ULL)
@@ -1187,15 +1274,736 @@ namespace etl
           count += 2U;
         }
 
+        if ((value & 0x1U) == 0U)
+        {
+          value >>= 1U;
+          count += 1U;
+        }
+
         count -= value & 0x1ULL;
       }
 
       return count;
+#endif
   }
 
   inline ETL_CONSTEXPR14 uint_least8_t count_trailing_zeros(int64_t value)
   {
     return count_trailing_zeros(uint64_t(value));
+  }
+#endif
+
+#if ETL_8BIT_SUPPORT
+  //***************************************************************************
+  /// Count trailing zeros. bit.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_ones(uint8_t value)
+  {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::countr_one(value);
+#else
+    uint_least8_t count = 0U;
+
+    if ((value & 0x1U) == 0x0U)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFU) == 0xFU)
+      {
+        value >>= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0x3U) == 0x3U)
+      {
+        value >>= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x1U) == 0x1U)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x1U) == 0x0U);
+    }
+
+    return count;
+#endif
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_ones(int8_t value)
+  {
+    return count_trailing_ones(uint8_t(value));
+  }
+#endif
+
+  //***************************************************************************
+  /// Count trailing zeros. 16bit.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_ones(uint16_t value)
+  {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::countr_one(value);
+#else
+    uint_least8_t count = 0U;
+
+    if ((value & 0x1U) == 0x0U)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFU) == 0xFFU)
+      {
+        value >>= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xFU) == 0xFU)
+      {
+        value >>= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0x3U) == 0x3U)
+      {
+        value >>= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x1U) == 0x1U)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x1U) == 0x0U);
+    }
+
+    return count;
+#endif
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_ones(int16_t value)
+  {
+    return count_trailing_ones(uint16_t(value));
+  }
+
+  //***************************************************************************
+  /// Count trailing zeros. 32bit.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_ones(uint32_t value)
+  {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::countr_one(value);
+#else
+    uint_least8_t count = 0U;
+
+    if ((value & 0x1UL) == 0x0UL)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFFFUL) == 0xFFFFUL)
+      {
+        value >>= 16U;
+        count += 16U;
+      }
+
+      if ((value & 0xFFUL) == 0xFFUL)
+      {
+        value >>= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xFUL) == 0xFUL)
+      {
+        value >>= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0x3UL) == 0x3UL)
+      {
+        value >>= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x1UL) == 0x1UL)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x1UL) == 0x0UL);
+    }
+
+    return count;
+#endif
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_ones(int32_t value)
+  {
+    return count_trailing_ones(uint32_t(value));
+  }
+
+#if ETL_USING_64BIT_TYPES
+  //***************************************************************************
+  /// Count trailing zeros. 64bit.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  ETL_CONSTEXPR14 inline uint_least8_t count_trailing_ones(uint64_t value)
+  {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::countr_one(value);
+#else
+    uint_least8_t count = 0U;
+
+    if ((value & 0x1ULL) == 0x0ULL)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFFFULL) == 0xFFFFULL)
+      {
+        value >>= 16U;
+        count += 16U;
+      }
+
+      if ((value & 0xFFULL) == 0xFFULL)
+      {
+        value >>= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xFULL) == 0xFULL)
+      {
+        value >>= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0x3ULL) == 0x3ULL)
+      {
+        value >>= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x1ULL) == 0x1ULL)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x1ULL) == 0x0ULL);
+    }
+
+    return count;
+#endif
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_ones(int64_t value)
+  {
+    return count_trailing_ones(uint64_t(value));
+  }
+#endif
+
+#if ETL_8BIT_SUPPORT
+  //***************************************************************************
+  /// Count leading zeros.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_zeros(uint8_t value)
+  {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::countl_zero(value);
+#else
+    uint_least8_t count = 0U;
+
+    if (value & 0x80U)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xF0U) == 0U)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC0U) == 0U)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x80U) == 0U)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x80U) == 0x80U);
+    }
+
+    return count;
+#endif
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_zeros(int8_t value)
+  {
+    return count_leading_zeros(uint8_t(value));
+  }
+#endif
+
+  //***************************************************************************
+  /// Count leading zeros.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_zeros(uint16_t value)
+  {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::countl_zero(value);
+#else
+    uint_least8_t count = 0U;
+
+    if (value & 0x8000U)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFF00U) == 0U)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xF000U) == 0U)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC000U) == 0U)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x8000U) == 0U)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x8000U) == 0x8000U);
+    }
+
+    return count;
+#endif
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_zeros(int16_t value)
+  {
+    return count_leading_zeros(uint16_t(value));
+  }
+
+  //***************************************************************************
+  /// Count leading zeros.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_zeros(uint32_t value)
+  {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::countl_zero(value);
+#else
+    uint_least8_t count = 0U;
+
+    if (value & 0x80000000UL)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFFF0000UL) == 0U)
+      {
+        value <<= 16U;
+        count += 16U;
+      }
+
+      if ((value & 0xFF000000UL) == 0U)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xF0000000UL) == 0U)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC0000000UL) == 0U)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x80000000UL) == 0U)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x80000000UL) == 0x80000000UL);
+    }
+
+    return count;
+#endif
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_zeros(int32_t value)
+  {
+    return count_leading_zeros(uint32_t(value));
+  }
+
+#if ETL_USING_64BIT_TYPES
+  //***************************************************************************
+  /// Count leading zeros.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_zeros(uint64_t value)
+  {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::countl_zero(value);
+#else
+    uint_least8_t count = 0U;
+
+    if (value & 0x8000000000000000ULL)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFFFFFFFF0000000ULL) == 0U)
+      {
+        value <<= 32U;
+        count += 32U;
+      }
+
+      if ((value & 0xFFFF000000000000ULL) == 0U)
+      {
+        value <<= 16U;
+        count += 16U;
+      }
+
+      if ((value & 0xFF00000000000000ULL) == 0U)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xF000000000000000ULL) == 0U)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC000000000000000ULL) == 0U)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x8000000000000000ULL) == 0U)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x8000000000000000ULL) == 0x8000000000000000ULL);
+    }
+
+    return count;
+#endif
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_zeros(int64_t value)
+  {
+    return count_leading_zeros(uint64_t(value));
+  }
+#endif
+
+#if ETL_8BIT_SUPPORT
+  //***************************************************************************
+  /// Count leading ones.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_ones(uint8_t value)
+  {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::countl_one(value);
+#else
+    uint_least8_t count = 0U;
+
+    if ((value & 0x80U) == 0U)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xF0U) == 0xF0U)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC0U) == 0xC0U)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x80U) == 0x80U)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x80U) == 0x0U);
+    }
+
+    return count;
+#endif
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_ones(int8_t value)
+  {
+    return count_leading_ones(uint8_t(value));
+  }
+#endif
+
+  //***************************************************************************
+  /// Count leading ones.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_ones(uint16_t value)
+  {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::countl_one(value);
+#else
+    uint_least8_t count = 0U;
+
+    if ((value & 0x8000U) == 0U)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFF00U) == 0xFF00U)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xF000U) == 0xF000U)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC000U) == 0xC000U)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x8000U) == 0x8000U)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x8000U) == 0U);
+    }
+
+    return count;
+#endif
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_ones(int16_t value)
+  {
+    return count_leading_ones(uint16_t(value));
+  }
+
+  //***************************************************************************
+  /// Count leading ones.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_ones(uint32_t value)
+  {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::countl_one(value);
+#else
+    uint_least8_t count = 0U;
+
+    if ((value & 0x80000000UL) == 0UL)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFFF0000UL) == 0xFFFF0000UL)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xFF000000UL) == 0xFF000000UL)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xF0000000UL) == 0xF0000000UL)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC0000000UL) == 0xC0000000UL)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x80000000UL) == 0x80000000UL)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x80000000UL) == 0UL);
+    }
+
+    return count;
+#endif
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_ones(int32_t value)
+  {
+    return count_leading_ones(uint32_t(value));
+  }
+
+#if ETL_USING_64BIT_TYPES
+  //***************************************************************************
+  /// Count leading ones.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_ones(uint64_t value)
+  {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::countl_one(value);
+#else
+    uint_least8_t count = 0U;
+
+    if ((value & 0x8000000000000000ULL) == 0ULL)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFFFFFFF00000000ULL) == 0xFFFFFFFF00000000ULL)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xFFFF000000000000ULL) == 0xFFFF000000000000ULL)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xFF00000000000000ULL) == 0xFF00000000000000ULL)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xF000000000000000ULL) == 0xF000000000000000ULL)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC000000000000000ULL) == 0xC000000000000000ULL)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x8000000000000000ULL) == 0x8000000000000000ULL)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x8000000000000000ULL) == 0ULL);
+    }
+
+    return count;
+#endif
+  }
+
+  inline ETL_CONSTEXPR14 uint_least8_t count_leading_ones(int64_t value)
+  {
+    return count_leading_ones(uint64_t(value));
   }
 #endif
 

@@ -37,9 +37,45 @@ SOFTWARE.
 #include "enum_type.h"
 #include "binary.h"
 
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+  #include <bit>
+#endif
+
 ///\defgroup endian endian
 /// Constants & utilities for endianess
 ///\ingroup utilities
+
+#if !((!defined(ETL_ENDIAN_LITTLE) && !defined(ETL_ENDIAN_BIG) && !defined(ETL_ENDIAN_NATIVE)) || ((defined(ETL_ENDIAN_LITTLE) && defined(ETL_ENDIAN_BIG) && defined(ETL_ENDIAN_NATIVE))))
+  #error All three of ETL_ENDIAN_LITTLE, ETL_ENDIAN_BIG and ETL_ENDIAN_NATIVE must be defined
+#endif
+
+// Have we not already defined all of the macros?
+#if !defined(ETL_ENDIAN_LITTLE) || !defined(ETL_ENDIAN_BIG) || !defined(ETL_ENDIAN_NATIVE)
+  #undef ETL_ENDIAN_LITTLE
+  #undef ETL_ENDIAN_BIG
+  #undef ETL_ENDIAN_NATIVE
+  // Can we use the C++20 definitions?
+  #if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    #define ETL_ENDIAN_LITTLE std::endian::little
+    #define ETL_ENDIAN_BIG    std::endian::big
+    #define ETL_ENDIAN_NATIVE std::endian::native
+  // If not can we use the compiler macros?
+  #elif defined(__BYTE_ORDER__)
+    // Test the two versions of the macro we are likely to see.
+    #if defined(__ORDER_LITTLE_ENDIAN__)
+      #define ETL_ENDIAN_LITTLE __ORDER_LITTLE_ENDIAN__
+      #define ETL_ENDIAN_BIG    __ORDER_BIG_ENDIAN__
+      #define ETL_ENDIAN_NATIVE __BYTE_ORDER__
+    #elif defined(__LITTLE_ENDIAN__)
+      #define ETL_ENDIAN_LITTLE __LITTLE_ENDIAN__
+      #define ETL_ENDIAN_BIG    __BIG_ENDIAN__
+      #define ETL_ENDIAN_NATIVE __BYTE_ORDER__
+    #endif
+  #endif
+#endif
+
+// If true, then the endianness of the platform can be constexpr.
+#define ETL_ENDIANNESS_IS_CONSTEXPR (ETL_CPP11_SUPPORTED && defined(ETL_ENDIAN_NATIVE))
 
 namespace etl
 {
@@ -49,17 +85,28 @@ namespace etl
   //***************************************************************************
   struct endian
   {
+#if defined(ETL_ENDIAN_NATIVE)
+    enum enum_type
+    {
+      little  = static_cast<int>(ETL_ENDIAN_LITTLE),
+      big     = static_cast<int>(ETL_ENDIAN_BIG),
+      native  = static_cast<int>(ETL_ENDIAN_NATIVE),
+      unknown = INT_MAX
+    };
+#else
     enum enum_type
     {
       little,
       big,
-      native
+      native,
+      unknown = native
     };
+#endif
 
     ETL_DECLARE_ENUM_TYPE(endian, int)
-    ETL_ENUM_TYPE(little, "little")
-    ETL_ENUM_TYPE(big,    "big")
-    ETL_ENUM_TYPE(native, "native")
+    ETL_ENUM_TYPE(little,  "little")
+    ETL_ENUM_TYPE(big,     "big")
+    ETL_ENUM_TYPE(unknown, "unknown")
     ETL_END_ENUM_TYPE
   };
 
@@ -74,11 +121,17 @@ namespace etl
       return etl::endian(*this);
     }
 
+#if ETL_ENDIANNESS_IS_CONSTEXPR
+    ETL_CONSTEXPR
+#endif
     operator etl::endian() const
     {
       return get();
     }
 
+#if ETL_ENDIANNESS_IS_CONSTEXPR
+    ETL_CONSTEXPR
+#endif
     static etl::endian value()
     {
       return get();
@@ -86,38 +139,19 @@ namespace etl
 
   private:
 
+#if ETL_ENDIANNESS_IS_CONSTEXPR
+    ETL_CONSTEXPR static etl::endian get()
+    {
+      return etl::endian::native;
+    }
+#else
     static etl::endian get()
     {
-      static union U
-      {
-        U()
-          : ui32(0x12345678UL)
-        {
-        }
+      static const uint32_t i = 0xFFFF0000;
 
-        uint32_t ui32;
-        uint16_t ui16[2];
-      } u;
-
-      return (u.ui16[0] == 0x5678U) ? etl::endian::little : etl::endian::big;
+      return (*reinterpret_cast<const unsigned char*>(&i) == 0) ? etl::endian::little : etl::endian::big;
     }
-
-//    constexpr static auto check() 
-//    {
-//#if defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
-//
-//      return etl::endian::big;
-//
-//#elif   defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
-//
-//      return etl::endian::little;
-//
-//#else
-//
-//      return Endian::UNKNOWN;
-//
-//#endif
-//    }
+#endif
   };
 
   //***************************************************************************

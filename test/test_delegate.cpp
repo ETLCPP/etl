@@ -33,6 +33,8 @@ SOFTWARE.
 
 #if !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
 
+#include <functional>
+
 namespace
 {
   //*****************************************************************************
@@ -1102,6 +1104,19 @@ namespace
       CHECK(!was_called);
       CHECK(!function_called);
       CHECK(!parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_construct_from_std_function_from_free_int)
+    {
+      std::function<void(int, int)> std_function(free_int);
+
+      etl::delegate<void(int, int)> d(std_function);
+
+      d(VALUE1, VALUE2);
+
+      CHECK(function_called);
+      CHECK(parameter_correct);
     }
   };
 }

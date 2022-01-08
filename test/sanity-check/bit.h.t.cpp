@@ -1,5 +1,3 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -7,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 jwellbelove
+Copyright(c) 2022 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,17 +26,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-/*
- * The header include guard has been intentionally omitted.
- * This file is intended to evaluated multiple times by design.
- */
-
-#if !defined(ETL_COMPILER_GREEN_HILLS)
-  #if !defined(ETL_COMPILER_ARM5)
-    #pragma push_macro("min")
-    #pragma push_macro("max")
-  #endif
-
-  #undef min
-  #undef max
-#endif
+#include <etl/bit.h>

@@ -1,20 +1,33 @@
 #pragma once
 
-template <typename To, typename From>
-etl::enable_if_t<sizeof(To) == sizeof(From) && etl::is_trivially_copyable_v<From> && etl::is_trivially_copyable_v<To>, To>
-//ETL_CONSTEXPR
-bit_cast(const From& src) ETL_NOEXCEPT
+#include "platform.h"
+
+template <typename TDestination, typename TSource>
+typename etl::enable_if<(sizeof(TDestination) == sizeof(TSource))   && 
+                         etl::is_trivially_copyable<TSource>::value && 
+                         etl::is_trivially_copyable<TDestination>::value, TDestination>::type
+  bit_cast(const TSource& source) ETL_NOEXCEPT
 {
-  To dst;
-  memcpy(&dst, &src, sizeof(To));
+  TDestination destination;
 
-  // __builtin_memcpy(&dst, &src, sizeof(To));
+  memcpy(&destination, &source, sizeof(TDestination));
 
-  return dst;
+  return destination;
 }
 
-std::midpoint
-// https://en.cppreference.com/w/cpp/numeric/midpoint
+template <typename TDestination, typename TSource>
+ETL_CONSTEXPR
+typename etl::enable_if<(sizeof(TDestination) == sizeof(TSource))   &&
+                         etl::is_trivially_copyable<TSource>::value &&
+                         etl::is_trivially_copyable<TDestination>::value, TDestination>::type
+  bit_cast(const TSource& source) ETL_NOEXCEPT
+{
+  TDestination destination;
 
-std::lerp
-// https://en.cppreference.com/w/cpp/numeric/lerp
+  __builtin_memcpy(&destination, &source, sizeof(TDestination));
+
+  return destination;
+}
+
+
+
