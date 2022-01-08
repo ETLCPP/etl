@@ -48,6 +48,7 @@ set(TEST_SOURCE_FILES
 	test_atomic_std.cpp
 	test_binary.cpp
 	test_bip_buffer_spsc_atomic.cpp
+	test_bit.cpp
 	test_bitset.cpp
 	test_bit_stream.cpp
 	test_byte_stream.cpp
@@ -254,6 +255,7 @@ set(TEST_SOURCE_FILES
 	test_type_lookup.cpp
 	test_type_select.cpp
 	test_type_traits.cpp
+#	test_unaligned_type.cpp
 	test_unordered_map.cpp
 	test_unordered_multimap.cpp
 	test_unordered_multiset.cpp

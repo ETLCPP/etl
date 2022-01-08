@@ -1203,10 +1203,10 @@ namespace
       is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation));
       CHECK(!is_permutation);
 
-      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), std::equal_to<int>());
+      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), etl::equal_to<int>());
       CHECK(is_permutation);
 
-      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), std::equal_to<int>());
+      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), etl::equal_to<int>());
       CHECK(!is_permutation);
 
       is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), std::end(permutation));
@@ -1215,10 +1215,10 @@ namespace
       is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), std::end(not_permutation));
       CHECK(!is_permutation);
 
-      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), std::end(permutation), std::equal_to<int>());
+      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), std::end(permutation), etl::equal_to<int>());
       CHECK(is_permutation);
 
-      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), std::end(not_permutation), std::equal_to<int>());
+      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), std::end(not_permutation), etl::equal_to<int>());
       CHECK(!is_permutation);
     }
 

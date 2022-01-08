@@ -3089,6 +3089,12 @@
     <ClCompile Include="..\test_bit.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\sanity-check\bit.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\unaligned_type.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">

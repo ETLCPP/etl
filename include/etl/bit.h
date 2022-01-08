@@ -90,6 +90,50 @@ namespace etl
   {
     return (value & (value - 1)) == 0;
   }
+  //***************************************************************************
+  /// countl_zero
+  //***************************************************************************
+  template <typename T>
+  ETL_NODISCARD ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_unsigned<T>::value, int>::type
+    countl_zero(T value) ETL_NOEXCEPT
+  {
+    return etl::count_leading_zeros(value);
+  }
+
+  //***************************************************************************
+  /// countl_one
+  //***************************************************************************
+  template <typename T>
+  ETL_NODISCARD ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_unsigned<T>::value, int>::type
+    countl_one(T value) ETL_NOEXCEPT
+  {
+    return etl::count_leading_ones(value);
+  }
+
+  //***************************************************************************
+  /// countr_zero
+  //***************************************************************************
+  template <typename T>
+  ETL_NODISCARD ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_unsigned<T>::value, int>::type
+    countr_zero(T value) ETL_NOEXCEPT
+  {
+    return etl::count_trailing_zeros(value);
+  }
+
+  //***************************************************************************
+  /// countr_one
+  //***************************************************************************
+  template <typename T>
+  ETL_NODISCARD ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_unsigned<T>::value, int>::type
+    countr_one(T value) ETL_NOEXCEPT
+  {
+    return etl::count_trailing_ones(value);;
+  }
+
 
   //***************************************************************************
   /// bit_width
@@ -189,51 +233,7 @@ namespace etl
       return etl::rotate_right(value, n);
     }
   }
-
-  //***************************************************************************
-  /// countl_zero
-  //***************************************************************************
-  template <typename T>
-  ETL_NODISCARD ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_unsigned<T>::value, int>::type
-    countl_zero(T value) ETL_NOEXCEPT
-  {
-    return etl::count_leading_zeros(value);
-  }
-  
-  //***************************************************************************
-  /// countl_one
-  //***************************************************************************
-  template <typename T>
-  ETL_NODISCARD ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_unsigned<T>::value, int>::type 
-    countl_one(T value) ETL_NOEXCEPT
-  {
-    return etl::count_leading_ones(value);
-  }
-
-  //***************************************************************************
-  /// countr_zero
-  //***************************************************************************
-  template <typename T>
-  ETL_NODISCARD ETL_CONSTEXPR14 
-    typename etl::enable_if<etl::is_unsigned<T>::value, int>::type
-    countr_zero(T value) ETL_NOEXCEPT
-  {
-    return etl::count_trailing_zeros(value);
-  }
-  
-  //***************************************************************************
-  /// countr_one
-  //***************************************************************************
-  template <typename T>
-  ETL_NODISCARD ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_unsigned<T>::value, int>::type 
-    countr_one(T value) ETL_NOEXCEPT
-  {
-    return etl::count_trailing_ones(value);;
-  }
-  
+ 
   //***************************************************************************
   /// popcount
   //***************************************************************************

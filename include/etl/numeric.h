@@ -201,11 +201,11 @@ namespace etl
   /// For when any parameter is not floating point.
   //***************************************************************************
   template <typename TArithmetic1, typename TArithmetic2, typename TArithmetic3>
-  ETL_CONSTEXPR typename etl::enable_if_t<!etl::is_floating_point<TArithmetic1>::value ||
-                                          !etl::is_floating_point<TArithmetic2>::value ||
-                                          !etl::is_floating_point<TArithmetic3>::value, typename etl::conditional<etl::is_same<TArithmetic1, long double>::value ||
-                                                                                                                  etl::is_same<TArithmetic2, long double>::value ||
-                                                                                                                  etl::is_same<TArithmetic3, long double>::value, long double, double>::type>
+  ETL_CONSTEXPR typename etl::enable_if<!etl::is_floating_point<TArithmetic1>::value ||
+                                        !etl::is_floating_point<TArithmetic2>::value ||
+                                        !etl::is_floating_point<TArithmetic3>::value, typename etl::conditional<etl::is_same<TArithmetic1, long double>::value ||
+                                                                                                                etl::is_same<TArithmetic2, long double>::value ||
+                                                                                                                etl::is_same<TArithmetic3, long double>::value, long double, double>::type>::type
     lerp(TArithmetic1 a, TArithmetic2 b, TArithmetic3 t) ETL_NOEXCEPT
   {
     typedef typename etl::conditional<etl::is_integral<TArithmetic1>::value, double, TArithmetic1>::type typecast_a;
