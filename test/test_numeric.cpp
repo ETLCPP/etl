@@ -37,6 +37,7 @@ SOFTWARE.
 #include <vector>
 #include <deque>
 #include <list>
+#include <array>
 
 namespace
 {		
@@ -104,7 +105,8 @@ namespace
     //*************************************************************************
     TEST(test_midpoint_etl_random_access_iterator)
     {
-      etl::deque<int, 10> data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      std::array<int, 10> initial = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::deque<int, 10> data(initial.begin(), initial.end());
 
       etl::deque<int, 10>::iterator b = data.begin();
       etl::deque<int, 10>::iterator e = data.end();
@@ -116,7 +118,8 @@ namespace
     //*************************************************************************
     TEST(test_midpoint_etl_bidirectional_iterator)
     {
-      etl::list<int, 10> data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      std::array<int, 10> initial = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::list<int, 10> data(initial.begin(), initial.end());
 
       etl::list<int, 10>::iterator b = data.begin();
       etl::list<int, 10>::iterator e = data.end();

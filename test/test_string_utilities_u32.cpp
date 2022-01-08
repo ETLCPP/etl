@@ -38,6 +38,14 @@ SOFTWARE.
 
 namespace
 {
+  //***********************************
+  std::ostream& operator << (std::ostream& os, const etl::iu32string::value_type& c)
+  {
+    os << uint32_t(c);
+
+    return os;
+  }
+
   SUITE(test_string_utilities_u32)
   {
     static const size_t SIZE = 50;

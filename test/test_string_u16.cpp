@@ -46,6 +46,22 @@ namespace
            ((result1 > 0)  && (result2 > 0));
   }
 
+  //***********************************
+  std::ostream& operator << (std::ostream& os, const etl::iu16string::value_type& c)
+  {
+    os << uint16_t(c);
+
+    return os;
+  }
+
+  //***********************************
+  std::ostream& operator << (std::ostream& os, const etl::iu16string::value_type* c)
+  {
+    os << (void*)c;
+
+    return os;
+  }
+
   SUITE(test_string_char)
   {
     static const size_t SIZE = 11;

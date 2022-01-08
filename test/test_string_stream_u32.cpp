@@ -68,7 +68,7 @@ namespace etl
   {
     for (auto c : str)
     {
-      os << c;
+      os << uint32_t(c);
     }
 
     return os;

@@ -38,11 +38,19 @@ SOFTWARE.
 
 namespace
 {
+  //***********************************
+  std::ostream& operator << (std::ostream& os, const std::wstring::value_type& c)
+  {
+    os << uint16_t(c);
+
+    return os;
+  }
+
   SUITE(test_string_utilities_wchar_t)
   {
     static const size_t SIZE = 50;
 
-    using String     =  etl::wstring<SIZE>;
+    using String     = etl::wstring<SIZE>;
     using IString    = etl::iwstring;
     using StringView = etl::wstring_view;
     using Char       = etl::iwstring::value_type;
