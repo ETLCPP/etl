@@ -38,6 +38,11 @@ SOFTWARE.
 #include "binary.h"
 #include "integral_limits.h"
 #include "endianness.h"
+#include "type_traits.h"
+
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+  #include <bit>
+#endif
 
 namespace etl
 {
@@ -45,6 +50,7 @@ namespace etl
   /// bit_cast
   //***************************************************************************
   template <typename TDestination, typename TSource>
+  ETL_CONSTEXPR14
   typename etl::enable_if<(sizeof(TDestination) == sizeof(TSource)) &&
                            etl::is_trivially_copyable<TSource>::value &&
                            etl::is_trivially_copyable<TDestination>::value, TDestination>::type
@@ -52,24 +58,17 @@ namespace etl
   {
     TDestination destination;
 
-    memcpy(&destination, &source, sizeof(TDestination));
+    const char* s  = &source;
+    char*       d  = &destination;
+    char* const de = d + sizeof(TDestination);
+
+    while (d != de)
+    {
+      *d++ = *s++;
+    }
 
     return destination;
   }
-
-  //template <typename TDestination, typename TSource>
-  //ETL_CONSTEXPR14
-  //typename etl::enable_if<(sizeof(TDestination) == sizeof(TSource))   &&
-  //                         etl::is_trivially_copyable<TSource>::value &&
-  //                         etl::is_trivially_copyable<TDestination>::value, TDestination>::type
-  //  bit_cast(const TSource& source) ETL_NOEXCEPT
-  //{
-  //  TDestination destination;
-  //
-  //  __builtin_memcpy(&destination, &source, sizeof(TDestination));
-  //
-  //  return destination;
-  //}
 
   //***************************************************************************
   /// byteswap
@@ -93,6 +92,21 @@ namespace etl
   }
 
   //***************************************************************************
+  /// bit_width
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
+    bit_width(T value) ETL_NOEXCEPT
+  {
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::bit_width(value);
+#else
+    return etl::integral_limits<T>::bits - etl::countl_zero(value);
+#endif
+  }
+
+  //***************************************************************************
   /// bit_ceil
   //***************************************************************************
   template <typename T>
@@ -100,7 +114,18 @@ namespace etl
     typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
     bit_ceil(T value)
   {
-    return 1;
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::bit_ceil(value);
+#else
+    if (value == T(0))
+    {
+      return T(1);
+    }
+    else
+    {
+      return T(1) << etl::bit_width(T(value - T(1)));
+    }
+#endif
   }
 
   //***************************************************************************
@@ -111,18 +136,18 @@ namespace etl
     typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
     bit_floor(T value) ETL_NOEXCEPT
   {
-    return 1;
-  }
-
-  //***************************************************************************
-  /// bit_width
-  //***************************************************************************
-  template <typename T>
-  ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
-    bit_width(T value) ETL_NOEXCEPT
-  {
-    return 1;
+#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+    return std::bit_floor(value);
+#else
+    if (value == T(0))
+    {
+      return T(0);
+    }
+    else
+    {
+      return T(1) << (etl::bit_width(value) - T(1));
+    }
+#endif
   }
 
   //***************************************************************************
@@ -131,17 +156,17 @@ namespace etl
   template <typename T>
   ETL_NODISCARD ETL_CONSTEXPR14
     typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
-    rotl(T value, int s) ETL_NOEXCEPT
+    rotl(T value, int n) ETL_NOEXCEPT
   {
     ETL_CONSTANT size_t N = etl::integral_limits<T>::bits;
 
-    if (s < 0)
+    if (n < 0)
     {
-      return etl::rotate_right(value, -s);
+      return etl::rotate_right(value, -n);
     }
     else
     {
-      return etl::rotate_left(value, s);
+      return etl::rotate_left(value, n);
     }
   }
 
@@ -151,17 +176,17 @@ namespace etl
   template <typename T>
   ETL_NODISCARD ETL_CONSTEXPR14
     typename etl::enable_if<etl::is_unsigned<T>::value, T>::type 
-    rotr(T value, int s) ETL_NOEXCEPT
+    rotr(T value, int n) ETL_NOEXCEPT
   {
     ETL_CONSTANT size_t N = etl::integral_limits<T>::bits;
 
-    if (s < 0)
+    if (n < 0)
     {
-      return etl::rotate_left(value, -s);
+      return etl::rotate_left(value, -n);
     }
     else
     {
-      return etl::rotate_right(value, s);
+      return etl::rotate_right(value, n);
     }
   }
 
@@ -173,7 +198,7 @@ namespace etl
     typename etl::enable_if<etl::is_unsigned<T>::value, int>::type
     countl_zero(T value) ETL_NOEXCEPT
   {
-    return 1;
+    return etl::count_leading_zeros(value);
   }
   
   //***************************************************************************
@@ -184,7 +209,7 @@ namespace etl
     typename etl::enable_if<etl::is_unsigned<T>::value, int>::type 
     countl_one(T value) ETL_NOEXCEPT
   {
-    return 1;
+    return etl::count_leading_ones(value);
   }
 
   //***************************************************************************
@@ -206,7 +231,7 @@ namespace etl
     typename etl::enable_if<etl::is_unsigned<T>::value, int>::type 
     countr_one(T value) ETL_NOEXCEPT
   {
-    return 1;
+    return etl::count_trailing_ones(value);;
   }
   
   //***************************************************************************
