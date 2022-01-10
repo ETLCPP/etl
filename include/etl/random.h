@@ -521,7 +521,7 @@ namespace etl
   };
 #endif
 
-#if ETL_8BIT_SUPPORT
+#if ETL_USING_8BIT_TYPES
   //***************************************************************************
   /// A 32 bit random number generator.
   /// Applies a user supplied 32bit hash to a counter.

@@ -623,7 +623,7 @@ namespace etl
   //*************************************************************************
   /// Hash function.
   //*************************************************************************
-#if ETL_8BIT_SUPPORT
+#if ETL_USING_8BIT_TYPES
   template <typename T>
   struct hash<etl::array_view<T> >
   {

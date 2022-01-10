@@ -86,7 +86,7 @@ SOFTWARE.
   #define ETL_NOT_USING_8BIT_TYPES 1
 #endif
 
-#define ETL_8BIT_SUPPORT (CHAR_BIT == 8)
+#define ETL_8BIT_SUPPORT (CHAR_BIT == 8) // Deprecated
 
 // Helper macro for ETL_NO_64BIT_TYPES.
 #if defined(ETL_NO_64BIT_TYPES)

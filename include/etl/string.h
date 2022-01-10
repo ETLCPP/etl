@@ -439,7 +439,7 @@ namespace etl
   //*************************************************************************
   /// Hash function.
   //*************************************************************************
-#if ETL_8BIT_SUPPORT
+#if ETL_USING_8BIT_TYPES
   template <>
   struct hash<etl::istring>
   {
