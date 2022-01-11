@@ -59,14 +59,14 @@ namespace etl
   {
     typedef uint32_t value_type;
 
-    inline uint32_t initial() const
+    uint32_t initial() const
     {
       is_finalised = false;
 
       return 0;
     }
 
-    inline uint32_t add(value_type hash, uint8_t value) const
+    uint32_t add(value_type hash, uint8_t value) const
     {
       ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
 
@@ -77,7 +77,7 @@ namespace etl
       return hash;
     }
 
-    inline uint32_t final(value_type hash) const
+    uint32_t final(value_type hash) const
     {
       hash += (hash << 3U);
       hash ^= (hash >> 11U);

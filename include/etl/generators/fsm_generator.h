@@ -285,7 +285,7 @@ namespace etl
     }
 
     //*******************************************
-    inline etl::fsm& get_fsm_context() const
+    etl::fsm& get_fsm_context() const
     {
       return *p_context;
     }
@@ -547,7 +547,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
@@ -631,7 +631,7 @@ namespace etl
   cog.outl("  {")
   cog.outl("  }")
   cog.outl("")
-  cog.outl("  inline TContext& get_fsm_context() const")
+  cog.outl("  TContext& get_fsm_context() const")
   cog.outl("  {")
   cog.outl("    return static_cast<TContext&>(ifsm_state::get_fsm_context());")
   cog.outl("  }")
@@ -708,7 +708,7 @@ namespace etl
       cog.outl("  {")
       cog.outl("  }")
       cog.outl("")
-      cog.outl("  inline TContext& get_fsm_context() const")
+      cog.outl("  TContext& get_fsm_context() const")
       cog.outl("  {")
       cog.outl("    return static_cast<TContext&>(ifsm_state::get_fsm_context());")
       cog.outl("  }")
@@ -768,7 +768,7 @@ namespace etl
   cog.outl("  {")
   cog.outl("  }")
   cog.outl("")
-  cog.outl("  inline TContext& get_fsm_context() const")
+  cog.outl("  TContext& get_fsm_context() const")
   cog.outl("  {")
   cog.outl("    return static_cast<TContext&>(ifsm_state::get_fsm_context());")
   cog.outl("  }")

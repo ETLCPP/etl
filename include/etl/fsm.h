@@ -259,7 +259,7 @@ namespace etl
     }
 
     //*******************************************
-    inline etl::fsm& get_fsm_context() const
+    etl::fsm& get_fsm_context() const
     {
       return *p_context;
     }
@@ -521,7 +521,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
@@ -597,7 +597,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
@@ -662,7 +662,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
@@ -726,7 +726,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
@@ -789,7 +789,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
@@ -850,7 +850,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
@@ -910,7 +910,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
@@ -969,7 +969,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
@@ -1027,7 +1027,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
@@ -1083,7 +1083,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
@@ -1138,7 +1138,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
@@ -1192,7 +1192,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
@@ -1245,7 +1245,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
@@ -1296,7 +1296,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
@@ -1346,7 +1346,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
@@ -1395,7 +1395,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
@@ -1443,7 +1443,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
@@ -1489,7 +1489,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }

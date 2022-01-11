@@ -1030,7 +1030,7 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a default value at the back.
     //*********************************************************************
-    inline void create_back()
+    void create_back()
     {
       etl::create_value_at(p_end);
       ETL_INCREMENT_DEBUG_COUNT
@@ -1041,7 +1041,7 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a value at the back
     //*********************************************************************
-    inline void create_back(const_reference value)
+    void create_back(const_reference value)
     {
       etl::create_copy_at(p_end, value);
       ETL_INCREMENT_DEBUG_COUNT
@@ -1053,7 +1053,7 @@ namespace etl
     //*********************************************************************
     /// Create a new element with a value at the back
     //*********************************************************************
-    inline void create_back(rvalue_reference value)
+    void create_back(rvalue_reference value)
     {
       etl::create_copy_at(p_end, etl::move(value));
       ETL_INCREMENT_DEBUG_COUNT
