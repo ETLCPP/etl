@@ -210,6 +210,15 @@ namespace
   SUITE(test_bit)
   {
     //*************************************************************************
+    TEST(test_bit_cast)
+    {
+      int32_t i = 0x12345678;
+      uint32_t ui = etl::bit_cast<uint32_t>(i);
+
+      CHECK_EQUAL(i, ui);
+    }
+
+    //*************************************************************************
     TEST(test_rotl_8)
     {
       uint8_t value;
@@ -577,6 +586,26 @@ namespace
       char temp[etl::rotate(uint16_t(0xAAU), 1)];
 
       CHECK_EQUAL(etl::rotate(uint16_t(0xAAU), 1), sizeof(temp));
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_byteswap_8)
+    {
+      uint8_t value;
+
+      value = 0x5AU;
+      value = etl::byteswap(value);
+      CHECK_EQUAL(0x5AU, value);
+    }
+
+#if !defined(ETL_FORCE_NO_ADVANCED_CPP)
+    //*************************************************************************
+    TEST(test_byteswap_8_constexpr)
+    {
+      char temp[etl::byteswap(uint8_t(0x12U))];
+
+      CHECK_EQUAL(etl::byteswap(uint8_t(0x12)), sizeof(temp));
     }
 #endif
 
