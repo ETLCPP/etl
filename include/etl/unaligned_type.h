@@ -38,29 +38,37 @@ SOFTWARE.
 #include "platform.h"
 #include "type_traits.h"
 #include "endianness.h"
+#include "state_chart.h"
+#include "iterator.h"
 
 #include <string.h>
 
 namespace etl
 {
-  template <typename T, int Endian, typename = typename etl::enable_if<etl::is_fundamental<T>::value && (Endian != etl::endian::native), void>::type>
+  template <typename T, int Endian_>
   class unaligned_type
   {
   public:
 
-    typedef T type;
+    ETL_STATIC_ASSERT(etl::is_fundamental<T>::value, "Unaligned type must be fundamental");
 
-    static ETL_CONSTANT size_t Size = sizeof(T);
-    static ETL_CONSTANT int endian_type = Endian;
+    typedef T                                     type;
+    typedef char*                                 pointer;
+    typedef const char*                           const_pointer;
+    typedef char*                                 iterator;
+    typedef const char*                           const_iterator;
+    typedef etl::reverse_iterator<iterator>       reverse_iterator;
+    typedef etl::reverse_iterator<const_iterator> const_reverse_iterator;
+
+    static ETL_CONSTANT size_t Size   = sizeof(T);
+    static ETL_CONSTANT int    Endian = Endian_;
 
     //*************************************************************************
     /// Default constructor
     //*************************************************************************
     unaligned_type()
+      : storage()
     {
-      T value = T(0);
-
-      memcpy(storage, &value, Size);
     }
 
     //*************************************************************************
@@ -86,6 +94,21 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Copy constructor
+    //*************************************************************************
+    template <int Endian_Other>
+    unaligned_type(const unaligned_type<T, Endian_Other>& other)
+    {
+      memcpy(storage, other.data(), Size);
+
+      // Not same?
+      if (Endian != Endian_Other)
+      {
+        etl::reverse(storage, storage + Size);
+      }
+    }
+
+    //*************************************************************************
     /// Assignment operator
     //*************************************************************************
     unaligned_type& operator =(const unaligned_type& other)
@@ -96,18 +119,36 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Assignment operator
+    //*************************************************************************
+    unaligned_type& operator =(T value)
+    {
+      // Not same as host?
+      if (Endian != etl::endianness::value())
+      {
+        value = etl::reverse_bytes(value);
+      }
+
+      memcpy(storage, &value, Size);
+
+      return *this;
+    }
+
+    //*************************************************************************
     /// Assignment operator from other endianness.
     //*************************************************************************
     template <int Endian_Other>
     unaligned_type& operator =(const unaligned_type<T, Endian_Other>& other)
     {
-      memcpy(storage, other.storage, Size);
+      memcpy(storage, other.data(), Size);
 
       // Not same?
       if (Endian != Endian_Other)
       {
         etl::reverse(storage, storage + Size);
       }
+
+      return *this;
     }
 
     //*************************************************************************
@@ -119,9 +160,43 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Equality operator
+    //*************************************************************************
+    friend bool operator ==(const unaligned_type& lhs, T rhs)
+    {
+      T lhs_value = lhs;
+      return (memcmp(&lhs_value, &rhs, Size) == 0);
+    }
+
+    //*************************************************************************
+    /// Equality operator
+    //*************************************************************************
+    friend bool operator ==(T lhs, const unaligned_type& rhs)
+    {
+      T rhs_value = rhs;
+      return (memcmp(&lhs, &rhs_value, Size) == 0);
+    }
+
+    //*************************************************************************
     /// Inequality operator
     //*************************************************************************
     friend bool operator !=(const unaligned_type& lhs, const unaligned_type& rhs)
+    {
+      return !(lhs == rhs);
+    }
+
+    //*************************************************************************
+    /// Inequality operator
+    //*************************************************************************
+    friend bool operator !=(const unaligned_type& lhs, T rhs)
+    {
+      return !(lhs == rhs);
+    }
+
+    //*************************************************************************
+    /// Inequality operator
+    //*************************************************************************
+    friend bool operator !=(T lhs, const unaligned_type& rhs)
     {
       return !(lhs == rhs);
     }
@@ -144,166 +219,236 @@ namespace etl
       return value;
     }
 
+    //*************************************************************************
+    /// Pointer to the beginning of the storage.
+    //*************************************************************************
+    pointer data()
+    {
+      return storage;
+    }
+
+    //*************************************************************************
+    /// Const pointer to the beginning of the storage.
+    //*************************************************************************
+    const_pointer data() const
+    {
+      return storage;
+    }
+
+    //*************************************************************************
+    /// Iterator to the beginning of the storage.
+    //*************************************************************************
+    iterator begin()
+    {
+      return iterator(storage);
+    }
+
+    //*************************************************************************
+    /// Const iterator to the beginning of the storage.
+    //*************************************************************************
+    const_iterator begin() const
+    {
+      return const_iterator(storage);
+    }
+
+    //*************************************************************************
+    /// Const iterator to the beginning of the storage.
+    //*************************************************************************
+    const_iterator cbegin() const
+    {
+      return const_iterator(storage);
+    }
+
+    //*************************************************************************
+    /// Reverse iterator to the beginning of the storage.
+    //*************************************************************************
+    reverse_iterator rbegin()
+    {
+      return reverse_iterator(storage + Size);
+    }
+
+    //*************************************************************************
+    /// Const reverse iterator to the beginning of the storage.
+    //*************************************************************************
+    const_reverse_iterator rbegin() const
+    {
+      return const_reverse_iterator(storage + Size);
+    }
+
+    //*************************************************************************
+    /// Const reverse iterator to the beginning of the storage.
+    //*************************************************************************
+    const_reverse_iterator crbegin() const
+    {
+      return const_reverse_iterator(storage + Size);
+    }
+
+    //*************************************************************************
+    /// Iterator to the end of the storage.
+    //*************************************************************************
+    iterator end()
+    {
+      return iterator(storage + Size);
+    }
+    
+    //*************************************************************************
+    /// Const iterator to the end of the storage.
+    //*************************************************************************
+    const_iterator end() const
+    {
+      return const_iterator(storage + Size);
+    }
+
+    //*************************************************************************
+    /// Const iterator to the end of the storage.
+    //*************************************************************************
+    const_iterator cend() const
+    {
+      return const_iterator(storage + Size);
+    }
+
+    //*************************************************************************
+    /// Reverse iterator to the end of the storage.
+    //*************************************************************************
+    reverse_iterator rend()
+    {
+      return reverse_iterator(storage);
+    }
+
+    //*************************************************************************
+    /// Const reverse iterator to the end of the storage.
+    //*************************************************************************
+    const_reverse_iterator rend() const
+    {
+      return const_reverse_iterator(storage);
+    }
+
+    //*************************************************************************
+    /// Const reverrse iterator to the end of the storage.
+    //*************************************************************************
+    const_reverse_iterator crend() const
+    {
+      return const_reverse_iterator(storage);
+    }
+
   private:
 
     char storage[Size];
   };
 
+#if ETL_ENDIANNESS_IS_CONSTEXPR
+  // Host order
+  typedef unaligned_type<char,               etl::endianness::value()> host_char_t;
+  typedef unaligned_type<signed char,        etl::endianness::value()> host_schar_t;
+  typedef unaligned_type<unsigned char,      etl::endianness::value()> host_uchar_t;
+  typedef unaligned_type<short,              etl::endianness::value()> host_short_t;
+  typedef unaligned_type<unsigned short,     etl::endianness::value()> host_ushort_t;
+  typedef unaligned_type<int,                etl::endianness::value()> host_int_t;
+  typedef unaligned_type<unsigned int,       etl::endianness::value()> host_uint_t;
+  typedef unaligned_type<long,               etl::endianness::value()> host_long_t;
+  typedef unaligned_type<unsigned long,      etl::endianness::value()> host_ulong_t;
+  typedef unaligned_type<long long,          etl::endianness::value()> host_long_long_t;
+  typedef unaligned_type<unsigned long long, etl::endianness::value()> host_ulong_long_t;
+#if ETL_USING_8BIT_TYPES
+  typedef unaligned_type<int8_t,             etl::endianness::value()> host_int8_t;
+  typedef unaligned_type<uint8_t,            etl::endianness::value()> host_uint8_t;
+#endif
+  typedef unaligned_type<int16_t,            etl::endianness::value()> host_int16_t;
+  typedef unaligned_type<uint16_t,           etl::endianness::value()> host_uint16_t;
+  typedef unaligned_type<int32_t,            etl::endianness::value()> host_int32_t;
+  typedef unaligned_type<uint32_t,           etl::endianness::value()> host_uint32_t;
+#if ETL_USING_64BIT_TYPES
+  typedef unaligned_type<int64_t,            etl::endianness::value()> host_int64_t;
+  typedef unaligned_type<uint64_t,           etl::endianness::value()> host_uint64_t;
+#endif
+  typedef unaligned_type<float,              etl::endianness::value()> host_float_t;
+  typedef unaligned_type<double,             etl::endianness::value()> host_double_t;
+  typedef unaligned_type<long double,        etl::endianness::value()> host_long_double_t;
+#endif
 
+  // Little Endian
+  typedef unaligned_type<char,               etl::endian::little> le_char_t;
+  typedef unaligned_type<signed char,        etl::endian::little> le_schar_t;
+  typedef unaligned_type<unsigned char,      etl::endian::little> le_uchar_t;
+  typedef unaligned_type<short,              etl::endian::little> le_short_t;
+  typedef unaligned_type<unsigned short,     etl::endian::little> le_ushort_t;
+  typedef unaligned_type<int,                etl::endian::little> le_int_t;
+  typedef unaligned_type<unsigned int,       etl::endian::little> le_uint_t;
+  typedef unaligned_type<long,               etl::endian::little> le_long_t;
+  typedef unaligned_type<unsigned long,      etl::endian::little> le_ulong_t;
+  typedef unaligned_type<long long,          etl::endian::little> le_long_long_t;
+  typedef unaligned_type<unsigned long long, etl::endian::little> le_ulong_long_t;
+#if ETL_USING_8BIT_TYPES
+  typedef unaligned_type<int8_t,             etl::endian::little> le_int8_t;
+  typedef unaligned_type<uint8_t,            etl::endian::little> le_uint8_t;
+#endif
+  typedef unaligned_type<int16_t,            etl::endian::little> le_int16_t;
+  typedef unaligned_type<uint16_t,           etl::endian::little> le_uint16_t;
+  typedef unaligned_type<int32_t,            etl::endian::little> le_int32_t;
+  typedef unaligned_type<uint32_t,           etl::endian::little> le_uint32_t;
+#if ETL_USING_64BIT_TYPES
+  typedef unaligned_type<int64_t,            etl::endian::little> le_int64_t;
+  typedef unaligned_type<uint64_t,           etl::endian::little> le_uint64_t;
+#endif
+  typedef unaligned_type<float,              etl::endian::little> le_float_t;
+  typedef unaligned_type<double,             etl::endian::little> le_double_t;
+  typedef unaligned_type<long double,        etl::endian::little> le_long_double_t;
 
-
-
-  //template <typename T, typename D = typename etl::enable_if<etl::is_fundamental<T>::value, void>::type>
-  //class unaligned_type<T, etl::endian::native, D>
-  //{
-  //public:
-
-  //  typedef T type;
-
-  //  static ETL_CONSTANT size_t Size = Size;
-  //  static ETL_CONSTANT etl::endianness endian_type = etl::endianness::get();
-
-  //  //*************************************************************************
-  //  /// Default constructor
-  //  //*************************************************************************
-  //  unaligned_type()
-  //  {
-  //    T value = T(0);
-
-  //    memcpy(storage, &value, Size);
-  //  }
-
-  //  //*************************************************************************
-  //  /// Constructor
-  //  //*************************************************************************
-  //  unaligned_type(T value)
-  //  {
-  //    memcpy(storage, &value, Size);
-  //  }
-
-  //  //*************************************************************************
-  //  /// Copy constructor
-  //  //*************************************************************************
-  //  unaligned_type(const unaligned_type& other)
-  //  {
-  //    memcpy(storage, other.storage, Size);
-  //  }
-
-  //  //*************************************************************************
-  //  /// Assignment operator
-  //  //*************************************************************************
-  //  unaligned_type& operator =(const unaligned_type& other)
-  //  {
-  //    memcpy(storage, other.storage, Size);
-  //  }
-
-  //  //*************************************************************************
-  //  /// Equality operator
-  //  //*************************************************************************
-  //  friend bool operator ==(const unaligned_type& lhs, const unaligned_type& rhs)
-  //  {
-  //    return (memcmp(lhs.storage, rhs.storage, Size) == 0);
-  //  }
-
-  //  //*************************************************************************
-  //  /// Inequality operator
-  //  //*************************************************************************
-  //  friend bool operator !=(const unaligned_type& lhs, const unaligned_type& rhs)
-  //  {
-  //    return !(lhs == rhs);
-  //  }
-
-  //  //*************************************************************************
-  //  /// Conversion operator
-  //  //*************************************************************************
-  //  operator T() const
-  //  {
-  //    T value;
-
-  //    memcpy(&value, storage, Size);
-
-  //    return value;
-  //  }
-
-  //private:
-
-  //  char storage[Size];
-  //};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  // Big Endian
+  typedef unaligned_type<char,               etl::endian::big> be_char_t;
+  typedef unaligned_type<signed char,        etl::endian::big> be_schar_t;
+  typedef unaligned_type<unsigned char,      etl::endian::big> be_uchar_t;
+  typedef unaligned_type<short,              etl::endian::big> be_short_t;
+  typedef unaligned_type<unsigned short,     etl::endian::big> be_ushort_t;
+  typedef unaligned_type<int,                etl::endian::big> be_int_t;
+  typedef unaligned_type<unsigned int,       etl::endian::big> be_uint_t;
+  typedef unaligned_type<long,               etl::endian::big> be_long_t;
+  typedef unaligned_type<unsigned long,      etl::endian::big> be_ulong_t;
+  typedef unaligned_type<long long,          etl::endian::big> be_long_long_t;
+  typedef unaligned_type<unsigned long long, etl::endian::big> be_ulong_long_t;
+#if ETL_USING_8BIT_TYPES
+  typedef unaligned_type<int8_t,             etl::endian::big> be_int8_t;
+  typedef unaligned_type<uint8_t,            etl::endian::big> be_uint8_t;
+#endif
+  typedef unaligned_type<int16_t,            etl::endian::big> be_int16_t;
+  typedef unaligned_type<uint16_t,           etl::endian::big> be_uint16_t;
+  typedef unaligned_type<int32_t,            etl::endian::big> be_int32_t;
+  typedef unaligned_type<uint32_t,           etl::endian::big> be_uint32_t;
+#if ETL_USING_64BIT_TYPES
+  typedef unaligned_type<int64_t,            etl::endian::big> be_int64_t;
+  typedef unaligned_type<uint64_t,           etl::endian::big> be_uint64_t;
+#endif
+  typedef unaligned_type<float,              etl::endian::big> be_float_t;
+  typedef unaligned_type<double,             etl::endian::big> be_double_t;
+  typedef unaligned_type<long double,        etl::endian::big> be_long_double_t;
 
   // Network Order
-  typedef unaligned_type<char,               etl::endian::big> net_char_t;
-  typedef unaligned_type<signed char,        etl::endian::big> net_schar_t;
-  typedef unaligned_type<unsigned char,      etl::endian::big> net_uchar_t;
-  typedef unaligned_type<short,              etl::endian::big> net_shor_t;
-  typedef unaligned_type<unsigned short,     etl::endian::big> net_unsigned_shor_t;
-  typedef unaligned_type<int,                etl::endian::big> net_in_t;
-  typedef unaligned_type<unsigned int,       etl::endian::big> net_unsigned_in_t;
-  typedef unaligned_type<long,               etl::endian::big> net_long_t;
-  typedef unaligned_type<unsigned long,      etl::endian::big> net_unsigned_long_t;
-  typedef unaligned_type<long long,          etl::endian::big> net_long_long_t;
-  typedef unaligned_type<unsigned long long, etl::endian::big> net_unsigned_long_long_t;
-#if ETL_8BIT_SUPPORT
-  typedef unaligned_type<int8_t,             etl::endian::big> net_int8_t;
-  typedef unaligned_type<uint8_t,            etl::endian::big> net_uint8_t;
+  typedef be_char_t        net_char_t;
+  typedef be_schar_t       net_schar_t;
+  typedef be_uchar_t       net_uchar_t;
+  typedef be_short_t       net_short_t;
+  typedef be_ushort_t      net_ushort_t;
+  typedef be_int_t         net_int_t;
+  typedef be_uint_t        net_uint_t;
+  typedef be_long_t        net_long_t;
+  typedef be_ulong_t       net_ulong_t;
+  typedef be_long_long_t   net_long_long_t;
+  typedef be_ulong_long_t  net_ulong_long_t;
+#if ETL_USING_8BIT_TYPES
+  typedef be_int8_t        net_int8_t;
+  typedef be_uint8_t       net_uint8_t;
 #endif
-  typedef unaligned_type<int16_t,            etl::endian::big> net_int16_t;
-  typedef unaligned_type<uint16_t,           etl::endian::big> net_uint16_t;
-  typedef unaligned_type<int32_t,            etl::endian::big> net_int32_t;
-  typedef unaligned_type<uint32_t,           etl::endian::big> net_uint32_t;
+  typedef be_int16_t       net_int16_t;
+  typedef be_uint16_t      net_uint16_t;
+  typedef be_int32_t       net_int32_t;
+  typedef be_uint32_t      net_uint32_t;
 #if ETL_USING_64BIT_TYPES
-  typedef unaligned_type<int64_t,            etl::endian::big> net_int64_t;
-  typedef unaligned_type<uint64_t,           etl::endian::big> net_uint64_t;
+  typedef be_int64_t       net_int64_t;
+  typedef be_uint64_t      net_uint64_t;
 #endif
-  typedef unaligned_type<float,              etl::endian::big> net_floa_t;
-  typedef unaligned_type<double,             etl::endian::big> net_double_t;
-  typedef unaligned_type<long double,        etl::endian::big> net_long_double_t;
-
-//#if ETL_CPP11_SUPPORTED
-//  // Host order
-//  typedef unaligned_type<char,               int(etl::endianness::get())> host_char_t;
-//  typedef unaligned_type<signed char,        etl::endianness::get()> host_schar_t;
-//  typedef unaligned_type<unsigned char,      etl::endianness::get()> host_uchar_t;
-//  typedef unaligned_type<short,              etl::endianness::get()> host_shor_t;
-//  typedef unaligned_type<unsigned short,     etl::endianness::get()> host_unsigned_shor_t;
-//  typedef unaligned_type<int,                etl::endianness::get()> host_in_t;
-//  typedef unaligned_type<unsigned int,       etl::endianness::get()> host_unsigned_in_t;
-//  typedef unaligned_type<long,               etl::endianness::get()> host_long_t;
-//  typedef unaligned_type<unsigned long,      etl::endianness::get()> host_unsigned_long_t;
-//  typedef unaligned_type<long long,          etl::endianness::get()> host_long_long_t;
-//  typedef unaligned_type<unsigned long long, etl::endianness::get()> host_unsigned_long_long_t;
-//#if ETL_8BIT_SUPPORT
-//  typedef unaligned_type<int8_t,             etl::endianness::get()> host_int8_t;
-//  typedef unaligned_type<uint8_t,            etl::endianness::get()> host_uint8_t;
-//#endif
-//  typedef unaligned_type<int16_t,            etl::endianness::get()> host_int16_t;
-//  typedef unaligned_type<uint16_t,           etl::endianness::get()> host_uint16_t;
-//  typedef unaligned_type<int32_t,            etl::endianness::get()> host_int32_t;
-//  typedef unaligned_type<uint32_t,           etl::endianness::get()> host_uint32_t;
-//#if ETL_USING_64BIT_TYPES
-//  typedef unaligned_type<int64_t,            etl::endianness::get()> host_int64_t;
-//  typedef unaligned_type<uint64_t,           etl::endianness::get()> host_uint64_t;
-//#endif
-//  typedef unaligned_type<float,              etl::endianness::get()> host_floa_t;
-//  typedef unaligned_type<double,             etl::endianness::get()> host_double_t;
-//  typedef unaligned_type<long double,        etl::endianness::get()> host_long_double_t;
-//#endif
-
-  //template <>
-  //unaligned_type<char, etl::endian::native>
+  typedef be_float_t       net_float_t;
+  typedef be_double_t      net_double_t;
+  typedef be_long_double_t net_long_double_t;
 
 #if ETL_CPP11_SUPPORTED
   template <typename T, int Endian>
@@ -311,7 +456,7 @@ namespace etl
 #endif
 
 #if ETL_CPP17_SUPPORTED
-  template <typename T>
+  template <typename T, int Endian>
   constexpr size_t unaligned_type_v = etl::unaligned_type<T, Endian>::Size;
 #endif
 }
