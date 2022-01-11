@@ -2166,6 +2166,7 @@
     <ClInclude Include="..\..\include\etl\u16string_stream.h" />
     <ClInclude Include="..\..\include\etl\u32format_spec.h" />
     <ClInclude Include="..\..\include\etl\u32string_stream.h" />
+    <ClInclude Include="..\..\include\etl\unaligned_type.h" />
     <ClInclude Include="..\..\include\etl\variance.h" />
     <ClInclude Include="..\..\include\etl\variant_pool.h" />
     <ClInclude Include="..\..\include\etl\version.h" />
