@@ -45,15 +45,8 @@ SOFTWARE.
 /// Constants & utilities for endianess
 ///\ingroup utilities
 
-#if !((!defined(ETL_ENDIAN_LITTLE) && !defined(ETL_ENDIAN_BIG) && !defined(ETL_ENDIAN_NATIVE)) || ((defined(ETL_ENDIAN_LITTLE) && defined(ETL_ENDIAN_BIG) && defined(ETL_ENDIAN_NATIVE))))
-  #error All three of ETL_ENDIAN_LITTLE, ETL_ENDIAN_BIG and ETL_ENDIAN_NATIVE must be defined
-#endif
-
-// Have we not already defined all of the macros?
-#if !defined(ETL_ENDIAN_LITTLE) || !defined(ETL_ENDIAN_BIG) || !defined(ETL_ENDIAN_NATIVE)
-  #undef ETL_ENDIAN_LITTLE
-  #undef ETL_ENDIAN_BIG
-  #undef ETL_ENDIAN_NATIVE
+// Have we not already defined ETL_ENDIAN_NATIVE?
+#if !defined(ETL_ENDIAN_NATIVE)
   // Can we use the C++20 definitions?
   #if ETL_CPP20_SUPPORTED && ETL_USING_STL
     #define ETL_ENDIAN_LITTLE std::endian::little
@@ -71,7 +64,14 @@ SOFTWARE.
       #define ETL_ENDIAN_BIG    __BIG_ENDIAN__
       #define ETL_ENDIAN_NATIVE __BYTE_ORDER__
     #endif
+  #else
+    // The user needs to define ETL_ENDIAN_NATIVE.
+    #error Unable to determine native endianness at compile time. ETL_ENDIAN_NATIVE must be defined either as 0 for 'little endian' or 1 for 'big endian'.
   #endif
+#else
+  // Default values for little and big endianness.
+  #define ETL_ENDIAN_LITTLE 0
+  #define ETL_ENDIAN_BIG    1
 #endif
 
 // If true, then the endianness of the platform can be constexpr.
@@ -85,28 +85,16 @@ namespace etl
   //***************************************************************************
   struct endian
   {
-#if defined(ETL_ENDIAN_NATIVE)
     enum enum_type
     {
       little  = static_cast<int>(ETL_ENDIAN_LITTLE),
       big     = static_cast<int>(ETL_ENDIAN_BIG),
       native  = static_cast<int>(ETL_ENDIAN_NATIVE),
-      unknown = INT_MAX
     };
-#else
-    enum enum_type
-    {
-      little,
-      big,
-      native,
-      unknown = native
-    };
-#endif
 
     ETL_DECLARE_ENUM_TYPE(endian, int)
     ETL_ENUM_TYPE(little,  "little")
     ETL_ENUM_TYPE(big,     "big")
-    ETL_ENUM_TYPE(unknown, "unknown")
     ETL_END_ENUM_TYPE
   };
 
@@ -155,98 +143,36 @@ namespace etl
   };
 
   //***************************************************************************
-  inline uint8_t ntoh(const uint8_t network)
-  {
-    return network;
-  }
-
-  //***************************************************************************
-  inline uint16_t ntoh(const uint16_t network)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value, T>::type
+    ntoh(T value)
   {
     if (endianness::value() == endian::little)
     {
-      return etl::reverse_bytes(network);
+      return etl::reverse_bytes(value);
     }
     else
     {
-      return network;
+      return value;
     }
   }
 
   //***************************************************************************
-  inline uint32_t ntoh(const uint32_t network)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value, T>::type
+    hton(T value)
   {
     if (endianness::value() == endian::little)
     {
-      return etl::reverse_bytes(network);
+      return etl::reverse_bytes(value);
     }
     else
     {
-      return network;
+      return value;
     }
   }
-
-#if ETL_USING_64BIT_TYPES
-  //***************************************************************************
-  inline uint64_t ntoh(const uint64_t network)
-  {
-    if (endianness::value() == endian::little)
-    {
-      return etl::reverse_bytes(network);
-    }
-    else
-    {
-      return network;
-    }
-  }
-#endif
-
-  //***************************************************************************
-  inline uint8_t hton(const uint8_t host)
-  {
-    return host;
-  }
-
-  //***************************************************************************
-  inline uint16_t hton(const uint16_t host)
-  {
-    if (endianness::value() == endian::little)
-    {
-      return etl::reverse_bytes(host);
-    }
-    else
-    {
-      return host;
-    }
-  }
-
-  //***************************************************************************
-  inline uint32_t hton(const uint32_t host)
-  {
-    if (endianness::value() == endian::little)
-    {
-      return etl::reverse_bytes(host);
-    }
-    else
-    {
-      return host;
-    }
-  }
-
-#if ETL_USING_64BIT_TYPES
-  //***************************************************************************
-  inline uint64_t hton(const uint64_t host)
-  {
-    if (endianness::value() == endian::little)
-    {
-      return etl::reverse_bytes(host);
-    }
-    else
-    {
-      return host;
-    }
-  }
-#endif
 }
 
 #endif
