@@ -58,14 +58,7 @@ namespace etl
   {
     TDestination destination;
 
-    const char* s  = &source;
-    char*       d  = &destination;
-    char* const de = d + sizeof(TDestination);
-
-    while (d != de)
-    {
-      *d++ = *s++;
-    }
+    memcpy(&destination, &source, sizeof(TDestination));
 
     return destination;
   }
