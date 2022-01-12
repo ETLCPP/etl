@@ -45,52 +45,210 @@ SOFTWARE.
 
 namespace etl
 {
+  namespace private_unaligned_type
+  {
+    //*************************************************************************
+    /// unaligned_type_common
+    /// Contains all functionality that doesn't require the type.
+    //*************************************************************************
+    template <size_t Size_>
+    class unaligned_type_common
+    {
+    public:
+
+      static ETL_CONSTANT size_t Size = Size_;
+
+      typedef char* pointer;
+      typedef const char* const_pointer;
+      typedef char* iterator;
+      typedef const char* const_iterator;
+      typedef etl::reverse_iterator<iterator>       reverse_iterator;
+      typedef etl::reverse_iterator<const_iterator> const_reverse_iterator;
+
+      //*************************************************************************
+      /// Default constructor
+      //*************************************************************************
+      unaligned_type_common()
+        : storage()
+      {
+      }
+
+      //*************************************************************************
+      /// Copy constructor
+      //*************************************************************************
+      unaligned_type_common(const unaligned_type_common& other)
+      {
+        memcpy(storage, other.storage, Size);
+      }
+
+      //*************************************************************************
+      /// Pointer to the beginning of the storage.
+      //*************************************************************************
+      pointer data()
+      {
+        return storage;
+      }
+
+      //*************************************************************************
+      /// Const pointer to the beginning of the storage.
+      //*************************************************************************
+      const_pointer data() const
+      {
+        return storage;
+      }
+
+      //*************************************************************************
+      /// Iterator to the beginning of the storage.
+      //*************************************************************************
+      iterator begin()
+      {
+        return iterator(storage);
+      }
+
+      //*************************************************************************
+      /// Const iterator to the beginning of the storage.
+      //*************************************************************************
+      const_iterator begin() const
+      {
+        return const_iterator(storage);
+      }
+
+      //*************************************************************************
+      /// Const iterator to the beginning of the storage.
+      //*************************************************************************
+      const_iterator cbegin() const
+      {
+        return const_iterator(storage);
+      }
+
+      //*************************************************************************
+      /// Reverse iterator to the beginning of the storage.
+      //*************************************************************************
+      reverse_iterator rbegin()
+      {
+        return reverse_iterator(storage + Size);
+      }
+
+      //*************************************************************************
+      /// Const reverse iterator to the beginning of the storage.
+      //*************************************************************************
+      const_reverse_iterator rbegin() const
+      {
+        return const_reverse_iterator(storage + Size);
+      }
+
+      //*************************************************************************
+      /// Const reverse iterator to the beginning of the storage.
+      //*************************************************************************
+      const_reverse_iterator crbegin() const
+      {
+        return const_reverse_iterator(storage + Size);
+      }
+
+      //*************************************************************************
+      /// Iterator to the end of the storage.
+      //*************************************************************************
+      iterator end()
+      {
+        return iterator(storage + Size);
+      }
+
+      //*************************************************************************
+      /// Const iterator to the end of the storage.
+      //*************************************************************************
+      const_iterator end() const
+      {
+        return const_iterator(storage + Size);
+      }
+
+      //*************************************************************************
+      /// Const iterator to the end of the storage.
+      //*************************************************************************
+      const_iterator cend() const
+      {
+        return const_iterator(storage + Size);
+      }
+
+      //*************************************************************************
+      /// Reverse iterator to the end of the storage.
+      //*************************************************************************
+      reverse_iterator rend()
+      {
+        return reverse_iterator(storage);
+      }
+
+      //*************************************************************************
+      /// Const reverse iterator to the end of the storage.
+      //*************************************************************************
+      const_reverse_iterator rend() const
+      {
+        return const_reverse_iterator(storage);
+      }
+
+      //*************************************************************************
+      /// Const reverse iterator to the end of the storage.
+      //*************************************************************************
+      const_reverse_iterator crend() const
+      {
+        return const_reverse_iterator(storage);
+      }
+
+      //*************************************************************************
+      /// Index operator.
+      //*************************************************************************
+      char& operator[](int i)
+      {
+        return storage[i];
+      }
+
+      //*************************************************************************
+      /// Const index operator.
+      //*************************************************************************
+      const char& operator[](int i) const
+      {
+        return storage[i];
+      }
+
+    protected:
+
+      char storage[Size];
+    };
+  }
+
+  //*************************************************************************
+  /// unaligned_type
+  //*************************************************************************
   template <typename T, int Endian_>
-  class unaligned_type
+  class unaligned_type : public private_unaligned_type::unaligned_type_common<sizeof(T)>
   {
   public:
 
     ETL_STATIC_ASSERT(etl::is_fundamental<T>::value, "Unaligned type must be fundamental");
 
-    typedef T                                     type;
-    typedef char*                                 pointer;
-    typedef const char*                           const_pointer;
-    typedef char*                                 iterator;
-    typedef const char*                           const_iterator;
-    typedef etl::reverse_iterator<iterator>       reverse_iterator;
-    typedef etl::reverse_iterator<const_iterator> const_reverse_iterator;
+    typedef T value_type;
 
-    static ETL_CONSTANT size_t Size   = sizeof(T);
-    static ETL_CONSTANT int    Endian = Endian_;
+    static ETL_CONSTANT int Endian  = Endian_;
+    static ETL_CONSTANT size_t Size = private_unaligned_type::unaligned_type_common<sizeof(T)>::Size;
 
     //*************************************************************************
     /// Default constructor
     //*************************************************************************
     unaligned_type()
-      : storage()
     {
     }
 
     //*************************************************************************
-    /// Constructor
+    /// Construct from a value.
     //*************************************************************************
     unaligned_type(T value)
     {
+      memcpy(this->storage, &value, Size);
+
       // Not same as host?
       if (Endian != etl::endianness::value())
       {
-        value = etl::reverse_bytes(value);
+        etl::reverse(this->storage, this->storage + Size);
       }
-
-      memcpy(storage, &value, Size);
-    }
-
-    //*************************************************************************
-    /// Copy constructor
-    //*************************************************************************
-    unaligned_type(const unaligned_type& other)
-    {
-      memcpy(storage, other.storage, Size);
     }
 
     //*************************************************************************
@@ -99,23 +257,13 @@ namespace etl
     template <int Endian_Other>
     unaligned_type(const unaligned_type<T, Endian_Other>& other)
     {
-      memcpy(storage, other.data(), Size);
+      memcpy(this->storage, other.data(), Size);
 
-      // Not same?
+      // Not same as the other type?
       if (Endian != Endian_Other)
       {
-        etl::reverse(storage, storage + Size);
+        etl::reverse(this->storage, this->storage + Size);
       }
-    }
-
-    //*************************************************************************
-    /// Assignment operator
-    //*************************************************************************
-    unaligned_type& operator =(const unaligned_type& other)
-    {
-      memcpy(storage, other.storage, Size);
-
-      return *this;
     }
 
     //*************************************************************************
@@ -123,13 +271,13 @@ namespace etl
     //*************************************************************************
     unaligned_type& operator =(T value)
     {
+      memcpy(this->storage, &value, Size);
+
       // Not same as host?
       if (Endian != etl::endianness::value())
       {
-        value = etl::reverse_bytes(value);
+        etl::reverse(this->storage, this->storage + Size);
       }
-
-      memcpy(storage, &value, Size);
 
       return *this;
     }
@@ -140,12 +288,12 @@ namespace etl
     template <int Endian_Other>
     unaligned_type& operator =(const unaligned_type<T, Endian_Other>& other)
     {
-      memcpy(storage, other.data(), Size);
+      memcpy(this->storage, other.data(), Size);
 
       // Not same?
       if (Endian != Endian_Other)
       {
-        etl::reverse(storage, storage + Size);
+        etl::reverse(this->storage, this->storage + Size);
       }
 
       return *this;
@@ -180,7 +328,7 @@ namespace etl
     //*************************************************************************
     /// Inequality operator
     //*************************************************************************
-    friend bool operator !=(const unaligned_type& lhs, const unaligned_type& rhs)
+    friend bool operator !=(const unaligned_type& lhs, T rhs)
     {
       return !(lhs == rhs);
     }
@@ -188,7 +336,7 @@ namespace etl
     //*************************************************************************
     /// Inequality operator
     //*************************************************************************
-    friend bool operator !=(const unaligned_type& lhs, T rhs)
+    friend bool operator !=(const unaligned_type& lhs, const unaligned_type& rhs)
     {
       return !(lhs == rhs);
     }
@@ -208,7 +356,7 @@ namespace etl
     {
       T value;
 
-      memcpy(&value, storage, Size);
+      memcpy(&value, this->storage, Size);
 
       // Same as host?
       if (Endian != etl::endianness::value())
@@ -218,122 +366,6 @@ namespace etl
 
       return value;
     }
-
-    //*************************************************************************
-    /// Pointer to the beginning of the storage.
-    //*************************************************************************
-    pointer data()
-    {
-      return storage;
-    }
-
-    //*************************************************************************
-    /// Const pointer to the beginning of the storage.
-    //*************************************************************************
-    const_pointer data() const
-    {
-      return storage;
-    }
-
-    //*************************************************************************
-    /// Iterator to the beginning of the storage.
-    //*************************************************************************
-    iterator begin()
-    {
-      return iterator(storage);
-    }
-
-    //*************************************************************************
-    /// Const iterator to the beginning of the storage.
-    //*************************************************************************
-    const_iterator begin() const
-    {
-      return const_iterator(storage);
-    }
-
-    //*************************************************************************
-    /// Const iterator to the beginning of the storage.
-    //*************************************************************************
-    const_iterator cbegin() const
-    {
-      return const_iterator(storage);
-    }
-
-    //*************************************************************************
-    /// Reverse iterator to the beginning of the storage.
-    //*************************************************************************
-    reverse_iterator rbegin()
-    {
-      return reverse_iterator(storage + Size);
-    }
-
-    //*************************************************************************
-    /// Const reverse iterator to the beginning of the storage.
-    //*************************************************************************
-    const_reverse_iterator rbegin() const
-    {
-      return const_reverse_iterator(storage + Size);
-    }
-
-    //*************************************************************************
-    /// Const reverse iterator to the beginning of the storage.
-    //*************************************************************************
-    const_reverse_iterator crbegin() const
-    {
-      return const_reverse_iterator(storage + Size);
-    }
-
-    //*************************************************************************
-    /// Iterator to the end of the storage.
-    //*************************************************************************
-    iterator end()
-    {
-      return iterator(storage + Size);
-    }
-    
-    //*************************************************************************
-    /// Const iterator to the end of the storage.
-    //*************************************************************************
-    const_iterator end() const
-    {
-      return const_iterator(storage + Size);
-    }
-
-    //*************************************************************************
-    /// Const iterator to the end of the storage.
-    //*************************************************************************
-    const_iterator cend() const
-    {
-      return const_iterator(storage + Size);
-    }
-
-    //*************************************************************************
-    /// Reverse iterator to the end of the storage.
-    //*************************************************************************
-    reverse_iterator rend()
-    {
-      return reverse_iterator(storage);
-    }
-
-    //*************************************************************************
-    /// Const reverse iterator to the end of the storage.
-    //*************************************************************************
-    const_reverse_iterator rend() const
-    {
-      return const_reverse_iterator(storage);
-    }
-
-    //*************************************************************************
-    /// Const reverrse iterator to the end of the storage.
-    //*************************************************************************
-    const_reverse_iterator crend() const
-    {
-      return const_reverse_iterator(storage);
-    }
-
-  private:
-
-    char storage[Size];
   };
 
 #if ETL_ENDIANNESS_IS_CONSTEXPR

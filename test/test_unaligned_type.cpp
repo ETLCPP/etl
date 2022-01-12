@@ -639,5 +639,37 @@ namespace
       ++citr;
       CHECK(citr == const_test.crend());
     }
+
+    //*************************************************************************
+    TEST(test_index_operator)
+    {
+      etl::le_uint16_t       test_le(0x1234);
+      const etl::le_uint16_t const_test_le(0x1234);
+
+      etl::be_uint16_t       test_be(0x1234);
+      const etl::be_uint16_t const_test_be(0x1234);
+
+      CHECK_EQUAL(0x34, test_le[0]);
+      CHECK_EQUAL(0x12, test_le[1]);
+
+      test_le[0] = 0x56;
+      test_le[1] = 0x78;
+      CHECK_EQUAL(0x56, test_le[0]);
+      CHECK_EQUAL(0x78, test_le[1]);
+
+      CHECK_EQUAL(0x34, const_test_le[0]);
+      CHECK_EQUAL(0x12, const_test_le[1]);
+
+      CHECK_EQUAL(0x12, test_be[0]);
+      CHECK_EQUAL(0x34, test_be[1]);
+
+      test_be[0] = 0x56;
+      test_be[1] = 0x78;
+      CHECK_EQUAL(0x56, test_be[0]);
+      CHECK_EQUAL(0x78, test_be[1]);
+
+      CHECK_EQUAL(0x12, const_test_be[0]);
+      CHECK_EQUAL(0x34, const_test_be[1]);
+    }
   };
 }
