@@ -44,19 +44,6 @@ namespace
     double  d;
     uint8_t c;
   };
-
-  //bool operator ==(const Object& lhs, const Object& rhs)
-  //{
-  //  return (lhs.i == rhs.i) &&
-  //         (lhs.d == rhs.d) &&
-  //         (lhs.c == rhs.c);
-  //}
-
-  //std::ostream& operator << (std::ostream& os, const Object& object)
-  //{
-  //  os << object.i << "," << object.d << "," << (int)object.c;
-  //  return os;
-  //}
 }
 
 namespace etl
