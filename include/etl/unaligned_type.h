@@ -38,7 +38,6 @@ SOFTWARE.
 #include "platform.h"
 #include "type_traits.h"
 #include "endianness.h"
-#include "state_chart.h"
 #include "iterator.h"
 
 #include <string.h>
@@ -58,17 +57,17 @@ namespace etl
 
       static ETL_CONSTANT size_t Size = Size_;
 
-      typedef char* pointer;
-      typedef const char* const_pointer;
-      typedef char* iterator;
-      typedef const char* const_iterator;
+      typedef char*                                 pointer;
+      typedef const char*                           const_pointer;
+      typedef char*                                 iterator;
+      typedef const char*                           const_iterator;
       typedef etl::reverse_iterator<iterator>       reverse_iterator;
       typedef etl::reverse_iterator<const_iterator> const_reverse_iterator;
 
       //*************************************************************************
       /// Default constructor
       //*************************************************************************
-      unaligned_type_common()
+      ETL_CONSTEXPR unaligned_type_common()
         : storage()
       {
       }
@@ -92,9 +91,17 @@ namespace etl
       //*************************************************************************
       /// Const pointer to the beginning of the storage.
       //*************************************************************************
-      const_pointer data() const
+      ETL_CONSTEXPR const_pointer data() const
       {
         return storage;
+      }
+
+      //*************************************************************************
+      /// Const pointer to the beginning of the storage.
+      //*************************************************************************
+      ETL_CONSTEXPR size_t size() const
+      {
+        return Size;
       }
 
       //*************************************************************************
@@ -108,7 +115,7 @@ namespace etl
       //*************************************************************************
       /// Const iterator to the beginning of the storage.
       //*************************************************************************
-      const_iterator begin() const
+      ETL_CONSTEXPR const_iterator begin() const
       {
         return const_iterator(storage);
       }
@@ -116,7 +123,7 @@ namespace etl
       //*************************************************************************
       /// Const iterator to the beginning of the storage.
       //*************************************************************************
-      const_iterator cbegin() const
+      ETL_CONSTEXPR const_iterator cbegin() const
       {
         return const_iterator(storage);
       }
@@ -156,7 +163,7 @@ namespace etl
       //*************************************************************************
       /// Const iterator to the end of the storage.
       //*************************************************************************
-      const_iterator end() const
+      ETL_CONSTEXPR const_iterator end() const
       {
         return const_iterator(storage + Size);
       }
@@ -164,7 +171,7 @@ namespace etl
       //*************************************************************************
       /// Const iterator to the end of the storage.
       //*************************************************************************
-      const_iterator cend() const
+      ETL_CONSTEXPR const_iterator cend() const
       {
         return const_iterator(storage + Size);
       }
@@ -204,7 +211,7 @@ namespace etl
       //*************************************************************************
       /// Const index operator.
       //*************************************************************************
-      const char& operator[](int i) const
+      ETL_CONSTEXPR const char& operator[](int i) const
       {
         return storage[i];
       }
@@ -233,7 +240,7 @@ namespace etl
     //*************************************************************************
     /// Default constructor
     //*************************************************************************
-    unaligned_type()
+    ETL_CONSTEXPR unaligned_type()
     {
     }
 
