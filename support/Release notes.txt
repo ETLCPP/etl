@@ -1,4 +1,17 @@
 ===============================================================================
+20.23.0
+Added etl::unaligned_type for fundamental types.
+Added reverse engineered functionality from C++20 <bit>.
+Added etl::midpoint and etl::lerp
+Recoded etl::endian & etl::endianness to allow constexpr in certain configurations.
+Moved void_t definition.
+Renamed 8bit check macro.
+Updated tests to support C++20 STL.
+Modified C++ language level detection.
+Added all permutations of leading/trailing bit tests.
+etl::iterator is more SFINAE compatible.
+
+===============================================================================
 20.22.0
 Split callback and message timer to atomic and locked interrupt versions.
 #480 Fixed: Double formatting with precision > 9
