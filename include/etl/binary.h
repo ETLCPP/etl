@@ -511,7 +511,7 @@ namespace etl
   {
     value = ((value & 0xAAU) >> 1U) | ((value & 0x55U) << 1U);
     value = ((value & 0xCCU) >> 2U) | ((value & 0x33U) << 2U);
-    value = (value >> 4U) | (value << 4U);
+    value = (value >> 4U) | ((value & 0x0FU) << 4U);
 
     return value;
   }
@@ -527,7 +527,7 @@ namespace etl
 
   public:
 
-    static ETL_CONSTANT uint8_t value = uint8_t((value2 >> 4U) | (value2 << 4U));
+    static ETL_CONSTANT uint8_t value = uint8_t((value2 >> 4U) | ((value2 & 0x0FU) << 4U));
   };
 
   //***********************************
@@ -541,7 +541,7 @@ namespace etl
 
   public:
 
-    static ETL_CONSTANT int8_t value = int8_t((value2 >> 4U) | (value2 << 4U));
+    static ETL_CONSTANT int8_t value = int8_t((value2 >> 4U) | ((value2 & 0x0FU) << 4U));
   };
 #endif
 
@@ -557,7 +557,7 @@ namespace etl
     value = ((value & 0xAAAAU) >> 1U) | ((value & 0x5555U) << 1U);
     value = ((value & 0xCCCCU) >> 2U) | ((value & 0x3333U) << 2U);
     value = ((value & 0xF0F0U) >> 4U) | ((value & 0x0F0FU) << 4U);
-    value = (value >> 8U) | (value << 8U);
+    value = (value >> 8U) | ((value & 0xFFU) << 8U);
 
     return value;
   }
@@ -574,7 +574,7 @@ namespace etl
 
   public:
 
-    static ETL_CONSTANT uint16_t value = uint16_t((value3 >> 8U) | (value3 << 8U));
+    static ETL_CONSTANT uint16_t value = uint16_t((value3 >> 8U) | ((value3 & 0xFFU) << 8U));
   };
 
   //***********************************
@@ -589,7 +589,7 @@ namespace etl
 
   public:
 
-    static ETL_CONSTANT int16_t value = int16_t((value3 >> 8U) | (value3 << 8U));
+    static ETL_CONSTANT int16_t value = int16_t((value3 >> 8U) | ((value3 & 0xFFU) << 8U));
   };
 
   //***************************************************************************
@@ -605,7 +605,7 @@ namespace etl
     value = ((value & 0xCCCCCCCCUL) >>  2U) | ((value & 0x33333333UL) <<  2U);
     value = ((value & 0xF0F0F0F0UL) >>  4U) | ((value & 0x0F0F0F0FUL) <<  4U);
     value = ((value & 0xFF00FF00UL) >>  8U) | ((value & 0x00FF00FFUL) <<  8U);
-    value = (value >> 16U) | (value << 16U);
+    value = (value >> 16U) | ((value & 0xFFFFU) << 16U);
 
     return value;
   }
@@ -623,7 +623,7 @@ namespace etl
 
   public:
 
-    static ETL_CONSTANT uint32_t value = uint32_t((value4 >> 16U) | (value4 << 16U));
+    static ETL_CONSTANT uint32_t value = uint32_t((value4 >> 16U) | ((value4 & 0xFFFFU) << 16U));
   };
 
   //***********************************
@@ -639,7 +639,7 @@ namespace etl
 
   public:
 
-    static ETL_CONSTANT int32_t value = int32_t((value4 >> 16U) | (value4 << 16U));
+    static ETL_CONSTANT int32_t value = int32_t((value4 >> 16U) | ((value4 & 0xFFFFUL) << 16U));
   };
 
 #if ETL_USING_64BIT_TYPES
@@ -657,7 +657,7 @@ namespace etl
     value = ((value & 0xF0F0F0F0F0F0F0F0ULL) >>  4U) | ((value & 0x0F0F0F0F0F0F0F0FULL) <<  4U);
     value = ((value & 0xFF00FF00FF00FF00ULL) >>  8U) | ((value & 0x00FF00FF00FF00FFULL) <<  8U);
     value = ((value & 0xFFFF0000FFFF0000ULL) >> 16U) | ((value & 0x0000FFFF0000FFFFULL) << 16U);
-    value = (value >> 32U) | (value << 32U);
+    value = (value >> 32U) | ((value & 0xFFFFFFFFULL) << 32U);
 
     return value;
   }
@@ -676,7 +676,7 @@ namespace etl
 
   public:
 
-    static ETL_CONSTANT uint64_t value = uint64_t((value5 >> 32U) | (value5 << 32U));
+    static ETL_CONSTANT uint64_t value = uint64_t((value5 >> 32U) | ((value5 & 0xFFFFFFFFULL) << 32U));
   };
 
   //***********************************
@@ -693,7 +693,7 @@ namespace etl
 
   public:
 
-    static ETL_CONSTANT int64_t value = int64_t((value5 >> 32U) | (value5 << 32U));
+    static ETL_CONSTANT int64_t value = int64_t((value5 >> 32U) | ((value5 & 0xFFFFFFFFULL) << 32U));
   };
 #endif
 

@@ -79,10 +79,6 @@ SOFTWARE.
   #define ETL_CPP20_SUPPORTED 0
 #endif
 
-#if !ETL_CPP20_SUPPORTED && !defined(ETL_NO_STL)
-  #define ETL_ENDIAN_NATIVE 0
-#endif
-
 //#define ETL_POLYMORPHIC_CONTAINERS
 
 //#define ETL_MESSAGES_ARE_VIRTUAL
@@ -145,6 +141,10 @@ SOFTWARE.
   #define ETL_TARGET_OS_LINUX
 #else
   #define ETL_TARGET_OS_GENERIC
+#endif
+
+#if ETL_CPP20_NOT_SUPPORTED || !defined(ETL_NO_STL)
+  #define ETL_ENDIAN_NATIVE 0
 #endif
 
 #endif

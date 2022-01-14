@@ -97,7 +97,7 @@ namespace etl
       }
 
       //*************************************************************************
-      /// Const pointer to the beginning of the storage.
+      /// Size of the storage.
       //*************************************************************************
       ETL_CONSTEXPR size_t size() const
       {

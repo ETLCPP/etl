@@ -36,6 +36,7 @@ SOFTWARE.
 
 #include "file_error_numbers.h"
 
+//*************************************
 // Define a debug macro
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(ETL_DEBUG) 
   #define ETL_DEBUG
@@ -46,6 +47,7 @@ SOFTWARE.
 #define ETL_PLATFORM_32BIT (UINT32_MAX == UINTPTR_MAX)
 #define ETL_PLATFORM_64BIT (UINT64_MAX == UINTPTR_MAX)
 
+//*************************************
 // Include the user's profile definition.
 #if !defined(ETL_NO_PROFILE_HEADER) && defined(__has_include)
   #if !__has_include("etl_profile.h")
@@ -57,6 +59,7 @@ SOFTWARE.
   #include "etl_profile.h"
 #endif
 
+//*************************************
 // Helper macros, so we don't have to use double negatives.
 // The ETL will use the STL, unless ETL_NO_STL is defined.
 // With this macro we can use '#if ETL_USING_STL' instead of '#if !ETL_NO_STL' in the code.
@@ -68,6 +71,7 @@ SOFTWARE.
   #define ETL_NOT_USING_STL 0
 #endif
 
+//*************************************
 // Helper macros for ETL_STLPORT.
 #if defined(ETL_STLPORT)
   #define ETL_USING_STLPORT     1
@@ -77,6 +81,7 @@ SOFTWARE.
   #define ETL_NOT_USING_STLPORT 1
 #endif
 
+//*************************************
 // Some targets do not support 8bit types.
 #if (CHAR_BIT == 8)
   #define ETL_USING_8BIT_TYPES     1
@@ -88,6 +93,7 @@ SOFTWARE.
 
 #define ETL_8BIT_SUPPORT (CHAR_BIT == 8) // Deprecated
 
+//*************************************
 // Helper macro for ETL_NO_64BIT_TYPES.
 #if defined(ETL_NO_64BIT_TYPES)
   #define ETL_USING_64BIT_TYPES     0
@@ -97,13 +103,16 @@ SOFTWARE.
   #define ETL_NOT_USING_64BIT_TYPES 0
 #endif
 
+//*************************************
 // Figure out things about the compiler, if haven't already done so in etl_profile.h
 #include "profiles/determine_compiler_version.h"
 #include "profiles/determine_compiler_language_support.h"
 
+//*************************************
 // See if we can determine the OS we're compiling on, if haven't already done so in etl_profile.h
 #include "profiles/determine_development_os.h"
 
+//*************************************
 // Figure out if we can use the standard library <new> header, if haven't already done so in etl_profile.h
 #if !defined(ETL_USING_STD_NEW)
   #if defined(__has_include)
@@ -115,6 +124,7 @@ SOFTWARE.
   #endif
 #endif
 
+//*************************************
 // Option to force string construction from a character pointer to be explicit.
 #if defined(ETL_FORCE_EXPLICIT_STRING_CONVERSION_FROM_CHAR)
   #define ETL_EXPLICIT_STRING_FROM_CHAR explicit
@@ -122,6 +132,7 @@ SOFTWARE.
   #define ETL_EXPLICIT_STRING_FROM_CHAR
 #endif
 
+//*************************************
 // Option to disable truncation checks for strings.
 #if defined(ETL_DISABLE_STRING_TRUNCATION_CHECKS)
   #define ETL_STRING_TRUNCATION_CHECKS_ENABLED 0
@@ -129,6 +140,7 @@ SOFTWARE.
   #define ETL_STRING_TRUNCATION_CHECKS_ENABLED 1
 #endif
 
+//*************************************
 // Option to disable clear-after-use functionality for strings.
 #if defined(ETL_DISABLE_STRING_CLEAR_AFTER_USE)
   #define ETL_STRING_CLEAR_AFTER_USE_ENABLED 0
@@ -136,6 +148,7 @@ SOFTWARE.
   #define ETL_STRING_CLEAR_AFTER_USE_ENABLED 1
 #endif
 
+//*************************************
 // The macros below are dependent on the profile.
 // C++11
 #if ETL_CPP11_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
@@ -168,6 +181,7 @@ SOFTWARE.
   #define ETL_MOVE(x) x
 #endif
 
+//*************************************
 // C++14
 #if ETL_CPP14_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
   #define ETL_CONSTEXPR14 constexpr
@@ -179,6 +193,7 @@ SOFTWARE.
   #define ETL_DEPRECATED_REASON(reason)
 #endif
 
+//*************************************
 // C++17
 #if ETL_CPP17_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
   #define ETL_CONSTEXPR17 constexpr
@@ -196,6 +211,7 @@ SOFTWARE.
   #define ETL_INLINE_VAR
 #endif
 
+//*************************************
 // C++20
 #if ETL_CPP20_SUPPORTED && !defined(ETL_FORCE_NO_ADVANCED_CPP)
   #define ETL_LIKELY [[likely]]
@@ -221,6 +237,7 @@ SOFTWARE.
   #endif
 #endif
 
+//*************************************
 // Determine if the ETL can use std::array
 #if !defined(ETL_HAS_STD_ARRAY)
   #if ETL_CPP11_SUPPORTED && ETL_USING_STL
@@ -230,6 +247,7 @@ SOFTWARE.
   #endif
 #endif
 
+//*************************************
 // Determine if the ETL should support atomics.
 #if defined(ETL_NO_ATOMICS) || \
     defined(ETL_TARGET_DEVICE_ARM_CORTEX_M0) || \
@@ -247,6 +265,7 @@ SOFTWARE.
   #endif
 #endif
 
+//*************************************
 // Sort out namespaces for STL/No STL options.
 #include "private/choose_namespace.h"
 
