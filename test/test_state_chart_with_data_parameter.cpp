@@ -463,18 +463,34 @@ namespace
       // Send Start event.
       motorControl.process_event(EventId::START, 1);
 
+      int state = int(motorControl.get_state_id());
+      int check = StateId::RUNNING;
+
       // Now in Running state.
 
+      // Send abort event.
       motorControl.process_event(EventId::ABORT, 2);
-      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
+
+      state = int(motorControl.get_state_id());
+      check = StateId::IDLE;
+
+      CHECK_EQUAL(check, state);
+      //CHECK_EQUAL(StateId::IDLE, state);
+      //CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
 
       // Send Start event.
       motorControl.process_event(EventId::START, 3);
 
       // Now in Running state.
 
+      state = int(motorControl.get_state_id());
+      check = StateId::RUNNING;
+
       // Send Stop event.
       motorControl.process_event(EventId::STOP, 4);
+
+      state = int(motorControl.get_state_id());
+      check = StateId::WINDING_DOWN;
 
       // Now in WindingDown state.
       motorControl.process_event(EventId::ABORT, 5);

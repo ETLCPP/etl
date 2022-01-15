@@ -496,6 +496,7 @@ namespace
 
       // Now in Running state.
 
+      // Send abort event.
       motorControl.process_event(EventId::ABORT, Data(2));
       CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
 
