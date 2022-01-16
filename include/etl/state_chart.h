@@ -40,10 +40,21 @@ SOFTWARE.
 
 namespace etl
 {
-  namespace private_state_chart
+  //***************************************************************************
+  /// Simple Finite State Machine Types
+  //***************************************************************************
+  class istate_chart
   {
+  public:
+
     typedef uint_least8_t state_id_t;
     typedef uint_least8_t event_id_t;
+  };
+
+  namespace private_state_chart
+  {
+    typedef istate_chart::state_id_t state_id_t;
+    typedef istate_chart::event_id_t event_id_t;
 
     //*************************************************************************
     /// Transition definition
@@ -148,35 +159,6 @@ namespace etl
     };
   }
 
-  //*************************************************************************
-  /// istate_chart
-  //*************************************************************************
-  class istate_chart
-  {
-  public:
-
-    typedef private_state_chart::state_id_t state_id_t;
-    typedef private_state_chart::event_id_t event_id_t;
-
-    //*************************************************************************
-    /// Gets the current state id.
-    /// \return The current state id.
-    //*************************************************************************
-    state_id_t get_state_id() const
-    {
-      return current_state_id;
-    }
-
-  protected:
-
-    istate_chart(state_id_t current_state_id_)
-      : current_state_id(current_state_id_)
-    {
-    }
-
-    state_id_t current_state_id; ///< The current state id.
-  };
-
   //***************************************************************************
   /// Simple Finite State Machine
   /// Data parameter for events.
@@ -186,7 +168,8 @@ namespace etl
   {
   public:
 
-    typedef TParameter parameter_t;  
+    typedef TParameter parameter_t;
+
     typedef etl::delegate<void(const event_id_t, parameter_t)> delegate_t;
     typedef private_state_chart::transition<TObject, parameter_t> transition;
     typedef private_state_chart::state<TObject> state;
@@ -202,7 +185,7 @@ namespace etl
                               const transition* const transition_table_begin_,
                               const transition* const transition_table_end_,
                               const state_id_t        state_id_)
-      : istate_chart(state_id_),
+      : current_state_id(state_id_),
         object(object_),
         transition_table_begin(transition_table_begin_),
         state_table_begin(ETL_NULLPTR),
@@ -227,7 +210,7 @@ namespace etl
                               const state* const       state_table_begin_,
                               const state* const       state_table_end_,
                               const state_id_t         state_id_)
-      : istate_chart(state_id_),
+      : current_state_id(state_id_),
         object(object_),
         transition_table_begin(transition_table_begin_),
         state_table_begin(state_table_begin_),
@@ -407,6 +390,15 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Gets the current state id.
+    /// \return The current state id.
+    //*************************************************************************
+    state_id_t get_state_id() const
+    {
+      return current_state_id;
+    }
+
+    //*************************************************************************
     /// Get a delegate to the process_event function.
     //*************************************************************************
     delegate_t get_process_event_delegate()
@@ -471,6 +463,7 @@ namespace etl
     const state*      state_table_begin;      ///< The start of the table of states.
     uint_least8_t     transition_table_size;  ///< The size of the table of transitions.
     uint_least8_t     state_table_size;       ///< The size of the table of states.
+    state_id_t        current_state_id;       ///< The current state id.
     bool              started;                ///< Set if the state chart has been started.
   };
 
@@ -497,7 +490,7 @@ namespace etl
                               const transition* transition_table_begin_,
                               const transition* transition_table_end_,
                               const state_id_t state_id_)
-      : istate_chart(state_id_),
+      : current_state_id(state_id_),
         object(object_),
         transition_table_begin(transition_table_begin_),
         state_table_begin(ETL_NULLPTR),
@@ -522,7 +515,7 @@ namespace etl
                               const state* state_table_begin_,
                               const state* state_table_end_,
                               const state_id_t state_id_)
-      : istate_chart(state_id_),
+      : current_state_id(state_id_),
         object(object_),
         transition_table_begin(transition_table_begin_),
         state_table_begin(state_table_begin_),
@@ -686,6 +679,15 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Gets the current state id.
+    /// \return The current state id.
+    //*************************************************************************
+    state_id_t get_state_id() const
+    {
+      return current_state_id;
+    }
+
+    //*************************************************************************
     /// Get a delegate to the process_event function.
     //*************************************************************************
     delegate_t get_process_event_delegate()
@@ -750,6 +752,7 @@ namespace etl
     const state*      state_table_begin;      ///< The start of the table of states.
     uint_least8_t     transition_table_size;  ///< The size of the table of transitions.
     uint_least8_t     state_table_size;       ///< The size of the table of states.
+    state_id_t        current_state_id;       ///< The current state id.
     bool              started;                ///< Set if the state chart has been started.
   };
 }
