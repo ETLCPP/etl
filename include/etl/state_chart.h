@@ -51,7 +51,7 @@ namespace etl
     typedef uint_least8_t event_id_t;
   };
 
-  namespace private_state_chart
+  namespace state_chart_types
   {
     typedef istate_chart::state_id_t state_id_t;
     typedef istate_chart::event_id_t event_id_t;
@@ -163,7 +163,14 @@ namespace etl
   /// Simple Finite State Machine
   /// Data parameter for events.
   //***************************************************************************
-  template <typename TObject, typename TParameter = void>
+  template <typename    TObject, 
+            typename    TParameter = void, 
+            void*       TObjectPtr = ETL_NULLPTR,
+            const void* TransitionListBegin = ETL_NULLPTR,
+            size_t      TransitionListSize = 0U,
+            const void* StateListBegin = ETL_NULLPTR,
+            size_t      StateListSize = 0U,
+            istate_chart::state_id_t InitialState = 0U>
   class state_chart : public istate_chart
   {
   public:
@@ -171,8 +178,8 @@ namespace etl
     typedef TParameter parameter_t;
 
     typedef etl::delegate<void(const event_id_t, parameter_t)> delegate_t;
-    typedef private_state_chart::transition<TObject, parameter_t> transition;
-    typedef private_state_chart::state<TObject> state;
+    typedef state_chart_types::transition<TObject, parameter_t> transition;
+    typedef state_chart_types::state<TObject> state;
 
     //*************************************************************************
     /// Constructor.
@@ -424,8 +431,8 @@ namespace etl
     struct is_transition
     {
       is_transition(event_id_t event_id_, state_id_t state_id_)
-        : event_id(event_id_),
-          state_id(state_id_)
+        : event_id(event_id_)
+        , state_id(state_id_)
       {
       }
 
@@ -471,13 +478,13 @@ namespace etl
   /// Simple Finite State Machine
   //***************************************************************************
   template <typename TObject>
-  class state_chart<TObject, void> : public istate_chart
+  class state_chart<TObject, void, ETL_NULLPTR, ETL_NULLPTR, 0U, ETL_NULLPTR, 0U, 0U> : public istate_chart
   {
   public:
 
     typedef etl::delegate<void(const event_id_t)> delegate_t;
-    typedef private_state_chart::transition<TObject, void> transition;
-    typedef private_state_chart::state<TObject> state;
+    typedef state_chart_types::transition<TObject, void> transition;
+    typedef state_chart_types::state<TObject> state;
 
     //*************************************************************************
     /// Constructor.
@@ -490,13 +497,13 @@ namespace etl
                               const transition* transition_table_begin_,
                               const transition* transition_table_end_,
                               const state_id_t state_id_)
-      : current_state_id(state_id_),
-        object(object_),
-        transition_table_begin(transition_table_begin_),
-        state_table_begin(ETL_NULLPTR),
-        transition_table_size(transition_table_end_ - transition_table_begin_),
-        state_table_size(0U),
-        started(false)
+      : current_state_id(state_id_)
+      , object(object_)
+      , transition_table_begin(transition_table_begin_)
+      , state_table_begin(ETL_NULLPTR)
+      , transition_table_size(transition_table_end_ - transition_table_begin_)
+      , state_table_size(0U)
+      , started(false)
     {
     }
 
@@ -515,13 +522,13 @@ namespace etl
                               const state* state_table_begin_,
                               const state* state_table_end_,
                               const state_id_t state_id_)
-      : current_state_id(state_id_),
-        object(object_),
-        transition_table_begin(transition_table_begin_),
-        state_table_begin(state_table_begin_),
-        transition_table_size(transition_table_end_ - transition_table_begin_),
-        state_table_size(state_table_end_ - state_table_begin_),
-        started(false)
+      : current_state_id(state_id_)
+      , object(object_)
+      , transition_table_begin(transition_table_begin_)
+      , state_table_begin(state_table_begin_)
+      , transition_table_size(transition_table_end_ - transition_table_begin_)
+      , state_table_size(state_table_end_ - state_table_begin_)
+      , started(false)
     {
     }
 
@@ -713,8 +720,8 @@ namespace etl
     struct is_transition
     {
       is_transition(event_id_t event_id_, state_id_t state_id_)
-        : event_id(event_id_),
-          state_id(state_id_)
+        : event_id(event_id_)
+        , state_id(state_id_)
       {
       }
 
@@ -754,6 +761,249 @@ namespace etl
     uint_least8_t     state_table_size;       ///< The size of the table of states.
     state_id_t        current_state_id;       ///< The current state id.
     bool              started;                ///< Set if the state chart has been started.
+  };
+
+  //***************************************************************************
+  /// Simple Finite State Machine
+  //***************************************************************************
+  template <typename    TObject,
+            void*       TObjectPtr,
+            const void* TransitionListBegin,
+            size_t      TransitionListSize,
+            const void* StateListBegin,
+            size_t      StateListSize,
+            istate_chart::state_id_t InitialState>
+  class state_chart<TObject, void, TObjectPtr, TransitionListBegin, TransitionListSize, StateListBegin, StateListSize, InitialState> : public istate_chart
+  {
+  public:
+
+    typedef etl::delegate<void(const event_id_t)> delegate_t;
+    typedef state_chart_types::transition<TObject, void> transition;
+    typedef state_chart_types::state<TObject> state;
+
+    //*************************************************************************
+    /// Constructor.
+    //*************************************************************************
+    ETL_CONSTEXPR state_chart()
+      : current_state_id(InitialState)
+      , started(false)
+    {
+    }
+
+    //*************************************************************************
+    /// Gets a const reference to the implementation object.
+    /// \return Const reference to the implementation object.
+    //*************************************************************************
+    TObject& get_object()
+    {
+      return *reinterpret_cast<TObject*>(TObjectPtr);
+    }
+
+    //*************************************************************************
+    /// Gets a const reference to the implementation object.
+    /// \return Const reference to the implementation object.
+    //*************************************************************************
+    const TObject& get_object() const
+    {
+      return *reinterpret_cast<const TObject*>(TObjectPtr);
+    }
+
+    //*************************************************************************
+    /// Gets the current state id.
+    /// \return The current state id.
+    //*************************************************************************
+    const state* find_state(state_id_t state_id)
+    {
+      if (StateListBegin == ETL_NULLPTR)
+      {
+        return state_table_end();
+      }
+      else
+      {
+        return etl::find_if(state_table_begin(),
+                            state_table_end(),
+                            is_state(state_id));
+      }
+    }
+
+    //*************************************************************************
+    /// Start the state chart.
+    //*************************************************************************
+    void start(const bool on_entry_initial = true)
+    {
+      if (!started)
+      {
+        if (on_entry_initial)
+        {
+          // See if we have a state item for the initial state.
+          const state* s = find_state(current_state_id);
+
+          // If the initial state has an 'on_entry' then call it.
+          if ((s != state_table_end()) && (s->on_entry != ETL_NULLPTR))
+          {
+            (get_object().*(s->on_entry))();
+          }
+        }
+
+        started = true;
+      }
+    }
+
+    //*************************************************************************
+    /// Processes the specified event.
+    /// The state machine will action the <b>first</b> item in the transition table
+    /// that satisfies the conditions for executing the action.
+    /// \param event_id The id of the event to process.
+    //*************************************************************************
+    void process_event(const event_id_t event_id)
+    {
+      if (started)
+      {
+        const transition* t = transition_table_begin();
+
+        // Keep looping until we execute a transition or reach the end of the table.
+        while (t != transition_table_end())
+        {
+          // Scan the transition table from the latest position.
+          t = etl::find_if(t,
+                           transition_table_end(),
+                           is_transition(event_id, current_state_id));
+
+          // Found an entry?
+          if (t != transition_table_end())
+          {
+            TObject& object = get_object();
+
+            // Shall we execute the transition?
+            if ((t->guard == ETL_NULLPTR) || ((object.*t->guard)()))
+            {
+              // Shall we execute the action?
+              if (t->action != ETL_NULLPTR)
+              {
+                (object.*t->action)();
+              }
+
+              // Changing state?
+              if (current_state_id != t->next_state_id)
+              {
+                const state* s;
+
+                // See if we have a state item for the current state.
+                s = find_state(current_state_id);
+
+                // If the current state has an 'on_exit' then call it.
+                if ((s != state_table_end()) && (s->on_exit != ETL_NULLPTR))
+                {
+                  (object.*(s->on_exit))();
+                }
+
+                current_state_id = t->next_state_id;
+
+                // See if we have a state item for the new state.
+                s = find_state(current_state_id);
+
+                // If the new state has an 'on_entry' then call it.
+                if ((s != state_table_end()) && (s->on_entry != ETL_NULLPTR))
+                {
+                  (object.*(s->on_entry))();
+                }
+              }
+
+              t = transition_table_end();
+            }
+            else
+            {
+              // Start the search from the next item in the table.
+              ++t;
+            }
+          }
+        }
+      }
+    }
+
+    //*************************************************************************
+    /// Gets the current state id.
+    /// \return The current state id.
+    //*************************************************************************
+    state_id_t get_state_id() const
+    {
+      return current_state_id;
+    }
+
+    //*************************************************************************
+    /// Get a delegate to the process_event function.
+    //*************************************************************************
+    delegate_t get_process_event_delegate()
+    {
+      return delegate_t::template create<state_chart<TObject, void, TObjectPtr, TransitionListBegin, TransitionListSize, StateListBegin, StateListSize, InitialState>, &state_chart<TObject, void, TObjectPtr, TransitionListBegin, TransitionListSize, StateListBegin, StateListSize, InitialState>::process_event>(*this);
+    }
+
+  private:
+
+    //*************************************************************************
+    const transition* const transition_table_begin() const
+    {
+      return reinterpret_cast<const transition* const>(TransitionListBegin);
+    }
+
+    //*************************************************************************
+    const transition* const transition_table_end() const
+    {
+      return reinterpret_cast<const transition* const>(TransitionListBegin) + TransitionListSize;
+    }
+
+    //*************************************************************************
+    const state* const state_table_begin() const
+    {
+      return reinterpret_cast<const state* const>(StateListBegin);
+    }
+
+    //*************************************************************************
+    const state* const state_table_end() const
+    {
+      return reinterpret_cast<const state* const>(StateListBegin) + StateListSize;
+    }
+
+    //*************************************************************************
+    struct is_transition
+    {
+      is_transition(event_id_t event_id_, state_id_t state_id_)
+        : event_id(event_id_)
+        , state_id(state_id_)
+      {
+      }
+
+      bool operator()(const transition& t) const
+      {
+        return (t.event_id == event_id) && (t.from_any_state || (t.current_state_id == state_id));
+      }
+
+      const event_id_t event_id;
+      const state_id_t state_id;
+    };
+
+    //*************************************************************************
+    struct is_state
+    {
+      is_state(state_id_t state_id_)
+        : state_id(state_id_)
+      {
+      }
+
+      bool operator()(const state& s) const
+      {
+        return (s.state_id == state_id);
+      }
+
+      const state_id_t state_id;
+    };
+
+    // Disabled
+    state_chart(const state_chart&) ETL_DELETE;
+    state_chart& operator =(const state_chart&) ETL_DELETE;
+
+    state_id_t current_state_id; ///< The current state id.
+    bool       started;          ///< Set if the state chart has been started.
   };
 }
 
