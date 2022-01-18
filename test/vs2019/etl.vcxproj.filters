@@ -3101,6 +3101,12 @@
     <ClCompile Include="..\test_unaligned_type.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_state_chart_compile_time.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_state_chart_compile_time_with_data_parameter.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">

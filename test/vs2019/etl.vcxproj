@@ -9457,6 +9457,8 @@
     <ClCompile Include="..\test_state_chart.cpp" />
     <ClCompile Include="..\test_smallest.cpp" />
     <ClCompile Include="..\test_stack.cpp" />
+    <ClCompile Include="..\test_state_chart_compile_time.cpp" />
+    <ClCompile Include="..\test_state_chart_compile_time_with_data_parameter.cpp" />
     <ClCompile Include="..\test_state_chart_with_data_parameter.cpp" />
     <ClCompile Include="..\test_state_chart_with_rvalue_data_parameter.cpp" />
     <ClCompile Include="..\test_string_utilities_std.cpp" />
