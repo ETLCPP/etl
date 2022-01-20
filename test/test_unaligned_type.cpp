@@ -223,7 +223,7 @@ namespace
         // long long
         CHECK(etl::le_long_long_t(0x0123456789ABCDEF) == etl::le_long_long_t(0x0123456789ABCDEF));
         CHECK((long long)(0x0123456789ABCDEF)         == etl::le_long_long_t(0x0123456789ABCDEF));
-        CHECK(etl::le_long_long_t(0x0123456789ABCDEF) == long long(0x0123456789ABCDEF));
+        CHECK(etl::le_long_long_t(0x0123456789ABCDEF) == (long long)(0x0123456789ABCDEF));
 
         CHECK(etl::le_ulong_long_t(0x0123456789ABCDEFU) == etl::le_ulong_long_t(0x0123456789ABCDEFU));
         CHECK((unsigned long long)(0x0123456789ABCDEFU) == etl::le_ulong_long_t(0x0123456789ABCDEFU));
@@ -281,8 +281,8 @@ namespace
       {
         // long long
         CHECK(etl::le_long_long_t(0x0123456789ABCDEF) != etl::le_long_long_t(0x0223456789ABCDEF));
-        CHECK(long long(0x0123456789ABCDEF)           != etl::le_long_long_t(0x0223456789ABCDEF));
-        CHECK(etl::le_long_long_t(0x0123456789ABCDEF) != long long(0x0223456789ABCDEF));
+        CHECK((long long)(0x0123456789ABCDEF)           != etl::le_long_long_t(0x0223456789ABCDEF));
+        CHECK(etl::le_long_long_t(0x0123456789ABCDEF) != (long long)(0x0223456789ABCDEF));
 
         CHECK(etl::le_ulong_long_t(0x0123456789ABCDEFU) != etl::le_ulong_long_t(0x0223456789ABCDEFU));
         CHECK((unsigned long long)(0x0123456789ABCDEFU) != etl::le_ulong_long_t(0x0223456789ABCDEFU));
@@ -340,8 +340,8 @@ namespace
       {
         // long long
         CHECK(etl::be_long_long_t(0x0123456789ABCDEF) == etl::be_long_long_t(0x0123456789ABCDEF));
-        CHECK(long long(0x0123456789ABCDEF)           == etl::be_long_long_t(0x0123456789ABCDEF));
-        CHECK(etl::be_long_long_t(0x0123456789ABCDEF) == long long(0x0123456789ABCDEF));
+        CHECK((long long)(0x0123456789ABCDEF)           == etl::be_long_long_t(0x0123456789ABCDEF));
+        CHECK(etl::be_long_long_t(0x0123456789ABCDEF) == (long long)(0x0123456789ABCDEF));
 
         CHECK(etl::be_ulong_long_t(0x0123456789ABCDEFU) == etl::be_ulong_long_t(0x0123456789ABCDEFU));
         CHECK((unsigned long long)(0x0123456789ABCDEFU) == etl::be_ulong_long_t(0x0123456789ABCDEFU));
@@ -399,8 +399,8 @@ namespace
       {
         // long long
         CHECK(etl::be_long_long_t(0x0123456789ABCDEF) != etl::be_long_long_t(0x0223456789ABCDEF));
-        CHECK(long long(0x0123456789ABCDEF)           != etl::be_long_long_t(0x0223456789ABCDEF));
-        CHECK(etl::be_long_long_t(0x0123456789ABCDEF) != long long(0x0223456789ABCDEF));
+        CHECK((long long)(0x0123456789ABCDEF)           != etl::be_long_long_t(0x0223456789ABCDEF));
+        CHECK(etl::be_long_long_t(0x0123456789ABCDEF) != (long long)(0x0223456789ABCDEF));
 
         CHECK(etl::be_ulong_long_t(0x0123456789ABCDEFU) != etl::be_ulong_long_t(0x0223456789ABCDEFU));
         CHECK((unsigned long long)(0x0123456789ABCDEFU) != etl::be_ulong_long_t(0x0223456789ABCDEFU));
