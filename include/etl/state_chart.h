@@ -165,6 +165,7 @@ namespace etl
     typedef state_chart_traits::event_id_t event_id_t;
 
     virtual void process_event(event_id_t, parameter_t) = 0;
+    virtual ~istate_chart() {}
   };
 
   //***************************************************************************
@@ -180,6 +181,7 @@ namespace etl
     typedef state_chart_traits::event_id_t event_id_t;
 
     virtual void process_event(event_id_t) = 0;
+    virtual ~istate_chart() {}
   };
 
   //***************************************************************************
@@ -187,23 +189,21 @@ namespace etl
   /// Compile time tables.
   /// Event has no parameter.
   //***************************************************************************
-  template <typename TObject, 
-            TObject& TObject_Ref,
+  template <typename                                                  TObject, 
+            TObject&                                                  TObject_Ref,
             const etl::state_chart_traits::transition<TObject, void>* Transition_Table_Begin,
-            size_t Transition_Table_Size,
-            const etl::state_chart_traits::state<TObject>* State_Table_Begin,
-            size_t State_Table_Size,
-            etl::state_chart_traits::state_id_t Initial_State>
+            size_t                                                    Transition_Table_Size,
+            const etl::state_chart_traits::state<TObject>*            State_Table_Begin,
+            size_t                                                    State_Table_Size,
+            etl::state_chart_traits::state_id_t                       Initial_State>
   class state_chart_ctv : public istate_chart<void>
   {
   public:  
 
-    using parameter_t = typename istate_chart<void>::parameter_t;
-    using state_id_t  = typename istate_chart<void>::state_id_t;
-    using event_id_t  = typename istate_chart<void>::event_id_t;
-
+    typedef void parameter_t;
+    typedef state_chart_traits::state_id_t state_id_t;
+    typedef state_chart_traits::event_id_t event_id_t;
     typedef state_chart_traits::transition<TObject, void> transition;
-
     typedef state_chart_traits::state<TObject> state;
 
     //*************************************************************************
@@ -391,30 +391,28 @@ namespace etl
   /// Compile time tables.
   /// Event has parameter.
   //***************************************************************************
-  template <typename TObject,
-            typename TParameter,
-            TObject& TObject_Ref,
+  template <typename                                                        TObject,
+            typename                                                        TParameter,
+            TObject&                                                        TObject_Ref,
             const etl::state_chart_traits::transition<TObject, TParameter>* Transition_Table_Begin,
-            size_t Transition_Table_Size,
-            const etl::state_chart_traits::state<TObject>* State_Table_Begin,
-            size_t State_Table_Size,
-            etl::state_chart_traits::state_id_t Initial_State>
-  class state_chart_ctp : public istate_chart<TParameter>
+            size_t                                                          Transition_Table_Size,
+            const etl::state_chart_traits::state<TObject>*                  State_Table_Begin,
+            size_t                                                          State_Table_Size,
+            etl::state_chart_traits::state_id_t                             Initial_State>
+  class state_chart_ct : public istate_chart<TParameter>
   {
   public:
 
-    using parameter_t = typename istate_chart<TParameter>::parameter_t;
-    using state_id_t  = typename istate_chart<TParameter>::state_id_t;
-    using event_id_t  = typename istate_chart<TParameter>::event_id_t;
-
+    typedef TParameter parameter_t;
+    typedef state_chart_traits::state_id_t state_id_t;
+    typedef state_chart_traits::event_id_t event_id_t;
     typedef state_chart_traits::transition<TObject, parameter_t> transition;
-
     typedef state_chart_traits::state<TObject> state;
 
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    ETL_CONSTEXPR state_chart_ctp()
+    ETL_CONSTEXPR state_chart_ct()
       : current_state_id(Initial_State)
       , started(false)
     {
@@ -588,8 +586,8 @@ namespace etl
     };
 
     // Disabled
-    state_chart_ctp(const state_chart_ctp&) ETL_DELETE;
-    state_chart_ctp& operator =(const state_chart_ctp&) ETL_DELETE;
+    state_chart_ct(const state_chart_ct&) ETL_DELETE;
+    state_chart_ct& operator =(const state_chart_ct&) ETL_DELETE;
 
     state_id_t current_state_id; ///< The current state id.
     bool       started;          ///< Set if the state chart has been started.
@@ -605,10 +603,9 @@ namespace etl
   {
   public:
 
-    using parameter_t = typename istate_chart<TParameter>::parameter_t;
-    using state_id_t  = typename istate_chart<TParameter>::state_id_t;
-    using event_id_t  = typename istate_chart<TParameter>::event_id_t;
-
+    typedef TParameter parameter_t;
+    typedef state_chart_traits::state_id_t state_id_t;
+    typedef state_chart_traits::event_id_t event_id_t;
     typedef state_chart_traits::transition<TObject, parameter_t> transition;
     typedef state_chart_traits::state<TObject> state;
 
@@ -870,10 +867,9 @@ namespace etl
   {
   public:
 
-    using parameter_t = typename istate_chart<void>::parameter_t;
-    using state_id_t  = typename istate_chart<void>::state_id_t;
-    using event_id_t  = typename istate_chart<void>::event_id_t;
-
+    typedef void parameter_t;
+    typedef state_chart_traits::state_id_t state_id_t;
+    typedef state_chart_traits::event_id_t event_id_t;
     typedef state_chart_traits::transition<TObject, void> transition;
     typedef state_chart_traits::state<TObject> state;
 

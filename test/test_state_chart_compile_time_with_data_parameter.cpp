@@ -238,7 +238,7 @@ namespace
 
   MotorControl motorControl;
 
-  etl::state_chart_ctp<MotorControl,
+  etl::state_chart_ct<MotorControl,
                        int,
                        motorControl,
                        transitionTable,
