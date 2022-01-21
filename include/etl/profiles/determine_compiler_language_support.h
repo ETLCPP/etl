@@ -37,17 +37,21 @@ SOFTWARE.
 
 // Determine C++20 support
 #if !defined(ETL_CPP20_SUPPORTED)
-#if defined(__cplusplus)
-#if defined(ETL_COMPILER_MICROSOFT)
-#define ETL_CPP20_SUPPORTED (_MSC_VER >= 1929)
-#elif defined(ETL_COMPILER_ARM5)
-#define ETL_CPP20_SUPPORTED 0
-#else
-#define ETL_CPP20_SUPPORTED (__cplusplus >= 202002L)
-#endif
-#else
-#define ETL_CPP20_SUPPORTED 0
-#endif
+  #if defined(__cplusplus)
+    #if defined(ETL_COMPILER_MICROSOFT)
+      #if defined(_MSVC_LANG)
+        #define ETL_CPP20_SUPPORTED (_MSVC_LANG >= 202002L)
+      #else
+        #define ETL_CPP20_SUPPORTED (_MSC_VER >= 1929)
+      #endif
+    #elif defined(ETL_COMPILER_ARM5)
+      #define ETL_CPP20_SUPPORTED 0
+    #else
+      #define ETL_CPP20_SUPPORTED (__cplusplus >= 202002L)
+    #endif
+  #else
+    #define ETL_CPP20_SUPPORTED 0
+  #endif
 #endif
 
 #if ETL_CPP20_SUPPORTED
@@ -60,7 +64,11 @@ SOFTWARE.
 #if !defined(ETL_CPP17_SUPPORTED)
   #if defined(__cplusplus)
     #if defined(ETL_COMPILER_MICROSOFT)
-      #define ETL_CPP17_SUPPORTED (_MSC_VER >= 1914)
+      #if defined(_MSVC_LANG)
+        #define ETL_CPP17_SUPPORTED (_MSVC_LANG >= 201703L)
+      #else
+        #define ETL_CPP17_SUPPORTED (_MSC_VER >= 1914)
+      #endif
     #elif defined(ETL_COMPILER_ARM5)
       #define ETL_CPP17_SUPPORTED 0
     #else
@@ -80,7 +88,11 @@ SOFTWARE.
 #if !defined(ETL_CPP14_SUPPORTED)
   #if defined(__cplusplus)
     #if defined(ETL_COMPILER_MICROSOFT)
-      #define ETL_CPP14_SUPPORTED (_MSC_VER >= 1900)
+      #if defined(_MSVC_LANG)
+        #define ETL_CPP14_SUPPORTED (_MSVC_LANG >= 201402L)
+      #else
+        #define ETL_CPP14_SUPPORTED (_MSC_VER >= 1900)
+      #endif
     #elif defined(ETL_COMPILER_ARM5)
       #define ETL_CPP14_SUPPORTED 0
     #else
@@ -99,7 +111,11 @@ SOFTWARE.
 #if !defined(ETL_CPP11_SUPPORTED)
   #if defined(__cplusplus)
     #if defined(ETL_COMPILER_MICROSOFT)
-      #define ETL_CPP11_SUPPORTED (_MSC_VER >= 1600)
+      #if defined(_MSVC_LANG)
+        #define ETL_CPP11_SUPPORTED (_MSVC_LANG >= 201103L)
+      #else
+        #define ETL_CPP11_SUPPORTED (_MSC_VER >= 1600)
+      #endif
     #elif defined(ETL_COMPILER_ARM5)
       #define ETL_CPP11_SUPPORTED 0
     #else
