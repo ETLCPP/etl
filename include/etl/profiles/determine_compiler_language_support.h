@@ -79,7 +79,7 @@ SOFTWARE.
 #endif
 
 // NAN not defined or Rowley CrossWorks
-#if !defined(NAN) || defined(__CROSSWORKS_ARM) || defined(ETL_COMPILER_ARM5)
+#if !defined(NAN) || defined(__CROSSWORKS_ARM) || defined(ETL_COMPILER_ARM5) || defined(ARDUINO)
   #define ETL_NO_CPP_NAN_SUPPORT
 #endif
 
