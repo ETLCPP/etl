@@ -1114,7 +1114,7 @@ namespace etl
     /// Returns a string representing the bitset.
     //*************************************************************************
     template<class STRINGT = etl::string<MAXN> >
-    STRINGT to_string(typename STRINGT::value_type zero = STRINGT::value_type('0'), typename STRINGT::value_type one = STRINGT::value_type('1')) const
+    STRINGT to_string(typename STRINGT::value_type zero = typename STRINGT::value_type('0'), typename STRINGT::value_type one = typename STRINGT::value_type('1')) const
     {
       STRINGT result;
 
