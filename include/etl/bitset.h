@@ -51,6 +51,7 @@ SOFTWARE.
 #include "static_assert.h"
 #include "error_handler.h"
 #include "span.h"
+#include "string.h"
 
 #include "private/minmax_push.h"
 
@@ -116,6 +117,20 @@ namespace etl
 
     bitset_type_too_small(string_type file_name_, numeric_type line_number_)
       : bitset_exception(ETL_ERROR_TEXT("bitset:type_too_small", ETL_BITSET_FILE_ID"B"), file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// Bitset overflow exception.
+  ///\ingroup bitset
+  //***************************************************************************
+  class bitset_overflow : public bitset_exception
+  {
+  public:
+
+    bitset_overflow(string_type file_name_, numeric_type line_number_)
+      : bitset_exception(ETL_ERROR_TEXT("bitset:overflow", ETL_BITSET_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -784,6 +799,47 @@ namespace etl
     }
 #endif
 
+    //*************************************************************************
+    /// to_ulong
+    /// Returns an unsigned long represented by the bitset data.
+    //*************************************************************************
+    unsigned long to_ulong() const
+    {
+      for (size_t i = sizeof(long) / sizeof(element_t); i < SIZE; ++i)
+        ETL_ASSERT(!(pdata[i]), ETL_ERROR(etl::bitset_overflow));
+
+      unsigned long out = 0;
+
+      for (size_t i = 0UL; i < SIZE; i++)
+      {
+        out += static_cast<unsigned long>(pdata[i] & ((i < SIZE - 1) ? ALL_SET : TOP_MASK)) << (BITS_PER_ELEMENT * i);
+      }
+
+      return out;
+    }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    /// to_ullong
+    /// Returns an unsigned long long represented by the bitset data.
+    //*************************************************************************
+    unsigned long long to_ullong() const
+    {
+        for (size_t i = sizeof(long long) / sizeof(element_t); i < SIZE; ++i)
+          ETL_ASSERT(!(pdata[i]), ETL_ERROR(etl::bitset_overflow));
+
+        unsigned long long out = 0;
+
+        for (size_t i = 0ULL; i < SIZE; i++)
+        {
+          out += static_cast<unsigned long long>(pdata[i] & ((i < SIZE - 1) ? ALL_SET : TOP_MASK)) << (BITS_PER_ELEMENT * i);
+        }
+
+        return out;
+    }
+#endif
+
+
   protected:
 
     //*************************************************************************
@@ -897,7 +953,7 @@ namespace etl
     static ETL_CONSTANT size_t ARRAY_SIZE = (MAXN % BITS_PER_ELEMENT == 0) ? MAXN / BITS_PER_ELEMENT : MAXN / BITS_PER_ELEMENT + 1;
 
   public:
-
+  
     static ETL_CONSTANT size_t ALLOCATED_BITS = ARRAY_SIZE * BITS_PER_ELEMENT;
 
   public:
@@ -1053,6 +1109,22 @@ namespace etl
     {
       etl::ibitset::flip(position);
       return *this;
+    }
+
+    //*************************************************************************
+    /// Returns a string representing the bitset.
+    //*************************************************************************
+    template<class STRINGT = etl::string<MAXN> >
+    STRINGT to_string(typename STRINGT::value_type zero = STRINGT::value_type('0'), typename STRINGT::value_type one = STRINGT::value_type('1')) const
+    {
+      STRINGT result;
+
+      result.assign(MAXN, '\0');
+      for (size_t i = MAXN; i > 0; --i) {
+        result[MAXN - i] = test(i - 1) ? one : zero;
+      }
+      
+      return result;
     }
 
     //*************************************************************************
