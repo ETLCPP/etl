@@ -196,7 +196,7 @@ namespace etl
             const etl::state_chart_traits::state<TObject>*            State_Table_Begin,
             size_t                                                    State_Table_Size,
             etl::state_chart_traits::state_id_t                       Initial_State>
-  class state_chart_ctv : public istate_chart<void>
+  class state_chart_ct : public istate_chart<void>
   {
   public:  
 
@@ -209,7 +209,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    ETL_CONSTEXPR state_chart_ctv()
+    ETL_CONSTEXPR state_chart_ct()
       : current_state_id(Initial_State)
       , started(false)
     {
@@ -271,7 +271,7 @@ namespace etl
     /// that satisfies the conditions for executing the action.
     /// \param event_id The id of the event to process.
     //*************************************************************************
-    virtual void process_event(event_id_t event_id/*, parameter_t data*/) ETL_OVERRIDE
+    virtual void process_event(event_id_t event_id) ETL_OVERRIDE
     {
       if (started)
       {
@@ -379,8 +379,8 @@ namespace etl
     };
 
     // Disabled
-    state_chart_ctv(const state_chart_ctv&) ETL_DELETE;
-    state_chart_ctv& operator =(const state_chart_ctv&) ETL_DELETE;
+    state_chart_ct(const state_chart_ct&) ETL_DELETE;
+    state_chart_ct& operator =(const state_chart_ct&) ETL_DELETE;
 
     state_id_t current_state_id; ///< The current state id.
     bool       started;          ///< Set if the state chart has been started.
@@ -399,7 +399,7 @@ namespace etl
             const etl::state_chart_traits::state<TObject>*                  State_Table_Begin,
             size_t                                                          State_Table_Size,
             etl::state_chart_traits::state_id_t                             Initial_State>
-  class state_chart_ct : public istate_chart<TParameter>
+  class state_chart_ctp : public istate_chart<TParameter>
   {
   public:
 
@@ -412,7 +412,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    ETL_CONSTEXPR state_chart_ct()
+    ETL_CONSTEXPR state_chart_ctp()
       : current_state_id(Initial_State)
       , started(false)
     {
@@ -586,8 +586,8 @@ namespace etl
     };
 
     // Disabled
-    state_chart_ct(const state_chart_ct&) ETL_DELETE;
-    state_chart_ct& operator =(const state_chart_ct&) ETL_DELETE;
+    state_chart_ctp(const state_chart_ctp&) ETL_DELETE;
+    state_chart_ctp& operator =(const state_chart_ctp&) ETL_DELETE;
 
     state_id_t current_state_id; ///< The current state id.
     bool       started;          ///< Set if the state chart has been started.

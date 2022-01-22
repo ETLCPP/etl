@@ -232,13 +232,13 @@ namespace
 
   MotorControl motorControl;
 
-  etl::state_chart_ctv<MotorControl, 
-                       motorControl, 
-                       transitionTable,
-                       7,
-                       stateTable,
-                       3,
-                       StateId::IDLE> motorControlStateChart;
+  etl::state_chart_ct<MotorControl, 
+                      motorControl, 
+                      transitionTable,
+                      7,
+                      stateTable,
+                      3,
+                      StateId::IDLE> motorControlStateChart;
 
   SUITE(test_state_chart_compile_time)
   {
