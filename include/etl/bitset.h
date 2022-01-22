@@ -839,7 +839,6 @@ namespace etl
     }
 #endif
 
-
   protected:
 
     //*************************************************************************
@@ -953,7 +952,7 @@ namespace etl
     static ETL_CONSTANT size_t ARRAY_SIZE = (MAXN % BITS_PER_ELEMENT == 0) ? MAXN / BITS_PER_ELEMENT : MAXN / BITS_PER_ELEMENT + 1;
 
   public:
-  
+
     static ETL_CONSTANT size_t ALLOCATED_BITS = ARRAY_SIZE * BITS_PER_ELEMENT;
 
   public:
