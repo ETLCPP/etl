@@ -848,7 +848,7 @@ namespace etl
     {
       for (size_t i = 0UL; i < SIZE; ++i)
       {
-        pdata[i] = ~pdata[i];
+        pdata[i] = ~pdata[i] & (i == SIZE - 1 ? TOP_MASK : ALL_SET);
       }
     }
 
