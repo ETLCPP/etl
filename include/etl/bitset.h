@@ -260,7 +260,10 @@ namespace etl
       size_t    index;
       element_t mask;
 
-      if (SIZE == 1)
+      if (SIZE == 0) {
+        return false;
+      }
+      else if (SIZE == 1)
       {
         index = 0;
         mask = element_t(1) << position;
@@ -297,7 +300,10 @@ namespace etl
       size_t    index;
       element_t bit;
 
-      if (SIZE == 1)
+      if (SIZE == 0) {
+        return *this;
+      }
+      else if (SIZE == 1)
       {
         index = 0;
         bit = element_t(1) << position;
@@ -453,7 +459,11 @@ namespace etl
       size_t       index;
       element_t bit;
 
-      if (SIZE == 1)
+      if (SIZE == 0)
+      {
+        return *this;
+      }
+      else if (SIZE == 1)
       {
         index = 0;
         bit = element_t(1) << position;
@@ -494,7 +504,12 @@ namespace etl
         size_t    index;
         element_t bit;
 
-        if (SIZE == 1)
+        
+        if (SIZE == 0)
+        {
+          return *this;
+        }
+        else if (SIZE == 1)
         {
           index = 0;
           bit = element_t(1) << position;
@@ -580,7 +595,11 @@ namespace etl
       size_t index;
       size_t bit;
 
-      if (SIZE == 1)
+      if (SIZE == 0)
+      {
+        return ibitset::npos;
+      }
+      else if (SIZE == 1)
       {
         index = 0;
         bit = position;
@@ -692,7 +711,10 @@ namespace etl
     //*************************************************************************
     ibitset& operator<<=(size_t shift)
     {
-      if (SIZE == 1)
+      if (SIZE == 0) {
+        return *this;
+      }
+      else if (SIZE == 1)
       {
         pdata[0] <<= shift;
       }
@@ -720,7 +742,10 @@ namespace etl
     //*************************************************************************
     ibitset& operator>>=(size_t shift)
     {
-      if (SIZE == 1)
+      if (SIZE == 0) {
+        return *this;
+      }
+      else if (SIZE == 1)
       {
         pdata[0] >>= shift;
       }
