@@ -75,7 +75,11 @@ SOFTWARE.
 #endif
 
 // If true, then the endianness of the platform can be constexpr.
-#define ETL_ENDIANNESS_IS_CONSTEXPR (ETL_CPP11_SUPPORTED && defined(ETL_ENDIAN_NATIVE))
+#if (ETL_CPP11_SUPPORTED && defined(ETL_ENDIAN_NATIVE))
+  #define ETL_ENDIANNESS_IS_CONSTEXPR 1
+#else
+  #define ETL_ENDIANNESS_IS_CONSTEXPR 0
+#endif
 
 namespace etl
 {

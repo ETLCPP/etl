@@ -1,15 +1,21 @@
 ===============================================================================
 20.23.0
+Recoded state_chart to reduce its resource requirements.
+Added compile time state chart variants.
 Added etl::unaligned_type for fundamental types.
 Added reverse engineered functionality from C++20 <bit>.
+Added all permutations of leading/trailing bit tests.
+Changed inline functions to templates in binary.h.
 Added etl::midpoint and etl::lerp
 Recoded etl::endian & etl::endianness to allow constexpr in certain configurations.
+Updates and fixes to etl::bitset. Added to_ulong, to_ullong, to_string member functions.
 Moved void_t definition.
 Renamed 8bit check macro.
 Updated tests to support C++20 STL.
 Modified C++ language level detection.
 Added all permutations of leading/trailing bit tests.
 etl::iterator is more SFINAE compatible.
+Updated C++ standard detection.
 
 ===============================================================================
 20.22.0

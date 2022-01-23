@@ -80,46 +80,14 @@ namespace
     ETL_END_ENUM_TYPE
   };
 
-  //***************************************************************************
-  // Data
-  struct Data
-  {
-    Data()
-      : i(0)
-    {
-    } 
-
-    explicit Data(int i_)
-      : i(i_)
-    {
-    }
-
-    Data(Data&& data)
-      : i(std::move(data.i))
-    {
-    }
-
-    Data& operator = (Data&& data)
-    {
-      i = std::move(data.i);
-      return *this;
-    }
-
-    Data(const Data&) = delete;
-    Data& operator = (const Data&) = delete;
-
-    int i;
-  };
-
   //***********************************
   // The motor control FSM.
   //***********************************
-  class MotorControl : public etl::state_chart<MotorControl, Data&&>
+  class MotorControl
   {
   public:
 
     MotorControl()
-      : state_chart<MotorControl, Data&&>(*this, transitionTable.begin(), transitionTable.end(), stateTable.begin(), stateTable.end(), StateId::IDLE)
     {
       ClearStatistics();
     }
@@ -136,34 +104,34 @@ namespace
       windingDown   = 0;
       entered_idle  = false;
       null          = 0;
-      data          = Data(0);
+      data          = 0;
     }
 
     //***********************************
-    void OnStart(parameter_t d)
+    void OnStart(int d)
     {
-      data = std::move(d);
+      data = d;
       ++startCount;
     }
 
     //***********************************
-    void OnStop(parameter_t d)
+    void OnStop(int d)
     {
-      data = std::move(d);
+      data = d;
       ++stopCount;
     }
 
     //***********************************
-    void OnStopped(parameter_t d)
+    void OnStopped(int d)
     {
-      data = std::move(d);
+      data = d;
       ++stoppedCount;
     }
 
     //***********************************
-    void OnSetSpeed(parameter_t d)
+    void OnSetSpeed(int d)
     {
-      data = std::move(d);
+      data = d;
       ++setSpeedCount;
       SetSpeedValue(100);
     }
@@ -224,9 +192,9 @@ namespace
     }
 
     //***********************************
-    void Null(parameter_t d)
+    void Null(int d)
     {
-      data = std::move(d);
+      data = d;
       ++null;
     }
 
@@ -239,45 +207,55 @@ namespace
     int windingDown;
     bool entered_idle;
     int null;
-    Data data;
+    int data;
 
     bool guard;
-
-    static const etl::array<MotorControl::transition, 7> transitionTable;
-    static const etl::array<MotorControl::state, 3>      stateTable;
   };
 
   //***************************************************************************
-  constexpr etl::array<MotorControl::transition, 7> MotorControl::transitionTable =
+  using transition = etl::state_chart_traits::transition<MotorControl, int>;
+
+  constexpr transition transitionTable[7] =
   {
-    MotorControl::transition(StateId::IDLE,         EventId::START,          StateId::RUNNING,      &MotorControl::OnStart, &MotorControl::Guard),
-    MotorControl::transition(StateId::IDLE,         EventId::START,          StateId::IDLE,         &MotorControl::Null,    &MotorControl::NotGuard),
-    MotorControl::transition(StateId::RUNNING,      EventId::STOP,           StateId::WINDING_DOWN, &MotorControl::OnStop),
-    MotorControl::transition(StateId::RUNNING,      EventId::EMERGENCY_STOP, StateId::IDLE,         &MotorControl::OnStop),
-    MotorControl::transition(StateId::RUNNING,      EventId::SET_SPEED,      StateId::RUNNING,      &MotorControl::OnSetSpeed),
-    MotorControl::transition(StateId::WINDING_DOWN, EventId::STOPPED,        StateId::IDLE,         &MotorControl::OnStopped),
-    MotorControl::transition(                       EventId::ABORT,          StateId::IDLE)
+    transition(StateId::IDLE,         EventId::START,          StateId::RUNNING,      &MotorControl::OnStart, &MotorControl::Guard),
+    transition(StateId::IDLE,         EventId::START,          StateId::IDLE,         &MotorControl::Null,    &MotorControl::NotGuard),
+    transition(StateId::RUNNING,      EventId::STOP,           StateId::WINDING_DOWN, &MotorControl::OnStop),
+    transition(StateId::RUNNING,      EventId::EMERGENCY_STOP, StateId::IDLE,         &MotorControl::OnStop),
+    transition(StateId::RUNNING,      EventId::SET_SPEED,      StateId::RUNNING,      &MotorControl::OnSetSpeed),
+    transition(StateId::WINDING_DOWN, EventId::STOPPED,        StateId::IDLE,         &MotorControl::OnStopped),
+    transition(EventId::ABORT,          StateId::IDLE)
   };
 
   //***************************************************************************
-  constexpr etl::array<MotorControl::state, 3> MotorControl::stateTable =
+  using state = etl::state_chart_traits::state<MotorControl>;
+
+  constexpr state stateTable[3] =
   {
-    MotorControl::state(StateId::IDLE,         &MotorControl::OnEnterIdle,        nullptr),
-    MotorControl::state(StateId::RUNNING,      &MotorControl::OnEnterRunning,     nullptr),
-    MotorControl::state(StateId::WINDING_DOWN, &MotorControl::OnEnterWindingDown, &MotorControl::OnExitWindingDown)
+    state(StateId::IDLE,         &MotorControl::OnEnterIdle,        nullptr),
+    state(StateId::RUNNING,      &MotorControl::OnEnterRunning,     nullptr),
+    state(StateId::WINDING_DOWN, &MotorControl::OnEnterWindingDown, &MotorControl::OnExitWindingDown)
   };
 
   MotorControl motorControl;
 
-  SUITE(test_state_chart_class)
+  etl::state_chart_ctp<MotorControl,
+                       int,
+                       motorControl,
+                       transitionTable,
+                       7,
+                       stateTable,
+                       3,
+                       StateId::IDLE> motorControlStateChart;
+
+  SUITE(test_state_chart_compile_time_with_data_parameter)
   {
     //*************************************************************************
-    TEST(test_state_chart_with_rvalue_data_parameter)
+    TEST(test_state_chart)
     {    
       motorControl.ClearStatistics();
 
       // In Idle state.
-      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::IDLE, int(motorControlStateChart.get_state_id()));
 
       CHECK_EQUAL(false, motorControl.isLampOn);
       CHECK_EQUAL(0, motorControl.setSpeedCount);
@@ -290,11 +268,11 @@ namespace
 
       // Send Start event (state chart not started).
       motorControl.guard = true;
-      motorControl.process_event(EventId::START, Data(1));
+      motorControlStateChart.process_event(EventId::START, 1);
 
-      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::IDLE, int(motorControlStateChart.get_state_id()));
 
-      CHECK_EQUAL(0, motorControl.data.i);
+      CHECK_EQUAL(0, motorControl.data);
       CHECK_EQUAL(false, motorControl.isLampOn);
       CHECK_EQUAL(0, motorControl.setSpeedCount);
       CHECK_EQUAL(0, motorControl.speed);
@@ -306,17 +284,17 @@ namespace
 
       // Start the state chart
       motorControl.guard = true;
-      motorControl.start();
+      motorControlStateChart.start();
 
       CHECK_EQUAL(true, motorControl.entered_idle);
 
       // Send unhandled events.
-      motorControl.process_event(EventId::STOP, Data(2));
-      motorControl.process_event(EventId::STOPPED, Data(3));
+      motorControlStateChart.process_event(EventId::STOP, 2);
+      motorControlStateChart.process_event(EventId::STOPPED, 3);
 
-      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::IDLE, int(motorControlStateChart.get_state_id()));
 
-      CHECK_EQUAL(0, motorControl.data.i);
+      CHECK_EQUAL(0, motorControl.data);
       CHECK_EQUAL(false, motorControl.isLampOn);
       CHECK_EQUAL(0, motorControl.setSpeedCount);
       CHECK_EQUAL(0, motorControl.speed);
@@ -327,13 +305,13 @@ namespace
 
       // Send Start event.
       motorControl.guard = false;
-      motorControl.process_event(EventId::START, Data(4));
+      motorControlStateChart.process_event(EventId::START, 4);
 
       // Still in Idle state.
 
-      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::IDLE, int(motorControlStateChart.get_state_id()));
 
-      CHECK_EQUAL(4, motorControl.data.i);
+      CHECK_EQUAL(4, motorControl.data);
       CHECK_EQUAL(false, motorControl.isLampOn);
       CHECK_EQUAL(0, motorControl.setSpeedCount);
       CHECK_EQUAL(0, motorControl.speed);
@@ -345,13 +323,13 @@ namespace
 
       // Send Start event.
       motorControl.guard = true;
-      motorControl.process_event(EventId::START, Data(5));
+      motorControlStateChart.process_event(EventId::START, 5);
 
       // Now in Running state.
 
-      CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::RUNNING, int(motorControlStateChart.get_state_id()));
 
-      CHECK_EQUAL(5, motorControl.data.i);
+      CHECK_EQUAL(5, motorControl.data);
       CHECK_EQUAL(true, motorControl.isLampOn);
       CHECK_EQUAL(0, motorControl.setSpeedCount);
       CHECK_EQUAL(0, motorControl.speed);
@@ -362,12 +340,12 @@ namespace
       CHECK_EQUAL(1, motorControl.null);
 
       // Send unhandled events.
-      motorControl.process_event(EventId::START, Data(6));
-      motorControl.process_event(EventId::STOPPED, Data(7));
+      motorControlStateChart.process_event(EventId::START, 6);
+      motorControlStateChart.process_event(EventId::STOPPED, 7);
 
-      CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::RUNNING, int(motorControlStateChart.get_state_id()));
 
-      CHECK_EQUAL(5, motorControl.data.i);
+      CHECK_EQUAL(5, motorControl.data);
       CHECK_EQUAL(true, motorControl.isLampOn);
       CHECK_EQUAL(0, motorControl.setSpeedCount);
       CHECK_EQUAL(0, motorControl.speed);
@@ -378,13 +356,13 @@ namespace
       CHECK_EQUAL(1, motorControl.null);
 
       // Send SetSpeed event.
-      motorControl.process_event(EventId::SET_SPEED, Data(8));
+      motorControlStateChart.process_event(EventId::SET_SPEED, 8);
 
       // Still in Running state.
 
-      CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::RUNNING, int(motorControlStateChart.get_state_id()));
 
-      CHECK_EQUAL(8, motorControl.data.i);
+      CHECK_EQUAL(8, motorControl.data);
       CHECK_EQUAL(true, motorControl.isLampOn);
       CHECK_EQUAL(1, motorControl.setSpeedCount);
       CHECK_EQUAL(100, motorControl.speed);
@@ -395,13 +373,13 @@ namespace
       CHECK_EQUAL(1, motorControl.null);
 
       // Send Stop event.
-      motorControl.process_event(EventId::STOP, Data(9));
+      motorControlStateChart.process_event(EventId::STOP, 9);
 
       // Now in WindingDown state.
 
-      CHECK_EQUAL(StateId::WINDING_DOWN, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::WINDING_DOWN, int(motorControlStateChart.get_state_id()));
 
-      CHECK_EQUAL(9, motorControl.data.i);
+      CHECK_EQUAL(9, motorControl.data);
       CHECK_EQUAL(true, motorControl.isLampOn);
       CHECK_EQUAL(1, motorControl.setSpeedCount);
       CHECK_EQUAL(100, motorControl.speed);
@@ -412,12 +390,12 @@ namespace
       CHECK_EQUAL(1, motorControl.null);
 
       // Send unhandled events.
-      motorControl.process_event(EventId::START, Data(10));
-      motorControl.process_event(EventId::STOP, Data(11));
+      motorControlStateChart.process_event(EventId::START, 10);
+      motorControlStateChart.process_event(EventId::STOP, 11);
 
-      CHECK_EQUAL(StateId::WINDING_DOWN, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::WINDING_DOWN, int(motorControlStateChart.get_state_id()));
 
-      CHECK_EQUAL(9, motorControl.data.i);
+      CHECK_EQUAL(9, motorControl.data);
       CHECK_EQUAL(true, motorControl.isLampOn);
       CHECK_EQUAL(1, motorControl.setSpeedCount);
       CHECK_EQUAL(100, motorControl.speed);
@@ -428,12 +406,12 @@ namespace
       CHECK_EQUAL(1, motorControl.null);
 
       // Send Stopped event.
-      motorControl.process_event(EventId::STOPPED, Data(12));
+      motorControlStateChart.process_event(EventId::STOPPED, 12);
 
       // Now in Idle state.
-      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::IDLE, int(motorControlStateChart.get_state_id()));
 
-      CHECK_EQUAL(12, motorControl.data.i);
+      CHECK_EQUAL(12, motorControl.data);
       CHECK_EQUAL(false, motorControl.isLampOn);
       CHECK_EQUAL(1, motorControl.setSpeedCount);
       CHECK_EQUAL(100, motorControl.speed);
@@ -452,13 +430,13 @@ namespace
       // Now in Idle state.
 
       // Send Start event.
-      motorControl.process_event(EventId::START, Data(1));
+      motorControlStateChart.process_event(EventId::START, 1);
 
       // Now in Running state.
 
-      CHECK_EQUAL(StateId::RUNNING, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::RUNNING, int(motorControlStateChart.get_state_id()));
 
-      CHECK_EQUAL(1, motorControl.data.i);
+      CHECK_EQUAL(1, motorControl.data);
       CHECK_EQUAL(true, motorControl.isLampOn);
       CHECK_EQUAL(0, motorControl.setSpeedCount);
       CHECK_EQUAL(0, motorControl.speed);
@@ -468,12 +446,12 @@ namespace
       CHECK_EQUAL(0, motorControl.windingDown);
 
       // Send emergency Stop event.
-      motorControl.process_event(EventId::EMERGENCY_STOP, Data(2));
+      motorControlStateChart.process_event(EventId::EMERGENCY_STOP, 2);
 
       // Now in Idle state.
-      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::IDLE, int(motorControlStateChart.get_state_id()));
 
-      CHECK_EQUAL(2, motorControl.data.i);
+      CHECK_EQUAL(2, motorControl.data);
       CHECK_EQUAL(false, motorControl.isLampOn);
       CHECK_EQUAL(0, motorControl.setSpeedCount);
       CHECK_EQUAL(0, motorControl.speed);
@@ -491,25 +469,40 @@ namespace
       // Now in Idle state.
 
       // Send Start event.
-      motorControl.process_event(EventId::START, Data(1));
+      motorControlStateChart.process_event(EventId::START, 1);
+
+      int state = int(motorControlStateChart.get_state_id());
+      int check = StateId::RUNNING;
 
       // Now in Running state.
 
       // Send abort event.
-      motorControl.process_event(EventId::ABORT, Data(2));
-      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
+      motorControlStateChart.process_event(EventId::ABORT, 2);
+
+      state = int(motorControlStateChart.get_state_id());
+      check = StateId::IDLE;
+
+      CHECK_EQUAL(check, state);
+      //CHECK_EQUAL(StateId::IDLE, state);
+      //CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
 
       // Send Start event.
-      motorControl.process_event(EventId::START, Data(3));
+      motorControlStateChart.process_event(EventId::START, 3);
 
       // Now in Running state.
 
+      state = int(motorControlStateChart.get_state_id());
+      check = StateId::RUNNING;
+
       // Send Stop event.
-      motorControl.process_event(EventId::STOP, Data(4));
+      motorControlStateChart.process_event(EventId::STOP, 4);
+
+      state = int(motorControlStateChart.get_state_id());
+      check = StateId::WINDING_DOWN;
 
       // Now in WindingDown state.
-      motorControl.process_event(EventId::ABORT, Data(5));
-      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
+      motorControlStateChart.process_event(EventId::ABORT, 5);
+      CHECK_EQUAL(StateId::IDLE, int(motorControlStateChart.get_state_id()));
     }
   };
 }

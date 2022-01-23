@@ -51,7 +51,7 @@ namespace
       ABORT
     };
 
-    ETL_DECLARE_ENUM_TYPE(EventId, etl::istate_chart::event_id_t)
+    ETL_DECLARE_ENUM_TYPE(EventId, etl::state_chart_traits::event_id_t)
     ETL_ENUM_TYPE(START,          "Start")
     ETL_ENUM_TYPE(STOP,           "Stop")
     ETL_ENUM_TYPE(EMERGENCY_STOP, "Emergency Stop")
@@ -73,7 +73,7 @@ namespace
       NUMBER_OF_STATES
     };
 
-    ETL_DECLARE_ENUM_TYPE(StateId, etl::istate_chart::state_id_t)
+    ETL_DECLARE_ENUM_TYPE(StateId, etl::state_chart_traits::state_id_t)
     ETL_ENUM_TYPE(IDLE,         "Idle")
     ETL_ENUM_TYPE(RUNNING,      "Running")
     ETL_ENUM_TYPE(WINDING_DOWN, "Winding Down")
@@ -88,9 +88,8 @@ namespace
   public:
 
     MotorControl()
-      : state_chart<MotorControl, int>(*this, transitionTable.begin(), transitionTable.end(), StateId::IDLE)
+      : etl::state_chart<MotorControl, int>(*this, transitionTable.begin(), transitionTable.end(), stateTable.begin(), stateTable.end(), StateId::IDLE)
     {
-      this->set_state_table(stateTable.begin(), stateTable.end());
       ClearStatistics();
     }
 
@@ -239,7 +238,7 @@ namespace
 
   MotorControl motorControl;
 
-  SUITE(test_state_chart_class)
+  SUITE(test_state_chart_with_data_parameter)
   {
     //*************************************************************************
     TEST(test_state_chart)
@@ -463,18 +462,34 @@ namespace
       // Send Start event.
       motorControl.process_event(EventId::START, 1);
 
+      int state = int(motorControl.get_state_id());
+      int check = StateId::RUNNING;
+
       // Now in Running state.
 
+      // Send abort event.
       motorControl.process_event(EventId::ABORT, 2);
-      CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
+
+      state = int(motorControl.get_state_id());
+      check = StateId::IDLE;
+
+      CHECK_EQUAL(check, state);
+      //CHECK_EQUAL(StateId::IDLE, state);
+      //CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
 
       // Send Start event.
       motorControl.process_event(EventId::START, 3);
 
       // Now in Running state.
 
+      state = int(motorControl.get_state_id());
+      check = StateId::RUNNING;
+
       // Send Stop event.
       motorControl.process_event(EventId::STOP, 4);
+
+      state = int(motorControl.get_state_id());
+      check = StateId::WINDING_DOWN;
 
       // Now in WindingDown state.
       motorControl.process_event(EventId::ABORT, 5);
