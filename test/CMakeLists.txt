@@ -224,6 +224,8 @@ set(TEST_SOURCE_FILES
 	test_state_chart.cpp
 	test_state_chart_with_data_parameter.cpp
 	test_state_chart_with_rvalue_data_parameter.cpp
+	test_state_chart_compile_time.cpp
+	test_state_chart_compile_time_with_data_parameter.cpp
 	test_string_char.cpp
 	test_string_char_external_buffer.cpp
 	test_string_stream.cpp
@@ -255,7 +257,7 @@ set(TEST_SOURCE_FILES
 	test_type_lookup.cpp
 	test_type_select.cpp
 	test_type_traits.cpp
-#	test_unaligned_type.cpp
+	test_unaligned_type.cpp
 	test_unordered_map.cpp
 	test_unordered_multimap.cpp
 	test_unordered_multiset.cpp

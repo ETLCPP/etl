@@ -164,9 +164,7 @@ namespace etl
         if (try_lock())
         {
           // We have something to do?
-          bool has_active = !active_list.empty();
-
-          timer_data* ptimer = &active_list.front();
+          bool has_active = !active_list.empty();       
 
           if (has_active)
           {
@@ -177,7 +175,6 @@ namespace etl
               count -= timer.delta;
 
               active_list.remove(timer.id, true);
-              ptimer = &active_list.front();
 
               if (timer.repeating)
               {

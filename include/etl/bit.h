@@ -195,8 +195,6 @@ namespace etl
     typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
     rotl(T value, int n) ETL_NOEXCEPT
   {
-    ETL_CONSTANT size_t N = etl::integral_limits<T>::bits;
-
     if (n < 0)
     {
       return etl::rotate_right(value, -n);
@@ -215,8 +213,6 @@ namespace etl
     typename etl::enable_if<etl::is_unsigned<T>::value, T>::type 
     rotr(T value, int n) ETL_NOEXCEPT
   {
-    ETL_CONSTANT size_t N = etl::integral_limits<T>::bits;
-
     if (n < 0)
     {
       return etl::rotate_left(value, -n);
