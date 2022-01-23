@@ -107,79 +107,6 @@ namespace etl
   }
 
   //***************************************************************************
-  template <typename T = void>
-  struct less
-  {
-    typedef T value_type;
-
-    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
-    {
-      return (lhs < rhs);
-    }
-  };
-
-  //***************************************************************************
-  template <typename T = void>
-  struct less_equal
-  {
-    typedef T value_type;
-
-    ETL_CONSTEXPR bool operator()(const T& lhs, const T& rhs) const
-    {
-      return !(rhs < lhs);
-    }
-  };
-
-  //***************************************************************************
-  template <typename T = void>
-  struct greater
-  {
-    typedef T value_type;
-
-    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
-    {
-      return (rhs < lhs);
-    }
-  };
-
-  //***************************************************************************
-  template <typename T = void>
-  struct greater_equal
-  {
-    typedef T value_type;
-
-    ETL_CONSTEXPR bool operator()(const T& lhs, const T& rhs) const
-    {
-      return !(lhs < rhs);
-    }
-  };
-
-  //***************************************************************************
-  template <typename T = void>
-  struct equal_to
-  {
-    typedef T value_type;
-
-    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
-    {
-      return lhs == rhs;
-    }
-  };
-
-  //***************************************************************************
-  template <typename T = void>
-  struct not_equal_to
-  {
-    typedef T value_type;
-
-    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
-    {
-      return !(lhs == rhs);
-    }
-  };
-
-  //***************************************************************************
-
   template <typename TArgumentType, typename TResultType>
   struct unary_function
   {
@@ -188,7 +115,6 @@ namespace etl
   };
 
   //***************************************************************************
-
   template <typename TFirstArgumentType, typename TSecondArgumentType, typename TResultType>
   struct binary_function
   {
@@ -198,7 +124,163 @@ namespace etl
   };
 
   //***************************************************************************
+  template <typename T = void>
+  struct less : public etl::binary_function<T, T, bool>
+  {
+    typedef T value_type;
 
+    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
+    {
+      return (lhs < rhs);
+    }
+  };
+
+#if ETL_CPP11_SUPPORTED
+  template <>
+  struct less<void> : public etl::binary_function<void, void, bool>
+  {
+    typedef int is_transparent;
+
+    template <typename T1, typename T2>
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    {
+      return static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs);
+    }
+  };
+#endif
+
+  //***************************************************************************
+  template <typename T = void>
+  struct less_equal : public etl::binary_function<T, T, bool>
+  {
+    typedef T value_type;
+
+    ETL_CONSTEXPR bool operator()(const T& lhs, const T& rhs) const
+    {
+      return !(rhs < lhs);
+    }
+  };
+
+#if ETL_CPP11_SUPPORTED
+  template <>
+  struct less_equal<void> : public etl::binary_function<void, void, bool>
+  {
+    typedef int is_transparent;
+
+    template <typename T1, typename T2>
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    {
+      return !(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs));
+    }
+  };
+#endif
+
+  //***************************************************************************
+  template <typename T = void>
+  struct greater : public etl::binary_function<T, T, bool>
+  {
+    typedef T value_type;
+
+    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
+    {
+      return (rhs < lhs);
+    }
+  };
+
+#if ETL_CPP11_SUPPORTED
+  template <>
+  struct greater<void> : public etl::binary_function<void, void, bool>
+  {
+    typedef int is_transparent;
+
+    template <typename T1, typename T2>
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    {
+      return static_cast<T1&&>(rhs) < static_cast<T2&&>(lhs);
+    }
+  };
+#endif
+
+  //***************************************************************************
+  template <typename T = void>
+  struct greater_equal : public etl::binary_function<T, T, bool>
+  {
+    typedef T value_type;
+
+    ETL_CONSTEXPR bool operator()(const T& lhs, const T& rhs) const
+    {
+      return !(lhs < rhs);
+    }
+  };
+
+#if ETL_CPP11_SUPPORTED
+  template <>
+  struct greater_equal<void> : public etl::binary_function<void, void, bool>
+  {
+    typedef int is_transparent;
+
+    template <typename T1, typename T2>
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    {
+      return static_cast<T1&&>(rhs) < static_cast<T2&&>(lhs);
+    }
+  };
+#endif
+
+  //***************************************************************************
+  template <typename T = void>
+  struct equal_to : public etl::binary_function<T, T, bool>
+  {
+    typedef T value_type;
+
+    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
+    {
+      return lhs == rhs;
+    }
+  };
+
+#if ETL_CPP11_SUPPORTED
+  template <>
+  struct equal_to<void> : public etl::binary_function<void, void, bool>
+  {
+    typedef void value_type;
+    typedef int is_transparent;
+
+    template <typename T1, typename T2>
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    {
+      return static_cast<T1&&>(lhs) == static_cast<T2&&>(rhs);
+    }
+  };
+#endif
+
+  //***************************************************************************
+  template <typename T = void>
+  struct not_equal_to : public etl::binary_function<T, T, bool>
+  {
+    typedef T value_type;
+
+    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
+    {
+      return !(lhs == rhs);
+    }
+  };
+
+#if ETL_CPP11_SUPPORTED
+  template <>
+  struct not_equal_to<void> : public etl::binary_function<void, void, bool>
+  {
+    typedef int is_transparent;
+
+    template <typename T1, typename T2>
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    {
+      return !(static_cast<T1&&>(lhs) == static_cast<T2&&>(rhs));
+    }
+  };
+#endif
+
+  //***************************************************************************
   template <typename TFunction>
   class binder1st : public etl::unary_function<typename TFunction::second_argument_type, typename TFunction::result_type>
   {

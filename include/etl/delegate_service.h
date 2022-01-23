@@ -37,11 +37,6 @@ SOFTWARE.
 #include "delegate.h"
 #include "array.h"
 
-#if ETL_CPP11_NOT_SUPPORTED
-  #if !defined(ETL_IN_UNIT_TEST)
-    #error NOT SUPPORTED FOR C++03 OR BELOW
-  #endif
-#else
 namespace etl
 {
   //***************************************************************************
@@ -51,12 +46,15 @@ namespace etl
   /// \tparam Delegates Pointer to an array of delegate pointers.
   /// The delegate ids must range between Offset and Offset + Range - 1.
   //***************************************************************************
+#if ETL_CPP11_SUPPORTED && !defined(ETL_DELEGATE_FORCE_CPP03_IMPLEMENTATION)
   template <const size_t Range, 
-            const size_t Offset = 0U, 
+            const size_t Offset = 0U,
             const etl::delegate<void(size_t)>* Delegates = nullptr>
   class delegate_service
   {
   public:
+
+    typedef etl::delegate<void(size_t)> delegate_type;
 
     //*************************************************************************
     /// Executes the delegate function for the index.
@@ -90,6 +88,7 @@ namespace etl
       }
     }
   };
+#endif
 
   //***************************************************************************
   /// An indexed delegate service.
@@ -99,9 +98,15 @@ namespace etl
   //***************************************************************************
   template <const size_t Range, 
             const size_t Offset>
+#if ETL_CPP11_SUPPORTED && !defined(ETL_DELEGATE_FORCE_CPP03_IMPLEMENTATION)
   class delegate_service<Range, Offset, nullptr>
+#else
+  class delegate_service
+#endif
   {
   public:
+
+    typedef etl::delegate<void(size_t)> delegate_type;
 
     //*************************************************************************
     /// Default constructor.
@@ -109,7 +114,7 @@ namespace etl
     //*************************************************************************
     delegate_service()
     {
-      etl::delegate<void(size_t)> default_delegate = etl::delegate<void(size_t)>::create<delegate_service<Range, Offset>, &delegate_service<Range, Offset>::unhandled>(*this);
+      delegate_type default_delegate = delegate_type::create<delegate_service<Range, Offset>, &delegate_service<Range, Offset>::unhandled>(*this);
 
       lookup.fill(default_delegate);
     }
@@ -121,7 +126,7 @@ namespace etl
     /// \param delegate Reference to the delegate.
     //*************************************************************************
     template <const size_t Id>
-    void register_delegate(etl::delegate<void(size_t)> callback)
+    void register_delegate(delegate_type callback)
     {
       ETL_STATIC_ASSERT(Id < (Offset + Range), "Callback Id out of range");
       ETL_STATIC_ASSERT(Id >= Offset, "Callback Id out of range");
@@ -135,7 +140,7 @@ namespace etl
     /// \param id       Id of the delegate.
     /// \param delegate Reference to the delegate.
     //*************************************************************************
-    void register_delegate(const size_t id, etl::delegate<void(size_t)> callback)
+    void register_delegate(const size_t id, delegate_type callback)
     {
       if ((id >= Offset) && (id < (Offset + Range)))
       {
@@ -147,7 +152,7 @@ namespace etl
     /// Registers an alternative delegate for unhandled ids.
     /// \param delegate A reference to the user supplied 'unhandled' delegate.
     //*************************************************************************
-    void register_unhandled_delegate(etl::delegate<void(size_t)> callback)
+    void register_unhandled_delegate(delegate_type callback)
     {
       unhandled_delegate = callback;
     }
@@ -199,12 +204,12 @@ namespace etl
     }
 
     /// The default delegate for unhandled ids.
-    etl::delegate<void(size_t)> unhandled_delegate;
+    delegate_type unhandled_delegate;
 
     /// Lookup table of delegates.
-    etl::array<etl::delegate<void(size_t)>, Range> lookup;
+    etl::array<delegate_type, Range> lookup;
   };
 }
 
 #endif
-#endif
+

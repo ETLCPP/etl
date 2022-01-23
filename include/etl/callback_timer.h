@@ -40,10 +40,7 @@ SOFTWARE.
 #include "atomic.h"
 #include "error_handler.h"
 #include "placement_new.h"
-
-#if ETL_CPP11_SUPPORTED
-  #include "delegate.h"
-#endif
+#include "delegate.h"
 
 #if defined(ETL_IN_UNIT_TEST) && ETL_NOT_USING_STL
   #define ETL_DISABLE_TIMER_UPDATES
@@ -84,7 +81,9 @@ namespace etl
   /// The configuration of a timer.
   struct callback_timer_data
   {
-    enum callback_type
+    typedef etl::delegate<void(void)> callback_type;
+
+    enum callback_type_id
     {
       C_CALLBACK,
       IFUNCTION,
@@ -144,10 +143,10 @@ namespace etl
     //*******************************************
     /// ETL delegate callback
     //*******************************************
-    callback_timer_data(etl::timer::id::type   id_,
-                        etl::delegate<void()>& callback_,
-                        uint32_t               period_,
-                        bool                   repeating_)
+    callback_timer_data(etl::timer::id::type id_,
+                        callback_type&       callback_,
+                        uint32_t             period_,
+                        bool                 repeating_)
             : p_callback(reinterpret_cast<void*>(&callback_)),
               period(period_),
               delta(etl::timer::state::INACTIVE),
@@ -183,7 +182,7 @@ namespace etl
     uint_least8_t         previous;
     uint_least8_t         next;
     bool                  repeating;
-    callback_type         cbk_type;
+    callback_type_id      cbk_type;
 
   private:
 
@@ -380,6 +379,8 @@ namespace etl
   {
   public:
 
+    typedef etl::delegate<void(void)> callback_type;
+
     //*******************************************
     /// Register a timer.
     //*******************************************
@@ -448,9 +449,9 @@ namespace etl
       /// Register a timer.
       //*******************************************
 #if ETL_CPP11_SUPPORTED
-      etl::timer::id::type register_timer(etl::delegate<void()>& callback_,
-                                          uint32_t               period_,
-                                          bool                   repeating_)
+      etl::timer::id::type register_timer(callback_type& callback_,
+                                          uint32_t       period_,
+                                          bool           repeating_)
       {
           etl::timer::id::type id = etl::timer::id::NO_TIMER;
 
@@ -590,7 +591,7 @@ namespace etl
                 else if(timer.cbk_type == callback_timer_data::DELEGATE)
                 {
                     // Call the delegate callback.
-                    (*reinterpret_cast<etl::delegate<void()>*>(timer.p_callback))();
+                    (*reinterpret_cast<callback_type*>(timer.p_callback))();
                 }
 #endif
               }

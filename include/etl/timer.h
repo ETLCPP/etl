@@ -44,7 +44,11 @@ namespace etl
 #ifdef ETL_TIMER_SEMAPHORE_TYPE
   typedef ETL_TIMER_SEMAPHORE_TYPE timer_semaphore_t;
 #else
-  typedef etl::atomic_uint32_t timer_semaphore_t;
+  #if ETL_HAS_ATOMIC
+    typedef etl::atomic_uint32_t timer_semaphore_t;
+  #else
+    #error 'timer_semaphore_t' NOT DEFINED. NO ATOMICS AVAILABLE
+  #endif
 #endif
 
   //***************************************************************************

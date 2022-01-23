@@ -134,7 +134,7 @@ namespace
       CHECK((etl::is_same<Type16, typename Type_Id_Lookup16::type_from_id<Type16::ID>::type>::value));
     }
 
-#if !defined(ETL_TYPE_SELECT_FORCE_CPP03)
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_type_from_id_t_16)
     {
@@ -170,7 +170,7 @@ namespace
       CHECK((etl::is_same<Type16, typename Type_Id_Lookup8::type_from_id<Type16::ID>::type>::value));
     }
 
-#if !defined(ETL_TYPE_SELECT_FORCE_CPP03)
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_type_from_id_t_8)
     {
@@ -191,7 +191,7 @@ namespace
       CHECK((etl::is_same<Type16, typename Type_Id_Lookup1::type_from_id<Type16::ID>::type>::value));
     }
 
-#if !defined(ETL_TYPE_SELECT_FORCE_CPP03)
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_type_from_id_t_1)
     {
@@ -253,7 +253,7 @@ namespace
       CHECK_EQUAL((unsigned int)Type16::ID, (unsigned int)Type_Id_Lookup16::get_id_from_type(Type16()));
     }
 
-#if !defined(ETL_TYPE_SELECT_FORCE_CPP03)
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_id_from_type_v_16)
     {
@@ -306,7 +306,7 @@ namespace
       CHECK_EQUAL((unsigned int)Type16::ID, (unsigned int)Type_Id_Lookup8::get_id_from_type(Type16()));
     }
 
-#if !defined(ETL_TYPE_SELECT_FORCE_CPP03)
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_id_from_type_v_8)
     {
@@ -330,7 +330,7 @@ namespace
       CHECK_EQUAL((unsigned int)Type16::ID, (unsigned int)Type_Id_Lookup1::get_id_from_type(Type16()));
     }
 
-#if !defined(ETL_TYPE_SELECT_FORCE_CPP03)
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_id_from_type_v_1)
     {
@@ -359,7 +359,7 @@ namespace
       CHECK((etl::is_same<Type15, typename Type_Type_Lookup16::type_from_type<Type16>::type>::value));
     }
 
-#if !defined(ETL_TYPE_SELECT_FORCE_CPP03)
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_type_from_type_t_16)
     {
@@ -395,7 +395,7 @@ namespace
       CHECK((etl::is_same<Type7, typename Type_Type_Lookup8::type_from_type<Type8>::type>::value));
     }
 
-#if !defined(ETL_TYPE_SELECT_FORCE_CPP03)
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_type_from_type_t_8)
     {
@@ -416,7 +416,7 @@ namespace
       CHECK((etl::is_same<Type2, typename Type_Type_Lookup1::type_from_type<Type1>::type>::value));
     }
 
-#if !defined(ETL_TYPE_SELECT_FORCE_CPP03)
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_type_from_type_t_1)
     {

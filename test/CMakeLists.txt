@@ -48,6 +48,7 @@ set(TEST_SOURCE_FILES
 	test_atomic_std.cpp
 	test_binary.cpp
 	test_bip_buffer_spsc_atomic.cpp
+	test_bit.cpp
 	test_bitset.cpp
 	test_bit_stream.cpp
 	test_byte_stream.cpp
@@ -57,6 +58,8 @@ set(TEST_SOURCE_FILES
 	test_buffer_descriptors.cpp
 	test_callback_service.cpp
 	test_callback_timer.cpp
+	test_callback_timer_atomic.cpp
+	test_callback_timer_locked.cpp
 	test_checksum.cpp
 	test_circular_buffer.cpp
 	test_circular_buffer_external_buffer.cpp
@@ -116,6 +119,7 @@ set(TEST_SOURCE_FILES
 	test_cyclic_value.cpp
 	test_debounce.cpp
 	test_delegate.cpp
+	test_delegate_cpp03.cpp
 	test_delegate_service.cpp
 	test_delegate_service_compile_time.cpp
 	test_deque.cpp
@@ -171,10 +175,13 @@ set(TEST_SOURCE_FILES
 	test_message_router.cpp
 	test_message_router_registry.cpp
 	test_message_timer.cpp
+	test_message_timer_atomic.cpp
+    test_message_timer_locked.cpp
 	test_multimap.cpp
 	test_multiset.cpp
 	test_multi_array.cpp
 	test_multi_range.cpp
+	test_multi_vector.cpp
 	test_murmur3.cpp
 	test_numeric.cpp
 	test_observer.cpp
@@ -217,6 +224,8 @@ set(TEST_SOURCE_FILES
 	test_state_chart.cpp
 	test_state_chart_with_data_parameter.cpp
 	test_state_chart_with_rvalue_data_parameter.cpp
+	test_state_chart_compile_time.cpp
+	test_state_chart_compile_time_with_data_parameter.cpp
 	test_string_char.cpp
 	test_string_char_external_buffer.cpp
 	test_string_stream.cpp
@@ -248,6 +257,7 @@ set(TEST_SOURCE_FILES
 	test_type_lookup.cpp
 	test_type_select.cpp
 	test_type_traits.cpp
+	test_unaligned_type.cpp
 	test_unordered_map.cpp
 	test_unordered_multimap.cpp
 	test_unordered_multiset.cpp

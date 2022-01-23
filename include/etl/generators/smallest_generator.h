@@ -75,7 +75,7 @@ cog.outl("//********************************************************************
 
 namespace etl
 {
-#if ETL_CPP11_SUPPORTED && !defined(ETL_SMALLEST_TYPE_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_SMALLEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   /// Template to determine the largest type and size.
   /// Defines 'value_type' which is the type of the largest parameter.

@@ -78,6 +78,26 @@ using Compare_Data_const_iterator = Compare_Data::const_iterator;
 
 namespace
 {
+  struct Key
+  {
+    Key(int k_)
+      : k(k_)
+    {
+    }
+
+    int k;
+  };
+
+  bool operator <(const Key& lhs, const int& rhs)
+  {
+    return (lhs.k < rhs);
+  }
+
+  bool operator <(const int& lhs, const Key& rhs)
+  {
+    return (lhs < rhs.k);
+  }
+
   SUITE(test_multiset)
   {
     //*************************************************************************
@@ -632,18 +652,14 @@ namespace
       Data data(random_data.begin(), random_data.end());
 
       // Test a number not available
-      ETL_OR_STD::pair<Data::iterator, Data::iterator> data_result =
-        data.equal_range(1);
-      ETL_OR_STD::pair<Compare_Data::iterator, Compare_Data::iterator> compare_result =
-        compare_data.equal_range(1);
+      ETL_OR_STD::pair<Data::iterator, Data::iterator> data_result = data.equal_range(1);
+      ETL_OR_STD::pair<Compare_Data::iterator, Compare_Data::iterator> compare_result = compare_data.equal_range(1);
 
       // Check that both return the same return results
       CHECK_EQUAL(*compare_result.first, *data_result.first);
       CHECK_EQUAL(*compare_result.second, *data_result.second);
 
-      bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+      bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -655,18 +671,14 @@ namespace
       const Data data(initial_data.begin(), initial_data.end());
 
       // Test a number with several of the same key
-      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> data_result =
-        data.equal_range(2);
-      ETL_OR_STD::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> compare_result =
-        compare_data.equal_range(2);
+      ETL_OR_STD::pair<Data::const_iterator, Data::const_iterator> data_result = data.equal_range(2);
+      ETL_OR_STD::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> compare_result = compare_data.equal_range(2);
 
       // Check that both return the same return results
       CHECK_EQUAL(*compare_result.first, *data_result.first);
       CHECK_EQUAL(*compare_result.second, *data_result.second);
 
-      bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+      bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -697,9 +709,41 @@ namespace
       // Check that both return the same return results
       CHECK_EQUAL(compare_count, data_count);
 
-      bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+      bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_value_using_transparent_comparator)
+    {
+      using CSet = std::multiset<int, std::less<int>>;
+      CSet compare_data(initial_data.begin(), initial_data.end());
+      
+      using ESet = etl::multiset<int, MAX_SIZE, std::less<>>;
+      ESet data(initial_data.begin(), initial_data.end());
+
+      size_t compare_count = compare_data.erase(2);
+      size_t data_count = data.erase(Key(2));
+
+      // Check that both return the same return results
+      CHECK_EQUAL(compare_count, data_count);
+
+      // Erase another value
+      compare_count = compare_data.erase(1);
+      data_count = data.erase(1);
+
+      // Check that both return the same return results
+      CHECK_EQUAL(compare_count, data_count);
+
+      // Erase another value
+      compare_count = compare_data.erase(3);
+      data_count = data.erase(3);
+
+      // Check that both return the same return results
+      CHECK_EQUAL(compare_count, data_count);
+
+      bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -718,9 +762,7 @@ namespace
 
       CHECK_EQUAL(*i_compare1, *i_data1);
 
-      bool isEqual = Check_Equal(data.begin(),
-                                 data.end(),
-                                 compare_data.begin());
+      bool isEqual = Check_Equal(data.begin(), data.end(),  compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -815,6 +857,24 @@ namespace
       CHECK_EQUAL(compare_data.count(3), data.count(3));
       CHECK_EQUAL(compare_data.count(4), data.count(4));
       CHECK_EQUAL(compare_data.count(99), data.count(99));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_count_using_transparent_comparator)
+    {
+      using CSet = std::multiset<int, std::less<int>>;
+      const CSet compare_data(initial_data.begin(), initial_data.end());
+
+      using ESet = etl::multiset<int, MAX_SIZE, std::less<>>;
+      const ESet data(initial_data.begin(), initial_data.end());
+
+      CHECK_EQUAL(compare_data.count(-1), data.count(Key(-1)));
+      CHECK_EQUAL(compare_data.count(0), data.count(Key(0)));
+      CHECK_EQUAL(compare_data.count(1), data.count(Key(1)));
+      CHECK_EQUAL(compare_data.count(2), data.count(Key(2)));
+      CHECK_EQUAL(compare_data.count(3), data.count(Key(3)));
+      CHECK_EQUAL(compare_data.count(4), data.count(Key(4)));
+      CHECK_EQUAL(compare_data.count(99), data.count(Key(99)));
     }
 
     //*************************************************************************
@@ -919,6 +979,54 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_using_transparent_comparator)
+    {
+      using CSet = std::multiset<int, std::less<int>>;
+      CSet compare_data(initial_data.begin(), initial_data.end());
+
+      using ESet = etl::multiset<int, MAX_SIZE, std::less<>>;
+      ESet data(initial_data.begin(), initial_data.end());
+
+      ESet::iterator i_data = data.find(Key(0));
+      CSet::iterator i_compare = compare_data.find(0);
+
+      // Check that both return successful return results
+      CHECK_EQUAL(*i_compare, *i_data);
+
+      i_data = data.find(Key(1));
+      i_compare = compare_data.find(1);
+
+      // Check that both return successful return results
+      CHECK_EQUAL(*i_compare, *i_data);
+
+      i_data = data.find(Key(2));
+      i_compare = compare_data.find(2);
+
+      // Check that both return successful return results
+      CHECK_EQUAL(*i_compare, *i_data);
+
+      i_data = data.find(Key(3));
+      i_compare = compare_data.find(3);
+
+      // Check that both return successful return results
+      CHECK_EQUAL(*i_compare, *i_data);
+
+      i_data = data.find(Key(-1));
+      i_compare = compare_data.find(-1);
+
+      // Check that both return successful return results
+      CHECK(data.end() == i_data);
+      CHECK(compare_data.end() == i_compare);
+
+      i_data = data.find(Key(99));
+      i_compare = compare_data.find(99);
+
+      // Check that both return successful return results
+      CHECK(data.end() == i_data);
+      CHECK(compare_data.end() == i_compare);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_const)
     {
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
@@ -956,6 +1064,54 @@ namespace
       CHECK(compare_data.end() == i_compare);
 
       i_data = data.find(99);
+      i_compare = compare_data.find(99);
+
+      // Check that both return successful return results
+      CHECK(data.end() == i_data);
+      CHECK(compare_data.end() == i_compare);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_const_using_transparent_comparator)
+    {
+      using CSet = std::multiset<int, std::less<int>>;
+      CSet compare_data(initial_data.begin(), initial_data.end());
+
+      using ESet = etl::multiset<int, MAX_SIZE, std::less<>>;
+      ESet data(initial_data.begin(), initial_data.end());
+
+      ESet::const_iterator i_data = data.find(Key(0));
+      CSet::const_iterator i_compare = compare_data.find(0);
+
+      // Check that both return successful return results
+      CHECK_EQUAL(*i_compare, *i_data);
+
+      i_data = data.find(Key(1));
+      i_compare = compare_data.find(1);
+
+      // Check that both return successful return results
+      CHECK_EQUAL(*i_compare, *i_data);
+
+      i_data = data.find(Key(2));
+      i_compare = compare_data.find(2);
+
+      // Check that both return successful return results
+      CHECK_EQUAL(*i_compare, *i_data);
+
+      i_data = data.find(Key(3));
+      i_compare = compare_data.find(3);
+
+      // Check that both return successful return results
+      CHECK_EQUAL(*i_compare, *i_data);
+
+      i_data = data.find(Key(-1));
+      i_compare = compare_data.find(-1);
+
+      // Check that both return successful return results
+      CHECK(data.end() == i_data);
+      CHECK(compare_data.end() == i_compare);
+
+      i_data = data.find(Key(99));
       i_compare = compare_data.find(99);
 
       // Check that both return successful return results
@@ -1023,6 +1179,30 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_lower_bound_using_transparent_comparator)
+    {
+      using CSet = std::multiset<int, std::less<int>>;
+      CSet compare_data(initial_data.begin(), initial_data.end());
+
+      using ESet = etl::multiset<int, MAX_SIZE, std::less<>>;
+      ESet data(initial_data.begin(), initial_data.end());
+
+      CSet::iterator i_compare = compare_data.lower_bound(2);
+      ESet::iterator i_data = data.lower_bound(Key(2));
+      CHECK_EQUAL(*i_compare, *i_data);
+
+      i_compare = compare_data.lower_bound(-1);
+      i_data = data.lower_bound(Key(-1));
+      CHECK_EQUAL(*i_compare, *i_data);
+
+      i_compare = compare_data.lower_bound(99);
+      CHECK(compare_data.end() == i_compare);
+
+      i_data = data.lower_bound(Key(99));
+      CHECK(data.end() == i_data);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_lower_bound_const)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
@@ -1053,6 +1233,30 @@ namespace
       i_data = data.lower_bound(99);
       CHECK_EQUAL(data.end(), i_data);
 #endif
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_lower_bound_const_using_transparent_comparator)
+    {
+      using CSet = std::multiset<int, std::less<int>>;
+      CSet compare_data(initial_data.begin(), initial_data.end());
+
+      using ESet = etl::multiset<int, MAX_SIZE, std::less<>>;
+      ESet data(initial_data.begin(), initial_data.end());
+
+      CSet::const_iterator i_compare = compare_data.lower_bound(4);
+      ESet::const_iterator i_data = data.lower_bound(Key(4));
+      CHECK_EQUAL(*i_compare, *i_data);
+
+      i_compare = compare_data.lower_bound(-1);
+      i_data = data.lower_bound(Key(-1));
+      CHECK_EQUAL(*i_compare, *i_data);
+
+      i_compare = compare_data.lower_bound(99);
+      CHECK(compare_data.end() == i_compare);
+
+      i_data = data.lower_bound(Key(99));
+      CHECK(data.end() == i_data);
     }
 
     //*************************************************************************
@@ -1089,9 +1293,33 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_upper_bound_using_transparent_comparator)
+    {
+      using CSet = std::multiset<int, std::less<int>>;
+      CSet compare_data(initial_data.begin(), initial_data.end());
+
+      using ESet = etl::multiset<int, MAX_SIZE, std::less<>>;
+      ESet data(initial_data.begin(), initial_data.end());
+
+      CSet::iterator i_compare = compare_data.upper_bound(1);
+      ESet::iterator i_data = data.upper_bound(Key(1));
+      CHECK_EQUAL(*i_compare, *i_data);
+
+      i_compare = compare_data.upper_bound(-1);
+      i_data = data.upper_bound(Key(-1));
+      CHECK_EQUAL(*i_compare, *i_data);
+
+      i_compare = compare_data.upper_bound(99);
+      CHECK(compare_data.end() == i_compare);
+
+      i_data = data.upper_bound(Key(99));
+      CHECK(data.end() == i_data);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_upper_bound_const)
     {
-      Compare_Data compare_data(initial_data.begin(), initial_data.end());
+      const Compare_Data compare_data(initial_data.begin(), initial_data.end());
       const Data data(initial_data.begin(), initial_data.end());
 
       Compare_Data::const_iterator i_compare = compare_data.upper_bound(3);
@@ -1122,6 +1350,30 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_upper_bound_const_using_transparent_comparator)
+    {
+      using CSet = std::multiset<int, std::less<int>>;
+      const CSet compare_data(initial_data.begin(), initial_data.end());
+
+      using ESet = etl::multiset<int, MAX_SIZE, std::less<>>;
+      const ESet data(initial_data.begin(), initial_data.end());
+
+      CSet::const_iterator i_compare = compare_data.upper_bound(3);
+      ESet::const_iterator i_data = data.upper_bound(Key(3));
+      CHECK_EQUAL(*i_compare, *i_data);
+
+      i_compare = compare_data.upper_bound(-1);
+      i_data = data.upper_bound(Key(-1));
+      CHECK_EQUAL(*i_compare, *i_data);
+
+      i_compare = compare_data.upper_bound(99);
+      CHECK(compare_data.end() == i_compare);
+
+      i_data = data.upper_bound(Key(99));
+      CHECK(data.end() == i_data);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_key_compare)
     {
       const Data data(initial_data.begin(), initial_data.end());
@@ -1138,6 +1390,21 @@ namespace
       CHECK(compare(a, b));
       CHECK(!compare(b, a));
 #endif
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_key_compare_using_transparent_comparator)
+    {
+      using ESet = etl::multiset<int, MAX_SIZE, std::less<>>;
+      const ESet data(initial_data.begin(), initial_data.end());
+
+      ESet::key_compare compare = data.key_comp();
+
+      int a(1);
+      ESet::key_type b(2);
+
+      CHECK(compare(a, b));
+      CHECK(!compare(b, a));
     }
 
     //*************************************************************************
@@ -1216,6 +1483,68 @@ namespace
                 }
             }
         }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_compare_lower_upper_bound_using_transparent_comparator)
+    {
+      using CSet = std::multiset<int, std::less<int>>;
+      CSet compare(initial_data.begin(), initial_data.end());
+
+      using ESet = etl::multiset<int, MAX_SIZE, std::less<>>;
+      ESet data(initial_data.begin(), initial_data.end());
+
+      std::vector<int> tab(test_data.begin(), test_data.end());
+
+      //make sure both data and compare contain same elements
+      std::vector<int> data_elements(data.begin(), data.end());
+      std::vector<int> compare_data_elements(compare.begin(), compare.end());
+
+      CHECK(data_elements == compare_data_elements);
+      CHECK_EQUAL(data_elements.size(), MAX_SIZE);
+
+      for (std::vector<int>::iterator it = tab.begin(); it != tab.end(); ++it)
+      {
+        int i = *it;
+
+        //lower_bound
+        CHECK_EQUAL(compare.lower_bound(i) == compare.end(), data.lower_bound(i) == data.end());
+        //if both end, or none
+        if ((compare.lower_bound(i) == compare.end()) == (data.lower_bound(i) == data.end()))
+        {
+          //if both are not end
+          if (compare.lower_bound(i) != compare.end())
+          {
+            CHECK((*compare.lower_bound(i)) == (*data.lower_bound(i)));
+          }
+
+          ETL_OR_STD::pair<CSet::const_iterator, CSet::const_iterator> stlret = compare.equal_range(i);
+          ETL_OR_STD::pair<ESet::const_iterator, ESet::const_iterator> etlret = data.equal_range(Key(i));
+
+          CHECK_EQUAL(stlret.first == compare.end(), etlret.first == data.end());
+          if ((stlret.first != compare.end()) && (etlret.first != data.end()))
+          {
+            CHECK((*stlret.first) == (*etlret.first));
+          }
+          CHECK_EQUAL(stlret.second == compare.end(), etlret.second == data.end());
+          if ((stlret.second != compare.end()) && (etlret.second != data.end()))
+          {
+            CHECK((*stlret.second) == (*etlret.second));
+          }
+        }
+
+        //upper_bound
+        CHECK_EQUAL(compare.upper_bound(i) == compare.end(), data.upper_bound(i) == data.end());
+        //if both end, or none
+        if ((compare.upper_bound(i) == compare.end()) == (data.upper_bound(i) == data.end()))
+        {
+          //if both are not end
+          if (compare.upper_bound(i) != compare.end())
+          {
+            CHECK((*compare.upper_bound(i)) == (*data.upper_bound(i)));
+          }
+        }
+      }
     }
 
     //*************************************************************************
@@ -1304,5 +1633,28 @@ namespace
       CHECK_EQUAL("F", *itr);
     }
 #endif
+
+    //*************************************************************************
+    TEST(test_contains)
+    {
+      std::array<int, 6U> initial = { 1, 2, 3, 4, 5, 6 };
+      etl::multiset<int, 6U, etl::less<>> data(initial.begin(), initial.end());
+
+      CHECK(data.contains(1));
+      CHECK(!data.contains(99));
+    }
+
+    //*************************************************************************
+    TEST(test_contains_using_transparent_comparator)
+    {
+      std::array<int, 6U> initial = { 1, 2, 3, 4, 5, 6 };
+      etl::multiset<int, 6U, etl::less<>> data(initial.begin(), initial.end());
+
+      CHECK(data.contains(1));
+      CHECK(data.contains(Key(1)));
+
+      CHECK(!data.contains(99));
+      CHECK(!data.contains(Key(99)));
+    }
   };
 }

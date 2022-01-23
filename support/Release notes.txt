@@ -1,4 +1,40 @@
 ===============================================================================
+20.23.0
+Recoded state_chart to reduce its resource requirements.
+Added compile time state chart variants.
+Added etl::unaligned_type for fundamental types.
+Added reverse engineered functionality from C++20 <bit>.
+Added all permutations of leading/trailing bit tests.
+Changed inline functions to templates in binary.h.
+Added etl::midpoint and etl::lerp
+Recoded etl::endian & etl::endianness to allow constexpr in certain configurations.
+Updates and fixes to etl::bitset. Added to_ulong, to_ullong, to_string member functions.
+Moved void_t definition.
+Renamed 8bit check macro.
+Updated tests to support C++20 STL.
+Modified C++ language level detection.
+Added all permutations of leading/trailing bit tests.
+etl::iterator is more SFINAE compatible.
+Updated C++ standard detection.
+
+===============================================================================
+20.22.0
+Split callback and message timer to atomic and locked interrupt versions.
+#480 Fixed: Double formatting with precision > 9
+#481 Fixed: etl::span const datacannot be created from non const c array of data.
+#482 Fixed: Two or more etl::span/array_view of different types create ambiguous overloading set 
+#483 Fixed: Added Green Hills compiler to minmax push and pop.
+#484 Fixed: etl::vector test_uninitialized_resize_excess not calling uninitialized_resize.
+#485 Fixed: etl::message_packet takes message types that are not in its list.
+
+===============================================================================
+20.21.0
+Added contains() method to etl::map and etl::set + variants.
+Added support for transparent comparators.
+When ETL_NO_ATOMICS is defined the timer.h file does not define timer_semaphore_t.
+etl::deque::resize throws etl::deque_full instead of etl::deque_out_of_bounds, if requested size is too large.
+
+===============================================================================
 20.20.0
 Updated container 'insert' and 'erase' to C++11 style const_iterator parameters. (#463)
 Fixed container template function overload abiguity. (#466)

@@ -45,7 +45,7 @@ SOFTWARE.
   #include <Windows.h>
 #endif
 
-#define REALTIME_TEST 1
+#define REALTIME_TEST 0
 
 namespace
 {
@@ -153,7 +153,7 @@ namespace
       CHECK(!queue.pop(i));
     }
 
-#if !defined(ETL_FORCE_TEST_CPP03)
+#if !defined(ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_move_push_pop)
     {

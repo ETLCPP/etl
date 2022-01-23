@@ -37,7 +37,7 @@ SOFTWARE.
 #include <atomic>
 #include <thread>
 
-#define REALTIME_TEST 1
+#define REALTIME_TEST 0
 
 namespace
 {

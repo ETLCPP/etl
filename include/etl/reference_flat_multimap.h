@@ -40,6 +40,10 @@ SOFTWARE.
 #include "vector.h"
 #include "iterator.h"
 #include "nth_type.h"
+#include "type_traits.h"
+#include "type_traits.h"
+
+#include "private/comparator_is_transparent.h"
 
 namespace etl
 {
@@ -282,7 +286,7 @@ namespace etl
 
   protected:
 
-    typedef typename etl::parameter_type<TKey>::type key_parameter_t;
+    typedef const TKey& key_parameter_t;
 
   private:
 
@@ -302,6 +306,20 @@ namespace etl
       {
         return comp(key, element.first);
       }
+
+#if ETL_CPP11_SUPPORTED
+      template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+      bool operator ()(const value_type& element, const K& key) const
+      {
+        return comp(element.first, key);
+      }
+
+      template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+      bool operator ()(const K& key, const value_type& element) const
+      {
+        return comp(key, element.first);
+      }
+#endif
 
       key_compare comp;
     };
@@ -503,6 +521,26 @@ namespace etl
       }
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    size_t erase(K&& key)
+    {
+      ETL_OR_STD::pair<iterator, iterator> range = equal_range(key);
+
+      if (range.first == end())
+      {
+        return 0U;
+      }
+      else
+      {
+        size_t d = etl::distance(range.first, range.second);
+        erase(range.first, range.second);
+        return d;
+      }
+    }
+#endif
+
     //*********************************************************************
     /// Erases an element.
     ///\param i_element Iterator to the element.
@@ -565,6 +603,29 @@ namespace etl
       return end();
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    iterator find(const K& key)
+    {
+      iterator itr = lower_bound(key);
+
+      if (itr != end())
+      {
+        if (!key_compare()(itr->first, key) && !key_compare()(key, itr->first))
+        {
+          return itr;
+        }
+        else
+        {
+          return end();
+        }
+      }
+
+      return end();
+    }
+#endif
+
     //*********************************************************************
     /// Finds an element.
     ///\param key The key to search for.
@@ -589,6 +650,29 @@ namespace etl
       return end();
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    const_iterator find(const K& key) const
+    {
+      const_iterator itr = lower_bound(key);
+
+      if (itr != end())
+      {
+        if (!key_compare()(itr->first, key) && !key_compare()(key, itr->first))
+        {
+          return itr;
+        }
+        else
+        {
+          return end();
+        }
+      }
+
+      return end();
+    }
+#endif
+
     //*********************************************************************
     /// Counts an element.
     ///\param key The key to search for.
@@ -601,6 +685,17 @@ namespace etl
       return etl::distance(range.first, range.second);
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    size_t count(const K& key) const
+    {
+      ETL_OR_STD::pair<const_iterator, const_iterator> range = equal_range(key);
+
+      return etl::distance(range.first, range.second);
+    }
+#endif
+
     //*********************************************************************
     /// Finds the lower bound of a key
     ///\param key The key to search for.
@@ -610,6 +705,15 @@ namespace etl
     {
       return etl::lower_bound(begin(), end(), key, compare);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    iterator lower_bound(const K& key)
+    {
+      return etl::lower_bound(begin(), end(), key, compare);
+    }
+#endif
 
     //*********************************************************************
     /// Finds the lower bound of a key
@@ -621,6 +725,15 @@ namespace etl
       return etl::lower_bound(cbegin(), cend(), key, compare);
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    const_iterator lower_bound(const K& key) const
+    {
+      return etl::lower_bound(cbegin(), cend(), key, compare);
+    }
+#endif
+
     //*********************************************************************
     /// Finds the upper bound of a key
     ///\param key The key to search for.
@@ -631,6 +744,15 @@ namespace etl
       return etl::upper_bound(begin(), end(), key, compare);
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    iterator upper_bound(const K& key)
+    {
+      return etl::upper_bound(begin(), end(), key, compare);
+    }
+#endif
+
     //*********************************************************************
     /// Finds the upper bound of a key
     ///\param key The key to search for.
@@ -640,6 +762,15 @@ namespace etl
     {
       return etl::upper_bound(begin(), end(), key, compare);
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    const_iterator upper_bound(const K& key) const
+    {
+      return etl::upper_bound(begin(), end(), key, compare);
+    }
+#endif
 
     //*********************************************************************
     /// Finds the range of equal elements of a key
@@ -653,6 +784,17 @@ namespace etl
       return ETL_OR_STD::make_pair(i_lower, etl::upper_bound(i_lower, end(), key, compare));
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    ETL_OR_STD::pair<iterator, iterator> equal_range(const K& key)
+    {
+      iterator i_lower = etl::lower_bound(begin(), end(), key, compare);
+
+      return ETL_OR_STD::make_pair(i_lower, etl::upper_bound(i_lower, end(), key, compare));
+    }
+#endif
+
     //*********************************************************************
     /// Finds the range of equal elements of a key
     ///\param key The key to search for.
@@ -664,6 +806,34 @@ namespace etl
 
       return ETL_OR_STD::make_pair(i_lower, etl::upper_bound(i_lower, cend(), key, compare));
     }
+
+#if ETL_CPP11_SUPPORTED
+    //*********************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const K& key) const
+    {
+      const_iterator i_lower = etl::lower_bound(cbegin(), cend(), key, compare);
+
+      return ETL_OR_STD::make_pair(i_lower, etl::upper_bound(i_lower, cend(), key, compare));
+    }
+#endif
+
+    //*************************************************************************
+    /// Check if the map contains the key.
+    //*************************************************************************
+    bool contains(const TKey& key) const
+    {
+      return find(key) != end();
+    }
+
+#if ETL_CPP11_SUPPORTED
+    //*************************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    bool contains(const K& k) const
+    {
+      return find(k) != end();
+    }
+#endif
 
     //*************************************************************************
     /// Gets the current size of the flat_multiset.

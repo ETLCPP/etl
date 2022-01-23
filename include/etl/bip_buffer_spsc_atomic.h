@@ -52,7 +52,7 @@ SOFTWARE.
 #include "error_handler.h"
 #include "span.h"
 
-#if ETL_HAS_ATOMIC && ETL_CPP11_SUPPORTED
+#if ETL_HAS_ATOMIC
 
 namespace etl
 {
@@ -389,7 +389,7 @@ namespace etl
     span<T> read_reserve(size_type max_reserve_size)
     {
       size_type reserve_size = max_reserve_size;
-      auto rindex = get_read_reserve(&reserve_size);
+      size_type rindex = get_read_reserve(&reserve_size);
         
       return span<T>(p_buffer + rindex, reserve_size);
     }
@@ -411,7 +411,7 @@ namespace etl
     span<T> write_reserve(size_type max_reserve_size)
     {
       size_type reserve_size = max_reserve_size;
-      auto windex = get_write_reserve(&reserve_size);
+      size_type windex = get_write_reserve(&reserve_size);
         
       return span<T>(p_buffer + windex, reserve_size);
     }
@@ -433,7 +433,7 @@ namespace etl
     void clear()
     {
       // the buffer might be split into two contiguous blocks
-      for (auto reader = read_reserve(max_size()); reader.size() > 0; reader = read_reserve(max_size()))
+      for (span<T> reader = read_reserve(max_size()); reader.size() > 0; reader = read_reserve(max_size()))
       {
         destroy(reader.begin(), reader.end());
         read_commit(reader);

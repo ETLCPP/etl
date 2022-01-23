@@ -232,7 +232,7 @@ namespace etl
       return observer_list.size();
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_OBSERVER_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
     //*****************************************************************
     /// Notify all of the observers, sending them the notification.
     ///\tparam TNotification the notification type.
@@ -297,7 +297,7 @@ namespace etl
     Observer_List observer_list;
   };
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_OBSERVER_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
 
   //*****************************************************************
   /// The observer class for N types.

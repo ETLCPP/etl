@@ -155,7 +155,7 @@ namespace
       CHECK(!queue.pop(i));
     }
 
-#if !defined(ETL_FORCE_TEST_CPP03)
+#if !defined(ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_move_push_pop)
     {

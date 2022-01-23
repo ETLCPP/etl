@@ -750,6 +750,26 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_shift_left_operator_shift_element_size)
+    {
+      etl::bitset<60> data(0x12345678UL);
+      etl::bitset<60> shift(0x1234567800UL);
+
+      data <<= 8U;
+      CHECK_EQUAL(shift.value<uint64_t>(), data.value<uint64_t>());
+    }
+
+    //*************************************************************************
+    TEST(test_shift_left_operator_overflow)
+    {
+      etl::bitset<31> data(0x7FFFFFFFUL);
+      etl::bitset<31> shifted(0x7FFFFFFEUL);
+
+      data <<= 1U;
+      CHECK(data == shifted);
+    }
+
+    //*************************************************************************
     TEST(test_shift_left_copy_operator)
     {
       etl::bitset<60> data1(0x12345678UL);
@@ -788,6 +808,16 @@ namespace
       data2 = data1;
       data2 >>= 11U;
       CHECK(data2 == shift11);
+    }
+
+    //*************************************************************************
+    TEST(test_shift_right_operator_shift_element_size)
+    {
+      etl::bitset<60> data(0x12345678UL);
+      etl::bitset<60> shift(0x123456UL);
+
+      data >>= 8U;
+      CHECK_EQUAL(shift.value<uint64_t>(), data.value<uint64_t>());
     }
 
     //*************************************************************************
@@ -1090,6 +1120,51 @@ namespace
       CHECK_EQUAL(0x56U, s[1]);
       CHECK_EQUAL(0x34U, s[2]);
       CHECK_EQUAL(0x12U, s[3]);
+    }
+
+    //*************************************************************************
+    TEST(test_to_string)
+    {
+      etl::bitset<32> b(0x12345678UL);
+
+      etl::string<32> text = b.to_string('.', '*');
+      std::string stdtext = b.to_string<std::string>('.', '*');
+
+      CHECK_THROW(etl::string<32> text1 = b.to_string<etl::string<30>>('.', '*'), etl::bitset_overflow);   
+      CHECK_EQUAL("...*..*...**.*...*.*.**..****...", text.c_str());
+      CHECK_EQUAL("...*..*...**.*...*.*.**..****...", stdtext.c_str());
+    }
+
+    //*************************************************************************
+    TEST(test_issue_497_count_inverted_bits)
+    {
+      etl::bitset<5U> bits;
+      std::bitset<5U> stdbits;
+      etl::bitset<5U> negbits = ~bits;
+      std::bitset<5U> stdnegbits = ~stdbits;
+
+      CHECK_EQUAL(stdbits.count(),    bits.count());
+      CHECK_EQUAL(stdbits.all(),      bits.all());
+      CHECK_EQUAL(stdnegbits.count(), negbits.count());
+      CHECK_EQUAL(stdnegbits.all(),   negbits.all());
+    }
+
+    //*************************************************************************
+    TEST(test_issue_497_shifted_zero_sized_bitset)
+    {
+      etl::bitset<0> bits;
+      std::bitset<0> stdbits;
+
+      CHECK_EQUAL(stdbits.size(), bits.size());
+      CHECK_EQUAL(stdbits.none(), bits.none());
+      CHECK_EQUAL(stdbits.all(),  bits.all());
+      CHECK_EQUAL(stdbits.any(),  bits.any());
+
+      CHECK_EQUAL(stdbits.count(),     bits.count());
+      CHECK_EQUAL(stdbits.to_ulong(),  bits.to_ulong());
+      CHECK_EQUAL(stdbits.to_ullong(), bits.to_ullong());
+
+      etl::bitset<0> shiftbits = bits << 1; // No exception.
     }
   };
 }

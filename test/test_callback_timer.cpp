@@ -659,10 +659,12 @@ namespace
       size_t called = 0UL;
     };
 
+    using callback_type = etl::icallback_timer::callback_type;
+
     TEST(callback_timer_call_etl_delegate)
     {
         test_object test_obj;
-        etl::delegate<void()> delegate_callback = etl::delegate<void()>::create<test_object, &test_object::call>(test_obj);
+        callback_type delegate_callback = callback_type::create<test_object, &test_object::call>(test_obj);
         etl::callback_timer<1> timer_controller;
 
         timer_controller.enable(true);

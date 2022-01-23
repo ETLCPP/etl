@@ -92,7 +92,7 @@ namespace etl
   // For internal FSM use.
   typedef typename etl::larger_type<etl::message_id_t>::type fsm_internal_id_t;
 
-#if ETL_CPP17_SUPPORTED && !defined(ETL_FSM_FORCE_CPP03) // For C++17 and above
+#if ETL_CPP17_SUPPORTED && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
   template <typename, typename, const etl::fsm_state_id_t, typename...>
   class fsm_state;
 #else
@@ -203,7 +203,7 @@ namespace etl
     friend class etl::fsm;
     friend class etl::hfsm;
 
-#if ETL_CPP17_SUPPORTED && !defined(ETL_FSM_FORCE_CPP03) // For C++17 and above
+#if ETL_CPP17_SUPPORTED && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
     template <typename, typename, const etl::fsm_state_id_t, typename...>
     friend class fsm_state;
 #else
@@ -285,7 +285,7 @@ namespace etl
     }
 
     //*******************************************
-    inline etl::fsm& get_fsm_context() const
+    etl::fsm& get_fsm_context() const
     {
       return *p_context;
     }
@@ -520,7 +520,7 @@ namespace etl
 //*************************************************************************************************
 // For C++17 and above.
 //*************************************************************************************************
-#if ETL_CPP17_SUPPORTED && !defined(ETL_FSM_FORCE_CPP03) // For C++17 and above
+#if ETL_CPP17_SUPPORTED && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
   //***************************************************************************
   // The definition for all types.
   //***************************************************************************
@@ -547,7 +547,7 @@ namespace etl
     {
     }
 
-    inline TContext& get_fsm_context() const
+    TContext& get_fsm_context() const
     {
       return static_cast<TContext&>(ifsm_state::get_fsm_context());
     }
@@ -631,7 +631,7 @@ namespace etl
   cog.outl("  {")
   cog.outl("  }")
   cog.outl("")
-  cog.outl("  inline TContext& get_fsm_context() const")
+  cog.outl("  TContext& get_fsm_context() const")
   cog.outl("  {")
   cog.outl("    return static_cast<TContext&>(ifsm_state::get_fsm_context());")
   cog.outl("  }")
@@ -708,7 +708,7 @@ namespace etl
       cog.outl("  {")
       cog.outl("  }")
       cog.outl("")
-      cog.outl("  inline TContext& get_fsm_context() const")
+      cog.outl("  TContext& get_fsm_context() const")
       cog.outl("  {")
       cog.outl("    return static_cast<TContext&>(ifsm_state::get_fsm_context());")
       cog.outl("  }")
@@ -768,7 +768,7 @@ namespace etl
   cog.outl("  {")
   cog.outl("  }")
   cog.outl("")
-  cog.outl("  inline TContext& get_fsm_context() const")
+  cog.outl("  TContext& get_fsm_context() const")
   cog.outl("  {")
   cog.outl("    return static_cast<TContext&>(ifsm_state::get_fsm_context());")
   cog.outl("  }")

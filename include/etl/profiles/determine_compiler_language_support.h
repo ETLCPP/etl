@@ -35,29 +35,94 @@ SOFTWARE.
 
 #include "determine_compiler.h"
 
-#if !defined(ETL_CPP11_SUPPORTED) && !defined(ETL_CPP14_SUPPORTED) && !defined(ETL_CPP17_SUPPORTED)
+// Determine C++20 support
+#if !defined(ETL_CPP20_SUPPORTED)
   #if defined(__cplusplus)
     #if defined(ETL_COMPILER_MICROSOFT)
-      #define ETL_CPP11_SUPPORTED (_MSC_VER >= 1600)
-      #define ETL_CPP14_SUPPORTED (_MSC_VER >= 1900)
-      #define ETL_CPP17_SUPPORTED (_MSC_VER >= 1914)
-      #define ETL_CPP20_SUPPORTED 0
+      #if defined(_MSVC_LANG)
+        #define ETL_CPP20_SUPPORTED (_MSVC_LANG >= 202002L)
+      #else
+        #define ETL_CPP20_SUPPORTED (_MSC_VER >= 1929)
+      #endif
     #elif defined(ETL_COMPILER_ARM5)
-      #define ETL_CPP11_SUPPORTED 0
-      #define ETL_CPP14_SUPPORTED 0
-      #define ETL_CPP17_SUPPORTED 0
       #define ETL_CPP20_SUPPORTED 0
     #else
-      #define ETL_CPP11_SUPPORTED (__cplusplus >= 201103L)
-      #define ETL_CPP14_SUPPORTED (__cplusplus >= 201402L)
+      #define ETL_CPP20_SUPPORTED (__cplusplus >= 202002L)
+    #endif
+  #else
+    #define ETL_CPP20_SUPPORTED 0
+  #endif
+#endif
+
+#if ETL_CPP20_SUPPORTED
+  #define ETL_CPP11_SUPPORTED 1
+  #define ETL_CPP14_SUPPORTED 1
+  #define ETL_CPP17_SUPPORTED 1
+#endif
+
+// Determine C++17 support
+#if !defined(ETL_CPP17_SUPPORTED)
+  #if defined(__cplusplus)
+    #if defined(ETL_COMPILER_MICROSOFT)
+      #if defined(_MSVC_LANG)
+        #define ETL_CPP17_SUPPORTED (_MSVC_LANG >= 201703L)
+      #else
+        #define ETL_CPP17_SUPPORTED (_MSC_VER >= 1914)
+      #endif
+    #elif defined(ETL_COMPILER_ARM5)
+      #define ETL_CPP17_SUPPORTED 0
+    #else
       #define ETL_CPP17_SUPPORTED (__cplusplus >= 201703L)
-      #define ETL_CPP20_SUPPORTED 0
+    #endif
+  #else
+    #define ETL_CPP17_SUPPORTED 0
+  #endif
+#endif
+
+#if ETL_CPP17_SUPPORTED
+  #define ETL_CPP11_SUPPORTED 1
+  #define ETL_CPP14_SUPPORTED 1
+#endif
+
+// Determine C++14 support
+#if !defined(ETL_CPP14_SUPPORTED)
+  #if defined(__cplusplus)
+    #if defined(ETL_COMPILER_MICROSOFT)
+      #if defined(_MSVC_LANG)
+        #define ETL_CPP14_SUPPORTED (_MSVC_LANG >= 201402L)
+      #else
+        #define ETL_CPP14_SUPPORTED (_MSC_VER >= 1900)
+      #endif
+    #elif defined(ETL_COMPILER_ARM5)
+      #define ETL_CPP14_SUPPORTED 0
+    #else
+      #define ETL_CPP14_SUPPORTED (__cplusplus >= 201402L)
+    #endif
+  #else
+    #define ETL_CPP14_SUPPORTED 0
+  #endif
+#endif
+
+#if ETL_CPP14_SUPPORTED
+  #define ETL_CPP11_SUPPORTED 1
+#endif
+
+// Determine C++11 support
+#if !defined(ETL_CPP11_SUPPORTED)
+  #if defined(__cplusplus)
+    #if defined(ETL_COMPILER_MICROSOFT)
+      #if defined(_MSVC_LANG)
+        #define ETL_CPP11_SUPPORTED (_MSVC_LANG >= 201103L)
+      #else
+        #define ETL_CPP11_SUPPORTED (_MSC_VER >= 1600)
+      #endif
+    #elif defined(ETL_COMPILER_ARM5)
+      #define ETL_CPP11_SUPPORTED 0
+    #else
+      #define ETL_CPP11_SUPPORTED (__cplusplus >= 201103L)
     #endif
   #else
     #define ETL_CPP11_SUPPORTED 0
-    #define ETL_CPP14_SUPPORTED 0
-    #define ETL_CPP17_SUPPORTED 0
-    #define ETL_CPP20_SUPPORTED 0
   #endif
 #endif
 
@@ -65,6 +130,7 @@ SOFTWARE.
 #define ETL_CPP11_NOT_SUPPORTED !ETL_CPP11_SUPPORTED
 #define ETL_CPP14_NOT_SUPPORTED !ETL_CPP14_SUPPORTED
 #define ETL_CPP17_NOT_SUPPORTED !ETL_CPP17_SUPPORTED
+#define ETL_CPP20_NOT_SUPPORTED !ETL_CPP20_SUPPORTED
 
 #if !defined(ETL_NO_NULLPTR_SUPPORT)
   #define ETL_NO_NULLPTR_SUPPORT ETL_CPP11_NOT_SUPPORTED
@@ -79,7 +145,7 @@ SOFTWARE.
 #endif
 
 // NAN not defined or Rowley CrossWorks
-#if !defined(NAN) || defined(__CROSSWORKS_ARM) || defined(ETL_COMPILER_ARM5)
+#if !defined(NAN) || defined(__CROSSWORKS_ARM) || defined(ETL_COMPILER_ARM5) || defined(ARDUINO)
   #define ETL_NO_CPP_NAN_SUPPORT
 #endif
 

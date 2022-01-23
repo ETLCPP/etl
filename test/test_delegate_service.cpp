@@ -31,6 +31,8 @@ SOFTWARE.
 #include "etl/delegate.h"
 #include "etl/delegate_service.h"
 
+#if !defined(ETL_DELEGATE_FORCE_CPP03_IMPLEMENTATION)
+
 namespace
 {
   const size_t Size   = 3UL;
@@ -71,7 +73,7 @@ namespace
   public:
 
     Test()
-      : callback(etl::delegate<void(size_t)>::create<Test, &Test::member1>(*this))
+      : callback(Service::delegate_type::create<Test, &Test::member1>(*this))
     {
     }
 
@@ -94,13 +96,13 @@ namespace
   Test test;
 
   // Callback for 'member2'.
-  constexpr etl::delegate<void(size_t)> member_callback = etl::delegate<void(size_t)>::create<Test, test, &Test::member2>();
+  constexpr Service::delegate_type member_callback = Service::delegate_type::create<Test, test, &Test::member2>();
 
   // Callback for 'global'.
-  constexpr etl::delegate<void(size_t)> global_callback = etl::delegate<void(size_t)>::create<global>();
+  constexpr Service::delegate_type global_callback = Service::delegate_type::create<global>();
 
   // Callback for 'unhandled'.
-  constexpr etl::delegate<void(size_t)> unhandled_callback = etl::delegate<void(size_t)>::create<unhandled>();
+  constexpr Service::delegate_type unhandled_callback = Service::delegate_type::create<unhandled>();
 
   //*****************************************************************************
   // Initialises the test results.
@@ -331,3 +333,5 @@ namespace
     }
   };
 }
+
+#endif

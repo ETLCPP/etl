@@ -382,7 +382,7 @@ namespace
 
       Data data(INITIAL_SIZE);
 
-      CHECK_THROW(data.resize(NEW_SIZE), etl::vector_full);
+      CHECK_THROW(data.uninitialized_resize(NEW_SIZE), etl::vector_full);
     }
 
     //*************************************************************************

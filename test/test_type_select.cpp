@@ -54,7 +54,7 @@ namespace
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types1::select<0>::type>::value));
     }
 
-#if !defined(ETL_TYPE_SELECT_FORCE_CPP03)
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_type_select_t_1)
     {
@@ -84,7 +84,7 @@ namespace
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types8::select<7>::type>::value));
     }
 
-#if !defined(ETL_TYPE_SELECT_FORCE_CPP03)
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_type_select_t_8)
     {
@@ -144,7 +144,7 @@ namespace
       CHECK(!(etl::is_same<etl::null_type<99>, typename Types16::select<15>::type>::value));
     }
 
-#if !defined(ETL_TYPE_SELECT_FORCE_CPP03)
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_type_select_t_16)
     {

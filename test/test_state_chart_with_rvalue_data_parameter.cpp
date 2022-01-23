@@ -51,7 +51,7 @@ namespace
       ABORT
     };
 
-    ETL_DECLARE_ENUM_TYPE(EventId, etl::istate_chart::event_id_t)
+    ETL_DECLARE_ENUM_TYPE(EventId, etl::state_chart_traits::event_id_t)
     ETL_ENUM_TYPE(START,          "Start")
     ETL_ENUM_TYPE(STOP,           "Stop")
     ETL_ENUM_TYPE(EMERGENCY_STOP, "Emergency Stop")
@@ -73,7 +73,7 @@ namespace
       NUMBER_OF_STATES
     };
 
-    ETL_DECLARE_ENUM_TYPE(StateId, etl::istate_chart::state_id_t)
+    ETL_DECLARE_ENUM_TYPE(StateId, etl::state_chart_traits::state_id_t)
     ETL_ENUM_TYPE(IDLE,         "Idle")
     ETL_ENUM_TYPE(RUNNING,      "Running")
     ETL_ENUM_TYPE(WINDING_DOWN, "Winding Down")
@@ -119,9 +119,8 @@ namespace
   public:
 
     MotorControl()
-      : state_chart<MotorControl, Data&&>(*this, transitionTable.begin(), transitionTable.end(), StateId::IDLE)
+      : state_chart<MotorControl, Data&&>(*this, transitionTable.begin(), transitionTable.end(), stateTable.begin(), stateTable.end(), StateId::IDLE)
     {
-      this->set_state_table(stateTable.begin(), stateTable.end());
       ClearStatistics();
     }
 
@@ -273,7 +272,7 @@ namespace
   SUITE(test_state_chart_class)
   {
     //*************************************************************************
-    TEST(test_state_chart)
+    TEST(test_state_chart_with_rvalue_data_parameter)
     {    
       motorControl.ClearStatistics();
 
@@ -496,6 +495,7 @@ namespace
 
       // Now in Running state.
 
+      // Send abort event.
       motorControl.process_event(EventId::ABORT, Data(2));
       CHECK_EQUAL(StateId::IDLE, int(motorControl.get_state_id()));
 

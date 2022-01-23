@@ -58,19 +58,19 @@ namespace etl
   {
     typedef uint64_t value_type;
 
-    inline uint64_t initial() const
+    uint64_t initial() const
     {
       return OFFSET_BASIS;
     }
 
-    inline uint64_t add(uint64_t hash, uint8_t value) const
+    uint64_t add(uint64_t hash, uint8_t value) const
     {
       hash *= PRIME;
       hash ^= value;
       return  hash;
     }
 
-    inline uint64_t final(uint64_t hash) const
+    uint64_t final(uint64_t hash) const
     {
       return hash;
     }
@@ -116,19 +116,19 @@ namespace etl
     {
     typedef uint64_t value_type;
 
-    inline uint64_t initial() const
+    uint64_t initial() const
       {
       return OFFSET_BASIS;
     }
 
-    inline uint64_t add(uint64_t hash, uint8_t value) const
+    uint64_t add(uint64_t hash, uint8_t value) const
     {
       hash ^= value;
       hash *= PRIME;
       return hash;
     }
 
-    inline uint64_t final(uint64_t hash) const
+    uint64_t final(uint64_t hash) const
     {
       return hash;
     }
@@ -175,19 +175,19 @@ namespace etl
     {
     typedef uint32_t value_type;
 
-    inline uint32_t initial() const
+    uint32_t initial() const
       {
       return OFFSET_BASIS;
     }
 
-    inline uint32_t add(uint32_t hash, uint8_t value) const
+    uint32_t add(uint32_t hash, uint8_t value) const
     {
       hash *= PRIME;
       hash ^= value;
       return hash;
     }
 
-    inline uint32_t final(uint32_t hash) const
+    uint32_t final(uint32_t hash) const
     {
       return hash;
     }
@@ -233,19 +233,19 @@ namespace etl
     {
     typedef uint32_t value_type;
 
-    inline uint32_t initial() const
+    uint32_t initial() const
       {
       return OFFSET_BASIS;
     }
 
-    inline uint32_t add(uint32_t hash, uint8_t value) const
+    uint32_t add(uint32_t hash, uint8_t value) const
     {
       hash ^= value;
       hash *= PRIME;
       return hash;
     }
 
-    inline uint32_t final(uint32_t hash) const
+    uint32_t final(uint32_t hash) const
     {
       return hash;
     }

@@ -27,42 +27,42 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 //******************************************************************************/
-//
-//#ifndef ETL_MULTI_VECTOR_INCLUDED
-//#define ETL_MULTI_VECTOR_INCLUDED
-//
-//#include "platform.h"
-//#include "vector.h"
-//
-/////\defgroup multi_vector multi_vector
-///// A multi dimentional vector.
-/////\ingroup containers
-//
-//namespace etl
-//{
-//#if ETL_CPP11_SUPPORTED
-//
-//  namespace private_multi_vector
-//  {
-//    template <class T, size_t TD1, size_t... TDn>
-//    struct multi_vector_t
-//    {
-//      using type = etl::vector<typename multi_vector_t<T, TDn...>::type, TD1>;
-//      static constexpr size_t Max_Size = TD1;
-//    };
-//
-//    template <class T, size_t TD1>
-//    struct multi_vector_t<T, TD1>
-//    {
-//      using type = etl::vector<T, TD1>;
-//      static constexpr size_t Max_Size = TD1;
-//    };
-//  }
-//
-//  template <typename T, const size_t... TDn>
-//  using multi_vector = typename private_multi_vector::multi_vector_t<T, TDn...>::type;
-//}
-//
-//#endif
-//#endif
-//
+
+#ifndef ETL_MULTI_VECTOR_INCLUDED
+#define ETL_MULTI_VECTOR_INCLUDED
+
+#include "platform.h"
+#include "vector.h"
+
+///\defgroup multi_vector multi_vector
+/// A multi dimentional vector.
+///\ingroup containers
+
+#if ETL_CPP11_SUPPORTED
+
+namespace etl
+{
+  namespace private_multi_vector
+  {
+    template <class T, size_t TD1, size_t... TDn>
+    struct multi_vector_t
+    {
+      using type = etl::vector<typename multi_vector_t<T, TDn...>::type, TD1>;
+      static constexpr size_t Max_Size = TD1;
+    };
+
+    template <class T, size_t TD1>
+    struct multi_vector_t<T, TD1>
+    {
+      using type = etl::vector<T, TD1>;
+      static constexpr size_t Max_Size = TD1;
+    };
+  }
+
+  template <typename T, const size_t... TDn>
+  using multi_vector = typename private_multi_vector::multi_vector_t<T, TDn...>::type;
+}
+
+#endif
+#endif
+

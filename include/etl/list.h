@@ -175,7 +175,7 @@ namespace etl
       //***********************************************************************
       /// Reverses the previous & next pointers.
       //***********************************************************************
-      inline void reverse()
+      void reverse()
       {
         using ETL_OR_STD::swap; // Allow ADL
 

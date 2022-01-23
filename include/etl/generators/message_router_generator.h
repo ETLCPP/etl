@@ -260,7 +260,7 @@ namespace etl
 
   //***********************************************
   /// null message router functionality.
-  inline etl::imessage_router& get_null_message_router()
+  etl::imessage_router& get_null_message_router()
   {
     return etl::null_message_router::instance();
   }
@@ -325,8 +325,8 @@ namespace etl
   //***************************************************************************
   /// Send a message to a router.
   //***************************************************************************
-  inline static void send_message(etl::imessage_router& destination,
-                                  const etl::imessage&  message)
+  static void send_message(etl::imessage_router& destination,
+                           const etl::imessage&  message)
   {
     destination.receive(message);
   }
@@ -334,7 +334,7 @@ namespace etl
 //*************************************************************************************************
 // For C++17 and above.
 //*************************************************************************************************
-#if ETL_CPP17_SUPPORTED && !defined(ETL_MESSAGE_ROUTER_FORCE_CPP03)
+#if ETL_CPP17_SUPPORTED && !defined(ETL_MESSAGE_ROUTER_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   // The definition for all message types.
   //***************************************************************************

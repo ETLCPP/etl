@@ -84,7 +84,7 @@ namespace etl
     //*************************************************************************
     /// Get how many instances we have.
     //*************************************************************************
-    inline static int32_t get_instance_count()
+    static int32_t get_instance_count()
     {
       return how_many();
     }
@@ -92,7 +92,7 @@ namespace etl
     //*************************************************************************
     /// Get how many instances we have.
     //*************************************************************************
-    inline static void reset_instance_count()
+    static void reset_instance_count()
     {
       how_many() = 0;
     }
@@ -102,7 +102,7 @@ namespace etl
     //*************************************************************************
     /// Get a referenceto the count.
     //*************************************************************************
-    inline static int32_t& how_many()
+    static int32_t& how_many()
     {
       static int32_t count = 0;
       return count;

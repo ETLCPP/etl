@@ -71,7 +71,7 @@ namespace etl
     typedef T2 type2;
   };
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_TYPE_SELECT_FORCE_CPP03)
+#if ETL_CPP11_SUPPORTED && !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   // type_id_lookup 
   //***************************************************************************
