@@ -272,15 +272,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the current state id.
-    /// \return The current state id.
-    //*************************************************************************
-    const state* find_state(state_id_t state_id)
-    {
-      return etl::find_if(State_Table_Begin, State_Table_Begin + State_Table_Size, is_state(state_id));
-    }
-
-    //*************************************************************************
     /// Start the state chart.
     //*************************************************************************
     virtual void start(bool on_entry_initial = true) ETL_OVERRIDE
@@ -374,6 +365,15 @@ namespace etl
   private:
 
     //*************************************************************************
+    /// Gets the current state id.
+    /// \return The current state id.
+    //*************************************************************************
+    const state* find_state(state_id_t state_id)
+    {
+      return etl::find_if(State_Table_Begin, State_Table_Begin + State_Table_Size, is_state(state_id));
+    }
+
+    //*************************************************************************
     struct is_transition
     {
       is_transition(event_id_t event_id_, state_id_t state_id_)
@@ -462,15 +462,6 @@ namespace etl
     const TObject& get_object() const
     {
       return TObject_Ref;
-    }
-
-    //*************************************************************************
-    /// Gets the current state id.
-    /// \return The current state id.
-    //*************************************************************************
-    const state* find_state(state_id_t state_id)
-    {
-      return etl::find_if(State_Table_Begin, State_Table_Begin + State_Table_Size, is_state(state_id));
     }
 
     //*************************************************************************
@@ -569,6 +560,15 @@ namespace etl
     }
 
   private:
+
+    //*************************************************************************
+    /// Gets the current state id.
+    /// \return The current state id.
+    //*************************************************************************
+    const state* find_state(state_id_t state_id)
+    {
+      return etl::find_if(State_Table_Begin, State_Table_Begin + State_Table_Size, is_state(state_id));
+    }
 
     //*************************************************************************
     struct is_transition
@@ -695,22 +695,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the current state id.
-    /// \return The current state id.
-    //*************************************************************************
-    const state* find_state(state_id_t state_id)
-    {
-      if (state_table_begin == ETL_NULLPTR)
-      {
-        return state_table_end();
-      }
-      else
-      {
-        return etl::find_if(state_table_begin, state_table_end(), is_state(state_id));
-      }
-    }
-
-    //*************************************************************************
     /// Start the state chart.
     //*************************************************************************
     virtual void start(bool on_entry_initial = true) ETL_OVERRIDE
@@ -806,6 +790,22 @@ namespace etl
     }
 
   private:
+
+    //*************************************************************************
+    /// Gets the current state id.
+    /// \return The current state id.
+    //*************************************************************************
+    const state* find_state(state_id_t state_id)
+    {
+      if (state_table_begin == ETL_NULLPTR)
+      {
+        return state_table_end();
+      }
+      else
+      {
+        return etl::find_if(state_table_begin, state_table_end(), is_state(state_id));
+      }
+    }
 
     //*************************************************************************
     const transition* const transition_table_end() const
@@ -949,22 +949,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the current state id.
-    /// \return The current state id.
-    //*************************************************************************
-    const state* find_state(state_id_t state_id)
-    {
-      if (state_table_begin == ETL_NULLPTR)
-      {
-        return state_table_end();
-      }
-      else
-      {
-        return etl::find_if(state_table_begin, state_table_end(), is_state(state_id));
-      }
-    }
-
-    //*************************************************************************
     /// Start the state chart.
     //*************************************************************************
     virtual void start(bool on_entry_initial = true) ETL_OVERRIDE
@@ -1056,6 +1040,22 @@ namespace etl
     }
 
   private:
+
+    //*************************************************************************
+    /// Gets the current state id.
+    /// \return The current state id.
+    //*************************************************************************
+    const state* find_state(state_id_t state_id)
+    {
+      if (state_table_begin == ETL_NULLPTR)
+      {
+        return state_table_end();
+      }
+      else
+      {
+        return etl::find_if(state_table_begin, state_table_end(), is_state(state_id));
+      }
+    }
 
     //*************************************************************************
     const transition* const transition_table_end() const

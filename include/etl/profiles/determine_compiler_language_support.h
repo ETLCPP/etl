@@ -114,7 +114,7 @@ SOFTWARE.
       #if defined(_MSVC_LANG)
         #define ETL_CPP11_SUPPORTED (_MSVC_LANG >= 201103L)
       #else
-        #define ETL_CPP11_SUPPORTED (_MSC_VER >= 1600)
+        #define ETL_CPP11_SUPPORTED (_MSC_VER >= 1700)
       #endif
     #elif defined(ETL_COMPILER_ARM5)
       #define ETL_CPP11_SUPPORTED 0

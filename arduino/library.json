@@ -7,7 +7,7 @@
   },
   "homepage": "https://www.etlcpp.com/",
   "license": "MIT",
-  "description": "ETL. A C++ template library tailored for embedded systems. Directories formated for Arduino",
+  "description": "ETL. A C++ template library tailored for embedded systems. Directories formatted for Arduino",
   "keywords": "c-plus-plus, cpp, algorithms, containers, templates",
   "repository": {
     "type": "git",
