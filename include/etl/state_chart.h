@@ -164,8 +164,27 @@ namespace etl
     typedef state_chart_traits::state_id_t state_id_t;
     typedef state_chart_traits::event_id_t event_id_t;
 
+    istate_chart(state_id_t initial_state_id)
+      : current_state_id(initial_state_id)
+    {
+    }
+
+    virtual void start(bool on_entry_initial = true) = 0;
     virtual void process_event(event_id_t, parameter_t) = 0;
     virtual ~istate_chart() {}
+
+    //*************************************************************************
+    /// Gets the current state id.
+    /// \return The current state id.
+    //*************************************************************************
+    state_id_t get_state_id() const
+    {
+      return current_state_id;
+    }
+
+  protected:
+
+    state_id_t current_state_id; ///< The current state id.
   };
 
   //***************************************************************************
@@ -180,8 +199,27 @@ namespace etl
     typedef state_chart_traits::state_id_t state_id_t;
     typedef state_chart_traits::event_id_t event_id_t;
 
+    istate_chart(state_id_t initial_state_id)
+      : current_state_id(initial_state_id)
+    {
+    }
+
     virtual void process_event(event_id_t) = 0;
+    virtual void start(bool on_entry_initial = true) = 0;
     virtual ~istate_chart() {}
+
+    //*************************************************************************
+    /// Gets the current state id.
+    /// \return The current state id.
+    //*************************************************************************
+    state_id_t get_state_id() const
+    {
+      return current_state_id;
+    }
+
+  protected:
+
+    state_id_t current_state_id; ///< The current state id.
   };
 
   //***************************************************************************
@@ -210,7 +248,7 @@ namespace etl
     /// Constructor.
     //*************************************************************************
     ETL_CONSTEXPR state_chart_ct()
-      : current_state_id(Initial_State)
+      : istate_chart<void>(Initial_State)
       , started(false)
     {
     }
@@ -234,25 +272,16 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the current state id.
-    /// \return The current state id.
-    //*************************************************************************
-    const state* find_state(state_id_t state_id)
-    {
-      return etl::find_if(State_Table_Begin, State_Table_Begin + State_Table_Size, is_state(state_id));
-    }
-
-    //*************************************************************************
     /// Start the state chart.
     //*************************************************************************
-    void start(const bool on_entry_initial = true)
+    virtual void start(bool on_entry_initial = true) ETL_OVERRIDE
     {
       if (!started)
       {
         if (on_entry_initial)
         {
           // See if we have a state item for the initial state.
-          const state* s = find_state(current_state_id);
+          const state* s = find_state(this->current_state_id);
 
           // If the initial state has an 'on_entry' then call it.
           if ((s != (State_Table_Begin + State_Table_Size)) && (s->on_entry != ETL_NULLPTR))
@@ -281,7 +310,7 @@ namespace etl
         while (t != (Transition_Table_Begin + Transition_Table_Size))
         {
           // Scan the transition table from the latest position.
-          t = etl::find_if(t, (Transition_Table_Begin + Transition_Table_Size), is_transition(event_id, current_state_id));
+          t = etl::find_if(t, (Transition_Table_Begin + Transition_Table_Size), is_transition(event_id, this->current_state_id));
 
           // Found an entry?
           if (t != (Transition_Table_Begin + Transition_Table_Size))
@@ -296,12 +325,12 @@ namespace etl
               }
 
               // Changing state?
-              if (current_state_id != t->next_state_id)
+              if (this->current_state_id != t->next_state_id)
               {
                 const state* s;
 
                 // See if we have a state item for the current state.
-                s = find_state(current_state_id);
+                s = find_state(this->current_state_id);
 
                 // If the current state has an 'on_exit' then call it.
                 if ((s != (State_Table_Begin + State_Table_Size)) && (s->on_exit != ETL_NULLPTR))
@@ -309,10 +338,10 @@ namespace etl
                   (TObject_Ref.*(s->on_exit))();
                 }
 
-                current_state_id = t->next_state_id;
+                this->current_state_id = t->next_state_id;
 
                 // See if we have a state item for the new state.
-                s = find_state(current_state_id);
+                s = find_state(this->current_state_id);
 
                 // If the new state has an 'on_entry' then call it.
                 if ((s != (State_Table_Begin + State_Table_Size)) && (s->on_entry != ETL_NULLPTR))
@@ -333,16 +362,16 @@ namespace etl
       }
     }
 
+  private:
+
     //*************************************************************************
     /// Gets the current state id.
     /// \return The current state id.
     //*************************************************************************
-    state_id_t get_state_id() const
+    const state* find_state(state_id_t state_id)
     {
-      return current_state_id;
+      return etl::find_if(State_Table_Begin, State_Table_Begin + State_Table_Size, is_state(state_id));
     }
-
-  private:
 
     //*************************************************************************
     struct is_transition
@@ -382,8 +411,7 @@ namespace etl
     state_chart_ct(const state_chart_ct&) ETL_DELETE;
     state_chart_ct& operator =(const state_chart_ct&) ETL_DELETE;
 
-    state_id_t current_state_id; ///< The current state id.
-    bool       started;          ///< Set if the state chart has been started.
+    bool started; ///< Set if the state chart has been started.
   };
 
   //***************************************************************************
@@ -413,7 +441,7 @@ namespace etl
     /// Constructor.
     //*************************************************************************
     ETL_CONSTEXPR state_chart_ctp()
-      : current_state_id(Initial_State)
+      : istate_chart<TParameter>(Initial_State)
       , started(false)
     {
     }
@@ -437,25 +465,16 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the current state id.
-    /// \return The current state id.
-    //*************************************************************************
-    const state* find_state(state_id_t state_id)
-    {
-      return etl::find_if(State_Table_Begin, State_Table_Begin + State_Table_Size, is_state(state_id));
-    }
-
-    //*************************************************************************
     /// Start the state chart.
     //*************************************************************************
-    void start(const bool on_entry_initial = true)
+    virtual void start(bool on_entry_initial = true) ETL_OVERRIDE
     {
       if (!started)
       {
         if (on_entry_initial)
         {
           // See if we have a state item for the initial state.
-          const state* s = find_state(current_state_id);
+          const state* s = find_state(this->current_state_id);
 
           // If the initial state has an 'on_entry' then call it.
           if ((s != (State_Table_Begin + State_Table_Size)) && (s->on_entry != ETL_NULLPTR))
@@ -484,7 +503,7 @@ namespace etl
         while (t != (Transition_Table_Begin + Transition_Table_Size))
         {
           // Scan the transition table from the latest position.
-          t = etl::find_if(t, (Transition_Table_Begin + Transition_Table_Size), is_transition(event_id, current_state_id));
+          t = etl::find_if(t, (Transition_Table_Begin + Transition_Table_Size), is_transition(event_id, this->current_state_id));
 
           // Found an entry?
           if (t != (Transition_Table_Begin + Transition_Table_Size))
@@ -503,12 +522,12 @@ namespace etl
               }
 
               // Changing state?
-              if (current_state_id != t->next_state_id)
+              if (this->current_state_id != t->next_state_id)
               {
                 const state* s;
 
                 // See if we have a state item for the current state.
-                s = find_state(current_state_id);
+                s = find_state(this->current_state_id);
 
                 // If the current state has an 'on_exit' then call it.
                 if ((s != (State_Table_Begin + State_Table_Size)) && (s->on_exit != ETL_NULLPTR))
@@ -516,10 +535,10 @@ namespace etl
                   (TObject_Ref.*(s->on_exit))();
                 }
 
-                current_state_id = t->next_state_id;
+                this->current_state_id = t->next_state_id;
 
                 // See if we have a state item for the new state.
-                s = find_state(current_state_id);
+                s = find_state(this->current_state_id);
 
                 // If the new state has an 'on_entry' then call it.
                 if ((s != (State_Table_Begin + State_Table_Size)) && (s->on_entry != ETL_NULLPTR))
@@ -540,16 +559,16 @@ namespace etl
       }
     }
 
+  private:
+
     //*************************************************************************
     /// Gets the current state id.
     /// \return The current state id.
     //*************************************************************************
-    state_id_t get_state_id() const
+    const state* find_state(state_id_t state_id)
     {
-      return current_state_id;
+      return etl::find_if(State_Table_Begin, State_Table_Begin + State_Table_Size, is_state(state_id));
     }
-
-  private:
 
     //*************************************************************************
     struct is_transition
@@ -589,8 +608,7 @@ namespace etl
     state_chart_ctp(const state_chart_ctp&) ETL_DELETE;
     state_chart_ctp& operator =(const state_chart_ctp&) ETL_DELETE;
 
-    state_id_t current_state_id; ///< The current state id.
-    bool       started;          ///< Set if the state chart has been started.
+    bool started; ///< Set if the state chart has been started.
   };
 
   //***************************************************************************
@@ -624,12 +642,12 @@ namespace etl
                               const state*      state_table_begin_,
                               const state*      state_table_end_,
                               const state_id_t  state_id_)
-      : object(object_)
+      : istate_chart<TParameter>(state_id_)
+      , object(object_)
       , transition_table_begin(transition_table_begin_)
       , state_table_begin(state_table_begin_)
       , transition_table_size(transition_table_end_ - transition_table_begin_)
       , state_table_size(state_table_end_ - state_table_begin_)
-      , current_state_id(state_id_)
       , started(false)
     {
     }
@@ -677,32 +695,16 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the current state id.
-    /// \return The current state id.
-    //*************************************************************************
-    const state* find_state(state_id_t state_id)
-    {
-      if (state_table_begin == ETL_NULLPTR)
-      {
-        return state_table_end();
-      }
-      else
-      {
-        return etl::find_if(state_table_begin, state_table_end(), is_state(state_id));
-      }
-    }
-
-    //*************************************************************************
     /// Start the state chart.
     //*************************************************************************
-    void start(const bool on_entry_initial = true)
+    virtual void start(bool on_entry_initial = true) ETL_OVERRIDE
     {
       if (!started)
       {
         if (on_entry_initial)
         {
           // See if we have a state item for the initial state.
-          const state* s = find_state(current_state_id);
+          const state* s = find_state(this->current_state_id);
 
           // If the initial state has an 'on_entry' then call it.
           if ((s != state_table_end()) && (s->on_entry != ETL_NULLPTR))
@@ -731,7 +733,7 @@ namespace etl
         while (t != transition_table_end())
         {
           // Scan the transition table from the latest position.
-          t = etl::find_if(t, transition_table_end(), is_transition(event_id, current_state_id));
+          t = etl::find_if(t, transition_table_end(), is_transition(event_id, this->current_state_id));
 
           // Found an entry?
           if (t != transition_table_end())
@@ -750,12 +752,12 @@ namespace etl
               }
 
               // Changing state?
-              if (current_state_id != t->next_state_id)
+              if (this->current_state_id != t->next_state_id)
               {
                 const state* s;
 
                 // See if we have a state item for the current state.
-                s = find_state(current_state_id);
+                s = find_state(this->current_state_id);
 
                 // If the current state has an 'on_exit' then call it.
                 if ((s != state_table_end()) && (s->on_exit != ETL_NULLPTR))
@@ -763,10 +765,10 @@ namespace etl
                   (object.*(s->on_exit))();
                 }
 
-                current_state_id = t->next_state_id;
+                this->current_state_id = t->next_state_id;
 
                 // See if we have a state item for the new state.
-                s = find_state(current_state_id);
+                s = find_state(this->current_state_id);
 
                 // If the new state has an 'on_entry' then call it.
                 if ((s != state_table_end()) && (s->on_entry != ETL_NULLPTR))
@@ -787,16 +789,23 @@ namespace etl
       }
     }
 
+  private:
+
     //*************************************************************************
     /// Gets the current state id.
     /// \return The current state id.
     //*************************************************************************
-    state_id_t get_state_id() const
+    const state* find_state(state_id_t state_id)
     {
-      return current_state_id;
+      if (state_table_begin == ETL_NULLPTR)
+      {
+        return state_table_end();
+      }
+      else
+      {
+        return etl::find_if(state_table_begin, state_table_end(), is_state(state_id));
+      }
     }
-
-  private:
 
     //*************************************************************************
     const transition* const transition_table_end() const
@@ -853,7 +862,6 @@ namespace etl
     const state*      state_table_begin;      ///< The start of the table of states.
     uint_least8_t     transition_table_size;  ///< The size of the table of transitions.
     uint_least8_t     state_table_size;       ///< The size of the table of states.
-    state_id_t        current_state_id;       ///< The current state id.
     bool              started;                ///< Set if the state chart has been started.
   };
 
@@ -888,12 +896,12 @@ namespace etl
                               const state*      state_table_begin_,
                               const state*      state_table_end_,
                               const state_id_t  state_id_)
-      : object(object_)
+      : istate_chart<void>(state_id_)
+      , object(object_)
       , transition_table_begin(transition_table_begin_)
       , state_table_begin(state_table_begin_)
       , transition_table_size(transition_table_end_ - transition_table_begin_)
       , state_table_size(state_table_end_ - state_table_begin_)
-      , current_state_id(state_id_)
       , started(false)
     {
     }
@@ -941,32 +949,16 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the current state id.
-    /// \return The current state id.
-    //*************************************************************************
-    const state* find_state(state_id_t state_id)
-    {
-      if (state_table_begin == ETL_NULLPTR)
-      {
-        return state_table_end();
-      }
-      else
-      {
-        return etl::find_if(state_table_begin, state_table_end(), is_state(state_id));
-      }
-    }
-
-    //*************************************************************************
     /// Start the state chart.
     //*************************************************************************
-    void start(const bool on_entry_initial = true)
+    virtual void start(bool on_entry_initial = true) ETL_OVERRIDE
     {
       if (!started)
       {
         if (on_entry_initial)
         {
           // See if we have a state item for the initial state.
-          const state* s = find_state(current_state_id);
+          const state* s = find_state(this->current_state_id);
 
           // If the initial state has an 'on_entry' then call it.
           if ((s != state_table_end()) && (s->on_entry != ETL_NULLPTR))
@@ -995,7 +987,7 @@ namespace etl
         while (t != transition_table_end())
         {
           // Scan the transition table from the latest position.
-          t = etl::find_if(t, transition_table_end(), is_transition(event_id, current_state_id));
+          t = etl::find_if(t, transition_table_end(), is_transition(event_id, this->current_state_id));
 
           // Found an entry?
           if (t != transition_table_end())
@@ -1010,12 +1002,12 @@ namespace etl
               }
 
               // Changing state?
-              if (current_state_id != t->next_state_id)
+              if (this->current_state_id != t->next_state_id)
               {
                 const state* s;
 
                 // See if we have a state item for the current state.
-                s = find_state(current_state_id);
+                s = find_state(this->current_state_id);
 
                 // If the current state has an 'on_exit' then call it.
                 if ((s != state_table_end()) && (s->on_exit != ETL_NULLPTR))
@@ -1023,10 +1015,10 @@ namespace etl
                   (object.*(s->on_exit))();
                 }
 
-                current_state_id = t->next_state_id;
+                this->current_state_id = t->next_state_id;
 
                 // See if we have a state item for the new state.
-                s = find_state(current_state_id);
+                s = find_state(this->current_state_id);
 
                 // If the new state has an 'on_entry' then call it.
                 if ((s != state_table_end()) && (s->on_entry != ETL_NULLPTR))
@@ -1047,16 +1039,23 @@ namespace etl
       }
     }
 
+  private:
+
     //*************************************************************************
     /// Gets the current state id.
     /// \return The current state id.
     //*************************************************************************
-    state_id_t get_state_id() const
+    const state* find_state(state_id_t state_id)
     {
-      return current_state_id;
+      if (state_table_begin == ETL_NULLPTR)
+      {
+        return state_table_end();
+      }
+      else
+      {
+        return etl::find_if(state_table_begin, state_table_end(), is_state(state_id));
+      }
     }
-
-  private:
 
     //*************************************************************************
     const transition* const transition_table_end() const
@@ -1113,7 +1112,6 @@ namespace etl
     const state*      state_table_begin;      ///< The start of the table of states.
     uint_least8_t     transition_table_size;  ///< The size of the table of transitions.
     uint_least8_t     state_table_size;       ///< The size of the table of states.
-    state_id_t        current_state_id;       ///< The current state id.
     bool              started;                ///< Set if the state chart has been started.
   };
 }

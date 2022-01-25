@@ -181,6 +181,9 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Resource Files\Arduino">
+      <UniqueIdentifier>{d138997a-b860-4420-9f45-87e9e2c52f3b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -3265,11 +3268,11 @@
     <None Include="..\..\meson.build">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\..\arduino\library.properties">
-      <Filter>ETL\Arduino</Filter>
-    </None>
     <None Include="..\..\arduino\library.json">
-      <Filter>ETL\Arduino</Filter>
+      <Filter>Resource Files\Arduino</Filter>
+    </None>
+    <None Include="..\..\arduino\library.properties">
+      <Filter>Resource Files\Arduino</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
