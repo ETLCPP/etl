@@ -101,7 +101,7 @@ namespace etl
   };
 
   template <const size_t NBITS>
-  const typename max_value_for_nbits<NBITS>::value_type max_value_for_nbits<NBITS>::value;
+  ETL_CONSTANT typename max_value_for_nbits<NBITS>::value_type max_value_for_nbits<NBITS>::value;
 
 #if ETL_CPP17_SUPPORTED
   template <const size_t NBITS>
@@ -381,7 +381,7 @@ namespace etl
   };
 
   template <const size_t POSITION>
-  const typename bit<POSITION>::value_type bit<POSITION>::value;
+  ETL_CONSTANT typename bit<POSITION>::value_type bit<POSITION>::value;
 
 #if ETL_CPP17_SUPPORTED
   template <const size_t POSITION>
