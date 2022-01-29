@@ -228,6 +228,32 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_construct_destroy_trivial)
+    {
+      char n[sizeof(trivial_t)];
+      trivial_t* pn = reinterpret_cast<trivial_t*>(n);
+
+      // Non count.
+      std::fill(std::begin(n), std::end(n), 0xFFU);
+      etl::construct_at(pn);
+      CHECK_EQUAL(0UL, *pn);
+      etl::destroy_at(pn);
+      CHECK_EQUAL(0UL, *pn);
+
+      std::fill(std::begin(n), std::end(n), 0xFFU);
+      etl::construct_at(pn);
+      CHECK_EQUAL(0x00000000UL, *pn);
+      etl::destroy_at(pn);
+      CHECK_EQUAL(0x00000000UL, *pn);
+
+      std::fill(std::begin(n), std::end(n), 0xFFU);
+      etl::construct_at(pn, test_item_trivial);
+      CHECK_EQUAL(test_item_trivial, *pn);
+      etl::destroy_at(pn);
+      CHECK_EQUAL(test_item_trivial, *pn);
+    }
+
+    //*************************************************************************
     TEST(test_uninitialized_fill_n_trivial)
     {
       // Also tests uninitialized_fill.

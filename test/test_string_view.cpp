@@ -57,31 +57,17 @@ namespace
   char ctext[] = { 'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '\0' };
   char* pctext = ctext;
 
-  constexpr etl::string_view string_view_assign()
-  {
-    etl::string_view a;
-
-    const char* text = "Hello";
-    a = etl::string_view(text, text + 5);
-
-    if (a.ends_with("o"))
-    {
-      return a;
-    }
-    else
-    {
-      return etl::string_view("World");
-    }
-  }
-
   SUITE(test_string_view)
   {
     //*************************************************************************
     TEST(test_constexpr)
     {
-#if ETL_USE_BUILTIN_MEMMOVE
-      constexpr etl::string_view b(string_view_assign());
-#endif
+      constexpr const char* text = "Hello";
+
+      constexpr etl::string_view view1(text);
+      constexpr etl::string_view view2(text, 5U);
+      constexpr etl::string_view view3(text, text + 5U);
+      constexpr etl::string_view view4(view3);
     }
 
     //*************************************************************************

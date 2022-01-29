@@ -1248,6 +1248,9 @@
     <ClInclude Include="..\data.h">
       <Filter>Tests\Test Support</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\determine_builtin_support.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp">
@@ -2789,9 +2792,6 @@
     <ClCompile Include="..\test_mean.cpp">
       <Filter>Tests\Algorithms</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_memory.cpp">
-      <Filter>Tests\Algorithms</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_quantize.cpp">
       <Filter>Tests\Algorithms</Filter>
     </ClCompile>
@@ -3175,6 +3175,9 @@
     </ClCompile>
     <ClCompile Include="..\test_threshold.cpp">
       <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_memory.cpp">
+      <Filter>Tests\Memory &amp; Iterators</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

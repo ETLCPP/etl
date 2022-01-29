@@ -36,6 +36,10 @@ SOFTWARE.
     #define ETL_USE_BUILTIN_MEMCMP 1
   #endif
 
+  #if !defined(ETL_USE_BUILTIN_MEMCPY)
+    #define ETL_USE_BUILTIN_MEMCPY 1
+  #endif
+
   #if !defined(ETL_USE_BUILTIN_MEMMOVE)
     #define ETL_USE_BUILTIN_MEMMOVE 1
   #endif
@@ -72,6 +76,10 @@ SOFTWARE.
     #define ETL_USE_BUILTIN_MEMCMP  __has_builtin(__builtin_memcmp)
   #endif
 
+#if !defined(ETL_USE_BUILTIN_MEMCPY)
+  #define ETL_USE_BUILTIN_MEMCPY __has_builtin(__builtin_memcpy)
+#endif
+
   #if !defined(ETL_USE_BUILTIN_MEMMOVE)
     #define ETL_USE_BUILTIN_MEMMOVE __has_builtin(__builtin_memmove)
   #endif
@@ -102,6 +110,10 @@ SOFTWARE.
 #else
   #if !defined(ETL_USE_BUILTIN_MEMCMP)
     #define ETL_USE_BUILTIN_MEMCMP 0
+  #endif
+
+  #if !defined(ETL_USE_BUILTIN_MEMCPY)
+    #define ETL_USE_BUILTIN_MEMCPY 0
   #endif
 
   #if !defined(ETL_USE_BUILTIN_MEMMOVE)

@@ -137,7 +137,7 @@ SOFTWARE.
   #define ETL_TARGET_OS_GENERIC
 #endif
 
-#if ETL_CPP20_NOT_SUPPORTED || !defined(ETL_NO_STL)
+#if !((ETL_CPP20_SUPPORTED && ETL_USING_STL) || defined(__BYTE_ORDER__))
   #define ETL_ENDIAN_NATIVE 0
 #endif
 

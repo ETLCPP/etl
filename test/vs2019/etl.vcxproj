@@ -2085,6 +2085,7 @@
     <ClInclude Include="..\..\include\etl\profiles\clang_generic_no_stl.h" />
     <ClInclude Include="..\..\include\etl\profiles\cpp17.h" />
     <ClInclude Include="..\..\include\etl\profiles\cpp17_no_stl.h" />
+    <ClInclude Include="..\..\include\etl\profiles\determine_builtin_support.h" />
     <ClInclude Include="..\..\include\etl\profiles\determine_compiler.h" />
     <ClInclude Include="..\..\include\etl\profiles\determine_compiler_language_support.h" />
     <ClInclude Include="..\..\include\etl\profiles\determine_compiler_version.h" />

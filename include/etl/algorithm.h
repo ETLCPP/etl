@@ -104,8 +104,15 @@ namespace etl
 
   //***************************************************************************
   // copy
-
-  // Other iterator
+#if ETL_USING_STL && !(ETL_CPP20_NOT_SUPPORTED && defined(ETL_FORCE_CONSTEXPR_ALGORITHMS))
+  // Use the STL implementation
+  template <typename TIterator1, typename TIterator2>
+  ETL_CONSTEXPR20 TIterator2 copy(TIterator1 sb, TIterator1 se, TIterator2 db)
+  {
+    return std::copy(sb, se, db);
+  }
+#else
+  // Non-pointer
   template <typename TIterator1, typename TIterator2>
   ETL_CONSTEXPR14
   typename etl::enable_if<ETL_IS_NOT_POINTER_TYPE(TIterator1) ||
@@ -123,7 +130,7 @@ namespace etl
   }
 
   // Pointer
-#if ETL_USE_BUILTIN_MEMMOVE
+#if ETL_USE_BUILTIN_MEMCPY
   template <typename TIterator1, typename TIterator2>
   ETL_CONSTEXPR14
   typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
@@ -137,9 +144,9 @@ namespace etl
 
     difference_t count = (se - sb);
 
-    return TIterator2(__builtin_memmove(db, sb, sizeof(value_t) * count)) + count;
+    return TIterator2(__builtin_memcpy(db, sb, sizeof(value_t) * count)) + count;
   }
-#elif ETL_FORCE_CONSTEXPR_ALGORITHMS
+#elif defined(ETL_FORCE_CONSTEXPR_ALGORITHMS)
   template <typename TIterator1, typename TIterator2>
   ETL_CONSTEXPR14
   typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
@@ -168,12 +175,20 @@ namespace etl
 
     difference_t count = (se - sb);
 
-    return TIterator2(memmove(db, sb, sizeof(value_t) * count)) + count;
+    return TIterator2(memcpy(db, sb, sizeof(value_t) * count)) + count;
   }
 #endif
+#endif // ETL_USING_STL && !(ETL_CPP20_NOT_SUPPORTED && defined(ETL_FORCE_CONSTEXPR_ALGORITHMS))
 
   //***************************************************************************
   // reverse_copy
+#if ETL_USING_STL && !(ETL_CPP20_NOT_SUPPORTED && defined(ETL_FORCE_CONSTEXPR_ALGORITHMS))
+  template <typename TIterator1, typename TIterator2>
+  ETL_CONSTEXPR20 TIterator2 reverse_copy(TIterator1 sb, TIterator1 se, TIterator2 db)
+  {
+    return std::reverse_copy(sb, se, db);
+  }
+#else
   template <typename TIterator1, typename TIterator2>
   ETL_CONSTEXPR14
   TIterator2 reverse_copy(TIterator1 sb, TIterator1 se, TIterator2 db)
@@ -185,11 +200,19 @@ namespace etl
 
     return db;
   }
+#endif // ETL_USING_STL && !(ETL_CPP20_NOT_SUPPORTED && defined(ETL_FORCE_CONSTEXPR_ALGORITHMS))
 
   //***************************************************************************
   // copy_n
-  
-  // Normal iterator
+#if ETL_USING_STL && ETL_CPP11_SUPPORTED && !(ETL_CPP20_NOT_SUPPORTED && defined(ETL_FORCE_CONSTEXPR_ALGORITHMS))
+  // Use the STL implementation
+  template <typename TIterator1, typename TSize, typename TIterator2>
+  ETL_CONSTEXPR20 TIterator2 copy_n(TIterator1 sb, TSize count, TIterator2 db)
+  {
+    return std::copy_n(sb, count, db);
+  }
+#else
+  // Non-pointer
   template <typename TIterator1, typename TSize, typename TIterator2>
   ETL_CONSTEXPR14
   typename etl::enable_if<ETL_IS_NOT_POINTER_TYPE(TIterator1) ||
@@ -208,7 +231,7 @@ namespace etl
   }
   
   // Pointer
-#if ETL_USE_BUILTIN_MEMMOVE
+#if ETL_USE_BUILTIN_MEMCPY
   template <typename TIterator1, typename TSize, typename TIterator2>
   ETL_CONSTEXPR14
   typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
@@ -219,7 +242,7 @@ namespace etl
   {
     typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
 
-    return TIterator2(__builtin_memmove(db, sb, sizeof(value_t) * count)) + count;
+    return TIterator2(__builtin_memcpy(db, sb, sizeof(value_t) * count)) + count;
   }
 #elif defined(ETL_FORCE_CONSTEXPR_ALGORITHMS)
   template <typename TIterator1, typename TSize, typename TIterator2>
@@ -248,13 +271,36 @@ namespace etl
   {
     typedef typename etl::iterator_traits<TIterator1>::value_type value_t;
 
-    return TIterator2(memmove(db, sb, sizeof(value_t) * count)) + count;
+    return TIterator2(memcpy(db, sb, sizeof(value_t) * count)) + count;
   }
 #endif
+#endif // ETL_USING_STL && !(ETL_CPP20_NOT_SUPPORTED && defined(ETL_FORCE_CONSTEXPR_ALGORITHMS))
 
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // copy_backward
+#if ETL_USING_STL && !(ETL_CPP20_NOT_SUPPORTED && defined(ETL_FORCE_CONSTEXPR_ALGORITHMS))
+  template <typename TIterator1, typename TIterator2>
+  ETL_CONSTEXPR20 TIterator2 copy_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
+  {
+    return std::copy_backward(sb, se, de);
+  }
+#else
+  // Non-pointer
+  template <typename TIterator1, typename TIterator2>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<!ETL_IS_POINTER_TYPE(TIterator1) ||
+                            !ETL_IS_POINTER_TYPE(TIterator2) ||
+                            !ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
+    copy_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
+  {
+    while (se != sb)
+    {
+      *(--de) = *(--se);
+    }
+
+    return de;
+  }
+
   // Pointer
 #if ETL_USE_BUILTIN_MEMMOVE
   template <typename TIterator1, typename TIterator2>
@@ -284,36 +330,26 @@ namespace etl
     return TIterator2(memmove(de - length, sb, sizeof(value_t) * length));
   }
 #endif
+#endif // ETL_USING_STL && !(ETL_CPP20_NOT_SUPPORTED && defined(ETL_FORCE_CONSTEXPR_ALGORITHMS))
 
-  // Other iterator
-  template <typename TIterator1, typename TIterator2>
-  ETL_CONSTEXPR14
-  typename etl::enable_if<!ETL_IS_POINTER_TYPE(TIterator1) ||
-                          !ETL_IS_POINTER_TYPE(TIterator2) ||
-                          !ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
-    copy_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
-  {
-    while (se != sb)
-    {
-      *(--de) = *(--se);
-    }
-
-    return de;
-  }
-#else
-  //***************************************************************************
-  // copy_backward
-  template <typename TIterator1, typename TIterator2>
-  TIterator2 copy_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
-  {
-    return std::copy_backward(sb, se, de);
-  }
-#endif
-
-#if ETL_CPP11_SUPPORTED
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // move
+#if ETL_USING_STL && !(ETL_CPP20_NOT_SUPPORTED && defined(ETL_FORCE_CONSTEXPR_ALGORITHMS))
+#if ETL_CPP11_SUPPORTED
+  template <typename TIterator1, typename TIterator2>
+  ETL_CONSTEXPR20 TIterator2 move(TIterator1 sb, TIterator1 se, TIterator2 db)
+  {
+    return std::move(sb, se, db);
+  }
+#else
+  template <typename TIterator1, typename TIterator2>
+  TIterator2 move(TIterator1 sb, TIterator1 se, TIterator2 db)
+  {
+    // Move not supported. Defer to copy.
+    return std::copy(sb, se, db);
+  }
+#endif
+#else
   // non-pointer or not trivially copyable
   template <typename TIterator1, typename TIterator2>
   ETL_CONSTEXPR14
@@ -362,31 +398,27 @@ namespace etl
     return TIterator2(memmove(db, sb, sizeof(value_t) * count)) + count;
   }
 #endif
-#else
-  //***************************************************************************
-  // move
-  template <typename TIterator1, typename TIterator2>
-  ETL_CONSTEXPR20 TIterator2 move(TIterator1 sb, TIterator1 se, TIterator2 db)
-  {
-    return std::move(sb, se, db);
-  }
-#endif
-#else
-  // C++03
-  //***************************************************************************
-  // move
-  template <typename TIterator1, typename TIterator2>
-  TIterator2 move(TIterator1 sb, TIterator1 se, TIterator2 db)
-  {
-    // Move not supported. Defer to copy.
-    return etl::copy(sb, se, db);
-  }
-#endif
+#endif // ETL_USING_STL && !(ETL_CPP20_NOT_SUPPORTED && defined(ETL_FORCE_CONSTEXPR_ALGORITHMS))
 
-#if ETL_CPP11_SUPPORTED
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // move_backward
+#if ETL_USING_STL && !(ETL_CPP20_NOT_SUPPORTED && defined(ETL_FORCE_CONSTEXPR_ALGORITHMS))
+#if ETL_CPP11_SUPPORTED
+  template <typename TIterator1, typename TIterator2>
+  ETL_CONSTEXPR20
+    TIterator2 move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
+  {
+    return std::move_backward(sb, se, de);
+  }
+#else
+  template <typename TIterator1, typename TIterator2>
+  TIterator2 move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
+  {
+    // Move not supported. Defer to copy_backward.
+    return std::copy_backward(sb, se, de);
+  }
+#endif
+#else
   // non-pointer, non-pod
   template <typename TIterator1, typename TIterator2>
   ETL_CONSTEXPR14
@@ -437,33 +469,13 @@ namespace etl
     return TIterator2(memmove(db, sb, sizeof(value_t) * count)) + count;
   }
 #endif
-#else
-  //***************************************************************************
-  // move_backward
-  template <typename TIterator1, typename TIterator2>
-  ETL_CONSTEXPR20
-  TIterator2 move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
-  {
-    return std::move_backward(sb, se, de);
-  }
-#endif
-#else
-  // C++03
-  //***************************************************************************
-  // move_backward
-  template <typename TIterator1, typename TIterator2>
-  TIterator2 move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
-  {
-    // Move not supported. Defer to copy_backward.
-    return ETL_OR_STD::copy_backward(sb, se, de);
-  }
-#endif
+#endif // ETL_USING_STL && !(ETL_CPP20_NOT_SUPPORTED && defined(ETL_FORCE_CONSTEXPR_ALGORITHMS))
 
-#if ETL_NOT_USING_STL
   //***************************************************************************
   // reverse
   // Pointers
   template <typename TIterator>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_pointer<TIterator>::value, void>::type
     reverse(TIterator b, TIterator e)
   {
@@ -477,8 +489,9 @@ namespace etl
     }
   }
 
-  // Other
+  // Non-pointers
   template <typename TIterator>
+  ETL_CONSTEXPR14
   typename etl::enable_if<!etl::is_pointer<TIterator>::value, void>::type
     reverse(TIterator b, TIterator e)
   {
@@ -487,15 +500,6 @@ namespace etl
       etl::iter_swap(b++, e);
     }
   }
-#else
-  //***************************************************************************
-  // reverse
-  template <typename TIterator>
-  void reverse(TIterator b, TIterator e)
-  {
-    std::reverse(b, e);
-  }
-#endif
 
   //***************************************************************************
   // lower_bound
@@ -644,6 +648,13 @@ namespace etl
 
   //***************************************************************************
   // fill
+#if ETL_USING_STL && !(ETL_CPP20_NOT_SUPPORTED && defined(ETL_FORCE_CONSTEXPR_ALGORITHMS))
+  template<typename TIterator, typename TValue>
+  ETL_CONSTEXPR20 void fill(TIterator first, TIterator last, const TValue& value)
+  {
+    std::fill(first, last, value);
+  }
+#else
   template<typename TIterator, typename TValue>
   ETL_CONSTEXPR14
   typename etl::enable_if<ETL_IS_NOT_CHAR_TYPE(TValue) || ETL_IS_NOT_POINTER_TYPE(TIterator), void>::type
@@ -682,9 +693,17 @@ namespace etl
     memset(first, value, last - first);
   }
 #endif
+#endif // ETL_USING_STL && !(ETL_CPP20_NOT_SUPPORTED && defined(ETL_FORCE_CONSTEXPR_ALGORITHMS))
 
   //***************************************************************************
   // fill_n
+#if ETL_USING_STL && !(ETL_CPP20_NOT_SUPPORTED && defined(ETL_FORCE_CONSTEXPR_ALGORITHMS))
+  template<typename TIterator, typename TSize, typename TValue>
+  ETL_CONSTEXPR20 TIterator fill_n(TIterator first, TSize count, const TValue& value)
+  {
+    return std::fill_n(first, count, value);
+  }
+#else
   template<typename TIterator, typename TSize, typename TValue>
   ETL_CONSTEXPR14
   typename etl::enable_if<ETL_IS_NOT_CHAR_TYPE(TValue) || ETL_IS_NOT_POINTER_TYPE(TIterator), TIterator>::type
@@ -729,6 +748,7 @@ namespace etl
     return TIterator(memset(first, value, count));
   }
 #endif
+#endif // ETL_USING_STL && !(ETL_CPP20_NOT_SUPPORTED && defined(ETL_FORCE_CONSTEXPR_ALGORITHMS))
 
   //***************************************************************************
   // count
@@ -777,6 +797,23 @@ namespace etl
 
   //***************************************************************************
   // equal
+#if ETL_USING_STL && !(ETL_CPP20_NOT_SUPPORTED && defined(ETL_FORCE_CONSTEXPR_ALGORITHMS))
+  template <typename TIterator1, typename TIterator2>
+  ETL_NODISCARD 
+  ETL_CONSTEXPR20 
+  bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2)
+  {
+    return std::equal(first1, last1, first2);
+  }
+
+  template <typename TIterator1, typename TIterator2, typename TPredicate>
+  ETL_NODISCARD
+  ETL_CONSTEXPR20
+  bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2, TPredicate predicate)
+  {
+    return std::equal(first1, last1, first2, predicate);
+  }
+#else
   // Not pointer types or not trivially copyable.
   template <typename TIterator1, typename TIterator2>
   ETL_NODISCARD
@@ -814,7 +851,7 @@ namespace etl
 
     return (__builtin_memcmp(first1, first2, sizeof(value_t) * (last1 - first1)) == 0);
   }
-#elif ETL_FORCE_CONSTEXPR_ALGORITHMS
+#elif defined(ETL_FORCE_CONSTEXPR_ALGORITHMS)
   // Forced constexpr.
   // Not pointer types or not trivially copyable.
   template <typename TIterator1, typename TIterator2>
@@ -852,7 +889,24 @@ namespace etl
   }
 #endif
 
-  // 
+  // Predicate
+  template <typename TIterator1, typename TIterator2, typename TPredicate>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14 
+  bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2, TPredicate predicate)
+  {
+    while (first1 != last1)
+    {
+      if (!predicate(*first1++, *first2++))
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // Four parameter
   template <typename TIterator1, typename TIterator2>
   ETL_NODISCARD
   ETL_CONSTEXPR14
@@ -868,6 +922,24 @@ namespace etl
 
     return (first1 == last1) && (first2 == last2);
   }
+
+  // Four parameter, Predicate
+  template <typename TIterator1, typename TIterator2, typename TPredicate>
+  ETL_NODISCARD
+    ETL_CONSTEXPR14
+    bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2, TIterator2 last2, TPredicate predicate)
+  {
+    while ((first1 != last1) && (first2 != last2))
+    {
+      if (!predicate(*first1++ , *first2++))
+      {
+        return false;
+      }
+    }
+
+    return (first1 == last1) && (first2 == last2);
+  }
+#endif //ETL_USING_STL && !(ETL_CPP20_NOT_SUPPORTED && defined(ETL_FORCE_CONSTEXPR_ALGORITHMS))
 
   //***************************************************************************
   // lexicographical_compare
