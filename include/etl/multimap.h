@@ -2355,8 +2355,11 @@ namespace etl
 
         while (from != other.end())
         {
+          typename etl::imultimap<TKey, TValue, TCompare>::iterator temp = from;
+          ++temp;
+
           this->insert(etl::move(*from));
-          ++from;
+          from = temp;
         }
       }
     }
@@ -2420,8 +2423,11 @@ namespace etl
 
         while (from != rhs.end())
         {
+          typename etl::imultimap<TKey, TValue, TCompare>::iterator temp = from;
+          ++temp;
+
           this->insert(etl::move(*from));
-          ++from;
+          from = temp;
         }
       }
 

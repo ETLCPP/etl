@@ -978,11 +978,14 @@ namespace etl
         etl::iflat_map<TKey, TMapped, TKeyCompare>::iterator first = rhs.begin();
         etl::iflat_map<TKey, TMapped, TKeyCompare>::iterator last  = rhs.end();
 
-        // Add all of the elements.
+        // Move all of the elements.
         while (first != last)
         {
+          typename etl::iflat_map<TKey, TMapped, TKeyCompare>::iterator temp = first;
+          ++temp;
+
           this->insert(etl::move(*first));
-          ++first;
+          first = temp;
         }
       }
     }

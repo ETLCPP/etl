@@ -1298,7 +1298,8 @@ namespace etl
   {
     while (first != last)
     {
-      etl::pop_heap(first, last--);
+      etl::pop_heap(first, last);
+      --last;
     }
   }
 
@@ -1308,7 +1309,8 @@ namespace etl
   {
     while (first != last)
     {
-      etl::pop_heap(first, last--, compare);
+      etl::pop_heap(first, last, compare);
+      --last;
     }
   }
 

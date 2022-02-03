@@ -1437,7 +1437,8 @@ namespace etl
           // Create copy.
           for (size_t i = 0UL; i < n_create_copy; ++i)
           {
-            create_element_front(*from--);
+            create_element_front(*from);
+            --from;
           }
 
           // Move old.

@@ -629,7 +629,8 @@ namespace etl
 
       while (first_ != last_)
       {
-        insert(*first_++);
+        insert(*first_);
+        ++first_;
       }
     }
 
@@ -794,7 +795,8 @@ namespace etl
     {
       while (first_ != last_)
       {
-        insert(*first_++);
+        insert(*first_);
+        ++first_;
       }
     }
 
@@ -1249,7 +1251,10 @@ namespace etl
     {
       while (first != last)
       {
-        insert(etl::move(*first++));
+        iterator temp = first;
+        ++temp;
+        insert(etl::move(*first));
+        first = temp;
       }
     }
 #endif

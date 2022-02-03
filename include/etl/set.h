@@ -774,6 +774,13 @@ namespace etl
       }
 
     private:
+
+      // Convert to an iterator.
+      iset::iterator to_iterator() const
+      {
+        return iset::iterator(const_cast<iset&>(*p_set), const_cast<Node*>(p_node));
+      }
+
       // Pointer to set associated with this iterator
       const iset* p_set;
 
@@ -814,7 +821,11 @@ namespace etl
 
         while (from != rhs.end())
         {
-          insert(etl::move(*from++));
+          typename etl::iset<TKey, TCompare>::iterator temp = from;
+          ++temp;
+
+          this->insert(etl::move(*from));
+          from = temp;
         }
       }
 
@@ -1047,13 +1058,12 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator first, const_iterator last)
     {
-      iterator next;
       while (first != last)
       {
-        next = erase(first++);
+        first = erase(first);
       }
 
-      return next;
+      return last.to_iterator();
     }
 
     //*********************************************************************
@@ -1204,7 +1214,8 @@ namespace etl
     {
       while (first != last)
       {
-        insert(*first++);
+        insert(*first);
+        ++first;
       }
     }
 
@@ -2523,13 +2534,19 @@ namespace etl
     set(set&& other)
       : etl::iset<TKey, TCompare>(node_pool, MAX_SIZE)
     {
+      int count = 0;
+
       if (this != &other)
       {
         typename etl::iset<TKey, TCompare>::iterator from = other.begin();
 
         while (from != other.end())
         {
-          this->insert(etl::move(*from++));
+          typename etl::iset<TKey, TCompare>::iterator temp = from;
+          ++temp;
+
+          this->insert(etl::move(*from));
+          from = temp;
         }
       }
     }
@@ -2594,7 +2611,11 @@ namespace etl
 
         while (from != rhs.end())
         {
-          this->insert(etl::move(*from++));
+          typename etl::iset<TKey, TCompare>::iterator temp = from;
+          ++temp;
+
+          this->insert(etl::move(*from));
+          from = temp;
         }
       }
 

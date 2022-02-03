@@ -815,11 +815,14 @@ namespace etl
         etl::iflat_multiset<T, TKeyCompare>::iterator first = rhs.begin();
         etl::iflat_multiset<T, TKeyCompare>::iterator last = rhs.end();
 
-        // Add all of the elements.
+        // Move all of the elements.
         while (first != last)
         {
+          typename etl::iflat_multiset<T, TKeyCompare>::iterator temp = first;
+          ++temp;
+
           this->insert(etl::move(*first));
-          ++first;
+          first = temp;
         }
       }
     }

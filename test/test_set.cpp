@@ -45,12 +45,13 @@ static const size_t MAX_SIZE = 10UL;
 
 #define TEST_GREATER_THAN
 #ifdef TEST_GREATER_THAN
-using Data = etl::set<int, MAX_SIZE, std::greater<int>>;
-using IData = etl::iset<int, std::greater<int>>;
-using Compare_Data = std::set<int, std::greater<int>>;
+  using Data = etl::set<int, MAX_SIZE, std::greater<int>>;
+  using IData = etl::iset<int, std::greater<int>>;
+  using Compare_Data = std::set<int, std::greater<int>>;
 #else
-using Data = etl::set<int, MAX_SIZE, std::less<int>>;
-using Compare_Data = std::set<int, std::less<int>>;
+  using Data = etl::set<int, MAX_SIZE, std::less<int>>;
+  using IData = etl::iset<int, std::less<int>>;
+  using Compare_Data = std::set<int, std::less<int>>;
 #endif
 
 using ItemM = TestDataM<int>;
@@ -95,6 +96,11 @@ namespace
   bool operator <(const int& lhs, const Key& rhs)
   {
     return (lhs < rhs.k);
+  }
+
+  bool operator <(const Key& lhs, const Key& rhs)
+  {
+    return (lhs.k < rhs.k);
   }
 
   SUITE(test_set)
@@ -244,6 +250,11 @@ namespace
       CHECK_EQUAL(2, ItemM(2).value);
       CHECK_EQUAL(3, ItemM(3).value);
       CHECK_EQUAL(4, ItemM(4).value);
+
+      CHECK(data2.find(ItemM(1)) != data2.end());
+      CHECK(data2.find(ItemM(2)) != data2.end());
+      CHECK(data2.find(ItemM(3)) != data2.end());
+      CHECK(data2.find(ItemM(4)) != data2.end());
     }
 
     //*************************************************************************
