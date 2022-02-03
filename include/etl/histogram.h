@@ -188,7 +188,8 @@ namespace etl
     {
       while (first != last)
       {
-        add(*first++);
+        add(*first);
+        ++first;
       }
     }
 
@@ -311,7 +312,8 @@ namespace etl
     {
       while (first != last)
       {
-        add(*first++);
+        add(*first);
+        ++first;
       }
     }
 
@@ -472,7 +474,8 @@ namespace etl
     {
       while (first != last)
       {
-        add(*first++);
+        add(*first);
+        ++first;
       }
     }
 
@@ -547,7 +550,8 @@ namespace etl
 
       while (itr != accumulator.end())
       {
-        sum += (*itr++).second;
+        sum += (*itr).second;
+        ++itr;
       }
 
       return sum;

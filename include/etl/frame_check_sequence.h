@@ -149,7 +149,8 @@ namespace etl
 
       while (begin != end)
       {
-        frame_check = policy.add(frame_check, *begin++);
+        frame_check = policy.add(frame_check, *begin);
+        ++begin;
       }
     }
 

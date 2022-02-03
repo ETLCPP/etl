@@ -107,7 +107,8 @@ namespace etl
 
       while (begin != end)
       {
-        add(*begin++);
+        add(*begin);
+        ++begin;
       }
     }
 

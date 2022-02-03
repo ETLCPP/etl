@@ -96,7 +96,9 @@ namespace etl
   {
     while (first1 != last1)
     {
-      iter_swap(first1++, first2++);
+      iter_swap(first1, first2);
+      ++first1;
+      ++first2;
     }
 
     return first2;
@@ -195,7 +197,8 @@ namespace etl
   {
     while (sb != se)
     {
-      *(db++) = *(--se);
+      *db = *--se;
+      ++db;
     }
 
     return db;
@@ -223,7 +226,9 @@ namespace etl
   {
     while (count != 0)
     {
-      *db++ = *sb++;
+      *db = *sb;
+      ++db;
+      ++sb;
       --count;
     }
 
@@ -255,7 +260,9 @@ namespace etl
   {
     while (count != 0)
     {
-      *db++ = *sb++;
+      *db = *sb;
+      ++db;
+      ++sb;
       --count;
     }
 
@@ -360,7 +367,9 @@ namespace etl
   {
     while (sb != se)
     {
-      *db++ = etl::move(*sb++);
+      *db = etl::move(*sb);
+      ++db;
+      ++sb;
     }
 
     return db;
@@ -826,10 +835,13 @@ namespace etl
   {
     while (first1 != last1)
     {
-      if (*first1++ != *first2++)
+      if (*first1 != *first2)
       {
         return false;
       }
+
+      ++first1;
+      ++first2;
     }
 
     return true;
@@ -865,10 +877,13 @@ namespace etl
   {
     while (first1 != last1)
     {
-      if (*first1++ != *first2++)
+      if (*first1 != *first2)
       {
         return false;
       }
+
+      ++first1;
+      ++first2;
     }
 
     return true;
@@ -897,10 +912,13 @@ namespace etl
   {
     while (first1 != last1)
     {
-      if (!predicate(*first1++, *first2++))
+      if (!predicate(*first1, *first2))
       {
         return false;
       }
+
+      ++first1;
+      ++first2;
     }
 
     return true;
@@ -914,10 +932,13 @@ namespace etl
   {
     while ((first1 != last1) && (first2 != last2))
     {
-      if (*first1++ != *first2++)
+      if (*first1 != *first2)
       {
         return false;
       }
+
+      ++first1;
+      ++first2;
     }
 
     return (first1 == last1) && (first2 == last2);
@@ -931,10 +952,13 @@ namespace etl
   {
     while ((first1 != last1) && (first2 != last2))
     {
-      if (!predicate(*first1++ , *first2++))
+      if (!predicate(*first1 , *first2))
       {
         return false;
       }
+
+      ++first1;
+      ++first2;
     }
 
     return (first1 == last1) && (first2 == last2);
@@ -1030,7 +1054,8 @@ namespace etl
   {
     while (first != last)
     {
-      unary_operation(*first++);
+      unary_operation(*first);
+      ++first;
     }
 
     return unary_operation;
@@ -1044,7 +1069,10 @@ namespace etl
   {
     while (first1 != last1)
     {
-      *d_first++ = unary_operation(*first1++);
+      *d_first = unary_operation(*first1);
+
+      ++d_first;
+      ++first1;
     }
 
     return d_first;
@@ -1056,7 +1084,11 @@ namespace etl
   {
     while (first1 != last1)
     {
-      *d_first++ = binary_operation(*first1++, *first2++);
+      *d_first = binary_operation(*first1, *first2);
+
+      ++d_first;
+      ++first1;
+      ++first2;
     }
 
     return d_first;
@@ -1343,7 +1375,10 @@ namespace etl
       {
         using ETL_OR_STD::swap; // Allow ADL
 
-        swap(*first++, *next++);
+        swap(*first, *next);
+
+        ++first;
+        ++next;
 
         if (next == last)
         {
@@ -1891,18 +1926,22 @@ namespace etl
   {
     while (begin != end)
     {
-      if (!predicate(*begin++))
+      if (!predicate(*begin))
       {
         break;
       }
+
+      ++begin;
     }
 
     while (begin != end)
     {
-      if (predicate(*begin++))
+      if (predicate(*begin))
       {
         return false;
       }
+
+      ++begin;
     }
 
     return true;
@@ -1951,12 +1990,16 @@ namespace etl
     {
       if (predicate(*begin))
       {
-        *destination_true++ = *begin++;
+        *destination_true = *begin;
+        ++destination_true;
       }
       else
       {
-        *destination_false++ = *begin++;
+        *destination_false = *begin;
+        ++destination_false;
       }
+
+      ++begin;
     }
 
     return ETL_OR_STD::pair<TDestinationTrue, TDestinationFalse>(destination_true, destination_false);
@@ -1978,7 +2021,8 @@ namespace etl
     {
       if (predicate(*begin))
       {
-        *out++ = *begin;
+        *out = *begin;
+        ++out;
       }
 
       ++begin;
@@ -2132,7 +2176,8 @@ namespace etl
   {
     while (first != last)
     {
-      sum = etl::move(sum) + *first++;
+      sum = etl::move(sum) + *first;
+      ++first;
     }
       
     return sum;
@@ -2148,7 +2193,8 @@ namespace etl
   {
     while (first != last)
     {
-      sum = operation(etl::move(sum), *first++);
+      sum = operation(etl::move(sum), *first);
+      ++first;
     }
 
     return sum;
@@ -2190,7 +2236,8 @@ namespace etl
       {
         if (!(*itr == value))
         {
-          *first++ = etl::move(*itr);
+          *first = etl::move(*itr);
+          ++first;
         }
 
         ++itr;
@@ -2218,7 +2265,8 @@ namespace etl
       {
         if (!predicate(*itr))
         {
-          *first++ = etl::move(*itr);
+          *first = etl::move(*itr);
+          ++first;
         }
 
         ++itr;
@@ -2285,7 +2333,9 @@ namespace etl
   {
     while ((i_begin != i_end) && (o_begin != o_end))
     {
-      *o_begin++ = *i_begin++;
+      *o_begin = *i_begin;
+      ++o_begin;
+      ++i_begin;
     }
 
     return o_begin;
@@ -2307,7 +2357,9 @@ namespace etl
   {
     while ((n-- > 0) && (o_begin != o_end))
     {
-      *o_begin++ = *i_begin++;
+      *o_begin = *i_begin;
+      ++o_begin;
+      ++i_begin;
     }
 
     return o_begin;
@@ -2330,7 +2382,9 @@ namespace etl
   {
     while ((n1-- > 0) && (n2-- > 0))
     {
-      *o_begin++ = *i_begin++;
+      *o_begin = *i_begin;
+      ++o_begin;
+      ++i_begin;
     }
 
     return o_begin;
@@ -2356,7 +2410,8 @@ namespace etl
     {
       if (predicate(*i_begin))
       {
-        *o_begin++ = *i_begin;
+        *o_begin = *i_begin;
+        ++o_begin;
       }
 
       ++i_begin;
@@ -2384,7 +2439,8 @@ namespace etl
     {
       if (predicate(*i_begin))
       {
-        *o_begin++ = *i_begin;
+        *o_begin = *i_begin;
+        ++o_begin;
       }
 
       ++i_begin;
@@ -2443,7 +2499,9 @@ namespace etl
   {
     while ((i_begin != i_end) && (o_begin != o_end))
     {
-      *o_begin++ = etl::move(*i_begin++);
+      *o_begin = etl::move(*i_begin);
+      ++i_begin;
+      ++o_begin;
     }
 
     return o_begin;
@@ -2561,7 +2619,8 @@ namespace etl
   {
     while (n-- > 0)
     {
-      function(*begin++);
+      function(*begin);
+      ++begin;
     }
 
     return begin;
@@ -2610,7 +2669,9 @@ namespace etl
   {
     while ((i_begin != i_end) && (o_begin != o_end))
     {
-      *o_begin++ = function(*i_begin++);
+      *o_begin = function(*i_begin);
+      ++i_begin;
+      ++o_begin;
     }
 
     return o_begin;
@@ -2681,7 +2742,8 @@ namespace etl
     {
       if (predicate(*i_begin))
       {
-        *o_begin++ = function(*i_begin);
+        *o_begin = function(*i_begin);
+        ++o_begin;
       }
 
       ++i_begin;
@@ -2711,7 +2773,8 @@ namespace etl
     {
       if (predicate(*i_begin1, *i_begin2))
       {
-        *o_begin++ = function(*i_begin1, *i_begin2);
+        *o_begin = function(*i_begin1, *i_begin2);
+        ++o_begin;
       }
 
       ++i_begin1;
@@ -2741,7 +2804,8 @@ namespace etl
     {
       if (predicate(*i_begin))
       {
-        *o_begin++ = function(*i_begin);
+        *o_begin = function(*i_begin);
+        ++o_begin;
       }
 
       ++i_begin;
@@ -2803,12 +2867,16 @@ namespace etl
     {
       if (predicate(*begin))
       {
-        *destination_true++ = function_true(*begin++);
+        *destination_true = function_true(*begin);
+        ++destination_true;
       }
       else
       {
-        *destination_false++ = function_false(*begin++);
+        *destination_false = function_false(*begin);
+        ++destination_false;
       }
+
+      ++begin;
     }
 
     return ETL_OR_STD::pair<TDestinationTrue, TDestinationFalse>(destination_true, destination_false);
@@ -2840,12 +2908,17 @@ namespace etl
     {
       if (predicate(*begin1, *begin2))
       {
-        *destination_true++ = function_true(*begin1++, *begin2++);
+        *destination_true = function_true(*begin1, *begin2);
+        ++destination_true;
       }
       else
       {
-        *destination_false++ = function_false(*begin1++, *begin2++);
+        *destination_false = function_false(*begin1, *begin2);
+        ++destination_false;
       }
+
+      ++begin1;
+      ++begin2;
     }
 
     return ETL_OR_STD::pair<TDestinationTrue, TDestinationFalse>(destination_true, destination_false);

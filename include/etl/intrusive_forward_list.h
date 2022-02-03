@@ -603,7 +603,8 @@ namespace etl
       while (first != last)
       {
         // Set up the next free link.
-        this->insert_link_after(*position.p_value, *first++);
+        this->insert_link_after(*position.p_value, *first);
+        ++first;
         ++position;
       }
     }

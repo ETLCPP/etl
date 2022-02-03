@@ -135,7 +135,9 @@ namespace etl
     {
       while (first1 != last1)
       {
-        add(*first1++, *first2++);
+        add(*first1, *first2);
+        ++first1;
+        ++first2;
       }
     }
 

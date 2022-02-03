@@ -90,7 +90,8 @@ namespace etl
       reset();
       while (begin != end)
       {
-        block |= (*begin++) << (block_fill_count * 8U);
+        block |= (*begin) << (block_fill_count * 8U);
+        ++begin;
 
         if (++block_fill_count == FULL_BLOCK)
         {
@@ -128,7 +129,8 @@ namespace etl
 
       while (begin != end)
       {
-        block |= (*begin++) << (block_fill_count * 8U);
+        block |= (*begin) << (block_fill_count * 8U);
+        ++begin;
 
         if (++block_fill_count == FULL_BLOCK)
         {

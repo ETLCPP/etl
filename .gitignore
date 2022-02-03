@@ -347,3 +347,4 @@ test/build-ninja
 test/vs2019/Debug MSVC C++20
 test/vs2019/Debug MSVC C++20 - No STL
 patches
+test/vs2019/Debug MSVC - No Tests

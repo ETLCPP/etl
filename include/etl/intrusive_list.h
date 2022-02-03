@@ -688,7 +688,8 @@ namespace etl
       while (first != last)
       {
         // Set up the next free link.
-        this->insert_link(*position.p_value->link_type::etl_previous, *first++);
+        this->insert_link(*position.p_value->link_type::etl_previous, *first);
+        ++first;
       }
     }
 

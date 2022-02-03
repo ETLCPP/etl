@@ -346,7 +346,8 @@ namespace etl
 
       while (first != last)
       {
-        *p_end++ = (void*)(*first++);
+        *p_end++ = (void*)(*first);
+        ++first;
       }
     }
 

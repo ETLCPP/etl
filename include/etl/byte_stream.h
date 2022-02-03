@@ -165,7 +165,8 @@ namespace etl
 
       while (itr != range.end())
       {
-        to_bytes(*itr++);
+        to_bytes(*itr);
+        ++itr;
       }
     }
 
@@ -196,7 +197,8 @@ namespace etl
     {
       while (length-- != 0U)
       {
-        to_bytes(*start++);
+        to_bytes(*start);
+        ++start;
       }
     }
 

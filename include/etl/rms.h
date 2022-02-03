@@ -122,7 +122,8 @@ namespace etl
     {
       while (first != last)
       {
-        add(*first++);
+        add(*first);
+        ++first;
       }
     }
 

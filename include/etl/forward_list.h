@@ -663,7 +663,8 @@ namespace etl
       {
         ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
-        data_node_t& data_node = allocate_data_node(*first++);
+        data_node_t& data_node = allocate_data_node(*first);
+        ++first;
         join(p_last_node, &data_node);
         data_node.next = ETL_NULLPTR;
         p_last_node = &data_node;
@@ -994,7 +995,8 @@ namespace etl
       while (first != last)
       {
         // Set up the next free node.
-        data_node_t& data_node = allocate_data_node(*first++);
+        data_node_t& data_node = allocate_data_node(*first);
+        ++first;
         insert_node_after(*to_iterator(position).p_node, data_node);
         ++position;
       }
@@ -1519,7 +1521,8 @@ namespace etl
             {
               ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
 
-              data_node_t& data_node = this->allocate_data_node(etl::move(*first++));
+              data_node_t& data_node = this->allocate_data_node(etl::move(*first));
+              ++first;
               join(p_last_node, &data_node);
               data_node.next = ETL_NULLPTR;
               p_last_node = &data_node;

@@ -433,7 +433,8 @@ namespace etl
 
       while (first != last)
       {
-        insert(*first++);
+        insert(*first);
+        ++first;
       }
     }
 
@@ -472,7 +473,8 @@ namespace etl
     {
       while (first != last)
       {
-        insert(*first++);
+        insert(*first);
+        ++first;
       }
     }
 

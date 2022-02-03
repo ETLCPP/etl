@@ -1198,7 +1198,8 @@ namespace etl
         ETL_ASSERT(!full(), ETL_ERROR(list_full));
 
         // Set up the next free node and insert.
-        insert_node(*to_iterator(position).p_node, allocate_data_node(*first++));
+        insert_node(*to_iterator(position).p_node, allocate_data_node(*first));
+        ++first;
       }
     }
 
@@ -1385,7 +1386,8 @@ namespace etl
         typename ilist<T>::iterator itr = other.begin();
         while (itr != other.end())
         {
-          to = insert(to, etl::move(*itr++));
+          to = insert(to, etl::move(*itr));
+          ++itr;
         }
 
         other.erase(other.begin(), other.end());
@@ -1466,7 +1468,8 @@ namespace etl
         ilist::iterator itr = first;
         while (itr != last)
         {
-          to = insert(to, etl::move(*itr++));
+          to = insert(to, etl::move(*itr));
+          ++itr;
           ++to;
         }
 
@@ -1583,8 +1586,9 @@ namespace etl
         {
           while (other_begin != other_end)
           {
-            insert(this_end, etl::move(*other_begin++));
-            }
+            insert(this_end, etl::move(*other_begin));
+            ++other_begin;
+          }
         }
 
         other.clear();
@@ -1864,7 +1868,8 @@ namespace etl
             {
               ETL_ASSERT(!full(), ETL_ERROR(list_full));
 
-              insert_node(terminal_node, this->allocate_data_node(etl::move(*first++)));
+              insert_node(terminal_node, this->allocate_data_node(etl::move(*first)));
+              ++first;
             }
 
             rhs.initialise();

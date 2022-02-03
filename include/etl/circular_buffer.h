@@ -886,7 +886,8 @@ namespace etl
     {
       while (first != last)
       {
-        push(*first++);
+        push(*first);
+        ++first;
       }
     }
 
@@ -1058,7 +1059,8 @@ namespace etl
     {
       while (first != last)
       {
-        this->push(*first++);
+        this->push(*first);
+        ++first;
       }
     }
 
@@ -1178,7 +1180,8 @@ namespace etl
     {
       while (first != last)
       {
-        this->push(*first++);
+        this->push(*first);
+        ++first;
       }
     }
 

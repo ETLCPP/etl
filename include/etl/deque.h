@@ -725,7 +725,8 @@ namespace etl
 
       while (range_begin != range_end)
       {
-        push_back(*range_begin++);
+        push_back(*range_begin);
+        ++range_begin;
       }
     }
 
@@ -1470,7 +1471,8 @@ namespace etl
 
           for (size_t i = 0UL; i < n_create_copy; ++i)
           {
-            create_element_back(*from++);
+            create_element_back(*from);
+            ++from;
           }
 
           // Move old.
@@ -1511,7 +1513,8 @@ namespace etl
       {
         for (difference_type i = 0; i < n; ++i)
         {
-          create_element_back(*range_begin++);
+          create_element_back(*range_begin);
+          ++range_begin;
         }
 
         position = _end - n;
@@ -1566,7 +1569,8 @@ namespace etl
           TIterator item = range_begin + (n - n_create_new);
           for (size_t i = 0UL; i < n_create_new; ++i)
           {
-            create_element_back(*item++);
+            create_element_back(*item);
+            ++item;
           }
 
           // Create copy.
@@ -1574,7 +1578,8 @@ namespace etl
 
           for (size_t i = 0UL; i < n_create_copy; ++i)
           {
-            create_element_back(*from++);
+            create_element_back(*from);
+            ++from;
           }
 
           // Move old.
@@ -2136,7 +2141,8 @@ namespace etl
 
       do
       {
-        ::new (&(*item++)) T(*from);
+        ::new (&(*item)) T(*from);
+        ++item;
         ++from;
         ++current_size;
         ETL_INCREMENT_DEBUG_COUNT

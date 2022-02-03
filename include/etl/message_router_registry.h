@@ -386,7 +386,8 @@ namespace etl
     {
       while (first != last)
       {
-        add(*first++);
+        add(*first);
+        ++first;
       }
     }
 
@@ -526,7 +527,8 @@ namespace etl
     {
       while (first != last)
       {
-        this->add(*first++);
+        this->add(*first);
+        ++first;
       }
     }
 
@@ -541,7 +543,8 @@ namespace etl
 
       while (itr != init.end())
       {
-        this->add(*itr++);
+        this->add(*itr);
+        ++itr;
       }
     }
 #endif

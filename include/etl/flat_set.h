@@ -220,7 +220,8 @@ namespace etl
 
       while (first != last)
       {
-        insert(*first++);
+        insert(*first);
+        ++first;
       }
     }
 
@@ -312,7 +313,8 @@ namespace etl
     {
       while (first != last)
       {
-        insert(*first++);
+        insert(*first);
+        ++first;
       }
     }
 
@@ -903,7 +905,8 @@ namespace etl
         // Add all of the elements.
         while (first != last)
         {
-          this->insert(etl::move(*first++));
+          this->insert(etl::move(*first));
+          ++first;
         }
       }
     }

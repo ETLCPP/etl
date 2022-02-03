@@ -954,6 +954,13 @@ namespace etl
       }
 
     private:
+
+      // Convert to an iterator.
+      imultimap::iterator to_iterator() const
+      {
+        return imultimap::iterator(const_cast<imultimap&>(*p_multimap), const_cast<Node*>(p_node));
+      }
+
       // Pointer to multimap associated with this iterator
       const imultimap* p_multimap;
 
@@ -1185,7 +1192,7 @@ namespace etl
         // Increment count for each node removed
         ++d;
         // Remove node using the other erase method
-        (void)erase(lower++);
+        lower = erase(lower);
       }
 
       // Return the total count erased
@@ -1206,7 +1213,7 @@ namespace etl
         // Increment count for each node removed
         ++d;
         // Remove node using the other erase method
-        (void)erase(lower++);
+        lower = erase(lower);
       }
 
       // Return the total count erased
@@ -1219,13 +1226,12 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator first, const_iterator last)
     {
-      iterator next;
       while (first != last)
       {
-        next = erase(first++);
+        first = erase(first);
       }
 
-      return next;
+      return last.to_iterator();
     }
 
     //*********************************************************************
@@ -1350,7 +1356,8 @@ namespace etl
     {
       while (first != last)
       {
-        insert(*first++);
+        insert(*first);
+        ++first;
       }
     }
 
@@ -1463,7 +1470,8 @@ namespace etl
 
         while (from != rhs.end())
         {
-          this->insert(etl::move(*from++));
+          this->insert(etl::move(*from));
+          ++from;
         }
       }
 
@@ -2347,7 +2355,8 @@ namespace etl
 
         while (from != other.end())
         {
-          this->insert(etl::move(*from++));
+          this->insert(etl::move(*from));
+          ++from;
         }
       }
     }
@@ -2411,7 +2420,8 @@ namespace etl
 
         while (from != rhs.end())
         {
-          this->insert(etl::move(*from++));
+          this->insert(etl::move(*from));
+          ++from;
         }
       }
 
