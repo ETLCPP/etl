@@ -1,4 +1,12 @@
 ===============================================================================
+20.24.0
+#503 Algorithm transform uses expensive post increment operator - Fixed for all occurances of iterator increment.
+#504 ETL_CONSTANT vs const in binary.h - Fixed.
+Many algorithms will leverage built-ins, if available. Dependant on compiler version.
+Much of etl::string and etl::string_view can be constexpr.
+Added etl::construct_at support.
+
+===============================================================================
 20.23.0
 Recoded state_chart to reduce its resource requirements.
 Added compile time state chart variants.
