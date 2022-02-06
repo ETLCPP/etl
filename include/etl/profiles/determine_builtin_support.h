@@ -32,117 +32,118 @@ SOFTWARE.
 #define ETL_DETERMINE_BUILTIN_SUPPORT_H_INCLUDED
 
 #if defined(ETL_USE_MEM_BUILTINS) // Set all of them to be true if not already defined
-  #if !defined(ETL_USE_BUILTIN_MEMCMP)
-    #define ETL_USE_BUILTIN_MEMCMP 1
+  #if !defined(ETL_USING_BUILTIN_MEMCMP)
+    #define ETL_USING_BUILTIN_MEMCMP 1
   #endif
 
-  #if !defined(ETL_USE_BUILTIN_MEMCPY)
-    #define ETL_USE_BUILTIN_MEMCPY 1
+  #if !defined(ETL_USING_BUILTIN_MEMCPY)
+    #define ETL_USING_BUILTIN_MEMCPY 1
   #endif
 
-  #if !defined(ETL_USE_BUILTIN_MEMMOVE)
-    #define ETL_USE_BUILTIN_MEMMOVE 1
+  #if !defined(ETL_USING_BUILTIN_MEMMOVE)
+    #define ETL_USING_BUILTIN_MEMMOVE 1
   #endif
 
-  #if !defined(ETL_USE_BUILTIN_MEMSET)
-    #define ETL_USE_BUILTIN_MEMSET 1
+  #if !defined(ETL_USING_BUILTIN_MEMSET)
+    #define ETL_USING_BUILTIN_MEMSET 1
   #endif
 #endif
 
 #if defined(ETL_USE_TYPE_TRAITS_BUILTINS) // Set all of them to be true if not already defined
-  #if !defined(ETL_USE_BUILTIN_IS_ASSIGNABLE)
-    #define ETL_USE_BUILTIN_IS_ASSIGNABLE 1
+  #if !defined(ETL_USING_BUILTIN_IS_ASSIGNABLE)
+    #define ETL_USING_BUILTIN_IS_ASSIGNABLE 1
   #endif
 
-  #if !defined(ETL_USE_BUILTIN_IS_CONSTRUCTIBLE)
-    #define ETL_USE_BUILTIN_IS_CONSTRUCTIBLE 1
+  #if !defined(ETL_USING_BUILTIN_IS_CONSTRUCTIBLE)
+    #define ETL_USING_BUILTIN_IS_CONSTRUCTIBLE 1
   #endif
 
-  #if !defined(ETL_USE_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE)
-    #define ETL_USE_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE 1
+  #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE)
+    #define ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE 1
   #endif
 
-  #if !defined(ETL_USE_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE)
-    #define ETL_USE_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE 1
+  #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE)
+    #define ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE 1
   #endif
 
-  #if !defined(ETL_USE_BUILTIN_IS_TRIVIALLY_COPYABLE)
-    #define ETL_USE_BUILTIN_IS_TRIVIALLY_COPYABLE 1
+  #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE)
+    #define ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE 1
   #endif
 #endif
 
-#if defined(__has_builtin) && (!defined(ETL_USE_MEM_BUILTINS) || !defined(ETL_USE_TYPE_TRAITS_BUILTINS)) // Use __has_builtin to check for existence of builtin functions, if not already defined
-  #if !defined(ETL_USE_BUILTIN_MEMCMP)
-    #define ETL_USE_BUILTIN_MEMCMP  __has_builtin(__builtin_memcmp)
+#if defined(__has_builtin) // Use __has_builtin to check for existence of builtin functions?
+  #if !defined(ETL_USING_BUILTIN_MEMCMP)
+    #define ETL_USING_BUILTIN_MEMCMP  __has_builtin(__builtin_memcmp)
   #endif
 
-#if !defined(ETL_USE_BUILTIN_MEMCPY)
-  #define ETL_USE_BUILTIN_MEMCPY __has_builtin(__builtin_memcpy)
+  #if !defined(ETL_USING_BUILTIN_MEMCPY)
+    #define ETL_USING_BUILTIN_MEMCPY __has_builtin(__builtin_memcpy)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_MEMMOVE)
+    #define ETL_USING_BUILTIN_MEMMOVE __has_builtin(__builtin_memmove)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_MEMSET)
+    #define ETL_USING_BUILTIN_MEMSET  __has_builtin(__builtin_memset)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_ASSIGNABLE)
+    #define ETL_USING_BUILTIN_IS_ASSIGNABLE __has_builtin(__is_assignable)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_CONSTRUCTIBLE)
+    #define ETL_USING_BUILTIN_IS_CONSTRUCTIBLE __has_builtin(__is_constructible)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE)
+    #define ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE (__has_builtin(__has_trivial_constructor) || __has_builtin(__is_trivially_constructible))
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE)
+    #define ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE (__has_builtin(__has_trivial_destructor) || __has_builtin(__is_trivially_destructible))
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE)
+    #define ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE (__has_builtin(__has_trivial_copy) || __has_builtin(__is_trivially_copyable))
+  #endif
 #endif
 
-  #if !defined(ETL_USE_BUILTIN_MEMMOVE)
-    #define ETL_USE_BUILTIN_MEMMOVE __has_builtin(__builtin_memmove)
-  #endif
+// The default. Set to 0, if not already set.
+#if !defined(ETL_USING_BUILTIN_MEMCMP)
+  #define ETL_USING_BUILTIN_MEMCMP 0
+#endif
 
-  #if !defined(ETL_USE_BUILTIN_MEMSET)
-    #define ETL_USE_BUILTIN_MEMSET  __has_builtin(__builtin_memset)
-  #endif
+#if !defined(ETL_USING_BUILTIN_MEMCPY)
+  #define ETL_USING_BUILTIN_MEMCPY 0
+#endif
 
-  #if !defined(ETL_USE_BUILTIN_IS_ASSIGNABLE)
-    #define ETL_USE_BUILTIN_IS_ASSIGNABLE __has_builtin(__is_assignable)
-  #endif
+#if !defined(ETL_USING_BUILTIN_MEMMOVE)
+  #define ETL_USING_BUILTIN_MEMMOVE 0
+#endif
 
-  #if !defined(ETL_USE_BUILTIN_IS_CONSTRUCTIBLE)
-    #define ETL_USE_BUILTIN_IS_CONSTRUCTIBLE __has_builtin(__is_constructible)
-  #endif
+#if !defined(ETL_USING_BUILTIN_MEMSET)
+  #define ETL_USING_BUILTIN_MEMSET 0
+#endif
 
-  #if !defined(ETL_USE_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE)
-    #define ETL_USE_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE (__has_builtin(__has_trivial_constructor) || __has_builtin(__is_trivially_constructible))
-  #endif
+#if !defined(ETL_USING_BUILTIN_IS_ASSIGNABLE)
+  #define ETL_USING_BUILTIN_IS_ASSIGNABLE 0
+#endif
 
-  #if !defined(ETL_USE_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE)
-    #define ETL_USE_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE (__has_builtin(__has_trivial_destructor) || __has_builtin(__is_trivially_destructible))
-  #endif
+#if !defined(ETL_USING_BUILTIN_IS_CONSTRUCTIBLE)
+  #define ETL_USING_BUILTIN_IS_CONSTRUCTIBLE 0
+#endif
 
-  #if !defined(ETL_USE_BUILTIN_IS_TRIVIALLY_COPYABLE)
-    #define ETL_USE_BUILTIN_IS_TRIVIALLY_COPYABLE (__has_builtin(__has_trivial_copy) || __has_builtin(__is_trivially_copyable))
-  #endif
-#else
-  #if !defined(ETL_USE_BUILTIN_MEMCMP)
-    #define ETL_USE_BUILTIN_MEMCMP 0
-  #endif
+#if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE)
+  #define ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE 0
+#endif
 
-  #if !defined(ETL_USE_BUILTIN_MEMCPY)
-    #define ETL_USE_BUILTIN_MEMCPY 0
-  #endif
+#if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE)
+  #define ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE 0
+#endif
 
-  #if !defined(ETL_USE_BUILTIN_MEMMOVE)
-    #define ETL_USE_BUILTIN_MEMMOVE 0
-  #endif
-
-  #if !defined(ETL_USE_BUILTIN_MEMSET)
-    #define ETL_USE_BUILTIN_MEMSET 0
-  #endif
-
-  #if !defined(ETL_USE_BUILTIN_IS_ASSIGNABLE)
-    #define ETL_USE_BUILTIN_IS_ASSIGNABLE 0
-  #endif
-
-  #if !defined(ETL_USE_BUILTIN_IS_CONSTRUCTIBLE)
-    #define ETL_USE_BUILTIN_IS_CONSTRUCTIBLE 0
-  #endif
-
-  #if !defined(ETL_USE_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE)
-    #define ETL_USE_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE 0
-  #endif
-
-  #if !defined(ETL_USE_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE)
-    #define ETL_USE_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE 0
-  #endif
-
-  #if !defined(ETL_USE_BUILTIN_IS_TRIVIALLY_COPYABLE)
-    #define ETL_USE_BUILTIN_IS_TRIVIALLY_COPYABLE 0
-  #endif
+#if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE)
+  #define ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE 0
 #endif
 
 #endif

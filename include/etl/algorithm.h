@@ -132,7 +132,7 @@ namespace etl
   }
 
   // Pointer
-#if ETL_USE_BUILTIN_MEMCPY
+#if ETL_USING_BUILTIN_MEMCPY
   template <typename TIterator1, typename TIterator2>
   ETL_CONSTEXPR14
   typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
@@ -236,7 +236,7 @@ namespace etl
   }
   
   // Pointer
-#if ETL_USE_BUILTIN_MEMCPY
+#if ETL_USING_BUILTIN_MEMCPY
   template <typename TIterator1, typename TSize, typename TIterator2>
   ETL_CONSTEXPR14
   typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
@@ -309,7 +309,7 @@ namespace etl
   }
 
   // Pointer
-#if ETL_USE_BUILTIN_MEMMOVE
+#if ETL_USING_BUILTIN_MEMMOVE
   template <typename TIterator1, typename TIterator2>
   ETL_CONSTEXPR14
   typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
@@ -375,7 +375,7 @@ namespace etl
     return db;
   }
 
-#if ETL_USE_BUILTIN_MEMMOVE
+#if ETL_USING_BUILTIN_MEMMOVE
   // pointer and trivially copyable
   template <typename TIterator1, typename TIterator2>
   ETL_CONSTEXPR14
@@ -444,7 +444,7 @@ namespace etl
     return de;
   }
 
-#if ETL_USE_BUILTIN_MEMMOVE
+#if ETL_USING_BUILTIN_MEMMOVE
   // pointer and pod
   template <typename TIterator1, typename TIterator2>
   ETL_CONSTEXPR14
@@ -675,7 +675,7 @@ namespace etl
     }
   }
 
-#if ETL_USE_BUILTIN_MEMSET
+#if ETL_USING_BUILTIN_MEMSET
   template<typename TIterator, typename TValue>
   ETL_CONSTEXPR14
   typename etl::enable_if<ETL_IS_CHAR_TYPE(TValue) && ETL_IS_POINTER_TYPE(TIterator), void>::type
@@ -727,7 +727,7 @@ namespace etl
     return first;
   }
 
-#if ETL_USE_BUILTIN_MEMSET
+#if ETL_USING_BUILTIN_MEMSET
   template<typename TIterator, typename TSize, typename TValue>
   ETL_CONSTEXPR14
   typename etl::enable_if<ETL_IS_CHAR_TYPE(TValue) && ETL_IS_POINTER_TYPE(TIterator), TIterator>::type
@@ -847,7 +847,7 @@ namespace etl
     return true;
   }
 
-#if ETL_USE_BUILTIN_MEMCMP
+#if ETL_USING_BUILTIN_MEMCMP
   // Using builtins.
   // Pointer types and trivially copyable.
   template <typename TIterator1, typename TIterator2>

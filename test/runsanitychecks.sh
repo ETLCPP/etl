@@ -17,7 +17,7 @@ echo "-----------------------------------------------"
 
 echo "GCC - STL"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -28,7 +28,7 @@ fi
 
 { echo ""; echo "GCC - No STL"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -37,9 +37,9 @@ else
   exit $?
 fi
 
-{ echo ""; echo "GCC - No STL - Builtins"; } | tee -a ../log.txt
+{ echo ""; echo "GCC - No STL - Force Builtins"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USE_MEM_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -61,7 +61,7 @@ fi
 
 { echo ""; echo "Clang - STL"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
-CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -72,7 +72,7 @@ fi
 
 { echo ""; echo "Clang - No STL"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
-CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -81,9 +81,9 @@ else
   exit $?
 fi
 
-{ echo ""; echo "Clang - No STL - Builtins"; } | tee -a ../log.txt
+{ echo ""; echo "Clang - No STL - Force Builtins"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
-CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USE_MEM_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -113,7 +113,7 @@ echo "-----------------------------------------------"
 
 echo "GCC - STL"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -124,7 +124,7 @@ fi
 
 { echo ""; echo "GCC - STL - Force C++03"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -135,7 +135,7 @@ fi
 
 { echo ""; echo "GCC - No STL"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -144,9 +144,9 @@ else
   exit $?
 fi
 
-{ echo ""; echo "GCC - No STL - Builtins"; } | tee -a ../log.txt
+{ echo ""; echo "GCC - No STL - Force Builtins"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USE_MEM_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -168,7 +168,7 @@ fi
 
 { echo ""; echo "Clang - STL"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
-CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -179,7 +179,7 @@ fi
 
 { echo ""; echo "Clang - STL - Force C++03"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
-CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -190,7 +190,7 @@ fi
 
 { echo ""; echo "Clang - No STL"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
-CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -199,9 +199,9 @@ else
   exit $?
 fi
 
-{ echo ""; echo "Clang - No STL - Builtins"; } | tee -a ../log.txt
+{ echo ""; echo "Clang - No STL - Force Builtins"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
-CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USE_MEM_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -231,7 +231,7 @@ echo "-----------------------------------------------"
 
 echo "GCC - STL"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -242,7 +242,7 @@ fi
 
 { echo ""; echo "GCC - STL - Force C++03"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -253,7 +253,7 @@ fi
 
 { echo ""; echo "GCC - No STL"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -262,9 +262,9 @@ else
   exit $?
 fi
 
-{ echo ""; echo "GCC - No STL - Builtins"; } | tee -a ../log.txt
+{ echo ""; echo "GCC - No STL - Force Builtins"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USE_MEM_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -286,7 +286,7 @@ fi
 
 { echo ""; echo "Clang - STL"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
-CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -297,7 +297,7 @@ fi
 
 { echo ""; echo "Clang - STL - Force C++03"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
-CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -308,7 +308,7 @@ fi
 
 { echo ""; echo "Clang - No STL"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
-CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -317,9 +317,9 @@ else
   exit $?
 fi
 
-{ echo ""; echo "Clang - No STL - Builtins"; } | tee -a ../log.txt
+{ echo ""; echo "Clang - No STL - Force Builtins"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
-CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USE_MEM_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -349,7 +349,7 @@ echo "-----------------------------------------------"
 
 echo "GCC - STL"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -360,7 +360,7 @@ fi
 
 { echo ""; echo "GCC - STL - Force C++03"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -371,7 +371,7 @@ fi
 
 { echo ""; echo "GCC - No STL"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -382,7 +382,7 @@ fi
 
 { echo ""; echo "GCC - No STL - Force C++03"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -391,9 +391,9 @@ else
   exit $?
 fi
 
-{ echo ""; echo "GCC - No STL - Builtins"; } | tee -a ../log.txt
+{ echo ""; echo "GCC - No STL - Force Builtins"; } | tee -a ../log.txt
 g++ --version | head --lines=1 | tee -a ../log.txt
-CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USE_MEM_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bgcc
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -415,7 +415,7 @@ fi
 
 { echo ""; echo "Clang - STL"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
-CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -426,7 +426,7 @@ fi
 
 { echo ""; echo "Clang - STL - Force C++03"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
-CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -437,7 +437,7 @@ fi
 
 { echo ""; echo "Clang - No STL"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
-CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   echo "Passed"
@@ -446,9 +446,9 @@ else
   exit $?
 fi
 
-{ echo ""; echo "Clang - No STL - Builtins"; } | tee -a ../log.txt
+{ echo ""; echo "Clang - No STL - Force Builtins"; } | tee -a ../log.txt
 clang++ --version | head --lines=1 | tee -a ../log.txt
-CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
+CC=clang CXX=clang++ cmake -E chdir bclang cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USE_MEM_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ..
 cmake --build bclang
 if [ $? -eq 0 ]; then
   echo "Passed"

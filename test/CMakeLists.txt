@@ -3,9 +3,9 @@ project(etl_unit_tests)
 
 add_definitions(-DETL_DEBUG)
 
-option(NO_STL "No STL" OFF)
+option(ETL_NO_STL "No STL" OFF)
 
-if (NO_STL)
+if (NO_STL OR ETL_NO_STL)
 	message(STATUS "Compiling for No STL")
 	add_definitions(-DETL_NO_STL)
 else()
@@ -15,6 +15,11 @@ endif()
 if (ETL_USE_TYPE_TRAITS_BUILTINS)
 	message(STATUS "Compiling for built-in type traits")
 	add_definitions(-DETL_USE_TYPE_TRAITS_BUILTINS)
+endif()
+
+if (ETL_USE_MEM_BUILTINS)
+	message(STATUS "Compiling for built-in memory functions")
+	add_definitions(-DETL_USE_MEM_BUILTINS)
 endif()
 
 if (ETL_USER_DEFINED_TYPE_TRAITS)
