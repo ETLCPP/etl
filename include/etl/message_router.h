@@ -566,7 +566,6 @@ namespace etl
           {
             return false;
           }
-          break;
         }
       }
     }
@@ -701,7 +700,6 @@ namespace etl
           {
             return false;
           }
-          break;
         }
       }
     }
@@ -835,7 +833,6 @@ namespace etl
           {
             return false;
           }
-          break;
         }
       }
     }
@@ -968,7 +965,6 @@ namespace etl
           {
             return false;
           }
-          break;
         }
       }
     }
@@ -1098,7 +1094,6 @@ namespace etl
           {
             return false;
           }
-          break;
         }
       }
     }
@@ -1227,7 +1222,6 @@ namespace etl
           {
             return false;
           }
-          break;
         }
       }
     }
@@ -1355,7 +1349,6 @@ namespace etl
           {
             return false;
           }
-          break;
         }
       }
     }
@@ -1482,7 +1475,6 @@ namespace etl
           {
             return false;
           }
-          break;
         }
       }
     }
@@ -1606,7 +1598,6 @@ namespace etl
           {
             return false;
           }
-          break;
         }
       }
     }
@@ -1728,7 +1719,6 @@ namespace etl
           {
             return false;
           }
-          break;
         }
       }
     }
@@ -1849,7 +1839,6 @@ namespace etl
           {
             return false;
           }
-          break;
         }
       }
     }
@@ -1969,7 +1958,6 @@ namespace etl
           {
             return false;
           }
-          break;
         }
       }
     }
@@ -2086,7 +2074,6 @@ namespace etl
           {
             return false;
           }
-          break;
         }
       }
     }
@@ -2202,7 +2189,6 @@ namespace etl
           {
             return false;
           }
-          break;
         }
       }
     }
@@ -2317,7 +2303,6 @@ namespace etl
           {
             return false;
           }
-          break;
         }
       }
     }
@@ -2431,7 +2416,6 @@ namespace etl
           {
             return false;
           }
-          break;
         }
       }
     }

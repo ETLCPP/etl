@@ -102,19 +102,19 @@ namespace etl
     typedef typename char_traits_types<T>::state_type state_type;
 
     //*************************************************************************
-    ETL_CONSTEXPR static bool eq(char_type a, char_type b)
+    static ETL_CONSTEXPR bool eq(char_type a, char_type b)
     {
       return a == b;
     }
 
     //*************************************************************************
-    ETL_CONSTEXPR static bool lt(char_type a, char_type b)
+    static ETL_CONSTEXPR bool lt(char_type a, char_type b)
     {
       return a < b;
     }
 
     //*************************************************************************
-    ETL_CONSTEXPR14 static size_t length(const char_type* str)
+    static ETL_CONSTEXPR14 size_t length(const char_type* str)
     {
       size_t count = 0UL;
 
