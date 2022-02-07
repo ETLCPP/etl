@@ -1,6 +1,6 @@
 ===============================================================================
 20.24.0
-#503 Algorithm transform uses expensive post increment operator - Fixed for all occurances of iterator increment.
+#503 Algorithm transform uses expensive post increment operator - Fixed for all occurences of iterator increment.
 #504 ETL_CONSTANT vs const in binary.h - Fixed.
 Many algorithms will leverage built-ins, if available. Dependant on compiler version.
 Added detection or selection of built-ins.
