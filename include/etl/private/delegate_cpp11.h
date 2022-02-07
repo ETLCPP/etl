@@ -121,7 +121,7 @@ namespace etl
     /// Create from function (Compile time).
     //*************************************************************************
     template <TReturn(*Method)(TParams...)>
-    ETL_CONSTEXPR14 static delegate create()
+    static ETL_CONSTEXPR14 delegate create()
     {
       return delegate(ETL_NULLPTR, function_stub<Method>);
     }
@@ -130,7 +130,7 @@ namespace etl
     /// Create from Lambda or Functor.
     //*************************************************************************
     template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value, void>>
-    ETL_CONSTEXPR14 static delegate create(const TLambda& instance)
+    static ETL_CONSTEXPR14 delegate create(const TLambda& instance)
     {
       return delegate((void*)(&instance), lambda_stub<TLambda>);
     }
@@ -139,7 +139,7 @@ namespace etl
     /// Create from instance method (Run time).
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...)>
-    ETL_CONSTEXPR14 static delegate create(T& instance)
+    static ETL_CONSTEXPR14 delegate create(T& instance)
     {
       return delegate((void*)(&instance), method_stub<T, Method>);
     }
@@ -149,13 +149,13 @@ namespace etl
     /// Deleted for rvalue references.
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...)>
-    ETL_CONSTEXPR14 static delegate create(T&& instance) = delete;
+    static ETL_CONSTEXPR14 delegate create(T&& instance) = delete;
 
     //*************************************************************************
     /// Create from const instance method (Run time).
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...) const>
-    ETL_CONSTEXPR14 static delegate create(const T& instance)
+    static ETL_CONSTEXPR14 delegate create(const T& instance)
     {
       return delegate((void*)(&instance), const_method_stub<T, Method>);
     }
@@ -164,13 +164,13 @@ namespace etl
     /// Disable create from rvalue instance method (Run time).
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...) const>
-    ETL_CONSTEXPR14 static delegate create(T&& instance) = delete;
+    static ETL_CONSTEXPR14 delegate create(T&& instance) = delete;
 
     //*************************************************************************
     /// Create from instance method (Compile time).
     //*************************************************************************
     template <typename T, T& Instance, TReturn(T::*Method)(TParams...)>
-    ETL_CONSTEXPR14 static delegate create()
+    static ETL_CONSTEXPR14 delegate create()
     {
       return delegate(method_instance_stub<T, Instance, Method>);
     }
@@ -179,7 +179,7 @@ namespace etl
     /// Create from const instance method (Compile time).
     //*************************************************************************
     template <typename T, T const& Instance, TReturn(T::*Method)(TParams...) const>
-    ETL_CONSTEXPR14 static delegate create()
+    static ETL_CONSTEXPR14 delegate create()
     {
       return delegate(const_method_instance_stub<T, Instance, Method>);
     }
@@ -244,7 +244,7 @@ namespace etl
     /// At the time of writing, GCC appears to have trouble with this.
     //*************************************************************************
     template <typename T, T& Instance>
-    ETL_CONSTEXPR14 static delegate create()
+    static ETL_CONSTEXPR14 delegate create()
     {
       return delegate(operator_instance_stub<T, Instance>);
     }
@@ -444,7 +444,7 @@ namespace etl
     /// Stub call for a member function. Run time instance.
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...)>
-    ETL_CONSTEXPR14 static TReturn method_stub(void* object, TParams... params)
+    static ETL_CONSTEXPR14 TReturn method_stub(void* object, TParams... params)
     {
       T* p = static_cast<T*>(object);
       return (p->*Method)(etl::forward<TParams>(params)...);
@@ -454,7 +454,7 @@ namespace etl
     /// Stub call for a const member function. Run time instance.
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...) const>
-    ETL_CONSTEXPR14 static TReturn const_method_stub(void* object, TParams... params)
+    static ETL_CONSTEXPR14 TReturn const_method_stub(void* object, TParams... params)
     {
       T* const p = static_cast<T*>(object);
       return (p->*Method)(etl::forward<TParams>(params)...);
@@ -464,7 +464,7 @@ namespace etl
     /// Stub call for a member function. Compile time instance.
     //*************************************************************************
     template <typename T, T& Instance, TReturn(T::*Method)(TParams...)>
-    ETL_CONSTEXPR14 static TReturn method_instance_stub(void*, TParams... params)
+    static ETL_CONSTEXPR14 TReturn method_instance_stub(void*, TParams... params)
     {
       return (Instance.*Method)(etl::forward<TParams>(params)...);
     }
@@ -473,7 +473,7 @@ namespace etl
     /// Stub call for a const member function. Compile time instance.
     //*************************************************************************
     template <typename T, const T& Instance, TReturn(T::*Method)(TParams...) const>
-    ETL_CONSTEXPR14 static TReturn const_method_instance_stub(void*, TParams... params)
+    static ETL_CONSTEXPR14 TReturn const_method_instance_stub(void*, TParams... params)
     {
       return (Instance.*Method)(etl::forward<TParams>(params)...);
     }
@@ -483,7 +483,7 @@ namespace etl
     /// Stub call for a function operator. Compile time instance.
     //*************************************************************************
     template <typename T, T& Instance>
-    ETL_CONSTEXPR14 static TReturn operator_instance_stub(void*, TParams... params)
+    static ETL_CONSTEXPR14 TReturn operator_instance_stub(void*, TParams... params)
     {
       return Instance.operator()(etl::forward<TParams>(params)...);
     }
@@ -493,7 +493,7 @@ namespace etl
     /// Stub call for a free function.
     //*************************************************************************
     template <TReturn(*Method)(TParams...)>
-    ETL_CONSTEXPR14 static TReturn function_stub(void*, TParams... params)
+    static ETL_CONSTEXPR14 TReturn function_stub(void*, TParams... params)
     {
       return (Method)(etl::forward<TParams>(params)...);
     }
@@ -502,7 +502,7 @@ namespace etl
     /// Stub call for a lambda or functor function.
     //*************************************************************************
     template <typename TLambda>
-    ETL_CONSTEXPR14 static TReturn lambda_stub(void* object, TParams... arg)
+    static ETL_CONSTEXPR14 TReturn lambda_stub(void* object, TParams... arg)
     {
       TLambda* p = static_cast<TLambda*>(object);
       return (p->operator())(etl::forward<TParams>(arg)...);
