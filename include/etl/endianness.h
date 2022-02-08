@@ -132,7 +132,7 @@ namespace etl
   private:
 
 #if ETL_ENDIANNESS_IS_CONSTEXPR
-    ETL_CONSTEXPR static etl::endian get()
+    static ETL_CONSTEXPR etl::endian get()
     {
       return etl::endian::native;
     }
