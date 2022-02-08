@@ -313,8 +313,8 @@ namespace etl
   //***************************************************************************
   /// Send a message to a router.
   //***************************************************************************
-  inline static void send_message(etl::imessage_router& destination,
-                                  const etl::imessage&  message)
+  static void send_message(etl::imessage_router& destination,
+                           const etl::imessage&  message)
   {
     destination.receive(message);
   }
