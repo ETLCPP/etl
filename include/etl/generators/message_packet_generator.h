@@ -524,7 +524,7 @@ namespace etl
     cog.outl("  }")
     cog.outl("#endif")
     cog.outl("")
-    cog.outl("#if ETL_CPP11_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
+    cog.outl("#if ETL_CPP11_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)")
     cog.outl("  //********************************************")
     cog.out("  template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<")
     for n in range(1, int(Handlers)):
@@ -810,7 +810,7 @@ namespace etl
         cog.outl("  }")
         cog.outl("#endif")
         cog.outl("")
-        cog.outl("#if ETL_CPP11_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
+        cog.outl("#if ETL_CPP11_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)")
         cog.outl("  //********************************************")
         cog.out("  template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<")
         for t in range(1, n):
@@ -845,7 +845,6 @@ namespace etl
         generate_static_assert_cpp03(n)
         cog.outl("  }")
         cog.outl("#endif")
-        cog.outl("")
         cog.outl("")
         cog.outl("  //**********************************************")
         cog.outl("  message_packet(const message_packet& other)")
