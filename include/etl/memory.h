@@ -976,7 +976,7 @@ namespace etl
   template <typename T, typename... TArgs>
   ETL_CONSTEXPR20 T* construct_at(T* p, TArgs&&... args)
   {
-    return std::construct_at(o, etl::forward<TArgs>(args)...);
+    return std::construct_at(p, etl::forward<TArgs>(args)...);
   }
 #endif
 
@@ -2100,7 +2100,7 @@ namespace etl
 
     T* begin()
     {
-      return reinterpret_cast<const T*>(raw);
+      return reinterpret_cast<T*>(raw);
     }
 
     const T* begin() const
@@ -2110,7 +2110,7 @@ namespace etl
 
     T* end()
     {
-      return reinterpret_cast<const T*>(raw + (sizeof(T) * N_Objects));
+      return reinterpret_cast<T*>(raw + (sizeof(T) * N_Objects));
     }
 
     const T* end() const
