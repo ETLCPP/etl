@@ -61,52 +61,75 @@ namespace std
     using iterator        = const T*;
     using const_iterator  = const T*;
 
-    constexpr initializer_list() noexcept : m_first(nullptr), m_last(nullptr)
+    //*************************************************************************
+    /// Default constructor 
+    //*************************************************************************
+    constexpr initializer_list() noexcept 
+      : pfirst(nullptr), plast(nullptr)
     {
     }
 
-    constexpr initializer_list(const T* first, const T* last) noexcept
-      : m_first(first), m_last(last) 
+    //*************************************************************************
+    /// Constructor 
+    //*************************************************************************
+    constexpr initializer_list(const T* pfirst_, const T* plast_) noexcept
+      : pfirst(pfirst_), plast(plast_) 
     {
     }
 
+    //*************************************************************************
+    /// Get the beginning of the list.
+    //*************************************************************************
     constexpr const T* begin() const noexcept 
     { 
-      return m_first; 
+      return pfirst; 
     }
 
+    //*************************************************************************
+    /// Get the end of the list.
+    //*************************************************************************
     constexpr const T* end() const noexcept 
     { 
-      return m_last; 
+      return plast; 
     }
 
+    //*************************************************************************
+    /// Get the size of the list.
+    //*************************************************************************
     constexpr size_t size() const noexcept
     {
-      return static_cast<size_t>(m_last - m_first);
+      return static_cast<size_t>(plast - pfirst);
     }
 
   private:
 
-    const T* m_first;
-    const T* m_last;
+    const T* pfirst;
+    const T* plast;
   };
 
+  //*************************************************************************
+  /// Get the beginning of the list.
+  //*************************************************************************
   template<typename T>
-  constexpr const T* begin(initializer_list<T> il) noexcept
+  constexpr const T* begin(initializer_list<T> init) noexcept
   {
-    return il.begin();
+    return init.begin();
   }
 
+  //*************************************************************************
+  /// Get the end of the list.
+  //*************************************************************************
   template<typename T>
-  constexpr const T* end(initializer_list<T> il) noexcept
+  constexpr const T* end(initializer_list<T> init) noexcept
   {
-    return il.end();
+    return init.end();
   }
 
-#elif defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_ARM7)
+#elif defined(ETL_COMPILER_GCC)  || defined(ETL_COMPILER_CLANG) || defined(ETL_COMPILER_ARM6) || \
+      defined(ETL_COMPILER_ARM7) || defined(ETL_COMPILER_IAR)   || defined(ETL_COMPILER_TEXAS_INSTRUMENTS)
 
   ///**************************************************************************
-  /// A definition of initializer_list that is compatible with Clang, GCC and related compilers.
+  /// A definition of initializer_list that is compatible with Clang, GCC and other compilers.
   ///**************************************************************************
   template<class T>
   class initializer_list
@@ -120,50 +143,72 @@ namespace std
     using iterator        = const T*;
     using const_iterator  = const T*;
 
-    constexpr initializer_list() noexcept : m_begin(nullptr), m_size(0)
+    //*************************************************************************
+    /// Default constructor 
+    //*************************************************************************
+    constexpr initializer_list() noexcept 
+      : pfirst(nullptr), length(0)
     {
     }
 
-    constexpr size_t size()  const noexcept 
-    { 
-      return m_size; 
-    }
-
+    //*************************************************************************
+    /// Get the beginning of the list.
+    //*************************************************************************
     constexpr const T* begin() const noexcept 
     { 
-      return m_begin; 
+      return pfirst; 
     }
 
-    constexpr const T* end()   const noexcept 
+    //*************************************************************************
+    /// Get the end of the list.
+    //*************************************************************************
+    constexpr const T* end() const noexcept 
     { 
-      return m_begin + m_size; 
+      return pfirst + length; 
+    }
+
+    //*************************************************************************
+    /// Get the size of the list.
+    //*************************************************************************
+    constexpr size_t size()  const noexcept
+    {
+      return length;
     }
 
   private:
 
-    constexpr initializer_list(const T* b, size_t s) noexcept
-      : m_begin(b)
-      , m_size(s)
+    //*************************************************************************
+    /// Constructor 
+    //*************************************************************************
+    constexpr initializer_list(const T* pfirst_, size_t length_) noexcept
+      : pfirst(pfirst_)
+      , length(length_)
     {
     }
 
-    const T* m_begin;
-    size_t   m_size;
+    const T* pfirst;
+    size_t   length;
   };
 
+  //*************************************************************************
+  /// Get the beginning of the list.
+  //*************************************************************************
   template<class T>
   constexpr const T* begin(initializer_list<T> init) noexcept
   {
     return init.begin();
   }
 
+  //*************************************************************************
+  /// Get the end of the list.
+  //*************************************************************************
   template<class T>
   constexpr const T* end(initializer_list<T> init) noexcept
   {
     return init.end();
   }
 #else
-  #error No definition for initializer_list is currently available.
+  #error No definition for initializer_list is currently available for your compiler. Visit https://www.etlcpp.com to request support.
 #endif // Compiler tests
 }
 #endif // ETL_USING_STL

@@ -26,4 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <etl/initializer_list.h>
+#if (__cplusplus >= 201103L)
+  #include <etl/initializer_list.h>
+#endif
+

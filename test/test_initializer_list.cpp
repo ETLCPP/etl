@@ -61,8 +61,12 @@ namespace
     T buffer[10];
   };
 
+  //***************************************************************************
+  // Test constexpr.
   constexpr Container<int> container = { 1, 2, 3, 4, 5 };
 
+  //***************************************************************************
+  // Test non-constexpr.
   static Container<int> TestInitializerList()
   {
     static Container<int> container = { 1, 2, 3, 4, 5 };
