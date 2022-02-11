@@ -47,7 +47,7 @@ SOFTWARE.
 #define ETL_OR_STD11 etl
 #else
   // We will use the STL's definitions under the std namespace
-#define ETL_OR_STD11 std
+  #define ETL_OR_STD11 std
 #endif
 
 #endif

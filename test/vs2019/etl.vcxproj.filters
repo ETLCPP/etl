@@ -1251,6 +1251,12 @@
     <ClInclude Include="..\..\include\etl\profiles\determine_builtin_support.h">
       <Filter>ETL\Profiles</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\singleton.h">
+      <Filter>ETL\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\initializer_list.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp">
@@ -3178,6 +3184,12 @@
     </ClCompile>
     <ClCompile Include="..\test_memory.cpp">
       <Filter>Tests\Memory &amp; Iterators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_singleton.cpp">
+      <Filter>Tests\Patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\singleton.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

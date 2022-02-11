@@ -349,3 +349,4 @@ test/vs2019/Debug MSVC C++20 - No STL
 patches
 test/vs2019/Debug MSVC - No Tests
 test/vs2019/Debug MSVC - No STL - Force Built-ins
+test/vs2019/Debug MSVC - No STL - Force Constexpr Algorithms

@@ -27,6 +27,11 @@ if (ETL_USER_DEFINED_TYPE_TRAITS)
 	add_definitions(-DETL_USER_DEFINED_TYPE_TRAITS)
 endif()
 
+if (ETL_FORCE_CONSTEXPR_ALGORITHMS)
+	message(STATUS "Compiling with forced constexpr algorithms")
+	add_definitions(-DETL_FORCE_CONSTEXPR_ALGORITHMS)
+endif()
+
 if (ETL_FORCE_TEST_CPP03)
 	message(STATUS "Compiling for C++03 tests")
 	add_definitions(-DETL_FORCE_TEST_CPP03)
@@ -222,6 +227,7 @@ set(TEST_SOURCE_FILES
 	test_scaled_rounding.cpp
 	test_set.cpp
 	test_shared_message.cpp
+	test_singleton.cpp
 	test_smallest.cpp
 	test_span.cpp
 	test_stack.cpp
