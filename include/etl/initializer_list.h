@@ -162,10 +162,12 @@ namespace std
   {
     return init.end();
   }
-
-#endif
+#else
+  #error No definition for initializer_list is currently available.
+#endif // Compiler tests
 }
-
-#endif
-#endif
-#endif
+#endif // ETL_USING_STL
+#else
+  #error initializer_list is only supported for C++11 or above.
+#endif // ETL_CPP11_SUPPORTED
+#endif // ETL_INITIALIZER_LIST_INCLUDED
