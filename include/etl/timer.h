@@ -46,8 +46,6 @@ namespace etl
 #else
   #if ETL_HAS_ATOMIC
     typedef etl::atomic_uint32_t timer_semaphore_t;
-  #else
-    #error 'timer_semaphore_t' NOT DEFINED. NO ATOMICS AVAILABLE
   #endif
 #endif
 
