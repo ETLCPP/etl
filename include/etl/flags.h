@@ -40,10 +40,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "integral_limits.h"
 #include "static_assert.h"
-
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
-  #include <initializer_list>
-#endif
+#include "initializer_list.h"
 
 namespace etl
 {

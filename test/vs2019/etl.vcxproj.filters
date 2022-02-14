@@ -1400,110 +1400,11 @@
     <ClCompile Include="..\sanity-check\container.h.t.cpp">
       <Filter>Tests\Sanity Checks</Filter>
     </ClCompile>
-    <ClCompile Include="..\sanity-check\correlation.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\covariance.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
     <ClCompile Include="..\sanity-check\crc8_ccitt.h.t.cpp">
       <Filter>Tests\Sanity Checks</Filter>
     </ClCompile>
-    <ClCompile Include="..\sanity-check\crc8_cdma2000.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc8_darc.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc8_dvbs2.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc8_ebu.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc8_icode.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc8_itu.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc8_maxim.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc8_rohc.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc8_wcdma.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_a.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_arc.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_aug_ccitt.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_buypass.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_ccitt.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_cdma2000.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_dds110.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_dectr.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_dectx.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_dnp.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_en13757.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_genibus.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
     <ClCompile Include="..\sanity-check\crc8_ebu.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_maxim.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_mcrf4xx.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_modbus.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_profibus.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_riello.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_t10dif.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_teledisk.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_tms37157.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc16_usb.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc8_icode.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
@@ -1526,29 +1427,11 @@
     <ClCompile Include="..\sanity-check\crc16_a.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
     </ClCompile>
-    <ClCompile Include="..\sanity-check\crc32_d.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc32_jamcrc.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc32_mpeg2.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_arc.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_aug_ccitt.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc32_q.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc32_xfer.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\crc64_ecma.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_buypass.h.t.cpp">
       <Filter>Source Files\Sanity Checks</Filter>
@@ -1725,9 +1608,6 @@
       <Filter>Tests\Sanity Checks</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\functional.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\gamma.h.t.cpp">
       <Filter>Tests\Sanity Checks</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\generic_pool.h.t.cpp">
@@ -2085,30 +1965,6 @@
       <Filter>Tests\Sanity Checks</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\utility.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\variant.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\variant_pool.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\vector.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\version.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\visitor.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\wformat_spec.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\wstring.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\sanity-check\wstring_stream.h.t.cpp">
       <Filter>Tests\Sanity Checks</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc8_cdma2000.h.t.cpp">
@@ -3191,10 +3047,151 @@
     <ClCompile Include="..\sanity-check\singleton.h.t.cpp">
       <Filter>Tests\Sanity Checks</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_initializer_list.cpp">
-      <Filter>Tests\Misc</Filter>
-    </ClCompile>
     <ClCompile Include="..\sanity-check\initializer_list.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\correlation.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\covariance.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_cdma2000.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_darc.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_dvbs2.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_ebu.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_icode.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_itu.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_maxim.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_rohc.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_wcdma.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_a.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_arc.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_aug_ccitt.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_buypass.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_ccitt.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_cdma2000.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dds110.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dectr.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dectx.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dnp.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_en13757.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_genibus.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_maxim.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_mcrf4xx.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_modbus.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_profibus.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_riello.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_t10dif.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_teledisk.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_tms37157.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_usb.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_d.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_jamcrc.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_mpeg2.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_q.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_xfer.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc64_ecma.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\gamma.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\variant.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\variant_pool.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\vector.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\version.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\visitor.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\wformat_spec.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\wstring.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\wstring_stream.h.t.cpp">
       <Filter>Tests\Sanity Checks</Filter>
     </ClCompile>
   </ItemGroup>

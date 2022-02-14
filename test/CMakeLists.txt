@@ -157,7 +157,6 @@ set(TEST_SOURCE_FILES
 	test_histogram.cpp
 	test_indirect_vector.cpp
 	test_indirect_vector_external_buffer.cpp
-	test_initializer_list.cpp
 	test_instance_count.cpp
 	test_integral_limits.cpp
 	test_intrusive_forward_list.cpp

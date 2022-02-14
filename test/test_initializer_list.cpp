@@ -26,61 +26,73 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <assert.h>
-
 #include "etl/initializer_list.h"
 
-#if ETL_NOT_USING_STL
+#include <stdio.h>
 
-namespace
+template <typename T>
+class Container
 {
-  template <typename T>
-  class Container
+public:
+
+  constexpr Container(std::initializer_list<T> init)
+    : buffer()
+    , length(init.size())
   {
-  public:
+    typename std::initializer_list<T>::const_iterator itr = std::begin(init);
+    T* p = buffer;
 
-    constexpr Container(std::initializer_list<T> init)
-      : buffer()
+    while (itr != std::end(init))
     {
-      typename std::initializer_list<T>::const_iterator itr = std::begin(init);
-      T* p = buffer;
-
-      while (itr != std::end(init))
-      {
-        *p++ = *itr++;
-      }
+      *p++ = *itr++;
     }
-
-    const T& operator [](int i) const
-    {
-      return buffer[i];
-    }
-
-  private:
-
-    T buffer[10];
-  };
-
-  //***************************************************************************
-  // Test constexpr.
-  constexpr Container<int> container = { 1, 2, 3, 4, 5 };
-
-  //***************************************************************************
-  // Test non-constexpr.
-  static Container<int> TestInitializerList()
-  {
-    static Container<int> container = { 1, 2, 3, 4, 5 };
-
-    assert(container[0] == 1);
-    assert(container[1] == 2);
-    assert(container[2] == 3);
-    assert(container[3] == 4);
-    assert(container[4] == 5);
-
-    return container;
   }
- 
-  static Container<int> c = TestInitializerList();
+
+  const T& operator [](int i) const
+  {
+    return buffer[i];
+  }
+
+  const size_t length;
+
+private:
+
+  T buffer[10];
+};
+
+int main()
+{
+  int result = 0;
+
+  Container<int> c = { 1, 2, 3, 4, 5 };
+
+  if (c[0] != 1) result =  1;
+  if (c[1] != 2) result =  2;
+  if (c[2] != 3) result =  3;
+  if (c[3] != 4) result =  4;
+  if (c[4] != 5) result =  5;
+
+  if (c.length != 5) result =  6;
+
+  constexpr Container<int> cc = { 1, 2, 3, 4, 5 };
+
+  if (cc[0] != 1) result =  7;
+  if (cc[1] != 2) result =  8;
+  if (cc[2] != 3) result =  9;
+  if (cc[3] != 4) result =  10;
+  if (cc[4] != 5) result =  11;
+
+  if (cc.length != 5) result =  12;
+
+  if (result == 0)
+  {
+    printf("**** All tests passed ****\n");
+  }
+  else
+  {
+    printf(">>>> Tests failed at #%d <<<<\n", result);
+  }
+
+  return result;
 }
 
-#endif

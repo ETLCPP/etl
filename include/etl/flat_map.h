@@ -38,13 +38,9 @@ SOFTWARE.
 #include "nth_type.h"
 #include "utility.h"
 #include "type_traits.h"
+#include "initializer_list.h"
 
 #include "private/comparator_is_transparent.h"
-
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
-  #include <initializer_list>
-#endif
-
 
 //*****************************************************************************
 ///\defgroup flat_map flat_map

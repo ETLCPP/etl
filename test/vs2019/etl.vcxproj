@@ -10531,7 +10531,6 @@
     <ClCompile Include="..\test_histogram.cpp" />
     <ClCompile Include="..\test_indirect_vector.cpp" />
     <ClCompile Include="..\test_indirect_vector_external_buffer.cpp" />
-    <ClCompile Include="..\test_initializer_list.cpp" />
     <ClCompile Include="..\test_invert.cpp" />
     <ClCompile Include="..\test_limiter.cpp" />
     <ClCompile Include="..\test_limits.cpp" />

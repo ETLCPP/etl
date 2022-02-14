@@ -37,8 +37,9 @@ SOFTWARE.
 
 #include <stddef.h>
 
-#if ETL_USING_STL
-
+#if (ETL_USING_STL && ETL_NOT_USING_STLPORT) || !defined(ETL_IN_UNIT_TEST_INITIALIZER_LIST)
+  
+  #define ETL_USING_INITIALIZER_LIST 1
 	#include <initializer_list>
 
 #else
@@ -46,6 +47,9 @@ SOFTWARE.
 namespace std
 {
 #if defined(ETL_COMPILER_MICROSOFT)
+
+  #define ETL_USING_INITIALIZER_LIST 1
+
   ///**************************************************************************
   /// A definition of initializer_list that is compatible with the Microsoft compiler
   ///**************************************************************************
@@ -126,7 +130,10 @@ namespace std
   }
 
 #elif defined(ETL_COMPILER_GCC)  || defined(ETL_COMPILER_CLANG) || defined(ETL_COMPILER_ARM6) || \
-      defined(ETL_COMPILER_ARM7) || defined(ETL_COMPILER_IAR)   || defined(ETL_COMPILER_TEXAS_INSTRUMENTS)
+      defined(ETL_COMPILER_ARM7) || defined(ETL_COMPILER_IAR)   || defined(ETL_COMPILER_TEXAS_INSTRUMENTS) || \
+      defined(ETL_COMPILER_INTEL)
+
+  #define ETL_USING_INITIALIZER_LIST 1
 
   ///**************************************************************************
   /// A definition of initializer_list that is compatible with Clang, GCC and other compilers.
@@ -208,11 +215,17 @@ namespace std
     return init.end();
   }
 #else
-  #error No definition for initializer_list is currently available for your compiler. Visit https://www.etlcpp.com to request support.
+
+  #error No definition for initializer_list is currently available for your compiler. Visit https://github.com/ETLCPP/etl/issues to request support.
+  #define ETL_USING_INITIALIZER_LIST 0
+
 #endif // Compiler tests
 }
 #endif // ETL_USING_STL
 #else
-  #error initializer_list is only supported for C++11 or above.
+
+  #define ETL_USING_INITIALIZER_LIST 0
+
 #endif // ETL_CPP11_SUPPORTED
+
 #endif // ETL_INITIALIZER_LIST_INCLUDED

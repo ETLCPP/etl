@@ -43,14 +43,11 @@ SOFTWARE.
 #include "../placement_new.h"
 #include "../visitor.h"
 #include "../memory.h"
+#include "../initializer_list.h"
 
 #if defined(ETL_COMPILER_KEIL)
   #pragma diag_suppress 940
   #pragma diag_suppress 111
-#endif
-
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
-  #include <initializer_list>
 #endif
 
 #if ETL_CPP11_NOT_SUPPORTED

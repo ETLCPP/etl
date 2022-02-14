@@ -52,10 +52,7 @@ SOFTWARE.
 #include "static_assert.h"
 #include "placement_new.h"
 #include "algorithm.h"
-
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
-  #include <initializer_list>
-#endif
+#include "initializer_list.h"
 
 #ifdef ETL_COMPILER_GCC
 #pragma GCC diagnostic push
@@ -1571,7 +1568,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+#if ETL_USING_INITIALIZER_LIST
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************

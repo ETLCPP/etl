@@ -35,10 +35,7 @@ SOFTWARE.
 #include "basic_string.h"
 #include "string_view.h"
 #include "hash.h"
-
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
-  #include <initializer_list>
-#endif
+#include "initializer_list.h"
 
 #include "private/minmax_push.h"
 
