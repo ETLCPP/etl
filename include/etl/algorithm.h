@@ -323,6 +323,7 @@ namespace etl
   ETL_CONSTEXPR14
     typename etl::enable_if<ETL_IS_NOT_POINTER_TYPE(TIterator1) ||
                             ETL_IS_NOT_POINTER_TYPE(TIterator2) ||
+                            ETL_TARGET_IS_NOT_TRIVIALLY_COPYABLE(TIterator1) ||
                             ETL_TARGET_IS_NOT_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
     copy_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
@@ -353,8 +354,9 @@ namespace etl
 #elif ETL_FORCE_CONSTEXPR_ALGORITHMS
   template <typename TIterator1, typename TIterator2>
   ETL_CONSTEXPR14
-    typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) ||
-                            ETL_IS_POINTER_TYPE(TIterator2) ||
+    typename etl::enable_if<ETL_IS_POINTER_TYPE(TIterator1) &&
+                            ETL_IS_POINTER_TYPE(TIterator2) &&
+                            ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator1) &&
                             ETL_TARGET_IS_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
     copy_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
@@ -491,6 +493,7 @@ namespace etl
   ETL_CONSTEXPR14
   typename etl::enable_if<ETL_IS_NOT_POINTER_TYPE(TIterator1) ||
                           ETL_IS_NOT_POINTER_TYPE(TIterator2) ||
+                          ETL_TARGET_IS_NOT_TRIVIALLY_COPYABLE(TIterator1) ||
                           ETL_TARGET_IS_NOT_TRIVIALLY_COPYABLE(TIterator2), TIterator2>::type
     move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
