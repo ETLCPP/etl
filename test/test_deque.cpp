@@ -2031,5 +2031,15 @@ namespace
       CHECK_EQUAL(9, data[9]);
     }
 #endif
+
+    //*************************************************************************
+    TEST(test_fill)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      data.fill(N999);
+
+      CHECK(std::equal(blank_data.begin(), blank_data.end(), data.begin()));
+    }
   };
 }

@@ -51,6 +51,7 @@ namespace
     Compare_Data shorter_data;
     Compare_Data different_data;
     Compare_Data insert_data;
+    Compare_Data blank_data;
 
     //*************************************************************************
     struct SetupFixture
@@ -61,6 +62,7 @@ namespace
         int n_insert[]  = { 11, 12, 13 };
         int n_less[]    = { 0, 1, 2, 3, 3, 5, 6, 7, 8, 9 };
         int n_greater[] = { 0, 1, 2, 4, 4, 5, 6, 7, 8, 9 };
+        int n_blank[]   = { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 };
 
         initial_data.assign(std::begin(n), std::end(n));
         insert_data.assign(std::begin(n_insert), std::end(n_insert));
@@ -68,6 +70,7 @@ namespace
         greater_data.assign(std::begin(n_greater), std::end(n_greater));
         shorter_data.assign(std::begin(n_greater), std::end(n_greater) - 1);
         different_data.assign(initial_data.rbegin(), initial_data.rend());
+        blank_data.assign(std::begin(n_blank), std::end(n_blank));
       }
     };
 
@@ -1377,5 +1380,15 @@ namespace
       CHECK_EQUAL(9, data[9]);
     }
 #endif
+
+    //*************************************************************************
+    TEST(test_fill)
+    {
+      etl::vector<int, 10> data(initial_data.begin(), initial_data.end());
+
+      data.fill(99);
+
+      CHECK(std::equal(blank_data.begin(), blank_data.end(), data.begin()));
+    }
   };
 }
