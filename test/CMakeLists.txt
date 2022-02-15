@@ -61,6 +61,7 @@ set(TEST_SOURCE_FILES
 	test_bit.cpp
 	test_bitset.cpp
 	test_bit_stream.cpp
+	test_byte.cpp
 	test_byte_stream.cpp
 	test_bloom_filter.cpp
 	test_bresenham_line.cpp

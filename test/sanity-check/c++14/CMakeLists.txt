@@ -57,6 +57,7 @@ target_sources(t14 PRIVATE etl_profile.h
         ../bit.h.t.cpp
         ../bitset.h.t.cpp
         ../bit_stream.h.t.cpp
+        ../byte.h.t.cpp
         ../byte_stream.h.t.cpp
         ../bloom_filter.h.t.cpp
         ../bresenham_line.h.t.cpp
