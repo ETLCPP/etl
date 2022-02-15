@@ -27,9 +27,9 @@ if (ETL_USER_DEFINED_TYPE_TRAITS)
 	add_definitions(-DETL_USER_DEFINED_TYPE_TRAITS)
 endif()
 
-if (ETL_FORCE_TEST_CPP03)
+if (ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 	message(STATUS "Compiling for C++03 tests")
-	add_definitions(-DETL_FORCE_TEST_CPP03)
+	add_definitions(-DETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 endif()
 
 add_library(t11 OBJECT)

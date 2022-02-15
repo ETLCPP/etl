@@ -62,15 +62,15 @@ namespace
 
       etl::byte b = etl::byte(B);
 
-      CHECK_EQUAL((unsigned char)(B << 0U), (unsigned char)(b << 0U));
-      CHECK_EQUAL((unsigned char)(B << 1U), (unsigned char)(b << 1U));
-      CHECK_EQUAL((unsigned char)(B << 2U), (unsigned char)(b << 2U));
-      CHECK_EQUAL((unsigned char)(B << 3U), (unsigned char)(b << 3U));
-      CHECK_EQUAL((unsigned char)(B << 4U), (unsigned char)(b << 4U));
-      CHECK_EQUAL((unsigned char)(B << 5U), (unsigned char)(b << 5U));
-      CHECK_EQUAL((unsigned char)(B << 6U), (unsigned char)(b << 6U));
-      CHECK_EQUAL((unsigned char)(B << 7U), (unsigned char)(b << 7U));
-      CHECK_EQUAL((unsigned char)(B << 8U), (unsigned char)(b << 8U));
+      CHECK_EQUAL((unsigned char)(B << 0U), etl::to_integer<unsigned char>(b << 0U));
+      CHECK_EQUAL((unsigned char)(B << 1U), etl::to_integer<unsigned char>(b << 1U));
+      CHECK_EQUAL((unsigned char)(B << 2U), etl::to_integer<unsigned char>(b << 2U));
+      CHECK_EQUAL((unsigned char)(B << 3U), etl::to_integer<unsigned char>(b << 3U));
+      CHECK_EQUAL((unsigned char)(B << 4U), etl::to_integer<unsigned char>(b << 4U));
+      CHECK_EQUAL((unsigned char)(B << 5U), etl::to_integer<unsigned char>(b << 5U));
+      CHECK_EQUAL((unsigned char)(B << 6U), etl::to_integer<unsigned char>(b << 6U));
+      CHECK_EQUAL((unsigned char)(B << 7U), etl::to_integer<unsigned char>(b << 7U));
+      CHECK_EQUAL((unsigned char)(B << 8U), etl::to_integer<unsigned char>(b << 8U));
     }
 
     //*************************************************************************
@@ -81,23 +81,23 @@ namespace
       etl::byte b;
 
       b = etl::byte(B);
-      CHECK_EQUAL((unsigned char)(B << 0U), (unsigned char)(b <<= 0U));
+      CHECK_EQUAL((unsigned char)(B << 0U), etl::to_integer<unsigned char>(b <<= 0U));
       b = etl::byte(B);
-      CHECK_EQUAL((unsigned char)(B << 1U), (unsigned char)(b <<= 1U));
+      CHECK_EQUAL((unsigned char)(B << 1U), etl::to_integer<unsigned char>(b <<= 1U));
       b = etl::byte(B);
-      CHECK_EQUAL((unsigned char)(B << 2U), (unsigned char)(b <<= 2U));
+      CHECK_EQUAL((unsigned char)(B << 2U), etl::to_integer<unsigned char>(b <<= 2U));
       b = etl::byte(B);
-      CHECK_EQUAL((unsigned char)(B << 3U), (unsigned char)(b <<= 3U));
+      CHECK_EQUAL((unsigned char)(B << 3U), etl::to_integer<unsigned char>(b <<= 3U));
       b = etl::byte(B);
-      CHECK_EQUAL((unsigned char)(B << 4U), (unsigned char)(b <<= 4U));
+      CHECK_EQUAL((unsigned char)(B << 4U), etl::to_integer<unsigned char>(b <<= 4U));
       b = etl::byte(B);
-      CHECK_EQUAL((unsigned char)(B << 5U), (unsigned char)(b <<= 5U));
+      CHECK_EQUAL((unsigned char)(B << 5U), etl::to_integer<unsigned char>(b <<= 5U));
       b = etl::byte(B);
-      CHECK_EQUAL((unsigned char)(B << 6U), (unsigned char)(b <<= 6U));
+      CHECK_EQUAL((unsigned char)(B << 6U), etl::to_integer<unsigned char>(b <<= 6U));
       b = etl::byte(B);
-      CHECK_EQUAL((unsigned char)(B << 7U), (unsigned char)(b <<= 7U));
+      CHECK_EQUAL((unsigned char)(B << 7U), etl::to_integer<unsigned char>(b <<= 7U));
       b = etl::byte(B);
-      CHECK_EQUAL((unsigned char)(B << 8U), (unsigned char)(b <<= 8U));
+      CHECK_EQUAL((unsigned char)(B << 8U), etl::to_integer<unsigned char>(b <<= 8U));
     }
 
     //*************************************************************************
@@ -107,14 +107,14 @@ namespace
 
       etl::byte b = etl::byte(B);
 
-      CHECK_EQUAL((unsigned char)(B >> 0U), (unsigned char)(b >> 0U));
-      CHECK_EQUAL((unsigned char)(B >> 1U), (unsigned char)(b >> 1U));
-      CHECK_EQUAL((unsigned char)(B >> 2U), (unsigned char)(b >> 2U));
-      CHECK_EQUAL((unsigned char)(B >> 3U), (unsigned char)(b >> 3U));
-      CHECK_EQUAL((unsigned char)(B >> 4U), (unsigned char)(b >> 4U));
-      CHECK_EQUAL((unsigned char)(B >> 5U), (unsigned char)(b >> 5U));
-      CHECK_EQUAL((unsigned char)(B >> 6U), (unsigned char)(b >> 6U));
-      CHECK_EQUAL((unsigned char)(B >> 7U), (unsigned char)(b >> 7U));
+      CHECK_EQUAL((unsigned char)(B >> 0U), etl::to_integer<unsigned char>(b >> 0U));
+      CHECK_EQUAL((unsigned char)(B >> 1U), etl::to_integer<unsigned char>(b >> 1U));
+      CHECK_EQUAL((unsigned char)(B >> 2U), etl::to_integer<unsigned char>(b >> 2U));
+      CHECK_EQUAL((unsigned char)(B >> 3U), etl::to_integer<unsigned char>(b >> 3U));
+      CHECK_EQUAL((unsigned char)(B >> 4U), etl::to_integer<unsigned char>(b >> 4U));
+      CHECK_EQUAL((unsigned char)(B >> 5U), etl::to_integer<unsigned char>(b >> 5U));
+      CHECK_EQUAL((unsigned char)(B >> 6U), etl::to_integer<unsigned char>(b >> 6U));
+      CHECK_EQUAL((unsigned char)(B >> 7U), etl::to_integer<unsigned char>(b >> 7U));
     }
   }
 
@@ -126,21 +126,21 @@ namespace
     etl::byte b;
 
     b = etl::byte(B);
-    CHECK_EQUAL((unsigned char)(B >> 0U), (unsigned char)(b >>= 0U));
+    CHECK_EQUAL((unsigned char)(B >> 0U), etl::to_integer<unsigned char>(b >>= 0U));
     b = etl::byte(B);
-    CHECK_EQUAL((unsigned char)(B >> 1U), (unsigned char)(b >>= 1U));
+    CHECK_EQUAL((unsigned char)(B >> 1U), etl::to_integer<unsigned char>(b >>= 1U));
     b = etl::byte(B);
-    CHECK_EQUAL((unsigned char)(B >> 2U), (unsigned char)(b >>= 2U));
+    CHECK_EQUAL((unsigned char)(B >> 2U), etl::to_integer<unsigned char>(b >>= 2U));
     b = etl::byte(B);
-    CHECK_EQUAL((unsigned char)(B >> 3U), (unsigned char)(b >>= 3U));
+    CHECK_EQUAL((unsigned char)(B >> 3U), etl::to_integer<unsigned char>(b >>= 3U));
     b = etl::byte(B);
-    CHECK_EQUAL((unsigned char)(B >> 4U), (unsigned char)(b >>= 4U));
+    CHECK_EQUAL((unsigned char)(B >> 4U), etl::to_integer<unsigned char>(b >>= 4U));
     b = etl::byte(B);
-    CHECK_EQUAL((unsigned char)(B >> 5U), (unsigned char)(b >>= 5U));
+    CHECK_EQUAL((unsigned char)(B >> 5U), etl::to_integer<unsigned char>(b >>= 5U));
     b = etl::byte(B);
-    CHECK_EQUAL((unsigned char)(B >> 6U), (unsigned char)(b >>= 6U));
+    CHECK_EQUAL((unsigned char)(B >> 6U), etl::to_integer<unsigned char>(b >>= 6U));
     b = etl::byte(B);
-    CHECK_EQUAL((unsigned char)(B >> 7U), (unsigned char)(b >>= 7U));
+    CHECK_EQUAL((unsigned char)(B >> 7U), etl::to_integer<unsigned char>(b >>= 7U));
   }
 
   //*************************************************************************
@@ -152,7 +152,7 @@ namespace
 
     for (unsigned int i = 0; i < 256; ++i)
     {
-      CHECK_EQUAL((unsigned char)(B & i), (unsigned char)(b & etl::byte(i)));
+      CHECK_EQUAL((unsigned char)(B & i), etl::to_integer<unsigned char>(b & etl::byte(i)));
     }
   }
 
@@ -166,7 +166,7 @@ namespace
     for (unsigned int i = 0; i < 256; ++i)
     {
       b = etl::byte(B);
-      CHECK_EQUAL((unsigned char)(B & i), (unsigned char)(b &= etl::byte(i)));
+      CHECK_EQUAL((unsigned char)(B & i), etl::to_integer<unsigned char>(b &= etl::byte(i)));
     }
   }
 
@@ -179,7 +179,7 @@ namespace
 
     for (unsigned int i = 0; i < 256; ++i)
     {
-      CHECK_EQUAL((unsigned char)(B | i), (unsigned char)(b | etl::byte(i)));
+      CHECK_EQUAL((unsigned char)(B | i), etl::to_integer<unsigned char>(b | etl::byte(i)));
     }
   }
 
@@ -193,7 +193,7 @@ namespace
     for (unsigned int i = 0; i < 256; ++i)
     {
       b = etl::byte(B);
-      CHECK_EQUAL((unsigned char)(B | i), (unsigned char)(b |= etl::byte(i)));
+      CHECK_EQUAL((unsigned char)(B | i), etl::to_integer<unsigned char>(b |= etl::byte(i)));
     }
   }
 
@@ -206,7 +206,7 @@ namespace
 
     for (unsigned int i = 0; i < 256; ++i)
     {
-      CHECK_EQUAL((unsigned char)(B ^ i), (unsigned char)(b ^ etl::byte(i)));
+      CHECK_EQUAL((unsigned char)(B ^ i), etl::to_integer<unsigned char>(b ^ etl::byte(i)));
     }
   }
 
@@ -220,7 +220,7 @@ namespace
     for (unsigned int i = 0; i < 256; ++i)
     {
       b = etl::byte(B);
-      CHECK_EQUAL((unsigned char)(B ^ i), (unsigned char)(b ^= etl::byte(i)));
+      CHECK_EQUAL((unsigned char)(B ^ i), etl::to_integer<unsigned char>(b ^= etl::byte(i)));
     }
   }
 
@@ -229,7 +229,7 @@ namespace
   {
     for (unsigned int i = 0; i < 256; ++i)
     {
-      CHECK_EQUAL((unsigned char)(~i), (unsigned char)(~etl::byte(i)));
+      CHECK_EQUAL((unsigned char)(~i), etl::to_integer<unsigned char>(~etl::byte(i)));
     }
   }
 }
