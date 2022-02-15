@@ -71,6 +71,7 @@ namespace
     CompareDataNDC unordered_data;
     CompareDataNDC stable_part_ordered_data;
     CompareDataNDC stable_part_greater_ordered_data;
+    CompareDataNDC blank_data;
 
     template <typename TIterator, typename TFunctor>
     void test_algorithm(TIterator first1, TIterator last1, TIterator first2, TFunctor functor)
@@ -105,6 +106,7 @@ namespace
         NDC n_stable_part_ordered[]         = { NDC("1"), NDC("4", 1), NDC("0"), NDC("2"), NDC("3"), NDC("4", 2), NDC("4", 3), NDC("6"), NDC("7"), NDC("9"), NDC("8"), NDC("5") };
         NDC n_stable_part_greater_ordered[] = { NDC("1"), NDC("4", 1), NDC("9"), NDC("7"), NDC("6"), NDC("4", 2), NDC("4", 3), NDC("3"), NDC("2"), NDC("0"), NDC("8"), NDC("5") };
 
+        NDC n_blank[] = { NDC("99"), NDC("99"), NDC("99"), NDC("99"), NDC("99"), NDC("99"), NDC("99"), NDC("99"), NDC("99"), NDC("99"), NDC("99"), NDC("99") };
 
         initial_data.assign(std::begin(n), std::end(n));
         insert_data.assign(std::begin(n_insert), std::end(n_insert));
@@ -122,6 +124,7 @@ namespace
         stable_greater_reverse_ordered_data.assign(std::begin(n_stable_greater_reverse_ordered_data), std::end(n_stable_greater_reverse_ordered_data));
         stable_part_ordered_data.assign(std::begin(n_stable_part_ordered), std::end(n_stable_part_ordered));
         stable_part_greater_ordered_data.assign(std::begin(n_stable_part_greater_ordered), std::end(n_stable_part_greater_ordered));
+        blank_data.assign(std::begin(n_blank), std::end(n_blank));
       }
     };
 
@@ -1465,6 +1468,16 @@ namespace
                                  ordered_data.begin());
 
       CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST(test_fill)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      data.fill(NDC("99"));
+
+      CHECK(std::equal(blank_data.begin(), blank_data.end(), data.begin()));
     }
   };
 }

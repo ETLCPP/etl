@@ -934,5 +934,19 @@ namespace
 
       CHECK(data1 != data2);
     }
+
+    //*************************************************************************
+    TEST(test_fill)
+    {
+      Compare input{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8") };
+      Compare blank{ Ndc("9"), Ndc("9"), Ndc("9"), Ndc("9"), Ndc("9"), Ndc("9"), Ndc("9"), Ndc("9"), Ndc("9") };
+      Data data;
+      data.push(input.begin(), input.end());
+
+      data.fill(Ndc("9"));
+
+      bool isEqual = std::equal(blank.begin(), blank.end(), data.begin());
+      CHECK(isEqual);
+    }
   };
 }

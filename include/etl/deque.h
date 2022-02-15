@@ -941,6 +941,14 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Fills the deque.
+    //*************************************************************************
+    void fill(const T& value)
+    {
+      etl::fill(begin(), end(), value);
+    }
+
+    //*************************************************************************
     /// Inserts data into the deque.
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
     ///\param insert_position>The insert position.
