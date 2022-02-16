@@ -134,24 +134,10 @@ namespace etl
   public:
 
     // Friend functions
-    friend etl::byte operator |(etl::byte lhs, etl::byte rhs);
-    friend etl::byte operator &(etl::byte lhs, etl::byte rhs);
-    friend etl::byte operator ^(etl::byte lhs, etl::byte rhs);
-
-    template <typename TInteger>
-    friend 
-      typename etl::enable_if<etl::is_integral<TInteger>::value, etl::byte>::type
-      operator <<(etl::byte b, TInteger shift);
-
-    template <typename TInteger>
-    friend 
-      typename etl::enable_if<etl::is_integral<TInteger>::value, etl::byte>::type
-      operator >>(etl::byte b, TInteger shift);
-
     template <typename TInteger>
     friend
-      typename etl::enable_if<etl::is_integral<TInteger>::value, TInteger>::type
-      to_integer(etl::byte b);
+    typename etl::enable_if<etl::is_integral<TInteger>::value, TInteger>::type
+    to_integer(etl::byte b);
 
     friend bool operator ==(etl::byte lhs, etl::byte rhs);
 
@@ -214,7 +200,7 @@ namespace etl
   typename etl::enable_if<etl::is_integral<TInteger>::value, etl::byte>::type
   operator <<(etl::byte b, TInteger shift)
   {
-    return  etl::byte(static_cast<unsigned int>(b) << shift);
+    return  etl::byte(to_integer<unsigned int>(b) << shift);
   }
 
   //*************************************************************************
@@ -224,7 +210,7 @@ namespace etl
   typename etl::enable_if<etl::is_integral<TInteger>::value, etl::byte>::type
   operator >>(etl::byte b, TInteger shift)
   {
-    return  etl::byte(static_cast<unsigned int>(b) >> shift);
+    return  etl::byte(to_integer<unsigned int>(b) >> shift);
   }
 
   //*************************************************************************
@@ -256,7 +242,7 @@ namespace etl
   //*************************************************************************
   etl::byte operator |(etl::byte lhs, etl::byte rhs)
   {
-    return etl::byte(static_cast<unsigned int>(lhs) | static_cast<unsigned int>(rhs));
+    return etl::byte(to_integer<unsigned int>(lhs) | to_integer<unsigned int>(rhs));
   }
 
   //*************************************************************************
@@ -264,7 +250,7 @@ namespace etl
   //*************************************************************************
   etl::byte operator &(etl::byte lhs, etl::byte rhs)
   {
-    return etl::byte(static_cast<unsigned int>(lhs) & static_cast<unsigned int>(rhs));
+    return etl::byte(to_integer<unsigned int>(lhs) & to_integer<unsigned int>(rhs));
   }
 
   //*************************************************************************
@@ -272,7 +258,7 @@ namespace etl
   //*************************************************************************
    etl::byte operator ^(etl::byte lhs, etl::byte rhs)
   {
-   return etl::byte(static_cast<unsigned int>(lhs) ^ static_cast<unsigned int>(rhs));
+   return etl::byte(to_integer<unsigned int>(lhs) ^ to_integer<unsigned int>(rhs));
   }
 
   //*************************************************************************
