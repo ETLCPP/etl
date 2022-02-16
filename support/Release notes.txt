@@ -7,6 +7,7 @@ Added detection or selection of built-ins.
 Much of etl::string and etl::string_view can be constexpr.
 Added ETL initializer_list implementations that are compatible with major compilers.
 Added etl::construct_at support.
+Added etl::byte
 
 ===============================================================================
 20.23.0

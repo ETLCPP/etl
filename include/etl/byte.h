@@ -14,7 +14,7 @@ namespace etl
   enum class byte : unsigned char {};
 
   //*************************************************************************
-  /// To intger.
+  /// To integer.
   //*************************************************************************
   template <typename TInteger>
   constexpr
@@ -184,7 +184,7 @@ namespace etl
   }
 
   //*************************************************************************
-  /// To intger.
+  /// To integer.
   //*************************************************************************
   template <typename TInteger> 
   typename etl::enable_if<etl::is_integral<TInteger>::value, TInteger>::type
