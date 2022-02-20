@@ -1,4 +1,9 @@
 ===============================================================================
+20.24.1
+callback and message timers now use etl::timer_semaphore_t instead of et::atomic_uint_least16_t
+Fixed send_message function signatures.
+
+===============================================================================
 20.24.0
 #503 Algorithm transform uses expensive post increment operator - Fixed for all occurences of iterator increment.
 #504 ETL_CONSTANT vs const in binary.h - Fixed.

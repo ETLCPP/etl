@@ -109,12 +109,6 @@ SOFTWARE.
   #define ETL_VARIANT_FORCE_CPP11
 #endif
 
-//#define ETL_VARIANT_CPP11_MAX_16_TYPES
-
-#if defined(ETL_NO_STL)
-  #define ETL_TIMER_SEMAPHORE_TYPE uint32_t
-#endif
-
 #include "../include/etl/profiles/determine_compiler_language_support.h"
 
 #if ETL_CPP17_NOT_SUPPORTED
