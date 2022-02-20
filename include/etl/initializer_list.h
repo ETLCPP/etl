@@ -37,7 +37,9 @@ SOFTWARE.
 
 #include <stddef.h>
 
-#if (ETL_USING_STL && ETL_NOT_USING_STLPORT) || !defined(ETL_IN_UNIT_TEST_INITIALIZER_LIST)
+
+
+#if ((ETL_USING_STL && ETL_NOT_USING_STLPORT) || defined(ETL_IN_UNIT_TEST)) && !defined(ETL_IN_UNIT_TEST_INITIALIZER_LIST)
   
   #define ETL_USING_INITIALIZER_LIST 1
 	#include <initializer_list>
