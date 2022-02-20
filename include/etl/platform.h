@@ -40,6 +40,9 @@ SOFTWARE.
 // Define a debug macro
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(ETL_DEBUG) 
   #define ETL_DEBUG
+  #define ETL_IS_DEBUG_BUILD 1
+#else
+  #define ETL_IS_DEBUG_BUILD 0
 #endif
 
 // Determine the bit width of the platform.
@@ -145,6 +148,7 @@ SOFTWARE.
 #else
   #define ETL_STRING_CLEAR_AFTER_USE_ENABLED 1
 #endif
+
 
 //*************************************
 // The macros below are dependent on the profile.
@@ -268,5 +272,31 @@ SOFTWARE.
 //*************************************
 // Sort out namespaces for STL/No STL options.
 #include "private/choose_namespace.h"
+
+namespace etl
+{
+  namespace library_traits
+  {
+    static ETL_CONSTANT bool using_stl                    = (ETL_USING_STL == 1);
+    static ETL_CONSTANT bool using_stlport                = (ETL_USING_STLPORT == 1);
+    static ETL_CONSTANT bool using_cpp11                  = (ETL_CPP11_SUPPORTED == 1);
+    static ETL_CONSTANT bool using_cpp14                  = (ETL_CPP14_SUPPORTED == 1);
+    static ETL_CONSTANT bool using_cpp17                  = (ETL_CPP17_SUPPORTED == 1);
+    static ETL_CONSTANT bool using_cpp20                  = (ETL_CPP20_SUPPORTED == 1);
+    static ETL_CONSTANT bool has_8bit_types               = (ETL_USING_8BIT_TYPES == 1);
+    static ETL_CONSTANT bool has_64bit_types              = (ETL_USING_64BIT_TYPES == 1);
+    static ETL_CONSTANT bool has_atomic                   = (ETL_HAS_ATOMIC == 1);
+    static ETL_CONSTANT bool has_nullptr                  = (ETL_NO_NULLPTR_SUPPORT == 0);
+    static ETL_CONSTANT bool has_large_char               = (ETL_NO_LARGE_CHAR_SUPPORT == 0);
+    static ETL_CONSTANT bool has_string_truncation_checks = (ETL_STRING_TRUNCATION_CHECKS_ENABLED == 1);
+    static ETL_CONSTANT bool has_string_clear_after_use   = (ETL_STRING_CLEAR_AFTER_USE_ENABLED == 1);
+    static ETL_CONSTANT bool has_istring_repair           = (ETL_ISTRING_REPAIR_ENABLED == 1);
+    static ETL_CONSTANT bool has_ivector_repair           = (ETL_IVECTOR_REPAIR_ENABLED == 1);
+    static ETL_CONSTANT bool has_ideque_repair            = (ETL_IDEQUE_REPAIR_ENABLED == 1);
+    static ETL_CONSTANT bool is_debug_build               = (ETL_IS_DEBUG_BUILD == 1);
+    static ETL_CONSTANT bool has_polymorphic_messages     = (ETL_HAS_POLYMORPHIC_MESSAGES == 1);
+    static ETL_CONSTANT bool error_on_string_truncation   = (ETL_ERROR_ON_STRING_TRUNCATION == 1);
+  };
+}
 
 #endif

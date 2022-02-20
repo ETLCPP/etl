@@ -10677,6 +10677,7 @@
     <ClCompile Include="..\test_indirect_vector.cpp" />
     <ClCompile Include="..\test_indirect_vector_external_buffer.cpp" />
     <ClCompile Include="..\test_invert.cpp" />
+    <ClCompile Include="..\test_library_traits.cpp" />
     <ClCompile Include="..\test_limiter.cpp" />
     <ClCompile Include="..\test_limits.cpp" />
     <ClCompile Include="..\test_list_shared_pool.cpp" />

@@ -234,7 +234,7 @@ namespace etl
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
     void repair()
-#ifdef ETL_ISTRING_REPAIR_ENABLE
+#if ETL_ISTRING_REPAIR_ENABLED
       ETL_OVERRIDE
 #endif
     {
@@ -419,7 +419,7 @@ namespace etl
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
     void repair()
-#ifdef ETL_ISTRING_REPAIR_ENABLE
+#if ETL_ISTRING_REPAIR_ENABLED
       ETL_OVERRIDE
 #endif
     {

@@ -3116,9 +3116,6 @@
     <ClCompile Include="..\sanity-check\gamma.h.t.cpp">
       <Filter>Tests\Sanity Checks</Filter>
     </ClCompile>
-    <ClCompile Include="..\sanity-check\wstring_stream.h.t.cpp">
-      <Filter>Tests\Sanity Checks</Filter>
-    </ClCompile>
     <ClCompile Include="..\sanity-check\variant.h.t.cpp">
       <Filter>Tests\Sanity Checks</Filter>
     </ClCompile>
@@ -3139,6 +3136,9 @@
     </ClCompile>
     <ClCompile Include="..\sanity-check\wstring.h.t.cpp">
       <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_library_traits.cpp">
+      <Filter>Tests\Misc</Filter>
     </ClCompile>
     <ClCompile Include="..\test_callback_timer_interrupt.cpp">
       <Filter>Tests\Callback Timers</Filter>

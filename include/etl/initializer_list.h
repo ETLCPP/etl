@@ -235,4 +235,13 @@ namespace std
 
 #endif // ETL_USE_INITIALIZER_LIST
 
+namespace etl
+{
+  namespace library_traits
+  {
+    static ETL_CONSTANT bool has_initializer_list = (ETL_USING_INITIALIZER_LIST == 1);
+  }
+}
+
+#endif // ETL_INITIALIZER_LIST_INCLUDED
 #endif // ETL_INITIALIZER_LIST_INCLUDED

@@ -2230,7 +2230,7 @@ namespace etl
       return *this;
     }
 
-#ifdef ETL_ISTRING_REPAIR_ENABLE
+#if ETL_ISTRING_REPAIR_ENABLED
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
