@@ -165,7 +165,7 @@ namespace etl
     {
       if (enabled)
       {
-        if (process_semaphore.load() == 0U)
+        if (process_semaphore == 0U)
         {
           // We have something to do?
           bool has_active = !active_list.empty();
@@ -580,7 +580,7 @@ namespace etl
     timer_list active_list;
 
     volatile bool enabled;
-    volatile etl::atomic_uint_least16_t process_semaphore;
+    volatile etl::timer_semaphore_t process_semaphore;
     volatile uint_least8_t registered_timers;
 
   public:
