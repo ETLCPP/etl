@@ -50,9 +50,10 @@ print('etl_arduino_examples_dir = ', etl_arduino_examples_dir)
 print('')
 
 # Copy the library properties
-filename    = 'library.properties'
-source      = os.path.join(arduino_dir, filename)
-destination = os.path.join(etl_arduino_dir, filename)
+src_filename    = 'library-arduino.properties'
+dst_filename    = 'library.properties'
+source      = os.path.join(arduino_dir, src_filename)
+destination = os.path.join(etl_arduino_dir, dst_filename)
 print('Copy the library properties')
 print('  From :', source)
 print('  To   :', destination)
@@ -61,9 +62,10 @@ shutil.copyfile(source, destination)
 print('')
 
 # Copy the library json
-filename    = 'library.json'
-source      = os.path.join(arduino_dir, filename)
-destination = os.path.join(etl_arduino_dir, filename)
+src_filename    = 'library-arduino.json'
+dst_filename    = 'library.json'
+source      = os.path.join(arduino_dir, src_filename)
+destination = os.path.join(etl_arduino_dir, dst_filename)
 print('Copy the library json')
 print('  From :', source)
 print('  To   :', destination)
