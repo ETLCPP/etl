@@ -33,11 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 
-//#if defined(ARDUINO) || defined(__AVR__)
-  #include <stddef.h>
-//#else
-//  #include <cstddef>
-//#endif
+#include <stddef.h>
 
 #if ETL_CPP11_NOT_SUPPORTED || ETL_NOT_USING_STL
   // Use the old style C++ NULL definition.
