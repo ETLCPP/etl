@@ -1260,6 +1260,12 @@
     <ClInclude Include="..\..\include\etl\byte.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\callback_timer_interrupt.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_timer_interrupt.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unittest-cpp\UnitTest++\AssertException.cpp">
@@ -3203,6 +3209,12 @@
     <ClCompile Include="..\sanity-check\wstring.h.t.cpp">
       <Filter>Tests\Sanity Checks</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_callback_timer_interrupt.cpp">
+      <Filter>Tests\Timers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_message_timer_interrupt.cpp">
+      <Filter>Tests\Messaging</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -3271,9 +3283,6 @@
     <None Include="..\..\.github\workflows\vs2019.yml">
       <Filter>Resource Files\CI\Github</Filter>
     </None>
-    <None Include="..\..\arduino\create_arduino_library.py">
-      <Filter>ETL\Arduino</Filter>
-    </None>
     <None Include="..\runsanitychecks.sh">
       <Filter>Tests\Scripts</Filter>
     </None>
@@ -3295,10 +3304,13 @@
     <None Include="..\..\meson.build">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\..\arduino\library.json">
+    <None Include="..\..\arduino\library-arduino.json">
       <Filter>Resource Files\Arduino</Filter>
     </None>
-    <None Include="..\..\arduino\library.properties">
+    <None Include="..\..\arduino\library-arduino.properties">
+      <Filter>Resource Files\Arduino</Filter>
+    </None>
+    <None Include="..\..\arduino\create_arduino_library.py">
       <Filter>Resource Files\Arduino</Filter>
     </None>
   </ItemGroup>

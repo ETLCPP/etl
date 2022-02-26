@@ -2362,6 +2362,7 @@
     <ClInclude Include="..\..\include\etl\byte_stream.h" />
     <ClInclude Include="..\..\include\etl\callback_timer.h" />
     <ClInclude Include="..\..\include\etl\callback_timer_atomic.h" />
+    <ClInclude Include="..\..\include\etl\callback_timer_interrupt.h" />
     <ClInclude Include="..\..\include\etl\callback_timer_locked.h" />
     <ClInclude Include="..\..\include\etl\circular_buffer.h" />
     <ClInclude Include="..\..\include\etl\combinations.h" />
@@ -2454,6 +2455,7 @@
     <ClInclude Include="..\..\include\etl\message_packet.h" />
     <ClInclude Include="..\..\include\etl\message_pool.h" />
     <ClInclude Include="..\..\include\etl\message_timer_atomic.h" />
+    <ClInclude Include="..\..\include\etl\message_timer_interrupt.h" />
     <ClInclude Include="..\..\include\etl\message_timer_locked.h" />
     <ClInclude Include="..\..\include\etl\multi_array.h" />
     <ClInclude Include="..\..\include\etl\multi_range.h" />
@@ -10494,6 +10496,7 @@
     <ClCompile Include="..\test_byte_stream.cpp" />
     <ClCompile Include="..\test_callback_service.cpp" />
     <ClCompile Include="..\test_callback_timer_atomic.cpp" />
+    <ClCompile Include="..\test_callback_timer_interrupt.cpp" />
     <ClCompile Include="..\test_callback_timer_locked.cpp" />
     <ClCompile Include="..\test_circular_buffer.cpp" />
     <ClCompile Include="..\test_circular_buffer_external_buffer.cpp" />
@@ -10572,6 +10575,7 @@
     <ClCompile Include="..\test_message_packet.cpp" />
     <ClCompile Include="..\test_message_router_registry.cpp" />
     <ClCompile Include="..\test_message_timer_atomic.cpp" />
+    <ClCompile Include="..\test_message_timer_interrupt.cpp" />
     <ClCompile Include="..\test_message_timer_locked.cpp" />
     <ClCompile Include="..\test_multi_array.cpp" />
     <ClCompile Include="..\test_array.cpp">
@@ -11358,8 +11362,8 @@
     <None Include="..\..\.gitmodules" />
     <None Include="..\..\appveyor.yml" />
     <None Include="..\..\arduino\create_arduino_library.py" />
-    <None Include="..\..\arduino\library.json" />
-    <None Include="..\..\arduino\library.properties" />
+    <None Include="..\..\arduino\library-arduino.json" />
+    <None Include="..\..\arduino\library-arduino.properties" />
     <None Include="..\..\etl.pspimage" />
     <None Include="..\..\etl.xar" />
     <None Include="..\..\include\etl\generators\generate.bat" />
