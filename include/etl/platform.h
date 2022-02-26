@@ -125,6 +125,16 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Check WCHAR_MIN and WCHAR_MAX
+#if !defined(WCHAR_MIN)
+  #define WCHAR_MIN 0x0000
+#endif
+
+#if !defined(WCHAR_MAX)
+  #define WCHAR_MAX 0xFFFF
+#endif
+
+//*************************************
 // Option to force string construction from a character pointer to be explicit.
 #if defined(ETL_FORCE_EXPLICIT_STRING_CONVERSION_FROM_CHAR)
   #define ETL_EXPLICIT_STRING_FROM_CHAR explicit

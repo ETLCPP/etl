@@ -331,11 +331,6 @@ namespace etl
     static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
     static ETL_CONSTANT bool is_signed = etl::is_signed<wchar_t>::value;
     static ETL_CONSTANT bool is_modulo = etl::is_unsigned<wchar_t>::value;
-
-#if defined(ETL_COMPILER_CLANG) && defined(ETL_CROSS_COMPILING_TO_AVR) && !defined(WCHAR_MIN)
-  #define WCHAR_MIN (-WCHAR_MAX - 1)
-#endif
-
     static ETL_CONSTEXPR wchar_t min() { return WCHAR_MIN; }
     static ETL_CONSTEXPR wchar_t max() { return WCHAR_MAX; }
     static ETL_CONSTEXPR wchar_t lowest() { return WCHAR_MIN; }
