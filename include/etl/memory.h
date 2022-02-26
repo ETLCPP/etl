@@ -2064,13 +2064,13 @@ namespace etl
     /// Index operator.
     T& operator [](int i)
     {
-      return ((T*)this->raw)[i];
+      return reinterpret_cast<T*>(this->raw)[i];
     }
 
     /// Index operator.
     const T& operator [](int i) const
     {
-      return ((T*)this->raw)[i];
+      return reinterpret_cast<const T*>(this->raw)[i];
     }
 
     /// Convert to T reference.
