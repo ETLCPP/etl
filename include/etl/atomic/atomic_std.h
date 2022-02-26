@@ -432,12 +432,12 @@ namespace etl
     // Conversion operator
     operator T* () const
     {
-      return (T*)value;
+      return static_cast<T*>(value);
     }
 
     operator T*() volatile const
     {
-      return (T*)value;
+      return static_cast<T*>(value);
     }
 
     // Is lock free?
