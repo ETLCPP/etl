@@ -38,19 +38,16 @@ SOFTWARE.
 #include "function.h"
 #include "static_assert.h"
 #include "timer.h"
-#include "atomic.h"
 #include "error_handler.h"
 #include "placement_new.h"
-#include "atomic.h"
 #include "delegate.h"
-
-#if ETL_HAS_ATOMIC
 
 namespace etl
 {
   //***************************************************************************
   /// Interface for callback timer
   //***************************************************************************
+  template <typename TSemaphore>
   class icallback_timer_atomic
   {
   public:
@@ -178,17 +175,17 @@ namespace etl
 
               active_list.remove(timer.id, true);
 
+              if (timer.callback.is_valid())
+              {
+                // Call the delegate callback.
+                timer.callback();
+              }
+
               if (timer.repeating)
               {
                 // Reinsert the timer.
                 timer.delta = timer.period;
                 active_list.insert(timer.id);
-              }
-
-              if (timer.callback.is_valid())
-              {
-                // Call the delegate callback.
-                timer.callback();
               }
 
               has_active = !active_list.empty();
@@ -567,7 +564,7 @@ namespace etl
     timer_list active_list;
 
     volatile bool enabled;
-    volatile etl::timer_semaphore_t process_semaphore;
+    volatile TSemaphore process_semaphore;
     volatile uint_least8_t number_of_registered_timers;
 
   public:
@@ -578,8 +575,8 @@ namespace etl
   //***************************************************************************
   /// The callback timer
   //***************************************************************************
-  template <uint_least8_t MAX_TIMERS_>
-  class callback_timer_atomic : public etl::icallback_timer_atomic
+  template <uint_least8_t MAX_TIMERS_, typename TSemaphore>
+  class callback_timer_atomic : public etl::icallback_timer_atomic<TSemaphore>
   {
   public:
 
@@ -589,16 +586,14 @@ namespace etl
     /// Constructor.
     //*******************************************
     callback_timer_atomic()
-      : icallback_timer_atomic(timer_array, MAX_TIMERS_)
+      : icallback_timer_atomic<TSemaphore>(timer_array, MAX_TIMERS_)
     {
     }
 
   private:
 
-    timer_data timer_array[MAX_TIMERS_];
+    typename etl::icallback_timer_atomic<TSemaphore>::timer_data timer_array[MAX_TIMERS_];
   };
 }
-
-#endif
 
 #endif

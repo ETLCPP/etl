@@ -49,6 +49,7 @@ namespace etl
   //***************************************************************************
   /// Interface for message timer
   //***************************************************************************
+  template <typename TSemaphore>
   class imessage_timer_atomic
   {
   public:
@@ -180,15 +181,15 @@ namespace etl
 
               active_list.remove(timer.id, true);
 
+              if (timer.p_router != ETL_NULLPTR)
+              {
+                timer.p_router->receive(timer.destination_router_id, *(timer.p_message));
+              }
+
               if (timer.repeating)
               {
                 timer.delta = timer.period;
                 active_list.insert(timer.id);
-              }
-
-              if (timer.p_router != ETL_NULLPTR)
-              {
-                timer.p_router->receive(timer.destination_router_id, *(timer.p_message));
               }
 
               has_active = !active_list.empty();
@@ -580,7 +581,7 @@ namespace etl
     timer_list active_list;
 
     volatile bool enabled;
-    volatile etl::timer_semaphore_t process_semaphore;
+    volatile TSemaphore process_semaphore;
     volatile uint_least8_t registered_timers;
 
   public:
@@ -591,8 +592,8 @@ namespace etl
   //***************************************************************************
   /// The message timer
   //***************************************************************************
-  template <uint_least8_t MAX_TIMERS_>
-  class message_timer_atomic : public etl::imessage_timer_atomic
+  template <uint_least8_t MAX_TIMERS_, typename TSemaphore>
+  class message_timer_atomic : public etl::imessage_timer_atomic<TSemaphore>
   {
   public:
 
@@ -602,13 +603,13 @@ namespace etl
     /// Constructor.
     //*******************************************
     message_timer_atomic()
-      : imessage_timer_atomic(timer_array, MAX_TIMERS_)
+      : imessage_timer_atomic<TSemaphore>(timer_array, MAX_TIMERS_)
     {
     }
 
   private:
 
-    timer_data timer_array[MAX_TIMERS_];
+    typename etl::imessage_timer_atomic<TSemaphore>::timer_data timer_array[MAX_TIMERS_];
   };
 }
 

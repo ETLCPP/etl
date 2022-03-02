@@ -37,6 +37,7 @@ SOFTWARE.
 #include <vector>
 #include <thread>
 #include <chrono>
+#include <atomic>
 
 #if defined(ETL_COMPILER_MICROSOFT)
   #include <Windows.h>
@@ -73,17 +74,17 @@ namespace
       p_controller->start(1);
     }
 
-    void set_controller(etl::callback_timer_atomic<3>& controller)
+    void set_controller(etl::callback_timer_atomic<3, std::atomic_uint32_t>& controller)
     {
       p_controller = &controller;
     }
 
     std::vector<uint64_t> tick_list;
 
-    etl::callback_timer_atomic<3>* p_controller;
+    etl::callback_timer_atomic<3, std::atomic_uint32_t>* p_controller;
   };
 
-  using callback_type = etl::icallback_timer_atomic::callback_type;
+  using callback_type = etl::icallback_timer_atomic<std::atomic_uint32_t>::callback_type;
 
   Test test;
   callback_type member_callback1 = callback_type::create<Test, test, &Test::callback1>();
@@ -118,7 +119,7 @@ namespace
     //*************************************************************************
     TEST(callback_timer_atomic_too_many_timers)
     {
-      etl::callback_timer_atomic<2> timer_controller;
+      etl::callback_timer_atomic<2, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback1,        37, etl::timer::mode::SINGLE_SHOT);
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback1, 23, etl::timer::mode::SINGLE_SHOT);
@@ -136,7 +137,7 @@ namespace
     //*************************************************************************
     TEST(callback_timer_atomic_one_shot)
     {
-      etl::callback_timer_atomic<4> timer_controller;
+      etl::callback_timer_atomic<4, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback1,        37, etl::timer::mode::SINGLE_SHOT);
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback1, 23, etl::timer::mode::SINGLE_SHOT);
@@ -178,7 +179,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_one_shot_after_timeout)
     {
-      etl::callback_timer_atomic<1> timer_controller;
+      etl::callback_timer_atomic<1, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback1, 37, etl::timer::mode::SINGLE_SHOT);
       test.tick_list.clear();
@@ -224,7 +225,7 @@ namespace
     //*************************************************************************
     TEST(callback_timer_atomic_repeating)
     {
-      etl::callback_timer_atomic<3> timer_controller;
+      etl::callback_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback1,        37, etl::timer::mode::REPEATING);
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback1, 23, etl::timer::mode::REPEATING);
@@ -266,7 +267,7 @@ namespace
     //*************************************************************************
     TEST(callback_timer_atomic_repeating_bigger_step)
     {
-      etl::callback_timer_atomic<3> timer_controller;
+      etl::callback_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback1,        37, etl::timer::mode::REPEATING);
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback1, 23, etl::timer::mode::REPEATING);
@@ -312,7 +313,7 @@ namespace
     //*************************************************************************
     TEST(callback_timer_atomic_repeating_stop_start)
     {
-      etl::callback_timer_atomic<3> timer_controller;
+      etl::callback_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback1,        37, etl::timer::mode::REPEATING);
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback1, 23, etl::timer::mode::REPEATING);
@@ -365,7 +366,7 @@ namespace
     //*************************************************************************
     TEST(callback_timer_atomic_timer_starts_timer_small_step)
     {
-      etl::callback_timer_atomic<3> timer_controller;
+      etl::callback_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback2, 100, etl::timer::mode::SINGLE_SHOT);
       etl::timer::id::type id2 = timer_controller.register_timer(member_callback1, 10, etl::timer::mode::SINGLE_SHOT);
@@ -402,7 +403,7 @@ namespace
     //*************************************************************************
     TEST(callback_timer_atomic_timer_starts_timer_big_step)
     {
-      etl::callback_timer_atomic<3> timer_controller;
+      etl::callback_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback2, 100, etl::timer::mode::SINGLE_SHOT);
       etl::timer::id::type id2 = timer_controller.register_timer(member_callback1,   10, etl::timer::mode::SINGLE_SHOT);
@@ -439,7 +440,7 @@ namespace
     //*************************************************************************
     TEST(callback_timer_atomic_repeating_register_unregister)
     {
-      etl::callback_timer_atomic<3> timer_controller;
+      etl::callback_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1;
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback1, 23, etl::timer::mode::REPEATING);
@@ -488,7 +489,7 @@ namespace
     //*************************************************************************
     TEST(callback_timer_atomic_repeating_clear)
     {
-      etl::callback_timer_atomic<3> timer_controller;
+      etl::callback_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback1,        37, etl::timer::mode::REPEATING);
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback1, 23, etl::timer::mode::REPEATING);
@@ -536,7 +537,7 @@ namespace
     //*************************************************************************
     TEST(callback_timer_atomic_delayed_immediate)
     {
-      etl::callback_timer_atomic<3> timer_controller;
+      etl::callback_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback1,        37, etl::timer::mode::REPEATING);
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback1, 23, etl::timer::mode::REPEATING);
@@ -579,7 +580,7 @@ namespace
     //*************************************************************************
     TEST(callback_timer_atomic_one_shot_big_step_short_delay_insert)
     {
-      etl::callback_timer_atomic<3> timer_controller;
+      etl::callback_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(free_function_callback1, 15, etl::timer::mode::SINGLE_SHOT);
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback2, 5,  etl::timer::mode::REPEATING);
@@ -615,7 +616,7 @@ namespace
     //*************************************************************************
     TEST(callback_timer_atomic_one_shot_empty_list_huge_tick_before_insert)
     {
-      etl::callback_timer_atomic<3> timer_controller;
+      etl::callback_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(free_function_callback1, 5, etl::timer::mode::SINGLE_SHOT);
 
@@ -669,7 +670,7 @@ namespace
     {
         test_object test_obj;
         callback_type delegate_callback = callback_type::create<test_object, &test_object::call>(test_obj);
-        etl::callback_timer_atomic<1> timer_controller;
+        etl::callback_timer_atomic<1, std::atomic_uint32_t> timer_controller;
 
         timer_controller.enable(true);
 
@@ -694,7 +695,7 @@ namespace
     #define FIX_PROCESSOR_AFFINITY
   #endif
 
-    etl::callback_timer_atomic<3> controller;
+    etl::callback_timer_atomic<3, std::atomic_uint32_t> controller;
 
     //*********************************
     void timer_event()

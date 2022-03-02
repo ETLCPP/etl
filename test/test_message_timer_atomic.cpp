@@ -139,7 +139,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_too_many_timers)
     {
-      etl::message_timer_atomic<2> timer_controller;
+      etl::message_timer_atomic<2, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::SINGLE_SHOT);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::SINGLE_SHOT);
@@ -157,7 +157,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_one_shot)
     {
-      etl::message_timer_atomic<3> timer_controller;
+      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::SINGLE_SHOT);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::SINGLE_SHOT);
@@ -193,7 +193,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_one_shot_after_timeout)
     {
-      etl::message_timer_atomic<1> timer_controller;
+      etl::message_timer_atomic<1, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::SINGLE_SHOT);
       router1.clear();
@@ -239,7 +239,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_repeating)
     {
-      etl::message_timer_atomic<3> timer_controller;
+      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::REPEATING);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::REPEATING);
@@ -275,7 +275,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_repeating_bigger_step)
     {
-      etl::message_timer_atomic<3> timer_controller;
+      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::REPEATING);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::REPEATING);
@@ -315,7 +315,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_repeating_stop_start)
     {
-      etl::message_timer_atomic<3> timer_controller;
+      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::REPEATING);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::REPEATING);
@@ -362,7 +362,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_repeating_register_unregister)
     {
-      etl::message_timer_atomic<3> timer_controller;
+      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1;
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::REPEATING);
@@ -405,7 +405,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_repeating_clear)
     {
-      etl::message_timer_atomic<3> timer_controller;
+      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::REPEATING);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::REPEATING);
@@ -447,7 +447,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_route_through_bus)
     {
-      etl::message_timer_atomic<3> timer_controller;
+      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, bus1, 37, etl::timer::mode::SINGLE_SHOT, ROUTER1);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, bus1, 23, etl::timer::mode::SINGLE_SHOT, ROUTER1);
@@ -485,7 +485,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_immediate_delayed)
     {
-      etl::message_timer_atomic<3> timer_controller;
+      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::REPEATING);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::REPEATING);
@@ -526,7 +526,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_one_shot_big_step_short_delay_insert)
     {
-      etl::message_timer_atomic<3> timer_controller;
+      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 15, etl::timer::mode::SINGLE_SHOT);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1,  5, etl::timer::mode::REPEATING);
@@ -558,7 +558,7 @@ namespace
     //*************************************************************************
     TEST(callback_timer_one_shot_empty_list_huge_tick_before_insert)
     {
-      etl::message_timer_atomic<3> timer_controller;
+      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 5, etl::timer::mode::SINGLE_SHOT);
 
@@ -604,7 +604,7 @@ namespace
     #define FIX_PROCESSOR_AFFINITY
   #endif
 
-    etl::message_timer_atomic<3> controller;
+    etl::message_timer_atomic<3, std::atomic_uint32_t> controller;
 
     void timer_event()
     {
