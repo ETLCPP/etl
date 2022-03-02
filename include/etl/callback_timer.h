@@ -733,6 +733,17 @@ namespace etl
 
     volatile bool enabled;
 #if defined(ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK)
+
+#if defined(ETL_TIMER_SEMAPHORE_TYPE)
+    typedef ETL_TIMER_SEMAPHORE_TYPE timer_semaphore_t;
+#else
+  #if ETL_HAS_ATOMIC
+    typedef etl::atomic_uint16_t timer_semaphore_t;
+  #else
+    #error No atomic type available
+  #endif
+#endif
+
     volatile etl::timer_semaphore_t process_semaphore;
 #endif
     volatile uint_least8_t registered_timers;
