@@ -1,4 +1,16 @@
 ===============================================================================
+20.25.0
+Added message_timer_interrupt
+Added callback_timer_interrupt
+Changed message_timer_atomic and callback_timer_atomic to require an atomic counter template type.
+Renamed Arduino files to stop PlatformIO getting confused.
+Changed from C cast to C++ cast in memory.h
+Always use stddef.h
+Modified WCHAR_MIN and WCHAR_MAX checks.
+Added char8_t type.
+Fixed 'unused function parameter' warnings.
+
+===============================================================================
 20.24.1
 callback and message timers now use etl::timer_semaphore_t instead of et::atomic_uint_least16_t
 Fixed send_message function signatures.
