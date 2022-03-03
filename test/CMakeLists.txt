@@ -70,6 +70,7 @@ set(TEST_SOURCE_FILES
 	test_callback_service.cpp
 	test_callback_timer.cpp
 	test_callback_timer_atomic.cpp
+	test_callback_timer_interrupt.cpp
 	test_callback_timer_locked.cpp
 	test_checksum.cpp
 	test_circular_buffer.cpp
@@ -187,7 +188,8 @@ set(TEST_SOURCE_FILES
 	test_message_router_registry.cpp
 	test_message_timer.cpp
 	test_message_timer_atomic.cpp
-    test_message_timer_locked.cpp
+    test_message_timer_interrupt.cpp
+	test_message_timer_locked.cpp
 	test_multimap.cpp
 	test_multiset.cpp
 	test_multi_array.cpp

@@ -606,7 +606,7 @@ namespace etl
 
     ETL_STATIC_ASSERT(MAX_TIMERS_ <= 254, "No more than 254 timers are allowed");
 
-    typedef typename imessage_timer_interrupt::callback_type callback_type;
+    typedef typename imessage_timer_interrupt<TInterruptGuard>::callback_type callback_type;
 
     //*******************************************
     /// Constructor.

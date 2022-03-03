@@ -3215,6 +3215,18 @@
     <ClCompile Include="..\test_message_timer_interrupt.cpp">
       <Filter>Tests\Messaging</Filter>
     </ClCompile>
+    <ClCompile Include="..\sanity-check\callback_timer_interrupt.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\callback_timer_locked.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\message_timer_interrupt.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\message_timer_locked.h.t.cpp">
+      <Filter>Tests\Sanity Checks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">

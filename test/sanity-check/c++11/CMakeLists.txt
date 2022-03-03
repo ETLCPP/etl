@@ -66,6 +66,8 @@ target_sources(t11 PRIVATE etl_profile.h
         ../callback_service.h.t.cpp
         ../callback_timer.h.t.cpp
         ../callback_timer_atomic.h.t.cpp
+        ../callback_timer_interrupt.h.t.cpp
+        ../callback_timer_locked.h.t.cpp
         ../char_traits.h.t.cpp
         ../checksum.h.t.cpp
         ../circular_buffer.h.t.cpp
@@ -187,6 +189,8 @@ target_sources(t11 PRIVATE etl_profile.h
         ../message_router_registry.h.t.cpp
         ../message_timer.h.t.cpp
         ../message_timer_atomic.h.t.cpp
+        ../message_timer_interrupt.h.t.cpp
+        ../message_timer_locked.h.t.cpp
         ../message_types.h.t.cpp
         ../multimap.h.t.cpp
         ../multiset.h.t.cpp
