@@ -176,16 +176,16 @@ namespace etl
 
               active_list.remove(timer.id, true);
 
+              if (timer.callback.is_valid())
+              {
+                timer.callback();
+              }
+
               if (timer.repeating)
               {
                 // Reinsert the timer.
                 timer.delta = timer.period;
                 active_list.insert(timer.id);
-              }
-
-              if (timer.callback.is_valid())
-              {
-                timer.callback();
               }
 
               has_active = !active_list.empty();

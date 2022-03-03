@@ -952,15 +952,15 @@ namespace
       CHECK_EQUAL(10U, free_tick_list1.size());
       CHECK(free_tick_list2.size() < 65U);
 
-      //std::vector<uint64_t> compare1 = { 400, 900 };
-      //std::vector<uint64_t> compare2 = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 };
+      std::vector<uint64_t> compare1 = { 400, 900 };
+      std::vector<uint64_t> compare2 = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 };
 
       CHECK(test.tick_list.size()  != 0);
       CHECK(free_tick_list1.size() != 0);
       CHECK(free_tick_list2.size() != 0);
 
-      //CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  min(compare1.size(), test.tick_list.size()));
-      //CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), min(compare2.size(), free_tick_list1.size()));
+      CHECK_ARRAY_EQUAL(compare1.data(), test.tick_list.data(),  min(compare1.size(), test.tick_list.size()));
+      CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), min(compare2.size(), free_tick_list1.size()));
 
       CHECK_EQUAL(0U, threadLock.lock_count);
     }

@@ -135,9 +135,6 @@
     <Filter Include="Tests\Callbacks &amp; Delegates">
       <UniqueIdentifier>{a300635d-25da-4af6-b7e7-1e27ec9df921}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tests\Timers">
-      <UniqueIdentifier>{dc898ba2-50f4-4c3d-abee-039670df8582}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Tests\State Machines">
       <UniqueIdentifier>{e260d680-649f-41b5-844d-c736a252dcb5}</UniqueIdentifier>
     </Filter>
@@ -183,6 +180,9 @@
     </Filter>
     <Filter Include="Resource Files\Arduino">
       <UniqueIdentifier>{d138997a-b860-4420-9f45-87e9e2c52f3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Callback Timers">
+      <UniqueIdentifier>{dc898ba2-50f4-4c3d-abee-039670df8582}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -2352,13 +2352,13 @@
       <Filter>Tests\Callbacks &amp; Delegates</Filter>
     </ClCompile>
     <ClCompile Include="..\test_callback_timer.cpp">
-      <Filter>Tests\Timers</Filter>
+      <Filter>Tests\Callback Timers</Filter>
     </ClCompile>
     <ClCompile Include="..\test_callback_timer_atomic.cpp">
-      <Filter>Tests\Timers</Filter>
+      <Filter>Tests\Callback Timers</Filter>
     </ClCompile>
     <ClCompile Include="..\test_callback_timer_locked.cpp">
-      <Filter>Tests\Timers</Filter>
+      <Filter>Tests\Callback Timers</Filter>
     </ClCompile>
     <ClCompile Include="..\test_format_spec.cpp">
       <Filter>Tests\Strings</Filter>
@@ -3210,7 +3210,7 @@
       <Filter>Tests\Sanity Checks</Filter>
     </ClCompile>
     <ClCompile Include="..\test_callback_timer_interrupt.cpp">
-      <Filter>Tests\Timers</Filter>
+      <Filter>Tests\Callback Timers</Filter>
     </ClCompile>
     <ClCompile Include="..\test_message_timer_interrupt.cpp">
       <Filter>Tests\Messaging</Filter>

@@ -185,15 +185,15 @@ namespace etl
 
               active_list.remove(timer.id, true);
 
+              if (timer.p_router != ETL_NULLPTR)
+              {
+                timer.p_router->receive(timer.destination_router_id, *(timer.p_message));
+              }
+
               if (timer.repeating)
               {
                 timer.delta = timer.period;
                 active_list.insert(timer.id);
-              }
-
-              if (timer.p_router != ETL_NULLPTR)
-              {
-                timer.p_router->receive(timer.destination_router_id, *(timer.p_message));
               }
 
               has_active = !active_list.empty();
