@@ -353,3 +353,4 @@ test/vs2019/Debug MSVC - No STL - Force Constexpr Algorithms
 test/vs2019/Debug Intel
 test/vs2019/Debug Intel - No STL
 EmbeddedTemplateLibrary-20.24.1.tar.gz
+test/etl_initializer_list/.vs

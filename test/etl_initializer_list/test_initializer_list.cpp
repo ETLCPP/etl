@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "etl/initializer_list.h"
 
-#include "etl/string_view.h" // Check for an include that causes a clash with the compilers version.
+//#include "etl/string_view.h" // Check for an include that causes a clash with the compilers version.
 
 #include <stdio.h>
 
@@ -37,6 +37,7 @@ class Container
 {
 public:
 
+//#if ETL_USING_INITIALIZER_LIST
   constexpr Container(std::initializer_list<T> init)
     : buffer()
     , length(init.size())
@@ -49,6 +50,7 @@ public:
       *p++ = *itr++;
     }
   }
+//#endif
 
   const T& operator [](int i) const
   {
