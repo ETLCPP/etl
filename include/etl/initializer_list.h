@@ -33,11 +33,15 @@ SOFTWARE.
 
 #include "platform.h"
 
+#if ETL_NO_INITIALIZER_LIST
+
+  #define ETL_USING_INITIALIZER_LIST 0
+
+#else
+
 #if ETL_CPP11_SUPPORTED
 
 #include <stddef.h>
-
-
 
 #if ((ETL_USING_STL && ETL_NOT_USING_STLPORT) || defined(ETL_IN_UNIT_TEST)) && !defined(ETL_IN_UNIT_TEST_INITIALIZER_LIST)
   
@@ -223,11 +227,14 @@ namespace std
 
 #endif // Compiler tests
 }
-#endif // ETL_USING_STL
+
+#endif // ((ETL_USING_STL && ETL_NOT_USING_STLPORT) || defined(ETL_IN_UNIT_TEST)) && !defined(ETL_IN_UNIT_TEST_INITIALIZER_LIST)
 #else
 
   #define ETL_USING_INITIALIZER_LIST 0
 
 #endif // ETL_CPP11_SUPPORTED
+
+#endif // ETL_NO_INITIALIZER_LIST
 
 #endif // ETL_INITIALIZER_LIST_INCLUDED

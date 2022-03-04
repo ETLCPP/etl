@@ -44,6 +44,7 @@ SOFTWARE.
 #include "static_assert.h"
 #include "error_handler.h"
 #include "nth_type.h"
+#include "initializer_list.h"
 
 ///\defgroup array array
 /// A replacement for std::array if you haven't got C++0x11.

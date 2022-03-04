@@ -113,15 +113,12 @@ SOFTWARE.
 #include "profiles/determine_development_os.h"
 
 //*************************************
-// Figure out if we can use the standard library <new> header, if haven't already done so in etl_profile.h
-#if !defined(ETL_USING_STD_NEW)
-  #if defined(__has_include)
-    #define ETL_USING_STD_NEW __has_include(<new>)
-  #elif ETL_NOT_USING_STL || (defined(ARDUINO) && defined(__AVR__))
-    #define ETL_USING_STD_NEW 0
-  #else
-    #define ETL_USING_STD_NEW 1
-  #endif
+// Initializer lists are enabled by default.
+#if defined(ETL_NO_INITIALIZER_LIST)
+  #undef ETL_NO_INITIALIZER_LIST
+  #define ETL_NO_INITIALIZER_LIST 1
+#else
+  #define ETL_NO_INITIALIZER_LIST 0
 #endif
 
 //*************************************
