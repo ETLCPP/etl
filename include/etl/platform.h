@@ -113,15 +113,6 @@ SOFTWARE.
 #include "profiles/determine_development_os.h"
 
 //*************************************
-// Initializer lists are enabled by default.
-#if defined(ETL_NO_INITIALIZER_LIST)
-  #undef ETL_NO_INITIALIZER_LIST
-  #define ETL_NO_INITIALIZER_LIST 1
-#else
-  #define ETL_NO_INITIALIZER_LIST 0
-#endif
-
-//*************************************
 // Check WCHAR_MIN and WCHAR_MAX
 #if !defined(WCHAR_MIN)
   #define WCHAR_MIN 0x0000
