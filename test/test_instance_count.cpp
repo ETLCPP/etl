@@ -33,6 +33,7 @@ SOFTWARE.
 #include <list>
 #include <vector>
 #include <numeric>
+#include <atomic>
 
 namespace
 {
@@ -42,6 +43,40 @@ namespace
     TEST(test_count)
     {
       struct Test1 : public etl::instance_count<Test1>
+      {};
+
+      struct Test2 : public etl::instance_count<Test2>
+      {};
+
+      CHECK_EQUAL(0, Test1::get_instance_count());
+      CHECK_EQUAL(0, Test2::get_instance_count());
+
+      Test1 test1a;
+      CHECK_EQUAL(1, Test1::get_instance_count());
+      CHECK_EQUAL(0, Test2::get_instance_count());
+
+      Test1 test1b;
+      Test2 test2a;
+      CHECK_EQUAL(2, Test1::get_instance_count());
+      CHECK_EQUAL(1, Test2::get_instance_count());
+
+      Test2* ptest2b = new Test2;
+      CHECK_EQUAL(2, Test1::get_instance_count());
+      CHECK_EQUAL(2, Test2::get_instance_count());
+
+      Test2 test2c(test2a);
+      CHECK_EQUAL(2, Test1::get_instance_count());
+      CHECK_EQUAL(3, Test2::get_instance_count());
+
+      delete ptest2b;
+      CHECK_EQUAL(2, Test1::get_instance_count());
+      CHECK_EQUAL(2, Test2::get_instance_count());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_count)
+    {
+      struct Test1 : public etl::instance_count<Test1, std::atomic_uint8_t>
       {};
 
       struct Test2 : public etl::instance_count<Test2>
