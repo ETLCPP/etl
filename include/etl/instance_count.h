@@ -44,17 +44,20 @@ namespace etl
   /// Inherit from this to count instances of a type.
   ///\ingroup reference
   //***************************************************************************
-  template <typename T>
+  template <typename T, typename TCounter = int32_t>
   class instance_count
   {
   public:
+
+    typedef T        type;
+    typedef TCounter counter_type;
 
     //*************************************************************************
     /// Construct and add 1.
     //*************************************************************************
     instance_count()
     {
-      ++how_many();
+      ++current_instance_count();
     }
 
     //*************************************************************************
@@ -62,7 +65,7 @@ namespace etl
     //*************************************************************************
     instance_count(const instance_count&)
     {
-      ++how_many();
+      ++current_instance_count();
     }
 
     //*************************************************************************
@@ -78,15 +81,15 @@ namespace etl
     //*************************************************************************
     ~instance_count()
     {
-      --how_many();
+      --current_instance_count();
     }
 
     //*************************************************************************
     /// Get how many instances we have.
     //*************************************************************************
-    static int32_t get_instance_count()
+    static const counter_type& get_instance_count()
     {
-      return how_many();
+      return current_instance_count();
     }
 
     //*************************************************************************
@@ -94,7 +97,7 @@ namespace etl
     //*************************************************************************
     static void reset_instance_count()
     {
-      how_many() = 0;
+      current_instance_count() = 0;
     }
 
   private:
@@ -102,10 +105,10 @@ namespace etl
     //*************************************************************************
     /// Get a referenceto the count.
     //*************************************************************************
-    static int32_t& how_many()
+    static counter_type& current_instance_count()
     {
-      static int32_t count = 0;
-      return count;
+      static counter_type counter = 0;
+      return counter;
     }
   };
 }
