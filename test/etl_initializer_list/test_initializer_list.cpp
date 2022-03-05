@@ -28,8 +28,6 @@ SOFTWARE.
 
 #include "etl/initializer_list.h"
 
-//#include "etl/string_view.h" // Check for an include that causes a clash with the compilers version.
-
 #include <stdio.h>
 
 template <typename T>
