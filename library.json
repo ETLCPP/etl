@@ -16,6 +16,21 @@
   "build": {
     "includeDir": "include"
   },
+  "export": {
+    "include": [
+      "include",
+      "examples",
+      "LICENSE",
+      "README.md"
+    ],
+    "exclude": [
+      "**/__vm",
+      "**/.vs",
+      "**/*.sln",
+      "**/*.vcxproj",
+      "**/*.filters"
+    ]
+  },
   "platforms": "*",
   "frameworks": "*"
 }
