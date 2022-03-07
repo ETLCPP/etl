@@ -24,11 +24,13 @@
       "README.md"
     ],
     "exclude": [
+      "include/etl/experimental",
+      "include/etl/deprecated",
       "**/__vm",
       "**/.vs",
-      "**/*.sln",
-      "**/*.vcxproj",
-      "**/*.filters"
+      "**/*.filters",
+      "**/*.log",
+      "**/*.tmp"
     ]
   },
   "platforms": "*",
