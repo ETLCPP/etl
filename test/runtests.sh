@@ -173,6 +173,53 @@ else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?
 fi
+
+echo ""
+echo "-----------------------------------------------" | tee -a log.txt
+echo " GCC - Initializer list test" | tee -a log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+cd ../etl_initializer_list/
+mkdir -p build-make || exit 1
+cd build-make || exit 1
+gcc --version | grep gcc | tee -a log.txt
+CC=gcc CXX=g++ cmake --cmake-clean-cache ..
+make -j8
+if [ $? -eq 0 ]; then
+  echo "<<<< Passed initializer_list >>>>"
+else
+  echo "****************\n**** Failed initializer_list ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
+./etl_tests
+if [ $? -eq 0 ]; then
+  echo "<<<< Passed >>>>"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
+
+echo ""
+echo "-----------------------------------------------" | tee -a log.txt
+echo " Clang - Initializer list test" | tee -a log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+clang --version | grep clang | tee -a log.txt
+CC=clang CXX=clang++ cmake --cmake-clean-cache ..
+make -j8
+if [ $? -eq 0 ]; then
+  echo "<<<< Passed initializer_list >>>>"
+else
+  echo "****************\n**** Failed initializer_list ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
+./etl_tests
+if [ $? -eq 0 ]; then
+  echo "<<<< Passed >>>>"
+else
+  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
+cd ../..
+
 echo ""
 echo "-----------------------------------------------" | tee -a log.txt
 echo " All Tests Completed OK" | tee -a log.txt

@@ -3,6 +3,9 @@
 Added message_timer_interrupt
 Added callback_timer_interrupt
 Changed message_timer_atomic and callback_timer_atomic to require an atomic counter template type.
+Added extra condition compile macros to control std::initializer_list.
+Initializer list tests are in a separate project.
+Modified etl::instance_count to take an optional counter type.
 Renamed Arduino files to stop PlatformIO getting confused.
 Changed from C cast to C++ cast in memory.h
 Always use stddef.h
