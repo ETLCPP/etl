@@ -224,7 +224,7 @@ namespace etl
     typedef T                     value_type;      ///< The type stored in the stack.
     typedef T&                    reference;       ///< A reference to the type used in the stack.
     typedef const T&              const_reference; ///< A const reference to the type used in the stack.
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     typedef T&&                   rvalue_reference;///< An rvalue reference to the type used in the stack.
 #endif
     typedef T*                    pointer;         ///< A pointer to the type used in the stack.
@@ -260,7 +260,7 @@ namespace etl
       ::new (&p_buffer[top_index]) T(value);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Adds a value to the stack.
     /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
@@ -276,7 +276,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
     //*************************************************************************
     /// Constructs a value in the stack place'.
     /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
@@ -436,7 +436,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
@@ -468,7 +468,7 @@ namespace etl
       }
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Make this a clone of the supplied stack
     //*************************************************************************
@@ -549,7 +549,7 @@ namespace etl
       etl::istack<T>::clone(rhs);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
@@ -581,7 +581,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************

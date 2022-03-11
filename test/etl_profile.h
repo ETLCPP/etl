@@ -73,11 +73,6 @@ SOFTWARE.
 #define ETL_POLYMORPHIC_VECTOR
 #define ETL_POLYMORPHIC_INDIRECT_VECTOR
 
-//#define ETL_POLYMORPHIC_CONTAINERS
-
-//#define ETL_MESSAGES_ARE_VIRTUAL
-//#define ETL_POLYMORPHIC_MESSAGES
-
 #if defined(ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
   #define ETL_FUNCTION_FORCE_CPP03_IMPLEMENTATION
   #define ETL_PRIORITY_QUEUE_FORCE_CPP03_IMPLEMENTATION
@@ -110,20 +105,18 @@ SOFTWARE.
 #endif
 
 #include "../include/etl/profiles/determine_compiler_language_support.h"
+#include "../include/etl/profiles/determine_compiler_version.h"
+#include "../include/etl/profiles/determine_development_os.h"
 
 #if ETL_CPP17_NOT_SUPPORTED
   #error THE UNIT TESTS REQUIRE C++17 SUPPORT
 #endif
-
-#include "../include/etl/profiles/determine_compiler_version.h"
 
 #if defined(ETL_COMPILER_GCC)
   #if (ETL_COMPILER_VERSION < 8)
     #define ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED
   #endif
 #endif
-
-#include "../include/etl/profiles/determine_development_os.h"
 
 #if defined(ETL_DEVELOPMENT_OS_WINDOWS)
   #define ETL_TARGET_OS_WINDOWS
@@ -133,7 +126,7 @@ SOFTWARE.
   #define ETL_TARGET_OS_GENERIC
 #endif
 
-#if !((ETL_CPP20_SUPPORTED && ETL_USING_STL) || defined(__BYTE_ORDER__))
+#if !((ETL_CPP20_SUPPORTED && !defined(ETL_NO_STL)) || defined(__BYTE_ORDER__))
   #define ETL_ENDIAN_NATIVE 0
 #endif
 

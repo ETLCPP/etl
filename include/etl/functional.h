@@ -135,7 +135,7 @@ namespace etl
     }
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <>
   struct less<void> : public etl::binary_function<void, void, bool>
   {
@@ -161,7 +161,7 @@ namespace etl
     }
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <>
   struct less_equal<void> : public etl::binary_function<void, void, bool>
   {
@@ -187,7 +187,7 @@ namespace etl
     }
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <>
   struct greater<void> : public etl::binary_function<void, void, bool>
   {
@@ -213,7 +213,7 @@ namespace etl
     }
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <>
   struct greater_equal<void> : public etl::binary_function<void, void, bool>
   {
@@ -239,7 +239,7 @@ namespace etl
     }
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <>
   struct equal_to<void> : public etl::binary_function<void, void, bool>
   {
@@ -266,7 +266,7 @@ namespace etl
     }
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <>
   struct not_equal_to<void> : public etl::binary_function<void, void, bool>
   {

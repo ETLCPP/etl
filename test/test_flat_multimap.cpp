@@ -297,7 +297,7 @@ namespace
       CHECK(data.begin() == data.end());
     }
 
-#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
@@ -347,7 +347,7 @@ namespace
       CHECK(isEqual);
     }
 
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -1286,7 +1286,7 @@ namespace
     }
 
     //*************************************************************************
-#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     TEST(test_flat_multimap_template_deduction)
     {
       using Pair = ETL_OR_STD::pair<const int, NDC>;
@@ -1315,7 +1315,7 @@ namespace
 #endif
 
     //*************************************************************************
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_HAS_INITIALIZER_LIST
     TEST(test_make_flat_multimap)
     {
       using Pair = ETL_OR_STD::pair<const int, NDC>;

@@ -236,7 +236,7 @@ namespace
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
     }
 
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     TEST(test_constructor_initializer_list)
     {

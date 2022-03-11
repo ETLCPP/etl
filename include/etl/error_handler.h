@@ -274,7 +274,7 @@ namespace etl
   #define ETL_ALWAYS_ASSERT(e)                                                             // Does nothing.
   #define ETL_ALWAYS_ASSERT_AND_RETURN(e)                                                  // Does nothing.
   #define ETL_ALWAYS_ASSERT_AND_RETURN_VALUE(e, v)                                         // Does nothing.
-#elif defined(ETL_THROW_EXCEPTIONS)
+#elif ETL_USING_EXCEPTIONS
   #if defined(ETL_LOG_ERRORS)
     #define ETL_ASSERT(b, e) {if (!(b)) {etl::error_handler::error((e)); throw((e));}}                     // If the condition fails, calls the error handler then throws an exception.
     #define ETL_ASSERT_AND_RETURN(b, e) {if (!(b)) {etl::error_handler::error((e)); throw((e));}}          // If the condition fails, calls the error handler then throws an exception.
@@ -299,7 +299,7 @@ namespace etl
     #define ETL_ALWAYS_ASSERT_AND_RETURN(e) {etl::error_handler::error((e)); return;}                     // Calls the error handler and return
     #define ETL_ALWAYS_ASSERT_AND_RETURN_VALUE(e, v) {etl::error_handler::error((e)); return (v);}        // Calls the error handler and return a value
   #else
-    #if defined(ETL_DEBUG)
+    #if ETL_IS_DEBUG_BUILD
       #define ETL_ASSERT(b, e) assert((b))                                                 // If the condition fails, asserts.
       #define ETL_ASSERT_AND_RETURN(b, e) assert((b))                                      // If the condition fails, asserts.
       #define ETL_ASSERT_AND_RETURN_VALUE(b, e, v) assert((b))                             // If the condition fails, asserts.

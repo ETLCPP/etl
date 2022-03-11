@@ -32,7 +32,7 @@ SOFTWARE.
 #include "platform.h"
 
 #if ETL_HAS_ATOMIC
-  #if (ETL_CPP11_SUPPORTED && (ETL_USING_STL || defined(ETL_IN_UNIT_TEST))) 
+  #if (ETL_USING_CPP11 && (ETL_USING_STL || defined(ETL_IN_UNIT_TEST))) 
     #include "atomic/atomic_std.h"
   #elif defined(ETL_COMPILER_ARM5)
     #include "atomic/atomic_arm.h"

@@ -74,7 +74,7 @@ cog.outl("//********************************************************************
 
 namespace etl
 {
-#if ETL_CPP17_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
+#if ETL_USING_CPP17 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   // The definition for all message types.
   //***************************************************************************
@@ -278,11 +278,7 @@ namespace etl
       {
         etl::imessage* pmsg = static_cast<etl::imessage*>(data);
 
-#if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)
         pmsg->~imessage();
-#else
-        (delete_current_message_type<TMessageTypes>(pmsg->get_message_id()) || ...);
-#endif
       }
     }
 
@@ -309,21 +305,6 @@ namespace etl
     bool valid;
 
   private:
-
-    //********************************************
-    template <typename TType>
-    bool delete_current_message_type(etl::message_id_t Id)
-    {
-      if (TType::ID == Id)
-      {
-        static_cast<TType*>(data)->~TType();
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
 
     //********************************************
     template <typename TType>
@@ -505,7 +486,7 @@ namespace etl
     cog.outl("    ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));")
     cog.outl("  }")
     cog.outl("")
-    cog.outl("#if ETL_CPP11_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
+    cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
     cog.outl("  //********************************************")
     cog.outl("  explicit message_packet(etl::imessage&& msg)")
     cog.outl("    : data()")
@@ -524,7 +505,7 @@ namespace etl
     cog.outl("  }")
     cog.outl("#endif")
     cog.outl("")
-    cog.outl("#if ETL_CPP11_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)")
+    cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)")
     cog.outl("  //********************************************")
     cog.out("  template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<")
     for n in range(1, int(Handlers)):
@@ -571,7 +552,7 @@ namespace etl
     cog.outl("    }")
     cog.outl("  }")
     cog.outl("")
-    cog.outl("#if ETL_CPP11_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
+    cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
     cog.outl("  //**********************************************")
     cog.outl("  message_packet(message_packet&& other)")
     cog.outl("    : data()")
@@ -597,7 +578,7 @@ namespace etl
     cog.outl("    return *this;")
     cog.outl("  }")
     cog.outl("")
-    cog.outl("#if ETL_CPP11_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
+    cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
     cog.outl("  //**********************************************")
     cog.outl("  message_packet& operator =(message_packet&& rhs)")
     cog.outl("  {")
@@ -685,18 +666,7 @@ namespace etl
     cog.outl("    {")
     cog.outl("      etl::imessage* pmsg = static_cast<etl::imessage*>(data);")
     cog.outl("")
-    cog.outl("#if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)")
     cog.outl("      pmsg->~imessage();")
-    cog.outl("#else")
-    cog.outl("      size_t id = pmsg->get_message_id();")
-    cog.outl("")
-    cog.outl("      switch (id)")
-    cog.outl("      {")
-    for n in range(1, int(Handlers) + 1):
-        cog.outl("        case T%s::ID: static_cast<T%s*>(pmsg)->~T%s(); break;" % (n, n, n))
-    cog.outl("        default: assert(false); break;")
-    cog.outl("      }")
-    cog.outl("  #endif")
     cog.outl("    }")
     cog.outl("  }")
     cog.outl("")
@@ -714,7 +684,7 @@ namespace etl
     cog.outl("    }")
     cog.outl("  }")
     cog.outl("")
-    cog.outl("#if ETL_CPP11_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
+    cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
     cog.outl("  //********************************************")
     cog.outl("  void add_new_message(etl::imessage&& msg)")
     cog.outl("  {")
@@ -791,7 +761,7 @@ namespace etl
         cog.outl("    ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));")
         cog.outl("  }")
         cog.outl("")
-        cog.outl("#if ETL_CPP11_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
+        cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
         cog.outl("  //********************************************")
         cog.outl("  explicit message_packet(etl::imessage&& msg)")
         cog.outl("    : data()")
@@ -810,7 +780,7 @@ namespace etl
         cog.outl("  }")
         cog.outl("#endif")
         cog.outl("")
-        cog.outl("#if ETL_CPP11_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)")
+        cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)")
         cog.outl("  //********************************************")
         cog.out("  template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<")
         for t in range(1, n):
@@ -857,7 +827,7 @@ namespace etl
         cog.outl("    }")
         cog.outl("  }")
         cog.outl("")
-        cog.outl("#if ETL_CPP11_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
+        cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
         cog.outl("  //**********************************************")
         cog.outl("  message_packet(message_packet&& other)")
         cog.outl("    : data()")
@@ -883,7 +853,7 @@ namespace etl
         cog.outl("    return *this;")
         cog.outl("  }")
         cog.outl("")
-        cog.outl("#if ETL_CPP11_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
+        cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
         cog.outl("  //**********************************************")
         cog.outl("  message_packet& operator =(message_packet&& rhs)")
         cog.outl("  {")
@@ -971,18 +941,7 @@ namespace etl
         cog.outl("    {")
         cog.outl("      etl::imessage* pmsg = static_cast<etl::imessage*>(data);")
         cog.outl("")
-        cog.outl("#if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)")
         cog.outl("      pmsg->~imessage();")
-        cog.outl("#else")
-        cog.outl("      size_t id = pmsg->get_message_id();")
-        cog.outl("")
-        cog.outl("      switch (id)")
-        cog.outl("      {")
-        for t in range(1, n + 1):
-            cog.outl("        case T%s::ID: static_cast<T%s*>(pmsg)->~T%s(); break;" % (t, t, t))
-        cog.outl("        default: assert(false); break;")
-        cog.outl("      }")
-        cog.outl("  #endif")
         cog.outl("    }")
         cog.outl("  }")
         cog.outl("")
@@ -1000,7 +959,7 @@ namespace etl
         cog.outl("    }")
         cog.outl("  }")
         cog.outl("")
-        cog.outl("#if ETL_CPP11_SUPPORTED && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
+        cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
         cog.outl("  //********************************************")
         cog.outl("  void add_new_message(etl::imessage&& msg)")
         cog.outl("  {")

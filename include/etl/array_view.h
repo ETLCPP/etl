@@ -43,7 +43,7 @@ SOFTWARE.
 #include "memory.h"
 #include "type_traits.h"
 
-#if ETL_CPP11_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP11 && ETL_USING_STL
 #include <array>
 #endif
 
@@ -130,7 +130,7 @@ namespace etl
     {
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Construct from etl::array.
     //*************************************************************************
@@ -172,7 +172,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP11 && ETL_USING_STL
     //*************************************************************************
     /// Construct from std::array.
     //*************************************************************************
@@ -194,7 +194,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Construct from a container or other type that supports
     /// data() and size() member functions.
@@ -613,7 +613,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename TArray>
   array_view(TArray& a) 
     -> array_view<typename TArray::value_type>;

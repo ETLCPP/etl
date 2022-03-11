@@ -40,7 +40,7 @@ SOFTWARE.
 #include "memory.h"
 #include "array.h"
 
-#if ETL_CPP11_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP11 && ETL_USING_STL
   #include <array>
 #endif
 
@@ -112,7 +112,7 @@ namespace etl
     {
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Construct from etl::array.
     //*************************************************************************
@@ -154,7 +154,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP11 && ETL_USING_STL
     //*************************************************************************
     /// Construct from std::array.
     //*************************************************************************
@@ -325,7 +325,7 @@ namespace etl
       return etl::span<element_type, etl::dynamic_extent>(mend - count, mend);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Obtains a span that is a view from OFFSET over the next COUNT elements of this span.
     //*************************************************************************
@@ -443,7 +443,7 @@ namespace etl
     {
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Construct from etl::array.
     //*************************************************************************
@@ -485,7 +485,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP11 && ETL_USING_STL
     //*************************************************************************
     /// Construct from std::array.
     //*************************************************************************
@@ -507,7 +507,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Construct from a container or other type that supports
     /// data() and size() member functions.
@@ -697,7 +697,7 @@ namespace etl
       return etl::span<element_type, etl::dynamic_extent>(mend - count, mend);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Obtains a span that is a view from OFFSET over the next COUNT elements of this span.
     //*************************************************************************
@@ -754,7 +754,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename TArray>
   span(TArray& a)
     ->span<typename TArray::value_type, etl::dynamic_extent>;

@@ -181,7 +181,7 @@ namespace
       CHECK(are_equal);
     }
 
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {

@@ -432,7 +432,7 @@ namespace etl
     typedef TCategory  iterator_category;
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   //***************************************************************************
   // move_iterator
   template <typename TIterator>

@@ -31,7 +31,7 @@ SOFTWARE.
 
 namespace etl
 {
-#if ETL_CPP11_SUPPORTED && !defined(ETL_BYTE_FORCE_CPP03_IMPLEMENTATION)
+#if ETL_USING_CPP11 && !defined(ETL_BYTE_FORCE_CPP03_IMPLEMENTATION)
 
   enum class byte : unsigned char {};
 

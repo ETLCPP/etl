@@ -406,7 +406,7 @@ namespace etl
       bool is_within_range = (distance >= 0) && (distance <= intptr_t((Item_Size * Max_Size) - Item_Size));
 
       // Modulus and division can be slow on some architectures, so only do this in debug.
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       // Is the address on a valid object boundary?
       bool is_valid_address = ((distance % Item_Size) == 0);
 #else

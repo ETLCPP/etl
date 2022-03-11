@@ -132,7 +132,7 @@ namespace etl
     typedef TKeyEqual         key_equal;
     typedef value_type&       reference;
     typedef const value_type& const_reference;
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     typedef value_type&&      rvalue_reference;
 #endif
     typedef value_type*       pointer;
@@ -616,7 +616,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first_, TIterator last_)
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       difference_type d = etl::distance(first_, last_);
       ETL_ASSERT(d >= 0, ETL_ERROR(unordered_multiset_iterator));
       ETL_ASSERT(size_t(d) <= max_size(), ETL_ERROR(unordered_multiset_full));
@@ -699,7 +699,7 @@ namespace etl
       return result;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Inserts a value to the unordered_multiset.
     /// If asserts or exceptions are enabled, emits unordered_multiset_full if the unordered_multiset is already full.
@@ -1173,7 +1173,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
@@ -1240,7 +1240,7 @@ namespace etl
       last = first;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move from a range
     //*************************************************************************
@@ -1441,7 +1441,7 @@ namespace etl
     }
 
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
@@ -1469,7 +1469,7 @@ namespace etl
       base::assign(first_, last_);
     }
 
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
@@ -1502,7 +1502,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -1531,7 +1531,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
   template <typename... T>
   unordered_multiset(T...) -> unordered_multiset<etl::nth_type_t<0, T...>, sizeof...(T)>;
 #endif
@@ -1539,7 +1539,7 @@ namespace etl
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
+#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
   template <typename TKey, typename THash = etl::hash<TKey>, typename TKeyEqual = etl::equal_to<TKey>, typename... T>
   constexpr auto make_unordered_multiset(T&&... keys) -> etl::unordered_multiset<TKey, sizeof...(T), sizeof...(T), THash, TKeyEqual>
   {

@@ -251,7 +251,7 @@ namespace etl
     typedef T                          value_type;      ///< The type stored in the queue.
     typedef T&                         reference;       ///< A reference to the type used in the queue.
     typedef const T&                   const_reference; ///< A const reference to the type used in the queue.
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     typedef T&&                        rvalue_reference;///< An rvalue reference to the type used in the queue.
 #endif
     typedef T*                         pointer;         ///< A pointer to the type used in the queue.
@@ -317,7 +317,7 @@ namespace etl
       add_in();
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Adds a value to the queue.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
@@ -333,7 +333,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_FORCE_CPP03_IMPLEMENTATION)
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
@@ -483,7 +483,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
@@ -517,7 +517,7 @@ namespace etl
       }
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Make this a moved clone of the supplied queue
     //*************************************************************************
@@ -608,7 +608,7 @@ namespace etl
       base_t::clone(rhs);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
@@ -640,7 +640,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************

@@ -59,7 +59,7 @@ SOFTWARE.
 #pragma diag_suppress 1300
 #endif
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   #define ETL_STR(x)  x
   #define ETL_STRL(x) L##x
   #define ETL_STRu(x) u##x
@@ -157,7 +157,7 @@ namespace etl
 
     static ETL_CONSTANT size_t    BITS_PER_ELEMENT = etl::integral_limits<element_t>::bits;
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     typedef etl::span<element_t>       span_type;
     typedef etl::span<const element_t> const_span_type;
 #endif
@@ -853,7 +853,7 @@ namespace etl
       etl::swap_ranges(pdata, pdata + SIZE, other.pdata);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// span
     /// Returns a span of the underlying data.
@@ -1149,7 +1149,7 @@ namespace etl
     //*************************************************************************
     /// Returns a string representing the bitset.
     //*************************************************************************
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     template <typename TString = etl::string<MAXN>>
 #else
     template <typename TString>

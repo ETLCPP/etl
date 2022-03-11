@@ -139,7 +139,7 @@ namespace etl
     {
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*******************************************
     /// ETL delegate callback
     //*******************************************
@@ -448,7 +448,7 @@ namespace etl
       //*******************************************
       /// Register a timer.
       //*******************************************
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
       etl::timer::id::type register_timer(callback_type& callback_,
                                           uint32_t       period_,
                                           bool           repeating_)
@@ -587,7 +587,7 @@ namespace etl
                   // Call the function wrapper callback.
                   (*reinterpret_cast<etl::ifunction<void>*>(timer.p_callback))();
                 }
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
                 else if(timer.cbk_type == callback_timer_data::DELEGATE)
                 {
                     // Call the delegate callback.

@@ -7,7 +7,7 @@
 
 namespace etl
 {
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename... T>
   using void_t = void;
 

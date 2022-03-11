@@ -84,7 +84,7 @@ namespace etl
     }
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <>
   struct whitespace<char16_t>
   {
@@ -104,7 +104,7 @@ namespace etl
   };
 #endif
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename TChar>
   inline constexpr const TChar* whitespace_v = whitespace<TChar>::value();
 #endif

@@ -99,7 +99,7 @@ namespace
       CHECK_EQUAL(data.max_size(), SIZE);
     }
 
-#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
@@ -244,7 +244,7 @@ namespace
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
     }
 
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     TEST(test_constructor_initializer_list)
     {
@@ -1937,7 +1937,7 @@ namespace
     }
 
     //*************************************************************************
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_HAS_INITIALIZER_LIST
     TEST(test_make_vector)
     {
       const int values[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };

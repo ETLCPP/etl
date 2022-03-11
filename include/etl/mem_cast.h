@@ -166,7 +166,7 @@ namespace etl
       ::new (p) T(value);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //***********************************
     /// Emplace from parameters
     //***********************************
@@ -400,7 +400,7 @@ namespace etl
       ::new (p) T(value);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //***********************************
     /// Emplace from parameters
     //***********************************
@@ -572,7 +572,7 @@ namespace etl
   /// mem_cast_var
   /// mem_cast from a variadic list of types
   //*****************************************************************************
-#if ETL_CPP11_SUPPORTED && !defined(ETL_MEM_CAST_FORCE_CPP03_IMPLEMENTATION)
+#if ETL_USING_CPP11 && !defined(ETL_MEM_CAST_FORCE_CPP03_IMPLEMENTATION)
   template <typename... TTypes>
   using mem_cast_types = etl::mem_cast<etl::largest<TTypes...>::size, etl::largest<TTypes...>::alignment>;
 #else

@@ -39,7 +39,7 @@ SOFTWARE.
 
 namespace etl
 {
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <size_t Table_Size>
   using crc16_xmodem_t = etl::crc_type<etl::private_crc::crc16_xmodem_parameters, Table_Size>;
 #else

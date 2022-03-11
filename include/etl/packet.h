@@ -57,7 +57,7 @@ namespace etl
 
     typedef TBase base_t;
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Constructor that static asserts any types that do not conform to the max size and alignment.
     //***************************************************************************
@@ -95,7 +95,7 @@ namespace etl
       static_cast<TBase*>(data)->~TBase();
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Assignment operator for type.
     ///\param value The value to assign.

@@ -149,7 +149,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
@@ -218,7 +218,7 @@ namespace etl
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
     void repair()
-#if ETL_ISTRING_REPAIR_ENABLED
+#if ETL_HAS_ISTRING_REPAIR
       ETL_OVERRIDE
 #endif
     {
@@ -340,7 +340,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
@@ -402,7 +402,7 @@ namespace etl
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
     void repair()
-#if ETL_ISTRING_REPAIR_ENABLED
+#if ETL_HAS_ISTRING_REPAIR
       ETL_OVERRIDE
 #endif
     {

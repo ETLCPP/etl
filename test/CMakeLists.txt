@@ -297,6 +297,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   list(APPEND TEST_SOURCE_FILES "test_atomic_gcc_sync.cpp")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 endif()
+
 add_executable(etl_tests
   ${TEST_SOURCE_FILES}
   )
@@ -326,7 +327,6 @@ add_test(etl_unit_tests etl_tests)
 # define a target that will output all of the failing or passing tests
 # as they appear from UnitTest++
 add_custom_target(test_verbose COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
-
 
 #RSG
 set_property(TARGET etl_tests PROPERTY CXX_STANDARD 17)

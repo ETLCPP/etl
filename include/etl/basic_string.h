@@ -148,7 +148,7 @@ namespace etl
 
     typedef size_t size_type;
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     static constexpr size_type npos = etl::integral_limits<size_type>::max;
 #else
     enum
@@ -220,7 +220,7 @@ namespace etl
       return max_size() - size();
     }
 
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
     //*************************************************************************
     /// Returns whether the string was truncated by the last operation.
     /// Deprecated. Use is_truncated()
@@ -250,7 +250,7 @@ namespace etl
     }
 #endif
 
-#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
+#if ETL_HAS_STRING_CLEAR_AFTER_USE
     //*************************************************************************
     /// Sets the 'secure' flag to the requested state.
     //*************************************************************************
@@ -279,7 +279,7 @@ namespace etl
     {
     }
 
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
     //*************************************************************************
     /// Sets the 'truncated' flag.
     //*************************************************************************
@@ -302,7 +302,7 @@ namespace etl
     size_type       current_size;   ///< The current number of elements in the string.
     const size_type CAPACITY;       ///< The maximum number of elements in the string.
 
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED || ETL_STRING_CLEAR_AFTER_USE_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS || ETL_HAS_STRING_CLEAR_AFTER_USE
     etl::flags<uint_least8_t> flags;
 #endif
   };
@@ -458,10 +458,10 @@ namespace etl
     {
       if (new_size > CAPACITY)
       {
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
         set_truncated(true);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
 #endif
@@ -618,18 +618,18 @@ namespace etl
     {
       assign(other.begin(), other.end());
 
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       if (other.is_truncated())
       {
         set_truncated(true);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
       }
 #endif
 
-#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
+#if ETL_HAS_STRING_CLEAR_AFTER_USE
       if (other.is_secure())
       {
         set_secure();
@@ -657,18 +657,18 @@ namespace etl
 
       assign(other.begin() + subposition, sublength);
 
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       if (other.is_truncated())
       {
         this->set_truncated(true);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
       }
 #endif
 
-#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
+#if ETL_HAS_STRING_CLEAR_AFTER_USE
       if (other.is_secure())
       {
         set_secure();
@@ -690,10 +690,10 @@ namespace etl
         p_buffer[current_size++] = *other++;
       }
 
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       set_truncated(*other != 0);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
       ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation))
 #endif
 #endif
@@ -711,10 +711,10 @@ namespace etl
     {
       initialise();
 
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       set_truncated(length_ > CAPACITY);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
       ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation))
 #endif
 #endif
@@ -737,7 +737,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       difference_type d = etl::distance(first, last);
       ETL_ASSERT(d >= 0, ETL_ERROR(string_iterator));
 #endif
@@ -751,10 +751,10 @@ namespace etl
 
       p_buffer[current_size] = 0;
 
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       set_truncated(first != last);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
       ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation))
 #endif
 #endif
@@ -770,10 +770,10 @@ namespace etl
     {
       initialise();
 
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       set_truncated(n > CAPACITY);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
       ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation))
 #endif
 #endif
@@ -807,10 +807,10 @@ namespace etl
       }
       else
       {
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
         set_truncated(true);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
 #endif
@@ -837,12 +837,12 @@ namespace etl
     {
       insert(end(), str.begin(), str.end());
 
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       if (str.is_truncated())
       {
         set_truncated(true);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
       }
@@ -947,10 +947,10 @@ namespace etl
           *insert_position = value;
         }
 
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
         set_truncated(true);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
 #endif
@@ -983,10 +983,10 @@ namespace etl
       // No effect.
       if (start >= CAPACITY)
       {
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
         set_truncated(true);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
 #endif
@@ -998,10 +998,10 @@ namespace etl
       {
         if ((current_size + n) > CAPACITY)
         {
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
           set_truncated(true);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
           ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
 #endif
@@ -1024,10 +1024,10 @@ namespace etl
         {
           current_size = CAPACITY;
 
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
           set_truncated(true);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
           ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
 #endif
@@ -1069,10 +1069,10 @@ namespace etl
       // No effect.
       if (start >= CAPACITY)
       {
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
         set_truncated(true);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
 #endif
@@ -1084,10 +1084,10 @@ namespace etl
       {
         if (((current_size + n) > CAPACITY))
         {
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
           set_truncated(true);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
           ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
 #endif
@@ -1114,10 +1114,10 @@ namespace etl
         {
           current_size = CAPACITY;
 
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
           set_truncated(true);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
           ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
 #endif
@@ -1151,12 +1151,12 @@ namespace etl
 
       insert(begin() + position, str.cbegin(), str.cend());
 
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       if (str.is_truncated())
       {
         set_truncated(true);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
       }
@@ -1184,12 +1184,12 @@ namespace etl
 
       insert(begin() + position, str.cbegin() + subposition, str.cbegin() + subposition + sublength);
 
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       if (str.is_truncated())
       {
         set_truncated(true);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
       }
@@ -1379,7 +1379,7 @@ namespace etl
     //*********************************************************************
     size_type find(const_pointer s, size_type pos = 0) const
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       if ((pos + etl::strlen(s)) > size())
       {
         return npos;
@@ -1406,7 +1406,7 @@ namespace etl
     //*********************************************************************
     size_type find(const_pointer s, size_type pos, size_type n) const
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       if ((pos + etl::strlen(s) - n) > size())
       {
         return npos;
@@ -1611,12 +1611,12 @@ namespace etl
       // Insert the new stuff.
       insert(first_, str.begin(), str.end());
 
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       if (str.is_truncated())
       {
         set_truncated(true);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
       }
@@ -1643,12 +1643,12 @@ namespace etl
       // Insert the new stuff.
       insert(position, str, subposition, sublength);
 
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       if (str.is_truncated())
       {
         set_truncated(true);
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
         ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
 #endif
       }
@@ -2230,7 +2230,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_ISTRING_REPAIR_ENABLED
+#if ETL_HAS_ISTRING_REPAIR
     //*************************************************************************
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
@@ -2242,7 +2242,7 @@ namespace etl
     //*********************************************************************
     void initialize_free_space()
     {
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       set_truncated(false);
 #endif
       etl::fill(&p_buffer[current_size], &p_buffer[CAPACITY + 1U], T(0));
@@ -2255,7 +2255,7 @@ namespace etl
     //*********************************************************************
     void trim_to_terminator()
     {
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       set_truncated(p_buffer[CAPACITY] != T(0));
 #endif
 
@@ -2282,7 +2282,7 @@ namespace etl
       current_size = 0U;
       cleanup();
       p_buffer[0] = 0;
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       set_truncated(false);
 #endif
     }
@@ -2342,7 +2342,7 @@ namespace etl
     //*************************************************************************
     void cleanup()
     {
-#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
+#if ETL_HAS_STRING_CLEAR_AFTER_USE
       if (is_secure())
       {
         etl::memory_clear_range(&p_buffer[current_size], &p_buffer[CAPACITY]);
@@ -2371,7 +2371,7 @@ namespace etl
 #endif
     ~ibasic_string()
     {
-#if ETL_STRING_CLEAR_AFTER_USE_ENABLED
+#if ETL_HAS_STRING_CLEAR_AFTER_USE
       if (is_secure())
       {
         initialise();

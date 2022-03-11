@@ -167,7 +167,7 @@ namespace etl
       ETL_ASSERT(released, ETL_ERROR(etl::reference_counted_message_pool_release_failure));
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*****************************************************
     template <typename TMessage1, typename... TMessages>
     struct pool_message_parameters
@@ -254,7 +254,7 @@ namespace etl
     reference_counted_message_pool& operator =(const reference_counted_message_pool&) ETL_DELETE;
   };
 
-#if ETL_CPP11_SUPPORTED && ETL_HAS_ATOMIC
+#if ETL_USING_CPP11 && ETL_HAS_ATOMIC
   using  atomic_counted_message_pool = reference_counted_message_pool<etl::atomic_int>;
 #endif
 }

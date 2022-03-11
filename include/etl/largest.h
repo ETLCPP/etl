@@ -63,7 +63,7 @@ SOFTWARE.
 
 namespace etl
 {
-#if ETL_CPP11_SUPPORTED && !defined(ETL_LARGEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
+#if ETL_USING_CPP11 && !defined(ETL_LARGEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   /// Template to determine the largest type and size.
   /// Defines 'value_type' which is the type of the largest parameter.
@@ -110,12 +110,12 @@ namespace etl
     };
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename... T>
   using largest_type_t = typename largest_type<T...>::type;
 #endif
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename... T>
   constexpr size_t largest_type_v = largest_type<T...>::size;
 #endif
@@ -167,7 +167,7 @@ namespace etl
   };
 #endif
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_LARGEST_ALIGNMENT_FORCE_CPP03_IMPLEMENTATION)
+#if ETL_USING_CPP11 && !defined(ETL_LARGEST_ALIGNMENT_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   /// Template to determine the largest alignment.
   /// Defines <b>value</b> which is the largest alignment of all the parameters.
@@ -207,7 +207,7 @@ namespace etl
     };
   };
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename... T>
   inline constexpr size_t largest_alignment_v = largest_alignment<T...>::value;
 #endif
@@ -271,7 +271,7 @@ namespace etl
     typedef typename etl::smallest_int_for_bits<etl::integral_limits<typename etl::make_signed<T>::type>::bits + 1>::type type;
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using larger_int_type_t = typename larger_int_type<T>::type;
 #endif
@@ -289,7 +289,7 @@ namespace etl
     typedef typename etl::smallest_uint_for_bits<etl::integral_limits<typename etl::make_unsigned<T>::type>::bits + 1>::type type;
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using larger_uint_type_t = typename larger_uint_type<T>::type;
 #endif
@@ -319,12 +319,12 @@ namespace etl
     typedef typename etl::smallest_int_for_bits<etl::integral_limits<T>::bits + 1>::type type;
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using larger_type_t = typename larger_type<T>::type;
 #endif
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_LARGEST_FORCE_CPP03_IMPLEMENTATION)
+#if ETL_USING_CPP11 && !defined(ETL_LARGEST_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   /// Template to determine the largest type, size and alignment.
   /// Defines <b>value</b> which is the largest type, size and alignment of all the parameters.
@@ -342,12 +342,12 @@ namespace etl
     };
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     template <typename... T>
     using largest_t = typename largest<T...>::type;
 #endif
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
     template <typename... T>
     inline constexpr size_t largest_size = largest<T...>::size;
 #endif

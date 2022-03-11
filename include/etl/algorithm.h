@@ -7,6 +7,8 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
+Documentation: https://www.etlcpp.com/algorithm.html
+
 Copyright(c) 2014 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -106,7 +108,7 @@ namespace etl
 
   //***************************************************************************
   // copy
-#if ETL_USING_STL && ETL_CPP20_SUPPORTED 
+#if ETL_USING_STL && ETL_USING_CPP20 
   // Use the STL constexpr implementation.
   template <typename TIterator1, typename TIterator2>
   constexpr TIterator2 copy(TIterator1 sb, TIterator1 se, TIterator2 db)
@@ -191,7 +193,7 @@ namespace etl
 
   //***************************************************************************
   // reverse_copy
-#if ETL_USING_STL && ETL_CPP20_SUPPORTED
+#if ETL_USING_STL && ETL_USING_CPP20
   template <typename TIterator1, typename TIterator2>
   constexpr TIterator2 reverse_copy(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
@@ -220,14 +222,14 @@ namespace etl
 
   //***************************************************************************
   // copy_n
-#if ETL_USING_STL && ETL_CPP20_SUPPORTED
+#if ETL_USING_STL && ETL_USING_CPP20
   // Use the STL implementation
   template <typename TIterator1, typename TSize, typename TIterator2>
   constexpr TIterator2 copy_n(TIterator1 sb, TSize count, TIterator2 db)
   {
     return std::copy_n(sb, count, db);
   }
-#elif ETL_USING_STL && ETL_CPP11_SUPPORTED && !ETL_FORCE_CONSTEXPR_ALGORITHMS
+#elif ETL_USING_STL && ETL_USING_CPP11 && !ETL_FORCE_CONSTEXPR_ALGORITHMS
   // Use the STL implementation
   template <typename TIterator1, typename TSize, typename TIterator2>
   TIterator2 copy_n(TIterator1 sb, TSize count, TIterator2 db)
@@ -305,7 +307,7 @@ namespace etl
 
   //***************************************************************************
   // copy_backward
-#if ETL_USING_STL && ETL_CPP20_SUPPORTED
+#if ETL_USING_STL && ETL_USING_CPP20
   template <typename TIterator1, typename TIterator2>
   constexpr TIterator2 copy_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
@@ -386,13 +388,13 @@ namespace etl
 
   //***************************************************************************
   // move
-#if ETL_USING_STL && ETL_CPP20_SUPPORTED
+#if ETL_USING_STL && ETL_USING_CPP20
   template <typename TIterator1, typename TIterator2>
   constexpr TIterator2 move(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
     return std::move(sb, se, db);
   }
-#elif ETL_USING_STL && ETL_CPP11_SUPPORTED && !ETL_FORCE_CONSTEXPR_ALGORITHMS
+#elif ETL_USING_STL && ETL_USING_CPP11 && !ETL_FORCE_CONSTEXPR_ALGORITHMS
   template <typename TIterator1, typename TIterator2>
   TIterator2 move(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
@@ -474,14 +476,14 @@ namespace etl
 
   //***************************************************************************
   // move_backward
-#if ETL_USING_STL && ETL_CPP20_SUPPORTED
+#if ETL_USING_STL && ETL_USING_CPP20
   template <typename TIterator1, typename TIterator2>
   ETL_CONSTEXPR20
     TIterator2 move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
     return std::move_backward(sb, se, de);
   }
-#elif ETL_USING_STL && ETL_CPP11_SUPPORTED && !ETL_FORCE_CONSTEXPR_ALGORITHMS
+#elif ETL_USING_STL && ETL_USING_CPP11 && !ETL_FORCE_CONSTEXPR_ALGORITHMS
   template <typename TIterator1, typename TIterator2>
   TIterator2 move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
@@ -737,7 +739,7 @@ namespace etl
 
   //***************************************************************************
   // fill
-#if ETL_USING_STL && ETL_CPP20_SUPPORTED
+#if ETL_USING_STL && ETL_USING_CPP20
   template<typename TIterator, typename TValue>
   constexpr void fill(TIterator first, TIterator last, const TValue& value)
   {
@@ -792,7 +794,7 @@ namespace etl
 
   //***************************************************************************
   // fill_n
-#if ETL_USING_STL && ETL_CPP20_SUPPORTED
+#if ETL_USING_STL && ETL_USING_CPP20
   template<typename TIterator, typename TSize, typename TValue>
   constexpr TIterator fill_n(TIterator first, TSize count, const TValue& value)
   {
@@ -898,7 +900,7 @@ namespace etl
 
   //***************************************************************************
   // equal
-#if ETL_USING_STL && ETL_CPP20_SUPPORTED
+#if ETL_USING_STL && ETL_USING_CPP20
   template <typename TIterator1, typename TIterator2>
   [[nodiscard]]
   constexpr
@@ -2554,7 +2556,7 @@ namespace etl
     return o_begin;
   }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   //***************************************************************************
   /// move_s
   /// A safer form of move where the smallest of the two ranges is used.
@@ -3226,7 +3228,7 @@ namespace etl
   //***************************************************************************
   /// Returns the maximum value.
   //***************************************************************************
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   ETL_NODISCARD
   constexpr const T& multimax(const T& a, const T& b)
@@ -3246,7 +3248,7 @@ namespace etl
   /// Returns the maximum value.
   /// User supplied compare function.
   //***************************************************************************
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename TCompare, typename T>
   ETL_NODISCARD
   constexpr const T& multimax_compare(TCompare compare, const T& a, const T& b)
@@ -3265,7 +3267,7 @@ namespace etl
   //***************************************************************************
   /// Returns the maximum value.
   //***************************************************************************
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   ETL_NODISCARD
   constexpr const T& multimin(const T& a, const T& b)
@@ -3285,7 +3287,7 @@ namespace etl
   /// Returns the minimum value.
   /// User supplied compare function.
   //***************************************************************************
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename TCompare, typename T>
   ETL_NODISCARD
   constexpr const T& multimin_compare(TCompare compare, const T& a, const T& b)
@@ -3304,7 +3306,7 @@ namespace etl
   //***************************************************************************
   /// Returns the iterator to the maximum value.
   //***************************************************************************
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename TIterator>
   ETL_NODISCARD
   constexpr const TIterator& multimax_iter(const TIterator& a, const TIterator& b)
@@ -3324,7 +3326,7 @@ namespace etl
   /// Returns the iterator to the maximum value.
   /// User supplied compare function.
   //***************************************************************************
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename TCompare, typename TIterator>
   ETL_NODISCARD
   constexpr const TIterator& multimax_iter_compare(TCompare compare, const TIterator& a, const TIterator& b)
@@ -3343,7 +3345,7 @@ namespace etl
   //***************************************************************************
   /// Returns the iterator to the minimum value.
   //***************************************************************************
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename TIterator>
   ETL_NODISCARD
   constexpr const TIterator& multimin_iter(const TIterator& a, const TIterator& b)
@@ -3363,7 +3365,7 @@ namespace etl
   /// Returns the iterator to the minimum value.
   /// User supplied compare function.
   //***************************************************************************
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename TCompare, typename TIterator>
   ETL_NODISCARD
   constexpr const TIterator& multimin_iter_compare(TCompare compare, const TIterator& a, const TIterator& b)

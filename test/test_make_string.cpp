@@ -108,25 +108,26 @@ namespace
 
       CHECK_EQUAL(CAPACITY, ctext.max_size());
       CHECK_EQUAL(length, ctext.size());
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
-      CHECK(!ctext.is_truncated());
-#endif
+      if  constexpr (etl::traits::has_string_truncation_checks)
+      {
+        CHECK(!ctext.is_truncated());
+      }
 
       CHECK_EQUAL(CAPACITY, wtext.max_size());
       CHECK_EQUAL(length, wtext.size());
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(!wtext.is_truncated());
 #endif
 
       CHECK_EQUAL(CAPACITY, u16text.max_size());
       CHECK_EQUAL(length, u16text.size());
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(!u16text.is_truncated());
 #endif
 
       CHECK_EQUAL(CAPACITY, u32text.max_size());
       CHECK_EQUAL(length, u32text.size());
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(!u32text.is_truncated());
 #endif
 
@@ -142,7 +143,7 @@ namespace
       constexpr size_t CAPACITY = 10UL;
       size_t length = strlen("Hello World");
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
       CHECK_THROW(auto ctext   = etl::make_string_with_capacity<CAPACITY>("Hello World"),  etl::string_truncation);
       CHECK_THROW(auto wtext   = etl::make_string_with_capacity<CAPACITY>(L"Hello World"), etl::string_truncation);;
       CHECK_THROW(auto u16text = etl::make_string_with_capacity<CAPACITY>(u"Hello World"), etl::string_truncation);;
@@ -155,25 +156,25 @@ namespace
 
       CHECK_EQUAL(CAPACITY, ctext.max_size());
       CHECK_EQUAL(length - 1, ctext.size());
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(ctext.is_truncated());
 #endif
 
       CHECK_EQUAL(CAPACITY, wtext.max_size());
       CHECK_EQUAL(length - 1, wtext.size());
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(wtext.is_truncated());
 #endif
 
       CHECK_EQUAL(CAPACITY, u16text.max_size());
       CHECK_EQUAL(length - 1, u16text.size());
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(u16text.is_truncated());
 #endif
 
       CHECK_EQUAL(CAPACITY, u32text.max_size());
       CHECK_EQUAL(length - 1, u32text.size());
-#if ETL_STRING_TRUNCATION_CHECKS_ENABLED
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(u32text.is_truncated());
 #endif
 

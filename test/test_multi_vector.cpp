@@ -385,7 +385,7 @@ namespace
       CHECK_EQUAL(SIZE2, data[0].max_size());
     }
 
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     TEST(test_swap)
     {
@@ -403,7 +403,7 @@ namespace
     }
 #endif
 
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     TEST(test_assign)
     {
@@ -431,7 +431,7 @@ namespace
     }
 #endif
 
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     TEST(test_insert_value)
     {
@@ -474,7 +474,7 @@ namespace
 #endif
 
     //*************************************************************************
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_HAS_INITIALIZER_LIST
     TEST(test_equal)
     {
       Data initial1 = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
@@ -485,7 +485,7 @@ namespace
 #endif
 
     //*************************************************************************
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_HAS_INITIALIZER_LIST
     TEST(test_not_equal)
     {
       Array initial1 = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };

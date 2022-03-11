@@ -532,7 +532,7 @@ namespace etl
       }
     }
 
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_HAS_INITIALIZER_LIST
     //********************************************
     // Initializer_list constructor.
     //********************************************

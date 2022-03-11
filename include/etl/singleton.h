@@ -69,7 +69,7 @@ namespace etl
     }
   };
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_SINGLETON_FORCE_CPP03_IMPLEMENTATION)
+#if ETL_USING_CPP11 && !defined(ETL_SINGLETON_FORCE_CPP03_IMPLEMENTATION)
   //*************************************************************************
   /// Singleton pattern base class.
   /// \ingroup singleton

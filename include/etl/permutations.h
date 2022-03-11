@@ -59,7 +59,7 @@ namespace etl
     static ETL_CONSTANT size_t value = 1UL;
   };
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <size_t NV, size_t KV>
   inline constexpr size_t permutations_v = permutations<NV, KV>::value;
 #endif

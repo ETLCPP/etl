@@ -122,7 +122,7 @@ namespace etl
     typedef TCompare              compare_type;       ///< The comparison type.
     typedef T&                    reference;          ///< A reference to the type used in the queue.
     typedef const T&              const_reference;    ///< A const reference to the type used in the queue.
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     typedef T&&                   rvalue_reference;   ///< An rvalue reference to the type used in the queue.
 #endif
     typedef typename TContainer::size_type size_type; ///< The type used for determining the size of the queue.
@@ -162,7 +162,7 @@ namespace etl
       etl::push_heap(container.begin(), container.end(), compare);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Moves a value to the queue.
     /// If asserts or exceptions are enabled, throws an etl::priority_queue_full
@@ -180,7 +180,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_PRIORITY_QUEUE_FORCE_CPP03_IMPLEMENTATION)
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_PRIORITY_QUEUE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Emplaces a value to the queue.
     /// If asserts or exceptions are enabled, throws an etl::priority_queue_full
@@ -279,7 +279,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       difference_type d = etl::distance(first, last);
       ETL_ASSERT(d >= 0, ETL_ERROR(etl::priority_queue_iterator));
       ETL_ASSERT(static_cast<size_t>(d) <= max_size(), ETL_ERROR(etl::priority_queue_full));
@@ -376,7 +376,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -401,7 +401,7 @@ namespace etl
       assign(other.container.cbegin(), other.container.cend());
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Make this a moved version of the supplied priority queue
     //*************************************************************************
@@ -467,7 +467,7 @@ namespace etl
       etl::ipriority_queue<T, TContainer, TCompare>::clone(rhs);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move constructor
     //*************************************************************************
@@ -512,7 +512,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************

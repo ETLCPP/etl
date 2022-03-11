@@ -83,7 +83,7 @@ namespace etl
     typedef T2 type2;
   };
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
+#if ETL_USING_CPP11 && !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   // type_id_lookup 
   //***************************************************************************
@@ -160,7 +160,7 @@ namespace etl
       static_assert(value != UNKNOWN, "Invalid type");
     };
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
     template <typename T>
     static constexpr size_t id_from_type_v = id_from_type<T>::value;
 #endif

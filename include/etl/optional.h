@@ -138,7 +138,7 @@ namespace etl
       }
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Move constructor.
     //***************************************************************************
@@ -161,7 +161,7 @@ namespace etl
       valid = true;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Constructor from value type.
     //***************************************************************************
@@ -226,7 +226,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Assignment operator from optional.
     //***************************************************************************
@@ -275,7 +275,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Assignment operator from value type.
     //***************************************************************************
@@ -300,7 +300,7 @@ namespace etl
     //***************************************************************************
     T* operator ->()
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -312,7 +312,7 @@ namespace etl
     //***************************************************************************
     const T* operator ->() const
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -324,7 +324,7 @@ namespace etl
     //***************************************************************************
     T& operator *()
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -336,7 +336,7 @@ namespace etl
     //***************************************************************************
     const T& operator *() const
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -365,7 +365,7 @@ namespace etl
     //***************************************************************************
     T& value()
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -377,7 +377,7 @@ namespace etl
     //***************************************************************************
     const T& value() const
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -414,7 +414,7 @@ namespace etl
       }
     }
 
-#if ETL_CPP11_SUPPORTED  && ETL_NOT_USING_STLPORT && !defined(ETL_OPTIONAL_FORCE_CPP03_IMPLEMENTATION)
+#if ETL_USING_CPP11  && ETL_NOT_USING_STLPORT && !defined(ETL_OPTIONAL_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Emplaces a value.
     ///\param args The arguments to construct with.

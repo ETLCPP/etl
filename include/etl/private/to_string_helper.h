@@ -46,7 +46,7 @@ SOFTWARE.
 #include "../iterator.h"
 #include "../limits.h"
 
-#if ETL_USING_STL && ETL_CPP11_SUPPORTED
+#if ETL_USING_STL && ETL_USING_CPP11
   #include <iterator> // For std::begin, std::end and std::size
 #endif
 

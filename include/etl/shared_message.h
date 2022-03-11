@@ -85,7 +85,7 @@ namespace etl
       p_rcmessage->get_reference_counter().increment_reference_count();
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move constructor
     //*************************************************************************
@@ -117,7 +117,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move assignment operator
     //*************************************************************************

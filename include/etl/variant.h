@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if !ETL_CPP11_SUPPORTED || ETL_USE_LEGACY_VARIANT
+#if !ETL_USING_CPP11 || ETL_USE_LEGACY_VARIANT
   #include "private/variant_legacy.h"
 #else
   #include "private/variant_variadic.h"

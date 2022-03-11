@@ -40,7 +40,7 @@ SOFTWARE.
 
 namespace etl
 {
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
 
   namespace private_multi_array
   {

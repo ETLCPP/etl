@@ -140,7 +140,7 @@ namespace
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
     }
 
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     TEST(test_constructor_initializer_list)
     {
@@ -1992,7 +1992,7 @@ namespace
     }
 
     //*************************************************************************
-#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     TEST(test_deque_template_deduction)
     {
       etl::deque data{ char(0), short(1), int(2), long(3), 4, 5, 6, 7, 8, 9 };
@@ -2014,7 +2014,7 @@ namespace
 #endif
 
     //*************************************************************************
-#if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
+#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
     TEST(test_make_deque)
     {
       auto data = etl::make_deque<int>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);

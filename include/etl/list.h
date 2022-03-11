@@ -414,7 +414,7 @@ namespace etl
     typedef const T* const_pointer;
     typedef T&       reference;
     typedef const T& const_reference;
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     typedef T&&      rvalue_reference;
 #endif
     typedef size_t   size_type;
@@ -796,7 +796,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       difference_type d = etl::distance(first, last);
       ETL_ASSERT(d >= 0, ETL_ERROR(list_iterator));
       ETL_ASSERT(size_t(d) <= MAX_SIZE, ETL_ERROR(list_full));
@@ -818,7 +818,7 @@ namespace etl
     //*************************************************************************
     void assign(size_t n, const T& value)
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(n <= MAX_SIZE, ETL_ERROR(list_full));
 #endif
 
@@ -844,7 +844,7 @@ namespace etl
       insert_node(get_head(), allocate_data_node(value));
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Pushes a value to the front of the list.
     //*************************************************************************
@@ -857,7 +857,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
     //*************************************************************************
     /// Emplaces a value to the front of the list.
     //*************************************************************************
@@ -967,7 +967,7 @@ namespace etl
       insert_node(terminal_node, allocate_data_node(value));
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Pushes a value to the back of the list.
     //*************************************************************************
@@ -983,7 +983,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the back of the list.
     //*************************************************************************
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
     template <typename ... Args>
     void emplace_back(Args && ... args)
     {
@@ -1080,7 +1080,7 @@ namespace etl
       return iterator(data_node);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Inserts a value to the list at the specified position.
     //*************************************************************************
@@ -1098,7 +1098,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the list at the specified position.
     //*************************************************************************
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
     template <typename ... Args>
     iterator emplace(const_iterator position, Args && ... args)
     {
@@ -1372,7 +1372,7 @@ namespace etl
       }
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Splices from another list to this.
     //*************************************************************************
@@ -1410,7 +1410,7 @@ namespace etl
       }
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Splices an element from another list to this.
     //*************************************************************************
@@ -1448,7 +1448,7 @@ namespace etl
       }
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Splices a range of elements from another list to this.
     //*************************************************************************
@@ -1491,7 +1491,7 @@ namespace etl
     {
       if ((this != &other) && !other.empty())
       {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
         ETL_ASSERT(etl::is_sorted(other.begin(), other.end(), compare), ETL_ERROR(list_unsorted));
         ETL_ASSERT(etl::is_sorted(begin(), end(), compare), ETL_ERROR(list_unsorted));
 #endif
@@ -1531,7 +1531,7 @@ namespace etl
       }
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Merge another list into this one. Both lists should be sorted.
     //*************************************************************************
@@ -1548,7 +1548,7 @@ namespace etl
     {
       if (!other.empty())
       {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
         ETL_ASSERT(etl::is_sorted(other.begin(), other.end(), compare), ETL_ERROR(list_unsorted));
         ETL_ASSERT(etl::is_sorted(begin(), end(), compare), ETL_ERROR(list_unsorted));
 #endif
@@ -1748,7 +1748,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
@@ -1822,7 +1822,7 @@ namespace etl
       join(terminal_node, terminal_node);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move a forward list
     //*************************************************************************
@@ -1911,7 +1911,7 @@ namespace etl
         return; // Can't more to before yourself!
       }
 
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       // Check that we are not doing an illegal move!
       for (const_iterator item = first; item != last; ++item)
       {
@@ -1958,7 +1958,7 @@ namespace etl
       return *p_data_node;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Allocate a data_node_t.
     //*************************************************************************
@@ -2039,7 +2039,7 @@ namespace etl
     typedef const T* const_pointer;
     typedef T&       reference;
     typedef const T& const_reference;
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     typedef T&&      rvalue_reference;
 #endif
     typedef size_t   size_type;
@@ -2090,7 +2090,7 @@ namespace etl
       }
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
@@ -2123,7 +2123,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
@@ -2147,7 +2147,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -2168,7 +2168,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED && ETL_USING_INITIALIZER_LIST
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
   template <typename... T>
   list(T...) -> list<typename etl::common_type_t<T...>,
                      sizeof...(T)>;
@@ -2177,7 +2177,7 @@ namespace etl
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_CPP11_SUPPORTED && ETL_USING_INITIALIZER_LIST
+#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
   template <typename... T>
   constexpr auto make_list(T... t) -> etl::list<typename etl::common_type_t<T...>, sizeof...(T)>
   {
@@ -2268,7 +2268,7 @@ namespace etl
       }
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move constructor. Implicit pool.
     //*************************************************************************
@@ -2298,7 +2298,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_USING_INITIALIZER_LIST
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
@@ -2322,7 +2322,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************

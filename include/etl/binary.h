@@ -46,7 +46,7 @@ SOFTWARE.
 #include "exception.h"
 #include "error_handler.h"
 
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
   #include <bit>
 #endif
 
@@ -103,7 +103,7 @@ namespace etl
   template <const size_t NBITS>
   ETL_CONSTANT typename max_value_for_nbits<NBITS>::value_type max_value_for_nbits<NBITS>::value;
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <const size_t NBITS>
   inline constexpr typename etl::max_value_for_nbits<NBITS>::value_type max_value_for_nbits_v = max_value_for_nbits<NBITS>::value;
 #endif
@@ -115,7 +115,7 @@ namespace etl
   template <typename T>
   ETL_CONSTEXPR14 T rotate_left(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::rotl(value, 1);
 #else
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
@@ -133,7 +133,7 @@ namespace etl
   template <typename T>
   ETL_CONSTEXPR14 T rotate_left(T value, size_t distance)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::rotl(value, distance);
 #else
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
@@ -153,7 +153,7 @@ namespace etl
   template <typename T>
   ETL_CONSTEXPR14 T rotate_right(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::rotr(value, 1);
 #else
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
@@ -171,7 +171,7 @@ namespace etl
   template <typename T>
   ETL_CONSTEXPR14 T rotate_right(T value, size_t distance)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::rotr(value, distance);
 #else
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
@@ -383,7 +383,7 @@ namespace etl
   template <const size_t POSITION>
   ETL_CONSTANT typename bit<POSITION>::value_type bit<POSITION>::value;
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <const size_t POSITION>
   inline constexpr typename bit<POSITION>::value_type bit_v = bit<POSITION>::value;
 #endif
@@ -917,7 +917,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 16U), uint_least8_t>::type
     count_bits(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::popcount(value);
 #else
     uint32_t count = 0U;
@@ -940,7 +940,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 32U), uint_least8_t>::type
     count_bits(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::popcount(value);
 #else
     uint32_t count = 0U;
@@ -965,7 +965,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), uint_least8_t>::type
     count_bits(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::popcount(value);
 #else
     uint64_t count = 0U;
@@ -1087,7 +1087,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), uint_least8_t>::type
     count_trailing_zeros(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::countr_zero(value);
 #else
     uint_least8_t count = 0U;
@@ -1136,7 +1136,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 16U), uint_least8_t>::type
     count_trailing_zeros(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::countr_zero(value);
 #else
     uint_least8_t count = 0U;
@@ -1190,7 +1190,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 32U), uint_least8_t>::type
     count_trailing_zeros(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::countr_zero(value);
 #else
     uint_least8_t count = 0U;
@@ -1251,7 +1251,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), uint_least8_t>::type
     count_trailing_zeros(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::countr_zero(value);
 #else
       uint_least8_t count = 0U;
@@ -1333,7 +1333,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), uint_least8_t>::type
     count_trailing_ones(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::countr_one(value);
 #else
     uint_least8_t count = 0U;
@@ -1382,7 +1382,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 16U), uint_least8_t>::type
     count_trailing_ones(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::countr_one(value);
 #else
     uint_least8_t count = 0U;
@@ -1436,7 +1436,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 32U), uint_least8_t>::type
     count_trailing_ones(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::countr_one(value);
 #else
     uint_least8_t count = 0U;
@@ -1497,7 +1497,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), uint_least8_t>::type
     count_trailing_ones(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::countr_one(value);
 #else
     uint_least8_t count = 0U;
@@ -1573,7 +1573,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), uint_least8_t>::type
     count_leading_zeros(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::countl_zero(value);
 #else
     uint_least8_t count = 0U;
@@ -1622,7 +1622,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 16U), uint_least8_t>::type
     count_leading_zeros(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::countl_zero(value);
 #else
     uint_least8_t count = 0U;
@@ -1676,7 +1676,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 32U), uint_least8_t>::type
     count_leading_zeros(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::countl_zero(value);
 #else
     uint_least8_t count = 0U;
@@ -1737,7 +1737,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), uint_least8_t>::type
     count_leading_zeros(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::countl_zero(value);
 #else
     uint_least8_t count = 0U;
@@ -1819,7 +1819,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), uint_least8_t>::type
     count_leading_ones(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::countl_one(value);
 #else
     uint_least8_t count = 0U;
@@ -1868,7 +1868,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 16U), uint_least8_t>::type
     count_leading_ones(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::countl_one(value);
 #else
     uint_least8_t count = 0U;
@@ -1922,7 +1922,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 32U), uint_least8_t>::type
     count_leading_ones(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::countl_one(value);
 #else
     uint_least8_t count = 0U;
@@ -1983,7 +1983,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), uint_least8_t>::type
     count_leading_ones(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::countl_one(value);
 #else
     uint_least8_t count = 0U;

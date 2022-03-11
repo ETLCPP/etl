@@ -60,7 +60,7 @@ namespace etl
   template <typename T>
   ETL_CONSTEXPR17 T* addressof(T& t)
   {
-#if ETL_CPP11_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP11 && ETL_USING_STL
     return std::addressof(t);
 #else
     return reinterpret_cast<T*>(&const_cast<char&>(reinterpret_cast<const volatile char&>(t)));
@@ -366,7 +366,7 @@ namespace etl
 }
 #endif
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
 #if ETL_NOT_USING_STL || ETL_CPP17_NOT_SUPPORTED
   //*****************************************************************************
   /// Moves a range of objects to uninitialised memory.
@@ -491,7 +491,7 @@ namespace etl
   }
 #endif
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
 #if ETL_NOT_USING_STL || ETL_CPP17_NOT_SUPPORTED
   //*****************************************************************************
   /// Moves a range of objects to uninitialised memory.
@@ -597,7 +597,7 @@ namespace etl
   TOutputIterator  uninitialized_move_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin)
   {
     // Move not supported. Defer to copy.
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     return std::uninitialized_copy_n(i_begin, n, o_begin);
 #else
     return etl::uninitialized_copy_n(i_begin, n, o_begin);
@@ -616,7 +616,7 @@ namespace etl
     count += TCounter(n);
 
     // Move not supported. Defer to copy.
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     return std::uninitialized_copy_n(i_begin, n, o_begin);
 #else
     return etl::uninitialized_copy_n(i_begin, n, o_begin);
@@ -939,7 +939,7 @@ namespace etl
 #endif
 
 #if ETL_NOT_USING_STL || ETL_CPP20_NOT_SUPPORTED
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   //*****************************************************************************
   /// Constructs an item at address p with value constructed from 'args'.
   /// https://en.cppreference.com/w/cpp/memory/construct_at
@@ -1294,7 +1294,7 @@ namespace etl
     {
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*********************************
     unique_ptr(unique_ptr&& p_) ETL_NOEXCEPT
       : p(p_.release())
@@ -1312,7 +1312,7 @@ namespace etl
     {
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*********************************
     unique_ptr(pointer p_, typename etl::remove_reference<TDeleter>::type&& deleter_) ETL_NOEXCEPT
       : p(p_)
@@ -1381,7 +1381,7 @@ namespace etl
       return (p != ETL_NULLPTR);
     }
 
-#if ETL_CPP11_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP11 && ETL_USING_STL
     //*********************************
     unique_ptr&	operator =(std::nullptr_t) ETL_NOEXCEPT
     {
@@ -1399,7 +1399,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*********************************
     unique_ptr&	operator =(unique_ptr&& p_) ETL_NOEXCEPT
     {
@@ -1464,7 +1464,7 @@ namespace etl
     {
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*********************************
     unique_ptr(unique_ptr&& p_) ETL_NOEXCEPT
       : p(p_.release())
@@ -1482,7 +1482,7 @@ namespace etl
     {
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*********************************
     unique_ptr(pointer p_, typename etl::remove_reference<TDeleter>::type&& deleter_) ETL_NOEXCEPT
       : p(p_)
@@ -1550,7 +1550,7 @@ namespace etl
       return (p != ETL_NULLPTR);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*********************************
     unique_ptr& operator =(unique_ptr&& p_) ETL_NOEXCEPT
     {
@@ -1703,7 +1703,7 @@ namespace etl
     ::new (p) T(value);
   }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   //*****************************************************************************
   /// Copy construct an item at address p.
   ///\ingroup memory
@@ -1760,7 +1760,7 @@ namespace etl
     return *reinterpret_cast<T*>(p);
   }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   //*****************************************************************************
   /// Construct an item at address p.
   ///\ingroup memory
@@ -1796,7 +1796,7 @@ namespace etl
     return *reinterpret_cast<T*>(p);
   }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   //*****************************************************************************
   /// Construct an item at address p.
   ///\ingroup memory
@@ -2029,7 +2029,7 @@ namespace etl
       return reinterpret_cast<const T*>(raw);
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_COMPILER_ARM5) && !defined(ETL_UNINITIALIZED_BUFFER_FORCE_CPP03_IMPLEMENTATION)
+#if ETL_USING_CPP11 && !defined(ETL_COMPILER_ARM5) && !defined(ETL_UNINITIALIZED_BUFFER_FORCE_CPP03_IMPLEMENTATION)
     alignas(VAlignment) char raw[Object_Size * N_Objects];
 #else
     union
@@ -2118,7 +2118,7 @@ namespace etl
       return reinterpret_cast<const T*>(raw + (sizeof(T) * N_Objects));
     }
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_COMPILER_ARM5) && !defined(ETL_UNINITIALIZED_BUFFER_FORCE_CPP03_IMPLEMENTATION)
+#if ETL_USING_CPP11 && !defined(ETL_COMPILER_ARM5) && !defined(ETL_UNINITIALIZED_BUFFER_FORCE_CPP03_IMPLEMENTATION)
     alignas(Alignment) char raw[sizeof(T) * N_Objects];
 #else
     union
@@ -2129,7 +2129,7 @@ namespace etl
 #endif
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T, size_t N_Objects>
   using uninitialized_buffer_of_t = typename uninitialized_buffer_of<T, N_Objects>::buffer;
 #endif

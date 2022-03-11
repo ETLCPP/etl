@@ -40,7 +40,7 @@ SOFTWARE.
 #include "endianness.h"
 #include "type_traits.h"
 
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
   #include <bit>
 #endif
 
@@ -136,7 +136,7 @@ namespace etl
     typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
     bit_width(T value) ETL_NOEXCEPT
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::bit_width(value);
 #else
     return etl::integral_limits<T>::bits - etl::countl_zero(value);
@@ -151,7 +151,7 @@ namespace etl
     typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
     bit_ceil(T value)
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::bit_ceil(value);
 #else
     if (value == T(0))
@@ -173,7 +173,7 @@ namespace etl
     typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
     bit_floor(T value) ETL_NOEXCEPT
   {
-#if ETL_CPP20_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP20 && ETL_USING_STL
     return std::bit_floor(value);
 #else
     if (value == T(0))

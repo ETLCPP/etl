@@ -206,7 +206,7 @@ namespace
     //*************************************************************************
     TEST(test_pair_conversion)
     {
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
       etl::pair<int, std::string> ep1(1, "Hello");
       std::pair<int, std::string> sp1(2, "World");
 

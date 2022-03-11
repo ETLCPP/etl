@@ -237,7 +237,7 @@ namespace etl
     etl::reference_counter<TCounter> reference_counter; ///< The reference counter.
   };
 
-#if ETL_CPP11_SUPPORTED && ETL_HAS_ATOMIC
+#if ETL_USING_CPP11 && ETL_HAS_ATOMIC
   //***************************************************************************
   /// Class for creating reference counted objects using an atomic counter.
   /// \tparam TObject  The type to be reference counted.
