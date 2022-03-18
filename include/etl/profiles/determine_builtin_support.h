@@ -31,24 +31,6 @@ SOFTWARE.
 #ifndef ETL_DETERMINE_BUILTIN_SUPPORT_H_INCLUDED
 #define ETL_DETERMINE_BUILTIN_SUPPORT_H_INCLUDED
 
-#if defined(ETL_USE_MEM_BUILTINS) // Set all of them to be true if not already defined
-  #if !defined(ETL_USING_BUILTIN_MEMCMP)
-    #define ETL_USING_BUILTIN_MEMCMP 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_MEMCPY)
-    #define ETL_USING_BUILTIN_MEMCPY 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_MEMMOVE)
-    #define ETL_USING_BUILTIN_MEMMOVE 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_MEMSET)
-    #define ETL_USING_BUILTIN_MEMSET 1
-  #endif
-#endif
-
 #if defined(ETL_USE_TYPE_TRAITS_BUILTINS) // Set all of them to be true if not already defined
   #if !defined(ETL_USING_BUILTIN_IS_ASSIGNABLE)
     #define ETL_USING_BUILTIN_IS_ASSIGNABLE 1
@@ -72,22 +54,6 @@ SOFTWARE.
 #endif
 
 #if defined(__has_builtin) // Use __has_builtin to check for existence of builtin functions?
-  #if !defined(ETL_USING_BUILTIN_MEMCMP)
-    #define ETL_USING_BUILTIN_MEMCMP  __has_builtin(__builtin_memcmp)
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_MEMCPY)
-    #define ETL_USING_BUILTIN_MEMCPY __has_builtin(__builtin_memcpy)
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_MEMMOVE)
-    #define ETL_USING_BUILTIN_MEMMOVE __has_builtin(__builtin_memmove)
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_MEMSET)
-    #define ETL_USING_BUILTIN_MEMSET  __has_builtin(__builtin_memset)
-  #endif
-
   #if !defined(ETL_USING_BUILTIN_IS_ASSIGNABLE)
     #define ETL_USING_BUILTIN_IS_ASSIGNABLE __has_builtin(__is_assignable)
   #endif
@@ -110,22 +76,6 @@ SOFTWARE.
 #endif
 
 // The default. Set to 0, if not already set.
-#if !defined(ETL_USING_BUILTIN_MEMCMP)
-  #define ETL_USING_BUILTIN_MEMCMP 0
-#endif
-
-#if !defined(ETL_USING_BUILTIN_MEMCPY)
-  #define ETL_USING_BUILTIN_MEMCPY 0
-#endif
-
-#if !defined(ETL_USING_BUILTIN_MEMMOVE)
-  #define ETL_USING_BUILTIN_MEMMOVE 0
-#endif
-
-#if !defined(ETL_USING_BUILTIN_MEMSET)
-  #define ETL_USING_BUILTIN_MEMSET 0
-#endif
-
 #if !defined(ETL_USING_BUILTIN_IS_ASSIGNABLE)
   #define ETL_USING_BUILTIN_IS_ASSIGNABLE 0
 #endif
