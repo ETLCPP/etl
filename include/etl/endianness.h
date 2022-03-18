@@ -76,9 +76,9 @@ SOFTWARE.
 
 // If true, then the endianness of the platform can be constexpr.
 #if (ETL_USING_CPP11 && defined(ETL_ENDIAN_NATIVE))
-  #define ETL_ENDIANNESS_IS_CONSTEXPR 1
+  #define ETL_HAS_CONSTEXPR_ENDIANNESS 1
 #else
-  #define ETL_ENDIANNESS_IS_CONSTEXPR 0
+  #define ETL_HAS_CONSTEXPR_ENDIANNESS 0
 #endif
 
 namespace etl
@@ -113,7 +113,7 @@ namespace etl
       return etl::endian(*this);
     }
 
-#if ETL_ENDIANNESS_IS_CONSTEXPR
+#if ETL_HAS_CONSTEXPR_ENDIANNESS
     ETL_CONSTEXPR
 #endif
     operator etl::endian() const
@@ -121,7 +121,7 @@ namespace etl
       return get();
     }
 
-#if ETL_ENDIANNESS_IS_CONSTEXPR
+#if ETL_HAS_CONSTEXPR_ENDIANNESS
     ETL_CONSTEXPR
 #endif
     static etl::endian value()
@@ -131,7 +131,7 @@ namespace etl
 
   private:
 
-#if ETL_ENDIANNESS_IS_CONSTEXPR
+#if ETL_HAS_CONSTEXPR_ENDIANNESS
     static ETL_CONSTEXPR etl::endian get()
     {
       return etl::endian::native;

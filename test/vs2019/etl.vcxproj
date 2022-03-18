@@ -11465,6 +11465,7 @@
     <ClCompile Include="..\test_string_stream_u16.cpp" />
     <ClCompile Include="..\test_string_stream_u32.cpp" />
     <ClCompile Include="..\test_unaligned_type.cpp" />
+    <ClCompile Include="..\test_unaligned_type_constexpr.cpp" />
     <ClCompile Include="..\test_unordered_map.cpp" />
     <ClCompile Include="..\test_unordered_multimap.cpp" />
     <ClCompile Include="..\test_unordered_multiset.cpp" />

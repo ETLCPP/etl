@@ -27,11 +27,6 @@ if (ETL_USER_DEFINED_TYPE_TRAITS)
 	add_definitions(-DETL_USER_DEFINED_TYPE_TRAITS)
 endif()
 
-if (ETL_FORCE_CONSTEXPR_ALGORITHMS)
-	message(STATUS "Compiling with forced constexpr algorithms")
-	add_definitions(-DETL_FORCE_CONSTEXPR_ALGORITHMS)
-endif()
-
 if (ETL_FORCE_TEST_CPP03)
 	message(STATUS "Compiling for C++03 tests")
 	add_definitions(-DETL_FORCE_TEST_CPP03)
@@ -272,6 +267,7 @@ set(TEST_SOURCE_FILES
 	test_type_select.cpp
 	test_type_traits.cpp
 	test_unaligned_type.cpp
+	test_unaligned_type_constexpr.cpp
 	test_unordered_map.cpp
 	test_unordered_multimap.cpp
 	test_unordered_multiset.cpp
