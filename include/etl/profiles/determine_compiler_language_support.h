@@ -35,6 +35,9 @@ SOFTWARE.
 
 #include "determine_compiler.h"
 
+// Determine C++23 support
+#define ETL_CPP23_SUPPORTED 0
+
 // Determine C++20 support
 #if !defined(ETL_CPP20_SUPPORTED)
   #if defined(__cplusplus)
