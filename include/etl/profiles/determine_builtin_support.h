@@ -102,9 +102,6 @@ namespace etl
   {
     // Documentation: https://www.etlcpp.com/etl_traits.html
 
-    static ETL_CONSTANT bool using_builtin_memcmp                     = (ETL_USING_BUILTIN_MEMCMP == 1);
-    static ETL_CONSTANT bool using_builtin_memmove                    = (ETL_USING_BUILTIN_MEMMOVE == 1);
-    static ETL_CONSTANT bool using_builtin_memset                     = (ETL_USING_BUILTIN_MEMSET == 1);
     static ETL_CONSTANT bool using_builtin_is_assignable              = (ETL_USING_BUILTIN_IS_ASSIGNABLE == 1);
     static ETL_CONSTANT bool using_builtin_is_constructible           = (ETL_USING_BUILTIN_IS_CONSTRUCTIBLE == 1);
     static ETL_CONSTANT bool using_builtin_is_trivially_constructible = (ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE == 1);
