@@ -17,14 +17,14 @@ gcc --version | grep gcc | tee -a log.txt
 CC=gcc CXX=g++ cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
 make -j8
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed >>>>"
+  echo "<<<< Passed Compilation >>>>"
 else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?
 fi
 ./etl_tests
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed >>>>"
+  echo "<<<< Passed Tests >>>>"
 else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?
@@ -37,14 +37,14 @@ gcc --version | grep gcc | tee -a log.txt
 CC=gcc CXX=g++ cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
 make -j8
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed >>>>"
+  echo "<<<< Passed Compilation >>>>"
 else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?
 fi
 ./etl_tests
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed >>>>"
+  echo "<<<< Passed Tests >>>>"
 else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?
@@ -57,14 +57,14 @@ gcc --version | grep gcc | tee -a log.txt
 CC=gcc CXX=g++ cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
 make -j8
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed >>>>"
+  echo "<<<< Passed Compilation >>>>"
 else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?
 fi
 ./etl_tests
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed >>>>"
+  echo "<<<< Passed Tests >>>>"
 else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?
@@ -77,14 +77,14 @@ gcc --version | grep gcc | tee -a log.txt
 CC=gcc CXX=g++ cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USE_MEM_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
 make -j8
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed >>>>"
+  echo "<<<< Passed Compilation >>>>"
 else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?
 fi
 ./etl_tests
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed >>>>"
+  echo "<<<< Passed Tests >>>>"
 else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?
@@ -101,14 +101,14 @@ clang --version | grep clang | tee -a log.txt
 CC=clang CXX=clang++ cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
 make -j8
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed >>>>"
+  echo "<<<< Passed Compilation >>>>"
 else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?
 fi
 ./etl_tests
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed >>>>"
+  echo "<<<< Passed Tests >>>>"
 else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?
@@ -121,14 +121,14 @@ clang --version | grep clang | tee -a log.txt
 CC=clang CXX=clang++ cmake --cmake-clean-cache -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
 make -j8
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed >>>>"
+  echo "<<<< Passed Compilation >>>>"
 else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?
 fi
 ./etl_tests
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed >>>>"
+  echo "<<<< Passed Tests >>>>"
 else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?
@@ -141,14 +141,14 @@ clang --version | grep clang | tee -a log.txt
 CC=clang CXX=clang++ cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
 make -j8
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed >>>>"
+  echo "<<<< Passed Compilation >>>>"
 else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?
 fi
 ./etl_tests
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed >>>>"
+  echo "<<<< Passed Tests >>>>"
 else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?
@@ -161,14 +161,14 @@ clang --version | grep clang | tee -a log.txt
 CC=clang CXX=clang++ cmake --cmake-clean-cache -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USE_MEM_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
 make -j8
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed >>>>"
+  echo "<<<< Passed Compilation >>>>"
 else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?
 fi
 ./etl_tests
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed >>>>"
+  echo "<<<< Passed Tests >>>>"
 else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?
@@ -185,14 +185,14 @@ gcc --version | grep gcc | tee -a log.txt
 CC=gcc CXX=g++ cmake --cmake-clean-cache ..
 make -j8
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed initializer_list >>>>"
+  echo "<<<< Passed initializer_list Compilation >>>>"
 else
   echo "****************\n**** Failed initializer_list ****\n****************" | tee -a ../log.txt
   exit $?
 fi
 ./etl_tests
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed >>>>"
+  echo "<<<< Passed Tests >>>>"
 else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?
@@ -206,14 +206,14 @@ clang --version | grep clang | tee -a log.txt
 CC=clang CXX=clang++ cmake --cmake-clean-cache ..
 make -j8
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed initializer_list >>>>"
+  echo "<<<< Passed initializer_list Compilation >>>>"
 else
   echo "****************\n**** Failed initializer_list ****\n****************" | tee -a ../log.txt
   exit $?
 fi
 ./etl_tests
 if [ $? -eq 0 ]; then
-  echo "<<<< Passed >>>>"
+  echo "<<<< Passed Tests >>>>"
 else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?

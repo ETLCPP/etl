@@ -3227,6 +3227,9 @@
     <ClCompile Include="..\sanity-check\wstring_stream.h.t.cpp">
       <Filter>Tests\Sanity Checks</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_unaligned_type_constexpr.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">

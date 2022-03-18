@@ -36,19 +36,67 @@ namespace
   SUITE(test_unaligned_type)
   {
     //*************************************************************************
-    TEST(test_copy_construction)
+    TEST(test_copy_construction_8)
     {
-      etl::le_uint32_t le_v1(0x01234567);
-      etl::be_uint32_t be_v1(0x01234567);
+      etl::le_uint32_t le_v1(0xEF);
+      etl::be_uint32_t be_v1(0xEF);
       etl::le_uint32_t le_v2(le_v1); // Copy construct le from le.
       etl::be_uint32_t be_v2(be_v1); // Copy construct be from be.
       etl::le_uint32_t le_v3(be_v1); // Copy construct le from be.
       etl::be_uint32_t be_v3(le_v1); // Copy construct be from le.
 
-      CHECK_EQUAL(int(0x01234567), int(le_v2));
-      CHECK_EQUAL(int(0x01234567), int(be_v2));
-      CHECK_EQUAL(int(0x01234567), int(le_v3));
-      CHECK_EQUAL(int(0x01234567), int(be_v3));
+      CHECK_EQUAL(int(0xEF), int(le_v2));
+      CHECK_EQUAL(int(0xEF), int(be_v2));
+      CHECK_EQUAL(int(0xEF), int(le_v3));
+      CHECK_EQUAL(int(0xEF), int(be_v3));
+    }
+
+    //*************************************************************************
+    TEST(test_copy_construction_16)
+    {
+      etl::le_uint32_t le_v1(0xEEEF);
+      etl::be_uint32_t be_v1(0xEEEF);
+      etl::le_uint32_t le_v2(le_v1); // Copy construct le from le.
+      etl::be_uint32_t be_v2(be_v1); // Copy construct be from be.
+      etl::le_uint32_t le_v3(be_v1); // Copy construct le from be.
+      etl::be_uint32_t be_v3(le_v1); // Copy construct be from le.
+
+      CHECK_EQUAL(int(0xEEEF), int(le_v2));
+      CHECK_EQUAL(int(0xEEEF), int(be_v2));
+      CHECK_EQUAL(int(0xEEEF), int(le_v3));
+      CHECK_EQUAL(int(0xEEEF), int(be_v3));
+    }
+
+    //*************************************************************************
+    TEST(test_copy_construction_32)
+    {
+      etl::le_uint32_t le_v1(0xEE2345EF);
+      etl::be_uint32_t be_v1(0xEE2345EF);
+      etl::le_uint32_t le_v2(le_v1); // Copy construct le from le.
+      etl::be_uint32_t be_v2(be_v1); // Copy construct be from be.
+      etl::le_uint32_t le_v3(be_v1); // Copy construct le from be.
+      etl::be_uint32_t be_v3(le_v1); // Copy construct be from le.
+
+      CHECK_EQUAL(int(0xEE2345EF), int(le_v2));
+      CHECK_EQUAL(int(0xEE2345EF), int(be_v2));
+      CHECK_EQUAL(int(0xEE2345EF), int(le_v3));
+      CHECK_EQUAL(int(0xEE2345EF), int(be_v3));
+    }
+
+    //*************************************************************************
+    TEST(test_copy_construction_64)
+    {
+      etl::le_uint64_t le_v1(0xEE23456789ABCDEF);
+      etl::be_uint64_t be_v1(0xEE23456789ABCDEF);
+      etl::le_uint64_t le_v2(le_v1); // Copy construct le from le.
+      etl::be_uint64_t be_v2(be_v1); // Copy construct be from be.
+      etl::le_uint64_t le_v3(be_v1); // Copy construct le from be.
+      etl::be_uint64_t be_v3(le_v1); // Copy construct be from le.
+
+      CHECK_EQUAL(uint64_t(0xEE23456789ABCDEF), uint64_t(le_v2));
+      CHECK_EQUAL(uint64_t(0xEE23456789ABCDEF), uint64_t(be_v2));
+      CHECK_EQUAL(uint64_t(0xEE23456789ABCDEF), uint64_t(le_v3));
+      CHECK_EQUAL(uint64_t(0xEE23456789ABCDEF), uint64_t(be_v3));
     }
 
     //*************************************************************************
@@ -142,7 +190,7 @@ namespace
       CHECK_EQUAL(sizeof(uint64_t), etl::net_uint64_t::Size);
     }
 
-#if ETL_ENDIANNESS_IS_CONSTEXPR
+#if ETL_HAS_CONSTEXPR_ENDIANNESS
     //*************************************************************************
     TEST(test_host_sizes)
     {
@@ -198,24 +246,24 @@ namespace
       CHECK(etl::le_ushort_t(0x0123) == (unsigned short)(0x0123));
 
       // int
-      CHECK(etl::le_int_t(0x012345678) == etl::le_int_t(0x012345678));
-      CHECK(int(0x012345678)           == etl::le_int_t(0x012345678));
-      CHECK(etl::le_int_t(0x012345678) == int(0x012345678));
+      CHECK(etl::le_int_t(0x01234567) == etl::le_int_t(0x01234567));
+      CHECK(int(0x01234567)          == etl::le_int_t(0x01234567));
+      CHECK(etl::le_int_t(0x01234567) == int(0x01234567));
 
-      CHECK(etl::le_uint_t(0x012345678U) == etl::le_uint_t(0x012345678U));
-      CHECK((unsigned int)(0x012345678U) == etl::le_uint_t(0x012345678U));
-      CHECK(etl::le_uint_t(0x012345678U) == (unsigned int)(0x012345678U));
+      CHECK(etl::le_uint_t(0x01234567U) == etl::le_uint_t(0x01234567U));
+      CHECK((unsigned int)(0x01234567U) == etl::le_uint_t(0x01234567U));
+      CHECK(etl::le_uint_t(0x01234567U) == (unsigned int)(0x01234567U));
 
       if (sizeof(long) == 4U)
       {
         // long
-        CHECK(etl::le_long_t(0x012345678) == etl::le_long_t(0x012345678));
-        CHECK(long(0x012345678)           == etl::le_long_t(0x012345678));
-        CHECK(etl::le_long_t(0x012345678) == long(0x012345678));
+        CHECK(etl::le_long_t(0x01234567) == etl::le_long_t(0x01234567));
+        CHECK(long(0x01234567)           == etl::le_long_t(0x01234567));
+        CHECK(etl::le_long_t(0x01234567) == long(0x01234567));
 
-        CHECK(etl::le_ulong_t(0x012345678U) == etl::le_ulong_t(0x012345678U));
-        CHECK((unsigned long)(0x012345678U) == etl::le_ulong_t(0x012345678U));
-        CHECK(etl::le_ulong_t(0x012345678U) == (unsigned long)(0x012345678U));
+        CHECK(etl::le_ulong_t(0x01234567U) == etl::le_ulong_t(0x01234567U));
+        CHECK((unsigned long)(0x01234567U) == etl::le_ulong_t(0x01234567U));
+        CHECK(etl::le_ulong_t(0x01234567U) == (unsigned long)(0x01234567U));
       }
 
       if (sizeof(long long) == 8U)
@@ -257,24 +305,24 @@ namespace
       CHECK(etl::le_ushort_t(0x0123) != (unsigned short)(0x0223));
 
       // int
-      CHECK(etl::le_int_t(0x012345678) != etl::le_int_t(0x022345678));
-      CHECK(int(0x012345678)           != etl::le_int_t(0x022345678));
-      CHECK(etl::le_int_t(0x012345678) != int(0x022345678));
+      CHECK(etl::le_int_t(0x01234567) != etl::le_int_t(0x02234567));
+      CHECK(int(0x01234567)           != etl::le_int_t(0x02234567));
+      CHECK(etl::le_int_t(0x01234567) != int(0x02234567));
 
-      CHECK(etl::le_uint_t(0x012345678U) != etl::le_uint_t(0x022345678U));
-      CHECK((unsigned int)(0x012345678U) != etl::le_uint_t(0x022345678U));
-      CHECK(etl::le_uint_t(0x012345678U) != (unsigned int)(0x022345678U));
+      CHECK(etl::le_uint_t(0x01234567U) != etl::le_uint_t(0x02234567U));
+      CHECK((unsigned int)(0x01234567U) != etl::le_uint_t(0x02234567U));
+      CHECK(etl::le_uint_t(0x01234567U) != (unsigned int)(0x02234567U));
 
       if (sizeof(long) == 4U)
       {
         // long
-        CHECK(etl::le_long_t(0x012345678) != etl::le_long_t(0x022345678));
-        CHECK(long(0x012345678)           != etl::le_long_t(0x022345678));
-        CHECK(etl::le_long_t(0x012345678) != long(0x022345678));
+        CHECK(etl::le_long_t(0x01234567) != etl::le_long_t(0x02234567));
+        CHECK(long(0x01234567)           != etl::le_long_t(0x02234567));
+        CHECK(etl::le_long_t(0x01234567) != long(0x02234567));
 
-        CHECK(etl::le_ulong_t(0x012345678U) != etl::le_ulong_t(0x022345678U));
-        CHECK((unsigned long)(0x012345678U) != etl::le_ulong_t(0x022345678U));
-        CHECK(etl::le_ulong_t(0x012345678U) != (unsigned long)(0x022345678U));
+        CHECK(etl::le_ulong_t(0x01234567U) != etl::le_ulong_t(0x02234567U));
+        CHECK((unsigned long)(0x01234567U) != etl::le_ulong_t(0x02234567U));
+        CHECK(etl::le_ulong_t(0x01234567U) != (unsigned long)(0x02234567U));
       }
 
       if (sizeof(long long) == 8U)
@@ -316,31 +364,31 @@ namespace
       CHECK(etl::be_ushort_t(0x0123) == (unsigned short)(0x0123));
 
       // int
-      CHECK(etl::be_int_t(0x012345678) == etl::be_int_t(0x012345678));
-      CHECK(int(0x012345678)           == etl::be_int_t(0x012345678));
-      CHECK(etl::be_int_t(0x012345678) == int(0x012345678));
+      CHECK(etl::be_int_t(0x01234567) == etl::be_int_t(0x01234567));
+      CHECK(int(0x01234567)           == etl::be_int_t(0x01234567));
+      CHECK(etl::be_int_t(0x01234567) == int(0x01234567));
 
-      CHECK(etl::be_uint_t(0x012345678U) == etl::be_uint_t(0x012345678U));
-      CHECK((unsigned int)(0x012345678U) == etl::be_uint_t(0x012345678U));
-      CHECK(etl::be_uint_t(0x012345678U) == (unsigned int)(0x012345678U));
+      CHECK(etl::be_uint_t(0x01234567U) == etl::be_uint_t(0x01234567U));
+      CHECK((unsigned int)(0x01234567U) == etl::be_uint_t(0x01234567U));
+      CHECK(etl::be_uint_t(0x01234567U) == (unsigned int)(0x01234567U));
 
       if (sizeof(long) == 4U)
       {
         // long
-        CHECK(etl::be_long_t(0x012345678) == etl::be_long_t(0x012345678));
-        CHECK(long(0x012345678)           == etl::be_long_t(0x012345678));
-        CHECK(etl::be_long_t(0x012345678) == long(0x012345678));
+        CHECK(etl::be_long_t(0x01234567) == etl::be_long_t(0x01234567));
+        CHECK(long(0x01234567)           == etl::be_long_t(0x01234567));
+        CHECK(etl::be_long_t(0x01234567) == long(0x01234567));
 
-        CHECK(etl::be_ulong_t(0x012345678U) == etl::be_ulong_t(0x012345678U));
-        CHECK((unsigned long)(0x012345678U) == etl::be_ulong_t(0x012345678U));
-        CHECK(etl::be_ulong_t(0x012345678U) == (unsigned long)(0x012345678U));
+        CHECK(etl::be_ulong_t(0x01234567U) == etl::be_ulong_t(0x01234567U));
+        CHECK((unsigned long)(0x01234567U) == etl::be_ulong_t(0x01234567U));
+        CHECK(etl::be_ulong_t(0x01234567U) == (unsigned long)(0x01234567U));
       }
 
       if (sizeof(long long) == 8U)
       {
         // long long
         CHECK(etl::be_long_long_t(0x0123456789ABCDEF) == etl::be_long_long_t(0x0123456789ABCDEF));
-        CHECK((long long)(0x0123456789ABCDEF)           == etl::be_long_long_t(0x0123456789ABCDEF));
+        CHECK((long long)(0x0123456789ABCDEF)         == etl::be_long_long_t(0x0123456789ABCDEF));
         CHECK(etl::be_long_long_t(0x0123456789ABCDEF) == (long long)(0x0123456789ABCDEF));
 
         CHECK(etl::be_ulong_long_t(0x0123456789ABCDEFU) == etl::be_ulong_long_t(0x0123456789ABCDEFU));
@@ -375,24 +423,24 @@ namespace
       CHECK(etl::be_ushort_t(0x0123) != (unsigned short)(0x0223));
 
       // int
-      CHECK(etl::be_int_t(0x012345678) != etl::be_int_t(0x022345678));
-      CHECK(int(0x012345678)           != etl::be_int_t(0x022345678));
-      CHECK(etl::be_int_t(0x012345678) != int(0x022345678));
+      CHECK(etl::be_int_t(0x01234567) != etl::be_int_t(0x02234567));
+      CHECK(int(0x01234567)           != etl::be_int_t(0x02234567));
+      CHECK(etl::be_int_t(0x01234567) != int(0x02234567));
 
-      CHECK(etl::be_uint_t(0x012345678U) != etl::be_uint_t(0x022345678U));
-      CHECK((unsigned int)(0x012345678U) != etl::be_uint_t(0x022345678U));
-      CHECK(etl::be_uint_t(0x012345678U) != (unsigned int)(0x022345678U));
+      CHECK(etl::be_uint_t(0x01234567U) != etl::be_uint_t(0x02234567U));
+      CHECK((unsigned int)(0x01234567U) != etl::be_uint_t(0x02234567U));
+      CHECK(etl::be_uint_t(0x01234567U) != (unsigned int)(0x02234567U));
 
       if (sizeof(long) == 4U)
       {
         // long
-        CHECK(etl::be_long_t(0x012345678) != etl::be_long_t(0x022345678));
-        CHECK(long(0x012345678)           != etl::be_long_t(0x022345678));
-        CHECK(etl::be_long_t(0x012345678) != long(0x022345678));
+        CHECK(etl::be_long_t(0x01234567) != etl::be_long_t(0x02234567));
+        CHECK(long(0x01234567)           != etl::be_long_t(0x02234567));
+        CHECK(etl::be_long_t(0x01234567) != long(0x02234567));
 
-        CHECK(etl::be_ulong_t(0x012345678U) != etl::be_ulong_t(0x022345678U));
-        CHECK((unsigned long)(0x012345678U) != etl::be_ulong_t(0x022345678U));
-        CHECK(etl::be_ulong_t(0x012345678U) != (unsigned long)(0x022345678U));
+        CHECK(etl::be_ulong_t(0x01234567U) != etl::be_ulong_t(0x02234567U));
+        CHECK((unsigned long)(0x01234567U) != etl::be_ulong_t(0x02234567U));
+        CHECK(etl::be_ulong_t(0x01234567U) != (unsigned long)(0x02234567U));
       }
 
       if (sizeof(long long) == 8U)
@@ -670,6 +718,47 @@ namespace
 
       CHECK_EQUAL(0x12, const_test_be[0]);
       CHECK_EQUAL(0x34, const_test_be[1]);
+    }
+
+    //*************************************************************************
+    TEST(test_le_negative_numbers)
+    {
+      // char
+      CHECK(char(0xFE) == etl::le_char_t(char(0xFE)));
+      CHECK((signed char)(0xFE) == etl::le_schar_t((signed char)(0xFE)));
+      CHECK((unsigned char)(0xFEU) == etl::le_uchar_t((unsigned char)(0xFEU)));
+
+      // short
+      CHECK(short(0xFEFD) == etl::le_short_t(short(0xFEFD)));
+      CHECK((unsigned short)(0xFEFD) == etl::le_ushort_t((unsigned short)(0xFEFD)));
+
+      // int
+      CHECK(int(0xFEFDFCFB) == etl::le_int_t(0xFEFDFCFB));
+      CHECK((unsigned int)(0xFEFDFCFBU) == etl::le_uint_t(0xFEFDFCFBU));
+
+      if (sizeof(long) == 4U)
+      {
+        // long
+        CHECK(long(0xFEFDFCFB) == etl::le_long_t(0xFEFDFCFB));
+        CHECK((unsigned long)(0xFEFDFCFBU) == etl::le_ulong_t(0xFEFDFCFBU));
+      }
+
+      if (sizeof(long long) == 8U)
+      {
+        // long long
+        CHECK((long long)(0xFEFDFCFBFAF9F8F7) == etl::le_long_long_t(0xFEFDFCFBFAF9F8F7));
+        CHECK((unsigned long long)(0xFEFDFCFBFAF9F8F7U) == etl::le_ulong_long_t(0xFEFDFCFBFAF9F8F7U));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_value)
+    {
+      etl::le_uint16_t test_le(0x1234);
+      etl::be_uint16_t test_be(0x1234);
+
+      CHECK_EQUAL(0x1234, test_le.value());
+      CHECK_EQUAL(0x1234, test_be.value());
     }
   };
 }
