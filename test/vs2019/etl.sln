@@ -23,8 +23,6 @@ Global
 		Debug MSVC - No STL - Auto Built-ins|x64 = Debug MSVC - No STL - Auto Built-ins|x64
 		Debug MSVC - No STL - Force Built-ins|Win32 = Debug MSVC - No STL - Force Built-ins|Win32
 		Debug MSVC - No STL - Force Built-ins|x64 = Debug MSVC - No STL - Force Built-ins|x64
-		Debug MSVC - No STL - Force Constexpr Algorithms|Win32 = Debug MSVC - No STL - Force Constexpr Algorithms|Win32
-		Debug MSVC - No STL - Force Constexpr Algorithms|x64 = Debug MSVC - No STL - Force Constexpr Algorithms|x64
 		Debug MSVC - No STL|Win32 = Debug MSVC - No STL|Win32
 		Debug MSVC - No STL|x64 = Debug MSVC - No STL|x64
 		Debug MSVC - No Tests|Win32 = Debug MSVC - No Tests|Win32
@@ -83,10 +81,6 @@ Global
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - No STL - Force Built-ins|Win32.Build.0 = Debug MSVC - No STL - Force Built-ins|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - No STL - Force Built-ins|x64.ActiveCfg = Debug MSVC - No STL - Force Built-ins|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - No STL - Force Built-ins|x64.Build.0 = Debug MSVC - No STL - Force Built-ins|x64
-		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - No STL - Force Constexpr Algorithms|Win32.ActiveCfg = Debug MSVC - No STL - Force Constexpr Algorithms|Win32
-		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - No STL - Force Constexpr Algorithms|Win32.Build.0 = Debug MSVC - No STL - Force Constexpr Algorithms|Win32
-		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - No STL - Force Constexpr Algorithms|x64.ActiveCfg = Debug MSVC - No STL - Force Constexpr Algorithms|x64
-		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - No STL - Force Constexpr Algorithms|x64.Build.0 = Debug MSVC - No STL - Force Constexpr Algorithms|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - No STL|Win32.ActiveCfg = Debug - No STL|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - No STL|Win32.Build.0 = Debug - No STL|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - No STL|x64.ActiveCfg = DebugNoSTL|x64
