@@ -75,7 +75,7 @@ namespace etl
   //***************************************************************************
   // swap
   template <typename T>
-  void swap(T& a, T& b) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 void swap(T& a, T& b) ETL_NOEXCEPT
   {
     T temp(ETL_MOVE(a));
     a = ETL_MOVE(b);
@@ -83,7 +83,7 @@ namespace etl
   }
 
   template< class T, size_t N >
-  void swap(T(&a)[N], T(&b)[N]) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 void swap(T(&a)[N], T(&b)[N]) ETL_NOEXCEPT
   {
     for (size_t i = 0UL; i < N; ++i)
     {
