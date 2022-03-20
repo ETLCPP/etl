@@ -45,6 +45,7 @@ jobs:
       run: |
         cmake -G "Visual Studio 16 2019" -AWin32 -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
         MSBuild.exe -version
+        dir
         MSBuild.exe .\etl_unit_tests.sln
         
     - name: Run tests
