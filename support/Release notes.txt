@@ -2,6 +2,7 @@
 20.26.0
 Added constexpr support for etl::unaligned_type.
 Added etl::traits namespace containing traits mirroring many ETL macros.
+Traits are const for C++03, constexpr for C++11 and above.
 Removed some uses of GCC builtins due to compatibilty with constexpr.
 etl::swap is now ETL_CONSTEXPR14.
 Changed ETL_ENDIANNESS_IS_CONSTEXPR to ETL_HAS_CONSTEXPR_ENDIANNESS.
