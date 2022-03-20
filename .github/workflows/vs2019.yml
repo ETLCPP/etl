@@ -27,7 +27,7 @@ jobs:
         MSBuild.exe .\etl.sln
         
     - name: Run tests
-      run: Win32/Debug/etl_tests.exe
+      run: debug/etl_tests.exe
 
   build-windows-vs2019-no-stl:
     name: Windows VS2019 Debug - No STL
@@ -49,7 +49,7 @@ jobs:
         MSBuild.exe .\etl_tests.sln
         
     - name: Run tests
-      run: Win32/Debug/etl.exe
+      run: debug/etl.exe
 
   build-windows-vs2019-stl-force-cpp03:
     name: Windows VS2019 Debug - STL - Force C++03
@@ -71,5 +71,5 @@ jobs:
         MSBuild.exe .\etl.sln
         
     - name: Run tests
-      run: Win32/Debug/etl_tests.exe
+      run: debug/etl_tests.exe
 
