@@ -903,9 +903,6 @@
     <ClInclude Include="..\..\include\etl\multi_range.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\message_pool.h">
-      <Filter>UnitTest++\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\ireference_counted_message_pool.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>

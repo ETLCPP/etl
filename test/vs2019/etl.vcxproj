@@ -2475,7 +2475,6 @@
     <ClInclude Include="..\..\include\etl\mean.h" />
     <ClInclude Include="..\..\include\etl\mem_cast.h" />
     <ClInclude Include="..\..\include\etl\message_packet.h" />
-    <ClInclude Include="..\..\include\etl\message_pool.h" />
     <ClInclude Include="..\..\include\etl\message_timer_atomic.h" />
     <ClInclude Include="..\..\include\etl\message_timer_interrupt.h" />
     <ClInclude Include="..\..\include\etl\message_timer_locked.h" />
