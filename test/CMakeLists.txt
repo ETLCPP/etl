@@ -32,12 +32,6 @@ if (ETL_FORCE_TEST_CPP03)
 	add_definitions(-DETL_FORCE_TEST_CPP03)
 endif()
 
-if(NOT UnitTest++_FOUND)
-  # Add unittest-cpp as an ExternalProject
-  include(cmake/unit-test_external_project.cmake)
-  add_unittest_cpp()
-endif()
-
 include_directories(${UTPP_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/../include)
 
 set(TEST_SOURCE_FILES
@@ -286,8 +280,59 @@ set(TEST_SOURCE_FILES
 	test_vector_pointer_external_buffer.cpp
 	test_visitor.cpp
 	test_xor_checksum.cpp
-	test_xor_rotate_checksum.cpp
+	test_xor_rotate_checksum.cpp 
   )
+  
+if (WIN32)
+    set(UNITTEST_SOURCE_FILES
+        UnitTest++/AssertException.cpp
+        UnitTest++/Checks.cpp
+        UnitTest++/CompositeTestReporter.cpp                                            
+        UnitTest++/CurrentTest.cpp                                                      
+        UnitTest++/DeferredTestReporter.cpp                                             
+        UnitTest++/DeferredTestResult.cpp                                               
+        UnitTest++/MemoryOutStream.cpp                                                  
+        UnitTest++/ReportAssert.cpp                                                     
+        UnitTest++/RequiredCheckException.cpp                                           
+        UnitTest++/RequiredCheckTestReporter.cpp                                        
+        UnitTest++/Test.cpp                                                             
+        UnitTest++/TestDetails.cpp                                                      
+        UnitTest++/TestList.cpp                                                         
+        UnitTest++/TestReporter.cpp                                                     
+        UnitTest++/TestReporterStdout.cpp                                               
+        UnitTest++/TestResults.cpp                                                      
+        UnitTest++/TestRunner.cpp                                                       
+        UnitTest++/ThrowingTestReporter.cpp                                             
+        UnitTest++/TimeConstraint.cpp                                                   
+        UnitTest++/XmlTestReporter.cpp     
+        UnitTest++/Win32/TimeHelpers.cpp
+  )
+else ()
+    set(UNITTEST_SOURCE_FILES
+        UnitTest++/AssertException.cpp
+        UnitTest++/Checks.cpp
+        UnitTest++/CompositeTestReporter.cpp
+        UnitTest++/CurrentTest.cpp
+        UnitTest++/DeferredTestReporter.cpp
+        UnitTest++/DeferredTestResult.cpp
+        UnitTest++/MemoryOutStream.cpp
+        UnitTest++/ReportAssert.cpp
+        UnitTest++/RequiredCheckException.cpp
+        UnitTest++/RequiredCheckTestReporter.cpp
+        UnitTest++/Test.cpp
+        UnitTest++/TestDetails.cpp
+        UnitTest++/TestList.cpp
+        UnitTest++/TestReporter.cpp
+        UnitTest++/TestReporterStdout.cpp
+        UnitTest++/TestResults.cpp
+        UnitTest++/TestRunner.cpp
+        UnitTest++/ThrowingTestReporter.cpp
+        UnitTest++/TimeConstraint.cpp
+        UnitTest++/XmlTestReporter.cpp
+		UnitTest++/Posix/SignalTranslator.cpp
+        UnitTest++/Posix/TimeHelpers.cpp
+  )
+endif ()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   list(APPEND TEST_SOURCE_FILES "test_atomic_gcc_sync.cpp")
@@ -296,19 +341,20 @@ endif()
 
 add_executable(etl_tests
   ${TEST_SOURCE_FILES}
+  ${UNITTEST_SOURCE_FILES}
   )
 
 if(UNIX AND NOT APPLE)
   # atomic is need on Linux with Clang
   set(THREADS_PREFER_PTHREAD_FLAG ON)
   find_package(Threads REQUIRED)
-  target_link_libraries(etl_tests UnitTest++ atomic Threads::Threads)
+  target_link_libraries(etl_tests atomic Threads::Threads)
 elseif(NOT UNIX AND APPLE)
   set(THREADS_PREFER_PTHREAD_FLAG ON)
   find_package(Threads REQUIRED)
-  target_link_libraries(etl_tests UnitTest++)
+  target_link_libraries(etl_tests)
 else()
-  target_link_libraries(etl_tests UnitTest++)
+  target_link_libraries(etl_tests)
 endif()
 
 target_include_directories(etl_tests

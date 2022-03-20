@@ -30,6 +30,5 @@ SOFTWARE.
 #define ETL_UNIT_TEST_FRAMEWORK_INCLUDED
 
 #include "UnitTest++/UnitTest++.h"
-#include "ExtraCheckMacros.h"
 
 #endif
