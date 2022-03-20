@@ -187,6 +187,9 @@
     <Filter Include="Tests\Sanity Checks\Source">
       <UniqueIdentifier>{a05ae045-3218-4ca2-9f25-08cc977898df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UnitTest++\Header Files\Win32">
+      <UniqueIdentifier>{4dd0f57a-eeab-4910-a243-42c0950f0536}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -1265,6 +1268,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\message_timer_interrupt.h">
       <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.h">
+      <Filter>UnitTest++\Header Files\Win32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

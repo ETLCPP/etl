@@ -2364,6 +2364,7 @@
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\TimeHelpers.h" />
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\UnitTest++.h" />
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\UnitTestPP.h" />
+    <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\Win32\TimeHelpers.h" />
     <ClInclude Include="..\..\..\unittest-cpp\UnitTest++\XmlTestReporter.h" />
     <ClInclude Include="..\..\arduino\Embedded_Template_Library.h" />
     <ClInclude Include="..\..\include\etl\array_view.h" />
