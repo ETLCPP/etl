@@ -27,7 +27,7 @@ jobs:
         ls Debug
         
     - name: Run tests
-      run: ./Debug/etl_tests.exe
+      run: test/Debug/etl_tests.exe
 
 #  build-windows-vs2019-no-stl:
 #    name: Windows VS2019 Debug - No STL
