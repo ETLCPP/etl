@@ -27,7 +27,6 @@ jobs:
         MSBuild.exe .\etl.sln
         dir
         dir Debug
-        dir test/Win32/Debug
         
 #    - name: Run tests
 #      run: debug/etl_tests.exe
