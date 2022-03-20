@@ -35,6 +35,7 @@ SOFTWARE.
 #include <assert.h>
 
 #include "platform.h"
+#include "atomic.h"
 
 ///\defgroup debug_count debug count
 ///\ingroup utilities
@@ -111,7 +112,11 @@ namespace etl
 
   private:
 
+#if ETL_HAS_ATOMIC
+    etl::atomic_int32_t count;
+#else
     int32_t count;
+#endif
   };
 
 }

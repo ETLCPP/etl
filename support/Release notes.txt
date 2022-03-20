@@ -8,6 +8,7 @@ etl::swap is now ETL_CONSTEXPR14.
 Changed ETL_ENDIANNESS_IS_CONSTEXPR to ETL_HAS_CONSTEXPR_ENDIANNESS.
 Changed ETL_CONSTEXPR17 to ETL_CONSTEXPR14 for reverse iterators
 Added template wrappers around memcpy, memmove, memcmp, memset& memchr.
+The counter in etl::debug_count is atomic, if available.
 
 ===============================================================================
 20.25.0
