@@ -1,7 +1,7 @@
 name: vs2019
 on:
   push:
-    branches: [ master ]
+    branches: [ master development]
   pull_request:
     branches: [ master ]
 
@@ -21,9 +21,9 @@ jobs:
 
     - name: Build
       run: |
-        cmake -G "Visual Studio 16 2019" -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
+        cmake -G "Visual Studio 16 2019" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
         MSBuild.exe -version
-        MSBuild.exe etl.sln
+        MSBuild.exe .\etl_unit_tests.sln
         
     - name: Run tests
       run: ./test/debug/etl_tests.exe
@@ -43,9 +43,9 @@ jobs:
 
     - name: Build
       run: |
-        cmake -G "Visual Studio 16 2019" -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
+        cmake -G "Visual Studio 16 2019" -AWin32 -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
         MSBuild.exe -version
-        MSBuild.exe etl.sln
+        MSBuild.exe .\etl_unit_tests.sln
         
     - name: Run tests
       run: ./test/debug/etl_tests.exe
@@ -65,9 +65,9 @@ jobs:
 
     - name: Build
       run: |
-        cmake -G "Visual Studio 16 2019" -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ./
+        cmake -G "Visual Studio 16 2019" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ./
         MSBuild.exe -version
-        MSBuild.exe etl.sln
+        MSBuild.exe .\etl_unit_tests.sln
         
     - name: Run tests
       run: ./test/debug/etl_tests.exe
