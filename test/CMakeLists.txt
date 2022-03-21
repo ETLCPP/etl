@@ -27,9 +27,9 @@ if (ETL_USER_DEFINED_TYPE_TRAITS)
 	add_definitions(-DETL_USER_DEFINED_TYPE_TRAITS)
 endif()
 
-if (ETL_FORCE_TEST_CPP03)
+if (ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 	message(STATUS "Compiling for C++03 tests")
-	add_definitions(-DETL_FORCE_TEST_CPP03)
+	add_definitions(-DETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 endif()
 
 include_directories(${UTPP_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/../include)
@@ -283,54 +283,39 @@ set(TEST_SOURCE_FILES
 	test_xor_rotate_checksum.cpp 
   )
   
+set(UNITTEST_SOURCE_FILES
+    UnitTest++/AssertException.cpp
+    UnitTest++/Checks.cpp
+    UnitTest++/CompositeTestReporter.cpp                                            
+    UnitTest++/CurrentTest.cpp                                                      
+    UnitTest++/DeferredTestReporter.cpp                                             
+    UnitTest++/DeferredTestResult.cpp                                               
+    UnitTest++/MemoryOutStream.cpp                                                  
+    UnitTest++/ReportAssert.cpp                                                     
+    UnitTest++/RequiredCheckException.cpp                                           
+    UnitTest++/RequiredCheckTestReporter.cpp                                        
+    UnitTest++/Test.cpp                                                             
+    UnitTest++/TestDetails.cpp                                                      
+    UnitTest++/TestList.cpp                                                         
+    UnitTest++/TestReporter.cpp                                                     
+    UnitTest++/TestReporterStdout.cpp                                               
+    UnitTest++/TestResults.cpp                                                      
+    UnitTest++/TestRunner.cpp                                                       
+    UnitTest++/ThrowingTestReporter.cpp                                             
+    UnitTest++/TimeConstraint.cpp                                                   
+    UnitTest++/XmlTestReporter.cpp
+  )
+
 if (WIN32)
-    set(UNITTEST_SOURCE_FILES
-        UnitTest++/AssertException.cpp
-        UnitTest++/Checks.cpp
-        UnitTest++/CompositeTestReporter.cpp                                            
-        UnitTest++/CurrentTest.cpp                                                      
-        UnitTest++/DeferredTestReporter.cpp                                             
-        UnitTest++/DeferredTestResult.cpp                                               
-        UnitTest++/MemoryOutStream.cpp                                                  
-        UnitTest++/ReportAssert.cpp                                                     
-        UnitTest++/RequiredCheckException.cpp                                           
-        UnitTest++/RequiredCheckTestReporter.cpp                                        
-        UnitTest++/Test.cpp                                                             
-        UnitTest++/TestDetails.cpp                                                      
-        UnitTest++/TestList.cpp                                                         
-        UnitTest++/TestReporter.cpp                                                     
-        UnitTest++/TestReporterStdout.cpp                                               
-        UnitTest++/TestResults.cpp                                                      
-        UnitTest++/TestRunner.cpp                                                       
-        UnitTest++/ThrowingTestReporter.cpp                                             
-        UnitTest++/TimeConstraint.cpp                                                   
-        UnitTest++/XmlTestReporter.cpp     
-        UnitTest++/Win32/TimeHelpers.cpp
+  set(UNITTEST_SOURCE_FILES
+      ${UNITTEST_SOURCE_FILES}
+      UnitTest++/Win32/TimeHelpers.cpp
   )
 else ()
-    set(UNITTEST_SOURCE_FILES
-        UnitTest++/AssertException.cpp
-        UnitTest++/Checks.cpp
-        UnitTest++/CompositeTestReporter.cpp
-        UnitTest++/CurrentTest.cpp
-        UnitTest++/DeferredTestReporter.cpp
-        UnitTest++/DeferredTestResult.cpp
-        UnitTest++/MemoryOutStream.cpp
-        UnitTest++/ReportAssert.cpp
-        UnitTest++/RequiredCheckException.cpp
-        UnitTest++/RequiredCheckTestReporter.cpp
-        UnitTest++/Test.cpp
-        UnitTest++/TestDetails.cpp
-        UnitTest++/TestList.cpp
-        UnitTest++/TestReporter.cpp
-        UnitTest++/TestReporterStdout.cpp
-        UnitTest++/TestResults.cpp
-        UnitTest++/TestRunner.cpp
-        UnitTest++/ThrowingTestReporter.cpp
-        UnitTest++/TimeConstraint.cpp
-        UnitTest++/XmlTestReporter.cpp
-		UnitTest++/Posix/SignalTranslator.cpp
-        UnitTest++/Posix/TimeHelpers.cpp
+  set(UNITTEST_SOURCE_FILES
+	  ${UNITTEST_SOURCE_FILES}
+      UnitTest++/Posix/SignalTranslator.cpp
+      UnitTest++/Posix/TimeHelpers.cpp
   )
 endif ()
 
@@ -339,28 +324,23 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 endif()
 
-add_executable(etl_tests
-  ${TEST_SOURCE_FILES}
-  ${UNITTEST_SOURCE_FILES}
-  )
+add_executable(etl_tests ${TEST_SOURCE_FILES})
+add_library(unit_test ${UNITTEST_SOURCE_FILES})
 
 if(UNIX AND NOT APPLE)
   # atomic is need on Linux with Clang
   set(THREADS_PREFER_PTHREAD_FLAG ON)
   find_package(Threads REQUIRED)
-  target_link_libraries(etl_tests atomic Threads::Threads)
+  target_link_libraries(etl_tests unit_test atomic Threads::Threads)
 elseif(NOT UNIX AND APPLE)
   set(THREADS_PREFER_PTHREAD_FLAG ON)
   find_package(Threads REQUIRED)
-  target_link_libraries(etl_tests)
+  target_link_libraries(etl_tests unit_test)
 else()
-  target_link_libraries(etl_tests)
+  target_link_libraries(etl_tests unit_test)
 endif()
 
-target_include_directories(etl_tests
-  PUBLIC
-  ${CMAKE_CURRENT_LIST_DIR}
-  )
+target_include_directories(etl_tests PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 
 # Enable the 'make test' CMake target using the executable defined above
 add_test(etl_unit_tests etl_tests)
@@ -370,6 +350,4 @@ add_test(etl_unit_tests etl_tests)
 # as they appear from UnitTest++
 add_custom_target(test_verbose COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
 
-#RSG
 set_property(TARGET etl_tests PROPERTY CXX_STANDARD 17)
-

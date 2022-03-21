@@ -189,6 +189,14 @@
       UnitTest::CurrentTest::Results()->OnTestFailure(UnitTest::TestDetails(*UnitTest::CurrentTest::Details(), __LINE__), "Expected exception: \"" #ExpectedExceptionType "\" not thrown"); \
    UNITTEST_MULTILINE_MACRO_END
 
+#define UNITTEST_CHECK_NO_THROW(expression) \
+  UNITTEST_MULTILINE_MACRO_BEGIN \
+  bool caught_ = false; \
+  try { expression; } \
+  catch (...) { caught_ = true; } \
+if (caught_) \
+  UnitTest::CurrentTest::Results()->OnTestFailure(UnitTest::TestDetails(*UnitTest::CurrentTest::Details(), __LINE__), "Unexpected exception thrown"); \
+  UNITTEST_MULTILINE_MACRO_END
 
 #define UNITTEST_CHECK_ASSERT(expression)                       \
    UNITTEST_MULTILINE_MACRO_BEGIN                      \
@@ -203,6 +211,12 @@
       #error CHECK_THROW already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_THROW instead
    #else
       #define CHECK_THROW UNITTEST_CHECK_THROW
+   #endif
+
+   #ifdef CHECK_NO_THROW
+      #error CHECK_NO_THROW already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_NO_THROW instead
+   #else
+      #define CHECK_NO_THROW UNITTEST_CHECK_NO_THROW
    #endif
 
    #ifdef CHECK_ASSERT
