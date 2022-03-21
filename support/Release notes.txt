@@ -9,6 +9,7 @@ Changed ETL_ENDIANNESS_IS_CONSTEXPR to ETL_HAS_CONSTEXPR_ENDIANNESS.
 Changed ETL_CONSTEXPR17 to ETL_CONSTEXPR14 for reverse iterators
 Added template wrappers around memcpy, memmove, memcmp, memset& memchr.
 The counter in etl::debug_count is atomic, if available.
+Embedded essential UnitTest++ source into the project, as it is no longer maintained on GitHub.
 
 ===============================================================================
 20.25.0
