@@ -68,9 +68,9 @@ namespace
 
       if (!file.fail())
       {
-        for (size_t i = 0UL; i < out1.size(); i += 2)
+        for (size_t i = 0UL; i < out1.size(); ++i)
         {
-          file << out1[i] << "," << out1[i + 1] << "\n";
+          file << out1[i] << "\n";
         }
       }
 
@@ -121,9 +121,9 @@ namespace
 
       if (!file.fail())
       {
-        for (size_t i = 0UL; i < out1.size(); i += 2)
+        for (size_t i = 0UL; i < out1.size(); ++i)
         {
-          file << out1[i] << "," << out1[i + 1] << "\n";
+          file << out1[i] << "\n";
         }
       }
 
@@ -174,9 +174,9 @@ namespace
 
       if (!file.fail())
       {
-        for (size_t i = 0UL; i < out1.size(); i += 2)
+        for (size_t i = 0UL; i < out1.size(); ++i)
         {
-          file << out1[i] << "," << out1[i + 1] << "\n";
+          file << out1[i] << "\n";
         }
       }
 
@@ -227,9 +227,9 @@ namespace
 
       if (!file.fail())
       {
-        for (size_t i = 0UL; i < out1.size(); i += 2)
+        for (size_t i = 0UL; i < out1.size(); ++i)
         {
-          file << out1[i] << "," << out1[i + 1] << "\n";
+          file << out1[i] << "\n";
         }
       }
 
@@ -280,9 +280,9 @@ namespace
 
       if (!file.fail())
       {
-        for (size_t i = 0UL; i < out1.size(); i += 2)
+        for (size_t i = 0UL; i < out1.size(); ++i)
         {
-          file << out1[i] << "," << out1[i + 1] << "\n";
+          file << out1[i] << "\n";
         }
       }
 
@@ -333,9 +333,9 @@ namespace
 
       if (!file.fail())
       {
-        for (size_t i = 0UL; i < out1.size(); i += 2)
+        for (size_t i = 0UL; i < out1.size(); ++i)
         {
-          file << out1[i] << "," << out1[i + 1] << "\n";
+          file << out1[i] << "\n";
         }
       }
 
@@ -386,9 +386,9 @@ namespace
 
       if (!file.fail())
       {
-        for (size_t i = 0UL; i < out1.size(); i += 2)
+        for (size_t i = 0UL; i < out1.size(); ++i)
         {
-          file << out1[i] << "," << out1[i + 1] << "\n";
+          file << out1[i] << "\n";
         }
       }
 
