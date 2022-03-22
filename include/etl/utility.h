@@ -444,7 +444,39 @@ namespace etl
   typename etl::add_rvalue_reference<T>::type declval() ETL_NOEXCEPT;
 #endif
 
+#if ETL_USING_CPP11
+  //*************************************************************************
+  /// A function wrapper for free/global functions.
+  //*************************************************************************
+  template <typename TReturn, typename... TParams>
+  class functor
+  {
+  public:
 
+    //*********************************
+    /// Constructor.
+    //*********************************
+    constexpr functor(TReturn(*ptr_)(TParams...))
+      : ptr(ptr_)
+    {
+    }
+
+    //*********************************
+    /// Const function operator.
+    //*********************************
+    constexpr TReturn operator()(TParams... args) const
+    {
+      return ptr(etl::forward<TParams>(args)...);
+    }
+
+  private:
+
+    /// The pointer to the function.
+    TReturn(*ptr)(TParams...);
+  };
+#endif
+
+#if ETL_USING_CPP11
   //*****************************************************************************
   // A wrapper for a member function
   // Creates a static member function that calls the specified member function.
@@ -458,12 +490,14 @@ namespace etl
   public:
 
     template <typename T, T& Instance, TReturn(T::* Method)(TParams...)>
-    static TReturn function(TParams... params)
+    static constexpr TReturn function(TParams... params)
     {
-      return (Instance.*Method)(std::forward<TParams>(params)...);
+      return (Instance.*Method)(etl::forward<TParams>(params)...);
     }
   };
+#endif
 
+#if ETL_USING_CPP11
   //*****************************************************************************
   // A wrapper for a functor
   // Creates a static member function that calls the specified functor.
@@ -476,12 +510,13 @@ namespace etl
   {
   public:
 
-    template <typename TDelegate, TDelegate& Instance>
-    static TReturn function(TParams... params)
+    template <typename TFunctor, TFunctor& Instance>
+    static constexpr TReturn function(TParams... params)
     {
-      return Instance(std::forward<TParams>(params)...);
+      return Instance(etl::forward<TParams>(params)...);
     }
   };
+#endif
 }
 
 #endif

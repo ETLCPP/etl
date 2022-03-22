@@ -36,6 +36,7 @@ namespace
 {
   bool nonConstCalled;
   bool constCalled;
+  int  value;
 
   void TestText(std::string&)
   {
@@ -47,6 +48,11 @@ namespace
     constCalled = true;
   }
 
+  int TestGlobal(int i)
+  {
+    return 2 * i;
+  }
+
   using ItemM1 = TestDataM<int>;
   using ItemM2 = TestDataM<double>;
 
@@ -56,17 +62,15 @@ namespace
   {
   public:
 
-    void MemberFunction(int i)
+    int MemberFunction(int i)
     {
-      value  = i;
+      return 2 * i;
     }
 
-    void operator()(int i)
+    int operator()(int i)
     {
-      value = i;
+      return 2 * i;
     }
-
-    int value;
   };
 
   static TestClass test;
@@ -326,23 +330,28 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_functor)
+    {
+      constexpr auto ptr = TestGlobal;
+
+      constexpr etl::functor fw1(ptr);
+      CHECK_EQUAL(2, fw1(1));
+    }
+
+    //*************************************************************************
     TEST(test_member_function_wrapper)
     {
-      void(*pf)(int) = &etl::member_function_wrapper<void(int)>::function<TestClass, test, &TestClass::MemberFunction>;
+      constexpr int(*pf)(int) = &etl::member_function_wrapper<int(int)>::function<TestClass, test, &TestClass::MemberFunction>;
 
-      test.value = 0;
-      pf(1);
-      CHECK_EQUAL(1, test.value);
+      CHECK_EQUAL(2, pf(1));
     }
 
     //*************************************************************************
     TEST(test_functor_wrapper)
     {
-      void(*pf)(int) = &etl::functor_wrapper<void(int)>::function<TestClass, test>;
+      constexpr int(*pf)(int) = &etl::functor_wrapper<int(int)>::function<TestClass, test>;
 
-      test.value = 0;
-      pf(1);
-      CHECK_EQUAL(1, test.value);
+      CHECK_EQUAL(2, pf(1));
     }
   };
 }
