@@ -280,17 +280,7 @@ namespace etl
     //*************************************************************************
     friend ETL_CONSTEXPR14 bool operator ==(const unaligned_type& lhs, const unaligned_type& rhs)
     {
-      //for (int i = 0; i < Size; ++i)
-      //{
-      //  if (lhs.storage[i] != rhs.storage[i])
-      //  {
-      //    return false;
-      //  }
-      //}
-
       return etl::equal(lhs.data(), lhs.data() + lhs.Size, rhs.data());
-
-      //return true;
     }
 
     //*************************************************************************
