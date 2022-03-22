@@ -443,6 +443,45 @@ namespace etl
   template <typename T>
   typename etl::add_rvalue_reference<T>::type declval() ETL_NOEXCEPT;
 #endif
+
+
+  //*****************************************************************************
+  // A wrapper for a member function
+  // Creates a static member function that calls the specified member function.
+  //*****************************************************************************
+  template <typename T>
+  class member_function_wrapper;
+
+  template <typename TReturn, typename... TParams>
+  class member_function_wrapper<TReturn(TParams...)>
+  {
+  public:
+
+    template <typename T, T& Instance, TReturn(T::* Method)(TParams...)>
+    static TReturn function(TParams... params)
+    {
+      return (Instance.*Method)(std::forward<TParams>(params)...);
+    }
+  };
+
+  //*****************************************************************************
+  // A wrapper for a functor
+  // Creates a static member function that calls the specified functor.
+  //*****************************************************************************
+  template <typename T>
+  class functor_wrapper;
+
+  template <typename TReturn, typename... TParams>
+  class functor_wrapper<TReturn(TParams...)>
+  {
+  public:
+
+    template <typename TDelegate, TDelegate& Instance>
+    static TReturn function(TParams... params)
+    {
+      return Instance(std::forward<TParams>(params)...);
+    }
+  };
 }
 
 #endif

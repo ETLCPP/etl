@@ -49,6 +49,27 @@ namespace
 
   using ItemM1 = TestDataM<int>;
   using ItemM2 = TestDataM<double>;
+
+  //*****************************************************************************
+  // The test class to call.
+  class TestClass
+  {
+  public:
+
+    void MemberFunction(int i)
+    {
+      value  = i;
+    }
+
+    void operator()(int i)
+    {
+      value = i;
+    }
+
+    int value;
+  };
+
+  static TestClass test;
 }
 
 namespace
@@ -302,6 +323,26 @@ namespace
 
       CHECK(!nonConstCalled);
       CHECK(constCalled);
+    }
+
+    //*************************************************************************
+    TEST(test_member_function_wrapper)
+    {
+      void(*pf)(int) = &etl::member_function_wrapper<void(int)>::function<TestClass, test, &TestClass::MemberFunction>;
+
+      test.value = 0;
+      pf(1);
+      CHECK_EQUAL(1, test.value);
+    }
+
+    //*************************************************************************
+    TEST(test_functor_wrapper)
+    {
+      void(*pf)(int) = &etl::functor_wrapper<void(int)>::function<TestClass, test>;
+
+      test.value = 0;
+      pf(1);
+      CHECK_EQUAL(1, test.value);
     }
   };
 }
