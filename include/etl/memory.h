@@ -2201,7 +2201,6 @@ namespace etl
 
   //***************************************************************************
   /// Template wrapper for memcmp.
-  /// Type must be a char, signed char or unsigned char.
   /// \param source begin
   /// \param source end
   /// \param destination begin
@@ -2221,7 +2220,6 @@ namespace etl
 
   //***************************************************************************
   /// Template wrapper for memcmp.
-  /// Type must be a char, signed char or unsigned char.
   /// \param sb Source begin
   /// \param n  Source length
   /// \param db Destination begin
@@ -2241,41 +2239,38 @@ namespace etl
 
   //***************************************************************************
   /// Template wrapper for memset.
-  /// Type must be a char, signed char or unsigned char.
   /// \param db    Destination begin.
   /// \param de    Destination end.
   /// \param value The value to set.
   /// \return The destination
   //***************************************************************************
-  template <typename TPointer>
+  template <typename TPointer, typename T>
   typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<TPointer>::value_type>::value, TPointer>::type
-    mem_set(TPointer db, const TPointer de, typename etl::iterator_traits<TPointer>::value_type value) ETL_NOEXCEPT
+    mem_set(TPointer db, const TPointer de, T value) ETL_NOEXCEPT
   {
     return reinterpret_cast<TPointer>(memset(reinterpret_cast<void*>(db), 
-                                             value, 
+                                             static_cast<char>(value),
                                              sizeof(typename etl::iterator_traits<TPointer>::value_type) * static_cast<size_t>(de - db)));
   }
 
   //***************************************************************************
   /// Template wrapper for memset.
-  /// Type must be a char, signed char or unsigned char.
   /// \param db    Destination begin.
   /// \param n     Destination length.
   /// \param value The value to set.
   /// \return The destination
   //***************************************************************************
-  template <typename TPointer>
+  template <typename TPointer, typename T>
   typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<TPointer>::value_type>::value, TPointer>::type
-    mem_set(const TPointer db, size_t n, typename etl::iterator_traits<TPointer>::value_type value) ETL_NOEXCEPT
+    mem_set(const TPointer db, size_t n, T value) ETL_NOEXCEPT
   {
-    return reinterpret_cast<TPointer>(memset(reinterpret_cast<void*>(db), 
-                                             value, 
+    return reinterpret_cast<TPointer>(memset(reinterpret_cast<void*>(db),
+                                             static_cast<char>(value),
                                              sizeof(typename etl::iterator_traits<TPointer>::value_type) * n));
   }
 
   //***************************************************************************
   /// Template wrapper for memchr.
-  /// Type must be a char, signed char or unsigned char.
   /// \param sb    Source begin.
   /// \param se    Source end.
   /// \param value The value to find.
@@ -2295,7 +2290,6 @@ namespace etl
 
   //***************************************************************************
   /// Template wrapper for memchr.
-  /// Type must be a char, signed char or unsigned char.
   /// \param sb    Source begin.
   /// \param se    Source end.
   /// \param value The value to find.
@@ -2315,7 +2309,6 @@ namespace etl
 
   //***************************************************************************
   /// Template wrapper for memchr.
-  /// Type must be a char, signed char or unsigned char.
   /// \param sb    Source begin.
   /// \param n     Source length.
   /// \param value The value to find.
@@ -2335,7 +2328,6 @@ namespace etl
 
   //***************************************************************************
   /// Template wrapper for memchr.
-  /// Type must be a char, signed char or unsigned char.
   /// \param sb    Source begin.
   /// \param n     Source length.
   /// \param value The value to find.
