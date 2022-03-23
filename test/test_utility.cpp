@@ -332,9 +332,7 @@ namespace
     //*************************************************************************
     TEST(test_functor)
     {
-      constexpr auto ptr = TestGlobal;
-
-      constexpr etl::functor fw1(ptr);
+      constexpr etl::functor fw1(TestGlobal);
       CHECK_EQUAL(2, fw1(1));
     }
 
