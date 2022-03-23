@@ -1,4 +1,10 @@
 ===============================================================================
+20.27.0
+Added etl::functor for wrapping global/static functions in a functor.
+Added etl::member_function_wrapper for converting a member function to a static function.
+Added etl::functor_wrapper for converting a member function operator to a static function.
+
+===============================================================================
 20.26.0
 Added constexpr support for etl::unaligned_type.
 Added etl::traits namespace containing traits mirroring many ETL macros.
