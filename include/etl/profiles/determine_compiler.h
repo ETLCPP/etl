@@ -46,7 +46,6 @@ SOFTWARE.
   #if !defined(ETL_COMPILER_TYPE_DETECTED) && !defined(ETL_COMPILER_ARM5)
     #if defined(__CC_ARM)
       #define ETL_COMPILER_ARM5
-      #define ETL_USING_ARM5_COMPILER 1
       #define ETL_COMPILER_TYPE_DETECTED
     #endif
   #endif
@@ -61,7 +60,6 @@ SOFTWARE.
   #if !defined(ETL_COMPILER_TYPE_DETECTED) && !defined(ETL_COMPILER_ARM7)
     #if defined(__ARMCOMPILER_VERSION) && (__ARMCOMPILER_VERSION >= 7000000L) && (__ARMCOMPILER_VERSION < 8000000L)
       #define ETL_COMPILER_ARM7
-      #define ETL_USING_ARM7_COMPILER 1
       #define ETL_COMPILER_TYPE_DETECTED
     #endif
   #endif
@@ -69,7 +67,6 @@ SOFTWARE.
   #if !defined(ETL_COMPILER_TYPE_DETECTED) && !defined(ETL_COMPILER_GCC)
     #if defined(__GNUC__) && !defined(__clang__) && !defined(__llvm__)
       #define ETL_COMPILER_GCC
-      #define ETL_USING_GCC_COMPILER 1
       #define ETL_COMPILER_TYPE_DETECTED
     #endif
   #endif
@@ -77,7 +74,6 @@ SOFTWARE.
   #if !defined(ETL_COMPILER_TYPE_DETECTED) && !defined(ETL_COMPILER_CLANG)
     #if defined(__clang__) || defined(__llvm__)
       #define ETL_COMPILER_CLANG
-      #define ETL_USING_CLANG_COMPILER 1
       #define ETL_COMPILER_TYPE_DETECTED
       #if __AVR__ == 1
         #define ETL_CROSS_COMPILING_TO_AVR
@@ -88,7 +84,6 @@ SOFTWARE.
   #if !defined(ETL_COMPILER_TYPE_DETECTED) && !defined(ETL_COMPILER_GREEN_HILLS)
     #if defined(__ghs__)
       #define ETL_COMPILER_GREEN_HILLS
-      #define ETL_USING_GREEN_HILLS_COMPILER 1
       #define ETL_COMPILER_TYPE_DETECTED
     #endif
   #endif
@@ -96,7 +91,6 @@ SOFTWARE.
   #if !defined(ETL_COMPILER_TYPE_DETECTED) && !defined(ETL_COMPILER_IAR)
     #if defined(__IAR_SYSTEMS_ICC__)
       #define ETL_COMPILER_IAR
-      #define ETL_USING_IAR_COMPILER 1
       #define ETL_COMPILER_TYPE_DETECTED
     #endif
   #endif
@@ -104,7 +98,6 @@ SOFTWARE.
   #if !defined(ETL_COMPILER_TYPE_DETECTED) && !defined(ETL_COMPILER_INTEL)
     #if defined(__INTEL_COMPILER)
       #define ETL_COMPILER_INTEL
-      #define ETL_USING_INTEL_COMPILER 1
       #define ETL_COMPILER_TYPE_DETECTED
     #endif
   #endif
@@ -112,7 +105,6 @@ SOFTWARE.
   #if !defined(ETL_COMPILER_TYPE_DETECTED) && !defined(ETL_COMPILER_TEXAS_INSTRUMENTS)
     #if defined(__TI_COMPILER_VERSION__)
       #define ETL_COMPILER_TEXAS_INSTRUMENTS
-      #define ETL_USING_TEXAS_INSTRUMENTS_COMPILER 1
       #define ETL_COMPILER_TYPE_DETECTED
     #endif
   #endif
@@ -120,58 +112,78 @@ SOFTWARE.
   #if !defined(ETL_COMPILER_TYPE_DETECTED) && !defined(ETL_COMPILER_MICROSOFT)
     #if defined(_MSC_VER)
       #define ETL_COMPILER_MICROSOFT
-      #define ETL_USING_MICROSOFT_COMPILER 1
       #define ETL_COMPILER_TYPE_DETECTED
     #endif
   #endif
 
   #if !defined(ETL_COMPILER_TYPE_DETECTED)
     #define ETL_COMPILER_GENERIC
-    #define ETL_USING_GENERIC_COMPILER 1
   #endif
 #endif
 
-#if !defined(ETL_COMPILER_GCC)
+#if defined(ETL_COMPILER_GCC)
+  #define ETL_USING_GCC_COMPILER 1
+#else
   #define ETL_USING_GCC_COMPILER 0
 #endif
 
-#if !defined(ETL_COMPILER_MICROSOFT)
+#if defined(ETL_COMPILER_MICROSOFT)
+  #define ETL_USING_MICROSOFT_COMPILER 1
+#else
   #define ETL_USING_MICROSOFT_COMPILER 0
 #endif
 
-#if !defined(ETL_COMPILER_ARM5)
+#if defined(ETL_COMPILER_ARM5)
+  #define ETL_USING_ARM5_COMPILER 1
+#else
   #define ETL_USING_ARM5_COMPILER 0
 #endif
 
-#if !defined(ETL_COMPILER_ARM6)
+#if defined(ETL_COMPILER_ARM6)
+  #define ETL_USING_ARM6_COMPILER 1
+#else
   #define ETL_USING_ARM6_COMPILER 0
 #endif
 
-#if !defined(ETL_COMPILER_ARM7)
+#if defined(ETL_COMPILER_ARM7)
+  #define ETL_USING_ARM7_COMPILER 1
+#else
   #define ETL_USING_ARM7_COMPILER 0
 #endif
 
-#if !defined(ETL_COMPILER_CLANG)
+#if defined(ETL_COMPILER_CLANG)
+  #define ETL_USING_CLANG_COMPILER 1
+#else
   #define ETL_USING_CLANG_COMPILER 0
 #endif
 
-#if !defined(ETL_COMPILER_GREEN_HILLS)
+#if defined(ETL_COMPILER_GREEN_HILLS)
+  #define ETL_USING_GREEN_HILLS_COMPILER 1
+#else
   #define ETL_USING_GREEN_HILLS_COMPILER 0
 #endif
 
-#if !defined(ETL_COMPILER_IAR)
+#if defined(ETL_COMPILER_IAR)
+  #define ETL_USING_IAR_COMPILER 1
+#else
   #define ETL_USING_IAR_COMPILER 0
 #endif
 
-#if !defined(ETL_COMPILER_INTEL)
+#if defined(ETL_COMPILER_INTEL)
+  #define ETL_USING_INTEL_COMPILER 1
+#else
   #define ETL_USING_INTEL_COMPILER 0
 #endif
 
-#if !defined(ETL_COMPILER_TEXAS_INSTRUMENTS)
+#if defined(ETL_COMPILER_TEXAS_INSTRUMENTS)
+  #define ETL_USING_TEXAS_INSTRUMENTS_COMPILER 1
+#else
   #define ETL_USING_TEXAS_INSTRUMENTS_COMPILER 0
 #endif
 
-#if !defined(ETL_COMPILER_GENERIC)
+#if defined(ETL_COMPILER_GENERIC)
+  #define ETL_USING_GENERIC_COMPILER 1
+#else
   #define ETL_USING_GENERIC_COMPILER 0
 #endif
 

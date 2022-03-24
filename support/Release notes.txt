@@ -1,4 +1,8 @@
 ===============================================================================
+20.27.1
+Fixed undefined macros when compiler type is defined by the user.
+
+===============================================================================
 20.27.0
 Added etl::functor for wrapping global/static functions in a functor.
 Added etl::member_function_wrapper for converting a member function to a static function.
