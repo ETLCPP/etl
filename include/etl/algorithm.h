@@ -295,8 +295,6 @@ namespace etl
   typename etl::enable_if<etl::is_pointer<TIterator>::value, void>::type
     reverse(TIterator b, TIterator e)
   {
-    typedef typename etl::iterator_traits<TIterator>::value_type value_type;
-
     if (b != e)
     {
       while (b < --e)
