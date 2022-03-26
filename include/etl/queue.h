@@ -187,7 +187,7 @@ namespace etl
     //*************************************************************************
     void add_in()
     {
-      if (++in == CAPACITY)
+      if (++in == CAPACITY) ETL_UNLIKELY
       {
         in = 0;
       }
@@ -201,7 +201,7 @@ namespace etl
     //*************************************************************************
     void del_out()
     {
-      if (++out == CAPACITY)
+      if (++out == CAPACITY) ETL_UNLIKELY
       {
         out = 0;
       }
