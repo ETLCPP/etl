@@ -172,7 +172,7 @@ namespace etl
     //*************************************************************************
     cyclic_value& operator ++()
     {
-      if (value >= LAST)
+      if (value >= LAST) ETL_UNLIKELY
       {
         value = FIRST;
       }
@@ -201,7 +201,7 @@ namespace etl
     //*************************************************************************
     cyclic_value& operator --()
     {
-      if (value <= FIRST)
+      if (value <= FIRST) ETL_UNLIKELY
       {
         value = LAST;
       }
