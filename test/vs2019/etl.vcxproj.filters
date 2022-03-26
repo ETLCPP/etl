@@ -1272,6 +1272,12 @@
     <ClInclude Include="..\unittest++\Win32\TimeHelpers.h">
       <Filter>UnitTest++\Header Files\Win32</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\object_allocator.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\persistence.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
