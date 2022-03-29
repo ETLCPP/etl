@@ -11,6 +11,7 @@ endfunction()
 function(determine_version_with_git)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/GetGitRevisionDescription.cmake)
     git_describe(VERSION)
+    message(STATUS ${VERSION})
     # Parse the version information into pieces.
     string(REGEX REPLACE "^([0-9]+)\\..*" "\\1" VERSION_MAJOR "${VERSION}")
     string(REGEX REPLACE "^[0-9]+\\.([0-9]+).*" "\\1" VERSION_MINOR "${VERSION}")
