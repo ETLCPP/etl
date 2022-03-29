@@ -37,14 +37,13 @@ SOFTWARE.
 #include "iterator.h"
 #include "utility.h"
 #include "nullptr.h"
+#include "alignment.h"
+#include "placement_new.h"
 
 #include <assert.h>
-
 #include <string.h>
 
-#include <new>
-
-#if ETL_USING_STL
+#if defined(ETL_IN_UNIT_TEST) || ETL_USING_STL
   #include <memory>
 #endif
 
@@ -59,9 +58,9 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-  T* addressof(T& t)
+  ETL_CONSTEXPR17 T* addressof(T& t)
   {
-#if ETL_CPP11_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP11 && ETL_USING_STL
     return std::addressof(t);
 #else
     return reinterpret_cast<T*>(&const_cast<char&>(reinterpret_cast<const volatile char&>(t)));
@@ -367,7 +366,7 @@ namespace etl
 }
 #endif
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
 #if ETL_NOT_USING_STL || ETL_CPP17_NOT_SUPPORTED
   //*****************************************************************************
   /// Moves a range of objects to uninitialised memory.
@@ -492,7 +491,7 @@ namespace etl
   }
 #endif
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
 #if ETL_NOT_USING_STL || ETL_CPP17_NOT_SUPPORTED
   //*****************************************************************************
   /// Moves a range of objects to uninitialised memory.
@@ -598,7 +597,7 @@ namespace etl
   TOutputIterator  uninitialized_move_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin)
   {
     // Move not supported. Defer to copy.
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     return std::uninitialized_copy_n(i_begin, n, o_begin);
 #else
     return etl::uninitialized_copy_n(i_begin, n, o_begin);
@@ -617,7 +616,7 @@ namespace etl
     count += TCounter(n);
 
     // Move not supported. Defer to copy.
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     return std::uninitialized_copy_n(i_begin, n, o_begin);
 #else
     return etl::uninitialized_copy_n(i_begin, n, o_begin);
@@ -939,6 +938,48 @@ namespace etl
   }
 #endif
 
+#if ETL_NOT_USING_STL || ETL_CPP20_NOT_SUPPORTED
+#if ETL_USING_CPP11
+  //*****************************************************************************
+  /// Constructs an item at address p with value constructed from 'args'.
+  /// https://en.cppreference.com/w/cpp/memory/construct_at
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T, typename... TArgs>
+  ETL_CONSTEXPR T* construct_at(T* p, TArgs&&... args)
+  {
+    return ::new (const_cast<void*>(static_cast<const volatile void*>(p))) T(etl::forward<TArgs>(args)...);
+  }
+#else
+  //*****************************************************************************
+  /// Constructs an item at address p.
+  /// https://en.cppreference.com/w/cpp/memory/construct_at
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR T* construct_at(T* p)
+  {
+    return ::new (const_cast<void*>(static_cast<const volatile void*>(p))) T();
+  }
+  //*****************************************************************************
+  /// Constructs an item at address p with value 'arg'.
+  /// https://en.cppreference.com/w/cpp/memory/construct_at
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T, typename TArg>
+  ETL_CONSTEXPR T* construct_at(T* p, const TArg& arg)
+  {
+    return ::new (const_cast<void*>(static_cast<const volatile void*>(p))) T(arg);
+  }
+#endif
+#else
+  template <typename T, typename... TArgs>
+  ETL_CONSTEXPR20 T* construct_at(T* p, TArgs&&... args)
+  {
+    return std::construct_at(p, etl::forward<TArgs>(args)...);
+  }
+#endif
+
 #if ETL_NOT_USING_STL || ETL_CPP17_NOT_SUPPORTED
   //*****************************************************************************
   /// Destroys an item at address p.
@@ -1253,10 +1294,29 @@ namespace etl
     {
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*********************************
     unique_ptr(unique_ptr&& p_) ETL_NOEXCEPT
       : p(p_.release())
+      , deleter(etl::move(p_.deleter))
+    {
+    }
+#endif
+
+    //*********************************
+    unique_ptr(pointer p_, typename etl::conditional<etl::is_reference<TDeleter>::value, 
+                                                     TDeleter, 
+                                                     typename etl::add_lvalue_reference<const TDeleter>::type>::type deleter_) ETL_NOEXCEPT
+      : p(p_)
+      , deleter(deleter_)
+    {
+    }
+
+#if ETL_USING_CPP11
+    //*********************************
+    unique_ptr(pointer p_, typename etl::remove_reference<TDeleter>::type&& deleter_) ETL_NOEXCEPT
+      : p(p_)
+      , deleter(etl::move(deleter_))
     {
     }
 #endif
@@ -1264,7 +1324,10 @@ namespace etl
     //*********************************
     ~unique_ptr()
     {
-      deleter(p);
+      if (p != ETL_NULLPTR)
+      {
+        deleter(p);
+      }
     }
 
     //*********************************
@@ -1318,7 +1381,7 @@ namespace etl
       return (p != ETL_NULLPTR);
     }
 
-#if ETL_CPP11_SUPPORTED && ETL_USING_STL
+#if ETL_USING_CPP11 && ETL_USING_STL
     //*********************************
     unique_ptr&	operator =(std::nullptr_t) ETL_NOEXCEPT
     {
@@ -1336,7 +1399,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*********************************
     unique_ptr&	operator =(unique_ptr&& p_) ETL_NOEXCEPT
     {
@@ -1370,9 +1433,8 @@ namespace etl
     unique_ptr(const unique_ptr&) ETL_DELETE;
     unique_ptr&	operator =(const unique_ptr&) ETL_DELETE;
 
+    pointer	 p;
     TDeleter deleter;
-
-    pointer	p;
   };
 
   //*****************************************************************************
@@ -1402,10 +1464,29 @@ namespace etl
     {
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*********************************
     unique_ptr(unique_ptr&& p_) ETL_NOEXCEPT
       : p(p_.release())
+      , deleter(etl::move(p_.deleter))
+    {
+    }
+#endif
+
+    //*********************************
+    unique_ptr(pointer p_, typename etl::conditional<etl::is_reference<TDeleter>::value,
+                                                     TDeleter,
+                                                     typename etl::add_lvalue_reference<const TDeleter>::type>::type deleter_) ETL_NOEXCEPT
+      : p(p_)
+      , deleter(deleter_)
+    {
+    }
+
+#if ETL_USING_CPP11
+    //*********************************
+    unique_ptr(pointer p_, typename etl::remove_reference<TDeleter>::type&& deleter_) ETL_NOEXCEPT
+      : p(p_)
+      , deleter(etl::move(deleter_))
     {
     }
 #endif
@@ -1413,7 +1494,10 @@ namespace etl
     //*********************************
     ~unique_ptr()
     {
-      deleter(p);
+      if (p != ETL_NULLPTR)
+      {
+        deleter(p);
+      }
     }
 
     //*********************************
@@ -1466,7 +1550,7 @@ namespace etl
       return (p != ETL_NULLPTR);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*********************************
     unique_ptr& operator =(unique_ptr&& p_) ETL_NOEXCEPT
     {
@@ -1500,45 +1584,44 @@ namespace etl
     unique_ptr(const unique_ptr&) ETL_DELETE;
     unique_ptr&	operator =(const unique_ptr&) ETL_DELETE;
 
+    pointer	p; 
     TDeleter deleter;
-
-    pointer	p;
   };
 }
 
 //*****************************************************************************
 // Global functions for unique_ptr
 //*****************************************************************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator ==(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator ==(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return lhs.get() == rhs.get();
 }
 
 //*********************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator <(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator <(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return reinterpret_cast<char*>(lhs.get()) < reinterpret_cast<char*>(rhs.get());
 }
 
 //*********************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator <=(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator <=(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return !(rhs < lhs);
 }
 
 //*********************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator >(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator >(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return (rhs < lhs);
 }
 
 //*********************************
-template<typename T1, typename D1, typename T2, typename D2>
-bool operator >=(const etl::unique_ptr<T1, D1>&lhs, const etl::unique_ptr<T2, D2>& rhs)
+template<typename T1, typename TD1, typename T2, typename TD2>
+bool operator >=(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, TD2>& rhs)
 {
   return !(lhs < rhs);
 }
@@ -1594,7 +1677,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-   void create_value_at(T* p)
+  void create_value_at(T* p)
   {
     ::new (p) T();
   }
@@ -1604,7 +1687,7 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T, typename TCounter>
-   void create_value_at(T* p, TCounter& count)
+  void create_value_at(T* p, TCounter& count)
   {
     ::new (p) T();
     ++count;
@@ -1615,12 +1698,12 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
-   void create_copy_at(T* p, const T& value)
+  void create_copy_at(T* p, const T& value)
   {
     ::new (p) T(value);
   }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   //*****************************************************************************
   /// Copy construct an item at address p.
   ///\ingroup memory
@@ -1677,7 +1760,7 @@ namespace etl
     return *reinterpret_cast<T*>(p);
   }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   //*****************************************************************************
   /// Construct an item at address p.
   ///\ingroup memory
@@ -1713,7 +1796,7 @@ namespace etl
     return *reinterpret_cast<T*>(p);
   }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   //*****************************************************************************
   /// Construct an item at address p.
   ///\ingroup memory
@@ -1900,6 +1983,367 @@ namespace etl
       memory_clear(static_cast<volatile T&>(*this));
     }
   };
+
+  //***************************************************************************
+  /// Declares an aligned buffer of N_Objects x of size Object_Size at alignment Alignment.
+  ///\ingroup alignment
+  //***************************************************************************
+  template <size_t VObject_Size, size_t VN_Objects, size_t VAlignment>
+  class uninitialized_buffer
+  {
+  public:
+
+    static ETL_CONSTANT size_t Object_Size = VObject_Size;
+    static ETL_CONSTANT size_t N_Objects   = VN_Objects;
+    static ETL_CONSTANT size_t Alignment   = VAlignment;
+
+    /// Convert to T reference.
+    template <typename T>
+    operator T& ()
+    {
+      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+      return *reinterpret_cast<T*>(raw);
+    }
+
+    /// Convert to const T reference.
+    template <typename T>
+    operator const T& () const
+    {
+      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+      return *reinterpret_cast<const T*>(raw);
+    }
+
+    /// Convert to T pointer.
+    template <typename T>
+    operator T* ()
+    {
+      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+      return reinterpret_cast<T*>(raw);
+    }
+
+    /// Convert to const T pointer.
+    template <typename T>
+    operator const T* () const
+    {
+      ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+      return reinterpret_cast<const T*>(raw);
+    }
+
+#if ETL_USING_CPP11 && !defined(ETL_COMPILER_ARM5) && !defined(ETL_UNINITIALIZED_BUFFER_FORCE_CPP03_IMPLEMENTATION)
+    alignas(VAlignment) char raw[Object_Size * N_Objects];
+#else
+    union
+    {
+      char raw[VObject_Size * VN_Objects];
+      typename etl::type_with_alignment<Alignment>::type etl_alignment_type; // A POD type that has the same alignment as VAlignment.
+    };
+#endif
+  };
+
+  //***************************************************************************
+  /// Declares an aligned buffer of VN_Objects as if they were type T.
+  ///\ingroup alignment
+  //***************************************************************************
+  template <typename T, size_t VN_Objects>
+  class uninitialized_buffer_of
+  {
+  public:
+
+    typedef T        value_type;
+    typedef T&       reference;
+    typedef const T& const_reference;
+    typedef T*       pointer;
+    typedef const T* const_pointer;
+    typedef T*       iterator;
+    typedef const T* const_iterator;
+
+    static ETL_CONSTANT size_t Object_Size = sizeof(T);
+    static ETL_CONSTANT size_t N_Objects   = VN_Objects;
+    static ETL_CONSTANT size_t Alignment   = etl::alignment_of<T>::value;
+
+    /// Index operator.
+    T& operator [](int i)
+    {
+      return reinterpret_cast<T*>(this->raw)[i];
+    }
+
+    /// Index operator.
+    const T& operator [](int i) const
+    {
+      return reinterpret_cast<const T*>(this->raw)[i];
+    }
+
+    /// Convert to T reference.
+    operator T& ()
+    {
+      return *reinterpret_cast<T*>(raw);
+    }
+
+    /// Convert to const T reference.
+    operator const T& () const
+    {
+      return *reinterpret_cast<const T*>(raw);
+    }
+
+    /// Convert to T pointer.
+    operator T* ()
+
+    {
+      return reinterpret_cast<T*>(raw);
+    }
+
+    /// Convert to const T pointer.
+    operator const T* () const
+    {
+      return reinterpret_cast<const T*>(raw);
+    }
+
+    T* begin()
+    {
+      return reinterpret_cast<T*>(raw);
+    }
+
+    const T* begin() const
+    {
+      return reinterpret_cast<const T*>(raw);
+    }
+
+    T* end()
+    {
+      return reinterpret_cast<T*>(raw + (sizeof(T) * N_Objects));
+    }
+
+    const T* end() const
+    {
+      return reinterpret_cast<const T*>(raw + (sizeof(T) * N_Objects));
+    }
+
+#if ETL_USING_CPP11 && !defined(ETL_COMPILER_ARM5) && !defined(ETL_UNINITIALIZED_BUFFER_FORCE_CPP03_IMPLEMENTATION)
+    alignas(Alignment) char raw[sizeof(T) * N_Objects];
+#else
+    union
+    {
+      char raw[sizeof(T) * N_Objects];
+      typename etl::type_with_alignment<Alignment>::type etl_alignment_type; // A POD type that has the same alignment as Alignment.
+    };
+#endif
+  };
+
+#if ETL_USING_CPP11
+  template <typename T, size_t N_Objects>
+  using uninitialized_buffer_of_t = typename uninitialized_buffer_of<T, N_Objects>::buffer;
+#endif
+
+  //***************************************************************************
+/// Template wrapper for memcpy.
+/// Type must be trivially copyable.
+/// \param source begin
+/// \param source end
+/// \param destination begin
+/// \return A pointer to the destination.
+//***************************************************************************
+  template <typename TPointer>
+  typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<TPointer>::value_type>::value, TPointer>::type
+    mem_copy(const TPointer sb, const TPointer se, TPointer db) ETL_NOEXCEPT
+  {
+    return reinterpret_cast<TPointer>(memcpy(reinterpret_cast<void*>(db), 
+                                             reinterpret_cast<void*>(sb), 
+                                             sizeof(typename etl::iterator_traits<TPointer>::value_type) * static_cast<size_t>(se - sb)));
+  }
+
+  //***************************************************************************
+  /// Template wrapper for memcpy.
+  /// Type must be trivially copyable.
+  /// \param source begin
+  /// \param source length
+  /// \param destination begin
+  //***************************************************************************
+  template <typename TPointer>
+  typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<TPointer>::value_type>::value, TPointer>::type
+    mem_copy(const TPointer sb, size_t n, TPointer db) ETL_NOEXCEPT
+  {
+    return reinterpret_cast<TPointer>(memcpy(reinterpret_cast<void*>(db), 
+                                             reinterpret_cast<void*>(sb), 
+                                             sizeof(typename etl::iterator_traits<TPointer>::value_type) * n));
+  }
+
+  //***************************************************************************
+  /// Template wrapper for memmove.
+  /// Type must be trivially copyable.
+  /// \param source begin
+  /// \param source end
+  /// \param destination begin
+  //***************************************************************************
+  template <typename TPointer>
+  typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<TPointer>::value_type>::value, TPointer>::type
+    mem_move(const TPointer sb, const TPointer se, TPointer db) ETL_NOEXCEPT
+  {
+    return reinterpret_cast<TPointer>(memmove(reinterpret_cast<void*>(db), 
+                                              reinterpret_cast<void*>(sb), 
+                                              sizeof(typename etl::iterator_traits<TPointer>::value_type) * static_cast<size_t>(se - sb)));
+  }
+
+  //***************************************************************************
+  /// Template wrapper for memmove.
+  /// Type must be trivially copyable.
+  /// \param source begin
+  /// \param source length
+  /// \param destination begin
+  //***************************************************************************
+  template <typename TPointer>
+  typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<TPointer>::value_type>::value, TPointer>::type
+    mem_move(const TPointer sb, size_t n, TPointer db) ETL_NOEXCEPT
+  {
+    return reinterpret_cast<TPointer>(memmove(reinterpret_cast<void*>(db), 
+                                              reinterpret_cast<void*>(sb), 
+                                              sizeof(typename etl::iterator_traits<TPointer>::value_type) * n));
+  }
+
+  //***************************************************************************
+  /// Template wrapper for memcmp.
+  /// \param source begin
+  /// \param source end
+  /// \param destination begin
+  /// \return < 0	The first byte that does not match in both memory blocks has a lower value in 'sb' than in 'db' when evaluated as unsigned char values.
+  ///   0 The contents of both memory blocks are equal
+  /// > 0	The first byte that does not match in both memory blocks has a greater value in 'sb' than in 'db' when evaluated as unsigned char values.
+  //***************************************************************************
+  template <typename TPointer>
+  ETL_NODISCARD
+    typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<TPointer>::value_type>::value, int>::type
+    mem_compare(const TPointer sb, const TPointer se, TPointer db) ETL_NOEXCEPT
+  {
+    return memcmp(reinterpret_cast<void*>(db), 
+                  reinterpret_cast<void*>(sb), 
+                  sizeof(typename etl::iterator_traits<TPointer>::value_type) * static_cast<size_t>(se - sb));
+  }
+
+  //***************************************************************************
+  /// Template wrapper for memcmp.
+  /// \param sb Source begin
+  /// \param n  Source length
+  /// \param db Destination begin
+  /// \return < 0	The first byte that does not match in both memory blocks has a lower value in 'sb' than in 'db' when evaluated as unsigned char values.
+  ///   0 The contents of both memory blocks are equal
+  /// > 0	The first byte that does not match in both memory blocks has a greater value in 'sb' than in 'db' when evaluated as unsigned char values.
+  //***************************************************************************
+  template <typename TPointer>
+  ETL_NODISCARD
+    typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<TPointer>::value_type>::value, int>::type
+    mem_compare(const TPointer sb, size_t n, TPointer db) ETL_NOEXCEPT
+  {
+    return memcmp(reinterpret_cast<void*>(db), 
+                  reinterpret_cast<void*>(sb), 
+                  sizeof(typename etl::iterator_traits<TPointer>::value_type) * n);
+  }
+
+  //***************************************************************************
+  /// Template wrapper for memset.
+  /// \param db    Destination begin.
+  /// \param de    Destination end.
+  /// \param value The value to set.
+  /// \return The destination
+  //***************************************************************************
+  template <typename TPointer, typename T>
+  typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<TPointer>::value_type>::value, TPointer>::type
+    mem_set(TPointer db, const TPointer de, T value) ETL_NOEXCEPT
+  {
+    return reinterpret_cast<TPointer>(memset(reinterpret_cast<void*>(db), 
+                                             static_cast<char>(value),
+                                             sizeof(typename etl::iterator_traits<TPointer>::value_type) * static_cast<size_t>(de - db)));
+  }
+
+  //***************************************************************************
+  /// Template wrapper for memset.
+  /// \param db    Destination begin.
+  /// \param n     Destination length.
+  /// \param value The value to set.
+  /// \return The destination
+  //***************************************************************************
+  template <typename TPointer, typename T>
+  typename etl::enable_if<etl::is_trivially_copyable<typename etl::iterator_traits<TPointer>::value_type>::value, TPointer>::type
+    mem_set(const TPointer db, size_t n, T value) ETL_NOEXCEPT
+  {
+    return reinterpret_cast<TPointer>(memset(reinterpret_cast<void*>(db),
+                                             static_cast<char>(value),
+                                             sizeof(typename etl::iterator_traits<TPointer>::value_type) * n));
+  }
+
+  //***************************************************************************
+  /// Template wrapper for memchr.
+  /// \param sb    Source begin.
+  /// \param se    Source end.
+  /// \param value The value to find.
+  /// \return The position of the char or 'se'.
+  //***************************************************************************
+  template <typename TPointer, typename T>
+  ETL_NODISCARD
+    typename etl::enable_if<etl::is_pointer<TPointer>::value && !etl::is_const<typename etl::remove_pointer<TPointer>::type>::value, char*>::type
+    mem_char(TPointer sb, TPointer se, T value) ETL_NOEXCEPT
+  {
+    void* result = memchr(reinterpret_cast<void*>(sb), 
+                          static_cast<char>(value),
+                          sizeof(typename etl::iterator_traits<TPointer>::value_type) * static_cast<size_t>(se - sb));
+
+    return (result == 0U) ? reinterpret_cast<char*>(se) : reinterpret_cast<char*>(result);
+  }
+
+  //***************************************************************************
+  /// Template wrapper for memchr.
+  /// \param sb    Source begin.
+  /// \param se    Source end.
+  /// \param value The value to find.
+  /// \return The position of the char or 'se'.
+  //***************************************************************************
+  template <typename TPointer, typename T>
+  ETL_NODISCARD
+    typename etl::enable_if<etl::is_pointer<TPointer>::value && etl::is_const<typename etl::remove_pointer<TPointer>::type>::value, const char*>::type
+    mem_char(TPointer sb, TPointer se, T value) ETL_NOEXCEPT
+  {
+    const void* result = memchr(reinterpret_cast<const void*>(sb),
+                                static_cast<char>(value),
+                                sizeof(typename etl::iterator_traits<TPointer>::value_type) * static_cast<size_t>(se - sb));
+
+    return (result == 0U) ? reinterpret_cast<const char*>(se) : reinterpret_cast<const char*>(result);
+  }
+
+  //***************************************************************************
+  /// Template wrapper for memchr.
+  /// \param sb    Source begin.
+  /// \param n     Source length.
+  /// \param value The value to find.
+  /// \return The position of the char or 'sb + n'
+  //***************************************************************************
+  template <typename TPointer, typename T>
+  ETL_NODISCARD
+    typename etl::enable_if<etl::is_pointer<TPointer>::value && !etl::is_const<typename etl::remove_pointer<TPointer>::type>::value, char*>::type
+    mem_char(TPointer sb, size_t n, T value) ETL_NOEXCEPT
+  {
+    void* result = memchr(reinterpret_cast<void*>(sb), 
+                          static_cast<char>(value),
+                          sizeof(typename etl::iterator_traits<TPointer>::value_type) * n);
+
+    return (result == 0U) ? reinterpret_cast<char*>(sb + n) : reinterpret_cast<char*>(result);
+  }
+
+  //***************************************************************************
+  /// Template wrapper for memchr.
+  /// \param sb    Source begin.
+  /// \param n     Source length.
+  /// \param value The value to find.
+  /// \return The position of the char or 'sb + n'
+  //***************************************************************************
+  template <typename TPointer, typename T>
+  ETL_NODISCARD
+    typename etl::enable_if<etl::is_pointer<TPointer>::value && etl::is_const<typename etl::remove_pointer<TPointer>::type>::value, const char*>::type
+    mem_char(TPointer sb, size_t n, T value) ETL_NOEXCEPT
+  {
+    const void* result = memchr(reinterpret_cast<const void*>(sb),
+                                static_cast<char>(value),
+                                sizeof(typename etl::iterator_traits<TPointer>::value_type) * n);
+
+    return (result == 0U) ? reinterpret_cast<const char*>(sb + n) : reinterpret_cast<const char*>(result);
+  }
 }
 
 #endif

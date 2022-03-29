@@ -49,7 +49,7 @@ namespace etl
   template <size_t N>
   struct fibonacci
   {
-    static const size_t value = fibonacci<N - 1>::value + fibonacci<N - 2>::value;
+    static ETL_CONSTANT size_t value = fibonacci<N - 1>::value + fibonacci<N - 2>::value;
   };
 
   //***************************************************************************
@@ -58,7 +58,7 @@ namespace etl
   template <>
   struct fibonacci<1>
   {
-    static const size_t value = 1;
+    static ETL_CONSTANT size_t value = 1UL;
   };
 
   //***************************************************************************
@@ -67,8 +67,13 @@ namespace etl
   template <>
   struct fibonacci<0>
   {
-    static const size_t value = 0;
+    static ETL_CONSTANT size_t value = 0UL;
   };
+
+#if ETL_USING_CPP17
+  template <size_t N>
+  inline constexpr size_t fibonacci_v = fibonacci<N>::value;
+#endif
 }
 
 #endif

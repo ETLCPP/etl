@@ -40,27 +40,27 @@ SOFTWARE.
 
 namespace etl
 {
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
 
   namespace private_multi_array
   {
-    template <class T, size_t D1, size_t... Dx>
+    template <class T, size_t TD1, size_t... TDx>
     struct multi_array_t
     {
-      using type = etl::array<typename multi_array_t<T, Dx...>::type, D1>;
-      static constexpr size_t SIZE = D1;
+      using type = etl::array<typename multi_array_t<T, TDx...>::type, TD1>;
+      static constexpr size_t SIZE = TD1;
     };
 
-    template <class T, size_t D1>
-    struct multi_array_t<T, D1>
+    template <class T, size_t TD1>
+    struct multi_array_t<T, TD1>
     {
-      using type = etl::array<T, D1>;
-      static constexpr size_t SIZE = D1;
+      using type = etl::array<T, TD1>;
+      static constexpr size_t SIZE = TD1;
     };
   }
 
-  template <typename T, const size_t... Dx>
-  using multi_array = typename private_multi_array::multi_array_t<T, Dx...>::type;
+  template <typename T, const size_t... TDx>
+  using multi_array = typename private_multi_array::multi_array_t<T, TDx...>::type;
 
 #endif
 }

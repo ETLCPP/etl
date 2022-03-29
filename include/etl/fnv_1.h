@@ -58,25 +58,25 @@ namespace etl
   {
     typedef uint64_t value_type;
 
-    inline uint64_t initial() const
+    uint64_t initial() const
     {
       return OFFSET_BASIS;
     }
 
-    inline uint64_t add(uint64_t hash, uint8_t value) const
+    uint64_t add(uint64_t hash, uint8_t value) const
     {
       hash *= PRIME;
       hash ^= value;
       return  hash;
     }
 
-    inline uint64_t final(uint64_t hash) const
+    uint64_t final(uint64_t hash) const
     {
       return hash;
     }
 
-    static const uint64_t OFFSET_BASIS = 0xCBF29CE484222325ull;
-    static const uint64_t PRIME        = 0x00000100000001b3ull;
+    static ETL_CONSTANT uint64_t OFFSET_BASIS = 0xCBF29CE484222325ull;
+    static ETL_CONSTANT uint64_t PRIME        = 0x00000100000001b3ull;
   };
 
   //***************************************************************************
@@ -116,25 +116,25 @@ namespace etl
     {
     typedef uint64_t value_type;
 
-    inline uint64_t initial() const
+    uint64_t initial() const
       {
       return OFFSET_BASIS;
     }
 
-    inline uint64_t add(uint64_t hash, uint8_t value) const
+    uint64_t add(uint64_t hash, uint8_t value) const
     {
       hash ^= value;
       hash *= PRIME;
       return hash;
     }
 
-    inline uint64_t final(uint64_t hash) const
+    uint64_t final(uint64_t hash) const
     {
       return hash;
     }
 
-    static const uint64_t OFFSET_BASIS = 0xCBF29CE484222325ull;
-    static const uint64_t PRIME        = 0x00000100000001b3ull;
+    static ETL_CONSTANT uint64_t OFFSET_BASIS = 0xCBF29CE484222325ull;
+    static ETL_CONSTANT uint64_t PRIME        = 0x00000100000001b3ull;
   };
 
   //***************************************************************************
@@ -175,25 +175,25 @@ namespace etl
     {
     typedef uint32_t value_type;
 
-    inline uint32_t initial() const
+    uint32_t initial() const
       {
       return OFFSET_BASIS;
     }
 
-    inline uint32_t add(uint32_t hash, uint8_t value) const
+    uint32_t add(uint32_t hash, uint8_t value) const
     {
       hash *= PRIME;
       hash ^= value;
       return hash;
     }
 
-    inline uint32_t final(uint32_t hash) const
+    uint32_t final(uint32_t hash) const
     {
       return hash;
     }
 
-    static const uint32_t OFFSET_BASIS = 0x811C9DC5;
-    static const uint32_t PRIME        = 0x01000193;
+    static ETL_CONSTANT uint32_t OFFSET_BASIS = 0x811C9DC5UL;
+    static ETL_CONSTANT uint32_t PRIME        = 0x01000193UL;
   };
 
   //***************************************************************************
@@ -233,25 +233,25 @@ namespace etl
     {
     typedef uint32_t value_type;
 
-    inline uint32_t initial() const
+    uint32_t initial() const
       {
       return OFFSET_BASIS;
     }
 
-    inline uint32_t add(uint32_t hash, uint8_t value) const
+    uint32_t add(uint32_t hash, uint8_t value) const
     {
       hash ^= value;
       hash *= PRIME;
       return hash;
     }
 
-    inline uint32_t final(uint32_t hash) const
+    uint32_t final(uint32_t hash) const
     {
       return hash;
     }
 
-    static const uint32_t OFFSET_BASIS = 0x811C9DC5;
-    static const uint32_t PRIME        = 0x01000193;
+    static ETL_CONSTANT uint32_t OFFSET_BASIS = 0x811C9DC5UL;
+    static ETL_CONSTANT uint32_t PRIME        = 0x01000193UL;
   };
 
   //***************************************************************************

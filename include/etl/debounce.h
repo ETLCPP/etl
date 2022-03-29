@@ -106,7 +106,7 @@ namespace etl
         ON        = 1,
         HELD      = 2,
         REPEATING = 3,
-        STATE     = 0x03,
+        STATE     = 0x03U,
         SAMPLE    = 4,
         CHANGE    = 8
       };
@@ -132,7 +132,7 @@ namespace etl
       //*************************************************************************
       /// Gets the next state based on the inputs.
       //*************************************************************************
-      void get_next(bool sample, bool condition_set, bool condition_clear, uint_least8_t state_table[][2])
+      void get_next(bool sample, bool condition_set, bool condition_clear, const uint_least8_t state_table[][2])
       {
         int index1 = ((flags & STATE) * 2) + (sample ? 1 : 0);
         int index2 = (sample ? (condition_set ? 0 : 1) : (condition_clear ? 0 : 1));
@@ -182,7 +182,7 @@ namespace etl
       //*************************************************************************
       void set_state(bool sample, bool condition_set, bool condition_clear)
       {
-        static uint_least8_t state_table[4][2] =
+        static ETL_CONSTANT uint_least8_t state_table[4][2] =
         {
           /* OFF 0 */{ debounce_base::OFF, debounce_base::OFF },
           /* OFF 1 */{ debounce_base::ON,  debounce_base::OFF },
@@ -260,7 +260,7 @@ namespace etl
       //*************************************************************************
       void set_state(bool sample, bool condition_set, bool condition_clear)
       {
-        static uint_least8_t state_table[6][2] =
+        static ETL_CONSTANT uint_least8_t state_table[6][2] =
         {
           /* OFF  0 */{ debounce_base::OFF,  debounce_base::OFF },
           /* OFF  1 */{ debounce_base::ON,   debounce_base::OFF },
@@ -347,7 +347,7 @@ namespace etl
       //*************************************************************************
       void set_state(bool sample, bool condition_set, bool condition_clear)
       {
-        static uint_least8_t state_table[8][2] =
+        static ETL_CONSTANT uint_least8_t state_table[8][2] =
         {
           /* OFF       0 */{ debounce_base::OFF,       debounce_base::OFF },
           /* OFF       1 */{ debounce_base::ON,        debounce_base::OFF },

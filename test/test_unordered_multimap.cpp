@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <map>
 #include <array>
@@ -41,6 +41,19 @@ SOFTWARE.
 #include "data.h"
 
 #include "etl/unordered_multimap.h"
+
+namespace etl
+{
+  template <>
+  struct hash<std::string>
+  {
+    size_t operator ()(const std::string& e) const
+    {
+      size_t sum = 0U;
+      return std::accumulate(e.begin(), e.end(), sum);
+    }
+  };
+}
 
 namespace
 {
@@ -70,6 +83,12 @@ namespace
 
     return true;
   }
+
+  typedef TestDataDC<std::string>  DC;
+  typedef TestDataNDC<std::string> NDC;
+
+  typedef ETL_OR_STD::pair<std::string, DC>  ElementDC;
+  typedef ETL_OR_STD::pair<std::string, NDC> ElementNDC;
 
   SUITE(test_unordered_multimap)
   {
@@ -201,6 +220,26 @@ namespace
       CHECK_EQUAL(data.max_size(), SIZE);
       CHECK(data.begin() == data.end());
     }
+
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::unordered_multimap data{ ElementNDC(K0, N0), ElementNDC(K1, N1), ElementNDC(K2, N2), ElementNDC(K3, N3), ElementNDC(K4, N4),
+                                    ElementNDC(K5, N5), ElementNDC(K6, N6), ElementNDC(K7, N7), ElementNDC(K8, N8), ElementNDC(K9, N9) };
+      etl::unordered_multimap<std::string, NDC, 10U, 10U> check = { ElementNDC(K0, N0), ElementNDC(K1, N1), ElementNDC(K2, N2), ElementNDC(K3, N3), ElementNDC(K4, N4),
+                                                                    ElementNDC(K5, N5), ElementNDC(K6, N6), ElementNDC(K7, N7), ElementNDC(K8, N8), ElementNDC(K9, N9) };
+
+      CHECK(!data.empty());
+      CHECK(data.full());
+      CHECK(data.begin() != data.end());
+      CHECK_EQUAL(10U, data.size());
+      CHECK_EQUAL(0U, data.available());
+      CHECK_EQUAL(10U, data.capacity());
+      CHECK_EQUAL(10U, data.max_size());
+      CHECK(data == check);
+    }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_range)
@@ -343,7 +382,7 @@ namespace
 
       DataNDC::iterator idata;
 
-      for (size_t i = 0; i < 10; ++i)
+      for (size_t i = 0UL; i < 10; ++i)
       {
         idata = data.find(K[i]);
         CHECK(idata != data.end());
@@ -411,7 +450,7 @@ namespace
 
       data.insert(initial_data.begin(), initial_data.end());
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         DataNDC::iterator idata = data.find(initial_data[i].first);
         CHECK(idata != data.end());
@@ -471,7 +510,27 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_erase_single)
+    TEST_FIXTURE(SetupFixture, test_erase_single_iterator)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      DataNDC::iterator idata = data.find(K5);
+      DataNDC::iterator inext = idata;
+      ++inext;
+
+      DataNDC::iterator iafter = data.erase(idata);
+      idata = data.find(K5);
+
+      CHECK(idata == data.end());
+      CHECK(inext == iafter);
+
+      // Test that erase really does erase from the pool.
+      CHECK(!data.full());
+      CHECK(!data.empty());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_single_const_iterator)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
@@ -479,10 +538,10 @@ namespace
       DataNDC::const_iterator inext = idata;
       ++inext;
 
-      DataNDC::const_iterator iafter = data.erase(idata);
+      DataNDC::iterator iafter = data.erase(idata);
       idata = data.find(K5);
 
-      CHECK(idata == data.end());
+      CHECK(idata == data.cend());
       CHECK(inext == iafter);
 
       // Test that erase really does erase from the pool.
@@ -495,10 +554,10 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      DataNDC::iterator idata = data.begin();
+      DataNDC::const_iterator idata = data.cbegin();
       std::advance(idata, 2);
 
-      DataNDC::iterator idata_end = data.begin();
+      DataNDC::const_iterator idata_end = data.cbegin();
       std::advance(idata_end, 5);
 
       data.erase(idata, idata_end);
@@ -539,6 +598,51 @@ namespace
 
       idata = data.find(K9);
       CHECK(idata != data.end());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_range_first_half)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      DataNDC::const_iterator end = data.cbegin();
+      etl::advance(end, data.size() / 2);
+
+      auto itr = data.erase(data.cbegin(), end);
+
+      CHECK_EQUAL(initial_data.size() / 2, data.size());
+      CHECK(!data.full());
+      CHECK(!data.empty());
+      CHECK(itr == end);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_range_last_half)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      DataNDC::const_iterator begin = data.cbegin();
+      etl::advance(begin, data.size() / 2);
+
+      auto itr = data.erase(begin, data.cend());
+
+      CHECK_EQUAL(initial_data.size() / 2, data.size());
+      CHECK(!data.full());
+      CHECK(!data.empty());
+      CHECK(itr == data.end());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_range_all)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      auto itr = data.erase(data.cbegin(), data.cend());
+
+      CHECK_EQUAL(0U, data.size());
+      CHECK(!data.full());
+      CHECK(data.empty());
+      CHECK(itr == data.end());
     }
 
     //*************************************************************************

@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2019 jwellbelove
+Copyright(c) 2021 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -32,18 +32,47 @@ SOFTWARE.
 #define ETL_CRC32_POSIX_INCLUDED
 
 #include "platform.h"
-#include "private/crc32_poly_0x04c11db7.h"
+#include "private/crc_implementation.h"
 
-#if defined(ETL_COMPILER_KEIL)
-#pragma diag_suppress 1300
-#endif
-
-///\defgroup crc32 POSIX 32 bit CRC calculation
+///\defgroup crc32_posix 32 bit CRC POSIX calculation
 ///\ingroup crc
 
 namespace etl
 {
-  typedef crc32_poly_0x04c11db7<0x00000000U, 0xFFFFFFFFU, false> crc32_posix;
-}
+#if ETL_USING_CPP11
+  template <size_t Table_Size>
+  using crc32_posix_t = etl::crc_type<etl::private_crc::crc32_posix_parameters, Table_Size>;
+#else
+  template <size_t Table_Size>
+  class crc32_posix_t : public etl::crc_type<etl::private_crc::crc32_posix_parameters, Table_Size>
+  {
+  public:
 
+    //*************************************************************************
+    /// Default constructor.
+    //*************************************************************************
+    crc32_posix_t()
+    {
+      this->reset();
+    }
+
+    //*************************************************************************
+    /// Constructor from range.
+    /// \param begin Start of the range.
+    /// \param end   End of the range.
+    //*************************************************************************
+    template<typename TIterator>
+    crc32_posix_t(TIterator begin, const TIterator end)
+    {
+      this->reset();
+      this->add(begin, end);
+    }
+  };
+#endif
+
+  typedef etl::crc32_posix_t<256U> crc32_posix_t256;
+  typedef etl::crc32_posix_t<16U>  crc32_posix_t16;
+  typedef etl::crc32_posix_t<4U>   crc32_posix_t4;
+  typedef crc32_posix_t256         crc32_posix;
+}
 #endif

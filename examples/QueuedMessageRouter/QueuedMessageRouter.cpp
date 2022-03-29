@@ -62,18 +62,18 @@ public:
 
   //***************************************************************************
   // Override the base class's receive function.
-  void receive(etl::imessage_router& sender_, const etl::imessage& msg_)
+  void receive(const etl::imessage& msg_)
   {
     if (accepts(msg_))
     {
       // Place in queue.
-      queue.emplace(&sender_, msg_);
+      queue.emplace(msg_);
 
-      std::cout << "Queueing message " << int(msg_.message_id) << std::endl;
+      std::cout << "Queueing message " << int(msg_.get_message_id()) << std::endl;
     }
     else
     {
-      std::cout << "Ignoring message " << int(msg_.message_id) << std::endl;
+      std::cout << "Ignoring message " << int(msg_.get_message_id()) << std::endl;
     }
   }
 
@@ -82,58 +82,45 @@ public:
   {
     while (!queue.empty())
     {
-      Item& item = queue.front();
-      etl::imessage& msg = item.packet.get();
-      etl::imessage_router& sender = *item.sender;
-      std::cout << "Processing message " << int(msg.message_id) << std::endl;
+      message_packet& packet = queue.front();
+      etl::imessage& msg = packet.get();
+      std::cout << "Processing message " << int(msg.get_message_id()) << std::endl;
 
       // Call the base class's receive function.
       // This will route it to the correct on_receive handler.
-      Base_t::receive(sender, msg);
+      Base_t::receive(msg);
 
       queue.pop();
     }
   }
 
   //***************************************************************************
-  void on_receive(etl::imessage_router& sender, const Message1& msg)
+  void on_receive(const Message1& msg)
   {
-    std::cout << "  Received message " << int(msg.message_id) << " : '" << msg.i << "'" << std::endl;
+    std::cout << "  Received message " << int(msg.get_message_id()) << " : '" << msg.i << "'" << std::endl;
   }
 
   //***************************************************************************
-  void on_receive(etl::imessage_router& sender, const Message2& msg)
+  void on_receive(const Message2& msg)
   {
-    std::cout << "  Received message " << int(msg.message_id) << " : '" << msg.d << "'" << std::endl;
+    std::cout << "  Received message " << int(msg.get_message_id()) << " : '" << msg.d << "'" << std::endl;
   }
 
   //***************************************************************************
-  void on_receive(etl::imessage_router& sender, const Message3& msg)
+  void on_receive(const Message3& msg)
   {
-    std::cout << "  Received message " << int(msg.message_id) << " : '" << msg.s << "'" << std::endl;
+    std::cout << "  Received message " << int(msg.get_message_id()) << " : '" << msg.s << "'" << std::endl;
   }
 
   //***************************************************************************
-  void on_receive_unknown(etl::imessage_router& sender, const etl::imessage& msg)
+  void on_receive_unknown(const etl::imessage& msg)
   {
-    std::cout << "  Received unknown message " << int(msg.message_id) << std::endl;
+    std::cout << "  Received unknown message " << int(msg.get_message_id()) << std::endl;
   }
 
 private:
 
-  struct Item
-  {
-    Item(etl::imessage_router* sender_, const etl::imessage& msg_)
-      : sender(sender_),
-        packet(msg_)
-    {
-    }
-
-    etl::imessage_router* sender;
-    message_packet        packet;
-  };
-
-  etl::queue<Item, 10> queue;
+  etl::queue<message_packet, 10> queue;
 };
 
 //*****************************************************************************

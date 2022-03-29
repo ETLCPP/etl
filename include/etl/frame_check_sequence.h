@@ -36,13 +36,61 @@ SOFTWARE.
 
 #include "iterator.h"
 
-ETL_STATIC_ASSERT(ETL_8BIT_SUPPORT, "This file does not currently support targets with no 8bit type");
+ETL_STATIC_ASSERT(ETL_USING_8BIT_TYPES, "This file does not currently support targets with no 8bit type");
 
 ///\defgroup frame_check_sequence Frame check sequence calculation
 ///\ingroup maths
 
 namespace etl
 {
+  namespace private_frame_check_sequence
+  {
+    //***************************************************
+    /// add_insert_iterator
+    /// An output iterator used to add new values.
+    //***************************************************
+    template <typename TFCS>
+    class add_insert_iterator : public etl::iterator<ETL_OR_STD::output_iterator_tag, void, void, void, void>
+    {
+    public:
+
+      //***********************************
+      explicit add_insert_iterator(TFCS& fcs) ETL_NOEXCEPT
+        : p_fcs(&fcs)
+      {
+      }
+
+      //***********************************
+      add_insert_iterator& operator*() ETL_NOEXCEPT
+      {
+        return *this;
+      }
+
+      //***********************************
+      add_insert_iterator& operator++() ETL_NOEXCEPT
+      {
+        return *this;
+      }
+
+      //***********************************
+      add_insert_iterator& operator++(int) ETL_NOEXCEPT
+      {
+        return *this;
+      }
+
+      //***********************************
+      add_insert_iterator& operator =(uint8_t value)
+      {
+        p_fcs->add(value);
+        return *this;
+      }
+
+    private:
+
+      TFCS* p_fcs;
+    };
+  }
+
   //***************************************************************************
   /// Calculates a frame check sequence according to the specified policy.
   ///\tparam TPolicy The type used to enact the policy.
@@ -55,6 +103,7 @@ namespace etl
 
     typedef TPolicy policy_type;
     typedef typename policy_type::value_type value_type;
+    typedef private_frame_check_sequence::add_insert_iterator<frame_check_sequence<TPolicy> > add_insert_iterator;
 
     ETL_STATIC_ASSERT(etl::is_unsigned<value_type>::value, "Signed frame check type not supported");
 
@@ -100,7 +149,8 @@ namespace etl
 
       while (begin != end)
       {
-        frame_check = policy.add(frame_check, *begin++);
+        frame_check = policy.add(frame_check, *begin);
+        ++begin;
       }
     }
 
@@ -115,7 +165,7 @@ namespace etl
     //*************************************************************************
     /// Gets the FCS value.
     //*************************************************************************
-    value_type value()
+    value_type value() const
     {
       return policy.final(frame_check);
     }
@@ -123,9 +173,17 @@ namespace etl
     //*************************************************************************
     /// Conversion operator to value_type.
     //*************************************************************************
-    operator value_type ()
+    operator value_type () const
     {
       return policy.final(frame_check);
+    }
+
+    //*************************************************************************
+    /// Gets an add_insert_iterator for input.
+    //*************************************************************************
+    add_insert_iterator input()
+    {
+      return add_insert_iterator(*this);
     }
 
   private:

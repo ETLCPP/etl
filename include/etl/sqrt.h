@@ -42,14 +42,14 @@ namespace etl
   //***************************************************************************
   /// Calculates the smallest value that, when squared, will be not greater than VALUE.
   //***************************************************************************
-  template <const size_t VALUE, const size_t I = 1>
+  template <size_t VALUE, size_t I = 1>
   struct sqrt
   {
     typedef typename etl::conditional<((I * I) > VALUE), 
                                       etl::constant<intmax_t, I - 1>,
                                       etl::sqrt<VALUE, I + 1> >::type type;
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     static constexpr size_t value = type::value;
 #else
     enum
@@ -59,6 +59,11 @@ namespace etl
     };
 #endif
   };
+
+#if ETL_USING_CPP17
+  template <size_t VALUE, size_t I = 1>
+  inline constexpr size_t sqrt_v = sqrt<VALUE, I>::value;
+#endif
 }
 
 #endif

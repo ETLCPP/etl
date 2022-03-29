@@ -75,7 +75,7 @@ cog.outl("//********************************************************************
 
 namespace etl
 {
-#if ETL_CPP11_SUPPORTED && !defined(ETL_SMALLEST_TYPE_FORCE_CPP03)
+#if ETL_USING_CPP11 && !defined(ETL_SMALLEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   /// Template to determine the largest type and size.
   /// Defines 'value_type' which is the type of the largest parameter.
@@ -121,6 +121,17 @@ namespace etl
       size = etl::size_of<type>::value
     };
   };
+
+#if ETL_USING_CPP11
+  template <typename... T>
+  using smallest_type_t = typename smallest_type<T...>::type;
+#endif
+
+#if ETL_USING_CPP17
+  template <typename... T>
+  constexpr size_t smallest_type_v = smallest_type<T...>::size;
+#endif
+
 #else
   /*[[[cog
   import cog
@@ -303,20 +314,25 @@ namespace etl
   /// Defines 'type' which is the type of the smallest unsigned integer.
   ///\ingroup smallest
   //***************************************************************************
-  template <const size_t NBITS>
+  template <size_t NBITS>
   struct smallest_uint_for_bits
   {
   private:
 
     // Determines the index of the best unsigned type for the required number of bits.
-    static const int TYPE_INDEX = ((NBITS >  8) ? 1 : 0) +
-                                  ((NBITS > 16) ? 1 : 0) +
-                                  ((NBITS > 32) ? 1 : 0);
+    static ETL_CONSTANT int TYPE_INDEX = ((NBITS >  8) ? 1 : 0) +
+                                         ((NBITS > 16) ? 1 : 0) +
+                                         ((NBITS > 32) ? 1 : 0);
 
   public:
 
     typedef typename private_smallest::best_fit_uint_type<TYPE_INDEX>::type type;
   };
+
+#if ETL_USING_CPP11
+  template <size_t NBITS>
+  using smallest_uint_for_bits_t = typename smallest_uint_for_bits<NBITS>::type;
+#endif
 
   //***************************************************************************
   /// Template to determine the smallest signed int type that can contain a
@@ -324,20 +340,25 @@ namespace etl
   /// Defines 'type' which is the type of the smallest signed integer.
   ///\ingroup smallest
   //***************************************************************************
-  template <const size_t NBITS>
+  template <size_t NBITS>
   struct smallest_int_for_bits
   {
   private:
 
     // Determines the index of the best unsigned type for the required number of bits.
-    static const int TYPE_INDEX = ((NBITS >  8) ? 1 : 0) +
-                                  ((NBITS > 16) ? 1 : 0) +
-                                  ((NBITS > 32) ? 1 : 0);
+    static ETL_CONSTANT int TYPE_INDEX = ((NBITS >  8) ? 1 : 0) +
+                                         ((NBITS > 16) ? 1 : 0) +
+                                         ((NBITS > 32) ? 1 : 0);
 
   public:
 
     typedef typename private_smallest::best_fit_int_type<TYPE_INDEX>::type type;
   };
+
+#if ETL_USING_CPP11
+  template <size_t NBITS>
+  using smallest_int_for_bits_t = typename smallest_int_for_bits<NBITS>::type;
+#endif
 
   //***************************************************************************
   /// Template to determine the smallest unsigned int type that can contain the
@@ -345,20 +366,25 @@ namespace etl
   /// Defines 'type' which is the type of the smallest unsigned integer.
   ///\ingroup smallest
   //***************************************************************************
-  template <const uintmax_t VALUE>
+  template <uintmax_t VALUE>
   struct smallest_uint_for_value
   {
   private:
 
     // Determines the index of the best unsigned type for the required value.
-    static const int TYPE_INDEX = ((VALUE > UINT_LEAST8_MAX)  ? 1 : 0) +
-                                  ((VALUE > UINT16_MAX) ? 1 : 0) +
-                                  ((VALUE > UINT32_MAX) ? 1 : 0);
+    static ETL_CONSTANT int TYPE_INDEX = ((VALUE > UINT_LEAST8_MAX)  ? 1 : 0) +
+                                         ((VALUE > UINT16_MAX) ? 1 : 0) +
+                                         ((VALUE > UINT32_MAX) ? 1 : 0);
 
   public:
 
     typedef typename private_smallest::best_fit_uint_type<TYPE_INDEX>::type type;
   };
+
+#if ETL_USING_CPP11
+  template <uintmax_t VALUE>
+  using smallest_uint_for_value_t = typename smallest_uint_for_value<VALUE>::type;
+#endif
 
   //***************************************************************************
   /// Template to determine the smallest int type that can contain the
@@ -372,14 +398,19 @@ namespace etl
   private:
 
     // Determines the index of the best signed type for the required value.
-    static const int TYPE_INDEX = (((VALUE > INT_LEAST8_MAX)  || (VALUE < INT_LEAST8_MIN))  ? 1 : 0) +
-                                  (((VALUE > INT16_MAX) || (VALUE < INT16_MIN)) ? 1 : 0) +
-                                  (((VALUE > INT32_MAX) || (VALUE < INT32_MIN)) ? 1 : 0);
+    static ETL_CONSTANT int TYPE_INDEX = (((VALUE > intmax_t(INT_LEAST8_MAX)) || (VALUE < intmax_t(INT_LEAST8_MIN))) ? 1 : 0) +
+                                         (((VALUE > intmax_t(INT16_MAX))      || (VALUE < intmax_t(INT16_MIN))) ? 1 : 0) +
+                                         (((VALUE > intmax_t(INT32_MAX))      || (VALUE < intmax_t(INT32_MIN))) ? 1 : 0);
 
   public:
 
     typedef typename private_smallest::best_fit_int_type<TYPE_INDEX>::type type;
   };
+
+#if ETL_USING_CPP11
+  template <intmax_t VALUE>
+  using smallest_int_for_value_t = typename smallest_int_for_value<VALUE>::type;
+#endif
 }
 
 #endif

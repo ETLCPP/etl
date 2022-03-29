@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <stdint.h>
 #include <string>
@@ -81,13 +81,14 @@ public:
 
   //*********************************************
   Task(etl::task_priority_t priority_, WorkList_t& work_, Common& common_)
-    : task(priority_),
-      work(work_),
-      common(common_),
-      workIndex(0),
-      addAtIndex(0),
-      workToAdd(""),
-      pTaskToAddTo(nullptr)
+    : task(priority_)
+    , task_added(false)
+    , work(work_)
+    , common(common_)
+    , workIndex(0)
+    , addAtIndex(0)
+    , workToAdd("")
+    , pTaskToAddTo(nullptr)
   {
     workCopy = work;
   }
@@ -100,6 +101,7 @@ public:
     workToAdd    = "";
     pTaskToAddTo = nullptr;
     work         = workCopy;
+    task_added   = false;
   }
 
   //*********************************************
@@ -111,13 +113,13 @@ public:
   }
 
   //*********************************************
-  uint32_t task_request_work() const
+  virtual uint32_t task_request_work() const ETL_OVERRIDE
   {
     return uint_least8_t(work.size() - workIndex);
   }
 
   //*********************************************
-  void task_process_work()
+  virtual void task_process_work() ETL_OVERRIDE
   {
     common.workList.push_back(work[workIndex]);
     ++workIndex;
@@ -127,6 +129,14 @@ public:
       pTaskToAddTo->work.push_back(workToAdd);
     }
   }
+
+  //*********************************************
+  virtual void on_task_added() ETL_OVERRIDE
+  {
+    task_added = true;
+  }
+
+  bool task_added;
 
 private:
 
@@ -161,6 +171,24 @@ namespace
   SUITE(test_task_scheduler)
   {
     //*************************************************************************
+    TEST(test_task_added)
+    {
+      SchedulerSequentialSingle s;
+
+      task1.Reset();
+      task2.Reset();
+      task3.Reset();
+
+      common.Clear();
+
+      s.add_task_list(taskList, std::size(taskList));
+
+      CHECK(task1.task_added);
+      CHECK(task2.task_added);
+      CHECK(task3.task_added);
+    }
+
+    //*************************************************************************
     TEST(test_scheduler_sequencial_single)
     {
       SchedulerSequentialSingle s;
@@ -176,7 +204,7 @@ namespace
 
       s.set_idle_callback(common.idle_callback);
       s.set_watchdog_callback(common.watchdog_callback);
-      s.add_task_list(taskList, etl::size(taskList));
+      s.add_task_list(taskList, std::size(taskList));
       s.start(); // If 'start' returns then the idle callback was sucessfully called.
 
       WorkList_t expected = { "T3W1", "T2W1", "T1W1", "T3W2", "T2W2", "T1W2", "T3W3", "T2W3", "T1W3", "T2W4" };
@@ -201,7 +229,7 @@ namespace
 
       s.set_idle_callback(common.idle_callback);
       s.set_watchdog_callback(common.watchdog_callback);
-      s.add_task_list(taskList, etl::size(taskList));
+      s.add_task_list(taskList, std::size(taskList));
       s.start(); // If 'start' returns then the idle callback was sucessfully called.
 
       WorkList_t expected = { "T3W1", "T3W2", "T2W1", "T2W2", "T2W3", "T2W4", "T1W1", "T1W2", "T1W3", "T3W3" };
@@ -226,7 +254,7 @@ namespace
 
       s.set_idle_callback(common.idle_callback);
       s.set_watchdog_callback(common.watchdog_callback);
-      s.add_task_list(taskList, etl::size(taskList));
+      s.add_task_list(taskList, std::size(taskList));
       s.start(); // If 'start' returns then the idle callback was sucessfully called.
 
       WorkList_t expected = { "T3W1", "T3W2", "T2W1", "T2W2", "T3W3", "T2W3", "T2W4", "T1W1", "T1W2", "T1W3" };
@@ -251,7 +279,7 @@ namespace
 
       s.set_idle_callback(common.idle_callback);
       s.set_watchdog_callback(common.watchdog_callback);
-      s.add_task_list(taskList, etl::size(taskList));
+      s.add_task_list(taskList, std::size(taskList));
       s.start(); // If 'start' returns then the idle callback was sucessfully called.
 
       WorkList_t expected = { "T2W1", "T2W2", "T1W1", "T3W1", "T2W3", "T3W2", "T1W2", "T3W3", "T2W4", "T1W3" };

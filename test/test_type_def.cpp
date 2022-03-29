@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <stdint.h>
 
@@ -90,8 +90,8 @@ namespace
       class __type_t__;
       typedef etl::type_def<__type_t__, uint32_t> type_t;
 
-      uint32_t i = 0x5A3D;
-      type_t t(0x5A3D);
+      uint32_t i = 0x5A3DUL;
+      type_t t(0x5A3DUL);
 
       CHECK_EQUAL(++i, uint32_t(++t));
       CHECK_EQUAL(i++, uint32_t(t++));
@@ -105,17 +105,17 @@ namespace
       CHECK_EQUAL(i *= 2, uint32_t(t *= type_t(2)));
       CHECK_EQUAL(i /= 2, uint32_t(t /= 2));
       CHECK_EQUAL(i /= 2, uint32_t(t /= type_t(2)));
-      CHECK_EQUAL(i &= 0xFF00, uint32_t(t &= 0xFF00));
-      CHECK_EQUAL(i &= 0xFF00, uint32_t(t &= type_t(0xFF00)));
-      CHECK_EQUAL(i |= 0x003D, uint32_t(t |= 0x003D));
-      CHECK_EQUAL(i |= 0x003D, uint32_t(t |= type_t(0x003D)));
-      CHECK_EQUAL(i ^= 0xAA55, uint32_t(t ^= 0xAA55));
-      CHECK_EQUAL(i ^= 0xAA55, uint32_t(t ^= type_t(0xAA55)));
-      CHECK_EQUAL(i <<= 2, uint32_t(t <<= 2));
-      CHECK_EQUAL(i >>= 2, uint32_t(t >>= 2));
+      CHECK_EQUAL(i &= 0xFF00U, uint32_t(t &= 0xFF00U));
+      CHECK_EQUAL(i &= 0xFF00U, uint32_t(t &= type_t(0xFF00U)));
+      CHECK_EQUAL(i |= 0x003DU, uint32_t(t |= 0x003DU));
+      CHECK_EQUAL(i |= 0x003DU, uint32_t(t |= type_t(0x003DU)));
+      CHECK_EQUAL(i ^= 0xAA55U, uint32_t(t ^= 0xAA55U));
+      CHECK_EQUAL(i ^= 0xAA55U, uint32_t(t ^= type_t(0xAA55U)));
+      CHECK_EQUAL(i <<= 2U, uint32_t(t <<= 2U));
+      CHECK_EQUAL(i >>= 2U, uint32_t(t >>= 2U));
       CHECK_EQUAL(i %= 23, uint32_t(t %= 23));
 
-      t = type_t(0x1234);
+      t = type_t(0x1234U);
       CHECK_EQUAL(0x1234U, uint32_t(t));
     }
 

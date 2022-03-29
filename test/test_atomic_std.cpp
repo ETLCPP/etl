@@ -26,12 +26,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/platform.h"
 #include "etl/atomic/atomic_std.h"
 
 #include <atomic>
+#include <thread>
+
+#if defined(ETL_TARGET_OS_WINDOWS)
+  #include <Windows.h>
+#endif
+
+#define REALTIME_TEST 0
 
 namespace
 {
@@ -288,11 +295,11 @@ namespace
     //*************************************************************************
     TEST(test_atomic_operator_integer_and_equals)
     {
-      std::atomic<int> compare(0x0000FFFF);
-      etl::atomic<int> test(0x0000FFFF);
+      std::atomic<int> compare(0x0000FFFFUL);
+      etl::atomic<int> test(0x0000FFFFUL);
 
-      compare &= 0x55AA55AA;
-      test &= 0x55AA55AA;
+      compare &= 0x55AA55AAUL;
+      test &= 0x55AA55AAUL;
 
       CHECK_EQUAL((int)compare, (int)test);
     }
@@ -300,11 +307,11 @@ namespace
     //*************************************************************************
     TEST(test_atomic_operator_integer_or_equals)
     {
-      std::atomic<int> compare(0x0000FFFF);
-      etl::atomic<int> test(0x0000FFFF);
+      std::atomic<int> compare(0x0000FFFFUL);
+      etl::atomic<int> test(0x0000FFFFUL);
 
-      compare |= 0x55AA55AA;
-      test |= 0x55AA55AA;
+      compare |= 0x55AA55AAUL;
+      test |= 0x55AA55AAUL;
 
       CHECK_EQUAL((int)compare, (int)test);
     }
@@ -312,11 +319,11 @@ namespace
     //*************************************************************************
     TEST(test_atomic_operator_integer_xor_equals)
     {
-      std::atomic<int> compare(0x0000FFFF);
-      etl::atomic<int> test(0x0000FFFF);
+      std::atomic<int> compare(0x0000FFFFUL);
+      etl::atomic<int> test(0x0000FFFFUL);
 
-      compare ^= 0x55AA55AA;
-      test ^= 0x55AA55AA;
+      compare ^= 0x55AA55AAUL;
+      test ^= 0x55AA55AAUL;
 
       CHECK_EQUAL((int)compare, (int)test);
     }
@@ -344,28 +351,28 @@ namespace
     //*************************************************************************
     TEST(test_atomic_operator_fetch_and)
     {
-      std::atomic<int> compare(0xFFFFFFFF);
-      etl::atomic<int> test(0xFFFFFFFF);
+      std::atomic<int> compare(0xFFFFFFFFUL);
+      etl::atomic<int> test(0xFFFFFFFFUL);
 
-      CHECK_EQUAL((int)compare.fetch_and(0x55AA55AA), (int)test.fetch_and(0x55AA55AA));
+      CHECK_EQUAL((int)compare.fetch_and(0x55AA55AAUL), (int)test.fetch_and(0x55AA55AAUL));
     }
 
     //*************************************************************************
     TEST(test_atomic_operator_fetch_or)
     {
-      std::atomic<int> compare(0x0000FFFF);
-      etl::atomic<int> test(0x0000FFFF);
+      std::atomic<int> compare(0x0000FFFFUL);
+      etl::atomic<int> test(0x0000FFFFUL);
 
-      CHECK_EQUAL((int)compare.fetch_or(0x55AA55AA), (int)test.fetch_or(0x55AA55AA));
+      CHECK_EQUAL((int)compare.fetch_or(0x55AA55AAUL), (int)test.fetch_or(0x55AA55AAUL));
     }
 
     //*************************************************************************
     TEST(test_atomic_operator_fetch_xor)
     {
-      std::atomic<int> compare(0x0000FFFF);
-      etl::atomic<int> test(0x0000FFFF);
+      std::atomic<int> compare(0x0000FFFFUL);
+      etl::atomic<int> test(0x0000FFFFUL);
 
-      CHECK_EQUAL((int)compare.fetch_xor(0x55AA55AA), (int)test.fetch_xor(0x55AA55AA));
+      CHECK_EQUAL((int)compare.fetch_xor(0x55AA55AAUL), (int)test.fetch_xor(0x55AA55AAUL));
     }
 
     //*************************************************************************
@@ -395,14 +402,14 @@ namespace
       std::atomic<int> compare;
       etl::atomic<int> test;
 
-      int actual = 1U;
+      int actual = 1;
 
       compare = actual;
       test    = actual;
 
-      int compare_expected = 2U;
-      int test_expected    = 2U;
-      int desired  = 3U;
+      int compare_expected = 2;
+      int test_expected    = 2;
+      int desired  = 3;
 
       bool compare_result = compare.compare_exchange_weak(compare_expected, desired);
       bool test_result    = test.compare_exchange_weak(test_expected, desired);
@@ -418,14 +425,14 @@ namespace
       std::atomic<int> compare;
       etl::atomic<int> test;
 
-      int actual = 1U;
+      int actual = 1;
 
       compare = actual;
       test    = actual;
 
       int compare_expected = actual;
       int test_expected    = actual;
-      int desired  = 3U;
+      int desired  = 3;
 
       bool compare_result = compare.compare_exchange_weak(compare_expected, desired);
       bool test_result    = test.compare_exchange_weak(test_expected, desired);
@@ -441,14 +448,14 @@ namespace
       std::atomic<int> compare;
       etl::atomic<int> test;
 
-      int actual = 1U;
+      int actual = 1;
 
       compare = actual;
       test = actual;
 
-      int compare_expected = 2U;
-      int test_expected = 2U;
-      int desired = 3U;
+      int compare_expected = 2;
+      int test_expected = 2;
+      int desired = 3;
 
       bool compare_result = compare.compare_exchange_strong(compare_expected, desired);
       bool test_result = test.compare_exchange_strong(test_expected, desired);
@@ -464,14 +471,14 @@ namespace
       std::atomic<int> compare;
       etl::atomic<int> test;
 
-      int actual = 1U;
+      int actual = 1;
 
       compare = actual;
       test = actual;
 
       int compare_expected = actual;
       int test_expected = actual;
-      int desired = 3U;
+      int desired = 3;
 
       bool compare_result = compare.compare_exchange_strong(compare_expected, desired);
       bool test_result = test.compare_exchange_strong(test_expected, desired);
@@ -480,5 +487,61 @@ namespace
       CHECK_EQUAL(compare_expected, test_expected);
       CHECK_EQUAL(compare.load(), test.load());
     }
+
+    //*************************************************************************
+#if REALTIME_TEST
+
+#if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
+  #define RAISE_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)
+  #define FIX_PROCESSOR_AFFINITY1 SetThreadAffinityMask(GetCurrentThread(), 1)
+  #define FIX_PROCESSOR_AFFINITY2 SetThreadAffinityMask(GetCurrentThread(), 2)
+#else
+  #define RAISE_THREAD_PRIORITY
+  #define FIX_PROCESSOR_AFFINITY1
+  #define FIX_PROCESSOR_AFFINITY2
+#endif
+
+    etl::atomic_int32_t atomic_value = 0U;
+    etl::atomic<int>    start = false;
+
+    void thread1()
+    {
+      RAISE_THREAD_PRIORITY;
+      FIX_PROCESSOR_AFFINITY1;
+
+      while (!start.load());
+
+      for (int i = 0; i < 10000000; ++i)
+      {
+        ++atomic_value;
+      }
+    }
+
+    void thread2()
+    {
+      RAISE_THREAD_PRIORITY;
+      FIX_PROCESSOR_AFFINITY2;
+
+      while (!start.load());
+
+      for (int i = 0; i < 10000000; ++i)
+      {
+        --atomic_value;
+      }
+    }
+
+    TEST(test_atomic_multi_thread)
+    {
+      std::thread t1(thread1);
+      std::thread t2(thread2);
+
+      start.store(true);
+
+      t1.join();
+      t2.join();
+
+      CHECK_EQUAL(0, atomic_value.load());
+    }
+#endif
   };
 }

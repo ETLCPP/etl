@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <stdint.h>
 
@@ -68,9 +68,9 @@ namespace
 
       if (!file.fail())
       {
-        for (size_t i = 0; i < out1.size(); i += 2)
+        for (size_t i = 0UL; i < out1.size(); ++i)
         {
-          file << out1[i] << "," << out1[i + 1] << "\n";
+          file << out1[i] << "\n";
         }
       }
 
@@ -82,8 +82,8 @@ namespace
     {
       etl::random_xorshift r;
 
-      uint32_t low  = 1234;
-      uint32_t high = 9876;
+      uint32_t low  = 1234UL;
+      uint32_t high = 9876UL;
 
       for (int i = 0; i < 100000; ++i)
       {
@@ -121,9 +121,9 @@ namespace
 
       if (!file.fail())
       {
-        for (size_t i = 0; i < out1.size(); i += 2)
+        for (size_t i = 0UL; i < out1.size(); ++i)
         {
-          file << out1[i] << "," << out1[i + 1] << "\n";
+          file << out1[i] << "\n";
         }
       }
 
@@ -135,8 +135,8 @@ namespace
     {
       etl::random_lcg r;
 
-      uint32_t low  = 1234;
-      uint32_t high = 9876;
+      uint32_t low  = 1234UL;
+      uint32_t high = 9876UL;
 
       for (int i = 0; i < 100000; ++i)
       {
@@ -174,9 +174,9 @@ namespace
 
       if (!file.fail())
       {
-        for (size_t i = 0; i < out1.size(); i += 2)
+        for (size_t i = 0UL; i < out1.size(); ++i)
         {
-          file << out1[i] << "," << out1[i + 1] << "\n";
+          file << out1[i] << "\n";
         }
       }
 
@@ -188,8 +188,8 @@ namespace
     {
       etl::random_clcg r;
 
-      uint32_t low = 1234;
-      uint32_t high = 9876;
+      uint32_t low = 1234UL;
+      uint32_t high = 9876UL;
 
       for (int i = 0; i < 100000; ++i)
       {
@@ -227,9 +227,9 @@ namespace
 
       if (!file.fail())
       {
-        for (size_t i = 0; i < out1.size(); i += 2)
+        for (size_t i = 0UL; i < out1.size(); ++i)
         {
-          file << out1[i] << "," << out1[i + 1] << "\n";
+          file << out1[i] << "\n";
         }
       }
 
@@ -241,8 +241,8 @@ namespace
     {
       etl::random_lsfr r;
 
-      uint32_t low  = 1234;
-      uint32_t high = 9876;
+      uint32_t low  = 1234UL;
+      uint32_t high = 9876UL;
 
       for (int i = 0; i < 100000; ++i)
       {
@@ -280,9 +280,9 @@ namespace
 
       if (!file.fail())
       {
-        for (size_t i = 0; i < out1.size(); i += 2)
+        for (size_t i = 0UL; i < out1.size(); ++i)
         {
-          file << out1[i] << "," << out1[i + 1] << "\n";
+          file << out1[i] << "\n";
         }
       }
 
@@ -294,8 +294,8 @@ namespace
     {
       etl::random_mwc r;
 
-      uint32_t low = 1234;
-      uint32_t high = 9876;
+      uint32_t low = 1234UL;
+      uint32_t high = 9876UL;
 
       for (int i = 0; i < 100000; ++i)
       {
@@ -333,9 +333,9 @@ namespace
 
       if (!file.fail())
       {
-        for (size_t i = 0; i < out1.size(); i += 2)
+        for (size_t i = 0UL; i < out1.size(); ++i)
         {
-          file << out1[i] << "," << out1[i + 1] << "\n";
+          file << out1[i] << "\n";
         }
       }
 
@@ -347,8 +347,8 @@ namespace
     {
       etl::random_pcg r;
 
-      uint32_t low = 1234;
-      uint32_t high = 9876;
+      uint32_t low = 1234UL;
+      uint32_t high = 9876UL;
 
       for (int i = 0; i < 100000; ++i)
       {
@@ -386,9 +386,9 @@ namespace
 
       if (!file.fail())
       {
-        for (size_t i = 0; i < out1.size(); i += 2)
+        for (size_t i = 0UL; i < out1.size(); ++i)
         {
-          file << out1[i] << "," << out1[i + 1] << "\n";
+          file << out1[i] << "\n";
         }
       }
 
@@ -400,8 +400,8 @@ namespace
     {
       etl::random_hash<etl::crc32> r;
 
-      uint32_t low  = 1234;
-      uint32_t high = 9876;
+      uint32_t low  = 1234UL;
+      uint32_t high = 9876UL;
 
       for (int i = 0; i < 100000; ++i)
       {

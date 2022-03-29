@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/queue_spsc_locked.h"
 
@@ -34,7 +34,7 @@ SOFTWARE.
 #include <mutex>
 #include <vector>
 
-#if defined(ETL_COMPILER_MICROSOFT)
+#if defined(ETL_TARGET_OS_WINDOWS)
 #include <Windows.h>
 #endif
 
@@ -191,15 +191,26 @@ namespace
 
       access.clear();
 
+      // Queue full.
       CHECK(!queue.push(5));
-      CHECK(!queue.push_from_unlocked(5));
+
+      queue.pop();
+      // Queue not full (buffer rollover)
+      CHECK(queue.push(5));
+
+      // Queue full.
+      CHECK(!queue.push(6));
+
+      queue.pop();
+      // Queue not full (buffer rollover)
+      CHECK(queue.push(6));
 
       access.clear();
 
       int i;
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(1, i);
+      CHECK_EQUAL(3, i);
       CHECK(access.called_lock);
       CHECK(access.called_unlock);
       CHECK_EQUAL(3U, queue.size_from_unlocked());
@@ -207,7 +218,7 @@ namespace
       access.clear();
 
       CHECK(queue.pop_from_unlocked(i));
-      CHECK_EQUAL(2, i);
+      CHECK_EQUAL(4, i);
       CHECK(!access.called_lock);
       CHECK(!access.called_unlock);
       CHECK_EQUAL(2U, queue.size_from_unlocked());
@@ -215,7 +226,7 @@ namespace
       access.clear();
 
       CHECK(queue.pop_from_unlocked(i));
-      CHECK_EQUAL(3, i);
+      CHECK_EQUAL(5, i);
       CHECK(!access.called_lock);
       CHECK(!access.called_unlock);
       CHECK_EQUAL(1U, queue.size_from_unlocked());
@@ -223,7 +234,7 @@ namespace
       access.clear();
 
       CHECK(queue.pop_from_unlocked(i));
-      CHECK_EQUAL(4, i);
+      CHECK_EQUAL(6, i);
       CHECK(!access.called_lock);
       CHECK(!access.called_unlock);
       CHECK_EQUAL(0U, queue.size_from_unlocked());
@@ -234,6 +245,7 @@ namespace
       CHECK(!queue.pop_from_unlocked(i));
     }
 
+#if !defined(ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_move_push_pop)
     {
@@ -256,18 +268,19 @@ namespace
 
       ItemM pr(0);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(1, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(2, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(3, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(4, pr.value);
     }
+#endif
 
     //*************************************************************************
     TEST(test_size_push_pop_iqueue)
@@ -463,6 +476,46 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_size_push_front_pop)
+    {
+      access.clear();
+
+      etl::queue_spsc_locked<int, 4, etl::memory_model::MEMORY_MODEL_SMALL> queue(lock, unlock);
+
+      CHECK_EQUAL(0U, queue.size());
+
+      queue.push(1);
+      queue.push(2);
+      queue.push(3);
+      queue.push(4);
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(3U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(2U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK_EQUAL(4, queue.front());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK_EQUAL(4, queue.front());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(0U, queue.size());
+    }
+
+    //*************************************************************************
     TEST(test_multiple_emplace)
     {
       etl::queue_spsc_locked<Data, 4, etl::memory_model::MEMORY_MODEL_SMALL> queue(lock, unlock);
@@ -591,15 +644,16 @@ namespace
     }
 
     //*************************************************************************
-#if REALTIME_TEST && defined(ETL_COMPILER_MICROSOFT)
-  #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
+#if REALTIME_TEST
+#if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
     #define RAISE_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)
     #define FIX_PROCESSOR_AFFINITY SetThreadAffinityMask(GetCurrentThread(), 1);
   #else
-    #error No thread priority modifier defined
+    #define RAISE_THREAD_PRIORITY
+    #define FIX_PROCESSOR_AFFINITY
   #endif
 
-    size_t ticks = 0;
+    size_t ticks = 0UL;
 
     struct ThreadLock
     {
@@ -623,14 +677,14 @@ namespace
 
     etl::queue_spsc_locked<int, 10> queue(lock, unlock);
 
-    const size_t LENGTH = 1000;
+    const size_t LENGTH = 1000UL;
 
     void timer_thread()
     {
       RAISE_THREAD_PRIORITY;
       FIX_PROCESSOR_AFFINITY;
 
-      const size_t TICK = 1;
+      const size_t TICK = 1UL;
       size_t tick = TICK;
       ticks = 1;
 
@@ -674,7 +728,7 @@ namespace
 
       CHECK_EQUAL(LENGTH, tick_list.size());
 
-      for (size_t i = 0; i < LENGTH; ++i)
+      for (size_t i = 0UL; i < LENGTH; ++i)
       {
         CHECK_EQUAL(i + 1, tick_list[i]);
       }

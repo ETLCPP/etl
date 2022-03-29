@@ -1,19 +1,37 @@
 {
   "name": "Embedded Template Library",
-  "version": "18.1.3",
+  "version": "20.27.1",
   "authors": {
     "name": "John Wellbelove",
     "email": "john.wellbelove@etlcpp.com"
   },
   "homepage": "https://www.etlcpp.com/",
   "license": "MIT",
-  "description": "A C++ template library tailored for embedded systems.",
+  "description": "ETL. A C++ template library tailored for embedded systems.",
+  "keywords": "c-plus-plus, cpp, algorithms, containers, templates",
   "repository": {
     "type": "git",
     "url": "https://github.com/ETLCPP/etl.git"
   },
   "build": {
     "includeDir": "include"
+  },
+  "export": {
+    "include": [
+      "include",
+      "examples",
+      "LICENSE",
+      "README.md"
+    ],
+    "exclude": [
+      "include/etl/experimental",
+      "include/etl/deprecated",
+      "**/__vm",
+      "**/.vs",
+      "**/*.filters",
+      "**/*.log",
+      "**/*.tmp"
+    ]
   },
   "platforms": "*",
   "frameworks": "*"

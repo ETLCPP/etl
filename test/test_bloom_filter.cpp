@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <vector>
 #include <string.h>
@@ -82,7 +82,7 @@ namespace
     {
       etl::bloom_filter<256, hash1_t> bloom;
 
-      for (size_t i = 0; i < exist_text.size(); ++i)
+      for (size_t i = 0UL; i < exist_text.size(); ++i)
       {
         bloom.add(exist_text[i]);
       }
@@ -90,7 +90,7 @@ namespace
       // Check for false negatives.
       bool all_exist = true;
 
-      for (size_t i = 0; i < exist_text.size(); ++i)
+      for (size_t i = 0UL; i < exist_text.size(); ++i)
       {
         all_exist = all_exist && bloom.exists(exist_text[i]);
       }
@@ -100,7 +100,7 @@ namespace
       // Check for false positives. There should be none for this set.
       bool any_exist = false;
 
-      for (size_t i = 0; i < not_exist_text.size(); ++i)
+      for (size_t i = 0UL; i < not_exist_text.size(); ++i)
       {
         any_exist = any_exist || bloom.exists(not_exist_text[i]);
       }
@@ -121,7 +121,7 @@ namespace
     {
       etl::bloom_filter<256, hash1_t, hash2_t> bloom;
 
-      for (size_t i = 0; i < exist_text.size(); ++i)
+      for (size_t i = 0UL; i < exist_text.size(); ++i)
       {
         bloom.add(exist_text[i]);
       }
@@ -129,7 +129,7 @@ namespace
       // Check for false negatives.
       bool all_exist = true;
 
-      for (size_t i = 0; i < exist_text.size(); ++i)
+      for (size_t i = 0UL; i < exist_text.size(); ++i)
       {
         all_exist = all_exist && bloom.exists(exist_text[i]);
       }
@@ -139,7 +139,7 @@ namespace
       // Check for false positives. There should be none for this set.
       bool any_exist = false;
 
-      for (size_t i = 0; i < not_exist_text.size(); ++i)
+      for (size_t i = 0UL; i < not_exist_text.size(); ++i)
       {
         any_exist = any_exist || bloom.exists(not_exist_text[i]);
       }
@@ -159,7 +159,7 @@ namespace
     {
       etl::bloom_filter<256, hash1_t, hash2_t, hash3_t> bloom;
 
-      for (size_t i = 0; i < exist_text.size(); ++i)
+      for (size_t i = 0UL; i < exist_text.size(); ++i)
       {
         bloom.add(exist_text[i]);
       }
@@ -167,7 +167,7 @@ namespace
       // Check for false negatives.
       bool all_exist = true;
 
-      for (size_t i = 0; i < exist_text.size(); ++i)
+      for (size_t i = 0UL; i < exist_text.size(); ++i)
       {
         all_exist = all_exist && bloom.exists(exist_text[i]);
       }
@@ -177,7 +177,7 @@ namespace
       // Check for false positives. There should be none for this set.
       bool any_exist = false;
 
-      for (size_t i = 0; i < not_exist_text.size(); ++i)
+      for (size_t i = 0UL; i < not_exist_text.size(); ++i)
       {
         any_exist = any_exist || bloom.exists(not_exist_text[i]);
       }
@@ -209,7 +209,7 @@ namespace
 
       CHECK(bloom.count() == 0);
 
-      for (size_t i = 0; i < exist_text.size(); ++i)
+      for (size_t i = 0UL; i < exist_text.size(); ++i)
       {
         bloom.add(exist_text[i]);
       }
@@ -224,7 +224,7 @@ namespace
 
       CHECK(bloom.usage() == 0);
 
-      for (size_t i = 0; i < exist_text.size(); ++i)
+      for (size_t i = 0UL; i < exist_text.size(); ++i)
       {
         bloom.add(exist_text[i]);
       }
@@ -237,7 +237,7 @@ namespace
     {
       etl::bloom_filter<64, hash1_t> bloom;
 
-      for (size_t i = 0; i < exist_text.size(); ++i)
+      for (size_t i = 0UL; i < exist_text.size(); ++i)
       {
         bloom.add(exist_text[i]);
       }
@@ -253,7 +253,7 @@ namespace
       // Check that we get no matches.
       bool any_exist = false;
 
-      for (size_t i = 0; i < not_exist_text.size(); ++i)
+      for (size_t i = 0UL; i < not_exist_text.size(); ++i)
       {
         any_exist = any_exist || bloom.exists(not_exist_text[i]);
       }

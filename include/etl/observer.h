@@ -57,9 +57,7 @@ SOFTWARE.
 #include "vector.h"
 #include "exception.h"
 #include "error_handler.h"
-
-#undef ETL_FILE
-#define ETL_FILE "18"
+#include "utility.h"
 
 namespace etl
 {
@@ -86,7 +84,7 @@ namespace etl
   public:
 
     observer_list_full(string_type file_name_, numeric_type line_number_)
-      : observer_exception(ETL_ERROR_TEXT("observer:full", ETL_FILE"A"), file_name_, line_number_)
+      : observer_exception(ETL_ERROR_TEXT("observer:full", ETL_OBSERVER_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -100,11 +98,46 @@ namespace etl
   template <typename TObserver, const size_t MAX_OBSERVERS>
   class observable
   {
+  private:
+
+    //***********************************
+    // Item stored in the observer list.
+    //***********************************
+    struct observer_item
+    {
+      observer_item(TObserver& observer_)
+        : p_observer(&observer_)
+        , enabled(true)
+      {
+      }
+
+      TObserver* p_observer;
+      bool       enabled;
+    };
+
+    //***********************************
+    // How to compare an observer with an observer list item.
+    //***********************************
+    struct compare_observers
+    {
+      compare_observers(TObserver& observer_)
+        : p_observer(&observer_)
+      {
+      }
+
+      bool operator ()(const observer_item& item) const
+      {
+        return p_observer == item.p_observer;
+      }
+
+      TObserver* p_observer;
+    };
+
   public:
 
     typedef size_t size_type;
 
-    typedef etl::vector<TObserver*, MAX_OBSERVERS> Observer_List;
+    typedef etl::vector<observer_item, MAX_OBSERVERS> Observer_List;
 
     //*****************************************************************
     /// Add an observer to the list.
@@ -115,18 +148,16 @@ namespace etl
     void add_observer(TObserver& observer)
     {
 		  // See if we already have it in our list.
-      typename Observer_List::const_iterator i_observer = etl::find(observer_list.begin(),
-                                                                       observer_list.end(),
-                                                                       &observer);
+      typename Observer_List::iterator i_observer_item = find_observer(observer);
 
 		  // Not there?
-      if (i_observer == observer_list.end())
+      if (i_observer_item == observer_list.end())
       {
         // Is there enough room?
-        ETL_ASSERT(!observer_list.full(), ETL_ERROR(etl::observer_list_full));
+        ETL_ASSERT_AND_RETURN(!observer_list.full(), ETL_ERROR(etl::observer_list_full));
 
         // Add it.
-        observer_list.push_back(&observer);
+        observer_list.push_back(observer_item(observer));
       }
     }
 
@@ -138,20 +169,50 @@ namespace etl
     bool remove_observer(TObserver& observer)
     {
       // See if we have it in our list.
-      typename Observer_List::iterator i_observer = etl::find(observer_list.begin(),
-                                                                 observer_list.end(),
-                                                                 &observer);
+      typename Observer_List::iterator i_observer_item = find_observer(observer);
 
       // Found it?
-      if (i_observer != observer_list.end())
+      if (i_observer_item != observer_list.end())
       {
         // Erase it.
-        observer_list.erase(i_observer);
+        observer_list.erase(i_observer_item);
         return true;
       }
       else
       {
         return false;
+      }
+    }
+
+    //*****************************************************************
+    /// Enable an observer
+    ///\param observer A reference to the observer.
+    ///\param state    <b>true</b> to enable, <b>false</b> to disable. Default is enable.
+    //*****************************************************************
+    void enable_observer(TObserver& observer, bool state = true)
+    {
+      // See if we have it in our list.
+      typename Observer_List::iterator i_observer_item = find_observer(observer);
+
+      // Found it?
+      if (i_observer_item != observer_list.end())
+      {
+        i_observer_item->enabled = state;
+      }
+    }
+
+    //*****************************************************************
+    /// Disable an observer
+    //*****************************************************************
+    void disable_observer(TObserver& observer)
+    {
+      // See if we have it in our list.
+      typename Observer_List::iterator i_observer_item = find_observer(observer);
+
+      // Found it?
+      if (i_observer_item != observer_list.end())
+      {
+        i_observer_item->enabled = false;
       }
     }
 
@@ -173,29 +234,24 @@ namespace etl
 
     //*****************************************************************
     /// Notify all of the observers, sending them the notification.
-    ///\tparam TNotification the notification type.
+    ///\tparam TNotification The notification type.
     ///\param n The notification.
     //*****************************************************************
-#if ETL_CPP11_SUPPORTED && !defined(ETL_OBSERVER_FORCE_CPP03)
-    template <typename... TNotification>
-    void notify_observers(TNotification... n)
-    {
-      for (auto observer : observer_list)
-      {
-        observer->notification(n...);
-      }
-    }
-#else
     template <typename TNotification>
     void notify_observers(TNotification n)
     {
-      for (size_t i = 0; i < observer_list.size(); ++i)
+      typename Observer_List::iterator i_observer_item = observer_list.begin();
+
+      while (i_observer_item != observer_list.end())
       {
-        observer_list[i]->notification(n);
+        if (i_observer_item->enabled)
+        {
+          i_observer_item->p_observer->notification(n);
+        }
+
+        ++i_observer_item;
       }
     }
-#endif
-
 
   protected:
 
@@ -205,11 +261,20 @@ namespace etl
 
   private:
 
+    //*****************************************************************
+    /// Find an observer in the list.
+    /// Returns the end of the list if not found.
+    //*****************************************************************
+    typename Observer_List::iterator find_observer(TObserver& observer_)
+    {
+      return etl::find_if(observer_list.begin(), observer_list.end(), compare_observers(observer_));
+    }
+
     /// The list of observers.
     Observer_List observer_list;
   };
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_OBSERVER_FORCE_CPP03)
+#if ETL_USING_CPP11 && !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
 
   //*****************************************************************
   /// The observer class for N types.
@@ -232,6 +297,8 @@ namespace etl
   class observer<T1>
   {
   public:
+
+    virtual ~observer() = default;
 
     virtual void notification(T1) = 0;
   };
@@ -399,7 +466,5 @@ namespace etl
 
 #endif
 }
-
-#undef ETL_FILE
 
 #endif

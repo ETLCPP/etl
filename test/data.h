@@ -123,6 +123,9 @@ public:
   {
   }
 
+  TestDataNDC(const TestDataNDC&) = default;
+  TestDataNDC& operator =(const TestDataNDC&) = default;
+
   bool operator < (const TestDataNDC& other) const
   {
     return value < other.value;
@@ -185,7 +188,7 @@ public:
   {
   }
 
-  TestDataM(TestDataM&& other)
+  TestDataM(TestDataM&& other) noexcept
     : value(other.value)
     , valid(true)
   {
@@ -197,7 +200,7 @@ public:
   {
   }
 
-  TestDataM& operator =(TestDataM&& other)
+  TestDataM& operator =(TestDataM&& other) noexcept
   {
     value = std::move(other.value);
     valid = true;

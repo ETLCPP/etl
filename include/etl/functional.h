@@ -52,23 +52,23 @@ namespace etl
 
     typedef T type;
 
-    explicit reference_wrapper(T& t_)
+    ETL_CONSTEXPR20 explicit reference_wrapper(T& t_) ETL_NOEXCEPT
       : t(&t_)
     {
     }
 
-    operator T& () const
+    ETL_CONSTEXPR20 reference_wrapper<T>& operator = (const reference_wrapper& rhs) ETL_NOEXCEPT
+    {
+      t = rhs.t;
+      return *this;
+    }
+
+    ETL_CONSTEXPR20 T& get() const ETL_NOEXCEPT
     {
       return *t;
     }
 
-    reference_wrapper<T>& operator = (T value)
-    {
-      *t = value;
-      return *this;
-    }
-
-    T& get() const
+    ETL_CONSTEXPR20 operator T&() const ETL_NOEXCEPT
     {
       return *t;
     }
@@ -107,55 +107,6 @@ namespace etl
   }
 
   //***************************************************************************
-  template <typename T = void>
-  struct less
-  {
-    typedef T value_type;
-
-    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
-    {
-      return lhs < rhs;
-    }
-  };
-
-  //***************************************************************************
-  template <typename T = void>
-  struct greater
-  {
-    typedef T value_type;
-
-    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
-    {
-      return lhs > rhs;
-    }
-  };
-
-  //***************************************************************************
-  template <typename T = void>
-  struct equal_to
-  {
-    typedef T value_type;
-
-    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
-    {
-      return lhs == rhs;
-    }
-  };
-
-  //***************************************************************************
-  template <typename T = void>
-  struct not_equal_to
-  {
-    typedef T value_type;
-
-    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
-    {
-      return lhs != rhs;
-    }
-  };
-
-  //***************************************************************************
-
   template <typename TArgumentType, typename TResultType>
   struct unary_function
   {
@@ -164,7 +115,6 @@ namespace etl
   };
 
   //***************************************************************************
-
   template <typename TFirstArgumentType, typename TSecondArgumentType, typename TResultType>
   struct binary_function
   {
@@ -174,7 +124,163 @@ namespace etl
   };
 
   //***************************************************************************
+  template <typename T = void>
+  struct less : public etl::binary_function<T, T, bool>
+  {
+    typedef T value_type;
 
+    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
+    {
+      return (lhs < rhs);
+    }
+  };
+
+#if ETL_USING_CPP11
+  template <>
+  struct less<void> : public etl::binary_function<void, void, bool>
+  {
+    typedef int is_transparent;
+
+    template <typename T1, typename T2>
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    {
+      return static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs);
+    }
+  };
+#endif
+
+  //***************************************************************************
+  template <typename T = void>
+  struct less_equal : public etl::binary_function<T, T, bool>
+  {
+    typedef T value_type;
+
+    ETL_CONSTEXPR bool operator()(const T& lhs, const T& rhs) const
+    {
+      return !(rhs < lhs);
+    }
+  };
+
+#if ETL_USING_CPP11
+  template <>
+  struct less_equal<void> : public etl::binary_function<void, void, bool>
+  {
+    typedef int is_transparent;
+
+    template <typename T1, typename T2>
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    {
+      return !(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs));
+    }
+  };
+#endif
+
+  //***************************************************************************
+  template <typename T = void>
+  struct greater : public etl::binary_function<T, T, bool>
+  {
+    typedef T value_type;
+
+    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
+    {
+      return (rhs < lhs);
+    }
+  };
+
+#if ETL_USING_CPP11
+  template <>
+  struct greater<void> : public etl::binary_function<void, void, bool>
+  {
+    typedef int is_transparent;
+
+    template <typename T1, typename T2>
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    {
+      return static_cast<T1&&>(rhs) < static_cast<T2&&>(lhs);
+    }
+  };
+#endif
+
+  //***************************************************************************
+  template <typename T = void>
+  struct greater_equal : public etl::binary_function<T, T, bool>
+  {
+    typedef T value_type;
+
+    ETL_CONSTEXPR bool operator()(const T& lhs, const T& rhs) const
+    {
+      return !(lhs < rhs);
+    }
+  };
+
+#if ETL_USING_CPP11
+  template <>
+  struct greater_equal<void> : public etl::binary_function<void, void, bool>
+  {
+    typedef int is_transparent;
+
+    template <typename T1, typename T2>
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    {
+      return static_cast<T1&&>(rhs) < static_cast<T2&&>(lhs);
+    }
+  };
+#endif
+
+  //***************************************************************************
+  template <typename T = void>
+  struct equal_to : public etl::binary_function<T, T, bool>
+  {
+    typedef T value_type;
+
+    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
+    {
+      return lhs == rhs;
+    }
+  };
+
+#if ETL_USING_CPP11
+  template <>
+  struct equal_to<void> : public etl::binary_function<void, void, bool>
+  {
+    typedef void value_type;
+    typedef int is_transparent;
+
+    template <typename T1, typename T2>
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    {
+      return static_cast<T1&&>(lhs) == static_cast<T2&&>(rhs);
+    }
+  };
+#endif
+
+  //***************************************************************************
+  template <typename T = void>
+  struct not_equal_to : public etl::binary_function<T, T, bool>
+  {
+    typedef T value_type;
+
+    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
+    {
+      return !(lhs == rhs);
+    }
+  };
+
+#if ETL_USING_CPP11
+  template <>
+  struct not_equal_to<void> : public etl::binary_function<void, void, bool>
+  {
+    typedef int is_transparent;
+
+    template <typename T1, typename T2>
+    constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) < static_cast<T2&&>(rhs))
+    {
+      return !(static_cast<T1&&>(lhs) == static_cast<T2&&>(rhs));
+    }
+  };
+#endif
+
+  //***************************************************************************
   template <typename TFunction>
   class binder1st : public etl::unary_function<typename TFunction::second_argument_type, typename TFunction::result_type>
   {
@@ -208,7 +314,6 @@ namespace etl
   }
 
   //***************************************************************************
-
   template <typename TFunction >
   class binder2nd : public etl::unary_function<typename TFunction::first_argument_type, typename TFunction::result_type>
   {
@@ -237,6 +342,187 @@ namespace etl
   {
     return binder2nd<F>(f, x);
   }
+
+  //***************************************************************************
+  template <typename T = void>
+  struct plus
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
+    {
+      return lhs + rhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct minus
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
+    {
+      return lhs - rhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct negate
+  {
+    typedef T argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs) const
+    {
+      return -lhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct multiplies
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
+    {
+      return lhs * rhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct divides
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
+    {
+      return lhs / rhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct modulus
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
+    {
+      return lhs % rhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct logical_and
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
+    {
+      return lhs && rhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct logical_or
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
+    {
+      return lhs || rhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct logical_not
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs) const
+    {
+      return !lhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct bit_and
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
+    {
+      return lhs & rhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct bit_or
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
+    {
+      return lhs | rhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct bit_xor
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs, const T& rhs) const
+    {
+      return lhs ^ rhs;
+    }
+  };
+
+  //***************************************************************************
+  template <typename T = void>
+  struct bit_not
+  {
+    typedef T first_argument_type;
+    typedef T second_argument_type;
+    typedef T result_type;
+
+    ETL_CONSTEXPR T operator()(const T& lhs) const
+    {
+      return ~lhs;
+    }
+  };
 }
 
 #endif

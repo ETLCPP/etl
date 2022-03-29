@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <iterator>
 #include <string>
@@ -68,7 +68,7 @@ namespace
     //*************************************************************************
     TEST(test_hash_unsigned_char)
     {
-      size_t hash = etl::hash<unsigned char>()((unsigned char)(0x5A));
+      size_t hash = etl::hash<unsigned char>()((unsigned char)(0x5AU));
 
       CHECK_EQUAL(0x5AU, hash);
     }
@@ -84,7 +84,7 @@ namespace
     //*************************************************************************
     TEST(test_hash_unsigned_short)
     {
-      size_t hash = etl::hash<unsigned short>()((unsigned short)(0x5AA5));
+      size_t hash = etl::hash<unsigned short>()((unsigned short)(0x5AA5U));
 
       CHECK_EQUAL(0x5AA5U, hash);
     }
@@ -92,64 +92,64 @@ namespace
     //*************************************************************************
     TEST(test_hash_int)
     {
-      size_t hash = etl::hash<int>()((int)(0x5AA555AA));
+      size_t hash = etl::hash<int>()((int)(0x5AA555AAL));
 
-      CHECK_EQUAL(0x5AA555AAU, hash);
+      CHECK_EQUAL(0x5AA555AAUL, hash);
     }
 
     //*************************************************************************
     TEST(test_hash_unsigned_int)
     {
-      size_t hash = etl::hash<unsigned int>()((unsigned int)(0x5AA555AA));
+      size_t hash = etl::hash<unsigned int>()((unsigned int)(0x5AA555AAUL));
 
-      CHECK_EQUAL(0x5AA555AAU, hash);
+      CHECK_EQUAL(0x5AA555AAUL, hash);
     }
 
     //*************************************************************************
     TEST(test_hash_long)
     {
-      size_t hash = etl::hash<long>()((long)(0x5AA555AA));
+      size_t hash = etl::hash<long>()((long)(0x5AA555AAL));
 
-      CHECK_EQUAL(0x5AA555AAU, hash);
+      CHECK_EQUAL(0x5AA555AAUL, hash);
     }
 
     //*************************************************************************
     TEST(test_hash_unsigned_long)
     {
-      size_t hash = etl::hash<unsigned long>()((unsigned long)(0x5AA555AA));
+      size_t hash = etl::hash<unsigned long>()((unsigned long)(0x5AA555AAUL));
 
-      CHECK_EQUAL(0x5AA555AAU, hash);
+      CHECK_EQUAL(0x5AA555AAUL, hash);
     }
 
     //*************************************************************************
     TEST(test_hash_long_long)
     {
-      size_t hash = etl::hash<long long>()((long long)(0x5AA555AA3CC333CC));
+      size_t hash = etl::hash<long long>()((long long)(0x5AA555AA3CC333CCULL));
 
       if (ETL_PLATFORM_32BIT)
       {
-        CHECK_EQUAL(0xEC6A8D69U, hash);
+        CHECK_EQUAL(0xEC6A8D69UL, hash);
       }
 
       if (ETL_PLATFORM_64BIT)
       {
-        CHECK_EQUAL(0x5AA555AA3CC333CCU, hash);
+        CHECK_EQUAL(0x5AA555AA3CC333CCULL, hash);
       }
     }
 
     //*************************************************************************
     TEST(test_hash_unsigned_long_long)
     {
-      size_t hash = etl::hash<unsigned long long>()((unsigned long long)(0x5AA555AA3CC333CC));
+      size_t hash = etl::hash<unsigned long long>()((unsigned long long)(0x5AA555AA3CC333CCULL));
 
       if (ETL_PLATFORM_32BIT)
       {
-        CHECK_EQUAL(0xEC6A8D69U, hash);
+        CHECK_EQUAL(0xEC6A8D69UL, hash);
       }
 
       if (ETL_PLATFORM_64BIT)
       {
-        CHECK_EQUAL(0x5AA555AA3CC333CCU, hash);
+        CHECK_EQUAL(0x5AA555AA3CC333CCULL, hash);
       }
     }
 
@@ -173,15 +173,15 @@ namespace
     TEST(test_hash_double)
     {
       size_t hash = etl::hash<double>()((double)(1.2345));
-     
+
       if (ETL_PLATFORM_32BIT)
       {
-        CHECK_EQUAL(0x86FBF224U, hash);
+        CHECK_EQUAL(0x86FBF224UL, hash);
       }
 
       if (ETL_PLATFORM_64BIT)
       {
-        CHECK_EQUAL(0x3FF3C083126E978DU, hash);
+        CHECK_EQUAL(0x3FF3C083126E978DULL, hash);
       }
     }
 

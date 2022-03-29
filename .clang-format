@@ -1,0 +1,51 @@
+---
+#------------------------------------
+# Configuration for clang-format v12
+#------------------------------------
+
+Language: Cpp
+
+SortIncludes: true
+
+BasedOnStyle: Chromium
+
+BinPackParameters: false
+BitFieldColonSpacing: Both
+
+BreakBeforeBraces: Allman
+BreakConstructorInitializers: BeforeComma
+
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: false
+
+AllowAllArgumentsOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
+
+ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
+ConstructorInitializerIndentWidth: '2'
+
+NamespaceIndentation: All
+IndentPPDirectives: BeforeHash
+PointerAlignment: Left
+ColumnLimit: '0'
+ContinuationIndentWidth: '2'
+UseTab: Never
+TabWidth: '2'
+IndentWidth: '2'
+AccessModifierOffset : '-2'
+IndentCaseLabels: false
+Cpp11BracedListStyle: 'true'
+AlignAfterOpenBracket: Align
+AlignConsecutiveDeclarations: true
+
+#------------------------------------
+# Configurations not supported by clang-format v12
+#------------------------------------
+# BreakInheritanceList: AfterComma
+# EmptyLineBeforeAccessModifier: Always
+# EmptyLineAfterAccessModifier: Always
+# ReferenceAlignment: Left
+
+...

@@ -31,8 +31,11 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if ETL_CPP11_SUPPORTED == 1 && ETL_USING_STL
+#if ETL_USING_CPP11 && ETL_USING_STL
   #include "mutex/mutex_std.h"
+  #define ETL_HAS_MUTEX 1
+#elif defined(ETL_TARGET_OS_CMSIS_OS2)
+  #include "mutex/mutex_cmsis_os2.h"
   #define ETL_HAS_MUTEX 1
 #elif defined(ETL_TARGET_OS_FREERTOS)
   #include "mutex/mutex_freertos.h"
@@ -42,6 +45,9 @@ SOFTWARE.
   #define ETL_HAS_MUTEX 1
 #elif defined(ETL_COMPILER_GCC)
   #include "mutex/mutex_gcc_sync.h"
+  #define ETL_HAS_MUTEX 1
+#elif defined(ETL_COMPILER_CLANG)
+  #include "mutex/mutex_clang_sync.h"
   #define ETL_HAS_MUTEX 1
 #else
   #define ETL_HAS_MUTEX 0

@@ -34,9 +34,6 @@ SOFTWARE.
 #include "type_traits.h"
 #include "null_type.h"
 
-#undef ETL_FILE
-#define ETL_FILE "49"
-
 /*[[[cog
 import cog
 cog.outl("#if 0")
@@ -59,6 +56,53 @@ cog.outl("//********************************************************************
 
 namespace etl
 {
+#if ETL_USING_CPP11 && !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
+  //***************************************************************************
+  // Variadic version.
+  //***************************************************************************
+  template <typename... TTypes>
+  struct type_select
+  {
+  private:
+
+    //***********************************
+    template <size_t ID, size_t N, typename T1, typename... TRest>
+    struct type_select_helper
+    {
+      using type = typename etl::conditional<ID == N,
+                                             T1,
+                                             typename type_select_helper<ID, N + 1, TRest...>::type>::type;
+    };
+
+    //***********************************
+    template <size_t ID, size_t N, typename T1>
+    struct type_select_helper<ID, N, T1>
+    {
+      using type = T1;
+    };
+
+  public:
+
+    template <size_t ID>
+    struct select
+    {
+      static_assert(ID < sizeof...(TTypes), "Illegal type_select::select index");
+
+      using type = typename type_select_helper<ID, 0, TTypes...>::type;
+    };
+
+    template <size_t ID>
+    using select_t = typename select<ID>::type;
+  };
+
+  //***************************************************************************
+  // Select type alias
+  //***************************************************************************
+  template <size_t N, typename... TTypes>
+  using type_select_t = typename etl::type_select<TTypes...>:: template select_t<N>;
+
+#else
+
   /*[[[cog
   import cog
   cog.outl("//***************************************************************************")
@@ -127,8 +171,7 @@ namespace etl
       cog.outl("};")
   ]]]*/
   /*[[[end]]]*/
+#endif
 }
-
-#undef ETL_FILE
 
 #endif

@@ -61,6 +61,9 @@ namespace etl
     memory_order_seq_cst
   } memory_order;
 
+  //***************************************************************************
+  /// For all types except bool and pointers
+  //***************************************************************************
   template <typename T>
   class atomic
   {
@@ -217,94 +220,111 @@ namespace etl
     // Store
     void store(T v, etl::memory_order order = etl::memory_order_seq_cst)
     {
+      (void)order;
       (void)__sync_lock_test_and_set(&value, v);
     }
 
     void store(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
+      (void)order;
       (void)__sync_lock_test_and_set(&value, v);
     }
 
     // Load
     T load(etl::memory_order order = etl::memory_order_seq_cst) const
     {
+      (void)order;
       return __sync_fetch_and_add(&value, 0);
     }
 
     T load(etl::memory_order order = etl::memory_order_seq_cst) const volatile
     {
+      (void)order;
       return __sync_fetch_and_add(&value, 0);
     }
 
     // Fetch add
     T fetch_add(T v, etl::memory_order order = etl::memory_order_seq_cst)
     {
+      (void)order;
       return __sync_fetch_and_add(&value, v);
     }
 
     T fetch_add(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
+      (void)order;
       return __sync_fetch_and_add(&value, v);
     }
 
     // Fetch subtract
     T fetch_sub(T v, etl::memory_order order = etl::memory_order_seq_cst)
     {
+      (void)order;
       return __sync_fetch_and_sub(&value, v);
     }
 
     T fetch_sub(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
+      (void)order;
       return __sync_fetch_and_sub(&value, v);
     }
 
     // Fetch or
     T fetch_or(T v, etl::memory_order order = etl::memory_order_seq_cst)
     {
+      (void)order;
       return __sync_fetch_and_or(&value, v);
     }
 
     T fetch_or(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
+      (void)order;
       return __sync_fetch_and_or(&value, v);
     }
 
     // Fetch and
     T fetch_and(T v, etl::memory_order order = etl::memory_order_seq_cst)
     {
+      (void)order;
       return __sync_fetch_and_and(&value, v);
     }
 
     T fetch_and(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
+      (void)order;
       return __sync_fetch_and_and(&value, v);
     }
 
     // Fetch exclusive or
     T fetch_xor(T v, etl::memory_order order = etl::memory_order_seq_cst)
     {
+      (void)order;
       return __sync_fetch_and_xor(&value, v);
     }
 
     T fetch_xor(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
+      (void)order;
       return __sync_fetch_and_xor(&value, v);
     }
 
     // Exchange
     T exchange(T v, etl::memory_order order = etl::memory_order_seq_cst)
     {
+      (void)order;
       return __sync_lock_test_and_set(&value, v);
     }
 
     T exchange(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
+      (void)order;
       return __sync_lock_test_and_set(&value, v);
     }
 
     // Compare exchange weak
     bool compare_exchange_weak(T& expected, T desired, etl::memory_order order = etl::memory_order_seq_cst)
     {
+      (void)order;
       T old = __sync_val_compare_and_swap(&value, expected, desired);
 
       if (old == expected)
@@ -320,6 +340,7 @@ namespace etl
 
     bool compare_exchange_weak(T& expected, T desired, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
+      (void)order;
       T old = __sync_val_compare_and_swap(&value, expected, desired);
 
       if (old == expected)
@@ -335,6 +356,8 @@ namespace etl
 
     bool compare_exchange_weak(T& expected, T desired, etl::memory_order success, etl::memory_order failure)
     {
+      (void)success;
+      (void)failure;
       T old = __sync_val_compare_and_swap(&value, expected, desired);
 
       if (old == expected)
@@ -350,6 +373,8 @@ namespace etl
 
     bool compare_exchange_weak(T& expected, T desired, etl::memory_order success, etl::memory_order failure) volatile
     {
+      (void)success;
+      (void)failure;
       T old = __sync_val_compare_and_swap(&value, expected, desired);
 
       if (old == expected)
@@ -366,6 +391,7 @@ namespace etl
     // Compare exchange strong
     bool compare_exchange_strong(T& expected, T desired, etl::memory_order order = etl::memory_order_seq_cst)
     {
+      (void)order;
       T old = expected;
 
       while (!compare_exchange_weak(old, desired))
@@ -382,6 +408,7 @@ namespace etl
 
     bool compare_exchange_strong(T& expected, T desired, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
+      (void)order;
       T old = expected;
 
       while (!compare_exchange_weak(old, desired))
@@ -398,6 +425,8 @@ namespace etl
 
     bool compare_exchange_strong(T& expected, T desired, etl::memory_order success, etl::memory_order failure)
     {
+      (void)success;
+      (void)failure;
       T old = expected;
 
       while (!compare_exchange_weak(old, desired))
@@ -414,6 +443,8 @@ namespace etl
 
     bool compare_exchange_strong(T& expected, T desired, etl::memory_order success, etl::memory_order failure) volatile
     {
+      (void)success;
+      (void)failure;
       T old = expected;
 
       while (!compare_exchange_weak(old, desired))
@@ -430,24 +461,27 @@ namespace etl
 
   private:
 
-    atomic& operator =(const atomic&);
-    atomic& operator =(const atomic&) volatile;
+    atomic& operator =(const atomic&) ETL_DELETE;
+    atomic& operator =(const atomic&) volatile ETL_DELETE;
 
     mutable volatile T value;
   };
 
+  //***************************************************************************
+  /// Specialisation for pointers
+  //***************************************************************************
   template <typename T>
   class atomic<T*>
   {
   public:
 
     atomic()
-      : value(ETL_NULLPTR)
+      : value(0U)
     {
     }
 
     atomic(T* v)
-      : value(v)
+      : value(uintptr_t(v))
     {
     }
 
@@ -469,78 +503,78 @@ namespace etl
     // Pre-increment
     T* operator ++()
     {
-      return (T*)__sync_add_and_fetch(&value, sizeof(T));
+      return reinterpret_cast<T*>(__sync_add_and_fetch(&value, sizeof(T)));
     }
 
     T* operator ++() volatile
     {
-      return (T*)__sync_add_and_fetch(&value, sizeof(T));
+      return reinterpret_cast<T*>(__sync_add_and_fetch(&value, sizeof(T)));
     }
 
     // Post-increment
     T* operator ++(int)
     {
-      return (T*)__sync_fetch_and_add(&value, sizeof(T));
+      return reinterpret_cast<T*>(__sync_fetch_and_add(&value, sizeof(T)));
     }
 
     T* operator ++(int) volatile
     {
-      return (T*)__sync_fetch_and_add(&value, sizeof(T));
+      return reinterpret_cast<T*>(__sync_fetch_and_add(&value, sizeof(T)));
     }
 
     // Pre-decrement
     T* operator --()
     {
-      return (T*)__sync_sub_and_fetch(&value, sizeof(T));
+      return reinterpret_cast<T*>(__sync_sub_and_fetch(&value, sizeof(T)));
     }
 
     T* operator --() volatile
     {
-      return (T*)__sync_sub_and_fetch(&value, sizeof(T));
+      return reinterpret_cast<T*>(__sync_sub_and_fetch(&value, sizeof(T)));
     }
 
     // Post-decrement
     T* operator --(int)
     {
-      return (T*)__sync_fetch_and_sub(&value, sizeof(T));
+      return reinterpret_cast<T*>(__sync_fetch_and_sub(&value, sizeof(T)));
     }
 
     T* operator --(int) volatile
     {
-      return (T*)__sync_fetch_and_sub(&value, sizeof(T));
+      return reinterpret_cast<T*>(__sync_fetch_and_sub(&value, sizeof(T)));
     }
 
     // Add
     T* operator +=(ptrdiff_t v)
     {
-      return (T*)__sync_fetch_and_add(&value, v * sizeof(T));
+      return reinterpret_cast<T*>(__sync_fetch_and_add(&value, v * sizeof(T)));
     }
 
     T* operator +=(ptrdiff_t v) volatile
     {
-      return (T*)__sync_fetch_and_add(&value, v * sizeof(T));
+      return reinterpret_cast<T*>(__sync_fetch_and_add(&value, v * sizeof(T)));
     }
 
     // Subtract
     T* operator -=(ptrdiff_t v)
     {
-      return (T*)__sync_fetch_and_sub(&value, v * sizeof(T));
+      return reinterpret_cast<T*>(__sync_fetch_and_sub(&value, v * sizeof(T)));
     }
 
     T* operator -=(ptrdiff_t v) volatile
     {
-      return (T*)__sync_fetch_and_sub(&value, v * sizeof(T));
+      return reinterpret_cast<T*>(__sync_fetch_and_sub(&value, v * sizeof(T)));
     }
 
     // Conversion operator
     operator T* () const
     {
-      return (T*)__sync_fetch_and_add(&value, 0);
+      return reinterpret_cast<T*>(__sync_fetch_and_add(&value, 0));
     }
 
     operator T*() volatile const
     {
-      return __sync_fetch_and_add(&value, 0);
+      return reinterpret_cast<T*>(__sync_fetch_and_add(&value, 0));
     }
 
     // Is lock free?
@@ -557,62 +591,62 @@ namespace etl
     // Store
     void store(T* v, etl::memory_order order = etl::memory_order_seq_cst)
     {
-      __sync_lock_test_and_set(&value, v);
+      __sync_lock_test_and_set(&value, uintptr_t(v));
     }
 
     void store(T* v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
-      __sync_lock_test_and_set(&value, v);
+      __sync_lock_test_and_set(&value, uintptr_t(v));
     }
 
     // Load
     T* load(etl::memory_order order = etl::memory_order_seq_cst) const
     {
-      return (T*)__sync_fetch_and_add(&value, 0);
+      return reinterpret_cast<T*>(__sync_fetch_and_add(&value, 0));
     }
 
     T* load(etl::memory_order order = etl::memory_order_seq_cst) const volatile
     {
-      return __sync_fetch_and_add(&value, 0);
+      return reinterpret_cast<T*>(__sync_fetch_and_add(&value, 0));
     }
 
     // Fetch add
     T* fetch_add(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst)
     {
-      return (T*)__sync_fetch_and_add(&value, v);
+      return reinterpret_cast<T*>(__sync_fetch_and_add(&value, v));
     }
 
     T* fetch_add(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
-      return (T*)__sync_fetch_and_add(&value, v);
+      return reinterpret_cast<T*>(__sync_fetch_and_add(&value, v));
     }
 
     // Fetch subtract
     T* fetch_sub(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst)
     {
-      return (T*)__sync_fetch_and_sub(&value, v);
+      return reinterpret_cast<T*>(__sync_fetch_and_sub(&value, v));
     }
 
     T* fetch_sub(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
-      return (T*)__sync_fetch_and_sub(&value, v);
+      return reinterpret_cast<T*>(__sync_fetch_and_sub(&value, v));
     }
 
     // Exchange
     T* exchange(T* v, etl::memory_order order = etl::memory_order_seq_cst)
     {
-      return (T*)__sync_lock_test_and_set(&value, v);
+      return reinterpret_cast<T*>(__sync_lock_test_and_set(&value, uintptr_t(v)));
     }
 
     T* exchange(T* v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
-      return (T*)__sync_lock_test_and_set(&value, v);
+      return reinterpret_cast<T*>(__sync_lock_test_and_set(&value, uintptr_t(v)));
     }
 
     // Compare exchange weak
     bool compare_exchange_weak(T*& expected, T* desired, etl::memory_order order = etl::memory_order_seq_cst)
     {
-      T* old = __sync_val_compare_and_swap(&value, expected, desired);
+      T* old = reinterpret_cast<T*>(__sync_val_compare_and_swap(&value, uintptr_t(expected), uintptr_t(desired)));
 
       if (old == expected)
       {
@@ -627,7 +661,7 @@ namespace etl
 
     bool compare_exchange_weak(T*& expected, T* desired, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
-      T* old = __sync_val_compare_and_swap(&value, expected, desired);
+      T* old = reinterpret_cast<T*>(__sync_val_compare_and_swap(&value, uintptr_t(expected), uintptr_t(desired)));
 
       if (old == expected)
       {
@@ -642,7 +676,7 @@ namespace etl
 
     bool compare_exchange_weak(T*& expected, T* desired, etl::memory_order success, etl::memory_order failure)
     {
-      T* old = __sync_val_compare_and_swap(&value, expected, desired);
+      T* old = reinterpret_cast<T*>(__sync_val_compare_and_swap(&value, uintptr_t(expected), uintptr_t(desired)));
 
       if (old == expected)
       {
@@ -657,7 +691,7 @@ namespace etl
 
     bool compare_exchange_weak(T*& expected, T* desired, etl::memory_order success, etl::memory_order failure) volatile
     {
-      T* old = __sync_val_compare_and_swap(&value, expected, desired);
+      T* old = reinterpret_cast<T*>(__sync_val_compare_and_swap(&value, uintptr_t(expected), uintptr_t(desired)));
 
       if (old == expected)
       {
@@ -737,12 +771,323 @@ namespace etl
 
   private:
 
-    atomic& operator =(const atomic&);
-    atomic& operator =(const atomic&) volatile;
+    atomic& operator =(const atomic&) ETL_DELETE;
+    atomic& operator =(const atomic&) volatile ETL_DELETE;
 
-    mutable volatile T* value;
+    mutable uintptr_t value;
   };
 
+  //***************************************************************************
+  /// Specialisation for bool
+  //***************************************************************************
+  template <>
+  class atomic<bool>
+  {
+  public:
+
+    atomic()
+      : value(0U)
+    {
+    }
+
+    atomic(bool v)
+      : value(char(v))
+    {
+    }
+
+    // Assignment
+    bool operator =(bool v)
+    {
+      store(v);
+
+      return v;
+    }
+
+    bool operator =(bool v) volatile
+    {
+      store(v);
+
+      return v;
+    }
+
+    // Pre-increment
+    bool operator ++()
+    {
+      return static_cast<bool>(__sync_add_and_fetch(&value, sizeof(char)));
+    }
+
+    bool operator ++() volatile
+    {
+      return static_cast<bool>(__sync_add_and_fetch(&value, sizeof(char)));
+    }
+
+    // Post-increment
+    bool operator ++(int)
+    {
+      return static_cast<bool>(__sync_fetch_and_add(&value, sizeof(char)));
+    }
+
+    bool operator ++(int) volatile
+    {
+      return static_cast<bool>(__sync_fetch_and_add(&value, sizeof(char)));
+    }
+
+    // Pre-decrement
+    bool operator --()
+    {
+      return static_cast<bool>(__sync_sub_and_fetch(&value, sizeof(char)));
+    }
+
+    bool operator --() volatile
+    {
+      return static_cast<bool>(__sync_sub_and_fetch(&value, sizeof(char)));
+    }
+
+    // Post-decrement
+    bool operator --(int)
+    {
+      return static_cast<bool>(__sync_fetch_and_sub(&value, sizeof(char)));
+    }
+
+    bool operator --(int) volatile
+    {
+      return static_cast<bool>(__sync_fetch_and_sub(&value, sizeof(char)));
+    }
+
+    // Add
+    bool operator +=(ptrdiff_t v)
+    {
+      return static_cast<bool>(__sync_fetch_and_add(&value, v * sizeof(char)));
+    }
+
+    bool operator +=(ptrdiff_t v) volatile
+    {
+      return static_cast<bool>(__sync_fetch_and_add(&value, v * sizeof(char)));
+    }
+
+    // Subtract
+    bool operator -=(ptrdiff_t v)
+    {
+      return static_cast<bool>(__sync_fetch_and_sub(&value, v * sizeof(char)));
+    }
+
+    bool operator -=(ptrdiff_t v) volatile
+    {
+      return static_cast<bool>(__sync_fetch_and_sub(&value, v * sizeof(char)));
+    }
+
+    // Conversion operator
+    operator bool () const
+    {
+      return static_cast<bool>(__sync_fetch_and_add(&value, 0));
+    }
+
+    operator bool() volatile const
+    {
+      return static_cast<bool>(__sync_fetch_and_add(&value, 0));
+    }
+
+    // Is lock free?
+    bool is_lock_free() const
+    {
+      return true;
+    }
+
+    bool is_lock_free() const volatile
+    {
+      return true;
+    }
+
+    // Store
+    void store(bool v, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      __sync_lock_test_and_set(&value, char(v));
+    }
+
+    void store(bool v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      __sync_lock_test_and_set(&value, char(v));
+    }
+
+    // Load
+    bool load(etl::memory_order order = etl::memory_order_seq_cst) const
+    {
+      return static_cast<bool>(__sync_fetch_and_add(&value, 0));
+    }
+
+    bool load(etl::memory_order order = etl::memory_order_seq_cst) const volatile
+    {
+      return static_cast<bool>(__sync_fetch_and_add(&value, 0));
+    }
+
+    // Fetch add
+    bool fetch_add(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      return static_cast<bool>(__sync_fetch_and_add(&value, v));
+    }
+
+    bool fetch_add(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      return static_cast<bool>(__sync_fetch_and_add(&value, v));
+    }
+
+    // Fetch subtract
+    bool fetch_sub(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      return static_cast<bool>(__sync_fetch_and_sub(&value, v));
+    }
+
+    bool fetch_sub(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      return static_cast<bool>(__sync_fetch_and_sub(&value, v));
+    }
+
+    // Exchange
+    bool exchange(bool v, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      return static_cast<bool>(__sync_lock_test_and_set(&value, char(v)));
+    }
+
+    bool exchange(bool v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      return static_cast<bool>(__sync_lock_test_and_set(&value, char(v)));
+    }
+
+    // Compare exchange weak
+    bool compare_exchange_weak(bool& expected, bool desired, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      bool old = static_cast<bool>(__sync_val_compare_and_swap(&value, char(expected), char(desired)));
+
+      if (old == expected)
+      {
+        return true;
+      }
+      else
+      {
+        expected = old;
+        return false;
+      }
+    }
+
+    bool compare_exchange_weak(bool& expected, bool desired, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      bool old = static_cast<bool>(__sync_val_compare_and_swap(&value, char(expected), char(desired)));
+
+      if (old == expected)
+      {
+        return true;
+      }
+      else
+      {
+        expected = old;
+        return false;
+      }
+    }
+
+    bool compare_exchange_weak(bool& expected, bool desired, etl::memory_order success, etl::memory_order failure)
+    {
+      bool old = static_cast<bool>(__sync_val_compare_and_swap(&value, char(expected), char(desired)));
+
+      if (old == expected)
+      {
+        return true;
+      }
+      else
+      {
+        expected = old;
+        return false;
+      }
+    }
+
+    bool compare_exchange_weak(bool& expected, bool desired, etl::memory_order success, etl::memory_order failure) volatile
+    {
+      bool old = static_cast<bool>(__sync_val_compare_and_swap(&value, char(expected), char(desired)));
+
+      if (old == expected)
+      {
+        return true;
+      }
+      else
+      {
+        expected = old;
+        return false;
+      }
+    }
+
+    // Compare exchange strong
+    bool compare_exchange_strong(bool& expected, bool desired, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      bool old = expected;
+
+      while (!compare_exchange_weak(old, desired))
+      {
+        if (memcmp(&old, &expected, sizeof(bool)))
+        {
+          expected = old;
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    bool compare_exchange_strong(bool& expected, bool desired, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      bool old = expected;
+
+      while (!compare_exchange_weak(old, desired))
+      {
+        if (memcmp(&old, &expected, sizeof(bool)))
+        {
+          expected = old;
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    bool compare_exchange_strong(bool& expected, bool desired, etl::memory_order success, etl::memory_order failure)
+    {
+      bool old = expected;
+
+      while (!compare_exchange_weak(old, desired))
+      {
+        if (memcmp(&old, &expected, sizeof(bool)))
+        {
+          expected = old;
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    bool compare_exchange_strong(bool& expected, bool desired, etl::memory_order success, etl::memory_order failure) volatile
+    {
+      bool old = expected;
+
+      while (!compare_exchange_weak(old, desired))
+      {
+        if (memcmp(&old, &expected, sizeof(bool)))
+        {
+          expected = old;
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+  private:
+
+    atomic& operator =(const atomic&) ETL_DELETE;
+    atomic& operator =(const atomic&) volatile ETL_DELETE;
+
+    mutable char value;
+  };
+
+  typedef etl::atomic<bool>                atomic_bool;
   typedef etl::atomic<char>                atomic_char;
   typedef etl::atomic<signed char>         atomic_schar;
   typedef etl::atomic<unsigned char>       atomic_uchar;
@@ -757,8 +1102,10 @@ namespace etl
   typedef etl::atomic<wchar_t>             atomic_wchar_t;
   typedef etl::atomic<char16_t>            atomic_char16_t;
   typedef etl::atomic<char32_t>            atomic_char32_t;
+#if ETL_USING_8BIT_TYPES
   typedef etl::atomic<uint8_t>             atomic_uint8_t;
   typedef etl::atomic<int8_t>              atomic_int8_t;
+#endif
   typedef etl::atomic<uint16_t>            atomic_uint16_t;
   typedef etl::atomic<int16_t>             atomic_int16_t;
   typedef etl::atomic<uint32_t>            atomic_uint32_t;

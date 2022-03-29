@@ -35,7 +35,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "basic_format_spec.h"
-#include "cstring.h"
+#include "string.h"
 
 namespace etl
 {

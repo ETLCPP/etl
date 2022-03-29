@@ -34,10 +34,8 @@ SOFTWARE.
 #include <stddef.h>
 #include <stdint.h>
 
-#include <new>
-
 #include "platform.h"
-#include "container.h"
+#include "iterator.h"
 #include "alignment.h"
 #include "array.h"
 #include "exception.h"
@@ -48,9 +46,7 @@ SOFTWARE.
 #include "memory_model.h"
 #include "integral_limits.h"
 #include "utility.h"
-
-#undef ETL_FILE
-#define ETL_FILE "13"
+#include "placement_new.h"
 
 //*****************************************************************************
 ///\defgroup queue queue
@@ -84,7 +80,7 @@ namespace etl
   public:
 
     queue_full(string_type file_name_, numeric_type line_number_)
-      : queue_exception(ETL_ERROR_TEXT("queue:full", ETL_FILE"A"), file_name_, line_number_)
+      : queue_exception(ETL_ERROR_TEXT("queue:full", ETL_QUEUE_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -98,7 +94,7 @@ namespace etl
   public:
 
     queue_empty(string_type file_name_, numeric_type line_number_)
-      : queue_exception(ETL_ERROR_TEXT("queue:empty", ETL_FILE"B"), file_name_, line_number_)
+      : queue_exception(ETL_ERROR_TEXT("queue:empty", ETL_QUEUE_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -255,7 +251,7 @@ namespace etl
     typedef T                          value_type;      ///< The type stored in the queue.
     typedef T&                         reference;       ///< A reference to the type used in the queue.
     typedef const T&                   const_reference; ///< A const reference to the type used in the queue.
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     typedef T&&                        rvalue_reference;///< An rvalue reference to the type used in the queue.
 #endif
     typedef T*                         pointer;         ///< A pointer to the type used in the queue.
@@ -321,7 +317,7 @@ namespace etl
       add_in();
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Adds a value to the queue.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
@@ -337,7 +333,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_FORCE_CPP03)
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
@@ -456,7 +452,7 @@ namespace etl
     //*************************************************************************
     void pop_into(reference destination)
     {
-      destination = front();
+      destination = ETL_MOVE(front());
       pop();
     }
 
@@ -469,7 +465,7 @@ namespace etl
     template <typename TContainer>
     void pop_into(TContainer& destination)
     {
-      destination.push(front());
+      destination.push(ETL_MOVE(front()));
       pop();
     }
 
@@ -487,7 +483,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
@@ -521,7 +517,7 @@ namespace etl
       }
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Make this a moved clone of the supplied queue
     //*************************************************************************
@@ -588,11 +584,12 @@ namespace etl
 
   public:
 
-    typedef typename base_t::size_type size_type;
+    typedef typename base_t::size_type                                                  size_type;
+    typedef typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type container_type;
 
     ETL_STATIC_ASSERT((SIZE <= etl::integral_limits<size_type>::max), "Size too large for memory model");
 
-    static const size_type MAX_SIZE = size_type(SIZE);
+    static ETL_CONSTANT size_type MAX_SIZE = size_type(SIZE);
 
     //*************************************************************************
     /// Default constructor.
@@ -611,14 +608,14 @@ namespace etl
       base_t::clone(rhs);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
     queue(queue&& rhs)
       : base_t(reinterpret_cast<T*>(&buffer[0]), SIZE)
     {
-      base_t::move_clone(std::move(rhs));
+      base_t::move_clone(etl::move(rhs));
     }
 #endif
 
@@ -643,7 +640,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -661,10 +658,8 @@ namespace etl
   private:
 
     /// The uninitialised buffer of T used in the queue.
-    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[SIZE];
+    container_type buffer[SIZE];
   };
 }
-
-#undef ETL_FILE
 
 #endif

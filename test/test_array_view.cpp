@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/array_view.h"
 #include "etl/array.h"
@@ -40,7 +40,7 @@ namespace
 {
   SUITE(test_array_view)
   {
-    static const size_t SIZE = 10;
+    static const size_t SIZE = 10UL;
 
     typedef etl::array<int, SIZE> EtlData;
     typedef std::array<int, SIZE> StlData;
@@ -63,6 +63,9 @@ namespace
     const StlData cstldata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     const StlVData cstlvdata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
+    const int FillData = -1;
+    const EtlData filldata = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+
     int cdata[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     int* pcdata = cdata;
 
@@ -83,6 +86,18 @@ namespace
     TEST(test_constructor_etl_array_1)
     {
       View view(etldata);
+
+      CHECK_EQUAL(etldata.size(), view.size());
+      CHECK_EQUAL(etldata.max_size(), view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), etldata.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_implicit_constructor_etl_array_1)
+    {
+      View view = etldata;
 
       CHECK_EQUAL(etldata.size(), view.size());
       CHECK_EQUAL(etldata.max_size(), view.max_size());
@@ -131,6 +146,18 @@ namespace
     TEST(test_constructor_stl_array_1)
     {
       View view(stldata);
+
+      CHECK_EQUAL(stldata.size(), view.size());
+      CHECK_EQUAL(stldata.max_size(), view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), stldata.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_implicit_constructor_stl_array_1)
+    {
+      View view = stldata;
 
       CHECK_EQUAL(stldata.size(), view.size());
       CHECK_EQUAL(stldata.max_size(), view.max_size());
@@ -236,6 +263,18 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_implicit_constructor_c_array)
+    {
+      View view = cdata;
+
+      CHECK_EQUAL(SIZE, view.size());
+      CHECK_EQUAL(SIZE, view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), cdata);
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST(test_constructor_c_array_2_const)
     {
       CView view(ccdata);
@@ -246,6 +285,39 @@ namespace
       bool isEqual = std::equal(view.begin(), view.end(), ccdata);
       CHECK(isEqual);
     }
+
+    //*************************************************************************
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    TEST(test_cpp17_deduced_constructor)
+    {
+      etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      etl::array_view view1{ data };
+      etl::array_view view2{ data.begin(), data.end() };
+      etl::array_view view3{ data.begin(), data.size() };
+      etl::array_view view4{ view1 };
+
+      int c_array[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array_view view5{ c_array };
+
+      bool isEqual = false;
+
+      isEqual = std::equal(view1.begin(), view1.end(), data.begin());
+      CHECK(isEqual);
+
+      isEqual = std::equal(view2.begin(), view2.end(), data.begin());
+      CHECK(isEqual);
+
+      isEqual = std::equal(view3.begin(), view3.end(), data.begin());
+      CHECK(isEqual);
+
+      isEqual = std::equal(view4.begin(), view4.end(), data.begin());
+      CHECK(isEqual);
+
+      isEqual = std::equal(view5.begin(), view5.end(), c_array);
+      CHECK(isEqual);
+    }
+#endif
 
     //*************************************************************************
     TEST(test_constructor_range)
@@ -401,7 +473,7 @@ namespace
       View  view(etldata.begin(), etldata.end());
       CView cview(etldata.begin(), etldata.end());
 
-      for (size_t i = 0; i < etldata.size(); ++i)
+      for (size_t i = 0UL; i < etldata.size(); ++i)
       {
         CHECK_EQUAL(etldata[i], view[i]);
         CHECK_EQUAL(etldata[i], cview[i]);
@@ -414,7 +486,7 @@ namespace
       View  view(etldata.begin(), etldata.end());
       CView cview(etldata.begin(), etldata.end());
 
-      for (size_t i = 0; i < etldata.size(); ++i)
+      for (size_t i = 0UL; i < etldata.size(); ++i)
       {
         CHECK_EQUAL(etldata[i], view.at(i));
         CHECK_EQUAL(etldata[i], cview.at(i));
@@ -598,49 +670,52 @@ namespace
       CHECK(isEqual);
     }
 
-	TEST(test_remove_prefix_boundary)
-	{
-		// On-point test
-		std::vector<int> original = { 1, 2, 3, 4, 5, 6, 7, 8 };
+    //*************************************************************************
+	  TEST(test_remove_prefix_boundary)
+	  {
+		  // On-point test
+		  std::vector<int> original = { 1, 2, 3, 4, 5, 6, 7, 8 };
 
-		View view(original);
+		  View view(original);
 
-		view.remove_prefix(original.size());
+		  view.remove_prefix(original.size());
 
-		CHECK(view.empty());
+		  CHECK(view.empty());
 
-		// Off-point test
+		  // Off-point test
 
-		std::vector<int> original2 = { 1, 2, 3, 4, 5, 6, 7, 8 };
+		  std::vector<int> original2 = { 1, 2, 3, 4, 5, 6, 7, 8 };
 
-		View view2(original2);
+		  View view2(original2);
 
-		view2.remove_prefix(original.size() + 1);
+		  view2.remove_prefix(original.size() + 1);
 
-		CHECK(view2.empty());
-	}
+		  CHECK(view2.empty());
+	  }
 
-	TEST(test_remove_suffix_boundary)
-	{
-		// On-point test
-		std::vector<int> original = { 1, 2, 3, 4, 5, 6, 7, 8 };
+    //*************************************************************************
+	  TEST(test_remove_suffix_boundary)
+	  {
+		  // On-point test
+		  std::vector<int> original = { 1, 2, 3, 4, 5, 6, 7, 8 };
 
-		View view(original);
+		  View view(original);
 
-		view.remove_suffix(original.size());
+		  view.remove_suffix(original.size());
 
-		CHECK(view.empty());
+		  CHECK(view.empty());
 
-		// Off-point test
+		  // Off-point test
 
-		std::vector<int> original2 = { 1, 2, 3, 4, 5, 6, 7, 8 };
+		  std::vector<int> original2 = { 1, 2, 3, 4, 5, 6, 7, 8 };
 
-		View view2(original2);
+		  View view2(original2);
 
-		view2.remove_suffix(original.size() + 1);
+		  view2.remove_suffix(original.size() + 1);
 
-		CHECK(view2.empty());
-	}
+		  CHECK(view2.empty());
+	  }
+
     //*************************************************************************
     TEST(test_hash)
     {
@@ -648,13 +723,45 @@ namespace
       CView cview(etldata.begin(), etldata.end());
 
       size_t hashdata = etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&etldata[0]),
-                                                                    reinterpret_cast<const uint8_t*>(&etldata[etldata.size()]));
+                                                                reinterpret_cast<const uint8_t*>(&etldata[etldata.size()]));
 
       size_t hashview  = etl::hash<View>()(view);
       size_t hashcview = etl::hash<CView>()(cview);
 
       CHECK_EQUAL(hashdata, hashview);
       CHECK_EQUAL(hashdata, hashcview);
+    }
+
+    //*************************************************************************
+    struct C_issue_482 {};
+
+    void f_issue_482(etl::array_view<char>)
+    {
+    }
+
+    void f_issue_482(etl::array_view<C_issue_482>)
+    {
+    }
+
+    TEST(test_issue_482_2)
+    {
+      etl::array<C_issue_482, 10> c;
+
+      // Should compile without ambiguous function error.
+      f_issue_482(c);
+    }
+
+    //*************************************************************************
+    TEST(test_fill)
+    {
+      View view;
+
+      view.assign(etldata.begin(), etldata.end());
+
+      view.fill(FillData);
+
+      bool isEqual = std::equal(filldata.begin(), filldata.end(), view.begin());
+      CHECK(isEqual);
     }
   };
 }

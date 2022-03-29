@@ -58,7 +58,7 @@ namespace etl
     {
       uint32_t h = fnv_1a_32(begin, end);
 
-      return static_cast<size_t>(h ^ (h >> 16));
+      return static_cast<size_t>(h ^ (h >> 16U));
     }
 
     //*************************************************************************
@@ -237,7 +237,7 @@ namespace etl
     size_t operator ()(long v) const
     {
       // If it's the same size as a size_t.
-      if (sizeof(size_t) >= sizeof(v))
+      if ETL_IF_CONSTEXPR(sizeof(size_t) >= sizeof(v))
       {
         return static_cast<size_t>(v);
       }
@@ -259,7 +259,7 @@ namespace etl
     size_t operator ()(long long v) const
     {
       // If it's the same size as a size_t.
-      if (sizeof(size_t) >= sizeof(v))
+      if ETL_IF_CONSTEXPR(sizeof(size_t) >= sizeof(v))
       {
         return static_cast<size_t>(v);
       }
@@ -281,7 +281,7 @@ namespace etl
     size_t  operator ()(unsigned long v) const
     {
       // If it's the same size as a size_t.
-      if (sizeof(size_t) >= sizeof(v))
+      if ETL_IF_CONSTEXPR(sizeof(size_t) >= sizeof(v))
       {
         return static_cast<size_t>(v);
       }
@@ -303,7 +303,7 @@ namespace etl
     size_t  operator ()(unsigned long long v) const
     {
       // If it's the same size as a size_t.
-      if (sizeof(size_t) >= sizeof(v))
+      if ETL_IF_CONSTEXPR(sizeof(size_t) >= sizeof(v))
       {
         return static_cast<size_t>(v);
       }
@@ -325,7 +325,7 @@ namespace etl
     size_t operator ()(float v) const
     {
       // If it's the same size as a size_t.
-      if (sizeof(size_t) == sizeof(v))
+      if ETL_IF_CONSTEXPR(sizeof(size_t) == sizeof(v))
       {
         union
         {
@@ -355,7 +355,7 @@ namespace etl
     size_t  operator ()(double v) const
     {
       // If it's the same size as a size_t.
-      if (sizeof(size_t) == sizeof(v))
+      if ETL_IF_CONSTEXPR(sizeof(size_t) == sizeof(v))
       {
         union
         {
@@ -385,7 +385,7 @@ namespace etl
     size_t operator ()(long double v) const
     {
       // If it's the same size as a size_t.
-      if (sizeof(size_t) == sizeof(v))
+      if ETL_IF_CONSTEXPR(sizeof(size_t) == sizeof(v))
       {
         union
         {

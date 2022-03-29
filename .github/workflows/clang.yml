@@ -1,0 +1,135 @@
+name: clang
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-clang-9-linux-stl:
+    name: Clang-9 Linux - STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y "clang-9" "lldb-9" "lld-9" "clang-format-9"
+        export CC=clang-9
+        export CXX=clang++-9
+        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-9-linux-no-stl:
+    name: Clang-9 Linux - No STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
+        gcc --version
+        make
+    
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-9-linux-stl-force-cpp03:
+    name: Clang-9 Linux - STL - Force C++03
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y "clang-9" "lldb-9" "lld-9" "clang-format-9"
+        export CC=clang-9
+        export CXX=clang++-9
+        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-10-osx-stl:
+    name: Clang-10 OSX - STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-10.15]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        export CC=clang
+        export CXX=clang++
+        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-10-osx-no-stl:
+    name: Clang-10 OSX - No STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-10.15]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        export CC=clang
+        export CXX=clang++
+        cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-10-osx-stl-force-cpp03:
+    name: Clang-10 OSX - STL - Force C++03
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-10.15]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: |
+        export CC=clang
+        export CXX=clang++
+        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests

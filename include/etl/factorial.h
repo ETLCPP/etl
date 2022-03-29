@@ -49,7 +49,7 @@ namespace etl
   template <size_t N>
   struct factorial
   {
-    static const size_t value = N * factorial<N - 1>::value;
+    static ETL_CONSTANT size_t value = N * factorial<N - 1>::value;
   };
 
   //***************************************************************************
@@ -58,8 +58,13 @@ namespace etl
   template <>
   struct factorial<0>
   {
-    static const size_t value = 1;
+    static ETL_CONSTANT size_t value = 1;
   };
+
+#if ETL_USING_CPP17
+  template <size_t N>
+  inline constexpr size_t factorial_v = factorial<N>::value;
+#endif
 }
 
 #endif

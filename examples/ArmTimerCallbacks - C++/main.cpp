@@ -26,7 +26,7 @@ struct FP
 
 static etl::vector<FP, 10> power_callbacks;
 
-void register_poweroff_callback(void (*function)()) 
+void register_poweroff_callback(void (*function)())
 {
   FP fp = { function };
   power_callbacks.push_back(fp);
@@ -66,10 +66,10 @@ void SystemCoreClockConfigure(void) {
 
   // PLL configuration:  VCO = HSI/M * N,  Sysclk = VCO/P
   RCC->PLLCFGR = ( 16ul                   |                // PLL_M =  16
-                 (384ul <<  6)            |                // PLL_N = 384
-                 (  3ul << 16)            |                // PLL_P =   8
+                 (384ul <<  6U)           |                // PLL_N = 384
+                 (  3ul << 16U)           |                // PLL_P =   8
                  (RCC_PLLCFGR_PLLSRC_HSI) |                // PLL_SRC = HSI
-                 (  8ul << 24)             );              // PLL_Q =   8
+                 (  8ul << 24U)            );              // PLL_Q =   8
 
   RCC->CR |= RCC_CR_PLLON;                                 // Enable PLL
   while((RCC->CR & RCC_CR_PLLRDY) == 0) __NOP();           // Wait till PLL is ready
@@ -88,7 +88,7 @@ void StartTimers()
 void SwapTimers()
 {
   static bool state = false;
-  
+
   if (!state)
   {
     callback_timer.stop(short_toggle);
@@ -99,16 +99,16 @@ void SwapTimers()
     callback_timer.start(short_toggle);
     callback_timer.stop(long_toggle);
   }
-  
+
   state = !state;
-  
+
   callback_timer.start(swap_timers);
 }
 
 void LedToggle()
 {
   static bool state = false;
-  
+
   if (state)
   {
     LED_On(0);
@@ -117,7 +117,7 @@ void LedToggle()
   {
     LED_Off(0);
   }
-  
+
   state = !state;
 }
 
@@ -125,23 +125,23 @@ int main()
 {
   SystemCoreClockConfigure();                              // configure HSI as System Clock
   SystemCoreClockUpdate();
-   
+
   LED_Initialize();
   Buttons_Initialize();
-  
+
   // The LEDs will start flashing fast after 2 seconds.
-  // After another 5 seconds they will start flashing slower.  
+  // After another 5 seconds they will start flashing slower.
   short_toggle = callback_timer.register_timer(LedToggle,   50,  etl::timer::mode::REPEATING);
   long_toggle  = callback_timer.register_timer(LedToggle,   100,  etl::timer::mode::REPEATING);
   start_timers = callback_timer.register_timer(StartTimers, 2000, etl::timer::mode::SINGLE_SHOT);
   swap_timers  = callback_timer.register_timer(SwapTimers,  1500, etl::timer::mode::SINGLE_SHOT);
 
   SysTick_Config(SystemCoreClock / 1000);
-    
+
   callback_timer.enable(true);
-  
+
   callback_timer.start(start_timers);
-    
+
   while (true)
   {
     __NOP();
@@ -150,11 +150,11 @@ int main()
 
 extern "C"
 {
-  void SysTick_Handler() 
+  void SysTick_Handler()
   {
-    const  uint32_t TICK   = 1;   
+    const  uint32_t TICK   = 1U;
     static uint32_t nticks = TICK;
-    
+
     if (callback_timer.tick(nticks))
     {
       nticks = TICK;

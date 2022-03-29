@@ -182,7 +182,7 @@ namespace
   typedef etl::type_id_pair<NonDerived, NONDERIVED> ND_Type;
   typedef etl::type_id_pair<int,        INTEGRAL>   I_Type;
 
-  const size_t SIZE = 5;
+  const size_t SIZE = 5UL;
 
   // Notice that the type declaration order is not important.
   typedef etl::factory<SIZE, D1_Type, ND_Type, D3_Type, D2_Type, I_Type> Factory;

@@ -37,18 +37,13 @@ SOFTWARE.
 #include "iterator.h"
 #include "utility.h"
 #include "functional.h"
-
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
-  #include <initializer_list>
-#endif
+#include "static_assert.h"
+#include "initializer_list.h"
 
 #ifdef ETL_COMPILER_GCC
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
-
-#undef ETL_FILE
-#define ETL_FILE "53"
 
 //*****************************************************************************
 ///\defgroup indirect_vector indirect_vector
@@ -67,7 +62,7 @@ namespace etl
   public:
 
     indirect_vector_buffer_missmatch(string_type file_name_, numeric_type line_number_)
-      : vector_exception(ETL_ERROR_TEXT("indirect_vector:buffer_missmatch", ETL_FILE"A"), file_name_, line_number_)
+      : vector_exception(ETL_ERROR_TEXT("indirect_vector:buffer_missmatch", ETL_INDIRECT_VECTOR_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -85,7 +80,7 @@ namespace etl
     typedef T              value_type;
     typedef T&             reference;
     typedef const T&       const_reference;
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     typedef T&&            rvalue_reference;
 #endif
     typedef T*             pointer;
@@ -224,7 +219,7 @@ namespace etl
         return temp;
       }
 
-      iterator operator =(const iterator& other)
+      iterator& operator =(const iterator& other)
       {
         lookup_itr = other.lookup_itr;
         return *this;
@@ -242,32 +237,17 @@ namespace etl
         return *this;
       }
 
-      reference operator *()
+      reference operator *() const
       {
         return **lookup_itr;
       }
 
-      const_reference operator *() const
-      {
-        return **lookup_itr;
-      }
-
-      pointer operator &()
+      pointer operator &() const
       {
         return &(**lookup_itr);
       }
 
-      const_pointer operator &() const
-      {
-        return &(**lookup_itr);
-      }
-
-      pointer operator ->()
-      {
-        return &(**lookup_itr);
-      }
-
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return &(**lookup_itr);
       }
@@ -387,7 +367,7 @@ namespace etl
         return *this;
       }
 
-      const_iterator operator =(const const_iterator& other)
+      const_iterator& operator =(const const_iterator& other)
       {
         lookup_itr = other.lookup_itr;
         return *this;
@@ -624,6 +604,7 @@ namespace etl
 
     //*********************************************************************
     /// Does nothing.
+    /// For compatilbilty with the STL vector API.
     //*********************************************************************
     void reserve(size_t)
     {
@@ -719,7 +700,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT((etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::iterator_traits<TIterator>::value_type>::type>::value), "Iterator type does not match container type");
 
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       difference_type d = etl::distance(first, last);
       ETL_ASSERT(static_cast<size_t>(d) <= capacity(), ETL_ERROR(vector_full));
 #endif
@@ -761,6 +742,14 @@ namespace etl
       initialise();
     }
 
+    //*************************************************************************
+    /// Fills the buffer.
+    //*************************************************************************
+    void fill(const T& value)
+    {
+      etl::fill(begin(), end(), value);
+    }
+
     //*********************************************************************
     /// Inserts a value at the end of the indirect_vector.
     /// If asserts or exceptions are enabled, emits vector_full if the indirect_vector is already full.
@@ -775,7 +764,7 @@ namespace etl
       lookup.push_back(p);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Inserts a value at the end of the indirect_vector.
     /// If asserts or exceptions are enabled, emits vector_full if the indirect_vector is already full.
@@ -791,7 +780,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_VECTOR_FORCE_CPP03)
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_VECTOR_FORCE_CPP03_IMPLEMENTATION)
     //*********************************************************************
     /// Constructs a value at the end of the indirect_vector.
     /// If asserts or exceptions are enabled, emits vector_full if the indirect_vector is already full.
@@ -871,38 +860,38 @@ namespace etl
     ///\param position The position to insert before.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, const_reference value)
+    iterator insert(const_iterator position, const_reference value)
     {
-      ETL_ASSERT(size() + 1 <= capacity(), ETL_ERROR(vector_full));
+      ETL_ASSERT(size() != capacity(), ETL_ERROR(vector_full));
 
       T* p = storage.create<T>(T(value));
       position = iterator(lookup.insert(position.lookup_itr, p));
 
-      return position;
+      return to_iterator(position);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Inserts a value to the indirect_vector.
     /// If asserts or exceptions are enabled, emits vector_full if the indirect_vector is already full.
     ///\param position The position to insert before.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, rvalue_reference value)
+    iterator insert(const_iterator position, rvalue_reference value)
     {
-      ETL_ASSERT(size() + 1 <= capacity(), ETL_ERROR(vector_full));
+      ETL_ASSERT(size() != capacity(), ETL_ERROR(vector_full));
 
       T* p = storage.create<T>(T(etl::move(value)));
       position = iterator(lookup.insert(position.lookup_itr, p));
 
-      return position;
+      return to_iterator(position);
     }
 #endif
 
     //*************************************************************************
     /// Emplaces a value to the vector at the specified position.
     //*************************************************************************
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
     template <typename ... Args>
     iterator emplace(iterator position, Args && ... args)
     {
@@ -966,12 +955,14 @@ namespace etl
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
     //*********************************************************************
-    void insert(iterator position, size_t n, parameter_t value)
+    iterator insert(const_iterator position, size_t n, parameter_t value)
     {
       ETL_ASSERT((size() + n) <= capacity(), ETL_ERROR(vector_full));
 
+      iterator position_ = to_iterator(position);
+
       // Make space for the new lookup pointers.
-      typename etl::ivector<T*>::iterator lookup_itr = position.lookup_itr;
+      typename etl::ivector<T*>::iterator lookup_itr = position_.lookup_itr;
       lookup.insert(lookup_itr, n, ETL_NULLPTR);
 
       while (n-- != 0U)
@@ -979,6 +970,8 @@ namespace etl
         T* p = storage.create<T>(value);
         *lookup_itr++ = p;
       }
+
+      return position_;
     }
 
     //*********************************************************************
@@ -989,14 +982,14 @@ namespace etl
     ///\param last     The last + 1 element to add.
     //*********************************************************************
     template <class TIterator>
-    void insert(iterator position, TIterator first, TIterator last)
+    iterator insert(const_iterator position, TIterator first, TIterator last)
     {
       size_t count = size_t(etl::distance(first, last));
 
       ETL_ASSERT((size() + count) <= capacity(), ETL_ERROR(vector_full));
 
       // Make space for the new lookup pointers.
-      typename etl::ivector<T*>::iterator lookup_itr = position.lookup_itr;
+      typename etl::ivector<T*>::iterator lookup_itr = to_iterator(position).lookup_itr;
       lookup.insert(lookup_itr, count, ETL_NULLPTR);
 
       while (first != last)
@@ -1005,6 +998,8 @@ namespace etl
         *lookup_itr++ =  p;
         ++first;
       }
+
+      return to_iterator(position);
     }
 
     //*********************************************************************
@@ -1020,6 +1015,18 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Erases an element.
+    ///\param i_element Iterator to the element.
+    ///\return An iterator pointing to the element that followed the erased element.
+    //*********************************************************************
+    iterator erase(const_iterator i_element)
+    {
+      storage.destroy<T>(etl::addressof(*i_element));
+
+      return iterator(lookup.erase(i_element.lookup_itr));
+    }
+
+    //*********************************************************************
     /// Erases a range of elements.
     /// The range includes all the elements between first and last, including the
     /// element pointed by first, but not the one pointed by last.
@@ -1027,9 +1034,9 @@ namespace etl
     ///\param last  Iterator to the last element.
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
-    iterator erase(iterator first, iterator last)
+    iterator erase(const_iterator first, const_iterator last)
     {
-      iterator element = first;
+      iterator element = to_iterator(first);
 
       while (element != last)
       {
@@ -1039,7 +1046,7 @@ namespace etl
 
       lookup.erase(first.lookup_itr, last.lookup_itr);
 
-      return last;
+      return to_iterator(last);
     }
 
     //*************************************************************************
@@ -1055,7 +1062,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -1159,6 +1166,7 @@ namespace etl
       lookup.clear();
     }
 
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Move from a container.
     //*********************************************************************
@@ -1179,6 +1187,7 @@ namespace etl
         other.initialise();
       }
     }
+#endif
 
     etl::ivector<T*>& lookup;
     etl::ipool&       storage;
@@ -1200,6 +1209,16 @@ namespace etl
     ~iindirect_vector()
     {
       initialise();
+    }
+
+  protected:
+
+    //*************************************************************************
+    /// Convert from const_iterator to iterator.
+    //*************************************************************************
+    iterator to_iterator(const_iterator itr) const
+    {
+      return iterator(const_cast<indirect_iterator>(itr.lookup_itr));
     }
   };
 
@@ -1292,7 +1311,9 @@ namespace etl
   {
   public:
 
-    static const size_t MAX_SIZE = MAX_SIZE_;
+    ETL_STATIC_ASSERT((MAX_SIZE_ > 0U), "Zero capacity etl::indirect_vector is not valid");
+
+    static ETL_CONSTANT size_t MAX_SIZE = MAX_SIZE_;
 
     //*************************************************************************
     /// Constructor.
@@ -1336,7 +1357,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************
@@ -1369,7 +1390,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
@@ -1404,6 +1425,26 @@ namespace etl
     etl::pool<T, MAX_SIZE>    storage_pool;
   };
 
+  //*************************************************************************
+  /// Template deduction guides.
+  //*************************************************************************
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
+  template <typename T, typename... Ts>
+  indirect_vector(T, Ts...)
+    ->indirect_vector<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
+#endif 
+
+  //*************************************************************************
+  /// Make
+  //*************************************************************************
+#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
+  template <typename... T>
+  constexpr auto make_indirect_vector(T... t) -> etl::indirect_vector<typename etl::common_type_t<T...>, sizeof...(T)>
+  {
+    return { { etl::forward<T>(t)... } };
+  }
+#endif
+
   //***************************************************************************
   /// A indirect_vector implementation that uses a fixed size buffer.
   /// The buffer is supplied on construction.
@@ -1411,14 +1452,14 @@ namespace etl
   ///\ingroup indirect_vector
   //***************************************************************************
   template <typename T>
-  class indirect_vector<T, 0> : public etl::iindirect_vector<T>
+  class indirect_vector_ext : public etl::iindirect_vector<T>
   {
   public:
 
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    indirect_vector(etl::ivector<T*>& lookup_, etl::ipool& pool_)
+    indirect_vector_ext(etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
       ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
@@ -1426,9 +1467,9 @@ namespace etl
 
     //*************************************************************************
     /// Constructor, with size.
-    ///\param initial_size The initial size of the indirect_vector.
+    ///\param initial_size The initial size of the indirect_vector_ext.
     //*************************************************************************
-    explicit indirect_vector(size_t initial_size, etl::ivector<T*>& lookup_, etl::ipool& pool_)
+    explicit indirect_vector_ext(size_t initial_size, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
       ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
@@ -1437,10 +1478,10 @@ namespace etl
 
     //*************************************************************************
     /// Constructor, from initial size and value.
-    ///\param initial_size  The initial size of the indirect_vector.
-    ///\param value        The value to fill the indirect_vector with.
+    ///\param initial_size  The initial size of the indirect_vector_ext.
+    ///\param value        The value to fill the indirect_vector_ext with.
     //*************************************************************************
-    indirect_vector(size_t initial_size, typename etl::iindirect_vector<T>::parameter_t value, etl::ivector<T*>& lookup_, etl::ipool& pool_)
+    indirect_vector_ext(size_t initial_size, typename etl::iindirect_vector<T>::parameter_t value, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
       ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
@@ -1454,18 +1495,18 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    indirect_vector(TIterator first, TIterator last, etl::ivector<T*>& lookup_, etl::ipool& pool_)
+    indirect_vector_ext(TIterator first, TIterator last, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
       ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************
-    indirect_vector(std::initializer_list<T> init, etl::ivector<T*>& lookup_, etl::ipool& pool_)
+    indirect_vector_ext(std::initializer_list<T> init, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
       ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
@@ -1476,7 +1517,7 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    indirect_vector(const indirect_vector& other, etl::ivector<T*>& lookup_, etl::ipool& pool_)
+    indirect_vector_ext(const indirect_vector_ext& other, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
       ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
@@ -1486,7 +1527,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    indirect_vector& operator = (const indirect_vector& rhs)
+    indirect_vector_ext& operator = (const indirect_vector_ext& rhs)
     {
       if (&rhs != this)
       {
@@ -1496,11 +1537,11 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
-    indirect_vector(indirect_vector&& other, etl::ivector<T*>& lookup_, etl::ipool& pool_)
+    indirect_vector_ext(indirect_vector_ext&& other, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
       ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
@@ -1510,7 +1551,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    indirect_vector& operator = (indirect_vector&& rhs)
+    indirect_vector_ext& operator = (indirect_vector_ext&& rhs)
     {
       this->move_container(etl::move(rhs));
 
@@ -1521,7 +1562,7 @@ namespace etl
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    ~indirect_vector()
+    ~indirect_vector_ext()
     {
       this->clear();
     }
@@ -1531,8 +1572,6 @@ namespace etl
 #ifdef ETL_COMPILER_GCC
 #pragma GCC diagnostic pop
 #endif
-
-#undef ETL_FILE
 
 #endif
 

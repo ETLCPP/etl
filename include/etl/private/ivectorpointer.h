@@ -203,6 +203,15 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Resizes the vector, but does not initialise new entries.
+    ///\param new_size The new size.
+    //*********************************************************************
+    void uninitialized_resize(size_t new_size)
+    {
+      base_t::uninitialized_resize(new_size);
+    }
+
+    //*********************************************************************
     /// Returns a reference to the value at index 'i'
     ///\param i The index.
     ///\return A reference to the value at index 'i'
@@ -308,12 +317,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-      base_t::initialise();
-
-      while (first != last)
-      {
-        *p_end++ = (void*)*first++;
-      }
+      base_t::assign(first, last);
     }
 
     //*********************************************************************
@@ -345,6 +349,16 @@ namespace etl
       base_t::push_back(value);
     }
 
+    //*********************************************************************
+    /// Constructs a value at the end of the vector.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    ///\param value The value to add.
+    //*********************************************************************
+    void emplace_back(parameter_t value)
+    {
+      base_t::emplace_back(value);
+    }
+
     //*************************************************************************
     /// Removes an element from the end of the vector.
     /// Does nothing if the vector is empty.
@@ -360,9 +374,17 @@ namespace etl
     ///\param position The position to insert before.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, parameter_t value)
+    iterator insert(const_iterator position, parameter_t value)
     {
       return iterator(base_t::insert(base_t::iterator(position), value));
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the vector at the specified position.
+    //*************************************************************************
+    iterator emplace(const_iterator position, parameter_t value)
+    {
+      return iterator(base_t::emplace(base_t::iterator(position), value));
     }
 
     //*********************************************************************
@@ -372,7 +394,7 @@ namespace etl
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
     //*********************************************************************
-    void insert(iterator position, size_t n, parameter_t value)
+    void insert(const_iterator position, size_t n, parameter_t value)
     {
       base_t::insert(base_t::iterator(position), n, value);
     }
@@ -385,7 +407,7 @@ namespace etl
     ///\param last     The last + 1 element to add.
     //*********************************************************************
     template <class TIterator>
-    void insert(iterator position, TIterator first, TIterator last)
+    void insert(const_iterator position, TIterator first, TIterator last)
     {
       base_t::insert(base_t::iterator(position), first, last);
     }
@@ -401,6 +423,16 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Erases an element.
+    ///\param i_element Iterator to the element.
+    ///\return An iterator pointing to the element that followed the erased element.
+    //*********************************************************************
+    iterator erase(const_iterator i_element)
+    {
+      return iterator(base_t::erase(base_t::const_iterator(i_element)));
+    }
+
+    //*********************************************************************
     /// Erases a range of elements.
     /// The range includes all the elements between first and last, including the
     /// element pointed by first, but not the one pointed by last.
@@ -408,9 +440,9 @@ namespace etl
     ///\param last  Iterator to the last element.
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
-    iterator erase(iterator first, iterator last)
+    iterator erase(const_iterator first, const_iterator last)
     {
-      return iterator(base_t::erase(base_t::iterator(first), base_t::iterator(last)));
+      return iterator(base_t::erase(base_t::const_iterator(first), base_t::const_iterator(last)));
     }
 
     //*************************************************************************
@@ -418,13 +450,22 @@ namespace etl
     //*************************************************************************
     ivector& operator = (const ivector& rhs)
     {
-      if (&rhs != this)
-      {
-        assign(rhs.cbegin(), rhs.cend());
-      }
+      base_t::operator = (rhs);
 
       return *this;
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    ivector& operator = (ivector&& rhs)
+    {
+      (void)base_t::operator = (etl::move(rhs));
+
+      return *this;
+    }
+#endif
 
 #ifdef ETL_IVECTOR_REPAIR_ENABLE
     //*************************************************************************
@@ -441,24 +482,6 @@ namespace etl
     ivector(T** p_buffer_, size_t MAX_SIZE_)
       : pvoidvector(reinterpret_cast<void**>(p_buffer_), MAX_SIZE_)
     {
-    }
-
-    //*********************************************************************
-    /// Initialise the source vector after a move.
-    //*********************************************************************
-    void initialise_source_external_buffer_after_move()
-    {
-      ETL_SUBTRACT_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
-
-        p_end = p_buffer;
-    }
-
-    //*********************************************************************
-    /// Initialise the destination vector after a move.
-    //*********************************************************************
-    void initialise_destination_external_buffer_after_move()
-    {
-      ETL_ADD_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
     }
   };
 
@@ -621,6 +644,15 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Resizes the vector, but does not initialise new entries.
+    ///\param new_size The new size.
+    //*********************************************************************
+    void uninitialized_resize(size_t new_size)
+    {
+      base_t::uninitialized_resize(new_size);
+    }
+
+    //*********************************************************************
     /// Returns a reference to the value at index 'i'
     ///\param i The index.
     ///\return A reference to the value at index 'i'
@@ -726,12 +758,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-      base_t::initialise();
-
-      while (first != last)
-      {
-        *p_end++ = (void*)*first++;
-      }
+      base_t::assign(first, last);
     }
 
     //*********************************************************************
@@ -778,7 +805,7 @@ namespace etl
     ///\param position The position to insert before.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator position, parameter_t value)
+    iterator insert(const_iterator position, parameter_t value)
     {
       return iterator(base_t::insert(base_t::iterator(position), const_cast<T*>(value)));
     }
@@ -790,7 +817,7 @@ namespace etl
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
     //*********************************************************************
-    void insert(iterator position, size_t n, parameter_t value)
+    void insert(const_iterator position, size_t n, parameter_t value)
     {
       base_t::insert(base_t::iterator(position), n, const_cast<T*>(value));
     }
@@ -803,7 +830,7 @@ namespace etl
     ///\param last     The last + 1 element to add.
     //*********************************************************************
     template <class TIterator>
-    void insert(iterator position, TIterator first, TIterator last)
+    void insert(const_iterator position, TIterator first, TIterator last)
     {
       base_t::insert(base_t::iterator(position), first, last);
     }
@@ -819,6 +846,16 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Erases an element.
+    ///\param i_element Iterator to the element.
+    ///\return An iterator pointing to the element that followed the erased element.
+    //*********************************************************************
+    iterator erase(const_iterator i_element)
+    {
+      return iterator(base_t::erase(base_t::iterator(i_element)));
+    }
+
+    //*********************************************************************
     /// Erases a range of elements.
     /// The range includes all the elements between first and last, including the
     /// element pointed by first, but not the one pointed by last.
@@ -826,7 +863,7 @@ namespace etl
     ///\param last  Iterator to the last element.
     ///\return An iterator pointing to the element that followed the erased element.
     //*********************************************************************
-    iterator erase(iterator first, iterator last)
+    iterator erase(const_iterator first, const_iterator last)
     {
       return iterator(base_t::erase(base_t::iterator(first), base_t::iterator(last)));
     }
@@ -836,13 +873,22 @@ namespace etl
     //*************************************************************************
     ivector& operator = (const ivector& rhs)
     {
-      if (&rhs != this)
-      {
-        assign(rhs.cbegin(), rhs.cend());
-      }
+      base_t::operator = (rhs);
 
       return *this;
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    ivector& operator = (ivector&& rhs)
+    {
+      (void)base_t::operator = (etl::move(rhs));
+
+      return *this;
+    }
+#endif
 
 #ifdef ETL_IVECTOR_REPAIR_ENABLE
     //*************************************************************************
@@ -859,24 +905,6 @@ namespace etl
     ivector(const T** p_buffer_, size_t MAX_SIZE_)
       : pvoidvector(reinterpret_cast<void**>(const_cast<T**>(p_buffer_)), MAX_SIZE_)
     {
-    }
-
-    //*********************************************************************
-    /// Initialise the source vector after a move.
-    //*********************************************************************
-    void initialise_source_external_buffer_after_move()
-    {
-      ETL_SUBTRACT_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
-
-        p_end = p_buffer;
-    }
-
-    //*********************************************************************
-    /// Initialise the destination vector after a move.
-    //*********************************************************************
-    void initialise_destination_external_buffer_after_move()
-    {
-      ETL_ADD_DEBUG_COUNT(int32_t(etl::distance(p_buffer, p_end)))
     }
   };
 

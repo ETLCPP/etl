@@ -26,8 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
-#include "ExtraCheckMacros.h"
+#include "unit_test_framework.h"
 
 #include "etl/message_router.h"
 #include "etl/message_bus.h"
@@ -92,22 +91,22 @@ namespace
 
     }
 
-    void on_receive(etl::imessage_router&, const Message1&)
+    void on_receive(const Message1&)
     {
       message1.push_back(ticks);
     }
 
-    void on_receive(etl::imessage_router&, const Message2&)
+    void on_receive(const Message2&)
     {
       message2.push_back(ticks);
     }
 
-    void on_receive(etl::imessage_router&, const Message3&)
+    void on_receive(const Message3&)
     {
       message3.push_back(ticks);
     }
 
-    void on_receive_unknown(etl::imessage_router&, const etl::imessage&)
+    void on_receive_unknown(const etl::imessage&)
     {
     }
 
@@ -174,7 +173,7 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 1;
+      const uint32_t step = 1UL;
 
       while (ticks <= 100U)
       {
@@ -182,9 +181,9 @@ namespace
         timer_controller.tick(step);
       }
 
-      std::vector<uint64_t> compare1 = { 37 };
-      std::vector<uint64_t> compare2 = { 23 };
-      std::vector<uint64_t> compare3 = { 11 };
+      std::vector<uint64_t> compare1 = { 37ULL };
+      std::vector<uint64_t> compare2 = { 23ULL };
+      std::vector<uint64_t> compare3 = { 11ULL };
 
       CHECK_ARRAY_EQUAL(compare1.data(), router1.message1.data(), compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), router1.message2.data(), compare2.size());
@@ -204,7 +203,7 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 1;
+      const uint32_t step = 1U;
 
       while (ticks <= 100U)
       {
@@ -256,7 +255,7 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 1;
+      const uint32_t step = 1U;
 
       while (ticks <= 100U)
       {
@@ -264,9 +263,9 @@ namespace
         timer_controller.tick(step);
       }
 
-      std::vector<uint64_t> compare1 = { 37, 74 };
-      std::vector<uint64_t> compare2 = { 23, 46, 69, 92 };
-      std::vector<uint64_t> compare3 = { 11, 22, 33, 44, 55, 66, 77, 88, 99 };
+      std::vector<uint64_t> compare1 = { 37ULL, 74ULL };
+      std::vector<uint64_t> compare2 = { 23ULL, 46ULL, 69ULL, 92ULL };
+      std::vector<uint64_t> compare3 = { 11ULL, 22ULL, 33ULL, 44ULL, 55ULL, 66ULL, 77ULL, 88ULL, 99ULL };
 
       CHECK_ARRAY_EQUAL(compare1.data(), router1.message1.data(), compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), router1.message2.data(), compare2.size());
@@ -296,7 +295,7 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 5;
+      const uint32_t step = 5UL;
 
       while (ticks <= 100U)
       {
@@ -304,9 +303,9 @@ namespace
         timer_controller.tick(step);
       }
 
-      std::vector<uint64_t> compare1 = { 40, 75 };
-      std::vector<uint64_t> compare2 = { 25, 50, 70, 95 };
-      std::vector<uint64_t> compare3 = { 15, 25, 35, 45, 55, 70, 80, 90, 100 };
+      std::vector<uint64_t> compare1 = { 40ULL, 75ULL };
+      std::vector<uint64_t> compare2 = { 25ULL, 50ULL, 70ULL, 95ULL };
+      std::vector<uint64_t> compare3 = { 15ULL, 25ULL, 35ULL, 45ULL, 55ULL, 70ULL, 80ULL, 90ULL, 100ULL };
 
       CHECK_ARRAY_EQUAL(compare1.data(), router1.message1.data(), compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), router1.message2.data(), compare2.size());
@@ -331,7 +330,7 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 1;
+      const uint32_t step = 1UL;
 
       while (ticks <= 100U)
       {
@@ -351,9 +350,9 @@ namespace
         timer_controller.tick(step);
       }
 
-      std::vector<uint64_t> compare1 = { 77 };
-      std::vector<uint64_t> compare2 = { 23 };
-      std::vector<uint64_t> compare3 = { 11, 22, 33, 44, 55, 66, 77, 88, 99 };
+      std::vector<uint64_t> compare1 = { 77ULL };
+      std::vector<uint64_t> compare2 = { 23ULL };
+      std::vector<uint64_t> compare3 = { 11ULL, 22ULL, 33ULL, 44ULL, 55ULL, 66ULL, 77ULL, 88ULL, 99ULL };
 
       CHECK_ARRAY_EQUAL(compare1.data(), router1.message1.data(), compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), router1.message2.data(), compare2.size());
@@ -378,7 +377,7 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 1;
+      const uint32_t step = 1UL;
 
       while (ticks <= 100U)
       {
@@ -394,9 +393,9 @@ namespace
         timer_controller.tick(step);
       }
 
-      std::vector<uint64_t> compare1 = { 77 };
-      std::vector<uint64_t> compare2 = { 23 };
-      std::vector<uint64_t> compare3 = { 11, 22, 33, 44, 55, 66, 77, 88, 99 };
+      std::vector<uint64_t> compare1 = { 77ULL };
+      std::vector<uint64_t> compare2 = { 23ULL };
+      std::vector<uint64_t> compare3 = { 11ULL, 22ULL, 33ULL, 44ULL, 55ULL, 66ULL, 77ULL, 88ULL, 99ULL };
 
       CHECK_ARRAY_EQUAL(compare1.data(), router1.message1.data(), compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), router1.message2.data(), compare2.size());
@@ -422,7 +421,7 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 1;
+      const uint32_t step = 1UL;
 
       while (ticks <= 100U)
       {
@@ -436,9 +435,9 @@ namespace
         timer_controller.tick(step);
       }
 
-      std::vector<uint64_t> compare1 = { 37 };
-      std::vector<uint64_t> compare2 = { 23 };
-      std::vector<uint64_t> compare3 = { 11, 22, 33 };
+      std::vector<uint64_t> compare1 = { 37ULL };
+      std::vector<uint64_t> compare2 = { 23ULL };
+      std::vector<uint64_t> compare3 = { 11ULL, 22ULL, 33ULL };
 
       CHECK_ARRAY_EQUAL(compare1.data(), router1.message1.data(), compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), router1.message2.data(), compare2.size());
@@ -466,7 +465,7 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 1;
+      const uint32_t step = 1UL;
 
       while (ticks <= 100U)
       {
@@ -474,9 +473,9 @@ namespace
         timer_controller.tick(step);
       }
 
-      std::vector<uint64_t> compare1 = { 37 };
-      std::vector<uint64_t> compare2 = { 23 };
-      std::vector<uint64_t> compare3 = { 11 };
+      std::vector<uint64_t> compare1 = { 37ULL };
+      std::vector<uint64_t> compare2 = { 23ULL };
+      std::vector<uint64_t> compare3 = { 11ULL };
 
       CHECK_ARRAY_EQUAL(compare1.data(), router1.message1.data(), compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), router1.message2.data(), compare2.size());
@@ -507,7 +506,7 @@ namespace
       timer_controller.start(id2, etl::timer::start::IMMEDIATE);
       timer_controller.start(id3, etl::timer::start::DELAYED);
 
-      const uint32_t step = 1;
+      const uint32_t step = 1UL;
 
       while (ticks <= 100U)
       {
@@ -515,9 +514,9 @@ namespace
         timer_controller.tick(step);
       }
 
-      std::vector<uint64_t> compare1 = { 6, 42, 79 };
-      std::vector<uint64_t> compare2 = { 6, 28, 51, 74, 97 };
-      std::vector<uint64_t> compare3 = { 16, 27, 38, 49, 60, 71, 82, 93 };
+      std::vector<uint64_t> compare1 = { 6ULL, 42ULL, 79ULL };
+      std::vector<uint64_t> compare2 = { 6ULL, 28ULL, 51ULL, 74ULL, 97ULL };
+      std::vector<uint64_t> compare3 = { 16ULL, 27ULL, 38ULL, 49ULL, 60ULL, 71ULL, 82ULL, 93ULL };
 
       CHECK_ARRAY_EQUAL(compare1.data(), router1.message1.data(), compare1.size());
       CHECK_ARRAY_EQUAL(compare2.data(), router1.message2.data(), compare2.size());
@@ -541,7 +540,7 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 11;
+      const uint32_t step = 11UL;
 
       ticks += step;
       timer_controller.tick(step);
@@ -571,9 +570,9 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 5;
+      const uint32_t step = 5ULL;
 
-      for (uint32_t i = 0; i < step; ++i)
+      for (uint32_t i = 0UL; i < step; ++i)
       {
         ++ticks;
         timer_controller.tick(1);
@@ -584,7 +583,7 @@ namespace
 
       timer_controller.start(id1);
 
-      for (uint32_t i = 0; i < step; ++i)
+      for (uint32_t i = 0UL; i < step; ++i)
       {
         ++ticks;
         timer_controller.tick(1);
@@ -601,14 +600,15 @@ namespace
     #define RAISE_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)
     #define FIX_PROCESSOR_AFFINITY SetThreadAffinityMask(GetCurrentThread(), 1);
   #else
-    #error No thread priority modifier defined
+    #define RAISE_THREAD_PRIORITY
+    #define FIX_PROCESSOR_AFFINITY
   #endif
 
     etl::message_timer<3> controller;
 
     void timer_event()
     {
-      const uint32_t TICK = 1;
+      const uint32_t TICK = 1UL;
       uint32_t tick = TICK;
       ticks = 1;
 

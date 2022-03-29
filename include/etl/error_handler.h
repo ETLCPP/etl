@@ -43,20 +43,9 @@ SOFTWARE.
 #include "function.h"
 #include "nullptr.h"
 
+#if defined(ETL_LOG_ERRORS) || defined(ETL_IN_UNIT_TEST)
 namespace etl
 {
-  namespace private_error_handler
-  {
-    template <class dummy>
-    struct wrapper
-    {
-      static etl::ifunction<const etl::exception&>* p_ifunction;
-    };
-
-    template <class dummy>
-    etl::ifunction<const etl::exception&>* wrapper<dummy>::p_ifunction = ETL_NULLPTR;
-  }
-
   //***************************************************************************
   /// Error handler for when throwing exceptions is not required.
   ///\ingroup error_handler
@@ -66,18 +55,18 @@ namespace etl
   public:
 
     //*************************************************************************
-    /// Callback class for free handler functions.
+    /// Callback class for free handler functions. Deprecated.
     //*************************************************************************
     struct free_function : public etl::function<void, const etl::exception&>
     {
-      free_function(void (*p_function_)(const etl::exception&))
+      explicit free_function(void (*p_function_)(const etl::exception&))
         : etl::function<void, const etl::exception&>(p_function_)
       {
       }
     };
 
     //*************************************************************************
-    /// Callback class for member handler functions.
+    /// Callback class for member handler functions. Deprecated.
     //*************************************************************************
     template <typename TObject>
     struct member_function : public etl::function<TObject, const etl::exception&>
@@ -89,12 +78,57 @@ namespace etl
     };
 
     //*****************************************************************************
-    /// Sets the error callback function.
+    /// Sets the error callback function. Deprecated.
     ///\param f A reference to an etl::function object that will handler errors.
     //*****************************************************************************
     static void set_callback(ifunction<const etl::exception&>& f)
     {
-      private_error_handler::wrapper<void>::p_ifunction = &f;
+      create((void*)(&f), ifunction_stub);
+    }
+
+    //*************************************************************************
+    /// Create from function (Compile time).
+    //*************************************************************************
+    template <void(*Method)(const etl::exception&)>
+    static void set_callback()
+    {
+      create(ETL_NULLPTR, function_stub<Method>);
+    }
+
+    //*************************************************************************
+    /// Create from instance method (Run time).
+    //*************************************************************************
+    template <typename T, void(T::* Method)(const etl::exception&)>
+    static void set_callback(T& instance)
+    {
+      create((void*)(&instance), method_stub<T, Method>);
+    }
+
+    //*************************************************************************
+    /// Create from const instance method (Run time).
+    //*************************************************************************
+    template <typename T, void(T::* Method)(const etl::exception&) const>
+    static void set_callback(const T& instance)
+    {
+      create((void*)(&instance), const_method_stub<T, Method>);
+    }
+
+    //*************************************************************************
+    /// Create from instance method (Compile time).
+    //*************************************************************************
+    template <typename T, T& Instance, void(T::* Method)(const etl::exception&)>
+    static void set_callback()
+    {
+      create(method_instance_stub<T, Instance, Method>);
+    }
+
+    //*************************************************************************
+    /// Create from const instance method (Compile time).
+    //*************************************************************************
+    template <typename T, T const& Instance, void(T::* Method)(const etl::exception&) const>
+    static void set_callback()
+    {
+      create(const_method_instance_stub<T, Instance, Method>);
     }
 
     //*****************************************************************************
@@ -103,13 +137,125 @@ namespace etl
     //*****************************************************************************
     static void error(const etl::exception& e)
     {
-      if (private_error_handler::wrapper<void>::p_ifunction != ETL_NULLPTR)
+      invocation_element& invocation = get_invocation_element();
+
+      if (invocation.stub != ETL_NULLPTR)
       {
-        (*private_error_handler::wrapper<void>::p_ifunction)(e);
+        (*invocation.stub)(invocation.object, e);
       }
+    }
+
+  private:
+
+    typedef void(*stub_type)(void* object, const etl::exception&);
+
+    //*************************************************************************
+    /// The internal invocation object.
+    //*************************************************************************
+    struct invocation_element
+    {
+      //***********************************************************************
+      invocation_element()
+        : object(ETL_NULLPTR)
+        , stub(ETL_NULLPTR)
+      {
+      }
+
+      //***********************************************************************
+      void* object;
+      stub_type stub;
+    };
+
+    //*************************************************************************
+    /// Returns the static invocation element.
+    //*************************************************************************
+    static invocation_element& get_invocation_element()
+    {
+      static invocation_element invocation;
+
+      return invocation;
+    }
+
+    //*************************************************************************
+    /// Constructs a callback from an object and stub.
+    //*************************************************************************
+    static void create(void* object, stub_type stub)
+    {
+      invocation_element& invocation = get_invocation_element();
+
+      invocation.object = object;
+      invocation.stub   = stub;
+    }
+
+    //*************************************************************************
+    /// Constructs a callback from a stub.
+    //*************************************************************************
+    static void create(stub_type stub)
+    {
+      invocation_element& invocation = get_invocation_element();
+
+      invocation.object = ETL_NULLPTR;
+      invocation.stub   = stub;
+    }
+
+    //*************************************************************************
+    /// Stub call for a member function. Run time instance.
+    //*************************************************************************
+    template <typename T, void(T::* Method)(const etl::exception&)>
+    static void method_stub(void* object, const etl::exception& e)
+    {
+      T* p = static_cast<T*>(object);
+      return (p->*Method)(e);
+    }
+
+    //*************************************************************************
+    /// Stub call for a const member function. Run time instance.
+    //*************************************************************************
+    template <typename T, void(T::* Method)(const etl::exception&) const>
+    static void const_method_stub(void* object, const etl::exception& e)
+    {
+      T* const p = static_cast<T*>(object);
+      return (p->*Method)(e);
+    }
+
+    //*************************************************************************
+    /// Stub call for a member function. Compile time instance.
+    //*************************************************************************
+    template <typename T, T& Instance, void(T::* Method)(const etl::exception&)>
+    static void method_instance_stub(void*, const etl::exception& e)
+    {
+      return (Instance.*Method)(e);
+    }
+
+    //*************************************************************************
+    /// Stub call for a const member function. Compile time instance.
+    //*************************************************************************
+    template <typename T, const T& Instance, void(T::* Method)(const etl::exception&) const>
+    static void const_method_instance_stub(void*, const etl::exception& e)
+    {
+      (Instance.*Method)(e);
+    }
+
+    //*************************************************************************
+    /// Stub call for a free function.
+    //*************************************************************************
+    template <void(*Method)(const etl::exception&)>
+    static void function_stub(void*, const etl::exception& e)
+    {
+      (Method)(e);
+    }
+
+    //*************************************************************************
+    /// Stub call for a ifunction. Run time instance.
+    //*************************************************************************
+    static void ifunction_stub(void* object, const etl::exception& e)
+    {
+      etl::ifunction<const etl::exception&>* p = static_cast<etl::ifunction<const etl::exception&>*>(object);
+      p->operator()(e);
     }
   };
 }
+#endif
 
 //***************************************************************************
 /// Asserts a condition.
@@ -123,31 +269,50 @@ namespace etl
 //***************************************************************************
 #if defined(ETL_NO_CHECKS)
   #define ETL_ASSERT(b, e)                                                                 // Does nothing.
+  #define ETL_ASSERT_AND_RETURN(b, e)                                                      // Does nothing.
+  #define ETL_ASSERT_AND_RETURN_VALUE(b, e, v)                                             // Does nothing.
   #define ETL_ALWAYS_ASSERT(e)                                                             // Does nothing.
-#elif defined(ETL_THROW_EXCEPTIONS)
+  #define ETL_ALWAYS_ASSERT_AND_RETURN(e)                                                  // Does nothing.
+  #define ETL_ALWAYS_ASSERT_AND_RETURN_VALUE(e, v)                                         // Does nothing.
+#elif ETL_USING_EXCEPTIONS
   #if defined(ETL_LOG_ERRORS)
-    #define ETL_ASSERT(b, e) {if (!(b)) {etl::error_handler::error((e)); throw((e));}}     // If the condition fails, calls the error handler then throws an exception.
-    #define ETL_ALWAYS_ASSERT(e) {etl::error_handler::error((e)); throw((e));}             // Calls the error handler then throws an exception.
+    #define ETL_ASSERT(b, e) {if (!(b)) {etl::error_handler::error((e)); throw((e));}}                     // If the condition fails, calls the error handler then throws an exception.
+    #define ETL_ASSERT_AND_RETURN(b, e) {if (!(b)) {etl::error_handler::error((e)); throw((e));}}          // If the condition fails, calls the error handler then throws an exception.
+    #define ETL_ASSERT_AND_RETURN_VALUE(b, e, v) {if (!(b)) {etl::error_handler::error((e)); throw((e));}} // If the condition fails, calls the error handler then throws an exception.
+    #define ETL_ALWAYS_ASSERT(e) {etl::error_handler::error((e)); throw((e));}                             // Calls the error handler then throws an exception.
+    #define ETL_ALWAYS_ASSERT_AND_RETURN(e) {etl::error_handler::error((e)); throw((e));}                  // Calls the error handler then throws an exception.
+    #define ETL_ALWAYS_ASSERT_AND_RETURN_VALUE(e) {etl::error_handler::error((e)); throw((e));}            // Calls the error handler then throws an exception.
   #else
     #define ETL_ASSERT(b, e) {if (!(b)) {throw((e));}}                                     // If the condition fails, throws an exception.
+    #define ETL_ASSERT_AND_RETURN(b, e) {if (!(b)) {throw((e));}}                          // If the condition fails, throws an exception.
+    #define ETL_ASSERT_AND_RETURN_VALUE(b, e, v) {if (!(b)) {throw((e));}}                 // If the condition fails, throws an exception.
     #define ETL_ALWAYS_ASSERT(e) {throw((e));}                                             // Throws an exception.
+    #define ETL_ALWAYS_ASSERT_AND_RETURN(e) {throw((e));}                                  // Throws an exception.
+    #define ETL_ALWAYS_ASSERT_AND_RETURN_VALUE(e, v) {throw((e));}                         // Throws an exception.
   #endif
 #else
   #if defined(ETL_LOG_ERRORS)
-    #if defined(NDEBUG)
-      #define ETL_ASSERT(b, e) {if(!(b)) {etl::error_handler::error((e));}}                // If the condition fails, calls the error handler
-      #define ETL_ALWAYS_ASSERT(e) {etl::error_handler::error((e));}                       // Calls the error handler
-    #else
-      #define ETL_ASSERT(b, e) {if(!(b)) {etl::error_handler::error((e)); assert(false);}} // If the condition fails, calls the error handler then asserts.
-      #define ETL_ALWAYS_ASSERT(e) {etl::error_handler::error((e)); assert(false);}        // Calls the error handler then asserts.
-    #endif
+    #define ETL_ASSERT(b, e) {if(!(b)) {etl::error_handler::error((e));}}                                 // If the condition fails, calls the error handler
+    #define ETL_ASSERT_AND_RETURN(b, e) {if(!(b)) {etl::error_handler::error((e)); return;}}              // If the condition fails, calls the error handler and return
+    #define ETL_ASSERT_AND_RETURN_VALUE(b, e, v) {if(!(b)) {etl::error_handler::error((e)); return (v);}} // If the condition fails, calls the error handler and return a value
+    #define ETL_ALWAYS_ASSERT(e) {etl::error_handler::error((e));}                                        // Calls the error handler
+    #define ETL_ALWAYS_ASSERT_AND_RETURN(e) {etl::error_handler::error((e)); return;}                     // Calls the error handler and return
+    #define ETL_ALWAYS_ASSERT_AND_RETURN_VALUE(e, v) {etl::error_handler::error((e)); return (v);}        // Calls the error handler and return a value
   #else
-    #if defined(NDEBUG)
-      #define ETL_ASSERT(b, e)                                                             // Does nothing.
-      #define ETL_ALWAYS_ASSERT(e)                                                         // Does nothing.
-    #else
+    #if ETL_IS_DEBUG_BUILD
       #define ETL_ASSERT(b, e) assert((b))                                                 // If the condition fails, asserts.
+      #define ETL_ASSERT_AND_RETURN(b, e) assert((b))                                      // If the condition fails, asserts.
+      #define ETL_ASSERT_AND_RETURN_VALUE(b, e, v) assert((b))                             // If the condition fails, asserts.
       #define ETL_ALWAYS_ASSERT(e) assert(false)                                           // Asserts.
+      #define ETL_ALWAYS_ASSERT_AND_RETURN(e) assert(false)                                // Asserts.
+      #define ETL_ALWAYS_ASSERT_AND_RETURN_VALUE(e, v) assert(false)                       // Asserts.
+    #else
+      #define ETL_ASSERT(b, e)                                                             // Does nothing.
+      #define ETL_ASSERT_AND_RETURN(b, e) {if (!(b)) return;}                              // Returns.
+      #define ETL_ASSERT_AND_RETURN_VALUE(b, e, v) {if (!(b)) return(v);}                  // Returns a value.
+      #define ETL_ALWAYS_ASSERT(e)                                                         // Does nothing.
+      #define ETL_ALWAYS_ASSERT_AND_RETURN(e) {return;}                                    // Returns.
+      #define ETL_ALWAYS_ASSERT_AND_RETURN_VALUE(e, v) {return(v);}                        // Returns a value.
     #endif
   #endif
 #endif

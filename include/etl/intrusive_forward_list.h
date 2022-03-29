@@ -50,9 +50,6 @@ SOFTWARE.
 #include "algorithm.h"
 #include "iterator.h"
 
-#undef ETL_FILE
-#define ETL_FILE "20"
-
 namespace etl
 {
   //***************************************************************************
@@ -78,7 +75,7 @@ namespace etl
   public:
 
     intrusive_forward_list_empty(string_type file_name_, numeric_type line_number_)
-      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:empty", ETL_FILE"A"), file_name_, line_number_)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:empty", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -92,7 +89,7 @@ namespace etl
   public:
 
     intrusive_forward_list_iterator_exception(string_type file_name_, numeric_type line_number_)
-      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:iterator", ETL_FILE"B"), file_name_, line_number_)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:iterator", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -106,7 +103,7 @@ namespace etl
   public:
 
     intrusive_forward_list_index_exception(string_type file_name_, numeric_type line_number_)
-      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:bounds", ETL_FILE"C"), file_name_, line_number_)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:bounds", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -120,7 +117,7 @@ namespace etl
   public:
 
     intrusive_forward_list_unsorted(string_type file_name_, numeric_type line_number_)
-      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:unsorted", ETL_FILE"D"), file_name_, line_number_)
+      : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:unsorted", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"D"), file_name_, line_number_)
     {
     }
   };
@@ -152,7 +149,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       intmax_t d = etl::distance(first, last);
       ETL_ASSERT(d >= 0, ETL_ERROR(intrusive_forward_list_iterator_exception));
 #endif
@@ -365,38 +362,23 @@ namespace etl
         return temp;
       }
 
-      iterator operator =(const iterator& other)
+      iterator& operator =(const iterator& other)
       {
         p_value = other.p_value;
         return *this;
       }
 
-      reference operator *()
+      reference operator *() const
       {
         return *p_value;
       }
 
-      const_reference operator *() const
-      {
-        return *p_value;
-      }
-
-      pointer operator &()
+      pointer operator &() const
       {
         return p_value;
       }
 
-      const_pointer operator &() const
-      {
-        return p_value;
-      }
-
-      pointer operator ->()
-      {
-        return p_value;
-      }
-
-      const_pointer operator ->() const
+      pointer operator ->() const
       {
         return p_value;
       }
@@ -460,7 +442,7 @@ namespace etl
         return temp;
       }
 
-      const_iterator operator =(const const_iterator& other)
+      const_iterator& operator =(const const_iterator& other)
       {
         p_value = other.p_value;
         return *this;
@@ -518,7 +500,7 @@ namespace etl
     /// Constructor from range
     //*************************************************************************
     template <typename TIterator>
-    intrusive_forward_list(TIterator first, TIterator last)
+    intrusive_forward_list(TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
     {
       this->assign(first, last);
     }
@@ -621,7 +603,8 @@ namespace etl
       while (first != last)
       {
         // Set up the next free link.
-        this->insert_link_after(*position.p_value, *first++);
+        this->insert_link_after(*position.p_value, *first);
+        ++first;
         ++position;
       }
     }
@@ -999,7 +982,7 @@ namespace etl
     {
       if ((this != &other) && !other.empty())
       {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
         ETL_ASSERT(etl::is_sorted(other.begin(), other.end(), compare), ETL_ERROR(intrusive_forward_list_unsorted));
         ETL_ASSERT(etl::is_sorted(begin(), end(), compare), ETL_ERROR(intrusive_forward_list_unsorted));
 #endif
@@ -1068,7 +1051,5 @@ namespace etl
 }
 
 #include "private/minmax_pop.h"
-
-#undef ETL_FILE
 
 #endif

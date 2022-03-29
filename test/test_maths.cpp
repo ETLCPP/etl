@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/log.h"
 #include "etl/power.h"
@@ -71,7 +71,7 @@ namespace
   {
     size_t p = 1;
 
-    for (size_t i = 0; i < k; ++i)
+    for (size_t i = 0UL; i < k; ++i)
     {
       p *= n;
       --n;
@@ -213,19 +213,19 @@ namespace
 
       // 7^6
       actual = etl::power<7, 6>::value;
-      CHECK_EQUAL(117649U, actual);
+      CHECK_EQUAL(117649UL, actual);
 
       // 8^7
       actual = etl::power<8, 7>::value;
-      CHECK_EQUAL(2097152U, actual);
+      CHECK_EQUAL(2097152UL, actual);
 
       // 9^8
       actual = etl::power<9, 8>::value;
-      CHECK_EQUAL(43046721U, actual);
+      CHECK_EQUAL(43046721UL, actual);
 
       // 10^9
       actual = etl::power<10, 9>::value;
-      CHECK_EQUAL(1000000000U, actual);
+      CHECK_EQUAL(1000000000UL, actual);
 
       // 2^16
       actual = etl::power<2, 15>::value;
@@ -233,11 +233,11 @@ namespace
 
       // 2^31
       actual = etl::power<2, 31>::value;
-      CHECK_EQUAL(0x80000000U, actual);
+      CHECK_EQUAL(0x80000000UL, actual);
 
       // 2^63
       actual = etl::power<2, 63>::value;
-      CHECK_EQUAL(0x8000000000000000U, actual);
+      CHECK_EQUAL(0x8000000000000000ULL, actual);
     }
 
     //*************************************************************************

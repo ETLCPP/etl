@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <vector>
 #include <array>
@@ -47,9 +47,9 @@ namespace
 
   SUITE(test_vector)
   {
-    typedef etl::vector<int, 0> Data;
-    typedef etl::ivector<int>   IData;
-    typedef std::vector<int>    Compare_Data;
+    typedef etl::vector_ext<int> Data;
+    typedef etl::ivector<int>    IData;
+    typedef std::vector<int>     Compare_Data;
 
     Compare_Data initial_data;
     Compare_Data less_data;
@@ -154,7 +154,7 @@ namespace
       CHECK(!data.empty());
     }
 
-#if ETL_USING_STL
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     TEST(test_constructor_initializer_list)
     {
@@ -338,6 +338,78 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_uninitialized_resize_up)
+    {
+      const size_t INITIAL_SIZE = 5;
+      const size_t NEW_SIZE = 8;
+
+      Data data(INITIAL_SIZE, buffer1, SIZE);
+
+      int* pbegin = &data.front();
+      int* pend = &data.back() + 1;
+      int* pmax = pbegin + data.max_size();
+
+      constexpr int Pattern = 0x12345678UL;
+
+      // Fill free space with a pattern.
+      std::fill(pend, pmax, Pattern);
+
+      data.uninitialized_resize(NEW_SIZE);
+
+      for (int* p = pbegin; p != pend; ++p)
+      {
+        CHECK_EQUAL(*p, 0);
+      }
+
+      for (int* p = pend; p != pmax; ++p)
+      {
+        CHECK_EQUAL(*p, Pattern);
+      }
+
+      CHECK_EQUAL(data.size(), NEW_SIZE);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_uninitialized_resize_up_excess)
+    {
+      const size_t INITIAL_SIZE = 5;
+      const size_t NEW_SIZE = SIZE + 1;
+
+      Data data(INITIAL_SIZE, buffer1, SIZE);
+
+      CHECK_THROW(data.resize(NEW_SIZE), etl::vector_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_uninitialized_resize_down)
+    {
+      const size_t INITIAL_SIZE = 5;
+      const size_t NEW_SIZE = 2;
+
+      Data data(INITIAL_SIZE, buffer1, SIZE);
+
+      int* pbegin = &data.front();
+      int* pend = &data.back() + 1;
+      int* pmax = pbegin + data.max_size();
+
+      constexpr int Pattern = 0x12345678UL;
+
+      // Fill free space with a pattern.
+      std::fill(pend, pmax, Pattern);
+
+      data.uninitialized_resize(NEW_SIZE);
+
+      pend = &data.back() + 1;
+
+      for (int* p = pbegin; p < pend; ++p)
+      {
+        CHECK_EQUAL(*p, 0);
+      }
+
+      CHECK_EQUAL(data.size(), NEW_SIZE);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_empty)
     {
       Data data(buffer1, SIZE);
@@ -363,7 +435,7 @@ namespace
 
       Data data(compare_data.begin(), compare_data.end(), buffer1, SIZE);
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
@@ -376,7 +448,7 @@ namespace
 
       const Data data(compare_data.begin(), compare_data.end(), buffer1, SIZE);
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
@@ -388,7 +460,7 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.at(i), compare_data.at(i));
       }
@@ -402,7 +474,7 @@ namespace
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
       const Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.at(i), compare_data.at(i));
       }
@@ -1077,8 +1149,8 @@ namespace
 
       const S raw[6] = { 1, 2, 3, 4, 5, 6 };
 
-      etl::vector<S, 0> dest(etl::begin(raw), etl::end(raw), sbuffer1, SIZE);
-      etl::vector<S, 0> src((size_t) 2, S(8), sbuffer2, SIZE);
+      etl::vector_ext<S> dest(std::begin(raw), std::end(raw), sbuffer1, SIZE);
+      etl::vector_ext<S> src((size_t) 2, S(8), sbuffer2, SIZE);
 
       dest.insert(dest.begin(), src.begin(), src.end());
 
@@ -1112,7 +1184,7 @@ namespace
 
       const S raw[6] = { 1, 2, 3, 4, 5, 6 };
 
-      etl::vector<S, 0> dest(etl::begin(raw), etl::end(raw), sbuffer1, SIZE);
+      etl::vector_ext<S> dest(ETL_OR_STD11::begin(raw), ETL_OR_STD11::end(raw), sbuffer1, SIZE);
 
       dest.insert(dest.begin(), 2, S(8));
 

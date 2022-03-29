@@ -35,18 +35,20 @@ SOFTWARE.
 #include <assert.h>
 
 #include "platform.h"
+#include "atomic.h"
 
 ///\defgroup debug_count debug count
 ///\ingroup utilities
 
 #if defined(ETL_DEBUG_COUNT)
 
-#define ETL_DECLARE_DEBUG_COUNT     etl::debug_count etl_debug_count;
-#define ETL_INCREMENT_DEBUG_COUNT   ++etl_debug_count;
-#define ETL_DECREMENT_DEBUG_COUNT   --etl_debug_count;
-#define ETL_ADD_DEBUG_COUNT(n)      etl_debug_count += (n);
-#define ETL_SUBTRACT_DEBUG_COUNT(n) etl_debug_count -= (n);
-#define ETL_RESET_DEBUG_COUNT       etl_debug_count.clear();
+#define ETL_DECLARE_DEBUG_COUNT              etl::debug_count etl_debug_count;
+#define ETL_INCREMENT_DEBUG_COUNT            ++etl_debug_count;
+#define ETL_DECREMENT_DEBUG_COUNT            --etl_debug_count;
+#define ETL_ADD_DEBUG_COUNT(n)               etl_debug_count += (n);
+#define ETL_SUBTRACT_DEBUG_COUNT(n)          etl_debug_count -= (n);
+#define ETL_RESET_DEBUG_COUNT                etl_debug_count.clear();
+#define ETL_OBJECT_RESET_DEBUG_COUNT(object) object.etl_debug_count.clear();
 
 namespace etl
 {
@@ -61,23 +63,23 @@ namespace etl
   {
   public:
 
-    inline debug_count()
+    debug_count()
       : count(0)
     {
     }
 
-    inline ~debug_count()
+    ~debug_count()
     {
       assert(count == 0);
     }
 
-    inline debug_count& operator ++()
+    debug_count& operator ++()
     {
       ++count;
       return *this;
     }
 
-    inline debug_count& operator --()
+    debug_count& operator --()
     {
       --count;
       assert(count >= 0);
@@ -85,32 +87,36 @@ namespace etl
     }
 
     template <typename T>
-    inline debug_count& operator +=(T n)
+    debug_count& operator +=(T n)
     {
       count += int32_t(n);
       return *this;
     }
 
     template <typename T>
-    inline debug_count& operator -=(T n)
+    debug_count& operator -=(T n)
     {
       count -= int32_t(n);
       return *this;
     }
 
-    inline operator int32_t()
+    operator int32_t()
     {
       return count;
     }
 
-    inline void clear()
+    void clear()
     {
       count = 0;
     }
 
   private:
 
+#if ETL_HAS_ATOMIC
+    etl::atomic_int32_t count;
+#else
     int32_t count;
+#endif
   };
 
 }
@@ -122,6 +128,7 @@ namespace etl
   #define ETL_ADD_DEBUG_COUNT(n)
   #define ETL_SUBTRACT_DEBUG_COUNT(n)
   #define ETL_RESET_DEBUG_COUNT
+  #define ETL_OBJECT_RESET_DEBUG_COUNT(object)
 #endif // ETL_DEBUG_COUNT
 
 #endif

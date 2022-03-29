@@ -65,17 +65,23 @@ SOFTWARE.
 /// Derived from either the standard or alternate definitions, dependant on whether or not ETL_NO_STL is defined.
 /// \ingroup utilities
 
-#if ETL_USING_STL && ETL_CPP11_SUPPORTED
+#if ETL_USING_STL && ETL_USING_CPP11
   #include <type_traits>
 #endif
 
 namespace etl
 {
+#if ETL_USING_CPP11
+  template <typename...>
+  using void_t = void;
+#endif
+
 #if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
 
   //*****************************************************************************
   // Traits are defined by the ETL
   //*****************************************************************************
+  
   //***************************************************************************
   /// integral_constant
   template <typename T, const T VALUE>
@@ -99,17 +105,35 @@ namespace etl
   template <typename T, const T VALUE>
   const T integral_constant<T, VALUE>::value;
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP11
   template <bool B>
   using bool_constant = integral_constant<bool, B>;
+#else
+  template <bool B>
+  struct bool_constant : etl::integral_constant<bool, B> { };
+#endif
+
+  //***************************************************************************
+  /// negation
+  template <typename T>
+  struct negation : etl::bool_constant<!bool(T::value)>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool negation_v = negation<T>::value;
 #endif
 
   //***************************************************************************
   /// remove_reference
   template <typename T> struct remove_reference { typedef T type; };
   template <typename T> struct remove_reference<T&> { typedef T type; };
+#if ETL_USING_CPP11
+  template <typename T> struct remove_reference<T&&> { typedef T type; };
+#endif
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using remove_reference_t = typename remove_reference<T>::type;
 #endif
@@ -126,7 +150,7 @@ namespace etl
   template <typename T> struct remove_pointer<volatile T* const> { typedef volatile T type; };
   template <typename T> struct remove_pointer<const volatile T* const> { typedef const volatile T type; };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using remove_pointer_t = typename remove_pointer<T>::type;
 #endif
@@ -135,7 +159,7 @@ namespace etl
   /// add_pointer
   template <typename T> struct add_pointer { typedef typename remove_reference<T>::type* type; };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using add_pointer_t = typename add_pointer<T>::type;
 #endif
@@ -146,7 +170,7 @@ namespace etl
   template <typename T> struct is_const<const T> : true_type {};
   template <typename T> struct is_const<const volatile T> : true_type {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_const_v = is_const<T>::value;
 #endif
@@ -156,7 +180,7 @@ namespace etl
   template <typename T> struct remove_const { typedef T type; };
   template <typename T> struct remove_const<const T> { typedef T type; };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using remove_const_t = typename remove_const<T>::type;
 #endif
@@ -166,7 +190,7 @@ namespace etl
   template <typename T> struct add_const { typedef const T type; };
   template <typename T> struct add_const<const T> { typedef const T type; };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using add_const_t = typename add_const<T>::type;
 #endif
@@ -177,7 +201,7 @@ namespace etl
   template <typename T> struct is_volatile<volatile T> : true_type {};
   template <typename T> struct is_volatile<const volatile T> : true_type {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_volatile_v = is_volatile<T>::value;
 #endif
@@ -187,7 +211,7 @@ namespace etl
   template <typename T> struct remove_volatile { typedef T type; };
   template <typename T> struct remove_volatile<volatile T> { typedef T type; };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using remove_volatile_t = typename remove_volatile<T>::type;
 #endif
@@ -197,7 +221,7 @@ namespace etl
   template <typename T> struct add_volatile { typedef volatile T type; };
   template <typename T> struct add_volatile<volatile T> { typedef volatile T type; };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using add_volatile_t = typename add_volatile<T>::type;
 #endif
@@ -209,7 +233,7 @@ namespace etl
     typedef typename remove_volatile<typename remove_const<T>::type>::type type;
   };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using remove_cv_t = typename remove_cv<T>::type;
 #endif
@@ -221,9 +245,21 @@ namespace etl
     typedef typename add_volatile<typename add_const<T>::type>::type type;
   };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using add_cv_t = typename add_cv<T>::type;
+#endif
+
+  //***************************************************************************
+  /// remove_cvref
+  template <typename T> struct remove_cvref
+  {
+    typedef typename remove_cv<typename remove_reference<T>::type>::type type;
+  };
+
+#if ETL_USING_CPP11
+  template <typename T>
+  using remove_cvref_t = typename remove_cvref<T>::type;
 #endif
 
   //***************************************************************************
@@ -246,7 +282,7 @@ namespace etl
   template <typename T> struct is_integral<volatile T> : is_integral<T> {};
   template <typename T> struct is_integral<const volatile T> : is_integral<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_integral_v = is_integral<T>::value;
 #endif
@@ -254,8 +290,8 @@ namespace etl
   //***************************************************************************
   /// is_signed
   template <typename T> struct is_signed : false_type {};
-  template <> struct is_signed<char> : integral_constant<bool, (char(255) < 0)> {};
-  template <> struct is_signed<wchar_t> : public etl::integral_constant<bool, static_cast<bool>(wchar_t(-1) < wchar_t(0))> {};
+  template <> struct is_signed<char> : etl::bool_constant<(char(255) < 0)> {};
+  template <> struct is_signed<wchar_t> : public etl::bool_constant<static_cast<bool>(wchar_t(-1) < wchar_t(0))> {};
   template <> struct is_signed<signed char> : true_type {};
   template <> struct is_signed<short> : true_type {};
   template <> struct is_signed<int> : true_type {};
@@ -268,7 +304,7 @@ namespace etl
   template <typename T> struct is_signed<volatile T> : is_signed<T> {};
   template <typename T> struct is_signed<const volatile T> : is_signed<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_signed_v = is_signed<T>::value;
 #endif
@@ -277,9 +313,9 @@ namespace etl
   /// is_unsigned
   template <typename T> struct is_unsigned : false_type {};
   template <> struct is_unsigned<bool> : true_type {};
-  template <> struct is_unsigned<char> : integral_constant<bool, (char(255) > 0)> {};
+  template <> struct is_unsigned<char> : etl::bool_constant<(char(255) > 0)> {};
   template <> struct is_unsigned<unsigned char> : true_type {};
-  template <> struct is_unsigned<wchar_t> : public etl::integral_constant<bool, (wchar_t(-1) > wchar_t(0))> {};
+  template <> struct is_unsigned<wchar_t> : public etl::bool_constant<(wchar_t(-1) > wchar_t(0))> {};
   template <> struct is_unsigned<unsigned short> : true_type {};
   template <> struct is_unsigned<unsigned int> : true_type {};
   template <> struct is_unsigned<unsigned long> : true_type {};
@@ -288,7 +324,7 @@ namespace etl
   template <typename T> struct is_unsigned<volatile T> : is_unsigned<T> {};
   template <typename T> struct is_unsigned<const volatile T> : is_unsigned<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_unsigned_v = is_unsigned<T>::value;
 #endif
@@ -303,7 +339,7 @@ namespace etl
   template <typename T> struct is_floating_point<volatile T> : is_floating_point<T> {};
   template <typename T> struct is_floating_point<const volatile T> : is_floating_point<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_floating_point_v = is_floating_point<T>::value;
 #endif
@@ -313,7 +349,7 @@ namespace etl
   template <typename T1, typename T2> struct is_same : public false_type {};
   template <typename T> struct is_same<T, T> : public true_type {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T1, typename T2>
   inline constexpr bool is_same_v = is_same<T1, T2>::value;
 #endif
@@ -323,34 +359,34 @@ namespace etl
   template<typename T> struct is_void : false_type {};
   template<> struct is_void<void> : true_type {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_void_v = is_void<T>::value;
 #endif
 
   //***************************************************************************
   /// is_arithmetic
-  template<typename T> struct is_arithmetic : integral_constant<bool, is_integral<T>::value || is_floating_point<T>::value> {};
+  template<typename T> struct is_arithmetic : etl::bool_constant<is_integral<T>::value || is_floating_point<T>::value> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_arithmetic_v = is_arithmetic<T>::value;
 #endif
 
   //***************************************************************************
   /// is_fundamental
-  template <typename T> struct is_fundamental : integral_constant<bool, is_arithmetic<T>::value || is_void<T>::value> {};
+  template <typename T> struct is_fundamental : etl::bool_constant<is_arithmetic<T>::value || is_void<T>::value> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_fundamental_v = is_fundamental<T>::value;
 #endif
 
   //***************************************************************************
   /// is_compound
-  template <typename T> struct is_compound : integral_constant<bool, !is_fundamental<T>::value> {};
+  template <typename T> struct is_compound : etl::bool_constant<!is_fundamental<T>::value> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_compound_v = is_compound<T>::value;
 #endif
@@ -361,7 +397,7 @@ namespace etl
   template <typename T> struct is_array<T[]> : true_type {};
   template <typename T, size_t MAXN> struct is_array<T[MAXN]> : true_type {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_array_v = is_array<T>::value;
 #endif
@@ -372,7 +408,7 @@ namespace etl
   template<typename T> struct is_pointer_helper<T*> : true_type {};
   template<typename T> struct is_pointer : is_pointer_helper<typename remove_cv<T>::type> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_pointer_v = is_pointer<T>::value;
 #endif
@@ -383,7 +419,7 @@ namespace etl
   template<typename T> struct is_reference_helper<T&> : true_type {};
   template<typename T> struct is_reference : is_reference_helper<typename remove_cv<T>::type> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_reference_v = is_reference<T>::value;
 #endif
@@ -394,19 +430,19 @@ namespace etl
   template<typename T> struct is_lvalue_reference_helper<T&> : true_type {};
   template<typename T> struct is_lvalue_reference : is_lvalue_reference_helper<typename remove_cv<T>::type> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_lvalue_reference_v = etl::is_lvalue_reference<T>::value;
 #endif
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   //***************************************************************************
   /// is_rvalue_reference
   template<typename T> struct is_rvalue_reference_helper : false_type {};
   template<typename T> struct is_rvalue_reference_helper<T&&> : true_type {};
   template<typename T> struct is_rvalue_reference : is_rvalue_reference_helper<typename remove_cv<T>::type> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_rvalue_reference_v = etl::is_rvalue_reference<T>::value;
 #endif
@@ -415,67 +451,22 @@ namespace etl
   //***************************************************************************
   /// is_pod
   /// Only fundamental and pointers types are recognised.
-  template <typename T> struct is_pod : etl::integral_constant<bool, etl::is_fundamental<T>::value || etl::is_pointer<T>::value> {};
+  template <typename T> struct is_pod : etl::bool_constant<etl::is_fundamental<T>::value || etl::is_pointer<T>::value> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_pod_v = etl::is_pod<T>::value;
-#endif
-
-  //***************************************************************************
-  /// is_trivially_constructible
-  /// Only POD types are recognised.
-  template <typename T> struct is_trivially_constructible : etl::is_pod<T> {};
-
-#if ETL_CPP17_SUPPORTED
-  template <typename T>
-  inline constexpr bool is_trivially_constructible_v = etl::is_trivially_constructible<T>::value;
-#endif
-
-  //***************************************************************************
-  /// is_trivially_copy_constructible
-  /// Only POD types are recognised.
-  template <typename T> struct is_trivially_copy_constructible : etl::is_pod<T> {};
-
-#if ETL_CPP17_SUPPORTED
-  template <typename T>
-  inline constexpr bool is_trivially_copy_constructible_v = etl::is_trivially_copy_constructible<T>::value;
-#endif
-
-  //***************************************************************************
-  /// is_trivially_destructible
-  /// Only POD types are recognised.
-  template <typename T> struct is_trivially_destructible : etl::is_pod<T> {};
-
-#if ETL_CPP17_SUPPORTED
-  template <typename T>
-  inline constexpr bool is_trivially_destructible_v = etl::is_trivially_destructible<T>::value;
-#endif
-
-  //***************************************************************************
-  /// is_trivially_copy_assignable
-  /// Only POD types are recognised.
-  template <typename T> struct is_trivially_copy_assignable : etl::is_pod<T> {};
-
-#if ETL_CPP17_SUPPORTED
-  template <typename T>
-  inline constexpr bool is_trivially_copy_assignable_v = etl::is_trivially_copy_assignable<T>::value;
-#endif
-
-  //***************************************************************************
-  /// is_trivially_copyable
-  /// Only POD types are recognised.
-  template <typename T> struct is_trivially_copyable : etl::is_pod<T> {};
-
-#if ETL_CPP17_SUPPORTED
-  template <typename T>
-  inline constexpr bool is_trivially_copyable_v = etl::is_trivially_copyable<T>::value;
 #endif
 
   //***************************************************************************
   /// conditional
   template <bool B, typename T, typename F>  struct conditional { typedef T type; };
   template <typename T, typename F> struct conditional<false, T, F> { typedef F type; };
+
+#if ETL_USING_CPP11
+  template <bool B, typename T, typename F>
+  using conditional_t = typename conditional<B, T, F>::type;
+#endif
 
   //***************************************************************************
   /// make_signed
@@ -486,10 +477,10 @@ namespace etl
   template <> struct make_signed<wchar_t>
   {
     typedef etl::conditional<sizeof(wchar_t) == sizeof(int16_t),
-      int16_t,
-      etl::conditional<sizeof(wchar_t) == sizeof(int32_t),
-      int32_t,
-      void>::type>::type type;
+                             int16_t,
+                             etl::conditional<sizeof(wchar_t) == sizeof(int32_t),
+                                              int32_t,
+                                              void>::type>::type type;
   };
 
   template <> struct make_signed<unsigned short> { typedef  short type; };
@@ -500,7 +491,7 @@ namespace etl
   template <typename T> struct make_signed<volatile T> : add_volatile<typename make_signed<T>::type> {};
   template <typename T> struct make_signed<const volatile T> : add_const<typename add_volatile<typename make_signed<T>::type>::type> {};
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using make_signed_t = typename make_signed<T>::type;
 #endif
@@ -515,10 +506,10 @@ namespace etl
   template <> struct make_unsigned<wchar_t>
   {
     typedef etl::conditional<sizeof(wchar_t) == sizeof(uint16_t),
-      uint16_t,
-      etl::conditional<sizeof(wchar_t) == sizeof(uint32_t),
-      uint32_t,
-      void>::type>::type type;
+                             uint16_t,
+                             etl::conditional<sizeof(wchar_t) == sizeof(uint32_t),
+                                              uint32_t,
+                                              void>::type>::type type;
   };
 
   template <> struct make_unsigned<int> { typedef unsigned int type; };
@@ -528,7 +519,7 @@ namespace etl
   template <typename T> struct make_unsigned<volatile T> : add_volatile<typename make_unsigned<T>::type> {};
   template <typename T> struct make_unsigned<const volatile T> : add_const<typename add_volatile<typename make_unsigned<T>::type>::type> {};
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using make_unsigned_t = typename make_unsigned<T>::type;
 #endif
@@ -538,30 +529,30 @@ namespace etl
   template <bool B, typename T = void> struct enable_if {};
   template <typename T> struct enable_if<true, T> { typedef T type; };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <bool B, typename T = void>
   using enable_if_t = typename enable_if<B, T>::type;
 #endif
 
   //***************************************************************************
   /// extent
-  template <typename T, size_t MAXN = 0U>
+  template <typename T, unsigned MAXN = 0U>
   struct extent : integral_constant<size_t, 0U> {};
 
   template <typename T>
   struct extent<T[], 0> : integral_constant<size_t, 0U> {};
 
-  template <typename T, size_t MAXN>
+  template <typename T, unsigned MAXN>
   struct extent<T[], MAXN> : integral_constant<size_t, extent<T, MAXN - 1>::value> {};
 
-  template <typename T, size_t MAXN>
+  template <typename T, unsigned MAXN>
   struct extent<T[MAXN], 0> : integral_constant<size_t, MAXN> {};
 
-  template <typename T, size_t I, size_t MAXN>
+  template <typename T, unsigned I, unsigned MAXN>
   struct extent<T[I], MAXN> : integral_constant<size_t, extent<T, MAXN - 1>::value> {};
 
-#if ETL_CPP17_SUPPORTED
-  template <typename T, size_t N = 0U>
+#if ETL_USING_CPP17
+  template <typename T, unsigned N = 0U>
   inline constexpr size_t extent_v = extent<T, N>::value;
 #endif
 
@@ -571,7 +562,7 @@ namespace etl
   template <typename T> struct remove_extent<T[]> { typedef T type; };
   template <typename T, size_t MAXN> struct remove_extent<T[MAXN]> { typedef T type; };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using remove_extent_t = typename remove_extent<T>::type;
 #endif
@@ -582,7 +573,7 @@ namespace etl
   template <typename T> struct remove_all_extents<T[]> { typedef typename remove_all_extents<T>::type type; };
   template <typename T, size_t MAXN> struct remove_all_extents<T[MAXN]> { typedef typename remove_all_extents<T>::type type; };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using remove_all_extents_t = typename remove_all_extents<T>::type;
 #endif
@@ -593,7 +584,7 @@ namespace etl
   template <typename T> struct rank<T[]> : public integral_constant<size_t, rank<T>::value + 1> {};
   template <typename T, size_t MAXN> struct rank<T[MAXN]> : public integral_constant<size_t, rank<T>::value + 1> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr size_t rank_v = rank<T>::value;
 #endif
@@ -605,11 +596,11 @@ namespace etl
   {
     typedef typename etl::remove_reference<T>::type U;
     typedef typename etl::conditional<etl::is_array<U>::value,
-      typename etl::remove_extent<U>::type*,
-      typename etl::remove_cv<U>::type>::type type;
+                                      typename etl::remove_extent<U>::type*,
+                                      typename etl::remove_cv<U>::type>::type type;
   };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using decay_t = typename decay<T>::type;
 #endif
@@ -618,7 +609,7 @@ namespace etl
   /// is_base_of
   template<typename TBase,
            typename TDerived,
-           const bool IsFundamental = (etl::is_fundamental<TBase>::value || etl::is_fundamental<TDerived>::value)>
+           const bool IsFundamental = (etl::is_fundamental<TBase>::value || etl::is_fundamental<TDerived>::value || etl::is_array<TDerived>::value)>
   struct is_base_of
   {
   private:
@@ -626,8 +617,10 @@ namespace etl
     template<typename T> struct dummy {};
     struct internal: TDerived, dummy<int>{};
 
-    static TBase* check(TBase*);
-    template<typename T> static char check(dummy<T>*);
+    static TBase* check(TBase*) { return (TBase*)0; }
+    
+    template<typename T> 
+    static char check(dummy<T>*) { return 0; }
 
   public:
 
@@ -641,7 +634,7 @@ namespace etl
     static const bool value = false;
   };
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T1, typename T2>
   inline constexpr bool is_base_of_v = is_base_of<T1, T2>::value;
 #endif
@@ -657,9 +650,9 @@ namespace etl
   }
 
   template <typename T>
-  struct is_class : etl::integral_constant<bool, sizeof(private_type_traits::test<T>(0)) == 1U> {};
+  struct is_class : etl::bool_constant<sizeof(private_type_traits::test<T>(0)) == 1U> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_class_v = is_class<T>::value;
 #endif
@@ -673,14 +666,14 @@ namespace etl
   template <>           struct add_lvalue_reference<volatile void> { typedef volatile void type; };
   template <>           struct add_lvalue_reference<const volatile void> { typedef const volatile void type; };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using add_lvalue_reference_t = typename etl::add_lvalue_reference<T>::type;
 #endif
 
   //***************************************************************************
   /// add_rvalue_reference
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T> struct add_rvalue_reference { using type = T && ; };
   template <typename T> struct add_rvalue_reference<T&> { using type = T & ; };
   template <>           struct add_rvalue_reference<void> { using type = void; };
@@ -689,21 +682,21 @@ namespace etl
   template <>           struct add_rvalue_reference<const volatile void> { using type = const volatile void; };
 #endif
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using add_rvalue_reference_t = typename etl::add_rvalue_reference<T>::type;
 #endif
 
   //***************************************************************************
   /// decval
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   typename etl::add_rvalue_reference<T>::type declval() ETL_NOEXCEPT;
 #endif
 
   //***************************************************************************
   /// is_convertible
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   namespace private_type_traits
   {
     template <typename>
@@ -722,13 +715,18 @@ namespace etl
     auto nonvoid_convertible(...)->etl::false_type;
   }
 
+#if defined(ETL_COMPILER_ARM5)
   template <typename TFrom, typename TTo>
-  struct is_convertible : etl::integral_constant<bool, (decltype(private_type_traits::returnable<TTo>(0))::value &&
-                                                        decltype(private_type_traits::nonvoid_convertible<TFrom, TTo>(0))::value) ||
-                                                        (etl::is_void<TFrom>::value && etl::is_void<TTo>::value)> {};
+  struct is_convertible : etl::bool_constant<__is_convertible_to(TFrom, TTo)> {};
+#else
+  template <typename TFrom, typename TTo>
+  struct is_convertible : etl::bool_constant<(decltype(private_type_traits::returnable<TTo>(0))::value &&
+                                              decltype(private_type_traits::nonvoid_convertible<TFrom, TTo>(0))::value) ||
+                                              (etl::is_void<TFrom>::value && etl::is_void<TTo>::value)> {};
+#endif
 #endif
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename TFrom, typename TTo >
   inline constexpr bool is_convertible_v = etl::is_convertible<TFrom, TTo>::value;
 #endif
@@ -736,9 +734,9 @@ namespace etl
   //***************************************************************************
   /// Alignment templates.
   /// These require compiler specific intrinsics.
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11 && !defined(ETL_COMPILER_ARM5)
   template <typename T> struct alignment_of : integral_constant<size_t, alignof(T)> { };
-#elif ETL_COMPILER_MICROSOFT
+#elif defined(ETL_COMPILER_MICROSOFT)
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__alignof(T))> {};
 #elif defined(ETL_COMPILER_IAR) || defined(ETL_COMPILER_TI)
   template <typename T> struct alignment_of : integral_constant<size_t, size_t(__ALIGNOF__(T))> {};
@@ -749,13 +747,14 @@ namespace etl
   /// Specialisation of 'alignment_of' for 'void'.
   ///\ingroup type_traits
   template <> struct alignment_of<void> : integral_constant <size_t, 0> {};
+  template <> struct alignment_of<const void> : integral_constant <size_t, 0> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr size_t alignment_of_v = etl::alignment_of<T>::value;
 #endif
 
-#else // Condition = ETL_USING_STL && ETL_CPP11_SUPPORTED
+#else // Condition = ETL_USING_STL && ETL_USING_CPP11
 
   //*****************************************************************************
   // Traits are derived from the STL
@@ -772,9 +771,25 @@ namespace etl
   typedef integral_constant<bool, false> false_type;
   typedef integral_constant<bool, true>  true_type;
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <bool B>
   using bool_constant = std::bool_constant<B>;
+#else
+  template <bool B>
+  struct bool_constant : std::integral_constant<bool, B> { };
+#endif
+
+  //***************************************************************************
+  /// negation
+  ///\ingroup type_traits
+#if ETL_USING_CPP17
+  template <typename T>
+  struct negation : std::negation<T>
+  {
+  };
+
+  template <typename T>
+  inline constexpr bool negation_v = std::negation_v<T>;
 #endif
 
   //***************************************************************************
@@ -782,9 +797,9 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct remove_reference : std::remove_reference<T> {};
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
-  using remove_reference_t = std::remove_reference_t<T>;
+  using remove_reference_t = typename std::remove_reference<T>::type;
 #endif
 
   //***************************************************************************
@@ -792,9 +807,9 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct remove_pointer : std::remove_pointer<T> {};
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
-  using remove_pointer_t = std::remove_pointer_t<T>;
+  using remove_pointer_t = typename std::remove_pointer<T>::type;
 #endif
 
   //***************************************************************************
@@ -802,9 +817,9 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct add_pointer : std::add_pointer<T> {};
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
-  using add_pointer_t = std::add_pointer_t<T>;
+  using add_pointer_t = typename std::add_pointer<T>::type;
 #endif
 
   //***************************************************************************
@@ -812,7 +827,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_const : std::is_const<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_const_v = std::is_const_v<T>;
 #endif
@@ -822,9 +837,9 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct remove_const : std::remove_const<T> {};
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
-  using remove_const_t = std::remove_const_t<T>;
+  using remove_const_t = typename std::remove_const<T>::type;
 #endif
 
   //***************************************************************************
@@ -832,9 +847,9 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct add_const : std::add_const<T> {};
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
-  using add_const_t = std::add_const_t<T>;
+  using add_const_t = typename std::add_const<T>::type;
 #endif
 
   //***************************************************************************
@@ -842,7 +857,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_volatile : std::is_volatile<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_volatile_v = std::is_volatile_v<T>;
 #endif
@@ -852,9 +867,9 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct remove_volatile : std::remove_volatile<T> {};
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
-  using remove_volatile_t = std::remove_volatile_t<T>;
+  using remove_volatile_t = typename std::remove_volatile<T>::type;
 #endif
 
   //***************************************************************************
@@ -862,9 +877,9 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct add_volatile : std::add_volatile<T> {};
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
-  using add_volatile_t = std::add_volatile_t<T>;
+  using add_volatile_t = typename std::add_volatile<T>::type;
 #endif
 
   //***************************************************************************
@@ -872,9 +887,9 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct remove_cv : std::remove_cv<T> {};
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
-  using remove_cv_t = std::remove_cv_t<T>;
+  using remove_cv_t = typename std::remove_cv<T>::type;
 #endif
 
   //***************************************************************************
@@ -882,9 +897,22 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct add_cv : std::add_cv<T> {};
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
-  using add_cv_t = std::add_cv_t<T>;
+  using add_cv_t = typename std::add_cv<T>::type;
+#endif
+
+  //***************************************************************************
+  /// remove_cvref
+  ///\ingroup type_traits
+  template <typename T> struct remove_cvref
+  {
+    typedef typename std::remove_cv<typename std::remove_reference<T>::type>::type type;
+  };
+
+#if ETL_USING_CPP11
+  template <typename T>
+  using remove_cvref_t = typename etl::remove_cvref<T>::type;
 #endif
 
   //***************************************************************************
@@ -892,7 +920,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_integral : std::is_integral<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_integral_v = std::is_integral_v<T>;
 #endif
@@ -902,7 +930,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_signed : std::is_signed<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_signed_v = std::is_signed_v<T>;
 #endif
@@ -912,7 +940,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_unsigned : std::is_unsigned<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_unsigned_v = std::is_unsigned_v<T>;
 #endif
@@ -922,7 +950,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_floating_point : std::is_floating_point<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_floating_point_v = std::is_floating_point_v<T>;
 #endif
@@ -932,7 +960,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T1, typename T2> struct is_same : std::is_same<T1, T2> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T1, typename T2>
   inline constexpr bool is_same_v = std::is_same_v<T1, T2>;
 #endif
@@ -942,7 +970,7 @@ namespace etl
   ///\ingroup type_traits
   template<typename T> struct is_void : std::is_void<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_void_v = std::is_void_v<T>;
 #endif
@@ -952,7 +980,7 @@ namespace etl
   ///\ingroup type_traits
   template<typename T> struct is_arithmetic : std::is_arithmetic<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_arithmetic_v = std::is_arithmetic_v<T>;
 #endif
@@ -962,7 +990,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_fundamental : std::is_fundamental<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_fundamental_v = std::is_fundamental_v<T>;
 #endif
@@ -972,7 +1000,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_compound : std::is_compound<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_compound_v = std::is_compound_v<T>;
 #endif
@@ -982,7 +1010,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_array : std::is_array<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_array_v = std::is_array_v<T>;
 #endif
@@ -992,7 +1020,7 @@ namespace etl
   ///\ingroup type_traits
   template<typename T> struct is_pointer : std::is_pointer<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_pointer_v = std::is_pointer_v<T>;
 #endif
@@ -1002,7 +1030,7 @@ namespace etl
   ///\ingroup type_traits
   template<typename T> struct is_reference : std::is_reference<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_reference_v = std::is_reference_v<T>;
 #endif
@@ -1012,7 +1040,7 @@ namespace etl
   ///\ingroup type_traits
   template<typename T> struct is_lvalue_reference : std::is_lvalue_reference<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_lvalue_reference_v = std::is_lvalue_reference_v<T>;
 #endif
@@ -1020,10 +1048,10 @@ namespace etl
   //***************************************************************************
   /// is_rvalue_reference
   ///\ingroup type_traits
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template<typename T> struct is_rvalue_reference : std::is_rvalue_reference<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_rvalue_reference_v = std::is_rvalue_reference_v<T>;
 #endif
@@ -1032,112 +1060,17 @@ namespace etl
   //***************************************************************************
   /// is_pod
   ///\ingroup type_traits
-  template <typename T> struct is_pod : std::is_pod<T> {};
-
-#if ETL_CPP17_SUPPORTED
   template <typename T>
-  inline constexpr bool is_pod_v = std::is_pod_v<T>;
+  struct is_pod : std::integral_constant<bool, std::is_standard_layout<T>::value && std::is_trivial<T>::value> {};
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_pod_v = std::is_standard_layout_v<T> && std::is_trivial_v<T>;
 #endif
 
-#if !defined(ARDUINO) && ETL_NOT_USING_STLPORT
-  //***************************************************************************
-  /// is_trivially_constructible
-  ///\ingroup type_traits
-  template <typename T> struct is_trivially_constructible : std::is_trivially_constructible<T> {};
-
-#if ETL_CPP17_SUPPORTED
-  template <typename T>
-  inline constexpr bool is_trivially_constructible_v = std::is_trivially_constructible_v<T>;
-#endif
-
-  //***************************************************************************
-  /// is_trivially_copy_constructible
-  ///\ingroup type_traits
-  template <typename T> struct is_trivially_copy_constructible : std::is_trivially_copy_constructible<T> {};
-
-#if ETL_CPP17_SUPPORTED
-  template <typename T>
-  inline constexpr bool is_trivially_copy_constructible_v = std::is_trivially_copy_constructible_v<T>;
-#endif
-
-  //***************************************************************************
-  /// is_trivially_destructible
-  ///\ingroup type_traits
-  template <typename T> struct is_trivially_destructible : std::is_trivially_destructible<T> {};
-
-#if ETL_CPP17_SUPPORTED
-  template <typename T>
-  inline constexpr bool is_trivially_destructible_v = std::is_trivially_destructible_v<T>;
-#endif
-
-  //***************************************************************************
-  /// is_trivially_copy_assignable
-  ///\ingroup type_traits
-  template <typename T> struct is_trivially_copy_assignable : std::is_trivially_copy_assignable<T> {};
-
-#if ETL_CPP17_SUPPORTED
-  template <typename T>
-  inline constexpr bool is_trivially_copy_assignable_v = std::is_trivially_copy_assignable_v<T>;
-#endif
-
-  //***************************************************************************
-  /// is_trivially_copyable
-  ///\ingroup type_traits
-  template <typename T> struct is_trivially_copyable : std::is_trivially_copyable<T> {};
-
-#if ETL_CPP17_SUPPORTED
-  template <typename T>
-  inline constexpr bool is_trivially_copyable_v = std::is_trivially_copyable_v<T>;
-#endif
-#else
-    //***************************************************************************
-    /// is_trivially_constructible
-    ///\ingroup type_traits
-    template <typename T> struct is_trivially_constructible : std::is_pod<T> {};
-
-  #if ETL_CPP17_SUPPORTED
-    template <typename T>
-    inline constexpr bool is_trivially_constructible_v = std::is_pod_v<T>;
-  #endif
-
-    //***************************************************************************
-    /// is_trivially_copy_constructible
-    ///\ingroup type_traits
-    template <typename T> struct is_trivially_copy_constructible : std::is_pod<T> {};
-
-  #if ETL_CPP17_SUPPORTED
-    template <typename T>
-    inline constexpr bool is_trivially_copy_constructible_v = std::is_pod_v<T>;
-  #endif
-
-    //***************************************************************************
-    /// is_trivially_destructible
-    ///\ingroup type_traits
-    template <typename T> struct is_trivially_destructible : std::is_pod<T> {};
-
-  #if ETL_CPP17_SUPPORTED
-    template <typename T>
-    inline constexpr bool is_trivially_destructible_v = std::is_pod_v<T>;
-  #endif
-
-    //***************************************************************************
-    /// is_trivially_copy_assignable
-    ///\ingroup type_traits
-    template <typename T> struct is_trivially_copy_assignable : std::is_pod<T> {};
-
-  #if ETL_CPP17_SUPPORTED
-    template <typename T>
-    inline constexpr bool is_trivially_copy_assignable_v = std::is_pod_v<T>;
-  #endif
-
-    //***************************************************************************
-    /// is_trivially_copyable
-    ///\ingroup type_traits
-    template <typename T> struct is_trivially_copyable : std::is_pod<T> {};
-
-  #if ETL_CPP17_SUPPORTED
-    template <typename T>
-    inline constexpr bool is_trivially_copyable_v = std::is_pod_v<T>;
+#if defined(ETL_COMPILER_GCC)
+  #if ETL_COMPILER_VERSION >= 5
+    #define ETL_GCC_V5_TYPE_TRAITS_SUPPORTED
   #endif
 #endif
 
@@ -1147,14 +1080,19 @@ namespace etl
   template <bool B, typename T, typename F>  struct conditional { typedef T type; };
   template <typename T, typename F> struct conditional<false, T, F> { typedef F type; };
 
+#if ETL_USING_CPP11
+  template <bool B, typename T, typename F>
+  using conditional_t = typename conditional<B, T, F>::type;
+#endif
+
   //***************************************************************************
   /// make_signed
   ///\ingroup type_traits
   template <typename T> struct make_signed : std::make_signed<T> {};
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
-  using make_signed_t = std::make_signed_t<T>;
+  using make_signed_t = typename std::make_signed<T>::type;
 #endif
 
   //***************************************************************************
@@ -1162,9 +1100,9 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct make_unsigned : std::make_unsigned<T> {};
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
-  using make_unsigned_t = std::make_unsigned_t<T>;
+  using make_unsigned_t = typename std::make_unsigned<T>::type;
 #endif
 
   //***************************************************************************
@@ -1172,19 +1110,19 @@ namespace etl
   ///\ingroup type_traits
   template <bool B, typename T = void> struct enable_if : std::enable_if<B, T> {};
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <bool B, typename T = void>
-  using enable_if_t = std::enable_if_t<B, T>;
+  using enable_if_t = typename std::enable_if<B, T>::type;
 #endif
 
   //***************************************************************************
   /// extent
   ///\ingroup type_traits
-  template <typename T, size_t MAXN = 0U>
+  template <typename T, unsigned MAXN = 0U>
   struct extent : std::extent<T, MAXN> {};
 
-#if ETL_CPP17_SUPPORTED
-  template <typename T, size_t MAXN = 0U>
+#if ETL_USING_CPP17
+  template <typename T, unsigned MAXN = 0U>
   inline constexpr size_t extent_v = std::extent_v<T, MAXN>;
 #endif
 
@@ -1193,9 +1131,9 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct remove_extent : std::remove_extent<T> { };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
-  using remove_extent_t = std::remove_extent_t<T>;
+  using remove_extent_t = typename std::remove_extent<T>::type;
 #endif
 
   //***************************************************************************
@@ -1203,9 +1141,9 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct remove_all_extents : std::remove_all_extents<T> { };
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
-  using remove_all_extents_t = std::remove_all_extents_t<T>;
+  using remove_all_extents_t = typename std::remove_all_extents<T>::type;
 #endif
 
   //***************************************************************************
@@ -1213,7 +1151,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T>struct rank : std::rank<T> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr size_t rank_v = std::rank_v<T>;
 #endif
@@ -1223,9 +1161,9 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct decay : std::decay<T> {};
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
-  using decay_t = std::decay_t<T>;
+  using decay_t = typename std::decay<T>::type;
 #endif
 
   //***************************************************************************
@@ -1233,7 +1171,7 @@ namespace etl
   ///\ingroup type_traits
   template<typename TBase, typename TDerived> struct is_base_of : std::is_base_of<TBase, TDerived> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename TBase, typename TDerived>
   inline constexpr bool is_base_of_v = std::is_base_of_v<TBase, TDerived>;
 #endif
@@ -1242,7 +1180,7 @@ namespace etl
   /// is_class
   template <typename T> struct is_class : std::is_class<T>{};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_class_v = is_class<T>::value;
 #endif
@@ -1251,25 +1189,25 @@ namespace etl
   /// add_lvalue_reference
   template <typename T> struct add_lvalue_reference : std::add_lvalue_reference<T> {};
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
-  using add_lvalue_reference_t = std::add_lvalue_reference_t<T>;
+  using add_lvalue_reference_t = typename std::add_lvalue_reference<T>::type;
 #endif
 
   //***************************************************************************
   /// add_rvalue_reference
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T> struct add_rvalue_reference : std::add_rvalue_reference<T> {};
 #endif
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
-  using add_rvalue_reference_t = std::add_rvalue_reference_t<T>;
+  using add_rvalue_reference_t = typename std::add_rvalue_reference<T>::type;
 #endif
 
   //***************************************************************************
   /// decval
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   typename std::add_rvalue_reference<T>::type declval() ETL_NOEXCEPT;
 #endif
@@ -1277,12 +1215,12 @@ namespace etl
   //***************************************************************************
   /// is_convertible
   ///\ingroup type_traits
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename TFrom, typename TTo>
   struct is_convertible : std::is_convertible<TFrom, TTo> {};
 #endif
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename TFrom, typename TTo>
   inline constexpr bool is_convertible_v = std::is_convertible_v<TFrom, TTo>;
 #endif
@@ -1292,13 +1230,14 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct alignment_of : std::alignment_of<T> {};
   template <> struct alignment_of<void> : std::integral_constant<size_t, 0> {};
+  template <> struct alignment_of<const void> : std::integral_constant <size_t, 0> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr size_t alignment_of_v = std::alignment_of_v<T>;
 #endif
 
-#endif // Condition = ETL_USING_STL && ETL_CPP11_SUPPORTED
+#endif // Condition = ETL_USING_STL && ETL_USING_CPP11
 
   //***************************************************************************
   // ETL extended type traits.
@@ -1324,8 +1263,7 @@ namespace etl
     static const T value = FALSE_VALUE;
   };
 
-
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   //***************************************************************************
   /// Template to determine if a type is one of a specified list.
   ///\ingroup types
@@ -1372,7 +1310,7 @@ namespace etl
   };
 #endif
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T, typename... TRest>
   inline constexpr bool is_one_of_v = etl::is_one_of<T, TRest...>::value;
 #endif
@@ -1398,7 +1336,7 @@ namespace etl
     typedef const type_t*       const_pointer;
     typedef const type_t* const const_pointer_const;
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     typedef type_t&&            rvalue_reference;
 #endif
   };
@@ -1420,7 +1358,7 @@ namespace etl
     typedef const type_t*       const_pointer;
     typedef const type_t* const const_pointer_const;
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     typedef type_t&&            rvalue_reference;
 #endif
   };
@@ -1442,7 +1380,7 @@ namespace etl
     typedef const type_t* const_pointer;
     typedef const type_t* const const_pointer_const;
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     typedef type_t&&            rvalue_reference;
 #endif
   };
@@ -1464,12 +1402,12 @@ namespace etl
     typedef const type_t*       const_pointer;
     typedef const type_t* const const_pointer_const;
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     typedef type_t&&            rvalue_reference;
 #endif
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   // rvalue References.
   template <typename T>
   struct types<T&&>
@@ -1487,13 +1425,13 @@ namespace etl
     typedef const type_t*       const_pointer;
     typedef const type_t* const const_pointer_const;
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     typedef type_t&&            rvalue_reference;
 #endif
   };
 #endif
 
-#if ETL_CPP14_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T>
   using types_t = typename types<T>::type;
 
@@ -1522,10 +1460,661 @@ namespace etl
   template <typename T> struct size_of : etl::integral_constant<size_t, sizeof(T)> {};
   template <> struct size_of<void> : etl::integral_constant<size_t, 1U> {};
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr size_t size_of_v = etl::size_of<T>::value;
 #endif
+
+#if ETL_USING_CPP11
+  //***************************************************************************
+  /// are_all_same
+  template <typename T, typename T1, typename... TRest>
+  struct are_all_same
+  {
+    static const bool value = etl::is_same<T, T1>::value &&
+      etl::are_all_same<T, TRest...>::value;
+  };
+
+  template <typename T, typename T1>
+  struct are_all_same<T, T1>
+  {
+    static const bool value = etl::is_same<T, T1>::value;
+  };
+#endif
+
+#if ETL_USING_CPP17
+  template <typename T, typename T1, typename... TRest>
+  inline constexpr bool are_all_same_v = are_all_same<T, T1, TRest...>::value;
+#endif
+
+  //***************************************************************************
+  /// conjunction
+#if ETL_USING_CPP11
+  template <typename...>
+  struct conjunction : public etl::true_type
+  {
+  };
+
+  template <typename T1, typename... Tn>
+  struct conjunction<T1, Tn...> : public etl::conditional_t<bool(T1::value), etl::conjunction<Tn...>, T1>
+  {
+  };
+
+  template <typename T>
+  struct conjunction<T> : public T
+  {
+  };
+#endif
+
+#if ETL_USING_CPP17
+  template <typename... T>
+  inline constexpr bool conjunction_v = conjunction<T...>::value;
+#endif
+
+  //***************************************************************************
+  /// disjunction
+#if ETL_USING_CPP11
+  template <typename...>
+  struct disjunction : public etl::false_type
+  {
+  };
+
+  template <typename T1, typename... Tn>
+  struct disjunction<T1, Tn...> : public etl::conditional_t<bool(T1::value), T1, disjunction<Tn...>>
+  {
+  };
+
+  template <typename T1> struct disjunction<T1> : public T1
+  {
+  };
+#endif
+
+#if ETL_USING_CPP17
+  template <typename... T>
+  inline constexpr bool disjunction_v = etl::disjunction<T...>::value;
+#endif
+
+  //***************************************************************************
+#if ETL_USING_CPP11 && ETL_USING_STL && !defined(ETL_USE_TYPE_TRAITS_BUILTINS) && !defined(ETL_USER_DEFINED_TYPE_TRAITS) && ((!defined(ARDUINO) && ETL_NOT_USING_STLPORT) || defined(ETL_GCC_V5_TYPE_TRAITS_SUPPORTED))
+
+  //*********************************************
+  // Use the STL's definitions.
+  //*********************************************
+
+  //*********************************************
+  // is_assignable
+  template<typename T1, typename T2>
+  struct is_assignable : public std::is_assignable<T1, T2>
+  {
+  };
+
+  //*********************************************
+  // is_constructible
+  template<typename T, typename... TArgs>
+  struct is_constructible : public std::is_constructible<T, TArgs...>
+  {
+  };
+
+  //*********************************************
+  // is_copy_constructible
+  template <typename T>
+  struct is_copy_constructible : public std::is_copy_constructible<T>
+  {
+  };
+
+  //*********************************************
+  // is_move_constructible
+  template <typename T>
+  struct is_move_constructible : public std::is_move_constructible<T>
+  {
+  };
+
+  //*********************************************
+  // is_trivially_constructible
+#if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+  template <typename T>
+  struct is_trivially_constructible : public std::is_trivially_constructible<T>
+  {
+  };
+#else
+  template <typename T>
+  struct is_trivially_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+#endif
+
+  //*********************************************
+  // is_trivially_copy_constructible
+#if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+  template <typename T>
+  struct is_trivially_copy_constructible : public std::is_trivially_copy_constructible<T>
+  {
+  };
+#else
+  template <typename T>
+  struct is_trivially_copy_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+#endif
+
+  //*********************************************
+  // is_trivially_destructible
+#if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+  template <typename T>
+  struct is_trivially_destructible : public std::is_trivially_destructible<T>
+  {
+  };
+#else
+  template <typename T>
+  struct is_trivially_destructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+#endif
+
+  //*********************************************
+  // is_trivially_copy_assignable
+#if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+  template <typename T>
+  struct is_trivially_copy_assignable : public std::is_trivially_copy_assignable<T>
+  {
+  };
+#else
+  template <typename T>
+  struct is_trivially_copy_assignable : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+#endif
+
+  //*********************************************
+  // is_trivially_copyable
+#if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
+  template <typename T>
+  struct is_trivially_copyable : public std::is_trivially_copyable<T>
+  {
+  };
+#else
+  template <typename T>
+  struct is_trivially_copyable : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+#endif
+
+#elif defined(ETL_USE_TYPE_TRAITS_BUILTINS) && !defined(ETL_USER_DEFINED_TYPE_TRAITS)
+
+  //*********************************************
+  // Use the compiler's builtins.
+  //*********************************************
+
+  //*********************************************
+  // is_assignable
+  template<typename T1, typename T2>
+  struct is_assignable
+  {
+    static ETL_CONSTANT bool value = __is_assignable(T1, T2);
+  };
+
+#if ETL_USING_CPP11
+  //*********************************************
+  // is_constructible
+  template<typename T, typename... TArgs>
+  struct is_constructible
+  {
+    static ETL_CONSTANT bool value = __is_constructible(T, TArgs...);
+  };
+#else
+  //*********************************************
+  // is_constructible
+  template<typename T, typename TArgs = void>
+  struct is_constructible
+  {
+    static ETL_CONSTANT bool value = __is_constructible(T, TArgs);
+  };
+
+  //*********************************************
+  // is_constructible
+  template<typename T>
+  struct is_constructible<T, void>
+  {
+    static ETL_CONSTANT bool value = __is_constructible(T);
+  };
+#endif
+
+  //*********************************************
+  // is_copy_constructible
+  template <typename T>
+  struct is_copy_constructible : public etl::is_constructible<T, typename etl::add_lvalue_reference<const T>::type>
+  {
+  };
+
+  //*********************************************
+  // is_move_constructible
+  template <typename T>
+  struct is_move_constructible : public etl::is_constructible<T, T>
+  {
+  };
+
+#if ETL_USING_CPP11
+  //*********************************************
+  // is_trivially_constructible
+  template <typename T, typename... TArgs>
+  struct is_trivially_constructible
+  {
+#if defined(ETL_COMPILER_GCC)
+    static ETL_CONSTANT bool value = __has_trivial_constructor(T);
+#else
+    static ETL_CONSTANT bool value = __is_trivially_constructible(T, TArgs...);
+#endif
+  };
+#else
+  //*********************************************
+  // is_trivially_constructible
+  template <typename T, typename TArgs = void>
+  struct is_trivially_constructible
+  {
+#if defined(ETL_COMPILER_GCC)
+    static ETL_CONSTANT bool value = __has_trivial_constructor(T);
+#else
+    static ETL_CONSTANT bool value = __is_trivially_constructible(T, TArgs);
+#endif
+  };
+
+  //*********************************************
+  // is_trivially_constructible
+  template <typename T>
+  struct is_trivially_constructible<T, void>
+  {
+#if defined(ETL_COMPILER_GCC)
+    static ETL_CONSTANT bool value = __has_trivial_constructor(T);
+#else
+    static ETL_CONSTANT bool value = __is_trivially_constructible(T);
+#endif
+  };
+#endif
+
+  //*********************************************
+  // is_trivially_copy_constructible
+  template <typename T>
+  struct is_trivially_copy_constructible : public is_trivially_constructible<T, typename add_lvalue_reference<const T>::type>
+  {
+  };
+
+  //*********************************************
+  // is_trivially_destructible
+  template <typename T>
+  struct is_trivially_destructible
+  {
+#if defined(ETL_COMPILER_GCC)
+    static ETL_CONSTANT bool value = __has_trivial_destructor(T);
+#else
+    static ETL_CONSTANT bool value = __is_trivially_destructible(T);
+#endif
+  };
+
+  //*********************************************
+  // is_trivially_copy_assignable
+  template <typename T>
+  struct is_trivially_copy_assignable
+  {
+#if defined(ETL_COMPILER_GCC)
+    static ETL_CONSTANT bool value = __has_trivial_copy(T);
+#else
+    static ETL_CONSTANT bool value = __is_trivially_copyable(T);
+#endif
+  };
+
+  //*********************************************
+  // is_trivially_copyable
+  template <typename T>
+  struct is_trivially_copyable
+  {
+#if defined(ETL_COMPILER_GCC)
+    static ETL_CONSTANT bool value = __has_trivial_copy(T);
+#else
+    static ETL_CONSTANT bool value = __is_trivially_copyable(T);
+#endif
+  };
+
+#elif defined(ETL_USER_DEFINED_TYPE_TRAITS) && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
+
+  //*********************************************
+  // Force the user to provide specialisations for
+  // anything other than arithmetics and pointers.
+  //*********************************************
+
+  //*********************************************
+  // is_assignable
+  template <typename T1,
+            typename T2,
+            bool B = (etl::is_arithmetic<T1>::value || etl::is_pointer<T1>::value) && (etl::is_arithmetic<T2>::value || etl::is_pointer<T2>::value)>
+  struct is_assignable;
+
+  template <typename T1, typename T2>
+  struct is_assignable<T1, T2, true> : public etl::true_type
+  {
+  };
+
+  template <typename T1, typename T2>
+  struct is_assignable<T1, T2, false>;
+
+#if ETL_USING_CPP11
+  //*********************************************
+  // is_constructible
+  template <typename T, bool B, typename... TArgs>
+  struct is_constructible_helper;
+
+  template <typename T, typename... TArgs>
+  struct is_constructible_helper<T, true, TArgs...> : public etl::true_type
+  {
+  };
+
+  template <typename T, typename... TArgs>
+  struct is_constructible_helper<T, false, TArgs...>;
+
+  template <typename T, typename... TArgs>
+  struct is_constructible : public is_constructible_helper<T, etl::is_arithmetic<T>::value || etl::is_pointer<T>::value, TArgs...>
+  {
+  };
+#endif
+
+  //*********************************************
+  // is_copy_constructible
+  template <typename T, bool B = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_copy_constructible;
+
+  template <typename T>
+  struct is_copy_constructible<T, true> : public etl::true_type
+  {
+  };
+
+  template <typename T>
+  struct is_copy_constructible<T, false>;
+
+  //*********************************************
+  // is_move_constructible
+  template <typename T, bool B = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_move_constructible;
+
+  template <typename T>
+  struct is_move_constructible<T, true> : public etl::true_type
+  {
+  };
+
+  template <typename T>
+  struct is_move_constructible<T, false>;
+
+  //*********************************************
+  // is_trivially_constructible
+  template <typename T, bool B = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_trivially_constructible;
+
+  template <typename T>
+  struct is_trivially_constructible<T, true> : public etl::true_type
+  {
+  };
+
+  template <typename T>
+  struct is_trivially_constructible<T, false>;
+
+  //*********************************************
+  // is_trivially_copy_constructible
+  template <typename T, bool B = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_trivially_copy_constructible;
+
+  template <typename T>
+  struct is_trivially_copy_constructible<T, true> : public etl::true_type
+  {
+  };
+
+  template <typename T>
+  struct is_trivially_copy_constructible<T, false>;
+
+  //*********************************************
+  // is_trivially_destructible
+  template <typename T, bool B = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_trivially_destructible;
+
+  template <typename T>
+  struct is_trivially_destructible<T, true> : public etl::true_type
+  {
+  };
+
+  template <typename T>
+  struct is_trivially_destructible<T, false>;
+
+  //*********************************************
+  // is_trivially_copy_assignable
+  template <typename T, bool B = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_trivially_copy_assignable;
+
+  template <typename T>
+  struct is_trivially_copy_assignable<T, true> : public etl::true_type
+  {
+  };
+
+  template <typename T>
+  struct is_trivially_copy_assignable<T, false>;
+
+  //*********************************************
+  // is_trivially_copyable
+  template <typename T, bool B = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_trivially_copyable;
+
+  template <typename T>
+  struct is_trivially_copyable<T, true> : public etl::true_type
+  {
+  };
+
+  template <typename T>
+  struct is_trivially_copyable<T, false>;
+
+#else
+
+  //*********************************************
+  // Assume that anything other than arithmetics 
+  // and pointers return false for the traits.
+  //*********************************************
+
+  //*********************************************
+  // is_assignable
+  template <typename T1, typename T2>
+  struct is_assignable : public etl::bool_constant<(etl::is_arithmetic<T1>::value || etl::is_pointer<T1>::value) && (etl::is_arithmetic<T2>::value || etl::is_pointer<T2>::value)>
+  {
+  };
+
+#if ETL_USING_CPP11
+  //*********************************************
+  // is_constructible
+  template <typename T, typename... TArgs>
+  struct is_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+#endif
+
+  //*********************************************
+  // is_copy_constructible
+  template <typename T>
+  struct is_copy_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+
+  //*********************************************
+  // is_move_constructible
+  template <typename T>
+  struct is_move_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+
+  //*********************************************
+  // is_trivially_constructible
+  template <typename T>
+  struct is_trivially_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+
+  //*********************************************
+  // is_trivially_copy_constructible
+  template <typename T>
+  struct is_trivially_copy_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+
+  //*********************************************
+  // is_trivially_destructible
+  template <typename T>
+  struct is_trivially_destructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+
+  //*********************************************
+  // is_trivially_copy_assignable
+  template <typename T>
+  struct is_trivially_copy_assignable : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+
+  //*********************************************
+  // is_trivially_copyable
+  template <typename T>
+  struct is_trivially_copyable : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+
+#endif
+
+  template <typename T1, typename T2>
+  struct is_lvalue_assignable : public etl::is_assignable<typename etl::add_lvalue_reference<T1>::type,
+                                                          typename etl::add_lvalue_reference<typename etl::add_const<T2>::type>::type>
+  {
+  };
+
+#if ETL_USING_CPP17
+
+  template <typename T1, typename T2>
+  inline constexpr bool is_assignable_v = etl::is_assignable<T1, T2>::value;
+
+  template <typename T1, typename T2>
+  inline constexpr bool is_lvalue_assignable_v = etl::is_lvalue_assignable<T1, T2>::value;
+
+  template<typename T, typename... TArgs>
+  inline constexpr bool is_constructible_v = etl::is_constructible<T, TArgs...>::value;
+
+  template<typename T>
+  inline constexpr bool is_copy_constructible_v = etl::is_copy_constructible<T>::value;
+
+  template<typename T>
+  inline constexpr bool is_move_constructible_v = etl::is_move_constructible<T>::value;
+
+  template <typename T>
+  inline constexpr bool is_trivially_constructible_v = etl::is_trivially_constructible<T>::value;
+
+  template <typename T>
+  inline constexpr bool is_trivially_copy_constructible_v = etl::is_trivially_copy_constructible<T>::value;
+
+  template <typename T>
+  inline constexpr bool is_trivially_destructible_v = etl::is_trivially_destructible<T>::value;
+
+  template <typename T>
+  inline constexpr bool is_trivially_copy_assignable_v = etl::is_trivially_copy_assignable<T>::value;
+
+  template <typename T>
+  inline constexpr bool is_trivially_copyable_v = etl::is_trivially_copyable<T>::value;
+
+#endif
+
+#if ETL_USING_CPP11
+  //*********************************************
+  // common_type
+  // Based on the sample implementation detailed on
+  // https://en.cppreference.com/w/cpp/types/common_type
+  //*********************************************
+  //***********************************
+  // Primary template
+  template<typename...>
+  struct common_type
+  {
+  };
+
+  //***********************************
+  // One type
+  template <typename T>
+  struct common_type<T> : common_type<T, T>
+  {
+  };
+
+  namespace private_common_type
+  {
+    template <typename T1, typename T2>
+    using conditional_result_t = decltype(false ? declval<T1>() : declval<T2>());
+
+    template <typename, typename, typename = void>
+    struct decay_conditional_result
+    {
+    };
+
+    template <typename T1, typename T2>
+    struct decay_conditional_result<T1, T2, void_t<conditional_result_t<T1, T2>>>
+      : etl::decay<conditional_result_t<T1, T2>>
+    {
+    };
+
+    template <typename T1, typename T2, typename = void>
+    struct common_type_2_impl : decay_conditional_result<const T1&, const T2&>
+    {
+    };
+
+    template <typename T1, typename T2>
+    struct common_type_2_impl<T1, T2, void_t<conditional_result_t<T1, T2>>>
+      : decay_conditional_result<T1, T2>
+    {
+    };
+  }
+
+  //***********************************
+  // Two types
+  template <typename T1, typename T2>
+  struct common_type<T1, T2>
+    : etl::conditional<etl::is_same<T1, typename etl::decay<T1>::type>::value&& etl::is_same<T2, typename etl::decay<T2>::type>::value,
+                       private_common_type::common_type_2_impl<T1, T2>,
+                       common_type<typename etl::decay<T2>::type,
+                       typename etl::decay<T2>::type>>::type
+  {
+  };
+
+  //***********************************
+  // Three or more types
+  namespace private_common_type
+  {
+    template <typename AlwaysVoid, typename T1, typename T2, typename... TRest>
+    struct common_type_multi_impl
+    {
+    };
+
+    template <typename T1, typename T2, typename... TRest>
+    struct common_type_multi_impl<void_t<typename common_type<T1, T2>::type>, T1, T2, TRest...>
+      : common_type<typename common_type<T1, T2>::type, TRest...>
+    {
+    };
+  }
+
+  template<typename T1, typename T2, typename... TRest>
+  struct common_type<T1, T2, TRest...>
+    : private_common_type::common_type_multi_impl<void, T1, T2, TRest...>
+  {
+  };
+
+  template <typename... T>
+  using common_type_t = typename common_type<T...>::type;
+#endif
 }
+
+// Helper macros
+#define ETL_IS_CHAR_TYPE(type)        (etl::is_same<char, type>::value || etl::is_same<signed char, type>::value || etl::is_same<unsigned char, type>::value)
+#define ETL_IS_NOT_CHAR_TYPE(type)    (!ETL_IS_CHAR_TYPE(type))
+
+#define ETL_IS_POINTER_TYPE(type)     (etl::is_pointer<type>::value)
+#define ETL_IS_NOT_POINTER_TYPE(type) (!ETL_IS_POINTER_TYPE(type))
+
+#define ETL_TARGET_IS_TRIVIALLY_COPYABLE(type)     (etl::is_trivially_copyable<typename etl::iterator_traits<type>::value_type>::value)
+#define ETL_TARGET_IS_NOT_TRIVIALLY_COPYABLE(type) (!ETL_TARGET_IS_TRIVIALLY_COPYABLE(type))
 
 #endif // ETL_TYPE_TRAITS_INCLUDED

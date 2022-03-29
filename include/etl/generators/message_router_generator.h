@@ -64,10 +64,10 @@ cog.outl("//********************************************************************
 #define ETL_MESSAGE_ROUTER_INCLUDED
 
 #include <stdint.h>
-#include <new>
 
 #include "platform.h"
 #include "message.h"
+#include "shared_message.h"
 #include "message_packet.h"
 #include "message_types.h"
 #include "alignment.h"
@@ -75,9 +75,9 @@ cog.outl("//********************************************************************
 #include "exception.h"
 #include "largest.h"
 #include "nullptr.h"
-
-#undef ETL_FILE
-#define ETL_FILE "35"
+#include "placement_new.h"
+#include "successor.h"
+#include "type_traits.h"
 
 namespace etl
 {
@@ -102,55 +102,66 @@ namespace etl
   public:
 
     message_router_illegal_id(string_type file_name_, numeric_type line_number_)
-      : message_router_exception(ETL_ERROR_TEXT("message router:illegal id", ETL_FILE"A"), file_name_, line_number_)
+      : message_router_exception(ETL_ERROR_TEXT("message router:illegal id", ETL_MESSAGE_ROUTER_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
 
   //***************************************************************************
+  /// Forward declare null message router functionality.
+  //***************************************************************************
+  class imessage_router;
+
+  etl::imessage_router& get_null_message_router();
+
+  //***************************************************************************
   /// This is the base of all message routers.
   //***************************************************************************
-  class imessage_router
+  class imessage_router : public etl::successor<imessage_router>
   {
   public:
 
     virtual ~imessage_router() {}
-    virtual void receive(const etl::imessage& message) = 0;
-    virtual void receive(imessage_router& source, const etl::imessage& message) = 0;
-    virtual void receive(imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& message) = 0;
-    virtual bool accepts(etl::message_id_t id) const = 0;
+    virtual void receive(const etl::imessage&) = 0;
+    virtual bool accepts(etl::message_id_t) const = 0;
     virtual bool is_null_router() const = 0;
     virtual bool is_producer() const = 0;
     virtual bool is_consumer() const = 0;
 
     //********************************************
+    virtual void receive(etl::message_router_id_t destination_router_id, const etl::imessage& message)
+    {
+      if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
+      {
+        receive(message);
+      }
+    }
+
+    //********************************************
+    virtual void receive(etl::shared_message shared_msg)
+    {
+      receive(shared_msg.get_message());
+    }
+
+    //********************************************
+    virtual void receive(etl::message_router_id_t destination_router_id, etl::shared_message shared_msg)
+    {
+      if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
+      {
+        receive(shared_msg);
+      }
+    }
+
+    //********************************************
     bool accepts(const etl::imessage& msg) const
     {
-      return accepts(msg.message_id);
+      return accepts(msg.get_message_id());
     }
 
     //********************************************
     etl::message_router_id_t get_message_router_id() const
     {
       return message_router_id;
-    }
-
-    //********************************************
-    void set_successor(imessage_router& successor_)
-    {
-      successor = &successor_;
-    }
-
-    //********************************************
-    imessage_router& get_successor() const
-    {
-      return *successor;
-    }
-
-    //********************************************
-    bool has_successor() const
-    {
-      return (successor != ETL_NULLPTR);
     }
 
     enum
@@ -164,15 +175,13 @@ namespace etl
   protected:
 
     imessage_router(etl::message_router_id_t id_)
-      : successor(ETL_NULLPTR),
-        message_router_id(id_)
+      : message_router_id(id_)
     {
     }
 
-    imessage_router(etl::message_router_id_t id_,
-                    imessage_router&         successor_)
-      : successor(&successor_),
-        message_router_id(id_)
+    imessage_router(etl::message_router_id_t id_, imessage_router& successor_)
+      : successor(successor_)
+      , message_router_id(id_)
     {
     }
 
@@ -181,8 +190,6 @@ namespace etl
     // Disabled.
     imessage_router(const imessage_router&);
     imessage_router& operator =(const imessage_router&);
-
-    etl::imessage_router* successor;
 
     etl::message_router_id_t  message_router_id;
   };
@@ -200,24 +207,29 @@ namespace etl
     }
 
     //********************************************
-    void receive(const etl::imessage&) ETL_OVERRIDE
+    using etl::imessage_router::receive;
+
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
+      if (has_successor())
+      {
+        get_successor().receive(msg);
+      }
     }
 
     //********************************************
-    void receive(etl::imessage_router&, const etl::imessage&) ETL_OVERRIDE
-    {
-    }
+    using etl::imessage_router::accepts;
 
-    //********************************************
-    void receive(imessage_router&, etl::message_router_id_t, const etl::imessage&) ETL_OVERRIDE
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
-    }
-
-    //********************************************
-    bool accepts(etl::message_id_t) const ETL_OVERRIDE
-    {
-      return false;
+      if (has_successor())
+      {
+        return get_successor().accepts(id);
+      }
+      else
+      {
+        return false;
+      }
     }
 
     //********************************************
@@ -246,6 +258,13 @@ namespace etl
     }
   };
 
+  //***********************************************
+  /// null message router functionality.
+  inline etl::imessage_router& get_null_message_router()
+  {
+    return etl::null_message_router::instance();
+  }
+
   //***************************************************************************
   /// This router can be used as a producer-only of messages, such an interrupt routine.
   //***************************************************************************
@@ -259,24 +278,29 @@ namespace etl
     }
 
     //********************************************
-    void receive(const etl::imessage&) ETL_OVERRIDE
+    using etl::imessage_router::receive;
+
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
+      if (has_successor())
+      {
+        get_successor().receive(msg);
+      }
     }
 
     //********************************************
-    void receive(etl::imessage_router&, const etl::imessage&) ETL_OVERRIDE
-    {
-    }
+    using etl::imessage_router::accepts;
 
-    //********************************************
-    void receive(imessage_router&, etl::message_router_id_t, const etl::imessage&) ETL_OVERRIDE
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
-    }
-
-    //********************************************
-    bool accepts(etl::message_id_t) const ETL_OVERRIDE
-    {
-      return false;
+      if (has_successor())
+      {
+        return get_successor().accepts(id);
+      }
+      else
+      {
+        return false;
+      }
     }
 
     //********************************************
@@ -297,26 +321,152 @@ namespace etl
       return false;
     }
   };
+
   //***************************************************************************
   /// Send a message to a router.
-  /// Sets the 'sender' to etl::null_message_router type.
   //***************************************************************************
-  inline static void send_message(etl::imessage_router& destination,
+  static inline void send_message(etl::imessage_router& destination,
                                   const etl::imessage&  message)
   {
     destination.receive(message);
   }
 
+//*************************************************************************************************
+// For C++17 and above.
+//*************************************************************************************************
+#if ETL_USING_CPP17 && !defined(ETL_MESSAGE_ROUTER_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
-  /// Send a message to a router.
+  // The definition for all message types.
   //***************************************************************************
-  inline static void send_message(etl::imessage_router& source,
-                                  etl::imessage_router& destination,
-                                  const etl::imessage&  message)
+  template <typename TDerived, typename... TMessageTypes>
+  class message_router : public imessage_router
   {
-    destination.receive(source, message);
-  }
+  public:
 
+    typedef etl::message_packet<TMessageTypes...> message_packet;
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_)
+      : imessage_router(id_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    message_router(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //**********************************************
+    using etl::imessage_router::receive;
+
+    void receive(const etl::imessage& msg) ETL_OVERRIDE
+    {
+      const bool was_handled = (receive_message_type<TMessageTypes>(msg) || ...);
+
+      if (!was_handled)
+      {
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
+      }
+    }
+
+    template <typename TMessage, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0>
+    void receive(const TMessage& msg)
+    {
+      if constexpr (etl::is_one_of<TMessage, TMessageTypes...>::value)
+      {
+        static_cast<TDerived*>(this)->on_receive(msg);
+      }
+      else
+      {
+        if (has_successor())
+        {
+          get_successor().receive(msg);
+        }
+        else
+        {
+          static_cast<TDerived*>(this)->on_receive_unknown(msg);
+        }
+      }
+    }
+
+    //**********************************************
+    using imessage_router::accepts;
+
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    {
+      return (accepts_type<TMessageTypes>(id) || ...);
+    }
+
+    //********************************************
+    ETL_DEPRECATED bool is_null_router() const ETL_OVERRIDE
+    {
+      return false;
+    }
+
+    //********************************************
+    bool is_producer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+    //********************************************
+    bool is_consumer() const ETL_OVERRIDE
+    {
+      return true;
+    }
+
+  private:
+
+    //********************************************
+    template <typename TMessage>
+    bool receive_message_type(const etl::imessage& msg)
+    {
+      if (TMessage::ID == msg.get_message_id())
+      {
+        static_cast<TDerived*>(this)->on_receive(static_cast<const TMessage&>(msg));
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    //********************************************
+    template <typename TMessage>
+    bool accepts_type(etl::message_id_t id) const
+    {
+      if (TMessage::ID == id)
+      {
+        return true;
+      }
+      else
+      {
+        if (has_successor())
+        {
+          return get_successor().accepts(id);
+        }
+        else
+        {
+          return false;
+        }
+      }
+    }
+  };
+#else
+//*************************************************************************************************
+// For C++14 and below.
+//*************************************************************************************************
   /*[[[cog
       import cog
       ################################################
@@ -359,49 +509,62 @@ namespace etl
       cog.outl("  }")
       cog.outl("")
       cog.outl("  //**********************************************")
+      cog.outl("  using etl::imessage_router::receive;")
+      cog.outl("")
       cog.outl("  void receive(const etl::imessage& msg) ETL_OVERRIDE")
       cog.outl("  {")
-      cog.outl("    receive(etl::null_message_router::instance(), msg);")
-      cog.outl("  }")
-      cog.outl("")
-      cog.outl("  //**********************************************")
-      cog.outl("  void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE")
-      cog.outl("  {")
-      cog.outl("    if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))")
-      cog.outl("    {")
-      cog.outl("      receive(source, msg);")
-      cog.outl("    }")
-      cog.outl("  }")
-      cog.outl("")
-      cog.outl("  //**********************************************")
-      cog.outl("  void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE")
-      cog.outl("  {")
-      cog.outl("    const etl::message_id_t id = msg.message_id;")
+      cog.outl("    const etl::message_id_t id = msg.get_message_id();")
       cog.outl("")
       cog.outl("    switch (id)")
       cog.outl("    {")
       for n in range(1, int(Handlers) + 1):
           cog.out("      case T%d::ID:" % n)
-          cog.out(" static_cast<TDerived*>(this)->on_receive(source, static_cast<const T%d&>(msg));" % n)
+          cog.out(" static_cast<TDerived*>(this)->on_receive(static_cast<const T%d&>(msg));" % n)
           cog.outl(" break;")
       cog.outl("      default:")
       cog.outl("      {")
       cog.outl("         if (has_successor())")
       cog.outl("         {")
-      cog.outl("           get_successor().receive(source, msg);")
+      cog.outl("           get_successor().receive(msg);")
       cog.outl("         }")
       cog.outl("         else")
       cog.outl("         {")
-      cog.outl("           static_cast<TDerived*>(this)->on_receive_unknown(source, msg);")
+      cog.outl("           static_cast<TDerived*>(this)->on_receive_unknown(msg);")
       cog.outl("         }")
       cog.outl("         break;")
       cog.outl("      }")
       cog.outl("    }")
       cog.outl("  }")
       cog.outl("")
-      cog.outl("  using imessage_router::accepts;")
+      cog.outl("  template <typename TMessage>")
+      cog.outl("  void receive(const TMessage& msg, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0)")
+      cog.outl("  {")
+      cog.out("    if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, ")
+      for n in range(1, int(Handlers)):
+          cog.out("T%s, " % n)
+          if n % 4 == 0:
+              cog.outl("")
+              cog.out("                                                  ")
+      cog.outl("T%s>::value)" % int(Handlers))
+      cog.outl("    {")     
+      cog.outl("      static_cast<TDerived*>(this)->on_receive(msg);")
+      cog.outl("    }")
+      cog.outl("    else")
+      cog.outl("    {")
+      cog.outl("      if (has_successor())")
+      cog.outl("      {")
+      cog.outl("        get_successor().receive(msg);")
+      cog.outl("      }")
+      cog.outl("      else")
+      cog.outl("      {")
+      cog.outl("        static_cast<TDerived*>(this)->on_receive_unknown(msg);")
+      cog.outl("      }")
+      cog.outl("    }")
+      cog.outl("  }")
       cog.outl("")
       cog.outl("  //**********************************************")
+      cog.outl("  using imessage_router::accepts;")
+      cog.outl("")
       cog.outl("  bool accepts(etl::message_id_t id) const ETL_OVERRIDE")
       cog.outl("  {")
       cog.outl("    switch (id)")
@@ -412,9 +575,18 @@ namespace etl
           if n % 8 == 0:
               cog.outl("")
               cog.out("      ")
-      cog.outl("  return true; break;")
+      cog.outl("  return true;")
       cog.outl("      default:")
-      cog.outl("        return false; break;")
+      cog.outl("      {")
+      cog.outl("        if (has_successor())")
+      cog.outl("        {")
+      cog.outl("          return get_successor().accepts(id);")
+      cog.outl("        }")
+      cog.outl("        else")
+      cog.outl("        {")
+      cog.outl("          return false;")
+      cog.outl("        }")
+      cog.outl("      }")
       cog.outl("    }")
       cog.outl("  }")
       cog.outl("")
@@ -492,49 +664,62 @@ namespace etl
           cog.outl("  }")
           cog.outl("")
           cog.outl("  //**********************************************")
+          cog.outl("  using etl::imessage_router::receive;")
+          cog.outl("")
           cog.outl("  void receive(const etl::imessage& msg) ETL_OVERRIDE")
           cog.outl("  {")
-          cog.outl("    receive(etl::null_message_router::instance(), msg);")
-          cog.outl("  }")
-          cog.outl("")
-          cog.outl("  //**********************************************")
-          cog.outl("  void receive(etl::imessage_router& source, etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE")
-          cog.outl("  {")
-          cog.outl("    if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))")
-          cog.outl("    {")
-          cog.outl("      receive(source, msg);")
-          cog.outl("    }")
-          cog.outl("  }")
-          cog.outl("")
-          cog.outl("  //**********************************************")
-          cog.outl("  void receive(etl::imessage_router& source, const etl::imessage& msg) ETL_OVERRIDE")
-          cog.outl("  {")
-          cog.outl("    const size_t id = msg.message_id;")
+          cog.outl("    const size_t id = msg.get_message_id();")
           cog.outl("")
           cog.outl("    switch (id)")
           cog.outl("    {")
           for t in range(1, n + 1):
               cog.out("      case T%d::ID:" % t)
-              cog.out(" static_cast<TDerived*>(this)->on_receive(source, static_cast<const T%d&>(msg));" % t)
+              cog.out(" static_cast<TDerived*>(this)->on_receive(static_cast<const T%d&>(msg));" % t)
               cog.outl(" break;")
           cog.outl("      default:")
           cog.outl("      {")
           cog.outl("         if (has_successor())")
           cog.outl("         {")
-          cog.outl("           get_successor().receive(source, msg);")
+          cog.outl("           get_successor().receive(msg);")
           cog.outl("         }")
           cog.outl("         else")
           cog.outl("         {")
-          cog.outl("           static_cast<TDerived*>(this)->on_receive_unknown(source, msg);")
+          cog.outl("           static_cast<TDerived*>(this)->on_receive_unknown(msg);")
           cog.outl("         }")
           cog.outl("         break;")
           cog.outl("      }")
           cog.outl("    }")
           cog.outl("  }")
           cog.outl("")
-          cog.outl("  using imessage_router::accepts;")
+          cog.outl("  template <typename TMessage>")
+          cog.outl("  void receive(const TMessage& msg, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0)")
+          cog.outl("  {")
+          cog.out("    if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, ")
+          for t in range(1, n):
+              cog.out("T%s, " % t)
+              if t % 4 == 0:
+                  cog.outl("")
+                  cog.out("                                                  ")
+          cog.outl("T%s>::value)" % n)
+          cog.outl("    {")
+          cog.outl("      static_cast<TDerived*>(this)->on_receive(msg);")
+          cog.outl("    }")
+          cog.outl("    else")
+          cog.outl("    {")
+          cog.outl("      if (has_successor())")
+          cog.outl("      {")
+          cog.outl("        get_successor().receive(msg);")
+          cog.outl("      }")
+          cog.outl("      else")
+          cog.outl("      {")
+          cog.outl("        static_cast<TDerived*>(this)->on_receive_unknown(msg);")
+          cog.outl("      }")
+          cog.outl("    }")
+          cog.outl("  }")
           cog.outl("")
           cog.outl("  //**********************************************")
+          cog.outl("  using imessage_router::accepts;")
+          cog.outl("")
           cog.outl("  bool accepts(etl::message_id_t id) const ETL_OVERRIDE")
           cog.outl("  {")
           cog.outl("    switch (id)")
@@ -546,9 +731,18 @@ namespace etl
                   cog.outl("")
                   cog.out("      ")
           cog.outl("")
-          cog.outl("        return true; break;")
+          cog.outl("        return true;")
           cog.outl("      default:")
-          cog.outl("        return false; break;")
+          cog.outl("      {")
+          cog.outl("        if (has_successor())")
+          cog.outl("        {")
+          cog.outl("          return get_successor().accepts(id);")
+          cog.outl("        }")
+          cog.outl("        else")
+          cog.outl("        {")
+          cog.outl("          return false;")
+          cog.outl("        }")
+          cog.outl("      }")
           cog.outl("    }")
           cog.outl("  }")
           cog.outl("")
@@ -572,8 +766,7 @@ namespace etl
           cog.outl("};")
   ]]]*/
   /*[[[end]]]*/
+#endif
 }
-
-#undef ETL_FILE
 
 #endif

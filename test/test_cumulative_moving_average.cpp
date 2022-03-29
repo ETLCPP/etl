@@ -26,22 +26,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
+
+#include <array>
+#include <algorithm>
 
 #include "etl/cumulative_moving_average.h"
 #include "etl/scaled_rounding.h"
 
 namespace
 {
-  const size_t SAMPLE_SIZE = 10U;
-  const size_t SCALING = 100U;
+  const size_t SAMPLE_SIZE = 10UL;
+  const size_t SCALING = 100UL;
 
   SUITE(test_cumulative_moving_average)
   {
     //*************************************************************************
     TEST(integral_signed_average_positive)
     {
-      typedef etl::cumulative_moving_average<int, SAMPLE_SIZE, SCALING> CMA;
+      using CMA = etl::cumulative_moving_average<int, SAMPLE_SIZE, SCALING>;
       CMA cma(0);
 
       CHECK_EQUAL(0, cma.value());
@@ -60,9 +63,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST(integral_signed_average_positive_via_iterator)
+    {
+      std::array data{ 9, 1, 8, 2, 7, 3, 6, 4, 5 };
+
+      using CMA = etl::cumulative_moving_average<int, SAMPLE_SIZE, SCALING>;
+      CMA cma(0);
+
+      CHECK_EQUAL(0, cma.value());
+
+      std::copy(data.begin(), data.end(), cma.input());
+
+      CHECK_EQUAL(280, cma.value());
+    }
+
+    //*************************************************************************
     TEST(integral_signed_average_negative)
     {
-      typedef etl::cumulative_moving_average<int, SAMPLE_SIZE, SCALING> CMA;
+      using CMA = etl::cumulative_moving_average<int, SAMPLE_SIZE, SCALING>;
       CMA cma(0);
 
       CHECK_EQUAL(0, cma.value());
@@ -81,9 +99,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST(integral_signed_average_negative_via_iterator)
+    {
+      std::array data{ -9, -1, -8, -2, -7, -3, -6, -4, -5 };
+
+      using CMA = etl::cumulative_moving_average<int, SAMPLE_SIZE, SCALING>;
+      CMA cma(0);
+
+      CHECK_EQUAL(0, cma.value());
+
+      std::copy(data.begin(), data.end(), cma.input());
+
+      CHECK_EQUAL(-280, cma.value());
+    }
+
+    //*************************************************************************
     TEST(integral_unsigned_average_positive)
     {
-      typedef etl::cumulative_moving_average<unsigned int, SAMPLE_SIZE, SCALING> CMA;
+      using CMA = etl::cumulative_moving_average<unsigned int, SAMPLE_SIZE, SCALING>;
       CMA cma(0U);
 
       CHECK_EQUAL(0U, cma.value());
@@ -102,9 +135,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST(integral_unsigned_average_positive_via_iterator)
+    {
+      std::array data{ 9U, 1U, 8U, 2U, 7U, 3U, 6U, 4U, 5U };
+
+      using CMA = etl::cumulative_moving_average<unsigned int, SAMPLE_SIZE, SCALING>;
+      CMA cma(0U);
+
+      CHECK_EQUAL(0U, cma.value());
+
+      std::copy(data.begin(), data.end(), cma.input());
+
+      CHECK_EQUAL(280U, cma.value());
+    }
+
+    //*************************************************************************
     TEST(integral_signed_average_positive_runtime_sample_size)
     {
-      typedef etl::cumulative_moving_average<int, 0U, SCALING> CMA;
+      using CMA = etl::cumulative_moving_average<int, 0U, SCALING>;
       CMA cma(0, SAMPLE_SIZE * 2U);
 
       CHECK_EQUAL(0, cma.value());
@@ -125,9 +173,26 @@ namespace
     }
 
     //*************************************************************************
+    TEST(integral_signed_average_positive_runtime_sample_size_via_iterator)
+    {
+      std::array data{ 9, 1, 8, 2, 7, 3, 6, 4, 5 };
+
+      using CMA = etl::cumulative_moving_average<int, 0U, SCALING>;
+      CMA cma(0, SAMPLE_SIZE * 2U);
+
+      CHECK_EQUAL(0, cma.value());
+
+      cma.set_sample_size(SAMPLE_SIZE);
+
+      std::copy(data.begin(), data.end(), cma.input());
+
+      CHECK_EQUAL(280, cma.value());
+    }
+
+    //*************************************************************************
     TEST(integral_signed_average_negative_runtime_sample_size)
     {
-      typedef etl::cumulative_moving_average<int, 0U, SCALING> CMA;
+      using CMA = etl::cumulative_moving_average<int, 0U, SCALING>;
       CMA cma(0, SAMPLE_SIZE * 2U);
 
       CHECK_EQUAL(0, cma.value());
@@ -148,9 +213,26 @@ namespace
     }
 
     //*************************************************************************
+    TEST(integral_signed_average_negative_runtime_sample_size_via_iterator)
+    {
+      std::array data{ -9, -1, -8, -2, -7, -3, -6, -4, -5 };
+
+      using CMA = etl::cumulative_moving_average<int, 0U, SCALING>;
+      CMA cma(0, SAMPLE_SIZE * 2U);
+
+      CHECK_EQUAL(0, cma.value());
+
+      cma.set_sample_size(SAMPLE_SIZE);
+
+      std::copy(data.begin(), data.end(), cma.input());
+
+      CHECK_EQUAL(-280, cma.value());
+    }
+
+    //*************************************************************************
     TEST(integral_unsigned_average_positive_runtime_sample_size)
     {
-      typedef etl::cumulative_moving_average<unsigned int, 0U, SCALING> CMA;
+      using CMA = etl::cumulative_moving_average<unsigned int, 0U, SCALING>;
       CMA cma(0U, SAMPLE_SIZE * 2U);
 
       CHECK_EQUAL(0U, cma.value());
@@ -171,9 +253,26 @@ namespace
     }
 
     //*************************************************************************
+    TEST(integral_unsigned_average_positive_runtime_sample_size_via_iterator)
+    {
+      std::array data{ 9U, 1U, 8U, 2U, 7U, 3U, 6U, 4U, 5U };
+
+      using CMA = etl::cumulative_moving_average<int, 0U, SCALING>;
+      CMA cma(0U, SAMPLE_SIZE * 2U);
+
+      CHECK_EQUAL(0U, cma.value());
+
+      cma.set_sample_size(SAMPLE_SIZE);
+
+      std::copy(data.begin(), data.end(), cma.input());
+
+      CHECK_EQUAL(280U, cma.value());
+    }
+
+    //*************************************************************************
     TEST(floating_point_average)
     {
-      typedef etl::cumulative_moving_average<double, SAMPLE_SIZE> CMA;
+      using CMA = etl::cumulative_moving_average<double, SAMPLE_SIZE>;
       CMA cma(0);
 
       CHECK_EQUAL(0.0, cma.value());
@@ -192,9 +291,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST(floating_point_average_via_iterator)
+    {
+      std::array data{ 9.0, 1.0, 8.0, 2.0, 7.0, 3.0, 6.0, 4.0, 5.0 };
+
+      using CMA = etl::cumulative_moving_average<double, SAMPLE_SIZE>;
+      CMA cma(0);
+
+      CHECK_EQUAL(0.0, cma.value());
+
+      std::copy(data.begin(), data.end(), cma.input());
+
+      CHECK_CLOSE(2.82, cma.value(), 0.01);
+    }
+
+    //*************************************************************************
     TEST(floating_point_average_runtime_sample_size)
     {
-      typedef etl::cumulative_moving_average<double, 0U> CMA;
+      using CMA = etl::cumulative_moving_average<double, 0U>;
       CMA cma(0, SAMPLE_SIZE * 2);
 
       CHECK_EQUAL(0.0, cma.value());
@@ -210,6 +324,23 @@ namespace
       cma.add(6.0);
       cma.add(4.0);
       cma.add(5.0);
+
+      CHECK_CLOSE(2.82, cma.value(), 0.01);
+    }
+
+    //*************************************************************************
+    TEST(floating_point_average_runtime_sample_size_via_iterator)
+    {
+      std::array data{ 9.0, 1.0, 8.0, 2.0, 7.0, 3.0, 6.0, 4.0, 5.0 };
+
+      using CMA = etl::cumulative_moving_average<double, 0U>;
+      CMA cma(0, SAMPLE_SIZE * 2);
+
+      CHECK_EQUAL(0.0, cma.value());
+
+      cma.set_sample_size(SAMPLE_SIZE);
+
+      std::copy(data.begin(), data.end(), cma.input());
 
       CHECK_CLOSE(2.82, cma.value(), 0.01);
     }

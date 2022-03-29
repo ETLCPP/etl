@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2019 jwellbelove
+Copyright(c) 2021 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -32,18 +32,49 @@ SOFTWARE.
 #define ETL_CRC16_AUG_CCITT_INCLUDED
 
 #include "platform.h"
-#include "private/crc16_poly_0x1021_.h"
+#include "private/crc_implementation.h"
 
-#if defined(ETL_COMPILER_KEIL)
-#pragma diag_suppress 1300
-#endif
-
-///\defgroup crc16_aug_ccitt 16 bit CRC AUG CCITT calculation
+///\defgroup crc16_aug_ccitt 16 bit CRC calculation
 ///\ingroup crc
 
 namespace etl
 {
-  typedef crc16_poly_0x1021<0x1D0FU, 0x0000U, false> crc16_aug_ccitt;
-}
+#if ETL_USING_CPP11 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
+  template <size_t Table_Size>
+  using crc16_aug_ccitt_t = etl::crc_type<etl::private_crc::crc16_aug_ccitt_parameters, Table_Size>;
+#else
+  template <size_t Table_Size>    
+  class crc16_aug_ccitt_t : public etl::crc_type<etl::private_crc::crc16_aug_ccitt_parameters, Table_Size>
+  {
+  public:
 
+      
+
+    //*************************************************************************
+    /// Default constructor.
+    //*************************************************************************
+    crc16_aug_ccitt_t()
+    {
+      this->reset();
+    }
+
+    //*************************************************************************
+    /// Constructor from range.
+    /// \param begin Start of the range.
+    /// \param end   End of the range.
+    //*************************************************************************
+    template<typename TIterator>
+    crc16_aug_ccitt_t(TIterator begin, const TIterator end)
+    {
+      this->reset();
+      this->add(begin, end);
+    }
+  };
+#endif
+
+  typedef etl::crc16_aug_ccitt_t<256U> crc16_aug_ccitt_t256;
+  typedef etl::crc16_aug_ccitt_t<16U>  crc16_aug_ccitt_t16;
+  typedef etl::crc16_aug_ccitt_t<4U>   crc16_aug_ccitt_t4;
+  typedef crc16_aug_ccitt_t256         crc16_aug_ccitt;
+}
 #endif

@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <thread>
 #include <chrono>
@@ -38,7 +38,7 @@ SOFTWARE.
 
 #if ETL_HAS_ATOMIC
 
-#if defined(ETL_COMPILER_MICROSOFT)
+#if defined(ETL_TARGET_OS_WINDOWS)
   #include <Windows.h>
 #endif
 
@@ -114,31 +114,43 @@ namespace
       CHECK_EQUAL(4U, queue.size());
       CHECK_EQUAL(0U, queue.available());
 
+      // Queue full.
       CHECK(!queue.push(5));
-      CHECK(!queue.push(5));
+
+      queue.pop();
+      // Queue not full (buffer rollover)
+      CHECK(queue.push(5));
+
+      // Queue full.
+      CHECK(!queue.push(6));
+
+      queue.pop();
+      // Queue not full (buffer rollover)
+      CHECK(queue.push(6));
 
       int i;
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(1, i);
+      CHECK_EQUAL(3, i);
       CHECK_EQUAL(3U, queue.size());
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(2, i);
+      CHECK_EQUAL(4, i);
       CHECK_EQUAL(2U, queue.size());
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(3, i);
+      CHECK_EQUAL(5, i);
       CHECK_EQUAL(1U, queue.size());
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(4, i);
+      CHECK_EQUAL(6, i);
       CHECK_EQUAL(0U, queue.size());
 
       CHECK(!queue.pop(i));
       CHECK(!queue.pop(i));
     }
 
+#if !defined(ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_move_push_pop)
     {
@@ -161,18 +173,19 @@ namespace
 
       ItemM pr(0);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(1, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(2, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(3, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(4, pr.value);
     }
+#endif
 
     //*************************************************************************
     TEST(test_size_push_pop_iqueue)
@@ -256,6 +269,44 @@ namespace
 
       CHECK(!queue.pop());
       CHECK(!queue.pop());
+    }
+
+    //*************************************************************************
+    TEST(test_size_push_front_pop)
+    {
+      etl::queue_spsc_atomic<int, 4> queue;
+
+      CHECK_EQUAL(0U, queue.size());
+
+      queue.push(1);
+      queue.push(2);
+      queue.push(3);
+      queue.push(4);
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(3U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(2U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK_EQUAL(4, queue.front());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK_EQUAL(4, queue.front());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(0U, queue.size());
     }
 
     //*************************************************************************
@@ -349,17 +400,17 @@ namespace
       #error No thread priority modifier defined
     #endif
 
-    size_t ticks = 0;
+    size_t ticks = 0UL;
 
     etl::queue_spsc_atomic<int, 10> queue;
 
-    const size_t LENGTH = 1000000;
+    const size_t LENGTH = 1000000UL;
 
     void timer_event()
     {
       FIX_PROCESSOR_AFFINITY1;
 
-      const size_t TICK = 1;
+      const size_t TICK = 1UL;
       size_t tick = TICK;
       ticks = 1;
 
@@ -396,7 +447,7 @@ namespace
 
       CHECK_EQUAL(LENGTH, tick_list.size());
 
-      for (size_t i = 0; i < LENGTH; ++i)
+      for (size_t i = 0UL; i < LENGTH; ++i)
       {
         CHECK_EQUAL(i + 1, tick_list[i]);
       }

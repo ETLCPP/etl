@@ -26,8 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
-#include "ExtraCheckMacros.h"
+#include "unit_test_framework.h"
 
 #include "data.h"
 
@@ -440,6 +439,36 @@ namespace
 
     CHECK_EQUAL(pool4.max_size(), pool4.available());
     CHECK_EQUAL(0U, pool4.size());
+  }
+
+  //*************************************************************************
+  TEST(test_allocate_release_non_class)
+  {
+    etl::pool<int, 4> pool;
+
+    int* i = pool.allocate();
+    pool.release(i);
+  } 
+  
+  //*************************************************************************
+  TEST(test_issue_406_pool_of_c_array)
+  {
+    using elem_type = uint8_t[10];
+
+    etl::pool<elem_type, 3> memPool{};
+
+    CHECK_EQUAL(3, memPool.available());
+    CHECK_EQUAL(0, memPool.size());
+
+    elem_type* memory = memPool.allocate();
+
+    CHECK_EQUAL(2, memPool.available());
+    CHECK_EQUAL(1, memPool.size());
+
+    memPool.release(memory);
+
+    CHECK_EQUAL(3, memPool.available());
+    CHECK_EQUAL(0, memPool.size());
   }
 }
 

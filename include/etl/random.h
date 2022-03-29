@@ -122,13 +122,13 @@ namespace etl
       uint32_t operator()()
       {
         uint32_t n = state[3];
-        n ^= n << 11;
-        n ^= n >> 8;
+        n ^= n << 11U;
+        n ^= n >> 8U;
         state[3] = state[2];
         state[2] = state[1];
         state[1] = state[0];
         n ^= state[0];
-        n ^= state[0] >> 19;
+        n ^= state[0] >> 19U;
         state[0] = n;
 
         return n;
@@ -139,7 +139,7 @@ namespace etl
       //***************************************************************************
       uint32_t range(uint32_t low, uint32_t high)
       {
-        uint32_t r = high - low + 1;
+        uint32_t r = high - low + 1UL;
         uint32_t n = operator()();
         n %= r;
         n += low;
@@ -208,7 +208,7 @@ namespace etl
     //***************************************************************************
     uint32_t range(uint32_t low, uint32_t high)
     {
-      uint32_t r = high - low + 1;
+      uint32_t r = high - low + 1UL;
       uint32_t n = operator()();
       n %= r;
       n += low;
@@ -218,8 +218,8 @@ namespace etl
 
   private:
 
-    static const uint32_t a = 40014;
-    static const uint32_t m = 2147483563;
+    static ETL_CONSTANT uint32_t a = 40014U;
+    static ETL_CONSTANT uint32_t m = 2147483563UL;
 
     uint32_t value;
   };
@@ -271,7 +271,7 @@ namespace etl
       //***************************************************************************
       uint32_t operator()()
       {
-        static const uint32_t m = ((m1 > m2) ? m1 : m2);
+        static ETL_CONSTANT uint32_t m = ((m1 > m2) ? m1 : m2);
 
         value1 = (a1 * value1) % m1;
         value2 = (a2 * value2) % m2;
@@ -284,7 +284,7 @@ namespace etl
       //***************************************************************************
       uint32_t range(uint32_t low, uint32_t high)
       {
-        uint32_t r = high - low + 1;
+        uint32_t r = high - low + 1UL;
         uint32_t n = operator()();
         n %= r;
         n += low;
@@ -294,11 +294,11 @@ namespace etl
 
     private:
 
-      static const uint32_t a1 = 40014;
-      static const uint32_t m1 = 2147483563;
+      static ETL_CONSTANT uint32_t a1 = 40014U;
+      static ETL_CONSTANT uint32_t m1 = 2147483563UL;
 
-      static const uint32_t a2 = 40692;
-      static const uint32_t m2 = 2147483399;
+      static ETL_CONSTANT uint32_t a2 = 40692U;
+      static ETL_CONSTANT uint32_t m2 = 2147483399UL;
 
       uint32_t value1;
       uint32_t value2;
@@ -350,11 +350,11 @@ namespace etl
       //***************************************************************************
       uint32_t operator()()
       {
-        static const uint32_t polynomial = 0x80200003;
+        static ETL_CONSTANT uint32_t polynomial = 0x80200003UL;
 
-        value >>= 1;
+        value >>= 1U;
 
-        if ((value & 1) == 1)
+        if ((value & 1UL) == 1UL)
         {
           value ^= polynomial;
         }
@@ -367,7 +367,7 @@ namespace etl
       //***************************************************************************
       uint32_t range(uint32_t low, uint32_t high)
       {
-        uint32_t r = high - low + 1;
+        uint32_t r = high - low + 1UL;
         uint32_t n = operator()();
         n %= r;
         n += low;
@@ -425,10 +425,10 @@ namespace etl
     //***************************************************************************
     uint32_t operator()()
     {
-      value1 = 36969 * (value1 & 0xFFFF) + (value1 >> 16);
-      value2 = 18000 * (value2 & 0xFFFF) + (value2 >> 16);
+      value1 = 36969UL * (value1 & 0xFFFFUL) + (value1 >> 16U);
+      value2 = 18000UL * (value2 & 0xFFFFUL) + (value2 >> 16U);
 
-      return (value1 << 16) + value2;
+      return (value1 << 16U) + value2;
     }
 
     //***************************************************************************
@@ -436,7 +436,7 @@ namespace etl
     //***************************************************************************
     uint32_t range(uint32_t low, uint32_t high)
     {
-      uint32_t r = high - low + 1;
+      uint32_t r = high - low + 1UL;
       uint32_t n = operator()();
       n %= r;
       n += low;
@@ -483,7 +483,7 @@ namespace etl
     //***************************************************************************
     void initialise(uint32_t seed)
     {
-      value = uint64_t(seed) | (uint64_t(seed) << 32);
+      value = uint64_t(seed) | (uint64_t(seed) << 32U);
     }
 
     //***************************************************************************
@@ -492,11 +492,11 @@ namespace etl
     uint32_t operator()()
     {
       uint64_t x = value;
-      unsigned count = (unsigned)(value >> 59);
+      unsigned count = (unsigned)(value >> 59U);
 
       value = (x * multiplier) + increment;
-      x ^= x >> 18;
-      return etl::rotate_right((uint32_t)(x >> 27), count);
+      x ^= x >> 18U;
+      return etl::rotate_right((uint32_t)(x >> 27U), count);
     }
 
     //***************************************************************************
@@ -504,7 +504,7 @@ namespace etl
     //***************************************************************************
     uint32_t range(uint32_t low, uint32_t high)
     {
-      uint32_t r = high - low + 1;
+      uint32_t r = high - low + 1UL;
       uint32_t n = operator()();
       n %= r;
       n += low;
@@ -514,14 +514,14 @@ namespace etl
 
   private:
 
-    static const uint64_t multiplier = 6364136223846793005ULL;
-    static const uint64_t increment  = 1ULL;
+    static ETL_CONSTANT uint64_t multiplier = 6364136223846793005ULL;
+    static ETL_CONSTANT uint64_t increment  = 1ULL;
 
     uint64_t value;
   };
 #endif
 
-#if ETL_8BIT_SUPPORT
+#if ETL_USING_8BIT_TYPES
   //***************************************************************************
   /// A 32 bit random number generator.
   /// Applies a user supplied 32bit hash to a counter.
@@ -573,7 +573,7 @@ namespace etl
     //***************************************************************************
     uint32_t range(uint32_t low, uint32_t high)
     {
-      uint32_t r = high - low + 1;
+      uint32_t r = high - low + 1UL;
       uint32_t n = operator()();
       n %= r;
       n += low;

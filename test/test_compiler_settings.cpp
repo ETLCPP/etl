@@ -26,15 +26,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include "etl/platform.h"
 
 namespace
 {
-  const bool cpp11_supported = ETL_CPP11_SUPPORTED;
-  const bool cpp14_supported = ETL_CPP14_SUPPORTED;
-  const bool cpp17_supported = ETL_CPP17_SUPPORTED;
+  const bool cpp11_supported = ETL_USING_CPP11;
+  const bool cpp14_supported = ETL_USING_CPP14;
+  const bool cpp17_supported = ETL_USING_CPP17;
 
   SUITE(test_compiler_settings)
   {

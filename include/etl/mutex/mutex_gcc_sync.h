@@ -61,7 +61,7 @@ namespace etl
 
     bool try_lock()
     {
-      return (__sync_lock_test_and_set(&flag, 1U) == 1U);
+      return (__sync_lock_test_and_set(&flag, 1U) == 0U);
     }
 
     void unlock()
@@ -70,6 +70,9 @@ namespace etl
     }
 
   private:
+
+    mutex(const mutex&) ETL_DELETE;
+    mutex& operator=(const mutex&) ETL_DELETE;
 
     char flag;
   };

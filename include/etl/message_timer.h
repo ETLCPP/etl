@@ -42,9 +42,6 @@ SOFTWARE.
 #include "timer.h"
 #include "atomic.h"
 
-#undef ETL_FILE
-#define ETL_FILE "44"
-
 #if defined(ETL_IN_UNIT_TEST) && ETL_NOT_USING_STL
   #define ETL_DISABLE_TIMER_UPDATES
   #define ETL_ENABLE_TIMER_UPDATES
@@ -72,8 +69,8 @@ SOFTWARE.
       #error ETL_MESSAGE_TIMER_DISABLE_INTERRUPTS and/or ETL_MESSAGE_TIMER_ENABLE_INTERRUPTS not defined
     #endif
 
-    #define ETL_DISABLE_TIMER_UPDATES (ETL_MESSAGE_TIMER_DISABLE_INTERRUPTS)
-    #define ETL_ENABLE_TIMER_UPDATES  (ETL_MESSAGE_TIMER_ENABLE_INTERRUPTS)
+    #define ETL_DISABLE_TIMER_UPDATES ETL_MESSAGE_TIMER_DISABLE_INTERRUPTS
+    #define ETL_ENABLE_TIMER_UPDATES  ETL_MESSAGE_TIMER_ENABLE_INTERRUPTS
     #define ETL_TIMER_UPDATES_ENABLED true
   #endif
 #endif
@@ -357,7 +354,7 @@ namespace etl
         if (!router_.is_null_router())
         {
           // Search for the free space.
-          for (uint_least8_t i = 0; i < MAX_TIMERS; ++i)
+          for (uint_least8_t i = 0U; i < MAX_TIMERS; ++i)
           {
             etl::message_timer_data& timer = timer_array[i];
 
@@ -473,8 +470,7 @@ namespace etl
 
               if (timer.p_router != ETL_NULLPTR)
               {
-                static etl::null_message_router nmr;
-                timer.p_router->receive(nmr, timer.destination_router_id, *(timer.p_message));
+                timer.p_router->receive(timer.destination_router_id, *(timer.p_message));
               }
 
               has_active = !active_list.empty();
@@ -622,6 +618,17 @@ namespace etl
     volatile bool enabled;
 
 #if defined(ETL_MESSAGE_TIMER_USE_ATOMIC_LOCK)
+  
+#if defined(ETL_TIMER_SEMAPHORE_TYPE)
+  typedef ETL_TIMER_SEMAPHORE_TYPE timer_semaphore_t;
+#else
+  #if ETL_HAS_ATOMIC
+    typedef etl::atomic_uint16_t timer_semaphore_t;
+  #else
+    #error No atomic type available
+  #endif
+#endif
+
     volatile etl::timer_semaphore_t process_semaphore;
 #endif
     volatile uint_least8_t registered_timers;
@@ -658,7 +665,5 @@ namespace etl
 #undef ETL_DISABLE_TIMER_UPDATES
 #undef ETL_ENABLE_TIMER_UPDATES
 #undef ETL_TIMER_UPDATES_ENABLED
-
-#undef ETL_FILE
 
 #endif

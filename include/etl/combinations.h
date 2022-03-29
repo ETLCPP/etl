@@ -48,8 +48,13 @@ namespace etl
   template <const size_t NV, const size_t KV>
   struct combinations
   {
-    static const size_t value = etl::permutations<NV, KV>::value / etl::factorial<KV>::value;
+    static ETL_CONSTANT size_t value = etl::permutations<NV, KV>::value / etl::factorial<KV>::value;
   };
+
+#if ETL_USING_CPP17
+  template <size_t NV, size_t KV>
+  inline constexpr size_t combinations_v = combinations<NV, KV>::value;
+#endif
 }
 
 #endif

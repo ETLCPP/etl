@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <iterator>
 #include <string>
@@ -36,7 +36,7 @@ SOFTWARE.
 #include "etl/fnv_1.h"
 
 namespace
-{		
+{
   SUITE(test_fnv1)
   {
     //*************************************************************************
@@ -46,7 +46,7 @@ namespace
 
       uint32_t hash = etl::fnv_1_32(data.begin(), data.end());
 
-      CHECK_EQUAL(0x24148816U, hash);
+      CHECK_EQUAL(0x24148816UL, hash);
     }
 
     //*************************************************************************
@@ -56,14 +56,14 @@ namespace
 
       etl::fnv_1_32 fnv_1_32_calculator;
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         fnv_1_32_calculator.add(data[i]);
       }
 
       uint32_t hash = fnv_1_32_calculator.value();
 
-      CHECK_EQUAL(0x24148816U, hash);
+      CHECK_EQUAL(0x24148816UL, hash);
     }
 
     //*************************************************************************
@@ -77,15 +77,29 @@ namespace
 
       uint32_t hash = fnv_1_32_calculator.value();
 
-      CHECK_EQUAL(0x24148816U, hash);
+      CHECK_EQUAL(0x24148816UL, hash);
+    }
+
+    //*************************************************************************
+    TEST(test_fnv_1_32_add_range_via_iterator)
+    {
+      std::string data("123456789");
+
+      etl::fnv_1_32 fnv_1_32_calculator;
+
+      std::copy(data.begin(), data.end(), fnv_1_32_calculator.input());
+
+      uint32_t hash = fnv_1_32_calculator.value();
+
+      CHECK_EQUAL(0x24148816UL, hash);
     }
 
     //*************************************************************************
     TEST(test_fnv_1_32_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
-      std::vector<uint32_t> data2 = { 0x04030201, 0x08070605 };
-      std::vector<uint8_t>  data3 = { 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
+      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint32_t> data2 = { 0x04030201UL, 0x08070605UL };
+      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
 
       uint32_t hash1 = etl::fnv_1_32(data1.begin(), data1.end());
       uint32_t hash2 = etl::fnv_1_32((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
@@ -102,7 +116,7 @@ namespace
 
       uint32_t hash = etl::fnv_1a_32(data.begin(), data.end());
 
-      CHECK_EQUAL(0xBB86B11CU, hash);
+      CHECK_EQUAL(0xBB86B11CUL, hash);
     }
 
     //*************************************************************************
@@ -112,14 +126,14 @@ namespace
 
       etl::fnv_1a_32 fnv_1a_32_calculator;
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         fnv_1a_32_calculator.add(data[i]);
       }
 
       uint32_t hash = fnv_1a_32_calculator.value();
 
-      CHECK_EQUAL(0xBB86B11CU, hash);
+      CHECK_EQUAL(0xBB86B11CUL, hash);
     }
 
     //*************************************************************************
@@ -133,15 +147,29 @@ namespace
 
       uint32_t hash = fnv_1a_32_calculator.value();
 
-      CHECK_EQUAL(0xBB86B11CU, hash);
+      CHECK_EQUAL(0xBB86B11CUL, hash);
+    }
+
+    //*************************************************************************
+    TEST(test_fnv_1a_32_add_range_via_iterator)
+    {
+      std::string data("123456789");
+
+      etl::fnv_1a_32 fnv_1a_32_calculator;
+
+      std::copy(data.begin(), data.end(), fnv_1a_32_calculator.input());
+
+      uint32_t hash = fnv_1a_32_calculator.value();
+
+      CHECK_EQUAL(0xBB86B11CUL, hash);
     }
 
     //*************************************************************************
     TEST(test_fnv_1a_32_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
-      std::vector<uint32_t> data2 = { 0x04030201, 0x08070605 };
-      std::vector<uint8_t>  data3 = { 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
+      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint32_t> data2 = { 0x04030201UL, 0x08070605UL };
+      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
 
       uint32_t hash1 = etl::fnv_1a_32(data1.begin(), data1.end());
       uint32_t hash2 = etl::fnv_1a_32((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
@@ -158,7 +186,7 @@ namespace
 
       uint64_t hash = etl::fnv_1_64(data.begin(), data.end());
 
-      CHECK_EQUAL(0xA72FFC362BF916D6U, hash);
+      CHECK_EQUAL(0xA72FFC362BF916D6ULL, hash);
     }
 
     //*************************************************************************
@@ -168,14 +196,14 @@ namespace
 
       etl::fnv_1_64 fnv_1_64_calculator;
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         fnv_1_64_calculator.add(data[i]);
       }
-      
+
       uint64_t hash = fnv_1_64_calculator;
 
-      CHECK_EQUAL(0xA72FFC362BF916D6U, hash);
+      CHECK_EQUAL(0xA72FFC362BF916D6ULL, hash);
     }
 
     //*************************************************************************
@@ -189,15 +217,29 @@ namespace
 
       uint64_t hash = fnv_1_64_calculator.value();
 
-      CHECK_EQUAL(0xA72FFC362BF916D6U, hash);
+      CHECK_EQUAL(0xA72FFC362BF916D6ULL, hash);
+    }
+
+    //*************************************************************************
+    TEST(test_fnv_1_64_add_range_via_iterator)
+    {
+      std::string data("123456789");
+
+      etl::fnv_1_64 fnv_1_64_calculator;
+
+      std::copy(data.begin(), data.end(), fnv_1_64_calculator.input());
+
+      uint64_t hash = fnv_1_64_calculator.value();
+
+      CHECK_EQUAL(0xA72FFC362BF916D6ULL, hash);
     }
 
     //*************************************************************************
     TEST(test_fnv_1_64_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
-      std::vector<uint32_t> data2 = { 0x04030201, 0x08070605 };
-      std::vector<uint8_t>  data3 = { 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
+      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint32_t> data2 = { 0x04030201UL, 0x08070605UL };
+      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
 
       uint64_t hash1 = etl::fnv_1_64(data1.begin(), data1.end());
       uint64_t hash2 = etl::fnv_1_64((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
@@ -214,7 +256,7 @@ namespace
 
       uint64_t hash = etl::fnv_1a_64(data.begin(), data.end());
 
-      CHECK_EQUAL(0x06D5573923C6CDFCU, hash);
+      CHECK_EQUAL(0x06D5573923C6CDFCULL, hash);
     }
 
     //*************************************************************************
@@ -224,14 +266,14 @@ namespace
 
       etl::fnv_1a_64 fnv_1a_64_calculator;
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         fnv_1a_64_calculator.add(data[i]);
       }
 
       uint64_t hash = fnv_1a_64_calculator;
 
-      CHECK_EQUAL(0x06D5573923C6CDFCU, hash);
+      CHECK_EQUAL(0x06D5573923C6CDFCULL, hash);
     }
 
     //*************************************************************************
@@ -245,15 +287,29 @@ namespace
 
       uint64_t hash = fnv_1a_64_calculator.value();
 
-      CHECK_EQUAL(0x06D5573923C6CDFCU, hash);
+      CHECK_EQUAL(0x06D5573923C6CDFCULL, hash);
+    }
+
+    //*************************************************************************
+    TEST(test_fnv_1a_64_add_range_via_iterator)
+    {
+      std::string data("123456789");
+
+      etl::fnv_1a_64 fnv_1a_64_calculator;
+
+      std::copy(data.begin(), data.end(), fnv_1a_64_calculator.input());
+
+      uint64_t hash = fnv_1a_64_calculator.value();
+
+      CHECK_EQUAL(0x06D5573923C6CDFCULL, hash);
     }
 
     //*************************************************************************
     TEST(test_fnv_1a_64_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
-      std::vector<uint32_t> data2 = { 0x04030201, 0x08070605 };
-      std::vector<uint8_t>  data3 = { 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
+      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint32_t> data2 = { 0x04030201UL, 0x08070605UL };
+      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
 
       uint64_t hash1 = etl::fnv_1a_64(data1.begin(), data1.end());
       uint64_t hash2 = etl::fnv_1a_64((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));

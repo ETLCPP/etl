@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <queue>
 
@@ -298,7 +298,7 @@ namespace
     {
       QueueInt queue;
 
-      for (size_t i = 0; i < queue.max_size(); ++i)
+      for (size_t i = 0UL; i < queue.max_size(); ++i)
       {
         queue.push(1);
       }

@@ -26,11 +26,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <string>
 
-#include "etl/cstring.h"
+#include "etl/string.h"
 #include "etl/wstring.h"
 #include "etl/u16string.h"
 #include "etl/u32string.h"
@@ -54,6 +54,27 @@ namespace
     };
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_make_string_empty)
+    {
+      size_t length = strlen("");
+
+      auto ctext   = etl::make_string("");
+      auto wtext   = etl::make_string(L"");
+      auto u16text = etl::make_string(u"");
+      auto u32text = etl::make_string(U"");
+
+      CHECK_EQUAL(length, ctext.size());
+      CHECK_EQUAL(length, wtext.size());
+      CHECK_EQUAL(length, u16text.size());
+      CHECK_EQUAL(length, u32text.size());
+
+      CHECK(Equal(std::string(""), ctext));
+      CHECK(Equal(std::wstring(L""), wtext));
+      CHECK(Equal(std::u16string(u""), u16text));
+      CHECK(Equal(std::u32string(U""), u32text));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_make_string)
     {
       size_t length = strlen("Hello World");
@@ -69,15 +90,15 @@ namespace
       CHECK_EQUAL(length, u32text.max_size());
 
       CHECK(Equal(std::string("Hello World"), ctext));
-      CHECK(Equal(std::wstring(L"Hello World"), ctext));
-      CHECK(Equal(std::u16string(u"Hello World"), ctext));
-      CHECK(Equal(std::u32string(U"Hello World"), ctext));
+      CHECK(Equal(std::wstring(L"Hello World"), wtext));
+      CHECK(Equal(std::u16string(u"Hello World"), u16text));
+      CHECK(Equal(std::u32string(U"Hello World"), u32text));
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_make_string_with_capacity)
     {
-      constexpr size_t CAPACITY = 20;
+      constexpr size_t CAPACITY = 20UL;
       size_t length = strlen("Hello World");
 
       auto ctext   = etl::make_string_with_capacity<CAPACITY>("Hello World");
@@ -87,33 +108,42 @@ namespace
 
       CHECK_EQUAL(CAPACITY, ctext.max_size());
       CHECK_EQUAL(length, ctext.size());
-      CHECK(!ctext.truncated());
+      if  constexpr (etl::traits::has_string_truncation_checks)
+      {
+        CHECK(!ctext.is_truncated());
+      }
 
       CHECK_EQUAL(CAPACITY, wtext.max_size());
       CHECK_EQUAL(length, wtext.size());
-      CHECK(!wtext.truncated());
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!wtext.is_truncated());
+#endif
 
       CHECK_EQUAL(CAPACITY, u16text.max_size());
       CHECK_EQUAL(length, u16text.size());
-      CHECK(!u16text.truncated());
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!u16text.is_truncated());
+#endif
 
       CHECK_EQUAL(CAPACITY, u32text.max_size());
       CHECK_EQUAL(length, u32text.size());
-      CHECK(!u32text.truncated());
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!u32text.is_truncated());
+#endif
 
       CHECK(Equal(std::string("Hello World"), ctext));
-      CHECK(Equal(std::wstring(L"Hello World"), ctext));
-      CHECK(Equal(std::u16string(u"Hello World"), ctext));
-      CHECK(Equal(std::u32string(U"Hello World"), ctext));
+      CHECK(Equal(std::wstring(L"Hello World"), wtext));
+      CHECK(Equal(std::u16string(u"Hello World"), u16text));
+      CHECK(Equal(std::u32string(U"Hello World"), u32text));
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_make_string_with_capacity_truncated)
     {
-      constexpr size_t CAPACITY = 10;
+      constexpr size_t CAPACITY = 10UL;
       size_t length = strlen("Hello World");
 
-#if defined(ETL_STRING_TRUNCATION_IS_ERROR)
+#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
       CHECK_THROW(auto ctext   = etl::make_string_with_capacity<CAPACITY>("Hello World"),  etl::string_truncation);
       CHECK_THROW(auto wtext   = etl::make_string_with_capacity<CAPACITY>(L"Hello World"), etl::string_truncation);;
       CHECK_THROW(auto u16text = etl::make_string_with_capacity<CAPACITY>(u"Hello World"), etl::string_truncation);;
@@ -126,19 +156,27 @@ namespace
 
       CHECK_EQUAL(CAPACITY, ctext.max_size());
       CHECK_EQUAL(length - 1, ctext.size());
-      CHECK(ctext.truncated());
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(ctext.is_truncated());
+#endif
 
       CHECK_EQUAL(CAPACITY, wtext.max_size());
       CHECK_EQUAL(length - 1, wtext.size());
-      CHECK(wtext.truncated());
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(wtext.is_truncated());
+#endif
 
       CHECK_EQUAL(CAPACITY, u16text.max_size());
       CHECK_EQUAL(length - 1, u16text.size());
-      CHECK(u16text.truncated());
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(u16text.is_truncated());
+#endif
 
       CHECK_EQUAL(CAPACITY, u32text.max_size());
       CHECK_EQUAL(length - 1, u32text.size());
-      CHECK(u32text.truncated());
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(u32text.is_truncated());
+#endif
 
       CHECK(Equal(std::string("Hello Worl"), ctext));
       CHECK(Equal(std::wstring(L"Hello Worl"), ctext));

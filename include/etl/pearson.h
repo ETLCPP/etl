@@ -38,9 +38,9 @@ SOFTWARE.
 #include "type_traits.h"
 #include "ihash.h"
 #include "array.h"
-#include "container.h"
+#include "iterator.h"
 
-ETL_STATIC_ASSERT(ETL_8BIT_SUPPORT, "This file does not currently support targets with no 8bit type");
+ETL_STATIC_ASSERT(ETL_USING_8BIT_TYPES, "This file does not currently support targets with no 8bit type");
 
 #if defined(ETL_COMPILER_KEIL)
 #pragma diag_suppress 1300
@@ -107,7 +107,8 @@ namespace etl
 
       while (begin != end)
       {
-        add(*begin++);
+        add(*begin);
+        ++begin;
       }
     }
 
@@ -116,7 +117,7 @@ namespace etl
     //*************************************************************************
     void add(uint8_t value_)
     {
-      static const uint8_t PEARSON_LOOKUP[] =
+      static ETL_CONSTANT uint8_t PEARSON_LOOKUP[] =
       {
         228,  39,  61,  95, 227, 187,   0, 197,  31, 189, 161, 222,  34,  15, 221, 246,
         19,  234,   6,  50, 113,   3,  91,  63,  77, 245, 144,   2, 183, 196,  25, 226,
@@ -138,7 +139,7 @@ namespace etl
 
       if (first)
       {
-        for (size_t i = 0; i < HASH_LENGTH; ++i)
+        for (size_t i = 0UL; i < HASH_LENGTH; ++i)
         {
           hash[i] = PEARSON_LOOKUP[(uint32_t(value_) + i) % 256];
         }
@@ -147,7 +148,7 @@ namespace etl
       }
       else
       {
-        for (size_t i = 0; i < HASH_LENGTH; ++i)
+        for (size_t i = 0UL; i < HASH_LENGTH; ++i)
         {
           hash[i] = PEARSON_LOOKUP[hash[i] ^ value_];
         }

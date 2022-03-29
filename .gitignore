@@ -16,6 +16,9 @@ examples/ArmTimerCallbacks/Objects
 examples/ArmTimerCallbacks/DebugConfig
 build-test-Desktop_x86_windows_msvc2017_pe_32bit-Debug/unittest++/src
 buildresults/
+build
+subprojects/*
+!subprojects/*.wrap
 
 #################
 ## Eclipse
@@ -254,3 +257,105 @@ unittest-cpp
 *.opendb
 build-test-Desktop_x86_windows_msvc2017_pe_32bit-Debug
 test/Logs
+build-test-Desktop_x86_windows_msvc2019_pe_32bit-Debug
+test/vs2019/.vs
+Corel Auto-Preserve
+.vscode
+build-test-Clang_10-Debug
+build-test-GCC-Debug
+test/kdevelopbuild/unittest++
+test/random_clcg.csv
+test/random_hash.csv
+test/random_lcg.csv
+test/random_lcg.csv
+test/random_lcg.csv
+test/random_lsfr.csv
+test/random_lsfr.csv
+test/random_mwc.csv
+test/random_pcg.csv
+test/random_pcg.csv
+test/random_xorshift.csv
+test/cmake_install.cmake
+test/Makefile
+test/vs2019/enc_temp_folder
+test/vs2019/.leu
+test/etl_test_log.txt
+test/vs2019/Debug No Unit Tests
+test/vs2019/multi_loop.csv
+temp/create_arduino_library.py
+examples/FunctionInterruptSimulation-Delegates/vs2019/.vs
+
+*.db-shm
+test/vs2019/.vs/etl/v16/Browse.VC.db-wal
+examples/SharedMessage/.vs
+examples/QueuedMessageRouter/vs2019/.vs
+test/sanity-check/c++03/bclang
+test/sanity-check/c++03/bgcc
+test/sanity-check/c++11/bclang
+test/sanity-check/c++11/bgcc
+test/sanity-check/c++14/bclang
+test/sanity-check/c++14/bgcc
+test/sanity-check/c++17/bclang
+test/sanity-check/c++17/bgcc
+test/log.txt
+log.txt
+test/sanity-check/c++17/CMakeFiles
+test/CMakeFiles
+test/sanity-check/c++11/CMakeFiles
+test/sanity-check/c++14/CMakeFiles
+test/sanity-check/c++11/cmake_install.cmake
+test/sanity-check/c++11/CMakeCache.txt
+test/sanity-check/c++11/libt11.a
+test/sanity-check/c++11/Makefile
+test/sanity-check/c++14/cmake_install.cmake
+test/sanity-check/c++14/CMakeCache.txt
+test/sanity-check/c++14/libt14.a
+test/sanity-check/c++14/Makefile
+test/sanity-check/c++17/cmake_install.cmake
+test/sanity-check/c++17/CMakeCache.txt
+test/sanity-check/c++17/libt17.a
+test/sanity-check/c++17/Makefile
+test/vs2019/Debug LLVM
+test/vs2019/DebugLLVMNoSTL
+test/vs2019/DebugNoSTL
+test/vs2022/Debug LLVM
+test/vs2019/Debug MSVC - No STL - Built-ins/etl.exe
+test/vs2019/Debug-LLVM-NoSTL-Builtins/etl.exe
+test/vs2019/cmake-build
+test/vs2019/Debug MSVC - No STL - Built-ins
+test/vs2019/Test1
+test/vs2019/Test2
+test/vs2019/Debug MSVC - Force C++03
+test/vs2019/Debug LLVM - No STL
+test/vs2019/Debug - No STL
+test/meson-info
+test/etl_unit_tests.p
+test/meson-logs
+test/meson-private
+test/.ninja_deps
+test/.ninja_log
+test/build.ninja
+test/compile_commands.json
+test/etl_unit_tests
+test/build-make
+test/build-make
+test/meson-info
+test/meson-logs
+test/meson-private
+test/build-make
+test/build-ninja
+test/vs2019/Debug MSVC C++20
+test/vs2019/Debug MSVC C++20 - No STL
+patches
+test/vs2019/Debug MSVC - No Tests
+test/vs2019/Debug MSVC - No STL - Force Built-ins
+test/vs2019/Debug MSVC - No STL - Force Constexpr Algorithms
+test/vs2019/Debug Intel
+test/vs2019/Debug Intel - No STL
+EmbeddedTemplateLibrary-20.24.1.tar.gz
+test/etl_initializer_list/.vs
+test/build-etl_initializer_list-Desktop_x86_windows_msvc2019_pe_32bit-Debug
+test/build-etl_initializer_list-GCC-Debug
+test/etl_initializer_list/etl_initializer_list.vcxproj.filters
+test/etl_initializer_list/build-make
+test/vs-build

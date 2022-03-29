@@ -45,12 +45,12 @@ namespace etl
 
   typedef std::memory_order memory_order;
 
-  static const etl::memory_order memory_order_relaxed = std::memory_order_relaxed;
-  static const etl::memory_order memory_order_consume = std::memory_order_consume;
-  static const etl::memory_order memory_order_acquire = std::memory_order_acquire;
-  static const etl::memory_order memory_order_release = std::memory_order_release;
-  static const etl::memory_order memory_order_acq_rel = std::memory_order_acq_rel;
-  static const etl::memory_order memory_order_seq_cst = std::memory_order_seq_cst;
+  static ETL_CONSTANT etl::memory_order memory_order_relaxed = std::memory_order_relaxed;
+  static ETL_CONSTANT etl::memory_order memory_order_consume = std::memory_order_consume;
+  static ETL_CONSTANT etl::memory_order memory_order_acquire = std::memory_order_acquire;
+  static ETL_CONSTANT etl::memory_order memory_order_release = std::memory_order_release;
+  static ETL_CONSTANT etl::memory_order memory_order_acq_rel = std::memory_order_acq_rel;
+  static ETL_CONSTANT etl::memory_order memory_order_seq_cst = std::memory_order_seq_cst;
 
   template <typename T>
   class atomic
@@ -432,12 +432,12 @@ namespace etl
     // Conversion operator
     operator T* () const
     {
-      return (T*)value;
+      return static_cast<T*>(value);
     }
 
     operator T*() volatile const
     {
-      return (T*)value;
+      return static_cast<T*>(value);
     }
 
     // Is lock free?
@@ -550,12 +550,13 @@ namespace etl
 
   private:
 
-    atomic & operator =(const atomic&);
-    //atomic& operator =(const atomic&) volatile;
+    atomic & operator =(const atomic&) ETL_DELETE;
+    atomic& operator =(const atomic&) volatile ETL_DELETE;
 
     std::atomic<T*> value;
   };
 
+  typedef std::atomic<bool>                atomic_bool;
   typedef std::atomic<char>                atomic_char;
   typedef std::atomic<signed char>         atomic_schar;
   typedef std::atomic<unsigned char>       atomic_uchar;
@@ -570,8 +571,10 @@ namespace etl
   typedef std::atomic<wchar_t>             atomic_wchar_t;
   typedef std::atomic<char16_t>            atomic_char16_t;
   typedef std::atomic<char32_t>            atomic_char32_t;
+#if ETL_USING_8BIT_TYPES
   typedef std::atomic<uint8_t>             atomic_uint8_t;
   typedef std::atomic<int8_t>              atomic_int8_t;
+#endif
   typedef std::atomic<uint16_t>            atomic_uint16_t;
   typedef std::atomic<int16_t>             atomic_int16_t;
   typedef std::atomic<uint32_t>            atomic_uint32_t;

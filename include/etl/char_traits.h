@@ -45,6 +45,9 @@ SOFTWARE.
 
 // Define the large character types if necessary.
 #if (ETL_NO_LARGE_CHAR_SUPPORT)
+#if ETL_USING_8BIT_TYPES
+typedef int8_t char8_t;
+#endif
 typedef int16_t char16_t;
 typedef int32_t char32_t;
 #endif
@@ -102,21 +105,21 @@ namespace etl
     typedef typename char_traits_types<T>::state_type state_type;
 
     //*************************************************************************
-    static bool eq(char_type a, char_type b)
+    static ETL_CONSTEXPR bool eq(char_type a, char_type b)
     {
       return a == b;
     }
 
     //*************************************************************************
-    static bool lt(char_type a, char_type b)
+    static ETL_CONSTEXPR bool lt(char_type a, char_type b)
     {
       return a < b;
     }
 
     //*************************************************************************
-    static size_t length(const char_type* str)
+    static ETL_CONSTEXPR14 size_t length(const char_type* str)
     {
-      size_t count = 0;
+      size_t count = 0UL;
 
       if (str != 0)
       {
@@ -174,7 +177,7 @@ namespace etl
     //*************************************************************************
     static int compare(const char_type* s1, const char_type* s2, size_t count)
     {
-      for (size_t i = 0; i < count; ++i)
+      for (size_t i = 0UL; i < count; ++i)
       {
         if (*s1 < *s2)
         {
@@ -195,7 +198,7 @@ namespace etl
     //*************************************************************************
     static const char_type* find(const char_type* p, size_t count, const char_type& ch)
     {
-      for (size_t i = 0; i < count; ++i)
+      for (size_t i = 0UL; i < count; ++i)
       {
         if (*p == ch)
         {

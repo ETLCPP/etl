@@ -33,15 +33,11 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if defined(ARDUINO)
-  #include <stddef.h>
-#else
-  #include <cstddef>
-#endif
+#include <stddef.h>
 
-#if (ETL_CPP11_SUPPORTED == 0) || ETL_NOT_USING_STL
-  // Use the old style NULL definition.
-  #define ETL_NULLPTR NULL
+#if ETL_CPP11_NOT_SUPPORTED || ETL_NOT_USING_STL
+  // Use the old style C++ NULL definition.
+  #define ETL_NULLPTR 0
 #else
   // Use the new style nullptr.
   #define ETL_NULLPTR nullptr

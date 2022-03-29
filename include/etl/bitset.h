@@ -50,14 +50,25 @@ SOFTWARE.
 #include "char_traits.h"
 #include "static_assert.h"
 #include "error_handler.h"
+#include "span.h"
+#include "string.h"
 
 #include "private/minmax_push.h"
 
-#undef ETL_FILE
-#define ETL_FILE "52"
-
 #if defined(ETL_COMPILER_KEIL)
 #pragma diag_suppress 1300
+#endif
+
+#if ETL_USING_CPP11
+  #define ETL_STR(x)  x
+  #define ETL_STRL(x) L##x
+  #define ETL_STRu(x) u##x
+  #define ETL_STRU(x) U##x
+#else
+  #define ETL_STR(x)  x
+  #define ETL_STRL(x) x
+  #define ETL_STRu(x) x
+  #define ETL_STRU(x) x
 #endif
 
 //*****************************************************************************
@@ -91,7 +102,7 @@ namespace etl
   public:
 
     bitset_nullptr(string_type file_name_, numeric_type line_number_)
-      : bitset_exception(ETL_ERROR_TEXT("bitset:null pointer", ETL_FILE"A"), file_name_, line_number_)
+      : bitset_exception(ETL_ERROR_TEXT("bitset:null pointer", ETL_BITSET_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -105,7 +116,21 @@ namespace etl
   public:
 
     bitset_type_too_small(string_type file_name_, numeric_type line_number_)
-      : bitset_exception(ETL_ERROR_TEXT("bitset:type_too_small", ETL_FILE"B"), file_name_, line_number_)
+      : bitset_exception(ETL_ERROR_TEXT("bitset:type_too_small", ETL_BITSET_FILE_ID"B"), file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// Bitset overflow exception.
+  ///\ingroup bitset
+  //***************************************************************************
+  class bitset_overflow : public bitset_exception
+  {
+  public:
+
+    bitset_overflow(string_type file_name_, numeric_type line_number_)
+      : bitset_exception(ETL_ERROR_TEXT("bitset:overflow", ETL_BITSET_FILE_ID"C"), file_name_, line_number_)
     {
     }
   };
@@ -127,10 +152,15 @@ namespace etl
 
   public:
 
-    static const element_t ALL_SET = etl::integral_limits<element_t>::max;
-    static const element_t ALL_CLEAR = 0;
+    static ETL_CONSTANT element_t ALL_SET = etl::integral_limits<element_t>::max;
+    static ETL_CONSTANT element_t ALL_CLEAR = 0;
 
-    static const size_t    BITS_PER_ELEMENT = etl::integral_limits<element_t>::bits;
+    static ETL_CONSTANT size_t    BITS_PER_ELEMENT = etl::integral_limits<element_t>::bits;
+
+#if ETL_USING_CPP11
+    typedef etl::span<element_t>       span_type;
+    typedef etl::span<const element_t> const_span_type;
+#endif
 
     enum
     {
@@ -226,9 +256,9 @@ namespace etl
     //*************************************************************************
     size_t count() const
     {
-      size_t n = 0;
+      size_t n = 0UL;
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         n += etl::count_bits(pdata[i]);
       }
@@ -245,7 +275,11 @@ namespace etl
       size_t    index;
       element_t mask;
 
-      if (SIZE == 1)
+      if (SIZE == 0) 
+      {
+        return false;
+      }
+      else if (SIZE == 1)
       {
         index = 0;
         mask = element_t(1) << position;
@@ -264,7 +298,7 @@ namespace etl
     //*************************************************************************
     ibitset& set()
     {
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         pdata[i] = ALL_SET;
       }
@@ -282,7 +316,10 @@ namespace etl
       size_t    index;
       element_t bit;
 
-      if (SIZE == 1)
+      if (SIZE == 0) {
+        return *this;
+      }
+      else if (SIZE == 1)
       {
         index = 0;
         bit = element_t(1) << position;
@@ -316,7 +353,7 @@ namespace etl
 
       while (i > 0)
       {
-        set(--i, *text++ == '1');
+        set(--i, *text++ == ETL_STR('1'));
       }
 
       return *this;
@@ -333,7 +370,7 @@ namespace etl
 
       while (i > 0)
       {
-        set(--i, *text++ == L'1');
+        set(--i, *text++ == ETL_STRL('1'));
       }
 
       return *this;
@@ -350,7 +387,7 @@ namespace etl
 
       while (i > 0)
       {
-        set(--i, *text++ == L'1');
+        set(--i, *text++ == ETL_STRL('1'));
       }
 
       return *this;
@@ -367,7 +404,7 @@ namespace etl
 
       while (i > 0)
       {
-        set(--i, *text++ == u'1');
+        set(--i, *text++ == ETL_STRu('1'));
       }
 
       return *this;
@@ -384,7 +421,7 @@ namespace etl
 
       while (i > 0)
       {
-        set(--i, *text++ == U'1');
+        set(--i, *text++ == ETL_STRU('1'));
       }
 
       return *this;
@@ -397,6 +434,11 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value, T>::type
       value() const
     {
+      for (size_t i = sizeof(long long) / sizeof(element_t); i < SIZE; ++i)
+      {
+        ETL_ASSERT_AND_RETURN_VALUE(!(pdata[i]), ETL_ERROR(etl::bitset_overflow), T(0));
+      }
+
       T v = T(0);
 
       const bool OK = (sizeof(T) * CHAR_BIT) >= (SIZE * BITS_PER_ELEMENT);
@@ -407,7 +449,7 @@ namespace etl
       {
         T shift = T(0);
 
-        for (size_t i = 0; i < SIZE; ++i)
+        for (size_t i = 0UL; i < SIZE; ++i)
         {
           v |= T(pdata[i]) << shift;
           shift += T(BITS_PER_ELEMENT);
@@ -418,11 +460,27 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Put to a unsigned long.
+    //*************************************************************************
+    unsigned long to_ulong() const
+    {
+      return value<unsigned long>();
+    }
+
+    //*************************************************************************
+    /// Put to a unsigned long long.
+    //*************************************************************************
+    unsigned long long to_ullong() const
+    {
+      return value<unsigned long long>();
+    }
+
+    //*************************************************************************
     /// Resets the bitset.
     //*************************************************************************
     ibitset& reset()
     {
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         pdata[i] = ALL_CLEAR;
       }
@@ -438,7 +496,11 @@ namespace etl
       size_t       index;
       element_t bit;
 
-      if (SIZE == 1)
+      if (SIZE == 0)
+      {
+        return *this;
+      }
+      else if (SIZE == 1)
       {
         index = 0;
         bit = element_t(1) << position;
@@ -459,7 +521,7 @@ namespace etl
     //*************************************************************************
     ibitset& flip()
     {
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         pdata[i] = ~pdata[i];
       }
@@ -478,8 +540,12 @@ namespace etl
       {
         size_t    index;
         element_t bit;
-
-        if (SIZE == 1)
+        
+        if (SIZE == 0)
+        {
+          return *this;
+        }
+        else if (SIZE == 1)
         {
           index = 0;
           bit = element_t(1) << position;
@@ -501,8 +567,13 @@ namespace etl
     //*************************************************************************
     bool all() const
     {
+      if (SIZE == 0UL)
+      {
+        return true;
+      }
+
       // All but the last.
-      for (size_t i = 0; i < (SIZE - 1); ++i)
+      for (size_t i = 0UL; i < (SIZE - 1); ++i)
       {
         if (pdata[i] != ALL_SET)
         {
@@ -532,7 +603,7 @@ namespace etl
     //*************************************************************************
     bool none() const
     {
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         if (pdata[i] != 0)
         {
@@ -565,7 +636,11 @@ namespace etl
       size_t index;
       size_t bit;
 
-      if (SIZE == 1)
+      if (SIZE == 0)
+      {
+        return ibitset::npos;
+      }
+      else if (SIZE == 1)
       {
         index = 0;
         bit = position;
@@ -585,7 +660,7 @@ namespace etl
 
         // Needs checking?
         if ((state && (value != ALL_CLEAR)) ||
-          (!state && (value != ALL_SET)))
+            (!state && (value != ALL_SET)))
         {
           // For each bit in the element...
           while ((bit < BITS_PER_ELEMENT) && (position < NBITS))
@@ -604,7 +679,7 @@ namespace etl
         }
         else
         {
-          position += BITS_PER_ELEMENT;
+          position += (BITS_PER_ELEMENT - bit);
         }
 
         // Start at the beginning for all other elements.
@@ -638,7 +713,7 @@ namespace etl
     //*************************************************************************
     ibitset& operator &=(const ibitset& other)
     {
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         pdata[i] &= other.pdata[i];
       }
@@ -651,7 +726,7 @@ namespace etl
     //*************************************************************************
     ibitset& operator |=(const ibitset& other)
     {
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         pdata[i] |= other.pdata[i];
       }
@@ -664,7 +739,7 @@ namespace etl
     //*************************************************************************
     ibitset& operator ^=(const ibitset& other)
     {
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         pdata[i] ^= other.pdata[i];
       }
@@ -677,23 +752,37 @@ namespace etl
     //*************************************************************************
     ibitset& operator<<=(size_t shift)
     {
-      if (SIZE == 1)
+      if (SIZE != 0UL)
       {
-        pdata[0] <<= shift;
-      }
-      else
-      {
-        size_t source = NBITS - shift - 1;
-        size_t destination = NBITS - 1;
-
-        for (size_t i = 0; i < (NBITS - shift); ++i)
+        // Just one element?
+        if (SIZE == 1UL)
         {
-          set(destination--, test(source--));
+          pdata[0] <<= shift;
         }
-
-        for (size_t i = 0; i < shift; ++i)
+        else if (shift == BITS_PER_ELEMENT)
         {
-          reset(destination--);
+          for (size_t i = (SIZE - 1); i > 0U; --i)
+          {
+            pdata[i] = pdata[i - 1];
+          }
+
+          pdata[0] = 0;
+        }
+        else
+        {
+          // TODO Optimise.
+          size_t source = NBITS - shift - 1;
+          size_t destination = NBITS - 1;
+
+          for (size_t i = 0UL; i < (NBITS - shift); ++i)
+          {
+            set(destination--, test(source--));
+          }
+
+          for (size_t i = 0UL; i < shift; ++i)
+          {
+            reset(destination--);
+          }
         }
       }
 
@@ -705,23 +794,38 @@ namespace etl
     //*************************************************************************
     ibitset& operator>>=(size_t shift)
     {
-      if (SIZE == 1)
+      if (SIZE != 0UL)
       {
-        pdata[0] >>= shift;
-      }
-      else
-      {
-        size_t source = shift;
-        size_t destination = 0;
-
-        for (size_t i = 0; i < (NBITS - shift); ++i)
+        // Just one element?
+        if (SIZE == 1UL)
         {
-          set(destination++, test(source++));
+          pdata[0] >>= shift;
         }
-
-        for (size_t i = 0; i < shift; ++i)
+        // Shift is the size of an element?
+        else if (shift == BITS_PER_ELEMENT)
         {
-          reset(destination++);
+          for (size_t i = 0UL; i < (SIZE - 1); ++i)
+          {
+            pdata[i] = pdata[i + 1];
+          }
+
+          pdata[SIZE - 1] = 0;
+        }
+        else
+        {
+          // TODO Optimise.
+          size_t source = shift;
+          size_t destination = 0UL;
+
+          for (size_t i = 0UL; i < (NBITS - shift); ++i)
+          {
+            set(destination++, test(source++));
+          }
+
+          for (size_t i = 0UL; i < shift; ++i)
+          {
+            reset(destination++);
+          }
         }
       }
 
@@ -749,6 +853,26 @@ namespace etl
       etl::swap_ranges(pdata, pdata + SIZE, other.pdata);
     }
 
+#if ETL_USING_CPP11
+    //*************************************************************************
+    /// span
+    /// Returns a span of the underlying data.
+    //*************************************************************************
+    span_type span()
+    {
+      return span_type(pdata, pdata + SIZE);
+    }
+
+    //*************************************************************************
+    /// span
+    /// Returns a const span of the underlying data.
+    //*************************************************************************
+    const_span_type span() const
+    {
+      return const_span_type(pdata, pdata + SIZE);
+    }
+#endif
+
   protected:
 
     //*************************************************************************
@@ -767,7 +891,7 @@ namespace etl
       }
       else
       {
-        size_t i = 0;
+        size_t i = 0UL;
 
         while ((value != 0) && (i < SIZE))
         {
@@ -786,10 +910,12 @@ namespace etl
     //*************************************************************************
     void invert()
     {
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         pdata[i] = ~pdata[i];
       }
+
+      pdata[SIZE - 1] &= TOP_MASK;
     }
 
     //*************************************************************************
@@ -852,18 +978,18 @@ namespace etl
   /// The class emulates an array of bool elements, but optimized for space allocation.
   /// Will accommodate any number of bits.
   /// Does not use std::string.
-  ///\tparam N The number of bits.
+  ///\tparam MAXN The number of bits.
   ///\ingroup bitset
   //*************************************************************************
   template <const size_t MAXN>
   class bitset : public etl::ibitset
   {
 
-    static const size_t ARRAY_SIZE = (MAXN % BITS_PER_ELEMENT == 0) ? MAXN / BITS_PER_ELEMENT : MAXN / BITS_PER_ELEMENT + 1;
+    static ETL_CONSTANT size_t ARRAY_SIZE = (MAXN % BITS_PER_ELEMENT == 0) ? MAXN / BITS_PER_ELEMENT : MAXN / BITS_PER_ELEMENT + 1;
 
   public:
 
-    static const size_t ALLOCATED_BITS = ARRAY_SIZE * BITS_PER_ELEMENT;
+    static ETL_CONSTANT size_t ALLOCATED_BITS = ARRAY_SIZE * BITS_PER_ELEMENT;
 
   public:
 
@@ -1021,6 +1147,30 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Returns a string representing the bitset.
+    //*************************************************************************
+#if ETL_USING_CPP11
+    template <typename TString = etl::string<MAXN>>
+#else
+    template <typename TString>
+#endif
+    TString to_string(typename TString::value_type zero = typename TString::value_type('0'), typename TString::value_type one = typename TString::value_type('1')) const
+    {
+      TString result;
+
+      result.resize(MAXN, '\0');
+
+      ETL_ASSERT_AND_RETURN_VALUE((result.size() == MAXN), ETL_ERROR(etl::bitset_overflow), result);
+
+      for (size_t i = MAXN; i > 0; --i) 
+      {
+        result[MAXN - i] = test(i - 1) ? one : zero;
+      }
+      
+      return result;
+    }
+
+    //*************************************************************************
     /// operator =
     //*************************************************************************
     bitset<MAXN>& operator =(const bitset<MAXN>& other)
@@ -1124,7 +1274,7 @@ namespace etl
 
   private:
 
-    element_t data[ARRAY_SIZE];
+    element_t data[ARRAY_SIZE > 0U ? ARRAY_SIZE : 1U];
   };
 
   //***************************************************************************
@@ -1184,7 +1334,5 @@ void swap(etl::bitset<MAXN>& lhs, etl::bitset<MAXN>& rhs)
 }
 
 #include "private/minmax_pop.h"
-
-#undef ETL_FILE
 
 #endif

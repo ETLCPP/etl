@@ -34,21 +34,17 @@ SOFTWARE.
 #include <stddef.h>
 #include <stdint.h>
 
-#include <new>
-
 #include "platform.h"
 #include "algorithm.h"
 #include "utility.h"
-#include "container.h"
+#include "iterator.h"
 #include "alignment.h"
 #include "array.h"
 #include "exception.h"
 #include "error_handler.h"
 #include "debug_count.h"
 #include "type_traits.h"
-
-#undef ETL_FILE
-#define ETL_FILE "15"
+#include "placement_new.h"
 
 //*****************************************************************************
 ///\defgroup stack stack
@@ -82,7 +78,7 @@ namespace etl
   public:
 
     stack_full(string_type file_name_, numeric_type line_number_)
-      : stack_exception(ETL_ERROR_TEXT("stack:full", ETL_FILE"A"), file_name_, line_number_)
+      : stack_exception(ETL_ERROR_TEXT("stack:full", ETL_STACK_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -96,7 +92,7 @@ namespace etl
   public:
 
     stack_empty(string_type file_name_, numeric_type line_number_)
-      : stack_exception(ETL_ERROR_TEXT("stack:empty", ETL_FILE"B"), file_name_, line_number_)
+      : stack_exception(ETL_ERROR_TEXT("stack:empty", ETL_STACK_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
@@ -228,7 +224,7 @@ namespace etl
     typedef T                     value_type;      ///< The type stored in the stack.
     typedef T&                    reference;       ///< A reference to the type used in the stack.
     typedef const T&              const_reference; ///< A const reference to the type used in the stack.
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     typedef T&&                   rvalue_reference;///< An rvalue reference to the type used in the stack.
 #endif
     typedef T*                    pointer;         ///< A pointer to the type used in the stack.
@@ -264,7 +260,7 @@ namespace etl
       ::new (&p_buffer[top_index]) T(value);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Adds a value to the stack.
     /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
@@ -280,7 +276,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
     //*************************************************************************
     /// Constructs a value in the stack place'.
     /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
@@ -402,7 +398,7 @@ namespace etl
     //*************************************************************************
     void pop_into(reference destination)
     {
-      destination = top();
+      destination = ETL_MOVE(top());
       pop();
     }
 
@@ -414,7 +410,7 @@ namespace etl
     template <typename TContainer>
     void pop_into(TContainer& destination)
     {
-      destination.push(top());
+      destination.push(ETL_MOVE(top()));
       pop();
     }
 
@@ -440,7 +436,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
@@ -448,7 +444,6 @@ namespace etl
     {
       if (&rhs != this)
       {
-        clear();
         clone(etl::move(rhs));
       }
 
@@ -463,23 +458,27 @@ namespace etl
     //*************************************************************************
     void clone(const istack& other)
     {
-      size_t index = 0;
+      clear();
 
-      for (size_t i = 0; i < other.size(); ++i)
+      size_t index = 0UL;
+
+      for (size_t i = 0UL; i < other.size(); ++i)
       {
         push(other.p_buffer[index++]);
       }
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Make this a clone of the supplied stack
     //*************************************************************************
     void clone(istack&& other)
     {
-      size_t index = 0;
+      clear();
 
-      for (size_t i = 0; i < other.size(); ++i)
+      size_t index = 0UL;
+
+      for (size_t i = 0UL; i < other.size(); ++i)
       {
         push(etl::move(other.p_buffer[index++]));
       }
@@ -529,8 +528,9 @@ namespace etl
   class stack : public etl::istack<T>
   {
   public:
+    typedef typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type container_type;
 
-    static const size_t MAX_SIZE = SIZE;
+    static ETL_CONSTANT size_t MAX_SIZE = SIZE;
 
     //*************************************************************************
     /// Default constructor.
@@ -549,7 +549,7 @@ namespace etl
       etl::istack<T>::clone(rhs);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
@@ -581,7 +581,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -599,10 +599,8 @@ namespace etl
   private:
 
     /// The unintitialised buffer of T used in the stack.
-    typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[SIZE];
+    container_type buffer[SIZE];
   };
 }
-
-#undef ETL_FILE
 
 #endif

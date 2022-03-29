@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <thread>
 #include <chrono>
@@ -41,11 +41,11 @@ SOFTWARE.
 
 #if ETL_HAS_MUTEX
 
-#if defined(ETL_COMPILER_MICROSOFT)
+#if defined(ETL_TARGET_OS_WINDOWS)
   #include <Windows.h>
 #endif
 
-#define REALTIME_TEST 1
+#define REALTIME_TEST 0
 
 namespace
 {
@@ -129,31 +129,43 @@ namespace
       CHECK_EQUAL(4U, queue.size());
       CHECK_EQUAL(0U, queue.available());
 
+      // Queue full.
       CHECK(!queue.push(5));
-      CHECK(!queue.push(5));
+
+      queue.pop();
+      // Queue not full (buffer rollover)
+      CHECK(queue.push(5));
+
+      // Queue full.
+      CHECK(!queue.push(6));
+
+      queue.pop();
+      // Queue not full (buffer rollover)
+      CHECK(queue.push(6));
 
       int i;
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(1, i);
+      CHECK_EQUAL(3, i);
       CHECK_EQUAL(3U, queue.size());
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(2, i);
+      CHECK_EQUAL(4, i);
       CHECK_EQUAL(2U, queue.size());
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(3, i);
+      CHECK_EQUAL(5, i);
       CHECK_EQUAL(1U, queue.size());
 
       CHECK(queue.pop(i));
-      CHECK_EQUAL(4, i);
+      CHECK_EQUAL(6, i);
       CHECK_EQUAL(0U, queue.size());
 
       CHECK(!queue.pop(i));
       CHECK(!queue.pop(i));
     }
 
+#if !defined(ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_move_push_pop)
     {
@@ -176,18 +188,19 @@ namespace
 
       ItemM pr(0);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(1, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(2, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(3, pr.value);
 
-      queue.pop(std::move(pr));
+      queue.pop(pr);
       CHECK_EQUAL(4, pr.value);
     }
+#endif
 
     //*************************************************************************
     TEST(test_multiple_emplace)
@@ -298,6 +311,44 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_size_push_front_pop)
+    {
+      QueueInt queue;
+
+      CHECK_EQUAL(0U, queue.size());
+
+      queue.push(1);
+      queue.push(2);
+      queue.push(3);
+      queue.push(4);
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(3U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(2U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK_EQUAL(4, queue.front());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK_EQUAL(4, queue.front());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(0U, queue.size());
+    }
+
+    //*************************************************************************
     TEST(test_push_255)
     {
       QueueInt255 queue;
@@ -382,7 +433,7 @@ namespace
 
     etl::queue_mpmc_mutex<int, 10> queue;
 
-    const size_t LENGTH = 100000;
+    const size_t LENGTH = 100000UL;
 
     std::vector<int> push1;
     std::vector<int> push2;
@@ -397,7 +448,7 @@ namespace
       FIX_PROCESSOR_AFFINITY1;
       SET_THREAD_PRIORITY;
 
-      size_t count = 0;
+      size_t count = 0UL;
       int value = 0;
 
       while (!start.load());
@@ -418,7 +469,7 @@ namespace
       FIX_PROCESSOR_AFFINITY2;
       SET_THREAD_PRIORITY;
 
-      size_t count = 0;
+      size_t count = 0UL;
       int value = LENGTH / 2;
 
       while (!start.load());
@@ -439,7 +490,7 @@ namespace
       FIX_PROCESSOR_AFFINITY3;
       SET_THREAD_PRIORITY;
 
-      size_t count = 0;
+      size_t count = 0UL;
 
       while (!start.load());
 
@@ -460,7 +511,7 @@ namespace
       FIX_PROCESSOR_AFFINITY4;
       SET_THREAD_PRIORITY;
 
-      size_t count = 0;
+      size_t count = 0UL;
 
       while (!start.load());
 
@@ -514,7 +565,7 @@ namespace
       CHECK_EQUAL(LENGTH, push.size());
       CHECK_EQUAL(LENGTH, pop.size());
 
-      for (size_t i = 0; i < LENGTH; ++i)
+      for (size_t i = 0UL; i < LENGTH; ++i)
       {
         CHECK_EQUAL(push[i], pop[i]);
         CHECK_EQUAL(i, pop[i]);

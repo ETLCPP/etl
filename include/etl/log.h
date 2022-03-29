@@ -51,7 +51,7 @@ namespace etl
   ///\tparam NV   The number to find the log of.
   ///\tparam BASE The base of the log.
   //***************************************************************************
-  template <const size_t NV, const size_t BASE>
+  template <size_t NV, size_t BASE>
   struct log
   {
     enum value_type
@@ -64,7 +64,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for N = 1
   //***************************************************************************
-  template <const size_t BASE>
+  template <size_t BASE>
   struct log<1, BASE>
   {
     enum value_type
@@ -76,7 +76,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for N = 0
   //***************************************************************************
-  template <const size_t BASE>
+  template <size_t BASE>
   struct log<0, BASE>
   {
     enum value_type
@@ -84,6 +84,11 @@ namespace etl
       value = 0
     };
   };
+
+#if ETL_USING_CPP17
+  template <size_t NV, size_t BASE>
+  inline constexpr size_t log_v = log<NV, BASE>::value;
+#endif
 
   //***************************************************************************
   ///\ingroup log
@@ -98,6 +103,11 @@ namespace etl
     };
   };
 
+#if ETL_USING_CPP17
+  template <size_t NV>
+  inline constexpr size_t log2_v = log2<NV>::value;
+#endif
+
   //***************************************************************************
   ///\ingroup log
   /// Calculates base 10 logs.
@@ -110,6 +120,11 @@ namespace etl
       value = log<NV, 10>::value
     };
   };
+
+#if ETL_USING_CPP17
+  template <size_t NV>
+  inline constexpr size_t log10_v = log10<NV>::value;
+#endif
 }
 
 #endif

@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "UnitTest++/UnitTest++.h"
+#include "unit_test_framework.h"
 
 #include <stack>
 
@@ -247,7 +247,7 @@ namespace
     {
       etl::stack<int, 4> stack;
 
-      for (size_t i = 0; i < stack.max_size(); ++i)
+      for (size_t i = 0UL; i < stack.max_size(); ++i)
       {
         stack.push(1);
       }
@@ -342,12 +342,12 @@ namespace
     {
       etl::stack<int, 4> stack;
 
-      for (size_t i = 0; i < stack.max_size(); ++i)
+      for (size_t i = 0UL; i < stack.max_size(); ++i)
       {
         stack.push(1);
       }
 
-      for (size_t i = 0; i < stack.max_size(); ++i)
+      for (size_t i = 0UL; i < stack.max_size(); ++i)
       {
         stack.pop();
       }
@@ -436,6 +436,10 @@ namespace
       stack.push(4);
 
       etl::stack<int, 4> stack2;
+
+      // These should be overwritten.
+      stack2.push(5);
+      stack2.push(6);
 
       stack2 = stack;
 

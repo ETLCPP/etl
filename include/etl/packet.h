@@ -31,15 +31,11 @@ SOFTWARE.
 #ifndef ETL_PACKET_INCLUDED
 #define ETL_PACKET_INCLUDED
 
-#include <new>
-
 #include "platform.h"
 #include "static_assert.h"
 #include "alignment.h"
 #include "utility.h"
-
-#undef ETL_FILE
-#define ETL_FILE "38"
+#include "placement_new.h"
 
 //*****************************************************************************
 ///\defgroup packet packet
@@ -61,7 +57,7 @@ namespace etl
 
     typedef TBase base_t;
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Constructor that static asserts any types that do not conform to the max size and alignment.
     //***************************************************************************
@@ -99,7 +95,7 @@ namespace etl
       static_cast<TBase*>(data)->~TBase();
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Assignment operator for type.
     ///\param value The value to assign.
@@ -165,7 +161,5 @@ namespace etl
     typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
   };
 }
-
-#undef ETL_FILE
 
 #endif

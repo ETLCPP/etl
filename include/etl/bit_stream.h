@@ -37,6 +37,7 @@ SOFTWARE.
 #include "binary.h"
 #include "algorithm.h"
 #include "iterator.h"
+#include "memory.h"
 
 #include "private/minmax_push.h"
 
@@ -65,19 +66,9 @@ namespace etl
     //***************************************************************************
     /// Construct from range.
     //***************************************************************************
-    bit_stream(char* begin_, char* end_)
+    bit_stream(void* begin_, void* end_)
       : pdata(reinterpret_cast<unsigned char*>(begin_)),
-        length(etl::distance(begin_, end_))
-    {
-      restart();
-    }
-
-    //***************************************************************************
-    /// Construct from range.
-    //***************************************************************************
-    bit_stream(unsigned char* begin_, unsigned char* end_)
-      : pdata(begin_),
-        length(etl::distance(begin_, end_))
+        length(etl::distance(reinterpret_cast<unsigned char*>(begin_), reinterpret_cast<unsigned char*>(end_)))
     {
       restart();
     }
@@ -85,7 +76,7 @@ namespace etl
     //***************************************************************************
     /// Construct from begin and length.
     //***************************************************************************
-    bit_stream(char* begin_, size_t length_)
+    bit_stream(void* begin_, size_t length_)
       : pdata(reinterpret_cast<unsigned char*>(begin_)),
         length(length_)
     {
@@ -95,17 +86,7 @@ namespace etl
     //***************************************************************************
     /// Construct from begin and length.
     //***************************************************************************
-    bit_stream(unsigned char* begin_, size_t length_)
-      : pdata(begin_),
-        length(length_)
-    {
-      restart();
-    }
-
-    //***************************************************************************
-    /// Construct from begin and length.
-    //***************************************************************************
-    void set_stream(char* begin_, size_t length_)
+    void set_stream(void* begin_, size_t length_)
     {
       pdata  = reinterpret_cast<unsigned char*>(begin_);
       length = length_;
@@ -113,29 +94,11 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Construct from begin and length.
-    //***************************************************************************
-    void set_stream(unsigned char* begin_, size_t length_)
-    {
-      pdata  = begin_;
-      length = length_;
-      restart();
-    }
-
-    //***************************************************************************
     /// Construct from range.
     //***************************************************************************
-    void set_stream(char* begin_, char* end_)
+    void set_stream(void* begin_, void* end_)
     {
-      set_stream(begin_, etl::distance(begin_, end_));
-    }
-
-    //***************************************************************************
-    /// Construct from range.
-    //***************************************************************************
-    void set_stream(unsigned char* begin_, unsigned char* end_)
-    {
-      set_stream(begin_, etl::distance(begin_, end_));
+      set_stream(begin_, etl::distance(reinterpret_cast<unsigned char*>(begin_), reinterpret_cast<unsigned char*>(end_)));
     }
 
     //***************************************************************************
@@ -216,7 +179,7 @@ namespace etl
       unsigned char data[sizeof(T)];
       to_bytes(value, data);
 
-      for (size_t i = 0; i < sizeof(T); ++i)
+      for (size_t i = 0UL; i < sizeof(T); ++i)
       {
         if (!put_integral(uint32_t(data[i]), CHAR_BIT))
         {
@@ -305,16 +268,14 @@ namespace etl
         if (bits_remaining >= width)
         {
           // Temporary storage.
-          unsigned char data[sizeof(T)];
+          etl::uninitialized_buffer_of<T, 1U> data;
 
-          for (size_t i = 0; i < sizeof(T); ++i)
+          for (size_t i = 0UL; i < sizeof(T); ++i)
           {
-             get(data[i], CHAR_BIT);
+             get(data.raw[i], CHAR_BIT);
           }
 
-          from_bytes(data, value);
-
-          bits_remaining -= width;
+          from_bytes(reinterpret_cast<const unsigned char*>(data.raw), value);
 
           success = true;
         }
@@ -480,7 +441,7 @@ namespace etl
     //***************************************************************************
     bool get_bit()
     {
-      bool result = (pdata[byte_index] & (1 << (bits_in_byte - 1))) != 0;
+      bool result = (pdata[byte_index] & (1U << (bits_in_byte - 1U))) != 0U;
 
       step(1U);
 
@@ -493,19 +454,19 @@ namespace etl
     template <typename T>
     void from_bytes(const unsigned char* data, T& value)
     {
-      unsigned char temp[sizeof(T)];
+      etl::uninitialized_buffer_of<T, 1U> temp;
 
       // Network to host.
       if (etl::endianness::value() == etl::endian::little)
       {
-        etl::reverse_copy(data, data + sizeof(T), temp);
+        etl::reverse_copy(data, data + sizeof(T), temp.raw);
       }
       else
       {
-        etl::copy(data, data + sizeof(T), temp);
+        etl::copy(data, data + sizeof(T), temp.raw);
       }
 
-      value = *reinterpret_cast<T*>(temp);
+      value = *reinterpret_cast<T*>(temp.raw);
     }
 
     //***************************************************************************

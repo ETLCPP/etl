@@ -59,35 +59,35 @@ namespace etl
   {
     typedef uint32_t value_type;
 
-    inline uint32_t initial()
+    uint32_t initial() const
     {
       is_finalised = false;
 
       return 0;
     }
 
-    inline uint32_t add(value_type hash, uint8_t value) const
+    uint32_t add(value_type hash, uint8_t value) const
     {
       ETL_ASSERT(!is_finalised, ETL_ERROR(hash_finalised));
 
       hash += value;
-      hash += (hash << 10);
-      hash ^= (hash >> 6);
+      hash += (hash << 10U);
+      hash ^= (hash >> 6U);
 
       return hash;
     }
 
-    inline uint32_t final(value_type hash)
+    uint32_t final(value_type hash) const
     {
-      hash += (hash << 3);
-      hash ^= (hash >> 11);
-      hash += (hash << 15);
+      hash += (hash << 3U);
+      hash ^= (hash >> 11U);
+      hash += (hash << 15U);
       is_finalised = true;
 
       return hash;
     }
 
-    bool is_finalised;
+    mutable bool is_finalised;
   };
 
   //*************************************************************************

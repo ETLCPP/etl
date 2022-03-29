@@ -36,7 +36,6 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 #include "hash.h"
-#include "container.h"
 #include "parameter_type.h"
 
 #include "algorithm.h"
@@ -44,9 +43,6 @@ SOFTWARE.
 ///\defgroup array array
 /// A wrapper for arrays
 ///\ingroup containers
-
-#undef ETL_FILE
-#define ETL_FILE "42"
 
 namespace etl
 {
@@ -72,7 +68,7 @@ namespace etl
   public:
 
     array_wrapper_bounds(string_type file_name_, numeric_type line_number_)
-      : array_wrapper_exception(ETL_ERROR_TEXT("array_wrapper:bounds", ETL_FILE"A"), file_name_, line_number_)
+      : array_wrapper_exception(ETL_ERROR_TEXT("array_wrapper:bounds", ETL_ARRAY_WRAPPER_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -322,7 +318,7 @@ namespace etl
     {
       using ETL_OR_STD::swap; // Allow ADL
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         swap(ARRAY_[i], other.begin()[i]);
       }
@@ -392,7 +388,7 @@ namespace etl
   //*************************************************************************
   /// Hash function.
   //*************************************************************************
-#if ETL_8BIT_SUPPORT
+#if ETL_USING_8BIT_TYPES
   template <typename T, size_t SIZE, T(&ARRAY)[SIZE]>
   struct hash<etl::array_wrapper<T, SIZE, ARRAY> >
   {
@@ -416,8 +412,6 @@ void swap(etl::array_wrapper<T, SIZE, ARRAYL>& lhs,
 }
 
 #define ETL_ARRAY_WRAPPER(arraytype, arrayobject)  etl::array_wrapper<arraytype, ETL_ARRAY_SIZE(arrayobject), arrayobject>
-
-#undef ETL_FILE
 
 #endif
 
