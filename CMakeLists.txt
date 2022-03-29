@@ -7,8 +7,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/helpers.cmake)
 
 determine_version("version.txt")
 
-# If the function was not able to determine a version, the variable will just be empty
-project(etl ${ETL_VERSION})
+project(etl VERSION ${ETL_VERSION})
 
 #######################################################################
 # Define an option to allow consumers of the library to 
