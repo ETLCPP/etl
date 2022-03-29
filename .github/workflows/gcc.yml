@@ -19,6 +19,7 @@ jobs:
     - name: Build
       run: |
         git fetch --tags
+        git describe --tags --always
         cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
         gcc --version
         make
