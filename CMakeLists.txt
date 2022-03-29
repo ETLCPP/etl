@@ -2,6 +2,11 @@
 # The Embedded Template Library (https://www.etlcpp.com/)
 #######################################################################
 cmake_minimum_required(VERSION 3.5.0)
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/helpers.cmake)
+
+determine_version("version.txt")
+
 project(etl)
 
 #######################################################################
