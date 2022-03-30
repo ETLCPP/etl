@@ -2,7 +2,12 @@
 # The Embedded Template Library (https://www.etlcpp.com/)
 #######################################################################
 cmake_minimum_required(VERSION 3.5.0)
-project(etl)
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/helpers.cmake)
+
+determine_version_with_git()
+
+project(etl VERSION ${ETL_VERSION})
 
 option(BUILD_TESTS "Build unit tests" OFF)
 option(NO_STL "No STL" OFF)

@@ -11,6 +11,7 @@ stages:
 Build ETL:
   stage: build
   script:
+    - git fetch --tags
     - cmake -DBUILD_TESTS=ON ./
     - make
   artifacts:
