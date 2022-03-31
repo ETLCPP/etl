@@ -7,7 +7,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/helpers.cmake)
 
 determine_version_with_git()
 if(NOT ETL_VERSION)
-    determine_version()
+    determine_version("version.txt")
 endif()
 
 project(etl VERSION ${ETL_VERSION})
