@@ -16,7 +16,6 @@ function(determine_version_with_git)
         message(WARNING "Version string ${VERSION} retrieved with git describe is invalid")
         return()
     endif()
-    message(STATUS ${VERSION})
     # Parse the version information into pieces.
     string(REGEX REPLACE "^([0-9]+)\\..*" "\\1" VERSION_MAJOR "${VERSION}")
     string(REGEX REPLACE "^[0-9]+\\.([0-9]+).*" "\\1" VERSION_MINOR "${VERSION}")
