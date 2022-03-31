@@ -34,11 +34,13 @@ if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
-    # Generate the package configuration files using CMake provided macros
-    write_basic_package_version_file(
-        "${PROJECT_NAME}ConfigVersion.cmake"
-        COMPATIBILITY SameMajorVersion
-    )
+    if(ETL_VERSION)
+        # Generate the package configuration files using CMake provided macros
+        write_basic_package_version_file(
+            "${PROJECT_NAME}ConfigVersion.cmake"
+            COMPATIBILITY SameMajorVersion
+        )
+    endif()
     configure_package_config_file(
         "${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in"
         "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
