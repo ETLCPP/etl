@@ -127,10 +127,10 @@ def get_version():
 
   elements = version.split('.', 3)
 
-  return elements[0], elements[1], elements[2]
+  return version, elements[0], elements[1], elements[2]
 
 #------------------------------------------------------------------------------
-def create_version_h():
+def update_version_h():
   print('')
   print('Creating version.h')
 
@@ -162,37 +162,70 @@ def create_version_h():
     index = text[i].find(search_patch)
     if index != -1:     
       text[i] = text[i][index:length_patch] + patch_version
-      print(text[i])
 
 #------------------------------------------------------------------------------
-def create_library_json():
+def update_library_json(filename):
   print('')
-  print('Creating library.json')
+  print('Creating %s' % filename)
+  
+  with open(filename) as f:
+    text = f.read().splitlines()
+  
+  search = 'version'
+
+  for i in range(len(text) - 1):   
+    index = text[i].find(search)
+    if index != -1:
+      text[i] = '  \"version\": \"' + full_version + '\",'
+
+  with open(filename, 'w') as f:
+    for line in text:
+      f.write(line)
+      f.write('\n')
 
 #------------------------------------------------------------------------------
-def create_library_properties():
+def update_library_properties(filename):
   print('')
-  print('Creating library.properties')
+  print('Creating %s' % filename)
+
+  with open(filename, 'r') as f:
+    text = f.read().splitlines()
+  
+  search = 'version'
+
+  for i in range(len(text) - 1):   
+    index = text[i].find(search)
+    if index != -1:
+      text[i] = 'version=' + full_version
+
+  with open(filename, 'w') as f:
+    for line in text:
+      f.write(line)
+      f.write('\n')
 
 #------------------------------------------------------------------------------
 def update_versions():
   print('')
   print('Update Versions')
-  print('')
 
+  global full_version
   global major_version
   global minor_version
   global patch_version
 
-  major_version, minor_version, patch_version = get_version()
+  full_version, major_version, minor_version, patch_version = get_version()
 
-  print("Version = %s.%s.%s" % ( major_version, minor_version, patch_version ))
+  print("Version = %s.%s.%s" % (major_version, minor_version, patch_version ))
 
-  create_version_h()
-  create_library_json()
-  create_library_properties()
+  update_version_h()
+  
+  update_library_json(os.path.join(etl_dir,     'library.json'))
+  update_library_json(os.path.join(arduino_dir, 'library-arduino.json'))
+
+  update_library_properties(os.path.join(etl_dir,     'library.properties'))
+  update_library_properties(os.path.join(arduino_dir, 'library-arduino.properties'))
 
 #------------------------------------------------------------------------------
 if __name__ == "__main__":
-  create_arduino_variant()
   update_versions()
+  create_arduino_variant()
