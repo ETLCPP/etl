@@ -377,7 +377,7 @@ namespace etl
     static ETL_CONSTANT bool has_mutable_array_view           = (ETL_HAS_MUTABLE_ARRAY_VIEW == 1);
     static ETL_CONSTANT bool has_ideque_repair                = (ETL_HAS_IDEQUE_REPAIR == 1);
     static ETL_CONSTANT bool is_debug_build                   = (ETL_IS_DEBUG_BUILD == 1);
-    static ETL_CONSTANT  int cplusplus                        = __cplusplus;
+    static ETL_CONSTANT long cplusplus                        = __cplusplus;
   }
 }
 
