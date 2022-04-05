@@ -86,16 +86,18 @@ cmake -B build .
 sudo cmake --install build/
 ```
 
-After the library has been installed, you can use [find_package](https://cmake.org/cmake/help/latest/command/find_package.html) to use the library:
+After the library has been installed, you can use [find_package](https://cmake.org/cmake/help/latest/command/find_package.html) to use the library.
+Replace `<majorVersionRequirement>` with your desired major version:
 
 ```cmake
-find_package(etl)
+find_package(etl <majorVersionRequirement>)
 add_executable(foo main.cpp)
 target_link_libraries(foo PRIVATE etl)
 ```
 
 
-Alternatively you can use [FetchContent](https://cmake.org/cmake/help/latest/module/FetchContent.html):
+Alternatively you can use [FetchContent](https://cmake.org/cmake/help/latest/module/FetchContent.html), replacing `<targetVersion>` with the version to
+install based on a git tag:
 
 ```sh
 Include(FetchContent)
