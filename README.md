@@ -62,6 +62,30 @@ I am especially interested in people who are using Keil, IAR, Green Hills, TI Co
 
 See (https://www.etlcpp.com) for up-to-date information.
 
+**Installing this library**
+
+You can find the setup steps [here](https://www.etlcpp.com/setup.html).
+
+If you want to install this library with CMake, you can perform the following steps
+
+```sh
+git clone https://github.com/ETLCPP/etl.git
+git checkout <targetVersion>
+cmake -B build .
+sudo cmake --install build/
+```
+
+After the library has been installed, it should be enough to do
+
+```cmake
+find_package(etl)
+add_executable(foo main.cpp)
+target_link_libraries(foo PRIVATE etl)
+```
+
+Alternatively, you can drop the ETL folder somewhere in your project directory, add
+the folder with `add_subdirectory`, and then link against the `etl` target.
+
 **Arduino library:**
 
 The content of this repo is available as a library in the Arduino IDE (search for the "Embedded Template Library" in the IDE library manager). The Arduino library repository is available at ```https://github.com/ETLCPP/etl-arduino```, see there for more details.
