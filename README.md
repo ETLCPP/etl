@@ -13,7 +13,7 @@ Embedded Template Library (ETL)
 [![Build status](https://ci.appveyor.com/api/projects/status/b7jgecv7unqjw4u0/branch/master?svg=true)](https://ci.appveyor.com/project/jwellbelove/etl/branch/master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3c14cd918ccf40008d0bcd7b083d5946)](https://www.codacy.com/manual/jwellbelove/etl?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ETLCPP/etl&amp;utm_campaign=Badge_Grade)
 
-**Motivation**
+## Motivation
 
 C++ is a great language to use for embedded applications and templates are a powerful aspect. The standard library can offer a great deal of well tested functionality,  but there are some parts of the standard library that do not fit well with deterministic behaviour and limited resource requirements. These limitations usually preclude the use of dynamically allocated memory and containers with open ended sizes.
 
@@ -21,7 +21,7 @@ What is needed is a template library where the user can declare the size, or max
 
 This is what the ETL attempts to achieve.
 
-**Summary**
+## Summary
 
 The ETL is not designed to completely replace the STL, but complement it.
 Its design objective covers three areas.
@@ -35,7 +35,7 @@ It contains a set of containers, algorithms and utilities, some of which emulate
 There is no dynamic memory allocation. The library makes no use of the heap. All of the containers have a fixed capacity allowing all memory allocation to be determined at compile time.
 The library is intended for any compiler that supports C++ 03.
 
-**Main features:**
+## Main features
 
 - Cross platform. This library is not specific to any processor type.
 - No dynamic memory allocation
@@ -62,9 +62,20 @@ I am especially interested in people who are using Keil, IAR, Green Hills, TI Co
 
 See (https://www.etlcpp.com) for up-to-date information.
 
-**Installing this library**
+## Installing this library
 
 You can find the setup steps [here](https://www.etlcpp.com/setup.html).
+
+### CMake
+
+One way to use this library is to drop it somewhere in your project directory
+and then make the library available by using `add_subdirectory`
+
+```cmake
+add_subdirectory(etl)
+add_executable(foo main.cpp)
+target_link_libraries(foo PRIVATE etl)
+```
 
 If you want to install this library with CMake, you can perform the following steps
 
@@ -75,7 +86,7 @@ cmake -B build .
 sudo cmake --install build/
 ```
 
-After the library has been installed, it should be enough to do
+After the library has been installed, you can use [find_package](https://cmake.org/cmake/help/latest/command/find_package.html) to use the library:
 
 ```cmake
 find_package(etl)
@@ -83,9 +94,24 @@ add_executable(foo main.cpp)
 target_link_libraries(foo PRIVATE etl)
 ```
 
-Alternatively, you can drop the ETL folder somewhere in your project directory, add
-the folder with `add_subdirectory`, and then link against the `etl` target.
 
-**Arduino library:**
+Alternatively you can use [FetchContent](https://cmake.org/cmake/help/latest/module/FetchContent.html):
+
+```sh
+Include(FetchContent)
+
+FetchContent_Declare(
+  etl
+  GIT_REPOSITORY https://github.com/ETLCPP/etl
+  GIT_TAG        <targetVersion>
+)
+
+FetchContent_MakeAvailable(etl)
+
+add_executable(foo main.cpp)
+target_link_libraries(foo PRIVATE etl)
+```
+
+## Arduino library
 
 The content of this repo is available as a library in the Arduino IDE (search for the "Embedded Template Library" in the IDE library manager). The Arduino library repository is available at ```https://github.com/ETLCPP/etl-arduino```, see there for more details.
