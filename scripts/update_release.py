@@ -137,7 +137,7 @@ def update_version_h():
   version_h = os.path.join(headers_dir, 'version.h')
   
   with open(version_h) as f:
-    text = f.readlines()
+    text = f.read().splitlines()
   
   search_major = '#define ETL_VERSION_MAJOR '
   search_minor = '#define ETL_VERSION_MINOR '
@@ -162,6 +162,12 @@ def update_version_h():
     index = text[i].find(search_patch)
     if index != -1:     
       text[i] = text[i][index:length_patch] + patch_version
+      print(text[i])
+
+  with open(version_h, 'w') as f:
+    for line in text:
+      f.write(line)
+      f.write('\n')
 
 #------------------------------------------------------------------------------
 def update_library_json(filename):
