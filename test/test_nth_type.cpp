@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2021 jwellbelove
+Copyright(c) 2022 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -26,29 +26,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_NTH_TYPE_INCLUDED
-#define ETL_NTH_TYPE_INCLUDED
+#include "unit_test_framework.h"
 
-#include "platform.h"
+#include "etl/nth_type.h"
+#include <type_traits>
 
-namespace etl
+namespace
 {
-#if ETL_USING_CPP11
-  template <size_t N, typename T1, typename... TRest>
-  struct nth_type
+  SUITE(test_nth_type)
   {
-    using type = typename nth_type<N - 1U, TRest...>::type;
-  };
-
-  template <typename T1, typename... TRest>
-  struct nth_type<0U, T1, TRest...>
-  {
-    using type = T1;
-  };
-
-  template <size_t N, typename... TTypes>
-  using nth_type_t = typename nth_type<N, TTypes...>::type;
-#endif
+    //*************************************************************************
+    TEST(test_nth_type)
+    {
+      CHECK((std::is_same_v<etl::nth_type_t<0, int, long, double>, int>));
+      CHECK((std::is_same_v<etl::nth_type_t<1, int, long, double>, long>));
+      CHECK((std::is_same_v<etl::nth_type_t<2, int, long, double>, double>));
+    }
+  }
 }
-
-#endif

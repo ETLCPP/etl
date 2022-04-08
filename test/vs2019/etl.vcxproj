@@ -11299,6 +11299,7 @@
     <ClCompile Include="..\test_multi_span.cpp" />
     <ClCompile Include="..\test_multi_vector.cpp" />
     <ClCompile Include="..\test_murmur3.cpp" />
+    <ClCompile Include="..\test_nth_type.cpp" />
     <ClCompile Include="..\test_numeric.cpp" />
     <ClCompile Include="..\test_observer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>

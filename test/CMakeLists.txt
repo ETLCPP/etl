@@ -185,6 +185,7 @@ set(TEST_SOURCE_FILES
 	test_multi_range.cpp
 	test_multi_vector.cpp
 	test_murmur3.cpp
+	test_nth_type.cpp
 	test_numeric.cpp
 	test_observer.cpp
 	test_optional.cpp

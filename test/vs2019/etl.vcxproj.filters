@@ -3239,6 +3239,9 @@
     <ClCompile Include="..\unittest++\Win32\TimeHelpers.cpp">
       <Filter>UnitTest++\Source Files\Win32</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_nth_type.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
