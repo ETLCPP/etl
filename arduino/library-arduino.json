@@ -1,7 +1,6 @@
 {
   "name": "Embedded Template Library - Arduino",
-  "version": "20.27.2
-",
+  "version": "20.27.2",
   "authors": {
     "name": "John Wellbelove",
     "email": "john.wellbelove@etlcpp.com"
@@ -17,6 +16,24 @@
   "build": {
     "includeDir": "include"
   },
+  "export": {
+    "include": [
+      "include",
+      "examples",
+      "LICENSE",
+      "README.md"
+    ],
+    "exclude": [
+      "include/etl/experimental",
+      "include/etl/deprecated",
+      "**/__vm",
+      "**/.vs",
+      "**/*.filters",
+      "**/*.log",
+      "**/*.tmp"
+    ]
+  },
   "platforms": "*",
   "frameworks": "*"
 }
+

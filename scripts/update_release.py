@@ -123,11 +123,11 @@ def get_version():
   print('version_file = ', version_file)
     
   with open(version_file) as f:
-    version = f.read()
+    version = f.read().splitlines()
 
-  elements = version.split('.', 3)
+  elements = version[0].split('.', 3)
 
-  return version, elements[0], elements[1], elements[2]
+  return version[0], elements[0], elements[1], elements[2]
 
 #------------------------------------------------------------------------------
 def update_version_h():
