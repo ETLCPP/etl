@@ -1215,6 +1215,7 @@ namespace etl
                         TCompare  compare)
   {
     TIterator minimum = begin;
+    ++begin;
 
     while (begin != end)
     {
@@ -1258,6 +1259,7 @@ namespace etl
                         TCompare  compare)
   {
     TIterator maximum = begin;
+    ++begin;
 
     while (begin != end)
     {
@@ -1302,6 +1304,7 @@ namespace etl
   {
     TIterator minimum = begin;
     TIterator maximum = begin;
+    ++begin;
 
     while (begin != end)
     {
