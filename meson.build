@@ -7,8 +7,8 @@ project('etl',
         # plain options affect `native: false` targets.
         'cpp_std=c++17', 'build.cpp_std=c++17',
     ],
-    meson_version: '>=0.54.0',
-    version: '20.27.1'
+    meson_version: '>=0.57.0',
+    version: files('version.txt')
 )
 
 compile_args = []

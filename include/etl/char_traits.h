@@ -44,7 +44,7 @@ SOFTWARE.
 //*****************************************************************************
 
 // Define the large character types if necessary.
-#if (ETL_NO_LARGE_CHAR_SUPPORT)
+#if ETL_NO_LARGE_CHAR_SUPPORT
 #if ETL_USING_8BIT_TYPES
 typedef int8_t char8_t;
 #endif

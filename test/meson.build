@@ -250,7 +250,7 @@ elif
 endif
 
 if meson.get_compiler('cpp').get_id() == 'gcc'
-    etl_test_sources += files('test/test_atomic_gcc_sync.cpp')
+    etl_test_sources += files('test_atomic_gcc_sync.cpp')
     compile_args += '-fexceptions'
 endif
 

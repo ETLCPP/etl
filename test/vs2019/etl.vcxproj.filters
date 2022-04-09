@@ -193,6 +193,9 @@
     <Filter Include="UnitTest++\Source Files\Win32">
       <UniqueIdentifier>{107d7e33-580f-4dc5-be11-a4b2076c2c10}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Scripts">
+      <UniqueIdentifier>{4ee68175-3bc2-4d30-b8bf-be7261124979}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -3236,6 +3239,9 @@
     <ClCompile Include="..\unittest++\Win32\TimeHelpers.cpp">
       <Filter>UnitTest++\Source Files\Win32</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_nth_type.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -3289,9 +3295,6 @@
     <None Include="..\..\.circleci\config.yml">
       <Filter>Resource Files\CI\CircleCI</Filter>
     </None>
-    <None Include="..\cmake\unit-test_external_project.cmake">
-      <Filter>Resource Files\CMake</Filter>
-    </None>
     <None Include="..\..\appveyor.yml">
       <Filter>Resource Files\CI\Appveyor</Filter>
     </None>
@@ -3331,8 +3334,17 @@
     <None Include="..\..\arduino\library-arduino.properties">
       <Filter>Resource Files\Arduino</Filter>
     </None>
-    <None Include="..\..\arduino\create_arduino_library.py">
-      <Filter>Resource Files\Arduino</Filter>
+    <None Include="..\..\cmake\GetGitRevisionDescription.cmake">
+      <Filter>Resource Files\CMake</Filter>
+    </None>
+    <None Include="..\..\cmake\GetGitRevisionDescription.cmake.in">
+      <Filter>Resource Files\CMake</Filter>
+    </None>
+    <None Include="..\..\cmake\helpers.cmake">
+      <Filter>Resource Files\CMake</Filter>
+    </None>
+    <None Include="..\..\scripts\update_release.py">
+      <Filter>Resource Files\Scripts</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -3362,6 +3374,9 @@
     </Text>
     <Text Include="..\CMakeLists.txt">
       <Filter>Tests\Test Support</Filter>
+    </Text>
+    <Text Include="..\..\version.txt">
+      <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

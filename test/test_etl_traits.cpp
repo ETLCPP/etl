@@ -31,7 +31,8 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/platform.h"
-
+#include "etl/version.h"
+#include "etl/char_traits.h"
 namespace
 {
   SUITE(test_etl_traits)
@@ -70,6 +71,14 @@ namespace
       CHECK_EQUAL((ETL_HAS_MUTABLE_ARRAY_VIEW == 1),           etl::traits::has_mutable_array_view);     
       CHECK_EQUAL((ETL_IS_DEBUG_BUILD == 1),                   etl::traits::is_debug_build);
       CHECK_EQUAL(__cplusplus,                                 etl::traits::cplusplus);
+      CHECK_EQUAL(ETL_VERSION_MAJOR,                           etl::traits::version_major);
+      CHECK_EQUAL(ETL_VERSION_MINOR,                           etl::traits::version_minor);
+      CHECK_EQUAL(ETL_VERSION_PATCH,                           etl::traits::version_patch);
+      CHECK_EQUAL(ETL_VERSION_VALUE,                           etl::traits::version);
+      CHECK_ARRAY_EQUAL(ETL_VERSION, etl::traits::version_string,    etl::strlen(ETL_VERSION));
+      CHECK_ARRAY_EQUAL(ETL_VERSION, etl::traits::version_wstring,   etl::strlen(ETL_VERSION_W));
+      CHECK_ARRAY_EQUAL(ETL_VERSION, etl::traits::version_u16string, etl::strlen(ETL_VERSION_U16));
+      CHECK_ARRAY_EQUAL(ETL_VERSION, etl::traits::version_u32string, etl::strlen(ETL_VERSION_U32));
     }
   };
 }

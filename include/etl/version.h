@@ -31,6 +31,7 @@ SOFTWARE.
 #ifndef ETL_VERSION_INCLUDED
 #define ETL_VERSION_INCLUDED
 
+#include "platform.h"
 #include "macros.h"
 
 ///\defgroup version version
@@ -39,12 +40,34 @@ SOFTWARE.
 
 #define ETL_VERSION_MAJOR 20
 #define ETL_VERSION_MINOR 27
-#define ETL_VERSION_PATCH  1
+#define ETL_VERSION_PATCH 2
+
+
 #define ETL_VERSION       ETL_STRINGIFY(ETL_VERSION_MAJOR) "." ETL_STRINGIFY(ETL_VERSION_MINOR) "." ETL_STRINGIFY(ETL_VERSION_PATCH)
 #define ETL_VERSION_W     ETL_STRINGIFY(ETL_VERSION_MAJOR) L"." ETL_STRINGIFY(ETL_VERSION_MINOR) L"." ETL_STRINGIFY(ETL_VERSION_PATCH)
 #define ETL_VERSION_U16   ETL_STRINGIFY(ETL_VERSION_MAJOR) u"." ETL_STRINGIFY(ETL_VERSION_MINOR) u"." ETL_STRINGIFY(ETL_VERSION_PATCH)
 #define ETL_VERSION_U32   ETL_STRINGIFY(ETL_VERSION_MAJOR) U"." ETL_STRINGIFY(ETL_VERSION_MINOR) U"." ETL_STRINGIFY(ETL_VERSION_PATCH)
 #define ETL_VERSION_VALUE ((ETL_VERSION_MAJOR * 10000) + (ETL_VERSION_MINOR * 100) + ETL_VERSION_PATCH)
+
+namespace etl
+{
+  namespace traits
+  {
+    static ETL_CONSTANT long version                   = ETL_VERSION_VALUE;
+    static ETL_CONSTANT long version_major             = ETL_VERSION_MAJOR;
+    static ETL_CONSTANT long version_minor             = ETL_VERSION_MINOR;
+    static ETL_CONSTANT long version_patch             = ETL_VERSION_PATCH;
+#if ETL_USING_CPP11
+    static constexpr const char*     version_string    = ETL_VERSION;
+    static constexpr const wchar_t*  version_wstring   = ETL_VERSION_W;
+    static constexpr const char16_t* version_u16string = ETL_VERSION_U16;
+    static constexpr const char32_t* version_u32string = ETL_VERSION_U32;
+#else
+    static const char*     version_string              = ETL_VERSION;
+    static const wchar_t*  version_wstring             = ETL_VERSION_W;
+#endif
+  }
+}
 
 #endif
 

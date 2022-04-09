@@ -11299,6 +11299,7 @@
     <ClCompile Include="..\test_multi_span.cpp" />
     <ClCompile Include="..\test_multi_vector.cpp" />
     <ClCompile Include="..\test_murmur3.cpp" />
+    <ClCompile Include="..\test_nth_type.cpp" />
     <ClCompile Include="..\test_numeric.cpp" />
     <ClCompile Include="..\test_observer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -11496,9 +11497,11 @@
     <None Include="..\..\.gitignore" />
     <None Include="..\..\.gitmodules" />
     <None Include="..\..\appveyor.yml" />
-    <None Include="..\..\arduino\create_arduino_library.py" />
     <None Include="..\..\arduino\library-arduino.json" />
     <None Include="..\..\arduino\library-arduino.properties" />
+    <None Include="..\..\cmake\GetGitRevisionDescription.cmake" />
+    <None Include="..\..\cmake\GetGitRevisionDescription.cmake.in" />
+    <None Include="..\..\cmake\helpers.cmake" />
     <None Include="..\..\etl.pspimage" />
     <None Include="..\..\etl.xar" />
     <None Include="..\..\include\etl\generators\generate.bat" />
@@ -11515,7 +11518,7 @@
     <None Include="..\..\library.properties" />
     <None Include="..\..\meson.build" />
     <None Include="..\..\README.md" />
-    <None Include="..\cmake\unit-test_external_project.cmake" />
+    <None Include="..\..\scripts\update_release.py" />
     <None Include="..\runsanitychecks.sh" />
     <None Include="..\runtests.sh" />
     <None Include="cpp.hint" />
@@ -11524,6 +11527,7 @@
     <Text Include="..\..\CMakeLists.txt" />
     <Text Include="..\..\support\Release notes.txt" />
     <Text Include="..\..\todo.txt" />
+    <Text Include="..\..\version.txt" />
     <Text Include="..\CMakeLists.txt" />
     <Text Include="..\sanity-check\c++03\CMakeLists.txt" />
     <Text Include="..\sanity-check\c++11\CMakeLists.txt" />

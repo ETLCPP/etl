@@ -211,6 +211,8 @@ $RECYCLE.BIN/
 ## Python
 #############
 
+/venv
+
 *.py[cod]
 
 # Packages
@@ -222,6 +224,7 @@ eggs/
 parts/
 var/
 sdist/
+
 develop-eggs/
 .installed.cfg
 
