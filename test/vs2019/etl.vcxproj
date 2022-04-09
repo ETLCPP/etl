@@ -11497,7 +11497,6 @@
     <None Include="..\..\.gitignore" />
     <None Include="..\..\.gitmodules" />
     <None Include="..\..\appveyor.yml" />
-    <None Include="..\..\arduino\create_arduino_library.py" />
     <None Include="..\..\arduino\library-arduino.json" />
     <None Include="..\..\arduino\library-arduino.properties" />
     <None Include="..\..\cmake\GetGitRevisionDescription.cmake" />

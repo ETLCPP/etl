@@ -3334,9 +3334,6 @@
     <None Include="..\..\arduino\library-arduino.properties">
       <Filter>Resource Files\Arduino</Filter>
     </None>
-    <None Include="..\..\arduino\create_arduino_library.py">
-      <Filter>Resource Files\Arduino</Filter>
-    </None>
     <None Include="..\..\cmake\GetGitRevisionDescription.cmake">
       <Filter>Resource Files\CMake</Filter>
     </None>
