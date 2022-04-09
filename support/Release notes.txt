@@ -1,8 +1,13 @@
 ===============================================================================
 20.27.2
 Added scripts to automatically update version information.
+Added ETL version information to etl::traits.
+Small optimisations for computing indexes for queues & cyclic_value.
 #530 Fixed: etl::nth_type not implemented correctly.
 #521 CMake: Add package version file for installation.
+#525 Fixed: plusplus constant type.
+#517 Fixed: unused-local-typedefs warning.
+
 ===============================================================================
 20.27.1
 Fixed undefined macros when compiler type is defined by the user.
