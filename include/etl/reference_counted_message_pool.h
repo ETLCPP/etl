@@ -61,7 +61,7 @@ namespace etl
   //***************************************************************************
   /// Exception if the allocation failed.
   //***************************************************************************
-  class reference_counted_message_pool_allocation_failure : etl::reference_counted_message_pool_exception
+  class reference_counted_message_pool_allocation_failure : public etl::reference_counted_message_pool_exception
   {
   public:
 
@@ -74,7 +74,7 @@ namespace etl
   //***************************************************************************
   /// Exception if the release failed.
   //***************************************************************************
-  class reference_counted_message_pool_release_failure : etl::reference_counted_message_pool_exception
+  class reference_counted_message_pool_release_failure : public etl::reference_counted_message_pool_exception
   {
   public:
 
