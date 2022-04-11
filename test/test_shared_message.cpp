@@ -249,5 +249,43 @@ namespace
       CHECK_EQUAL(0, router2.count_message2);
       CHECK_EQUAL(0, router2.count_unknown_message);
     }
+
+    TEST(test_reference_counted_pool_exceptions)
+    {
+      using pool_message_parameters = etl::atomic_counted_message_pool::pool_message_parameters<Message1, Message2>;
+
+      etl::fixed_sized_memory_block_allocator<pool_message_parameters::max_size,
+                                              pool_message_parameters::max_alignment,
+                                              4U> memory_allocator;
+
+      etl::atomic_counted_message_pool message_pool(memory_allocator);
+
+      etl::reference_counted_message<Message1, etl::atomic_int>* prcm;
+      CHECK_NO_THROW(prcm = message_pool.allocate<Message1>(1));
+      CHECK_NO_THROW(prcm = message_pool.allocate<Message1>(2));
+      CHECK_NO_THROW(prcm = message_pool.allocate<Message1>(3));
+      CHECK_NO_THROW(prcm = message_pool.allocate<Message1>(4));
+      
+      try
+      {
+        prcm = message_pool.allocate<Message1>(5);
+      }
+      catch (etl::exception e)
+      {
+        CHECK_EQUAL(std::string("reference_counted_message_pool:allocation failure"), std::string(e.what()));
+      }
+      
+      Message1 message1(6);
+      etl::reference_counted_message<Message1, etl::atomic_int> temp(message1, message_pool);
+
+      try
+      {
+        message_pool.release(temp);
+      }
+      catch (etl::exception e)
+      {
+        CHECK_EQUAL(std::string("reference_counted_message_pool:release failure"), std::string(e.what()));
+      }
+    }
   }
 }
