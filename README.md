@@ -81,6 +81,7 @@ If you want to install this library with CMake, you can perform the following st
 
 ```sh
 git clone https://github.com/ETLCPP/etl.git
+cd etl
 git checkout <targetVersion>
 cmake -B build .
 sudo cmake --install build/
