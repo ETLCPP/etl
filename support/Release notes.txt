@@ -1,4 +1,9 @@
 ===============================================================================
+20.27.3
+#531 Fixed: Compilation of etl::reference_counted_message_pool with ETL_LOG_ERROR 
+enabled due to non-public inheritance.
+
+===============================================================================
 20.27.2
 Added scripts to automatically update version information.
 Added ETL version information to etl::traits.
