@@ -77,16 +77,20 @@ add_executable(foo main.cpp)
 target_link_libraries(foo PRIVATE etl)
 ```
 
-If you want to install this library with CMake, you can perform the following steps
+If you want to install this library with CMake, you can perform the following steps. On Linux,
+super user rights might be required to install the library, so it might be necessary to add
+`sudo` before the last command:
 
 ```sh
 git clone https://github.com/ETLCPP/etl.git
+cd etl
 git checkout <targetVersion>
 cmake -B build .
-sudo cmake --install build/
+cmake --install build/
 ```
 
-After the library has been installed, you can use [find_package](https://cmake.org/cmake/help/latest/command/find_package.html) to use the library.
+After the library has been installed, you can use
+[find_package](https://cmake.org/cmake/help/latest/command/find_package.html) to use the library.
 Replace `<majorVersionRequirement>` with your desired major version:
 
 ```cmake
@@ -96,8 +100,8 @@ target_link_libraries(foo PRIVATE etl)
 ```
 
 
-Alternatively you can use [FetchContent](https://cmake.org/cmake/help/latest/module/FetchContent.html), replacing `<targetVersion>` with the version to
-install based on a git tag:
+Alternatively you can use [FetchContent](https://cmake.org/cmake/help/latest/module/FetchContent.html),
+replacing `<targetVersion>` with the version to install based on a git tag:
 
 ```sh
 Include(FetchContent)
