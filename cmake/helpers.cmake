@@ -10,7 +10,7 @@ endfunction()
 
 function(determine_version_with_git)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/GetGitRevisionDescription.cmake)
-    git_describe(VERSION)
+    git_describe(VERSION ${ARGN})
     string(FIND ${VERSION} "." VALID_VERSION)
     if(VALID_VERSION EQUAL -1)
         message(WARNING "Version string ${VERSION} retrieved with git describe is invalid")
