@@ -37,6 +37,7 @@ if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
         write_basic_package_version_file(
             "${PROJECT_NAME}ConfigVersion.cmake"
             COMPATIBILITY SameMajorVersion
+            ARCH_INDEPENDENT
         )
     endif()
     configure_package_config_file(
