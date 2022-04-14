@@ -176,7 +176,7 @@ function(git_describe _var)
     if(NOT GIT_FOUND)
         find_package(Git QUIET)
     endif()
-    get_git_head_revision(refspec hash)
+    get_git_head_revision(refspec hash ${ARGN})
     if(NOT GIT_FOUND)
         set(${_var}
             "GIT-NOTFOUND"

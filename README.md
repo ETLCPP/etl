@@ -77,6 +77,13 @@ add_executable(foo main.cpp)
 target_link_libraries(foo PRIVATE etl)
 ```
 
+If ETL library is used as a Git submodule it may require additional configuration for proper ETL version resolution by allowing the lookup for Git folder outside of the library root directory.
+
+```cmake
+set(GIT_DIR_LOOKUP_POLICY ALLOW_LOOKING_ABOVE_CMAKE_SOURCE_DIR)
+add_subdirectory(etl)
+```
+
 If you want to install this library with CMake, you can perform the following steps. On Linux,
 super user rights might be required to install the library, so it might be necessary to add
 `sudo` before the last command:
