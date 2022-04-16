@@ -43,8 +43,8 @@ namespace etl
 {
   //***************************************************************************
   ///\ingroup fibonacci
-  /// Defines <b>value</b> as the Nth Fibbonacci number.
-  ///\tparam N The number to find the Fibbonacci value of.
+  /// Defines <b>value</b> as the Nth Fibonacci number.
+  ///\tparam N The number to find the Fibonacci value of.
   //***************************************************************************
   template <size_t N>
   struct fibonacci

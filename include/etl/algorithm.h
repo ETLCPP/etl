@@ -106,14 +106,14 @@ namespace etl
   //***************************************************************************
   // swap_ranges
   //***************************************************************************
-  template <typename T1terator1, typename TIterator2>
+  template <typename TIterator1, typename TIterator2>
 #if ETL_USING_STD_NAMESPACE
   ETL_CONSTEXPR20
 #else
   ETL_CONSTEXPR14
 #endif
-  TIterator2 swap_ranges(T1terator1 first1,
-                         T1terator1 last1,
+  TIterator2 swap_ranges(TIterator1 first1,
+                         TIterator1 last1,
                          TIterator2 first2)
   {
     while (first1 != last1)

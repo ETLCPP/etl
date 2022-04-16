@@ -92,7 +92,7 @@ namespace etl
   //*********************************************************************
   /// The object that is being observed.
   ///\tparam TObserver     The observer type.
-  ///\tparam MAX_OBSERVERS The maximum number of observers that can be accomodated.
+  ///\tparam MAX_OBSERVERS The maximum number of observers that can be accommodated.
   ///\ingroup observer
   //*********************************************************************
   template <typename TObserver, const size_t MAX_OBSERVERS>

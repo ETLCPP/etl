@@ -54,7 +54,7 @@ namespace
   SUITE(test_variance)
   {
     //*************************************************************************
-    TEST(test_char_variance_default_constuctor)
+    TEST(test_char_variance_default_constructor)
     {
       etl::variance<etl::variance_type::Population, char, int32_t> variance;
 
@@ -64,7 +64,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_float_variance_default_constuctor)
+    TEST(test_float_variance_default_constructor)
     {
       etl::variance<etl::variance_type::Population, float> variance;
 
@@ -74,7 +74,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_double_variance_default_constuctor)
+    TEST(test_double_variance_default_constructor)
     {
       etl::variance<etl::variance_type::Population, double> variance;
 
@@ -84,7 +84,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_char_variance_constuctor_population)
+    TEST(test_char_variance_constructor_population)
     {
       double variance_result;
 
@@ -94,7 +94,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_char_variance_constuctor_sample)
+    TEST(test_char_variance_constructor_sample)
     {
       double variance_result;
 
@@ -104,7 +104,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_float_variance_constuctor_population)
+    TEST(test_float_variance_constructor_population)
     {
       double variance_result;
 
@@ -114,7 +114,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_float_variance_constuctor_sample)
+    TEST(test_float_variance_constructor_sample)
     {
       double variance_result;
 
@@ -124,7 +124,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_double_variance_constuctor_population)
+    TEST(test_double_variance_constructor_population)
     {
       double variance_result;
 
@@ -134,7 +134,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_double_variance_constuctor_sample)
+    TEST(test_double_variance_constructor_sample)
     {
       double variance_result;
 

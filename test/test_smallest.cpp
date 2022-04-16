@@ -34,7 +34,7 @@ SOFTWARE.
 
 namespace
 {
-  SUITE(test_smallst)
+  SUITE(test_smallest)
   {
     //*************************************************************************
     TEST(test_pod)

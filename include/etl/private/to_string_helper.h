@@ -157,7 +157,7 @@ namespace etl
 
       if (value == 0)
       {
-        // If number is negative, append '-' (a negative zero might occure for fractional numbers > -1.0)
+        // If number is negative, append '-' (a negative zero might occur for fractional numbers > -1.0)
         if ((format.get_base() == 10U) && negative)
         {
           str.push_back(type('-'));
@@ -377,7 +377,7 @@ namespace etl
 
       iterator start = str.end();
 
-      // Caculate the denominator.
+      // Calculate the denominator.
       working_t denominator = 1U;
 
       for (uint32_t i = 0U; i < denominator_exponent; ++i)
@@ -558,11 +558,11 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value &&
                             !etl::is_same<T, bool>::value &&
                             !etl::is_one_of<T, int64_t, uint64_t>::value, const TIString&>::type
-      to_string(const T value, uint32_t denominator_exponant, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
+      to_string(const T value, uint32_t denominator_exponent, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
     {
       typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type type;
 
-      etl::private_to_string::add_integral_denominated(type(value), denominator_exponant, str, format, append);
+      etl::private_to_string::add_integral_denominated(type(value), denominator_exponent, str, format, append);
 
       return str;
     }
@@ -574,9 +574,9 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value&&
                             !etl::is_same<T, bool>::value&&
                             etl::is_one_of<T, int64_t, uint64_t>::value, const TIString&>::type
-      to_string(const T value, uint32_t denominator_exponant, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
+      to_string(const T value, uint32_t denominator_exponent, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
     {
-      etl::private_to_string::add_integral_denominated(value, denominator_exponant, str, format, append);
+      etl::private_to_string::add_integral_denominated(value, denominator_exponent, str, format, append);
 
       return str;
     }
@@ -602,9 +602,9 @@ namespace etl
     template <typename T, typename TIString>
     typename etl::enable_if<etl::is_integral<T>::value &&
       !etl::is_same<T, bool>::value>::value, const TIString& > ::type
-      to_string(const T value, uint32_t denominator_exponant, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
+      to_string(const T value, uint32_t denominator_exponent, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append = false)
     {
-      etl::private_to_string::add_integral_denominated(type(value), denominator_exponant, str, format, append, false);
+      etl::private_to_string::add_integral_denominated(type(value), denominator_exponent, str, format, append, false);
 
       return str;
     }

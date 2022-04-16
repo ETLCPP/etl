@@ -84,7 +84,7 @@ namespace
   SUITE(test_correlation)
   {
     //*************************************************************************
-    TEST(test_char_correlation_default_constuctor)
+    TEST(test_char_correlation_default_constructor)
     {
       etl::correlation<etl::correlation_type::Population, char, int32_t> correlation;
 
@@ -94,7 +94,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_float_correlation_default_constuctor)
+    TEST(test_float_correlation_default_constructor)
     {
       etl::correlation<etl::correlation_type::Population, float> correlation;
 
@@ -104,7 +104,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_double_correlation_default_constuctor)
+    TEST(test_double_correlation_default_constructor)
     {
       etl::correlation<etl::correlation_type::Population, double> correlation;
 
@@ -114,7 +114,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_char_correlation_constuctor_population)
+    TEST(test_char_correlation_constructor_population)
     {
       double correlation_result;
       double covariance_result;
@@ -142,7 +142,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_char_correlation_constuctor_sample)
+    TEST(test_char_correlation_constructor_sample)
     {
       double correlation_result;
       double covariance_result;
@@ -170,7 +170,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_float_correlation_constuctor_population)
+    TEST(test_float_correlation_constructor_population)
     {
       double correlation_result;
       double covariance_result;
@@ -198,7 +198,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_float_correlation_constuctor_sample)
+    TEST(test_float_correlation_constructor_sample)
     {
       double correlation_result;
       double covariance_result;
@@ -226,7 +226,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_double_correlation_constuctor_population)
+    TEST(test_double_correlation_constructor_population)
     {
       double correlation_result;
       double covariance_result;
@@ -254,7 +254,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_double_correlation_constuctor_sample)
+    TEST(test_double_correlation_constructor_sample)
     {
       double correlation_result;
       double covariance_result;

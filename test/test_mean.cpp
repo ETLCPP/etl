@@ -54,7 +54,7 @@ namespace
   SUITE(test_mean)
   {
     //*************************************************************************
-    TEST(test_char_mean_default_constuctor)
+    TEST(test_char_mean_default_constructor)
     {
       etl::mean<char, int32_t> mean;
 
@@ -64,7 +64,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_float_mean_default_constuctor)
+    TEST(test_float_mean_default_constructor)
     {
       etl::mean<float> mean;
 
@@ -74,7 +74,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_double_mean_default_constuctor)
+    TEST(test_double_mean_default_constructor)
     {
       etl::mean<double> mean;
 
@@ -84,7 +84,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_char_mean_constuctor)
+    TEST(test_char_mean_constructor)
     {
       double mean_result;
 
@@ -94,7 +94,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_float_mean_constuctor)
+    TEST(test_float_mean_constructor)
     {
       double mean_result;
 
@@ -104,7 +104,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_double_mean_constuctor)
+    TEST(test_double_mean_constructor)
     {
       double mean_result;
 

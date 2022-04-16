@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_ALIGNEMENT_INCLUDED
-#define ETL_ALIGNEMENT_INCLUDED
+#ifndef ETL_ALIGNMENT_INCLUDED
+#define ETL_ALIGNMENT_INCLUDED
 
 #include <stdint.h>
 

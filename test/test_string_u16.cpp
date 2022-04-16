@@ -3364,7 +3364,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_compare_positon_length_string)
+    TEST_FIXTURE(SetupFixture, test_compare_position_length_string)
     {
       Compare_Text compare_text(STR("xxxABCDEFyyy"));
       Text text(STR("xxxABCDEFyyy"));
@@ -3399,7 +3399,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_compare_positon_length_string_subposition_sublength)
+    TEST_FIXTURE(SetupFixture, test_compare_position_length_string_subposition_sublength)
     {
       Compare_Text compare_text(STR("xxxABCDEFyyy"));
       Text text(STR("xxxABCDEFyyy"));
@@ -3469,7 +3469,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_compare_positon_length_c_string)
+    TEST_FIXTURE(SetupFixture, test_compare_position_length_c_string)
     {
       Compare_Text compare_text(STR("xxxABCDEFyyy"));
       Text text(STR("xxxABCDEFyyy"));
@@ -3504,7 +3504,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_compare_positon_length_c_string_n)
+    TEST_FIXTURE(SetupFixture, test_compare_position_length_c_string_n)
     {
       Compare_Text compare_text(STR("xxxABCDEFyyy"));
       Text text(STR("xxxABCDEFyyy"));
