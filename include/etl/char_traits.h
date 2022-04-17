@@ -43,15 +43,6 @@ SOFTWARE.
 ///\ingroup string
 //*****************************************************************************
 
-// Define the large character types if necessary.
-#if ETL_NO_LARGE_CHAR_SUPPORT
-#if ETL_USING_8BIT_TYPES
-typedef int8_t char8_t;
-#endif
-typedef int16_t char16_t;
-typedef int32_t char32_t;
-#endif
-
 namespace etl
 {
   template<typename T> struct char_traits_types;

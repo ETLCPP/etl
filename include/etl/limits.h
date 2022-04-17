@@ -271,7 +271,7 @@ namespace etl
     static ETL_CONSTEXPR signed char signaling_NaN() { return 0; }
   };
 
-#if (ETL_NO_LARGE_CHAR_SUPPORT == false)
+#if ETL_USING_CHAR16_T
   //***************************************************************************
   // char16_t
   template<>
@@ -294,7 +294,9 @@ namespace etl
     static ETL_CONSTEXPR char16_t quiet_NaN() { return 0U; }
     static ETL_CONSTEXPR char16_t signaling_NaN() { return 0U; }
   };
+#endif
 
+#if ETL_USING_CHAR32_T
   //***************************************************************************
   // char32_t
   template<>
@@ -317,7 +319,6 @@ namespace etl
     static ETL_CONSTEXPR char32_t quiet_NaN() { return 0U; }
     static ETL_CONSTEXPR char32_t signaling_NaN() { return 0U; }
   };
-
 #endif
 
   //***************************************************************************
