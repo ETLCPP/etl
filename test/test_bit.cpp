@@ -131,20 +131,6 @@ namespace
   }
 
   //***********************************
-  // Power of 2.
-  uint64_t test_power_of_2(int power)
-  {
-    uint64_t result = 1ULL;
-
-    for (int i = 0; i < power; ++i)
-    {
-      result *= 2;
-    }
-
-    return result;
-  }
-
-  //***********************************
   // Count the bit width the long way.
   template <typename T>
   T test_bit_width(T value)
