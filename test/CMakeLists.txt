@@ -127,6 +127,7 @@ set(TEST_SOURCE_FILES
 	test_endian.cpp
 	test_enum_type.cpp
 	test_error_handler.cpp
+	test_etl_traits.cpp
 	test_exception.cpp
 	test_fixed_iterator.cpp
 	test_fixed_sized_memory_block_allocator.cpp
