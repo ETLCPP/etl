@@ -1462,6 +1462,9 @@ namespace
 
       std::string a("A");
       Key b("B");
+
+      CHECK(compare(a, b));
+      CHECK(!compare(b, a));
     }
 
     //*************************************************************************

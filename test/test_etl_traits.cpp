@@ -33,6 +33,8 @@ SOFTWARE.
 #include "etl/platform.h"
 #include "etl/version.h"
 #include "etl/char_traits.h"
+#include "etl/mutex.h"
+
 namespace
 {
   SUITE(test_etl_traits)
@@ -60,6 +62,7 @@ namespace
       CHECK_EQUAL((ETL_USING_8BIT_TYPES == 1),                 etl::traits::has_8bit_types);
       CHECK_EQUAL((ETL_USING_64BIT_TYPES == 1),                etl::traits::has_64bit_types);
       CHECK_EQUAL((ETL_HAS_ATOMIC == 1),                       etl::traits::has_atomic);
+      CHECK_EQUAL((ETL_HAS_MUTEX == 1),                        etl::traits::has_mutex);
       CHECK_EQUAL((ETL_HAS_NULLPTR == 1),                      etl::traits::has_nullptr);
       CHECK_EQUAL((ETL_HAS_CHAR8_T == 1),                      etl::traits::has_char8_t);
       CHECK_EQUAL((ETL_HAS_NATIVE_CHAR8_T == 1),               etl::traits::has_native_char8_t);
