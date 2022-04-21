@@ -569,8 +569,15 @@ namespace etl
   typedef std::atomic<long long>           atomic_llong;
   typedef std::atomic<unsigned long long>  atomic_ullong;
   typedef std::atomic<wchar_t>             atomic_wchar_t;
+#if ETL_HAS_NATIVE_CHAR8_T
+  typedef std::atomic<char8_t>             atomic_char8_t;
+#endif
+#if ETL_HAS_NATIVE_CHAR16_T
   typedef std::atomic<char16_t>            atomic_char16_t;
+#endif
+#if ETL_HAS_NATIVE_CHAR32_T
   typedef std::atomic<char32_t>            atomic_char32_t;
+#endif
 #if ETL_USING_8BIT_TYPES
   typedef std::atomic<uint8_t>             atomic_uint8_t;
   typedef std::atomic<int8_t>              atomic_int8_t;

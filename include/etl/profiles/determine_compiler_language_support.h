@@ -168,6 +168,21 @@ SOFTWARE.
 #define ETL_USING_CPP20 (ETL_CPP20_SUPPORTED == 1)
 #define ETL_USING_CPP23 (ETL_CPP23_SUPPORTED == 1)
 
+// Language standard
+#if ETL_USING_CPP23
+  #define ETL_LANGUAGE_STANDARD 23
+#elif ETL_USING_CPP20
+  #define ETL_LANGUAGE_STANDARD 20
+#elif ETL_USING_CPP17
+  #define ETL_LANGUAGE_STANDARD 17
+#elif ETL_USING_CPP14
+  #define ETL_LANGUAGE_STANDARD 14
+#elif ETL_USING_CPP11
+  #define ETL_LANGUAGE_STANDARD 11
+#else
+  #define ETL_LANGUAGE_STANDARD 3
+#endif
+
 // NAN not defined or Rowley CrossWorks
 #if !defined(NAN) || defined(__CROSSWORKS_ARM) || defined(ETL_COMPILER_ARM5) || defined(ARDUINO)
   #define ETL_NO_CPP_NAN_SUPPORT

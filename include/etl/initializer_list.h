@@ -35,9 +35,7 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if (defined(ETL_FORCE_ETL_INITIALIZER_LIST) && defined(ETL_FORCE_STD_INITIALIZER_LIST))
-  #error ETL_FORCE_ETL_INITIALIZER_LIST and ETL_FORCE_STD_INITIALIZER_LIST both been defined. Choose one or neither.
-#endif
+#if ETL_HAS_INITIALIZER_LIST
 
 #if (ETL_USING_CPP11 && !defined(ETL_NO_INITIALIZER_LIST))
 
@@ -46,7 +44,6 @@ SOFTWARE.
 // Use the compiler's std::initializer_list?
 #if (ETL_USING_STL && ETL_NOT_USING_STLPORT && !defined(ETL_FORCE_ETL_INITIALIZER_LIST)) || defined(ETL_IN_UNIT_TEST) || defined(ETL_FORCE_STD_INITIALIZER_LIST)
   
-  #define ETL_HAS_INITIALIZER_LIST 1
 	#include <initializer_list>
 
 #else
@@ -55,8 +52,6 @@ SOFTWARE.
 namespace std
 {
 #if defined(ETL_COMPILER_MICROSOFT) 
-
-  #define ETL_HAS_INITIALIZER_LIST 1
 
   ///**************************************************************************
   /// A definition of initializer_list that is compatible with the Microsoft compiler
@@ -141,8 +136,6 @@ namespace std
       defined(ETL_COMPILER_ARM7) || defined(ETL_COMPILER_IAR)   || defined(ETL_COMPILER_TEXAS_INSTRUMENTS) || \
       defined(ETL_COMPILER_INTEL)
 
-  #define ETL_HAS_INITIALIZER_LIST 1
-
   ///**************************************************************************
   /// A definition of initializer_list that is compatible with Clang, GCC and other compilers.
   ///**************************************************************************
@@ -225,26 +218,11 @@ namespace std
 #else
 
   #error No definition for initializer_list is currently available for your compiler. Visit https://github.com/ETLCPP/etl/issues to request support.
-  #define ETL_HAS_INITIALIZER_LIST 0
 
 #endif // Compiler tests
 }
 
-#endif // ETL_USE_STD_INITIALIZER_LIST
-#else
-
-  #define ETL_HAS_INITIALIZER_LIST 0
-
-#endif // ETL_USE_INITIALIZER_LIST
-
-namespace etl
-{
-  namespace traits
-  {
-    // Documentation: https://www.etlcpp.com/etl_traits.html
-
-    static ETL_CONSTANT bool has_initializer_list = (ETL_HAS_INITIALIZER_LIST == 1);
-  }
-}
-
+#endif // (ETL_USING_STL && ETL_NOT_USING_STLPORT && !defined(ETL_FORCE_ETL_INITIALIZER_LIST)) || defined(ETL_IN_UNIT_TEST) || defined(ETL_FORCE_STD_INITIALIZER_LIST)
+#endif // ETL_USING_CPP11 && !defined(ETL_NO_INITIALIZER_LIST)
+#endif // ETL_HAS_INITIALIZER_LIST
 #endif // ETL_INITIALIZER_LIST_INCLUDED

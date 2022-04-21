@@ -271,7 +271,32 @@ namespace etl
     static ETL_CONSTEXPR signed char signaling_NaN() { return 0; }
   };
 
-#if ETL_USING_CHAR16_T
+#if ETL_HAS_NATIVE_CHAR8_T
+  //***************************************************************************
+  // char8_t
+  template<>
+  class numeric_limits<char> : public etl_integral_limits
+  {
+  public:
+
+    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(char8_t)) - (etl::is_signed<char8_t>::value ? 1 : 0);
+    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
+    static ETL_CONSTANT bool is_signed = etl::is_signed<char8_t>::value;
+    static ETL_CONSTANT bool is_modulo = false;
+
+    static ETL_CONSTEXPR char min() { return char(CHAR_MIN); }
+    static ETL_CONSTEXPR char max() { return char(CHAR_MAX); }
+    static ETL_CONSTEXPR char lowest() { return char(CHAR_MIN); }
+    static ETL_CONSTEXPR char epsilon() { return 0; }
+    static ETL_CONSTEXPR char round_error() { return 0; }
+    static ETL_CONSTEXPR char denorm_min() { return 0; }
+    static ETL_CONSTEXPR char infinity() { return 0; }
+    static ETL_CONSTEXPR char quiet_NaN() { return 0; }
+    static ETL_CONSTEXPR char signaling_NaN() { return 0; }
+  };
+#endif
+
+#if ETL_HAS_NATIVE_CHAR16_T
   //***************************************************************************
   // char16_t
   template<>
@@ -296,7 +321,7 @@ namespace etl
   };
 #endif
 
-#if ETL_USING_CHAR32_T
+#if ETL_HAS_NATIVE_CHAR32_T
   //***************************************************************************
   // char32_t
   template<>

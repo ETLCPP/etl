@@ -291,20 +291,30 @@ SOFTWARE.
 
 //*************************************
 // Determine if the ETL can use char8_t type.
-#if ETL_NO_SMALL_CHAR_SUPPORT
-  #define ETL_HAS_CHAR8_T 0
+#if ETL_USING_8BIT_TYPES
+  #if ETL_NO_SMALL_CHAR_SUPPORT
+    typedef int8_t char8_t;
+    #define ETL_HAS_CHAR8_T 1
+    #define ETL_HAS_NATIVE_CHAR8_T 0
+  #else
+    #define ETL_HAS_CHAR8_T 1
+    #define ETL_HAS_NATIVE_CHAR8_T 1
+  #endif
 #else
-  #define ETL_HAS_CHAR8_T 1
+  #define ETL_HAS_CHAR8_T 0
+  #define ETL_HAS_NATIVE_CHAR8_T 0
 #endif
 
 //*************************************
-// Determine if the ETL can use char16_t and char32_t types.
+// Define the large character types if necessary.
 #if ETL_NO_LARGE_CHAR_SUPPORT
-  #define ETL_HAS_CHAR16_T 0
-  #define ETL_HAS_CHAR32_T 0
+  typedef int16_t char16_t;
+  typedef int32_t char32_t;
+  #define ETL_HAS_NATIVE_CHAR16_T 0
+  #define ETL_HAS_NATIVE_CHAR32_T 0
 #else
-  #define ETL_HAS_CHAR16_T 1
-  #define ETL_HAS_CHAR32_T 1
+  #define ETL_HAS_NATIVE_CHAR16_T 1
+  #define ETL_HAS_NATIVE_CHAR32_T 1
 #endif
 
 //*************************************
@@ -333,6 +343,30 @@ SOFTWARE.
   #else
     #define ETL_HAS_ATOMIC 0
   #endif
+#endif
+
+//*************************************
+// Determine if the ETL should use std::initializer_list.
+#if (defined(ETL_FORCE_ETL_INITIALIZER_LIST) && defined(ETL_FORCE_STD_INITIALIZER_LIST))
+  #error ETL_FORCE_ETL_INITIALIZER_LIST and ETL_FORCE_STD_INITIALIZER_LIST both been defined. Choose one or neither.
+#endif
+
+#if (ETL_USING_CPP11 && !defined(ETL_NO_INITIALIZER_LIST))
+  // Use the compiler's std::initializer_list?
+  #if (ETL_USING_STL && ETL_NOT_USING_STLPORT && !defined(ETL_FORCE_ETL_INITIALIZER_LIST)) || defined(ETL_IN_UNIT_TEST) || defined(ETL_FORCE_STD_INITIALIZER_LIST)
+    #define ETL_HAS_INITIALIZER_LIST 1
+  #else
+    // Use the ETL's compatible version?
+    #if defined(ETL_COMPILER_MICROSOFT) || defined(ETL_COMPILER_GCC)  || defined(ETL_COMPILER_CLANG) || \
+        defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_ARM7) || defined(ETL_COMPILER_IAR)   || \
+        defined(ETL_COMPILER_TEXAS_INSTRUMENTS) || defined(ETL_COMPILER_INTEL)
+      #define ETL_HAS_INITIALIZER_LIST 1
+    #else
+      #define ETL_HAS_INITIALIZER_LIST 0
+    #endif
+  #endif
+#else
+  #define ETL_HAS_INITIALIZER_LIST 0
 #endif
 
 //*************************************
@@ -374,13 +408,15 @@ namespace etl
     static ETL_CONSTANT bool using_intel_compiler             = (ETL_USING_INTEL_COMPILER == 1);
     static ETL_CONSTANT bool using_texas_instruments_compiler = (ETL_USING_TEXAS_INSTRUMENTS_COMPILER == 1);
     static ETL_CONSTANT bool using_generic_compiler           = (ETL_USING_GENERIC_COMPILER == 1);
+    static ETL_CONSTANT bool has_initializer_list             = (ETL_HAS_INITIALIZER_LIST == 1);
     static ETL_CONSTANT bool has_8bit_types                   = (ETL_USING_8BIT_TYPES == 1);
     static ETL_CONSTANT bool has_64bit_types                  = (ETL_USING_64BIT_TYPES == 1);
     static ETL_CONSTANT bool has_atomic                       = (ETL_HAS_ATOMIC == 1);
     static ETL_CONSTANT bool has_nullptr                      = (ETL_HAS_NULLPTR == 1);
     static ETL_CONSTANT bool has_char8_t                      = (ETL_HAS_CHAR8_T == 1);
-    static ETL_CONSTANT bool has_char16_t                     = (ETL_HAS_CHAR16_T == 1);
-    static ETL_CONSTANT bool has_char32_t                     = (ETL_HAS_CHAR32_T == 1);
+    static ETL_CONSTANT bool has_native_char8_t               = (ETL_HAS_NATIVE_CHAR8_T == 1);
+    static ETL_CONSTANT bool has_native_char16_t              = (ETL_HAS_NATIVE_CHAR16_T == 1);
+    static ETL_CONSTANT bool has_native_char32_t              = (ETL_HAS_NATIVE_CHAR32_T == 1);
     static ETL_CONSTANT bool has_string_truncation_checks     = (ETL_HAS_STRING_TRUNCATION_CHECKS == 1);
     static ETL_CONSTANT bool has_error_on_string_truncation   = (ETL_HAS_ERROR_ON_STRING_TRUNCATION == 1);
     static ETL_CONSTANT bool has_string_clear_after_use       = (ETL_HAS_STRING_CLEAR_AFTER_USE == 1);
@@ -390,6 +426,7 @@ namespace etl
     static ETL_CONSTANT bool has_ideque_repair                = (ETL_HAS_IDEQUE_REPAIR == 1);
     static ETL_CONSTANT bool is_debug_build                   = (ETL_IS_DEBUG_BUILD == 1);
     static ETL_CONSTANT long cplusplus                        = __cplusplus;
+    static ETL_CONSTANT int  language_standard                = ETL_LANGUAGE_STANDARD;
   }
 }
 
