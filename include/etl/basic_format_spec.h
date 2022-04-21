@@ -219,7 +219,7 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Cconstructor.
+    /// Constructor.
     //***************************************************************************
     ETL_CONSTEXPR basic_format_spec(uint_least8_t base__,
                                     uint_least8_t width__,

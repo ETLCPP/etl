@@ -44,7 +44,7 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// Defines <=, >, >= interms of <
+  /// Defines <=, >, >= in terms of <
   /// Default
   //***************************************************************************
   template <typename T, typename TLess = etl::less<T> >

@@ -362,7 +362,7 @@ namespace etl
     //*************************************************************************
     /// Fills the array from the range.
     /// If the range is smaller than the array then the unused array elements are left unmodified.
-    ///\param first The iterator to the first item in the ramge.
+    ///\param first The iterator to the first item in the range.
     ///\param last  The iterator to one past the final item in the range.
     //*************************************************************************
     template <typename TIterator>
@@ -374,7 +374,7 @@ namespace etl
     //*************************************************************************
     /// Fills the array from the range.
     /// If the range is smaller than the array then the unused array elements are initialised with the supplied value.
-    ///\param first The iterator to the first item in the ramge.
+    ///\param first The iterator to the first item in the range.
     ///\param last  The iterator to one past the final item in the range.
     //*************************************************************************
     template <typename TIterator>

@@ -1902,7 +1902,7 @@ namespace etl
           }
           else
           {
-            // Attatch node to right
+            // Attach node to right
             attach_node(found->children[found->dir], node);
 
             // Return newly added node
@@ -1935,7 +1935,7 @@ namespace etl
       }
       else
       {
-        // Attatch node to current position
+        // Attach node to current position
         attach_node(position, node);
 
         // Return newly added node at current position

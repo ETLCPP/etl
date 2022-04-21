@@ -341,7 +341,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_fibbonacci)
+    TEST(test_fibonacci)
     {
       CHECK_EQUAL(0U,          (size_t)etl::fibonacci<0>::value);
       CHECK_EQUAL(1U,          (size_t)etl::fibonacci<1>::value);

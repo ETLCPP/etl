@@ -81,7 +81,7 @@ namespace etl
       }
 
       //***************************************************
-      /// Copy constuctor
+      /// Copy constructor
       //***************************************************
       const_iterator(const const_iterator& other)
         : p_bresenham_line(other.p_bresenham_line)

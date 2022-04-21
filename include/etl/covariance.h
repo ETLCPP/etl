@@ -159,7 +159,7 @@ namespace etl
     }
 
     //*********************************
-    /// Get the covaniance.
+    /// Get the covariance.
     //*********************************
     double get_covariance() const
     {

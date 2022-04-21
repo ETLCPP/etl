@@ -103,7 +103,7 @@ namespace etl
   private:
 
     //*************************************************************************
-    /// Get a referenceto the count.
+    /// Get a reference to the count.
     //*************************************************************************
     static counter_type& current_instance_count()
     {

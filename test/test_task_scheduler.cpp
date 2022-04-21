@@ -205,7 +205,7 @@ namespace
       s.set_idle_callback(common.idle_callback);
       s.set_watchdog_callback(common.watchdog_callback);
       s.add_task_list(taskList, std::size(taskList));
-      s.start(); // If 'start' returns then the idle callback was sucessfully called.
+      s.start(); // If 'start' returns then the idle callback was successfully called.
 
       WorkList_t expected = { "T3W1", "T2W1", "T1W1", "T3W2", "T2W2", "T1W2", "T3W3", "T2W3", "T1W3", "T2W4" };
 
@@ -230,7 +230,7 @@ namespace
       s.set_idle_callback(common.idle_callback);
       s.set_watchdog_callback(common.watchdog_callback);
       s.add_task_list(taskList, std::size(taskList));
-      s.start(); // If 'start' returns then the idle callback was sucessfully called.
+      s.start(); // If 'start' returns then the idle callback was successfully called.
 
       WorkList_t expected = { "T3W1", "T3W2", "T2W1", "T2W2", "T2W3", "T2W4", "T1W1", "T1W2", "T1W3", "T3W3" };
 
@@ -255,7 +255,7 @@ namespace
       s.set_idle_callback(common.idle_callback);
       s.set_watchdog_callback(common.watchdog_callback);
       s.add_task_list(taskList, std::size(taskList));
-      s.start(); // If 'start' returns then the idle callback was sucessfully called.
+      s.start(); // If 'start' returns then the idle callback was successfully called.
 
       WorkList_t expected = { "T3W1", "T3W2", "T2W1", "T2W2", "T3W3", "T2W3", "T2W4", "T1W1", "T1W2", "T1W3" };
 
@@ -280,7 +280,7 @@ namespace
       s.set_idle_callback(common.idle_callback);
       s.set_watchdog_callback(common.watchdog_callback);
       s.add_task_list(taskList, std::size(taskList));
-      s.start(); // If 'start' returns then the idle callback was sucessfully called.
+      s.start(); // If 'start' returns then the idle callback was successfully called.
 
       WorkList_t expected = { "T2W1", "T2W2", "T1W1", "T3W1", "T2W3", "T3W2", "T1W2", "T3W3", "T2W4", "T1W3" };
 

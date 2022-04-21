@@ -2029,7 +2029,7 @@ namespace etl
       }
       else
       {
-        // Attatch node to current position (which is assumed to be root)
+        // Attach node to current position (which is assumed to be root)
         attach_node(ETL_NULLPTR, position, node);
 
         // Return newly added node at current position

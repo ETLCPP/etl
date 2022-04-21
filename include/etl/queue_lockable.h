@@ -66,7 +66,7 @@ namespace etl
     //*************************************************************************
     size_type available_unlocked() const
     {
-      return available_impementation();
+      return available_implementation();
     }
 
     //*************************************************************************
@@ -76,7 +76,7 @@ namespace etl
     {
       this->lock();
 
-      size_type result = available_impementation();
+      size_type result = available_implementation();
 
       this->unlock();
 
@@ -89,7 +89,7 @@ namespace etl
     //*************************************************************************
     bool empty_unlocked() const
     {
-      return empty_impementation();
+      return empty_implementation();
     }
 
     //*************************************************************************
@@ -99,7 +99,7 @@ namespace etl
     {
       this->lock();
 
-      size_type result = empty_impementation();
+      size_type result = empty_implementation();
 
       this->unlock();
 
@@ -112,7 +112,7 @@ namespace etl
     //*************************************************************************
     bool full_unlocked() const
     {
-      return full_impementation();
+      return full_implementation();
     }
 
     //*************************************************************************
@@ -122,7 +122,7 @@ namespace etl
     {
       this->lock();
 
-      size_type result = full_impementation();
+      size_type result = full_implementation();
 
       this->unlock();
 
@@ -135,7 +135,7 @@ namespace etl
     //*************************************************************************
     size_type size_unlocked() const
     {
-      return size_impementation();
+      return size_implementation();
     }
 
     //*************************************************************************
@@ -145,7 +145,7 @@ namespace etl
     {
       this->lock();
 
-      size_type result = size_impementation();
+      size_type result = size_implementation();
 
       this->unlock();
 
@@ -209,7 +209,7 @@ namespace etl
     //*************************************************************************
     /// How much free space available in the queue.
     //*************************************************************************
-    size_type available_impementation() const
+    size_type available_implementation() const
     {
       return Max_Size - current_size;
     }
@@ -217,7 +217,7 @@ namespace etl
     //*************************************************************************
     /// Is the queue empty?
     //*************************************************************************
-    bool empty_impementation() const
+    bool empty_implementation() const
     {
       return (current_size == 0);
     }
@@ -225,7 +225,7 @@ namespace etl
     //*************************************************************************
     /// Is the queue full?
     //*************************************************************************
-    bool full_impementation() const
+    bool full_implementation() const
     {
       return (current_size == Max_Size);;
     }
@@ -233,7 +233,7 @@ namespace etl
     //*************************************************************************
     /// How many items in the queue?
     //*************************************************************************
-    size_type size_impementation() const
+    size_type size_implementation() const
     {
       return current_size;
     }

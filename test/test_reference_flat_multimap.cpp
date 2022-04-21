@@ -380,7 +380,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_erase_key_using_transparent_comparitor)
+    TEST_FIXTURE(SetupFixture, test_erase_key_using_transparent_comparator)
     {
       using CMap = std::multimap<int, NDC>;
       using EMap = etl::reference_flat_multimap<int, NDC, SIZE, etl::less<>>;
@@ -588,7 +588,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_find_using_transparent_comparitor)
+    TEST_FIXTURE(SetupFixture, test_find_using_transparent_comparator)
     {
       using EMap = etl::reference_flat_multimap<int, NDC, SIZE, etl::less<>>;
       EMap data(initial_data.begin(), initial_data.end());
@@ -613,7 +613,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_find_not_present_using_transparent_comparitor)
+    TEST_FIXTURE(SetupFixture, test_find_not_present_using_transparent_comparator)
     {
       using EMap = etl::reference_flat_multimap<int, NDC, SIZE, etl::less<>>;
       EMap data(initial_data.begin(), initial_data.end());
@@ -638,7 +638,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_find_const_using_transparent_comparitor)
+    TEST_FIXTURE(SetupFixture, test_find_const_using_transparent_comparator)
     {
       using EMap = etl::reference_flat_multimap<int, NDC, SIZE, etl::less<>>;
       const EMap data(initial_data.begin(), initial_data.end());
@@ -663,7 +663,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_find_const_not_present_using_transparent_comparitor)
+    TEST_FIXTURE(SetupFixture, test_find_const_not_present_using_transparent_comparator)
     {
       using EMap = etl::reference_flat_multimap<int, NDC, SIZE, etl::less<>>;
       const EMap data(initial_data.begin(), initial_data.end());
@@ -688,7 +688,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_lower_bound_using_transparent_comparitor)
+    TEST_FIXTURE(SetupFixture, test_lower_bound_using_transparent_comparator)
     {
       using CMap = std::multimap<int, NDC>;
       using EMap = etl::reference_flat_multimap<int, NDC, SIZE, etl::less<>>;
@@ -715,7 +715,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_upper_bound_using_transparent_comparitor)
+    TEST_FIXTURE(SetupFixture, test_upper_bound_using_transparent_comparator)
     {
       using CMap = std::multimap<int, NDC>;
       using EMap = etl::reference_flat_multimap<int, NDC, SIZE, etl::less<>>;
@@ -743,7 +743,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_equal_range_using_transparent_comparitor)
+    TEST_FIXTURE(SetupFixture, test_equal_range_using_transparent_comparator)
     {
       using CMap = std::multimap<int, NDC>;
       using EMap = etl::reference_flat_multimap<int, NDC, SIZE, etl::less<>>;
@@ -775,7 +775,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_equal_range_not_present_using_transparent_comparitor)
+    TEST_FIXTURE(SetupFixture, test_equal_range_not_present_using_transparent_comparator)
     {
       using EMap = etl::reference_flat_multimap<int, NDC, SIZE, etl::less<>>;
       EMap data(initial_data.begin(), initial_data.end());
@@ -852,7 +852,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_multi_using_transparent_comparitor)
+    TEST_FIXTURE(SetupFixture, test_multi_using_transparent_comparator)
     {
       using CMap = std::multimap<int, NDC>;
       using EMap = etl::reference_flat_multimap<int, NDC, SIZE, etl::less<>>;
@@ -903,7 +903,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_count_using_transparent_comparitor)
+    TEST_FIXTURE(SetupFixture, test_count_using_transparent_comparator)
     {
       using CMap = std::multimap<int, NDC>;
       using EMap = etl::reference_flat_multimap<int, NDC, SIZE, etl::less<>>;

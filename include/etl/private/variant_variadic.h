@@ -857,7 +857,7 @@ namespace etl
 
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
     //***************************************************************************
-    /// Call the relevent visitor by attemptng each one.
+    /// Call the relevent visitor by attempting each one.
     //***************************************************************************
     template <size_t... I>
     void do_accept(etl::visitor<TTypes...>& visitor, etl::index_sequence<I...>)
@@ -934,7 +934,7 @@ namespace etl
 
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
     //***************************************************************************
-    /// Call the relevent visitor by attemptng each one.
+    /// Call the relevent visitor by attempting each one.
     //***************************************************************************
     template <typename TVisitor, size_t... I>
     void do_operator(TVisitor& visitor, etl::index_sequence<I...>)

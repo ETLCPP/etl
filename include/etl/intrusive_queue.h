@@ -128,7 +128,7 @@ namespace etl
     //*************************************************************************
     /// Removes the oldest item from the queue and pushes it to the destination.
     /// Undefined behaviour if the queue is already empty.
-    /// NOTE: The destination must be an intrusize container that supports a push(TLink) member function.
+    /// NOTE: The destination must be an intrusive container that supports a push(TLink) member function.
     //*************************************************************************
     template <typename TContainer>
     void pop_into(TContainer& destination)

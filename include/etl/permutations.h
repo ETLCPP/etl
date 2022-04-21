@@ -41,7 +41,7 @@ namespace etl
 {
   //***************************************************************************
   ///\ingroup permutations
-  /// Calculates permutaions.
+  /// Calculates permutations.
   //***************************************************************************
   template <const size_t NV, const size_t KV>
   struct permutations

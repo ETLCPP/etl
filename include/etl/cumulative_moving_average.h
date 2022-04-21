@@ -260,7 +260,7 @@ namespace etl
   private:
 
     T        average; ///< The current cumulative average.
-    sample_t samples; ///< The nuimber of samples to average over.
+    sample_t samples; ///< The number of samples to average over.
   };
 
   //***************************************************************************

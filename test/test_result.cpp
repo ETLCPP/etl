@@ -90,7 +90,7 @@ namespace
   using ResultM = etl::result<ValueM, ErrorM>;
 }
 
-// Definitions for when the STL and compiler built-ins are not avalable.
+// Definitions for when the STL and compiler built-ins are not available.
 #if ETL_NOT_USING_STL && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
 
 using etl::is_copy_constructible;

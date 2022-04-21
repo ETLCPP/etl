@@ -142,7 +142,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_muliply_equal)
+    TEST(test_multiply_equal)
     {
       CompassDirection value = CompassDirection::North;
       value *= 3;

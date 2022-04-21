@@ -212,7 +212,7 @@ namespace etl
 
   //***************************************************************************
   /// trim_whitespace_right
-  /// Trim firght of whitespace
+  /// Trim from right of whitespace
   //***************************************************************************
   template <typename TIString>
   void trim_whitespace_right(TIString& s)

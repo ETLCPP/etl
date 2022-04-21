@@ -100,7 +100,7 @@ namespace etl
   //***************************************************************************
   ///\ingroup stack
   /// A fixed capacity stack written in the STL style.
-  /// \warntopg This stack cannot be used for concurrent access from multiple threads.
+  /// \warning This stack cannot be used for concurrent access from multiple threads.
   //***************************************************************************
   class stack_base
   {
@@ -598,7 +598,7 @@ namespace etl
 
   private:
 
-    /// The unintitialised buffer of T used in the stack.
+    /// The uninitialised buffer of T used in the stack.
     container_type buffer[SIZE];
   };
 }

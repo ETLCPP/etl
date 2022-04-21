@@ -1626,7 +1626,7 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Replace characters from 'position' of 'length' with 'str' from 'subpsotion' of 'sublength'.
+    /// Replace characters from 'position' of 'length' with 'str' from 'subposition' of 'sublength'.
     //*********************************************************************
     ibasic_string& replace(size_type position, size_type length_, const ibasic_string& str, size_type subposition, size_type sublength)
     {
