@@ -735,26 +735,33 @@ namespace
       size_t timer_count = 0U;
 
       // Create the callbacks.
-      callback_type delegate_callback0([&]()
-                                       { 
-                                         timer_log.push_back(TimerLogEntry{ 0, timer_count }); 
-                                       });
+      static auto dc0 = [&]()
+      {
+        timer_log.push_back(TimerLogEntry{ 0, timer_count });
+      };
+
+      static auto dc1 = [&]()
+      {
+        timer_log.push_back(TimerLogEntry{ 1, timer_count });
+      };
+
+      static auto dc2 = [&]()
+      {
+        timer_log.push_back(TimerLogEntry{ 2, timer_count });
+      };
+
+      static auto dc3 = [&]()
+      {
+        timer_log.push_back(TimerLogEntry{ 3, timer_count });
+      };
+
+      callback_type delegate_callback0(dc0);
       
-      callback_type delegate_callback1([&]() 
-                                       { 
-                                         timer_log.push_back(TimerLogEntry{ 1, timer_count }); 
-                                       });
+      callback_type delegate_callback1(dc1);
       
-      callback_type delegate_callback2([&]() 
-                                       { 
-                                         timer_log.push_back(TimerLogEntry{ 2, timer_count }); 
-                                       });
+      callback_type delegate_callback2(dc2);
       
-      callback_type delegate_callback3([&]() 
-                                       { 
-                                         timer_log.push_back(TimerLogEntry{ 3, timer_count }); 
-                                         timer_controller.start(1); 
-                                       });
+      callback_type delegate_callback3(dc3);
 
       timer_log.clear();
       timer_controller.enable(true);

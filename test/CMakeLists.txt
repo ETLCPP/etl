@@ -326,6 +326,8 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 endif()
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined")
+
 add_executable(etl_tests ${TEST_SOURCE_FILES})
 add_library(unit_test ${UNITTEST_SOURCE_FILES})
 

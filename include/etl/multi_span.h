@@ -87,7 +87,7 @@ namespace etl
             do
             {
               ++p_current;
-            } while (p_current->empty() && (p_current != p_end));
+            } while ((p_current != p_end) && p_current->empty());
 
             if (p_current != p_end)
             {
@@ -171,7 +171,10 @@ namespace etl
         , p_end(p_end_)
         , p_value(ETL_NULLPTR)
       {
-        p_value = p_current->begin();
+        if (p_current != p_end)
+        {
+          p_value = p_current->begin();
+        }
       }
 
       typedef const span_type* span_list_pointer;

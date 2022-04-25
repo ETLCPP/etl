@@ -210,7 +210,7 @@ namespace
     {
       Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      CHECK_EQUAL(data.end(), &data[SIZE]);
+      CHECK_EQUAL(data.end(), data.data() + SIZE);
     }
 
     //*************************************************************************
@@ -218,7 +218,7 @@ namespace
     {
       const Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      CHECK_EQUAL(data.cbegin(), &data[0]);
+      CHECK_EQUAL(data.cbegin(), data.data());
     }
 
     //*************************************************************************
@@ -226,7 +226,7 @@ namespace
     {
       const Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      CHECK_EQUAL(data.cend(), &data[SIZE]);
+      CHECK_EQUAL(data.cend(), data.data() + SIZE);
     }
 
     //*************************************************************************
@@ -234,7 +234,7 @@ namespace
     {
       Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      CHECK(data.rbegin() == Data::reverse_iterator(&data[SIZE]));
+      CHECK(data.rbegin() == Data::reverse_iterator(data.data() + SIZE));
     }
 
     //*************************************************************************
@@ -250,7 +250,7 @@ namespace
     {
       const Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      CHECK(data.crbegin() == Data::const_reverse_iterator(&data[SIZE]));
+      CHECK(data.crbegin() == Data::const_reverse_iterator(data.data() + SIZE));
     }
 
     //*************************************************************************
