@@ -188,8 +188,6 @@ namespace etl
         // Must be an addressed message.
         default:
         {
-          router_list_t::iterator irouter = router_list.begin();
-
           // Find routers with the id.
           ETL_OR_STD::pair<router_list_t::iterator, router_list_t::iterator> range = etl::equal_range(router_list.begin(),
                                                                                                       router_list.end(),
@@ -209,7 +207,7 @@ namespace etl
 
           // Do any message buses.
           // These are always at the end of the list.
-          irouter = etl::lower_bound(router_list.begin(),
+          router_list_t::iterator irouter = etl::lower_bound(router_list.begin(),
                                      router_list.end(),
                                      etl::imessage_bus::MESSAGE_BUS,
                                      compare_router_id());
