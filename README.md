@@ -103,7 +103,7 @@ Replace `<majorVersionRequirement>` with your desired major version:
 ```cmake
 find_package(etl <majorVersionRequirement>)
 add_executable(foo main.cpp)
-target_link_libraries(foo PRIVATE etl)
+target_link_libraries(foo PRIVATE etl::etl)
 ```
 
 
