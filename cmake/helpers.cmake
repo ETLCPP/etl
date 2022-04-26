@@ -24,7 +24,7 @@ function(determine_version_with_git)
     set(ETL_VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 
     set(ETL_VERSION ${ETL_VERSION} CACHE STRING
-        "ETL version determined from version.txt" FORCE
+        "ETL version determined with git describe" FORCE
     )
     message(STATUS "Determined ETL version ${ETL_VERSION} from the git tag")
 endfunction()
