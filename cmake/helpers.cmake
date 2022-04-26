@@ -3,7 +3,7 @@ function(determine_version VER_FILE_NAME)
     # Remove trailing whitespaces and/or newline
     string(STRIP ${ETL_VERSION_RAW} ETL_VERSION)
     set(ETL_VERSION ${ETL_VERSION} CACHE STRING
-        "ETL version determined from version.txt"
+        "ETL version determined from version.txt" FORCE
     )
     message(STATUS "Determined ETL version ${ETL_VERSION} from version.txt file")
 endfunction()
@@ -16,7 +16,6 @@ function(determine_version_with_git)
         message(WARNING "Version string ${VERSION} retrieved with git describe is invalid")
         return()
     endif()
-    message(STATUS ${VERSION})
     # Parse the version information into pieces.
     string(REGEX REPLACE "^([0-9]+)\\..*" "\\1" VERSION_MAJOR "${VERSION}")
     string(REGEX REPLACE "^[0-9]+\\.([0-9]+).*" "\\1" VERSION_MINOR "${VERSION}")
@@ -25,7 +24,7 @@ function(determine_version_with_git)
     set(ETL_VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 
     set(ETL_VERSION ${ETL_VERSION} CACHE STRING
-        "ETL version determined from version.txt"
+        "ETL version determined from version.txt" FORCE
     )
     message(STATUS "Determined ETL version ${ETL_VERSION} from the git tag")
 endfunction()
