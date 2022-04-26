@@ -26,6 +26,7 @@ if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
     # Steps here based on excellent guide: https://dominikberner.ch/cmake-interface-lib/
     # Which also details all steps
     include(CMakePackageConfigHelpers)
+    include(GNUInstallDirs)
     install(TARGETS ${PROJECT_NAME}
         EXPORT ${PROJECT_NAME}Targets
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
