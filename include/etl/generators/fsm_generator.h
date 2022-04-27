@@ -570,7 +570,7 @@ namespace etl
 
       const bool was_handled = (process_event_type<TMessageTypes>(message, new_state_id) || ...);
 
-      if (!was_handled)
+      if (!was_handled || new_state_id == Pass_To_Parent)
       {
         new_state_id = (p_parent != nullptr) ? p_parent->process_event(message) : static_cast<TDerived*>(this)->on_event_unknown(message);
       }
