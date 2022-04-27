@@ -376,9 +376,15 @@ namespace
   //***********************************
   // The winding down state.
   //***********************************
-  class WindingDown : public etl::fsm_state<MotorControl, WindingDown, StateId::Winding_Down, Stopped>
+  class WindingDown : public etl::fsm_state<MotorControl, WindingDown, StateId::Winding_Down, Stopped, EStop>
   {
   public:
+
+    etl::fsm_state_id_t on_event(const EStop&)
+    {
+      ++get_fsm_context().stopCount;
+      return Pass_To_Parent;
+    }
 
     //***********************************
     etl::fsm_state_id_t on_event(const Stopped&)
@@ -693,6 +699,61 @@ namespace
       CHECK_EQUAL(0, motorControl.speed);
       CHECK_EQUAL(1, motorControl.startCount);
       CHECK_EQUAL(1, motorControl.stopCount);
+      CHECK_EQUAL(0, motorControl.stoppedCount);
+      CHECK_EQUAL(0, motorControl.unknownCount);
+      CHECK_EQUAL(1, motorControl.windUpCompleteCount);
+      CHECK_EQUAL(1, motorControl.windUpStartCount);
+    }
+
+    //*************************************************************************
+    TEST(test_hfsm_emergency_stop_from_winding_down)
+    {
+      etl::null_message_router nmr;
+
+      motorControl.Initialise(stateList, std::size(stateList));
+      motorControl.reset();
+      motorControl.ClearStatistics();
+
+      CHECK(!motorControl.is_started());
+
+      // Start the FSM.
+      motorControl.start(false);
+      CHECK(motorControl.is_started());
+
+      // Now in Idle state.
+
+      // Send Start event.
+      motorControl.receive(Start());
+      motorControl.receive(Timeout());
+      motorControl.receive(Stop());
+
+      // Now in at speed state.
+
+      CHECK_EQUAL(StateId::Winding_Down, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Winding_Down, int(motorControl.get_state().get_state_id()));
+
+      CHECK_EQUAL(true, motorControl.isLampOn);
+      CHECK_EQUAL(0, motorControl.setSpeedCount);
+      CHECK_EQUAL(0, motorControl.speed);
+      CHECK_EQUAL(1, motorControl.startCount);
+      CHECK_EQUAL(1, motorControl.stopCount);
+      CHECK_EQUAL(0, motorControl.stoppedCount);
+      CHECK_EQUAL(0, motorControl.unknownCount);
+      CHECK_EQUAL(1, motorControl.windUpCompleteCount);
+      CHECK_EQUAL(1, motorControl.windUpStartCount);
+
+      // Send emergency Stop event.
+      motorControl.receive(EStop());
+
+      // Now in Idle state.
+      CHECK_EQUAL(StateId::Idle, int(motorControl.get_state_id()));
+      CHECK_EQUAL(StateId::Idle, int(motorControl.get_state().get_state_id()));
+
+      CHECK_EQUAL(false, motorControl.isLampOn);
+      CHECK_EQUAL(0, motorControl.setSpeedCount);
+      CHECK_EQUAL(0, motorControl.speed);
+      CHECK_EQUAL(1, motorControl.startCount);
+      CHECK_EQUAL(3, motorControl.stopCount);
       CHECK_EQUAL(0, motorControl.stoppedCount);
       CHECK_EQUAL(0, motorControl.unknownCount);
       CHECK_EQUAL(1, motorControl.windUpCompleteCount);
