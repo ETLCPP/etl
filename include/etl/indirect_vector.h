@@ -454,13 +454,7 @@ namespace etl
     //*********************************************************************
     iterator begin()
     {
-      etl::ivector<T*>& ivr = lookup;
-
-      bool e = ivr.empty();
-
-      typename etl::ivector<T*>::iterator itr = ivr.begin();
-
-      return iterator(itr);
+      return iterator(lookup.begin());
     }
 
     //*********************************************************************
