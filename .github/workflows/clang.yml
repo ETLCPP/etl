@@ -42,9 +42,15 @@ jobs:
 
     - name: Build
       run: |
+        sudo apt-get update
+        sudo apt-get install -y "clang-9" "lldb-9" "lld-9" "clang-format-9"
+        export CC=clang-9
+        export CXX=clang++-9
         git fetch --tags
         cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
         gcc --version
+        cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
+        clang --version
         make
     
     - name: Run tests
@@ -139,3 +145,4 @@ jobs:
 
     - name: Run tests
       run: ./test/etl_tests
+No newline at end of file
