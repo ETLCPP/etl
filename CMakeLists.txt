@@ -13,6 +13,9 @@ option(BUILD_TESTS "Build unit tests" OFF)
 option(NO_STL "No STL" OFF)
 
 add_library(${PROJECT_NAME} INTERFACE)
+# This allows users which use the add_subdirectory or FetchContent
+# to use the same target as users which use find_package
+add_library(etl::etl ALIAS ${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME} SYSTEM INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
