@@ -32,6 +32,7 @@ SOFTWARE.
 #define ETL_ABSOLUTE_INCLUDED
 
 #include "type_traits.h"
+#include "integral_limits.h"
 
 namespace etl
 {
@@ -53,6 +54,29 @@ namespace etl
     absolute(T value)
   {
     return value;
+  }
+
+  //***************************************************************************
+  // For signed types.
+  // Returns the result as the unsigned type.
+  //***************************************************************************
+  template <typename T, typename TReturn = typename etl::make_unsigned<T>::type>
+  ETL_CONSTEXPR typename etl::enable_if<etl::is_signed<T>::value, TReturn>::type
+    absolute_unsigned(T value)
+  {
+    return (value == etl::integral_limits<T>::min) ? etl::integral_limits<TReturn>::max / 2U
+      : (value < T(0)) ? TReturn(-value) : TReturn(value);
+  }
+
+  //***************************************************************************
+  // For unsigned types.
+  // Returns the result as the unsigned type.
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
+    absolute_unsigned(T value)
+  {
+    return etl::absolute(value);
   }
 }
 

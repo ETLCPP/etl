@@ -447,12 +447,12 @@ namespace etl
 
       if (OK)
       {
-        T shift = T(0);
+        uint_least8_t shift = 0U;
 
         for (size_t i = 0UL; i < SIZE; ++i)
         {
-          v |= T(pdata[i]) << shift;
-          shift += T(BITS_PER_ELEMENT);
+          v |= T(typename etl::make_unsigned<T>::type(pdata[i]) << shift);
+          shift += uint_least8_t(BITS_PER_ELEMENT);
         }
       }
 

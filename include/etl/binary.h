@@ -120,7 +120,7 @@ namespace etl
 #else
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
-    const size_t SHIFT = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits - 1;
+    ETL_CONSTANT size_t SHIFT = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits - 1U;
 
     return (value << 1U) | (value >> SHIFT);
 #endif
@@ -138,11 +138,18 @@ namespace etl
 #else
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
-    const size_t BITS = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits;
+    ETL_CONSTANT size_t BITS = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits;
     distance %= BITS;
     const size_t SHIFT = BITS - distance;
 
-    return (value << distance) | (value >> SHIFT);
+    if (SHIFT == BITS)
+    {
+      return value;
+    }
+    else
+    {
+      return (value << distance) | (value >> SHIFT);
+    }
 #endif
   }
 
@@ -158,7 +165,7 @@ namespace etl
 #else
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
-    const size_t SHIFT = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits - 1;
+    ETL_CONSTANT size_t SHIFT = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits - 1U;
 
     return (value >> 1U) | (value << SHIFT);
 #endif
@@ -176,11 +183,18 @@ namespace etl
 #else
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
-    const size_t BITS = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits;
+    ETL_CONSTANT size_t BITS = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits;
     distance %= BITS;
     const size_t SHIFT = BITS - distance;
 
-    return (value >> distance) | (value << SHIFT);
+    if (SHIFT == BITS)
+    {
+      return value;
+    }
+    else
+    {
+      return (value >> distance) | (value << SHIFT);
+    }
 #endif
   }
 
@@ -224,13 +238,13 @@ namespace etl
   /// Fold a binary number down to a set number of bits using XOR.
   ///\ingroup binary
   //***************************************************************************
-  template <typename TReturn, const size_t NBITS, typename TValue>
+  template <typename TReturn, size_t NBITS, typename TValue>
   ETL_CONSTEXPR14 TReturn fold_bits(TValue value)
   {
     ETL_STATIC_ASSERT(integral_limits<TReturn>::bits >= NBITS, "Return type too small to hold result");
 
-    const TValue mask  = etl::power<2, NBITS>::value - 1U;
-    const size_t shift = NBITS;
+    ETL_CONSTANT TValue mask  = etl::power<2, NBITS>::value - 1U;
+    ETL_CONSTANT size_t shift = NBITS;
 
     // Fold the value down to fit the width.
     TReturn folded_value = 0;
@@ -253,7 +267,7 @@ namespace etl
   /// Converts an N bit binary number, where bit N-1 is the sign bit, to a signed integral type.
   ///\ingroup binary
   //***************************************************************************
-  template <typename TReturn, const size_t NBITS, typename TValue>
+  template <typename TReturn, size_t NBITS, typename TValue>
   ETL_CONSTEXPR14 TReturn sign_extend(TValue value)
   {
     ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
@@ -274,7 +288,7 @@ namespace etl
   /// is the right shift amount, to a signed integral type.
   ///\ingroup binary
   //***************************************************************************
-  template <typename TReturn, const size_t NBITS, const size_t SHIFT, typename TValue>
+  template <typename TReturn, size_t NBITS, size_t SHIFT, typename TValue>
   ETL_CONSTEXPR14 TReturn sign_extend(TValue value)
   {
     ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
@@ -296,7 +310,7 @@ namespace etl
   ///\ingroup binary
   //***************************************************************************
   template <typename TReturn, typename TValue>
-  ETL_CONSTEXPR14 TReturn sign_extend(TValue value, const size_t NBITS)
+  ETL_CONSTEXPR14 TReturn sign_extend(TValue value, size_t NBITS)
   {
     ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
     ETL_STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
@@ -316,7 +330,7 @@ namespace etl
   ///\ingroup binary
   //***************************************************************************
   template <typename TReturn, typename TValue>
-  ETL_CONSTEXPR14 TReturn sign_extend(TValue value, const size_t NBITS, const size_t SHIFT)
+  ETL_CONSTEXPR14 TReturn sign_extend(TValue value, size_t NBITS, size_t SHIFT)
   {
     ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
     ETL_STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
@@ -398,7 +412,7 @@ namespace etl
     ETL_STATIC_ASSERT(sizeof(TResult) >= sizeof(TValue), "Result must be at least as large as the fill value");
 
     typedef typename etl::make_unsigned<TResult>::type unsigned_r_t;
-    typedef typename etl::make_unsigned<TValue>::type unsigned_v_t;
+    typedef typename etl::make_unsigned<TValue>::type  unsigned_v_t;
 
     return TResult(unsigned_v_t(value) * (unsigned_r_t(~unsigned_r_t(0U)) / unsigned_v_t(~unsigned_v_t(0U))));
   }
@@ -407,13 +421,13 @@ namespace etl
   /// Fills a value with a bit pattern. Partial compile time.
   ///\ingroup binary
   //***************************************************************************
-  template <typename TResult, typename TValue, const TValue N>
+  template <typename TResult, typename TValue, TValue N>
   ETL_CONSTEXPR TResult binary_fill()
   {
     ETL_STATIC_ASSERT(sizeof(TResult) >= sizeof(TValue), "Result must be at least as large as the fill value");
 
     typedef typename etl::make_unsigned<TResult>::type unsigned_r_t;
-    typedef typename etl::make_unsigned<TValue>::type unsigned_v_t;
+    typedef typename etl::make_unsigned<TValue>::type  unsigned_v_t;
 
     return TResult(unsigned_v_t(N) * (unsigned_r_t(~unsigned_r_t(0U)) / unsigned_v_t(~unsigned_v_t(0U))));
   }
@@ -424,7 +438,7 @@ namespace etl
   ///\ingroup binary
   //***************************************************************************
   template <typename TValue>
-  ETL_CONSTEXPR14 bool has_zero_byte(const TValue value)
+  ETL_CONSTEXPR14 bool has_zero_byte(TValue value)
   {
     typedef typename etl::make_unsigned<TValue>::type unsigned_t;
     const unsigned_t mask = etl::binary_fill<unsigned_t, uint8_t>(0x7FU);
@@ -437,7 +451,7 @@ namespace etl
   /// Detects the presence of zero bytes. Partial compile time.
   ///\ingroup binary
   //***************************************************************************
-  template <typename TValue, const TValue N>
+  template <typename TValue, TValue N>
   ETL_CONSTEXPR14 bool has_zero_byte()
   {
     typedef typename etl::make_unsigned<TValue>::type unsigned_t;
@@ -461,7 +475,7 @@ namespace etl
   /// Detects the presence of a byte of value N. Partial compile time.
   ///\ingroup binary
   //***************************************************************************
-  template <typename TValue, const TValue N>
+  template <typename TValue, TValue N>
   ETL_CONSTEXPR14 bool has_byte_n(TValue value)
   {
     return etl::has_zero_byte(TValue(value ^ etl::binary_fill<TValue, uint8_t>(N)));
@@ -475,7 +489,7 @@ namespace etl
   ///\ingroup binary
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR T binary_merge(const T first, const T second, const T mask)
+  ETL_CONSTEXPR T binary_merge(T first, T second, T mask)
   {
     return second ^ ((second ^ first) & mask);
   }
@@ -486,8 +500,8 @@ namespace etl
   /// Mask is a template parameter.
   ///\ingroup binary
   //***************************************************************************
-  template <typename T, const T MASK>
-  ETL_CONSTEXPR T binary_merge(const T first, const T second)
+  template <typename T, T MASK>
+  ETL_CONSTEXPR T binary_merge(T first, T second)
   {
     return second ^ ((second ^ first) & MASK);
   }
@@ -2151,7 +2165,7 @@ namespace etl
   //***************************************************************************
   template <typename T>
   ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, bool>::type
-   is_odd(const T value)
+   is_odd(T value)
   {
 	  return ((static_cast<typename etl::make_unsigned<T>::type>(value) & 1U) != 0U);
   }
@@ -2162,7 +2176,7 @@ namespace etl
   //***************************************************************************
   template <typename T>
   ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, bool>::type
-    is_even(const T value)
+    is_even(T value)
   {
     return ((static_cast<typename etl::make_unsigned<T>::type>(value) & 1U) == 0U);
   }
