@@ -189,7 +189,7 @@ public:
   }
 
   TestDataM(TestDataM&& other) noexcept
-    : value(std::move(other.value);)
+    : value(std::move(other.value))
     , valid(true)
   {
     other.valid = false;
