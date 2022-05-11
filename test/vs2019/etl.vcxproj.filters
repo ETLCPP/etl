@@ -3242,6 +3242,9 @@
     <ClCompile Include="..\test_nth_type.cpp">
       <Filter>Tests\Types</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_successor.cpp">
+      <Filter>Tests\Patterns</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">

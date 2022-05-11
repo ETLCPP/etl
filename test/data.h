@@ -188,6 +188,12 @@ public:
   {
   }
 
+  explicit TestDataM(T&& value_)
+    : value(std::move(value_))
+    , valid(true)
+  {
+  }
+
   TestDataM(TestDataM&& other) noexcept
     : value(std::move(other.value))
     , valid(true)
