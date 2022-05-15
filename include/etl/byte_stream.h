@@ -559,7 +559,7 @@ namespace etl
     {
       T* destination = start;
 
-      while (length-- != 0U)
+      for (size_t i = 0; i < length; ++i)
       {
         *destination++ = from_bytes<T>();
       }
