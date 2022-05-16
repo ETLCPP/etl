@@ -206,7 +206,7 @@ namespace etl
     //*************************************************************************
     cumulative_moving_average(const T initial_value, const size_t sample_size)
       : average(initial_value * SCALE)
-      , samples(sample_size)
+      , samples(sample_t(sample_size))
     {
     }
 
