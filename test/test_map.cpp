@@ -215,7 +215,7 @@ namespace
 
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
-    TEST(test_cpp17_deduced_constructor)
+    TEST_FIXTURE(SetupFixture, test_cpp17_deduced_constructor)
     {
       etl::map data{ std::pair<std::string, int>("0", 0), std::pair<std::string, int>("1", 1), std::pair<std::string, int>("2", 2), std::pair<std::string, int>("3", 3), std::pair<std::string, int>("4", 4),
                      std::pair<std::string, int>("5", 5), std::pair<std::string, int>("6", 6), std::pair<std::string, int>("7", 7), std::pair<std::string, int>("8", 8), std::pair<std::string, int>("9", 9) };
@@ -1568,7 +1568,7 @@ namespace
 
     //*************************************************************************
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
-    TEST(test_map_template_deduction)
+    TEST_FIXTURE(SetupFixture, test_map_template_deduction)
     {
       using Pair = std::pair<const std::string, int>;
 
@@ -1589,7 +1589,7 @@ namespace
 
     //*************************************************************************
 #if ETL_HAS_INITIALIZER_LIST
-    TEST(test_make_map)
+    TEST_FIXTURE(SetupFixture, test_make_map)
     {
       using Pair = ETL_OR_STD::pair<const std::string, int>;
 
