@@ -26,4 +26,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <etl/delegate.h>
+#include <etl/private/delegate_cpp11.h>

@@ -69,7 +69,7 @@ namespace
 
   char* Ptr(int i)
   {
-    return reinterpret_cast<char*>(i);
+    return reinterpret_cast<char*>(uintptr_t(i));
   }
 
   std::aligned_storage_t<Size, Alignment> buffer;
