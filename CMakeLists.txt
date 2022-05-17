@@ -5,7 +5,11 @@ cmake_minimum_required(VERSION 3.5.0)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/helpers.cmake)
 
+set(MSG_PREFIX "etl |")
 determine_version_with_git(${GIT_DIR_LOOKUP_POLICY})
+if(NOT ETL_VERSION)
+    determine_version("version.txt")
+endif()
 
 project(etl VERSION ${ETL_VERSION})
 
