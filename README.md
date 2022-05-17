@@ -74,7 +74,7 @@ and then make the library available by using `add_subdirectory`
 ```cmake
 add_subdirectory(etl)
 add_executable(foo main.cpp)
-target_link_libraries(foo PRIVATE etl)
+target_link_libraries(foo PRIVATE etl::etl)
 ```
 
 If ETL library is used as a Git submodule it may require additional configuration for proper ETL version resolution by allowing the lookup for Git folder outside of the library root directory.
@@ -103,7 +103,7 @@ Replace `<majorVersionRequirement>` with your desired major version:
 ```cmake
 find_package(etl <majorVersionRequirement>)
 add_executable(foo main.cpp)
-target_link_libraries(foo PRIVATE etl)
+target_link_libraries(foo PRIVATE etl::etl)
 ```
 
 
@@ -122,7 +122,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(etl)
 
 add_executable(foo main.cpp)
-target_link_libraries(foo PRIVATE etl)
+target_link_libraries(foo PRIVATE etl::etl)
 ```
 
 ## Arduino library
