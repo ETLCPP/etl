@@ -221,6 +221,28 @@ namespace etl
     }
 
     //***************************************************************************
+    /// Skip n items of T, up to the maximum space available.
+    /// Returns <b>true</b> if the skip was possible.
+    /// Returns <b>false</b> if the full skip size was not possible.
+    //***************************************************************************
+    template <typename T>
+    bool skip(size_t n)
+    {
+      size_t maximum = available<T>();
+
+      if (n < maximum)
+      {
+        pcurrent += (n * sizeof(T));
+        return true;
+      }
+      else
+      {
+        pcurrent += (maximum * sizeof(T));
+        return false;
+      }
+    }
+
+    //***************************************************************************
     /// Sets the index back to the position in the stream. Default = 0.
     //***************************************************************************
     void restart(size_t n = 0U)
