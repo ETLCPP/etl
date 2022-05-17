@@ -188,16 +188,22 @@ public:
   {
   }
 
-  TestDataM(TestDataM&& other) noexcept
-    : value(other.value)
+  explicit TestDataM(T&& value_)
+    : value(std::move(value_))
     , valid(true)
   {
-    other.value = std::move(T());
+  }
+
+  TestDataM(TestDataM&& other) noexcept
+    : value(std::move(other.value))
+    , valid(true)
+  {
     other.valid = false;
   }
 
   virtual ~TestDataM()
   {
+    valid = false;
   }
 
   TestDataM& operator =(TestDataM&& other) noexcept
@@ -205,7 +211,6 @@ public:
     value = std::move(other.value);
     valid = true;
 
-    other.value = T();
     other.valid = false;
 
     return *this;

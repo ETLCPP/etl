@@ -153,7 +153,7 @@ namespace
 
       j32.value();
 
-      CHECK_THROW(j32.add(0), etl::hash_finalised);
+      CHECK_THROW(j32.add(0), etl::hash_finalized);
     }
   };
 }

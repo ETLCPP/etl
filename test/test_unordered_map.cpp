@@ -246,7 +246,7 @@ namespace
 
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
-    TEST(test_cpp17_deduced_constructor)
+    TEST_FIXTURE(SetupFixture, test_cpp17_deduced_constructor)
     {
       etl::unordered_map data{ ElementNDC(K0, N0), ElementNDC(K1, N1), ElementNDC(K2, N2), ElementNDC(K3, N3), ElementNDC(K4, N4),
                                ElementNDC(K5, N5), ElementNDC(K6, N6), ElementNDC(K7, N7), ElementNDC(K8, N8), ElementNDC(K9, N9) };
@@ -299,7 +299,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_destruct_via_iunordered_map)
+    TEST_FIXTURE(SetupFixture, test_destruct_via_iunordered_map)
     {
       int current_count = NDC::get_instance_count();
 

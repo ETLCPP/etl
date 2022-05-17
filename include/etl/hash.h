@@ -438,6 +438,6 @@ namespace etl
   };
 }
 
-#endif ETL_USING_8BIT_TYPES
+#endif // ETL_USING_8BIT_TYPES
 
 #endif

@@ -261,7 +261,7 @@ namespace
     TEST(test_rend)
     {
       Data5 aw5;
-      CHECK_EQUAL(data5 + Data5::REND, std::addressof(*aw5.rend()));
+      CHECK_EQUAL(Data5::SIZE, std::distance(aw5.rbegin(), aw5.rend()));
     }
 
     //*************************************************************************
@@ -275,12 +275,12 @@ namespace
     TEST(test_crend)
     {
       const Data5 caw5a;
-      CHECK_EQUAL(caw5a.data() + Data5::REND, std::addressof(*caw5a.rend()));
-      CHECK_EQUAL(caw5a.data() + Data5::REND, std::addressof(*caw5a.crend()));
+      CHECK_EQUAL(Data5::SIZE, std::distance(caw5a.rbegin(), caw5a.rend()));
+      CHECK_EQUAL(Data5::SIZE, std::distance(caw5a.rbegin(), caw5a.rend()));
 
       CData5 caw5b;
-      CHECK_EQUAL(caw5b.data() + CData5::REND, std::addressof(*caw5b.rend()));
-      CHECK_EQUAL(caw5b.data() + CData5::REND, std::addressof(*caw5b.crend()));
+      CHECK_EQUAL(Data5::SIZE, std::distance(caw5b.rbegin(), caw5b.rend()));
+      CHECK_EQUAL(Data5::SIZE, std::distance(caw5b.rbegin(), caw5b.rend()));
     }
 
     //*************************************************************************
@@ -329,7 +329,7 @@ namespace
       Data5::reverse_iterator itr = aw5.rbegin();
       int* p = data5 + Data5::RBEGIN;
 
-      while (p != data5 + Data5::REND)
+      while (itr != aw5.rend())
       {
         CHECK_EQUAL(*p, *itr);
         --p;
@@ -350,7 +350,7 @@ namespace
       Data5::const_reverse_iterator itr = aw5.crbegin();
       int* p = data5 + Data5::RBEGIN;
 
-      while (p != data5 + Data5::REND)
+      while (itr != aw5.crend())
       {
         CHECK_EQUAL(*p, *itr);
         --p;

@@ -409,17 +409,21 @@ namespace
       const DataDC constData(10);
 
       CHECK_EQUAL(&data[0], &(*data.begin()));
+      CHECK_EQUAL(&data[0], &(*data.cbegin()));
       CHECK_EQUAL(&constData[0], &(*constData.begin()));
+      CHECK_EQUAL(&constData[0], &(*constData.cbegin()));
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_end)
     {
-      DataDC data(10);
-      const DataDC constData(10);
+      DataDC data(10U);
+      const DataDC constData(10U);
 
-      CHECK_EQUAL(&data[10], &(*data.end()));
-      CHECK_EQUAL(&constData[10], &(constData.end()));
+      CHECK(std::distance(data.begin(),       data.end())       == 10U);
+      CHECK(std::distance(data.cbegin(),      data.cend())      == 10U);
+      CHECK(std::distance(constData.begin(),  constData.end())  == 10U);
+      CHECK(std::distance(constData.cbegin(), constData.cend()) == 10U);
     }
 
     //*************************************************************************

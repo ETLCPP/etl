@@ -155,13 +155,18 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Destruct a message and send it back to the pool.
+    /// Destruct a message and send it back to the allocator.
     //*************************************************************************
     void release(const etl::ireference_counted_message& rcmessage)
     {
-      rcmessage.~ireference_counted_message();
+      bool released = false;
+
       lock();
-      bool released = memory_block_allocator.release(&rcmessage);
+      if (memory_block_allocator.is_owner_of(&rcmessage))
+      {
+        rcmessage.~ireference_counted_message();
+        released = memory_block_allocator.release(&rcmessage);
+      }
       unlock();
 
       ETL_ASSERT(released, ETL_ERROR(etl::reference_counted_message_pool_release_failure));

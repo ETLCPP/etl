@@ -385,7 +385,8 @@ namespace etl
         denominator *= 10U;
       }
 
-      working_t abs_value = etl::absolute(value);
+      // Get the absolute value, taking care of minimum negative values.
+      working_t abs_value = etl::absolute_unsigned(value);
 
       // Figure out how many decimal digits we have in the value.
       const uint32_t& original_decimal_digits = denominator_exponent;

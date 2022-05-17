@@ -164,7 +164,7 @@ namespace
 
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
-    TEST(test_cpp17_deduced_constructor)
+    TEST_FIXTURE(SetupFixture, test_cpp17_deduced_constructor)
     {
       etl::unordered_multiset data{ N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
       etl::unordered_multiset<NDC, 10U> check = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
@@ -206,16 +206,27 @@ namespace
 
       DataM data2(std::move(data1));
 
+      size_t count1 = etl::distance(data1.begin(), data1.end());
+      size_t count2 = etl::distance(data2.begin(), data2.end());
+
       CHECK(!data1.empty()); // Move does not clear the source.
 
-      CHECK_EQUAL(1, ItemM(1).value);
-      CHECK_EQUAL(2, ItemM(2).value);
-      CHECK_EQUAL(3, ItemM(3).value);
-      CHECK_EQUAL(4, ItemM(4).value);
+      DataM::const_iterator itr = data1.begin();
+
+
+      CHECK(data2.find(ItemM(1)) != data2.end());
+      CHECK(data2.find(ItemM(2)) != data2.end());
+      CHECK(data2.find(ItemM(3)) != data2.end());
+      CHECK(data2.find(ItemM(4)) != data2.end());
+
+      CHECK(data2.find(ItemM(1))->valid);
+      CHECK(data2.find(ItemM(2))->valid);
+      CHECK(data2.find(ItemM(3))->valid);
+      CHECK(data2.find(ItemM(4))->valid);
     }
 
     //*************************************************************************
-    TEST(test_destruct_via_iunordered_multiset)
+    TEST_FIXTURE(SetupFixture, test_destruct_via_iunordered_multiset)
     {
       int current_count = NDC::get_instance_count();
 
@@ -294,11 +305,6 @@ namespace
       data2 = std::move(data1);
 
       CHECK(!data1.empty()); // Move does not clear the source.
-
-      CHECK_EQUAL(1, ItemM(1).value);
-      CHECK_EQUAL(2, ItemM(2).value);
-      CHECK_EQUAL(3, ItemM(3).value);
-      CHECK_EQUAL(4, ItemM(4).value);
     }
 
     //*************************************************************************

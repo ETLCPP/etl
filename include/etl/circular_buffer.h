@@ -296,9 +296,7 @@ namespace etl
       //*************************************************************************
       iterator& operator +=(int n)
       {
-        n = picb->BUFFER_SIZE + n;
-
-        current += n;
+        current += size_type(picb->BUFFER_SIZE + n);
         current %= picb->BUFFER_SIZE;
 
         return (*this);
@@ -569,9 +567,7 @@ namespace etl
       //*************************************************************************
       const_iterator& operator +=(int n)
       {
-        n = picb->BUFFER_SIZE + n;
-
-        current += n;
+        current += size_type(picb->BUFFER_SIZE + n);
         current %= picb->BUFFER_SIZE;
 
         return (*this);

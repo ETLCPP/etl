@@ -231,10 +231,12 @@ namespace etl
           while (width != 0)
           {
             unsigned char mask_width = static_cast<unsigned char>(etl::min(width, bits_in_byte));
-            unsigned char chunk = get_chunk(mask_width);
+            
+            typedef typename etl::make_unsigned<T>::type chunk_t;           
+            chunk_t chunk = get_chunk(mask_width);
 
             width -= mask_width;
-            value |= static_cast<T>(chunk) << width;
+            value |= static_cast<T>(chunk << width);
           }
 
           success = true;

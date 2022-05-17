@@ -1,4 +1,13 @@
 ===============================================================================
+20.28.0
+Fixed issues raised by sanitizer.
+Added conditional compilation for 8 bit type in hash.h
+Fixed warnings for 64bit compilation.
+Fixed sanity check includes.
+Fixed incorrect returned span length for byte stream read.
+Updates to etl::successor and derived classes.
+
+===============================================================================
 20.27.3
 #531 Fixed: Compilation of etl::reference_counted_message_pool with ETL_LOG_ERROR 
 enabled due to non-public inheritance.

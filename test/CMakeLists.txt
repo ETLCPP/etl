@@ -42,8 +42,6 @@ set(TEST_SOURCE_FILES
 	test_array.cpp
 	test_array_view.cpp
 	test_array_wrapper.cpp
-	test_atomic_clang_sync.cpp
-	test_atomic_gcc_sync.cpp
 	test_atomic_std.cpp
 	test_binary.cpp
 	test_bip_buffer_spsc_atomic.cpp
@@ -252,6 +250,7 @@ set(TEST_SOURCE_FILES
 	test_string_view.cpp
 	test_string_wchar_t.cpp
 	test_string_wchar_t_external_buffer.cpp
+	test_successor.cpp
 	test_task_scheduler.cpp
 	test_threshold.cpp
 	test_to_string.cpp
@@ -322,11 +321,20 @@ else ()
 endif ()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  list(APPEND TEST_SOURCE_FILES "test_atomic_gcc_sync.cpp")
+  message(STATUS "Using GNU")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+  message(STATUS "Including test_atomic_gcc_sync")
+  list(APPEND TEST_SOURCE_FILES "test_atomic_gcc_sync.cpp")
 endif()
 
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined")
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  message(STATUS "Using Clang")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+  message(STATUS "Including test_atomic_clang_sync")
+  list(APPEND TEST_SOURCE_FILES "test_atomic_clang_sync.cpp")
+endif()
 
 add_executable(etl_tests ${TEST_SOURCE_FILES})
 add_library(unit_test ${UNITTEST_SOURCE_FILES})

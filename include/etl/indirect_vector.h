@@ -1208,7 +1208,6 @@ namespace etl
 #endif
     ~iindirect_vector()
     {
-      initialise();
     }
 
   protected:

@@ -920,6 +920,7 @@ namespace
 
       etl::optional<etl::span<const int32_t> > result = reader.read<int32_t>(output);
       CHECK(result.has_value());
+      CHECK_EQUAL(sizeof(const int32_t), result.value().size());
       CHECK_EQUAL(put_data[0], get_data[0]);
       CHECK_EQUAL(put_data[1], get_data[1]);
       CHECK_EQUAL(put_data[2], get_data[2]);
@@ -944,6 +945,7 @@ namespace
 
       etl::optional<etl::span<const int32_t> > result = reader.read<int32_t>(get_data.data(), get_data.size());
       CHECK(result.has_value());
+      CHECK_EQUAL(sizeof(const int32_t), result.value().size());
       CHECK_EQUAL(put_data[0], get_data[0]);
       CHECK_EQUAL(put_data[1], get_data[1]);
       CHECK_EQUAL(put_data[2], get_data[2]);
