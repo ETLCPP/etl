@@ -154,7 +154,7 @@ SOFTWARE.
 
 //*************************************
 // Option to make string truncation an error.
-#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
+#if defined(ETL_ENABLE_ERROR_ON_STRING_TRUNCATION)
   #define ETL_HAS_ERROR_ON_STRING_TRUNCATION 1
 #else
   #define ETL_HAS_ERROR_ON_STRING_TRUNCATION 0
