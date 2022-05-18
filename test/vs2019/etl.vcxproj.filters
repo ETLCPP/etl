@@ -196,6 +196,12 @@
     <Filter Include="Resource Files\Scripts">
       <UniqueIdentifier>{4ee68175-3bc2-4d30-b8bf-be7261124979}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Messaging">
+      <UniqueIdentifier>{ba688ff7-bea4-4f7e-bfab-1033d3401426}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Messaging\Generators">
+      <UniqueIdentifier>{ba80408c-0198-432a-a213-e4e2db946aab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -417,20 +423,8 @@
     <ClInclude Include="..\..\include\etl\fsm.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\message_router.h">
-      <Filter>ETL\Frameworks</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\packet.h">
       <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\message.h">
-      <Filter>ETL\Frameworks</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\message_bus.h">
-      <Filter>ETL\Frameworks</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\message_types.h">
-      <Filter>ETL\Frameworks</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\scheduler.h">
       <Filter>ETL\Frameworks</Filter>
@@ -455,9 +449,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\compare.h">
       <Filter>ETL\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\message_timer.h">
-      <Filter>ETL\Frameworks</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\callback_timer.h">
       <Filter>ETL\Frameworks</Filter>
@@ -708,9 +699,6 @@
     <ClInclude Include="..\..\include\etl\mutex\mutex_freertos.h">
       <Filter>ETL\Utilities\Mutex</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\message_packet.h">
-      <Filter>ETL\Frameworks</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\null_type.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
@@ -754,12 +742,6 @@
       <Filter>ETL\Utilities\Generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\generators\fsm_generator.h">
-      <Filter>ETL\Frameworks\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\message_packet_generator.h">
-      <Filter>ETL\Frameworks\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\message_router_generator.h">
       <Filter>ETL\Frameworks\Generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\generators\variant_pool_generator.h">
@@ -816,15 +798,6 @@
     <ClInclude Include="..\..\include\etl\multi_range.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\ireference_counted_message_pool.h">
-      <Filter>ETL\Frameworks</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\reference_counted_message.h">
-      <Filter>ETL\Frameworks</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\reference_counted_message_pool.h">
-      <Filter>ETL\Frameworks</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\generic_pool.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
@@ -833,9 +806,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\file_error_numbers.h">
       <Filter>ETL\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\shared_message.h">
-      <Filter>ETL\Frameworks</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\reference_counted_object.h">
       <Filter>ETL\Utilities</Filter>
@@ -851,9 +821,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\imemory_block_allocator.h">
       <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\message_router_registry.h">
-      <Filter>ETL\Frameworks</Filter>
     </ClInclude>
     <ClInclude Include="..\sanity-check\c++03\etl_profile.h">
       <Filter>Tests\Sanity Checks\C++03</Filter>
@@ -963,17 +930,11 @@
     <ClInclude Include="..\..\include\etl\callback_timer_locked.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\message_timer_atomic.h">
-      <Filter>ETL\Frameworks</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\private\delegate_cpp03.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\private\delegate_cpp11.h">
       <Filter>ETL\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\message_timer_locked.h">
-      <Filter>ETL\Frameworks</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\bit.h">
       <Filter>ETL\Utilities</Filter>
@@ -1173,9 +1134,6 @@
     <ClInclude Include="..\..\include\etl\callback_timer_interrupt.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\message_timer_interrupt.h">
-      <Filter>ETL\Frameworks</Filter>
-    </ClInclude>
     <ClInclude Include="..\unittest++\AssertException.h">
       <Filter>UnitTest++\Header Files</Filter>
     </ClInclude>
@@ -1274,6 +1232,54 @@
     </ClInclude>
     <ClInclude Include="..\unittest++\Win32\TimeHelpers.h">
       <Filter>UnitTest++\Header Files\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\ireference_counted_message_pool.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_bus.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_packet.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_router.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_router_registry.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_timer.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_timer_atomic.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_timer_interrupt.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_timer_locked.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_types.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\reference_counted_message.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\reference_counted_message_pool.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\shared_message.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\message_packet_generator.h">
+      <Filter>ETL\Messaging\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\message_router_generator.h">
+      <Filter>ETL\Messaging\Generators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -156,6 +156,18 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Clear the successor chain.
+    //*************************************************************************
+    void clear_successor_chain()
+    {
+      if (has_successor())
+      {
+        get_successor().clear_successor_chain();
+        clear_successor();
+      }
+    }
+
+    //*************************************************************************
     /// Get the successor.
     /// Emits an etl::successor_invalid if a successor has not been set.
     //*************************************************************************

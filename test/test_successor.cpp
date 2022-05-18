@@ -371,6 +371,145 @@ namespace
       CHECK_EQUAL(2, successor2.value);
       CHECK_EQUAL(3, successor3.value);
     }
+
+    //*************************************************************************
+    TEST(test_clear_successor)
+    {
+      SuccessorSameBase1 successor1;
+      SuccessorSameBase2 successor2;
+      SuccessorSameBase3 successor3;
+      SuccessorSameBase4 successor4;
+      SuccessorSameBase5 successor5;
+
+      successor1.set_successor(successor2, successor3, successor4, successor5);
+
+      successor2.clear_successor();
+
+      CHECK(successor1.has_successor());
+      CHECK(!successor2.has_successor());
+      CHECK(successor3.has_successor());
+      CHECK(successor4.has_successor());
+      CHECK(!successor5.has_successor());
+    }
+    
+    //*************************************************************************
+    TEST(test_clear_successor_chain)
+    {
+      SuccessorSameBase1 successor1;
+      SuccessorSameBase2 successor2;
+      SuccessorSameBase3 successor3;
+      SuccessorSameBase4 successor4;
+      SuccessorSameBase5 successor5;
+
+      successor1.set_successor(successor2, successor3, successor4, successor5);
+
+      successor2.clear_successor_chain();
+
+      CHECK(successor1.has_successor());
+      CHECK(!successor2.has_successor());
+      CHECK(!successor3.has_successor());
+      CHECK(!successor4.has_successor());
+      CHECK(!successor5.has_successor());
+    }
+
+    //*************************************************************************
+    TEST(test_interative_successors)
+    {
+      class IProcessor : public etl::successor<IProcessor>
+      {
+      public:
+
+        //*********************************
+        virtual bool Check() = 0;
+
+        //*********************************
+        bool Process()
+        {
+          bool handled = false;
+
+          IProcessor* p = this;
+
+          while (handled == false)
+          {
+            handled = p->Check();
+
+            // Were we unable to handle the call?
+            if (handled == false)
+            {
+              // Do we have a successor?
+              if (p->has_successor())
+              {
+                // Get the next successor.
+                p = &(p->get_successor());
+              }
+              else
+              {
+                break;
+              }
+            }
+          }
+
+          return handled;
+        }
+      };
+
+      //*********************************
+      class Processor1 : public IProcessor
+      {
+      public:
+
+        bool Check() override
+        {
+          return false;
+        }
+      };
+
+      //*********************************
+      class Processor2 : public IProcessor
+      {
+      public:
+
+        bool Check() override
+        {
+          return false;
+        }
+      };
+
+      //*********************************
+      class Processor3 : public IProcessor
+      {
+      public:
+
+        bool Check() override
+        {
+          return false;
+        }
+      };
+
+      //*********************************
+      class Processor4 : public IProcessor
+      {
+      public:
+
+        bool Check() override
+        {
+          return true;
+        }
+      };
+
+      Processor1 processor1a;
+      Processor1 processor1b;
+      Processor2 processor2a;
+      Processor2 processor2b;
+      Processor3 processor3;
+      Processor4 processor4;
+
+      processor1a.append_successor(processor2a, processor3);
+      processor1b.append_successor(processor2b, processor4);
+
+      CHECK(processor1a.Process() == false);
+      CHECK(processor1b.Process() == true);
+    }
   }
 }
 
