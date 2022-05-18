@@ -286,7 +286,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(message_packet_copy_consructor)
+    TEST(message_packet_copy_constructor)
     {
       Message1 message1(1);
       Message2 message2(2.2);
@@ -309,7 +309,7 @@ namespace
 
 #if !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
-    TEST(message_packet_move_consructor)
+    TEST(message_packet_move_constructor)
     {
       Message1 message1(1);
       Message2 message2(2.2);

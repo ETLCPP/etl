@@ -41,7 +41,7 @@ SOFTWARE.
 
 //*****************************************************************************
 ///\defgroup integral_limits integral_limits
-/// A set of templated compile time constants that mirror some of std::numeric_limits funtionality.
+/// A set of templated compile time constants that mirror some of std::numeric_limits functionality.
 ///\ingroup utilities
 //*****************************************************************************
 

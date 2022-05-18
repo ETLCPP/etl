@@ -5,7 +5,11 @@ cmake_minimum_required(VERSION 3.5.0)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/helpers.cmake)
 
+set(MSG_PREFIX "etl |")
 determine_version_with_git(${GIT_DIR_LOOKUP_POLICY})
+if(NOT ETL_VERSION)
+    determine_version("version.txt")
+endif()
 
 project(etl VERSION ${ETL_VERSION})
 
@@ -13,6 +17,9 @@ option(BUILD_TESTS "Build unit tests" OFF)
 option(NO_STL "No STL" OFF)
 
 add_library(${PROJECT_NAME} INTERFACE)
+# This allows users which use the add_subdirectory or FetchContent
+# to use the same target as users which use find_package
+add_library(etl::etl ALIAS ${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME} SYSTEM INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -26,6 +33,7 @@ if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
     # Steps here based on excellent guide: https://dominikberner.ch/cmake-interface-lib/
     # Which also details all steps
     include(CMakePackageConfigHelpers)
+    include(GNUInstallDirs)
     install(TARGETS ${PROJECT_NAME}
         EXPORT ${PROJECT_NAME}Targets
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}

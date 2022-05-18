@@ -1629,7 +1629,7 @@ bool operator >=(const etl::unique_ptr<T1, TD1>&lhs, const etl::unique_ptr<T2, T
 namespace etl
 {
   //*****************************************************************************
-  /// Default contruct an item at address p.
+  /// Default construct an item at address p.
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
@@ -1639,7 +1639,7 @@ namespace etl
   }
 
   //*****************************************************************************
-  /// Default contruct an item at address p.
+  /// Default construct an item at address p.
   ///\ingroup memory
   //*****************************************************************************
   template <typename T, typename TCounter>
@@ -1650,7 +1650,7 @@ namespace etl
   }
 
   //*****************************************************************************
-  /// Default contruct an item at address p.
+  /// Default construct an item at address p.
   ///\ingroup memory
   //*****************************************************************************
   template <typename T>
@@ -1661,7 +1661,7 @@ namespace etl
   }
 
   //*****************************************************************************
-  /// Default contruct an item at address p.
+  /// Default construct an item at address p.
   ///\ingroup memory
   //*****************************************************************************
   template <typename T, typename TCounter>

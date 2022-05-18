@@ -475,7 +475,7 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Inserts a value to the flast_multi.
+    /// Inserts a value to the flat_multi.
     /// If asserts or exceptions are enabled, emits flat_map_full if the flat_map is already full.
     ///\param position The position to insert at.
     ///\param value    The value to insert.

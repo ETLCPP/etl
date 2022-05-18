@@ -1100,8 +1100,15 @@ namespace etl
   typedef etl::atomic<long long>           atomic_llong;
   typedef etl::atomic<unsigned long long>  atomic_ullong;
   typedef etl::atomic<wchar_t>             atomic_wchar_t;
+#if ETL_HAS_NATIVE_CHAR8_T
+  typedef etl::atomic<char8_t>             atomic_char8_t;
+#endif
+#if ETL_HAS_NATIVE_CHAR16_T
   typedef etl::atomic<char16_t>            atomic_char16_t;
+#endif
+#if ETL_HAS_NATIVE_CHAR32_T
   typedef etl::atomic<char32_t>            atomic_char32_t;
+#endif
 #if ETL_USING_8BIT_TYPES
   typedef etl::atomic<uint8_t>             atomic_uint8_t;
   typedef etl::atomic<int8_t>              atomic_int8_t;

@@ -401,6 +401,58 @@ namespace
     }
 
     //*************************************************************************
+    TEST(write_and_skip_int32_t)
+    {
+      // Tests assume big endian.
+      std::array<char, sizeof(int32_t) * 4> storage = { char(0xF0), char(0xF1), char(0xF2), char(0xF3),
+                                                        char(0xF4), char(0xF5), char(0xF6), char(0xF7),
+                                                        char(0xF8), char(0xF9), char(0xFA), char(0xFB),
+                                                        char(0xFC), char(0xFD), char(0xFE), char(0xFF) };
+
+      std::array<char, sizeof(int32_t) * 4> compare_data = { char(0x01), char(0x02), char(0x03), char(0x04),
+                                                             char(0xF4), char(0xF5), char(0xF6), char(0xF7),
+                                                             char(0xF8), char(0xF9), char(0xFA), char(0xFB),
+                                                             char(0x05), char(0x06), char(0x07), char(0x08) };
+
+      etl::byte_stream_writer byte_stream(storage.data(), storage.size(), etl::endian::big);
+
+      CHECK(byte_stream.write(int32_t(0x01020304)));
+      CHECK(byte_stream.skip<int32_t>(2));
+      CHECK(byte_stream.write(int32_t(0x05060708)));
+      CHECK(!byte_stream.skip<int32_t>(1));
+
+      for (size_t i = 0U; i < storage.size(); ++i)
+      {
+        CHECK_EQUAL(int(compare_data[i]), int(storage[i]));
+      }
+    }
+
+    //*************************************************************************
+    TEST(read_and_skip_int32_t)
+    {
+      // Tests assume big endian.
+      std::array<char, sizeof(int32_t) * 4> storage = { char(0x01), char(0x02), char(0x03), char(0x04),
+                                                        char(0xF4), char(0xF5), char(0xF6), char(0xF7),
+                                                        char(0xF8), char(0xF9), char(0xFA), char(0xFB),
+                                                        char(0x05), char(0x06), char(0x07), char(0x08) };
+
+      std::array<etl::optional<int32_t>, 4> compare = { int32_t(0x01020304), int32_t(0xF4F5F6F7), int32_t(0xF8F9FAFB), int32_t(0x05060708) };
+      std::array<etl::optional<int32_t>, 4> result  = { int32_t(0xF0F1F2F3), int32_t(0xF4F5F6F7), int32_t(0xF8F9FAFB), int32_t(0xFCFDFEFF) };
+
+      etl::byte_stream_reader byte_stream(storage.data(), storage.size(), etl::endian::big);
+
+      CHECK(result[0] = byte_stream.read<int32_t>());
+      CHECK(byte_stream.skip<int32_t>(2));
+      CHECK(result[3] = byte_stream.read<int32_t>());
+      CHECK(!byte_stream.skip<int32_t>(2));
+
+      for (size_t i = 0U; i < result.size(); ++i)
+      {
+        CHECK_EQUAL(compare[i].value(), result[i].value());
+      }
+    }
+
+    //*************************************************************************
     TEST(write_read_bool)
     {
       std::array<bool, 8> flags =
@@ -920,6 +972,7 @@ namespace
 
       etl::optional<etl::span<const int32_t> > result = reader.read<int32_t>(output);
       CHECK(result.has_value());
+      CHECK_EQUAL(sizeof(const int32_t), result.value().size());
       CHECK_EQUAL(put_data[0], get_data[0]);
       CHECK_EQUAL(put_data[1], get_data[1]);
       CHECK_EQUAL(put_data[2], get_data[2]);
@@ -944,6 +997,7 @@ namespace
 
       etl::optional<etl::span<const int32_t> > result = reader.read<int32_t>(get_data.data(), get_data.size());
       CHECK(result.has_value());
+      CHECK_EQUAL(sizeof(const int32_t), result.value().size());
       CHECK_EQUAL(put_data[0], get_data[0]);
       CHECK_EQUAL(put_data[1], get_data[1]);
       CHECK_EQUAL(put_data[2], get_data[2]);

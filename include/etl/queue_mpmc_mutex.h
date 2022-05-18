@@ -120,7 +120,7 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup queue_mpmc
-  ///\brief This is the base for all queue_mpmc_mutexs that contain a particular type.
+  ///\brief This is the base for all queue_mpmc_mutex's that contain a particular type.
   ///\details Normally a reference to this type will be taken from a derived queue_mpmc_mutex.
   ///\code
   /// etl::queue_mpmc_mutex<int, 10> myQueue;

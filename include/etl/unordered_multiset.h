@@ -154,7 +154,7 @@ namespace etl
       value_type key;
     };
 
-  private:
+  protected:
 
     typedef etl::intrusive_forward_list<node_t, link_t> bucket_t;
     typedef etl::ipool pool_t;
@@ -190,9 +190,9 @@ namespace etl
 
       //*********************************
       iterator(const iterator& other)
-        : pbuckets_end(other.pbuckets_end),
-        pbucket(other.pbucket),
-        inode(other.inode)
+        : pbuckets_end(other.pbuckets_end)
+        , pbucket(other.pbucket)
+        , inode(other.inode)
       {
       }
 
@@ -272,9 +272,9 @@ namespace etl
 
       //*********************************
       iterator(bucket_t* pbuckets_end_, bucket_t* pbucket_, local_iterator inode_)
-        : pbuckets_end(pbuckets_end_),
-          pbucket(pbucket_),
-          inode(inode_)
+        : pbuckets_end(pbuckets_end_)
+        , pbucket(pbucket_)
+        , inode(inode_)
       {
       }
 
@@ -332,17 +332,17 @@ namespace etl
 
       //*********************************
       const_iterator(const typename iunordered_multiset::iterator& other)
-        : pbuckets_end(other.pbuckets_end),
-        pbucket(other.pbucket),
-        inode(other.inode)
+        : pbuckets_end(other.pbuckets_end)
+        , pbucket(other.pbucket)
+        , inode(other.inode)
       {
       }
 
       //*********************************
       const_iterator(const const_iterator& other)
-        : pbuckets_end(other.pbuckets_end),
-        pbucket(other.pbucket),
-        inode(other.inode)
+        : pbuckets_end(other.pbuckets_end)
+        , pbucket(other.pbucket)
+        , inode(other.inode)
       {
       }
 
@@ -423,9 +423,9 @@ namespace etl
 
       //*********************************
       const_iterator(bucket_t* pbuckets_end_, bucket_t* pbucket_, local_iterator inode_)
-        : pbuckets_end(pbuckets_end_),
-          pbucket(pbucket_),
-          inode(inode_)
+        : pbuckets_end(pbuckets_end_)
+        , pbucket(pbucket_)
+        , inode(inode_)
       {
       }
 
@@ -726,8 +726,8 @@ namespace etl
         ::new (&node.key) value_type(etl::move(key));
         ETL_INCREMENT_DEBUG_COUNT
 
-          // Just add the pointer to the bucket;
-          bucket.insert_after(bucket.before_begin(), node);
+        // Just add the pointer to the bucket;
+        bucket.insert_after(bucket.before_begin(), node);
         adjust_first_last_markers_after_insert(&bucket);
 
         result.first = iterator((pbuckets + number_of_buckets), pbucket, pbucket->begin());
@@ -1196,9 +1196,11 @@ namespace etl
     /// Constructor.
     //*********************************************************************
     iunordered_multiset(pool_t& node_pool_, bucket_t* pbuckets_, size_t number_of_buckets_)
-      : pnodepool(&node_pool_),
-        pbuckets(pbuckets_),
-        number_of_buckets(number_of_buckets_)
+      : pnodepool(&node_pool_)
+      , pbuckets(pbuckets_)
+      , number_of_buckets(number_of_buckets_)
+      , first(pbuckets)
+      , last(pbuckets)
     {
     }
 
@@ -1237,7 +1239,7 @@ namespace etl
       }
 
       first = pbuckets;
-      last = first;
+      last  = first;
     }
 
 #if ETL_USING_CPP11
@@ -1275,7 +1277,7 @@ namespace etl
       if (size() == 1)
       {
         first = pbucket;
-        last = pbucket;
+        last  = pbucket;
       }
       else
       {
@@ -1298,7 +1300,7 @@ namespace etl
       if (empty())
       {
         first = pbuckets;
-        last = pbuckets;
+        last  = pbuckets;
       }
       else
       {
@@ -1327,10 +1329,6 @@ namespace etl
 
             ++pcurrent;
           }
-        }
-        else
-        {
-          // Nothing to do.
         }
       }
     }
@@ -1424,7 +1422,6 @@ namespace etl
     unordered_multiset()
       : base(node_pool, buckets, MAX_BUCKETS)
     {
-      base::initialise();
     }
 
     //*************************************************************************
@@ -1525,7 +1522,7 @@ namespace etl
     etl::pool<typename base::node_t, MAX_SIZE> node_pool;
 
     /// The buckets of node lists.
-    etl::intrusive_forward_list<typename base::node_t> buckets[MAX_BUCKETS_];
+    typename base::bucket_t buckets[MAX_BUCKETS_];
   };
 
   //*************************************************************************

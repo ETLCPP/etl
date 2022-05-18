@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_QUANTATIZE_INCLUDED
-#define ETL_QUANTATIZE_INCLUDED
+#ifndef ETL_QUANTIZE_INCLUDED
+#define ETL_QUANTIZE_INCLUDED
 
 #include "platform.h"
 #include "functional.h"

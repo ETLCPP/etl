@@ -269,7 +269,7 @@ namespace etl
 
     //*********************************************************************
     /// Does nothing.
-    /// For compatilbilty with the STL vector API.
+    /// For compatibility with the STL vector API.
     //*********************************************************************
     void reserve(size_t)
     {

@@ -53,4 +53,12 @@ SOFTWARE.
   #define ETL_HAS_MUTEX 0
 #endif
 
+namespace etl
+{
+  namespace traits
+  {
+    static ETL_CONSTANT bool has_mutex = (ETL_HAS_MUTEX == 1);
+  }
+}
+
 #endif

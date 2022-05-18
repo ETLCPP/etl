@@ -157,7 +157,7 @@ namespace
 
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
-    TEST(test_cpp17_deduced_constructor)
+    TEST_FIXTURE(SetupFixture, test_cpp17_deduced_constructor)
     {
       etl::unordered_set data{ N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
       etl::unordered_set<NDC, 10U> check = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
@@ -200,15 +200,10 @@ namespace
       DataM data2(std::move(data1));
 
       CHECK(!data1.empty()); // Move does not clear the source.
-
-      CHECK_EQUAL(1, ItemM(1).value);
-      CHECK_EQUAL(2, ItemM(2).value);
-      CHECK_EQUAL(3, ItemM(3).value);
-      CHECK_EQUAL(4, ItemM(4).value);
     }
 
     //*************************************************************************
-    TEST(test_destruct_via_iunordered_set)
+    TEST_FIXTURE(SetupFixture, test_destruct_via_iunordered_set)
     {
       int current_count = NDC::get_instance_count();
 
@@ -287,11 +282,6 @@ namespace
       data2 = std::move(data1);
 
       CHECK(!data1.empty()); // Move does not clear the source.
-
-      CHECK_EQUAL(1, ItemM(1).value);
-      CHECK_EQUAL(2, ItemM(2).value);
-      CHECK_EQUAL(3, ItemM(3).value);
-      CHECK_EQUAL(4, ItemM(4).value);
     }
 
     //*************************************************************************

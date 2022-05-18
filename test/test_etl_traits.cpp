@@ -33,6 +33,8 @@ SOFTWARE.
 #include "etl/platform.h"
 #include "etl/version.h"
 #include "etl/char_traits.h"
+#include "etl/mutex.h"
+
 namespace
 {
   SUITE(test_etl_traits)
@@ -60,8 +62,12 @@ namespace
       CHECK_EQUAL((ETL_USING_8BIT_TYPES == 1),                 etl::traits::has_8bit_types);
       CHECK_EQUAL((ETL_USING_64BIT_TYPES == 1),                etl::traits::has_64bit_types);
       CHECK_EQUAL((ETL_HAS_ATOMIC == 1),                       etl::traits::has_atomic);
+      CHECK_EQUAL((ETL_HAS_MUTEX == 1),                        etl::traits::has_mutex);
       CHECK_EQUAL((ETL_HAS_NULLPTR == 1),                      etl::traits::has_nullptr);
-      CHECK_EQUAL((ETL_HAS_LARGE_CHAR == 1),                   etl::traits::has_large_char);
+      CHECK_EQUAL((ETL_HAS_CHAR8_T == 1),                      etl::traits::has_char8_t);
+      CHECK_EQUAL((ETL_HAS_NATIVE_CHAR8_T == 1),               etl::traits::has_native_char8_t);
+      CHECK_EQUAL((ETL_HAS_NATIVE_CHAR16_T == 1),              etl::traits::has_native_char16_t);
+      CHECK_EQUAL((ETL_HAS_NATIVE_CHAR32_T == 1),              etl::traits::has_native_char32_t);
       CHECK_EQUAL((ETL_HAS_STRING_TRUNCATION_CHECKS == 1),     etl::traits::has_string_truncation_checks);
       CHECK_EQUAL((ETL_HAS_ERROR_ON_STRING_TRUNCATION == 1),   etl::traits::has_error_on_string_truncation);
       CHECK_EQUAL((ETL_HAS_STRING_CLEAR_AFTER_USE == 1),       etl::traits::has_string_clear_after_use);
@@ -75,8 +81,13 @@ namespace
       CHECK_EQUAL(ETL_VERSION_MINOR,                           etl::traits::version_minor);
       CHECK_EQUAL(ETL_VERSION_PATCH,                           etl::traits::version_patch);
       CHECK_EQUAL(ETL_VERSION_VALUE,                           etl::traits::version);
+      CHECK_EQUAL(17,                                          etl::traits::language_standard);
+
       CHECK_ARRAY_EQUAL(ETL_VERSION, etl::traits::version_string,    etl::strlen(ETL_VERSION));
       CHECK_ARRAY_EQUAL(ETL_VERSION, etl::traits::version_wstring,   etl::strlen(ETL_VERSION_W));
+#if ETL_HAS_NATIVE_CHAR8_T
+      CHECK_ARRAY_EQUAL(ETL_VERSION, etl::traits::version_u8string,  etl::strlen(ETL_VERSION_U8));
+#endif
       CHECK_ARRAY_EQUAL(ETL_VERSION, etl::traits::version_u16string, etl::strlen(ETL_VERSION_U16));
       CHECK_ARRAY_EQUAL(ETL_VERSION, etl::traits::version_u32string, etl::strlen(ETL_VERSION_U32));
     }

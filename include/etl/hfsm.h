@@ -86,7 +86,7 @@ namespace etl
   private:
 
     //*******************************************
-    /// Return the first common ancester of the two states.
+    /// Return the first common ancestor of the two states.
     //*******************************************
     static etl::ifsm_state* common_ancestor(etl::ifsm_state* s1, etl::ifsm_state* s2)
     {

@@ -264,7 +264,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_registery_contains)
+    TEST(test_registry_contains)
     {
       etl::imessage_router* routers[] = { &router1, &router2, &router3 };
       etl::message_router_registry<Registry_Size> registry(std::begin(routers), std::end(routers));

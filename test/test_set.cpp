@@ -189,7 +189,7 @@ namespace
 
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
-    TEST(test_cpp17_deduced_constructor)
+    TEST_FIXTURE(SetupFixture, test_cpp17_deduced_constructor)
     {
       etl::set data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
       etl::set<int, 10U> check = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -245,11 +245,6 @@ namespace
       DataM data2(std::move(data1));
 
       CHECK(!data1.empty()); // Move does not clear the source.
-
-      CHECK_EQUAL(1, ItemM(1).value);
-      CHECK_EQUAL(2, ItemM(2).value);
-      CHECK_EQUAL(3, ItemM(3).value);
-      CHECK_EQUAL(4, ItemM(4).value);
 
       CHECK(data2.find(ItemM(1)) != data2.end());
       CHECK(data2.find(ItemM(2)) != data2.end());
@@ -363,11 +358,6 @@ namespace
       data2 = std::move(data1);
 
       CHECK(!data1.empty()); // Move does not clear the source.
-
-      CHECK_EQUAL(1, ItemM(1).value);
-      CHECK_EQUAL(2, ItemM(2).value);
-      CHECK_EQUAL(3, ItemM(3).value);
-      CHECK_EQUAL(4, ItemM(4).value);
     }
 
     //*************************************************************************
@@ -1393,7 +1383,7 @@ namespace
 
     //*************************************************************************
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
-    TEST(test_set_template_deduction)
+    TEST_FIXTURE(SetupFixture, test_set_template_deduction)
     {
       etl::set data{ std::string("A"), std::string("B"), std::string("C"), std::string("D"), std::string("E"), std::string("F") };
 
@@ -1419,7 +1409,7 @@ namespace
 
     //*************************************************************************
 #if ETL_HAS_INITIALIZER_LIST
-    TEST(test_make_set)
+    TEST_FIXTURE(SetupFixture, test_make_set)
     {
       auto data = etl::make_set< std::string>(std::string("A"), std::string("B"), std::string("C"), std::string("D"), std::string("E"), std::string("F"));
 
@@ -1444,7 +1434,7 @@ namespace
 #endif
 
     //*************************************************************************
-    TEST(test_contains)
+    TEST_FIXTURE(SetupFixture, test_contains)
     {
       std::array<int, 6U> initial = { 1, 2, 3, 4, 5, 6 };
       etl::set<int, 6U, etl::less<>> data(initial.begin(), initial.end());
@@ -1454,7 +1444,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_contains_using_transparent_comparator)
+    TEST_FIXTURE(SetupFixture, test_contains_using_transparent_comparator)
     {
       std::array<int, 6U> initial = { 1, 2, 3, 4, 5, 6 };
       etl::set<int, 6U, etl::less<>> data(initial.begin(), initial.end());

@@ -261,26 +261,26 @@ namespace
     TEST(test_rend)
     {
       Data5 aw5;
-      CHECK_EQUAL(&data5[Data5::REND], &*aw5.rend());
+      CHECK_EQUAL(Data5::SIZE, std::distance(aw5.rbegin(), aw5.rend()));
     }
 
     //*************************************************************************
     TEST(test_crbegin)
     {
       Data5 aw5;
-      CHECK_EQUAL(&data5[Data5::RBEGIN], &*aw5.crbegin());
+      CHECK_EQUAL(data5 + Data5::RBEGIN, &*aw5.crbegin());
     }
 
     //*************************************************************************
     TEST(test_crend)
     {
       const Data5 caw5a;
-      CHECK_EQUAL(&data5[Data5::REND], &*caw5a.rend());
-      CHECK_EQUAL(&data5[Data5::REND], &*caw5a.crend());
+      CHECK_EQUAL(Data5::SIZE, std::distance(caw5a.rbegin(), caw5a.rend()));
+      CHECK_EQUAL(Data5::SIZE, std::distance(caw5a.rbegin(), caw5a.rend()));
 
       CData5 caw5b;
-      CHECK_EQUAL(&cdata5[CData5::REND], &*caw5b.rend());
-      CHECK_EQUAL(&cdata5[CData5::REND], &*caw5b.crend());
+      CHECK_EQUAL(Data5::SIZE, std::distance(caw5b.rbegin(), caw5b.rend()));
+      CHECK_EQUAL(Data5::SIZE, std::distance(caw5b.rbegin(), caw5b.rend()));
     }
 
     //*************************************************************************
@@ -290,7 +290,7 @@ namespace
       Data5::iterator itr = aw5.begin();
       int* p = data5;
 
-      while (p != &data5[Data5::END])
+      while (p != data5 + Data5::END)
       {
         CHECK_EQUAL(*p, *itr);
         ++p;
@@ -311,7 +311,7 @@ namespace
       Data5::const_iterator itr = caw5a.begin();
       int* p = data5;
 
-      while (p != &data5[Data5::END])
+      while (p != data5 + Data5::END)
       {
         CHECK_EQUAL(*p, *itr);
         ++p;
@@ -327,9 +327,9 @@ namespace
     {
       Data5 aw5;
       Data5::reverse_iterator itr = aw5.rbegin();
-      int* p = &data5[Data5::RBEGIN];
+      int* p = data5 + Data5::RBEGIN;
 
-      while (p != &data5[Data5::REND])
+      while (itr != aw5.rend())
       {
         CHECK_EQUAL(*p, *itr);
         --p;
@@ -348,9 +348,9 @@ namespace
     {
       Data5 aw5;
       Data5::const_reverse_iterator itr = aw5.crbegin();
-      int* p = &data5[Data5::RBEGIN];
+      int* p = data5 + Data5::RBEGIN;
 
-      while (p != &data5[Data5::REND])
+      while (itr != aw5.crend())
       {
         CHECK_EQUAL(*p, *itr);
         --p;
@@ -564,7 +564,7 @@ namespace
       size_t hash = etl::hash<Data5>()(aw5);
 
 
-      size_t compare_hash = etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&data5[0]), reinterpret_cast<const uint8_t*>(&data5[5]));
+      size_t compare_hash = etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(data5), reinterpret_cast<const uint8_t*>(data5 + 5U));
 
 
       CHECK_EQUAL(compare_hash, hash);

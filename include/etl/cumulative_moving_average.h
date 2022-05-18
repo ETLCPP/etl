@@ -206,7 +206,7 @@ namespace etl
     //*************************************************************************
     cumulative_moving_average(const T initial_value, const size_t sample_size)
       : average(initial_value * SCALE)
-      , samples(sample_size)
+      , samples(sample_t(sample_size))
     {
     }
 
@@ -260,7 +260,7 @@ namespace etl
   private:
 
     T        average; ///< The current cumulative average.
-    sample_t samples; ///< The nuimber of samples to average over.
+    sample_t samples; ///< The number of samples to average over.
   };
 
   //***************************************************************************

@@ -36,6 +36,8 @@ SOFTWARE.
 
 #include "platform.h"
 
+#if ETL_USING_8BIT_TYPES
+
 // The default hash calculation.
 #include "fnv_1.h"
 #include "type_traits.h"
@@ -435,5 +437,7 @@ namespace etl
     }
   };
 }
+
+#endif // ETL_USING_8BIT_TYPES
 
 #endif

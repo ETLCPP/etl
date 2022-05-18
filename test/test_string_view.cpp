@@ -68,6 +68,16 @@ namespace
       constexpr etl::string_view view2(text, 5U);
       constexpr etl::string_view view3(text, text + 5U);
       constexpr etl::string_view view4(view3);
+
+      constexpr const char* str1 = view1.begin();
+      constexpr const char* str2 = view2.begin();
+      constexpr const char* str3 = view3.begin();
+      constexpr const char* str4 = view4.begin();
+
+      CHECK_ARRAY_EQUAL(text, str1, 5U);
+      CHECK_ARRAY_EQUAL(text, str2, 5U);
+      CHECK_ARRAY_EQUAL(text, str3, 5U);
+      CHECK_ARRAY_EQUAL(text, str4, 5U);
     }
 
     //*************************************************************************

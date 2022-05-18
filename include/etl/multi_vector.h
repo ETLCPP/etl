@@ -35,7 +35,7 @@
 #include "vector.h"
 
 ///\defgroup multi_vector multi_vector
-/// A multi dimentional vector.
+/// A multi dimensional vector.
 ///\ingroup containers
 
 #if ETL_USING_CPP11

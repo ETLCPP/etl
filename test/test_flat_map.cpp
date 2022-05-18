@@ -338,7 +338,7 @@ namespace
 
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
-    TEST(test_cpp17_deduced_constructor)
+    TEST_FIXTURE(SetupFixture, test_cpp17_deduced_constructor)
     {
       etl::flat_map data{ ElementNDC(0, N0), ElementNDC(1, N1), ElementNDC(2, N2), ElementNDC(3, N3), ElementNDC(4, N4),
                           ElementNDC(5, N5), ElementNDC(6, N6), ElementNDC(7, N7), ElementNDC(8, N8), ElementNDC(9, N9) };
@@ -357,7 +357,7 @@ namespace
 #endif
 
     //*************************************************************************
-    TEST(test_destruct_via_iflat_map)
+    TEST_FIXTURE(SetupFixture, test_destruct_via_iflat_map)
     {
       int current_count = NDC::get_instance_count();
 
@@ -399,7 +399,7 @@ namespace
 #endif
 
     //*************************************************************************
-    TEST(test_move_constructor)
+    TEST_FIXTURE(SetupFixture, test_move_constructor)
     {
       using Item = ETL_OR_STD::pair<int, MC>;
 
@@ -1494,7 +1494,7 @@ namespace
 
     //*************************************************************************
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
-    TEST(test_flat_map_template_deduction)
+    TEST_FIXTURE(SetupFixture, test_flat_map_template_deduction)
     {
       using Pair = ETL_OR_STD::pair<const int, NDC>;
 
@@ -1515,7 +1515,7 @@ namespace
 
     //*************************************************************************
 #if ETL_HAS_INITIALIZER_LIST
-    TEST(test_make_flat_map)
+    TEST_FIXTURE(SetupFixture, test_make_flat_map)
     {
       using Pair = ETL_OR_STD::pair<const int, NDC>;
 

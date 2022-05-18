@@ -131,20 +131,6 @@ namespace
   }
 
   //***********************************
-  // Power of 2.
-  uint64_t test_power_of_2(int power)
-  {
-    uint64_t result = 1ULL;
-
-    for (int i = 0; i < power; ++i)
-    {
-      result *= 2;
-    }
-
-    return result;
-  }
-
-  //***********************************
   // Count the bit width the long way.
   template <typename T>
   T test_bit_width(T value)
@@ -1213,7 +1199,7 @@ namespace
     //*************************************************************************
     TEST(test_bit_ceil_8)
     {
-      for (size_t i = 0; i < 256; ++i)
+      for (size_t i = 0; i < 128; ++i)
       {
         uint8_t value = uint8_t(i);
 
@@ -1240,7 +1226,7 @@ namespace
       {
         hash.add(1);
 
-        uint16_t value = hash.value();
+        uint16_t value = hash.value() & 0x7FFF;
 
         CHECK_EQUAL(test_bit_ceil(value), etl::bit_ceil(value));
 
@@ -1270,7 +1256,7 @@ namespace
       {
         hash.add(1);
 
-        uint32_t value = hash.value();
+        uint32_t value = hash.value() & 0x7FFFFFFF;
 
         CHECK_EQUAL(test_bit_ceil(value), etl::bit_ceil(value));
 
@@ -1300,7 +1286,7 @@ namespace
       {
         hash.add(1);
 
-        uint64_t value = hash.value();
+        uint64_t value = hash.value() & 0x7FFFFFFFFFFFFFFF;
 
         CHECK_EQUAL(test_bit_ceil(value), etl::bit_ceil(value));
 

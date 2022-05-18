@@ -35,7 +35,7 @@ SOFTWARE.
 #include "array.h"
 
 ///\defgroup multi_array multi_array
-/// A multi dimentional array.
+/// A multi dimensional array.
 ///\ingroup containers
 
 namespace etl

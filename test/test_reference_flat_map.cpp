@@ -590,7 +590,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_erase_key_using_transparent_comparitor)
+    TEST_FIXTURE(SetupFixture, test_erase_key_using_transparent_comparator)
     {
       using CMap = std::map<int, NDC>;
       using EMap = etl::reference_flat_map<int, NDC, SIZE, etl::less<>>;
@@ -795,7 +795,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_find_using_transparent_comparitor)
+    TEST_FIXTURE(SetupFixture, test_find_using_transparent_comparator)
     {
       using EMap = etl::reference_flat_map<int, NDC, SIZE, etl::less<>>;
       EMap data(initial_data.begin(), initial_data.end());
@@ -817,7 +817,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_find_not_present_using_transparent_comparitor)
+    TEST_FIXTURE(SetupFixture, test_find_not_present_using_transparent_comparator)
     {
       using EMap = etl::reference_flat_map<int, NDC, SIZE, etl::less<>>;
       EMap data(initial_data.begin(), initial_data.end());
@@ -839,7 +839,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_find_const_using_transparent_comparitor)
+    TEST_FIXTURE(SetupFixture, test_find_const_using_transparent_comparator)
     {
       using EMap = etl::reference_flat_map<int, NDC, SIZE, etl::less<>>;
       const EMap data(initial_data.begin(), initial_data.end());
@@ -861,7 +861,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_find_const_not_present_using_transparent_comparitor)
+    TEST_FIXTURE(SetupFixture, test_find_const_not_present_using_transparent_comparator)
     {
       using EMap = etl::reference_flat_map<int, NDC, SIZE, etl::less<>>;
       const EMap data(initial_data.begin(), initial_data.end());

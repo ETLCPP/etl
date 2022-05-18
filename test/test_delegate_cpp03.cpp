@@ -37,7 +37,6 @@ namespace
 {
   //*****************************************************************************
   const int VALUE1 = 1;
-  const int VALUE2 = 2;
   bool function_called = false;
   bool parameter_correct = false;
 

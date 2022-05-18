@@ -201,7 +201,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_random_lfsr_sequence)
+    TEST(test_random_lsfr_sequence)
     {
       std::vector<uint32_t> out1(10000);
       etl::random_lsfr r;
@@ -237,7 +237,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_random_lfsr_range)
+    TEST(test_random_lsfr_range)
     {
       etl::random_lsfr r;
 

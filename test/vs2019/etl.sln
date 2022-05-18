@@ -97,8 +97,8 @@ Global
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - String Truncation Is Error|Win32.Build.0 = Debug|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - String Truncation Is Error|x64.ActiveCfg = DebugStringTruncationIsError|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC - String Truncation Is Error|x64.Build.0 = DebugStringTruncationIsError|x64
-		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC 64|Win32.ActiveCfg = Debug No Unit Tests|Win32
-		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC 64|Win32.Build.0 = Debug No Unit Tests|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC 64|Win32.ActiveCfg = Debug|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC 64|Win32.Build.0 = Debug|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC 64|x64.ActiveCfg = Debug64|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC 64|x64.Build.0 = Debug64|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug MSVC C++20 - No STL|Win32.ActiveCfg = Debug MSVC C++20 - No STL|Win32

@@ -252,7 +252,7 @@ namespace etl
   //***************************************************************************
   /// Round toward infinity.
   /// \param value Scaled integral.
-  /// \return Ccaled, rounded integral.
+  /// \return Scaled, rounded integral.
   //***************************************************************************
   template <const size_t SCALING, typename T>
   T round_infinity_scaled(T value)

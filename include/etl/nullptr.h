@@ -35,7 +35,7 @@ SOFTWARE.
 
 #include <stddef.h>
 
-#if ETL_CPP11_NOT_SUPPORTED || ETL_NOT_USING_STL
+#if ETL_CPP11_NOT_SUPPORTED
   // Use the old style C++ NULL definition.
   #define ETL_NULLPTR 0
 #else

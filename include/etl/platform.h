@@ -154,7 +154,7 @@ SOFTWARE.
 
 //*************************************
 // Option to make string truncation an error.
-#if ETL_HAS_ERROR_ON_STRING_TRUNCATION
+#if defined(ETL_ENABLE_ERROR_ON_STRING_TRUNCATION)
   #define ETL_HAS_ERROR_ON_STRING_TRUNCATION 1
 #else
   #define ETL_HAS_ERROR_ON_STRING_TRUNCATION 0
@@ -201,14 +201,6 @@ SOFTWARE.
 #endif
 
 //*************************************
-// Indicate if there are large char types.
-#if defined(ETL_NO_LARGE_CHAR_SUPPORT)
-  #define ETL_HAS_LARGE_CHAR 0
-#else
-  #define ETL_HAS_LARGE_CHAR 1
-#endif
-
-//*************************************
 // Indicate if array_view is mutable.
 #if defined(ETL_ARRAY_VIEW_IS_MUTABLE)
   #define ETL_HAS_MUTABLE_ARRAY_VIEW 1
@@ -221,16 +213,16 @@ SOFTWARE.
 // C++11
 #if ETL_USING_CPP11 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
   #define ETL_CONSTEXPR constexpr
-  #define ETL_CONSTANT constexpr
-  #define ETL_DELETE = delete
-  #define ETL_EXPLICIT explicit
-  #define ETL_OVERRIDE override
-  #define ETL_FINAL final
-  #define ETL_NORETURN [[noreturn]]
-  #define ETL_MOVE(x) etl::move(x)
+  #define ETL_CONSTANT  constexpr
+  #define ETL_DELETE =  delete
+  #define ETL_EXPLICIT  explicit
+  #define ETL_OVERRIDE  override
+  #define ETL_FINAL     final
+  #define ETL_NORETURN  [[noreturn]]
+  #define ETL_MOVE(x)   etl::move(x)
 
   #if ETL_USING_EXCEPTIONS
-    #define ETL_NOEXCEPT  noexcept
+    #define ETL_NOEXCEPT noexcept
     #define ETL_NOEXCEPT_EXPR(expression) noexcept(expression)
   #else
     #define ETL_NOEXCEPT
@@ -253,7 +245,7 @@ SOFTWARE.
 // C++14
 #if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
   #define ETL_CONSTEXPR14 constexpr
-  #define ETL_DEPRECATED [[deprecated]]
+  #define ETL_DEPRECATED  [[deprecated]]
   #define ETL_DEPRECATED_REASON(reason) [[deprecated(reason)]]
 #else
   #define ETL_CONSTEXPR14
@@ -264,12 +256,12 @@ SOFTWARE.
 //*************************************
 // C++17
 #if ETL_USING_CPP17 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
-  #define ETL_CONSTEXPR17 constexpr
+  #define ETL_CONSTEXPR17  constexpr
   #define ETL_IF_CONSTEXPR constexpr
-  #define ETL_NODISCARD [[nodiscard]]
+  #define ETL_NODISCARD    [[nodiscard]]
   #define ETL_MAYBE_UNUSED [[maybe_unused]]
-  #define ETL_FALLTHROUGH [[fallthrough]]
-  #define ETL_INLINE_VAR inline
+  #define ETL_FALLTHROUGH  [[fallthrough]]
+  #define ETL_INLINE_VAR   inline
 #else
   #define ETL_CONSTEXPR17
   #define ETL_IF_CONSTEXPR
@@ -295,6 +287,34 @@ SOFTWARE.
   #define ETL_CONSTEVAL
   #define ETL_CONSTINIT
   #define ETL_NO_UNIQUE_ADDRESS
+#endif
+
+//*************************************
+// Determine if the ETL can use char8_t type.
+#if ETL_USING_8BIT_TYPES
+  #if ETL_NO_SMALL_CHAR_SUPPORT
+    typedef int8_t char8_t;
+    #define ETL_HAS_CHAR8_T 1
+    #define ETL_HAS_NATIVE_CHAR8_T 0
+  #else
+    #define ETL_HAS_CHAR8_T 1
+    #define ETL_HAS_NATIVE_CHAR8_T 1
+  #endif
+#else
+  #define ETL_HAS_CHAR8_T 0
+  #define ETL_HAS_NATIVE_CHAR8_T 0
+#endif
+
+//*************************************
+// Define the large character types if necessary.
+#if ETL_NO_LARGE_CHAR_SUPPORT
+  typedef int16_t char16_t;
+  typedef int32_t char32_t;
+  #define ETL_HAS_NATIVE_CHAR16_T 0
+  #define ETL_HAS_NATIVE_CHAR32_T 0
+#else
+  #define ETL_HAS_NATIVE_CHAR16_T 1
+  #define ETL_HAS_NATIVE_CHAR32_T 1
 #endif
 
 //*************************************
@@ -326,6 +346,30 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Determine if the ETL should use std::initializer_list.
+#if (defined(ETL_FORCE_ETL_INITIALIZER_LIST) && defined(ETL_FORCE_STD_INITIALIZER_LIST))
+  #error ETL_FORCE_ETL_INITIALIZER_LIST and ETL_FORCE_STD_INITIALIZER_LIST both been defined. Choose one or neither.
+#endif
+
+#if (ETL_USING_CPP11 && !defined(ETL_NO_INITIALIZER_LIST))
+  // Use the compiler's std::initializer_list?
+  #if (ETL_USING_STL && ETL_NOT_USING_STLPORT && !defined(ETL_FORCE_ETL_INITIALIZER_LIST)) || defined(ETL_IN_UNIT_TEST) || defined(ETL_FORCE_STD_INITIALIZER_LIST)
+    #define ETL_HAS_INITIALIZER_LIST 1
+  #else
+    // Use the ETL's compatible version?
+    #if defined(ETL_COMPILER_MICROSOFT) || defined(ETL_COMPILER_GCC)  || defined(ETL_COMPILER_CLANG) || \
+        defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_ARM7) || defined(ETL_COMPILER_IAR)   || \
+        defined(ETL_COMPILER_TEXAS_INSTRUMENTS) || defined(ETL_COMPILER_INTEL)
+      #define ETL_HAS_INITIALIZER_LIST 1
+    #else
+      #define ETL_HAS_INITIALIZER_LIST 0
+    #endif
+  #endif
+#else
+  #define ETL_HAS_INITIALIZER_LIST 0
+#endif
+
+//*************************************
 // Set force flag to 0 if not already set.
 #if !defined(ETL_FORCE_CONSTEXPR_ALGORITHMS)
   #define ETL_FORCE_CONSTEXPR_ALGORITHMS 0
@@ -352,6 +396,8 @@ namespace etl
     static ETL_CONSTANT bool using_cpp17                      = (ETL_USING_CPP17 == 1);
     static ETL_CONSTANT bool using_cpp20                      = (ETL_USING_CPP20 == 1);
     static ETL_CONSTANT bool using_cpp23                      = (ETL_USING_CPP23 == 1);
+    static ETL_CONSTANT long cplusplus                        = __cplusplus;
+    static ETL_CONSTANT int  language_standard                = ETL_LANGUAGE_STANDARD;
     static ETL_CONSTANT bool using_exceptions                 = (ETL_USING_EXCEPTIONS == 1);
     static ETL_CONSTANT bool using_gcc_compiler               = (ETL_USING_GCC_COMPILER == 1);
     static ETL_CONSTANT bool using_microsoft_compiler         = (ETL_USING_MICROSOFT_COMPILER == 1);
@@ -364,11 +410,15 @@ namespace etl
     static ETL_CONSTANT bool using_intel_compiler             = (ETL_USING_INTEL_COMPILER == 1);
     static ETL_CONSTANT bool using_texas_instruments_compiler = (ETL_USING_TEXAS_INSTRUMENTS_COMPILER == 1);
     static ETL_CONSTANT bool using_generic_compiler           = (ETL_USING_GENERIC_COMPILER == 1);
+    static ETL_CONSTANT bool has_initializer_list             = (ETL_HAS_INITIALIZER_LIST == 1);
     static ETL_CONSTANT bool has_8bit_types                   = (ETL_USING_8BIT_TYPES == 1);
     static ETL_CONSTANT bool has_64bit_types                  = (ETL_USING_64BIT_TYPES == 1);
     static ETL_CONSTANT bool has_atomic                       = (ETL_HAS_ATOMIC == 1);
     static ETL_CONSTANT bool has_nullptr                      = (ETL_HAS_NULLPTR == 1);
-    static ETL_CONSTANT bool has_large_char                   = (ETL_HAS_LARGE_CHAR == 1);
+    static ETL_CONSTANT bool has_char8_t                      = (ETL_HAS_CHAR8_T == 1);
+    static ETL_CONSTANT bool has_native_char8_t               = (ETL_HAS_NATIVE_CHAR8_T == 1);
+    static ETL_CONSTANT bool has_native_char16_t              = (ETL_HAS_NATIVE_CHAR16_T == 1);
+    static ETL_CONSTANT bool has_native_char32_t              = (ETL_HAS_NATIVE_CHAR32_T == 1);
     static ETL_CONSTANT bool has_string_truncation_checks     = (ETL_HAS_STRING_TRUNCATION_CHECKS == 1);
     static ETL_CONSTANT bool has_error_on_string_truncation   = (ETL_HAS_ERROR_ON_STRING_TRUNCATION == 1);
     static ETL_CONSTANT bool has_string_clear_after_use       = (ETL_HAS_STRING_CLEAR_AFTER_USE == 1);
@@ -377,7 +427,6 @@ namespace etl
     static ETL_CONSTANT bool has_mutable_array_view           = (ETL_HAS_MUTABLE_ARRAY_VIEW == 1);
     static ETL_CONSTANT bool has_ideque_repair                = (ETL_HAS_IDEQUE_REPAIR == 1);
     static ETL_CONSTANT bool is_debug_build                   = (ETL_IS_DEBUG_BUILD == 1);
-    static ETL_CONSTANT long cplusplus                        = __cplusplus;
   }
 }
 

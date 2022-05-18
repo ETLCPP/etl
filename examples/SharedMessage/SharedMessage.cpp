@@ -188,7 +188,7 @@ private:
 };
 
 //*****************************************************************************
-// A message bus that can accomodate two subscribers.
+// A message bus that can accommodate two subscribers.
 //*****************************************************************************
 struct Bus : public etl::message_bus<2U>
 {

@@ -533,7 +533,7 @@ namespace etl
 
       const type p = reinterpret_cast<type>(pbuffer);    
 
-      return 1U << etl::count_trailing_zeros(p);
+      return size_t(1U) << etl::count_trailing_zeros(p);
     }
 
     //***********************************

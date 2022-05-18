@@ -723,7 +723,7 @@ namespace etl
     /// that satisfies the conditions for executing the action.
     /// \param event_id The id of the event to process.
     //*************************************************************************
-    void process_event(event_id_t event_id, parameter_t data)
+    void process_event(event_id_t event_id, parameter_t data) ETL_OVERRIDE
     {
       if (started)
       {
@@ -977,7 +977,7 @@ namespace etl
     /// that satisfies the conditions for executing the action.
     /// \param event_id The id of the event to process.
     //*************************************************************************
-    void process_event(event_id_t event_id)
+    void process_event(event_id_t event_id) ETL_OVERRIDE
     {
       if (started)
       {
