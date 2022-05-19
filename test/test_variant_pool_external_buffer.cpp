@@ -176,7 +176,7 @@ namespace
     //*************************************************************************
     TEST(test_sizes)
     {
-      auto* buffer = new Factory::element[SIZE];
+      auto buffer = new Factory::element[SIZE];
       Factory variant_pool(buffer, SIZE);
 
       size_t ms = variant_pool.max_size();
@@ -202,12 +202,14 @@ namespace
       CHECK(variant_pool.full());
 
       CHECK_THROW(variant_pool.create<Derived1>(), etl::pool_no_allocation);
+
+      delete[] buffer;
     }
 
     //*************************************************************************
     TEST(test_create_release)
     {
-      auto* buffer = new Factory::element[SIZE];
+      auto buffer = new Factory::element[SIZE];
       Factory variant_pool(buffer, SIZE);
 
       Base* p;
@@ -253,12 +255,14 @@ namespace
       // Integral
       int* pi = variant_pool.create<int>();
       variant_pool.destroy(pi);
+
+      delete[] buffer;
     }
 
     //*************************************************************************
     TEST(test_create_release_const)
     {
-      auto* buffer = new Factory::element[SIZE];
+      auto buffer = new Factory::element[SIZE];
       Factory variant_pool(buffer, SIZE);
 
       const Derived1& d = *variant_pool.create<Derived1>();
@@ -267,12 +271,13 @@ namespace
       variant_pool.destroy(&d);
       CHECK(destructor);
 
+      delete[] buffer;
     }
 
     //*************************************************************************
     TEST(test_create_emplace)
     {
-      auto* buffer = new Factory::element[SIZE];
+      auto buffer = new Factory::element[SIZE];
       Factory variant_pool(buffer, SIZE);
 
       Base* p;
@@ -297,14 +302,16 @@ namespace
       pd3 = static_cast<Derived3*>(p);
       CHECK_EQUAL("constructed1234", pd3->s);
       variant_pool.destroy(p);
+
+      delete[] buffer;
     }
 
     //*************************************************************************
     TEST(test_did_not_create)
     {
-      auto* buffer1 = new Factory::element[SIZE];
+      auto buffer1 = new Factory::element[SIZE];
       Factory variant_pool1(buffer1, SIZE);
-      auto* buffer2 = new Factory::element[SIZE];
+      auto buffer2 = new Factory::element[SIZE];
       Factory variant_pool2(buffer2, SIZE);
 
       Base* p;
@@ -314,6 +321,9 @@ namespace
 
       p = variant_pool2.create<Derived1>();
       CHECK_THROW(variant_pool1.destroy(p), etl::pool_object_not_in_pool);
+
+      delete[] buffer1;
+      delete[] buffer2;
     }
   };
 }

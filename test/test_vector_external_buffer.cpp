@@ -32,6 +32,7 @@ SOFTWARE.
 #include <array>
 #include <algorithm>
 #include <cstring>
+#include <numeric>
 
 #include "etl/vector.h"
 
@@ -407,6 +408,26 @@ namespace
       }
 
       CHECK_EQUAL(data.size(), NEW_SIZE);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_uninitialized_resize_after_contruct)
+    {
+      int c_buffer[SIZE];
+      std::iota(c_buffer, c_buffer + SIZE, 1);
+
+      int compare_buffer[SIZE];
+      std::iota(compare_buffer, compare_buffer + SIZE, 1);
+
+      Data data(c_buffer, SIZE);
+      data.uninitialized_resize(SIZE);
+
+      CHECK_EQUAL(SIZE, data.size());
+
+      for (size_t i = 0UL; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(data[i], compare_buffer[i]);
+      }
     }
 
     //*************************************************************************

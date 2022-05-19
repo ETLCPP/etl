@@ -1550,6 +1550,24 @@ namespace etl
       return (p != ETL_NULLPTR);
     }
 
+#if ETL_USING_CPP11 && ETL_USING_STL
+    //*********************************
+    unique_ptr& operator =(std::nullptr_t) ETL_NOEXCEPT
+    {
+      reset(nullptr);
+
+      return *this;
+    }
+#else
+    //*********************************
+    unique_ptr& operator =(void*) ETL_NOEXCEPT
+    {
+      reset(NULL);
+
+      return *this;
+    }
+#endif
+
 #if ETL_USING_CPP11
     //*********************************
     unique_ptr& operator =(unique_ptr&& p_) ETL_NOEXCEPT

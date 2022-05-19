@@ -6,8 +6,6 @@ cd build-make || exit 1
 
 echo "ETL Tests" > log.txt
 
-export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-
 #******************************************************************************
 # GCC
 #******************************************************************************

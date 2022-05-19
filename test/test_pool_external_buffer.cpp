@@ -166,7 +166,7 @@ namespace
     TEST(test_allocate)
     {
       const size_t SIZE = 4;
-      auto* buffer = new etl::pool_ext<Test_Data>::element[SIZE];
+      auto buffer = new etl::pool_ext<Test_Data>::element[SIZE];
       etl::pool_ext<Test_Data> pool(buffer, SIZE);
 
       Test_Data* p1 = nullptr;
@@ -187,13 +187,15 @@ namespace
       CHECK(p3 != p4);
 
       CHECK_THROW(pool.allocate(), etl::pool_no_allocation);
+
+      delete[] buffer;
     }
 
     //*************************************************************************
     TEST(test_release)
     {
       const size_t SIZE = 4;
-      auto* buffer = new etl::pool_ext<Test_Data>::element[SIZE];
+      auto buffer = new etl::pool_ext<Test_Data>::element[SIZE];
       etl::pool_ext<Test_Data> pool(buffer, SIZE);
 
       Test_Data* p1 = pool.allocate();
@@ -211,13 +213,15 @@ namespace
       Test_Data not_in_pool;
 
       CHECK_THROW(pool.release(&not_in_pool), etl::pool_object_not_in_pool);
+
+      delete[] buffer;
     }
 
     //*************************************************************************
     TEST(test_allocate_release)
     {
       const size_t SIZE = 4;
-      auto* buffer = new etl::pool_ext<Test_Data>::element[SIZE];
+      auto buffer = new etl::pool_ext<Test_Data>::element[SIZE];
       etl::pool_ext<Test_Data> pool(buffer, SIZE);
 
       Test_Data* p1 = pool.allocate();
@@ -264,13 +268,15 @@ namespace
       CHECK(p7 != p6);
 
       CHECK(pool.full());
+
+      delete[] buffer;
     }
 
     //*************************************************************************
     TEST(test_available)
     {
       const size_t SIZE = 4;
-      auto* buffer = new etl::pool_ext<Test_Data>::element[SIZE];
+      auto buffer = new etl::pool_ext<Test_Data>::element[SIZE];
       etl::pool_ext<Test_Data> pool(buffer, SIZE);
 
       CHECK_EQUAL(4U, pool.available());
@@ -288,23 +294,27 @@ namespace
 
       p = pool.allocate();
       CHECK_EQUAL(0U, pool.available());
+
+      delete[] buffer;
     }
 
     //*************************************************************************
     TEST(test_max_size)
     {
       const size_t SIZE = 4;
-      auto* buffer = new etl::pool_ext<Test_Data>::element[SIZE];
+      auto buffer = new etl::pool_ext<Test_Data>::element[SIZE];
       etl::pool_ext<Test_Data> pool(buffer, SIZE);
 
       CHECK(pool.max_size() == 4U);
+
+      delete[] buffer;
     }
 
     //*************************************************************************
     TEST(test_size)
     {
       const size_t SIZE = 4;
-      auto* buffer = new etl::pool_ext<Test_Data>::element[SIZE];
+      auto buffer = new etl::pool_ext<Test_Data>::element[SIZE];
       etl::pool_ext<Test_Data> pool(buffer, SIZE);
 
       CHECK_EQUAL(0U, pool.size());
@@ -322,13 +332,15 @@ namespace
 
       p = pool.allocate();
       CHECK_EQUAL(4U, pool.size());
+
+      delete[] buffer;
     }
 
     //*************************************************************************
     TEST(test_empty_full)
     {
       const size_t SIZE = 4;
-      auto* buffer = new etl::pool_ext<Test_Data>::element[SIZE];
+      auto buffer = new etl::pool_ext<Test_Data>::element[SIZE];
       etl::pool_ext<Test_Data> pool(buffer, SIZE);
 
       CHECK(pool.empty());
@@ -351,13 +363,15 @@ namespace
       p = pool.allocate();
       CHECK(!pool.empty());
       CHECK(pool.full());
+
+      delete[] buffer;
     }
 
     //*************************************************************************
     TEST(test_is_in_pool)
     {
       const size_t SIZE = 4;
-      auto* buffer = new etl::pool_ext<Test_Data>::element[SIZE];
+      auto buffer = new etl::pool_ext<Test_Data>::element[SIZE];
       etl::pool_ext<Test_Data> pool(buffer, SIZE);
 
       Test_Data not_in_pool;
@@ -366,6 +380,8 @@ namespace
 
       CHECK(pool.is_in_pool(p1));
       CHECK(!pool.is_in_pool(&not_in_pool));
+
+      delete[] buffer;
     }
 
     //*************************************************************************
@@ -378,12 +394,14 @@ namespace
       };
 
       const size_t SIZE = 4;
-      auto* buffer = new etl::pool_ext<uint32_t>::element[SIZE];
+      auto buffer = new etl::pool_ext<uint32_t>::element[SIZE];
       etl::pool_ext<uint32_t> pool(buffer, SIZE);
 
       etl::ipool& ip = pool;
 
       CHECK_THROW(ip.allocate<Test>(), etl::pool_element_size);
+
+      delete[] buffer;
     }
 
   //*************************************************************************
@@ -391,19 +409,19 @@ namespace
   {
     const size_t SIZE = 4;
 
-    auto* buffer0 = new etl::pool_ext<D0>::element[SIZE];
+    auto buffer0 = new etl::pool_ext<D0>::element[SIZE];
     etl::pool_ext<D0> pool0(buffer0, SIZE);
 
-    auto* buffer1 = new etl::pool_ext<D1>::element[SIZE];
+    auto buffer1 = new etl::pool_ext<D1>::element[SIZE];
     etl::pool_ext<D1> pool1(buffer1, SIZE);
 
-    auto* buffer2 = new etl::pool_ext<D2>::element[SIZE];
+    auto buffer2 = new etl::pool_ext<D2>::element[SIZE];
     etl::pool_ext<D2> pool2(buffer2, SIZE);
 
-    auto* buffer3 = new etl::pool_ext<D3>::element[SIZE];
+    auto buffer3 = new etl::pool_ext<D3>::element[SIZE];
     etl::pool_ext<D3> pool3(buffer3, SIZE);
 
-    auto* buffer4 = new etl::pool_ext<D4>::element[SIZE];
+    auto buffer4 = new etl::pool_ext<D4>::element[SIZE];
     etl::pool_ext<D4> pool4(buffer4, SIZE);
 
 
@@ -454,17 +472,25 @@ namespace
 
     CHECK_EQUAL(pool4.max_size(), pool4.available());
     CHECK_EQUAL(0U, pool4.size());
+
+    delete[] buffer0;
+    delete[] buffer1;
+    delete[] buffer2;
+    delete[] buffer3;
+    delete[] buffer4;
   }
 
   //*************************************************************************
   TEST(test_allocate_release_non_class)
   {
     const size_t SIZE = 4;
-    auto* buffer = new etl::pool_ext<int>::element[SIZE];
+    auto buffer = new etl::pool_ext<int>::element[SIZE];
     etl::pool_ext<int> pool(buffer, SIZE);
 
     int* i = pool.allocate();
     pool.release(i);
+
+    delete[] buffer;
   } 
   
   //*************************************************************************
@@ -473,7 +499,7 @@ namespace
     using elem_type = uint8_t[10];
 
     const size_t SIZE = 3;
-    auto* buffer = new etl::pool_ext<elem_type>::element[SIZE];
+    auto buffer = new etl::pool_ext<elem_type>::element[SIZE];
     etl::pool_ext<elem_type> memPool(buffer, SIZE);
 
     CHECK_EQUAL(3, memPool.available());
@@ -488,6 +514,8 @@ namespace
 
     CHECK_EQUAL(3, memPool.available());
     CHECK_EQUAL(0, memPool.size());
+
+    delete[] buffer;
   }
 }
 }

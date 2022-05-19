@@ -39,8 +39,8 @@ SOFTWARE.
 #include <iterator>
 #include <numeric>
 #include <stdint.h>
-
 #include <vector>
+
 
 namespace
 {
@@ -879,10 +879,13 @@ namespace
     //*************************************************************************
     TEST(test_unique_ptr_release)
     {
-      etl::unique_ptr<int> up(new int);
+      auto buffer = new int;
+      etl::unique_ptr<int> up(buffer);
 
       CHECK(up.release() != nullptr);
       CHECK(!bool(up));
+
+      delete buffer;
     }
 
     //*************************************************************************
@@ -958,7 +961,7 @@ namespace
     //*************************************************************************
     TEST(test_unique_ptr_from_array_pointer_construction)
     {
-      etl::unique_ptr<int> up(new int[4]);
+      etl::unique_ptr<int[]> up(new int[4]);
       std::iota(&up[0], &up[4], 0);
 
       CHECK(up.get() != nullptr);
@@ -972,9 +975,9 @@ namespace
     //*************************************************************************
     TEST(test_unique_ptr_move_array_construction)
     {
-      etl::unique_ptr<int> up1(new int[4]);
+      etl::unique_ptr<int[]> up1(new int[4]);
       std::iota(&up1[0], &up1[4], 0);
-      etl::unique_ptr<int> up2(std::move(up1));
+      etl::unique_ptr<int[]> up2(std::move(up1));
 
       CHECK(up1.get() == nullptr);
       CHECK(!bool(up1));
@@ -989,17 +992,20 @@ namespace
     //*************************************************************************
     TEST(test_unique_ptr_array_release)
     {
-      etl::unique_ptr<int> up(new int[4]);
+      auto buffer = new int[4];
+      etl::unique_ptr<int[]> up(buffer);
       std::iota(&up[0], &up[4], 0);
 
       CHECK(up.release() != nullptr);
       CHECK(!bool(up));
+
+      delete[] buffer;
     }
 
     //*************************************************************************
     TEST(test_unique_ptr_array_reset)
     {
-      etl::unique_ptr<int> up(new int[4]);
+      etl::unique_ptr<int[]> up(new int[4]);
       std::iota(&up[0], &up[4], 0);
 
       int* p = new int[4];
@@ -1019,10 +1025,10 @@ namespace
     //*************************************************************************
     TEST(test_unique_ptr_array_swap)
     {
-      etl::unique_ptr<int> up1(new int[4]);
+      etl::unique_ptr<int[]> up1(new int[4]);
       std::iota(&up1[0], &up1[4], 0);
 
-      etl::unique_ptr<int> up2(new int[4]);
+      etl::unique_ptr<int[]> up2(new int[4]);
       std::iota(&up2[0], &up2[4], 4);
 
       up1.swap(up2);
@@ -1041,7 +1047,7 @@ namespace
     //*************************************************************************
     TEST(test_unique_ptr_array_from_nullptr_assignment)
     {
-      etl::unique_ptr<int> up(new int[4]);
+      etl::unique_ptr<int[]> up(new int[4]);
 
       up = nullptr;
 
@@ -1052,10 +1058,10 @@ namespace
     //*************************************************************************
     TEST(test_unique_ptr_array_move_assignment)
     {
-      etl::unique_ptr<int> up1(new int[4]);
+      etl::unique_ptr<int[]> up1(new int[4]);
       std::iota(&up1[0], &up1[4], 0);
 
-      etl::unique_ptr<int> up2(new int[4]);
+      etl::unique_ptr<int[]> up2(new int[4]);
       std::iota(&up2[0], &up2[4], 4);
 
       up1 = std::move(up2);
