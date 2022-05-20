@@ -34,6 +34,7 @@ SOFTWARE.
 
 #include <array>
 #include <numeric>
+#include <vector>
 
 namespace
 {
@@ -1280,6 +1281,33 @@ namespace
       CHECK_EQUAL(int32_t(0xA55AA55A), get_data[1]);
       CHECK_EQUAL(int32_t(0x5AA55AA5), get_data[2]);
       CHECK_EQUAL(int32_t(0xFFFFFFFF), get_data[3]);
+    }
+
+    //*************************************************************************
+    TEST(write_byte_stream_iterative_output)
+    {
+      std::array<char, sizeof(int32_t)> storage;
+      std::array<int32_t, 4> put_data = { int32_t(0x00000001), int32_t(0xA55AA55A), int32_t(0x5AA55AA5), int32_t(0xFFFFFFFF) };
+      std::vector<char> expected = { char(0x00), char(0x00), char(0x00), char(0x01), 
+                                     char(0xA5), char(0x5A), char(0xA5), char(0x5A), 
+                                     char(0x5A), char(0xA5), char(0x5A), char(0xA5), 
+                                     char(0xFF), char(0xFF), char(0xFF), char(0xFF) };
+      std::vector<char> result;
+
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big);
+
+      for (auto i : put_data)
+      {
+        writer.write(i);
+        etl::span<char> s = writer.used_data();
+        std::copy(s.begin(), s.end(), std::back_inserter(result));
+        writer.restart();
+      }
+
+      for (size_t i = 0U; i < (4U * sizeof(int32_t)); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
     }
   };
 }
