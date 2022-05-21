@@ -45,6 +45,7 @@ SOFTWARE.
 #include "span.h"
 #include "iterator.h"
 #include "optional.h"
+#include "delegate.h"
 
 namespace etl
 {
@@ -56,37 +57,42 @@ namespace etl
   public:
 
     typedef const char* const_iterator;
+    typedef etl::span<char> callback_parameter_type;
+    typedef etl::delegate<void(etl::span<char>)> callback_type;
 
     //***************************************************************************
     /// Construct from span.
     //***************************************************************************
-    byte_stream_writer(etl::span<char> span_, etl::endian buffer_endianness_)
+    byte_stream_writer(etl::span<char> span_, etl::endian buffer_endianness_, callback_type callback_ = callback_type())
       : pdata(span_.begin())
       , pcurrent(span_.begin())
       , length(span_.size_bytes())
       , buffer_endianness(buffer_endianness_)
+      , callback(callback_)
     {
     }
 
     //***************************************************************************
     /// Construct from range.
     //***************************************************************************
-    byte_stream_writer(void* begin_, void* end_, etl::endian buffer_endianness_)
+    byte_stream_writer(void* begin_, void* end_, etl::endian buffer_endianness_, callback_type callback_ = callback_type())
       : pdata(reinterpret_cast<char*>(begin_))
       , pcurrent(reinterpret_cast<char*>(begin_))
       , length(etl::distance(reinterpret_cast<char*>(begin_), reinterpret_cast<char*>(end_)))
       , buffer_endianness(buffer_endianness_)
+      , callback(callback_)
     {
     }
 
     //***************************************************************************
     /// Construct from begin and length.
     //***************************************************************************
-    byte_stream_writer(void* begin_, size_t length_, etl::endian buffer_endianness_)
+    byte_stream_writer(void* begin_, size_t length_, etl::endian buffer_endianness_, callback_type callback_ = callback_type())
       : pdata(reinterpret_cast<char*>(begin_))
       , pcurrent(reinterpret_cast<char*>(begin_))
       , length(length_)
       , buffer_endianness(buffer_endianness_)
+      , callback(callback_)
     {
     }
 
@@ -94,11 +100,12 @@ namespace etl
     /// Construct from array.
     //***************************************************************************
     template <typename T, size_t Size>
-    byte_stream_writer(T(&begin_)[Size], etl::endian buffer_endianness_)
+    byte_stream_writer(T(&begin_)[Size], etl::endian buffer_endianness_, callback_type callback_ = callback_type())
       : pdata(begin_)
       , pcurrent(begin_)
       , length(begin_ + (Size * sizeof(T)))
       , buffer_endianness(buffer_endianness_)
+      , callback(callback_)
     {
     }
 
@@ -232,12 +239,12 @@ namespace etl
 
       if (n < maximum)
       {
-        pcurrent += (n * sizeof(T));
+        step(n * sizeof(T));
         return true;
       }
       else
       {
-        pcurrent += (maximum * sizeof(T));
+        step(maximum * sizeof(T));
         return false;
       }
     }
@@ -355,6 +362,14 @@ namespace etl
       return available<char>();
     }
 
+    //***************************************************************************
+    /// Sets the function to call afer every write.
+    //***************************************************************************
+    void set_callback(callback_type callback_)
+    {
+      callback = callback_;
+    }
+
   private:
 
     //***************************************************************************
@@ -364,7 +379,8 @@ namespace etl
     typename etl::enable_if<sizeof(T) == 1U, void>::type
       to_bytes(const T value)
     {
-      *pcurrent++ = static_cast<char>(value);
+      *pcurrent = static_cast<char>(value);
+      step(1U);
     }
 
     //*********************************
@@ -374,7 +390,15 @@ namespace etl
     {
       const char* pv = reinterpret_cast<const char*>(&value);
       copy_value(pv, pcurrent, sizeof(T));
-      pcurrent += sizeof(T);
+      step(sizeof(T));
+    }
+
+    //*********************************
+    void step(size_t n)
+    {
+      callback.call_if(etl::span<char>(pcurrent, pcurrent + n));
+
+      pcurrent += n;
     }
 
     //*********************************
@@ -396,6 +420,7 @@ namespace etl
     char*             pcurrent;          ///< The current position in the byte stream buffer.
     const size_t      length;            ///< The length of the byte stream buffer.
     const etl::endian buffer_endianness; ///< The endianness of the buffer data.
+    callback_type     callback;          ///< An optional callback on every step on the write buffer.
   };
 
   //***************************************************************************
