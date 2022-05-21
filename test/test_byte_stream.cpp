@@ -1284,7 +1284,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(write_byte_stream_iterative_output)
+    TEST(write_byte_stream_iterative_copy)
     {
       std::array<char, sizeof(int32_t)> storage;
       std::array<int32_t, 4> put_data = { int32_t(0x00000001), int32_t(0xA55AA55A), int32_t(0x5AA55AA5), int32_t(0xFFFFFFFF) };
@@ -1301,6 +1301,38 @@ namespace
         writer.write(i);
         etl::span<char> s = writer.used_data();
         std::copy(s.begin(), s.end(), std::back_inserter(result));
+        writer.restart();
+      }
+
+      for (size_t i = 0U; i < (4U * sizeof(int32_t)); ++i)
+      {
+        CHECK_EQUAL(expected[i], result[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(write_byte_stream_callback)
+    {
+      std::array<char, sizeof(int32_t)> storage;
+      std::array<int32_t, 4> put_data = { int32_t(0x00000001), int32_t(0xA55AA55A), int32_t(0x5AA55AA5), int32_t(0xFFFFFFFF) };
+      std::vector<char> expected = { char(0x00), char(0x00), char(0x00), char(0x01),
+                                     char(0xA5), char(0x5A), char(0xA5), char(0x5A),
+                                     char(0x5A), char(0xA5), char(0x5A), char(0xA5),
+                                     char(0xFF), char(0xFF), char(0xFF), char(0xFF) };
+      
+
+      static std::vector<char> result;
+
+      etl::byte_stream_writer::callback_type callback([&](etl::byte_stream_writer::callback_parameter_type sp) 
+                                                      { 
+                                                        std::copy(sp.begin(), sp.end(), std::back_inserter(result));
+                                                      });
+
+      etl::byte_stream_writer writer(storage.data(), storage.size(), etl::endian::big, callback);
+
+      for (auto i : put_data)
+      {
+        writer.write(i);
         writer.restart();
       }
 
