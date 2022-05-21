@@ -1284,7 +1284,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(write_byte_stream_iterative_output)
+    TEST(write_byte_stream_iterative_copy)
     {
       std::array<char, sizeof(int32_t)> storage;
       std::array<int32_t, 4> put_data = { int32_t(0x00000001), int32_t(0xA55AA55A), int32_t(0x5AA55AA5), int32_t(0xFFFFFFFF) };
