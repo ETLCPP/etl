@@ -91,62 +91,45 @@ namespace etl
     }
 
     //********************************************
-    explicit message_packet(const etl::imessage& msg)
-      : data()
-    {
-      if (accepts(msg))
-      {
-        add_new_message(msg);
-        valid = true;
-      }
-      else
-      {
-        valid = false;
-      }
-
-      ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
-    }
-
-    //********************************************
-    explicit message_packet(etl::imessage&& msg)
-      : data()
-    {
-      if (accepts(msg))
-      {
-        add_new_message(etl::move(msg));
-        valid = true;
-      }
-      else
-      {
-        valid = false;
-      }
-
-      ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
-    }
-
-    //********************************************
     template <typename TMessage, typename = etl::enable_if_t<!etl::is_same_v<etl::remove_reference_t<TMessage>, etl::message_packet<TMessageTypes...>> &&
-                                                             !etl::is_same_v<etl::remove_reference_t<TMessage>, etl::imessage> &&
-                                                             !etl::is_one_of_v<etl::remove_reference_t<TMessage>, TMessageTypes...>, int>>
+      !etl::is_same_v<etl::remove_reference_t<TMessage>, etl::imessage> &&
+      !etl::is_one_of_v<etl::remove_reference_t<TMessage>, TMessageTypes...>, int>>
       explicit message_packet(TMessage&& msg)
       : data()
       , valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       constexpr bool Enabled = (!etl::is_same_v<etl::remove_reference_t<TMessage>, etl::message_packet<TMessageTypes...>> &&
-                                !etl::is_same_v<etl::remove_reference_t<TMessage>, etl::imessage> &&
-                                etl::is_one_of_v<etl::remove_reference_t<TMessage>, TMessageTypes...>);
+        !etl::is_same_v<etl::remove_reference_t<TMessage>, etl::imessage> &&
+        etl::is_one_of_v<etl::remove_reference_t<TMessage>, TMessageTypes...>);
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
 
     //********************************************
-    template <typename TMessage, etl::enable_if_t<etl::is_one_of_v<etl::remove_reference_t<TMessage>, TMessageTypes...>, int>>
-    explicit message_packet(TMessage&& msg)
+    template <typename TMessage>
+    explicit message_packet(TMessage&& msg, etl::enable_if_t<!etl::is_same_v<etl::remove_reference_t<TMessage>, etl::message_packet<TMessageTypes...>>, int*> p = nullptr)
       : data()
       , valid(true)
     {
-      add_new_message<TMessage>(etl::forward<TMessage>(msg));
+      if constexpr (etl::is_same_v<etl::remove_reference_t<TMessage>, etl::imessage>)
+      {
+        if (accepts(msg))
+        {
+          add_new_message(etl::forward<TMessage>(msg));
+          valid = true;
+        }
+        else
+        {
+          valid = false;
+        }
+
+        ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
+      }
+      else
+      {
+        add_new_message_type<TMessage>(etl::forward<TMessage>(msg));
+      }
     }
 
     //**********************************************
@@ -295,17 +278,19 @@ namespace etl
     }
 
     //********************************************
-    template <typename TMessage, etl::enable_if_t<etl::is_one_of_v<etl::remove_reference_t<TMessage>, TMessageTypes...>, int>>
-    void add_new_message(TMessage&& msg)
+    /// Only enabled for types that are in the typelist.
+    //********************************************
+    template <typename TMessage>
+    etl::enable_if_t<etl::is_one_of_v<etl::remove_reference_t<TMessage>, TMessageTypes...>, void>
+      add_new_message_type(TMessage&& msg)
     {
-      (add_new_message_type<TMessageTypes, etl::remove_reference_t<TMessage>::ID>(etl::forward<TMessage>(msg)) || ...);
+      void* p = data;
+      new (p) etl::remove_reference_t<TMessage>((etl::forward<TMessage>(msg)));
     }
 
     typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
     bool valid;
 
-  private:
-
     //********************************************
     template <typename TType>
     bool add_new_message_type(const etl::imessage& msg)
@@ -323,42 +308,10 @@ namespace etl
     }
 
     //********************************************
-    template <typename TType, etl::message_id_t Id>
-    bool add_new_message_type(const etl::imessage& msg)
-    {
-      if (TType::ID == Id)
-      {
-        void* p = data;
-        new (p) TType(static_cast<const TType&>(msg));
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-
-    //********************************************
     template <typename TType>
     bool add_new_message_type(etl::imessage&& msg)
     {
       if (TType::ID == msg.get_message_id())
-      {
-        void* p = data;
-        new (p) TType(static_cast<TType&&>(msg));
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-    }
-
-    //********************************************
-    template <typename TType, etl::message_id_t Id>
-    bool add_new_message_type(etl::imessage&& msg)
-    {
-      if (TType::ID == Id)
       {
         void* p = data;
         new (p) TType(static_cast<TType&&>(msg));
