@@ -73,6 +73,18 @@ namespace etl
     }
 
     //***************************************************************************
+    /// Construct from span.
+    //***************************************************************************
+    byte_stream_writer(etl::span<unsigned char> span_, etl::endian buffer_endianness_, callback_type callback_ = callback_type())
+      : pdata(reinterpret_cast<char*>(span_.begin()))
+      , pcurrent(reinterpret_cast<char*>(span_.begin()))
+      , length(span_.size_bytes())
+      , buffer_endianness(buffer_endianness_)
+      , callback(callback_)
+    {
+    }
+
+    //***************************************************************************
     /// Construct from range.
     //***************************************************************************
     byte_stream_writer(void* begin_, void* end_, etl::endian buffer_endianness_, callback_type callback_ = callback_type())
@@ -368,6 +380,22 @@ namespace etl
     void set_callback(callback_type callback_)
     {
       callback = callback_;
+    }
+
+    //***************************************************************************
+    /// Gets the function to call afer every write.
+    //***************************************************************************
+    callback_type get_callback() const
+    {
+      return callback;
+    }
+
+    //***************************************************************************
+    /// Gets the endianness of the stream.
+    //***************************************************************************
+    etl::endian get_endianness() const
+    {
+      return buffer_endianness;
     }
 
   private:

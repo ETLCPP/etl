@@ -3254,6 +3254,9 @@
     <ClCompile Include="..\sanity-check\delegate_cpp03.h.t.cpp">
       <Filter>Tests\Sanity Checks\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_bit_stream_writer.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
