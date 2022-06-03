@@ -224,7 +224,7 @@ namespace etl
     ///\param new_size The new size.
     ///\param value   The value to fill new elements with. Default = default constructed value.
     //*********************************************************************
-    void resize(size_t new_size, T value)
+    void resize(size_t new_size, const_reference value)
     {
       ETL_ASSERT(new_size <= CAPACITY, ETL_ERROR(vector_full));
 
