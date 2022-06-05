@@ -772,7 +772,7 @@ namespace etl
 
       if (nbits != 0U)
       {
-        step(unsigned char(nbits));
+        step(static_cast<unsigned char>(nbits));
       }
 
       return success;
