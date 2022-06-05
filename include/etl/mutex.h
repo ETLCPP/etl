@@ -59,6 +59,45 @@ namespace etl
   {
     static ETL_CONSTANT bool has_mutex = (ETL_HAS_MUTEX == 1);
   }
+
+  //***************************************************************************
+  /// lock_guard
+  /// A mutex wrapper that provides an RAII mechanism for owning a mutex for 
+  /// the duration of a scoped block.
+  //***************************************************************************
+  template <typename TMutex>
+  class lock_guard
+  {
+  public:
+
+    typedef TMutex mutex_type;
+
+    //*****************************************************
+    /// Constructor
+    /// Locks the mutex.
+    //*****************************************************
+    explicit lock_guard(mutex_type& m_)
+      : m(m_)
+    {
+      m.lock();
+    }
+
+    //*****************************************************
+    /// Destructor
+    //*****************************************************
+    ~lock_guard()
+    {
+      m.unlock();
+    }
+
+  private:
+
+    // Deleted.
+    lock_guard(const lock_guard&) ETL_DELETE;
+
+    mutex_type& m;
+  };
+
 }
 
 #endif

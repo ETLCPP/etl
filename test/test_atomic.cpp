@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2022 jwellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -29,7 +29,15 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/platform.h"
-#include "etl/atomic/atomic_std.h"
+#include "etl/enum_type.h"
+
+#if defined(ETL_COMPILER_MICROSOFT)
+  #include "etl/atomic/atomic_std.h"
+#elif defined(ETL_COMPILER_GCC)
+  #include "etl/atomic/atomic_gcc_sync.h"
+#elif defined(ETL_COMPILER_CLANG)
+  #include "etl/atomic/atomic_clang_sync.h"
+#endif
 
 #include <atomic>
 #include <thread>
@@ -42,6 +50,20 @@ SOFTWARE.
 
 namespace
 {
+  struct Enum
+  {
+    enum enum_type
+    {
+      One = 1,
+      Two = 2
+    };
+ 
+    ETL_DECLARE_ENUM_TYPE(Enum, int)
+    ETL_ENUM_TYPE(One, "1")
+    ETL_ENUM_TYPE(Two, "2")
+    ETL_END_ENUM_TYPE
+  };
+
   SUITE(test_atomic_std)
   {
     //*************************************************************************
@@ -72,6 +94,15 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_atomic_enum_load)
+    {
+      std::atomic<Enum> compare(Enum::One);
+      etl::atomic<Enum> test(Enum::One);
+
+      CHECK_EQUAL((Enum)compare.load(), (Enum::value_type)test.load());
+    }
+
+    //*************************************************************************
     TEST(test_atomic_pointer_load)
     {
       int i;
@@ -83,6 +114,17 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_atomic_bool_load)
+    {
+      bool i;
+
+      std::atomic<bool> compare(&i);
+      etl::atomic<bool> test(&i);
+
+      CHECK_EQUAL((bool)compare.load(), (bool)test.load());
+    }
+
+    //*************************************************************************
     TEST(test_atomic_integer_store)
     {
       std::atomic<int> compare(1);
@@ -91,6 +133,17 @@ namespace
       compare.store(2);
       test.store(2);
       CHECK_EQUAL((int)compare.load(), (int)test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_enum_store)
+    {
+      std::atomic<Enum> compare(Enum::One);
+      etl::atomic<Enum> test(Enum::One);
+
+      compare.store(Enum::Two);
+      test.store(Enum::Two);
+      CHECK_EQUAL((Enum::value_type)compare.load(), (Enum::value_type)test.load());
     }
 
     //*************************************************************************
@@ -108,6 +161,17 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_atomic_bool_store)
+    {
+      std::atomic<bool> compare(false);
+      etl::atomic<bool> test(false);
+
+      compare.store(true);
+      test.store(true);
+      CHECK_EQUAL((bool)compare.load(), (bool)test.load());
+    }
+
+    //*************************************************************************
     TEST(test_atomic_integer_assignment)
     {
       std::atomic<int> compare(1);
@@ -116,6 +180,17 @@ namespace
       compare = 2;
       test = 2;
       CHECK_EQUAL((int)compare.load(), (int)test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_enum_assignment)
+    {
+      std::atomic<Enum> compare(Enum::One);
+      etl::atomic<Enum> test(Enum::One);
+
+      compare = Enum::Two;
+      test = Enum::Two;
+      CHECK_EQUAL((Enum::value_type)compare.load(), (Enum::value_type)test.load());
     }
 
     //*************************************************************************
@@ -130,6 +205,17 @@ namespace
       compare = &j;
       test = &j;
       CHECK_EQUAL((int*)compare.load(), (int*)test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_bool_assignment)
+    {
+      std::atomic<bool> compare(false);
+      etl::atomic<bool> test(false);
+
+      compare = true;
+      test = true;
+      CHECK_EQUAL((bool)compare.load(), (bool)test.load());
     }
 
     //*************************************************************************
@@ -385,6 +471,15 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_atomic_enum_exchange)
+    {
+      std::atomic<Enum> compare(Enum::One);
+      etl::atomic<Enum> test(Enum::One);
+
+      CHECK_EQUAL((Enum)compare.exchange(Enum::Two), (Enum)test.exchange(Enum::Two));
+    }
+
+    //*************************************************************************
     TEST(test_atomic_pointer_exchange)
     {
       int i;
@@ -394,6 +489,15 @@ namespace
       etl::atomic<int*> test(&i);
 
       CHECK_EQUAL((int*)compare.exchange(&j), (int*)test.exchange(&j));
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_bool_exchange)
+    {
+      std::atomic<bool> compare(false);
+      etl::atomic<bool> test(false);
+
+      CHECK_EQUAL((bool)compare.exchange(true), (bool)test.exchange(true));
     }
 
     //*************************************************************************
@@ -443,6 +547,52 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_atomic_compare_exchange_weak_pass_for_enum)
+    {
+      std::atomic<Enum> compare;
+      etl::atomic<Enum> test;
+
+      Enum actual = Enum::One;
+
+      compare = actual;
+      test = actual;
+
+      Enum compare_expected = actual;
+      Enum test_expected = actual;
+      Enum desired = Enum::Two;
+
+      bool compare_result = compare.compare_exchange_weak(compare_expected, desired);
+      bool test_result = test.compare_exchange_weak(test_expected, desired);
+
+      CHECK_EQUAL(compare_result, test_result);
+      CHECK_EQUAL(compare_expected, test_expected);
+      CHECK_EQUAL(compare.load(), test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_compare_exchange_weak_pass_for_bool)
+    {
+      std::atomic<bool> compare;
+      etl::atomic<bool> test;
+
+      bool actual = false;
+
+      compare = actual;
+      test = actual;
+
+      bool compare_expected = actual;
+      bool test_expected = actual;
+      bool desired = true;
+
+      bool compare_result = compare.compare_exchange_weak(compare_expected, desired);
+      bool test_result = test.compare_exchange_weak(test_expected, desired);
+
+      CHECK_EQUAL(compare_result, test_result);
+      CHECK_EQUAL(compare_expected, test_expected);
+      CHECK_EQUAL(compare.load(), test.load());
+    }
+
+    //*************************************************************************
     TEST(test_atomic_compare_exchange_strong_fail)
     {
       std::atomic<int> compare;
@@ -479,6 +629,52 @@ namespace
       int compare_expected = actual;
       int test_expected = actual;
       int desired = 3;
+
+      bool compare_result = compare.compare_exchange_strong(compare_expected, desired);
+      bool test_result = test.compare_exchange_strong(test_expected, desired);
+
+      CHECK_EQUAL(compare_result, test_result);
+      CHECK_EQUAL(compare_expected, test_expected);
+      CHECK_EQUAL(compare.load(), test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_compare_exchange_strong_pass_for_enum)
+    {
+      std::atomic<Enum> compare;
+      etl::atomic<Enum> test;
+
+      Enum actual = Enum::One;
+
+      compare = actual;
+      test = actual;
+
+      Enum compare_expected = actual;
+      Enum test_expected = actual;
+      Enum desired = Enum::Two;
+
+      bool compare_result = compare.compare_exchange_strong(compare_expected, desired);
+      bool test_result    = test.compare_exchange_strong(test_expected, desired);
+
+      CHECK_EQUAL(compare_result,   test_result);
+      CHECK_EQUAL(compare_expected, test_expected);
+      CHECK_EQUAL(compare.load(),   test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_compare_exchange_strong_pass_for_bool)
+    {
+      std::atomic<bool> compare;
+      etl::atomic<bool> test;
+
+      bool actual = false;
+
+      compare = actual;
+      test = actual;
+
+      bool compare_expected = actual;
+      bool test_expected = actual;
+      bool desired = true;
 
       bool compare_result = compare.compare_exchange_strong(compare_expected, desired);
       bool test_result = test.compare_exchange_strong(test_expected, desired);

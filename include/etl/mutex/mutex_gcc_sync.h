@@ -53,9 +53,6 @@ namespace etl
     {
       while (__sync_lock_test_and_set(&flag, 1U))
       {
-        while (flag)
-        {
-        }
       }
     }
 
