@@ -1931,15 +1931,6 @@
     <ClCompile Include="..\test_bip_buffer_spsc_atomic.cpp">
       <Filter>Tests\Queues</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_atomic_clang_sync.cpp">
-      <Filter>Tests\Atomic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_atomic_gcc_sync.cpp">
-      <Filter>Tests\Atomic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_atomic_std.cpp">
-      <Filter>Tests\Atomic</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_crc8_ccitt.cpp">
       <Filter>Tests\CRC</Filter>
     </ClCompile>
@@ -3256,6 +3247,9 @@
     </ClCompile>
     <ClCompile Include="..\test_bit_stream_writer.cpp">
       <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_atomic.cpp">
+      <Filter>Tests\Atomic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

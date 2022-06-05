@@ -39,37 +39,7 @@ namespace etl
   ///\ingroup mutex
   ///\brief This mutex class is implemented using std::mutex.
   //***************************************************************************
-  class mutex
-  {
-  public:
-
-    mutex()
-      : access()
-    {
-    }
-
-    void lock()
-    {
-      access.lock();
-    }
-
-    bool try_lock()
-    {
-      return access.try_lock();
-    }
-
-    void unlock()
-    {
-      access.unlock();
-    }
-
-  private:
-
-    mutex(const mutex&) ETL_DELETE;
-    mutex& operator=(const mutex&) ETL_DELETE;
-
-    std::mutex access;
-  };
+  using mutex = std::mutex;
 }
 
 #endif

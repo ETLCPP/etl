@@ -43,7 +43,10 @@ namespace etl
   // etl::atomic is a simple wrapper around std::atomic.
   //***************************************************************************
 
-  typedef std::memory_order memory_order;
+  template <typename T>
+  using atomic = std::atomic<T>;
+
+  using memory_order = std::memory_order;
 
   static ETL_CONSTANT etl::memory_order memory_order_relaxed = std::memory_order_relaxed;
   static ETL_CONSTANT etl::memory_order memory_order_consume = std::memory_order_consume;
@@ -52,570 +55,66 @@ namespace etl
   static ETL_CONSTANT etl::memory_order memory_order_acq_rel = std::memory_order_acq_rel;
   static ETL_CONSTANT etl::memory_order memory_order_seq_cst = std::memory_order_seq_cst;
 
-  template <typename T>
-  class atomic
-  {
-  public:
-
-    atomic()
-      : value(0)
-    {
-    }
-
-    atomic(T v)
-      : value(v)
-    {
-    }
-
-    // Assignment
-    T operator =(T v)
-    {
-      return value = v;
-    }
-
-    T operator =(T v) volatile
-    {
-      return value = v;
-    }
-
-    // Pre-increment
-    T operator ++()
-    {
-      return ++value;
-    }
-
-    T operator ++() volatile
-    {
-      return ++value;
-    }
-
-    // Post-increment
-    T operator ++(int)
-    {
-      return value++;
-    }
-
-    T operator ++(int) volatile
-    {
-      return value++;
-    }
-
-    // Pre-decrement
-    T operator --()
-    {
-      return --value;
-    }
-
-    T operator --() volatile
-    {
-      return --value;
-    }
-
-    // Post-decrement
-    T operator --(int)
-    {
-      return value--;
-    }
-
-    T operator --(int) volatile
-    {
-      return value--;
-    }
-
-    // Add
-    T operator +=(T v)
-    {
-      return value += v;
-    }
-
-    T operator +=(T v) volatile
-    {
-      return value += v;
-    }
-
-    // Subtract
-    T operator -=(T v)
-    {
-      return value -= v;
-    }
-
-    T operator -=(T v) volatile
-    {
-      return value -= v;
-    }
-
-    // And
-    T operator &=(T v)
-    {
-      return value &= v;
-    }
-
-    T operator &=(T v) volatile
-    {
-      return value &= v;
-    }
-
-    // Or
-    T operator |=(T v)
-    {
-      return value |= v;
-    }
-
-    T operator |=(T v) volatile
-    {
-      return value |= v;
-    }
-
-    // Exclusive or
-    T operator ^=(T v)
-    {
-      return value ^= v;
-    }
-
-    T operator ^=(T v) volatile
-    {
-      return value ^= v;
-    }
-
-    // Conversion operator
-    operator T () const
-    {
-      return T(value);
-    }
-
-    operator T() volatile const
-    {
-      return T(value);
-    }
-
-    // Is lock free?
-    bool is_lock_free() const
-    {
-      return value.is_lock_free();
-    }
-
-    bool is_lock_free() const volatile
-    {
-      return value.is_lock_free();
-    }
-
-    // Store
-    void store(T v, etl::memory_order order = etl::memory_order_seq_cst)
-    {
-      value.store(v, order);
-    }
-
-    void store(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      value.store(v, order);
-    }
-
-    // Load
-    T load(etl::memory_order order = etl::memory_order_seq_cst) const
-    {
-      return value.load(order);
-    }
-
-    T load(etl::memory_order order = etl::memory_order_seq_cst) const volatile
-    {
-      return value.load(order);
-    }
-
-    // Fetch add
-    T fetch_add(T v, etl::memory_order order = etl::memory_order_seq_cst)
-    {
-      return value.fetch_add(v, order);
-    }
-
-    T fetch_add(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      return value.fetch_add(v, order);
-    }
-
-    // Fetch subtract
-    T fetch_sub(T v, etl::memory_order order = etl::memory_order_seq_cst)
-    {
-      return value.fetch_sub(v, order);
-    }
-
-    T fetch_sub(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      return value.fetch_sub(v, order);
-    }
-
-    // Fetch or
-    T fetch_or(T v, etl::memory_order order = etl::memory_order_seq_cst)
-    {
-      return value.fetch_or(v, order);
-    }
-
-    T fetch_or(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      return value.fetch_or(v, order);
-    }
-
-    // Fetch and
-    T fetch_and(T v, etl::memory_order order = etl::memory_order_seq_cst)
-    {
-      return value.fetch_and(v, order);
-    }
-
-    T fetch_and(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      return value.fetch_and(v, order);
-    }
-
-    // Fetch exclusive or
-    T fetch_xor(T v, etl::memory_order order = etl::memory_order_seq_cst)
-    {
-      return value.fetch_xor(v, order);
-    }
-
-    T fetch_xor(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      return value.fetch_xor(v, order);
-    }
-
-    // Exchange
-    T exchange(T v, etl::memory_order order = etl::memory_order_seq_cst)
-    {
-      return value.exchange(v, order);
-    }
-
-    T exchange(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      return value.exchange(v, order);
-    }
-
-    // Compare exchange weak
-    bool compare_exchange_weak(T& expected, T desired, etl::memory_order order = etl::memory_order_seq_cst)
-    {
-      return value.compare_exchange_weak(expected, desired, order);
-    }
-
-    bool compare_exchange_weak(T& expected, T desired, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      return value.compare_exchange_weak(expected, desired, order);
-    }
-
-    bool compare_exchange_weak(T& expected, T desired, etl::memory_order success, etl::memory_order failure)
-    {
-      return value.compare_exchange_weak(expected, desired, success, failure);
-    }
-
-    bool compare_exchange_weak(T& expected, T desired, etl::memory_order success, etl::memory_order failure) volatile
-    {
-      return value.compare_exchange_weak(expected, desired, success, failure);
-    }
-
-    // Compare exchange strong
-    bool compare_exchange_strong(T& expected, T desired, etl::memory_order order = etl::memory_order_seq_cst)
-    {
-      return value.compare_exchange_strong(expected, desired, order);
-    }
-
-    bool compare_exchange_strong(T& expected, T desired, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      return value.compare_exchange_strong(expected, desired, order);
-    }
-
-    bool compare_exchange_strong(T& expected, T desired, etl::memory_order success, etl::memory_order failure)
-    {
-      return value.compare_exchange_strong(expected, desired, success, failure);
-    }
-
-    bool compare_exchange_strong(T& expected, T desired, etl::memory_order success, etl::memory_order failure) volatile
-    {
-      return value.compare_exchange_strong(expected, desired, success, failure);
-    }
-
-  private:
-
-    atomic& operator =(const atomic&);
-    //atomic& operator =(const atomic&) volatile;
-
-    std::atomic<T> value;
-  };
-
-  template <typename T>
-  class atomic<T*>
-  {
-  public:
-
-    atomic()
-      : value(ETL_NULLPTR)
-    {
-    }
-
-    atomic(T* v)
-      : value(v)
-    {
-    }
-
-    // Assignment
-    T* operator =(T* v)
-    {
-      return value = v;
-    }
-
-    T* operator =(T* v) volatile
-    {
-      return value = v;
-    }
-
-    // Pre-increment
-    T* operator ++()
-    {
-      return ++value;
-    }
-
-    T* operator ++() volatile
-    {
-      return ++value;
-    }
-
-    // Post-increment
-    T* operator ++(int)
-    {
-      return value++;
-    }
-
-    T* operator ++(int) volatile
-    {
-      return value++;
-    }
-
-    // Pre-decrement
-    T* operator --()
-    {
-      return --value;
-    }
-
-    T* operator --() volatile
-    {
-      return --value;
-    }
-
-    // Post-decrement
-    T* operator --(int)
-    {
-      return value--;
-    }
-
-    T* operator --(int) volatile
-    {
-      return value--;
-    }
-
-    // Add
-    T* operator +=(ptrdiff_t v)
-    {
-      return value += v;
-    }
-
-    T* operator +=(ptrdiff_t v) volatile
-    {
-      return value += v;
-    }
-
-    // Subtract
-    T* operator -=(ptrdiff_t v)
-    {
-      return value -= v;
-    }
-
-    T* operator -=(ptrdiff_t v) volatile
-    {
-      return value -= v;
-    }
-
-    // Conversion operator
-    operator T* () const
-    {
-      return static_cast<T*>(value);
-    }
-
-    operator T*() volatile const
-    {
-      return static_cast<T*>(value);
-    }
-
-    // Is lock free?
-    bool is_lock_free() const
-    {
-      return value.is_lock_free();
-    }
-
-    bool is_lock_free() const volatile
-    {
-      return value.is_lock_free();
-    }
-
-    // Store
-    void store(T* v, etl::memory_order order = etl::memory_order_seq_cst)
-    {
-      value.store(v, order);
-    }
-
-    void store(T* v, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      value.store(v, order);
-    }
-
-    // Load
-    T* load(etl::memory_order order = etl::memory_order_seq_cst)
-    {
-      return value.load(order);
-    }
-
-    T* load(etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      return value.load(order);
-    }
-
-    // Fetch add
-    T* fetch_add(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst)
-    {
-      return value.fetch_add(v, order);
-    }
-
-    T* fetch_add(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      return value.fetch_add(v, order);
-    }
-
-    // Fetch subtract
-    T* fetch_sub(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst)
-    {
-      return value.fetch_sub(v, order);
-    }
-
-    T* fetch_sub(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      return value.fetch_sub(v, order);
-    }
-
-    // Exchange
-    T* exchange(T* v, etl::memory_order order = etl::memory_order_seq_cst)
-    {
-      return value.exchange(v, order);
-    }
-
-    T* exchange(T* v, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      return value.exchange(v, order);
-    }
-
-    // Compare exchange weak
-    bool compare_exchange_weak(T*& expected, T* desired, etl::memory_order order = etl::memory_order_seq_cst)
-    {
-      return value.compare_exchange_weak(expected, desired, order);
-    }
-
-    bool compare_exchange_weak(T*& expected, T* desired, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      return value.compare_exchange_weak(expected, desired, order);
-    }
-
-    bool compare_exchange_weak(T*& expected, T* desired, etl::memory_order success, etl::memory_order failure)
-    {
-      return value.compare_exchange_weak(expected, desired, success, failure);
-    }
-
-    bool compare_exchange_weak(T*& expected, T* desired, etl::memory_order success, etl::memory_order failure) volatile
-    {
-      return value.compare_exchange_weak(expected, desired, success, failure);
-    }
-
-    // Compare exchange strong
-    bool compare_exchange_strong(T*& expected, T* desired, etl::memory_order order = etl::memory_order_seq_cst)
-    {
-      return value.compare_exchange_strong(expected, desired, order);
-    }
-
-    bool compare_exchange_strong(T*& expected, T* desired, etl::memory_order order = etl::memory_order_seq_cst) volatile
-    {
-      return value.compare_exchange_strong(expected, desired, order);
-    }
-
-    bool compare_exchange_strong(T*& expected, T* desired, etl::memory_order success, etl::memory_order failure)
-    {
-      return value.compare_exchange_strong(expected, desired, success, failure);
-    }
-
-    bool compare_exchange_strong(T*& expected, T* desired, etl::memory_order success, etl::memory_order failure) volatile
-    {
-      return value.compare_exchange_strong(expected, desired, success, failure);
-    }
-
-  private:
-
-    atomic & operator =(const atomic&) ETL_DELETE;
-    atomic& operator =(const atomic&) volatile ETL_DELETE;
-
-    std::atomic<T*> value;
-  };
-
-  typedef std::atomic<bool>                atomic_bool;
-  typedef std::atomic<char>                atomic_char;
-  typedef std::atomic<signed char>         atomic_schar;
-  typedef std::atomic<unsigned char>       atomic_uchar;
-  typedef std::atomic<short>               atomic_short;
-  typedef std::atomic<unsigned short>      atomic_ushort;
-  typedef std::atomic<int>                 atomic_int;
-  typedef std::atomic<unsigned int>        atomic_uint;
-  typedef std::atomic<long>                atomic_long;
-  typedef std::atomic<unsigned long>       atomic_ulong;
-  typedef std::atomic<long long>           atomic_llong;
-  typedef std::atomic<unsigned long long>  atomic_ullong;
-  typedef std::atomic<wchar_t>             atomic_wchar_t;
+  using atomic_bool           = std::atomic<bool>;
+  using atomic_char           = std::atomic<char>;
+  using atomic_schar          = std::atomic<signed char>;
+  using atomic_uchar          = std::atomic<unsigned char>;
+  using atomic_short          = std::atomic<short>;
+  using atomic_ushort         = std::atomic<unsigned short>;
+  using atomic_int            = std::atomic<int>;
+  using atomic_uint           = std::atomic<unsigned int>;
+  using atomic_long           = std::atomic<long>;
+  using atomic_ulong          = std::atomic<unsigned long>;
+  using atomic_llong          = std::atomic<long long>;
+  using atomic_ullong         = std::atomic<unsigned long long>;
+  using atomic_wchar_t        = std::atomic<wchar_t>;
 #if ETL_HAS_NATIVE_CHAR8_T
-  typedef std::atomic<char8_t>             atomic_char8_t;
+  using atomic_char8_t = std::atomic<char8_t>;
 #endif
 #if ETL_HAS_NATIVE_CHAR16_T
-  typedef std::atomic<char16_t>            atomic_char16_t;
+  using atomic_char16_t       = std::atomic<char16_t>;
 #endif
 #if ETL_HAS_NATIVE_CHAR32_T
-  typedef std::atomic<char32_t>            atomic_char32_t;
+  using atomic_char32_t       = std::atomic<char32_t>;
 #endif
 #if ETL_USING_8BIT_TYPES
-  typedef std::atomic<uint8_t>             atomic_uint8_t;
-  typedef std::atomic<int8_t>              atomic_int8_t;
+  using atomic_uint8_t        = std::atomic<uint8_t>;
+  using atomic_int8_t         = std::atomic<int8_t>;
 #endif
-  typedef std::atomic<uint16_t>            atomic_uint16_t;
-  typedef std::atomic<int16_t>             atomic_int16_t;
-  typedef std::atomic<uint32_t>            atomic_uint32_t;
-  typedef std::atomic<int32_t>             atomic_int32_t;
+  using atomic_uint16_t       = std::atomic<uint16_t>;
+  using atomic_int16_t        = std::atomic<int16_t>;
+  using atomic_uint32_t       = std::atomic<uint32_t>;
+  using atomic_int32_t        = std::atomic<int32_t>;
 #if ETL_USING_64BIT_TYPES
-  typedef std::atomic<uint64_t>            atomic_uint64_t;
-  typedef std::atomic<int64_t>             atomic_int64_t;
+  using atomic_uint64_t       = std::atomic<uint64_t>;
+  using atomic_int64_t        = std::atomic<int64_t>;
 #endif
-  typedef std::atomic<int_least8_t>        atomic_int_least8_t;
-  typedef std::atomic<uint_least8_t>       atomic_uint_least8_t;
-  typedef std::atomic<int_least16_t>       atomic_int_least16_t;
-  typedef std::atomic<uint_least16_t>      atomic_uint_least16_t;
-  typedef std::atomic<int_least32_t>       atomic_int_least32_t;
-  typedef std::atomic<uint_least32_t>      atomic_uint_least32_t;
+  using atomic_int_least8_t   = std::atomic<int_least8_t>;
+  using atomic_uint_least8_t  = std::atomic<uint_least8_t>;
+  using atomic_int_least16_t  = std::atomic<int_least16_t>;
+  using atomic_uint_least16_t = std::atomic<uint_least16_t>;
+  using atomic_int_least32_t  = std::atomic<int_least32_t>;
+  using atomic_uint_least32_t = std::atomic<uint_least32_t>;
 #if ETL_USING_64BIT_TYPES
-  typedef std::atomic<int_least64_t>       atomic_int_least64_t;
-  typedef std::atomic<uint_least64_t>      atomic_uint_least64_t;
+  using atomic_int_least64_t  = std::atomic<int_least64_t>;
+  using atomic_uint_least64_t = std::atomic<uint_least64_t>;
 #endif
-  typedef std::atomic<int_fast8_t>         atomic_int_fast8_t;
-  typedef std::atomic<uint_fast8_t>        atomic_uint_fast8_t;
-  typedef std::atomic<int_fast16_t>        atomic_int_fast16_t;
-  typedef std::atomic<uint_fast16_t>       atomic_uint_fast16_t;
-  typedef std::atomic<int_fast32_t>        atomic_int_fast32_t;
-  typedef std::atomic<uint_fast32_t>       atomic_uint_fast32_t;
+  using atomic_int_fast8_t    = std::atomic<int_fast8_t>;
+  using atomic_uint_fast8_t   = std::atomic<uint_fast8_t>;
+  using atomic_int_fast16_t   = std::atomic<int_fast16_t>;
+  using atomic_uint_fast16_t  = std::atomic<uint_fast16_t>;
+  using atomic_int_fast32_t   = std::atomic<int_fast32_t>;
+  using atomic_uint_fast32_t  = std::atomic<uint_fast32_t>;
 #if ETL_USING_64BIT_TYPES
-  typedef std::atomic<int_fast64_t>        atomic_int_fast64_t;
-  typedef std::atomic<uint_fast64_t>       atomic_uint_fast64_t;
+  using atomic_int_fast64_t   = std::atomic<int_fast64_t>;
+  using atomic_uint_fast64_t  = std::atomic<uint_fast64_t>;
 #endif
-  typedef std::atomic<intptr_t>            atomic_intptr_t;
-  typedef std::atomic<uintptr_t>           atomic_uintptr_t;
-  typedef std::atomic<size_t>              atomic_size_t;
-  typedef std::atomic<ptrdiff_t>           atomic_ptrdiff_t;
-  typedef std::atomic<intmax_t>            atomic_intmax_t;
-  typedef std::atomic<uintmax_t>           atomic_uintmax_t;
+  using atomic_intptr_t       = std::atomic<intptr_t>;
+  using atomic_uintptr_t      = std::atomic<uintptr_t>;
+  using atomic_size_t         = std::atomic<size_t>;
+  using atomic_ptrdiff_t      = std::atomic<ptrdiff_t>;
+  using atomic_intmax_t       = std::atomic<intmax_t>;
+  using atomic_uintmax_t      = std::atomic<uintmax_t>;
 }
 
 #endif
