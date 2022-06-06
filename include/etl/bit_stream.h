@@ -510,11 +510,11 @@ namespace etl
       bits_remaining -= nbits;
     }
 
-    unsigned char *pdata;         ///< The start of the bitstream buffer.
-    size_t        length_chars;   ///< The length, in char, of the bitstream buffer.
-    unsigned char bits_available_in_char;   ///< The number of available bits in the current char.
-    size_t        char_index;     ///< The index of the char in the bitstream buffer.
-    size_t        bits_remaining; ///< The number of bits still available in the bitstream buffer.
+    unsigned char *pdata;                 ///< The start of the bitstream buffer.
+    size_t        length_chars;           ///< The length, in char, of the bitstream buffer.
+    unsigned char bits_available_in_char; ///< The number of available bits in the current char.
+    size_t        char_index;             ///< The index of the char in the bitstream buffer.
+    size_t        bits_remaining;         ///< The number of bits still available in the bitstream buffer.
   };
 
   //***************************************************************************
@@ -525,8 +525,9 @@ namespace etl
   public:
 
     typedef const unsigned char* const_iterator;
-    typedef char callback_parameter_type;
-    typedef etl::delegate<void(char)> callback_type;
+    
+    typedef etl::span<char> callback_parameter_type;
+    typedef etl::delegate<void(callback_parameter_type)> callback_type;
 
     //***************************************************************************
     /// Construct from span.
@@ -785,7 +786,7 @@ namespace etl
     {
       size_t s = char_index;
 
-      // Is the current byte used?
+      // Is the current byte partially used?
       if (bits_available_in_char != CHAR_BIT)
       {
         ++s;
@@ -888,13 +889,19 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Finalizes the stream and calls the callback, if set.
+    /// Flush the last byte, if partially filled, to the callback, if valid.
     //***************************************************************************
-    void finalize()
+    void flush()
     {
-      if (bits_remaining != 0U)
+      if (callback.is_valid())
       {
-        callback.call_if(pdata[char_index]);
+        if (bits_available_in_char != 0U)
+        {
+          char_index = 1U;
+          flush_full_bytes();
+          char_index = 0U;
+          bits_available_in_char = CHAR_BIT;
+        }
       }
     }
 
@@ -934,6 +941,11 @@ namespace etl
 
         write_chunk(static_cast<unsigned char>(chunk), mask_width);
       }
+
+      if (callback.is_valid())
+      {
+        flush_full_bytes();
+      }
     }
 
   #if ETL_USING_64BIT_TYPES
@@ -955,6 +967,13 @@ namespace etl
 
         write_chunk(static_cast<unsigned char>(chunk), mask_width);
       }
+
+      size_t end_index = char_index;
+
+      if (callback.is_valid())
+      {
+        flush_full_bytes();
+      }
     }
   #endif
 
@@ -971,6 +990,27 @@ namespace etl
 
       pdata[char_index] |= chunk;
       step(nbits);
+    }
+
+    //***************************************************************************
+    /// Flush full bytes to the callback, if valid.
+    /// Resets the 
+    //***************************************************************************
+    void flush_full_bytes()
+    {
+      // Is the first byte fully filled?
+      if (char_index > 0U)
+      {
+        callback(callback_parameter_type((char*)pdata, (char*)pdata + char_index));
+
+        if (bits_available_in_char != 0U)
+        {
+          // Move a partially filled last byte to the start of the buffer.
+          pdata[0] = pdata[char_index];
+        }
+
+        char_index = 0U;
+      }
     }
 
     //***************************************************************************

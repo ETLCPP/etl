@@ -31,6 +31,7 @@ SOFTWARE.
 #include "etl/bit_stream.h"
 
 #include <array>
+#include <vector>
 #include <numeric>
 
 namespace
@@ -85,6 +86,30 @@ namespace etl
 
 namespace
 {
+  class Accumulator
+  {
+  public:
+
+    void Add(etl::bit_stream_writer::callback_parameter_type s)
+    {
+      data.insert(data.end(), s.begin(), s.end());
+    }
+
+    void Clear()
+    {
+      data.clear();
+    }
+
+    const std::vector<char>& GetData() const
+    {
+      return data;
+    }
+
+  private:
+
+    std::vector<char> data;
+  };
+
   SUITE(test_bit_stream)
   {
     //*************************************************************************
@@ -648,7 +673,7 @@ namespace
       CHECK_EQUAL((int)expected_data[13], (int)storage[13]);
     }
 
-    ////*************************************************************************
+    //*************************************************************************
     TEST(test_write_multiple_variable_size)
     {
       char c1 = 90;              // 0x5A       6 bits
@@ -690,6 +715,53 @@ namespace
       CHECK_EQUAL((int)expected_data[8], (int)storage[8]);
       CHECK_EQUAL((int)expected_data[9], (int)storage[9]);
       CHECK_EQUAL((int)expected_data[10], (int)storage[10]);
+    }
+
+    //*************************************************************************
+    TEST(test_write_multiple_variable_size_with_callback)
+    {
+      Accumulator accumulator;
+
+      char c1 = 90;               // 0x5A       6 bits
+      char c2 = -91;              // 0xA5       7 bits
+      unsigned short s1 = 4660U;  // 0x1234     13 bits
+      unsigned short s2 = 22136U; // 0x5678     11 bits
+      int32_t i1 = 2309737967L;   // 0x89ABCDEF 23 bits
+      int32_t i2 = 4275878552L;   // 0xFEDCBA98 25 bits
+
+      std::array<char, 14> storage;
+      storage.fill(0);
+      std::array<char, 14> expected_data = { char(0x6A), char(0x46), char(0x8A), char(0xF3),
+                                             char(0x7B), char(0xDB), char(0x97), char(0x53),
+                                             char(0x19), char(0xE1), char(0x28) };
+
+      auto callback = etl::bit_stream_writer::callback_type::create<Accumulator, &Accumulator::Add>(accumulator);
+
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), callback);
+
+      // Insert into the stream.
+      bit_stream.write(c1, 6);
+      bit_stream.write(s1, 13);
+      bit_stream.write(i1, 23);
+      bit_stream.write(i2, 25);
+      bit_stream.write(s2, 11);
+      bit_stream.write(c2, 7);
+      bit_stream.flush();
+
+      CHECK_EQUAL(11U, accumulator.GetData().size());
+
+      CHECK_EQUAL((int)expected_data[0], (int)accumulator.GetData()[0]);
+      CHECK_EQUAL((int)expected_data[1], (int)accumulator.GetData()[1]);
+      CHECK_EQUAL((int)expected_data[2], (int)accumulator.GetData()[2]);
+      CHECK_EQUAL((int)expected_data[3], (int)accumulator.GetData()[3]);
+      CHECK_EQUAL((int)expected_data[4], (int)accumulator.GetData()[4]);
+      CHECK_EQUAL((int)expected_data[5], (int)accumulator.GetData()[5]);
+      CHECK_EQUAL((int)expected_data[6], (int)accumulator.GetData()[6]);
+      CHECK_EQUAL((int)expected_data[7], (int)accumulator.GetData()[7]);
+      CHECK_EQUAL((int)expected_data[8], (int)accumulator.GetData()[8]);
+      CHECK_EQUAL((int)expected_data[9], (int)accumulator.GetData()[9]);
+      CHECK_EQUAL((int)expected_data[10], (int)accumulator.GetData()[10]);
+
     }
 
     ////*************************************************************************

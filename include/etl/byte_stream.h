@@ -58,7 +58,7 @@ namespace etl
 
     typedef const char* const_iterator;
     typedef etl::span<char> callback_parameter_type;
-    typedef etl::delegate<void(etl::span<char>)> callback_type;
+    typedef etl::delegate<void(callback_parameter_type)> callback_type;
 
     //***************************************************************************
     /// Construct from span.
