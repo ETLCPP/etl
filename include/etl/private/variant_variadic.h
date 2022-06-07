@@ -427,6 +427,17 @@ namespace etl
   };
 
   //***************************************************************************
+  /// 'Bad variant access' exception for the variant class.
+  ///\ingroup variant
+  //***************************************************************************
+  class bad_variant_access : public variant_exception {
+  public:
+    bad_variant_access(string_type file_name_, numeric_type line_number_)
+    : variant_exception(ETL_ERROR_TEXT("variant:bad variant access", ETL_VARIANT_FILE_ID"A"), file_name_, line_number_)
+    {}
+  };
+
+  //***************************************************************************
   /// A template class that can store any of the types defined in the template parameter list.
   /// Supports up to 8 types.
   ///\ingroup variant
@@ -1265,5 +1276,67 @@ namespace etl
   template <typename... TTypes>
   inline constexpr size_t variant_size_v = variant_size<TTypes...>::value;
 #endif
+
+  //***************************************************************************
+  /// visit
+  //***************************************************************************
+
+  namespace private_variant
+  {
+    template <typename TCallable, typename T>
+    struct single_visit_result_type
+    {
+      using type = decltype(std::declval<TCallable>()(std::declval<T>()));
+    };
+    template <typename TCallable, typename T>
+    using single_visit_result_type_t = typename single_visit_result_type<TCallable, T>::type;
+    template <typename, typename>
+    struct visit_result;
+    template <typename TCallable, typename... Ts>
+    struct visit_result<TCallable, etl::variant<Ts...>&&>
+    {
+      using type = typename std::common_type<single_visit_result_type_t<TCallable, Ts&&>...>::type;
+    };
+    template <typename TCallable, typename... Ts>
+    struct visit_result<TCallable, etl::variant<Ts...>&>
+    {
+      using type = typename std::common_type<single_visit_result_type_t<TCallable, Ts&>...>::type;
+    };
+    template <typename TCallable, typename... Ts>
+    struct visit_result<TCallable, etl::variant<Ts...> const&&>
+    {
+      using type = typename std::common_type<single_visit_result_type_t<TCallable, Ts const&&>...>::type;
+    };
+    template <typename TCallable, typename... Ts>
+    struct visit_result<TCallable, etl::variant<Ts...> const&>
+    {
+      using type = typename std::common_type<single_visit_result_type_t<TCallable, Ts const&&>...>::type;
+    };
+    template <typename TCallable, typename... Ts>
+    using visit_result_t = typename visit_result<TCallable, Ts...>::type;
+
+    template <typename TRet, typename TCallable, typename TVariant, std::size_t tIndex>
+    constexpr TRet do_visit_single(TCallable && f, TVariant && v)
+    {
+      return static_cast<TCallable&&>(f)(etl::get<tIndex>(static_cast<TVariant&&>(v)));
+    }
+
+    template <typename TRet, typename TCallable, typename TVariant, std::size_t... tIndices>
+    ETL_CONSTEXPR14 static TRet do_visit(TCallable && f, TVariant && v, std::index_sequence<tIndices...>)
+    {
+      ETL_ASSERT(!v.valueless_by_exception(), ETL_ERROR(bad_variant_access));
+      constexpr typename std::add_pointer<TRet(TCallable&&, TVariant &&)>::type jmp_table[]{
+        &do_visit_single<TRet, TCallable, TVariant, tIndices>...};
+      return jmp_table[v.index()](static_cast<TCallable&&>(f), static_cast<TVariant&&>(v));
+    }
+  }  // namespace private_variant
+  template <typename TCallable, typename TVariant>
+  constexpr auto visit(TCallable&& f, TVariant&& v) -> private_variant::visit_result_t<TCallable&&, TVariant&&>
+  {
+    constexpr std::size_t variants = etl::variant_size<std::remove_reference_t<TVariant> >::value;
+    return private_variant::do_visit<private_variant::visit_result_t<TCallable&&, TVariant&&> >(static_cast<TCallable&&>(f),
+                                                                                                static_cast<TVariant&&>(v),
+                                                                                                std::make_index_sequence<variants>{});
+  }
 }
 #endif

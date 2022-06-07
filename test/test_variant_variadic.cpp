@@ -1167,5 +1167,28 @@ namespace
       pcd = etl::get_if<1U>(&crv);
       CHECK(pcd == nullptr);
     }
+
+    //*************************************************************************
+    TEST(test_variant_visit)
+    {
+      etl::variant<int, double> the_variant(int{});
+      const auto                visitor = [](auto const& val)
+      {
+        if (std::is_same<decltype(val), int const&>::value)
+        {
+          return 1;
+        }
+        if (std::is_same<decltype(val), double const&>::value)
+        {
+          return 2;
+        }
+        return -1;
+      };
+      int type = etl::visit(visitor, the_variant);
+      CHECK(type == 1);
+      the_variant = double{};
+      type = etl::visit(visitor, the_variant);
+      CHECK(type == 2);
+    }
   };
 }
