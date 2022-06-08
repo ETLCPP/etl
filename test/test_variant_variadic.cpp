@@ -1168,27 +1168,108 @@ namespace
       CHECK(pcd == nullptr);
     }
 
+
+    struct variant_test_visit_dispatcher {
+      // const overloads
+      int8_t operator()(int8_t&) const {
+        return 1;
+      }
+      int8_t operator()(int8_t const&) const {
+        return 10;
+      }
+      int8_t operator()(uint8_t&) const {
+        return 2;
+      }
+      int8_t operator()(uint8_t const&) const {
+        return 20;
+      }
+      int8_t operator()(int16_t&) const {
+        return 3;
+      }
+      int8_t operator()(int16_t const&) const {
+        return 30;
+      }
+
+      // non-const overloads
+      int8_t operator()(int8_t&) {
+        return 5;
+      }
+      int8_t operator()(int8_t const&) {
+        return 50;
+      }
+      int8_t operator()(uint8_t&) {
+        return 6;
+      }
+      int8_t operator()(uint8_t const&) {
+        return 60;
+      }
+      int8_t operator()(int16_t&) {
+        return 7;
+      }
+      int8_t operator()(int16_t const&) {
+        return 70;
+      }
+
+      template<typename T>
+      int8_t operator()(T const&) const {
+        return -1;
+      }
+    };
     //*************************************************************************
     TEST(test_variant_visit)
     {
-      etl::variant<int, double> the_variant(int{});
-      const auto                visitor = [](auto const& val)
+      etl::variant<int8_t, uint8_t, int16_t> variant;
+      variant = int8_t{};
+      variant_test_visit_dispatcher visitor;
+      auto const& visitor_const = visitor;
+      int16_t type = etl::visit(visitor_const, variant);
+      CHECK_EQUAL(1, type);
+      auto const& variant_const = variant;
+      type = etl::visit(visitor_const, variant_const);
+      CHECK_EQUAL(10, type);
+
+      type = etl::visit(visitor, variant_const);
+      CHECK_EQUAL(50, type);
+
+      variant = int16_t{};
+      type = etl::visit(visitor_const, variant);
+      CHECK_EQUAL(3, type);
+
+      type = etl::visit(visitor_const, variant_const);
+      CHECK_EQUAL(30, type);
+
+      type = etl::visit(visitor, variant_const);
+      CHECK_EQUAL(70, type);
+    }
+
+    struct test_variant_multiple_visit_helper
+    {
+      template<typename T1, typename T2>
+      int16_t operator()(T1, T2) const
       {
-        if (std::is_same<decltype(val), int const&>::value)
-        {
-          return 1;
-        }
-        if (std::is_same<decltype(val), double const&>::value)
-        {
-          return 2;
-        }
-        return -1;
-      };
-      int type = etl::visit(visitor, the_variant);
-      CHECK(type == 1);
-      the_variant = double{};
-      type = etl::visit(visitor, the_variant);
-      CHECK(type == 2);
+        int16_t res{};
+        if(std::is_same<T1, int8>::value) res = 1;
+        else if(std::is_same<T1, uint8>::value) res = 2;
+        if(std::is_same<T2, double>::value) res += 10;
+        else if(std::is_same<T2, float>::value) res += 20;
+        else if(std::is_same<T2, uint8_t>::value) res += 30;
+
+      }
+    };
+    //*************************************************************************
+    TEST(test_variant_multiple_visit)
+    {
+      etl::variant<int8_t, uint8_t> variant1;
+      etl::variant<double, float, uint8_t> variant2;
+      auto res = etl::visit(test_variant_multiple_visit_helper{}, variant1, variant2);
+      CHECK_EQUAL(11, res);
+      variant2 = float{};
+      res = etl::visit(test_variant_multiple_visit_helper{}, variant1, variant2);
+      CHECK_EQUAL(21, res);
+      variant1 = uint8_t{};
+      variant2 = uint8_t{};
+      res = etl::visit(test_variant_multiple_visit_helper{}, variant1, variant2);
+      CHECK_EQUAL(32, res);
     }
   };
 }

@@ -791,5 +791,79 @@ namespace
       CHECK(variant.is_type<D4>());
       CHECK_EQUAL(D4("1", "2", "3", "4"), variant.get<D4>());
     }
+
+    struct variant_test_visit_dispatcher {
+      // const overloads
+      int8_t operator()(int8_t&) const {
+        return 1;
+      }
+      int8_t operator()(int8_t const&) const {
+        return 10;
+      }
+      int8_t operator()(uint8_t&) const {
+        return 2;
+      }
+      int8_t operator()(uint8_t const&) const {
+        return 20;
+      }
+      int8_t operator()(int16_t&) const {
+        return 3;
+      }
+      int8_t operator()(int16_t const&) const {
+        return 30;
+      }
+
+      // non-const overloads
+      int8_t operator()(int8_t&) {
+        return 5;
+      }
+      int8_t operator()(int8_t const&) {
+        return 50;
+      }
+      int8_t operator()(uint8_t&) {
+        return 6;
+      }
+      int8_t operator()(uint8_t const&) {
+        return 60;
+      }
+      int8_t operator()(int16_t&) {
+        return 7;
+      }
+      int8_t operator()(int16_t const&) {
+        return 70;
+      }
+
+      template<typename T>
+      int8_t operator()(T const&) const {
+        return -1;
+      }
+    };
+
+    //*************************************************************************
+    TEST(TestVariantVisit)
+    {
+      test_variant_3 variant;
+      variant = int8_t{};
+      // c++98 should generate a const ref of dispatchern.
+      int16_t type = etl::visit<int16_t>(variant_test_visit_dispatcher{}, variant);
+      CHECK_EQUAL(1, type);
+      test_variant_3 const& variant_const = variant;
+      type = etl::visit<int16_t>(variant_test_visit_dispatcher{}, variant_const);
+      CHECK_EQUAL(10, type);
+
+      variant_test_visit_dispatcher visitor;
+      type = etl::visit<int16_t>(visitor, variant_const);
+      CHECK_EQUAL(50, type);
+
+      variant = int16_t{};
+      type = etl::visit<int16_t>(variant_test_visit_dispatcher{}, variant);
+      CHECK_EQUAL(3, type);
+
+      type = etl::visit<int16_t>(variant_test_visit_dispatcher{}, variant_const);
+      CHECK_EQUAL(30, type);
+
+      type = etl::visit<int16_t>(visitor, variant_const);
+      CHECK_EQUAL(70, type);
+    }
   };
 }
