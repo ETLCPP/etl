@@ -46,9 +46,38 @@ SOFTWARE.
 #include "iterator.h"
 #include "optional.h"
 #include "delegate.h"
+#include "exception.h"
+#include "error_handler.h"
 
 namespace etl
 {
+  //***************************************************************************
+  /// Exception base for byte streams
+  //***************************************************************************
+  class byte_stream_exception : public etl::exception
+  {
+  public:
+
+    byte_stream_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  ///\ingroup string
+  /// String empty exception.
+  //***************************************************************************
+  class byte_stream_overflow : public etl::byte_stream_exception
+  {
+  public:
+
+    byte_stream_overflow(string_type file_name_, numeric_type line_number_)
+      : byte_stream_exception(ETL_ERROR_TEXT("byte_stream:overflow", ETL_BYTE_STREAM_FILE_ID"A"), file_name_, line_number_)
+    {
+    }
+  };
+
   //***************************************************************************
   /// Encodes a byte stream.
   //***************************************************************************
@@ -134,12 +163,15 @@ namespace etl
     //***************************************************************************
     bool write(bool value)
     {
-      bool success = false;
+      bool success = (available<bool>() > 0U);
 
-      if (available<bool>() > 0U)
+      if (success)
       {
         write_unchecked(value);
-        success = true;
+      }
+      else
+      {
+        ETL_ASSERT_FAIL(ETL_ERROR(etl::byte_stream_overflow));
       }
  
       return success;
@@ -162,12 +194,15 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, bool>::type
       write(T value)
     {
-      bool success = false;
+      bool success = (available<T>() > 0U);
 
-      if (available<T>() > 0U)
+      if (success)
       {
-        write_unchecked(value);
-        success = true;
+        write_unchecked(value);        
+      }
+      else
+      {
+        ETL_ASSERT_FAIL(ETL_ERROR(etl::byte_stream_overflow));
       }
 
       return success;
@@ -196,12 +231,15 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, bool>::type
       write(const etl::span<T>& range)
     {
-      bool success = false;
+      bool success = (available<T>() >= range.size());
 
-      if (available<T>() >= range.size())
+      if (success)
       {
         write_unchecked(range);
-        success = true;
+      }
+      else
+      {
+        ETL_ASSERT_FAIL(ETL_ERROR(etl::byte_stream_overflow));
       }
 
       return success;
@@ -228,37 +266,40 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, bool>::type
       write(const T* start, size_t length)
     {
-      bool success = false;
+      bool success = (available<T>() >= length);
 
-      if (available<T>() >= length)
+      if (success)
       {
         write_unchecked(start, length);
-        success = true;
+      }
+      else
+      {
+        ETL_ASSERT_FAIL(ETL_ERROR(etl::byte_stream_overflow));
       }
 
       return success;
     }
 
     //***************************************************************************
-    /// Skip n items of T, up to the maximum space available.
+    /// Skip n items of T, if the total space is available.
     /// Returns <b>true</b> if the skip was possible.
-    /// Returns <b>false</b> if the full skip size was not possible.
+    /// Returns <b>false</b> if the skip size was not possible.
     //***************************************************************************
     template <typename T>
     bool skip(size_t n)
     {
-      size_t maximum = available<T>();
+      bool success = (available<T>() >= n);
 
-      if (n < maximum)
+      if (success)
       {
         step(n * sizeof(T));
-        return true;
       }
       else
       {
-        step(maximum * sizeof(T));
-        return false;
+        ETL_ASSERT_FAIL(ETL_ERROR(etl::byte_stream_overflow));
       }
+
+      return success;
     }
 
     //***************************************************************************

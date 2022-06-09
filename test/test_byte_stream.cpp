@@ -153,7 +153,7 @@ namespace
       CHECK_EQUAL(std::size(storage) - sizeof(uint8_t) - sizeof(uint16_t), (std::distance(free_span.begin(), free_span.end())));
 
       CHECK(writer.write(uint32_t(0x12345678U)));  // 4 more written.
-      CHECK(!writer.write(uint32_t(0x12345678U))); // Can't write 4 more.
+      CHECK_THROW(writer.write(uint32_t(0x12345678U)), etl::byte_stream_overflow); // Can't write 4 more.
 
       CHECK(!writer.empty());
       CHECK(!writer.full());
@@ -186,7 +186,7 @@ namespace
       CHECK(byte_stream.write(false));
 
       // One too many.
-      CHECK(!byte_stream.write(true));
+      CHECK_THROW(byte_stream.write(true), etl::byte_stream_overflow);
 
       CHECK_ARRAY_EQUAL(result, storage, 8);
     }
@@ -207,7 +207,7 @@ namespace
       }
 
       // One too many.
-      CHECK(!byte_stream.write(int8_t(0)));
+      CHECK_THROW(byte_stream.write(int8_t(0)), etl::byte_stream_overflow);
 
       for (size_t i = 0; i < storage.size(); ++i)
       {
@@ -231,7 +231,7 @@ namespace
       }
 
       // One too many.
-      CHECK(!byte_stream.write(uint8_t(0U)));
+      CHECK_THROW(byte_stream.write(uint8_t(0U)), etl::byte_stream_overflow);
 
       for (size_t i = 0U; i < storage.size(); ++i)
       {
@@ -256,7 +256,7 @@ namespace
       CHECK(byte_stream.write(int16_t(0xFFFF)));
 
       // One too many.
-      CHECK(!byte_stream.write(int16_t(0)));
+      CHECK_THROW(byte_stream.write(int16_t(0)), etl::byte_stream_overflow);
 
       for (size_t i = 0; i < storage.size(); ++i)
       {
@@ -281,7 +281,7 @@ namespace
       CHECK(byte_stream.write(uint16_t(0xFFFFU)));
 
       // One too many.
-      CHECK(!byte_stream.write(uint16_t(0U)));
+      CHECK_THROW(byte_stream.write(uint16_t(0U)), etl::byte_stream_overflow);
 
       for (size_t i = 0; i < storage.size(); ++i)
       {
@@ -309,7 +309,7 @@ namespace
       CHECK(byte_stream.write(int32_t(0xFFFFFFFF)));
 
       // One too many.
-      CHECK(!byte_stream.write(int32_t(0)));
+      CHECK_THROW(byte_stream.write(int32_t(0)), etl::byte_stream_overflow);
 
       for (size_t i = 0U; i < storage.size(); ++i)
       {
@@ -337,7 +337,7 @@ namespace
       CHECK(byte_stream.write(uint32_t(0xFFFFFFFFU)));
 
       // One too many.
-      CHECK(!byte_stream.write(uint32_t(0)));
+      CHECK_THROW(byte_stream.write(uint32_t(0)), etl::byte_stream_overflow);
 
       for (size_t i = 0U; i < storage.size(); ++i)
       {
@@ -365,7 +365,7 @@ namespace
       CHECK(byte_stream.write(int64_t(0xFFFFFFFFFFFFFFFF)));
 
       // One too many.
-      CHECK(!byte_stream.write(int64_t(0)));
+      CHECK_THROW(byte_stream.write(int64_t(0)), etl::byte_stream_overflow);
 
       for (size_t i = 0U; i < storage.size(); ++i)
       {
@@ -393,7 +393,7 @@ namespace
       CHECK(byte_stream.write(uint64_t(0xFFFFFFFFFFFFFFFFU)));
 
       // One too many.
-      CHECK(!byte_stream.write(uint64_t(0)));
+      CHECK_THROW(byte_stream.write(uint64_t(0)), etl::byte_stream_overflow);
 
       for (size_t i = 0U; i < storage.size(); ++i)
       {
@@ -420,7 +420,7 @@ namespace
       CHECK(byte_stream.write(int32_t(0x01020304)));
       CHECK(byte_stream.skip<int32_t>(2));
       CHECK(byte_stream.write(int32_t(0x05060708)));
-      CHECK(!byte_stream.skip<int32_t>(1));
+      CHECK_THROW(byte_stream.skip<int32_t>(1), etl::byte_stream_overflow);
 
       for (size_t i = 0U; i < storage.size(); ++i)
       {
