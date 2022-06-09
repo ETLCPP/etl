@@ -462,7 +462,7 @@ namespace etl
         set_truncated(true);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+        ETL_ASSERT_FAIL(ETL_ERROR(string_truncation));
 #endif
 #endif
       }
@@ -624,7 +624,7 @@ namespace etl
         set_truncated(true);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+        ETL_ASSERT_FAIL(ETL_ERROR(string_truncation));
 #endif
       }
 #endif
@@ -663,7 +663,7 @@ namespace etl
         this->set_truncated(true);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+        ETL_ASSERT_FAIL(ETL_ERROR(string_truncation));
 #endif
       }
 #endif
@@ -811,7 +811,7 @@ namespace etl
         set_truncated(true);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+        ETL_ASSERT_FAIL(ETL_ERROR(string_truncation));
 #endif
 #endif
       }
@@ -843,7 +843,7 @@ namespace etl
         set_truncated(true);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+        ETL_ASSERT_FAIL(ETL_ERROR(string_truncation));
 #endif
       }
 #endif
@@ -951,7 +951,7 @@ namespace etl
         set_truncated(true);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+        ETL_ASSERT_FAIL(ETL_ERROR(string_truncation));
 #endif
 #endif
       }
@@ -987,7 +987,7 @@ namespace etl
         set_truncated(true);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+        ETL_ASSERT_FAIL(ETL_ERROR(string_truncation));
 #endif
 #endif
         return to_iterator(position);;
@@ -1002,7 +1002,7 @@ namespace etl
           set_truncated(true);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-          ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+          ETL_ASSERT_FAIL(ETL_ERROR(string_truncation));
 #endif
 #endif
         }
@@ -1028,7 +1028,7 @@ namespace etl
           set_truncated(true);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-          ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+          ETL_ASSERT_FAIL(ETL_ERROR(string_truncation));
 #endif
 #endif
         }
@@ -1073,7 +1073,7 @@ namespace etl
         set_truncated(true);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+        ETL_ASSERT_FAIL(ETL_ERROR(string_truncation));
 #endif
 #endif
         return position_;
@@ -1088,7 +1088,7 @@ namespace etl
           set_truncated(true);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-          ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+          ETL_ASSERT_FAIL(ETL_ERROR(string_truncation));
 #endif
 #endif
         }
@@ -1118,7 +1118,7 @@ namespace etl
           set_truncated(true);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-          ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+          ETL_ASSERT_FAIL(ETL_ERROR(string_truncation));
 #endif
 #endif
         }
@@ -1157,7 +1157,7 @@ namespace etl
         set_truncated(true);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+        ETL_ASSERT_FAIL(ETL_ERROR(string_truncation));
 #endif
       }
 #endif
@@ -1190,7 +1190,7 @@ namespace etl
         set_truncated(true);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+        ETL_ASSERT_FAIL(ETL_ERROR(string_truncation));
 #endif
       }
 #endif
@@ -1617,7 +1617,7 @@ namespace etl
         set_truncated(true);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+        ETL_ASSERT_FAIL(ETL_ERROR(string_truncation));
 #endif
       }
 #endif
@@ -1649,7 +1649,7 @@ namespace etl
         set_truncated(true);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-        ETL_ALWAYS_ASSERT(ETL_ERROR(string_truncation));
+        ETL_ASSERT_FAIL(ETL_ERROR(string_truncation));
 #endif
       }
 #endif

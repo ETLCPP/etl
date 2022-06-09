@@ -361,7 +361,7 @@ namespace etl
       }
       else
       {
-        ETL_ALWAYS_ASSERT(ETL_ERROR(etl::message_router_registry_full));
+        ETL_ASSERT_FAIL(ETL_ERROR(etl::message_router_registry_full));
       }
     }
 
