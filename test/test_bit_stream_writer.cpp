@@ -39,21 +39,21 @@ namespace
   //***********************************
   struct Object
   {
-    int16_t i;
-    double  d;
+    int16_t s;
+    int32_t i;
     uint8_t c;
   };
 
   bool operator ==(const Object& lhs, const Object& rhs)
   {
-    return (lhs.i == rhs.i) &&
-           (lhs.d == rhs.d) &&
+    return (lhs.s == rhs.s) &&
+           (lhs.i == rhs.i) &&
            (lhs.c == rhs.c);
   }
 
   std::ostream& operator << (std::ostream& os, const Object& object)
   {
-    os << object.i << "," << object.d << "," << (int)object.c;
+    os << object.s << "," << object.i << "," << (int)object.c;
     return os;
   }
 }
@@ -65,12 +65,12 @@ namespace etl
   {
     bool success = true;
 
-    if (!stream.write(object.i, 14))
+    if (!stream.write(object.s, 14))
     {
       success = false;
     }
 
-    if (!stream.write(object.d))
+    if (!stream.write(object.i, 23))
     {
       success = false;
     }
@@ -136,7 +136,7 @@ namespace
     TEST(test_write_bool)
     {
       unsigned char storage = 0;
-      unsigned char expected_data = 0x5AU;
+      unsigned char expected = 0x5AU;
 
       etl::bit_stream_writer bit_stream(&storage, 1U);
 
@@ -158,12 +158,12 @@ namespace
       CHECK_EQUAL(1U, bit_stream.used_data().size());
 
       // One too many.
-      CHECK(!bit_stream.write(true));
+      CHECK_THROW(bit_stream.write(true), etl::bit_stream_overflow);
 
       CHECK_EQUAL(1U, bit_stream.data().size());
       CHECK_EQUAL(1U, bit_stream.used_data().size());
 
-      CHECK_EQUAL(int(expected_data), int(storage));
+      CHECK_EQUAL(int(expected), int(storage));
     }
 
     //*************************************************************************
@@ -171,8 +171,8 @@ namespace
     {
       std::array<char, 256U> storage;
 
-      std::array<char, 256U> expected_data;
-      std::iota(expected_data.begin(), expected_data.end(), 0);
+      std::array<char, 256U> expected;
+      std::iota(expected.begin(), expected.end(), 0);
 
       etl::bit_stream_writer bit_stream(storage.data(), storage.size());
 
@@ -183,14 +183,14 @@ namespace
       }
 
       // One too many.
-      CHECK(!bit_stream.write(int8_t(0)));
+      CHECK_THROW(bit_stream.write(int8_t(0)), etl::bit_stream_overflow);
 
       CHECK_EQUAL(256U, bit_stream.data().size());
       CHECK_EQUAL(256U, bit_stream.used_data().size());
 
       for (size_t i = 0UL; i < storage.size(); ++i)
       {
-        CHECK_EQUAL(int(expected_data[i]), int(storage[i]));
+        CHECK_EQUAL(int(expected[i]), int(storage[i]));
       }
     }
 
@@ -199,8 +199,8 @@ namespace
     {
       std::array<char, 256> storage;
 
-      std::array<char, 256> expected_data;
-      std::iota(expected_data.begin(), expected_data.end(), 0);
+      std::array<char, 256> expected;
+      std::iota(expected.begin(), expected.end(), 0);
 
       etl::bit_stream_writer bit_stream(storage.data(), storage.size());
 
@@ -211,14 +211,14 @@ namespace
       }
 
       // One too many.
-      CHECK(!bit_stream.write(int8_t(0)));
+      CHECK_THROW(bit_stream.write(int8_t(0)), etl::bit_stream_overflow);
 
       CHECK_EQUAL(256U, bit_stream.data().size());
       CHECK_EQUAL(256U, bit_stream.used_data().size());
 
       for (size_t i = 0UL; i < storage.size(); ++i)
       {
-        CHECK_EQUAL(int(expected_data[i]), int(storage[i]));
+        CHECK_EQUAL(int(expected[i]), int(storage[i]));
       }
     }
 
@@ -227,12 +227,12 @@ namespace
     {
       // Tests assume big endian.
       std::array<char, sizeof(int16_t) * 4> storage;
-      std::array<char, sizeof(int16_t) * 4> expected_data = { char(0x00), char(0x01), 
-                                                              char(0x5A), char(0xA5),
-                                                              char(0xA5), char(0x5A),
-                                                              char(0xFF), char(0xFF) };
+      std::array<char, sizeof(int16_t) * 4> expected = { char(0x00), char(0x01), 
+                                                         char(0x5A), char(0xA5),
+                                                         char(0xA5), char(0x5A),
+                                                         char(0xFF), char(0xFF) };
 
-      CHECK(expected_data.size() == storage.size());
+      CHECK(expected.size() == storage.size());
 
       etl::bit_stream_writer bit_stream(storage.data(), storage.size());
 
@@ -246,14 +246,14 @@ namespace
       CHECK_EQUAL(sizeof(int16_t) * 4, bit_stream.used_data().size());
 
       // One too many.
-      CHECK(!bit_stream.write(int16_t(0)));
+      CHECK_THROW(bit_stream.write(int16_t(0)), etl::bit_stream_overflow);
 
       CHECK_EQUAL(sizeof(int16_t) * 4, bit_stream.data().size());
       CHECK_EQUAL(sizeof(int16_t) * 4, bit_stream.used_data().size());
 
       for (size_t i = 0UL; i < storage.size(); ++i)
       {
-        CHECK_EQUAL(int(expected_data[i]), int(storage[i]));
+        CHECK_EQUAL(int(expected[i]), int(storage[i]));
       }
     }
 
@@ -262,12 +262,12 @@ namespace
     {
       // Tests assume big endian.
       std::array<char, sizeof(uint16_t) * 4> storage;
-      std::array<char, sizeof(uint16_t) * 4> expected_data = { char(0x00), char(0x01),
-                                                               char(0x5A), char(0xA5),
-                                                               char(0xA5), char(0x5A),
-                                                               char(0xFF), char(0xFF) };
+      std::array<char, sizeof(uint16_t) * 4> expected = { char(0x00), char(0x01),
+                                                          char(0x5A), char(0xA5),
+                                                          char(0xA5), char(0x5A),
+                                                          char(0xFF), char(0xFF) };
 
-      CHECK(expected_data.size() == storage.size());
+      CHECK(expected.size() == storage.size());
 
       etl::bit_stream_writer bit_stream(storage.data(), storage.size());
 
@@ -281,14 +281,14 @@ namespace
       CHECK_EQUAL(sizeof(uint16_t) * 4, bit_stream.used_data().size());
 
       // One too many.
-      CHECK(!bit_stream.write(uint16_t(0)));
+      CHECK_THROW(bit_stream.write(uint16_t(0)), etl::bit_stream_overflow);
 
       CHECK_EQUAL(sizeof(uint16_t) * 4, bit_stream.data().size());
       CHECK_EQUAL(sizeof(uint16_t) * 4, bit_stream.used_data().size());
 
       for (size_t i = 0UL; i < storage.size(); ++i)
       {
-        CHECK_EQUAL(int(expected_data[i]), int(storage[i]));
+        CHECK_EQUAL(int(expected[i]), int(storage[i]));
       }
     }
 
@@ -297,12 +297,12 @@ namespace
     {
       // Tests assume big endian.
       std::array<char, sizeof(int32_t) * 4> storage;
-      std::array<char, sizeof(int32_t) * 4> expected_data = { char(0x00), char(0x00), char(0x00), char(0x01),
-                                                              char(0x5A), char(0xA5), char(0xA5), char(0x5A),
-                                                              char(0xA5), char(0x5A), char(0x5A), char(0xA5),
-                                                              char(0xFF), char(0xFF), char(0xFF), char(0xFF) };
+      std::array<char, sizeof(int32_t) * 4> expected = { char(0x00), char(0x00), char(0x00), char(0x01),
+                                                         char(0x5A), char(0xA5), char(0xA5), char(0x5A),
+                                                         char(0xA5), char(0x5A), char(0x5A), char(0xA5),
+                                                         char(0xFF), char(0xFF), char(0xFF), char(0xFF) };
 
-      CHECK(expected_data.size() == storage.size());
+      CHECK(expected.size() == storage.size());
 
       etl::bit_stream_writer bit_stream(storage.data(), storage.size());
 
@@ -316,14 +316,14 @@ namespace
       CHECK_EQUAL(sizeof(int32_t) * 4, bit_stream.used_data().size());
 
       // One too many.
-      CHECK(!bit_stream.write(int32_t(0)));
+      CHECK_THROW(bit_stream.write(int32_t(0)), etl::bit_stream_overflow);
 
       CHECK_EQUAL(sizeof(int32_t) * 4, bit_stream.data().size());
       CHECK_EQUAL(sizeof(int32_t) * 4, bit_stream.used_data().size());
 
       for (size_t i = 0UL; i < storage.size(); ++i)
       {
-        CHECK_EQUAL(int(expected_data[i]), int(storage[i]));
+        CHECK_EQUAL(int(expected[i]), int(storage[i]));
       }
     }
 
@@ -332,12 +332,12 @@ namespace
     {
       // Tests assume big endian.
       std::array<char, sizeof(uint32_t) * 4> storage;
-      std::array<char, sizeof(uint32_t) * 4> expected_data = { char(0x00), char(0x00), char(0x00), char(0x01),
-                                                               char(0x5A), char(0xA5), char(0xA5), char(0x5A),
-                                                               char(0xA5), char(0x5A), char(0x5A), char(0xA5),
-                                                               char(0xFF), char(0xFF), char(0xFF), char(0xFF) };
+      std::array<char, sizeof(uint32_t) * 4> expected = { char(0x00), char(0x00), char(0x00), char(0x01),
+                                                          char(0x5A), char(0xA5), char(0xA5), char(0x5A),
+                                                          char(0xA5), char(0x5A), char(0x5A), char(0xA5),
+                                                          char(0xFF), char(0xFF), char(0xFF), char(0xFF) };
 
-      CHECK(expected_data.size() == storage.size());
+      CHECK(expected.size() == storage.size());
 
       etl::bit_stream_writer bit_stream(storage.data(), storage.size());
 
@@ -351,14 +351,14 @@ namespace
       CHECK_EQUAL(sizeof(uint32_t) * 4, bit_stream.used_data().size());
 
       // One too many.
-      CHECK(!bit_stream.write(uint32_t(0)));
+      CHECK_THROW(bit_stream.write(uint32_t(0)), etl::bit_stream_overflow);
 
       CHECK_EQUAL(sizeof(uint32_t) * 4, bit_stream.data().size());
       CHECK_EQUAL(sizeof(uint32_t) * 4, bit_stream.used_data().size());
 
       for (size_t i = 0UL; i < storage.size(); ++i)
       {
-        CHECK_EQUAL(int(expected_data[i]), int(storage[i]));
+        CHECK_EQUAL(int(expected[i]), int(storage[i]));
       }
     }
 
@@ -367,12 +367,12 @@ namespace
     {
       // Tests assume big endian.
       std::array<char, sizeof(int64_t) * 4> storage;
-      std::array<char, sizeof(int64_t) * 4> expected_data = { char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x01),
-                                                              char(0x5A), char(0xA5), char(0xA5), char(0x5A), char(0xA5), char(0x5A), char(0x5A), char(0xA5),
-                                                              char(0xA5), char(0x5A), char(0x5A), char(0xA5), char(0x5A), char(0xA5), char(0xA5), char(0x5A),
-                                                              char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF) };
+      std::array<char, sizeof(int64_t) * 4> expected = { char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x01),
+                                                         char(0x5A), char(0xA5), char(0xA5), char(0x5A), char(0xA5), char(0x5A), char(0x5A), char(0xA5),
+                                                         char(0xA5), char(0x5A), char(0x5A), char(0xA5), char(0x5A), char(0xA5), char(0xA5), char(0x5A),
+                                                         char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF) };
 
-      CHECK(expected_data.size() == storage.size());
+      CHECK(expected.size() == storage.size());
 
       etl::bit_stream_writer bit_stream(storage.data(), storage.size());
 
@@ -386,14 +386,14 @@ namespace
       CHECK_EQUAL(sizeof(int64_t) * 4, bit_stream.used_data().size());
 
       // One too many.
-      CHECK(!bit_stream.write(int64_t(0)));
+      CHECK_THROW(bit_stream.write(int64_t(0)), etl::bit_stream_overflow);
 
       CHECK_EQUAL(sizeof(int64_t) * 4, bit_stream.data().size());
       CHECK_EQUAL(sizeof(int64_t) * 4, bit_stream.used_data().size());
 
       for (size_t i = 0UL; i < storage.size(); ++i)
       {
-        CHECK_EQUAL(int(expected_data[i]), int(storage[i]));
+        CHECK_EQUAL(int(expected[i]), int(storage[i]));
       }
     }
 
@@ -402,12 +402,12 @@ namespace
     {
       // Tests assume big endian.
       std::array<char, sizeof(uint64_t) * 4> storage;
-      std::array<char, sizeof(uint64_t) * 4> expected_data = { char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x01),
-                                                               char(0x5A), char(0xA5), char(0xA5), char(0x5A), char(0xA5), char(0x5A), char(0x5A), char(0xA5),
-                                                               char(0xA5), char(0x5A), char(0x5A), char(0xA5), char(0x5A), char(0xA5), char(0xA5), char(0x5A),
-                                                               char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF) };
+      std::array<char, sizeof(uint64_t) * 4> expected = { char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x01),
+                                                          char(0x5A), char(0xA5), char(0xA5), char(0x5A), char(0xA5), char(0x5A), char(0x5A), char(0xA5),
+                                                          char(0xA5), char(0x5A), char(0x5A), char(0xA5), char(0x5A), char(0xA5), char(0xA5), char(0x5A),
+                                                          char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF) };
 
-      CHECK(expected_data.size() == storage.size());
+      CHECK(expected.size() == storage.size());
 
       etl::bit_stream_writer bit_stream(storage.data(), storage.size());
 
@@ -421,14 +421,14 @@ namespace
       CHECK_EQUAL(sizeof(uint64_t) * 4, bit_stream.used_data().size());
 
       // One too many.
-      CHECK(!bit_stream.write(uint64_t(0)));
+      CHECK_THROW(bit_stream.write(uint64_t(0)), etl::bit_stream_overflow);
 
       CHECK_EQUAL(sizeof(uint64_t) * 4, bit_stream.data().size());
       CHECK_EQUAL(sizeof(uint64_t) * 4, bit_stream.used_data().size());
 
       for (size_t i = 0UL; i < storage.size(); ++i)
       {
-        CHECK_EQUAL(int(expected_data[i]), int(storage[i]));
+        CHECK_EQUAL(int(expected[i]), int(storage[i]));
       }
     }
 
@@ -436,8 +436,8 @@ namespace
     TEST(test_write_int8_t_5bits)
     {
       std::array<char, 4 * sizeof(char)> storage;
-      std::array<int8_t, 4> write_data    = { int8_t(0x01), int8_t(0xF5), int8_t(0x05), int8_t(0xFF) }; // 1, -11, 10, -1         
-      std::array<char, 4> expected_data = { char(0x0D), char(0x4B), char(0xF0), char(0x00) }; // 1, -11, 10, -1
+      std::array<int8_t, 4> write_data = { int8_t(0x01), int8_t(0xF5), int8_t(0x05), int8_t(0xFF) }; // 1, -11, 10, -1         
+      std::array<char, 4> expected = { char(0x0D), char(0x4B), char(0xF0), char(0x00) }; // 1, -11, 10, -1
 
       etl::bit_stream_writer bit_stream(storage.data(), storage.size());
 
@@ -451,9 +451,9 @@ namespace
       CHECK(bit_stream.write(write_data[3], 5));
       CHECK_EQUAL(3, bit_stream.used_data().size());
 
-      CHECK_EQUAL((int)expected_data[0], (int)storage[0]);
-      CHECK_EQUAL((int)expected_data[1], (int)storage[1]);
-      CHECK_EQUAL((int)expected_data[2], (int)storage[2]);
+      CHECK_EQUAL((int)expected[0], (int)storage[0]);
+      CHECK_EQUAL((int)expected[1], (int)storage[1]);
+      CHECK_EQUAL((int)expected[2], (int)storage[2]);
       // 4th byte not used.
     }
 
@@ -461,9 +461,9 @@ namespace
     TEST(test_write_int16_t_10bits)
     {
       std::array<char, 4 * sizeof(int16_t)> storage;
-      std::array<int16_t, 4>                write_data    = { int16_t(0x0001), int16_t(0xA55A), int16_t(0x5AA5), int16_t(0xFFFF) };
-      std::array<char, 4 * sizeof(int16_t)> expected_data = { char(0x00), char(0x55), char(0xAA), char(0x97), 
-                                                              char(0xFF), char(0x00), char(0x00), char(0x00) };
+      std::array<int16_t, 4>                write_data = { int16_t(0x0001), int16_t(0xA55A), int16_t(0x5AA5), int16_t(0xFFFF) };
+      std::array<char, 4 * sizeof(int16_t)> expected = { char(0x00), char(0x55), char(0xAA), char(0x97), 
+                                                          char(0xFF), char(0x00), char(0x00), char(0x00) };
 
       etl::bit_stream_writer bit_stream(storage.data(), storage.size());
 
@@ -477,11 +477,11 @@ namespace
       CHECK(bit_stream.write(write_data[3], 10));
       CHECK_EQUAL(5, bit_stream.used_data().size());
 
-      CHECK_EQUAL((int)expected_data[0], (int)storage[0]);
-      CHECK_EQUAL((int)expected_data[1], (int)storage[1]);
-      CHECK_EQUAL((int)expected_data[2], (int)storage[2]);
-      CHECK_EQUAL((int)expected_data[3], (int)storage[3]);
-      CHECK_EQUAL((int)expected_data[4], (int)storage[4]);
+      CHECK_EQUAL((int)expected[0], (int)storage[0]);
+      CHECK_EQUAL((int)expected[1], (int)storage[1]);
+      CHECK_EQUAL((int)expected[2], (int)storage[2]);
+      CHECK_EQUAL((int)expected[3], (int)storage[3]);
+      CHECK_EQUAL((int)expected[4], (int)storage[4]);
       // 6th to 8th bytes not used.
     }
 
@@ -490,10 +490,10 @@ namespace
     {
       std::array<char, 4 * sizeof(uint32_t)> storage;
       std::array<uint32_t, 4>                write_data = { uint32_t(0x00000001UL), uint32_t(0xA55AA55AUL), uint32_t(0x5AA55AA5UL), uint32_t(0xFFFFFFFFUL) };
-      std::array<char, 4 * sizeof(uint32_t)> expected_data = { char(0x00), char(0x00), char(0x05), char(0xAA), 
-                                                               char(0x55), char(0xA9), char(0x56), char(0xA9),
-                                                               char(0x7F), char(0xFF), char(0xFF), char(0x00),
-                                                               char(0x00), char(0x00), char(0x00), char(0x00) };
+      std::array<char, 4 * sizeof(uint32_t)> expected = { char(0x00), char(0x00), char(0x05), char(0xAA), 
+                                                          char(0x55), char(0xA9), char(0x56), char(0xA9),
+                                                          char(0x7F), char(0xFF), char(0xFF), char(0x00),
+                                                          char(0x00), char(0x00), char(0x00), char(0x00) };
 
       etl::bit_stream_writer bit_stream(storage.data(), storage.size());
 
@@ -507,17 +507,17 @@ namespace
       CHECK(bit_stream.write(write_data[3], 22));
       CHECK_EQUAL(11, bit_stream.used_data().size());
 
-      CHECK_EQUAL((int)expected_data[0], (int)storage[0]);
-      CHECK_EQUAL((int)expected_data[1], (int)storage[1]);
-      CHECK_EQUAL((int)expected_data[2], (int)storage[2]);
-      CHECK_EQUAL((int)expected_data[3], (int)storage[3]);
-      CHECK_EQUAL((int)expected_data[4], (int)storage[4]);
-      CHECK_EQUAL((int)expected_data[5], (int)storage[5]);
-      CHECK_EQUAL((int)expected_data[6], (int)storage[6]);
-      CHECK_EQUAL((int)expected_data[7], (int)storage[7]);
-      CHECK_EQUAL((int)expected_data[8], (int)storage[8]);
-      CHECK_EQUAL((int)expected_data[9], (int)storage[9]);
-      CHECK_EQUAL((int)expected_data[10], (int)storage[10]);
+      CHECK_EQUAL((int)expected[0], (int)storage[0]);
+      CHECK_EQUAL((int)expected[1], (int)storage[1]);
+      CHECK_EQUAL((int)expected[2], (int)storage[2]);
+      CHECK_EQUAL((int)expected[3], (int)storage[3]);
+      CHECK_EQUAL((int)expected[4], (int)storage[4]);
+      CHECK_EQUAL((int)expected[5], (int)storage[5]);
+      CHECK_EQUAL((int)expected[6], (int)storage[6]);
+      CHECK_EQUAL((int)expected[7], (int)storage[7]);
+      CHECK_EQUAL((int)expected[8], (int)storage[8]);
+      CHECK_EQUAL((int)expected[9], (int)storage[9]);
+      CHECK_EQUAL((int)expected[10], (int)storage[10]);
       // 12th to 16th to bytes not used.
     }
 
@@ -526,12 +526,12 @@ namespace
     {
       std::array<char, 4 * sizeof(int64_t)> storage;
       std::array<int64_t, 4>                write_data    = { int64_t(0x0000000000000001LL), int64_t(0xA55AA55AA55AA55ALL), int64_t(0x5AA55AA55AA55AA5LL), int64_t(0xFFFFFFFFFFFFFFFFLL) };
-      std::array<char, 4 * sizeof(int64_t)> expected_data = { char(0x00), char(0x00), char(0x00), char(0x00),
-                                                              char(0x00), char(0x02), char(0x95), char(0x6A),
-                                                              char(0x95), char(0x6A), char(0x95), char(0x6A),
-                                                              char(0xD5), char(0x2A), char(0xD5), char(0x2A),
-                                                              char(0xD5), char(0x2F), char(0xFF), char(0xFF),
-                                                              char(0xFF), char(0xFF), char(0xFF), char(0xF0) };
+      std::array<char, 4 * sizeof(int64_t)> expected = { char(0x00), char(0x00), char(0x00), char(0x00),
+                                                         char(0x00), char(0x02), char(0x95), char(0x6A),
+                                                         char(0x95), char(0x6A), char(0x95), char(0x6A),
+                                                         char(0xD5), char(0x2A), char(0xD5), char(0x2A),
+                                                         char(0xD5), char(0x2F), char(0xFF), char(0xFF),
+                                                         char(0xFF), char(0xFF), char(0xFF), char(0xF0) };
 
       etl::bit_stream_writer bit_stream(storage.data(), storage.size());
 
@@ -545,30 +545,30 @@ namespace
       bit_stream.write(write_data[3], 47);
       CHECK_EQUAL(24, bit_stream.used_data().size());
 
-      CHECK_EQUAL((int)expected_data[0], (int)storage[0]);
-      CHECK_EQUAL((int)expected_data[1], (int)storage[1]);
-      CHECK_EQUAL((int)expected_data[2], (int)storage[2]);
-      CHECK_EQUAL((int)expected_data[3], (int)storage[3]);
-      CHECK_EQUAL((int)expected_data[4], (int)storage[4]);
-      CHECK_EQUAL((int)expected_data[5], (int)storage[5]);
-      CHECK_EQUAL((int)expected_data[6], (int)storage[6]);
-      CHECK_EQUAL((int)expected_data[7], (int)storage[7]);
-      CHECK_EQUAL((int)expected_data[8], (int)storage[8]);
-      CHECK_EQUAL((int)expected_data[9], (int)storage[9]);
-      CHECK_EQUAL((int)expected_data[10], (int)storage[10]);
-      CHECK_EQUAL((int)expected_data[11], (int)storage[11]);
-      CHECK_EQUAL((int)expected_data[12], (int)storage[12]);
-      CHECK_EQUAL((int)expected_data[13], (int)storage[13]);
-      CHECK_EQUAL((int)expected_data[14], (int)storage[14]);
-      CHECK_EQUAL((int)expected_data[15], (int)storage[15]);
-      CHECK_EQUAL((int)expected_data[16], (int)storage[16]);
-      CHECK_EQUAL((int)expected_data[17], (int)storage[17]);
-      CHECK_EQUAL((int)expected_data[18], (int)storage[18]);
-      CHECK_EQUAL((int)expected_data[19], (int)storage[19]);
-      CHECK_EQUAL((int)expected_data[20], (int)storage[20]);
-      CHECK_EQUAL((int)expected_data[21], (int)storage[21]);
-      CHECK_EQUAL((int)expected_data[22], (int)storage[22]);
-      CHECK_EQUAL((int)expected_data[23], (int)storage[23]);
+      CHECK_EQUAL((int)expected[0], (int)storage[0]);
+      CHECK_EQUAL((int)expected[1], (int)storage[1]);
+      CHECK_EQUAL((int)expected[2], (int)storage[2]);
+      CHECK_EQUAL((int)expected[3], (int)storage[3]);
+      CHECK_EQUAL((int)expected[4], (int)storage[4]);
+      CHECK_EQUAL((int)expected[5], (int)storage[5]);
+      CHECK_EQUAL((int)expected[6], (int)storage[6]);
+      CHECK_EQUAL((int)expected[7], (int)storage[7]);
+      CHECK_EQUAL((int)expected[8], (int)storage[8]);
+      CHECK_EQUAL((int)expected[9], (int)storage[9]);
+      CHECK_EQUAL((int)expected[10], (int)storage[10]);
+      CHECK_EQUAL((int)expected[11], (int)storage[11]);
+      CHECK_EQUAL((int)expected[12], (int)storage[12]);
+      CHECK_EQUAL((int)expected[13], (int)storage[13]);
+      CHECK_EQUAL((int)expected[14], (int)storage[14]);
+      CHECK_EQUAL((int)expected[15], (int)storage[15]);
+      CHECK_EQUAL((int)expected[16], (int)storage[16]);
+      CHECK_EQUAL((int)expected[17], (int)storage[17]);
+      CHECK_EQUAL((int)expected[18], (int)storage[18]);
+      CHECK_EQUAL((int)expected[19], (int)storage[19]);
+      CHECK_EQUAL((int)expected[20], (int)storage[20]);
+      CHECK_EQUAL((int)expected[21], (int)storage[21]);
+      CHECK_EQUAL((int)expected[22], (int)storage[22]);
+      CHECK_EQUAL((int)expected[23], (int)storage[23]);
       // 25th to 32nd bytes not used.
     }
 
@@ -577,12 +577,12 @@ namespace
     {
       std::array<char, 4 * sizeof(uint64_t)> storage;
       std::array<uint64_t, 4>                write_data = { uint64_t(0x0000000000000001ULL), uint64_t(0xA55AA55AA55AA55AULL), uint64_t(0x5AA55AA55AA55AA5ULL), uint64_t(0xFFFFFFFFFFFFFFFFULL) };
-      std::array<char, 4 * sizeof(uint64_t)> expected_data = { char(0x00), char(0x00), char(0x00), char(0x00),
-                                                               char(0x00), char(0x02), char(0x95), char(0x6A),
-                                                               char(0x95), char(0x6A), char(0x95), char(0x6A),
-                                                               char(0xD5), char(0x2A), char(0xD5), char(0x2A),
-                                                               char(0xD5), char(0x2F), char(0xFF), char(0xFF),
-                                                               char(0xFF), char(0xFF), char(0xFF), char(0xF0) };
+      std::array<char, 4 * sizeof(uint64_t)> expected = { char(0x00), char(0x00), char(0x00), char(0x00),
+                                                          char(0x00), char(0x02), char(0x95), char(0x6A),
+                                                          char(0x95), char(0x6A), char(0x95), char(0x6A),
+                                                          char(0xD5), char(0x2A), char(0xD5), char(0x2A),
+                                                          char(0xD5), char(0x2F), char(0xFF), char(0xFF),
+                                                          char(0xFF), char(0xFF), char(0xFF), char(0xF0) };
 
       etl::bit_stream_writer bit_stream(storage.data(), storage.size());
 
@@ -596,30 +596,30 @@ namespace
       bit_stream.write(write_data[3], 47);
       CHECK_EQUAL(24, bit_stream.used_data().size());
 
-      CHECK_EQUAL((int)expected_data[0], (int)storage[0]);
-      CHECK_EQUAL((int)expected_data[1], (int)storage[1]);
-      CHECK_EQUAL((int)expected_data[2], (int)storage[2]);
-      CHECK_EQUAL((int)expected_data[3], (int)storage[3]);
-      CHECK_EQUAL((int)expected_data[4], (int)storage[4]);
-      CHECK_EQUAL((int)expected_data[5], (int)storage[5]);
-      CHECK_EQUAL((int)expected_data[6], (int)storage[6]);
-      CHECK_EQUAL((int)expected_data[7], (int)storage[7]);
-      CHECK_EQUAL((int)expected_data[8], (int)storage[8]);
-      CHECK_EQUAL((int)expected_data[9], (int)storage[9]);
-      CHECK_EQUAL((int)expected_data[10], (int)storage[10]);
-      CHECK_EQUAL((int)expected_data[11], (int)storage[11]);
-      CHECK_EQUAL((int)expected_data[12], (int)storage[12]);
-      CHECK_EQUAL((int)expected_data[13], (int)storage[13]);
-      CHECK_EQUAL((int)expected_data[14], (int)storage[14]);
-      CHECK_EQUAL((int)expected_data[15], (int)storage[15]);
-      CHECK_EQUAL((int)expected_data[16], (int)storage[16]);
-      CHECK_EQUAL((int)expected_data[17], (int)storage[17]);
-      CHECK_EQUAL((int)expected_data[18], (int)storage[18]);
-      CHECK_EQUAL((int)expected_data[19], (int)storage[19]);
-      CHECK_EQUAL((int)expected_data[20], (int)storage[20]);
-      CHECK_EQUAL((int)expected_data[21], (int)storage[21]);
-      CHECK_EQUAL((int)expected_data[22], (int)storage[22]);
-      CHECK_EQUAL((int)expected_data[23], (int)storage[23]);
+      CHECK_EQUAL((int)expected[0], (int)storage[0]);
+      CHECK_EQUAL((int)expected[1], (int)storage[1]);
+      CHECK_EQUAL((int)expected[2], (int)storage[2]);
+      CHECK_EQUAL((int)expected[3], (int)storage[3]);
+      CHECK_EQUAL((int)expected[4], (int)storage[4]);
+      CHECK_EQUAL((int)expected[5], (int)storage[5]);
+      CHECK_EQUAL((int)expected[6], (int)storage[6]);
+      CHECK_EQUAL((int)expected[7], (int)storage[7]);
+      CHECK_EQUAL((int)expected[8], (int)storage[8]);
+      CHECK_EQUAL((int)expected[9], (int)storage[9]);
+      CHECK_EQUAL((int)expected[10], (int)storage[10]);
+      CHECK_EQUAL((int)expected[11], (int)storage[11]);
+      CHECK_EQUAL((int)expected[12], (int)storage[12]);
+      CHECK_EQUAL((int)expected[13], (int)storage[13]);
+      CHECK_EQUAL((int)expected[14], (int)storage[14]);
+      CHECK_EQUAL((int)expected[15], (int)storage[15]);
+      CHECK_EQUAL((int)expected[16], (int)storage[16]);
+      CHECK_EQUAL((int)expected[17], (int)storage[17]);
+      CHECK_EQUAL((int)expected[18], (int)storage[18]);
+      CHECK_EQUAL((int)expected[19], (int)storage[19]);
+      CHECK_EQUAL((int)expected[20], (int)storage[20]);
+      CHECK_EQUAL((int)expected[21], (int)storage[21]);
+      CHECK_EQUAL((int)expected[22], (int)storage[22]);
+      CHECK_EQUAL((int)expected[23], (int)storage[23]);
       // 25th to 32nd bytes not used.
     }
 
@@ -634,12 +634,12 @@ namespace
       int32_t i2 = 4275878552L;  // 0xFEDCBA98
 
       std::array<char, 14> storage;
-      std::array<char, 14> expected_data = { char(0x5A),
-                                             char(0x12), char(0x34),
-                                             char(0x89), char(0xAB), char(0xCD), char(0xEF),
-                                             char(0xFE), char(0xDC), char(0xBA), char(0x98),
-                                             char(0x56), char(0x78),
-                                             char(0xA5) };
+      std::array<char, 14> expected = { char(0x5A),
+                                        char(0x12), char(0x34),
+                                        char(0x89), char(0xAB), char(0xCD), char(0xEF),
+                                        char(0xFE), char(0xDC), char(0xBA), char(0x98),
+                                        char(0x56), char(0x78),
+                                        char(0xA5) };
 
       etl::bit_stream_writer bit_stream(storage.data(), storage.size());
 
@@ -657,20 +657,20 @@ namespace
       bit_stream.write(c2);
       CHECK_EQUAL(14, bit_stream.used_data().size());
 
-      CHECK_EQUAL((int)expected_data[0], (int)storage[0]);
-      CHECK_EQUAL((int)expected_data[1], (int)storage[1]);
-      CHECK_EQUAL((int)expected_data[2], (int)storage[2]);
-      CHECK_EQUAL((int)expected_data[3], (int)storage[3]);
-      CHECK_EQUAL((int)expected_data[4], (int)storage[4]);
-      CHECK_EQUAL((int)expected_data[5], (int)storage[5]);
-      CHECK_EQUAL((int)expected_data[6], (int)storage[6]);
-      CHECK_EQUAL((int)expected_data[7], (int)storage[7]);
-      CHECK_EQUAL((int)expected_data[8], (int)storage[8]);
-      CHECK_EQUAL((int)expected_data[9], (int)storage[9]);
-      CHECK_EQUAL((int)expected_data[10], (int)storage[10]);
-      CHECK_EQUAL((int)expected_data[11], (int)storage[11]);
-      CHECK_EQUAL((int)expected_data[12], (int)storage[12]);
-      CHECK_EQUAL((int)expected_data[13], (int)storage[13]);
+      CHECK_EQUAL((int)expected[0], (int)storage[0]);
+      CHECK_EQUAL((int)expected[1], (int)storage[1]);
+      CHECK_EQUAL((int)expected[2], (int)storage[2]);
+      CHECK_EQUAL((int)expected[3], (int)storage[3]);
+      CHECK_EQUAL((int)expected[4], (int)storage[4]);
+      CHECK_EQUAL((int)expected[5], (int)storage[5]);
+      CHECK_EQUAL((int)expected[6], (int)storage[6]);
+      CHECK_EQUAL((int)expected[7], (int)storage[7]);
+      CHECK_EQUAL((int)expected[8], (int)storage[8]);
+      CHECK_EQUAL((int)expected[9], (int)storage[9]);
+      CHECK_EQUAL((int)expected[10], (int)storage[10]);
+      CHECK_EQUAL((int)expected[11], (int)storage[11]);
+      CHECK_EQUAL((int)expected[12], (int)storage[12]);
+      CHECK_EQUAL((int)expected[13], (int)storage[13]);
     }
 
     //*************************************************************************
@@ -684,9 +684,9 @@ namespace
       int32_t i2 = 4275878552L;  // 0xFEDCBA98 25 bits
 
       std::array<char, 14> storage;
-      std::array<char, 14> expected_data = { char(0x6A), char(0x46), char(0x8A), char(0xF3), 
-                                             char(0x7B), char(0xDB), char(0x97), char(0x53),
-                                             char(0x19), char(0xE1), char(0x28) };
+      std::array<char, 14> expected = { char(0x6A), char(0x46), char(0x8A), char(0xF3), 
+                                        char(0x7B), char(0xDB), char(0x97), char(0x53),
+                                        char(0x19), char(0xE1), char(0x28) };
 
       etl::bit_stream_writer bit_stream(storage.data(), storage.size());
 
@@ -704,17 +704,17 @@ namespace
       bit_stream.write(c2, 7);
       CHECK_EQUAL(11, bit_stream.used_data().size());
 
-      CHECK_EQUAL((int)expected_data[0], (int)storage[0]);
-      CHECK_EQUAL((int)expected_data[1], (int)storage[1]);
-      CHECK_EQUAL((int)expected_data[2], (int)storage[2]);
-      CHECK_EQUAL((int)expected_data[3], (int)storage[3]);
-      CHECK_EQUAL((int)expected_data[4], (int)storage[4]);
-      CHECK_EQUAL((int)expected_data[5], (int)storage[5]);
-      CHECK_EQUAL((int)expected_data[6], (int)storage[6]);
-      CHECK_EQUAL((int)expected_data[7], (int)storage[7]);
-      CHECK_EQUAL((int)expected_data[8], (int)storage[8]);
-      CHECK_EQUAL((int)expected_data[9], (int)storage[9]);
-      CHECK_EQUAL((int)expected_data[10], (int)storage[10]);
+      CHECK_EQUAL((int)expected[0], (int)storage[0]);
+      CHECK_EQUAL((int)expected[1], (int)storage[1]);
+      CHECK_EQUAL((int)expected[2], (int)storage[2]);
+      CHECK_EQUAL((int)expected[3], (int)storage[3]);
+      CHECK_EQUAL((int)expected[4], (int)storage[4]);
+      CHECK_EQUAL((int)expected[5], (int)storage[5]);
+      CHECK_EQUAL((int)expected[6], (int)storage[6]);
+      CHECK_EQUAL((int)expected[7], (int)storage[7]);
+      CHECK_EQUAL((int)expected[8], (int)storage[8]);
+      CHECK_EQUAL((int)expected[9], (int)storage[9]);
+      CHECK_EQUAL((int)expected[10], (int)storage[10]);
     }
 
     //*************************************************************************
@@ -731,9 +731,9 @@ namespace
 
       std::array<char, 14> storage;
       storage.fill(0);
-      std::array<char, 14> expected_data = { char(0x6A), char(0x46), char(0x8A), char(0xF3),
-                                             char(0x7B), char(0xDB), char(0x97), char(0x53),
-                                             char(0x19), char(0xE1), char(0x28) };
+      std::array<char, 14> expected = { char(0x6A), char(0x46), char(0x8A), char(0xF3),
+                                        char(0x7B), char(0xDB), char(0x97), char(0x53),
+                                        char(0x19), char(0xE1), char(0x28) };
 
       auto callback = etl::bit_stream_writer::callback_type::create<Accumulator, &Accumulator::Add>(accumulator);
 
@@ -748,71 +748,81 @@ namespace
       bit_stream.write(c2, 7);
       bit_stream.flush();
 
+      CHECK_EQUAL(bit_stream.capacity_bytes(), bit_stream.available<char>());
+
       CHECK_EQUAL(11U, accumulator.GetData().size());
 
-      CHECK_EQUAL((int)expected_data[0], (int)accumulator.GetData()[0]);
-      CHECK_EQUAL((int)expected_data[1], (int)accumulator.GetData()[1]);
-      CHECK_EQUAL((int)expected_data[2], (int)accumulator.GetData()[2]);
-      CHECK_EQUAL((int)expected_data[3], (int)accumulator.GetData()[3]);
-      CHECK_EQUAL((int)expected_data[4], (int)accumulator.GetData()[4]);
-      CHECK_EQUAL((int)expected_data[5], (int)accumulator.GetData()[5]);
-      CHECK_EQUAL((int)expected_data[6], (int)accumulator.GetData()[6]);
-      CHECK_EQUAL((int)expected_data[7], (int)accumulator.GetData()[7]);
-      CHECK_EQUAL((int)expected_data[8], (int)accumulator.GetData()[8]);
-      CHECK_EQUAL((int)expected_data[9], (int)accumulator.GetData()[9]);
-      CHECK_EQUAL((int)expected_data[10], (int)accumulator.GetData()[10]);
-
+      CHECK_EQUAL((int)expected[0], (int)accumulator.GetData()[0]);
+      CHECK_EQUAL((int)expected[1], (int)accumulator.GetData()[1]);
+      CHECK_EQUAL((int)expected[2], (int)accumulator.GetData()[2]);
+      CHECK_EQUAL((int)expected[3], (int)accumulator.GetData()[3]);
+      CHECK_EQUAL((int)expected[4], (int)accumulator.GetData()[4]);
+      CHECK_EQUAL((int)expected[5], (int)accumulator.GetData()[5]);
+      CHECK_EQUAL((int)expected[6], (int)accumulator.GetData()[6]);
+      CHECK_EQUAL((int)expected[7], (int)accumulator.GetData()[7]);
+      CHECK_EQUAL((int)expected[8], (int)accumulator.GetData()[8]);
+      CHECK_EQUAL((int)expected[9], (int)accumulator.GetData()[9]);
+      CHECK_EQUAL((int)expected[10], (int)accumulator.GetData()[10]);
     }
 
-    ////*************************************************************************
-    //TEST(put_get_object_global)
-    //{
-    //  std::array<char, 2 * sizeof(Object)> storage;
+    //*************************************************************************
+    TEST(test_write_object)
+    {
+      std::array<char, 2 * sizeof(Object)> storage;
+      storage.fill(0);
+      std::array expected{ char(0xEC), char(0xBA), char(0xDE), char(0x68),
+                           char(0xAF), char(0xD2), char(0xC5), char(0xC8),
+                           char(0x65), char(0xD3), char(0xDF), char(0x80) };
 
-    //  etl::bit_stream bit_stream(storage.data(), storage.size());
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size());
 
-    //  Object object1 = { -1234, 2.71578369, 250 };
-    //  Object object2 = {  5678, 5.24685744, 126 };
+      Object object1 = { -1234,  123456789, 250 };
+      Object object2 = {  5678, -987654321, 126 };
 
-    //  CHECK(etl::bit_stream_put(bit_stream, object1));
-    //  CHECK(etl::bit_stream_put(bit_stream, object2));
+      CHECK(etl::write(bit_stream, object1));
+      CHECK(etl::write(bit_stream, object2));
 
-    //  Object object1a;
-    //  Object object2a;
+      CHECK_EQUAL((int)expected[0], (int)storage[0]);
+      CHECK_EQUAL((int)expected[1], (int)storage[1]);
+      CHECK_EQUAL((int)expected[2], (int)storage[2]);
+      CHECK_EQUAL((int)expected[3], (int)storage[3]);
+      CHECK_EQUAL((int)expected[4], (int)storage[4]);
+      CHECK_EQUAL((int)expected[5], (int)storage[5]);
+      CHECK_EQUAL((int)expected[6], (int)storage[6]);
+      CHECK_EQUAL((int)expected[7], (int)storage[7]);
+      CHECK_EQUAL((int)expected[8], (int)storage[8]);
+      CHECK_EQUAL((int)expected[9], (int)storage[9]);
+      CHECK_EQUAL((int)expected[10], (int)storage[10]);
+      CHECK_EQUAL((int)expected[11], (int)storage[11]);
+    }
 
-    //  bit_stream.restart();
+    //*************************************************************************
+    TEST(test_write_multiple_floating_point)
+    {
+      float  f = 3.1415927f;
+      double d = 3.1415927;
 
-    //  CHECK(etl::bit_stream_get(bit_stream, object1a));
-    //  CHECK(etl::bit_stream_get(bit_stream, object2a));
+      std::array<char, sizeof(float) + sizeof(double)> storage;
+      storage.fill(0);
 
-    //  CHECK_EQUAL(object1, object1a);
-    //  CHECK_EQUAL(object2, object2a);
-    //}
+      std::array<char, sizeof(float) + sizeof(double)> expected;
+      expected.fill(0);
 
-    ////*************************************************************************
-    //TEST(put_get_multiple_float)
-    //{
+      memcpy(expected.data(), &f, sizeof(float));
+      std::reverse(expected.data(), expected.data() + sizeof(float));
+      
+      memcpy(expected.data() + sizeof(float), &d, sizeof(double));
+      std::reverse(expected.data() + sizeof(float), expected.data() + sizeof(float) + sizeof(double));
 
-    //  float  f = 3.1415927f;
-    //  double d = 3.1415927;
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size());
 
-    //  std::array<char, 12> storage;
+      bit_stream.write(f);
+      bit_stream.write(d);
 
-    //  etl::bit_stream bit_stream(storage.data(), storage.size());
-
-    //  bit_stream.put(f);
-    //  bit_stream.put(d);
-
-    //  bit_stream.restart();
-
-    //  float rf;
-    //  double rd;
-
-    //  CHECK(bit_stream.get(rf));
-    //  CHECK_CLOSE(f, rf, 0.1f);
-
-    //  CHECK(bit_stream.get(rd));
-    //  CHECK_CLOSE(f, rd, 0.1f);
-    //}
+      for (size_t i = 0; i < storage.size(); ++i)
+      {
+        CHECK_EQUAL(int(expected[i]), int(storage[i]));
+      }
+    }
   };
 }
