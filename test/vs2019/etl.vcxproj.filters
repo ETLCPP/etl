@@ -3251,6 +3251,9 @@
     <ClCompile Include="..\test_atomic.cpp">
       <Filter>Tests\Atomic</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_bit_stream_reader.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">

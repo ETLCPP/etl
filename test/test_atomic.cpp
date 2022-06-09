@@ -116,10 +116,8 @@ namespace
     //*************************************************************************
     TEST(test_atomic_bool_load)
     {
-      bool i;
-
-      std::atomic<bool> compare(&i);
-      etl::atomic<bool> test(&i);
+      std::atomic<bool> compare(true);
+      etl::atomic<bool> test(true);
 
       CHECK_EQUAL((bool)compare.load(), (bool)test.load());
     }
