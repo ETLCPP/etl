@@ -38,21 +38,21 @@ namespace
   //***********************************
   struct Object
   {
-    int16_t i;
-    double  d;
+    int16_t s;
+    int32_t i;
     uint8_t c;
   };
 
   bool operator ==(const Object& lhs, const Object& rhs)
   {
-    return (lhs.i == rhs.i) &&
-           (lhs.d == rhs.d) &&
+    return (lhs.s == rhs.s) &&
+           (lhs.i == rhs.i) &&
            (lhs.c == rhs.c);
   }
 
   std::ostream& operator << (std::ostream& os, const Object& object)
   {
-    os << object.i << "," << object.d << "," << (int)object.c;
+    os << object.s << "," << object.i << "," << (int)object.c;
     return os;
   }
 }
@@ -792,13 +792,55 @@ namespace
     //*************************************************************************
     TEST(test_read_object)
     {
+      std::array storage = { char(0xEC), char(0xBA), char(0xDE), char(0x68),
+                             char(0xAF), char(0xD2), char(0xC5), char(0xC8),
+                             char(0x65), char(0xD3), char(0xDF), char(0x80) };
 
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size());
+
+      Object object1 = { -1234,  123456789, 250 };
+      Object object2 = { 5678, -987654321, 126 };
+
+      CHECK(etl::read(bit_stream, object1));
+      CHECK(etl::read(bit_stream, object2));
+
+      CHECK_EQUAL(-1234,     object1.s);
+      CHECK_EQUAL(123456789, object1.i);
+      CHECK_EQUAL(250,       object1.c);
+
+      CHECK_EQUAL(5678,       object2.s);
+      CHECK_EQUAL(-987654321, object2.i);
+      CHECK_EQUAL(126,        object2.c);
     }
 
     //*************************************************************************
     TEST(test_read_multiple_floating_point)
     {
+      float        f = 3.1415927f;
+      double       d = 3.1415927;
+      long double ld = 3.1415927l;
 
+      std::array<char, sizeof(float) + sizeof(double) + sizeof(long double)> storage;
+      storage.fill(0);
+
+      memcpy(storage.data(), &f, sizeof(float));
+      std::reverse(storage.data(), storage.data() + sizeof(float));
+
+      memcpy(storage.data() + sizeof(float), &d, sizeof(double));
+      std::reverse(storage.data() + sizeof(float), storage.data() + sizeof(float) + sizeof(double));
+
+      memcpy(storage.data() + sizeof(float) + sizeof(double), &d, sizeof(long double));
+      std::reverse(storage.data() + sizeof(float) + sizeof(double), storage.data() + sizeof(float) + sizeof(double) + sizeof(long double));
+
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size());
+
+      auto result_f  = bit_stream.read<float>();
+      auto result_d  = bit_stream.read<double>();
+      auto result_ld = bit_stream.read<long double>();
+
+      CHECK_CLOSE(3.1415927f, result_f.value(),  0.0000001f);
+      CHECK_CLOSE(3.1415927,  result_d.value(),  0.0000001);
+      CHECK_CLOSE(3.1415927l, result_ld.value(), 0.0000001);
     }
   };
 }

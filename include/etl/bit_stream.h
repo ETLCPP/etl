@@ -1285,12 +1285,12 @@ namespace etl
 
       for (size_t i = 0UL; i < sizeof(T); ++i)
       {
-        get(data.raw[i], CHAR_BIT);
+        data.raw[i] = read_unchecked<char>();
       }
 
       from_bytes(reinterpret_cast<const unsigned char*>(data.raw), value);
 
-      return success;
+      return value;
     }
 
     //***************************************************************************

@@ -799,13 +799,14 @@ namespace
     //*************************************************************************
     TEST(test_write_multiple_floating_point)
     {
-      float  f = 3.1415927f;
-      double d = 3.1415927;
+      float        f = 3.1415927f;
+      double       d = 3.1415927;
+      long double ld = 3.1415927l;
 
-      std::array<char, sizeof(float) + sizeof(double)> storage;
+      std::array<char, sizeof(float) + sizeof(double) + sizeof(long double)> storage;
       storage.fill(0);
 
-      std::array<char, sizeof(float) + sizeof(double)> expected;
+      std::array<char, sizeof(float) + sizeof(double) + sizeof(long double)> expected;
       expected.fill(0);
 
       memcpy(expected.data(), &f, sizeof(float));
@@ -814,10 +815,14 @@ namespace
       memcpy(expected.data() + sizeof(float), &d, sizeof(double));
       std::reverse(expected.data() + sizeof(float), expected.data() + sizeof(float) + sizeof(double));
 
+      memcpy(expected.data() + sizeof(float) + sizeof(double), &d, sizeof(double));
+      std::reverse(expected.data() + sizeof(float) + sizeof(double), expected.data() + sizeof(float) + sizeof(double) + sizeof(long double));
+
       etl::bit_stream_writer bit_stream(storage.data(), storage.size());
 
       bit_stream.write(f);
       bit_stream.write(d);
+      bit_stream.write(ld);
 
       for (size_t i = 0; i < storage.size(); ++i)
       {
