@@ -98,10 +98,11 @@ namespace etl
   /// 'Bad variant access' exception for the variant class.
   ///\ingroup variant
   //***************************************************************************
-  class bad_variant_access : public variant_exception {
+  class bad_variant_access : public variant_exception 
+  {
   public:
     bad_variant_access(string_type file_name_, numeric_type line_number_)
-      : variant_exception(ETL_ERROR_TEXT("variant:bad variant access", ETL_VARIANT_FILE_ID"A"), file_name_, line_number_)
+      : variant_exception(ETL_ERROR_TEXT("variant:bad variant access", ETL_VARIANT_FILE_ID"B"), file_name_, line_number_)
     {}
   };
 
@@ -1073,18 +1074,18 @@ namespace etl
   {
     template <size_t, typename>
     struct variant_alternative_helper;
-#define ETL_VARIANT_HELPER(INDEX, TYPE)                                             \
-  template <typename T1,                                                            \
-            typename T2,                                                            \
-            typename T3,                                                            \
-            typename T4,                                                            \
-            typename T5,                                                            \
-            typename T6,                                                            \
-            typename T7,                                                            \
-            typename T8>                                                            \
-  struct variant_alternative_helper<INDEX, variant<T1, T2, T3, T4, T5, T6, T7, T8>> \
-  {                                                                                 \
-    typedef TYPE type;                                                              \
+#define ETL_VARIANT_HELPER(INDEX, TYPE)                                              \
+  template <typename T1,                                                             \
+            typename T2,                                                             \
+            typename T3,                                                             \
+            typename T4,                                                             \
+            typename T5,                                                             \
+            typename T6,                                                             \
+            typename T7,                                                             \
+            typename T8>                                                             \
+  struct variant_alternative_helper<INDEX, variant<T1, T2, T3, T4, T5, T6, T7, T8> > \
+  {                                                                                  \
+    typedef TYPE type;                                                               \
   };
     ETL_VARIANT_HELPER(0, T1)
     ETL_VARIANT_HELPER(1, T2)
@@ -1096,41 +1097,49 @@ namespace etl
     ETL_VARIANT_HELPER(7, T8)
 #undef ETL_VARIANT_HELPER
   }  // namespace private_variant
+  
   template <size_t tIndex, typename TVariant>
   struct variant_alternative
   {
     typedef typename private_variant::variant_alternative_helper<tIndex, TVariant>::type type;
   };
+  
   template <size_t tIndex, typename TVariant>
   struct variant_alternative<tIndex, TVariant const>
   {
     typedef typename private_variant::variant_alternative_helper<tIndex, TVariant>::type const type;
   };
+  
   template <size_t tIndex, typename TVariant>
   struct variant_alternative<tIndex, TVariant volatile>
   {
     typedef typename private_variant::variant_alternative_helper<tIndex, TVariant>::type volatile type;
   };
+  
   template <size_t tIndex, typename TVariant>
   struct variant_alternative<tIndex, TVariant const volatile>
   {
     typedef typename private_variant::variant_alternative_helper<tIndex, TVariant>::type const volatile type;
   };
+  
   template <typename T, typename TVariant>
   inline T& get(TVariant& variant)
   {
     return variant.template get<T>();
   }
+  
   template <typename T, typename TVariant>
   inline T const& get(TVariant const& variant)
   {
     return variant.template get<T>();
   }
+  
   template <size_t tIndex, typename TVariant>
   inline typename variant_alternative<tIndex, TVariant>::type& get(TVariant& variant)
   {
     return get<typename variant_alternative<tIndex, TVariant>::type>(variant);
   }
+
   template <size_t tIndex, typename TVariant>
   inline typename variant_alternative<tIndex, TVariant const>::type& get(TVariant const& variant)
   {
@@ -1143,15 +1152,15 @@ namespace etl
   {                                                                           \
     switch (variant.index())                                                  \
     {                                                                         \
-    case 0: return static_cast<TRet>(visitor(get<0>(variant)));               \
-    case 1: return static_cast<TRet>(visitor(get<1>(variant)));               \
-    case 2: return static_cast<TRet>(visitor(get<2>(variant)));               \
-    case 3: return static_cast<TRet>(visitor(get<3>(variant)));               \
-    case 4: return static_cast<TRet>(visitor(get<4>(variant)));               \
-    case 5: return static_cast<TRet>(visitor(get<5>(variant)));               \
-    case 6: return static_cast<TRet>(visitor(get<6>(variant)));               \
-    case 7: return static_cast<TRet>(visitor(get<7>(variant)));               \
-    default: ETL_ASSERT(false, ETL_ERROR(bad_variant_access));                \
+      case 0: return static_cast<TRet>(visitor(get<0>(variant)));             \
+      case 1: return static_cast<TRet>(visitor(get<1>(variant)));             \
+      case 2: return static_cast<TRet>(visitor(get<2>(variant)));             \
+      case 3: return static_cast<TRet>(visitor(get<3>(variant)));             \
+      case 4: return static_cast<TRet>(visitor(get<4>(variant)));             \
+      case 5: return static_cast<TRet>(visitor(get<5>(variant)));             \
+      case 6: return static_cast<TRet>(visitor(get<6>(variant)));             \
+      case 7: return static_cast<TRet>(visitor(get<7>(variant)));             \
+      default: ETL_ASSERT(false, ETL_ERROR(bad_variant_access));              \
     }                                                                         \
   }
 
