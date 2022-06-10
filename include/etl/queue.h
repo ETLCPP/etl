@@ -197,7 +197,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Decrements (and wraps) the 'out' index value to record a queue deletion.
+    /// Increments (and wraps) the 'out' index value to record a queue deletion.
     //*************************************************************************
     void del_out()
     {
