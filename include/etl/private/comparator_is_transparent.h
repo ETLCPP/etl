@@ -8,9 +8,6 @@
 namespace etl
 {
 #if ETL_USING_CPP11
-  template <typename... T>
-  using void_t = void;
-
   template <typename T, typename = void>
   struct comparator_is_transparent : etl::false_type
   {
