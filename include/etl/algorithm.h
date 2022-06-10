@@ -9,7 +9,7 @@ https://www.etlcpp.com
 
 Documentation: https://www.etlcpp.com/algorithm.html
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
