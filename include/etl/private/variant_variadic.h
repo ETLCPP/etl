@@ -1282,6 +1282,18 @@ namespace etl
   //***************************************************************************
   namespace private_variant
   {
+    template <typename TRet, typename TCallable, typename TVariant, size_t tIndex, typename TNext, typename... TVariants>
+    ETL_CONSTEXPR14 static TRet do_visit_single(TCallable&& f, TVariant&& v, TNext&&, TVariants&&... vs);
+
+    //***************************************************************************
+    /// Dummy-struct used to indicate that the return type should be auto-deduced
+    /// from the callable object and the alternatives in the variants passed to
+    /// a visit. Should never explicitly be used by an user.
+    //***************************************************************************
+    struct visit_auto_return
+    {
+    };
+
     //***************************************************************************
     /// Deduces return type of a call to TCallable with arguments Ts.
     /// A lite version of std::invoke_result.
@@ -1289,7 +1301,7 @@ namespace etl
     template <typename TCallable, typename... Ts>
     struct single_visit_result_type
     {
-      using type = decltype(std::declval<TCallable>()(std::declval<Ts>()...));
+      using type = decltype(declval<TCallable>()(declval<Ts>()...));
     };
     template <typename TCallable, typename... Ts>
     using single_visit_result_type_t = typename single_visit_result_type<TCallable, Ts...>::type;
@@ -1337,24 +1349,27 @@ namespace etl
     };
 
     //***************************************************************************
-    /// Used to create a template alias that has the TCallable embedded into the
-    /// first argument.
+    /// Generates the result type for visit by applying 'common_type' on the return
+    /// type from calls to function object with all possible permutations of variant
+    /// alternatives. Shortcuts to first argument unless it is 'visit_auto_return'.
     //***************************************************************************
-    template <typename TCallable>
-    struct visit_result_single_wrapper
+    template <typename TRet, typename...>
+    struct visit_result
     {
-      template <typename... Ts>
-      using ttype = single_visit_result_type_t<TCallable, Ts...>;
+      using type = TRet;
     };
 
     template <typename TCallable, typename T1, typename... Ts>
-    struct visit_result
+    struct visit_result<visit_auto_return, TCallable, T1, Ts...>
     {
-      using type = typename visit_result_helper<typename visit_result_single_wrapper<TCallable>::ttype, make_index_sequence<variant_size<remove_reference_t<T1> >::value>, T1, Ts...>::type;
+      // bind TCallable to the first argument in this variadic alias.
+      template <typename... Ts2>
+      using single_res = single_visit_result_type_t<TCallable, Ts2...>;
+      using type = typename visit_result_helper<single_res, make_index_sequence<variant_size<remove_reference_t<T1> >::value>, T1, Ts...>::type;
     };
 
-    template <typename TCallable, typename... Ts>
-    using visit_result_t = typename visit_result<TCallable, Ts...>::type;
+    template <typename... Ts>
+    using visit_result_t = typename visit_result<Ts...>::type;
 
     //***************************************************************************
     /// Makes a call to TCallable using tIndex alternative to the variant.
@@ -1429,32 +1444,20 @@ namespace etl
       }
     };
 
-    template <typename TRet, typename TCallable, typename TVariant, size_t tIndex, typename... TVariants>
-    ETL_CONSTEXPR14 static TRet do_visit_single(TCallable&& f, TVariant&& v, TVariants&&... vs)
+    template <typename TRet, typename TCallable, typename TVariant, size_t tIndex, typename TNext, typename... TVariants>
+    ETL_CONSTEXPR14 static TRet do_visit_single(TCallable&& f, TVariant&& v, TNext&& next, TVariants&&... vs)
     {
       return private_variant::visit<TRet>(constexpr_visit_closure<TRet, TCallable, TVariant, tIndex>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v)),
-                                          static_cast<TVariants&&>(vs)...);
+                                          static_cast<TNext&&>(next), static_cast<TVariants&&>(vs)...);
     }
-
-    //***************************************************************************
-    /// Dummy-struct used to indicate that the return type should be auto-deduced
-    /// from the callable object and the alternatives in the variants passed to
-    /// a visit. Should never explicitly be used by an user.
-    //***************************************************************************
-    struct visit_auto_return
-    {
-    };
-
-    template <typename TRet, typename TCallable, typename... TVariants>
-    using visit_return = conditional_t<is_same<TRet, visit_auto_return>::value, visit_result_t<TCallable&&, TVariants&&...>, TRet>;
 
   }  // namespace private_variant
 
   //***************************************************************************
   /// c++11/14 compatible etl::visit for etl::variant. Supports both c++17
-  /// "auto return type" signature
+  /// "auto return type" signature and c++20 explicit template return type.
   //***************************************************************************
-  template <typename TRet = private_variant::visit_auto_return, typename... TVariants, typename TCallable, typename TDeducedReturn = private_variant::visit_return<TRet, TCallable, TVariants...> >
+  template <typename TRet = private_variant::visit_auto_return, typename... TVariants, typename TCallable, typename TDeducedReturn = private_variant::visit_result_t<TRet, TCallable, TVariants...> >
   ETL_CONSTEXPR14 static TDeducedReturn visit(TCallable&& f, TVariants&&... vs)
   {
     return private_variant::visit<TDeducedReturn>(static_cast<TCallable&&>(f), static_cast<TVariants&&>(vs)...);

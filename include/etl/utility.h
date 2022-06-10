@@ -436,14 +436,6 @@ namespace etl
   inline constexpr in_place_index_t<I> in_place_index{};
 #endif
 
-  //***************************************************************************
-  /// declval
-  //***************************************************************************
-#if ETL_USING_CPP11
-  template <typename T>
-  typename etl::add_rvalue_reference<T>::type declval() ETL_NOEXCEPT;
-#endif
-
 #if ETL_USING_CPP11
   //*************************************************************************
   /// A function wrapper for free/global functions.
