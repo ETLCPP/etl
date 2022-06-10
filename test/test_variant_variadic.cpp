@@ -834,7 +834,7 @@ namespace
 
     //*************************************************************************
 
-    TEST(test_variant__accept_functor_with_overload)
+    TEST(test_variant_accept_functor_with_overload)
     {
       char result_c;
       int  result_i;
@@ -1168,7 +1168,7 @@ namespace
       CHECK(pcd == nullptr);
     }
 
-
+    //*************************************************************************
     struct variant_test_visit_dispatcher
     {
       // const overloads
@@ -1176,22 +1176,27 @@ namespace
       {
         return 1;
       }
+
       int8_t operator()(int8_t const&) const
       {
         return 10;
       }
+
       int8_t operator()(uint8_t&) const
       {
         return 2;
       }
+
       int8_t operator()(uint8_t const&) const
       {
         return 20;
       }
+
       int8_t operator()(int16_t&) const
       {
         return 3;
       }
+
       int8_t operator()(int16_t const&) const
       {
         return 30;
@@ -1202,22 +1207,27 @@ namespace
       {
         return 5;
       }
+
       int8_t operator()(int8_t const&)
       {
         return 50;
       }
+
       int8_t operator()(uint8_t&)
       {
         return 6;
       }
+
       int8_t operator()(uint8_t const&)
       {
         return 60;
       }
+
       int8_t operator()(int16_t&)
       {
         return 7;
       }
+
       int8_t operator()(int16_t const&)
       {
         return 70;
@@ -1229,7 +1239,7 @@ namespace
         return -1;
       }
     };
-    //*************************************************************************
+
     TEST(test_variant_visit)
     {
       etl::variant<int8_t, uint8_t, int16_t> variant;
@@ -1238,6 +1248,7 @@ namespace
       auto const&                   visitor_const = visitor;
       int16_t                       type = etl::visit(visitor_const, variant);
       CHECK_EQUAL(1, type);
+
       auto const& variant_const = variant;
       type = etl::visit(visitor_const, variant_const);
       CHECK_EQUAL(10, type);
@@ -1256,12 +1267,14 @@ namespace
       CHECK_EQUAL(70, type);
     }
 
+    //*************************************************************************
     struct test_variant_multiple_visit_helper
     {
       template <typename T1, typename T2>
       int16_t operator()(T1 v1, T2 v2) const
       {
         int16_t res{};
+
         if (std::is_same<T1, int8_t>::value)
           res = 1;
         else if (std::is_same<T1, uint8_t>::value)
@@ -1275,23 +1288,27 @@ namespace
         return res - static_cast<int16_t>(v1) * static_cast<int16_t>(v2);
       }
     };
-    //*************************************************************************
+
     TEST(test_variant_multiple_visit)
     {
       etl::variant<int8_t, uint8_t>           variant1;
       etl::variant<int8_t, uint16_t, uint8_t> variant2;
       variant1 = int8_t{3};
       variant2 = int8_t{1};
+      
       auto res = etl::visit<int16_t>(test_variant_multiple_visit_helper{}, variant1, variant2);
       CHECK_EQUAL(11 - 3, res);
+      
       variant2 = uint16_t{2};
       res = etl::visit<int16_t>(test_variant_multiple_visit_helper{}, variant1, variant2);
       CHECK_EQUAL(21 - 3 * 2, res);
+      
       variant1 = uint8_t{};
       variant2 = uint8_t{};
       res = etl::visit<int16_t>(test_variant_multiple_visit_helper{}, variant1, variant2);
       CHECK_EQUAL(32, res);
     }
+
     //*************************************************************************
     TEST(test_variant_multiple_visit_auto_return)
     {
@@ -1303,8 +1320,10 @@ namespace
       {
         return v1 * v2;
       };
+
       auto res = etl::visit(f, variant1, variant2);
       CHECK_EQUAL(3, res);
+      
       variant2 = uint16_t{2};
       res = etl::visit(f, variant1, variant2);
       CHECK_EQUAL(3 * 2, res);
@@ -1319,8 +1338,10 @@ namespace
       {
         variant_was_signed = etl::is_signed<etl::remove_reference_t<decltype(v)>>::value;
       };
+
       etl::visit(f, variant1);
       CHECK_EQUAL(true, variant_was_signed);
+
       variant1 = uint8_t{};
       etl::visit<void>(f, variant1);
       CHECK_EQUAL(false, variant_was_signed);

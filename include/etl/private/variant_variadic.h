@@ -430,10 +430,11 @@ namespace etl
   /// 'Bad variant access' exception for the variant class.
   ///\ingroup variant
   //***************************************************************************
-  class bad_variant_access : public variant_exception {
+  class bad_variant_access : public variant_exception 
+  {
   public:
     bad_variant_access(string_type file_name_, numeric_type line_number_)
-    : variant_exception(ETL_ERROR_TEXT("variant:bad variant access", ETL_VARIANT_FILE_ID"A"), file_name_, line_number_)
+    : variant_exception(ETL_ERROR_TEXT("variant:bad variant access", ETL_VARIANT_FILE_ID"B"), file_name_, line_number_)
     {}
   };
 

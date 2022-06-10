@@ -65,6 +65,7 @@ namespace etl
   template <typename T>
   constexpr T&& forward(typename etl::remove_reference<T>::type&& t) ETL_NOEXCEPT
   {
+    ETL_STATIC_ASSERT(!etl::is_lvalue_reference<T>::value, "Invalid rvalue to lvalue conversion");
     return static_cast<T&&>(t);
   }
 #endif
