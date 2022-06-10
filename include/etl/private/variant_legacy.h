@@ -89,7 +89,7 @@ namespace etl
   {
   public:
     variant_incorrect_type_exception(string_type file_name_, numeric_type line_number_)
-      : variant_exception(ETL_ERROR_TEXT("variant: unsupported type", ETL_VARIANT_FILE_ID"A"), file_name_, line_number_)
+      : variant_exception(ETL_ERROR_TEXT("variant:unsupported type", ETL_VARIANT_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
