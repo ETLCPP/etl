@@ -1832,9 +1832,6 @@
     <ClCompile Include="..\test_variance.cpp">
       <Filter>Tests\Algorithms</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_variant_legacy.cpp">
-      <Filter>Tests\Algorithms</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_binary.cpp">
       <Filter>Tests\Binary</Filter>
     </ClCompile>
@@ -3244,6 +3241,9 @@
     </ClCompile>
     <ClCompile Include="..\sanity-check\delegate_cpp03.h.t.cpp">
       <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_variant_legacy.cpp">
+      <Filter>Tests\Containers</Filter>
     </ClCompile>
     <ClCompile Include="..\test_atomic.cpp">
       <Filter>Tests\Atomic</Filter>

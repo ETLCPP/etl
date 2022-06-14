@@ -834,7 +834,7 @@ namespace
 
     //*************************************************************************
 
-    TEST(test_variant__accept_functor_with_overload)
+    TEST(test_variant_accept_functor_with_overload)
     {
       char result_c;
       int  result_i;
@@ -1166,6 +1166,257 @@ namespace
 
       pcd = etl::get_if<1U>(&crv);
       CHECK(pcd == nullptr);
+    }
+
+    //*************************************************************************
+    struct variant_test_visit_dispatcher
+    {
+      // const overloads
+      int8_t operator()(int8_t&) const
+      {
+        return 1;
+      }
+
+      int8_t operator()(int8_t const&) const
+      {
+        return 10;
+      }
+
+      int8_t operator()(uint8_t&) const
+      {
+        return 2;
+      }
+
+      int8_t operator()(uint8_t const&) const
+      {
+        return 20;
+      }
+
+      int8_t operator()(int16_t&) const
+      {
+        return 3;
+      }
+
+      int8_t operator()(int16_t const&) const
+      {
+        return 30;
+      }
+
+      // non-const overloads
+      int8_t operator()(int8_t&)
+      {
+        return 5;
+      }
+
+      int8_t operator()(int8_t const&)
+      {
+        return 50;
+      }
+
+      int8_t operator()(uint8_t&)
+      {
+        return 6;
+      }
+
+      int8_t operator()(uint8_t const&)
+      {
+        return 60;
+      }
+
+      int8_t operator()(int16_t&)
+      {
+        return 7;
+      }
+
+      int8_t operator()(int16_t const&)
+      {
+        return 70;
+      }
+
+      template <typename T>
+      int8_t operator()(T const&) const
+      {
+        return -1;
+      }
+    };
+
+    TEST(test_variant_visit)
+    {
+      etl::variant<int8_t, uint8_t, int16_t> variant;
+      variant = int8_t{};
+      variant_test_visit_dispatcher visitor;
+      auto const&                   visitor_const = visitor;
+      int16_t                       type = etl::visit(visitor_const, variant);
+      CHECK_EQUAL(1, type);
+
+      auto const& variant_const = variant;
+      type = etl::visit(visitor_const, variant_const);
+      CHECK_EQUAL(10, type);
+
+      type = etl::visit(visitor, variant_const);
+      CHECK_EQUAL(50, type);
+
+      variant = int16_t{};
+      type = etl::visit(visitor_const, variant);
+      CHECK_EQUAL(3, type);
+
+      type = etl::visit(visitor_const, variant_const);
+      CHECK_EQUAL(30, type);
+
+      type = etl::visit(visitor, variant_const);
+      CHECK_EQUAL(70, type);
+    }
+
+    //*************************************************************************
+    struct test_variant_multiple_visit_helper
+    {
+      template <typename T1, typename T2>
+      int16_t operator()(T1 v1, T2 v2) const
+      {
+        int16_t res{};
+
+        if (std::is_same<T1, int8_t>::value)
+          res = 1;
+        else if (std::is_same<T1, uint8_t>::value)
+          res = 2;
+        if (std::is_same<T2, int8_t>::value)
+          res += 10;
+        else if (std::is_same<T2, uint16_t>::value)
+          res += 20;
+        else if (std::is_same<T2, uint8_t>::value)
+          res += 30;
+        return res - static_cast<int16_t>(v1) * static_cast<int16_t>(v2);
+      }
+    };
+
+    TEST(test_variant_multiple_visit)
+    {
+      etl::variant<int8_t, uint8_t>           variant1;
+      etl::variant<int8_t, uint16_t, uint8_t> variant2;
+      variant1 = int8_t{3};
+      variant2 = int8_t{1};
+      
+      auto res = etl::visit<int16_t>(test_variant_multiple_visit_helper{}, variant1, variant2);
+      CHECK_EQUAL(11 - 3, res);
+      
+      variant2 = uint16_t{2};
+      res = etl::visit<int16_t>(test_variant_multiple_visit_helper{}, variant1, variant2);
+      CHECK_EQUAL(21 - 3 * 2, res);
+      
+      variant1 = uint8_t{};
+      variant2 = uint8_t{};
+      res = etl::visit<int16_t>(test_variant_multiple_visit_helper{}, variant1, variant2);
+      CHECK_EQUAL(32, res);
+    }
+
+    //*************************************************************************
+    TEST(test_variant_multiple_visit_auto_return)
+    {
+      etl::variant<int8_t, uint8_t>           variant1;
+      etl::variant<int8_t, uint16_t, uint8_t> variant2;
+      variant1 = int8_t{3};
+      variant2 = int8_t{1};
+      auto const f = [](auto v1, auto v2)
+      {
+        return v1 * v2;
+      };
+
+      auto res = etl::visit(f, variant1, variant2);
+      CHECK_EQUAL(3, res);
+      
+      variant2 = uint16_t{2};
+      res = etl::visit(f, variant1, variant2);
+      CHECK_EQUAL(3 * 2, res);
+    }
+    
+    //*************************************************************************
+    TEST(test_variant_visit_void)
+    {
+      etl::variant<int8_t, uint8_t> variant1;
+
+      bool       variant_was_signed{};
+      auto const f = [&variant_was_signed](auto v)
+      {
+        variant_was_signed = etl::is_signed<etl::remove_reference_t<decltype(v)>>::value;
+      };
+
+      etl::visit(f, variant1);
+      CHECK_EQUAL(true, variant_was_signed);
+
+      variant1 = uint8_t{};
+      etl::visit<void>(f, variant1);
+      CHECK_EQUAL(false, variant_was_signed);
+    }
+
+    //*************************************************************************
+    TEST(test_variant_visit_with_overload)
+    {
+      struct TypeA { };
+      struct TypeB { };
+      struct TypeC { };
+      struct TypeD { };
+
+      std::string result = "?";
+
+      etl::variant<TypeA, TypeB, TypeC, TypeD> package;
+
+      etl::visit(etl::overload
+        {
+          [&result](TypeA&) { result = "TypeA"; },
+          [&result](TypeB&) { result = "TypeB"; },
+          [&result](TypeC&) { result = "TypeC"; },
+          [&result](TypeD&) { result = "TypeD"; }
+        }, package);
+
+      CHECK_EQUAL(std::string("TypeA"), result);
+
+      package = TypeA{};
+
+      etl::visit(etl::overload
+        {
+          [&result](TypeA&) { result = "TypeA"; },
+          [&result](TypeB&) { result = "TypeB"; },
+          [&result](TypeC&) { result = "TypeC"; },
+          [&result](TypeD&) { result = "TypeD"; }
+        }, package);
+
+      CHECK_EQUAL(std::string("TypeA"), result);
+
+      package = TypeB{};
+
+      etl::visit(etl::overload
+        {
+          [&result](TypeA&) { result = "TypeA"; },
+          [&result](TypeB&) { result = "TypeB"; },
+          [&result](TypeC&) { result = "TypeC"; },
+          [&result](TypeD&) { result = "TypeD"; }
+        }, package);
+
+      CHECK_EQUAL(std::string("TypeB"), result);
+
+      package = TypeC{};
+
+      etl::visit(etl::overload
+        {
+          [&result](TypeA&) { result = "TypeA"; },
+          [&result](TypeB&) { result = "TypeB"; },
+          [&result](TypeC&) { result = "TypeC"; },
+          [&result](TypeD&) { result = "TypeD"; }
+        }, package);
+
+      CHECK_EQUAL(std::string("TypeC"), result);
+
+      package = TypeD{};
+
+      etl::visit(etl::overload
+        {
+          [&result](TypeA&) { result = "TypeA"; },
+          [&result](TypeB&) { result = "TypeB"; },
+          [&result](TypeC&) { result = "TypeC"; },
+          [&result](TypeD&) { result = "TypeD"; }
+        }, package);
+
+      CHECK_EQUAL(std::string("TypeD"), result);
     }
   };
 }
