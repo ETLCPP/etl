@@ -1304,6 +1304,7 @@ namespace etl
     {
       using type = decltype(declval<TCallable>()(declval<Ts>()...));
     };
+
     template <typename TCallable, typename... Ts>
     using single_visit_result_type_t = typename single_visit_result_type<TCallable, Ts...>::type;
 
@@ -1324,6 +1325,7 @@ namespace etl
     //***************************************************************************
     template <template <typename...> typename, typename...>
     struct visit_result_helper;
+
     template <template <typename...> typename TToInject, size_t... tAltIndices, typename TCur>
     struct visit_result_helper<TToInject, index_sequence<tAltIndices...>, TCur>
     {
@@ -1333,6 +1335,7 @@ namespace etl
 
       using type = common_type_t<TToInject<var_type<tAltIndices> >...>;
     };
+
     template <template <typename...> typename TToInject, size_t... tAltIndices, typename TCur, typename TNext, typename... TVs>
     struct visit_result_helper<TToInject, index_sequence<tAltIndices...>, TCur, TNext, TVs...>
     {
@@ -1346,6 +1349,7 @@ namespace etl
         using next_inject = TToInject<var_type<tIndex>, TNextInj...>;
         using recursive_result = typename visit_result_helper<next_inject, make_index_sequence<variant_size<remove_reference_t<TNext> >::value>, TNext, TVs...>::type;
       };
+
       using type = common_type_t<typename next_inject_wrap<tAltIndices>::recursive_result...>;
     };
 
@@ -1391,6 +1395,7 @@ namespace etl
     struct do_visit_helper
     {
       using function_pointer = add_pointer_t<TRet(TCallable&&, TCurVariant&&, TVarRest&&...)>;
+      
       template <size_t tIndex>
       static constexpr function_pointer fptr() noexcept
       {
@@ -1405,10 +1410,15 @@ namespace etl
     ETL_CONSTEXPR14 static TRet do_visit(TCallable&& f, TVariant&& v, index_sequence<tIndices...>, TVarRest&&... variants)
     {
       ETL_ASSERT(!v.valueless_by_exception(), ETL_ERROR(bad_variant_access));
+      
       using helper_t = do_visit_helper<TRet, TCallable, TVariant, TVarRest...>;
       using func_ptr = typename helper_t::function_pointer;
-      constexpr func_ptr jmp_table[]{
-        helper_t::template fptr<tIndices>()...};
+      
+      constexpr func_ptr jmp_table[]
+      {
+        helper_t::template fptr<tIndices>()...
+      };
+
       return jmp_table[v.index()](static_cast<TCallable&&>(f), static_cast<TVariant&&>(v), static_cast<TVarRest&&>(variants)...);
     }
 
@@ -1463,6 +1473,5 @@ namespace etl
   {
     return private_variant::visit<TDeducedReturn>(static_cast<TCallable&&>(f), static_cast<TVariants&&>(vs)...);
   }
-
 }
 #endif

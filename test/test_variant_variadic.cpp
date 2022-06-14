@@ -1328,6 +1328,7 @@ namespace
       res = etl::visit(f, variant1, variant2);
       CHECK_EQUAL(3 * 2, res);
     }
+    
     //*************************************************************************
     TEST(test_variant_visit_void)
     {
@@ -1345,6 +1346,77 @@ namespace
       variant1 = uint8_t{};
       etl::visit<void>(f, variant1);
       CHECK_EQUAL(false, variant_was_signed);
+    }
+
+    //*************************************************************************
+    TEST(test_variant_visit_with_overload)
+    {
+      struct TypeA { };
+      struct TypeB { };
+      struct TypeC { };
+      struct TypeD { };
+
+      std::string result = "?";
+
+      etl::variant<TypeA, TypeB, TypeC, TypeD> package;
+
+      etl::visit(etl::overload
+        {
+          [&result](TypeA&) { result = "TypeA"; },
+          [&result](TypeB&) { result = "TypeB"; },
+          [&result](TypeC&) { result = "TypeC"; },
+          [&result](TypeD&) { result = "TypeD"; }
+        }, package);
+
+      CHECK_EQUAL(std::string("TypeA"), result);
+
+      package = TypeA{};
+
+      etl::visit(etl::overload
+        {
+          [&result](TypeA&) { result = "TypeA"; },
+          [&result](TypeB&) { result = "TypeB"; },
+          [&result](TypeC&) { result = "TypeC"; },
+          [&result](TypeD&) { result = "TypeD"; }
+        }, package);
+
+      CHECK_EQUAL(std::string("TypeA"), result);
+
+      package = TypeB{};
+
+      etl::visit(etl::overload
+        {
+          [&result](TypeA&) { result = "TypeA"; },
+          [&result](TypeB&) { result = "TypeB"; },
+          [&result](TypeC&) { result = "TypeC"; },
+          [&result](TypeD&) { result = "TypeD"; }
+        }, package);
+
+      CHECK_EQUAL(std::string("TypeB"), result);
+
+      package = TypeC{};
+
+      etl::visit(etl::overload
+        {
+          [&result](TypeA&) { result = "TypeA"; },
+          [&result](TypeB&) { result = "TypeB"; },
+          [&result](TypeC&) { result = "TypeC"; },
+          [&result](TypeD&) { result = "TypeD"; }
+        }, package);
+
+      CHECK_EQUAL(std::string("TypeC"), result);
+
+      package = TypeD{};
+
+      etl::visit(etl::overload
+        {
+          [&result](TypeA&) { result = "TypeA"; },
+          [&result](TypeB&) { result = "TypeB"; },
+          [&result](TypeC&) { result = "TypeC"; },
+          [&result](TypeD&) { result = "TypeD"; }
+        }, package);
+
+      CHECK_EQUAL(std::string("TypeD"), result);
     }
   };
 }
