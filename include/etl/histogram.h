@@ -593,3 +593,5 @@ namespace etl
     etl::flat_map<key_type, count_type, Max_Size> accumulator;
   };
 }
+
+#endif
