@@ -121,6 +121,7 @@ namespace etl
     /// Create from function (Compile time).
     //*************************************************************************
     template <TReturn(*Method)(TParams...)>
+    ETL_NODISCARD
     static ETL_CONSTEXPR14 delegate create()
     {
       return delegate(ETL_NULLPTR, function_stub<Method>);
@@ -130,6 +131,7 @@ namespace etl
     /// Create from Lambda or Functor.
     //*************************************************************************
     template <typename TLambda, typename = etl::enable_if_t<etl::is_class<TLambda>::value, void>>
+    ETL_NODISCARD
     static ETL_CONSTEXPR14 delegate create(const TLambda& instance)
     {
       return delegate((void*)(&instance), lambda_stub<TLambda>);
@@ -139,6 +141,7 @@ namespace etl
     /// Create from instance method (Run time).
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...)>
+    ETL_NODISCARD
     static ETL_CONSTEXPR14 delegate create(T& instance)
     {
       return delegate((void*)(&instance), method_stub<T, Method>);
@@ -149,12 +152,14 @@ namespace etl
     /// Deleted for rvalue references.
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...)>
+    ETL_NODISCARD
     static ETL_CONSTEXPR14 delegate create(T&& instance) = delete;
 
     //*************************************************************************
     /// Create from const instance method (Run time).
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...) const>
+    ETL_NODISCARD
     static ETL_CONSTEXPR14 delegate create(const T& instance)
     {
       return delegate((void*)(&instance), const_method_stub<T, Method>);
@@ -170,6 +175,7 @@ namespace etl
     /// Create from instance method (Compile time).
     //*************************************************************************
     template <typename T, T& Instance, TReturn(T::*Method)(TParams...)>
+    ETL_NODISCARD
     static ETL_CONSTEXPR14 delegate create()
     {
       return delegate(method_instance_stub<T, Instance, Method>);
@@ -179,6 +185,7 @@ namespace etl
     /// Create from const instance method (Compile time).
     //*************************************************************************
     template <typename T, T const& Instance, TReturn(T::*Method)(TParams...) const>
+    ETL_NODISCARD
     static ETL_CONSTEXPR14 delegate create()
     {
       return delegate(const_method_instance_stub<T, Instance, Method>);
@@ -244,6 +251,7 @@ namespace etl
     /// At the time of writing, GCC appears to have trouble with this.
     //*************************************************************************
     template <typename T, T& Instance>
+    ETL_NODISCARD
     static ETL_CONSTEXPR14 delegate create()
     {
       return delegate(operator_instance_stub<T, Instance>);
@@ -365,6 +373,7 @@ namespace etl
     //*************************************************************************
     /// Returns <b>true</b> if the delegate is valid.
     //*************************************************************************
+    ETL_NODISCARD
     ETL_CONSTEXPR14 bool is_valid() const
     {
       return invocation.stub != ETL_NULLPTR;
