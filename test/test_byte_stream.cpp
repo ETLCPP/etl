@@ -242,7 +242,6 @@ namespace
     //*************************************************************************
     TEST(write_int16_t)
     {
-      // Tests assume big endian.
       std::array<char, sizeof(int16_t) * 4> storage;
       std::array<char, sizeof(int16_t) * 4> compare_data = { char(0x00), char(0x01), char(0x5A), char(0xA5), char(0xA5), char(0x5A), char(0xFF), char(0xFF) };
 
@@ -267,7 +266,6 @@ namespace
     //*************************************************************************
     TEST(write_uint16_t)
     {
-      // Tests assume big endian.
       std::array<char, sizeof(uint16_t) * 4> storage;
       std::array<char, sizeof(uint16_t) * 4> compare_data = { char(0x00), char(0x01), char(0x5A), char(0xA5), char(0xA5), char(0x5A), char(0xFF), char(0xFF) };
 
@@ -292,7 +290,6 @@ namespace
     //*************************************************************************
     TEST(write_int32_t)
     {
-      // Tests assume big endian.
       std::array<char, sizeof(int32_t) * 4> storage;
       std::array<char, sizeof(int32_t) * 4> compare_data = { char(0x00), char(0x00), char(0x00), char(0x01),
                                                              char(0x5A), char(0xA5), char(0xA5), char(0x5A),
@@ -320,7 +317,6 @@ namespace
     //*************************************************************************
     TEST(write_uint32_t)
     {
-      // Tests assume big endian.
       std::array<char, sizeof(uint32_t) * 4> storage;
       std::array<char, sizeof(uint32_t) * 4> compare_data = { char(0x00), char(0x00), char(0x00), char(0x01),
                                                               char(0x5A), char(0xA5), char(0xA5), char(0x5A),
@@ -348,7 +344,6 @@ namespace
     //*************************************************************************
     TEST(write_int64_t)
     {
-      // Tests assume big endian.
       std::array<char, sizeof(int64_t) * 4> storage;
       std::array<char, sizeof(int64_t) * 4> compare_data = { char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x01),
                                                              char(0x5A), char(0xA5), char(0xA5), char(0x5A), char(0xA5), char(0x5A), char(0x5A), char(0xA5),
@@ -376,7 +371,6 @@ namespace
     //*************************************************************************
     TEST(write_uint64_t)
     {
-      // Tests assume big endian.
       std::array<char, sizeof(uint64_t) * 4> storage;
       std::array<char, sizeof(uint64_t) * 4> compare_data = { char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x00), char(0x01),
                                                               char(0x5A), char(0xA5), char(0xA5), char(0x5A), char(0xA5), char(0x5A), char(0x5A), char(0xA5),
@@ -404,7 +398,6 @@ namespace
     //*************************************************************************
     TEST(write_and_skip_int32_t)
     {
-      // Tests assume big endian.
       std::array<char, sizeof(int32_t) * 4> storage = { char(0xF0), char(0xF1), char(0xF2), char(0xF3),
                                                         char(0xF4), char(0xF5), char(0xF6), char(0xF7),
                                                         char(0xF8), char(0xF9), char(0xFA), char(0xFB),
@@ -431,7 +424,6 @@ namespace
     //*************************************************************************
     TEST(read_and_skip_int32_t)
     {
-      // Tests assume big endian.
       std::array<char, sizeof(int32_t) * 4> storage = { char(0x01), char(0x02), char(0x03), char(0x04),
                                                         char(0xF4), char(0xF5), char(0xF6), char(0xF7),
                                                         char(0xF8), char(0xF9), char(0xFA), char(0xFB),

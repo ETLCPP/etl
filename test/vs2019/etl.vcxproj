@@ -10911,8 +10911,9 @@
     <ClCompile Include="..\test_alignment.cpp" />
     <ClCompile Include="..\test_atomic.cpp" />
     <ClCompile Include="..\test_bit.cpp" />
-    <ClCompile Include="..\test_bit_stream_reader.cpp" />
-    <ClCompile Include="..\test_bit_stream_writer.cpp" />
+    <ClCompile Include="..\test_bit_stream_reader_big_endian.cpp" />
+    <ClCompile Include="..\test_bit_stream_writer_big_endian.cpp" />
+    <ClCompile Include="..\test_bit_stream_writer_little_endian.cpp" />
     <ClCompile Include="..\test_bresenham_line.cpp" />
     <ClCompile Include="..\test_buffer_descriptors.cpp" />
     <ClCompile Include="..\test_byte.cpp" />
