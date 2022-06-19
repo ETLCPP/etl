@@ -49,6 +49,7 @@ set(TEST_SOURCE_FILES
 	test_bitset.cpp
 	test_bit_stream.cpp
 	test_bit_stream_reader_big_endian.cpp
+	test_bit_stream_reader_little_endian.cpp
 	test_bit_stream_writer_big_endian.cpp
 	test_bit_stream_writer_little_endian.cpp
 	test_byte.cpp

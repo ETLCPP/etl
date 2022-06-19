@@ -10912,6 +10912,7 @@
     <ClCompile Include="..\test_atomic.cpp" />
     <ClCompile Include="..\test_bit.cpp" />
     <ClCompile Include="..\test_bit_stream_reader_big_endian.cpp" />
+    <ClCompile Include="..\test_bit_stream_reader_little_endian.cpp" />
     <ClCompile Include="..\test_bit_stream_writer_big_endian.cpp" />
     <ClCompile Include="..\test_bit_stream_writer_little_endian.cpp" />
     <ClCompile Include="..\test_bresenham_line.cpp" />

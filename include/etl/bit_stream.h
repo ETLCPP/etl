@@ -562,10 +562,10 @@ namespace etl
     //***************************************************************************
     /// Construct from span.
     //***************************************************************************
-    bit_stream_writer(etl::span<char> span_, etl::endian buffer_endianness_, callback_type callback_ = callback_type())
+    bit_stream_writer(etl::span<char> span_, etl::endian stream_endianness_, callback_type callback_ = callback_type())
       : pdata(span_.begin())
       , length_chars(span_.size_bytes())
-      , stream_endianness(buffer_endianness_)
+      , stream_endianness(stream_endianness_)
       , callback(callback_)
     {
       restart();
@@ -574,10 +574,10 @@ namespace etl
     //***************************************************************************
     /// Construct from span.
     //***************************************************************************
-    bit_stream_writer(etl::span<unsigned char> span_, etl::endian buffer_endianness_, callback_type callback_ = callback_type())
+    bit_stream_writer(etl::span<unsigned char> span_, etl::endian stream_endianness_, callback_type callback_ = callback_type())
       : pdata(reinterpret_cast<char*>(span_.begin()))
       , length_chars(span_.size_bytes())
-      , stream_endianness(buffer_endianness_)
+      , stream_endianness(stream_endianness_)
       , callback(callback_)
     {
       restart();
@@ -586,10 +586,10 @@ namespace etl
     //***************************************************************************
     /// Construct from range.
     //***************************************************************************
-    bit_stream_writer(void* begin_, void* end_, etl::endian buffer_endianness_, callback_type callback_ = callback_type())
+    bit_stream_writer(void* begin_, void* end_, etl::endian stream_endianness_, callback_type callback_ = callback_type())
       : pdata(reinterpret_cast<char*>(begin_))
       , length_chars(etl::distance(reinterpret_cast<unsigned char*>(begin_), reinterpret_cast<unsigned char*>(end_)))
-      , stream_endianness(buffer_endianness_)
+      , stream_endianness(stream_endianness_)
       , callback(callback_)
     {
       restart();
@@ -598,10 +598,10 @@ namespace etl
     //***************************************************************************
     /// Construct from begin and length.
     //***************************************************************************
-    bit_stream_writer(void* begin_, size_t length_chars_, etl::endian buffer_endianness_, callback_type callback_ = callback_type())
+    bit_stream_writer(void* begin_, size_t length_chars_, etl::endian stream_endianness_, callback_type callback_ = callback_type())
       : pdata(reinterpret_cast<char*>(begin_))
       , length_chars(length_chars_)
-      , stream_endianness(buffer_endianness_)
+      , stream_endianness(stream_endianness_)
       , callback(callback_)
     {
       restart();
@@ -1080,25 +1080,6 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Convert to bytes.
-    //***************************************************************************
-    template <typename T>
-    void to_bytes(T value, unsigned char* data)
-    {
-      unsigned char* pf = reinterpret_cast<unsigned char*>(&value);
-
-      // Host to network.
-      if (etl::endianness::value() == etl::endian::little)
-      {
-        etl::reverse_copy(pf, pf + sizeof(T), data);
-      }
-      else
-      {
-        etl::copy(pf, pf + sizeof(T), data);
-      }
-    }
-
-    //***************************************************************************
     /// Step the specified number of bits along the stream.
     /// The width will never be larger than 'bits_available_in_char'.
     //***************************************************************************
@@ -1178,10 +1159,10 @@ namespace etl
     //***************************************************************************
     /// Construct from span.
     //***************************************************************************
-    bit_stream_reader(etl::span<char> span_, etl::endian buffer_endianness_)
+    bit_stream_reader(etl::span<char> span_, etl::endian stream_endianness_)
       : pdata(span_.begin())
       , length_chars(span_.size_bytes())
-      , stream_endianness(etl::endian::big)
+      , stream_endianness(stream_endianness_)
     {
       restart();
     }
@@ -1189,10 +1170,10 @@ namespace etl
     //***************************************************************************
     /// Construct from span.
     //***************************************************************************
-    bit_stream_reader(etl::span<unsigned char> span_, etl::endian buffer_endianness_)
+    bit_stream_reader(etl::span<unsigned char> span_, etl::endian stream_endianness_)
       : pdata(reinterpret_cast<char*>(span_.begin()))
       , length_chars(span_.size_bytes())
-      , stream_endianness(etl::endian::big)
+      , stream_endianness(stream_endianness_)
     {
       restart();
     }
@@ -1200,10 +1181,10 @@ namespace etl
     //***************************************************************************
     /// Construct from range.
     //***************************************************************************
-    bit_stream_reader(void* begin_, void* end_, etl::endian buffer_endianness_)
+    bit_stream_reader(void* begin_, void* end_, etl::endian stream_endianness_)
       : pdata(reinterpret_cast<char*>(begin_))
       , length_chars(etl::distance(reinterpret_cast<char*>(begin_), reinterpret_cast<char*>(end_)))
-      , stream_endianness(etl::endian::big)
+      , stream_endianness(stream_endianness_)
     {
       restart();
     }
@@ -1211,10 +1192,10 @@ namespace etl
     //***************************************************************************
     /// Construct from begin and length.
     //***************************************************************************
-    bit_stream_reader(void* begin_, size_t length_, etl::endian buffer_endianness_)
+    bit_stream_reader(void* begin_, size_t length_, etl::endian stream_endianness_)
       : pdata(reinterpret_cast<char*>(begin_))
       , length_chars(length_)
-      , stream_endianness(etl::endian::big)
+      , stream_endianness(stream_endianness_)
     {
       restart();
     }
@@ -1243,7 +1224,7 @@ namespace etl
     /// For bool types
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_same<bool, T>::value, etl::optional<bool>>::type
+    typename etl::enable_if<etl::is_same<bool, T>::value, etl::optional<bool> >::type
       read()
     {
       etl::optional<bool> result;
@@ -1267,29 +1248,11 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && !etl::is_same<bool, T>::value, T>::type
       read_unchecked(uint_least8_t nbits = CHAR_BIT * sizeof(T))
     {
-      T value = 0;
-      uint_least8_t bits = nbits;
+      typedef typename unsigned_type<T>::type unsigned_t;
 
-      // Get the bits from the stream.
-      while (nbits != 0)
-      {
-        unsigned char mask_width = static_cast<unsigned char>(etl::min(nbits, bits_available_in_char));
+      T value = read_value<unsigned_t>(nbits, etl::is_signed<T>::value);
 
-        typedef typename etl::make_unsigned<T>::type chunk_t;
-        chunk_t chunk = get_chunk(mask_width);
-
-        nbits -= mask_width;
-        value |= static_cast<T>(chunk << nbits);
-      }
-
-      // Sign extend if signed type and not already full bit width.
-      if (etl::is_signed<T>::value && (bits != (CHAR_BIT * sizeof(T))))
-      {
-        typedef typename etl::make_signed<T>::type ST;
-        value = etl::sign_extend<ST, ST>(value, bits);
-      }
-
-      return value;
+      return static_cast<T>(value);
     }
 
     //***************************************************************************
@@ -1365,6 +1328,54 @@ namespace etl
   private:
 
     //***************************************************************************
+    /// Defines one of five unsigned types that has the same size as T.
+    //***************************************************************************
+    template <typename T>
+    struct unsigned_type
+    {
+      typedef typename etl::conditional<sizeof(T) == sizeof(unsigned char), unsigned char,
+                typename etl::conditional<sizeof(T) == sizeof(unsigned short), unsigned short,
+                  typename etl::conditional<sizeof(T) == sizeof(unsigned int), unsigned int,
+                    typename etl::conditional<sizeof(T) == sizeof(unsigned long), unsigned long,
+                      unsigned long long>::type>::type>::type>::type type;
+    };
+
+    //***************************************************************************
+    /// Read a value from the stream.
+    /// It will be passed one of five unsigned types.
+    //***************************************************************************
+    template <typename T>
+    T read_value(uint_least8_t nbits, bool is_signed)
+    {
+      T value = 0;
+      uint_least8_t bits = nbits;
+
+      // Get the bits from the stream.
+      while (nbits != 0)
+      {
+        unsigned char mask_width = static_cast<unsigned char>(etl::min(nbits, bits_available_in_char));
+
+        T chunk = get_chunk(mask_width);
+
+        nbits -= mask_width;
+        value |= static_cast<T>(chunk << nbits);
+      }
+
+      if (stream_endianness == etl::endian::little)
+      {
+        value = value << ((CHAR_BIT * sizeof(T)) - bits);
+        value = etl::reverse_bits(value);
+      }
+
+      if (is_signed && (bits != (CHAR_BIT * sizeof(T))))
+      {
+        value = etl::sign_extend<T, T>(value, bits);
+      }
+
+      return value;
+    }
+
+    //***************************************************************************
     /// Get a data chunk from the stream
     //***************************************************************************
     unsigned char get_chunk(unsigned char nbits)
@@ -1400,27 +1411,6 @@ namespace etl
       step(1U);
 
       return result;
-    }
-
-    //***************************************************************************
-    /// Helper function for floating point types
-    //***************************************************************************
-    template <typename T>
-    void from_bytes(const unsigned char* data, T& value)
-    {
-      etl::uninitialized_buffer_of<T, 1U> temp;
-
-      // Network to host.
-      if (etl::endianness::value() == etl::endian::little)
-      {
-        etl::reverse_copy(data, data + sizeof(T), temp.raw);
-      }
-      else
-      {
-        etl::copy(data, data + sizeof(T), temp.raw);
-      }
-
-      value = *reinterpret_cast<T*>(temp.raw);
     }
 
     //***************************************************************************
