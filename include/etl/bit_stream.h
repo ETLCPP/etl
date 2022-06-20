@@ -653,7 +653,7 @@ namespace etl
     void write_unchecked(bool value)
     {
       unsigned char chunk = value ? 1 : 0;
-      write_integral(uint32_t(chunk), 1);
+      write_data<unsigned char>(static_cast<unsigned char>(chunk), 1);
     }
 
     //***************************************************************************
@@ -682,13 +682,9 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value, void>::type
       write_unchecked(T value, uint_least8_t nbits = CHAR_BIT * sizeof(T))
     {
-      if (stream_endianness == etl::endian::little)
-      {
-        value = etl::reverse_bits(value);
-        value = value >> ((CHAR_BIT * sizeof(T)) - nbits);
-      }
+      typedef typename unsigned_type<T>::type unsigned_t;
 
-      write_integral(static_cast<uint32_t>(value), nbits);
+      write_data<unsigned_t>(static_cast<unsigned_t>(value), nbits);
     }
 
     //***************************************************************************
@@ -711,74 +707,6 @@ namespace etl
 
       return success;
     }
-
-  #if ETL_USING_64BIT_TYPES
-    //***************************************************************************
-    /// For signed 64bit integral types
-    //***************************************************************************
-    void write_unchecked(int64_t value, uint_least8_t nbits = CHAR_BIT * sizeof(int64_t))
-    {
-      if (stream_endianness == etl::endian::little)
-      {
-        value = etl::reverse_bits(value);
-        value = value >> ((CHAR_BIT * sizeof(int64_t)) - nbits);
-      }
-
-      write_integral(uint64_t(value), nbits);
-    }
-
-    //***************************************************************************
-    /// For signed 64bit integral types
-    //***************************************************************************
-    bool write(int64_t value, uint_least8_t nbits = CHAR_BIT * sizeof(uint64_t))
-    {
-      bool success = (available(nbits) > 0U);
-
-      if (success)
-      {
-        write_unchecked(value, nbits);
-      }
-      else
-      {
-        ETL_ASSERT_FAIL(ETL_ERROR(etl::bit_stream_overflow));
-      }
-
-      return success;
-    }
-
-    //***************************************************************************
-    /// For unsigned 64bit integral types
-    //***************************************************************************
-    void write_unchecked(uint64_t value, uint_least8_t nbits = CHAR_BIT * sizeof(int64_t))
-    {
-      if (stream_endianness == etl::endian::little)
-      {
-        value = etl::reverse_bits(value);
-        value = value >> ((CHAR_BIT * sizeof(int64_t)) - nbits);
-      }
-
-      write_integral(uint64_t(value), nbits);
-    }
-
-    //***************************************************************************
-    /// For unsigned 64bit integral types
-    //***************************************************************************
-    bool write(uint64_t value, uint_least8_t nbits = CHAR_BIT * sizeof(uint64_t))
-    {
-      bool success = (available(nbits) > 0U);
-
-      if (success)
-      {
-        write_unchecked(value, nbits);
-      }
-      else
-      {
-        ETL_ASSERT_FAIL(ETL_ERROR(etl::bit_stream_overflow));
-      }
-
-      return success;
-    }
-  #endif
 
     //***************************************************************************
     /// Skip n bits, up to the maximum space available.
@@ -987,20 +915,41 @@ namespace etl
   private:
 
     //***************************************************************************
-    /// For unsigned integral types
+    /// Defines one of five unsigned types that has the same size as T.
     //***************************************************************************
-    void write_integral(uint32_t value, uint_least8_t nbits)
+    template <typename T>
+    struct unsigned_type
     {
+      typedef typename etl::conditional<sizeof(T) == sizeof(unsigned char), unsigned char,
+        typename etl::conditional<sizeof(T) == sizeof(unsigned short), unsigned short,
+          typename etl::conditional<sizeof(T) == sizeof(unsigned int), unsigned int,
+            typename etl::conditional<sizeof(T) == sizeof(unsigned long), unsigned long,
+              unsigned long long>::type>::type>::type>::type type;
+    };
+
+    //***************************************************************************
+    /// Write a value to the stream.
+    /// It will be passed one of five unsigned types.
+    //***************************************************************************
+    template <typename T>
+    void write_data(T value, uint_least8_t nbits)
+    {
+      if (stream_endianness == etl::endian::little)
+      {
+        value = etl::reverse_bits(value);
+        value = value >> ((CHAR_BIT * sizeof(T)) - nbits);
+      }
+
       // Send the bits to the stream.
       while (nbits != 0)
       {
         unsigned char mask_width = static_cast<unsigned char>(etl::min(nbits, bits_available_in_char));
         nbits -= mask_width;
-        uint32_t mask = ((uint32_t(1U) << mask_width) - 1U) << nbits;
+        T mask = ((T(1U) << mask_width) - 1U) << nbits;
 
         // Move chunk to lowest char bits.
         // Chunks are never larger than one char.
-        uint32_t chunk = ((value & mask) >> nbits) << (bits_available_in_char - mask_width);
+        T chunk = ((value & mask) >> nbits) << (bits_available_in_char - mask_width);
 
         write_chunk(static_cast<char>(chunk), mask_width);
       }
@@ -1010,35 +959,6 @@ namespace etl
         flush_full_bytes();
       }
     }
-
-  #if ETL_USING_64BIT_TYPES
-    //***************************************************************************
-    /// For unsigned integral types. 64bit
-    //***************************************************************************
-    void write_integral(uint64_t value, uint_least8_t nbits)
-    {
-      // Send the bits to the stream.
-      while (nbits != 0)
-      {
-        unsigned char mask_width = static_cast<unsigned char>(etl::min(nbits, bits_available_in_char));
-        nbits -= mask_width;
-        uint64_t mask = ((uint64_t(1U) << mask_width) - 1U) << nbits;
-
-        // Move chunk to lowest char bits.
-        // Chunks are never larger than one char.
-        uint64_t chunk = ((value & mask) >> nbits) << (bits_available_in_char - mask_width);
-
-        write_chunk(static_cast<char>(chunk), mask_width);
-      }
-
-      size_t end_index = char_index;
-
-      if (callback.is_valid())
-      {
-        flush_full_bytes();
-      }
-    }
-  #endif
 
     //***************************************************************************
     /// Write a data chunk to the stream
@@ -1334,10 +1254,10 @@ namespace etl
     struct unsigned_type
     {
       typedef typename etl::conditional<sizeof(T) == sizeof(unsigned char), unsigned char,
-                typename etl::conditional<sizeof(T) == sizeof(unsigned short), unsigned short,
-                  typename etl::conditional<sizeof(T) == sizeof(unsigned int), unsigned int,
-                    typename etl::conditional<sizeof(T) == sizeof(unsigned long), unsigned long,
-                      unsigned long long>::type>::type>::type>::type type;
+        typename etl::conditional<sizeof(T) == sizeof(unsigned short), unsigned short,
+          typename etl::conditional<sizeof(T) == sizeof(unsigned int), unsigned int,
+            typename etl::conditional<sizeof(T) == sizeof(unsigned long), unsigned long,
+              unsigned long long>::type>::type>::type>::type type;
     };
 
     //***************************************************************************
