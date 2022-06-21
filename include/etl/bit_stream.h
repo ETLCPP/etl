@@ -1198,11 +1198,19 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Returns the number of bytes used in the stream.
+    /// Returns the number of bytes in the stream buffer.
     //***************************************************************************
     size_t size_bytes() const
     {
       return length_chars;
+    }
+
+    //***************************************************************************
+    /// Returns the number of bits in the stream buffer.
+    //***************************************************************************
+    size_t size_bits() const
+    {
+      return length_chars * CHAR_BIT;
     }
 
     //***************************************************************************
