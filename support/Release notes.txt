@@ -1,4 +1,20 @@
 ===============================================================================
+20.29.0
+Added etl::bit_stream_writer
+Added etl::bit_stream_reader
+Deprecated etl::bit_stream
+Added callback option to etl::byte_stream_writer
+Added error exceptions to byte_stream_writer
+Added ETL_NODISCARD to etl::delegate 'create' and 'is_valid' functions
+Added etl::visit support to etl::variant
+Refactored C++17 message_packet
+Refactored etl::atomic implementations to allow non-(integrals/pointers/bool)
+Refactors etl::vector and etl::deque resize() to take const reference parameter
+Renamed ETL_ALWAYS_ASSERT to ETL_ASSERT_FAIL
+Removed duplicate void_t definition
+Removed duplicate etl::declvar definition
+
+===============================================================================
 20.28.0
 Fixed issues raised by sanitizer.
 Added conditional compilation for 8 bit type in hash.h
