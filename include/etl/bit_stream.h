@@ -682,7 +682,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value, void>::type
       write_unchecked(T value, uint_least8_t nbits = CHAR_BIT * sizeof(T))
     {
-      typedef typename unsigned_type<T>::type unsigned_t;
+      typedef typename etl::unsigned_type<T>::type unsigned_t;
 
       write_data<unsigned_t>(static_cast<unsigned_t>(value), nbits);
     }
@@ -915,25 +915,15 @@ namespace etl
   private:
 
     //***************************************************************************
-    /// Defines one of five unsigned types that has the same size as T.
-    //***************************************************************************
-    template <typename T>
-    struct unsigned_type
-    {
-      typedef typename etl::conditional<sizeof(T) == sizeof(unsigned char), unsigned char,
-        typename etl::conditional<sizeof(T) == sizeof(unsigned short), unsigned short,
-          typename etl::conditional<sizeof(T) == sizeof(unsigned int), unsigned int,
-            typename etl::conditional<sizeof(T) == sizeof(unsigned long), unsigned long,
-              unsigned long long>::type>::type>::type>::type type;
-    };
-
-    //***************************************************************************
     /// Write a value to the stream.
     /// It will be passed one of five unsigned types.
     //***************************************************************************
     template <typename T>
     void write_data(T value, uint_least8_t nbits)
     {
+      // Make sure that we are not writing more bits than should be available.
+      nbits = (nbits > (CHAR_BIT * sizeof(T))) ? (CHAR_BIT * sizeof(T)) : nbits;
+
       if (stream_endianness == etl::endian::little)
       {
         value = etl::reverse_bits(value);
@@ -1074,6 +1064,7 @@ namespace etl
   {
   public:
 
+    typedef char value_type;
     typedef const char* const_iterator;
 
     //***************************************************************************
@@ -1168,7 +1159,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value && !etl::is_same<bool, T>::value, T>::type
       read_unchecked(uint_least8_t nbits = CHAR_BIT * sizeof(T))
     {
-      typedef typename unsigned_type<T>::type unsigned_t;
+      typedef typename etl::unsigned_type<T>::type unsigned_t;
 
       T value = read_value<unsigned_t>(nbits, etl::is_signed<T>::value);
 
@@ -1179,7 +1170,7 @@ namespace etl
     /// For integral types
     //***************************************************************************
     template <typename T>
-    typename etl::enable_if<etl::is_integral<T>::value && !etl::is_same<bool, T>::value, etl::optional<T>>::type
+    typename etl::enable_if<etl::is_integral<T>::value && !etl::is_same<bool, T>::value, etl::optional<T> >::type
       read(uint_least8_t nbits = CHAR_BIT * sizeof(T))
     {
       etl::optional<T> result;
@@ -1253,20 +1244,37 @@ namespace etl
       return etl::span<const char>(pdata, pdata + length_chars);
     }
 
-  private:
-
     //***************************************************************************
-    /// Defines one of five unsigned types that has the same size as T.
+    /// Skip n bits, up to the maximum space available.
+    /// Returns <b>true</b> if the skip was possible.
+    /// Returns <b>false</b> if the full skip size was not possible.
     //***************************************************************************
-    template <typename T>
-    struct unsigned_type
+    bool skip(size_t nbits)
     {
-      typedef typename etl::conditional<sizeof(T) == sizeof(unsigned char), unsigned char,
-        typename etl::conditional<sizeof(T) == sizeof(unsigned short), unsigned short,
-          typename etl::conditional<sizeof(T) == sizeof(unsigned int), unsigned int,
-            typename etl::conditional<sizeof(T) == sizeof(unsigned long), unsigned long,
-              unsigned long long>::type>::type>::type>::type type;
-    };
+      bool success = (nbits <= bits_available);
+
+      if (success)
+      {
+        while (nbits > bits_available_in_char)
+        {
+          nbits -= bits_available_in_char;
+          step(bits_available_in_char);
+        }
+
+        if (nbits != 0U)
+        {
+          step(static_cast<unsigned char>(nbits));
+        }
+      }
+      else
+      {
+        ETL_ASSERT_FAIL_AND_RETURN_VALUE(ETL_ERROR(etl::bit_stream_overflow), false);
+      }
+
+      return success;
+    }
+
+  private:
 
     //***************************************************************************
     /// Read a value from the stream.
@@ -1275,6 +1283,9 @@ namespace etl
     template <typename T>
     T read_value(uint_least8_t nbits, bool is_signed)
     {
+      // Make sure that we are not reading more bits than should be available.
+      nbits = (nbits > (CHAR_BIT * sizeof(T))) ? (CHAR_BIT * sizeof(T)) : nbits;
+
       T value = 0;
       uint_least8_t bits = nbits;
 

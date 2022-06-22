@@ -339,6 +339,40 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_read_int8_t_5bits_with_skip)
+    {
+      std::array storage = { char(0x0E), char(0x8B), char(0xF0) };
+      std::array expected = { int8_t(0x01), int8_t(0xFA), int8_t(0x05), int8_t(0xFF) };
+
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+
+      CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
+
+      etl::optional<int8_t> result;
+
+      result.reset();
+      result = bit_stream.read<int8_t>(5U);
+      CHECK(result.has_value());
+      CHECK_EQUAL(int(expected[0]), int(result.value()));
+
+      bool success = bit_stream.skip(5U);
+      CHECK(success);
+
+      result.reset();
+      result = bit_stream.read<int8_t>(5U);
+      CHECK(result.has_value());
+      CHECK_EQUAL(int(expected[2]), int(result.value()));
+
+      result.reset();
+      result = bit_stream.read<int8_t>(5U);
+      CHECK(result.has_value());
+      CHECK_EQUAL(int(expected[3]), int(result.value()));
+
+      // One too many.
+      CHECK_THROW(bit_stream.read<int8_t>(5U), etl::bit_stream_overflow);
+    }
+
+    //*************************************************************************
     TEST(test_read_checked_int8_t_5bits_using_non_member_function)
     {
       std::array storage = { char(0x0E), char(0x8B), char(0xF0) };
