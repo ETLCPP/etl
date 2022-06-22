@@ -2112,6 +2112,42 @@ namespace etl
   template <typename... T>
   using common_type_t = typename common_type<T...>::type;
 #endif
+
+  //***************************************************************************
+  /// Defines one of five unsigned types that has the same size as T.
+  //***************************************************************************
+  template <typename T>
+  struct unsigned_type
+  {
+    typedef typename etl::conditional<sizeof(T) == sizeof(unsigned char), unsigned char,
+      typename etl::conditional<sizeof(T) == sizeof(unsigned short), unsigned short,
+        typename etl::conditional<sizeof(T) == sizeof(unsigned int), unsigned int,
+          typename etl::conditional<sizeof(T) == sizeof(unsigned long), unsigned long,
+            unsigned long long>::type>::type>::type>::type type;
+  };
+
+#if ETL_USING_CPP11
+  template <typename T>
+  using unsigned_type_t = typename unsigned_type<T>::type;
+#endif
+
+  //***************************************************************************
+  /// Defines one of five signed types that has the same size as T.
+  //***************************************************************************
+  template <typename T>
+  struct signed_type
+  {
+    typedef typename etl::conditional<sizeof(T) == sizeof(char), char,
+      typename etl::conditional<sizeof(T) == sizeof(short), short,
+        typename etl::conditional<sizeof(T) == sizeof(int), int,
+          typename etl::conditional<sizeof(T) == sizeof(long), long,
+            long long>::type>::type>::type>::type type;
+  };
+
+#if ETL_USING_CPP11
+  template <typename T>
+  using signed_type_t = typename signed_type<T>::type;
+#endif
 }
 
 // Helper macros
