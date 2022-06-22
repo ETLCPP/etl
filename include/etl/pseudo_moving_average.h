@@ -36,7 +36,7 @@ SOFTWARE.
 
 namespace etl
 {
-  namespace private_cumulative_moving_average
+  namespace private_pseudo_moving_average
   {
     //***************************************************
     /// add_insert_iterator
@@ -95,7 +95,7 @@ namespace etl
             const size_t SCALING  = 1U,
             const bool IsIntegral = etl::is_integral<T>::value,
             const bool IsFloat    = etl::is_floating_point<T>::value>
-  class cumulative_moving_average;
+  class pseudo_moving_average;
 
   //***************************************************************************
   /// Cumulative Moving Average
@@ -105,11 +105,11 @@ namespace etl
   /// \tparam SCALING     The scaling factor applied to samples. Default = 1.
   //***************************************************************************
   template <typename T, const size_t SAMPLE_SIZE_, const size_t SCALING_>
-  class cumulative_moving_average<T, SAMPLE_SIZE_, SCALING_, true, false>
+  class pseudo_moving_average<T, SAMPLE_SIZE_, SCALING_, true, false>
   {
   private:
 
-    typedef cumulative_moving_average<T, SAMPLE_SIZE_, SCALING_, true, false> this_t;
+    typedef pseudo_moving_average<T, SAMPLE_SIZE_, SCALING_, true, false> this_t;
 
     typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type scale_t;
     typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type sample_t;
@@ -120,7 +120,7 @@ namespace etl
   public:
 
     typedef T value_type;
-    typedef private_cumulative_moving_average::add_insert_iterator<this_t> add_insert_iterator;
+    typedef private_pseudo_moving_average::add_insert_iterator<this_t> add_insert_iterator;
 
     static ETL_CONSTANT size_t SAMPLE_SIZE = SAMPLE_SIZE_; ///< The number of samples averaged over.
     static ETL_CONSTANT size_t SCALING     = SCALING_;     ///< The sample scaling factor.
@@ -129,7 +129,7 @@ namespace etl
     /// Constructor
     /// \param initial_value The initial value for the average.
     //*************************************************************************
-    cumulative_moving_average(const T initial_value)
+    pseudo_moving_average(const T initial_value)
       : average(initial_value * SCALE)
     {
     }
@@ -155,7 +155,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the current cumulative average.
+    /// Gets the current pseudo moving average.
     /// \return The current average.
     //*************************************************************************
     T value() const
@@ -174,7 +174,7 @@ namespace etl
 
   private:
 
-    T average; ///< The current cumulative average.
+    T average; ///< The current pseudo moving average.
   };
 
   //***************************************************************************
@@ -184,9 +184,9 @@ namespace etl
 /// \tparam SCALING     The scaling factor applied to samples. Default = 1.
 //***************************************************************************
   template <typename T, const size_t SCALING_>
-  class cumulative_moving_average<T, 0, SCALING_, true, false>
+  class pseudo_moving_average<T, 0, SCALING_, true, false>
   {
-    typedef cumulative_moving_average<T, 0, SCALING_, true, false> this_t;
+    typedef pseudo_moving_average<T, 0, SCALING_, true, false> this_t;
 
     typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type scale_t;
     typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type sample_t;
@@ -196,7 +196,7 @@ namespace etl
   public:
 
     typedef T value_type;
-    typedef private_cumulative_moving_average::add_insert_iterator<this_t> add_insert_iterator;
+    typedef private_pseudo_moving_average::add_insert_iterator<this_t> add_insert_iterator;
 
     static ETL_CONSTANT size_t SCALING = SCALING_;     ///< The sample scaling factor.
 
@@ -204,7 +204,7 @@ namespace etl
     /// Constructor
     /// \param initial_value The initial value for the average.
     //*************************************************************************
-    cumulative_moving_average(const T initial_value, const size_t sample_size)
+    pseudo_moving_average(const T initial_value, const size_t sample_size)
       : average(initial_value * SCALE)
       , samples(sample_t(sample_size))
     {
@@ -240,7 +240,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the current cumulative average.
+    /// Gets the current pseudo moving average.
     /// \return The current average.
     //*************************************************************************
     T value() const
@@ -259,7 +259,7 @@ namespace etl
 
   private:
 
-    T        average; ///< The current cumulative average.
+    T        average; ///< The current pseudo moving average.
     sample_t samples; ///< The number of samples to average over.
   };
 
@@ -270,14 +270,14 @@ namespace etl
   /// \tparam SAMPLE_SIZE The number of samples to average over.
   //***************************************************************************
   template <typename T, const size_t SAMPLE_SIZE_>
-  class cumulative_moving_average<T, SAMPLE_SIZE_, 1U, false, true>
+  class pseudo_moving_average<T, SAMPLE_SIZE_, 1U, false, true>
   {
-    typedef cumulative_moving_average<T, SAMPLE_SIZE_, 1U, false, true> this_t;
+    typedef pseudo_moving_average<T, SAMPLE_SIZE_, 1U, false, true> this_t;
 
   public:
 
     typedef T value_type;
-    typedef private_cumulative_moving_average::add_insert_iterator<this_t> add_insert_iterator;
+    typedef private_pseudo_moving_average::add_insert_iterator<this_t> add_insert_iterator;
 
     static ETL_CONSTANT size_t SAMPLE_SIZE = SAMPLE_SIZE_;
 
@@ -285,7 +285,7 @@ namespace etl
     /// Constructor
     /// \param initial_value The initial value for the average.
     //*************************************************************************
-    cumulative_moving_average(const T initial_value)
+    pseudo_moving_average(const T initial_value)
       : reciprocal_samples_plus_1(T(1.0) / T(SAMPLE_SIZE_ + 1U))
       , average(initial_value)
     {
@@ -310,7 +310,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the current cumulative average.
+    /// Gets the current pseudo moving average.
     /// \return The current average.
     //*************************************************************************
     T value() const
@@ -330,7 +330,7 @@ namespace etl
   private:
 
     const T reciprocal_samples_plus_1; ///< Reciprocal of one greater than the sample size.
-    T       average;                   ///< The current cumulative average.
+    T       average;                   ///< The current pseudo moving average.
   };
 
   //***************************************************************************
@@ -340,20 +340,20 @@ namespace etl
   /// \tparam SAMPLE_SIZE The number of samples to average over.
   //***************************************************************************
   template <typename T>
-  class cumulative_moving_average<T, 0U, 1U, false, true>
+  class pseudo_moving_average<T, 0U, 1U, false, true>
   {
-    typedef cumulative_moving_average<T, 0U, 1U, false, true> this_t;
+    typedef pseudo_moving_average<T, 0U, 1U, false, true> this_t;
 
   public:
 
     typedef T value_type;
-    typedef private_cumulative_moving_average::add_insert_iterator<this_t> add_insert_iterator;
+    typedef private_pseudo_moving_average::add_insert_iterator<this_t> add_insert_iterator;
 
     //*************************************************************************
     /// Constructor
     /// \param initial_value The initial value for the average.
     //*************************************************************************
-    cumulative_moving_average(const T initial_value, const size_t sample_size)
+    pseudo_moving_average(const T initial_value, const size_t sample_size)
       : reciprocal_samples_plus_1(T(1.0) / T(sample_size + 1U))
       , average(initial_value)
     {
@@ -387,7 +387,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the current cumulative average.
+    /// Gets the current pseudo moving average.
     /// \return The current average.
     //*************************************************************************
     T value() const
@@ -407,7 +407,7 @@ namespace etl
   private:
 
     T reciprocal_samples_plus_1; ///< Reciprocal of one greater than the sample size.
-    T average;                   ///< The current cumulative average.
+    T average;                   ///< The current pseudo moving average.
   };
 }
 

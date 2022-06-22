@@ -588,7 +588,7 @@
     <ClInclude Include="..\..\include\etl\state_chart.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\cumulative_moving_average.h">
+    <ClInclude Include="..\..\include\etl\pseudo_moving_average.h">
       <Filter>ETL\Maths</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\scaled_rounding.h">
@@ -1790,7 +1790,7 @@
     <ClCompile Include="..\test_covariance.cpp">
       <Filter>Tests\Algorithms</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_cumulative_moving_average.cpp">
+    <ClCompile Include="..\test_pseudo_moving_average.cpp">
       <Filter>Tests\Algorithms</Filter>
     </ClCompile>
     <ClCompile Include="..\test_cyclic_value.cpp">

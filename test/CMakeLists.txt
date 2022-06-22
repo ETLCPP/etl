@@ -118,7 +118,6 @@ set(TEST_SOURCE_FILES
 	test_crc8_maxim.cpp
 	test_crc8_rohc.cpp
 	test_crc8_wcdma.cpp
-	test_cumulative_moving_average.cpp
 	test_cyclic_value.cpp
 	test_debounce.cpp
 	test_delegate.cpp
@@ -200,6 +199,7 @@ set(TEST_SOURCE_FILES
 	test_pool.cpp
 	test_pool_external_buffer.cpp
 	test_priority_queue.cpp
+	test_pseudo_moving_average.cpp
 	test_quantize.cpp
 	test_queue.cpp
 	test_queue_lockable.cpp

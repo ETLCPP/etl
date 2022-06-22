@@ -55,13 +55,13 @@ namespace etl
       void add_sample(bool sample)
       {
         // Changed from last time?
-        if (sample != bool((flags & SAMPLE) != 0))
+        if (sample != bool((flags & Sample) != 0))
         {
           count = 0;
-          flags = (flags & ~SAMPLE) | (sample ? SAMPLE : 0);
+          flags = (flags & ~Sample) | (sample ? Sample : 0);
         }
 
-        flags &= ~CHANGE;
+        flags &= ~Change;
       }
 
       //*************************************************************************
@@ -70,7 +70,7 @@ namespace etl
       //*************************************************************************
       bool has_changed() const
       {
-        return (flags & CHANGE) != 0;
+        return (flags & Change) != 0;
       }
 
       //*************************************************************************
@@ -79,7 +79,7 @@ namespace etl
       //*************************************************************************
       bool is_set() const
       {
-        return ((flags & STATE) > OFF);
+        return ((flags & State) > Off);
       }
 
       //*************************************************************************
@@ -88,7 +88,7 @@ namespace etl
       //*************************************************************************
       bool is_held() const
       {
-        return (flags & STATE) > ON;
+        return (flags & State) > On;
       }
 
       //*************************************************************************
@@ -97,27 +97,27 @@ namespace etl
       //*************************************************************************
       bool is_repeating() const
       {
-        return ((flags & STATE) == REPEATING);
+        return ((flags & State) == Repeating);
       }
+
+    protected:
 
       enum states
       {
-        OFF       = 0,
-        ON        = 1,
-        HELD      = 2,
-        REPEATING = 3,
-        STATE     = 0x03U,
-        SAMPLE    = 4,
-        CHANGE    = 8
+        Off       = 0,
+        On        = 1,
+        Held      = 2,
+        Repeating = 3,
+        State     = 0x03U,
+        Sample    = 4,
+        Change    = 8
       };
-
-    protected:
 
       //*************************************************************************
       /// Constructor.
       //*************************************************************************
       debounce_base(bool initial_state)
-        : flags(initial_state ? ON : OFF),
+        : flags(initial_state ? On : Off),
           count(0)
       {
       }
@@ -134,21 +134,21 @@ namespace etl
       //*************************************************************************
       void get_next(bool sample, bool condition_set, bool condition_clear, const uint_least8_t state_table[][2])
       {
-        int index1 = ((flags & STATE) * 2) + (sample ? 1 : 0);
+        int index1 = ((flags & State) * 2) + (sample ? 1 : 0);
         int index2 = (sample ? (condition_set ? 0 : 1) : (condition_clear ? 0 : 1));
 
         flags_t next = flags;
 
-        next &= ~STATE;
+        next &= ~State;
         next |= state_table[index1][index2];
 
         if (next != flags)
         {
-          next |= CHANGE;
+          next |= Change;
         }
         else
         {
-          next &= ~CHANGE;
+          next &= ~Change;
         }
 
         flags = next;
@@ -184,10 +184,10 @@ namespace etl
       {
         static ETL_CONSTANT uint_least8_t state_table[4][2] =
         {
-          /* OFF 0 */{ debounce_base::OFF, debounce_base::OFF },
-          /* OFF 1 */{ debounce_base::ON,  debounce_base::OFF },
-          /* ON  0 */{ debounce_base::OFF, debounce_base::ON },
-          /* ON  1 */{ debounce_base::ON,  debounce_base::ON },
+          /* Off 0 */{ debounce_base::Off, debounce_base::Off },
+          /* Off 1 */{ debounce_base::On,  debounce_base::Off },
+          /* On  0 */{ debounce_base::Off, debounce_base::On },
+          /* On  1 */{ debounce_base::On,  debounce_base::On },
         };
 
         get_next(sample, condition_set, condition_clear, state_table);
@@ -206,15 +206,15 @@ namespace etl
 
           bool valid = (count == valid_count);
 
-          switch (flags & STATE)
+          switch (flags & State)
           {
-            case OFF:
+            case Off:
             {
               set_state(sample, valid, valid);
               break;
             }
 
-            case ON:
+            case On:
             {
               set_state(sample, valid, valid);
               break;
@@ -227,12 +227,12 @@ namespace etl
           }
         }
 
-        if (flags & CHANGE)
+        if (flags & Change)
         {
           count = 0;
         }
 
-        return (flags & CHANGE);
+        return (flags & Change);
       }
     };
 
@@ -262,12 +262,12 @@ namespace etl
       {
         static ETL_CONSTANT uint_least8_t state_table[6][2] =
         {
-          /* OFF  0 */{ debounce_base::OFF,  debounce_base::OFF },
-          /* OFF  1 */{ debounce_base::ON,   debounce_base::OFF },
-          /* ON   0 */{ debounce_base::OFF,  debounce_base::ON },
-          /* ON   1 */{ debounce_base::HELD, debounce_base::ON },
-          /* HELD 0 */{ debounce_base::OFF,  debounce_base::HELD },
-          /* HELD 1 */{ debounce_base::HELD, debounce_base::HELD }
+          /* Off  0 */{ debounce_base::Off,  debounce_base::Off },
+          /* Off  1 */{ debounce_base::On,   debounce_base::Off },
+          /* On   0 */{ debounce_base::Off,  debounce_base::On },
+          /* On   1 */{ debounce_base::Held, debounce_base::On },
+          /* Held 0 */{ debounce_base::Off,  debounce_base::Held },
+          /* Held 1 */{ debounce_base::Held, debounce_base::Held }
         };
 
         get_next(sample, condition_set, condition_clear, state_table);
@@ -287,21 +287,21 @@ namespace etl
           bool valid = (count == valid_count);
           bool hold  = (count == hold_count);
 
-          switch (flags & STATE)
+          switch (flags & State)
           {
-            case OFF:
+            case Off:
             {
               set_state(sample, valid, valid);
               break;
             }
 
-            case ON:
+            case On:
             {
               set_state(sample, hold, valid);
               break;
             }
 
-            case HELD:
+            case Held:
             {
               set_state(sample, hold, valid);
               break;
@@ -314,12 +314,12 @@ namespace etl
           }
         }
 
-        if (flags & CHANGE)
+        if (flags & Change)
         {
           count = 0;
         }
 
-        return (flags & CHANGE);
+        return (flags & Change);
       }
     };
 
@@ -349,14 +349,14 @@ namespace etl
       {
         static ETL_CONSTANT uint_least8_t state_table[8][2] =
         {
-          /* OFF       0 */{ debounce_base::OFF,       debounce_base::OFF },
-          /* OFF       1 */{ debounce_base::ON,        debounce_base::OFF },
-          /* ON        0 */{ debounce_base::OFF,       debounce_base::ON },
-          /* ON        1 */{ debounce_base::HELD,      debounce_base::ON },
-          /* HELD      0 */{ debounce_base::OFF,       debounce_base::HELD },
-          /* HELD      1 */{ debounce_base::REPEATING, debounce_base::HELD },
-          /* REPEATING 0 */{ debounce_base::OFF,       debounce_base::REPEATING },
-          /* REPEATING 1 */{ debounce_base::REPEATING, debounce_base::REPEATING }
+          /* Off       0 */{ debounce_base::Off,       debounce_base::Off },
+          /* Off       1 */{ debounce_base::On,        debounce_base::Off },
+          /* On        0 */{ debounce_base::Off,       debounce_base::On },
+          /* On        1 */{ debounce_base::Held,      debounce_base::On },
+          /* Held      0 */{ debounce_base::Off,       debounce_base::Held },
+          /* Held      1 */{ debounce_base::Repeating, debounce_base::Held },
+          /* Repeating 0 */{ debounce_base::Off,       debounce_base::Repeating },
+          /* Repeating 1 */{ debounce_base::Repeating, debounce_base::Repeating }
         };
 
         get_next(sample, condition_set, condition_clear, state_table);
@@ -377,34 +377,34 @@ namespace etl
           bool hold   = (count == hold_count);
           bool repeat = (count == repeat_count);
 
-          switch (flags & STATE)
+          switch (flags & State)
           {
-            case OFF:
+            case Off:
             {
               set_state(sample, valid, valid);
               break;
             }
 
-            case ON:
+            case On:
             {
               set_state(sample, hold, valid);
               break;
             }
 
-            case HELD:
+            case Held:
             {
               set_state(sample, repeat, valid);
               break;
             }
 
-            case REPEATING:
+            case Repeating:
             {
               set_state(sample, repeat, valid);
 
               if (sample && repeat)
               {
                 count = 0;
-                flags |= CHANGE;
+                flags |= Change;
               }
               break;
             }
@@ -416,12 +416,12 @@ namespace etl
           }
         }
 
-        if (flags & CHANGE)
+        if (flags & Change)
         {
           count = 0;
         }
 
-        return (flags & CHANGE);
+        return (flags & Change);
       }
     };
   }

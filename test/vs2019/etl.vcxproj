@@ -2411,7 +2411,7 @@
     <ClInclude Include="..\..\include\etl\crc8_maxim.h" />
     <ClInclude Include="..\..\include\etl\crc8_rohc.h" />
     <ClInclude Include="..\..\include\etl\crc8_wcdma.h" />
-    <ClInclude Include="..\..\include\etl\cumulative_moving_average.h" />
+    <ClInclude Include="..\..\include\etl\pseudo_moving_average.h" />
     <ClInclude Include="..\..\include\etl\delegate.h" />
     <ClInclude Include="..\..\include\etl\delegate_service.h" />
     <ClInclude Include="..\..\include\etl\file_error_numbers.h" />
@@ -10973,7 +10973,7 @@
     <ClCompile Include="..\test_crc8_maxim.cpp" />
     <ClCompile Include="..\test_crc8_rohc.cpp" />
     <ClCompile Include="..\test_crc8_wcdma.cpp" />
-    <ClCompile Include="..\test_cumulative_moving_average.cpp" />
+    <ClCompile Include="..\test_pseudo_moving_average.cpp" />
     <ClCompile Include="..\test_delegate.cpp" />
     <ClCompile Include="..\test_delegate_cpp03.cpp" />
     <ClCompile Include="..\test_delegate_service.cpp" />

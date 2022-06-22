@@ -26,4 +26,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <etl/cumulative_moving_average.h>
+#include <etl/pseudo_moving_average.h>

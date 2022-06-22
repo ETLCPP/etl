@@ -13,6 +13,8 @@ Refactors etl::vector and etl::deque resize() to take const reference parameter
 Renamed ETL_ALWAYS_ASSERT to ETL_ASSERT_FAIL
 Removed duplicate void_t definition
 Removed duplicate etl::declvar definition
+Renamed cumulative_moving_average to pseudo_windowed_moving_average to more accurately reflect its algorithm.
+Changed etl::debounce internal state names to avoid clashes with Arduino macros.
 
 ===============================================================================
 20.28.0
