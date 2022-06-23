@@ -437,7 +437,7 @@ namespace
       CHECK(result[0] = byte_stream.read<int32_t>());
       CHECK(byte_stream.skip<int32_t>(2));
       CHECK(result[3] = byte_stream.read<int32_t>());
-      CHECK(!byte_stream.skip<int32_t>(2));
+      CHECK_THROW(byte_stream.skip<int32_t>(2), etl::byte_stream_overflow);
 
       for (size_t i = 0U; i < result.size(); ++i)
       {
@@ -1242,7 +1242,7 @@ namespace
 
       reader.restart();
       // Skip five int16_t (too many)
-      CHECK(!reader.skip<int16_t>(5U));
+      CHECK_THROW(reader.skip<int16_t>(5U), etl::byte_stream_overflow);
     }
 
     //*************************************************************************

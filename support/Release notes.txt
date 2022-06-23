@@ -1,4 +1,8 @@
 ===============================================================================
+20.29.1
+Added etl::byte_stream_overflow assert to byte_stream_reader 'skip'.
+
+===============================================================================
 20.29.0
 Added etl::bit_stream_writer
 Added etl::bit_stream_reader

@@ -749,16 +749,14 @@ namespace etl
     template <typename T>
     bool skip(size_t n)
     {
-      size_t maximum = available<T>();
-
-      if (n < maximum)
+      if (n < available<T>())
       {
         pcurrent += (n * sizeof(T));
         return true;
       }
       else
       {
-        pcurrent += (maximum * sizeof(T));
+        ETL_ASSERT_FAIL(ETL_ERROR(etl::byte_stream_overflow));
         return false;
       }
     }
