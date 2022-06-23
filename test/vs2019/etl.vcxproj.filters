@@ -2441,7 +2441,7 @@
     <ClCompile Include="..\sanity-check\crc64_ecma.h.t.cpp">
       <Filter>Tests\Sanity Checks\Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\sanity-check\cumulative_moving_average.h.t.cpp">
+    <ClCompile Include="..\sanity-check\pseudo_moving_average.h.t.cpp">
       <Filter>Tests\Sanity Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\cyclic_value.h.t.cpp">

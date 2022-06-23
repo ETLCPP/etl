@@ -122,7 +122,6 @@ target_sources(t17 PRIVATE etl_profile.h
         ../crc8_maxim.h.t.cpp
         ../crc8_rohc.h.t.cpp
         ../crc8_wcdma.h.t.cpp
-        ../cumulative_moving_average.h.t.cpp
         ../cyclic_value.h.t.cpp
         ../debounce.h.t.cpp
         ../debug_count.h.t.cpp
@@ -218,6 +217,7 @@ target_sources(t17 PRIVATE etl_profile.h
         ../pool.h.t.cpp
         ../power.h.t.cpp
         ../priority_queue.h.t.cpp
+        ../pseudo_moving_average.h.t.cpp
         ../quantize.h.t.cpp
         ../queue.h.t.cpp
         ../queue_lockable.h.t.cpp
