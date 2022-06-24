@@ -54,13 +54,15 @@ namespace
   {
     enum enum_type
     {
+      Zero = 0,
       One = 1,
       Two = 2
     };
  
     ETL_DECLARE_ENUM_TYPE(Enum, int)
-    ETL_ENUM_TYPE(One, "1")
-    ETL_ENUM_TYPE(Two, "2")
+    ETL_ENUM_TYPE(Zero, "0")
+    ETL_ENUM_TYPE(One,  "1")
+    ETL_ENUM_TYPE(Two,  "2")
     ETL_END_ENUM_TYPE
   };
 
@@ -547,8 +549,8 @@ namespace
     //*************************************************************************
     TEST(test_atomic_compare_exchange_weak_pass_for_enum)
     {
-      std::atomic<Enum> compare;
-      etl::atomic<Enum> test;
+      std::atomic<Enum> compare(Enum::Zero);
+      etl::atomic<Enum> test(Enum::Zero);
 
       Enum actual = Enum::One;
 
@@ -639,8 +641,8 @@ namespace
     //*************************************************************************
     TEST(test_atomic_compare_exchange_strong_pass_for_enum)
     {
-      std::atomic<Enum> compare;
-      etl::atomic<Enum> test;
+      std::atomic<Enum> compare(Enum::Zero);
+      etl::atomic<Enum> test(Enum::Zero);
 
       Enum actual = Enum::One;
 

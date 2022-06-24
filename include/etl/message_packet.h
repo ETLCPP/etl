@@ -69,14 +69,8 @@ namespace etl
   template <typename... TMessageTypes>
   class message_packet
   {
-  public:
 
-    //********************************************
-    message_packet()
-      : data()
-      , valid(false)
-    {
-    }
+  private:
 
     template <typename T>
     static constexpr bool IsMessagePacket = etl::is_same_v< etl::remove_const_t<etl::remove_reference_t<T>>, etl::message_packet<TMessageTypes...>>;
@@ -87,6 +81,15 @@ namespace etl
     template <typename T>
     static constexpr bool IsIMessage = etl::is_same_v<remove_const_t<etl::remove_reference_t<T>>, etl::imessage>;
 
+  public:
+
+    //********************************************
+    message_packet()
+      : data()
+      , valid(false)
+    {
+    }
+
     //********************************************
     /// 
     //********************************************
@@ -95,11 +98,6 @@ namespace etl
       : data()
       , valid(true)
     {
-      bool b1 = IsIMessage<T>;
-      bool b2 = IsInMessageList<T>;
-      bool b3 = IsMessagePacket<T>;
-      bool b4 = etl::is_rvalue_reference_v<T>;
-
       if constexpr (IsIMessage<T>)
       {
         if (accepts(msg))
