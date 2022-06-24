@@ -190,7 +190,7 @@ namespace
     {
       Message1 message1(1);
       Message2 message2(2.2);
-      Message3 message3("3");
+      const Message3 message3("3");
       Message4 message4;
 
       Packet packet1(message1);
