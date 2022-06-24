@@ -126,27 +126,6 @@ namespace etl
       }
     }
 
-    //********************************************
-    // Anything but etl::message_packet or message in typelist
-    //********************************************
-    //template <typename TMessage, etl::enable_if_t<IsIMessage<TMessage> && !IsMessagePacket<TMessage>, int> = 0>
-    //explicit message_packet(TMessage&& msg)
-    //  : data()
-    //  , valid(true)
-    //{
-    //  if (accepts(msg))
-    //  {
-    //    add_new_message(etl::forward<TMessage>(msg));
-    //    valid = true;
-    //  }
-    //  else
-    //  {
-    //    valid = false;
-    //  }
-
-    //  ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
-    //}
-
     //**********************************************
     void copy(const message_packet& other)
     {

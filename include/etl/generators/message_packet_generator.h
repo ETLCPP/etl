@@ -81,6 +81,18 @@ namespace etl
   template <typename... TMessageTypes>
   class message_packet
   {
+
+  private:
+
+    template <typename T>
+    static constexpr bool IsMessagePacket = etl::is_same_v< etl::remove_const_t<etl::remove_reference_t<T>>, etl::message_packet<TMessageTypes...>>;
+
+    template <typename T>
+    static constexpr bool IsInMessageList = etl::is_one_of_v<etl::remove_const_t<etl::remove_reference_t<T>>, TMessageTypes...>;
+
+    template <typename T>
+    static constexpr bool IsIMessage = etl::is_same_v<remove_const_t<etl::remove_reference_t<T>>, etl::imessage>;
+
   public:
 
     //********************************************
@@ -91,32 +103,18 @@ namespace etl
     }
 
     //********************************************
-    template <typename TMessage, typename = etl::enable_if_t<!etl::is_same_v<etl::remove_reference_t<TMessage>, etl::message_packet<TMessageTypes...>> &&
-      !etl::is_same_v<etl::remove_reference_t<TMessage>, etl::imessage> &&
-      !etl::is_one_of_v<etl::remove_reference_t<TMessage>, TMessageTypes...>, int>>
-      explicit message_packet(TMessage&& msg)
-      : data()
-      , valid(true)
-    {
-      // Not etl::message_packet, not etl::imessage and in typelist.
-      constexpr bool Enabled = (!etl::is_same_v<etl::remove_reference_t<TMessage>, etl::message_packet<TMessageTypes...>> &&
-        !etl::is_same_v<etl::remove_reference_t<TMessage>, etl::imessage> &&
-        etl::is_one_of_v<etl::remove_reference_t<TMessage>, TMessageTypes...>);
-
-      ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
-    }
-
+    /// 
     //********************************************
-    template <typename TMessage>
-    explicit message_packet(TMessage&& msg, etl::enable_if_t<!etl::is_same_v<etl::remove_reference_t<TMessage>, etl::message_packet<TMessageTypes...>>, int*> p = nullptr)
+    template <typename T>
+    explicit message_packet(T&& msg)
       : data()
       , valid(true)
     {
-      if constexpr (etl::is_same_v<etl::remove_reference_t<TMessage>, etl::imessage>)
+      if constexpr (IsIMessage<T>)
       {
         if (accepts(msg))
         {
-          add_new_message(etl::forward<TMessage>(msg));
+          add_new_message(etl::forward<T>(msg));
           valid = true;
         }
         else
@@ -126,17 +124,25 @@ namespace etl
 
         ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
       }
+      else if constexpr (IsInMessageList<T>)
+      {
+        add_new_message_type<T>(etl::forward<T>(msg));
+      }
+      else if constexpr (IsMessagePacket<T>)
+      {
+        copy(etl::forward<T>(msg));
+      }
       else
       {
-        add_new_message_type<TMessage>(etl::forward<TMessage>(msg));
+        ETL_STATIC_ASSERT(IsInMessageList<T>, "Message not in packet type list");
       }
     }
 
     //**********************************************
-    message_packet(const message_packet& other)
-      : data()
-      , valid(other.is_valid())
+    void copy(const message_packet& other)
     {
+      valid = other.is_valid();
+
       if (valid)
       {
         add_new_message(other.get());
@@ -144,10 +150,10 @@ namespace etl
     }
 
     //**********************************************
-    message_packet(message_packet&& other)
-      : data()
-      , valid(other.is_valid())
+    void copy(message_packet&& other)
     {
+      valid = other.is_valid();
+
       if (valid)
       {
         add_new_message(etl::move(other.get()));
@@ -281,7 +287,7 @@ namespace etl
     /// Only enabled for types that are in the typelist.
     //********************************************
     template <typename TMessage>
-    etl::enable_if_t<etl::is_one_of_v<etl::remove_reference_t<TMessage>, TMessageTypes...>, void>
+    etl::enable_if_t<etl::is_one_of_v<etl::remove_const_t<etl::remove_reference_t<TMessage>>, TMessageTypes...>, void>
       add_new_message_type(TMessage&& msg)
     {
       void* p = data;
