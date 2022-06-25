@@ -414,7 +414,7 @@ namespace etl
   /// Send a message to a bus.
   //***************************************************************************
   static inline void send_message(etl::imessage_bus&   bus,
-                           const etl::imessage& message)
+                                  const etl::imessage& message)
   {
     bus.receive(message);
   }
@@ -423,8 +423,8 @@ namespace etl
   /// Send a message to a bus.
   //***************************************************************************
   static inline void send_message(etl::imessage_bus&       bus,
-                           etl::message_router_id_t id,
-                           const etl::imessage&     message)
+                                  etl::message_router_id_t id,
+                                  const etl::imessage&     message)
   {
     bus.receive(id, message);
   }

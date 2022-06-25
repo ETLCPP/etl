@@ -319,6 +319,15 @@ namespace etl
     destination.receive(message);
   }
 
+  //***************************************************************************
+  /// Send a shared message to a router.
+  //***************************************************************************
+  static inline void send_message(etl::imessage_router& destination,
+                                  etl::shared_message message)
+  {
+    destination.receive(message);
+  }
+
 //*************************************************************************************************
 // For C++17 and above.
 //*************************************************************************************************

@@ -230,7 +230,7 @@ namespace
       bus.receive(sm2);
       bus.receive(sm1);
       bus.receive(sm3);
-      bus.receive(sm4);            // sm4 is a copy of sm1
+      etl::send_message(bus, sm4); // sm4 is a copy of sm1. Use non-member function.
       bus.receive(RouterId2, sm1); // Only send sm1 to Router2
 
       CHECK(sm1.is_valid());
