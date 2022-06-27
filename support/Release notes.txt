@@ -1,4 +1,8 @@
 ===============================================================================
+20.29.3
+Updated message_packet_generator.h to match etl::message_packet changes.
+
+===============================================================================
 20.29.2
 #557 QueuedFSM example does not compile.
 
