@@ -2411,6 +2411,7 @@
     <ClInclude Include="..\..\include\etl\crc8_maxim.h" />
     <ClInclude Include="..\..\include\etl\crc8_rohc.h" />
     <ClInclude Include="..\..\include\etl\crc8_wcdma.h" />
+    <ClInclude Include="..\..\include\etl\poly_span.h" />
     <ClInclude Include="..\..\include\etl\pseudo_moving_average.h" />
     <ClInclude Include="..\..\include\etl\delegate.h" />
     <ClInclude Include="..\..\include\etl\delegate_service.h" />
@@ -5312,6 +5313,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MSVC Debug - Appveyor|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\sanity-check\poly_span.h.t.cpp" />
     <ClCompile Include="..\sanity-check\pseudo_moving_average.h.t.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Built-ins|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Force Built-ins|Win32'">true</ExcludedFromBuild>
@@ -10973,6 +10975,7 @@
     <ClCompile Include="..\test_crc8_maxim.cpp" />
     <ClCompile Include="..\test_crc8_rohc.cpp" />
     <ClCompile Include="..\test_crc8_wcdma.cpp" />
+    <ClCompile Include="..\test_poly_span.cpp" />
     <ClCompile Include="..\test_pseudo_moving_average.cpp" />
     <ClCompile Include="..\test_delegate.cpp" />
     <ClCompile Include="..\test_delegate_cpp03.cpp" />
