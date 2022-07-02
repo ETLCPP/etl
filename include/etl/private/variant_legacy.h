@@ -54,7 +54,11 @@ SOFTWARE.
 ///\ingroup containers
 //*****************************************************************************
 
+#if defined(ETL_IN_UNIT_TEST)
+namespace etl_legacy
+#else
 namespace etl
+#endif
 {
   namespace private_variant
   {
@@ -72,7 +76,7 @@ namespace etl
   /// Base exception for the variant class.
   ///\ingroup variant
   //***************************************************************************
-  class variant_exception : public exception
+  class variant_exception : public etl::exception
   {
   public:
     variant_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
@@ -107,6 +111,19 @@ namespace etl
   };
 
   //***************************************************************************
+  /// 'Not a base type' exception for the variant class.
+  ///\ingroup variant
+  //***************************************************************************
+  class variant_not_a_base_exception : public variant_exception
+  {
+  public:
+    variant_not_a_base_exception(string_type file_name_, numeric_type line_number_)
+      : variant_exception(ETL_ERROR_TEXT("variant:not_a base", ETL_VARIANT_FILE_ID"C"), file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
   /// A template class that can store any of the types defined in the template parameter list.
   /// Supports up to 8 types.
   ///\ingroup variant
@@ -131,7 +148,7 @@ namespace etl
     //***************************************************************************
     /// The id a unsupported types.
     //***************************************************************************
-    static const type_id_t UNSUPPORTED_TYPE_ID = integral_limits<type_id_t>::max;
+    static const type_id_t UNSUPPORTED_TYPE_ID = etl::integral_limits<type_id_t>::max;
 
   private:
 
@@ -142,7 +159,7 @@ namespace etl
     //***************************************************************************
     /// The largest type.
     //***************************************************************************
-    typedef typename largest_type<T1, T2, T3, T4, T5, T6, T7, T8>::type largest_t;
+    typedef typename etl::largest_type<T1, T2, T3, T4, T5, T6, T7, T8>::type largest_t;
 
     //***************************************************************************
     /// The largest size.
@@ -186,15 +203,15 @@ namespace etl
     /// Lookup for the id of type.
     //***************************************************************************
     template <typename T>
-    struct Type_Is_Supported : public integral_constant<bool,
-                                                       is_same<T, T1>::value ||
-                                                       is_same<T, T2>::value ||
-                                                       is_same<T, T3>::value ||
-                                                       is_same<T, T4>::value ||
-                                                       is_same<T, T5>::value ||
-                                                       is_same<T, T6>::value ||
-                                                       is_same<T, T7>::value ||
-                                                       is_same<T, T8>::value>
+    struct Type_Is_Supported : public etl::integral_constant<bool,
+                                                             etl::is_same<T, T1>::value ||
+                                                             etl::is_same<T, T2>::value ||
+                                                             etl::is_same<T, T3>::value ||
+                                                             etl::is_same<T, T4>::value ||
+                                                             etl::is_same<T, T5>::value ||
+                                                             etl::is_same<T, T6>::value ||
+                                                             etl::is_same<T, T7>::value ||
+                                                             etl::is_same<T, T8>::value>
     {
     };
 
@@ -719,12 +736,50 @@ namespace etl
 
     //***************************************************************************
     /// Gets the value stored as the specified template type.
+    ///\return A pointer to the value.
+    //***************************************************************************
+    template <typename TBase>
+    TBase* upcast_ptr()
+    {
+      if (is_base_of<TBase>())
+      {
+        return reinterpret_cast<TBase*>(static_cast<uint_least8_t*>(data));
+      }
+      else
+      {
+        return ETL_NULLPTR;
+      }
+    }
+
+    //***************************************************************************
+    /// Gets the value stored as the specified template type.
     ///\return A reference to the value.
     //***************************************************************************
     template <typename TBase>
     TBase& upcast()
     {
-      return *upcast_functor<TBase, T1, T2, T3, T4, T5, T6, T7, T8>()(data, type_id);
+      TBase* ptr = upcast_ptr<TBase>();
+
+      ETL_ASSERT(ptr != ETL_NULLPTR, ETL_ERROR(variant_not_a_base_exception));
+
+      return *ptr;
+    }
+
+    //***************************************************************************
+    /// Gets the value stored as the specified template type.
+    ///\return A const pointer to the value.
+    //***************************************************************************
+    template <typename TBase>
+    const TBase* upcast_ptr() const
+    {
+      if (is_base_of<TBase>())
+      {
+        return reinterpret_cast<const TBase*>(static_cast<const uint_least8_t*>(data));
+      }
+      else
+      {
+        return ETL_NULLPTR;
+      }
     }
 
     //***************************************************************************
@@ -734,7 +789,35 @@ namespace etl
     template <typename TBase>
     const TBase& upcast() const
     {
-      return *upcast_functor<TBase, T1, T2, T3, T4, T5, T6, T7, T8>()(data, type_id);
+      const TBase* ptr = upcast_ptr<TBase>();
+
+      ETL_ASSERT(ptr != ETL_NULLPTR, ETL_ERROR(variant_not_a_base_exception));
+
+      return *ptr;
+    }
+
+    //***************************************************************************
+    /// Check that TBase is a base class of the current variant value.
+    //***************************************************************************
+    template <typename TBase>
+    bool is_base_of() const
+    {
+      bool is_base;
+
+      switch (type_id)
+      {
+        case 0: is_base = etl::is_base_of<TBase, T1>::value; break;
+        case 1: is_base = etl::is_base_of<TBase, T2>::value; break;
+        case 2: is_base = etl::is_base_of<TBase, T3>::value; break;
+        case 3: is_base = etl::is_base_of<TBase, T4>::value; break;
+        case 4: is_base = etl::is_base_of<TBase, T5>::value; break;
+        case 5: is_base = etl::is_base_of<TBase, T6>::value; break;
+        case 6: is_base = etl::is_base_of<TBase, T7>::value; break;
+        case 7: is_base = etl::is_base_of<TBase, T8>::value; break;
+        default: is_base = false;  break;
+      }
+
+      return is_base;
     }
 
     //***************************************************************************
@@ -781,282 +864,6 @@ namespace etl
 
       type_id = UNSUPPORTED_TYPE_ID;
     }
-
-    //*************************************************************************
-    //**** Up-cast functors ***************************************************
-    //*************************************************************************
-
-    //*************************************************************************
-    /// Base upcast_functor for eight types.
-    //*************************************************************************
-    template <typename TBase, typename U1, typename U2 = no_type2, typename U3 = no_type3, typename U4 = no_type4, typename U5 = no_type5, typename U6 = no_type6, typename U7 = no_type7, typename U8 = no_type8>
-    class upcast_functor
-    {
-    public:
-
-      TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId)
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<U1*>(p_data);
-        case 1: return reinterpret_cast<U2*>(p_data);
-        case 2: return reinterpret_cast<U3*>(p_data);
-        case 3: return reinterpret_cast<U4*>(p_data);
-        case 4: return reinterpret_cast<U5*>(p_data);
-        case 5: return reinterpret_cast<U6*>(p_data);
-        case 6: return reinterpret_cast<U7*>(p_data);
-        case 7: return reinterpret_cast<U8*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-
-      const TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId) const
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<const U1*>(p_data);
-        case 1: return reinterpret_cast<const U2*>(p_data);
-        case 2: return reinterpret_cast<const U3*>(p_data);
-        case 3: return reinterpret_cast<const U4*>(p_data);
-        case 4: return reinterpret_cast<const U5*>(p_data);
-        case 5: return reinterpret_cast<const U6*>(p_data);
-        case 6: return reinterpret_cast<const U7*>(p_data);
-        case 7: return reinterpret_cast<const U8*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-    };
-
-    //*************************************************************************
-    /// Upcast_functor for seven types.
-    //*************************************************************************
-    template <typename TBase, typename U1, typename U2, typename U3, typename U4, typename U5, typename U6, typename U7>
-    class upcast_functor<TBase, U1, U2, U3, U4, U5, U6, U7, no_type8>
-    {
-    public:
-
-      TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId)
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<U1*>(p_data);
-        case 1: return reinterpret_cast<U2*>(p_data);
-        case 2: return reinterpret_cast<U3*>(p_data);
-        case 3: return reinterpret_cast<U4*>(p_data);
-        case 4: return reinterpret_cast<U5*>(p_data);
-        case 5: return reinterpret_cast<U6*>(p_data);
-        case 6: return reinterpret_cast<U7*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-
-      const TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId) const
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<const U1*>(p_data);
-        case 1: return reinterpret_cast<const U2*>(p_data);
-        case 2: return reinterpret_cast<const U3*>(p_data);
-        case 3: return reinterpret_cast<const U4*>(p_data);
-        case 4: return reinterpret_cast<const U5*>(p_data);
-        case 5: return reinterpret_cast<const U6*>(p_data);
-        case 6: return reinterpret_cast<const U7*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-    };
-
-    //*************************************************************************
-    /// Upcast_functor for six types.
-    //*************************************************************************
-    template <typename TBase, typename U1, typename U2, typename U3, typename U4, typename U5, typename U6>
-    class upcast_functor<TBase, U1, U2, U3, U4, U5, U6, no_type7, no_type8>
-    {
-    public:
-
-      TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId)
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<U1*>(p_data);
-        case 1: return reinterpret_cast<U2*>(p_data);
-        case 2: return reinterpret_cast<U3*>(p_data);
-        case 3: return reinterpret_cast<U4*>(p_data);
-        case 4: return reinterpret_cast<U5*>(p_data);
-        case 5: return reinterpret_cast<U6*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-
-      const TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId) const
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<const U1*>(p_data);
-        case 1: return reinterpret_cast<const U2*>(p_data);
-        case 2: return reinterpret_cast<const U3*>(p_data);
-        case 3: return reinterpret_cast<const U4*>(p_data);
-        case 4: return reinterpret_cast<const U5*>(p_data);
-        case 5: return reinterpret_cast<const U6*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-    };
-
-    //*************************************************************************
-    /// Upcast_functor for five types.
-    //*************************************************************************
-    template <typename TBase, typename U1, typename U2, typename U3, typename U4, typename U5>
-    class upcast_functor<TBase, U1, U2, U3, U4, U5, no_type6, no_type7, no_type8>
-    {
-    public:
-
-      TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId)
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<U1*>(p_data);
-        case 1: return reinterpret_cast<U2*>(p_data);
-        case 2: return reinterpret_cast<U3*>(p_data);
-        case 3: return reinterpret_cast<U4*>(p_data);
-        case 4: return reinterpret_cast<U5*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-
-      const TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId) const
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<const U1*>(p_data);
-        case 1: return reinterpret_cast<const U2*>(p_data);
-        case 2: return reinterpret_cast<const U3*>(p_data);
-        case 3: return reinterpret_cast<const U4*>(p_data);
-        case 4: return reinterpret_cast<const U5*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-    };
-
-    //*************************************************************************
-    /// Upcast_functor for four types.
-    //*************************************************************************
-    template <typename TBase, typename U1, typename U2, typename U3, typename U4>
-    class upcast_functor<TBase, U1, U2, U3, U4, no_type5, no_type6, no_type7, no_type8>
-    {
-    public:
-
-      TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId)
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<U1*>(p_data);
-        case 1: return reinterpret_cast<U2*>(p_data);
-        case 2: return reinterpret_cast<U3*>(p_data);
-        case 3: return reinterpret_cast<U4*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-
-      const TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId) const
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<const U1*>(p_data);
-        case 1: return reinterpret_cast<const U2*>(p_data);
-        case 2: return reinterpret_cast<const U3*>(p_data);
-        case 3: return reinterpret_cast<const U4*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-    };
-
-    //*************************************************************************
-    /// Upcast_functor for three types.
-    //*************************************************************************
-    template <typename TBase, typename U1, typename U2, typename U3>
-    class upcast_functor<TBase, U1, U2, U3, no_type4, no_type5, no_type6, no_type7, no_type8>
-    {
-    public:
-
-      TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId)
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<U1*>(p_data);
-        case 1: return reinterpret_cast<U2*>(p_data);
-        case 2: return reinterpret_cast<U3*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-
-      const TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId) const
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<const U1*>(p_data);
-        case 1: return reinterpret_cast<const U2*>(p_data);
-        case 2: return reinterpret_cast<const U3*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-    };
-
-    //*************************************************************************
-    /// Upcast_functor for two types.
-    //*************************************************************************
-    template <typename TBase, typename U1, typename U2>
-    class upcast_functor<TBase, U1, U2, no_type3, no_type4, no_type5, no_type6, no_type7, no_type8>
-    {
-    public:
-
-      TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId)
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<U1*>(p_data);
-        case 1: return reinterpret_cast<U2*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-
-      const TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId) const
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<const U1*>(p_data);
-        case 1: return reinterpret_cast<const U2&>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-    };
-
-    //*************************************************************************
-    /// Upcast_functor for one type.
-    //*************************************************************************
-    template <typename TBase, typename U1>
-    class upcast_functor<TBase, U1, no_type2, no_type3, no_type4, no_type5, no_type6, no_type7, no_type8>
-    {
-    public:
-
-      TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId)
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<U1*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-
-      const TBase* operator()(uint_least8_t* p_data, uint_least8_t typeId) const
-      {
-        switch (typeId)
-        {
-        case 0: return reinterpret_cast<const U1*>(p_data);
-        default: return reinterpret_cast<TBase*>(0);
-        }
-      }
-    };
 
     //***************************************************************************
     /// The internal storage.
@@ -1146,22 +953,22 @@ namespace etl
     return get<typename variant_alternative<tIndex, TVariant>::type>(variant);
   }
 
-#define ETL_GEN_LEGACY_VISIT(VISITQUAL, VARIANTQUAL)                          \
-  template <typename TRet, typename TVisitor, typename TVariant>              \
-  static TRet visit(TVisitor VISITQUAL visitor, TVariant VARIANTQUAL variant) \
-  {                                                                           \
-    switch (variant.index())                                                  \
-    {                                                                         \
-      case 0: return static_cast<TRet>(visitor(get<0>(variant)));             \
-      case 1: return static_cast<TRet>(visitor(get<1>(variant)));             \
-      case 2: return static_cast<TRet>(visitor(get<2>(variant)));             \
-      case 3: return static_cast<TRet>(visitor(get<3>(variant)));             \
-      case 4: return static_cast<TRet>(visitor(get<4>(variant)));             \
-      case 5: return static_cast<TRet>(visitor(get<5>(variant)));             \
-      case 6: return static_cast<TRet>(visitor(get<6>(variant)));             \
-      case 7: return static_cast<TRet>(visitor(get<7>(variant)));             \
-      default: ETL_ASSERT(false, ETL_ERROR(bad_variant_access));              \
-    }                                                                         \
+#define ETL_GEN_LEGACY_VISIT(VISITQUAL, VARIANTQUAL)                             \
+  template <typename TReturn, typename TVisitor, typename TVariant>              \
+  static TReturn visit(TVisitor VISITQUAL visitor, TVariant VARIANTQUAL variant) \
+  {                                                                              \
+    switch (variant.index())                                                     \
+    {                                                                            \
+      case 0: return static_cast<TReturn>(visitor(get<0>(variant)));             \
+      case 1: return static_cast<TReturn>(visitor(get<1>(variant)));             \
+      case 2: return static_cast<TReturn>(visitor(get<2>(variant)));             \
+      case 3: return static_cast<TReturn>(visitor(get<3>(variant)));             \
+      case 4: return static_cast<TReturn>(visitor(get<4>(variant)));             \
+      case 5: return static_cast<TReturn>(visitor(get<5>(variant)));             \
+      case 6: return static_cast<TReturn>(visitor(get<6>(variant)));             \
+      case 7: return static_cast<TReturn>(visitor(get<7>(variant)));             \
+      default: ETL_ASSERT(false, ETL_ERROR(bad_variant_access));                 \
+    }                                                                            \
   }
 
   ETL_GEN_LEGACY_VISIT(&, &)
