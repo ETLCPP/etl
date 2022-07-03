@@ -1,4 +1,11 @@
 ===============================================================================
+20.30.0
+Fixed #560 Unable to upcast legacy variant.
+Refactored legacy variant to remove upcast functors.
+Added upcast_ptr, is_base_of & 'not a base' error exception to legacy variant.
+Added non-member etl::send_message for etl::shared_message
+
+===============================================================================
 20.29.3
 Updated message_packet_generator.h to match etl::message_packet changes.
 
