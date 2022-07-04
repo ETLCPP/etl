@@ -82,20 +82,20 @@ namespace
   };
 
   // Test variant types.
-  typedef etl_legacy::variant<char, int, std::string> test_variant_3a;
-  typedef etl_legacy::variant<int, short, double> test_variant_3b;
+  typedef etl::legacy::variant<char, int, std::string> test_variant_3a;
+  typedef etl::legacy::variant<int, short, double> test_variant_3b;
 
-  typedef etl_legacy::variant<int8_t> test_variant_1;
-  typedef etl_legacy::variant<int8_t, uint8_t> test_variant_2;
-  typedef etl_legacy::variant<int8_t, uint8_t, int16_t> test_variant_3;
-  typedef etl_legacy::variant<int8_t, uint8_t, int16_t, uint16_t> test_variant_4;
-  typedef etl_legacy::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t> test_variant_5;
-  typedef etl_legacy::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t> test_variant_6;
-  typedef etl_legacy::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, int64_t> test_variant_7;
-  typedef etl_legacy::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, int64_t, uint64_t> test_variant_8;
+  typedef etl::legacy::variant<int8_t> test_variant_1;
+  typedef etl::legacy::variant<int8_t, uint8_t> test_variant_2;
+  typedef etl::legacy::variant<int8_t, uint8_t, int16_t> test_variant_3;
+  typedef etl::legacy::variant<int8_t, uint8_t, int16_t, uint16_t> test_variant_4;
+  typedef etl::legacy::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t> test_variant_5;
+  typedef etl::legacy::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t> test_variant_6;
+  typedef etl::legacy::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, int64_t> test_variant_7;
+  typedef etl::legacy::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, int64_t, uint64_t> test_variant_8;
 
-  typedef etl_legacy::variant<derived_1, derived_2> test_variant_polymorphic;
-  typedef etl_legacy::variant<char, unsigned char, short, unsigned short, int, unsigned int, long, unsigned long> test_variant_max_types;
+  typedef etl::legacy::variant<derived_1, derived_2> test_variant_polymorphic;
+  typedef etl::legacy::variant<char, unsigned char, short, unsigned short, int, unsigned int, long, unsigned long> test_variant_max_types;
 
   // This line should compile with no errors.
   test_variant_max_types variant_max;
@@ -200,16 +200,16 @@ namespace
     return os;
   }
 
-  typedef etl_legacy::variant<D1, D2, D3, D4> test_variant_emplace;
+  typedef etl::legacy::variant<D1, D2, D3, D4> test_variant_emplace;
 
   SUITE(test_variant)
   {
     TEST(test_alignment)
     {
-      typedef etl_legacy::variant<char, unsigned char> test_variant_a;
-      typedef etl_legacy::variant<char, short>         test_variant_b;
-      typedef etl_legacy::variant<char, int>           test_variant_c;
-      typedef etl_legacy::variant<char, double>        test_variant_d;
+      typedef etl::legacy::variant<char, unsigned char> test_variant_a;
+      typedef etl::legacy::variant<char, short>         test_variant_b;
+      typedef etl::legacy::variant<char, int>           test_variant_c;
+      typedef etl::legacy::variant<char, double>        test_variant_d;
 
       static test_variant_a a(char('1'));
       static test_variant_b b(short(2));
@@ -319,7 +319,7 @@ namespace
       variant = text;
 
       int i;
-      CHECK_THROW(i = variant, etl_legacy::variant_incorrect_type_exception);
+      CHECK_THROW(i = variant, etl::legacy::variant_incorrect_type_exception);
       (void)i;
     }
 
@@ -455,7 +455,7 @@ namespace
       variant = 1;
 
       char c;
-      CHECK_THROW(c = variant.get<char>(), etl_legacy::variant_incorrect_type_exception);
+      CHECK_THROW(c = variant.get<char>(), etl::legacy::variant_incorrect_type_exception);
       (void)c;
     }
 
@@ -770,7 +770,7 @@ namespace
       CHECK(variant1.is_base_of<base>());
       CHECK(!variant1.is_base_of<not_base>());
       CHECK_EQUAL(1, variant1.upcast<base>().value);
-      CHECK_THROW(variant1.upcast<not_base>(), etl_legacy::variant_not_a_base_exception);
+      CHECK_THROW(variant1.upcast<not_base>(), etl::legacy::variant_not_a_base_exception);
       CHECK_EQUAL(ETL_NULLPTR, variant1.upcast_ptr<not_base>());
 
       derived_2 derived2;
@@ -780,7 +780,7 @@ namespace
       CHECK(variant1.is_base_of<base>());
       CHECK(!variant1.is_base_of<not_base>());
       CHECK_EQUAL(2, variant1.upcast<base>().value);
-      CHECK_THROW(variant1.upcast<not_base>(), etl_legacy::variant_not_a_base_exception);
+      CHECK_THROW(variant1.upcast<not_base>(), etl::legacy::variant_not_a_base_exception);
       CHECK_EQUAL(ETL_NULLPTR, variant1.upcast_ptr<not_base>());
     }
 
@@ -794,7 +794,7 @@ namespace
       CHECK(variant1.is_base_of<base>());
       CHECK(!variant1.is_base_of<not_base>());
       CHECK_EQUAL(1, variant1.upcast<base>().value);
-      CHECK_THROW(variant1.upcast<not_base>(), etl_legacy::variant_not_a_base_exception);
+      CHECK_THROW(variant1.upcast<not_base>(), etl::legacy::variant_not_a_base_exception);
       CHECK_EQUAL(ETL_NULLPTR, variant1.upcast_ptr<not_base>());
 
       derived_2 derived2;
@@ -804,7 +804,7 @@ namespace
       CHECK(variant2.is_base_of<base>());
       CHECK(!variant2.is_base_of<not_base>());
       CHECK_EQUAL(2, variant2.upcast<base>().value);
-      CHECK_THROW(variant2.upcast<not_base>(), etl_legacy::variant_not_a_base_exception);
+      CHECK_THROW(variant2.upcast<not_base>(), etl::legacy::variant_not_a_base_exception);
       CHECK_EQUAL(ETL_NULLPTR, variant2.upcast_ptr<not_base>());
     }
 
@@ -907,24 +907,24 @@ namespace
       test_variant_3 variant;
       variant = int8_t{};
       // c++98 should generate a const ref of dispatchern.
-      int16_t type = etl_legacy::visit<int16_t>(variant_test_visit_dispatcher{}, variant);
+      int16_t type = etl::legacy::visit<int16_t>(variant_test_visit_dispatcher{}, variant);
       CHECK_EQUAL(1, type);
       test_variant_3 const& variant_const = variant;
-      type = etl_legacy::visit<int16_t>(variant_test_visit_dispatcher{}, variant_const);
+      type = etl::legacy::visit<int16_t>(variant_test_visit_dispatcher{}, variant_const);
       CHECK_EQUAL(10, type);
 
       variant_test_visit_dispatcher visitor;
-      type = etl_legacy::visit<int16_t>(visitor, variant_const);
+      type = etl::legacy::visit<int16_t>(visitor, variant_const);
       CHECK_EQUAL(50, type);
 
       variant = int16_t{};
-      type = etl_legacy::visit<int16_t>(variant_test_visit_dispatcher{}, variant);
+      type = etl::legacy::visit<int16_t>(variant_test_visit_dispatcher{}, variant);
       CHECK_EQUAL(3, type);
 
-      type = etl_legacy::visit<int16_t>(variant_test_visit_dispatcher{}, variant_const);
+      type = etl::legacy::visit<int16_t>(variant_test_visit_dispatcher{}, variant_const);
       CHECK_EQUAL(30, type);
 
-      type = etl_legacy::visit<int16_t>(visitor, variant_const);
+      type = etl::legacy::visit<int16_t>(visitor, variant_const);
       CHECK_EQUAL(70, type);
     }
   };
