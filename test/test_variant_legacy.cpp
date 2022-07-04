@@ -771,7 +771,7 @@ namespace
       CHECK(!variant1.is_base_of<not_base>());
       CHECK_EQUAL(1, variant1.upcast<base>().value);
       CHECK_THROW(variant1.upcast<not_base>(), etl::legacy::variant_not_a_base_exception);
-      CHECK_EQUAL(ETL_NULLPTR, variant1.upcast_ptr<not_base>());
+      CHECK_EQUAL((void*)(0U), variant1.upcast_ptr<not_base>());
 
       derived_2 derived2;
       derived2.set();
@@ -781,7 +781,7 @@ namespace
       CHECK(!variant1.is_base_of<not_base>());
       CHECK_EQUAL(2, variant1.upcast<base>().value);
       CHECK_THROW(variant1.upcast<not_base>(), etl::legacy::variant_not_a_base_exception);
-      CHECK_EQUAL(ETL_NULLPTR, variant1.upcast_ptr<not_base>());
+      CHECK_EQUAL((void*)(0U), variant1.upcast_ptr<not_base>());
     }
 
     //*************************************************************************
@@ -795,7 +795,7 @@ namespace
       CHECK(!variant1.is_base_of<not_base>());
       CHECK_EQUAL(1, variant1.upcast<base>().value);
       CHECK_THROW(variant1.upcast<not_base>(), etl::legacy::variant_not_a_base_exception);
-      CHECK_EQUAL(ETL_NULLPTR, variant1.upcast_ptr<not_base>());
+      CHECK_EQUAL((void*)(0U), variant1.upcast_ptr<not_base>());
 
       derived_2 derived2;
       derived2.set();
@@ -805,7 +805,7 @@ namespace
       CHECK(!variant2.is_base_of<not_base>());
       CHECK_EQUAL(2, variant2.upcast<base>().value);
       CHECK_THROW(variant2.upcast<not_base>(), etl::legacy::variant_not_a_base_exception);
-      CHECK_EQUAL(ETL_NULLPTR, variant2.upcast_ptr<not_base>());
+      CHECK_EQUAL((void*)(0U), variant2.upcast_ptr<not_base>());
     }
 
     //*************************************************************************
