@@ -40,6 +40,8 @@ SOFTWARE.
 #include "memory.h"
 #include "array.h"
 
+#include "private/dynamic_extent.h"
+
 #if ETL_USING_CPP11 && ETL_USING_STL
   #include <array>
 #endif
@@ -49,36 +51,34 @@ SOFTWARE.
 
 namespace etl
 {
-  static ETL_CONSTANT size_t dynamic_extent = etl::integral_limits<size_t>::max;
-
   //***************************************************************************
   /// Span
   //***************************************************************************
-  template <typename T, size_t EXTENT = etl::dynamic_extent>
+  template <typename T, size_t Extent = etl::dynamic_extent>
   class span
   {
   public:
 
-    typedef T                                            element_type;
-    typedef typename etl::remove_cv<T>::type             value_type;
-    typedef size_t                                       size_type;
-    typedef T& reference;
-    typedef const T& const_reference;
-    typedef T* pointer;
-    typedef const T* const_pointer;
-    typedef T* iterator;
-    typedef const T* const_iterator;
+    typedef T                                element_type;
+    typedef typename etl::remove_cv<T>::type value_type;
+    typedef size_t                           size_type;
+    typedef T&                               reference;
+    typedef const T&                         const_reference;
+    typedef T*                               pointer;
+    typedef const T*                         const_pointer;
+    typedef T*                               iterator;
+    typedef const T*                         const_iterator;
+
     typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
-    static ETL_CONSTANT size_t extent = EXTENT;
+    static ETL_CONSTANT size_t extent = Extent;
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
     ETL_CONSTEXPR span() ETL_NOEXCEPT
-      : mbegin(ETL_NULLPTR)
-      , mend(ETL_NULLPTR)
+      : pbegin(ETL_NULLPTR)
     {
     }
 
@@ -87,8 +87,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator, typename TSize>
     ETL_CONSTEXPR span(const TIterator begin_, const TSize size_) ETL_NOEXCEPT
-      : mbegin(etl::addressof(*begin_))
-      , mend(etl::addressof(*begin_) + size_)
+      : pbegin(etl::addressof(*begin_))
     {
     }
 
@@ -97,8 +96,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     ETL_CONSTEXPR span(const TIterator begin_, const TIterator end_)
-      : mbegin(etl::addressof(*begin_))
-      , mend(etl::addressof(*begin_) + etl::distance(begin_, end_))
+      : pbegin(etl::addressof(*begin_))
     {
     }
 
@@ -107,8 +105,7 @@ namespace etl
     //*************************************************************************
     template<size_t ARRAY_SIZE>
     ETL_CONSTEXPR span(element_type(&begin_)[ARRAY_SIZE]) ETL_NOEXCEPT
-      : mbegin(begin_)
-      , mend(begin_ + ARRAY_SIZE)
+      : pbegin(begin_)
     {
     }
 
@@ -116,20 +113,18 @@ namespace etl
     //*************************************************************************
     /// Construct from etl::array.
     //*************************************************************************
-    template <typename U, size_t N, typename = typename etl::enable_if<(N == EXTENT) && etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
+    template <typename U, size_t N, typename = typename etl::enable_if<(N == Extent) && etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
     ETL_CONSTEXPR span(etl::array<U, N>& a) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
+      : pbegin(a.data())
     {
     }
 
     //*************************************************************************
     /// Construct from etl::array.
     //*************************************************************************
-    template <typename U, size_t N, typename = typename etl::enable_if<(N == EXTENT) && etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
+    template <typename U, size_t N, typename = typename etl::enable_if<(N == Extent) && etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
     ETL_CONSTEXPR span(const etl::array<U, N>& a) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
+      : pbegin(a.data())
     {
     }
 #else
@@ -137,9 +132,8 @@ namespace etl
     /// Construct from etl::array.
     //*************************************************************************
     template <typename U, size_t N>
-    ETL_CONSTEXPR span(etl::array<U, N>& a, typename etl::enable_if<(N == EXTENT) && etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
+    ETL_CONSTEXPR span(etl::array<U, N>& a, typename etl::enable_if<(N == Extent) && etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type) ETL_NOEXCEPT
+      : pbegin(a.data())
     {
     }
 
@@ -147,9 +141,8 @@ namespace etl
     /// Construct from etl::array.
     //*************************************************************************
     template <typename U, size_t N>
-    ETL_CONSTEXPR span(const etl::array<U, N>& a, typename etl::enable_if<(N == EXTENT) && etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
+    ETL_CONSTEXPR span(const etl::array<U, N>& a, typename etl::enable_if<(N == Extent) && etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type) ETL_NOEXCEPT
+      : pbegin(a.data())
     {
     }
 #endif
@@ -158,20 +151,18 @@ namespace etl
     //*************************************************************************
     /// Construct from std::array.
     //*************************************************************************
-    template <typename U, size_t N, typename = typename etl::enable_if<(N == EXTENT) && etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
+    template <typename U, size_t N, typename = typename etl::enable_if<(N == Extent) && etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
     ETL_CONSTEXPR span(std::array<U, N>& a) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
+      : pbegin(a.data())
     {
     }
 
     //*************************************************************************
     /// Construct from std::array.
     //*************************************************************************
-    template <typename U, size_t N, typename = typename etl::enable_if<(N == EXTENT) && etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
+    template <typename U, size_t N, typename = typename etl::enable_if<(N == Extent) && etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
     ETL_CONSTEXPR span(const std::array<U, N>& a) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
+      : pbegin(a.data())
     {
     }
 #endif
@@ -180,8 +171,7 @@ namespace etl
     /// Copy constructor
     //*************************************************************************
     ETL_CONSTEXPR span(const span& other) ETL_NOEXCEPT
-      : mbegin(other.mbegin)
-      , mend(other.mend)
+      : pbegin(other.pbegin)
     {
     }
 
@@ -190,7 +180,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR reference front() const ETL_NOEXCEPT
     {
-      return *mbegin;
+      return *pbegin;
     }
 
     //*************************************************************************
@@ -198,7 +188,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR reference back() const ETL_NOEXCEPT
     {
-      return *(mend - 1);
+      return *((pbegin + Extent) - 1);
     }
 
     //*************************************************************************
@@ -206,7 +196,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR pointer data() const ETL_NOEXCEPT
     {
-      return mbegin;
+      return pbegin;
     }
 
     //*************************************************************************
@@ -214,7 +204,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR iterator begin() const ETL_NOEXCEPT
     {
-      return mbegin;
+      return pbegin;
     }
 
     //*************************************************************************
@@ -222,7 +212,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR iterator end() const ETL_NOEXCEPT
     {
-      return mend;
+      return (pbegin + Extent);
     }
 
     //*************************************************************************
@@ -230,7 +220,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR reverse_iterator rbegin() const ETL_NOEXCEPT
     {
-      return reverse_iterator(mend);
+      return reverse_iterator((pbegin + Extent));
     }
 
     //*************************************************************************
@@ -238,7 +228,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR reverse_iterator rend() const ETL_NOEXCEPT
     {
-      return reverse_iterator(mbegin);
+      return reverse_iterator(pbegin);
     }
 
     //*************************************************************************
@@ -246,7 +236,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR bool empty() const ETL_NOEXCEPT
     {
-      return (mbegin == mend);
+      return false;
     }
 
     //*************************************************************************
@@ -254,7 +244,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR size_t size() const ETL_NOEXCEPT
     {
-      return (mend - mbegin);
+      return Extent;
     }
 
     //*************************************************************************
@@ -262,7 +252,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR size_t size_bytes() const ETL_NOEXCEPT
     {
-      return sizeof(element_type) * (mend - mbegin);
+      return sizeof(element_type) * Extent;
     }
 
     //*************************************************************************
@@ -278,8 +268,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 span& operator =(const span& other) ETL_NOEXCEPT
     {
-      mbegin = other.mbegin;
-      mend = other.mend;
+      pbegin = other.pbegin;
       return *this;
     }
 
@@ -288,7 +277,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR reference operator[](const size_t i) const
     {
-      return mbegin[i];
+      return pbegin[i];
     }
 
     //*************************************************************************
@@ -297,7 +286,7 @@ namespace etl
     template <size_t COUNT>
     ETL_CONSTEXPR etl::span<element_type, COUNT> first() const
     {
-      return etl::span<element_type, COUNT>(mbegin, mbegin + COUNT);
+      return etl::span<element_type, COUNT>(pbegin, pbegin + COUNT);
     }
 
     //*************************************************************************
@@ -305,7 +294,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> first(size_t count) const
     {
-      return etl::span<element_type, etl::dynamic_extent>(mbegin, mbegin + count);
+      return etl::span<element_type, etl::dynamic_extent>(pbegin, pbegin + count);
     }
 
     //*************************************************************************
@@ -314,7 +303,7 @@ namespace etl
     template <size_t COUNT>
     ETL_CONSTEXPR etl::span<element_type, COUNT> last() const
     {
-      return etl::span<element_type, COUNT>(mend - COUNT, mend);
+      return etl::span<element_type, COUNT>((pbegin + Extent) - COUNT, (pbegin + Extent));
     }
 
     //*************************************************************************
@@ -322,7 +311,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> last(size_t count) const
     {
-      return etl::span<element_type, etl::dynamic_extent>(mend - count, mend);
+      return etl::span<element_type, etl::dynamic_extent>((pbegin + Extent) - count, (pbegin + Extent));
     }
 
 #if ETL_USING_CPP11
@@ -331,15 +320,15 @@ namespace etl
     //*************************************************************************
     template <const size_t OFFSET, size_t COUNT = etl::dynamic_extent>
     ETL_CONSTEXPR 
-    etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (EXTENT != etl::dynamic_extent ? EXTENT - OFFSET : etl::dynamic_extent))> subspan() const
+    etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (Extent != etl::dynamic_extent ? Extent - OFFSET : etl::dynamic_extent))> subspan() const
     {
       if (COUNT == etl::dynamic_extent)
       {
-        return etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (EXTENT != etl::dynamic_extent ? EXTENT - OFFSET : etl::dynamic_extent))>(mbegin + OFFSET, mend);
+        return etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (Extent != etl::dynamic_extent ? Extent - OFFSET : etl::dynamic_extent))>(pbegin + OFFSET, (pbegin + Extent));
       }
       else
       {
-        return etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (EXTENT != etl::dynamic_extent ? EXTENT - OFFSET : etl::dynamic_extent))>(mbegin + OFFSET, mbegin + OFFSET + COUNT);
+        return etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (Extent != etl::dynamic_extent ? Extent - OFFSET : etl::dynamic_extent))>(pbegin + OFFSET, pbegin + OFFSET + COUNT);
       }
     }
 #else
@@ -348,15 +337,15 @@ namespace etl
     //*************************************************************************
     template <const size_t OFFSET, size_t COUNT>
     ETL_CONSTEXPR 
-      etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (EXTENT != etl::dynamic_extent ? EXTENT - OFFSET : etl::dynamic_extent))> subspan() const
+      etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (Extent != etl::dynamic_extent ? Extent - OFFSET : etl::dynamic_extent))> subspan() const
     {
       if (COUNT == etl::dynamic_extent)
       {
-        return etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (EXTENT != etl::dynamic_extent ? EXTENT - OFFSET : etl::dynamic_extent))>(mbegin + OFFSET, mend);
+        return etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (Extent != etl::dynamic_extent ? Extent - OFFSET : etl::dynamic_extent))>(pbegin + OFFSET, (pbegin + Extent));
       }
       else
       {
-        return etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (EXTENT != etl::dynamic_extent ? EXTENT - OFFSET : etl::dynamic_extent))>(mbegin + OFFSET, mbegin + OFFSET + COUNT);
+        return etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (Extent != etl::dynamic_extent ? Extent - OFFSET : etl::dynamic_extent))>(pbegin + OFFSET, pbegin + OFFSET + COUNT);
       }
     }
 #endif
@@ -368,18 +357,17 @@ namespace etl
     {
       if (count == etl::dynamic_extent)
       {
-        return etl::span<element_type, etl::dynamic_extent>(mbegin + offset, mend);
+        return etl::span<element_type, etl::dynamic_extent>(pbegin + offset, (pbegin + Extent));
       }
       else
       {
-        return etl::span<element_type, etl::dynamic_extent>(mbegin + offset, mbegin + offset + count);
+        return etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pbegin + offset + count);
       }
     }
 
   private:
 
-    element_type* mbegin;
-    element_type* mend;
+    pointer pbegin;
   };
 
   //***************************************************************************
@@ -408,8 +396,8 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     ETL_CONSTEXPR span() ETL_NOEXCEPT
-      : mbegin(ETL_NULLPTR)
-      , mend(ETL_NULLPTR)
+      : pbegin(ETL_NULLPTR)
+      , pend(ETL_NULLPTR)
     {
     }
 
@@ -418,8 +406,8 @@ namespace etl
     //*************************************************************************
     template <typename TIterator, typename TSize>
     ETL_CONSTEXPR span(const TIterator begin_, const TSize size_) ETL_NOEXCEPT
-      : mbegin(etl::addressof(*begin_))
-      , mend(etl::addressof(*begin_) + size_)
+      : pbegin(etl::addressof(*begin_))
+      , pend(etl::addressof(*begin_) + size_)
     {
     }
 
@@ -428,8 +416,8 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     ETL_CONSTEXPR span(const TIterator begin_, const TIterator end_)
-      : mbegin(etl::addressof(*begin_))
-      , mend(etl::addressof(*begin_) + etl::distance(begin_, end_))
+      : pbegin(etl::addressof(*begin_))
+      , pend(etl::addressof(*begin_) + etl::distance(begin_, end_))
     {
     }
 
@@ -438,8 +426,8 @@ namespace etl
     //*************************************************************************
     template<size_t ARRAY_SIZE>
     ETL_CONSTEXPR span(element_type(&begin_)[ARRAY_SIZE]) ETL_NOEXCEPT
-      : mbegin(begin_)
-      , mend(begin_ + ARRAY_SIZE)
+      : pbegin(begin_)
+      , pend(begin_ + ARRAY_SIZE)
     {
     }
 
@@ -449,8 +437,8 @@ namespace etl
     //*************************************************************************
     template <typename U, size_t N, typename = typename etl::enable_if<etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
     ETL_CONSTEXPR span(etl::array<U, N>& a) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
+      : pbegin(a.data())
+      , pend(a.data() + a.size())
     {
     }
 
@@ -459,8 +447,8 @@ namespace etl
     //*************************************************************************
     template <typename U, size_t N, typename = typename etl::enable_if<etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
     ETL_CONSTEXPR span(const etl::array<U, N>& a) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
+      : pbegin(a.data())
+      , pend(a.data() + a.size())
     {
     }
 #else
@@ -469,8 +457,8 @@ namespace etl
     //*************************************************************************
     template <typename U, size_t N>
     ETL_CONSTEXPR span(etl::array<U, N>& a, typename etl::enable_if<etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
+      : pbegin(a.data())
+      , pend(a.data() + a.size())
     {
     }
 
@@ -479,8 +467,8 @@ namespace etl
     //*************************************************************************
     template <typename U, size_t N>
     ETL_CONSTEXPR span(const etl::array<U, N>& a, typename etl::enable_if<etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
+      : pbegin(a.data())
+      , pend(a.data() + a.size())
     {
     }
 #endif
@@ -491,8 +479,8 @@ namespace etl
     //*************************************************************************
     template <typename U, size_t N, typename = typename etl::enable_if<etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
     ETL_CONSTEXPR span(std::array<U, N>& a) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
+      : pbegin(a.data())
+      , pend(a.data() + a.size())
     {
     }
 
@@ -501,8 +489,8 @@ namespace etl
     //*************************************************************************
     template <typename U, size_t N, typename = typename etl::enable_if<etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
     ETL_CONSTEXPR span(const std::array<U, N>& a) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
+      : pbegin(a.data())
+      , pend(a.data() + a.size())
     {
     }
 #endif
@@ -516,8 +504,8 @@ namespace etl
                                                                       !etl::is_array<etl::remove_reference_t<TContainer>>::value &&
                                                                       etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<typename etl::remove_reference_t<TContainer>::value_type>>::value, void>::type>
       ETL_CONSTEXPR span(TContainer&& a) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
+      : pbegin(a.data())
+      , pend(a.data() + a.size())
     {
     }
 #else
@@ -529,8 +517,8 @@ namespace etl
     ETL_CONSTEXPR span(TContainer& a, typename etl::enable_if<!etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
                                                               !etl::is_array<TContainer>::value &&
                                                               etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
+      : pbegin(a.data())
+      , pend(a.data() + a.size())
     {
     }
 
@@ -542,8 +530,8 @@ namespace etl
     ETL_CONSTEXPR span(const TContainer& a, typename etl::enable_if<!etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
                                                                     !etl::is_array<TContainer>::value &&
                                                                     etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type) ETL_NOEXCEPT
-      : mbegin(a.data())
-      , mend(a.data() + a.size())
+      : pbegin(a.data())
+      , pend(a.data() + a.size())
     {
     }
 #endif
@@ -552,8 +540,8 @@ namespace etl
     /// Copy constructor
     //*************************************************************************
     ETL_CONSTEXPR span(const span& other) ETL_NOEXCEPT
-      : mbegin(other.mbegin)
-      , mend(other.mend)
+      : pbegin(other.pbegin)
+      , pend(other.pend)
     {
     }
 
@@ -562,7 +550,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR reference front() const ETL_NOEXCEPT
     {
-      return *mbegin;
+      return *pbegin;
     }
 
     //*************************************************************************
@@ -570,7 +558,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR reference back() const ETL_NOEXCEPT
     {
-      return *(mend - 1);
+      return *(pend - 1);
     }
 
     //*************************************************************************
@@ -578,7 +566,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR pointer data() const ETL_NOEXCEPT
     {
-      return mbegin;
+      return pbegin;
     }
 
     //*************************************************************************
@@ -586,7 +574,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR iterator begin() const ETL_NOEXCEPT
     {
-      return mbegin;
+      return pbegin;
     }
 
     //*************************************************************************
@@ -594,7 +582,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR iterator end() const ETL_NOEXCEPT
     {
-      return mend;
+      return pend;
     }
 
     //*************************************************************************
@@ -602,7 +590,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR reverse_iterator rbegin() const ETL_NOEXCEPT
     {
-      return reverse_iterator(mend);
+      return reverse_iterator(pend);
     }
 
     //*************************************************************************
@@ -610,7 +598,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR reverse_iterator rend() const ETL_NOEXCEPT
     {
-      return reverse_iterator(mbegin);
+      return reverse_iterator(pbegin);
     }
 
     //*************************************************************************
@@ -618,7 +606,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR bool empty() const ETL_NOEXCEPT
     {
-      return (mbegin == mend);
+      return (pbegin == pend);
     }
 
     //*************************************************************************
@@ -626,7 +614,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR size_t size() const ETL_NOEXCEPT
     {
-      return (mend - mbegin);
+      return (pend - pbegin);
     }
 
     //*************************************************************************
@@ -634,7 +622,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR size_t size_bytes() const ETL_NOEXCEPT
     {
-      return sizeof(element_type) * (mend - mbegin);
+      return sizeof(element_type) * (pend - pbegin);
     }
 
     //*************************************************************************
@@ -650,8 +638,8 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 span& operator =(const span& other) ETL_NOEXCEPT
     {
-      mbegin = other.mbegin;
-      mend = other.mend;
+      pbegin = other.pbegin;
+      pend = other.pend;
       return *this;
     }
 
@@ -660,7 +648,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR reference operator[](const size_t i) const
     {
-      return mbegin[i];
+      return pbegin[i];
     }
 
     //*************************************************************************
@@ -669,7 +657,7 @@ namespace etl
     template <size_t COUNT>
     ETL_CONSTEXPR etl::span<element_type, COUNT> first() const
     {
-      return etl::span<element_type, COUNT>(mbegin, mbegin + COUNT);
+      return etl::span<element_type, COUNT>(pbegin, pbegin + COUNT);
     }
 
     //*************************************************************************
@@ -677,7 +665,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> first(size_t count) const
     {
-      return etl::span<element_type, etl::dynamic_extent>(mbegin, mbegin + count);
+      return etl::span<element_type, etl::dynamic_extent>(pbegin, pbegin + count);
     }
 
     //*************************************************************************
@@ -686,7 +674,7 @@ namespace etl
     template <size_t COUNT>
     ETL_CONSTEXPR etl::span<element_type, COUNT> last() const
     {
-      return etl::span<element_type, COUNT>(mend - COUNT, mend);
+      return etl::span<element_type, COUNT>(pend - COUNT, pend);
     }
 
     //*************************************************************************
@@ -694,7 +682,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> last(size_t count) const
     {
-      return etl::span<element_type, etl::dynamic_extent>(mend - count, mend);
+      return etl::span<element_type, etl::dynamic_extent>(pend - count, pend);
     }
 
 #if ETL_USING_CPP11
@@ -707,11 +695,11 @@ namespace etl
     {
       if (COUNT == etl::dynamic_extent)
       {
-        return etl::span<element_type, COUNT>(mbegin + OFFSET, mend);
+        return etl::span<element_type, COUNT>(pbegin + OFFSET, pend);
       }
       else
       {
-        return etl::span<element_type, COUNT>(mbegin + OFFSET, mbegin + OFFSET + COUNT);
+        return etl::span<element_type, COUNT>(pbegin + OFFSET, pbegin + OFFSET + COUNT);
       }     
     }
 #else
@@ -724,11 +712,11 @@ namespace etl
     {
       if (COUNT == etl::dynamic_extent)
       {
-        return etl::span<element_type, COUNT>(mbegin + OFFSET, mend);
+        return etl::span<element_type, COUNT>(pbegin + OFFSET, pend);
       }
       else
       {
-        return etl::span<element_type, COUNT>(mbegin + OFFSET, mbegin + OFFSET + COUNT);
+        return etl::span<element_type, COUNT>(pbegin + OFFSET, pbegin + OFFSET + COUNT);
       }
     }
 #endif
@@ -740,15 +728,15 @@ namespace etl
     {
       if (count == etl::dynamic_extent)
       {
-        return etl::span<element_type, etl::dynamic_extent>(mbegin + offset, mend);
+        return etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pend);
       }
-      return etl::span<element_type, etl::dynamic_extent>(mbegin + offset, mbegin + offset + count);
+      return etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pbegin + offset + count);
     }
 
   private:
 
-    element_type* mbegin;
-    element_type* mend;
+    pointer pbegin;
+    pointer pend;
   };
 
   //*************************************************************************

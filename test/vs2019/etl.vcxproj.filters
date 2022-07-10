@@ -3266,7 +3266,7 @@
     <ClCompile Include="..\sanity-check\poly_span.h.t.cpp">
       <Filter>Tests\Sanity Checks\Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_poly_span.cpp">
+    <ClCompile Include="..\test_poly_span_dynamic_extent.cpp">
       <Filter>Tests\Containers</Filter>
     </ClCompile>
   </ItemGroup>
