@@ -56,6 +56,28 @@ namespace
   {
   };
 
+  // Unscoped enum
+  enum Enum
+  {
+  };
+
+  // Scoped enum
+  enum class EnumClass
+  {
+  };
+
+  // Class which can be implicitly converted to/from any default-constructable type
+  struct ToAny {
+    ToAny() = default;
+    template <typename T> ToAny(T){};
+    template <typename T> operator T() { return T(); }
+  };
+
+  // Can't be default constructed
+  struct NotDefaultConstructable {
+    NotDefaultConstructable() = delete;
+  };
+
   //*********************************************
   struct Copyable
   {
@@ -304,6 +326,10 @@ namespace
       CHECK(etl::is_reference<const int&>::value          == std::is_reference<const int&>::value);
       CHECK(etl::is_reference<volatile int&>::value       == std::is_reference<volatile int&>::value);
       CHECK(etl::is_reference<const volatile int&>::value == std::is_reference<const volatile int&>::value);
+      CHECK(etl::is_reference<int&&>::value                == std::is_reference<int&&>::value);
+      CHECK(etl::is_reference<const int&&>::value          == std::is_reference<const int&&>::value);
+      CHECK(etl::is_reference<volatile int&&>::value       == std::is_reference<volatile int&&>::value);
+      CHECK(etl::is_reference<const volatile int&&>::value == std::is_reference<const volatile int&&>::value);
     }
 
     //*************************************************************************
@@ -956,6 +982,33 @@ namespace
     CHECK_EQUAL(std::is_rvalue_reference_v<int&>,  etl::is_rvalue_reference_v<int&>);
     CHECK_EQUAL(std::is_rvalue_reference_v<int&&>, etl::is_rvalue_reference_v<int&&>);
   }
+
+  //*************************************************************************
+  #define CHECK_EQUAL_FOR_TYPE(type) CHECK_EQUAL(std::is_enum_v<type>, etl::is_enum_v<type>)
+  TEST(test_is_enum) {
+    CHECK_EQUAL_FOR_TYPE(void);
+    CHECK_EQUAL_FOR_TYPE(void*);
+    CHECK_EQUAL_FOR_TYPE(int);
+    CHECK_EQUAL_FOR_TYPE(int*);
+    CHECK_EQUAL_FOR_TYPE(ToAny);
+    CHECK_EQUAL_FOR_TYPE(NotDefaultConstructable);
+    CHECK_EQUAL_FOR_TYPE(Enum);
+    CHECK_EQUAL_FOR_TYPE(Enum&);
+    CHECK_EQUAL_FOR_TYPE(Enum&&);
+    CHECK_EQUAL_FOR_TYPE(Enum*);
+    CHECK_EQUAL_FOR_TYPE(const Enum);
+    CHECK_EQUAL_FOR_TYPE(volatile Enum);
+    CHECK_EQUAL_FOR_TYPE(const volatile Enum);
+    CHECK_EQUAL_FOR_TYPE(EnumClass);
+    CHECK_EQUAL_FOR_TYPE(EnumClass&);
+    CHECK_EQUAL_FOR_TYPE(EnumClass&&);
+    CHECK_EQUAL_FOR_TYPE(EnumClass*);
+    CHECK_EQUAL_FOR_TYPE(const EnumClass);
+    CHECK_EQUAL_FOR_TYPE(volatile EnumClass);
+    CHECK_EQUAL_FOR_TYPE(const volatile EnumClass);
+
+  }
+  #undef CHECK_EQUAL_FOR_TYPE
 
   //*************************************************************************
   TEST(test_integral_constants)
