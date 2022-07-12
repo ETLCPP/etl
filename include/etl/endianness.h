@@ -122,9 +122,10 @@ namespace etl
     }
 
 #if ETL_HAS_CONSTEXPR_ENDIANNESS
-    ETL_CONSTEXPR
-#endif
+    static ETL_CONSTEXPR etl::endian value()
+#else
     static etl::endian value()
+#endif
     {
       return get();
     }

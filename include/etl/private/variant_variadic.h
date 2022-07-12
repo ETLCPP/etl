@@ -1284,7 +1284,7 @@ namespace etl
   namespace private_variant
   {
     template <typename TRet, typename TCallable, typename TVariant, size_t tIndex, typename TNext, typename... TVariants>
-    ETL_CONSTEXPR14 static TRet do_visit_single(TCallable&& f, TVariant&& v, TNext&&, TVariants&&... vs);
+    static ETL_CONSTEXPR14 TRet do_visit_single(TCallable&& f, TVariant&& v, TNext&&, TVariants&&... vs);
 
     //***************************************************************************
     /// Dummy-struct used to indicate that the return type should be auto-deduced
@@ -1407,7 +1407,7 @@ namespace etl
     /// Dispatch current variant into recursive calls to dispatch the rest.
     //***************************************************************************
     template <typename TRet, typename TCallable, typename TVariant, size_t... tIndices, typename... TVarRest>
-    ETL_CONSTEXPR14 static TRet do_visit(TCallable&& f, TVariant&& v, index_sequence<tIndices...>, TVarRest&&... variants)
+    static ETL_CONSTEXPR14 TRet do_visit(TCallable&& f, TVariant&& v, index_sequence<tIndices...>, TVarRest&&... variants)
     {
       ETL_ASSERT(!v.valueless_by_exception(), ETL_ERROR(bad_variant_access));
       
@@ -1423,7 +1423,7 @@ namespace etl
     }
 
     template <typename TRet, typename TCallable, typename TVariant, typename... TVs>
-    ETL_CONSTEXPR14 static TRet visit(TCallable&& f, TVariant&& v, TVs&&... vs)
+    static ETL_CONSTEXPR14 TRet visit(TCallable&& f, TVariant&& v, TVs&&... vs)
     {
       constexpr size_t variants = etl::variant_size<typename remove_reference<TVariant>::type>::value;
       return private_variant::do_visit<TRet>(static_cast<TCallable&&>(f),
@@ -1456,7 +1456,7 @@ namespace etl
     };
 
     template <typename TRet, typename TCallable, typename TVariant, size_t tIndex, typename TNext, typename... TVariants>
-    ETL_CONSTEXPR14 static TRet do_visit_single(TCallable&& f, TVariant&& v, TNext&& next, TVariants&&... vs)
+    static ETL_CONSTEXPR14 TRet do_visit_single(TCallable&& f, TVariant&& v, TNext&& next, TVariants&&... vs)
     {
       return private_variant::visit<TRet>(constexpr_visit_closure<TRet, TCallable, TVariant, tIndex>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v)),
                                           static_cast<TNext&&>(next), static_cast<TVariants&&>(vs)...);
@@ -1469,7 +1469,7 @@ namespace etl
   /// "auto return type" signature and c++20 explicit template return type.
   //***************************************************************************
   template <typename TRet = private_variant::visit_auto_return, typename... TVariants, typename TCallable, typename TDeducedReturn = private_variant::visit_result_t<TRet, TCallable, TVariants...> >
-  ETL_CONSTEXPR14 static TDeducedReturn visit(TCallable&& f, TVariants&&... vs)
+  static ETL_CONSTEXPR14 TDeducedReturn visit(TCallable&& f, TVariants&&... vs)
   {
     return private_variant::visit<TDeducedReturn>(static_cast<TCallable&&>(f), static_cast<TVariants&&>(vs)...);
   }
