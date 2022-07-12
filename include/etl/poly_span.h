@@ -247,7 +247,7 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Poly Span
+  /// Poly Span - Fixed Extent
   //***************************************************************************
   template <typename TBase, size_t Extent_ = etl::dynamic_extent>
   class poly_span
@@ -609,7 +609,7 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Span specialisation
+  /// Poly Span - Dynamic Extent
   //***************************************************************************
   template <typename TBase>
   class poly_span<TBase, etl::dynamic_extent>
