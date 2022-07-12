@@ -42,6 +42,7 @@ namespace
   struct Base 
   {
     virtual int value() const = 0;
+    virtual void value(int) = 0;
 
     virtual bool operator ==(const Base& rhs) const 
     { 
@@ -73,6 +74,11 @@ namespace
       return v1;
     }
 
+    void value(int i) override
+    {
+      v1 = i;
+    }
+
     int v1;
   };
 
@@ -88,6 +94,11 @@ namespace
     int value() const override 
     { 
       return v1; 
+    }
+
+    void value(int i) override
+    {
+      v1 = i;
     }
 
     double another_value() const override
@@ -253,74 +264,123 @@ namespace
       CHECK_EQUAL(data[3].another_value(), s2[3].another_value());
     }
 
-    ////*************************************************************************
-    //TEST(test_poly_span_typeProperties) 
-    //{
-    //  CHECK(std::is_trivial<etl::poly_span<int>::iterator>::value);
-    //  CHECK(std::is_trivial<etl::poly_span<const Base>::iterator>::value);
-    //  CHECK(std::is_trivial<etl::poly_span<int>::const_iterator>::value);
-    //  CHECK(bool(std::is_base_of<ETL_OR_STD::random_access_iterator_tag, etl::poly_span<int>::iterator::iterator_category>::value));
-    //  CHECK(std::is_trivially_copy_constructible<etl::poly_span<int>>::value);
-    //  CHECK(std::is_trivially_copy_assignable<etl::poly_span<int>>::value);
-    //}
+    //*************************************************************************
+    TEST(test_poly_span_front_back)
+    {
+      Derived data[] = { 1, 2, 3, 4 };
+      etl::poly_span<Base> s(data);
 
-    ////*************************************************************************
-    ////TEST(test_poly_span_iterators) 
-    ////{
-    ////  std::vector<int> v = { 1, 2, 3 };
-    ////  etl::poly_span<int> s = v;      
-    ////  using iterator = etl::poly_span<int>::iterator;
-    ////  
-    ////  CHECK_EQUAL(s.end() - s.begin(), s.size());
-    ////  CHECK_EQUAL(s.rend() - s.rbegin(), s.size());
-    ////  
-    ////  iterator b = s.begin();
-    ////  CHECK(b + s.size() == s.end());
-    ////  CHECK_EQUAL(b[0], 1);
-    ////  CHECK(b < s.end());
-    ////  CHECK(b != s.end());
-    ////  CHECK(b + 2 > s.end() - 1);
-
-    ////  etl::poly_span<int>::const_iterator bc = b;
-    ////  CHECK(bc <= s.end());
-    ////  CHECK_EQUAL(s.back(), *s.crbegin());
-    ////  CHECK_EQUAL(s.front(), s.crend()[-1]);
-    ////  
-    ////  bc += 1;
-    ////  bc -= 1;
-    ////  CHECK(bc == s.cbegin());
-    ////  CHECK(std::is_sorted(s.cbegin(), s.cend()));
-    ////}
+      CHECK_EQUAL(data[0].value(), s.front().value());
+      CHECK_EQUAL(data[3].value(), s.back().value());
+    }
 
     //*************************************************************************
-    TEST(test_poly_span_randomAccessIteratorUse) 
+    TEST(test_poly_span_const_front_back)
+    {
+      const Derived data[] = { 1, 2, 3, 4 };
+      const etl::poly_span<const Base> s(data);
+
+      CHECK_EQUAL(data[0].value(), s.front().value());
+      CHECK_EQUAL(data[3].value(), s.back().value());
+    }
+
+    //*************************************************************************
+    TEST(test_poly_span_iterator)
+    {
+      Derived data[] = { 1, 2, 3, 4 };
+      etl::poly_span<Base> s1(data);
+
+      etl::poly_span<Base>::iterator itr1 = s1.begin();
+
+      CHECK(itr1 != s1.end());
+
+      CHECK_EQUAL(data[0].value(), (*itr1).value());
+      CHECK_EQUAL(data[0].value(), itr1->value());
+      ++itr1;
+      CHECK_EQUAL(data[1].value(), (*itr1).value());
+      CHECK_EQUAL(data[1].value(), itr1->value());
+      itr1++;
+      CHECK_EQUAL(data[2].value(), (*itr1).value());
+      CHECK_EQUAL(data[2].value(), itr1->value());
+      itr1 += 1;
+      CHECK_EQUAL(data[3].value(), (*itr1).value());
+      CHECK_EQUAL(data[3].value(), itr1->value());
+      itr1 = itr1 + 1;
+      CHECK(itr1 == s1.end());
+      itr1 -= 1;
+      CHECK_EQUAL(data[3].value(), (*itr1).value());
+      CHECK_EQUAL(data[3].value(), itr1->value());
+      itr1 = itr1 - 1;
+      CHECK_EQUAL(data[2].value(), (*itr1).value());
+      CHECK_EQUAL(data[2].value(), itr1->value());
+
+      itr1 = s1.begin();
+      etl::poly_span<Base>::iterator itr2 = itr1 + 1;
+
+      CHECK(itr1 <  itr2);
+      CHECK(itr1 <= itr1);
+      CHECK(itr1 <= itr2);
+      CHECK(itr2 >  itr1);
+      CHECK(itr2 >= itr2);
+      CHECK(itr2 >= itr1);     
+      CHECK(itr1 == itr1);
+      CHECK(itr2 == itr2);
+      CHECK(itr1 != itr2);
+      CHECK(itr2 != itr1);
+
+      CHECK(!(itr1 > itr2));
+      CHECK(!(itr2 <= itr1));
+      CHECK(!(itr2 < itr1));
+      CHECK(!(itr1 >= itr2));
+      CHECK(!(itr1 == itr2));
+      CHECK(!(itr2 == itr1));
+      CHECK(!(itr1 != itr1));
+      CHECK(!(itr2 != itr2));
+
+      itr1 = s1.begin();
+
+      (*itr1).value(2);
+      CHECK_EQUAL(2, (*itr1).value());
+
+      itr1->value(3);
+      CHECK_EQUAL(3, itr1->value());
+
+      etl::poly_span<Base> s2;
+      CHECK(s2.begin() == s2.end());
+    }
+
+    //*************************************************************************
+    TEST(test_poly_span_random_access_iteratorUse) 
     {
       int data[] = { 25, 4, 3, -2, 1 };
       etl::poly_span<int> s = data;
       
-//      std::sort(s.begin(), s.end());
-//      CHECK(std::is_sorted(std::begin(data), std::end(data)));
+      std::sort(s.begin(), s.end());
+      CHECK(std::is_sorted(std::begin(data), std::end(data)));
     }
 
     //*************************************************************************
     TEST(test_poly_span_subspan) 
     {
-      const Derived data[] = { 1, 2, 3, 4, 5 };
-    //  etl::poly_span<const int> s(data);
+      Derived data[] = { 1, 2, 3, 4, 5 };
+      etl::poly_span<Base> s(data);
 
-    //  auto s1 = s.subspan(1, 2);
-    //  CHECK_EQUAL(2, s1.size());
-    //  CHECK_EQUAL(s[1], s1[0]);
-    //  CHECK_EQUAL(s[2], s1[1]);
+      auto s1 = s.subspan(1, 2);
+      CHECK_EQUAL(2, s1.size());
 
-    //  auto s2 = s.subspan(2);
-    //  CHECK_EQUAL(3, s2.size());
-    //  CHECK_EQUAL(s[2], s2[0]);
-    //  CHECK_EQUAL(s[4], s2[2]);
+      CHECK_EQUAL(s[1].value(), s1[0].value());
+      CHECK_EQUAL(s[2].value(), s1[1].value());
 
-    //  auto s3 = s.subspan(0, 10);
-    //  CHECK_EQUAL(s.size(), s3.size());
-    //  CHECK_THROW(s.subspan(6, 1), etl::poly_span_out_of_range);
+      //auto s2 = s.subspan<1, 2>();
+      //CHECK_EQUAL(2, s2.size());
+      //CHECK_EQUAL(data[1].value(), s2[0].value());
+      //CHECK_EQUAL(data[2].value(), s2[1].value());
+
+      auto s2 = s.subspan(2);
+      CHECK_EQUAL(3, s2.size());
+      CHECK_EQUAL(s[2].value(), s2[0].value());
+      CHECK_EQUAL(s[3].value(), s2[1].value());
+      CHECK_EQUAL(s[4].value(), s2[2].value());
     }
 
     ////*************************************************************************
