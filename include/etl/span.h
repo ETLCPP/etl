@@ -333,14 +333,7 @@ namespace etl
     ETL_CONSTEXPR 
     etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (EXTENT != etl::dynamic_extent ? EXTENT - OFFSET : etl::dynamic_extent))> subspan() const
     {
-      if (COUNT == etl::dynamic_extent)
-      {
-        return etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (EXTENT != etl::dynamic_extent ? EXTENT - OFFSET : etl::dynamic_extent))>(mbegin + OFFSET, mend);
-      }
-      else
-      {
-        return etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (EXTENT != etl::dynamic_extent ? EXTENT - OFFSET : etl::dynamic_extent))>(mbegin + OFFSET, mbegin + OFFSET + COUNT);
-      }
+      return COUNT == etl::dynamic_extent ? etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (EXTENT != etl::dynamic_extent ? EXTENT - OFFSET : etl::dynamic_extent))>(mbegin + OFFSET, mend) : etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (EXTENT != etl::dynamic_extent ? EXTENT - OFFSET : etl::dynamic_extent))>(mbegin + OFFSET, mbegin + OFFSET + COUNT);
     }
 #else
     //*************************************************************************
@@ -705,14 +698,7 @@ namespace etl
     ETL_CONSTEXPR 
     etl::span<element_type, COUNT> subspan() const
     {
-      if (COUNT == etl::dynamic_extent)
-      {
-        return etl::span<element_type, COUNT>(mbegin + OFFSET, mend);
-      }
-      else
-      {
-        return etl::span<element_type, COUNT>(mbegin + OFFSET, mbegin + OFFSET + COUNT);
-      }     
+      return COUNT == etl::dynamic_extent ? etl::span<element_type, COUNT>(mbegin + OFFSET, mend) : etl::span<element_type, COUNT>(mbegin + OFFSET, mbegin + OFFSET + COUNT);
     }
 #else
     //*************************************************************************
