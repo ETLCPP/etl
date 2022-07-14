@@ -67,14 +67,16 @@ namespace
   };
 
   // Class which can be implicitly converted to/from any default-constructable type
-  struct ToAny {
+  struct ToAny 
+  {
     ToAny() = default;
     template <typename T> ToAny(T){};
     template <typename T> operator T() { return T(); }
   };
 
   // Can't be default constructed
-  struct NotDefaultConstructable {
+  struct NotDefaultConstructable 
+  {
     NotDefaultConstructable() = delete;
   };
 
@@ -985,6 +987,7 @@ namespace
 
   //*************************************************************************
   #define CHECK_EQUAL_FOR_TYPE(type) CHECK_EQUAL(std::is_enum_v<type>, etl::is_enum_v<type>)
+
   TEST(test_is_enum) {
     CHECK_EQUAL_FOR_TYPE(void);
     CHECK_EQUAL_FOR_TYPE(void*);

@@ -692,7 +692,7 @@ namespace etl
 #endif
 
   //***************************************************************************
-  /// decval
+  /// declval
 #if ETL_USING_CPP11
   template <typename T>
   typename etl::add_rvalue_reference<T>::type declval() ETL_NOEXCEPT;
@@ -730,7 +730,7 @@ namespace etl
   inline constexpr bool is_enum_v = etl::is_enum<T>::value;
 #endif
 
-#endif // ETL_USING_CPP11
+#endif
 
   //***************************************************************************
   /// is_convertible
@@ -1244,10 +1244,26 @@ namespace etl
 #endif
 
   //***************************************************************************
-  /// decval
+  /// declval
 #if ETL_USING_CPP11
   template <typename T>
   typename std::add_rvalue_reference<T>::type declval() ETL_NOEXCEPT;
+#endif
+
+#if ETL_USING_CPP11
+  //***************************************************************************
+  /// is_enum
+  ///\ingroup type_traits
+  template <typename T>
+  struct is_enum : std::is_enum<T>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_enum_v = etl::is_enum<T>::value;
+#endif
+
 #endif
 
   //***************************************************************************
