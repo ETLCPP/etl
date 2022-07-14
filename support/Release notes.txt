@@ -1,11 +1,17 @@
-
 ===============================================================================
 20.31.0
-
+Added etl::poly_span
+Refacted parts of etl::span, including prevent compound statements in constexpr methods for C++11
 
 ===============================================================================
 20.30.1
-
+Fixed #560 Unable to upcast legacy variant Latest
+Refactored legacy variant to remove upcast functors.
+Added upcast_ptr, is_base_of & 'not a base' error exception to legacy variant.
+If ETL_USE_LEGACY_VARIANT is defined then legacy variant is in the etl namespace.
+If ETL_USE_LEGACY_VARIANT is not defined then legacy variant is in the etl::legacy namespace.
+Added non-member etl::send_message for etl::shared_message
+Green Hills compiler compatibility
 
 ===============================================================================
 20.30.0
