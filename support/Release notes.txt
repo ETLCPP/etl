@@ -2,6 +2,7 @@
 20.31.0
 Added etl::poly_span
 Refacted parts of etl::span, including prevent compound statements in constexpr methods for C++11
+Added etl::is_enum
 
 ===============================================================================
 20.30.1

@@ -716,26 +716,31 @@ namespace etl
   ///\ingroup type_traits
   /// Implemented by checking if type is convertable to an integer thru static_cast
 
-  namespace private_type_traits {
-
+  namespace private_type_traits 
+  {
     // Base case
     template <typename T, typename = int>
-    struct is_convertible_to_int : false_type {};
+    struct is_convertible_to_int : false_type
+    {
+    };
 
     // Selected if `static_cast<int>(declval<T>())` is a valid statement
     // 2nd template argument of base case defaults to int to ensure that this partial specialization is always tried first
     template <typename T>
-    struct is_convertible_to_int<
-        T, decltype(static_cast<int>(declval<T>()))>
-        : true_type {};
+    struct is_convertible_to_int<T, decltype(static_cast<int>(declval<T>()))>
+        : true_type 
+    {
+    };
+  }
 
-  } // namespace private_type_traits
   template <typename T>
   struct is_enum
     : integral_constant<bool, private_type_traits::is_convertible_to_int<T>::value &&
-                                       !is_class<T>::value &&
-                                       !is_arithmetic<T>::value &&
-                                       !is_reference<T>::value> {};
+                              !is_class<T>::value &&
+                              !is_arithmetic<T>::value &&
+                              !is_reference<T>::value> 
+  {
+  };
 
 #if ETL_USING_CPP17
   template <typename T>
