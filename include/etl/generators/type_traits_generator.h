@@ -93,7 +93,7 @@ namespace etl
   //*****************************************************************************
   // Traits are defined by the ETL
   //*****************************************************************************
-  
+
   //***************************************************************************
   /// integral_constant
   template <typename T, const T VALUE>
@@ -426,17 +426,6 @@ namespace etl
 #endif
 
   //***************************************************************************
-  /// is_reference
-  template<typename T> struct is_reference_helper : false_type {};
-  template<typename T> struct is_reference_helper<T&> : true_type {};
-  template<typename T> struct is_reference : is_reference_helper<typename remove_cv<T>::type> {};
-
-#if ETL_USING_CPP17
-  template <typename T>
-  inline constexpr bool is_reference_v = is_reference<T>::value;
-#endif
-
-  //***************************************************************************
   /// is_lvalue_reference
   template<typename T> struct is_lvalue_reference_helper : false_type {};
   template<typename T> struct is_lvalue_reference_helper<T&> : true_type {};
@@ -458,6 +447,21 @@ namespace etl
   template <typename T>
   inline constexpr bool is_rvalue_reference_v = etl::is_rvalue_reference<T>::value;
 #endif
+#endif
+
+  //***************************************************************************
+  /// is_reference
+  // Either lvalue or rvalue (for CPP11)
+  template<typename T> struct is_reference : integral_constant<bool,
+    is_lvalue_reference<T>::value
+    #if ETL_USING_CPP11
+        || is_rvalue_reference<T>::value
+    #endif
+  >{};
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_reference_v = is_reference<T>::value;
 #endif
 
   //***************************************************************************
@@ -630,8 +634,8 @@ namespace etl
     struct internal: TDerived, dummy<int>{};
 
     static TBase* check(TBase*) { return (TBase*)0; }
-    
-    template<typename T> 
+
+    template<typename T>
     static char check(dummy<T>*) { return 0; }
 
   public:
@@ -700,10 +704,44 @@ namespace etl
 #endif
 
   //***************************************************************************
-  /// decval
+  /// declval
 #if ETL_USING_CPP11
   template <typename T>
   typename etl::add_rvalue_reference<T>::type declval() ETL_NOEXCEPT;
+#endif
+
+#if ETL_USING_CPP11
+  //***************************************************************************
+  /// is_enum
+  ///\ingroup type_traits
+  /// Implemented by checking if type is convertable to an integer thru static_cast
+
+  namespace private_type_traits {
+
+    // Base case
+    template <typename T, typename = int>
+    struct is_convertible_to_int : false_type {};
+
+    // Selected if `static_cast<int>(declval<T>())` is a valid statement
+    // 2nd template argument of base case defaults to int to ensure that this partial specialization is always tried first
+    template <typename T>
+    struct is_convertible_to_int<
+        T, decltype(static_cast<int>(declval<T>()))>
+        : true_type {};
+
+  } // namespace private_type_traits
+  template <typename T>
+  struct is_enum
+    : integral_constant<bool, private_type_traits::is_convertible_to_int<T>::value &&
+                                       !is_class<T>::value &&
+                                       !is_arithmetic<T>::value &&
+                                       !is_reference<T>::value> {};
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_enum_v = etl::is_enum<T>::value;
+#endif
+
 #endif
 
   //***************************************************************************
@@ -1218,10 +1256,26 @@ namespace etl
 #endif
 
   //***************************************************************************
-  /// decval
+  /// declval
 #if ETL_USING_CPP11
   template <typename T>
   typename std::add_rvalue_reference<T>::type declval() ETL_NOEXCEPT;
+#endif
+
+#if ETL_USING_CPP11
+  //***************************************************************************
+  /// is_enum
+  ///\ingroup type_traits
+  template <typename T>
+  struct is_enum : std::is_enum<T>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_enum_v = etl::is_enum<T>::value;
+#endif
+
 #endif
 
   //***************************************************************************
@@ -1917,7 +1971,7 @@ namespace etl
 #else
 
   //*********************************************
-  // Assume that anything other than arithmetics 
+  // Assume that anything other than arithmetics
   // and pointers return false for the traits.
   //*********************************************
 
