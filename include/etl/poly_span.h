@@ -997,24 +997,24 @@ protected:
   poly_span(const TIterator begin_, const TSize size_)
     ->poly_span<etl::remove_pointer_t<TIterator>, etl::dynamic_extent>;
 
-  template <class T, size_t N>
+  template <typename T, size_t N>
   poly_span(T(&)[N])
     ->poly_span<T, N>;
 
-  template <class T, size_t N>
+  template <typename T, size_t N>
   poly_span(etl::array<T, N>&)
     ->poly_span<T, N>;
 
-  template <class T, size_t N>
+  template <typename T, size_t N>
   poly_span(const etl::array<T, N>&)
     ->poly_span<const T, N>;
 
 #if ETL_USING_STL
-  template <class T, size_t N>
+  template <typename T, size_t N>
   poly_span(std::array<T, N>&)
     ->poly_span<T, N>;
 
-  template <class T, size_t N>
+  template <typename T, size_t N>
   poly_span(const std::array<T, N>&)
     ->poly_span<const T, N>;
 #endif

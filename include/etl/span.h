@@ -766,24 +766,24 @@ namespace etl
   span(const TIterator begin_, const TSize size_)
     ->span<etl::remove_pointer_t<TIterator>, etl::dynamic_extent>;
 
-  template <class T, size_t N>
+  template <typename T, size_t N>
   span(T(&)[N])
     -> span<T, N>;
 
-  template <class T, size_t N>
+  template <typename T, size_t N>
   span(etl::array<T, N>&)
     -> span<T, N>;
 
-  template <class T, size_t N>
+  template <typename T, size_t N>
   span(const etl::array<T, N>&)
     -> span<const T, N>;
 
 #if ETL_USING_STL
-  template <class T, size_t N>
+  template <typename T, size_t N>
   span(std::array<T, N>&)
     ->span<T, N>;
 
-  template <class T, size_t N>
+  template <typename T, size_t N>
   span(const std::array<T, N>&)
     ->span<const T, N>;
 #endif
