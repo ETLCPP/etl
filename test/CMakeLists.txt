@@ -196,6 +196,8 @@ set(TEST_SOURCE_FILES
 	test_parameter_type.cpp
 	test_parity_checksum.cpp
 	test_pearson.cpp
+	test_poly_span_dynamic_extent.cpp
+	test_poly_span_fixed_extent.cpp
 	test_pool.cpp
 	test_pool_external_buffer.cpp
 	test_priority_queue.cpp
@@ -225,7 +227,8 @@ set(TEST_SOURCE_FILES
 	test_shared_message.cpp
 	test_singleton.cpp
 	test_smallest.cpp
-	test_span.cpp
+	test_span_dynamic_extent.cpp
+	test_span_fixed_extent.cpp
 	test_stack.cpp
 	test_standard_deviation.cpp
 	test_state_chart.cpp

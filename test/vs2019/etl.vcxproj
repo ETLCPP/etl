@@ -11003,6 +11003,7 @@
     <ClCompile Include="..\test_crc8_rohc.cpp" />
     <ClCompile Include="..\test_crc8_wcdma.cpp" />
     <ClCompile Include="..\test_poly_span_dynamic_extent.cpp" />
+    <ClCompile Include="..\test_poly_span_fixed_extent.cpp" />
     <ClCompile Include="..\test_pseudo_moving_average.cpp" />
     <ClCompile Include="..\test_delegate.cpp" />
     <ClCompile Include="..\test_delegate_cpp03.cpp" />
@@ -11746,7 +11747,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\test_singleton.cpp" />
-    <ClCompile Include="..\test_span.cpp" />
+    <ClCompile Include="..\test_span_dynamic_extent.cpp" />
+    <ClCompile Include="..\test_span_fixed_extent.cpp" />
     <ClCompile Include="..\test_standard_deviation.cpp" />
     <ClCompile Include="..\test_state_chart.cpp" />
     <ClCompile Include="..\test_smallest.cpp" />

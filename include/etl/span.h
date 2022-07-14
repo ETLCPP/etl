@@ -52,7 +52,7 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// Span
+  /// Span - Fixed Extent
   //***************************************************************************
   template <typename T, size_t Extent = etl::dynamic_extent>
   class span
@@ -162,6 +162,44 @@ namespace etl
     //*************************************************************************
     template <typename U, size_t N, typename = typename etl::enable_if<(N == Extent) && etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
     ETL_CONSTEXPR span(const std::array<U, N>& a) ETL_NOEXCEPT
+      : pbegin(a.data())
+    {
+    }
+#endif
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    /// Construct from a container or other type that supports
+    /// data() and size() member functions.
+    //*************************************************************************
+    template <typename TContainer, typename = typename etl::enable_if<!etl::is_pointer<etl::remove_reference_t<TContainer>>::value &&
+                                                                      !etl::is_array<etl::remove_reference_t<TContainer>>::value&&
+                                                                      etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<typename etl::remove_reference_t<TContainer>::value_type>>::value, void>::type>
+      ETL_CONSTEXPR span(TContainer&& a) ETL_NOEXCEPT
+      : pbegin(a.data())
+    {
+    }
+#else
+    //*************************************************************************
+    /// Construct from a container or other type that supports
+    /// data() and size() member functions.
+    //*************************************************************************
+    template <typename TContainer>
+    span(TContainer& a, typename etl::enable_if<!etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
+                                                !etl::is_array<TContainer>::value &&
+                                                etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type) ETL_NOEXCEPT
+      : pbegin(a.data())
+    {
+    }
+
+    //*************************************************************************
+    /// Construct from a container or other type that supports
+    /// data() and size() member functions.
+    //*************************************************************************
+    template <typename TContainer>
+    ETL_CONSTEXPR span(const TContainer& a, typename etl::enable_if<!etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
+                                                                    !etl::is_array<TContainer>::value&&
+                                                                    etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type) ETL_NOEXCEPT
       : pbegin(a.data())
     {
     }
@@ -303,7 +341,7 @@ namespace etl
     template <size_t COUNT>
     ETL_CONSTEXPR etl::span<element_type, COUNT> last() const
     {
-      return etl::span<element_type, COUNT>((pbegin + Extent) - COUNT, (pbegin + Extent));
+      return etl::span<element_type, COUNT>(pbegin + Extent - COUNT, (pbegin + Extent));
     }
 
     //*************************************************************************
@@ -320,32 +358,25 @@ namespace etl
     //*************************************************************************
     template <const size_t OFFSET, size_t COUNT = etl::dynamic_extent>
     ETL_CONSTEXPR 
-    etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (Extent != etl::dynamic_extent ? Extent - OFFSET : etl::dynamic_extent))> subspan() const
+    etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET> subspan() const
     {
-      if (COUNT == etl::dynamic_extent)
-      {
-        return etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (Extent != etl::dynamic_extent ? Extent - OFFSET : etl::dynamic_extent))>(pbegin + OFFSET, (pbegin + Extent));
-      }
-      else
-      {
-        return etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (Extent != etl::dynamic_extent ? Extent - OFFSET : etl::dynamic_extent))>(pbegin + OFFSET, pbegin + OFFSET + COUNT);
-      }
+      return (COUNT == etl::dynamic_extent) ? etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET>(pbegin + OFFSET, (pbegin + Extent))
+                                            : etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET>(pbegin + OFFSET, pbegin + OFFSET + COUNT);
     }
 #else
     //*************************************************************************
     /// Obtains a span that is a view from OFFSET over the next COUNT elements of this span.
     //*************************************************************************
     template <const size_t OFFSET, size_t COUNT>
-    ETL_CONSTEXPR 
-      etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (Extent != etl::dynamic_extent ? Extent - OFFSET : etl::dynamic_extent))> subspan() const
+    etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET> subspan() const
     {
       if (COUNT == etl::dynamic_extent)
       {
-        return etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (Extent != etl::dynamic_extent ? Extent - OFFSET : etl::dynamic_extent))>(pbegin + OFFSET, (pbegin + Extent));
+        return etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET)>(pbegin + OFFSET, (pbegin + Extent));
       }
       else
       {
-        return etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : (Extent != etl::dynamic_extent ? Extent - OFFSET : etl::dynamic_extent))>(pbegin + OFFSET, pbegin + OFFSET + COUNT);
+        return etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET>(pbegin + OFFSET, pbegin + OFFSET + COUNT);
       }
     }
 #endif
@@ -355,14 +386,8 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 etl::span<element_type, etl::dynamic_extent> subspan(size_t offset, size_t count = etl::dynamic_extent) const
     {
-      if (count == etl::dynamic_extent)
-      {
-        return etl::span<element_type, etl::dynamic_extent>(pbegin + offset, (pbegin + Extent));
-      }
-      else
-      {
-        return etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pbegin + offset + count);
-      }
+      return (count == etl::dynamic_extent) ? etl::span<element_type, etl::dynamic_extent>(pbegin + offset, (pbegin + Extent))
+                                            : etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pbegin + offset + count);
     }
 
   private:
@@ -371,7 +396,7 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Span specialisation
+  /// Span - Dynamic Extent
   //***************************************************************************
   template <typename T>
   class span<T, etl::dynamic_extent>
@@ -691,32 +716,25 @@ namespace etl
     //*************************************************************************
     template <const size_t OFFSET, size_t COUNT = etl::dynamic_extent>
     ETL_CONSTEXPR 
-    etl::span<element_type, COUNT> subspan() const
+    etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent> subspan() const
     {
-      if (COUNT == etl::dynamic_extent)
-      {
-        return etl::span<element_type, COUNT>(pbegin + OFFSET, pend);
-      }
-      else
-      {
-        return etl::span<element_type, COUNT>(pbegin + OFFSET, pbegin + OFFSET + COUNT);
-      }     
+      return (COUNT == etl::dynamic_extent) ? etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent>(pbegin + OFFSET, pend)
+                                            : etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent>(pbegin + OFFSET, pbegin + OFFSET + COUNT);
     }
 #else
     //*************************************************************************
     /// Obtains a span that is a view from OFFSET over the next COUNT elements of this span.
     //*************************************************************************
     template <const size_t OFFSET, size_t COUNT>
-    ETL_CONSTEXPR 
-    etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent)> subspan() const
+    etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent> subspan() const
     {
       if (COUNT == etl::dynamic_extent)
       {
-        return etl::span<element_type, COUNT>(pbegin + OFFSET, pend);
+        return etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent>(pbegin + OFFSET, pend);
       }
       else
       {
-        return etl::span<element_type, COUNT>(pbegin + OFFSET, pbegin + OFFSET + COUNT);
+        return etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent>(pbegin + OFFSET, pbegin + OFFSET + COUNT);
       }
     }
 #endif
@@ -726,11 +744,8 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 etl::span<element_type, etl::dynamic_extent> subspan(size_t offset, size_t count = etl::dynamic_extent) const
     {
-      if (count == etl::dynamic_extent)
-      {
-        return etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pend);
-      }
-      return etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pbegin + offset + count);
+      return (count == etl::dynamic_extent) ? etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pend)
+                                            : etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pbegin + offset + count);
     }
 
   private:
@@ -743,25 +758,43 @@ namespace etl
   /// Template deduction guides.
   //*************************************************************************
 #if ETL_USING_CPP17
-  template <typename TArray>
-  span(TArray& a)
-    ->span<typename TArray::value_type, etl::dynamic_extent>;
-
   template <typename TIterator>
   span(const TIterator begin_, const TIterator end_)
     ->span<etl::remove_pointer_t<TIterator>, etl::dynamic_extent>;
 
   template <typename TIterator, typename TSize>
-    span(const TIterator begin_, const TSize size_)
+  span(const TIterator begin_, const TSize size_)
     ->span<etl::remove_pointer_t<TIterator>, etl::dynamic_extent>;
+
+  template <class T, size_t N>
+  span(T(&)[N])
+    -> span<T, N>;
+
+  template <class T, size_t N>
+  span(etl::array<T, N>&)
+    -> span<T, N>;
+
+  template <class T, size_t N>
+  span(const etl::array<T, N>&)
+    -> span<const T, N>;
+
+#if ETL_USING_STL
+  template <class T, size_t N>
+  span(std::array<T, N>&)
+    ->span<T, N>;
+
+  template <class T, size_t N>
+  span(const std::array<T, N>&)
+    ->span<const T, N>;
+#endif
 #endif 
 
   //*************************************************************************
   /// Hash function.
   //*************************************************************************
 #if ETL_USING_8BIT_TYPES
-  template <typename T>
-  struct hash<etl::span<T> >
+  template <typename T, size_t Extent>
+  struct hash<etl::span<T, Extent> >
   {
     size_t operator()(const etl::span<T>& view) const
     {

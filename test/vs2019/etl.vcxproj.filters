@@ -1739,7 +1739,7 @@
     <ClCompile Include="..\test_set.cpp">
       <Filter>Tests\Containers</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_span.cpp">
+    <ClCompile Include="..\test_span_dynamic_extent.cpp">
       <Filter>Tests\Containers</Filter>
     </ClCompile>
     <ClCompile Include="..\test_stack.cpp">
@@ -3267,6 +3267,12 @@
       <Filter>Tests\Sanity Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\test_poly_span_dynamic_extent.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_span_fixed_extent.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_poly_span_fixed_extent.cpp">
       <Filter>Tests\Containers</Filter>
     </ClCompile>
   </ItemGroup>

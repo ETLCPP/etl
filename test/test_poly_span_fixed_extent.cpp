@@ -122,15 +122,15 @@ namespace
     return (span.size() == (std::end(source) - sb)) && std::equal(span.begin(), span.end(), sb);
   }
 
-  SUITE(test_poly_span_dynamic_extent)
+  SUITE(test_poly_span_fixed_extent)
   {
     //*************************************************************************
     TEST(test_poly_span_default_construct) 
     {
-      etl::poly_span<Base> s;
+      etl::poly_span<Base, 4U> s;
       CHECK_EQUAL(0U, s.size_of_element());
-      CHECK(s.empty());
-      CHECK_EQUAL(0U, s.size());
+      CHECK(!s.empty());
+      CHECK_EQUAL(4U, s.size());
       CHECK_EQUAL(0U, s.size_bytes());
       CHECK(s.begin() == s.end());
     }
@@ -140,7 +140,7 @@ namespace
     {
       std::vector<Derived> data = { 1, 2, 3, 4 };
 
-      etl::poly_span<Base> s(data.begin(), data.end());
+      etl::poly_span<Base, 4U> s(data.begin(), data.end());
       CHECK_EQUAL(sizeof(Derived), s.size_of_element());
       CHECK(!s.empty());
       CHECK_EQUAL(data.size(), s.size());
@@ -155,7 +155,7 @@ namespace
     TEST(test_poly_span_construct_from_c_array) 
     {
       Derived data[] = { 1, 2, 3, 4 };
-      etl::poly_span<Base> s(data);
+      etl::poly_span<Base, 4U> s(data);
       CHECK_EQUAL(sizeof(Derived), s.size_of_element());
       CHECK(!s.empty());
       CHECK_EQUAL(std::size(data), s.size());
@@ -170,7 +170,7 @@ namespace
     TEST(test_poly_span_construct_from_const_c_array)
     {
       const Derived data[] = { 1, 2, 3, 4 };
-      etl::poly_span<const Base> s(data);
+      etl::poly_span<const Base, 4U> s(data);
       CHECK_EQUAL(sizeof(Derived), s.size_of_element());
       CHECK(!s.empty());
       CHECK_EQUAL(std::size(data), s.size());
@@ -186,7 +186,7 @@ namespace
     TEST(test_poly_span_construct_from_std_array) 
     {
       std::array data{ Derived(1), Derived(2), Derived(3), Derived(4) };
-      etl::poly_span<Base> s(data);
+      etl::poly_span<Base, 4U> s(data);
       CHECK(!s.empty());
       CHECK_EQUAL(data.size(), s.size());
       CHECK_EQUAL(s.size() * sizeof(Derived), s.size_bytes());
@@ -200,7 +200,7 @@ namespace
     TEST(test_poly_span_construct_from_const_std_array)
     {
       const std::array data{ Derived(1), Derived(2), Derived(3), Derived(4) };
-      etl::poly_span<const Base> s(data);
+      etl::poly_span<const Base, 4U> s(data);
       CHECK(!s.empty());
       CHECK_EQUAL(data.size(), s.size());
       CHECK_EQUAL(s.size() * sizeof(Derived), s.size_bytes());
@@ -215,7 +215,7 @@ namespace
     TEST(test_poly_span_construct_from_etl_array)
     {
       etl::array data{ Derived(1), Derived(2), Derived(3), Derived(4) };
-      etl::poly_span<Base> s(data);
+      etl::poly_span<Base, 4U> s(data);
       CHECK(!s.empty());
       CHECK_EQUAL(data.size(), s.size());
       CHECK_EQUAL(s.size() * sizeof(Derived), s.size_bytes());
@@ -229,7 +229,7 @@ namespace
     TEST(test_poly_span_construct_from_const_etl_array)
     {
       const etl::array data{ Derived(1), Derived(2), Derived(3), Derived(4) };
-      etl::poly_span<const Base> s(data);
+      etl::poly_span<const Base, 4U> s(data);
       CHECK(!s.empty());
       CHECK_EQUAL(data.size(), s.size());
       CHECK_EQUAL(s.size() * sizeof(Derived), s.size_bytes());
@@ -243,10 +243,10 @@ namespace
     //*************************************************************************
     TEST(test_poly_span_copy_construct) 
     {
-      std::array<Derived, 4> a = { 1, 2, 3, 4 };
-      etl::poly_span<Base> s1 = a;
-      etl::poly_span<Base> s2 = s1;
-      const etl::poly_span<const Base> s3 = s1;
+      std::array<Derived, 4U> a = { 1, 2, 3, 4 };
+      etl::poly_span<Base, 4U> s1 = a;
+      etl::poly_span<Base, 4U> s2 = s1;
+      const etl::poly_span<const Base, 4U> s3 = s1;
       CHECK(!s2.empty());
       CHECK(!s3.empty());
       CHECK(std::equal(s1.begin(), s1.end(), s2.begin()));
@@ -256,9 +256,9 @@ namespace
     TEST(test_poly_span_assignment)
     {
       std::array<Derived, 4> a = { 1, 2, 3, 4 };
-      etl::poly_span<Base> s1 = a;
-      etl::poly_span<Base> s2;
-      etl::poly_span<const Base> s3;
+      etl::poly_span<Base, 4U> s1 = a;
+      etl::poly_span<Base, 4U> s2 = a;
+      etl::poly_span<const Base, 4U> s3 = a;
 
       s2 = s1;
       s3 = s1;
@@ -274,8 +274,8 @@ namespace
     {
       std::vector<MultiDerived> data = { { 0, 1.2 }, { 1, 2.3 }, { 2, 3.4 }, { 3, 4.5 } };
 
-      etl::poly_span<Base> s1(data.begin(), data.end());
-      etl::poly_span<AnotherBase> s2(data.begin(), data.end());
+      etl::poly_span<Base, 4U> s1(data.begin(), data.end());
+      etl::poly_span<AnotherBase, 4U> s2(data.begin(), data.end());
 
       CHECK_EQUAL(data[0].value(), s1[0].value());
       CHECK_EQUAL(data[1].value(), s1[1].value());
@@ -292,7 +292,7 @@ namespace
     TEST(test_poly_span_front_back)
     {
       Derived data[] = { 1, 2, 3, 4 };
-      etl::poly_span<Base> s(data);
+      etl::poly_span<Base, 4U> s(data);
 
       CHECK_EQUAL(data[0].value(), s.front().value());
       CHECK_EQUAL(data[3].value(), s.back().value());
@@ -302,7 +302,7 @@ namespace
     TEST(test_poly_span_const_front_back)
     {
       const Derived data[] = { 1, 2, 3, 4 };
-      const etl::poly_span<const Base> s(data);
+      const etl::poly_span<const Base, 4U> s(data);
 
       CHECK_EQUAL(data[0].value(), s.front().value());
       CHECK_EQUAL(data[3].value(), s.back().value());
@@ -312,9 +312,9 @@ namespace
     TEST(test_poly_span_iterator)
     {
       Derived data[] = { 1, 2, 3, 4 };
-      etl::poly_span<Base> s1(data);
+      etl::poly_span<Base, 4U> s1(data);
 
-      etl::poly_span<Base>::iterator itr1 = s1.begin();
+      etl::poly_span<Base, 4U>::iterator itr1 = s1.begin();
 
       CHECK(itr1 != s1.end());
 
@@ -339,7 +339,7 @@ namespace
       CHECK_EQUAL(data[2].value(), itr1->value());
 
       itr1 = s1.begin();
-      etl::poly_span<Base>::iterator itr2 = itr1 + 1;
+      etl::poly_span<Base, 4U>::iterator itr2 = itr1 + 1;
 
       CHECK(itr1 <  itr2);
       CHECK(itr1 <= itr1);
@@ -369,7 +369,7 @@ namespace
       itr1->value(3);
       CHECK_EQUAL(3, itr1->value());
 
-      etl::poly_span<Base> s2;
+      etl::poly_span<Base, 4U> s2;
       CHECK(s2.begin() == s2.end());
     }
 
@@ -377,9 +377,9 @@ namespace
     TEST(test_poly_span_reverse_iterator)
     {
       Derived data[] = { 1, 2, 3, 4 };
-      etl::poly_span<Base> s1(data);
+      etl::poly_span<Base, 4U> s1(data);
 
-      etl::poly_span<Base>::reverse_iterator itr1 = s1.rbegin();
+      etl::poly_span<Base, 4U>::reverse_iterator itr1 = s1.rbegin();
 
       CHECK(itr1 != s1.rend());
 
@@ -408,17 +408,17 @@ namespace
     TEST(test_poly_span_random_access_iterator_use) 
     {
       int data[] = { 25, 4, 3, -2, 1 };
-      etl::poly_span<int> s = data;
+      etl::poly_span<int, 5U> s = data;
       
       std::sort(s.begin(), s.end());
       CHECK(std::is_sorted(std::begin(data), std::end(data)));
     }
 
     //*************************************************************************
-    TEST(test_poly_span_subspan) 
+    TEST(test_poly_span_subspan_dynamic) 
     {
       Derived data[] = { 1, 2, 3, 4, 5 };
-      etl::poly_span<Base> s(data);
+      etl::poly_span<Base, 5U> s(data);
 
       auto s1 = s.subspan(1, 2);
       CHECK_EQUAL(2, s1.size());
@@ -427,7 +427,26 @@ namespace
       CHECK_EQUAL(s[2].value(), s1[1].value());
 
       auto s2 = s.subspan(2);
-      CHECK_EQUAL(3, s2.size());
+      CHECK_EQUAL(5U, s2.size());
+      CHECK_EQUAL(s[2].value(), s2[0].value());
+      CHECK_EQUAL(s[3].value(), s2[1].value());
+      CHECK_EQUAL(s[4].value(), s2[2].value());
+    }
+
+    //*************************************************************************
+    TEST(test_poly_span_subspan_fixed)
+    {
+      Derived data[] = { 1, 2, 3, 4, 5 };
+      etl::poly_span<Base, 5U> s(data);
+
+      auto s1 = s.subspan<1, 2>();
+      CHECK_EQUAL(2U, s1.size());
+
+      CHECK_EQUAL(s[1].value(), s1[0].value());
+      CHECK_EQUAL(s[2].value(), s1[1].value());
+
+      auto s2 = s.subspan<2>();
+      CHECK_EQUAL(3U, s2.size());
       CHECK_EQUAL(s[2].value(), s2[0].value());
       CHECK_EQUAL(s[3].value(), s2[1].value());
       CHECK_EQUAL(s[4].value(), s2[2].value());
@@ -437,7 +456,7 @@ namespace
     TEST(test_poly_span_first)
     {
       Derived data[] = { 1, 2, 3, 4 };
-      etl::poly_span<Base> s1(data);
+      etl::poly_span<Base, 4U> s1(data);
 
       auto s2 = s1.first(3);
       auto s3 = s1.first<3>();
@@ -455,7 +474,7 @@ namespace
     TEST(test_poly_span_last)
     {
       Derived data[] = { 1, 2, 3, 4 };
-      etl::poly_span<Base> s1(data);
+      etl::poly_span<Base, 4U> s1(data);
 
       auto s2 = s1.last(3);
       auto s3 = s1.last<3>();
@@ -473,12 +492,12 @@ namespace
     TEST(test_hash)
     {
       int data[] = { 1, 2, 3, 4 };
-      etl::poly_span<int> s1(data);
+      etl::poly_span<int, 4U> s1(data);
 
       size_t hashdata = etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&s1[0]),
                                                                 reinterpret_cast<const uint8_t*>(&s1[s1.size()]));
 
-      size_t hashview = etl::hash<etl::poly_span<int>>()(s1);
+      size_t hashview = etl::hash<etl::poly_span<int, 4U>>()(s1);
 
       CHECK_EQUAL(hashdata, hashview);
     }
