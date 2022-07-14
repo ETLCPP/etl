@@ -1281,6 +1281,9 @@
     <ClInclude Include="..\..\include\etl\generators\message_router_generator.h">
       <Filter>ETL\Messaging\Generators</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\poly_span.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -1736,7 +1739,7 @@
     <ClCompile Include="..\test_set.cpp">
       <Filter>Tests\Containers</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_span.cpp">
+    <ClCompile Include="..\test_span_dynamic_extent.cpp">
       <Filter>Tests\Containers</Filter>
     </ClCompile>
     <ClCompile Include="..\test_stack.cpp">
@@ -3259,6 +3262,18 @@
     </ClCompile>
     <ClCompile Include="..\test_bit_stream_reader_little_endian.cpp">
       <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\poly_span.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_poly_span_dynamic_extent.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_span_fixed_extent.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_poly_span_fixed_extent.cpp">
+      <Filter>Tests\Containers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -213,6 +213,7 @@ target_sources(t98 PRIVATE etl_profile.h
         ../pearson.h.t.cpp
         ../permutations.h.t.cpp
         ../placement_new.h.t.cpp
+        ../poly_span.h.t.cpp
         ../platform.h.t.cpp
         ../pool.h.t.cpp
         ../power.h.t.cpp

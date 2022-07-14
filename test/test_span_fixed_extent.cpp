@@ -38,7 +38,7 @@ SOFTWARE.
 
 namespace
 {
-  SUITE(test_span)
+  SUITE(test_span_fixed_extent)
   {
     static const size_t SIZE = 10UL;
 
@@ -46,8 +46,8 @@ namespace
     typedef std::array<int, SIZE> StlData;
     typedef std::vector<int> StlVData;
 
-    typedef etl::span<int> View;
-    typedef etl::span<const int> CView;
+    typedef etl::span<int, 10U> View;
+    typedef etl::span<const int, 10U> CView;
 
     EtlData etldata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     StlData stldata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -56,7 +56,7 @@ namespace
     EtlData etldatasmaller = { 0, 1, 2, 3, 4, 5, 5, 7, 8, 9 };
 
     EtlData etloriginal = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    EtlData etlmodified = { 0, 1, 10, 10, 10, 10, 10, 10, 8, 9 };
+    EtlData etlmodified = { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 };
 
     const EtlData cetldata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     const StlData cstldata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -73,9 +73,9 @@ namespace
     {
       View view;
 
-      CHECK_EQUAL(0U, view.size());
-      CHECK_EQUAL(0U, view.max_size());
-      CHECK(view.empty());
+      CHECK_EQUAL(10U, view.size());
+      CHECK_EQUAL(10U, view.max_size());
+      CHECK(!view.empty());
     }
 
     //*************************************************************************
@@ -296,12 +296,12 @@ namespace
     //*************************************************************************
     TEST(test_constructor_range)
     {
-      View view(etldata.begin() + 2, etldata.end() - 2);
+      View view(etldata.begin(), etldata.end());
 
-      CHECK_EQUAL(etldata.size() - 4, view.size());
-      CHECK_EQUAL(etldata.size() - 4, view.max_size());
+      CHECK_EQUAL(etldata.size(), view.size());
+      CHECK_EQUAL(etldata.size(), view.max_size());
 
-      bool isEqual = std::equal(view.begin(), view.end(), etldata.begin() + 2);
+      bool isEqual = std::equal(view.begin(), view.end(), etldata.begin());
       CHECK(isEqual);
     }
 
@@ -335,10 +335,10 @@ namespace
     //*************************************************************************
     TEST(test_modify_range)
     {
-      View view(etloriginal.begin() + 2, etloriginal.end() - 2);
+      View view(etloriginal.begin(), etloriginal.end());
 
-      CHECK_EQUAL(etloriginal.size() - 4, view.size());
-      CHECK_EQUAL(etloriginal.size() - 4, view.max_size());
+      CHECK_EQUAL(etloriginal.size(), view.size());
+      CHECK_EQUAL(etloriginal.size(), view.max_size());
 
       std::fill(view.begin(), view.end(), 10);
 
@@ -423,10 +423,7 @@ namespace
     TEST(test_empty)
     {
       View view1(etldata.begin(), etldata.begin());
-      CHECK(view1.empty());
-
-      View view2(etldata.begin(), etldata.begin() + 1);
-      CHECK(!view2.empty());
+      CHECK(!view1.empty());
     }
 
     //*************************************************************************
@@ -468,8 +465,8 @@ namespace
     //*************************************************************************
     TEST(test_first)
     {
-      std::vector<int> original = { 1, 2, 3, 4, 5, 6, 7, 8 };
-      std::vector<int> first    = { 1, 2, 3, 4, 5, 6 };
+      std::vector<int> original = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      std::vector<int> first    = { 0, 1, 2, 3, 4, 5 };
       View view(original);
       CView cview(original);
 
@@ -491,8 +488,8 @@ namespace
     //*************************************************************************
     TEST(test_first_2)
     {
-      std::vector<int> original = {1, 2, 3, 4, 5, 6, 7, 8};
-      std::vector<int> first = {1, 2, 3, 4, 5, 6};
+      std::vector<int> original = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      std::vector<int> first = { 0, 1, 2, 3, 4, 5 };
       View view(original);
       CView cview(original);
 
@@ -512,8 +509,8 @@ namespace
     //*************************************************************************
     TEST(test_last)
     {
-      std::vector<int> original = { 1, 2, 3, 4, 5, 6, 7, 8 };
-      std::vector<int> last     = { 3, 4, 5, 6, 7, 8 };
+      std::vector<int> original = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      std::vector<int> last     = { 4, 5, 6, 7, 8, 9 };
       View view(original);
       CView cview(original);
 
@@ -535,8 +532,8 @@ namespace
     //*************************************************************************
     TEST(test_last_2)
     {
-      std::vector<int> original = {1, 2, 3, 4, 5, 6, 7, 8};
-      std::vector<int> last = {3, 4, 5, 6, 7, 8};
+      std::vector<int> original = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      std::vector<int> last = { 4, 5, 6, 7, 8, 9 };
       View view(original);
       CView cview(original);
 
@@ -556,9 +553,9 @@ namespace
     //*************************************************************************
     TEST(test_subspan)
     {
-      std::vector<int> original = { 1, 2, 3, 4, 5, 6, 7, 8 };
-      std::vector<int> sub1 = { 3, 4, 5, 6 };
-      std::vector<int> sub2 = { 3, 4, 5, 6, 7, 8 };
+      std::vector<int> original = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      std::vector<int> sub1 = { 2, 3, 4, 5 };
+      std::vector<int> sub2 = { 2, 3, 4, 5, 6, 7 };
       View view(original);
       CView cview(original);
 
@@ -576,42 +573,35 @@ namespace
       CHECK_EQUAL(sub1.size(), cspan1.extent);
       CHECK_EQUAL(sub1.size(), cspan1.size());
 
-      auto span2 = view.subspan<2>();
-      isEqual = std::equal(span2.begin(), span2.end(), sub2.begin());
+      auto span2 = view.subspan<2>();     
+      isEqual = std::equal(sub2.begin(), sub2.end(), span2.begin());
       CHECK(isEqual);
-      CHECK_EQUAL(etl::dynamic_extent, span2.extent);
-      CHECK_EQUAL(sub2.size(), span2.size());
+      CHECK_EQUAL(span2.size(), span2.extent);
 
       auto cspan2 = cview.subspan<2>();
-      isEqual = std::equal(cspan2.begin(), cspan2.end(), sub2.begin());
+      isEqual = std::equal(sub2.begin(), sub2.end(), cspan2.begin());
       CHECK(isEqual);
-      CHECK_EQUAL(etl::dynamic_extent, cspan2.extent);
-      CHECK_EQUAL(sub2.size(), cspan2.size());
+      CHECK_EQUAL(original.size() - 2U, cspan2.extent);
 
       auto span3 = view.subspan(2, 4);
-      isEqual = std::equal(span3.begin(), span3.end(), sub1.begin());
+      isEqual = std::equal(sub1.begin(), sub1.end(), span3.begin());
       CHECK(isEqual);
       CHECK_EQUAL(etl::dynamic_extent, span3.extent);
-      CHECK_EQUAL(sub1.size(), span3.size());
 
       auto cspan3 = cview.subspan(2, 4);
-      isEqual = std::equal(cspan3.begin(), cspan3.end(), sub1.begin());
+      isEqual = std::equal(sub1.begin(), sub1.end(), cspan3.begin());
       CHECK(isEqual);
       CHECK_EQUAL(etl::dynamic_extent, cspan3.extent);
-      CHECK_EQUAL(sub1.size(), cspan3.size());
 
       auto span4 = view.subspan(2);
-      isEqual = std::equal(span4.begin(), span4.end(), sub2.begin());
+      isEqual = std::equal(sub2.begin(), sub2.end(), span4.begin());
       CHECK(isEqual);
       CHECK_EQUAL(etl::dynamic_extent, span4.extent);
-      CHECK_EQUAL(sub2.size(), span4.size());
 
       auto cspan4 = cview.subspan(2);
-      isEqual = std::equal(cspan4.begin(), cspan4.end(), sub2.begin());
+      isEqual = std::equal(sub2.begin(), sub2.end(), cspan4.begin());
       CHECK(isEqual);
       CHECK_EQUAL(etl::dynamic_extent, cspan4.extent);
-      CHECK_EQUAL(sub2.size(), cspan4.size());
-
     }
 
     //*************************************************************************
@@ -628,6 +618,68 @@ namespace
 
       CHECK_EQUAL(hashdata, hashview);
       CHECK_EQUAL(hashdata, hashcview);
+    }
+
+    //*************************************************************************
+    TEST(test_template_deduction_guide_for_c_array)
+    {
+      int data[] = { 1, 2, 3, 4 };
+
+      etl::span s = data;
+
+      CHECK_EQUAL(std::size(data), s.extent);
+      CHECK_EQUAL(std::size(data), s.size());
+      CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
+    }
+
+#if ETL_USING_STL
+    //*************************************************************************
+    TEST(test_template_deduction_guide_for_std_array)
+    {
+      std::array<int, 4U> data = { 1, 2, 3, 4 };
+
+      etl::span s = data;
+
+      CHECK_EQUAL(std::size(data), s.extent);
+      CHECK_EQUAL(std::size(data), s.size());
+      CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_template_deduction_guide_for_etl_array)
+    {
+      etl::array<int, 4U> data = { 1, 2, 3, 4 };
+
+      etl::span s = data;
+
+      CHECK_EQUAL(std::size(data), s.extent);
+      CHECK_EQUAL(std::size(data), s.size());
+      CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
+    }
+
+    //*************************************************************************
+    TEST(test_template_deduction_guide_for_iterators)
+    {
+      etl::array<int, 4U> data = { 1, 2, 3, 4 };
+
+      etl::span s{ data.begin(), data.end() };
+
+      CHECK_EQUAL(etl::dynamic_extent, s.extent);
+      CHECK_EQUAL(4U, s.size());
+      CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
+    }
+
+    //*************************************************************************
+    TEST(test_template_deduction_guide_for_iterator_and_size)
+    {
+      etl::array<int, 4U> data = { 1, 2, 3, 4 };
+
+      etl::span s{ data.begin(), data.size() };
+
+      CHECK_EQUAL(etl::dynamic_extent, s.extent);
+      CHECK_EQUAL(4U, s.size());
+      CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
     }
 
     //*************************************************************************
