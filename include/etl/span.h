@@ -216,7 +216,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reference to the first element.
     //*************************************************************************
-    ETL_CONSTEXPR reference front() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR reference front() const ETL_NOEXCEPT
     {
       return *pbegin;
     }
@@ -224,7 +224,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reference to the last element.
     //*************************************************************************
-    ETL_CONSTEXPR reference back() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR reference back() const ETL_NOEXCEPT
     {
       return *((pbegin + Extent) - 1);
     }
@@ -232,7 +232,7 @@ namespace etl
     //*************************************************************************
     /// Returns a pointer to the first element of the internal storage.
     //*************************************************************************
-    ETL_CONSTEXPR pointer data() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR pointer data() const ETL_NOEXCEPT
     {
       return pbegin;
     }
@@ -240,7 +240,7 @@ namespace etl
     //*************************************************************************
     /// Returns an iterator to the beginning of the span.
     //*************************************************************************
-    ETL_CONSTEXPR iterator begin() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR iterator begin() const ETL_NOEXCEPT
     {
       return pbegin;
     }
@@ -248,7 +248,7 @@ namespace etl
     //*************************************************************************
     /// Returns an iterator to the end of the span.
     //*************************************************************************
-    ETL_CONSTEXPR iterator end() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR iterator end() const ETL_NOEXCEPT
     {
       return (pbegin + Extent);
     }
@@ -256,7 +256,7 @@ namespace etl
     //*************************************************************************
     // Returns an reverse iterator to the reverse beginning of the span.
     //*************************************************************************
-    ETL_CONSTEXPR reverse_iterator rbegin() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR reverse_iterator rbegin() const ETL_NOEXCEPT
     {
       return reverse_iterator((pbegin + Extent));
     }
@@ -264,7 +264,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reverse iterator to the end of the span.
     //*************************************************************************
-    ETL_CONSTEXPR reverse_iterator rend() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR reverse_iterator rend() const ETL_NOEXCEPT
     {
       return reverse_iterator(pbegin);
     }
@@ -272,7 +272,7 @@ namespace etl
     //*************************************************************************
     /// Returns <b>true</b> if the span size is zero.
     //*************************************************************************
-    ETL_CONSTEXPR bool empty() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR bool empty() const ETL_NOEXCEPT
     {
       return false;
     }
@@ -280,7 +280,7 @@ namespace etl
     //*************************************************************************
     /// Returns the size of the span.
     //*************************************************************************
-    ETL_CONSTEXPR size_t size() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR size_t size() const ETL_NOEXCEPT
     {
       return Extent;
     }
@@ -288,7 +288,7 @@ namespace etl
     //*************************************************************************
     /// Returns the size of the span in bytes.
     //*************************************************************************
-    ETL_CONSTEXPR size_t size_bytes() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR size_t size_bytes() const ETL_NOEXCEPT
     {
       return sizeof(element_type) * Extent;
     }
@@ -296,7 +296,7 @@ namespace etl
     //*************************************************************************
     /// Returns the maximum possible size of the span.
     //*************************************************************************
-    ETL_CONSTEXPR size_t max_size() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR size_t max_size() const ETL_NOEXCEPT
     {
       return size();
     }
@@ -322,7 +322,7 @@ namespace etl
     /// Obtains a span that is a view over the first COUNT elements of this span.
     //*************************************************************************
     template <size_t COUNT>
-    ETL_CONSTEXPR etl::span<element_type, COUNT> first() const
+    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, COUNT> first() const ETL_NOEXCEPT
     {
       return etl::span<element_type, COUNT>(pbegin, pbegin + COUNT);
     }
@@ -330,7 +330,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a span that is a view over the first count elements of this span.
     //*************************************************************************
-    ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> first(size_t count) const
+    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> first(size_t count) const ETL_NOEXCEPT
     {
       return etl::span<element_type, etl::dynamic_extent>(pbegin, pbegin + count);
     }
@@ -339,7 +339,7 @@ namespace etl
     /// Obtains a span that is a view over the last COUNT elements of this span.
     //*************************************************************************
     template <size_t COUNT>
-    ETL_CONSTEXPR etl::span<element_type, COUNT> last() const
+    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, COUNT> last() const ETL_NOEXCEPT
     {
       return etl::span<element_type, COUNT>(pbegin + Extent - COUNT, (pbegin + Extent));
     }
@@ -347,7 +347,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a span that is a view over the last count elements of this span.
     //*************************************************************************
-    ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> last(size_t count) const
+    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> last(size_t count) const ETL_NOEXCEPT
     {
       return etl::span<element_type, etl::dynamic_extent>((pbegin + Extent) - count, (pbegin + Extent));
     }
@@ -357,8 +357,8 @@ namespace etl
     /// Obtains a span that is a view from OFFSET over the next COUNT elements of this span.
     //*************************************************************************
     template <const size_t OFFSET, size_t COUNT = etl::dynamic_extent>
-    ETL_CONSTEXPR 
-    etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET> subspan() const
+    ETL_NODISCARD ETL_CONSTEXPR
+    etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET> subspan() const ETL_NOEXCEPT
     {
       return (COUNT == etl::dynamic_extent) ? etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET>(pbegin + OFFSET, (pbegin + Extent))
                                             : etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET>(pbegin + OFFSET, pbegin + OFFSET + COUNT);
@@ -384,7 +384,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a span that is a view from 'offset' over the next 'count' elements of this span.
     //*************************************************************************
-    ETL_CONSTEXPR14 etl::span<element_type, etl::dynamic_extent> subspan(size_t offset, size_t count = etl::dynamic_extent) const
+    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> subspan(size_t offset, size_t count = etl::dynamic_extent) const ETL_NOEXCEPT
     {
       return (count == etl::dynamic_extent) ? etl::span<element_type, etl::dynamic_extent>(pbegin + offset, (pbegin + Extent))
                                             : etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pbegin + offset + count);
@@ -573,7 +573,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reference to the first element.
     //*************************************************************************
-    ETL_CONSTEXPR reference front() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR reference front() const ETL_NOEXCEPT
     {
       return *pbegin;
     }
@@ -581,7 +581,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reference to the last element.
     //*************************************************************************
-    ETL_CONSTEXPR reference back() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR reference back() const ETL_NOEXCEPT
     {
       return *(pend - 1);
     }
@@ -589,7 +589,7 @@ namespace etl
     //*************************************************************************
     /// Returns a pointer to the first element of the internal storage.
     //*************************************************************************
-    ETL_CONSTEXPR pointer data() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR pointer data() const ETL_NOEXCEPT
     {
       return pbegin;
     }
@@ -597,7 +597,7 @@ namespace etl
     //*************************************************************************
     /// Returns an iterator to the beginning of the span.
     //*************************************************************************
-    ETL_CONSTEXPR iterator begin() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR iterator begin() const ETL_NOEXCEPT
     {
       return pbegin;
     }
@@ -605,7 +605,7 @@ namespace etl
     //*************************************************************************
     /// Returns an iterator to the end of the span.
     //*************************************************************************
-    ETL_CONSTEXPR iterator end() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR iterator end() const ETL_NOEXCEPT
     {
       return pend;
     }
@@ -613,7 +613,7 @@ namespace etl
     //*************************************************************************
     // Returns an reverse iterator to the reverse beginning of the span.
     //*************************************************************************
-    ETL_CONSTEXPR reverse_iterator rbegin() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR reverse_iterator rbegin() const ETL_NOEXCEPT
     {
       return reverse_iterator(pend);
     }
@@ -621,7 +621,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reverse iterator to the end of the span.
     //*************************************************************************
-    ETL_CONSTEXPR reverse_iterator rend() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR reverse_iterator rend() const ETL_NOEXCEPT
     {
       return reverse_iterator(pbegin);
     }
@@ -629,7 +629,7 @@ namespace etl
     //*************************************************************************
     /// Returns <b>true</b> if the span size is zero.
     //*************************************************************************
-    ETL_CONSTEXPR bool empty() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR bool empty() const ETL_NOEXCEPT
     {
       return (pbegin == pend);
     }
@@ -637,7 +637,7 @@ namespace etl
     //*************************************************************************
     /// Returns the size of the span.
     //*************************************************************************
-    ETL_CONSTEXPR size_t size() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR size_t size() const ETL_NOEXCEPT
     {
       return (pend - pbegin);
     }
@@ -645,7 +645,7 @@ namespace etl
     //*************************************************************************
     /// Returns the size of the span in bytes.
     //*************************************************************************
-    ETL_CONSTEXPR size_t size_bytes() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR size_t size_bytes() const ETL_NOEXCEPT
     {
       return sizeof(element_type) * (pend - pbegin);
     }
@@ -653,7 +653,7 @@ namespace etl
     //*************************************************************************
     /// Returns the maximum possible size of the span.
     //*************************************************************************
-    ETL_CONSTEXPR size_t max_size() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR size_t max_size() const ETL_NOEXCEPT
     {
       return size();
     }
@@ -680,7 +680,7 @@ namespace etl
     /// Obtains a span that is a view over the first COUNT elements of this span.
     //*************************************************************************
     template <size_t COUNT>
-    ETL_CONSTEXPR etl::span<element_type, COUNT> first() const
+    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, COUNT> first() const ETL_NOEXCEPT
     {
       return etl::span<element_type, COUNT>(pbegin, pbegin + COUNT);
     }
@@ -688,7 +688,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a span that is a view over the first count elements of this span.
     //*************************************************************************
-    ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> first(size_t count) const
+    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> first(size_t count) const ETL_NOEXCEPT
     {
       return etl::span<element_type, etl::dynamic_extent>(pbegin, pbegin + count);
     }
@@ -697,7 +697,7 @@ namespace etl
     /// Obtains a span that is a view over the last COUNT elements of this span.
     //*************************************************************************
     template <size_t COUNT>
-    ETL_CONSTEXPR etl::span<element_type, COUNT> last() const
+    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, COUNT> last() const ETL_NOEXCEPT
     {
       return etl::span<element_type, COUNT>(pend - COUNT, pend);
     }
@@ -705,7 +705,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a span that is a view over the last count elements of this span.
     //*************************************************************************
-    ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> last(size_t count) const
+    ETL_NODISCARD ETL_CONSTEXPR etl::span<element_type, etl::dynamic_extent> last(size_t count) const ETL_NOEXCEPT
     {
       return etl::span<element_type, etl::dynamic_extent>(pend - count, pend);
     }
@@ -715,8 +715,8 @@ namespace etl
     /// Obtains a span that is a view from OFFSET over the next COUNT elements of this span.
     //*************************************************************************
     template <const size_t OFFSET, size_t COUNT = etl::dynamic_extent>
-    ETL_CONSTEXPR 
-    etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent> subspan() const
+    ETL_NODISCARD ETL_CONSTEXPR
+    etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent> subspan() const ETL_NOEXCEPT
     {
       return (COUNT == etl::dynamic_extent) ? etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent>(pbegin + OFFSET, pend)
                                             : etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent>(pbegin + OFFSET, pbegin + OFFSET + COUNT);
@@ -742,7 +742,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a span that is a view from 'offset' over the next 'count' elements of this span.
     //*************************************************************************
-    ETL_CONSTEXPR14 etl::span<element_type, etl::dynamic_extent> subspan(size_t offset, size_t count = etl::dynamic_extent) const
+    ETL_NODISCARD ETL_CONSTEXPR14 etl::span<element_type, etl::dynamic_extent> subspan(size_t offset, size_t count = etl::dynamic_extent) const ETL_NOEXCEPT
     {
       return (count == etl::dynamic_extent) ? etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pend)
                                             : etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pbegin + offset + count);

@@ -1,4 +1,9 @@
 ===============================================================================
+20.31.1
+Addition of extra ETL_NODISCARD and ETL_NOEXCEPT to etl::span & etl::poly_span.
+Fixed warnings for initialisation order for some etl::poly_span constructors.
+
+===============================================================================
 20.31.0
 Added etl::poly_span
 Refacted parts of etl::span, including prevent compound statements in constexpr methods for C++11

@@ -511,7 +511,7 @@ namespace etl
     /// Obtains a poly_span that is a view over the first COUNT elements of this poly_span.
     //*************************************************************************
     template <size_t COUNT>
-    ETL_CONSTEXPR etl::poly_span<element_type, COUNT> first() const
+    ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, COUNT> first() const ETL_NOEXCEPT
     {
       return etl::poly_span<element_type, COUNT>(pbegin, 0U, COUNT, element_size);
     }
@@ -519,7 +519,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a poly_span that is a view over the first count elements of this poly_span.
     //*************************************************************************
-    ETL_CONSTEXPR etl::poly_span<element_type, etl::dynamic_extent> first(size_t count) const
+    ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, etl::dynamic_extent> first(size_t count) const
     {
       return etl::poly_span<element_type, etl::dynamic_extent>(pbegin, 0U, count, element_size);
     }
@@ -528,7 +528,7 @@ namespace etl
     /// Obtains a poly_span that is a view over the last COUNT elements of this poly_span.
     //*************************************************************************
     template <size_t COUNT>
-    ETL_CONSTEXPR etl::poly_span<element_type, COUNT> last() const
+    ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, COUNT> last() const ETL_NOEXCEPT
     {
       return etl::poly_span<element_type, COUNT>(pbegin, Extent - COUNT, COUNT, element_size);
     }
@@ -536,7 +536,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a poly_span that is a view over the last count elements of this poly_span.
     //*************************************************************************
-    ETL_CONSTEXPR etl::poly_span<element_type, etl::dynamic_extent> last(size_t count) const
+    ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, etl::dynamic_extent> last(size_t count) const ETL_NOEXCEPT
     {
       return etl::poly_span<element_type, etl::dynamic_extent>(pbegin, Extent - count, count, element_size);
     }
@@ -546,7 +546,7 @@ namespace etl
     /// Obtains a poly_span that is a view from OFFSET over the next COUNT elements of this poly_span.
     //*************************************************************************
     template <const size_t OFFSET, size_t COUNT = etl::dynamic_extent>
-    ETL_CONSTEXPR etl::poly_span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET> subspan() const
+    ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET> subspan() const ETL_NOEXCEPT
     {
       return (COUNT == etl::dynamic_extent) ? etl::poly_span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET>(pbegin, OFFSET, Extent, element_size)
                                             : etl::poly_span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET>(pbegin, OFFSET, COUNT, element_size);
@@ -572,7 +572,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a poly_span that is a view from 'offset' over the next 'count' elements of this poly_span.
     //*************************************************************************
-    ETL_CONSTEXPR14 etl::poly_span<element_type, etl::dynamic_extent> subspan(size_t offset, size_t count = etl::dynamic_extent) const
+    ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, etl::dynamic_extent> subspan(size_t offset, size_t count = etl::dynamic_extent) const ETL_NOEXCEPT
     {
       return (count == etl::dynamic_extent) ? etl::poly_span<element_type, etl::dynamic_extent>(pbegin, offset, Extent, element_size)
                                             : etl::poly_span<element_type, etl::dynamic_extent>(pbegin, offset, count, element_size);
@@ -640,8 +640,8 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR poly_span() ETL_NOEXCEPT
       : pbegin(ETL_NULLPTR)
-      , span_extent(0U)
       , element_size(0U)
+      , span_extent(0U)
     {
     }
 
@@ -744,8 +744,8 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR poly_span(const poly_span<TBase, etl::dynamic_extent>& other) ETL_NOEXCEPT
       : pbegin(other.pbegin)
-      , span_extent(other.span_extent)
       , element_size(other.element_size)
+      , span_extent(other.span_extent)
     {
     }
 
@@ -755,8 +755,8 @@ namespace etl
     template <typename UBase>
     ETL_CONSTEXPR poly_span(const poly_span<UBase, etl::dynamic_extent>& other) ETL_NOEXCEPT
       : pbegin(other.pbegin)
-      , span_extent(other.span_extent)
       , element_size(other.element_size)
+      , span_extent(other.span_extent)
     {
     }
 
@@ -854,8 +854,8 @@ namespace etl
     ETL_CONSTEXPR14 poly_span& operator =(const poly_span& other) ETL_NOEXCEPT
     {
       pbegin = other.pbegin;
-      span_extent = other.span_extent;
       element_size = other.element_size;
+      span_extent = other.span_extent;
       return *this;
     }
 
@@ -866,8 +866,8 @@ namespace etl
     ETL_CONSTEXPR14 poly_span& operator =(const poly_span<UBase, etl::dynamic_extent>& other) ETL_NOEXCEPT
     {
       pbegin = other.pbegin;
-      span_extent = other.span_extent;
       element_size = other.element_size;
+      span_extent = other.span_extent;
       return *this;
     }
 
@@ -883,7 +883,7 @@ namespace etl
     /// Obtains a poly_span that is a view over the first COUNT elements of this poly_span.
     //*************************************************************************
     template <size_t COUNT>
-    ETL_CONSTEXPR etl::poly_span<element_type, COUNT> first() const
+    ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, COUNT> first() const ETL_NOEXCEPT
     {
       return etl::poly_span<element_type, COUNT>(pbegin, 0U, COUNT, element_size);
     }
@@ -891,7 +891,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a poly_span that is a view over the first count elements of this poly_span.
     //*************************************************************************
-    ETL_CONSTEXPR etl::poly_span<element_type, etl::dynamic_extent> first(size_t count) const
+    ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, etl::dynamic_extent> first(size_t count) const ETL_NOEXCEPT
     {
       return etl::poly_span<element_type, etl::dynamic_extent>(pbegin, 0U, count, element_size);
     }
@@ -900,7 +900,7 @@ namespace etl
     /// Obtains a poly_span that is a view over the last COUNT elements of this poly_span.
     //*************************************************************************
     template <size_t COUNT>
-    ETL_CONSTEXPR etl::poly_span<element_type, COUNT> last() const
+    ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, COUNT> last() const ETL_NOEXCEPT
     {
       return etl::poly_span<element_type, COUNT>(pbegin, span_extent - COUNT, COUNT, element_size);
     }
@@ -908,7 +908,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a poly_span that is a view over the last count elements of this poly_span.
     //*************************************************************************
-    ETL_CONSTEXPR etl::poly_span<element_type, etl::dynamic_extent> last(size_t count) const
+    ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, etl::dynamic_extent> last(size_t count) const ETL_NOEXCEPT
     {
       return etl::poly_span<element_type, etl::dynamic_extent>(pbegin, span_extent - count, count, element_size);
     }
@@ -918,7 +918,7 @@ namespace etl
     /// Obtains a poly_span that is a view from OFFSET over the next COUNT elements of this poly_span.
     //*************************************************************************
     template <const size_t OFFSET, size_t COUNT = etl::dynamic_extent>
-    ETL_CONSTEXPR etl::poly_span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent> subspan() const
+    ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent> subspan() const ETL_NOEXCEPT
     {
       return (COUNT == etl::dynamic_extent) ? etl::poly_span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent>(pbegin, OFFSET, span_extent, element_size)
                                             : etl::poly_span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent>(pbegin, OFFSET, COUNT, element_size);
@@ -944,7 +944,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a poly_span that is a view from 'offset' over the next 'count' elements of this poly_span.
     //*************************************************************************
-    ETL_CONSTEXPR14 etl::poly_span<element_type, etl::dynamic_extent> subspan(size_t offset, size_t count = etl::dynamic_extent) const
+    ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, etl::dynamic_extent> subspan(size_t offset, size_t count = etl::dynamic_extent) const ETL_NOEXCEPT
     {
       return (count == etl::dynamic_extent) ? etl::poly_span<element_type, etl::dynamic_extent>(pbegin, offset, span_extent - offset, element_size)
                                             : etl::poly_span<element_type, etl::dynamic_extent>(pbegin, offset, count, element_size);
@@ -957,8 +957,8 @@ protected:
   //*************************************************************************
   ETL_CONSTEXPR poly_span(TBase* pbegin_, size_t offset_, size_t extent_, size_t element_size_) ETL_NOEXCEPT
     : pbegin(reinterpret_cast<pointer>(reinterpret_cast<char_ptr_t>(pbegin_) + (offset_ * element_size_)))
-    , span_extent(extent_)
     , element_size(element_size_)
+    , span_extent(extent_)
   {
   }
 
@@ -981,8 +981,8 @@ protected:
     }
 
     pointer pbegin;
-    size_t  span_extent;
     size_t  element_size;
+    size_t  span_extent;
   };
 
   //*************************************************************************
