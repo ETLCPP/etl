@@ -13,6 +13,9 @@ endif()
 
 project(etl VERSION ${ETL_VERSION})
 
+# Used for testing that generators are synced to their outputs
+find_package(Python COMPONENTS Interpreter REQUIRED)
+
 option(BUILD_TESTS "Build unit tests" OFF)
 option(NO_STL "No STL" OFF)
 
@@ -65,7 +68,10 @@ if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
     install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/etl DESTINATION include)
 endif()
 
+# Below test checks if the generators output the corresponding headers files exactly. As of 2022-07-17 the generator for variant_pool.h has fallen significantly out-of-sync and needs to be fixed before uncommenting.
+# add_test(NAME test_generators_synced COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generator_test.py)
+
 if (BUILD_TESTS)
   enable_testing()
-  add_subdirectory(test) 
+  add_subdirectory(test)
 endif()
