@@ -331,6 +331,15 @@ namespace etl
     destination.receive(message);
   }
 
+  //***************************************************************************
+  /// Send a shared message to a router.
+  //***************************************************************************
+  static inline void send_message(etl::imessage_router& destination,
+                                  etl::shared_message message)
+  {
+    destination.receive(message);
+  }
+
 //*************************************************************************************************
 // For C++17 and above.
 //*************************************************************************************************
@@ -546,7 +555,7 @@ namespace etl
               cog.outl("")
               cog.out("                                                  ")
       cog.outl("T%s>::value)" % int(Handlers))
-      cog.outl("    {")     
+      cog.outl("    {")
       cog.outl("      static_cast<TDerived*>(this)->on_receive(msg);")
       cog.outl("    }")
       cog.outl("    else")
