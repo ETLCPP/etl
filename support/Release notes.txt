@@ -1,4 +1,8 @@
 ===============================================================================
+20.31.2
+#567 error-handler: only return when the condition is false 
+
+===============================================================================
 20.31.1
 Addition of extra ETL_NODISCARD and ETL_NOEXCEPT to etl::span & etl::poly_span.
 Fixed warnings for initialisation order for some etl::poly_span constructors.

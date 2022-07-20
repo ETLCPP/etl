@@ -202,6 +202,9 @@
     <Filter Include="ETL\Messaging\Generators">
       <UniqueIdentifier>{ba80408c-0198-432a-a213-e4e2db946aab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tests\Initializer List">
+      <UniqueIdentifier>{0014395b-c658-4903-a15f-d21acb676d79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -1283,6 +1286,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\poly_span.h">
       <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\etl_initializer_list\etl_profile.h">
+      <Filter>Tests\Initializer List</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3275,6 +3281,9 @@
     <ClCompile Include="..\test_poly_span_fixed_extent.cpp">
       <Filter>Tests\Containers</Filter>
     </ClCompile>
+    <ClCompile Include="..\etl_initializer_list\test_initializer_list.cpp">
+      <Filter>Tests\Initializer List</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -3410,6 +3419,9 @@
     </Text>
     <Text Include="..\..\version.txt">
       <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="..\etl_initializer_list\CMakeLists.txt">
+      <Filter>Tests\Initializer List</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

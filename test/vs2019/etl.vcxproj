@@ -2655,6 +2655,7 @@
     <ClInclude Include="..\..\include\etl\wstring.h" />
     <ClInclude Include="..\..\include\etl\wstring_stream.h" />
     <ClInclude Include="..\data.h" />
+    <ClInclude Include="..\etl_initializer_list\etl_profile.h" />
     <ClInclude Include="..\etl_profile.h" />
     <ClInclude Include="..\murmurhash3.h" />
     <ClInclude Include="..\iterators_for_unit_tests.h" />
@@ -2700,6 +2701,7 @@
     <ClInclude Include="..\unit_test_framework.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\etl_initializer_list\test_initializer_list.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\murmurhash3.cpp" />
     <ClCompile Include="..\sanity-check\absolute.h.t.cpp">
@@ -11874,6 +11876,7 @@
     <Text Include="..\..\todo.txt" />
     <Text Include="..\..\version.txt" />
     <Text Include="..\CMakeLists.txt" />
+    <Text Include="..\etl_initializer_list\CMakeLists.txt" />
     <Text Include="..\sanity-check\c++03\CMakeLists.txt" />
     <Text Include="..\sanity-check\c++11\CMakeLists.txt" />
     <Text Include="..\sanity-check\c++14\CMakeLists.txt" />
