@@ -305,9 +305,9 @@ namespace etl
     #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) {etl::error_handler::error((e)); return (v);}          // Calls the error handler and return a value
   #else
     #if ETL_IS_DEBUG_BUILD
-      #define ETL_ASSERT(b, e) assert((b))                                        // If the condition fails, asserts.
-      #define ETL_ASSERT_AND_RETURN(b, e) {assert((b)); return;}                  // If the condition fails, asserts.
-      #define ETL_ASSERT_AND_RETURN_VALUE(b, e, v) {assert((b)); return(v);}      // If the condition fails, asserts.
+      #define ETL_ASSERT(b, e) assert((b))                                                                // If the condition fails, asserts.
+      #define ETL_ASSERT_AND_RETURN(b, e) {if (!(b)) {assert(false); return;}}                            // If the condition fails, asserts and return.
+      #define ETL_ASSERT_AND_RETURN_VALUE(b, e, v) {if (!(b)) {assert(false); return(v);}}                // If the condition fails, asserts and return a value.
     
       #define ETL_ASSERT_FAIL(e) assert(false)                                    // Asserts.
       #define ETL_ASSERT_FAIL_AND_RETURN(e) {assert(false);  return;}             // Asserts.
