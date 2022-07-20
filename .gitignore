@@ -362,3 +362,4 @@ test/build-etl_initializer_list-GCC-Debug
 test/etl_initializer_list/etl_initializer_list.vcxproj.filters
 test/etl_initializer_list/build-make
 test/vs-build
+test/etl_error_handler/build-log_errors-GCC-Debug

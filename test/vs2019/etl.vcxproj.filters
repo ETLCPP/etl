@@ -205,6 +205,21 @@
     <Filter Include="Tests\Initializer List">
       <UniqueIdentifier>{0014395b-c658-4903-a15f-d21acb676d79}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tests\Error Handler">
+      <UniqueIdentifier>{69ed2e1e-f009-4a1a-abf2-a9144142b533}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Error Handler\Log Errors">
+      <UniqueIdentifier>{78498646-3058-4d15-9d21-2243ca5d5cd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Error Handler\Exceptions">
+      <UniqueIdentifier>{19d7da41-01e8-4449-8b9b-14be81447752}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Error Handler\Exceptions_And_Log_Errors">
+      <UniqueIdentifier>{de372ec9-d193-4956-871f-065414a9d3be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Error Handler\Assert">
+      <UniqueIdentifier>{1c718339-9f2d-4c83-a39e-66b7300df135}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -1289,6 +1304,9 @@
     </ClInclude>
     <ClInclude Include="..\etl_initializer_list\etl_profile.h">
       <Filter>Tests\Initializer List</Filter>
+    </ClInclude>
+    <ClInclude Include="..\etl_error_handler\log_errors\etl_profile.h">
+      <Filter>Tests\Error Handler\Log Errors</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3284,6 +3302,9 @@
     <ClCompile Include="..\etl_initializer_list\test_initializer_list.cpp">
       <Filter>Tests\Initializer List</Filter>
     </ClCompile>
+    <ClCompile Include="..\etl_error_handler\log_errors\test_error_handler.cpp">
+      <Filter>Tests\Error Handler\Log Errors</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -3422,6 +3443,9 @@
     </Text>
     <Text Include="..\etl_initializer_list\CMakeLists.txt">
       <Filter>Tests\Initializer List</Filter>
+    </Text>
+    <Text Include="..\etl_error_handler\log_errors\CMakeLists.txt">
+      <Filter>Tests\Error Handler\Log Errors</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
