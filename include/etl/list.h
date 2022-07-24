@@ -1824,7 +1824,7 @@ namespace etl
 
 #if ETL_USING_CPP11
     //*************************************************************************
-    /// Move a forward list
+    /// Move a list
     //*************************************************************************
     void move_container(ilist&& rhs)
     {
@@ -1837,21 +1837,13 @@ namespace etl
           // Are we using the same pool?
           if (this->get_node_pool() == rhs.get_node_pool())
           {
-            node_t* p_rhs_node = &rhs.get_head();
+            // Just link the nodes to this list.
+            join(terminal_node,  rhs.get_head());
+            join(rhs.get_tail(), terminal_node);
 
-            // Just link the nodes to the new forward_list.
-            do
-            {
-              ETL_ASSERT(!full(), ETL_ERROR(list_full));
+            ETL_SET_DEBUG_COUNT(ETL_OBJECT_GET_DEBUG_COUNT(rhs));
 
-              node_t* p_node = p_rhs_node;
-              p_rhs_node = p_rhs_node->next;
-              insert_node(terminal_node, *p_node);
-
-              ETL_INCREMENT_DEBUG_COUNT;
-
-            } while (p_rhs_node != &rhs.terminal_node);
-
+            // Clear the rhs.
             ETL_OBJECT_RESET_DEBUG_COUNT(rhs);
             rhs.join(rhs.terminal_node, rhs.terminal_node);
           }
