@@ -963,7 +963,7 @@ namespace etl
 #if ETL_USING_CPP11
     //*************************************************************************
     /// Move a flat_map.
-    /// Assumes the rhs is initialised and empty.
+    /// Assumes the flat_map is initialised and empty.
     //*************************************************************************
     void move_container(iflat_map&& rhs)
     {
