@@ -453,8 +453,8 @@ namespace etl
       /// Sets the state of the instance to containing no valid data.
       //***************************************************************************
       variant()
-        : type_id(UNSUPPORTED_TYPE_ID)
-        , data()
+        : data()
+        , type_id(UNSUPPORTED_TYPE_ID)
       {
       }
 
