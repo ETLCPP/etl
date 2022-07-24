@@ -49,7 +49,8 @@ struct ErrorLog
     int log_count;
 };
 
-int assert_return_count = 0;
+int exception_count = 0;
+int return_count = 0;
 
 //*****************************************************************************
 class test_exception : public etl::exception
@@ -90,7 +91,7 @@ void AssertAndReturn(bool state)
 {
   ETL_ASSERT_AND_RETURN(state, ETL_ERROR(test_exception_1));
 
-  ++assert_return_count;
+  ++return_count;
 }
 
 //*****************************************************************************
@@ -98,7 +99,7 @@ void AssertFailAndReturn()
 {
   ETL_ASSERT_FAIL_AND_RETURN(ETL_ERROR(test_exception_1));
 
-  ++assert_return_count;
+  ++return_count;
 }
 
 //*****************************************************************************
@@ -106,7 +107,7 @@ bool AssertAndReturnValue(bool state)
 {
   ETL_ASSERT_AND_RETURN_VALUE(state, ETL_ERROR(test_exception_1), true);
 
-  ++assert_return_count;
+  ++return_count;
   return false;
 }
 
@@ -115,38 +116,96 @@ bool AssertFailAndReturnValue()
 {
   ETL_ASSERT_FAIL_AND_RETURN_VALUE(ETL_ERROR(test_exception_1), true);
 
-  ++assert_return_count;
+  ++return_count;
   return false;
 }
 
 //*****************************************************************************
 int main()
 {
-  static ErrorLog error_log;
+  ErrorLog error_log;
 
   etl::error_handler::set_callback<ErrorLog, &ErrorLog::Log>(error_log);
 
-  Assert(false);
-  Assert(true);
-  AssertFail();
-
-  AssertAndReturn(false);
-  AssertAndReturn(true);
-  AssertFailAndReturn();
-
-  if (AssertAndReturnValue(false))
+  try
   {
-    ++assert_return_count;
+    Assert(false);
+  }
+  catch (test_exception_1 e)
+  {
+    ++exception_count;
   }
 
-  if (AssertAndReturnValue(true)) 
+  try
   {
-    ++assert_return_count;
+    Assert(true);
+  }
+  catch (test_exception_1 e)
+  {
+    ++exception_count;
   }
 
-  if (AssertFailAndReturnValue())
+  try
   {
-    ++assert_return_count;
+    AssertFail();
+  }
+  catch (test_exception_1 e)
+  {
+    ++exception_count;
+  }
+
+  try
+  {
+    AssertAndReturn(false);
+  }
+  catch (test_exception_1 e)
+  {
+    ++exception_count;
+  }
+
+  try
+  {
+    AssertAndReturn(true);
+  }
+  catch (test_exception_1 e)
+  {
+    ++exception_count;
+  }
+
+  try
+  {
+    AssertFailAndReturn();
+  }
+  catch (test_exception_1 e)
+  {
+    ++exception_count;
+  }
+
+  try
+  {
+    AssertAndReturnValue(false);
+  }
+  catch (test_exception_1 e)
+  {
+    ++exception_count;
+  }
+
+  try
+  {
+    AssertAndReturnValue(true);
+  }
+  catch (test_exception_1 e)
+  {
+    ++exception_count;
+  }
+
+  try
+  {
+    AssertFailAndReturnValue();
+  }
+  catch (test_exception_1 e)
+  {
+    ++exception_count;
   }
 
   bool log_count_passed = (error_log.log_count == 6);
@@ -160,7 +219,7 @@ int main()
     std::cout << "Log Count Failed\n";
   }
 
-  bool return_count_passed = (assert_return_count == 4);
+  bool return_count_passed = (return_count == 2);
 
   if (return_count_passed)
   {
@@ -171,6 +230,17 @@ int main()
     std::cout << "Return Count Failed\n";
   }
 
-  return (log_count_passed && return_count_passed) ? 0 : 1;
+  bool exception_count_passed = (exception_count == 6);
+
+  if (exception_count_passed)
+  {
+    std::cout << "Exception Count Passed\n";
+  }
+  else
+  {
+    std::cout << "Exception Count Failed\n";
+  }
+
+  return (log_count_passed && return_count_passed && exception_count_passed) ? 0 : 1;
 }
 
