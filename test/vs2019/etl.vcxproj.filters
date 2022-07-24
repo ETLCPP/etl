@@ -217,9 +217,6 @@
     <Filter Include="Tests\Error Handler\Exceptions_And_Log_Errors">
       <UniqueIdentifier>{de372ec9-d193-4956-871f-065414a9d3be}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tests\Error Handler\Assert">
-      <UniqueIdentifier>{1c718339-9f2d-4c83-a39e-66b7300df135}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -1307,6 +1304,12 @@
     </ClInclude>
     <ClInclude Include="..\etl_error_handler\log_errors\etl_profile.h">
       <Filter>Tests\Error Handler\Log Errors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\etl_error_handler\exceptions\etl_profile.h">
+      <Filter>Tests\Error Handler\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\etl_error_handler\exceptions_and_log_errors\etl_profile.h">
+      <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3305,6 +3308,12 @@
     <ClCompile Include="..\etl_error_handler\log_errors\test_error_handler.cpp">
       <Filter>Tests\Error Handler\Log Errors</Filter>
     </ClCompile>
+    <ClCompile Include="..\etl_error_handler\exceptions\test_error_handler.cpp">
+      <Filter>Tests\Error Handler\Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\etl_error_handler\exceptions_and_log_errors\test_error_handler.cpp">
+      <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -3409,6 +3418,9 @@
     <None Include="..\..\scripts\update_release.py">
       <Filter>Tests\Scripts</Filter>
     </None>
+    <None Include="..\..\scripts\generator_test.py">
+      <Filter>Tests\Scripts</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\support\Release notes.txt">
@@ -3446,6 +3458,12 @@
     </Text>
     <Text Include="..\etl_error_handler\log_errors\CMakeLists.txt">
       <Filter>Tests\Error Handler\Log Errors</Filter>
+    </Text>
+    <Text Include="..\etl_error_handler\exceptions\CMakeLists.txt">
+      <Filter>Tests\Error Handler\Exceptions</Filter>
+    </Text>
+    <Text Include="..\etl_error_handler\exceptions_and_log_errors\CMakeLists.txt">
+      <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

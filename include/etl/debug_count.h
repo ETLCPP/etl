@@ -31,24 +31,27 @@ SOFTWARE.
 #ifndef ETL_DEBUG_COUNT_INCLUDED
 #define ETL_DEBUG_COUNT_INCLUDED
 
-#include <stdint.h>
 #include <assert.h>
+#include <stdint.h>
 
-#include "platform.h"
 #include "atomic.h"
+#include "platform.h"
 
 ///\defgroup debug_count debug count
 ///\ingroup utilities
 
 #if defined(ETL_DEBUG_COUNT)
 
-#define ETL_DECLARE_DEBUG_COUNT              etl::debug_count etl_debug_count;
-#define ETL_INCREMENT_DEBUG_COUNT            ++etl_debug_count;
-#define ETL_DECREMENT_DEBUG_COUNT            --etl_debug_count;
-#define ETL_ADD_DEBUG_COUNT(n)               etl_debug_count += (n);
-#define ETL_SUBTRACT_DEBUG_COUNT(n)          etl_debug_count -= (n);
-#define ETL_RESET_DEBUG_COUNT                etl_debug_count.clear();
-#define ETL_OBJECT_RESET_DEBUG_COUNT(object) object.etl_debug_count.clear();
+  #define ETL_DECLARE_DEBUG_COUNT              etl::debug_count etl_debug_count;
+  #define ETL_SET_DEBUG_COUNT(n)               etl_debug_count.set(n)
+  #define ETL_GET_DEBUG_COUNT                  etl_debug_count.get()
+  #define ETL_INCREMENT_DEBUG_COUNT            ++etl_debug_count;
+  #define ETL_DECREMENT_DEBUG_COUNT            --etl_debug_count;
+  #define ETL_ADD_DEBUG_COUNT(n)               etl_debug_count += (n);
+  #define ETL_SUBTRACT_DEBUG_COUNT(n)          etl_debug_count -= (n);
+  #define ETL_RESET_DEBUG_COUNT                etl_debug_count.clear();
+  #define ETL_OBJECT_RESET_DEBUG_COUNT(object) object.etl_debug_count.clear();
+  #define ETL_OBJECT_GET_DEBUG_COUNT(object)   object.etl_debug_count.get()
 
 namespace etl
 {
@@ -62,7 +65,6 @@ namespace etl
   class debug_count
   {
   public:
-
     debug_count()
       : count(0)
     {
@@ -73,13 +75,13 @@ namespace etl
       assert(count == 0);
     }
 
-    debug_count& operator ++()
+    debug_count& operator++()
     {
       ++count;
       return *this;
     }
 
-    debug_count& operator --()
+    debug_count& operator--()
     {
       --count;
       assert(count >= 0);
@@ -87,22 +89,53 @@ namespace etl
     }
 
     template <typename T>
-    debug_count& operator +=(T n)
+    debug_count& operator+=(T n)
     {
       count += int32_t(n);
       return *this;
     }
 
     template <typename T>
-    debug_count& operator -=(T n)
+    debug_count& operator-=(T n)
     {
       count -= int32_t(n);
       return *this;
     }
 
-    operator int32_t()
+    debug_count& operator=(const debug_count& other)
+    {
+      count.store(other.count.load());
+
+      return *this;
+    }
+
+  #if ETL_HAS_ATOMIC
+    void swap(debug_count& other) ETL_NOEXCEPT  // NOT ATOMIC
+    {
+      int32_t temp = other.count.load();
+      other.count.store(count.load());
+      count.store(temp);
+    }
+  #else
+    void swap(debug_count& other) ETL_NOEXCEPT
+    {
+      swap(count, other.count);
+    }
+  #endif
+
+    operator int32_t() const
     {
       return count;
+    }
+
+    int32_t get() const
+    {
+      return int32_t(count);
+    }
+
+    void set(int32_t n)
+    {
+      count = n;
     }
 
     void clear()
@@ -110,25 +143,31 @@ namespace etl
       count = 0;
     }
 
+    friend static void swap(etl::debug_count& lhs, etl::debug_count& rhs)
+    {
+      lhs.swap(rhs);
+    }
+
   private:
-
-#if ETL_HAS_ATOMIC
+  #if ETL_HAS_ATOMIC
     etl::atomic_int32_t count;
-#else
+  #else
     int32_t count;
-#endif
+  #endif
   };
-
-}
+}  // namespace etl
 
 #else
   #define ETL_DECLARE_DEBUG_COUNT
+  #define ETL_SET_DEBUG_COUNT(n)
+  #define ETL_GET_DEBUG_COUNT
   #define ETL_INCREMENT_DEBUG_COUNT
   #define ETL_DECREMENT_DEBUG_COUNT
   #define ETL_ADD_DEBUG_COUNT(n)
   #define ETL_SUBTRACT_DEBUG_COUNT(n)
   #define ETL_RESET_DEBUG_COUNT
   #define ETL_OBJECT_RESET_DEBUG_COUNT(object)
-#endif // ETL_DEBUG_COUNT
+  #define ETL_OBJECT_GET_DEBUG_COUNT(object)
+#endif  // ETL_DEBUG_COUNT
 
 #endif
