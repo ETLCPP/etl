@@ -1304,7 +1304,7 @@ namespace etl
       swap(this->buffer_size, other.buffer_size);
 
 #if defined(ETL_DEBUG_COUNT)
-      swap(this->etl_debug_count, other.etl_debug_count);
+      this->etl_debug_count.swap(other.etl_debug_count);
 #endif
     }
 

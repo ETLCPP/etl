@@ -62,6 +62,8 @@ namespace etl
   /// Does nothing in a non-debug build.
   ///\ingroup reference
   //***************************************************************************
+
+  
   class debug_count
   {
   public:
@@ -143,11 +145,6 @@ namespace etl
       count = 0;
     }
 
-    friend static void swap(etl::debug_count& lhs, etl::debug_count& rhs)
-    {
-      lhs.swap(rhs);
-    }
-
   private:
   #if ETL_HAS_ATOMIC
     etl::atomic_int32_t count;
@@ -156,6 +153,12 @@ namespace etl
   #endif
   };
 }  // namespace etl
+
+
+static void swap(etl::debug_count& lhs, etl::debug_count& rhs)
+{
+  lhs.swap(rhs);
+}
 
 #else
   #define ETL_DECLARE_DEBUG_COUNT
