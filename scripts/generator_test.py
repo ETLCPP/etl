@@ -3,7 +3,7 @@ from os.path import abspath
 from pathlib import Path
 import filecmp
 
-root_path = Path(abspath(__file__)).parent
+root_path = Path(abspath(__file__)).parent.parent
 generator_folder = root_path/"include" / "etl" / "generators"
 
 # Create folder where generator outputs can go for purpose of comparison
