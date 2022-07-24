@@ -362,6 +362,14 @@ test/build-etl_initializer_list-GCC-Debug
 test/etl_initializer_list/etl_initializer_list.vcxproj.filters
 test/etl_initializer_list/build-make
 test/vs-build
+test/etl_error_handler/build-log_errors-GCC-Debug
+test/etl_error_handler/build-exceptions_and_log_errors-GCC-Debug
+test/etl_error_handler/build-exceptions-GCC-Debug
+test/etl_error_handler/exceptions_and_log_errors/.vs
+test/etl_error_handler/exceptions/build-make
+test/etl_error_handler/log_errors/build-make
+test/etl_error_handler/log_errors_and_exceptions/build-make
+test/etl_error_handler/log_errors_and_exceptions/.vs
 test/etl_error_handler/exceptions/build-make
 test/etl_error_handler/log_errors/build-make
 test/etl_error_handler/log_errors_and_exceptions/.vs

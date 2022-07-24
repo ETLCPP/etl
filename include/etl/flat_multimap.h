@@ -848,7 +848,7 @@ namespace etl
 #if ETL_USING_CPP11
     //*************************************************************************
     /// Move a flat_multimap.
-    /// Assumes the rhs is initialised and empty.
+    /// Assumes the flat_multimap is initialised and empty.
     //*************************************************************************
     void move_container(iflat_multimap&& rhs)
     {

@@ -218,6 +218,151 @@ else
   echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
   exit $?
 fi
+
+echo ""
+echo "-----------------------------------------------" | tee -a log.txt
+echo " GCC - Error macros 'log_errors' test" | tee -a log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+cd ../../etl_error_handler/log_errors
+mkdir -p build-make || exit 1
+cd build-make || exit 1
+gcc --version | grep gcc | tee -a log.txt
+cmake --cmake-clean-cache -DCMAKE_CXX_COMPILER="g++" -DCMAKE_C_COMPILER="gcc" ..
+make -j8
+if [ $? -eq 0 ]; then
+  echo "<<<< Passed Error macros 'log_errors' Compilation >>>>"
+else
+  echo "****************\n**** Failed Error macros 'log_errors' ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
+./etl_tests
+if [ $? -eq 0 ]; then
+  echo "<<<< Passed Tests >>>>"
+else
+  echo "****************\n**** Failed Error macros 'log_errors' ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
+
+echo ""
+echo "-----------------------------------------------" | tee -a log.txt
+echo " GCC - Error macros 'exceptions' test" | tee -a log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+cd ../../../etl_error_handler/exceptions
+mkdir -p build-make || exit 1
+cd build-make || exit 1
+gcc --version | grep gcc | tee -a log.txt
+cmake --cmake-clean-cache -DCMAKE_CXX_COMPILER="g++" -DCMAKE_C_COMPILER="gcc" ..
+make -j8
+if [ $? -eq 0 ]; then
+  echo "<<<< Passed Error macros 'exceptions' Compilation >>>>"
+else
+  echo "****************\n**** Failed Error macros 'exceptions' ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
+./etl_tests
+if [ $? -eq 0 ]; then
+  echo "<<<< Passed Tests >>>>"
+else
+  echo "****************\n**** Failed Error macros 'exceptions' ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
+
+echo ""
+echo "-----------------------------------------------" | tee -a log.txt
+echo " GCC - Error macros 'log_errors and exceptions' test" | tee -a log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+cd ../../../etl_error_handler/log_errors_and_exceptions
+mkdir -p build-make || exit 1
+cd build-make || exit 1
+gcc --version | grep gcc | tee -a log.txt
+cmake --cmake-clean-cache -DCMAKE_CXX_COMPILER="g++" -DCMAKE_C_COMPILER="gcc" ..
+make -j8
+if [ $? -eq 0 ]; then
+  echo "<<<< Passed Error macros 'log_errors and exceptions' Compilation >>>>"
+else
+  echo "****************\n**** Failed Error macros 'log_errors and exceptions' ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
+./etl_tests
+if [ $? -eq 0 ]; then
+  echo "<<<< Passed Tests >>>>"
+else
+  echo "****************\n**** Failed Error macros 'log_errors and exceptions' ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
+
+echo ""
+echo "-----------------------------------------------" | tee -a log.txt
+echo " Clang - Error macros 'log_errors' test" | tee -a log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+cd ../../../etl_error_handler/log_errors
+mkdir -p build-make || exit 1
+cd build-make || exit 1
+clang --version | grep clang | tee -a log.txt
+cmake --cmake-clean-cache -DCMAKE_CXX_COMPILER="clang++" -DCMAKE_C_COMPILER="clang" ..
+make -j8
+if [ $? -eq 0 ]; then
+  echo "<<<< Passed Error macros 'log_errors' Compilation >>>>"
+else
+  echo "****************\n**** Failed Error macros 'log_errors' ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
+./etl_tests
+if [ $? -eq 0 ]; then
+  echo "<<<< Passed Tests >>>>"
+else
+  echo "****************\n**** Failed Error macros 'log_errors' ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
+
+echo ""
+echo "-----------------------------------------------" | tee -a log.txt
+echo " Clang - Error macros 'exceptions' test" | tee -a log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+cd ../../../etl_error_handler/exceptions
+mkdir -p build-make || exit 1
+cd build-make || exit 1
+clang --version | grep clang | tee -a log.txt
+cmake --cmake-clean-cache -DCMAKE_CXX_COMPILER="clang++" -DCMAKE_C_COMPILER="clang" ..
+make -j8
+if [ $? -eq 0 ]; then
+  echo "<<<< Passed Error macros 'exceptions' Compilation >>>>"
+else
+  echo "****************\n**** Failed Error macros 'exceptions' ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
+./etl_tests
+if [ $? -eq 0 ]; then
+  echo "<<<< Passed Tests >>>>"
+else
+  echo "****************\n**** Failed Error macros 'exceptions' ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
+
+echo ""
+echo "-----------------------------------------------" | tee -a log.txt
+echo " Clang - Error macros 'log_errors and exceptions' test" | tee -a log.txt
+echo "-----------------------------------------------" | tee -a log.txt
+cd ../../../etl_error_handler/log_errors_and_exceptions
+mkdir -p build-make || exit 1
+cd build-make || exit 1
+clang --version | grep clang | tee -a log.txt
+cmake --cmake-clean-cache -DCMAKE_CXX_COMPILER="clang++" -DCMAKE_C_COMPILER="clang" ..
+make -j8
+if [ $? -eq 0 ]; then
+  echo "<<<< Passed Error macros 'log_errors and exceptions' Compilation >>>>"
+else
+  echo "****************\n**** Failed Error macros 'log_errors and exceptions' ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
+./etl_tests
+if [ $? -eq 0 ]; then
+  echo "<<<< Passed Tests >>>>"
+else
+  echo "****************\n**** Failed Error macros 'log_errors and exceptions' ****\n****************" | tee -a ../log.txt
+  exit $?
+fi
+
 cd ../..
 
 echo ""

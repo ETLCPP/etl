@@ -888,7 +888,7 @@ namespace etl
 #if ETL_USING_CPP11
     //*************************************************************************
     /// Move a flat_set.
-    /// Assumes the rhs is initialised and empty.
+    /// Assumes the flat_set is initialised and empty.
     //*************************************************************************
     void move_container(iflat_set&& rhs)
     {

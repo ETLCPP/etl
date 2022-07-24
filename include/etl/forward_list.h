@@ -1485,34 +1485,25 @@ namespace etl
 
         if (!rhs.empty())
         {
-          node_t* p_last_node = &this->start_node;
-          node_t* p_rhs_node  = rhs.start_node.next;
-
           // Are we using the same pool?
           if (this->get_node_pool() == rhs.get_node_pool())
           {
-            // Just link the nodes to the new forward_list.
-            do
-            {
-              node_t* p_node = p_rhs_node;
-              p_rhs_node = p_rhs_node->next;
+            // Just link the nodes to this list.
+            this->start_node.next = rhs.start_node.next;
 
-              insert_node_after(*p_last_node, *p_node);
-
-              p_last_node = p_node;
-
-              ETL_INCREMENT_DEBUG_COUNT;
-
-            } while (p_rhs_node != ETL_NULLPTR);
+            ETL_SET_DEBUG_COUNT(ETL_OBJECT_GET_DEBUG_COUNT(rhs));
 
             ETL_OBJECT_RESET_DEBUG_COUNT(rhs);
             rhs.start_node.next = ETL_NULLPTR;
           }
           else
           {
+            node_t* p_last_node = &this->start_node;
+            node_t* p_rhs_node = rhs.start_node.next;
+
             // Add all of the elements.
             etl::iforward_list<T>::iterator first = rhs.begin();
-            etl::iforward_list<T>::iterator last = rhs.end();
+            etl::iforward_list<T>::iterator last  = rhs.end();
 
             while (first != last)
             {

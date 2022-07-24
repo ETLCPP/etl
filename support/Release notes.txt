@@ -1,4 +1,12 @@
 ===============================================================================
+20.31.3
+#569 Fixed swap function for circular_buffer_ext
+#568 Fixed circular_buffer iterator -> operators
+Optimised container move for external buffers
+Added functions and macros to etl::debug_count
+Added tests for error handler macros
+
+===============================================================================
 20.31.2
 #567 error-handler: only return when the condition is false 
 

@@ -283,7 +283,7 @@ namespace etl
     
     #define ETL_ASSERT_FAIL(e) {etl::error_handler::error((e)); throw((e));}                                          // Calls the error handler then throws an exception.
     #define ETL_ASSERT_FAIL_AND_RETURN(e) {etl::error_handler::error((e)); throw((e)); return;}                       // Calls the error handler then throws an exception.
-    #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e) {etl::error_handler::error((e)); throw((e)); return(v);}              // Calls the error handler then throws an exception.
+    #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) {etl::error_handler::error((e)); throw((e)); return(v);}              // Calls the error handler then throws an exception.
   #else
     #define ETL_ASSERT(b, e) {if (!(b)) {throw((e));}}                                // If the condition fails, throws an exception.
     #define ETL_ASSERT_AND_RETURN(b, e) {if (!(b)) {throw((e)); return;}}             // If the condition fails, throws an exception.

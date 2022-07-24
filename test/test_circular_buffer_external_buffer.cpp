@@ -198,6 +198,48 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_iterator_to_pointer_operator)
+    {
+      Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
+      Data data(buffer1.raw, SIZE);
+      data.push(test.begin(), test.end());
+
+      Data::iterator itr = data.begin();
+
+      CHECK_EQUAL(test[0].value, (itr++)->value);
+      CHECK_EQUAL(test[1].value, (itr++)->value);
+      CHECK_EQUAL(test[2].value, (itr++)->value);
+      CHECK_EQUAL(test[3].value, (itr++)->value);
+      CHECK_EQUAL(test[4].value, (itr++)->value);
+      CHECK_EQUAL(test[5].value, (itr++)->value);
+      CHECK_EQUAL(test[6].value, (itr++)->value);
+      CHECK_EQUAL(test[7].value, (itr++)->value);
+      CHECK_EQUAL(test[8].value, (itr++)->value);
+      CHECK_EQUAL(test[9].value, (itr++)->value);
+    }
+
+    //*************************************************************************
+    TEST(test_const_iterator_to_pointer_operator)
+    {
+      Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
+      Data data(buffer1.raw, SIZE);
+      data.push(test.begin(), test.end());
+
+      Data::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(test[0].value, (itr++)->value);
+      CHECK_EQUAL(test[1].value, (itr++)->value);
+      CHECK_EQUAL(test[2].value, (itr++)->value);
+      CHECK_EQUAL(test[3].value, (itr++)->value);
+      CHECK_EQUAL(test[4].value, (itr++)->value);
+      CHECK_EQUAL(test[5].value, (itr++)->value);
+      CHECK_EQUAL(test[6].value, (itr++)->value);
+      CHECK_EQUAL(test[7].value, (itr++)->value);
+      CHECK_EQUAL(test[8].value, (itr++)->value);
+      CHECK_EQUAL(test[9].value, (itr++)->value);
+    }
+
+    //*************************************************************************
     TEST(test_push_full_range_reverse_iterator)
     {
       Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
@@ -903,18 +945,22 @@ namespace
     //*************************************************************************
     TEST(test_swap)
     {
-      // Over-write by 3
-      Compare input{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
-      Compare output{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
-      Data data1(buffer1.raw, SIZE);
-      Data data2(buffer2.raw, SIZE);
-      data1.push(input.begin(), input.end());
-      data2.push(input.rbegin(), input.rend());
+      etl::uninitialized_buffer_of<Ndc, 6U> buffer1;
+      etl::uninitialized_buffer_of<Ndc, 7U> buffer2;
+
+      Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4") };
+      Compare input2{ Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
+      Data data1(buffer1.raw, 5U);
+      Data data2(buffer2.raw, 6U);
+      data1.push(input1.begin(), input1.end());
+      data2.push(input2.begin(), input2.end());
 
       swap(data1, data2);
 
-      CHECK(std::equal(output.rbegin() + 3, output.rend(), data1.begin()));
-      CHECK(std::equal(output.begin() + 3, output.end(), data2.begin()));
+      CHECK_EQUAL(input1.size(), data2.size());
+      CHECK_EQUAL(input2.size(), data1.size());
+      CHECK(std::equal(input1.begin(), input1.end(), data2.begin()));
+      CHECK(std::equal(input2.begin(), input2.end(), data1.begin()));
     }
 
     //*************************************************************************
