@@ -66,68 +66,51 @@ cog.outl("//********************************************************************
 #include <stdint.h>
 
 #include "platform.h"
-#include "error_handler.h"
-#include "exception.h"
-#include "largest.h"
-#include "type_traits.h"
-#include "alignment.h"
-#include "static_assert.h"
-#include "type_lookup.h"
 #include "pool.h"
-
-#include "utility.h"
+#include "type_traits.h"
+#include "static_assert.h"
+#include "largest.h"
 
 namespace etl
 {
   //***************************************************************************
-  class variant_pool_exception : public etl::exception
-  {
-  public:
-
-    variant_pool_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
-      : exception(reason_, file_name_, line_number_)
-    {
-    }
-  };
-
-  //***************************************************************************
-  class variant_pool_cannot_create : public etl::variant_pool_exception
-  {
-  public:
-
-    variant_pool_cannot_create(string_type file_name_, numeric_type line_number_)
-      : variant_pool_exception(ETL_ERROR_TEXT("variant_pool:cannot create", ETL_VARIANT_POOL_FILE_ID"A"), file_name_, line_number_)
-    {
-    }
-  };
-
-  //***************************************************************************
-  class variant_pool_did_not_create : public etl::variant_pool_exception
-  {
-  public:
-
-    variant_pool_did_not_create(string_type file_name_, numeric_type line_number_)
-      : variant_pool_exception(ETL_ERROR_TEXT("variant_pool:did not create", ETL_VARIANT_POOL_FILE_ID"B"), file_name_, line_number_)
-    {
-    }
-  };
-
-  //***************************************************************************
   /*[[[cog
   import cog
   cog.outl("template <const size_t MAX_SIZE_,")
-  cog.outl("          typename T1, ")
+  cog.outl("          typename T1,")
   for n in range(2, int(NTypes)):
-      cog.outl("          typename T%s = void, " % n)
-      if n % 16 == 0:
-          cog.outl("")
-          cog.out("          ")
+      cog.outl("          typename T%s = void," % n)
   cog.outl("          typename T%s = void>" % int(NTypes))
+  cog.outl("class variant_pool")
+  cog.out("  : public etl::generic_pool<")
+  cog.out("etl::largest<")
+  for n in range(1, int(NTypes)):
+      cog.out("T%s, " % n)
+  cog.outl("T%s>::size," % int(NTypes))
+  cog.out("                             etl::largest<")
+  for n in range(1, int(NTypes)):
+      cog.out("T%s, " % n)
+  cog.outl("T%s>::alignment," % int(NTypes))
+  cog.outl("                             MAX_SIZE_>")
   ]]]*/
   /*[[[end]]]*/
-  class variant_pool
   {
   public:
+
+    /*[[[cog
+    import cog
+    cog.out("typedef etl::generic_pool<")
+    cog.out("etl::largest<")
+    for n in range(1, int(NTypes)):
+        cog.out("T%s, " % n)
+    cog.outl("T%s>::size," % int(NTypes))
+    cog.out("                          etl::largest<")
+    for n in range(1, int(NTypes)):
+        cog.out("T%s, " % n)
+    cog.outl("T%s>::alignment," % int(NTypes))
+    cog.outl("                          MAX_SIZE_> base_t;")
+    ]]]*/
+    /*[[[end]]]*/
 
     static const size_t MAX_SIZE = MAX_SIZE_;
 
@@ -157,23 +140,7 @@ namespace etl
       ]]]*/
       /*[[[end]]]*/
 
-      T* p = ETL_NULLPTR;
-
-      if (pool.full())
-      {
-        ETL_ASSERT(false, ETL_ERROR(etl::variant_pool_cannot_create));
-      }
-      else
-      {
-        p = pool.template allocate<T>();
-
-        if (p != ETL_NULLPTR)
-        {
-          new (p) T();
-        }
-      }
-
-      return p;
+      return base_t::template create<T>();
     }
 
     //*************************************************************************
@@ -194,23 +161,7 @@ namespace etl
       ]]]*/
       /*[[[end]]]*/
 
-      T* p = ETL_NULLPTR;
-
-      if (pool.full())
-      {
-        ETL_ASSERT(false, ETL_ERROR(etl::variant_pool_cannot_create));
-      }
-      else
-      {
-        p = pool.template allocate<T>();
-
-        if (p != ETL_NULLPTR)
-        {
-          new (p) T(p1);
-        }
-      }
-
-      return p;
+      return base_t::template create<T>(p1);
     }
 
     //*************************************************************************
@@ -231,23 +182,7 @@ namespace etl
       ]]]*/
       /*[[[end]]]*/
 
-      T* p = ETL_NULLPTR;
-
-      if (pool.full())
-      {
-        ETL_ASSERT(false, ETL_ERROR(etl::variant_pool_cannot_create));
-      }
-      else
-      {
-        p = pool.template allocate<T>();
-
-        if (p != ETL_NULLPTR)
-        {
-          new (p) T(p1, p2);
-        }
-      }
-
-      return p;
+      return base_t::template create<T>(p1, p2);
     }
 
     //*************************************************************************
@@ -268,23 +203,7 @@ namespace etl
       ]]]*/
       /*[[[end]]]*/
 
-      T* p = ETL_NULLPTR;
-
-      if (pool.full())
-      {
-        ETL_ASSERT(false, ETL_ERROR(etl::variant_pool_cannot_create));
-      }
-      else
-      {
-        p = pool.template allocate<T>();
-
-        if (p != ETL_NULLPTR)
-        {
-          new (p) T(p1, p2, p3);
-        }
-      }
-
-      return p;
+      return base_t::template create<T>(p1, p2, p3);
     }
 
     //*************************************************************************
@@ -305,23 +224,7 @@ namespace etl
       ]]]*/
       /*[[[end]]]*/
 
-      T* p = ETL_NULLPTR;
-
-      if (pool.full())
-      {
-        ETL_ASSERT(false, ETL_ERROR(etl::variant_pool_cannot_create));
-      }
-      else
-      {
-        p = pool.template allocate<T>();
-
-        if (p != ETL_NULLPTR)
-        {
-          new (p) T(p1, p2, p3, p4);
-        }
-      }
-
-      return p;
+      return base_t::template create<T>(p1, p2, p3, p4);
     }
 #else
     //*************************************************************************
@@ -342,23 +245,7 @@ namespace etl
       ]]]*/
       /*[[[end]]]*/
 
-      T* p = ETL_NULLPTR;
-
-      if (pool.full())
-      {
-        ETL_ASSERT(false, ETL_ERROR(etl::variant_pool_cannot_create));
-      }
-      else
-      {
-        p = pool.template allocate<T>();
-
-        if (p != ETL_NULLPTR)
-        {
-          new (p) T(ETL_OR_STD::forward<Args>(args)...);
-        }
-      }
-
-      return p;
+      return base_t::template create<T>(args...);
     }
 #endif
 
@@ -379,24 +266,13 @@ namespace etl
       cog.outl("T%s>::value ||" % int(NTypes))
 
       for n in range(1, int(NTypes)):
-          cog.outl("               etl::is_base_of<T, T%s>::value ||" % n)
-      cog.outl("               etl::is_base_of<T, T%s>::value), \"Invalid type\");" % int(NTypes))
+          cog.outl("                   etl::is_base_of<T, T%s>::value ||" % n)
+      cog.outl("                   etl::is_base_of<T, T%s>::value), \"Invalid type\");" % int(NTypes))
 
       ]]]*/
       /*[[[end]]]*/
 
-      p->~T();
-
-      void* vp = reinterpret_cast<char*>(const_cast<T*>(p));
-
-      if (pool.is_in_pool(vp))
-      {
-        pool.release(vp);
-      }
-      else
-      {
-        ETL_ASSERT(false, ETL_ERROR(variant_pool_did_not_create));
-      }
+      base_t::destroy(p);
     }
 
     //*************************************************************************
@@ -407,66 +283,222 @@ namespace etl
       return MAX_SIZE;
     }
 
+  private:
+
+    variant_pool(const variant_pool&) ETL_DELETE;
+    variant_pool& operator =(const variant_pool&) ETL_DELETE;
+  };
+
+  //***************************************************************************
+  /*[[[cog
+  import cog
+  cog.outl("template <typename T1,")
+  for n in range(2, int(NTypes)):
+      cog.outl("          typename T%s = void," % n)
+  cog.outl("          typename T%s = void>" % int(NTypes))
+  cog.outl("class variant_pool_ext")
+  cog.out("  : public etl::generic_pool_ext<")
+  cog.out("etl::largest<")
+  for n in range(1, int(NTypes)):
+      cog.out("T%s, " % n)
+  cog.outl("T%s>::size," % int(NTypes))
+  cog.out("                                 etl::largest<")
+  for n in range(1, int(NTypes)):
+      cog.out("T%s, " % n)
+  cog.outl("T%s>::alignment>" % int(NTypes))
+  ]]]*/
+  /*[[[end]]]*/
+  {
+  public:
+
+    /*[[[cog
+    import cog
+    cog.out("typedef etl::generic_pool_ext<")
+    cog.out("etl::largest<")
+    for n in range(1, int(NTypes)):
+        cog.out("T%s, " % n)
+    cog.outl("T%s>::size," % int(NTypes))
+    cog.out("                              etl::largest<")
+    for n in range(1, int(NTypes)):
+        cog.out("T%s, " % n)
+    cog.outl("T%s>::alignment> base_t;" % int(NTypes))
+    ]]]*/
+    /*[[[end]]]*/
+
     //*************************************************************************
-    /// Returns the number of free items in the variant_pool.
+    /// Default constructor.
     //*************************************************************************
-    size_t available() const
+    variant_pool_ext(typename base_t::element* buffer, size_t size)
+      : base_t(buffer, size) 
     {
-      return pool.available();
+    }
+
+#if ETL_CPP11_NOT_SUPPORTED || ETL_USING_STLPORT
+    //*************************************************************************
+    /// Creates the object. Default constructor.
+    //*************************************************************************
+    template <typename T>
+    T* create()
+    {
+      /*[[[cog
+      import cog
+      cog.out("ETL_STATIC_ASSERT((etl::is_one_of<T, ")
+      for n in range(1, int(NTypes)):
+          cog.out("T%s, " % n)
+          if n % 16 == 0:
+              cog.outl("")
+              cog.out("                              ")
+      cog.outl("T%s>::value), \"Unsupported type\");" % int(NTypes))
+      ]]]*/
+      /*[[[end]]]*/
+
+      return base_t::template create<T>();
     }
 
     //*************************************************************************
-    /// Returns the number of allocated items in the variant_pool.
+    /// Creates the object. One parameter constructor.
     //*************************************************************************
-    size_t size() const
+    template <typename T, typename TP1>
+    T* create(const TP1& p1)
     {
-      return pool.size();
+      /*[[[cog
+      import cog
+      cog.out("ETL_STATIC_ASSERT((etl::is_one_of<T, ")
+      for n in range(1, int(NTypes)):
+          cog.out("T%s, " % n)
+          if n % 16 == 0:
+              cog.outl("")
+              cog.out("                              ")
+      cog.outl("T%s>::value), \"Unsupported type\");" % int(NTypes))
+      ]]]*/
+      /*[[[end]]]*/
+
+      return base_t::template create<T>(p1);
     }
 
     //*************************************************************************
-    /// Checks to see if there are no allocated items in the variant_pool.
-    /// \return <b>true</b> if there are none allocated.
+    /// Creates the object. Two parameter constructor.
     //*************************************************************************
-    bool empty() const
+    template <typename T, typename TP1, typename TP2>
+    T* create(const TP1& p1, const TP2& p2)
     {
-      return pool.empty();
+      /*[[[cog
+      import cog
+      cog.out("ETL_STATIC_ASSERT((etl::is_one_of<T, ")
+      for n in range(1, int(NTypes)):
+          cog.out("T%s, " % n)
+          if n % 16 == 0:
+              cog.outl("")
+              cog.out("                              ")
+      cog.outl("T%s>::value), \"Unsupported type\");" % int(NTypes))
+      ]]]*/
+      /*[[[end]]]*/
+
+      return base_t::template create<T>(p1, p2);
     }
 
     //*************************************************************************
-    /// Checks to see if there are no free items in the variant_pool.
-    /// \return <b>true</b> if there are none free.
+    /// Creates the object. Three parameter constructor.
     //*************************************************************************
-    bool full() const
+    template <typename T, typename TP1, typename TP2, typename TP3>
+    T* create(const TP1& p1, const TP2& p2, const TP3& p3)
     {
-      return pool.full();
+      /*[[[cog
+      import cog
+      cog.out("ETL_STATIC_ASSERT((etl::is_one_of<T, ")
+      for n in range(1, int(NTypes)):
+          cog.out("T%s, " % n)
+          if n % 16 == 0:
+              cog.outl("")
+              cog.out("                              ")
+      cog.outl("T%s>::value), \"Unsupported type\");" % int(NTypes))
+      ]]]*/
+      /*[[[end]]]*/
+
+      return base_t::template create<T>(p1, p2, p3);
+    }
+
+    //*************************************************************************
+    /// Creates the object. Four parameter constructor.
+    //*************************************************************************
+    template <typename T, typename TP1, typename TP2, typename TP3, typename TP4>
+    T* create(const TP1& p1, const TP2& p2, const TP3& p3, const TP4& p4)
+    {
+      /*[[[cog
+      import cog
+      cog.out("ETL_STATIC_ASSERT((etl::is_one_of<T, ")
+      for n in range(1, int(NTypes)):
+          cog.out("T%s, " % n)
+          if n % 16 == 0:
+              cog.outl("")
+              cog.out("                              ")
+      cog.outl("T%s>::value), \"Unsupported type\");" % int(NTypes))
+      ]]]*/
+      /*[[[end]]]*/
+
+      return base_t::template create<T>(p1, p2, p3, p4);
+    }
+#else
+    //*************************************************************************
+    /// Creates the object from a type. Variadic parameter constructor.
+    //*************************************************************************
+    template <typename T, typename... Args>
+    T* create(Args&&... args)
+    {
+      /*[[[cog
+      import cog
+      cog.out("ETL_STATIC_ASSERT((etl::is_one_of<T, ")
+      for n in range(1, int(NTypes)):
+          cog.out("T%s, " % n)
+          if n % 16 == 0:
+              cog.outl("")
+              cog.out("                              ")
+      cog.outl("T%s>::value), \"Unsupported type\");" % int(NTypes))
+      ]]]*/
+      /*[[[end]]]*/
+
+      return base_t::template create<T>(args...);
+    }
+#endif
+
+    //*************************************************************************
+    /// Destroys the object.
+    //*************************************************************************
+    template <typename T>
+    void destroy(const T* const p)
+    {
+      /*[[[cog
+      import cog
+      cog.out("ETL_STATIC_ASSERT((etl::is_one_of<T, ")
+      for n in range(1, int(NTypes)):
+          cog.out("T%s, " % n)
+          if n % 16 == 0:
+              cog.outl("")
+              cog.out("                              ")
+      cog.outl("T%s>::value ||" % int(NTypes))
+
+      for n in range(1, int(NTypes)):
+          cog.outl("                   etl::is_base_of<T, T%s>::value ||" % n)
+      cog.outl("                   etl::is_base_of<T, T%s>::value), \"Invalid type\");" % int(NTypes))
+
+      ]]]*/
+      /*[[[end]]]*/
+
+      base_t::destroy(p);
+    }
+
+    //*************************************************************************
+    /// Returns the maximum number of items in the variant_pool.
+    //*************************************************************************
+    size_t max_size() const 
+    { 
+      return base_t::max_size(); 
     }
 
   private:
 
-    variant_pool(const variant_pool&);
-    variant_pool& operator =(const variant_pool&);
-
-    // The pool.
-    /*[[[cog
-    import cog
-    cog.out("etl::generic_pool<etl::largest<")
-    for n in range(1, int(NTypes)):
-        cog.out("T%s, " % n)
-        if n % 16 == 0:
-            cog.outl("")
-            cog.out("                  ")
-    cog.outl("T%s>::size," % int(NTypes))
-
-    cog.out("                  etl::largest<")
-    for n in range(1, int(NTypes)):
-        cog.out("T%s, " % n)
-        if n % 16 == 0:
-            cog.outl("")
-            cog.out("                  ")
-    cog.outl("T%s>::alignment," % int(NTypes))
-    cog.outl("                  MAX_SIZE> pool;")
-    ]]]*/
-    /*[[[end]]]*/
+    variant_pool_ext(const variant_pool_ext&) ETL_DELETE;
+    variant_pool_ext& operator =(const variant_pool_ext&) ETL_DELETE;
   };
 }
 
