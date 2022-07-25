@@ -384,9 +384,9 @@ namespace etl
     using base_t::max_size;
 
     //*************************************************************************
-    // Reserves a memory area for reading up to the max_reserve_size
+    // Reserves a memory area for reading (up to the max_reserve_size).
     //*************************************************************************
-    span<T> read_reserve(size_type max_reserve_size)
+    span<T> read_reserve(size_type max_reserve_size = numeric_limits<size_type>::max())
     {
       size_type reserve_size = max_reserve_size;
       size_type rindex = get_read_reserve(&reserve_size);
@@ -433,7 +433,7 @@ namespace etl
     void clear()
     {
       // the buffer might be split into two contiguous blocks
-      for (span<T> reader = read_reserve(max_size()); reader.size() > 0; reader = read_reserve(max_size()))
+      for (span<T> reader = read_reserve(); reader.size() > 0; reader = read_reserve())
       {
         destroy(reader.begin(), reader.end());
         read_commit(reader);

@@ -142,7 +142,7 @@ namespace
       CHECK_EQUAL(0U, writer.size());
 
       // Read to capacity
-      reader = istream.read_reserve(istream.size());
+      reader = istream.read_reserve();
       CHECK_EQUAL(3U, reader.size());
       CHECK_EQUAL(3, reader[0]);
       CHECK_EQUAL(4, reader[1]);
@@ -152,7 +152,7 @@ namespace
       istream.read_commit(reader); // * 2 * * *
       CHECK_EQUAL(1U, stream.size());
 
-      reader = istream.read_reserve(istream.size());
+      reader = istream.read_reserve();
       CHECK_EQUAL(1U, reader.size());
       CHECK_EQUAL(6, reader[0]);
       CHECK_EQUAL(1U, stream.size());
