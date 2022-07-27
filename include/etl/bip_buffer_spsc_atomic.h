@@ -200,7 +200,7 @@ namespace etl
     }
 
     //*************************************************************************
-    size_type get_write_reserve(size_type* psize)
+    size_type get_write_reserve(size_type* psize, size_type fallback_size = numeric_limits<size_type>::max())
     {
       size_type write_index = write.load(etl::memory_order_relaxed);
       size_type read_index = read.load(etl::memory_order_acquire);
@@ -215,8 +215,9 @@ namespace etl
         {
           return write_index;
         }
-        // There isn't more space even when wrapping around
-        else if (read_index <= (forward_size + 1))
+        // There isn't more space even when wrapping around,
+        // or the linear size is good enough as fallback
+        else if ((read_index <= (forward_size + 1)) || (fallback_size <= forward_size))
         {
           *psize = forward_size;
           return write_index;
@@ -406,7 +407,7 @@ namespace etl
     }
 
     //*************************************************************************
-    // Reserves a memory area for writing up to the max_reserve_size
+    // Reserves a memory area for writing up to the max_reserve_size.
     //*************************************************************************
     span<T> write_reserve(size_type max_reserve_size)
     {
@@ -414,6 +415,18 @@ namespace etl
       size_type windex = get_write_reserve(&reserve_size);
         
       return span<T>(p_buffer + windex, reserve_size);
+    }
+
+    //*************************************************************************
+    // Reserves an optimal memory area for writing. The buffer will only wrap
+    // around if the available forward space is less than min_reserve_size.
+    //*************************************************************************
+    span<T> write_reserve_optimal(size_type min_reserve_size = 1)
+    {
+        size_type reserve_size = numeric_limits<size_type>::max();
+        size_type windex = get_write_reserve(&reserve_size, min_reserve_size);
+
+        return span<T>(p_buffer + windex, reserve_size);
     }
 
     //*************************************************************************

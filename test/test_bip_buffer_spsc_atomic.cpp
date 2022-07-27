@@ -167,6 +167,48 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_optimal_write)
+    {
+        etl::bip_buffer_spsc_atomic<int, 5> stream;
+        etl::ibip_buffer_spsc_atomic<int>& istream = stream;
+
+        // Prepare buffer for bipartite split
+        auto writer = istream.write_reserve_optimal();
+        CHECK_EQUAL(5U, writer.size());
+        writer[0] = 1;
+        writer[1] = 2;
+        writer[2] = 3;
+        writer[3] = 4;
+        istream.write_commit(writer.subspan(0U, 4U)); // 1 2 3 4 *
+
+        auto reader = istream.read_reserve(3U);
+        istream.read_commit(reader); // * * * 4 *
+        CHECK_EQUAL(1U, stream.size());
+        CHECK_EQUAL(2U, stream.available());
+
+        // Write to remaining linear area
+        writer = istream.write_reserve_optimal();
+        CHECK_EQUAL(1U, writer.size());
+        writer[0] = 5;
+
+        istream.write_commit(writer); // * * * 4 5
+
+        // Read to capacity
+        reader = istream.read_reserve();
+        CHECK_EQUAL(2U, reader.size());
+        CHECK_EQUAL(4, reader[0]);
+        CHECK_EQUAL(5, reader[1]);
+
+        istream.read_commit(reader); // * * * * *
+
+        // Verify empty buffer
+        CHECK_EQUAL(0U, stream.size());
+        CHECK(stream.empty());
+        CHECK((stream.max_size() / 2U) <= stream.available());
+        CHECK(stream.available() <= stream.max_size());
+    }
+
+    //*************************************************************************
     TEST(test_clear)
     {
       etl::bip_buffer_spsc_atomic<int, 5> stream;
