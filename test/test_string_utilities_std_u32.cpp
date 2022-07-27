@@ -41,12 +41,12 @@ SOFTWARE.
 namespace
 {
   //***********************************
-  std::ostream& operator << (std::ostream& os, const std::u32string::value_type& c)
-  {
-    os << uint32_t(c);
+  //std::ostream& operator << (std::ostream& os, const std::u32string::value_type& c)
+  //{
+  //  os << uint32_t(c);
 
-    return os;
-  }
+  //  return os;
+  //}
 
   SUITE(test_string_utilities_std_u32)
   {

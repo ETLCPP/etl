@@ -413,7 +413,9 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       DataNDC other_data(data);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       other_data = other_data;
+#include "etl/private/diagnostic_pop.h" 
 
       bool isEqual = std::equal(data.begin(),
                                  data.end(),
@@ -1164,8 +1166,6 @@ namespace
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     TEST_FIXTURE(SetupFixture, test_flat_set_template_deduction)
     {
-      using Pair = ETL_OR_STD::pair<const int, NDC>;
-
       etl::flat_set data{ NDC("A"), NDC("B"), NDC("C"), NDC("D"), NDC("E"), NDC("F") };
 
       auto v = *data.begin();

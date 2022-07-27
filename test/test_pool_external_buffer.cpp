@@ -37,11 +37,6 @@ SOFTWARE.
 #include "etl/pool.h"
 #include "etl/largest.h"
 
-#if defined(ETL_COMPILER_GCC)
-  #pragma GCC diagnostic push
-  #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
-#endif
-
 typedef TestDataDC<std::string>  Test_Data;
 typedef TestDataNDC<std::string> Test_Data2;
 
@@ -282,6 +277,7 @@ namespace
       CHECK_EQUAL(4U, pool.available());
 
       Test_Data* p;
+      (void)p;
 
       p = pool.allocate();
       CHECK_EQUAL(3U, pool.available());
@@ -320,6 +316,7 @@ namespace
       CHECK_EQUAL(0U, pool.size());
 
       Test_Data* p;
+      (void)p;
 
       p = pool.allocate();
       CHECK_EQUAL(1U, pool.size());
@@ -347,6 +344,7 @@ namespace
       CHECK(!pool.full());
 
       Test_Data* p;
+      (void)p;
 
       p = pool.allocate();
       CHECK(!pool.empty());
@@ -404,121 +402,123 @@ namespace
       delete[] buffer;
     }
 
-  //*************************************************************************
-  TEST(test_create_destroy)
-  {
-    const size_t SIZE = 4;
+    //*************************************************************************
+    TEST(test_create_destroy)
+    {
+      const size_t SIZE = 4;
 
-    auto buffer0 = new etl::pool_ext<D0>::element[SIZE];
-    etl::pool_ext<D0> pool0(buffer0, SIZE);
+      auto buffer0 = new etl::pool_ext<D0>::element[SIZE];
+      etl::pool_ext<D0> pool0(buffer0, SIZE);
 
-    auto buffer1 = new etl::pool_ext<D1>::element[SIZE];
-    etl::pool_ext<D1> pool1(buffer1, SIZE);
+      auto buffer1 = new etl::pool_ext<D1>::element[SIZE];
+      etl::pool_ext<D1> pool1(buffer1, SIZE);
 
-    auto buffer2 = new etl::pool_ext<D2>::element[SIZE];
-    etl::pool_ext<D2> pool2(buffer2, SIZE);
+      auto buffer2 = new etl::pool_ext<D2>::element[SIZE];
+      etl::pool_ext<D2> pool2(buffer2, SIZE);
 
-    auto buffer3 = new etl::pool_ext<D3>::element[SIZE];
-    etl::pool_ext<D3> pool3(buffer3, SIZE);
+      auto buffer3 = new etl::pool_ext<D3>::element[SIZE];
+      etl::pool_ext<D3> pool3(buffer3, SIZE);
 
-    auto buffer4 = new etl::pool_ext<D4>::element[SIZE];
-    etl::pool_ext<D4> pool4(buffer4, SIZE);
+      auto buffer4 = new etl::pool_ext<D4>::element[SIZE];
+      etl::pool_ext<D4> pool4(buffer4, SIZE);
 
 
-    D0* p0 = pool0.create();
-    D1* p1 = pool1.create("1");
-    D2* p2 = pool2.create("1", "2");
-    D3* p3 = pool3.create("1", "2", "3");
-    D4* p4 = pool4.create("1", "2", "3", "4");
+      D0* p0 = pool0.create();
+      D1* p1 = pool1.create("1");
+      D2* p2 = pool2.create("1", "2");
+      D3* p3 = pool3.create("1", "2", "3");
+      D4* p4 = pool4.create("1", "2", "3", "4");
 
-    CHECK_EQUAL(pool0.max_size() - 1, pool0.available());
-    CHECK_EQUAL(1U, pool0.size());
+      (void)p1;
+      (void)p2;
+      (void)p3;
+      (void)p4;
 
-    CHECK_EQUAL(pool1.max_size() - 1, pool1.available());
-    CHECK_EQUAL(1U, pool1.size());
+      CHECK_EQUAL(pool0.max_size() - 1, pool0.available());
+      CHECK_EQUAL(1U, pool0.size());
 
-    CHECK_EQUAL(pool2.max_size() - 1, pool2.available());
-    CHECK_EQUAL(1U, pool2.size());
+      CHECK_EQUAL(pool1.max_size() - 1, pool1.available());
+      CHECK_EQUAL(1U, pool1.size());
 
-    CHECK_EQUAL(pool3.max_size() - 1, pool3.available());
-    CHECK_EQUAL(1U, pool3.size());
+      CHECK_EQUAL(pool2.max_size() - 1, pool2.available());
+      CHECK_EQUAL(1U, pool2.size());
 
-    CHECK_EQUAL(pool4.max_size() - 1, pool4.available());
-    CHECK_EQUAL(1U, pool4.size());
+      CHECK_EQUAL(pool3.max_size() - 1, pool3.available());
+      CHECK_EQUAL(1U, pool3.size());
 
-    CHECK_EQUAL(D0(), *p0);
-    CHECK_EQUAL(D1("1"), *p1);
-    CHECK_EQUAL(D2("1", "2"), *p2);
-    CHECK_EQUAL(D3("1", "2", "3"), *p3);
-    CHECK_EQUAL(D4("1", "2", "3", "4"), *p4);
+      CHECK_EQUAL(pool4.max_size() - 1, pool4.available());
+      CHECK_EQUAL(1U, pool4.size());
 
-    pool0.destroy<D0>(p0);
-    pool1.destroy<D1>(p1);
-    pool2.destroy<D2>(p2);
-    pool3.destroy<D3>(p3);
-    pool4.destroy<D4>(p4);
+      CHECK_EQUAL(D0(), *p0);
+      CHECK_EQUAL(D1("1"), *p1);
+      CHECK_EQUAL(D2("1", "2"), *p2);
+      CHECK_EQUAL(D3("1", "2", "3"), *p3);
+      CHECK_EQUAL(D4("1", "2", "3", "4"), *p4);
 
-    CHECK_EQUAL(pool0.max_size(), pool0.available());
-    CHECK_EQUAL(0U, pool0.size());
+      pool0.destroy<D0>(p0);
+      pool1.destroy<D1>(p1);
+      pool2.destroy<D2>(p2);
+      pool3.destroy<D3>(p3);
+      pool4.destroy<D4>(p4);
 
-    CHECK_EQUAL(pool1.max_size(), pool1.available());
-    CHECK_EQUAL(0U, pool1.size());
+      CHECK_EQUAL(pool0.max_size(), pool0.available());
+      CHECK_EQUAL(0U, pool0.size());
 
-    CHECK_EQUAL(pool2.max_size(), pool2.available());
-    CHECK_EQUAL(0U, pool2.size());
+      CHECK_EQUAL(pool1.max_size(), pool1.available());
+      CHECK_EQUAL(0U, pool1.size());
 
-    CHECK_EQUAL(pool3.max_size(), pool3.available());
-    CHECK_EQUAL(0U, pool3.size());
+      CHECK_EQUAL(pool2.max_size(), pool2.available());
+      CHECK_EQUAL(0U, pool2.size());
 
-    CHECK_EQUAL(pool4.max_size(), pool4.available());
-    CHECK_EQUAL(0U, pool4.size());
+      CHECK_EQUAL(pool3.max_size(), pool3.available());
+      CHECK_EQUAL(0U, pool3.size());
 
-    delete[] buffer0;
-    delete[] buffer1;
-    delete[] buffer2;
-    delete[] buffer3;
-    delete[] buffer4;
-  }
+      CHECK_EQUAL(pool4.max_size(), pool4.available());
+      CHECK_EQUAL(0U, pool4.size());
 
-  //*************************************************************************
-  TEST(test_allocate_release_non_class)
-  {
-    const size_t SIZE = 4;
-    auto buffer = new etl::pool_ext<int>::element[SIZE];
-    etl::pool_ext<int> pool(buffer, SIZE);
+      delete[] buffer0;
+      delete[] buffer1;
+      delete[] buffer2;
+      delete[] buffer3;
+      delete[] buffer4;
+    }
 
-    int* i = pool.allocate();
-    pool.release(i);
+    //*************************************************************************
+    TEST(test_allocate_release_non_class)
+    {
+      const size_t SIZE = 4;
+      auto buffer = new etl::pool_ext<int>::element[SIZE];
+      etl::pool_ext<int> pool(buffer, SIZE);
 
-    delete[] buffer;
-  } 
+      int* i = pool.allocate();
+      pool.release(i);
+
+      delete[] buffer;
+    } 
   
-  //*************************************************************************
-  TEST(test_issue_406_pool_of_c_array)
-  {
-    using elem_type = uint8_t[10];
+    //*************************************************************************
+    TEST(test_issue_406_pool_of_c_array)
+    {
+      using elem_type = uint8_t[10];
 
-    const size_t SIZE = 3;
-    auto buffer = new etl::pool_ext<elem_type>::element[SIZE];
-    etl::pool_ext<elem_type> memPool(buffer, SIZE);
+      const size_t SIZE = 3;
+      auto buffer = new etl::pool_ext<elem_type>::element[SIZE];
+      etl::pool_ext<elem_type> memPool(buffer, SIZE);
 
-    CHECK_EQUAL(3, memPool.available());
-    CHECK_EQUAL(0, memPool.size());
+      CHECK_EQUAL(3, memPool.available());
+      CHECK_EQUAL(0, memPool.size());
 
-    elem_type* memory = memPool.allocate();
+      elem_type* memory = memPool.allocate();
 
-    CHECK_EQUAL(2, memPool.available());
-    CHECK_EQUAL(1, memPool.size());
+      CHECK_EQUAL(2, memPool.available());
+      CHECK_EQUAL(1, memPool.size());
 
-    memPool.release(memory);
+      memPool.release(memory);
 
-    CHECK_EQUAL(3, memPool.available());
-    CHECK_EQUAL(0, memPool.size());
+      CHECK_EQUAL(3, memPool.available());
+      CHECK_EQUAL(0, memPool.size());
 
-    delete[] buffer;
+      delete[] buffer;
+    }
   }
 }
-}
-#if defined(ETL_COMPILER_GCC)
-  #pragma GCC diagnostic pop
-#endif

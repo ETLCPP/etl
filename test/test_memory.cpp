@@ -104,7 +104,7 @@ namespace
     }
 
     template <class U>
-    void operator()(U* p) const
+    void operator()(U* /*p*/) const
     {
     }
   };

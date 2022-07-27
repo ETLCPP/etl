@@ -44,10 +44,6 @@ SOFTWARE.
 #include "../functional.h"
 #include "../iterator.h"
 
-#ifdef ETL_COMPILER_GCC
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#endif
-
 #include "minmax_push.h"
 
 namespace etl

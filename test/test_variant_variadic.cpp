@@ -673,7 +673,9 @@ namespace
       test_variant_etl_3 variant_etl;
 
       variant_etl = 1;
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       variant_etl = variant_etl;
+#include "etl/private/diagnostic_pop.h" 
 
       CHECK_EQUAL(1, etl::get<int>(variant_etl));
     }

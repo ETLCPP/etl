@@ -41,10 +41,6 @@ SOFTWARE.
 
 // Select the amtomic builtins based on the version of the GCC compiler.
 #if defined(ETL_COMPILER_GCC)
-  #pragma GCC diagnostic push
-  #pragma GCC diagnostic ignored "-Wunused-parameter"
-  #pragma GCC diagnostic ignored "-Wunused-value"
-
   #if ETL_COMPILER_FULL_VERSION >= 40700
     #define ETL_USE_ATOMIC_BUILTINS
   #else
@@ -67,7 +63,6 @@ namespace etl
 
 #define ETL_BUILTIN_LOCK   while (__atomic_test_and_set(&flag, etl::memory_order_seq_cst)) {}
 #define ETL_BUILTIN_UNLOCK __atomic_clear(&flag, etl::memory_order_seq_cst);
-
 
   //***************************************************************************
   // Atomic type for pre C++11 GCC compilers that support the builtin '__atomic' functions.
@@ -849,6 +844,7 @@ namespace etl
     // Store
     void store(T v, etl::memory_order order = etl::memory_order_seq_cst)
     {
+      (void)order;
       ETL_BUILTIN_LOCK;
       value = v;
       ETL_BUILTIN_UNLOCK;
@@ -856,6 +852,7 @@ namespace etl
 
     void store(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
+      (void)order;
       ETL_BUILTIN_LOCK;
       value = v;
       ETL_BUILTIN_UNLOCK;
@@ -864,6 +861,7 @@ namespace etl
     // Load
     T load(etl::memory_order order = etl::memory_order_seq_cst) const volatile
     {
+      (void)order;
       ETL_BUILTIN_LOCK;
       T result = value;
       ETL_BUILTIN_UNLOCK;
@@ -874,6 +872,7 @@ namespace etl
     // Load
     T load(etl::memory_order order = etl::memory_order_seq_cst) const
     {
+      (void)order;
       ETL_BUILTIN_LOCK;
       T result = value;
       ETL_BUILTIN_UNLOCK;
@@ -884,6 +883,7 @@ namespace etl
     // Exchange
     T exchange(T v, etl::memory_order order = etl::memory_order_seq_cst)
     {
+      (void)order;
       ETL_BUILTIN_LOCK;
       T result = value;
       value = v;
@@ -894,6 +894,7 @@ namespace etl
 
     T exchange(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
+      (void)order;
       ETL_BUILTIN_LOCK;
       T result = value;
       value = v;
@@ -907,6 +908,7 @@ namespace etl
     {
       bool result;
 
+      (void)order;
       ETL_BUILTIN_LOCK;
       if (memcmp(&value, &expected, sizeof(T)) == 0)
       {
@@ -926,6 +928,7 @@ namespace etl
     {
       bool result;
 
+      (void)order;
       ETL_BUILTIN_LOCK;
       if (memcmp(&value, &expected, sizeof(T)) == 0)
       {
@@ -943,32 +946,42 @@ namespace etl
 
     bool compare_exchange_weak(T& expected, T desired, etl::memory_order success, etl::memory_order failure)
     {
+      (void)success;
+      (void)failure;
       return compare_exchange_weak(expected, desired);
     }
 
     bool compare_exchange_weak(T& expected, T desired, etl::memory_order success, etl::memory_order failure) volatile
     {
+      (void)success;
+      (void)failure;
       return compare_exchange_weak(expected, desired);
     }
 
     // Compare exchange strong
     bool compare_exchange_strong(T& expected, T desired, etl::memory_order order = etl::memory_order_seq_cst)
     {
+      (void)order;
       return compare_exchange_weak(expected, desired);
     }
 
     bool compare_exchange_strong(T& expected, T desired, etl::memory_order order = etl::memory_order_seq_cst) volatile
     {
+      (void)order;
       return compare_exchange_weak(expected, desired);
     }
 
     bool compare_exchange_strong(T& expected, T desired, etl::memory_order success, etl::memory_order failure)
     {
+      (void)success;
+      (void)failure;
       return compare_exchange_weak(expected, desired);
     }
 
     bool compare_exchange_strong(T& expected, T desired, etl::memory_order success, etl::memory_order failure) volatile
     {
+      (void)success;
+      (void)failure;
       return compare_exchange_weak(expected, desired);
     }
 
@@ -2205,9 +2218,5 @@ namespace etl
   typedef etl::atomic<intmax_t>            atomic_intmax_t;
   typedef etl::atomic<uintmax_t>           atomic_uintmax_t;
 }
-
-#if defined(ETL_COMPILER_GCC)
-#pragma GCC diagnostic pop
-#endif
 
 #endif

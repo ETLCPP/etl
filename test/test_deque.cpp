@@ -327,7 +327,9 @@ namespace
       DataNDC deque1(initial_data.begin(), initial_data.end());
       DataNDC deque2(deque1);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       deque2 = deque2;
+#include "etl/private/diagnostic_pop.h"
 
       CHECK_EQUAL(deque1.size(), deque2.size());
       CHECK(std::equal(deque1.begin(), deque1.end(), deque2.begin()));

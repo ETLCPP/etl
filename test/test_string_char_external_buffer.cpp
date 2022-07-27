@@ -613,7 +613,9 @@ namespace
       TextBuffer buffer2;
       Text other_text(text, buffer2.data(), buffer2.size());
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       other_text = other_text;
+#include "etl/private/diagnostic_pop.h" 
 
       bool is_equal = Equal(text, other_text);
 
@@ -633,7 +635,9 @@ namespace
       TextBuffer buffer2;
       Text other_text(text, buffer2.data(), buffer2.size());
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       other_text = other_text;
+#include "etl/private/diagnostic_pop.h" 
 
       bool is_equal = Equal(text, other_text);
 

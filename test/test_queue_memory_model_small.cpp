@@ -521,8 +521,10 @@ namespace
       queue.push(3);
       queue.push(4);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       queue = queue;
-
+#include "etl/private/diagnostic_pop.h" 
+      
       CHECK(queue.max_size() == queue.size());
 
       CHECK_EQUAL(1, queue.front());

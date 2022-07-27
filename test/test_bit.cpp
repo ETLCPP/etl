@@ -39,9 +39,9 @@ namespace
   //***********************************
   // Count bits the long way.
   template <typename T>
-  size_t test_count(T value)
+  int test_count(T value)
   {
-    size_t count = 0UL;
+    int count = 0;
 
     for (int i = 0; i < etl::integral_limits<T>::bits; ++i)
     {
@@ -57,9 +57,9 @@ namespace
   //***********************************
   // Count trailing zeros the long way.
   template <typename T>
-  size_t test_trailing_zeros(T value)
+  int test_trailing_zeros(T value)
   {
-    size_t count = 0UL;
+    int count = 0;
 
     for (int i = 0; i < etl::integral_limits<T>::bits; ++i)
     {
@@ -81,7 +81,7 @@ namespace
   //***********************************
   // Count leading zeros the long way.
   template <typename T>
-  size_t test_leading_zeros(T value)
+  int test_leading_zeros(T value)
   {
     value = etl::reverse_bits(value);
     return test_trailing_zeros(value);
@@ -90,9 +90,9 @@ namespace
   //***********************************
   // Count trailing ones the long way.
   template <typename T>
-  size_t test_trailing_ones(T value)
+  int test_trailing_ones(T value)
   {
-    size_t count = 0UL;
+    int count = 0UL;
 
     for (int i = 0; i < etl::integral_limits<T>::bits; ++i)
     {
@@ -114,7 +114,7 @@ namespace
   //***********************************
   // Count leading ones the long way.
   template <typename T>
-  size_t test_leading_ones(T value)
+  int test_leading_ones(T value)
   {
     value = etl::reverse_bits(value);
     return test_trailing_ones(value);

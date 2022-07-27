@@ -48,11 +48,15 @@ namespace
 
   using Point = etl::coordinate_2d<Value>;
 
+#include "etl/private/diagnostic_unused_function_push.h"
+
   std::ostream& operator << (std::ostream& os, const Point& point)
   {
     os << "(" << int(point.x) << "," << int(point.y) << ")";
     return os;
   }
+
+#include "etl/private/diagnostic_pop.h"
 
   using BresenhamLine = etl::bresenham_line<Value>;
 

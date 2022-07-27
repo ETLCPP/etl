@@ -206,13 +206,7 @@ namespace
 
       DataM data2(std::move(data1));
 
-      size_t count1 = etl::distance(data1.begin(), data1.end());
-      size_t count2 = etl::distance(data2.begin(), data2.end());
-
       CHECK(!data1.empty()); // Move does not clear the source.
-
-      DataM::const_iterator itr = data1.begin();
-
 
       CHECK(data2.find(ItemM(1)) != data2.end());
       CHECK(data2.find(ItemM(2)) != data2.end());
@@ -277,7 +271,9 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       DataNDC other_data(data);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       other_data = other_data;
+#include "etl/private/diagnostic_pop.h" 
 
       bool isEqual = std::equal(data.begin(),
                                 data.end(),

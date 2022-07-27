@@ -1348,7 +1348,9 @@ namespace
       DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
       DataNDC other_data(data1, pool);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       other_data = other_data;
+#include "etl/private/diagnostic_pop.h" 
 
       CHECK_EQUAL(data1.size(), other_data.size());
 

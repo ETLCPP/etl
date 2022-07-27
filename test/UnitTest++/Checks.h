@@ -1,6 +1,16 @@
 #ifndef UNITTEST_CHECKS_H
 #define UNITTEST_CHECKS_H
 
+#if defined(__GNUC__) && !defined(__clang__) && !defined(__llvm__)
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wsign-compare"
+#endif
+
+#if defined(__clang__) || defined(__llvm__)
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wsign-compare"
+#endif
+
 #include "Config.h"
 #include "TestResults.h"
 #include "MemoryOutStream.h"
@@ -154,5 +164,13 @@ namespace UnitTest {
    }
 
 }
+
+#if defined(__GNUC__) && !defined(__clang__) && !defined(__llvm__)
+#pragma GCC diagnostic pop
+#endif
+
+#if defined(__clang__) || defined(__llvm__)
+#pragma clang diagnostic pop
+#endif
 
 #endif

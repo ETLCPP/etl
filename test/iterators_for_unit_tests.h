@@ -52,6 +52,12 @@ struct non_random_iterator : public etl::iterator<ETL_OR_STD::bidirectional_iter
     ptr = other.ptr;
   }
 
+  non_random_iterator& operator =(const non_random_iterator& other)
+  {
+    ptr = other.ptr;
+    return *this;
+  }
+
   T& operator *()
   {
     return *ptr;
@@ -129,6 +135,12 @@ struct random_iterator : public etl::iterator<ETL_OR_STD::random_access_iterator
   random_iterator(const random_iterator& other)
   {
     ptr = other.ptr;
+  }
+
+  random_iterator& operator =(const random_iterator& other)
+  {
+    ptr = other.ptr;
+    return *this;
   }
 
   T& operator *()

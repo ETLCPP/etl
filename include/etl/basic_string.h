@@ -53,11 +53,6 @@ SOFTWARE.
 #include "binary.h"
 #include "flags.h"
 
-#ifdef ETL_COMPILER_GCC
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#endif
-
 #include "private/minmax_push.h"
 
 //*****************************************************************************
@@ -2629,9 +2624,5 @@ namespace etl
 }
 
 #include "private/minmax_pop.h"
-
-#ifdef ETL_COMPILER_GCC
-#pragma GCC diagnostic pop
-#endif
 
 #endif

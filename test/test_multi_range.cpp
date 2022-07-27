@@ -53,6 +53,11 @@ namespace
     {
     }
 
+    Index(const Index& other)
+      : index(other.index)
+    {
+    }
+
     Index& operator ++()
     {
       ++index;
@@ -71,7 +76,7 @@ namespace
       return *this;
     }
 
-    bool operator = (const Index& other)
+    Index& operator = (const Index& other)
     {
       index = other.index;
 

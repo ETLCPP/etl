@@ -34,13 +34,6 @@ SOFTWARE.
 #include <array>
 #include <algorithm>
 
-#if defined(ETL_COMPILER_GCC)
-  #pragma GCC diagnostic push
-  #pragma GCC diagnostic ignored "-Wunused-variable"
-#else
-  #pragma warning(disable:4101) // Unused variable.
-#endif
-
 uint8_t rw  = 0x12U;
 uint8_t ro  = 0x34U;
 uint8_t wo  = 0x56U;
@@ -226,7 +219,3 @@ namespace
     }
   };
 }
-
-#if defined(ETL_COMPILER_GCC)
-  #pragma GCC diagnostic pop
-#endif

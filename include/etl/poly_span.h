@@ -283,12 +283,11 @@ namespace etl
     /// Construct from iterator + size
     //*************************************************************************
     template <typename TIterator, typename TSize>
-    ETL_CONSTEXPR poly_span(const TIterator begin_, const TSize size_) ETL_NOEXCEPT
+    ETL_CONSTEXPR poly_span(const TIterator begin_, const TSize /*size_*/) ETL_NOEXCEPT
       : pbegin(etl::addressof(*begin_))
       , element_size(sizeof(typename etl::iterator_traits<TIterator>::value_type))
     {
       typedef typename etl::iterator_traits<TIterator>::value_type        data_type;
-      typedef typename etl::iterator_traits<TIterator>::iterator_category iterator_category;
 
       ETL_STATIC_ASSERT((etl::is_same<ETL_OR_STD::random_access_iterator_tag, typename etl::iterator_traits<TIterator>::iterator_category>::value), "Not a random access iterator");
       ETL_STATIC_ASSERT((etl::is_base_of<TBase, data_type>::value || etl::is_same<TBase, data_type>::value), "TBase not a base of the data type");
@@ -298,7 +297,7 @@ namespace etl
     /// Construct from iterators
     //*************************************************************************
     template <typename TIterator>
-    ETL_CONSTEXPR poly_span(const TIterator begin_, const TIterator end_)
+    ETL_CONSTEXPR poly_span(const TIterator begin_, const TIterator /*end_*/)
       : pbegin(etl::addressof(*begin_))
       , element_size(sizeof(typename etl::iterator_traits<TIterator>::value_type))
     {
@@ -600,7 +599,7 @@ namespace etl
     /// Construct from iterator + offset + element size
     /// extent_ is ignored.
     //*************************************************************************
-    ETL_CONSTEXPR poly_span(TBase* pbegin_, size_t offset_, size_t extent_, size_t element_size_) ETL_NOEXCEPT
+    ETL_CONSTEXPR poly_span(TBase* pbegin_, size_t offset_, size_t /*extent_*/, size_t element_size_) ETL_NOEXCEPT
       : pbegin(reinterpret_cast<pointer>(reinterpret_cast<char_ptr_t>(pbegin_) + (offset_ * element_size_)))
       , element_size(element_size_)
     {

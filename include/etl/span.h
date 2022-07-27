@@ -86,7 +86,7 @@ namespace etl
     /// Construct from pointer + size
     //*************************************************************************
     template <typename TIterator, typename TSize>
-    ETL_CONSTEXPR span(const TIterator begin_, const TSize size_) ETL_NOEXCEPT
+    ETL_CONSTEXPR span(const TIterator begin_, const TSize /*size_*/) ETL_NOEXCEPT
       : pbegin(etl::addressof(*begin_))
     {
     }
@@ -95,7 +95,7 @@ namespace etl
     /// Construct from iterators
     //*************************************************************************
     template <typename TIterator>
-    ETL_CONSTEXPR span(const TIterator begin_, const TIterator end_)
+    ETL_CONSTEXPR span(const TIterator begin_, const TIterator /*end_*/)
       : pbegin(etl::addressof(*begin_))
     {
     }

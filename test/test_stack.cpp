@@ -491,8 +491,10 @@ namespace
       stack.push(3);
       stack.push(4);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       stack = stack;
-
+#include "etl/private/diagnostic_pop.h" 
+      
       CHECK(stack.max_size() == stack.size());
 
       CHECK_EQUAL(4, stack.top());

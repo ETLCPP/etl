@@ -456,7 +456,7 @@ namespace etl
     ///\param position The position to insert at.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(const_iterator position, reference value)
+    iterator insert(const_iterator /*position*/, reference value)
     {
       return insert(value).first;
     }

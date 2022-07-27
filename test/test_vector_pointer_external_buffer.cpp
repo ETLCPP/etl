@@ -394,7 +394,9 @@ namespace
       Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
       Data other_data(data, buffer2, SIZE);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       other_data = other_data;
+#include "etl/private/diagnostic_pop.h" 
 
       bool is_equal = std::equal(data.begin(), data.end(), other_data.begin());
 
@@ -407,7 +409,9 @@ namespace
       CData data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
       CData other_data(data, buffer2, SIZE);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       other_data = other_data;
+#include "etl/private/diagnostic_pop.h" 
 
       bool is_equal = std::equal(data.begin(), data.end(), other_data.begin());
 

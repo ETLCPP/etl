@@ -969,7 +969,9 @@ namespace
       DataNDC data(sorted_data.begin(), sorted_data.end());
       DataNDC other_data(data);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       other_data = other_data;
+#include "etl/private/diagnostic_pop.h" 
 
       CHECK_EQUAL(data.size(), other_data.size());
 

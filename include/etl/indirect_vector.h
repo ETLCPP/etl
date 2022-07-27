@@ -40,11 +40,6 @@ SOFTWARE.
 #include "static_assert.h"
 #include "initializer_list.h"
 
-#ifdef ETL_COMPILER_GCC
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#endif
-
 //*****************************************************************************
 ///\defgroup indirect_vector indirect_vector
 /// A indirect_vector with the capacity defined at compile time. Objects are allocated from a pool and stored as pointers.
@@ -1567,10 +1562,6 @@ namespace etl
     }
   };
 }
-
-#ifdef ETL_COMPILER_GCC
-#pragma GCC diagnostic pop
-#endif
 
 #endif
 

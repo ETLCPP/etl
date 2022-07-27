@@ -808,13 +808,13 @@ namespace etl
     }
 
     //*************************************************************************
-    const transition* const transition_table_end() const
+    const transition* transition_table_end() const
     {
       return transition_table_begin + transition_table_size;
     }
 
     //*************************************************************************
-    const state* const state_table_end() const
+    const state* state_table_end() const
     {
       return state_table_begin + state_table_size;
     }
@@ -1058,13 +1058,13 @@ namespace etl
     }
 
     //*************************************************************************
-    const transition* const transition_table_end() const
+    const transition* transition_table_end() const
     {
       return transition_table_begin + transition_table_size;
     }
 
     //*************************************************************************
-    const state* const state_table_end() const
+    const state* state_table_end() const
     {
       return state_table_begin + state_table_size;
     }

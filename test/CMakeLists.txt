@@ -32,8 +32,6 @@ if (ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 	add_definitions(-DETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 endif()
 
-include_directories(${UTPP_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/../include)
-
 set(TEST_SOURCE_FILES
 	main.cpp
 	murmurhash3.cpp
@@ -314,6 +312,10 @@ set(UNITTEST_SOURCE_FILES
     UnitTest++/XmlTestReporter.cpp
   )
 
+set(UNITTEST_DIR
+      UnitTest++
+  )
+
 if (WIN32)
   set(UNITTEST_SOURCE_FILES
       ${UNITTEST_SOURCE_FILES}
@@ -327,20 +329,33 @@ else ()
   )
 endif ()
 
+if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  message(STATUS "Using MSVC")
+endif()
+
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   message(STATUS "Using GNU")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   message(STATUS "Using Clang")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 endif()
 
 add_executable(etl_tests ${TEST_SOURCE_FILES})
 add_library(unit_test ${UNITTEST_SOURCE_FILES})
+include_directories(${PROJECT_SOURCE_DIR}/../include)
+target_include_directories(etl_tests SYSTEM PRIVATE ${UNITTEST_DIR})
+target_include_directories(etl_tests PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 
 if(UNIX AND NOT APPLE)
   # atomic is need on Linux with Clang
@@ -354,8 +369,6 @@ elseif(NOT UNIX AND APPLE)
 else()
   target_link_libraries(etl_tests unit_test)
 endif()
-
-target_include_directories(etl_tests PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 
 # Enable the 'make test' CMake target using the executable defined above
 add_test(etl_unit_tests etl_tests)

@@ -155,7 +155,7 @@ namespace etl
 }  // namespace etl
 
 
-static void swap(etl::debug_count& lhs, etl::debug_count& rhs)
+inline void swap(etl::debug_count& lhs, etl::debug_count& rhs)
 {
   lhs.swap(rhs);
 }

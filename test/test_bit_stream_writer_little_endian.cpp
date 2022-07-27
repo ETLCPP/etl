@@ -44,6 +44,7 @@ namespace
     uint8_t c;
   };
 
+#include "etl/private/diagnostic_unused_function_push.h"
   bool operator ==(const Object& lhs, const Object& rhs)
   {
     return (lhs.s == rhs.s) &&
@@ -56,6 +57,7 @@ namespace
     os << object.s << "," << object.i << "," << (int)object.c;
     return os;
   }
+#include "etl/private/diagnostic_pop.h"
 }
 
 namespace etl

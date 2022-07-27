@@ -1499,7 +1499,6 @@ namespace etl
           else
           {
             node_t* p_last_node = &this->start_node;
-            node_t* p_rhs_node = rhs.start_node.next;
 
             // Add all of the elements.
             etl::iforward_list<T>::iterator first = rhs.begin();

@@ -47,20 +47,20 @@ namespace
   }
 
   //***********************************
-  std::ostream& operator << (std::ostream& os, const etl::iwstring::value_type& c)
-  {
-    os << uint16_t(c);
+  //std::ostream& operator << (std::ostream& os, const etl::iwstring::value_type& c)
+  //{
+  //  os << uint16_t(c);
 
-    return os;
-  }
+  //  return os;
+  //}
 
   //***********************************
-  std::ostream& operator << (std::ostream& os, const etl::iwstring::value_type* c)
-  {
-    os << (void*)c;
+  //std::ostream& operator << (std::ostream& os, const etl::iwstring::value_type* c)
+  //{
+  //  os << (void*)c;
 
-    return os;
-  }
+  //  return os;
+  //}
 
   SUITE(test_string_wchar_t)
   {
@@ -501,7 +501,9 @@ namespace
       Text text(initial_text.begin(), initial_text.end());
       Text other_text(text);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       other_text = other_text;
+#include "etl/private/diagnostic_pop.h" 
 
       bool is_equal = Equal(text, other_text);
 
@@ -518,7 +520,9 @@ namespace
       Text text(longer_text.begin(), longer_text.end());
       Text other_text(text);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       other_text = other_text;
+#include "etl/private/diagnostic_pop.h" 
 
       bool is_equal = Equal(text, other_text);
 

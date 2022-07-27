@@ -463,7 +463,9 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end(), lookup1, pool1);
       DataNDC other_data(data, lookup2, pool2);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       other_data = other_data;
+#include "etl/private/diagnostic_pop.h" 
 
       bool is_equal = std::equal(data.begin(),
                                  data.end(),

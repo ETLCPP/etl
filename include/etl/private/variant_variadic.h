@@ -181,7 +181,7 @@ namespace etl
     template <typename T>
     struct operation_type<T, Non_Copyable, Non_Moveable>
     {
-      static void do_operation(int operation, char* pstorage, const char* pvalue)
+      static void do_operation(int operation, char* pstorage, const char* /*pvalue*/)
       {
         switch (operation)
         {

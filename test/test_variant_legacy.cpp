@@ -443,7 +443,9 @@ namespace
       test_variant_3a variant;
 
       variant = 1;
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       variant = variant;
+#include "etl/private/diagnostic_pop.h" 
 
       CHECK_EQUAL(1, variant.get<int>());
     }

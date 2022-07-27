@@ -64,7 +64,7 @@ namespace
     {
     }
 
-    void on_receive(const Message1& msg)
+    void on_receive(const Message1&)
     {
     }
 
@@ -85,7 +85,7 @@ namespace
     {
     }
 
-    void on_receive(const Message1& msg)
+    void on_receive(const Message1&)
     {
     }
 
@@ -106,7 +106,7 @@ namespace
     {
     }
 
-    void on_receive(const Message1& msg)
+    void on_receive(const Message1&)
     {
     }
 
@@ -127,7 +127,7 @@ namespace
     {
     }
 
-    void on_receive(const Message1& msg)
+    void on_receive(const Message1&)
     {
     }
 
@@ -148,7 +148,7 @@ namespace
     {
     }
 
-    void on_receive(const Message1& msg)
+    void on_receive(const Message1&)
     {
     }
 

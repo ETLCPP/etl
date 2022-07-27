@@ -48,20 +48,20 @@ namespace
   }
 
   //***********************************
-  std::ostream& operator << (std::ostream& os, const etl::iu16string::value_type& c)
-  {
-    os << uint16_t(c);
+  //std::ostream& operator << (std::ostream& os, const etl::iu16string::value_type& c)
+  //{
+  //  os << uint16_t(c);
 
-    return os;
-  }
+  //  return os;
+  //}
 
   //***********************************
-  std::ostream& operator << (std::ostream& os, const etl::iu16string::value_type* c)
-  {
-    os << (void*)c;
+  //std::ostream& operator << (std::ostream& os, const etl::iu16string::value_type* c)
+  //{
+  //  os << (void*)c;
 
-    return os;
-  }
+  //  return os;
+  //}
 
   SUITE(test_string_char)
   {
@@ -629,7 +629,9 @@ namespace
       TextBuffer buffer2;
       Text other_text(text, buffer2.data(), buffer2.size());
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       other_text = other_text;
+#include "etl/private/diagnostic_pop.h" 
 
       bool is_equal = Equal(text, other_text);
 
@@ -649,7 +651,9 @@ namespace
       TextBuffer buffer2;
       Text other_text(text, buffer2.data(), buffer2.size());
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       other_text = other_text;
+#include "etl/private/diagnostic_pop.h" 
 
       bool is_equal = Equal(text, other_text);
 

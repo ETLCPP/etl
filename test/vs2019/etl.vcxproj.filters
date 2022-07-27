@@ -1311,6 +1311,18 @@
     <ClInclude Include="..\etl_error_handler\exceptions_and_log_errors\etl_profile.h">
       <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\diagnostic_pop.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\diagnostic_unused_function_push.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\diagnostic_self_assign_overloaded_push.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\diagnostic_pessimizing-move_push.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">

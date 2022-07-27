@@ -779,6 +779,7 @@ namespace
       
       // Start the repeating timers.
       timer_controller.start(id0);
+      timer_controller.start(id1);
       timer_controller.start(id2);
       timer_controller.start(id3);
 

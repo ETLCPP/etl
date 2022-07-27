@@ -338,7 +338,10 @@ namespace
       Message2 message2(2.2);
 
       Packet packet1(message1);
+
+#include "etl/private/diagnostic_pessimizing-move_push.h"
       Packet packet2(std::move(Packet(message1)));
+#include "etl/private/diagnostic_pop.h"
 
       CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
       CHECK_EQUAL(MESSAGE1, packet2.get().get_message_id());

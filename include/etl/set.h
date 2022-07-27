@@ -2531,8 +2531,6 @@ namespace etl
     set(set&& other)
       : etl::iset<TKey, TCompare>(node_pool, MAX_SIZE)
     {
-      int count = 0;
-
       if (this != &other)
       {
         typename etl::iset<TKey, TCompare>::iterator from = other.begin();

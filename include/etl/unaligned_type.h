@@ -374,7 +374,7 @@ namespace etl
       }
 
       //*******************************
-      static ETL_CONSTEXPR14 void copy(const char* src, int endian_src, char* dst)
+      static ETL_CONSTEXPR14 void copy(const char* src, int /*endian_src*/, char* dst)
       {
         dst[0] = src[0];
       }

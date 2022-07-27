@@ -54,11 +54,6 @@ SOFTWARE.
 #include "algorithm.h"
 #include "initializer_list.h"
 
-#ifdef ETL_COMPILER_GCC
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#endif
-
 //*****************************************************************************
 ///\defgroup vector vector
 /// A vector with the capacity defined at compile time.
@@ -1815,9 +1810,5 @@ namespace etl
     return d;
   }
 }
-
-#ifdef ETL_COMPILER_GCC
-#pragma GCC diagnostic pop
-#endif
 
 #endif

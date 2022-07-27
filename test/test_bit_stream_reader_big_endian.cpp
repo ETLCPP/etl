@@ -33,6 +33,8 @@ SOFTWARE.
 #include <array>
 #include <numeric>
 
+#include "etl/private/diagnostic_unused_function_push.h"
+
 namespace
 {
   //***********************************
@@ -63,8 +65,6 @@ namespace etl
   template <>
   Object read_unchecked<Object>(etl::bit_stream_reader& stream)
   {
-    bool success = true;
-
     int16_t result_s = stream.read_unchecked<int16_t>(14);
     int32_t result_i = stream.read_unchecked<int32_t>(23);
     uint8_t result_c = stream.read_unchecked<uint8_t>();
@@ -960,12 +960,12 @@ namespace
     //*************************************************************************
     TEST(test_read_multiple_full_size)
     {
-      int8_t   c1 = 90;          // 0x5A
-      uint16_t s1 = 4660;        // 0x1234
-      int32_t  i1 = 0x89ABCDEF; // 0x89ABCDEF
-      int32_t  i2 = 0xFEDCBA98; // 0xFEDCBA98
-      uint16_t s2 = 22136;       // 0x5678
-      int8_t   c2 = -91;         // 0xA5
+      //int8_t   c1 = 90;          // 0x5A
+      //uint16_t s1 = 4660;        // 0x1234
+      //int32_t  i1 = 0x89ABCDEF; // 0x89ABCDEF
+      //int32_t  i2 = 0xFEDCBA98; // 0xFEDCBA98
+      //uint16_t s2 = 22136;       // 0x5678
+      //int8_t   c2 = -91;         // 0xA5
 
       std::array storage = { char(0x5A),
                              char(0x12), char(0x34),
@@ -1006,12 +1006,12 @@ namespace
     //*************************************************************************
     TEST(test_read_multiple_variable_size)
     {
-      int8_t   c1 = 90;         // 0x5A       6 bits
-      uint16_t s1 = 4660;       // 0x1234     13 bits
-      int32_t  i1 = 0x89ABCDEF; // 0x89ABCDEF 23 bits
-      int32_t  i2 = 0xFEDCBA98; // 0xFEDCBA98 25 bits
-      uint16_t s2 = 22136;      // 0x5678     11 bits
-      int8_t   c2 = -91;        // 0xA5       7 bits
+      //int8_t   c1 = 90;         // 0x5A       6 bits
+      //uint16_t s1 = 4660;       // 0x1234     13 bits
+      //int32_t  i1 = 0x89ABCDEF; // 0x89ABCDEF 23 bits
+      //int32_t  i2 = 0xFEDCBA98; // 0xFEDCBA98 25 bits
+      //uint16_t s2 = 22136;      // 0x5678     11 bits
+      //int8_t   c2 = -91;        // 0xA5       7 bits
 
       std::array storage = { char(0x6A), char(0x46), char(0x8A), char(0xF3),
                              char(0x7B), char(0xDB), char(0x97), char(0x53),
@@ -1049,12 +1049,12 @@ namespace
     //*************************************************************************
     TEST(test_read_multiple_variable_size_using_non_member_functions)
     {
-      int8_t   c1 = 90;         // 0x5A       6 bits
-      uint16_t s1 = 4660;       // 0x1234     13 bits
-      int32_t  i1 = 0x89ABCDEF; // 0x89ABCDEF 23 bits
-      int32_t  i2 = 0xFEDCBA98; // 0xFEDCBA98 25 bits
-      uint16_t s2 = 22136;      // 0x5678     11 bits
-      int8_t   c2 = -91;        // 0xA5       7 bits
+      //int8_t   c1 = 90;         // 0x5A       6 bits
+      //uint16_t s1 = 4660;       // 0x1234     13 bits
+      //int32_t  i1 = 0x89ABCDEF; // 0x89ABCDEF 23 bits
+      //int32_t  i2 = 0xFEDCBA98; // 0xFEDCBA98 25 bits
+      //uint16_t s2 = 22136;      // 0x5678     11 bits
+      //int8_t   c2 = -91;        // 0xA5       7 bits
 
       std::array storage = { char(0x6A), char(0x46), char(0x8A), char(0xF3),
                              char(0x7B), char(0xDB), char(0x97), char(0x53),
@@ -1145,3 +1145,5 @@ namespace
     }
   };
 }
+
+#include "etl/private/diagnostic_pop.h"

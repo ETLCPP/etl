@@ -571,7 +571,10 @@ namespace
 
       etl::priority_queue<int, SIZE> priority_queue2 = priority_queue1;
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       priority_queue1 = priority_queue1;
+#include "etl/private/diagnostic_pop.h" 
+      
 
       CHECK(priority_queue1.size() == priority_queue2.size());
 

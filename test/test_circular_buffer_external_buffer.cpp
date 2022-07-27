@@ -521,17 +521,17 @@ namespace
       Data data(buffer1.raw, SIZE);
       data.push(input1.begin(), input1.end());
 
-      for (int i = 0; i < SIZE; ++i)
+      for (int i = 0; i < int(SIZE); ++i)
       {
         CHECK_EQUAL(input1[i + 3], data[i]);
       }
 
-      for (int i = 0; i < SIZE; ++i)
+      for (int i = 0; i < int(SIZE); ++i)
       {
         data[i] = input2[i];
       }
 
-      for (int i = 0; i < SIZE; ++i)
+      for (int i = 0; i < int(SIZE); ++i)
       {
         CHECK_EQUAL(input2[i], data[i]);
       }
@@ -545,7 +545,7 @@ namespace
       Data data(buffer1.raw, SIZE);
       data.push(input.begin(), input.end());
 
-      for (int i = 0; i < SIZE; ++i)
+      for (int i = 0; i < int(SIZE); ++i)
       {
         CHECK_EQUAL(input[i + 3], data[i]);
       }

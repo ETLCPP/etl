@@ -412,10 +412,10 @@ namespace
       View view(etldata);
       CView cview = view;
 
-      CHECK_EQUAL(etldata.size(), view.size());
-      CHECK_EQUAL(etldata.max_size(), view.max_size());
+      CHECK_EQUAL(etldata.size(), cview.size());
+      CHECK_EQUAL(etldata.max_size(), cview.max_size());
 
-      bool isEqual = std::equal(view.begin(), view.end(), etldata.begin());
+      bool isEqual = std::equal(cview.begin(), cview.end(), etldata.begin());
       CHECK(isEqual);
     }
 
@@ -693,7 +693,7 @@ namespace
     }
 
     //*************************************************************************
-    void f_issue_481(etl::span<const char, 10> value)
+    void f_issue_481(etl::span<const char, 10>)
     {
     }
 
@@ -705,6 +705,8 @@ namespace
     }
 
     //*************************************************************************
+#include "etl/private/diagnostic_unused_function_push.h"
+
     struct C_issue_482 {};
 
     void f_issue_482(etl::span<char>)
@@ -741,7 +743,7 @@ namespace
     }
 
     //*************************************************************************
-    void f_issue_486(etl::span<const char, 11> value)
+    void f_issue_486(etl::span<const char, 11>)
     {
     }
 
@@ -755,5 +757,6 @@ namespace
       // Should not compile.
       //f_issue_486(c);
     }
+#include "etl/private/diagnostic_pop.h"
   };
 }

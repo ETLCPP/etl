@@ -80,17 +80,17 @@ namespace
     {
     }
 
-    void on_receive(const Message1& message)
+    void on_receive(const Message1&)
     {
       ++count_message1;
     }
 
-    void on_receive(const Message2& message)
+    void on_receive(const Message2&)
     {
       ++count_message2;
     }
 
-    void on_receive_unknown(const etl::imessage& message)
+    void on_receive_unknown(const etl::imessage&)
     {
 
     }
@@ -118,12 +118,12 @@ namespace
     {
     }
 
-    void on_receive(const Message1& message)
+    void on_receive(const Message1&)
     {
       ++count_message1;
     }
 
-    void on_receive_unknown(const etl::imessage& message)
+    void on_receive_unknown(const etl::imessage&)
     {
       ++count_unknown_message;
     }
@@ -173,7 +173,7 @@ namespace
           return rcm2;
         }
 
-        void release(const etl::ireference_counted_message& msg) override
+        void release(const etl::ireference_counted_message&) override
         {
           // Do nothing.
         }
@@ -182,7 +182,9 @@ namespace
     //*************************************************************************
     TEST(test_move_constructor)
     {
+#include "etl/private/diagnostic_pessimizing-move_push.h"
       etl::shared_message sm1(std::move(etl::shared_message(message_pool, Message1(1))));
+#include "etl/private/diagnostic_pop.h"
       CHECK_EQUAL(1, sm1.get_reference_count());
     }
 
@@ -194,10 +196,16 @@ namespace
       Message2&        m2 = prcm->get_message(); // Check that we can get a non-const reference to the message.
       const Message2& cm2 = prcm->get_message(); // Check that we can get a const reference to the message.
 
+      (void)m2;
+      (void)cm2;
+
       etl::shared_message sm1(*prcm);
 
       etl::imessage&        im = sm1.get_message(); // Check that we can get a non-const reference to the message.
       const etl::imessage& cim = sm1.get_message(); // Check that we can get a const reference to the message.
+
+      (void)im;
+      (void)cim;
 
       CHECK_EQUAL(1, sm1.get_reference_count());
       CHECK(sm1.is_valid());
@@ -207,7 +215,9 @@ namespace
     TEST(test_move_assignment)
     {
       etl::shared_message sm2 = etl::shared_message(message_pool, Message1(2));
+#include "etl/private/diagnostic_pessimizing-move_push.h"
       sm2 = std::move(etl::shared_message(message_pool, Message1(3)));
+#include "etl/private/diagnostic_pop.h"
       CHECK_EQUAL(1, sm2.get_reference_count());
       CHECK(sm2.is_valid());
     }
@@ -266,6 +276,8 @@ namespace
       CHECK_NO_THROW(prcm = message_pool.allocate<Message1>(3));
       CHECK_NO_THROW(prcm = message_pool.allocate<Message1>(4));
       
+      (void)prcm;
+
       try
       {
         prcm = message_pool.allocate<Message1>(5);

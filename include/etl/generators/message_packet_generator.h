@@ -484,7 +484,7 @@ namespace etl
     cog.outl("#else")
     cog.outl("  //********************************************")
     cog.outl("  template <typename TMessage>")
-    cog.out("  explicit message_packet(const TMessage& msg, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<")
+    cog.out("  explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<")
     for n in range(1, int(Handlers)):
         cog.out("T%s, " % n)
     cog.outl("T%s> >::value &&" % int(Handlers))
@@ -759,7 +759,7 @@ namespace etl
         cog.outl("#else")
         cog.outl("  //********************************************")
         cog.outl("  template <typename TMessage>")
-        cog.out("  explicit message_packet(const TMessage& msg, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<")
+        cog.out("  explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<")
         for t in range(1, n):
             cog.out("T%s, " % t)
         cog.outl("T%s> >::value &&" % n)

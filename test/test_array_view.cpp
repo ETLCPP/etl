@@ -733,6 +733,8 @@ namespace
     }
 
     //*************************************************************************
+#include "etl/private/diagnostic_unused_function_push.h"
+
     struct C_issue_482 {};
 
     void f_issue_482(etl::array_view<char>)
@@ -750,6 +752,8 @@ namespace
       // Should compile without ambiguous function error.
       f_issue_482(c);
     }
+
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     TEST(test_fill)

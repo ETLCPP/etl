@@ -98,10 +98,10 @@ namespace
     return (lhs < rhs.k);
   }
 
-  bool operator <(const Key& lhs, const Key& rhs)
-  {
-    return (lhs.k < rhs.k);
-  }
+  //bool operator <(const Key& lhs, const Key& rhs)
+  //{
+  //  return (lhs.k < rhs.k);
+  //}
 
   SUITE(test_set)
   {
@@ -330,7 +330,9 @@ namespace
       Data data(initial_data.begin(), initial_data.end());
       Data otherData(data);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       data = data;
+#include "etl/private/diagnostic_pop.h" 
 
       bool isEqual = Check_Equal(data.begin(),
                                  data.end(),
