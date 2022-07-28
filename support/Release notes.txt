@@ -1,4 +1,11 @@
 ===============================================================================
+20.32.0
+#571 Activate GCC and clang compiler warnings
+#575 Bip buffer improvements
+#576 Invoke function pointers with parenthesis
+#574 Allow users to remove SYSTEM keyword because it forces C linkage for some gcc versions
+
+===============================================================================
 20.31.3
 #569 Fixed swap function for circular_buffer_ext
 #568 Fixed circular_buffer iterator -> operators
