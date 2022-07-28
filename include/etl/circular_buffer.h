@@ -1037,8 +1037,6 @@ namespace etl
       }
     }
 
-
-
     pointer pbuffer;
 
   private:
@@ -1203,6 +1201,15 @@ namespace etl
 
     //*************************************************************************
     /// Constructor.
+    /// Null buffer.
+    //*************************************************************************
+    circular_buffer_ext(size_t max_size)
+      : icircular_buffer<T>(ETL_NULLPTR, max_size)
+    {
+    }
+
+    //*************************************************************************
+    /// Constructor.
     /// Constructs a buffer from an iterator range.
     //*************************************************************************
     template <typename TIterator>
@@ -1306,6 +1313,22 @@ namespace etl
 #if defined(ETL_DEBUG_COUNT)
       this->etl_debug_count.swap(other.etl_debug_count);
 #endif
+    }
+
+    //*************************************************************************
+    /// set_buffer
+    //*************************************************************************
+    void set_buffer(void* buffer)
+    {
+      this->pbuffer = reinterpret_cast<T*>(buffer);
+    }
+
+    //*************************************************************************
+    /// set_buffer
+    //*************************************************************************
+    bool is_valid() const
+    {
+      return this->pbuffer != ETL_NULLPTR;
     }
 
     //*************************************************************************

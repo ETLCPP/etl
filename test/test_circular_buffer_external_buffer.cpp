@@ -66,6 +66,7 @@ namespace
     {
       Data data(buffer1.raw, SIZE);
 
+      CHECK(data.is_valid());
       CHECK_EQUAL(0U,   data.size());
       CHECK_EQUAL(SIZE, data.max_size());
       CHECK_EQUAL(SIZE, data.capacity());
@@ -73,6 +74,25 @@ namespace
       CHECK(data.begin()   == data.end());
       CHECK(data.cbegin()  == data.cend());
       CHECK(data.rbegin()  == data.rend());
+      CHECK(data.crbegin() == data.crend());
+    }
+
+    //*************************************************************************
+    TEST(test_set_buffer_after_default_constructor)
+    {
+      Data data(SIZE);
+      CHECK(!data.is_valid());
+
+      data.set_buffer(buffer1.raw);
+      CHECK(data.is_valid());
+
+      CHECK_EQUAL(0U, data.size());
+      CHECK_EQUAL(SIZE, data.max_size());
+      CHECK_EQUAL(SIZE, data.capacity());
+      CHECK_EQUAL(SIZE, data.available());
+      CHECK(data.begin() == data.end());
+      CHECK(data.cbegin() == data.cend());
+      CHECK(data.rbegin() == data.rend());
       CHECK(data.crbegin() == data.crend());
     }
 
