@@ -335,7 +335,7 @@ namespace etl
       }
       else
       {
-        return Method(etl::forward<TParams>(args)...);
+        return (Method)(etl::forward<TParams>(args)...);
       }
     }
 
