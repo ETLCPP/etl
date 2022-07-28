@@ -1,4 +1,8 @@
 ===============================================================================
+20.32.1
+Added size only constructor, set_buffer() and is_valid() members to circular_buffer_ext
+
+===============================================================================
 20.32.0
 #571 Activate GCC and clang compiler warnings
 #575 Bip buffer improvements
