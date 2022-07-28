@@ -370,7 +370,7 @@ namespace etl
       }
       else
       {
-        return Method(param);
+        return (Method)(param);
       }
     }
 
@@ -758,7 +758,7 @@ namespace etl
       }
       else
       {
-        return Method();
+        return (Method)();
       }
     }
 
