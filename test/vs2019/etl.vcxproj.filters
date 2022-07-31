@@ -1323,6 +1323,9 @@
     <ClInclude Include="..\..\include\etl\private\diagnostic_pessimizing-move_push.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_broker.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3325,6 +3328,9 @@
     </ClCompile>
     <ClCompile Include="..\etl_error_handler\exceptions_and_log_errors\test_error_handler.cpp">
       <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_message_broker.cpp">
+      <Filter>Tests\Messaging</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
