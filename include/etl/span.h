@@ -42,7 +42,7 @@ SOFTWARE.
 
 #include "private/dynamic_extent.h"
 
-#if ETL_USING_CPP11 && ETL_USING_STL
+#if ETL_USING_STL && ETL_USING_CPP11
   #include <array>
 #endif
 
@@ -147,7 +147,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP11 && ETL_USING_STL
+#if ETL_USING_STL && ETL_USING_CPP11
     //*************************************************************************
     /// Construct from std::array.
     //*************************************************************************
@@ -498,7 +498,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP11 && ETL_USING_STL
+#if ETL_USING_STL && ETL_USING_CPP11
     //*************************************************************************
     /// Construct from std::array.
     //*************************************************************************
