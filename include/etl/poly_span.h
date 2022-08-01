@@ -45,7 +45,7 @@ SOFTWARE.
 
 #include "private/dynamic_extent.h"
 
-#if ETL_USING_CPP11 && ETL_USING_STL
+#if ETL_USING_STL && ETL_USING_CPP11
   #include <array>
 #endif
 
@@ -344,7 +344,7 @@ namespace etl
       ETL_STATIC_ASSERT((etl::is_base_of<TBase, U>::value || etl::is_same<TBase, U>::value), "TBase not a base of the data type");
     }
 
-#if ETL_USING_CPP11 && ETL_USING_STL
+#if ETL_USING_STL && ETL_USING_CPP11
     //*************************************************************************
     /// Construct from std::array.
     //*************************************************************************
@@ -712,7 +712,7 @@ namespace etl
       ETL_STATIC_ASSERT((etl::is_base_of<TBase, U>::value || etl::is_same<TBase, U>::value), "TBase not a base of the data type");
     }
 
-#if ETL_USING_CPP11 && ETL_USING_STL
+#if ETL_USING_STL && ETL_USING_CPP11
     //*************************************************************************
     /// Construct from std::array.
     //*************************************************************************

@@ -425,6 +425,25 @@ namespace etl
   }
 
   //***************************************************************************
+  // binary_search
+  //***************************************************************************
+  template <typename TIterator, class T, class Compare>
+  bool binary_search(TIterator first, TIterator last, const T& value, Compare compare)
+  {
+    first = std::lower_bound(first, last, value, compare);
+
+    return (!(first == last) && !(compare(value, *first)));
+  }
+
+  template <typename TIterator, typename T>
+  bool binary_search(TIterator first, TIterator last, const T& value)
+  {
+    typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
+
+    return binary_search(first, last, value, compare());
+  }
+
+  //***************************************************************************
   // find_if
   //***************************************************************************
   template <typename TIterator, typename TUnaryPredicate>

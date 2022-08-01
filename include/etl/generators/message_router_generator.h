@@ -169,6 +169,7 @@ namespace etl
       NULL_MESSAGE_ROUTER = 255,
       MESSAGE_BUS         = 254,
       ALL_MESSAGE_ROUTERS = 253,
+      MESSAGE_BROKER      = 252,
       MAX_MESSAGE_ROUTER  = 249
     };
 

@@ -182,6 +182,7 @@ target_sources(t14 PRIVATE etl_profile.h
         ../memory.h.t.cpp
         ../memory_model.h.t.cpp
         ../message.h.t.cpp
+        ../message_broker.h.t.cpp
         ../message_bus.h.t.cpp
         ../message_packet.h.t.cpp
         ../message_router.h.t.cpp

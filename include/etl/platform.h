@@ -320,7 +320,7 @@ SOFTWARE.
 //*************************************
 // Determine if the ETL can use std::array
 #if !defined(ETL_HAS_STD_ARRAY)
-  #if ETL_USING_CPP11 && ETL_USING_STL
+  #if ETL_USING_STL && ETL_USING_CPP11
     #define ETL_HAS_STD_ARRAY 1
   #else
     #define ETL_HAS_STD_ARRAY 0

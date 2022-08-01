@@ -170,7 +170,8 @@ set(TEST_SOURCE_FILES
 	test_mean.cpp
 	test_mem_cast.cpp
 	test_mem_cast_ptr.cpp
-	test_memory.cpp
+    test_memory.cpp
+	test_message_broker.cpp
 	test_message_bus.cpp
 	test_message_packet.cpp
 	test_message_router.cpp

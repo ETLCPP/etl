@@ -60,7 +60,7 @@ namespace etl
   template <typename T>
   ETL_CONSTEXPR17 T* addressof(T& t)
   {
-#if ETL_USING_CPP11 && ETL_USING_STL
+#if ETL_USING_STL && ETL_USING_CPP11
     return std::addressof(t);
 #else
     return reinterpret_cast<T*>(&const_cast<char&>(reinterpret_cast<const volatile char&>(t)));
@@ -1381,7 +1381,7 @@ namespace etl
       return (p != ETL_NULLPTR);
     }
 
-#if ETL_USING_CPP11 && ETL_USING_STL
+#if ETL_USING_STL && ETL_USING_CPP11
     //*********************************
     unique_ptr&	operator =(std::nullptr_t) ETL_NOEXCEPT
     {
@@ -1550,7 +1550,7 @@ namespace etl
       return (p != ETL_NULLPTR);
     }
 
-#if ETL_USING_CPP11 && ETL_USING_STL
+#if ETL_USING_STL && ETL_USING_CPP11
     //*********************************
     unique_ptr& operator =(std::nullptr_t) ETL_NOEXCEPT
     {
