@@ -1,4 +1,10 @@
 ===============================================================================
+20.33.0
+Added etl::message_broker to message framework
+Added etl::binary_search to algorithm.h
+Standardise conditional compilation macros for ETL_USING_CPP11 and ETL_USING_STL
+
+===============================================================================
 20.32.1
 Added size only constructor, set_buffer() and is_valid() members to circular_buffer_ext
 
