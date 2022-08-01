@@ -3332,6 +3332,9 @@
     <ClCompile Include="..\test_message_broker.cpp">
       <Filter>Tests\Messaging</Filter>
     </ClCompile>
+    <ClCompile Include="..\sanity-check\message_broker.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
