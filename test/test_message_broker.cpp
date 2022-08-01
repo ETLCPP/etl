@@ -31,6 +31,7 @@ SOFTWARE.
 #include "etl/message_broker.h"
 
 #include <array>
+#include <vector>
 
 //***************************************************************************
 // The set of messages.
@@ -70,11 +71,8 @@ namespace
   struct Message3 : public etl::message<MESSAGE3>
   {
     Message3()
-      : value()
     {
     }
-
-    int value[10];
   };
 
   struct Message4 : public etl::message<MESSAGE4>
@@ -112,6 +110,16 @@ namespace
   {
   public:
 
+    Broker()
+      : message_broker()
+    {
+    }
+
+    Broker(etl::message_router_id_t id)
+      : message_broker(id)
+    {
+    }
+
     using etl::message_broker::receive;
 
     // Hook incoming messages and translate Message5 to Message4.
@@ -145,6 +153,17 @@ namespace
       , message6_count(0)
       , message_unknown_count(0)
     {
+    }
+
+    void clear()
+    {
+      message1_count = 0;
+      message2_count = 0;
+      message3_count = 0;
+      message4_count = 0;
+      message5_count = 0;
+      message6_count = 0;
+      message_unknown_count = 0;
     }
 
     void on_receive(const Message1&)
@@ -191,43 +210,196 @@ namespace
     int message_unknown_count;
   };
 
+  //*************************************************************************
+  class Subscription : public etl::message_broker::subscription
+  {
+  public:
+
+    Subscription(etl::imessage_router& router, std::initializer_list<etl::message_id_t> init)
+      : etl::message_broker::subscription(router)
+      , id_list(init)
+    {
+    }
+
+    virtual etl::message_broker::message_id_span_t message_id_list() const
+    {
+      return etl::message_broker::message_id_span_t(id_list.begin(), id_list.end());
+    }
+
+    std::vector<etl::message_id_t> id_list;
+  };
+
   SUITE(test_message_broker)
   {
     //*************************************************************************
-    TEST(message_bus_subscribe_unsubscribe)
+    TEST(message_check_broker_id)
+    {
+      Broker broker1;
+      Broker broker2(2);
+
+      CHECK_EQUAL(etl::imessage_router::MESSAGE_BROKER, broker1.get_message_router_id());
+      CHECK_EQUAL(2, broker2.get_message_router_id());
+
+      CHECK(broker1.is_consumer());
+      CHECK(broker1.is_producer());
+      CHECK(!broker1.is_null_router());
+    }
+
+    //*************************************************************************
+    TEST(message_broker_subscribe_then_unsubscribe)
+    {
+      Router router1(1);
+      Router router2(2);
+      Router router3(3);
+
+      Subscription subscription1{ router1, { Message1::ID, Message2::ID, Message3::ID, Message4::ID } };
+      Subscription subscription3{ router2, { Message1::ID, Message3::ID } };
+
+      Broker broker; 
+      CHECK(broker.empty());
+      CHECK(broker.accepts(MESSAGE1));
+      CHECK(broker.accepts(MESSAGE2));
+      CHECK(broker.accepts(MESSAGE3));
+      CHECK(broker.accepts(MESSAGE4));
+      CHECK(broker.accepts(MESSAGE5));
+      CHECK(broker.accepts(MESSAGE6));
+
+      broker.subscribe(subscription1);
+      CHECK(!broker.empty());
+
+      broker.subscribe(subscription3);
+      CHECK(!broker.empty());
+
+      broker.unsubscribe(router1);
+      CHECK(!broker.empty());
+
+      broker.unsubscribe(router2);
+      CHECK(broker.empty());
+
+      // There is no router3 subscription in 'broker'.
+      broker.unsubscribe(router3);
+      CHECK(broker.empty());
+    }
+
+    //*************************************************************************
+    TEST(message_broker_subscribe_then_clear)
+    {
+      Router router1(1);
+      Router router2(2);
+      Router router3(3);
+
+      Subscription subscription1{ router1, { Message1::ID, Message2::ID, Message3::ID, Message4::ID } };
+      Subscription subscription3{ router2, { Message1::ID, Message3::ID } };
+
+      Broker broker;
+
+      broker.subscribe(subscription1);
+      broker.subscribe(subscription3); // Duplicate router. Replace the old subscription.
+      broker.unsubscribe(router1);
+
+      broker.clear();
+      CHECK(broker.empty());
+
+      broker.receive(Message1());
+      broker.receive(Message2());
+      broker.receive(Message3());
+      broker.receive(Message4());
+      broker.receive(Message5());
+      broker.receive(Message6());
+      broker.receive(UnknownMessage());
+
+      CHECK_EQUAL(0, router1.message1_count);
+      CHECK_EQUAL(0, router2.message1_count);
+      CHECK_EQUAL(0, router3.message1_count);
+
+      CHECK_EQUAL(0, router1.message2_count);
+      CHECK_EQUAL(0, router2.message2_count);
+      CHECK_EQUAL(0, router3.message2_count);
+
+      CHECK_EQUAL(0, router1.message3_count);
+      CHECK_EQUAL(0, router2.message3_count);
+      CHECK_EQUAL(0, router3.message3_count);
+
+      CHECK_EQUAL(0, router1.message4_count);
+      CHECK_EQUAL(0, router2.message4_count);
+      CHECK_EQUAL(0, router3.message4_count);
+
+      CHECK_EQUAL(0, router1.message5_count);
+      CHECK_EQUAL(0, router2.message5_count);
+      CHECK_EQUAL(0, router3.message5_count);
+
+      CHECK_EQUAL(0, router1.message6_count);
+      CHECK_EQUAL(0, router2.message6_count);
+      CHECK_EQUAL(0, router3.message6_count);
+
+      CHECK_EQUAL(0, router1.message_unknown_count);
+      CHECK_EQUAL(0, router2.message_unknown_count);
+      CHECK_EQUAL(0, router3.message_unknown_count);
+    }
+
+    //*************************************************************************
+    TEST(message_broker_send_messages_to_broker_with_no_subscribers)
     {
       Broker broker;
       Router router1(1);
       Router router2(2);
       Router router3(3);
 
-      broker.set_successor(router3);
+      broker.receive(Message1());
+      broker.receive(Message2());
+      broker.receive(Message3());
+      broker.receive(Message4());
+      broker.receive(Message5());
+      broker.receive(Message6());
+      broker.receive(UnknownMessage());
 
-      CHECK(broker.empty());
+      CHECK_EQUAL(0, router1.message1_count);
+      CHECK_EQUAL(0, router2.message1_count);
+      CHECK_EQUAL(0, router3.message1_count);
 
-      std::array<etl::message_id_t, 4U> subscription1_message_list = { Message1::ID, Message2::ID, Message3::ID, Message4::ID };
-      Broker::subscription subscription1(router1, subscription1_message_list.data(), subscription1_message_list.size());
+      CHECK_EQUAL(0, router1.message2_count);
+      CHECK_EQUAL(0, router2.message2_count);
+      CHECK_EQUAL(0, router3.message2_count);
 
-      etl::array<etl::message_id_t, 2U> subscription2_message_list = { Message1::ID, Message2::ID };
-      Broker::subscription subscription2(router2, subscription2_message_list);
+      CHECK_EQUAL(0, router1.message3_count);
+      CHECK_EQUAL(0, router2.message3_count);
+      CHECK_EQUAL(0, router3.message3_count);
 
-      etl::array<etl::message_id_t, 2U> subscription3_message_list = { Message1::ID, Message3::ID };
-      Broker::subscription subscription3(router2, subscription3_message_list);
+      CHECK_EQUAL(0, router1.message4_count);
+      CHECK_EQUAL(0, router2.message4_count);
+      CHECK_EQUAL(0, router3.message4_count);
 
-      std::array<etl::message_id_t, 2U> subscription4_message_list = { Message5::ID, Message6::ID };
-      Broker::subscription subscription4(router3, subscription4_message_list.data(), subscription4_message_list.size());
+      CHECK_EQUAL(0, router1.message5_count);
+      CHECK_EQUAL(0, router2.message5_count);
+      CHECK_EQUAL(0, router3.message5_count);
+
+      CHECK_EQUAL(0, router1.message6_count);
+      CHECK_EQUAL(0, router2.message6_count);
+      CHECK_EQUAL(0, router3.message6_count);
+
+      CHECK_EQUAL(0, router1.message_unknown_count);
+      CHECK_EQUAL(0, router2.message_unknown_count);
+      CHECK_EQUAL(0, router3.message_unknown_count);
+    }
+
+    //*************************************************************************
+    TEST(message_broker_send_messages_to_subscribers)
+    {
+      Broker broker;
+      Router router1(1);
+      Router router2(2);
+      Router router3(3);
+
+      Subscription subscription1{ router1, { Message1::ID, Message2::ID, Message3::ID, Message4::ID } };
+      Subscription subscription2{ router2, { Message1::ID, Message2::ID } };
+      Subscription subscription3{ router2, { Message1::ID, Message3::ID } };
 
       broker.subscribe(subscription1);
-      CHECK(!broker.empty());
-
       broker.subscribe(subscription2);
-      CHECK(!broker.empty());
-
       broker.subscribe(subscription3); // Duplicate router. Replace the old subscription.
-      CHECK(!broker.empty());
-
       broker.subscribe(subscription1); // Do subscription1 again to see if it breaks.
-      CHECK(!broker.empty());
+
+      broker.set_successor(router3);
 
       broker.receive(Message1());
       broker.receive(Message2());
@@ -265,16 +437,64 @@ namespace
       CHECK_EQUAL(0, router1.message_unknown_count);
       CHECK_EQUAL(0, router2.message_unknown_count);
       CHECK_EQUAL(1, router3.message_unknown_count);
+    }
 
-      broker.unsubscribe(router1);
-      CHECK(!broker.empty());
+    //*************************************************************************
+    TEST(message_broker_send_messages_to_subscribers_after_unsubscribe)
+    {
+      Broker broker;
+      Router router1(1);
+      Router router2(2);
+      Router router3(3);
+
+      Subscription subscription1{ router1, { Message1::ID, Message2::ID, Message3::ID, Message4::ID } };
+      Subscription subscription3{ router2, { Message1::ID, Message3::ID } };
+
+      broker.subscribe(subscription1);
+      broker.subscribe(subscription3);
+
+      broker.set_successor(router3);
 
       broker.unsubscribe(router2);
-      CHECK(broker.empty());
 
-      // There is no router3 subscription in 'broker'.
-      broker.unsubscribe(router3);
-      CHECK(broker.empty());
+      broker.receive(Message1());
+      broker.receive(Message2());
+      broker.receive(Message3());
+      broker.receive(Message4());
+      broker.receive(Message5());
+      broker.receive(Message6());
+      broker.receive(UnknownMessage());
+
+      CHECK(broker.has_successor());
+
+      CHECK_EQUAL(1, router1.message1_count);
+      CHECK_EQUAL(0, router2.message1_count);
+      CHECK_EQUAL(1, router3.message1_count);
+
+      CHECK_EQUAL(1, router1.message2_count);
+      CHECK_EQUAL(0, router2.message2_count);
+      CHECK_EQUAL(1, router3.message2_count);
+
+      CHECK_EQUAL(1, router1.message3_count);
+      CHECK_EQUAL(0, router2.message3_count);
+      CHECK_EQUAL(1, router3.message3_count);
+
+      CHECK_EQUAL(2, router1.message4_count);
+      CHECK_EQUAL(0, router2.message4_count);
+      CHECK_EQUAL(2, router3.message4_count);
+
+      // Message5 is translated to Message4 in 'broker'.
+      CHECK_EQUAL(0, router1.message5_count);
+      CHECK_EQUAL(0, router2.message5_count);
+      CHECK_EQUAL(0, router3.message5_count);
+
+      CHECK_EQUAL(0, router1.message6_count);
+      CHECK_EQUAL(0, router2.message6_count);
+      CHECK_EQUAL(1, router3.message6_count);
+
+      CHECK_EQUAL(0, router1.message_unknown_count);
+      CHECK_EQUAL(0, router2.message_unknown_count);
+      CHECK_EQUAL(1, router3.message_unknown_count);
     }
   };
 }

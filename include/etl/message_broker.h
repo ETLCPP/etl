@@ -66,13 +66,13 @@ namespace etl
       }
 
       //*******************************
-      void next(subscription_node* sub)
+      void set_next(subscription_node* sub)
       {
         p_next = sub;
       }
 
       //*******************************
-      subscription_node* next() const
+      subscription_node* get_next() const
       {
         return p_next;
       }
@@ -80,7 +80,7 @@ namespace etl
       //*******************************
       void terminate()
       {
-        next(ETL_NULLPTR);
+        set_next(ETL_NULLPTR);
       }
 
       //*******************************
@@ -88,23 +88,17 @@ namespace etl
       {
         if (sub != ETL_NULLPTR)
         {
-          sub->next(next());
+          sub->set_next(get_next());
         }
-        next(sub);
-      }
-
-      //*******************************
-      void append(subscription_node& sub)
-      {
-        append(&sub);
+        set_next(sub);
       }
 
       subscription_node* p_next;
     };
 
-    typedef etl::span<const etl::message_id_t> message_id_span_t;
-
   public:
+
+    typedef etl::span<const etl::message_id_t> message_id_span_t;
 
     //*******************************************
     class subscription : public subscription_node
@@ -114,72 +108,29 @@ namespace etl
       friend class message_broker;
 
       //*******************************
-      subscription(etl::imessage_router& router_,
-                   etl::message_id_t*    p_message_ids_,
-                   size_t                n_messages_)
+      subscription(etl::imessage_router& router_)
         : p_router(&router_)
-        , message_ids(p_message_ids_, p_message_ids_ + n_messages_)
       {
       }
-
-      //*******************************
-      subscription(etl::imessage_router& router_,
-                   etl::message_id_t* first,
-                   etl::message_id_t* last)
-        : p_router(&router_)
-        , message_ids(first, last)
-      {
-      }
-
-      //*******************************
-      template <size_t NMessages>
-      subscription(etl::imessage_router& router_,
-                   const etl::array<etl::message_id_t, NMessages>& message_ids_)
-        : p_router(&router_)
-        , message_ids(message_ids_.data(), message_ids_.data() + NMessages)
-      {
-      }
-
-#if ETL_USING_STL && ETL_USING_CPP11
-      //*******************************
-      template <size_t NMessages>
-      subscription(etl::imessage_router& router_,
-                   const std::array<etl::message_id_t, NMessages>& message_ids_)
-        : p_router(&router_)
-        , message_ids(message_ids_.data(), message_ids_.data() + NMessages)
-      {
-      }
-#endif
 
     private:
 
       //*******************************
-      etl::imessage_router* router() const
+      virtual message_id_span_t message_id_list() const = 0;
+
+      //*******************************
+      etl::imessage_router* get_router() const
       {
         return p_router;
       }
 
       //*******************************
-      message_id_span_t message_id_list() const
-      {
-        return message_ids;
-      }
-
-      //*******************************
       subscription* next_subscription() const
       {
-        return static_cast<subscription*>(next());
+        return static_cast<subscription*>(get_next());
       }
 
-      ////*******************************
-      //subscription()
-      //  : p_router(ETL_NULLPTR)
-      //  , message_ids()
-      //{
-      //}
-
       etl::imessage_router* const p_router;
-      message_id_span_t           message_ids;
     };
 
     using etl::imessage_router::receive;
@@ -203,29 +154,11 @@ namespace etl
     }
 
     //*******************************************
-    /// Constructor.
-    //*******************************************
-    message_broker(etl::message_broker::subscription & subscription_list_)
-      : imessage_router(etl::imessage_router::MESSAGE_BROKER)
-      , head()
-    {
-    }
-
-    //*******************************************
-    /// Constructor.
-    //*******************************************
-    message_broker(etl::message_router_id_t id_, etl::message_broker::subscription& subscription_list_)
-      : imessage_router(id_)
-      , head()
-    {
-    }
-
-    //*******************************************
     /// Subscribe to the broker.
     //*******************************************
     void subscribe(etl::message_broker::subscription& new_sub)
     {
-      initialise_insertion_point(new_sub.router(), &new_sub);
+      initialise_insertion_point(new_sub.get_router(), &new_sub);
     }
 
     //*******************************************
@@ -242,7 +175,7 @@ namespace etl
       if (!empty())
       {
         // Scan the subscription lists.
-        subscription* sub = static_cast<subscription*>(head.next());
+        subscription* sub = static_cast<subscription*>(head.get_next());
 
         while (sub != ETL_NULLPTR)
         {
@@ -252,7 +185,7 @@ namespace etl
 
           if (itr != message_ids.end())
           {
-            sub->router()->receive(msg);
+            sub->get_router()->receive(msg);
           }
 
           sub = sub->next_subscription();
@@ -276,7 +209,7 @@ namespace etl
       if (!empty())
       {
         // Scan the subscription lists.
-        subscription* sub = static_cast<subscription*>(head.next());
+        subscription* sub = static_cast<subscription*>(head.get_next());
 
         while (sub != ETL_NULLPTR)
         {
@@ -286,7 +219,7 @@ namespace etl
 
           if (itr != message_ids.end())
           {
-            sub->router()->receive(shared_msg);
+            sub->get_router()->receive(shared_msg);
           }
 
           sub = sub->next_subscription();
@@ -337,7 +270,7 @@ namespace etl
     //********************************************
     bool empty() const
     {
-      return head.next() == ETL_NULLPTR;
+      return head.get_next() == ETL_NULLPTR;
     }
 
   private:
@@ -347,25 +280,25 @@ namespace etl
     {
       const etl::imessage_router* p_target_router = p_router;
 
-      subscription_node* p_sub = head.next();
+      subscription_node* p_sub          = head.get_next();
       subscription_node* p_sub_previous = &head;
 
       while (p_sub != ETL_NULLPTR)
       {
         // Do we already have a subscription for the router?
-        if (static_cast<subscription*>(p_sub)->router() == p_target_router)
+        if (static_cast<subscription*>(p_sub)->get_router() == p_target_router)
         {
           // Then unlink it.
-          p_sub_previous->next(p_sub->next()); // Jump over the subscription.
-          p_sub->terminate(); // Terminate the unlinked subscription.
+          p_sub_previous->set_next(p_sub->get_next()); // Jump over the subscription.
+          p_sub->terminate();                          // Terminate the unlinked subscription.
 
           // We're done now.
           break;
         }
 
         // Move on up the list.
-        p_sub = p_sub->next();
-        p_sub_previous = p_sub_previous->next();
+        p_sub = p_sub->get_next();
+        p_sub_previous = p_sub_previous->get_next();
       }
 
       if (p_new_sub != ETL_NULLPTR)
@@ -375,54 +308,26 @@ namespace etl
       }
     }
 
-    //*******************************************
-    /// Check if the message id is in the message list.
-    //*******************************************
-    bool is_in_subscription_list(etl::message_id_t id) const
-    {
-      if (!empty())
-      {
-        // Scan the subscription lists.
-        subscription* sub = static_cast<subscription*>(head.next());
-
-        while (sub != ETL_NULLPTR)
-        {
-          message_id_span_t message_ids = sub->message_id_list();
-
-          message_id_span_t::const_iterator itr = etl::find(message_ids.begin(), message_ids.end(), id);
-
-          if (itr != message_ids.end())
-          {
-              return true;
-          }
-
-          sub = sub->next_subscription();
-        }
-      }
-
-      return false;
-    }
-
     subscription_node head;
   };
 
   //***************************************************************************
   /// Send a message to a broker.
   //***************************************************************************
-  //static inline void send_message(etl::imessage_broker& broker,
-  //                                const etl::imessage&  message)
-  //{
-  //  broker.receive(message);
-  //}
+  static inline void send_message(etl::message_broker& broker,
+                                  const etl::imessage&  message)
+  {
+    broker.receive(message);
+  }
 
-  ////***************************************************************************
-  ///// Send a shared message to a broker.
-  ////***************************************************************************
-  //static inline void send_message(etl::imessage_broker& broker,
-  //                                etl::shared_message   message)
-  //{
-  //  broker.receive(message);
-  //}
+  //***************************************************************************
+  /// Send a shared message to a broker.
+  //***************************************************************************
+  static inline void send_message(etl::message_broker& broker,
+                                  etl::shared_message   message)
+  {
+    broker.receive(message);
+  }
 }
 
 #endif
