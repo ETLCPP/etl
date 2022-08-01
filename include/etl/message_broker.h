@@ -238,7 +238,7 @@ namespace etl
     //*******************************************
     /// Message brokers accept all messages.
     //*******************************************
-    virtual bool accepts(etl::message_id_t id) const ETL_OVERRIDE
+    virtual bool accepts(etl::message_id_t) const ETL_OVERRIDE
     {
       return true;
     }

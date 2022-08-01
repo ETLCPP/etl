@@ -242,7 +242,6 @@ namespace
 
       CHECK(broker1.is_consumer());
       CHECK(broker1.is_producer());
-      CHECK(!broker1.is_null_router());
     }
 
     //*************************************************************************
