@@ -151,6 +151,7 @@ namespace etl
       : imessage_router(id_)
       , head()
     {
+      ETL_ASSERT((id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER) || (id_ == etl::imessage_router::MESSAGE_BROKER), ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //*******************************************
