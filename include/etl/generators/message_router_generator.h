@@ -170,6 +170,7 @@ namespace etl
       MESSAGE_BUS         = 254,
       ALL_MESSAGE_ROUTERS = 253,
       MESSAGE_BROKER      = 252,
+      MESSAGE_ROUTER      = 251,
       MAX_MESSAGE_ROUTER  = 249
     };
 
@@ -202,11 +203,18 @@ namespace etl
   {
   public:
 
+    //********************************************
     null_message_router()
       : imessage_router(imessage_router::NULL_MESSAGE_ROUTER)
     {
     }
 
+    //********************************************
+    null_message_router(etl::imessage_router& successor)
+      : imessage_router(imessage_router::NULL_MESSAGE_ROUTER, successor)
+    {
+    }
+    
     //********************************************
     using etl::imessage_router::receive;
 
@@ -273,9 +281,30 @@ namespace etl
   {
   public:
 
+    //********************************************
+    message_producer()
+      : imessage_router(etl::imessage_router::MESSAGE_ROUTER)
+    {
+    }
+
+    //********************************************
+    message_producer(etl::imessage_router& successor)
+      : imessage_router(imessage_router::NULL_MESSAGE_ROUTER, successor)
+    {
+    }
+
+    //********************************************
     message_producer(etl::message_router_id_t id_)
       : imessage_router(id_)
     {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //********************************************
+    message_producer(etl::message_router_id_t id_, etl::imessage_router& successor)
+      : imessage_router(id_, successor)
+    {
+      ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //********************************************
@@ -354,6 +383,18 @@ namespace etl
   public:
 
     typedef etl::message_packet<TMessageTypes...> message_packet;
+
+    //**********************************************
+    message_router()
+      : imessage_router(etl::message_router::MESSAGE_ROUTER)
+    {
+    }
+
+    //**********************************************
+    message_router(etl::imessage_router& successor_)
+      : imessage_router(etl::message_router::MESSAGE_ROUTER, successor_)
+    {
+    }
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -519,6 +560,18 @@ namespace etl
       cog.outl("  }")
       cog.outl("")
       cog.outl("  //**********************************************")
+      cog.outl("  message_router()")
+      cog.outl("    : imessage_router(etl::imessage_router::MESSAGE_ROUTER)")
+      cog.outl("  {")
+      cog.outl("  }")
+      cog.outl("")
+      cog.outl("  //**********************************************")
+      cog.outl("  message_router(etl::imessage_router& successor_)")
+      cog.outl("    : imessage_router(etl::imessage_router::MESSAGE_ROUTER, successor_)")
+      cog.outl("  {")
+      cog.outl("  }")
+      cog.outl("")
+      cog.outl("  //**********************************************")
       cog.outl("  using etl::imessage_router::receive;")
       cog.outl("")
       cog.outl("  void receive(const etl::imessage& msg) ETL_OVERRIDE")
@@ -671,6 +724,18 @@ namespace etl
           cog.outl("    : imessage_router(id_, successor_)")
           cog.outl("  {")
           cog.outl("    ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));")
+          cog.outl("  }")
+          cog.outl("")
+          cog.outl("  //**********************************************")
+          cog.outl("  message_router()")
+          cog.outl("    : imessage_router(etl::imessage_router::MESSAGE_ROUTER)")
+          cog.outl("  {")
+          cog.outl("  }")
+          cog.outl("")
+          cog.outl("  //**********************************************")
+          cog.outl("  message_router(etl::imessage_router& successor_)")
+          cog.outl("    : imessage_router(etl::imessage_router::MESSAGE_ROUTER, successor_)")
+          cog.outl("  {")
           cog.outl("  }")
           cog.outl("")
           cog.outl("  //**********************************************")
