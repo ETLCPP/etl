@@ -171,7 +171,7 @@ namespace etl
       ALL_MESSAGE_ROUTERS = 253,
       MESSAGE_BROKER      = 252,
       MESSAGE_ROUTER      = 251,
-      MAX_MESSAGE_ROUTER  = 249,
+      MAX_MESSAGE_ROUTER  = 249
     };
 
   protected:
