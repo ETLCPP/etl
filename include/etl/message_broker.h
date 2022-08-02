@@ -147,8 +147,27 @@ namespace etl
     //*******************************************
     /// Constructor.
     //*******************************************
+    message_broker(etl::imessage_router& successor_)
+      : imessage_router(etl::imessage_router::MESSAGE_BROKER, successor_)
+      , head()
+    {
+    }
+
+    //*******************************************
+    /// Constructor.
+    //*******************************************
     message_broker(etl::message_router_id_t id_)
       : imessage_router(id_)
+      , head()
+    {
+      ETL_ASSERT((id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER) || (id_ == etl::imessage_router::MESSAGE_BROKER), ETL_ERROR(etl::message_router_illegal_id));
+    }
+
+    //*******************************************
+    /// Constructor.
+    //*******************************************
+    message_broker(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
       , head()
     {
       ETL_ASSERT((id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER) || (id_ == etl::imessage_router::MESSAGE_BROKER), ETL_ERROR(etl::message_router_illegal_id));

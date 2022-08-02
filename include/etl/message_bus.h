@@ -366,6 +366,15 @@ namespace etl
     {
     }
 
+    //*******************************************
+    /// Constructor.
+    //*******************************************
+    imessage_bus(router_list_t& list, etl::imessage_router& successor)
+      : imessage_router(etl::imessage_router::MESSAGE_BUS, successor),
+      router_list(list)
+    {
+    }
+
   private:
 
     //*******************************************
@@ -400,6 +409,14 @@ namespace etl
     //*******************************************
     message_bus()
       : imessage_bus(router_list)
+    {
+    }
+
+    //*******************************************
+    /// Constructor.
+    //*******************************************
+    message_bus(etl::imessage_router& successor)
+      : imessage_bus(router_list, successor)
     {
     }
 
