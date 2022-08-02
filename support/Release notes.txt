@@ -1,6 +1,7 @@
 ===============================================================================
 20.33.0
 Added etl::message_broker to message framework
+Added 'successor' parameter constructors to all etl::imessage_router derived classes
 Added etl::binary_search to algorithm.h
 Standardise conditional compilation macros for ETL_USING_CPP11 and ETL_USING_STL
 
