@@ -290,7 +290,7 @@ namespace etl
     //*************************************************************************
     /// Assign from a view.
     //*************************************************************************
-    ETL_CONSTEXPR etl::basic_string_view<T, TTraits>& operator=(const etl::basic_string_view<T, TTraits>& other)
+    ETL_CONSTEXPR14 etl::basic_string_view<T, TTraits>& operator=(const etl::basic_string_view<T, TTraits>& other)
     {
       mbegin = other.mbegin;
       mend   = other.mend;
