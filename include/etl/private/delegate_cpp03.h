@@ -66,11 +66,11 @@ namespace etl
     //***********************************
     template <typename TDelegate, typename TReturn, typename TParam>
     struct call_if_impl
-    {
-      TDelegate& d = static_cast<TDelegate&>(*this);
-
+    {    
       etl::optional<TReturn> call_if(TParam param)
       {
+				TDelegate& d = static_cast<TDelegate&>(*this);
+				
         etl::optional<TReturn> result;
 
         if (d.is_valid())
@@ -88,8 +88,8 @@ namespace etl
     {
       bool call_if()
       {
-        TDelegate& d = static_cast<TDelegate&>(*this);
-
+				TDelegate& d = static_cast<TDelegate&>(*this);
+				
         if (d.is_valid())
         {
           d();
@@ -106,10 +106,10 @@ namespace etl
     template <typename TDelegate, typename TReturn>
     struct call_if_impl<TDelegate, TReturn, void>
     {
-      TDelegate& d = static_cast<TDelegate&>(*this);
-
       etl::optional<TReturn> call_if()
       {
+				TDelegate& d = static_cast<TDelegate&>(*this);
+				
         etl::optional<TReturn> result;
 
         if (d.is_valid())
@@ -435,7 +435,11 @@ namespace etl
     //*************************************************************************
     struct invocation_element
     {
-      invocation_element() = default;
+      invocation_element()
+        : object(ETL_NULLPTR)
+        , stub(ETL_NULLPTR)
+			{
+			}
 
       //***********************************************************************
       invocation_element(void* object_, stub_type stub_)
@@ -457,8 +461,8 @@ namespace etl
       }
 
       //***********************************************************************
-      void*     object = ETL_NULLPTR;
-      stub_type stub   = ETL_NULLPTR;
+      void*     object;
+      stub_type stub;
     };
 
     //*************************************************************************
@@ -823,7 +827,11 @@ namespace etl
     //*************************************************************************
     struct invocation_element
     {
-      invocation_element() = default;
+      invocation_element()
+        : object(ETL_NULLPTR)
+        , stub(ETL_NULLPTR)
+			{
+			}
 
       //***********************************************************************
       invocation_element(void* object_, stub_type stub_)
@@ -845,8 +853,8 @@ namespace etl
       }
 
       //***********************************************************************
-      void* object = ETL_NULLPTR;
-      stub_type stub = ETL_NULLPTR;
+      void* object;
+      stub_type stub;
     };
 
     //*************************************************************************
