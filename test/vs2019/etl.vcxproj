@@ -11235,6 +11235,7 @@
     <ClCompile Include="..\test_callback_timer_atomic.cpp" />
     <ClCompile Include="..\test_callback_timer_interrupt.cpp" />
     <ClCompile Include="..\test_callback_timer_locked.cpp" />
+    <ClCompile Include="..\test_char_traits.cpp" />
     <ClCompile Include="..\test_circular_buffer.cpp" />
     <ClCompile Include="..\test_circular_buffer_external_buffer.cpp" />
     <ClCompile Include="..\test_compiler_settings.cpp" />
