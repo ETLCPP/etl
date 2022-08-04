@@ -430,7 +430,7 @@ namespace etl
   template <typename TIterator, class T, class Compare>
   bool binary_search(TIterator first, TIterator last, const T& value, Compare compare)
   {
-    first = std::lower_bound(first, last, value, compare);
+    first = etl::lower_bound(first, last, value, compare);
 
     return (!(first == last) && !(compare(value, *first)));
   }
