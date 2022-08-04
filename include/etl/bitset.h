@@ -294,16 +294,12 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Set the bit at the position.
+    /// Set all bits.
     //*************************************************************************
     ibitset& set()
     {
-      for (size_t i = 0UL; i < SIZE; ++i)
-      {
-        pdata[i] = ALL_SET;
-      }
-
-      pdata[SIZE - 1] &= TOP_MASK;
+      ::memset(pdata, 0xFF, SIZE);
+      pdata[SIZE - 1] = TOP_MASK;
 
       return *this;
     }
@@ -316,7 +312,8 @@ namespace etl
       size_t    index;
       element_t bit;
 
-      if (SIZE == 0) {
+      if (SIZE == 0) 
+      {
         return *this;
       }
       else if (SIZE == 1)
@@ -337,23 +334,6 @@ namespace etl
       else
       {
         pdata[index] &= ~bit;
-      }
-
-      return *this;
-    }
-
-    //*************************************************************************
-    /// Set from a string.
-    //*************************************************************************
-    ibitset& set(const char* text)
-    {
-      reset();
-
-      size_t i = etl::min(NBITS, etl::strlen(text));
-
-      while (i > 0)
-      {
-        set(--i, *text++ == ETL_STR('1'));
       }
 
       return *this;
@@ -428,6 +408,46 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Set from a string.
+    //*************************************************************************
+    ibitset& set(const char* text)
+    {
+      from_string(text);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Set from a wstring.
+    //*************************************************************************
+    ibitset& set(const wchar_t* text)
+    {
+      from_string(text);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Set from a u16string.
+    //*************************************************************************
+    ibitset& set(const char16_t* text)
+    {
+      from_string(text);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Set from a u32string.
+    //*************************************************************************
+    ibitset& set(const char32_t* text)
+    {
+      from_string(text);
+
+      return *this;
+    }
+
+    //*************************************************************************
     /// Put to a value.
     //*************************************************************************
     template <typename T>
@@ -480,10 +500,7 @@ namespace etl
     //*************************************************************************
     ibitset& reset()
     {
-      for (size_t i = 0UL; i < SIZE; ++i)
-      {
-        pdata[i] = ALL_CLEAR;
-      }
+      ::memset(pdata, 0x00, SIZE);
 
       return *this;
     }
