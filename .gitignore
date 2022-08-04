@@ -378,3 +378,4 @@ test/etl_error_handler/exceptions/build-make
 test/etl_error_handler/log_errors/build-make
 test/etl_error_handler/log_errors_and_exceptions/.vs
 test/etl_error_handler/log_errors_and_exceptions/build-make
+examples/ArmTimerCallbacks - C++/ArmTimerCallbacks.uvoptx
