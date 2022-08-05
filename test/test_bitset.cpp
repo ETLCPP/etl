@@ -84,12 +84,57 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_construct_from_string)
+    TEST(test_construct_from_char_string)
     {
       std::bitset<60> compare("110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<60> data("110001001000110100010101100111001100010010001101000101011001");
 
       CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.count(), data.count());
+
+      for (size_t i = 0UL; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data.test(i));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_wchar_t_string)
+    {
+      std::bitset<60> compare(L"110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset<60> data(L"110001001000110100010101100111001100010010001101000101011001");
+
+      CHECK_EQUAL(compare.size(), data.size());
+      CHECK_EQUAL(compare.count(), data.count());
+
+      for (size_t i = 0UL; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data.test(i));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_char16_t_string)
+    {
+      std::bitset<60> compare(u"110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset<60> data(u"110001001000110100010101100111001100010010001101000101011001");
+
+      CHECK_EQUAL(compare.size(), data.size());
+      CHECK_EQUAL(compare.count(), data.count());
+
+      for (size_t i = 0UL; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data.test(i));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_char32_t_string)
+    {
+      std::bitset<60> compare(U"110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset<60> data(U"110001001000110100010101100111001100010010001101000101011001");
+
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
 
       for (size_t i = 0UL; i < data.size(); ++i)
@@ -161,7 +206,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_string_set)
+    TEST(test_char_string_set)
     {
       std::bitset<60> compare("110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<60> data;
@@ -181,7 +226,67 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_from_string)
+    TEST(test_wchar_t_string_set)
+    {
+      std::bitset<60> compare(L"110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset<60> data;
+
+      data.set(L"110001001000110100010101100111001100010010001101000101011001");
+
+      CHECK_EQUAL(compare.size(), data.size());
+      CHECK_EQUAL(compare.count(), data.count());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
+
+      for (size_t i = 0UL; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data.test(i));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_char16_t_string_set)
+    {
+      std::bitset<60> compare(u"110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset<60> data;
+
+      data.set(u"110001001000110100010101100111001100010010001101000101011001");
+
+      CHECK_EQUAL(compare.size(), data.size());
+      CHECK_EQUAL(compare.count(), data.count());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
+
+      for (size_t i = 0UL; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data.test(i));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_char32_t_string_set)
+    {
+      std::bitset<60> compare(U"110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset<60> data;
+
+      data.set(U"110001001000110100010101100111001100010010001101000101011001");
+
+      CHECK_EQUAL(compare.size(), data.size());
+      CHECK_EQUAL(compare.count(), data.count());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
+
+      for (size_t i = 0UL; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data.test(i));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_from_char_string)
     {
       std::bitset<60> compare("110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<60> data;
@@ -201,7 +306,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_from_wstring)
+    TEST(test_from_wchar_t_string)
     {
       std::bitset<60> compare("110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<60> data;
@@ -221,7 +326,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_from_u16string)
+    TEST(test_from_char16_t_6string)
     {
       std::bitset<60> compare("110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<60> data;
@@ -241,7 +346,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_from_u32string)
+    TEST(test_from_char32_t_string)
     {
       std::bitset<60> compare("110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<60> data;

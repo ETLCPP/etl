@@ -1047,6 +1047,33 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Construct from a string.
+    //*************************************************************************
+    bitset(const wchar_t* text)
+      : etl::ibitset(MAXN, ARRAY_SIZE, data)
+    {
+      set(text);
+    }
+
+    //*************************************************************************
+    /// Construct from a string.
+    //*************************************************************************
+    bitset(const char16_t* text)
+      : etl::ibitset(MAXN, ARRAY_SIZE, data)
+    {
+      set(text);
+    }
+
+    //*************************************************************************
+    /// Construct from a string.
+    //*************************************************************************
+    bitset(const char32_t* text)
+      : etl::ibitset(MAXN, ARRAY_SIZE, data)
+    {
+      set(text);
+    }
+
+    //*************************************************************************
     /// Set all of the bits.
     //*************************************************************************
     bitset<MAXN>& set()
@@ -1068,6 +1095,39 @@ namespace etl
     /// Set from a string.
     //*************************************************************************
     bitset<MAXN>& set(const char* text)
+    {
+      ETL_ASSERT(text != 0, ETL_ERROR(bitset_nullptr));
+      etl::ibitset::set(text);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Set from a string.
+    //*************************************************************************
+    bitset<MAXN>& set(const wchar_t* text)
+    {
+      ETL_ASSERT(text != 0, ETL_ERROR(bitset_nullptr));
+      etl::ibitset::set(text);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Set from a string.
+    //*************************************************************************
+    bitset<MAXN>& set(const char16_t* text)
+    {
+      ETL_ASSERT(text != 0, ETL_ERROR(bitset_nullptr));
+      etl::ibitset::set(text);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Set from a string.
+    //*************************************************************************
+    bitset<MAXN>& set(const char32_t* text)
     {
       ETL_ASSERT(text != 0, ETL_ERROR(bitset_nullptr));
       etl::ibitset::set(text);
