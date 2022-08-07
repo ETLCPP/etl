@@ -330,24 +330,6 @@ namespace etl
 
     subscription_node head;
   };
-
-  //***************************************************************************
-  /// Send a message to a broker.
-  //***************************************************************************
-  static inline void send_message(etl::message_broker& broker,
-                                  const etl::imessage&  message)
-  {
-    broker.receive(message);
-  }
-
-  //***************************************************************************
-  /// Send a shared message to a broker.
-  //***************************************************************************
-  static inline void send_message(etl::message_broker& broker,
-                                  etl::shared_message   message)
-  {
-    broker.receive(message);
-  }
 }
 
 #endif
