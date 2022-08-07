@@ -370,6 +370,26 @@ namespace etl
     destination.receive(message);
   }
 
+  //***************************************************************************
+  /// Send a message to a router with a particular id.
+  //***************************************************************************
+  static inline void send_message(etl::imessage_router& destination,
+                                  etl::message_router_id_t id,
+                                  const etl::imessage& message)
+  {
+    destination.receive(id, message);
+  }
+
+  //***************************************************************************
+  /// Send a shared message to a router with a particular id.
+  //***************************************************************************
+  static inline void send_message(etl::imessage_router& destination,
+                                  etl::message_router_id_t id,
+                                  etl::shared_message message)
+  {
+    destination.receive(id, message);
+  }
+
 //*************************************************************************************************
 // For C++17 and above.
 //*************************************************************************************************
