@@ -861,7 +861,7 @@ namespace
       etl::bitset<60> shift(0x1234567800UL);
 
       data <<= 8U;
-      CHECK_EQUAL(shift.value<uint64_t>(), data.value<uint64_t>());
+      CHECK_EQUAL_HEX(shift.value<uint64_t>(), data.value<uint64_t>());
     }
 
     //*************************************************************************
@@ -894,6 +894,33 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_shift_left_operator_all_shifts_full_size)
+    {
+      constexpr uint64_t value = 0x01233456789ABCDEULL;
+
+      for (int shift = 0; shift <= 64; ++shift)
+      {
+        etl::bitset<64> data(value);
+
+        CHECK_EQUAL_HEX((value << shift), (data << shift).value<uint64_t>());
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_shift_left_operator_all_shifts_partial_size)
+    {
+      constexpr uint64_t value = 0x01233456789ABCDEULL;
+      constexpr uint64_t mask = 0x0FFFFFFFFFFFFFFFULL;
+
+      for (int shift = 0; shift <= 64; ++shift)
+      {
+        etl::bitset<60> data(value);
+
+        CHECK_EQUAL_HEX(((value << shift) & mask), (data << shift).value<uint64_t>());
+      }
+    }
+
+    //*************************************************************************
     TEST(test_shift_right_operator)
     {
       etl::bitset<60> data1(0x12345678UL);
@@ -916,13 +943,40 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_shift_right_operator_all_shifts_full_size)
+    {
+      constexpr uint64_t value = 0x01233456789ABCDEULL;
+      
+      for (int shift = 0; shift <= 64; ++shift)
+      {
+        etl::bitset<64> data(value);
+
+        CHECK_EQUAL_HEX((value >> shift), (data >> shift).value<uint64_t>());
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_shift_right_operator_all_shifts_partial_size)
+    {
+      constexpr uint64_t value = 0x01233456789ABCDEULL;
+      constexpr uint64_t mask  = 0x0FFFFFFFFFFFFFFFULL;
+
+      for (int shift = 0; shift <= 64; ++shift)
+      {
+        etl::bitset<60> data(value);
+
+        CHECK_EQUAL_HEX(((value >> shift) & mask), (data >> shift).value<uint64_t>());
+      }
+    }
+
+    //*************************************************************************
     TEST(test_shift_right_operator_shift_element_size)
     {
       etl::bitset<60> data(0x12345678UL);
       etl::bitset<60> shift(0x123456UL);
 
       data >>= 8U;
-      CHECK_EQUAL(shift.value<uint64_t>(), data.value<uint64_t>());
+      CHECK_EQUAL_HEX(shift.value<uint64_t>(), data.value<uint64_t>());
     }
 
     //*************************************************************************
