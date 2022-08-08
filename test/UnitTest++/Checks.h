@@ -14,6 +14,7 @@
 #include "Config.h"
 #include "TestResults.h"
 #include "MemoryOutStream.h"
+#include<iomanip> 
 
 namespace UnitTest {
 
@@ -35,6 +36,18 @@ namespace UnitTest {
 
          results.OnTestFailure(details, stream.GetText());
       }
+   }
+
+   template< typename Expected, typename Actual >
+   void CheckEqualHex(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)
+   {
+     if (!(expected == actual))
+     {
+       UnitTest::MemoryOutStream stream;
+       stream << std::hex << std::uppercase << std::setfill('0') << "Expected 0x" << std::setw(2 * sizeof(Expected)) << expected << " but was 0x" << std::setw(2 * sizeof(Actual)) << actual;
+
+       results.OnTestFailure(details, stream.GetText());
+     }
    }
 
    UNITTEST_LINKAGE void CheckEqual(TestResults& results, char const* expected, char const* actual, TestDetails const& details);

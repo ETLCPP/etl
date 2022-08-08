@@ -54,6 +54,27 @@
    })                                                                                                                                                \
    UNITTEST_MULTILINE_MACRO_END
 
+#define UNITTEST_CHECK_EQUAL_HEX(expected, actual)                                                                                                                \
+   UNITTEST_MULTILINE_MACRO_BEGIN                                                                                                                    \
+   UNITTEST_IMPL_TRY                                                                                                                                            \
+   ({                                                                                                                                                \
+      UnitTest::CheckEqualHex(*UnitTest::CurrentTest::Results(), expected, actual, UnitTest::TestDetails(*UnitTest::CurrentTest::Details(), __LINE__)); \
+   })                                                                                                                                                \
+   UNITTEST_IMPL_RETHROW (UnitTest::RequiredCheckException)                                                                                                               \
+   UNITTEST_IMPL_CATCH (std::exception, e,                                                                                                                      \
+   {                                                                                                                                                 \
+      UnitTest::MemoryOutStream UnitTest_message;                                                                                                    \
+      UnitTest_message << "Unhandled exception (" << e.what() << ") in CHECK_EQUAL(" #expected ", " #actual ")";                                     \
+      UnitTest::CurrentTest::Results()->OnTestFailure(UnitTest::TestDetails(*UnitTest::CurrentTest::Details(), __LINE__),                            \
+                                                      UnitTest_message.GetText());                                                                   \
+   })                                                                                                                                                \
+   UNITTEST_IMPL_CATCH_ALL                                                                                                                                      \
+   ({                                                                                                                                                \
+      UnitTest::CurrentTest::Results()->OnTestFailure(UnitTest::TestDetails(*UnitTest::CurrentTest::Details(), __LINE__),                            \
+                                                      "Unhandled exception in CHECK_EQUAL(" #expected ", " #actual ")");                             \
+   })                                                                                                                                                \
+   UNITTEST_MULTILINE_MACRO_END
+
 #define UNITTEST_CHECK_CLOSE(expected, actual, tolerance)                                                                                                                \
    UNITTEST_MULTILINE_MACRO_BEGIN                                                                                                                               \
    UNITTEST_IMPL_TRY                                                                                                                                                       \
@@ -150,6 +171,12 @@
    #else
       #define CHECK_EQUAL UNITTEST_CHECK_EQUAL
    #endif
+
+   #ifdef CHECK_EQUAL_HEX
+      #error CHECK_EQUAL_HEX already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_EQUAL instead
+   #else
+      #define CHECK_EQUAL_HEX UNITTEST_CHECK_EQUAL_HEX
+  #endif
 
    #ifdef CHECK_CLOSE
       #error CHECK_CLOSE already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_CLOSE instead
