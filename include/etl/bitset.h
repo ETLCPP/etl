@@ -543,7 +543,7 @@ namespace etl
         pdata[i] = ~pdata[i];
       }
 
-      pdata[Number_Of_Elements - 1U] &= Top_Mask;
+      adjust_top_bits();
 
       return *this;
     }
@@ -782,18 +782,14 @@ namespace etl
         }
         else if (shift == Bits_Per_Element)
         {
-          for (size_t i = (Number_Of_Elements - 1U); i > 0U; --i)
-          {
-            pdata[i] = pdata[i - 1];
-          }
-
+          etl::copy_backward(pdata, pdata + Number_Of_Elements - 1U, pdata + Number_Of_Elements);
           pdata[0] = 0;
         }
         else
         {
           // Where we are shifting from.
-          int src_index       = int(Number_Of_Elements - (shift / Bits_Per_Element) - 1U);
-          size_t src_position = Bits_Per_Element - (shift % Bits_Per_Element);
+          int src_index = int(Number_Of_Elements - (shift / Bits_Per_Element) - 1U);
+          const size_t src_position = Bits_Per_Element - (shift % Bits_Per_Element);
 
           // Where we are shifting to.
           int dst_index = int(Number_Of_Elements - 1U);
@@ -814,9 +810,12 @@ namespace etl
           // Now do the shifting.
           while (src_index >= 0)
           {
+            // Shift msb.
             element_t msb = element_t((pdata[src_index] & msb_mask) >> msb_shift);
             pdata[dst_index] = pdata[dst_index] | msb;
             --dst_index;
+
+            // Shift lsb.
             element_t lsb = element_t((pdata[src_index] & lsb_mask) << lsb_shift);
             pdata[dst_index] = lsb;
             --src_index;
@@ -836,7 +835,7 @@ namespace etl
         }
 
         // Truncate any bits shifted to the left.
-        pdata[Number_Of_Elements - 1U] &= Top_Mask;
+        adjust_top_bits();
       }
 
       return *this;
@@ -861,18 +860,14 @@ namespace etl
         // Shift is the size of an element?
         else if (shift == Bits_Per_Element)
         {
-          for (size_t i = 0UL; i < (Number_Of_Elements - 1U); ++i)
-          {
-            pdata[i] = pdata[i + 1];
-          }
-
+          etl::copy(pdata + 1, pdata + Number_Of_Elements, pdata);
           pdata[Number_Of_Elements - 1U] = 0;
         }
         else
         {
           // Where we are shifting from.
-          int src_index       = int(shift / Bits_Per_Element);
-          size_t src_position = shift % Bits_Per_Element;
+          int src_index = int(shift / Bits_Per_Element);
+          const size_t src_position = shift % Bits_Per_Element;
 
           // Where we are shifting to.
           int dst_index = 0;
@@ -891,8 +886,10 @@ namespace etl
             // Shift msb.
             element_t msb = element_t((pdata[src_index] & msb_mask) >> msb_shift);
             ++src_index;
+            
             // Shift lsb.
             element_t lsb = element_t((pdata[src_index] & lsb_mask) << lsb_shift);
+            
             // Combine them.
             pdata[dst_index] = lsb | msb;
             ++dst_index;
@@ -969,10 +966,10 @@ namespace etl
     {
       reset();
 
-      const size_t SHIFT = (integral_limits<unsigned long long>::bits <= (int)Bits_Per_Element) ? 0 : Bits_Per_Element;
+      const size_t Shift = (integral_limits<unsigned long long>::bits <= (int)Bits_Per_Element) ? 0 : Bits_Per_Element;
 
       // Can we do it in one hit?
-      if (SHIFT == 0)
+      if (Shift == 0)
       {
         pdata[0] = element_t(value);
       }
@@ -983,11 +980,11 @@ namespace etl
         while ((value != 0) && (i < Number_Of_Elements))
         {
           pdata[i++] = value & ALL_SET;
-          value = value >> SHIFT;
+          value = value >> Shift;
         }
       }
 
-      pdata[Number_Of_Elements - 1U] &= Top_Mask;
+      adjust_top_bits();
 
       return *this;
     }
@@ -1002,7 +999,7 @@ namespace etl
         pdata[i] = ~pdata[i];
       }
 
-      pdata[Number_Of_Elements - 1U] &= Top_Mask;
+      adjust_top_bits();
     }
 
     //*************************************************************************
@@ -1021,8 +1018,8 @@ namespace etl
       , Number_Of_Elements(size_)
       , pdata(pdata_)
     {
-      size_t allocated_bits = Number_Of_Elements * Bits_Per_Element;
-      size_t top_mask_shift = ((Bits_Per_Element - (allocated_bits - Total_Bits)) % Bits_Per_Element);
+      const size_t allocated_bits = Number_Of_Elements * Bits_Per_Element;
+      const size_t top_mask_shift = ((Bits_Per_Element - (allocated_bits - Total_Bits)) % Bits_Per_Element);
       Top_Mask = element_t(top_mask_shift == 0 ? ALL_SET : ~(ALL_SET << top_mask_shift));
     }
 
@@ -1037,6 +1034,14 @@ namespace etl
     element_t Top_Mask;
 
   private:
+
+    //*************************************************************************
+    /// Correct the unused top bits after bit manipulation.
+    //*************************************************************************
+    void adjust_top_bits()
+    {
+      pdata[Number_Of_Elements - 1U] &= Top_Mask;
+    }
 
     // Disable copy construction.
     ibitset(const ibitset&);
