@@ -30,6 +30,8 @@ add_library(${PROJECT_NAME} INTERFACE)
 # to use the same target as users which use find_package
 add_library(etl::etl ALIAS ${PROJECT_NAME})
 
+include(GNUInstallDirs)
+
 target_include_directories(${PROJECT_NAME} ${INCLUDE_SPECIFIER} INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
@@ -42,7 +44,6 @@ if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
     # Steps here based on excellent guide: https://dominikberner.ch/cmake-interface-lib/
     # Which also details all steps
     include(CMakePackageConfigHelpers)
-    include(GNUInstallDirs)
     install(TARGETS ${PROJECT_NAME}
         EXPORT ${PROJECT_NAME}Targets
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
