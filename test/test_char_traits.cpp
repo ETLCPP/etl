@@ -74,7 +74,7 @@ namespace
       char_type r = 'A';
       char_type c = 'B';
       char_type src[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      char_type dst[etl::size(src)];
+      char_type dst[std::size(src)];
       char_type filled[] = { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 };
       const char_type* p_src;
       char_type* p_dst;
@@ -96,18 +96,18 @@ namespace
       CHECK_EQUAL(-1, char_traits::compare("ABCDEE", "ABCDEF", 6U));
       CHECK_EQUAL(1,  char_traits::compare("ABCDEF", "ABCDEE", 6U));
 
-      p_dst = char_traits::assign(dst, etl::size(dst), 9);
-      CHECK_ARRAY_EQUAL(filled, p_dst, etl::size(filled));
+      p_dst = char_traits::assign(dst, std::size(dst), 9);
+      CHECK_ARRAY_EQUAL(filled, p_dst, std::size(filled));
 
-      std::fill_n(dst, etl::size(dst), 0);
-      p_dst = char_traits::copy(dst, src, etl::size(src));
-      CHECK_ARRAY_EQUAL(src, p_dst, etl::size(src));
+      std::fill_n(dst, std::size(dst), 0);
+      p_dst = char_traits::copy(dst, src, std::size(src));
+      CHECK_ARRAY_EQUAL(src, p_dst, std::size(src));
       
-      std::fill_n(dst, etl::size(dst), 0);
-      p_dst = char_traits::move(dst, src, etl::size(src));
-      CHECK_ARRAY_EQUAL(src, p_dst, etl::size(src));
+      std::fill_n(dst, std::size(dst), 0);
+      p_dst = char_traits::move(dst, src, std::size(src));
+      CHECK_ARRAY_EQUAL(src, p_dst, std::size(src));
 
-      p_src = char_traits::find(src, etl::size(src), 4);
+      p_src = char_traits::find(src, std::size(src), 4);
       CHECK_EQUAL(src[4], *p_src);
 
       CHECK_EQUAL(127, char_traits::to_char_type(int_type(127)));
@@ -130,7 +130,7 @@ namespace
       char_type r = L'A';
       char_type c = L'B';
       char_type src[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      char_type dst[etl::size(src)];
+      char_type dst[std::size(src)];
       char_type filled[] = { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 };
       const char_type* p_src;
       char_type* p_dst;
@@ -152,18 +152,18 @@ namespace
       CHECK_EQUAL(-1, char_traits::compare(L"ABCDEE", L"ABCDEF", 6U));
       CHECK_EQUAL(1, char_traits::compare(L"ABCDEF", L"ABCDEE", 6U));
 
-      p_dst = char_traits::assign(dst, etl::size(dst), 9);
-      CHECK_ARRAY_EQUAL(filled, p_dst, etl::size(filled));
+      p_dst = char_traits::assign(dst, std::size(dst), 9);
+      CHECK_ARRAY_EQUAL(filled, p_dst, std::size(filled));
 
-      std::fill_n(dst, etl::size(dst), 0);
-      p_dst = char_traits::copy(dst, src, etl::size(src));
-      CHECK_ARRAY_EQUAL(src, p_dst, etl::size(src));
+      std::fill_n(dst, std::size(dst), 0);
+      p_dst = char_traits::copy(dst, src, std::size(src));
+      CHECK_ARRAY_EQUAL(src, p_dst, std::size(src));
 
-      std::fill_n(dst, etl::size(dst), 0);
-      p_dst = char_traits::move(dst, src, etl::size(src));
-      CHECK_ARRAY_EQUAL(src, p_dst, etl::size(src));
+      std::fill_n(dst, std::size(dst), 0);
+      p_dst = char_traits::move(dst, src, std::size(src));
+      CHECK_ARRAY_EQUAL(src, p_dst, std::size(src));
 
-      p_src = char_traits::find(src, etl::size(src), 4);
+      p_src = char_traits::find(src, std::size(src), 4);
       CHECK_EQUAL(src[4], *p_src);
 
       CHECK_EQUAL(127, char_traits::to_char_type(int_type(127)));
@@ -186,7 +186,7 @@ namespace
       char_type r = u'A';
       char_type c = u'B';
       char_type src[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      char_type dst[etl::size(src)];
+      char_type dst[std::size(src)];
       char_type filled[] = { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 };
       const char_type* p_src;
       char_type* p_dst;
@@ -208,18 +208,18 @@ namespace
       CHECK_EQUAL(-1, char_traits::compare(u"ABCDEE", u"ABCDEF", 6U));
       CHECK_EQUAL(1, char_traits::compare(u"ABCDEF", u"ABCDEE", 6U));
 
-      p_dst = char_traits::assign(dst, etl::size(dst), 9);
-      CHECK_ARRAY_EQUAL(filled, p_dst, etl::size(filled));
+      p_dst = char_traits::assign(dst, std::size(dst), 9);
+      CHECK_ARRAY_EQUAL(filled, p_dst, std::size(filled));
 
-      std::fill_n(dst, etl::size(dst), 0);
-      p_dst = char_traits::copy(dst, src, etl::size(src));
-      CHECK_ARRAY_EQUAL(src, p_dst, etl::size(src));
+      std::fill_n(dst, std::size(dst), 0);
+      p_dst = char_traits::copy(dst, src, std::size(src));
+      CHECK_ARRAY_EQUAL(src, p_dst, std::size(src));
 
-      std::fill_n(dst, etl::size(dst), 0);
-      p_dst = char_traits::move(dst, src, etl::size(src));
-      CHECK_ARRAY_EQUAL(src, p_dst, etl::size(src));
+      std::fill_n(dst, std::size(dst), 0);
+      p_dst = char_traits::move(dst, src, std::size(src));
+      CHECK_ARRAY_EQUAL(src, p_dst, std::size(src));
 
-      p_src = char_traits::find(src, etl::size(src), 4);
+      p_src = char_traits::find(src, std::size(src), 4);
       CHECK_EQUAL(src[4], *p_src);
 
       CHECK_EQUAL(127, char_traits::to_char_type(int_type(127)));
@@ -242,7 +242,7 @@ namespace
       char_type r = U'A';
       char_type c = U'B';
       char_type src[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      char_type dst[etl::size(src)];
+      char_type dst[std::size(src)];
       char_type filled[] = { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 };
       const char_type* p_src;
       char_type* p_dst;
@@ -264,18 +264,18 @@ namespace
       CHECK_EQUAL(-1, char_traits::compare(U"ABCDEE", U"ABCDEF", 6U));
       CHECK_EQUAL(1, char_traits::compare(U"ABCDEF", U"ABCDEE", 6U));
 
-      p_dst = char_traits::assign(dst, etl::size(dst), 9);
-      CHECK_ARRAY_EQUAL(filled, p_dst, etl::size(filled));
+      p_dst = char_traits::assign(dst, std::size(dst), 9);
+      CHECK_ARRAY_EQUAL(filled, p_dst, std::size(filled));
 
-      std::fill_n(dst, etl::size(dst), 0);
-      p_dst = char_traits::copy(dst, src, etl::size(src));
-      CHECK_ARRAY_EQUAL(src, p_dst, etl::size(src));
+      std::fill_n(dst, std::size(dst), 0);
+      p_dst = char_traits::copy(dst, src, std::size(src));
+      CHECK_ARRAY_EQUAL(src, p_dst, std::size(src));
 
-      std::fill_n(dst, etl::size(dst), 0);
-      p_dst = char_traits::move(dst, src, etl::size(src));
-      CHECK_ARRAY_EQUAL(src, p_dst, etl::size(src));
+      std::fill_n(dst, std::size(dst), 0);
+      p_dst = char_traits::move(dst, src, std::size(src));
+      CHECK_ARRAY_EQUAL(src, p_dst, std::size(src));
 
-      p_src = char_traits::find(src, etl::size(src), 4);
+      p_src = char_traits::find(src, std::size(src), 4);
       CHECK_EQUAL(src[4], *p_src);
 
       CHECK_EQUAL(127, char_traits::to_char_type(int_type(127)));
