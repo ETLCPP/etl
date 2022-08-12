@@ -50,6 +50,30 @@ namespace UnitTest {
      }
    }
 
+   template< typename Expected, typename Actual >
+   void CheckNotEqual(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)
+   {
+     if (expected == actual)
+     {
+       UnitTest::MemoryOutStream stream;
+       stream << "Expected not equal, but both values are" << actual;
+
+       results.OnTestFailure(details, stream.GetText());
+     }
+   }
+
+   template< typename Expected, typename Actual >
+   void CheckNotEqualHex(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)
+   {
+     if (expected == actual)
+     {
+       UnitTest::MemoryOutStream stream;
+       stream << std::hex << std::uppercase << std::setfill('0') << std::setw(2 * sizeof(Actual)) << "Expected not equal, but both values are " << actual;
+
+       results.OnTestFailure(details, stream.GetText());
+     }
+   }
+
    UNITTEST_LINKAGE void CheckEqual(TestResults& results, char const* expected, char const* actual, TestDetails const& details);
 
    UNITTEST_LINKAGE void CheckEqual(TestResults& results, char* expected, char* actual, TestDetails const& details);

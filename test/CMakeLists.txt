@@ -44,7 +44,8 @@ set(TEST_SOURCE_FILES
 	test_binary.cpp
 	test_bip_buffer_spsc_atomic.cpp
 	test_bit.cpp
-	test_bitset.cpp
+	test_bitset_legacy.cpp
+	test_bitset_new.cpp
 	test_bit_stream.cpp
 	test_bit_stream_reader_big_endian.cpp
 	test_bit_stream_reader_little_endian.cpp

@@ -32,11 +32,11 @@ SOFTWARE.
 #include <type_traits>
 #include <bitset>
 
-#include "etl/bitset.h"
+#include "etl/private/bitset_legacy.h"
 
 namespace
 {
-  SUITE(test_bitset)
+  SUITE(test_bitset_legacy)
   {
     //*************************************************************************
     TEST(test_constructor)

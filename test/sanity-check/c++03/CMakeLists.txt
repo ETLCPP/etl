@@ -55,7 +55,8 @@ target_sources(t98 PRIVATE etl_profile.h
         ../binary.h.t.cpp
         ../bip_buffer_spsc_atomic.h.t.cpp
         ../bit.h.t.cpp
-        ../bitset.h.t.cpp
+        ../bitset_legacy.h.t.cpp
+        ../bitset_new.h.t.cpp
         ../bit_stream.h.t.cpp
         ../byte.h.t.cpp
         ../byte_stream.h.t.cpp

@@ -285,9 +285,6 @@
     <ClInclude Include="..\..\include\etl\forward_list.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\bitset.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\smallest.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
@@ -1326,6 +1323,12 @@
     <ClInclude Include="..\..\include\etl\message_broker.h">
       <Filter>ETL\Messaging</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\bitset_legacy.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\bitset_new.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -1883,7 +1886,7 @@
     <ClCompile Include="..\test_bit.cpp">
       <Filter>Tests\Binary</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_bitset.cpp">
+    <ClCompile Include="..\test_bitset_legacy.cpp">
       <Filter>Tests\Binary</Filter>
     </ClCompile>
     <ClCompile Include="..\test_bit_stream.cpp">
@@ -2288,7 +2291,7 @@
     <ClCompile Include="..\sanity-check\bit_stream.h.t.cpp">
       <Filter>Tests\Sanity Checks\Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\sanity-check\bitset.h.t.cpp">
+    <ClCompile Include="..\sanity-check\bitset_legacy.h.t.cpp">
       <Filter>Tests\Sanity Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\bloom_filter.h.t.cpp">
@@ -3337,6 +3340,12 @@
     </ClCompile>
     <ClCompile Include="..\test_char_traits.cpp">
       <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bitset_new.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\bitset_new.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

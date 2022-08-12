@@ -1,5 +1,3 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -7,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 John Wellbelove
+Copyright(c) 2022 Bo Rydberg, John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,15 +26,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_BITSET_INCLUDED
-#define ETL_BITSET_INCLUDED
-
-#include "platform.h"
-
-#if defined(ETL_USE_LEGACY_BITSET)
-  #include "private/bitset_legacy.h"
-#else
-  #include "private/bitset_new.h"
-#endif
-
-#endif
+#include <etl/private/bitset_new.h>

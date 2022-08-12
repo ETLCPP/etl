@@ -2439,6 +2439,8 @@
     <ClInclude Include="..\..\include\etl\crc8_wcdma.h" />
     <ClInclude Include="..\..\include\etl\message_broker.h" />
     <ClInclude Include="..\..\include\etl\poly_span.h" />
+    <ClInclude Include="..\..\include\etl\private\bitset_legacy.h" />
+    <ClInclude Include="..\..\include\etl\private\bitset_new.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_pessimizing-move_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_pop.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_self_assign_overloaded_push.h" />
@@ -2602,7 +2604,6 @@
     <ClInclude Include="..\..\include\etl\array.h" />
     <ClInclude Include="..\..\include\etl\basic_string.h" />
     <ClInclude Include="..\..\include\etl\binary.h" />
-    <ClInclude Include="..\..\include\etl\bitset.h" />
     <ClInclude Include="..\..\include\etl\bloom_filter.h" />
     <ClInclude Include="..\..\include\etl\char_traits.h" />
     <ClInclude Include="..\..\include\etl\checksum.h" />
@@ -3377,7 +3378,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Force C++03|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\sanity-check\bitset.h.t.cpp">
+    <ClCompile Include="..\sanity-check\bitset_legacy.h.t.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Built-ins|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Force Built-ins|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Force Constexpr Algorithms|Win32'">true</ExcludedFromBuild>
@@ -3409,6 +3410,34 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Clang|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MSVC Debug - Appveyor|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\bitset_new.h.t.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Small Strings|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No Tests|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MSVC Debug - Appveyor|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MSVC Debug - No STL - Appveyor|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Force Constexpr Algorithms|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM C++20|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - No Unit Tests|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Built-ins|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Force Built-ins|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM - No STL - Built-ins|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug64|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - String Truncation Is Error|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Clang|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - No STL - Force No Advanced|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Force cpp03|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Intel - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Intel|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC  - No Checks|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Force C++03|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\sanity-check\bit_stream.h.t.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Built-ins|Win32'">true</ExcludedFromBuild>
@@ -11223,6 +11252,7 @@
     <ClCompile Include="..\test_alignment.cpp" />
     <ClCompile Include="..\test_atomic.cpp" />
     <ClCompile Include="..\test_bit.cpp" />
+    <ClCompile Include="..\test_bitset_new.cpp" />
     <ClCompile Include="..\test_bit_stream_reader_big_endian.cpp" />
     <ClCompile Include="..\test_bit_stream_reader_little_endian.cpp" />
     <ClCompile Include="..\test_bit_stream_writer_big_endian.cpp" />
@@ -11330,7 +11360,7 @@
     <ClCompile Include="..\test_array_wrapper.cpp" />
     <ClCompile Include="..\test_binary.cpp" />
     <ClCompile Include="..\test_bip_buffer_spsc_atomic.cpp" />
-    <ClCompile Include="..\test_bitset.cpp" />
+    <ClCompile Include="..\test_bitset_legacy.cpp" />
     <ClCompile Include="..\test_bloom_filter.cpp" />
     <ClCompile Include="..\test_bsd_checksum.cpp" />
     <ClCompile Include="..\test_callback_timer.cpp" />
