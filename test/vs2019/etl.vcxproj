@@ -2441,6 +2441,7 @@
     <ClInclude Include="..\..\include\etl\poly_span.h" />
     <ClInclude Include="..\..\include\etl\private\bitset_legacy.h" />
     <ClInclude Include="..\..\include\etl\private\bitset_new.h" />
+    <ClInclude Include="..\..\include\etl\private\bitset_fast.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_pessimizing-move_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_pop.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_self_assign_overloaded_push.h" />

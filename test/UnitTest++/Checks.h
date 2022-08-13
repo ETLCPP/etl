@@ -25,6 +25,11 @@ namespace UnitTest {
       return !!value; // doing double negative to avoid silly VS warnings
    }
 
+   template< typename Value >
+   bool CheckFalse(Value const& value)
+   {
+     return !value;
+   }
 
    template< typename Expected, typename Actual >
    void CheckEqual(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)

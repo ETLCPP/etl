@@ -51,6 +51,9 @@ SOFTWARE.
 #include "../span.h"
 #include "../string.h"
 
+// Optimised vversions for when to bitset size equals the number of bits in an integral type.
+#include "bitset_fast.h"
+
 #include "minmax_push.h"
 
 #if defined(ETL_COMPILER_KEIL)
@@ -621,86 +624,80 @@ namespace etl
 //
 //      return *this;
 //    }
-//
-//    //*************************************************************************
-//    /// operator <<=
-//    //*************************************************************************
-//    ibitset& operator<<=(size_t shift)
-//    {
-//      if (shift >= Total_Bits)
-//      {
-//        reset();
-//      }
-//      else if (Number_Of_Elements != 0UL)
-//      {
-//        // Just one element?
-//        if (Number_Of_Elements == 1UL)
-//        {
-//          pdata[0] <<= shift;
-//        }
-//        else if (shift == Bits_Per_Element)
-//        {
-//          etl::copy_backward(pdata, pdata + Number_Of_Elements - 1U, pdata + Number_Of_Elements);
-//          pdata[0] = 0;
-//        }
-//        else
-//        {
-//          // The place where the elements are split when shifting.
-//          const size_t split_position = Bits_Per_Element - (shift % Bits_Per_Element);
-//
-//          // Where we are shifting from.
-//          int src_index = int(Number_Of_Elements - (shift / Bits_Per_Element) - 1U);
-//
-//          // Where we are shifting to.
-//          int dst_index = int(Number_Of_Elements - 1U);
-//
-//          // Shift control constants.
-//          const size_t lsb_shift = Bits_Per_Element - split_position;
-//          const size_t msb_shift = split_position;
-//
-//          const element_type lsb_mask         = element_type(etl::integral_limits<element_type>::max >> (Bits_Per_Element - split_position));
-//          const element_type msb_mask         = etl::integral_limits<element_type>::max - lsb_mask;
-//          const element_type lsb_shifted_mask = element_type(lsb_mask << lsb_shift);
-//          
-//          // First lsb.
-//          element_type lsb = element_type((pdata[src_index] & lsb_mask) << lsb_shift);
-//          pdata[dst_index] = lsb;
-//          --src_index;
-//
-//          // Now do the shifting.
-//          while (src_index >= 0)
-//          {
-//            // Shift msb.
-//            element_type msb = element_type((pdata[src_index] & msb_mask) >> msb_shift);
-//            pdata[dst_index] = pdata[dst_index] | msb;
-//            --dst_index;
-//
-//            // Shift lsb.
-//            element_type lsb = element_type((pdata[src_index] & lsb_mask) << lsb_shift);
-//            pdata[dst_index] = lsb;
-//            --src_index;
-//          }
-//
-//          // Clear the remaining bits.
-//          // First lsb.
-//          pdata[dst_index] &= lsb_shifted_mask;
-//          --dst_index;
-//
-//          // The other remaining bytes on the right.
-//          while (dst_index >= 0)
-//          {
-//            pdata[dst_index] = 0;
-//            --dst_index;
-//          }
-//        }
-//
-//        // Truncate any bits shifted to the left.
-//        clear_unused_bits_in_msb();
-//      }
-//
-//      return *this;
-//    }
-//
+
+    //*************************************************************************
+    /// operator <<=
+    //*************************************************************************
+    ETL_CONSTEXPR14 ibitset& shift_left_equals(pointer pdata, size_t number_of_elements, size_t total_bits, size_t shift)
+    {
+      if (shift == Bits_Per_Element)
+      {
+        etl::copy_backward(pdata, pdata + number_of_elements - 1U, pdata + number_of_elements);
+        pdata[0] = 0;
+      }
+      else if ((shift % Bits_Per_Element) == 0U)
+      {
+        size_t element_shift = shift / Bits_Per_Element;
+        etl::copy_backward(pdata, pdata + number_of_elements - element_shift, pdata + number_of_elements);
+        do
+        {
+          pdata[--element_shift] = 0U;
+        } while (element_shift > 0U);
+      }
+      else
+      {
+        // The place where the elements are split when shifting.
+        const size_t split_position = Bits_Per_Element - (shift % Bits_Per_Element);
+
+        // Where we are shifting from.
+        int src_index = int(number_of_elements - (shift / Bits_Per_Element) - 1U);
+
+        // Where we are shifting to.
+        int dst_index = int(number_of_elements - 1U);
+
+        // Shift control constants.
+        const size_t lsb_shift = Bits_Per_Element - split_position;
+        const size_t msb_shift = split_position;
+
+        const element_type lsb_mask         = element_type(etl::integral_limits<element_type>::max >> (Bits_Per_Element - split_position));
+        const element_type msb_mask         = etl::integral_limits<element_type>::max - lsb_mask;
+        const element_type lsb_shifted_mask = element_type(lsb_mask << lsb_shift);
+          
+        // First lsb.
+        element_type lsb = element_type((pdata[src_index] & lsb_mask) << lsb_shift);
+        pdata[dst_index] = lsb;
+        --src_index;
+
+        // Now do the shifting.
+        while (src_index >= 0)
+        {
+          // Shift msb.
+          element_type msb = element_type((pdata[src_index] & msb_mask) >> msb_shift);
+          pdata[dst_index] = pdata[dst_index] | msb;
+          --dst_index;
+
+          // Shift lsb.
+          element_type lsb = element_type((pdata[src_index] & lsb_mask) << lsb_shift);
+          pdata[dst_index] = lsb;
+          --src_index;
+        }
+
+        // Clear the remaining bits.
+        // First lsb.
+        pdata[dst_index] &= lsb_shifted_mask;
+        --dst_index;
+
+        // The other remaining bytes on the right.
+        while (dst_index >= 0)
+        {
+          pdata[dst_index] = 0;
+          --dst_index;
+        }
+      }
+
+      return *this;
+    }
+
 //    //*************************************************************************
 //    /// operator >>=
 //    //*************************************************************************
@@ -932,13 +929,51 @@ namespace etl
 //#endif
   };
 
+  template <size_t Total_Bits, bool Using_8Bit_Types, bool Using_64Bit_Types>
+  struct select_element_type;
+
+  template <size_t Total_Bits>
+  struct select_element_type<Total_Bits, 1, 1>
+  {
+    typedef typename etl::conditional<Total_Bits == 0U, void,
+              typename etl::conditional<Total_Bits == 8U, uint8_t,
+                typename etl::conditional<Total_Bits == 16U, uint16_t,
+                  typename etl::conditional<Total_Bits == 32U, uint32_t,
+                    typename etl::conditional<Total_Bits == 64U, uint64_t, char>::type>::type>::type>::type>::type type;
+  };
+
+  template <size_t Total_Bits>
+  struct select_element_type<Total_Bits, 0, 1>
+  {
+    typedef typename etl::conditional<Total_Bits == 0U, void,
+              typename etl::conditional<Total_Bits == 16U, uint16_t,
+                typename etl::conditional<Total_Bits == 32U, uint32_t,
+                  typename etl::conditional<Total_Bits == 64U, uint64_t, char>::type>::type>::type>::type type;
+  };
+
+  template <size_t Total_Bits>
+  struct select_element_type<Total_Bits, 1, 0>
+  {
+    typedef typename etl::conditional<Total_Bits == 0U, void,
+              typename etl::conditional<Total_Bits == 8U, uint8_t,
+                typename etl::conditional<Total_Bits == 16U, uint16_t,
+                  typename etl::conditional<Total_Bits == 32U, uint32_t, char>::type>::type>::type>::type type;
+  };
+  template <size_t Total_Bits>
+  struct select_element_type<Total_Bits, 0, 0>
+  {
+    typedef typename etl::conditional<Total_Bits == 0U, void,
+              typename etl::conditional<Total_Bits == 16U, uint16_t,
+                typename etl::conditional<Total_Bits == 32U, uint32_t, char>::type>::type>::type type;
+  };
+
   //*************************************************************************
   /// The class emulates an array of bool elements, but optimized for space allocation.
   /// Will accommodate any number of bits.
   ///\tparam Total_Bits The number of bits.
   ///\ingroup bitset
   //*************************************************************************
-  template <size_t Total_Bits, typename TElement = char>
+  template <size_t Total_Bits = 0U, typename TElement = typename select_element_type<Total_Bits, ETL_USING_8BIT_TYPES, ETL_USING_64BIT_TYPES>::type>
   class bitset : public etl::ibitset<TElement>
   {
   public:
@@ -1413,28 +1448,39 @@ namespace etl
 //
 //      return temp;
 //    }
-//
-//    //*************************************************************************
-//    /// operator <<
-//    //*************************************************************************
-//    bitset<Total_Bits, TElement> operator<<(size_t shift) const
-//    {
-//      etl::bitset<Total_Bits, TElement> temp(*this);
-//
-//      temp <<= shift;
-//
-//      return temp;
-//    }
-//
-//    //*************************************************************************
-//    /// operator <<=
-//    //*************************************************************************
-//    bitset<Total_Bits, TElement>& operator<<=(size_t shift)
-//    {
-//      etl::ibitset<TElement>::operator <<=(shift);
-//      return *this;
-//    }
-//
+
+    //*************************************************************************
+    /// operator <<
+    //*************************************************************************
+    ETL_CONSTEXPR14 bitset<Total_Bits, TElement> operator<<(size_t shift) const
+    {
+      etl::bitset<Total_Bits, TElement> temp(*this);
+
+      temp <<= shift;
+
+      return temp;
+    }
+
+    //*************************************************************************
+    /// operator <<=
+    //*************************************************************************
+    ETL_CONSTEXPR14 bitset<Total_Bits, TElement>& operator<<=(size_t shift)
+    {
+      if (shift >= Total_Bits)
+      {
+        reset();
+      }
+      else
+      {
+        etl::ibitset<TElement>::shift_left_equals(data, Number_Of_Elements, Total_Bits, shift);
+
+        // Truncate any bits shifted to the left.
+        clear_unused_bits_in_msb();
+      }
+      
+      return *this;
+    }
+
 //    //*************************************************************************
 //    /// operator >>
 //    //*************************************************************************
@@ -1477,6 +1523,61 @@ namespace etl
     }
 
     element_type data[Number_Of_Elements > 0U ? Number_Of_Elements : 1U];
+  };
+
+  //***************************************************************************
+  /// Specialisation for 0 bits.
+  //***************************************************************************
+  template <>
+  class bitset<0U, void>
+  {
+  public:
+
+    enum
+    {
+      npos = etl::integral_limits<size_t>::max
+    };
+  };
+
+  template <>
+  class bitset<8U, uint8_t> : public etl::private_bitset::bitset_fast<8U, uint8_t>
+  {
+  public:
+
+    ETL_CONSTEXPR14 bitset()
+      : bitset_fast<8U, uint8_t>()
+    {
+    }
+
+    ETL_CONSTEXPR14 bitset(unsigned long long v)
+      : bitset_fast<8U, uint8_t>(v)
+    {
+    }
+
+    ETL_CONSTEXPR14 bitset(const char* text)
+      : bitset_fast<8U, uint8_t>(text)
+    {
+    }
+
+    ETL_CONSTEXPR14 bitset(const wchar_t* text)
+      : bitset_fast<8U, uint8_t>(text)
+    {
+    }
+
+    ETL_CONSTEXPR14 bitset(const char16_t* text)
+      : bitset_fast<8U, uint8_t>(text)
+    {
+    }
+
+    ETL_CONSTEXPR14 bitset(const char32_t* text)
+      : bitset_fast<8U, uint8_t>(text)
+    {
+    }
+
+    ETL_CONSTEXPR14 bitset(const bitset<8U, uint8_t>& other)
+      : bitset_fast<8U, uint8_t>(other)
+    {
+    }
   };
 
   //***************************************************************************

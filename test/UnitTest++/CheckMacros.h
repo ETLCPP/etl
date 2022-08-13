@@ -33,6 +33,28 @@
    })                                                                                                                                 \
    UNITTEST_MULTILINE_MACRO_END
 
+#define UNITTEST_CHECK_FALSE(value)                                      \
+   UNITTEST_MULTILINE_MACRO_BEGIN                                                                                                     \
+   UNITTEST_IMPL_TRY                                                                                                                             \
+   ({                                                                                                                                 \
+      if (!UnitTest::CheckFalse(value))                                                                                                    \
+         UnitTest::CurrentTest::Results()->OnTestFailure(UnitTest::TestDetails(*UnitTest::CurrentTest::Details(), __LINE__), #value); \
+   })                                                                                                                                 \
+   UNITTEST_IMPL_RETHROW (UnitTest::RequiredCheckException)                                                                                                               \
+   UNITTEST_IMPL_CATCH (std::exception, e,                                                                                                       \
+   {                                                                                                                                  \
+      UnitTest::MemoryOutStream UnitTest_message;                                                                                     \
+      UnitTest_message << "Unhandled exception (" << e.what() << ") in CHECK(" #value ")";                                            \
+      UnitTest::CurrentTest::Results()->OnTestFailure(UnitTest::TestDetails(*UnitTest::CurrentTest::Details(), __LINE__),             \
+                                                      UnitTest_message.GetText());                                                    \
+   })                                                                                                                                 \
+   UNITTEST_IMPL_CATCH_ALL                                                                                                                       \
+      ({                                                                                                                              \
+      UnitTest::CurrentTest::Results()->OnTestFailure(UnitTest::TestDetails(*UnitTest::CurrentTest::Details(), __LINE__),             \
+                                                      "Unhandled exception in CHECK(" #value ")");                                    \
+   })                                                                                                                                 \
+   UNITTEST_MULTILINE_MACRO_END
+
 #define UNITTEST_CHECK_EQUAL(expected, actual)                                                                                                                \
    UNITTEST_MULTILINE_MACRO_BEGIN                                                                                                                    \
    UNITTEST_IMPL_TRY                                                                                                                                            \
@@ -75,7 +97,7 @@
    })                                                                                                                                                \
    UNITTEST_MULTILINE_MACRO_END
 
-#define UNITTEST_CHECK_NOT_EQUAL(expected, actual)                                                                                                                \
+#define UNITTEST_CHECK_FALSE_EQUAL(expected, actual)                                                                                                                \
    UNITTEST_MULTILINE_MACRO_BEGIN                                                                                                                    \
    UNITTEST_IMPL_TRY                                                                                                                                            \
    ({                                                                                                                                                \
@@ -96,7 +118,7 @@
    })                                                                                                                                                \
    UNITTEST_MULTILINE_MACRO_END
 
-#define UNITTEST_CHECK_NOT_EQUAL_HEX(expected, actual)                                                                                                                \
+#define UNITTEST_CHECK_FALSE_EQUAL_HEX(expected, actual)                                                                                                                \
    UNITTEST_MULTILINE_MACRO_BEGIN                                                                                                                    \
    UNITTEST_IMPL_TRY                                                                                                                                            \
    ({                                                                                                                                                \
@@ -208,6 +230,18 @@
       #define CHECK UNITTEST_CHECK
    #endif
 
+   #ifdef CHECK_TRUE
+      #error CHECK_TRUE already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_TRUE instead
+   #else
+      #define CHECK_TRUE UNITTEST_CHECK
+   #endif
+
+   #ifdef CHECK_FALSE
+      #error CHECK_FALSE already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_FALSE instead
+   #else
+      #define CHECK_FALSE UNITTEST_CHECK_FALSE
+   #endif
+
    #ifdef CHECK_EQUAL
       #error CHECK_EQUAL already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_EQUAL instead
    #else
@@ -220,16 +254,16 @@
       #define CHECK_EQUAL_HEX UNITTEST_CHECK_EQUAL_HEX
    #endif
 
-   #ifdef CHECK_NOT_EQUAL
-      #error CHECK_NOT_EQUAL already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_NOT_EQUAL instead
+   #ifdef CHECK_FALSE_EQUAL
+      #error CHECK_FALSE_EQUAL already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_FALSE_EQUAL instead
    #else
-      #define CHECK_NOT_EQUAL UNITTEST_CHECK_NOT_EQUAL
+      #define CHECK_FALSE_EQUAL UNITTEST_CHECK_FALSE_EQUAL
    #endif
 
-   #ifdef CHECK_NOT_EQUAL_HEX
-      #error CHECK_NOT_EQUAL_HEX already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_NOT_EQUAL_HEX instead
+   #ifdef CHECK_FALSE_EQUAL_HEX
+      #error CHECK_FALSE_EQUAL_HEX already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_FALSE_EQUAL_HEX instead
    #else
-      #define CHECK_NOT_EQUAL_HEX UNITTEST_CHECK_NOT_EQUAL_HEX
+      #define CHECK_FALSE_EQUAL_HEX UNITTEST_CHECK_FALSE_EQUAL_HEX
    #endif
 
    #ifdef CHECK_CLOSE
