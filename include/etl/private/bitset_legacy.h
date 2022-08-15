@@ -246,7 +246,7 @@ namespace etl
     //*************************************************************************
     size_t size() const
     {
-      return Total_Bits;
+      return Active_Bits;
     }
 
     //*************************************************************************
@@ -344,7 +344,7 @@ namespace etl
     {
       reset();
 
-      size_t i = etl::min(Total_Bits, etl::strlen(text));
+      size_t i = etl::min(Active_Bits, etl::strlen(text));
 
       while (i > 0)
       {
@@ -361,7 +361,7 @@ namespace etl
     {
       reset();
 
-      size_t i = etl::min(Total_Bits, etl::strlen(text));
+      size_t i = etl::min(Active_Bits, etl::strlen(text));
 
       while (i > 0)
       {
@@ -378,7 +378,7 @@ namespace etl
     {
       reset();
 
-      size_t i = etl::min(Total_Bits, etl::strlen(text));
+      size_t i = etl::min(Active_Bits, etl::strlen(text));
 
       while (i > 0)
       {
@@ -395,7 +395,7 @@ namespace etl
     {
       reset();
 
-      size_t i = etl::min(Total_Bits, etl::strlen(text));
+      size_t i = etl::min(Active_Bits, etl::strlen(text));
 
       while (i > 0)
       {
@@ -551,7 +551,7 @@ namespace etl
     //*************************************************************************
     ibitset& flip(size_t position)
     {
-      if (position < Total_Bits)
+      if (position < Active_Bits)
       {
         size_t    index;
         element_t bit;
@@ -678,7 +678,7 @@ namespace etl
             (!state && (value != ALL_SET)))
         {
           // For each bit in the element...
-          while ((bit < Bits_Per_Element) && (position < Total_Bits))
+          while ((bit < Bits_Per_Element) && (position < Active_Bits))
           {
             // Equal to the required state?
             if (((value & mask) != 0) == state)
@@ -767,7 +767,7 @@ namespace etl
     //*************************************************************************
     ibitset& operator<<=(size_t shift)
     {
-      if (shift >= Total_Bits)
+      if (shift >= Active_Bits)
       {
         reset();
       }
@@ -846,7 +846,7 @@ namespace etl
     //*************************************************************************
     ibitset& operator>>=(size_t shift)
     {
-      if (shift >= Total_Bits)
+      if (shift >= Active_Bits)
       {
         reset();
       }
@@ -1016,12 +1016,12 @@ namespace etl
     /// Constructor.
     //*************************************************************************
     ibitset(size_t nbits_, size_t size_, element_t* pdata_)
-      : Total_Bits(nbits_)
+      : Active_Bits(nbits_)
       , Number_Of_Elements(size_)
       , pdata(pdata_)
     {
       const size_t allocated_bits = Number_Of_Elements * Bits_Per_Element;
-      const size_t top_mask_shift = ((Bits_Per_Element - (allocated_bits - Total_Bits)) % Bits_Per_Element);
+      const size_t top_mask_shift = ((Bits_Per_Element - (allocated_bits - Active_Bits)) % Bits_Per_Element);
       Top_Mask = element_t(top_mask_shift == 0 ? ALL_SET : ~(ALL_SET << top_mask_shift));
     }
 
@@ -1048,7 +1048,7 @@ namespace etl
     // Disable copy construction.
     ibitset(const ibitset&);
 
-    const size_t Total_Bits;
+    const size_t Active_Bits;
     const size_t Number_Of_Elements;
     element_t*   pdata;
 
