@@ -36,8 +36,11 @@ namespace etl
 {
   namespace private_bitset
   {
+    template <size_t Total_Bits, typename TElement, bool HasSingleElementMask>
+    class bitset_fast;
+
     template <size_t Total_Bits, typename TElement>
-    class bitset_fast
+    class bitset_fast<Total_Bits, TElement, false>
     {
     public:
 
@@ -78,7 +81,7 @@ namespace etl
       {
       }
 
-      ETL_CONSTEXPR14 bitset_fast(const bitset_fast<Total_Bits, TElement>& other)
+      ETL_CONSTEXPR14 bitset_fast(const bitset_fast<Total_Bits, TElement, false>& other)
         : data(other.data)
       {
       }
