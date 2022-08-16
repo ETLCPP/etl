@@ -452,11 +452,6 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value, T>::type
       value() const
     {
-      for (size_t i = sizeof(long long) / sizeof(element_t); i < Number_Of_Elements; ++i)
-      {
-        ETL_ASSERT_AND_RETURN_VALUE(!(pdata[i]), ETL_ERROR(etl::bitset_overflow), T(0));
-      }
-
       T v = T(0);
 
       const bool OK = (sizeof(T) * CHAR_BIT) >= (Number_Of_Elements * Bits_Per_Element);

@@ -96,148 +96,151 @@ namespace
     return data2;
   }
 
-  SUITE(test_bitset_new)
+  SUITE(test_bitset_new_implicit_element_type)
   {
-    ////*************************************************************************
-    //TEST(test_default_constructor)
-    //{
-    //  constexpr std::bitset<60> compare;
-    //  constexpr etl::bitset<60> data;
+    //*************************************************************************
+    TEST(test_default_constructor)
+    {
+      constexpr std::bitset<60> compare;
+      constexpr etl::bitset<60> data;
 
-    //  CHECK_EQUAL(compare.size(),  data.size());
-    //  CHECK_EQUAL(compare.count(), data.count());
+      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.count(), data.count());
 
-    //  for (size_t i = 0UL; i < data.size(); ++i)
-    //  {
-    //    CHECK_EQUAL(compare.test(i), data.test(i));
-    //  }
-    //}
+      for (size_t i = 0UL; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data.test(i));
+      }
+    }
 
     //*************************************************************************
     TEST(test_default_constructor_single_element_no_mask)
     {
-      etl::bitset<8> data;
+      etl::bitset<8>  data8;
+      etl::bitset<16> data16;
+      etl::bitset<32> data32;
+      etl::bitset<64> data64;
+
+      CHECK_EQUAL(1U, data8.Number_Of_Elements);
+      CHECK_EQUAL(1U, data16.Number_Of_Elements);
+      CHECK_EQUAL(1U, data32.Number_Of_Elements);
+      CHECK_EQUAL(1U, data64.Number_Of_Elements);
     }
 
     //*************************************************************************
     TEST(test_default_constructor_single_element_mask)
     {
-      etl::bitset<6> data;
+      etl::bitset<6>  data6;
+      etl::bitset<14> data14;
+      etl::bitset<30> data30;
+      etl::bitset<62> data62;
+
+      CHECK_EQUAL(1U, data6.Number_Of_Elements);
+      CHECK_EQUAL(1U, data14.Number_Of_Elements);
+      CHECK_EQUAL(1U, data30.Number_Of_Elements);
+      CHECK_EQUAL(1U, data62.Number_Of_Elements);
     }
 
-    ////*************************************************************************
-    //TEST(test_default_constructor_different_element_types)
-    //{
-    //  constexpr etl::bitset<256, uint8_t> data8;
-    //  constexpr etl::bitset<256, uint16_t> data16;
-    //  constexpr etl::bitset<256, uint32_t> data32;
-    //  constexpr etl::bitset<256, uint64_t> data64;
+    //*************************************************************************
+    TEST(test_default_constructor_implicit_element_types)
+    {
+      CHECK_EQUAL(8U, etl::integral_limits<etl::bitset<1>::element_type>::bits);
+      CHECK_EQUAL(8U, etl::integral_limits<etl::bitset<2>::element_type>::bits);
+      CHECK_EQUAL(8U, etl::integral_limits<etl::bitset<3>::element_type>::bits);
+      CHECK_EQUAL(8U, etl::integral_limits<etl::bitset<4>::element_type>::bits);
+      CHECK_EQUAL(8U, etl::integral_limits<etl::bitset<5>::element_type>::bits);
+      CHECK_EQUAL(8U, etl::integral_limits<etl::bitset<6>::element_type>::bits);
+      CHECK_EQUAL(8U, etl::integral_limits<etl::bitset<7>::element_type>::bits);
+      CHECK_EQUAL(8U, etl::integral_limits<etl::bitset<8>::element_type>::bits);
+      CHECK_EQUAL(16U, etl::integral_limits<etl::bitset<9>::element_type>::bits);
+      CHECK_EQUAL(16U, etl::integral_limits<etl::bitset<10>::element_type>::bits);
+      CHECK_EQUAL(16U, etl::integral_limits<etl::bitset<11>::element_type>::bits);
+      CHECK_EQUAL(16U, etl::integral_limits<etl::bitset<12>::element_type>::bits);
+      CHECK_EQUAL(16U, etl::integral_limits<etl::bitset<13>::element_type>::bits);
+      CHECK_EQUAL(16U, etl::integral_limits<etl::bitset<14>::element_type>::bits);
+      CHECK_EQUAL(16U, etl::integral_limits<etl::bitset<15>::element_type>::bits);
+      CHECK_EQUAL(16U, etl::integral_limits<etl::bitset<16>::element_type>::bits);
+      CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<17>::element_type>::bits);
+      CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<18>::element_type>::bits);
+      CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<19>::element_type>::bits);
+      CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<20>::element_type>::bits);
+      CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<21>::element_type>::bits);
+      CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<22>::element_type>::bits);
+      CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<23>::element_type>::bits);
+      CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<24>::element_type>::bits);
+      CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<25>::element_type>::bits);
+      CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<26>::element_type>::bits);
+      CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<27>::element_type>::bits);
+      CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<28>::element_type>::bits);
+      CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<29>::element_type>::bits);
+      CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<30>::element_type>::bits);
+      CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<31>::element_type>::bits);
+      CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<32>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<33>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<34>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<35>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<36>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<37>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<38>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<39>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<40>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<41>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<42>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<43>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<44>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<45>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<46>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<47>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<48>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<49>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<50>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<51>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<52>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<53>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<54>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<55>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<56>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<57>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<58>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<59>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<60>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<61>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<62>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<63>::element_type>::bits);
+      CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<64>::element_type>::bits);
+    }
 
-    //  CHECK_EQUAL(32U, data8.Number_Of_Elements);
-    //  CHECK_EQUAL(16U, data16.Number_Of_Elements);
-    //  CHECK_EQUAL( 8U, data32.Number_Of_Elements);
-    //  CHECK_EQUAL( 4U, data64.Number_Of_Elements);
-    //}
+    //*************************************************************************
+    TEST(test_construct_from_value)
+    {
+      constexpr std::bitset<60> compare(0x123456731234567ULL);
+      /*constexpr*/ etl::bitset<60> data(0x123456731234567ULL);
 
-    ////*************************************************************************
-    //TEST(test_default_constructor_implicit_element_types)
-    //{
-    //  CHECK_EQUAL(8U, etl::integral_limits<etl::bitset<1>::element_type>::bits);
-    //  CHECK_EQUAL(8U, etl::integral_limits<etl::bitset<2>::element_type>::bits);
-    //  CHECK_EQUAL(8U, etl::integral_limits<etl::bitset<3>::element_type>::bits);
-    //  CHECK_EQUAL(8U, etl::integral_limits<etl::bitset<4>::element_type>::bits);
-    //  CHECK_EQUAL(8U, etl::integral_limits<etl::bitset<5>::element_type>::bits);
-    //  CHECK_EQUAL(8U, etl::integral_limits<etl::bitset<6>::element_type>::bits);
-    //  CHECK_EQUAL(8U, etl::integral_limits<etl::bitset<7>::element_type>::bits);
-    //  CHECK_EQUAL(8U, etl::integral_limits<etl::bitset<8>::element_type>::bits);
-    //  CHECK_EQUAL(16U, etl::integral_limits<etl::bitset<9>::element_type>::bits);
-    //  CHECK_EQUAL(16U, etl::integral_limits<etl::bitset<10>::element_type>::bits);
-    //  CHECK_EQUAL(16U, etl::integral_limits<etl::bitset<11>::element_type>::bits);
-    //  CHECK_EQUAL(16U, etl::integral_limits<etl::bitset<12>::element_type>::bits);
-    //  CHECK_EQUAL(16U, etl::integral_limits<etl::bitset<13>::element_type>::bits);
-    //  CHECK_EQUAL(16U, etl::integral_limits<etl::bitset<14>::element_type>::bits);
-    //  CHECK_EQUAL(16U, etl::integral_limits<etl::bitset<15>::element_type>::bits);
-    //  CHECK_EQUAL(16U, etl::integral_limits<etl::bitset<16>::element_type>::bits);
-    //  CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<17>::element_type>::bits);
-    //  CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<18>::element_type>::bits);
-    //  CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<19>::element_type>::bits);
-    //  CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<20>::element_type>::bits);
-    //  CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<21>::element_type>::bits);
-    //  CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<22>::element_type>::bits);
-    //  CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<23>::element_type>::bits);
-    //  CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<24>::element_type>::bits);
-    //  CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<25>::element_type>::bits);
-    //  CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<26>::element_type>::bits);
-    //  CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<27>::element_type>::bits);
-    //  CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<28>::element_type>::bits);
-    //  CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<29>::element_type>::bits);
-    //  CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<30>::element_type>::bits);
-    //  CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<31>::element_type>::bits);
-    //  CHECK_EQUAL(32U, etl::integral_limits<etl::bitset<32>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<33>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<34>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<35>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<36>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<37>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<38>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<39>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<40>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<41>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<42>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<43>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<44>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<45>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<46>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<47>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<48>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<49>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<50>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<51>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<52>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<53>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<54>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<55>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<56>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<57>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<58>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<59>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<60>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<61>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<62>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<63>::element_type>::bits);
-    //  CHECK_EQUAL(64U, etl::integral_limits<etl::bitset<64>::element_type>::bits);
-    //}
+      CHECK_EQUAL(compare.size(),  data.size());
+      CHECK_EQUAL(compare.count(), data.count());
+      CHECK_EQUAL_HEX(compare.to_ullong(), data.to_ullong());
 
-    ////*************************************************************************
-    //TEST(test_construct_from_value)
-    //{
-    //  constexpr std::bitset<60> compare(0x123456731234567ULL);
-    //  constexpr etl::bitset<60> data(0x123456731234567ULL);
+      for (size_t i = 0UL; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data.test(i));
+      }
+    }
 
-    //  CHECK_EQUAL(compare.size(),  data.size());
-    //  CHECK_EQUAL(compare.count(), data.count());
+    //*************************************************************************
+    TEST(test_copy_construct)
+    {
+      constexpr std::bitset<60> compare(0x123456731234567ULL);
+      constexpr etl::bitset<60> data(0x123456731234567ULL);
+      constexpr etl::bitset<60> data_copy(data);
 
-    //  for (size_t i = 0UL; i < data.size(); ++i)
-    //  {
-    //    CHECK_EQUAL(compare.test(i), data.test(i));
-    //  }
-    //}
+      CHECK_EQUAL(compare.size(), data_copy.size());
+      CHECK_EQUAL(compare.count(), data_copy.count());
 
-    ////*************************************************************************
-    //TEST(test_copy_construct)
-    //{
-    //  constexpr std::bitset<60> compare(0x123456731234567ULL);
-    //  constexpr etl::bitset<60> data(0x123456731234567ULL);
-    //  constexpr etl::bitset<60> data_copy(data);
-
-    //  CHECK_EQUAL(compare.size(), data_copy.size());
-    //  CHECK_EQUAL(compare.count(), data_copy.count());
-
-    //  for (size_t i = 0UL; i < data_copy.size(); ++i)
-    //  {
-    //    CHECK_EQUAL(compare.test(i), data_copy.test(i));
-    //  }
-    //}
+      for (size_t i = 0UL; i < data_copy.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data_copy.test(i));
+      }
+    }
 
     ////*************************************************************************
     //TEST(test_construct_from_excess_value)
@@ -592,8 +595,8 @@ namespace
     ////*************************************************************************
     //TEST(test_value_s16_max)
     //{
-    //  etl::bitset<16> data((unsigned long long)etl::integral_limits<int16_t>::max);
-    //  int16_t value = data.value<int16_t>();
+    //  constexpr etl::bitset<16> data((unsigned long long)etl::integral_limits<int16_t>::max);
+    //  constexpr int16_t value = data.value<int16_t>();
 
     //  CHECK_EQUAL(std::numeric_limits<int16_t>::max(), value);
     //}
@@ -1627,9 +1630,9 @@ namespace
     ////*************************************************************************
     //TEST(test_span)
     //{
-    //  using span_t = etl::bitset<32, char>::span_type;
+    //  using span_t = etl::bitset<32>::span_type;
 
-    //  etl::bitset<32, char> b(0x12345678UL);
+    //  etl::bitset<32> b(0x12345678UL);
 
     //  span_t s = b.span();
     //  CHECK_EQUAL(0x78U, s[0]);
@@ -1641,9 +1644,9 @@ namespace
     ////*************************************************************************
     //TEST(test_const_span)
     //{
-    //  using span_t = etl::bitset<32, char>::const_span_type;
+    //  using span_t = etl::bitset<32>::const_span_type;
 
-    //  const etl::bitset<32, char> b(0x12345678UL);
+    //  const etl::bitset<32> b(0x12345678UL);
 
     //  span_t s = b.span();
     //  CHECK_EQUAL(0x78U, s[0]);
@@ -1655,9 +1658,9 @@ namespace
     ////*************************************************************************
     //TEST(test_span_constexpr)
     //{
-    //  using span_t = etl::bitset<32, char>::const_span_type;
+    //  using span_t = etl::bitset<32>::const_span_type;
 
-    //  constexpr etl::bitset<32, char> b(0x12345678UL);
+    //  constexpr etl::bitset<32> b(0x12345678UL);
 
     //  constexpr span_t s = b.span();
     //  CHECK_EQUAL(0x78U, s[0]);

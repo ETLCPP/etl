@@ -363,11 +363,6 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value, T>::type
       value(const_pointer pbuffer, size_t number_of_elements) const
     {
-      for (size_t i = sizeof(long long) / sizeof(element_type); i < number_of_elements; ++i)
-      {
-        ETL_ASSERT_AND_RETURN_VALUE(!(pbuffer[i]), ETL_ERROR(etl::bitset_overflow), T(0));
-      }
-
       T v = T(0);
 
       const bool OK = (sizeof(T) * CHAR_BIT) >= (number_of_elements * Bits_Per_Element);
@@ -518,7 +513,7 @@ namespace etl
     {
       // Where to start.
       size_t index = position >> log2<Bits_Per_Element>::value;
-      size_t bit   = position;;
+      size_t bit   = position;
 
       element_type mask = 1 << bit;
 
@@ -1457,7 +1452,7 @@ namespace etl
     /// span
     /// Returns a span of the underlying buffer.
     //*************************************************************************
-    ETL_CONSTEXPR14 span_type span()
+    ETL_CONSTEXPR14 span_type span() ETL_NOEXCEPT
     {
       return span_type(buffer, buffer + Number_Of_Elements);
     }
@@ -1466,7 +1461,7 @@ namespace etl
     /// span
     /// Returns a const span of the underlying buffer.
     //*************************************************************************
-    ETL_CONSTEXPR14 const_span_type span() const
+    ETL_CONSTEXPR14 const_span_type span() const ETL_NOEXCEPT
     {
       return const_span_type(buffer, buffer + Number_Of_Elements);
     }
@@ -1518,7 +1513,7 @@ namespace etl
     static ETL_CONSTANT size_t       Bits_Per_Element   = etl::integral_limits<element_type>::bits;
     static ETL_CONSTANT size_t       Number_Of_Elements = 1U;
     static ETL_CONSTANT size_t       Allocated_Bits     = Bits_Per_Element;
-    static ETL_CONSTANT size_t       Top_Mask_Shift     = (Bits_Per_Element - (Allocated_Bits - Active_Bits));
+    static ETL_CONSTANT size_t       Top_Mask_Shift     = ((Bits_Per_Element - (Allocated_Bits - Active_Bits)) == Bits_Per_Element) ? 0U : (Bits_Per_Element - (Allocated_Bits - Active_Bits));
     static ETL_CONSTANT element_type All_Set            = etl::integral_limits<typename etl::make_unsigned<element_type>::type>::max;
     static ETL_CONSTANT element_type All_Clear          = element_type(0);
     static ETL_CONSTANT element_type Top_Mask           = element_type(~(All_Set << Top_Mask_Shift));
@@ -1619,10 +1614,8 @@ namespace etl
     /// Construct from a value.
     //*************************************************************************
     ETL_CONSTEXPR14 bitset(unsigned long long value) ETL_NOEXCEPT
-      : buffer(All_Clear)
+      : buffer(element_type(value))
     {
-      //ibitset.initialise(buffer, Number_Of_Elements, value);
-      //clear_unused_bits_in_msb();
     }
 
     //*************************************************************************
@@ -1631,8 +1624,8 @@ namespace etl
     bitset(const char* text)
       : buffer(All_Clear)
     {
-      //ibitset.set(buffer, Number_Of_Elements, Active_Bits, text);
-      //clear_unused_bits_in_msb();
+      set(text);
+      clear_unused_bits_in_msb();
     }
 
     //*************************************************************************
@@ -1641,8 +1634,8 @@ namespace etl
     bitset(const wchar_t* text)
       : buffer(All_Clear)
     {
-      //ibitset.set(buffer, Number_Of_Elements, Active_Bits, text);
-      //clear_unused_bits_in_msb();
+      set(text);
+      clear_unused_bits_in_msb();
     }
 
     //*************************************************************************
@@ -1651,8 +1644,8 @@ namespace etl
     bitset(const char16_t* text)
       : buffer(All_Clear)
     {
-    //  ibitset.set(buffer, Number_Of_Elements, Active_Bits, text);
-    //  clear_unused_bits_in_msb();
+      set(text);
+      clear_unused_bits_in_msb();
     }
 
     //*************************************************************************
@@ -1661,8 +1654,8 @@ namespace etl
     bitset(const char32_t* text)
       : buffer(All_Clear)
     {
-      //ibitset.set(buffer, Number_Of_Elements, Active_Bits, text);
-      //clear_unused_bits_in_msb();
+      set(buffer, Number_Of_Elements, Active_Bits, text);
+      clear_unused_bits_in_msb();
     }
 
     //*************************************************************************
@@ -1670,8 +1663,8 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset<Active_Bits, TElement, true, Has_Element_Mask>& set()
     {
-      //etl::fill_n(buffer, ETL_OR_STD::size(buffer), All_Set);
-      //clear_unused_bits_in_msb();
+      buffer = All_Set;
+      clear_unused_bits_in_msb();
 
       return *this;
     }
@@ -1681,8 +1674,8 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset<Active_Bits, TElement, true, Has_Element_Mask>& set(size_t position, bool value = true) ETL_NOEXCEPT
     {
-      //ibitset.set(buffer, Number_Of_Elements, position, value);
-      //clear_unused_bits_in_msb();
+      set(value);
+      clear_unused_bits_in_msb();
 
       return *this;
     }
@@ -1692,8 +1685,8 @@ namespace etl
     //*************************************************************************
     bitset<Active_Bits, TElement, true, Has_Element_Mask>& set(const char* text)
     {
-      //ETL_ASSERT_AND_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
-      //ibitset.set(buffer, Number_Of_Elements, Active_Bits, text);
+      ETL_ASSERT_AND_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
+      from_string(text);
 
       return *this;
     }
@@ -1703,8 +1696,8 @@ namespace etl
     //*************************************************************************
     bitset<Active_Bits, TElement, true, Has_Element_Mask>& set(const wchar_t* text)
     {
-      //ETL_ASSERT_AND_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
-      //ibitset.set(buffer, Number_Of_Elements, Active_Bits, text);
+      ETL_ASSERT_AND_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
+      from_string(text);
 
       return *this;
     }
@@ -1714,8 +1707,8 @@ namespace etl
     //*************************************************************************
     bitset<Active_Bits, TElement, true, Has_Element_Mask>& set(const char16_t* text)
     {
-      //ETL_ASSERT_AND_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
-      //ibitset.set(buffer, Number_Of_Elements, Active_Bits, text);
+      ETL_ASSERT_AND_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
+      from_string(text);
 
       return *this;
     }
@@ -1725,8 +1718,8 @@ namespace etl
     //*************************************************************************
     bitset<Active_Bits, TElement, true, Has_Element_Mask>& set(const char32_t* text)
     {
-      //ETL_ASSERT_AND_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
-      //ibitset.set(buffer, Number_Of_Elements, Active_Bits, text);
+      ETL_ASSERT_AND_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
+      from_string(text);
 
       return *this;
     }
@@ -1736,8 +1729,6 @@ namespace etl
     //*************************************************************************
     bitset<Active_Bits, TElement, true, Has_Element_Mask>& from_string(const char* text)
     {
-      //ibitset.from_string(buffer, Number_Of_Elements, Active_Bits, text);
-
       return *this;
     }
 
@@ -1746,8 +1737,6 @@ namespace etl
     //*************************************************************************
     bitset<Active_Bits, TElement, true, Has_Element_Mask>& from_string(const wchar_t* text)
     {
-      //ibitset.from_string(buffer, Number_Of_Elements, Active_Bits, text);
-
       return *this;
     }
 
@@ -1756,7 +1745,6 @@ namespace etl
     //*************************************************************************
     bitset<Active_Bits, TElement, true, Has_Element_Mask>& from_string(const char16_t* text)
     {
-      //ibitset.from_string(buffer, Number_Of_Elements, Active_Bits, text);
 
       return *this;
     }
@@ -1766,7 +1754,6 @@ namespace etl
     //*************************************************************************
     bitset<Active_Bits, TElement, true, Has_Element_Mask>& from_string(const char32_t* text)
     {
-      //ibitset.from_string(buffer, Number_Of_Elements, Active_Bits, text);
 
       return *this;
     }
@@ -1779,11 +1766,21 @@ namespace etl
       typename etl::enable_if<etl::is_integral<T>::value, T>::type
       value() const
     {
-      //ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Only integral types are supported");
-      //ETL_STATIC_ASSERT((sizeof(T) * CHAR_BIT) >= (Number_Of_Elements * Bits_Per_Element), "Type too small");
+      ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Only integral types are supported");
+      ETL_STATIC_ASSERT((sizeof(T) * CHAR_BIT) >= (Number_Of_Elements * Bits_Per_Element), "Type too small");
 
-      //return ibitset.value<T>(buffer, Number_Of_Elements);
-      return 0;
+      T v = T(0);
+
+      const bool OK = (sizeof(T) * CHAR_BIT) >= Bits_Per_Element;
+
+      ETL_ASSERT_AND_RETURN_VALUE(OK, ETL_ERROR(etl::bitset_type_too_small), T(0));
+
+      if (OK)
+      {
+        v = T(typename etl::make_unsigned<T>::type(buffer));
+      }
+
+      return v;
     }
 
     //*************************************************************************
@@ -1791,8 +1788,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 unsigned long to_ulong() const
     {
-      //return value<unsigned long>();
-      return 0;
+      return value<unsigned long>();
     }
 
     //*************************************************************************
@@ -1800,15 +1796,15 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 unsigned long long to_ullong() const
     {
-      //return value<unsigned long long>();
-      return 0;
+      return value<unsigned long long>();  
     }
+
     //*************************************************************************
     /// Reset all of the bits.
     //*************************************************************************
     ETL_CONSTEXPR14 bitset<Active_Bits, TElement, true, Has_Element_Mask>& reset() ETL_NOEXCEPT
     {
-      //etl::fill_n(buffer, Number_Of_Elements, All_Clear);
+      buffer = All_Clear;
 
       return *this;
     }
@@ -1828,8 +1824,9 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bool test(size_t position) const
     {
-      //return ibitset.test(buffer, Number_Of_Elements, position);
-      return false;
+      const element_type mask = element_type(element_type(1) << position);
+
+      return (buffer & mask) != 0U;
     }
 
     //*************************************************************************
@@ -1845,8 +1842,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 size_t count() const ETL_NOEXCEPT
     {
-      //return ibitset.count(buffer, Number_Of_Elements);
-      return 0;
+      return etl::count_bits(buffer);
     }
 
     //*************************************************************************
@@ -1854,8 +1850,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bool all() const ETL_NOEXCEPT
     {
-      //return ibitset.all(buffer, Number_Of_Elements, Top_Mask);
-      return false;
+      return buffer[0U] != (All_Set & Top_Mask);
     }
 
     //*************************************************************************
@@ -2112,16 +2107,16 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 void swap(etl::bitset<Active_Bits, TElement, true, Has_Element_Mask>& other)
     {
-      element_type temp = *p1;
-      *p1 = *p2;
-      *p2 = temp;
+      element_type temp = buffer;
+      buffer = other.buffer;
+      other.buffer = temp;
     }
 
     //*************************************************************************
     /// span
     /// Returns a span of the underlying buffer.
     //*************************************************************************
-    ETL_CONSTEXPR14 span_type span()
+    ETL_CONSTEXPR14 span_type span() ETL_NOEXCEPT
     {
       return span_type(buffer, buffer + Number_Of_Elements);
     }
@@ -2130,12 +2125,23 @@ namespace etl
     /// span
     /// Returns a const span of the underlying buffer.
     //*************************************************************************
-    ETL_CONSTEXPR14 const_span_type span() const
+    ETL_CONSTEXPR14 const_span_type span() const ETL_NOEXCEPT
     {
       return const_span_type(buffer, buffer + Number_Of_Elements);
     }
 
   private:
+
+    //*************************************************************************
+    /// Correct the unused top bits after bit manipulation.
+    //*************************************************************************
+    ETL_CONSTEXPR14 void clear_unused_bits_in_msb() ETL_NOEXCEPT
+    {
+      if ETL_CONSTEXPR_IF(Has_Element_Mask)
+      {
+        buffer[Number_Of_Elements - 1U] &= Top_Mask;
+      }
+    }
 
     element_type buffer;
   };
