@@ -1329,6 +1329,9 @@
     <ClInclude Include="..\..\include\etl\private\bitset_new.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\bitset.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3341,13 +3344,13 @@
     <ClCompile Include="..\test_char_traits.cpp">
       <Filter>Tests\Misc</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_bitset_new_char_element.cpp">
+    <ClCompile Include="..\test_bitset_new_default_element_type.cpp">
       <Filter>Tests\Binary</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\bitset_new.h.t.cpp">
       <Filter>Tests\Sanity Checks\Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_bitset_new_implicit_element.cpp">
+    <ClCompile Include="..\test_bitset_new_explicit_single_element_type.cpp">
       <Filter>Tests\Binary</Filter>
     </ClCompile>
   </ItemGroup>

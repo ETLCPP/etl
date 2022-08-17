@@ -143,12 +143,13 @@ namespace etl
 
     // The type used for each element in the array.
 #if !defined(ETL_BITSET_ELEMENT_TYPE)
-    typedef uint_least8_t element_t;
-#else
-    typedef typename etl::make_unsigned<ETL_BITSET_ELEMENT_TYPE>::type element_t;
+    typedef uint_least8_t element_type;
+    #define ETL_BITSET_ELEMENT_TYPE uint_least8_t
 #endif
 
   public:
+
+    typedef typename etl::make_unsigned<ETL_BITSET_ELEMENT_TYPE>::type element_t;
 
     static ETL_CONSTANT element_t ALL_SET = etl::integral_limits<element_t>::max;
     static ETL_CONSTANT element_t ALL_CLEAR = 0;

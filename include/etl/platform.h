@@ -195,9 +195,17 @@ SOFTWARE.
 //*************************************
 // Indicate if nullptr is used.
 #if ETL_NO_NULLPTR_SUPPORT
-#define ETL_HAS_NULLPTR 0
+  #define ETL_HAS_NULLPTR 0
 #else
-#define ETL_HAS_NULLPTR 1
+  #define ETL_HAS_NULLPTR 1
+#endif
+
+//*************************************
+// Indicate if legacy bitset is used.
+#if defined(ETL_USE_LEGACY_BITSET)
+  #define ETL_USING_LEGACY_BITSET 1
+#else
+  #define ETL_USING_LEGACY_BITSET 0
 #endif
 
 //*************************************
@@ -388,7 +396,11 @@ namespace etl
   namespace traits
   {
     // Documentation: https://www.etlcpp.com/etl_traits.html
+    // General
+    static ETL_CONSTANT long cplusplus                        = __cplusplus;
+    static ETL_CONSTANT int  language_standard                = ETL_LANGUAGE_STANDARD;
 
+    // Using...
     static ETL_CONSTANT bool using_stl                        = (ETL_USING_STL == 1);
     static ETL_CONSTANT bool using_stlport                    = (ETL_USING_STLPORT == 1);
     static ETL_CONSTANT bool using_cpp11                      = (ETL_USING_CPP11 == 1);
@@ -396,9 +408,6 @@ namespace etl
     static ETL_CONSTANT bool using_cpp17                      = (ETL_USING_CPP17 == 1);
     static ETL_CONSTANT bool using_cpp20                      = (ETL_USING_CPP20 == 1);
     static ETL_CONSTANT bool using_cpp23                      = (ETL_USING_CPP23 == 1);
-    static ETL_CONSTANT long cplusplus                        = __cplusplus;
-    static ETL_CONSTANT int  language_standard                = ETL_LANGUAGE_STANDARD;
-    static ETL_CONSTANT bool using_exceptions                 = (ETL_USING_EXCEPTIONS == 1);
     static ETL_CONSTANT bool using_gcc_compiler               = (ETL_USING_GCC_COMPILER == 1);
     static ETL_CONSTANT bool using_microsoft_compiler         = (ETL_USING_MICROSOFT_COMPILER == 1);
     static ETL_CONSTANT bool using_arm5_compiler              = (ETL_USING_ARM5_COMPILER == 1);
@@ -410,6 +419,10 @@ namespace etl
     static ETL_CONSTANT bool using_intel_compiler             = (ETL_USING_INTEL_COMPILER == 1);
     static ETL_CONSTANT bool using_texas_instruments_compiler = (ETL_USING_TEXAS_INSTRUMENTS_COMPILER == 1);
     static ETL_CONSTANT bool using_generic_compiler           = (ETL_USING_GENERIC_COMPILER == 1);
+    static ETL_CONSTANT bool using_legacy_bitset              = (ETL_USING_LEGACY_BITSET == 1);
+    static ETL_CONSTANT bool using_exceptions                 = (ETL_USING_EXCEPTIONS == 1);
+    
+    // Has...
     static ETL_CONSTANT bool has_initializer_list             = (ETL_HAS_INITIALIZER_LIST == 1);
     static ETL_CONSTANT bool has_8bit_types                   = (ETL_USING_8BIT_TYPES == 1);
     static ETL_CONSTANT bool has_64bit_types                  = (ETL_USING_64BIT_TYPES == 1);
@@ -426,7 +439,10 @@ namespace etl
     static ETL_CONSTANT bool has_ivector_repair               = (ETL_HAS_IVECTOR_REPAIR == 1);
     static ETL_CONSTANT bool has_mutable_array_view           = (ETL_HAS_MUTABLE_ARRAY_VIEW == 1);
     static ETL_CONSTANT bool has_ideque_repair                = (ETL_HAS_IDEQUE_REPAIR == 1);
+
+    // Is...
     static ETL_CONSTANT bool is_debug_build                   = (ETL_IS_DEBUG_BUILD == 1);
+   
   }
 }
 

@@ -2376,6 +2376,7 @@
     <ClInclude Include="..\..\include\etl\basic_string_stream.h" />
     <ClInclude Include="..\..\include\etl\bip_buffer_spsc_atomic.h" />
     <ClInclude Include="..\..\include\etl\bit.h" />
+    <ClInclude Include="..\..\include\etl\bitset.h" />
     <ClInclude Include="..\..\include\etl\bit_stream.h" />
     <ClInclude Include="..\..\include\etl\bresenham_line.h" />
     <ClInclude Include="..\..\include\etl\buffer_descriptors.h" />
@@ -11252,8 +11253,8 @@
     <ClCompile Include="..\test_alignment.cpp" />
     <ClCompile Include="..\test_atomic.cpp" />
     <ClCompile Include="..\test_bit.cpp" />
-    <ClCompile Include="..\test_bitset_new_char_element.cpp" />
-    <ClCompile Include="..\test_bitset_new_implicit_element.cpp" />
+    <ClCompile Include="..\test_bitset_new_default_element_type.cpp" />
+    <ClCompile Include="..\test_bitset_new_explicit_single_element_type.cpp" />
     <ClCompile Include="..\test_bit_stream_reader_big_endian.cpp" />
     <ClCompile Include="..\test_bit_stream_reader_little_endian.cpp" />
     <ClCompile Include="..\test_bit_stream_writer_big_endian.cpp" />
