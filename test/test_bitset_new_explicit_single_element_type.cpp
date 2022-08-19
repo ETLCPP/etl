@@ -46,9 +46,22 @@ namespace
   template <size_t Active_Bits, typename TElement>
   constexpr etl::bitset<Active_Bits, TElement> generate_shift_left_bitset(ull value, size_t shift)
   {
+    ull mask = 0ULL;
+    
+    if (shift < 64U)
+    {
+      mask = etl::integral_limits<ull>::max >> shift;
+    }
+     
+    value &= mask;
+
     etl::bitset<Active_Bits, TElement> data(value);
 
-    if (shift != 0U)
+    if (shift >= 64U)
+    {
+      data.reset();
+    }
+    else if (shift != 0U)
     {
       data <<= shift;
     }
@@ -63,7 +76,7 @@ namespace
     etl::bitset<Active_Bits, TElement> data1(value);
     etl::bitset<Active_Bits, TElement> data2;
 
-    if (shift != 0U)
+    if ((shift != 0U) && (shift != 64U))
     {
       data2 = data1 << shift;
     }
@@ -77,7 +90,11 @@ namespace
   {
     etl::bitset<Active_Bits, TElement> data(value);
 
-    if (shift != 0U)
+    if (shift >= 64U)
+    {
+      data.reset();
+    }
+    else if (shift != 0U)
     {
       data >>= shift;
     }
@@ -702,7 +719,7 @@ namespace
 
       constexpr bool bc13 = compare[13U];
       constexpr bool bd13 = data[13U];
-      CHECK_EQUAL(bc7, bd7);
+      CHECK_EQUAL(bc13, bd13);
     }
 
     //*************************************************************************
@@ -981,8 +998,8 @@ namespace
       constexpr bool equal = !(data1 != data2);
       constexpr bool not_equal = (data1 != data3);
 
-      CHECK(!(data1 != data2));
-      CHECK(data1 != data3);
+      CHECK(equal);
+      CHECK(not_equal);
     }
 
     //*************************************************************************
@@ -1025,73 +1042,73 @@ namespace
     //*************************************************************************
     TEST(test_shift_left_operator_all_shifts_full_size)
     {
-      int64_t value = 0x0123456789ABCDEFULL;
+      uint64_t value = 0x0123456789ABCDEFULL;
 
-      CHECK_EQUAL_HEX((value <<  0U), (generate_shift_left_bitset<64, int64_t>(value,  0U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value <<  1U), (generate_shift_left_bitset<64, int64_t>(value,  1U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value <<  2U), (generate_shift_left_bitset<64, int64_t>(value,  2U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value <<  3U), (generate_shift_left_bitset<64, int64_t>(value,  3U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value <<  4U), (generate_shift_left_bitset<64, int64_t>(value,  4U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value <<  5U), (generate_shift_left_bitset<64, int64_t>(value,  5U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value <<  6U), (generate_shift_left_bitset<64, int64_t>(value,  6U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value <<  7U), (generate_shift_left_bitset<64, int64_t>(value,  7U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value <<  8U), (generate_shift_left_bitset<64, int64_t>(value,  8U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value <<  9U), (generate_shift_left_bitset<64, int64_t>(value,  9U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 10U), (generate_shift_left_bitset<64, int64_t>(value, 10U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 11U), (generate_shift_left_bitset<64, int64_t>(value, 11U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 12U), (generate_shift_left_bitset<64, int64_t>(value, 12U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 13U), (generate_shift_left_bitset<64, int64_t>(value, 13U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 14U), (generate_shift_left_bitset<64, int64_t>(value, 14U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 15U), (generate_shift_left_bitset<64, int64_t>(value, 15U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 16U), (generate_shift_left_bitset<64, int64_t>(value, 16U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 17U), (generate_shift_left_bitset<64, int64_t>(value, 17U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 18U), (generate_shift_left_bitset<64, int64_t>(value, 18U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 19U), (generate_shift_left_bitset<64, int64_t>(value, 19U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 20U), (generate_shift_left_bitset<64, int64_t>(value, 20U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 21U), (generate_shift_left_bitset<64, int64_t>(value, 21U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 22U), (generate_shift_left_bitset<64, int64_t>(value, 22U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 23U), (generate_shift_left_bitset<64, int64_t>(value, 23U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 24U), (generate_shift_left_bitset<64, int64_t>(value, 24U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 25U), (generate_shift_left_bitset<64, int64_t>(value, 25U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 26U), (generate_shift_left_bitset<64, int64_t>(value, 26U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 27U), (generate_shift_left_bitset<64, int64_t>(value, 27U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 28U), (generate_shift_left_bitset<64, int64_t>(value, 28U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 29U), (generate_shift_left_bitset<64, int64_t>(value, 29U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 30U), (generate_shift_left_bitset<64, int64_t>(value, 30U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 31U), (generate_shift_left_bitset<64, int64_t>(value, 31U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 32U), (generate_shift_left_bitset<64, int64_t>(value, 32U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 33U), (generate_shift_left_bitset<64, int64_t>(value, 33U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 34U), (generate_shift_left_bitset<64, int64_t>(value, 34U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 35U), (generate_shift_left_bitset<64, int64_t>(value, 35U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 36U), (generate_shift_left_bitset<64, int64_t>(value, 36U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 37U), (generate_shift_left_bitset<64, int64_t>(value, 37U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 38U), (generate_shift_left_bitset<64, int64_t>(value, 38U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 39U), (generate_shift_left_bitset<64, int64_t>(value, 39U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 40U), (generate_shift_left_bitset<64, int64_t>(value, 40U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 41U), (generate_shift_left_bitset<64, int64_t>(value, 41U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 42U), (generate_shift_left_bitset<64, int64_t>(value, 42U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 43U), (generate_shift_left_bitset<64, int64_t>(value, 43U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 44U), (generate_shift_left_bitset<64, int64_t>(value, 44U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 45U), (generate_shift_left_bitset<64, int64_t>(value, 45U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 46U), (generate_shift_left_bitset<64, int64_t>(value, 46U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 47U), (generate_shift_left_bitset<64, int64_t>(value, 47U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 48U), (generate_shift_left_bitset<64, int64_t>(value, 48U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 49U), (generate_shift_left_bitset<64, int64_t>(value, 49U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 50U), (generate_shift_left_bitset<64, int64_t>(value, 50U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 51U), (generate_shift_left_bitset<64, int64_t>(value, 51U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 52U), (generate_shift_left_bitset<64, int64_t>(value, 52U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 53U), (generate_shift_left_bitset<64, int64_t>(value, 53U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 54U), (generate_shift_left_bitset<64, int64_t>(value, 54U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 55U), (generate_shift_left_bitset<64, int64_t>(value, 55U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 56U), (generate_shift_left_bitset<64, int64_t>(value, 56U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 57U), (generate_shift_left_bitset<64, int64_t>(value, 57U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 58U), (generate_shift_left_bitset<64, int64_t>(value, 58U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 59U), (generate_shift_left_bitset<64, int64_t>(value, 59U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 60U), (generate_shift_left_bitset<64, int64_t>(value, 60U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 61U), (generate_shift_left_bitset<64, int64_t>(value, 61U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 62U), (generate_shift_left_bitset<64, int64_t>(value, 62U).value<int64_t>()));
-      CHECK_EQUAL_HEX((value << 63U), (generate_shift_left_bitset<64, int64_t>(value, 63U).value<int64_t>()));
-      CHECK_EQUAL_HEX(0ULL,           (generate_shift_left_bitset<64, int64_t>(value, 64U).value<int64_t>()));
+      CHECK_EQUAL_HEX((value <<  0U), (generate_shift_left_bitset<64, uint64_t>(value,  0U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value <<  1U), (generate_shift_left_bitset<64, uint64_t>(value,  1U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value <<  2U), (generate_shift_left_bitset<64, uint64_t>(value,  2U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value <<  3U), (generate_shift_left_bitset<64, uint64_t>(value,  3U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value <<  4U), (generate_shift_left_bitset<64, uint64_t>(value,  4U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value <<  5U), (generate_shift_left_bitset<64, uint64_t>(value,  5U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value <<  6U), (generate_shift_left_bitset<64, uint64_t>(value,  6U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value <<  7U), (generate_shift_left_bitset<64, uint64_t>(value,  7U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value <<  8U), (generate_shift_left_bitset<64, uint64_t>(value,  8U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value <<  9U), (generate_shift_left_bitset<64, uint64_t>(value,  9U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 10U), (generate_shift_left_bitset<64, uint64_t>(value, 10U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 11U), (generate_shift_left_bitset<64, uint64_t>(value, 11U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 12U), (generate_shift_left_bitset<64, uint64_t>(value, 12U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 13U), (generate_shift_left_bitset<64, uint64_t>(value, 13U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 14U), (generate_shift_left_bitset<64, uint64_t>(value, 14U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 15U), (generate_shift_left_bitset<64, uint64_t>(value, 15U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 16U), (generate_shift_left_bitset<64, uint64_t>(value, 16U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 17U), (generate_shift_left_bitset<64, uint64_t>(value, 17U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 18U), (generate_shift_left_bitset<64, uint64_t>(value, 18U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 19U), (generate_shift_left_bitset<64, uint64_t>(value, 19U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 20U), (generate_shift_left_bitset<64, uint64_t>(value, 20U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 21U), (generate_shift_left_bitset<64, uint64_t>(value, 21U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 22U), (generate_shift_left_bitset<64, uint64_t>(value, 22U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 23U), (generate_shift_left_bitset<64, uint64_t>(value, 23U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 24U), (generate_shift_left_bitset<64, uint64_t>(value, 24U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 25U), (generate_shift_left_bitset<64, uint64_t>(value, 25U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 26U), (generate_shift_left_bitset<64, uint64_t>(value, 26U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 27U), (generate_shift_left_bitset<64, uint64_t>(value, 27U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 28U), (generate_shift_left_bitset<64, uint64_t>(value, 28U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 29U), (generate_shift_left_bitset<64, uint64_t>(value, 29U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 30U), (generate_shift_left_bitset<64, uint64_t>(value, 30U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 31U), (generate_shift_left_bitset<64, uint64_t>(value, 31U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 32U), (generate_shift_left_bitset<64, uint64_t>(value, 32U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 33U), (generate_shift_left_bitset<64, uint64_t>(value, 33U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 34U), (generate_shift_left_bitset<64, uint64_t>(value, 34U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 35U), (generate_shift_left_bitset<64, uint64_t>(value, 35U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 36U), (generate_shift_left_bitset<64, uint64_t>(value, 36U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 37U), (generate_shift_left_bitset<64, uint64_t>(value, 37U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 38U), (generate_shift_left_bitset<64, uint64_t>(value, 38U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 39U), (generate_shift_left_bitset<64, uint64_t>(value, 39U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 40U), (generate_shift_left_bitset<64, uint64_t>(value, 40U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 41U), (generate_shift_left_bitset<64, uint64_t>(value, 41U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 42U), (generate_shift_left_bitset<64, uint64_t>(value, 42U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 43U), (generate_shift_left_bitset<64, uint64_t>(value, 43U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 44U), (generate_shift_left_bitset<64, uint64_t>(value, 44U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 45U), (generate_shift_left_bitset<64, uint64_t>(value, 45U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 46U), (generate_shift_left_bitset<64, uint64_t>(value, 46U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 47U), (generate_shift_left_bitset<64, uint64_t>(value, 47U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 48U), (generate_shift_left_bitset<64, uint64_t>(value, 48U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 49U), (generate_shift_left_bitset<64, uint64_t>(value, 49U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 50U), (generate_shift_left_bitset<64, uint64_t>(value, 50U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 51U), (generate_shift_left_bitset<64, uint64_t>(value, 51U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 52U), (generate_shift_left_bitset<64, uint64_t>(value, 52U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 53U), (generate_shift_left_bitset<64, uint64_t>(value, 53U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 54U), (generate_shift_left_bitset<64, uint64_t>(value, 54U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 55U), (generate_shift_left_bitset<64, uint64_t>(value, 55U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 56U), (generate_shift_left_bitset<64, uint64_t>(value, 56U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 57U), (generate_shift_left_bitset<64, uint64_t>(value, 57U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 58U), (generate_shift_left_bitset<64, uint64_t>(value, 58U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 59U), (generate_shift_left_bitset<64, uint64_t>(value, 59U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 60U), (generate_shift_left_bitset<64, uint64_t>(value, 60U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 61U), (generate_shift_left_bitset<64, uint64_t>(value, 61U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 62U), (generate_shift_left_bitset<64, uint64_t>(value, 62U).value<uint64_t>()));
+      CHECK_EQUAL_HEX((value << 63U), (generate_shift_left_bitset<64, uint64_t>(value, 63U).value<uint64_t>()));
+      CHECK_EQUAL_HEX(0ULL,           (generate_shift_left_bitset<64, uint64_t>(value, 64U).value<uint64_t>()));
     }
 
     //*************************************************************************
@@ -1403,8 +1420,6 @@ namespace
     //*************************************************************************
     TEST(test_find_next)
     {
-      etl::bitset<8> data;
-
       constexpr etl::bitset<8, int8_t> bs1(ull(0x00));
       constexpr size_t bs1fnf0 = bs1.find_next(false, 0);
       constexpr size_t bs1fnf1 = bs1.find_next(false, 1);
@@ -1479,17 +1494,6 @@ namespace
       const etl::bitset<32, int32_t> b(0x12345678UL);
 
       span_t s = b.span();
-      CHECK_EQUAL(0x12345678UL, s[0]);
-    }
-
-    //*************************************************************************
-    TEST(test_span_constexpr)
-    {
-      using span_t = etl::bitset<32, int32_t>::const_span_type;
-
-      constexpr etl::bitset<32, int32_t> b(0x12345678UL);
-
-      constexpr span_t s = b.span();
       CHECK_EQUAL(0x12345678UL, s[0]);
     }
 

@@ -1351,7 +1351,7 @@ namespace
 
       constexpr bool bc13 = compare[13U];
       constexpr bool bd13 = data[13U];
-      CHECK_EQUAL(bc7, bd7);
+      CHECK_EQUAL(bc13, bd13);
     }
 
     //*************************************************************************
@@ -1524,7 +1524,7 @@ namespace
     }
 
     //*************************************************************************
-    constexpr etl::bitset<60> test_assignment_operator_helper(etl::bitset<60> to, const etl::bitset<60>& from)
+    constexpr etl::bitset<60> test_assignment_operator_helper(etl::bitset<60> to, etl::bitset<60> from)
     {
       to = from;
 
@@ -1567,8 +1567,8 @@ namespace
       constexpr bool equal = !(data1 != data2);
       constexpr bool not_equal = (data1 != data3);
 
-      CHECK(!(data1 != data2));
-      CHECK(data1 != data3);
+      CHECK(equal);
+      CHECK(not_equal);
     }
 
     //*************************************************************************
@@ -1990,8 +1990,6 @@ namespace
     //*************************************************************************
     TEST(test_find_next)
     {
-      etl::bitset<9> data;
-
       constexpr etl::bitset<9> bs1(ull(0x0000));
       constexpr size_t bs1fnf0 = bs1.find_next(false, 0);
       constexpr size_t bs1fnf1 = bs1.find_next(false, 1);
@@ -2069,20 +2067,6 @@ namespace
       const etl::bitset<32> b(0x12345678UL);
 
       span_t s = b.span();
-      CHECK_EQUAL(0x78U, s[0]);
-      CHECK_EQUAL(0x56U, s[1]);
-      CHECK_EQUAL(0x34U, s[2]);
-      CHECK_EQUAL(0x12U, s[3]);
-    }
-
-    //*************************************************************************
-    TEST(test_span_constexpr)
-    {
-      using span_t = etl::bitset<32>::const_span_type;
-
-      constexpr etl::bitset<32> b(0x12345678UL);
-
-      constexpr span_t s = b.span();
       CHECK_EQUAL(0x78U, s[0]);
       CHECK_EQUAL(0x56U, s[1]);
       CHECK_EQUAL(0x34U, s[2]);

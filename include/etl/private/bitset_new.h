@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 John Wellbelove
+Copyright(c) 2022 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -77,6 +77,34 @@ SOFTWARE.
 
 namespace etl
 {
+  //***************************************************************************
+  /// Exception base for bitset
+  ///\ingroup bitset
+  //***************************************************************************
+  class bitset_exception : public etl::exception
+  {
+  public:
+
+    bitset_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// Bitset type_too_small exception.
+  ///\ingroup bitset
+  //***************************************************************************
+  class bitset_string_too_small : public bitset_exception
+  {
+  public:
+
+    bitset_string_too_small(string_type file_name_, numeric_type line_number_)
+      : bitset_exception(ETL_ERROR_TEXT("bitset:type_too_small", ETL_BITSET_FILE_ID"A"), file_name_, line_number_)
+    {
+    }
+  };
+
   //*************************************************************************
   /// The implementation class for multi-element etl::bitset
   ///\ingroup bitset
@@ -528,9 +556,34 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Returns a string representing the bitset.
+    //*************************************************************************
+    template <typename TString>
+    TString to_string(const_pointer                pbuffer, 
+                      size_t                       number_of_elements, 
+                      size_t                       active_bits, 
+                      typename TString::value_type zero, 
+                      typename TString::value_type one) const
+    {
+      TString result;
+
+      result.resize(active_bits, '\0');
+
+      // Check that the string type can contain the digits.
+      ETL_ASSERT_AND_RETURN_VALUE(result.size() == active_bits, ETL_ERROR(etl::bitset_string_too_small), result);      
+
+      for (size_t i = active_bits; i > 0; --i)
+      {
+        result[active_bits - i] = test(pbuffer, number_of_elements, i - 1) ? one : zero;
+      }
+
+      return result;
+    }
+
+    //*************************************************************************
     /// shift_left_equals
     //*************************************************************************
-    ETL_CONSTEXPR14 void shift_left_equals(pointer pbuffer, size_t number_of_elements, size_t total_bits, size_t shift) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 void shift_left_equals(pointer pbuffer, size_t number_of_elements, size_t shift) ETL_NOEXCEPT
     {
       if ((shift % Bits_Per_Element) == 0U)
       {
@@ -593,7 +646,7 @@ namespace etl
     //*************************************************************************
     /// shift_right_equals
     //*************************************************************************
-    ETL_CONSTEXPR14 void shift_right_equals(pointer pbuffer, size_t number_of_elements, size_t total_bits, size_t shift) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 void shift_right_equals(pointer pbuffer, size_t number_of_elements, size_t shift) ETL_NOEXCEPT
     {
       if ((shift % Bits_Per_Element) == 0U)
       {
@@ -913,6 +966,16 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    ETL_CONSTEXPR14 bitset& operator =(const bitset<Active_Bits, TElement, true>& other) ETL_NOEXCEPT
+    {
+      buffer = other.buffer;
+
+      return *this;
+    }
+
+    //*************************************************************************
     /// Set all of the bits.
     //*************************************************************************
     ETL_CONSTEXPR14 bitset<Active_Bits, TElement, true>& set() ETL_NOEXCEPT
@@ -1003,7 +1066,7 @@ namespace etl
 
         for (size_t i = 0U; i < string_length; ++i)
         {
-          if (text[i] == '1')
+          if (text[i] == ETL_STR('1'))
           {
             buffer |= mask;
           }
@@ -1039,7 +1102,7 @@ namespace etl
 
         for (size_t i = 0U; i < string_length; ++i)
         {
-          if (text[i] == L'1')
+          if (text[i] == ETL_STRL('1'))
           {
             buffer |= mask;
           }
@@ -1075,7 +1138,7 @@ namespace etl
 
         for (size_t i = 0U; i < string_length; ++i)
         {
-          if (text[i] == u'1')
+          if (text[i] == ETL_STRu('1'))
           {
             buffer |= mask;
           }
@@ -1111,7 +1174,7 @@ namespace etl
 
         for (size_t i = 0U; i < string_length; ++i)
         {
-          if (text[i] == U'1')
+          if (text[i] == ETL_STRU('1'))
           {
             buffer |= mask;
           }
@@ -1334,11 +1397,14 @@ namespace etl
     template <typename TString>
 #endif
     TString to_string(typename TString::value_type zero = typename TString::value_type('0'),
-                      typename TString::value_type one  = typename TString::value_type('1')) const ETL_NOEXCEPT
+                      typename TString::value_type one  = typename TString::value_type('1')) const
     {
       TString result;
 
       result.resize(Active_Bits, '\0');
+
+      // Check that the string type can contain the digits.
+      ETL_ASSERT_AND_RETURN_VALUE(result.size() == Active_Bits, ETL_ERROR(etl::bitset_string_too_small), result);
 
       for (size_t i = Active_Bits; i > 0; --i)
       {
@@ -1554,7 +1620,7 @@ namespace etl
     /// span
     /// Returns a span of the underlying buffer.
     //*************************************************************************
-    ETL_CONSTEXPR14 span_type span() ETL_NOEXCEPT
+    span_type span() ETL_NOEXCEPT
     {
       return span_type(&buffer, 1);
     }
@@ -1585,17 +1651,16 @@ namespace etl
     // If the 'TElement' is the default 'void', then use 'char', otherwise uses
     // the unsigned variant of 'TElement'.
     //*************************************************************************
-    template <typename TElement>
     struct select_element_type
     {
-      typedef typename typename etl::make_unsigned<typename etl::conditional<etl::is_same<void, TElement>::value, char, TElement>::type>::type type;
+      typedef typename etl::make_unsigned<typename etl::conditional<etl::is_same<void, TElement>::value, char, TElement>::type>::type type;
     };  
 
   public:
 
-    typedef typename select_element_type<TElement>::type element_type;
-    typedef typename element_type*       pointer;
-    typedef typename const element_type* const_pointer;
+    typedef typename select_element_type::type element_type;
+    typedef element_type*       pointer;
+    typedef const element_type* const_pointer;
       
     static ETL_CONSTANT size_t       Bits_Per_Element   = etl::bitset_impl<element_type>::Bits_Per_Element;
     static ETL_CONSTANT size_t       Number_Of_Elements = (Active_Bits % Bits_Per_Element == 0) ? Active_Bits / Bits_Per_Element : Active_Bits / Bits_Per_Element + 1;
@@ -1755,11 +1820,21 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    ETL_CONSTEXPR14 bitset& operator =(const bitset<Active_Bits, TElement, false>& other) ETL_NOEXCEPT
+    {
+      ibitset.copy_elements(other.buffer, buffer, Number_Of_Elements);
+
+      return *this;
+    }
+
+    //*************************************************************************
     /// Set all of the bits.
     //*************************************************************************
     ETL_CONSTEXPR14 bitset<Active_Bits, TElement, false>& set() ETL_NOEXCEPT
     {
-      etl::fill_n(buffer, ETL_OR_STD::size(buffer), All_Set);
+      etl::fill_n(buffer, Number_Of_Elements, All_Set);
       clear_unused_bits_in_msb();
 
       return *this;
@@ -1867,7 +1942,7 @@ namespace etl
       ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Only integral types are supported");
       ETL_STATIC_ASSERT((sizeof(T) * CHAR_BIT) >= (Number_Of_Elements * Bits_Per_Element), "Type too small");
 
-      return ibitset.value<T>(buffer, Number_Of_Elements);
+      return ibitset.template value<T>(buffer, Number_Of_Elements);
     }
 
     //*************************************************************************
@@ -1999,18 +2074,9 @@ namespace etl
     template <typename TString>
 #endif
     TString to_string(typename TString::value_type zero = typename TString::value_type('0'), 
-                      typename TString::value_type one  = typename TString::value_type('1')) const ETL_NOEXCEPT
+                      typename TString::value_type one  = typename TString::value_type('1')) const
     {
-      TString result;
-
-      result.resize(Active_Bits, '\0');
-
-      for (size_t i = Active_Bits; i > 0; --i) 
-      {
-        result[Active_Bits - i] = test(i - 1) ? one : zero;
-      }
-      
-      return result;
+      return ibitset.template to_string<TString>(buffer, Number_Of_Elements, Active_Bits, zero, one);
     }
 
     //*************************************************************************
@@ -2135,7 +2201,7 @@ namespace etl
       }
       else
       {
-        ibitset.shift_left_equals(buffer, Number_Of_Elements, Active_Bits, shift);
+        ibitset.shift_left_equals(buffer, Number_Of_Elements, shift);
 
         // Truncate any bits shifted to the left.
         clear_unused_bits_in_msb();
@@ -2167,7 +2233,7 @@ namespace etl
       }
       else
       {
-        ibitset.shift_right_equals(buffer, Number_Of_Elements, Active_Bits, shift);
+        ibitset.shift_right_equals(buffer, Number_Of_Elements, shift);
       }
 
       return *this;
@@ -2206,7 +2272,7 @@ namespace etl
     /// span
     /// Returns a span of the underlying buffer.
     //*************************************************************************
-    ETL_CONSTEXPR14 span_type span() ETL_NOEXCEPT
+    span_type span() ETL_NOEXCEPT
     {
       return span_type(buffer, Number_Of_Elements);
     }
