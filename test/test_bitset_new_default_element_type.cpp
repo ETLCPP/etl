@@ -33,6 +33,10 @@ SOFTWARE.
 #include <bitset>
 
 #include "etl/private/bitset_new.h"
+#include "etl/string.h"
+#include "etl/wstring.h"
+#include "etl/u16string.h"
+#include "etl/u32string.h"
 
 namespace
 {
@@ -2093,9 +2097,44 @@ namespace
       etl::string<32> text = b.to_string('.', '*');
       std::string stdtext  = b.to_string<std::string>('.', '*');
 
-      CHECK_THROW(etl::string<32> text1 = b.to_string<etl::string<30>>('.', '*'), etl::bitset_overflow);   
       CHECK_EQUAL("...*..*...**.*...*.*.**..****...", text.c_str());
       CHECK_EQUAL("...*..*...**.*...*.*.**..****...", stdtext.c_str());
+    }
+
+    //*************************************************************************
+    TEST(test_to_wstring)
+    {
+      constexpr etl::bitset<32> b(0x12345678UL);
+
+      etl::wstring<32> text = b.to_string<etl::wstring<32>>(L'.', L'*');
+      std::wstring stdtext = b.to_string<std::wstring>(L'.', L'*');
+
+      CHECK(std::wstring(L"...*..*...**.*...*.*.**..****...") == std::wstring(text.c_str()));
+      CHECK(std::wstring(L"...*..*...**.*...*.*.**..****...") == std::wstring(stdtext.c_str()));
+    }
+
+    //*************************************************************************
+    TEST(test_to_u16string)
+    {
+      constexpr etl::bitset<32> b(0x12345678UL);
+
+      etl::u16string<32> text = b.to_string<etl::u16string<32>>(u'.', u'*');
+      std::u16string stdtext = b.to_string<std::u16string>(u'.', u'*');
+
+      CHECK(std::u16string(u"...*..*...**.*...*.*.**..****...") == std::u16string(text.c_str()));
+      CHECK(std::u16string(u"...*..*...**.*...*.*.**..****...") == std::u16string(stdtext.c_str()));
+    }
+
+    //*************************************************************************
+    TEST(test_to_u32string)
+    {
+      constexpr etl::bitset<32> b(0x12345678UL);
+
+      etl::u32string<32> text = b.to_string<etl::u32string<32>>(U'.', U'*');
+      std::u32string stdtext = b.to_string<std::u32string>(U'.', U'*');
+
+      CHECK(std::u32string(U"...*..*...**.*...*.*.**..****...") == std::u32string(text.c_str()));
+      CHECK(std::u32string(U"...*..*...**.*...*.*.**..****...") == std::u32string(stdtext.c_str()));
     }
   };
 }

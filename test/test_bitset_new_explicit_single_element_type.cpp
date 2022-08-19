@@ -1503,7 +1503,7 @@ namespace
       etl::string<32> text = b.to_string('.', '*');
       std::string stdtext  = b.to_string<std::string>('.', '*');
 
-      CHECK_THROW(b.to_string<etl::string<30>>('.', '*'), etl::bitset_overflow);
+      //CHECK_THROW(b.to_string<etl::string<30>>('.', '*'), etl::bitset_overflow);
       CHECK_EQUAL(std::string("...*..*...**.*...*.*.**..****..."), std::string(text.c_str()));
       CHECK_EQUAL(std::string("...*..*...**.*...*.*.**..****..."), std::string(stdtext.c_str()));
     }
@@ -1518,7 +1518,6 @@ namespace
       etl::wstring<32> text = b.to_string<etl::wstring<32>>(L'.', L'*');
       std::wstring stdtext = b.to_string<std::wstring>(L'.', L'*');
 
-      CHECK_THROW(b.to_string<etl::wstring<30>>(L'.', L'*'), etl::bitset_overflow);
       CHECK(std::wstring(L"...*..*...**.*...*.*.**..****...") == std::wstring(text.c_str()));
       CHECK(std::wstring(L"...*..*...**.*...*.*.**..****...") == std::wstring(stdtext.c_str()));
     }
@@ -1533,7 +1532,6 @@ namespace
       etl::u16string<32> text = b.to_string<etl::u16string<32>>(u'.', u'*');
       std::u16string stdtext = b.to_string<std::u16string>(u'.', u'*');
 
-      CHECK_THROW(b.to_string<etl::u16string<30>>(u'.', u'*'), etl::bitset_overflow);
       CHECK(std::u16string(u"...*..*...**.*...*.*.**..****...") == std::u16string(text.c_str()));
       CHECK(std::u16string(u"...*..*...**.*...*.*.**..****...") == std::u16string(stdtext.c_str()));
     }
@@ -1548,7 +1546,6 @@ namespace
       etl::u32string<32> text = b.to_string<etl::u32string<32>>(U'.', U'*');
       std::u32string stdtext = b.to_string<std::u32string>(U'.', U'*');
 
-      CHECK_THROW(b.to_string<etl::u32string<30>>(U'.', U'*'), etl::bitset_overflow);
       CHECK(std::u32string(U"...*..*...**.*...*.*.**..****...") == std::u32string(text.c_str()));
       CHECK(std::u32string(U"...*..*...**.*...*.*.**..****...") == std::u32string(stdtext.c_str()));
     }
