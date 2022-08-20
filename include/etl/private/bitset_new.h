@@ -120,8 +120,8 @@ namespace etl
     typedef const element_type* const_pointer;
 
     static ETL_CONSTANT size_t Bits_Per_Element = etl::integral_limits<element_type>::bits;
-    static ETL_CONSTANT element_type All_Set    = etl::integral_limits<element_type>::max;
-    static ETL_CONSTANT element_type All_Clear  = element_type(0);
+    static ETL_CONSTANT element_type All_Set_Element    = etl::integral_limits<element_type>::max;
+    static ETL_CONSTANT element_type All_Clear_Element  = element_type(0);
 
     enum
     {
@@ -152,11 +152,7 @@ namespace etl
       size_t       index = 0U;
       element_type mask  = element_type(0);
 
-      if (Number_Of_Elements == 0)
-      {
-        return false;
-      }
-      else if (Number_Of_Elements == 1)
+      if (Number_Of_Elements == 1)
       {
         index = 0;
         mask = element_type(1) << position;
@@ -211,7 +207,7 @@ namespace etl
     {
       if (text == ETL_NULLPTR)
       {
-        etl::fill_n(pbuffer, number_of_elements, All_Clear);
+        etl::fill_n(pbuffer, number_of_elements, All_Clear_Element);
       }
       else
       {
@@ -221,7 +217,7 @@ namespace etl
         // Only reset elements we need to.
         while (element_index != number_of_elements)
         {
-          pbuffer[element_index++] = All_Clear;
+          pbuffer[element_index++] = All_Clear_Element;
         }
 
         // Build from the string.
@@ -241,7 +237,7 @@ namespace etl
     {
       if (text == ETL_NULLPTR)
       {
-        etl::fill_n(pbuffer, number_of_elements, All_Clear);
+        etl::fill_n(pbuffer, number_of_elements, All_Clear_Element);
       }
       else
       {
@@ -251,7 +247,7 @@ namespace etl
         // Only reset elements we need to.
         while (element_index != number_of_elements)
         {
-          pbuffer[element_index++] = All_Clear;
+          pbuffer[element_index++] = All_Clear_Element;
         }
 
         // Build from the string.
@@ -271,7 +267,7 @@ namespace etl
     {
       if (text == ETL_NULLPTR)
       {
-        etl::fill_n(pbuffer, number_of_elements, All_Clear);
+        etl::fill_n(pbuffer, number_of_elements, All_Clear_Element);
       }
       else
       {
@@ -281,7 +277,7 @@ namespace etl
         // Only reset elements we need to.
         while (element_index != number_of_elements)
         {
-          pbuffer[element_index++] = All_Clear;
+          pbuffer[element_index++] = All_Clear_Element;
         }
 
         // Build from the string.
@@ -301,7 +297,7 @@ namespace etl
     {
       if (text == ETL_NULLPTR)
       {
-        etl::fill_n(pbuffer, number_of_elements, All_Clear);
+        etl::fill_n(pbuffer, number_of_elements, All_Clear_Element);
       }
       else
       {
@@ -311,7 +307,7 @@ namespace etl
         // Only reset elements we need to.
         while (element_index != number_of_elements)
         {
-          pbuffer[element_index++] = All_Clear;
+          pbuffer[element_index++] = All_Clear_Element;
         }
 
         // Build from the string.
@@ -461,14 +457,14 @@ namespace etl
       // All but the last.
       for (size_t i = 0UL; i < (number_of_elements - 1U); ++i)
       {
-        if (pbuffer[i] != All_Set)
+        if (pbuffer[i] != All_Set_Element)
         {
           return false;
         }
       }
 
       // The last.
-      if (pbuffer[number_of_elements - 1U] != (All_Set & top_mask))
+      if (pbuffer[number_of_elements - 1U] != (All_Set_Element & top_mask))
       {
         return false;
       }
@@ -522,8 +518,8 @@ namespace etl
         element_type value = pbuffer[index];
 
         // Needs checking?
-        if ((state && (value != All_Clear)) ||
-            (!state && (value != All_Set)))
+        if ((state && (value != All_Clear_Element)) ||
+            (!state && (value != All_Set_Element)))
         {
           // For each bit in the element...
           while ((bit < Bits_Per_Element) && (position < total_bits))
@@ -585,11 +581,17 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 void shift_left_equals(pointer pbuffer, size_t number_of_elements, size_t shift) ETL_NOEXCEPT
     {
-      if ((shift % Bits_Per_Element) == 0U)
+      if (number_of_elements == 1U)
       {
+        // Just one element.
+        pbuffer[0] <<= shift;
+      }
+      else if ((shift % Bits_Per_Element) == 0U)
+      {
+        // Shift by whole element.
         const size_t element_shift = shift / Bits_Per_Element;
         etl::copy_backward(pbuffer, pbuffer + number_of_elements - element_shift, pbuffer + number_of_elements);
-        etl::fill_n(pbuffer, element_shift, All_Clear);
+        etl::fill_n(pbuffer, element_shift, All_Clear_Element);
       }
       else
       {
@@ -648,11 +650,17 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 void shift_right_equals(pointer pbuffer, size_t number_of_elements, size_t shift) ETL_NOEXCEPT
     {
-      if ((shift % Bits_Per_Element) == 0U)
+      if (number_of_elements == 1U)
       {
+        // Just one element.
+        pbuffer[0] >>= shift;
+      }
+      else if ((shift % Bits_Per_Element) == 0U)
+      {
+        // Shift by whole elements.
         const size_t element_shift = (shift / Bits_Per_Element);
         pointer pzeros_begin = etl::copy(pbuffer + element_shift, pbuffer + number_of_elements, pbuffer);      
-        etl::fill_n(pzeros_begin, element_shift, All_Clear);
+        etl::fill_n(pzeros_begin, element_shift, All_Clear_Element);
       }
       else
       {
@@ -758,23 +766,15 @@ namespace etl
         // Set the non-zero elements.
         while ((value != 0) && (i != number_of_elements))
         {
-          pbuffer[i++] = value & All_Set;
+          pbuffer[i++] = value & All_Set_Element;
           value = value >> Shift;
         }
 
         // Clear the remaining elements.
         while (i != number_of_elements)
         {
-          pbuffer[i++] = All_Clear;
+          pbuffer[i++] = All_Clear_Element;
         }
-      }
-    }
-    //*************************************************************************
-    ETL_CONSTEXPR14 void copy_elements(const_pointer sb, pointer db, size_t count) ETL_NOEXCEPT
-    {
-      while (count-- != 0)
-      {
-        *db++ = *sb++;
       }
     }
   };
@@ -818,8 +818,11 @@ namespace etl
     static ETL_CONSTANT size_t       Bits_Per_Element   = etl::integral_limits<element_type>::bits;
     static ETL_CONSTANT size_t       Number_Of_Elements = 1U;
     static ETL_CONSTANT size_t       Allocated_Bits     = Bits_Per_Element;
-    static ETL_CONSTANT element_type All_Set            = etl::integral_limits<typename etl::make_unsigned<element_type>::type>::max;
-    static ETL_CONSTANT element_type All_Clear          = element_type(0);
+    static ETL_CONSTANT element_type All_Set_Element    = etl::integral_limits<typename etl::make_unsigned<element_type>::type>::max;
+    static ETL_CONSTANT element_type All_Clear_Element  = element_type(0);
+    static ETL_CONSTANT size_t       Top_Mask_Shift     = 0U;
+    static ETL_CONSTANT element_type Top_Mask           = All_Set_Element;
+
 
     typedef etl::span<element_type, Number_Of_Elements>       span_type;
     typedef etl::span<const element_type, Number_Of_Elements> const_span_type;
@@ -909,7 +912,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     ETL_CONSTEXPR14 bitset() ETL_NOEXCEPT
-      : buffer(All_Clear)
+      : buffer(All_Clear_Element)
     {
     }
 
@@ -933,7 +936,7 @@ namespace etl
     /// Construct from a string.
     //*************************************************************************
     bitset(const char* text) ETL_NOEXCEPT
-      : buffer(All_Clear)
+      : buffer(All_Clear_Element)
     {
       set(text);
     }
@@ -942,7 +945,7 @@ namespace etl
     /// Construct from a string.
     //*************************************************************************
     bitset(const wchar_t* text) ETL_NOEXCEPT
-      : buffer(All_Clear)
+      : buffer(All_Clear_Element)
     {
       set(text);
     }
@@ -951,7 +954,7 @@ namespace etl
     /// Construct from a string.
     //*************************************************************************
     bitset(const char16_t* text) ETL_NOEXCEPT
-      : buffer(All_Clear)
+      : buffer(All_Clear_Element)
     {
       set(text);
     }
@@ -960,7 +963,7 @@ namespace etl
     /// Construct from a string.
     //*************************************************************************
     bitset(const char32_t* text) ETL_NOEXCEPT
-      : buffer(All_Clear)
+      : buffer(All_Clear_Element)
     {
       set(text);
     }
@@ -980,7 +983,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset<Active_Bits, TElement, true>& set() ETL_NOEXCEPT
     {
-      buffer = All_Set;
+      buffer = All_Set_Element;
 
       return *this;
     }
@@ -1234,7 +1237,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset<Active_Bits, TElement, true>& reset() ETL_NOEXCEPT
     {
-      buffer = All_Clear;
+      buffer = All_Clear_Element;
 
       return *this;
     }
@@ -1289,7 +1292,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bool all() const ETL_NOEXCEPT
     {
-      return buffer == All_Set;
+      return buffer == All_Set_Element;
     }
 
     //*************************************************************************
@@ -1297,7 +1300,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bool all(element_type mask) const ETL_NOEXCEPT
     {
-      return buffer == (All_Set & mask);
+      return buffer == (All_Set_Element & mask);
     }
 
     //*************************************************************************
@@ -1305,7 +1308,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bool none() const ETL_NOEXCEPT
     {
-      return buffer == All_Clear;
+      return buffer == All_Clear_Element;
     }
 
     //*************************************************************************
@@ -1313,7 +1316,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bool none(element_type mask) const ETL_NOEXCEPT
     {
-      return (buffer & mask) == All_Clear;
+      return (buffer & mask) == All_Clear_Element;
     }
 
     //*************************************************************************
@@ -1439,9 +1442,8 @@ namespace etl
 
         element_type mask = 1U << position;
 
-        // For each element in the bitset...
         // Needs checking?
-        if ((state && (buffer != All_Clear)) || (!state && (buffer != All_Set)))
+        if ((state && (buffer != All_Clear_Element)) || (!state && (buffer != All_Set_Element)))
         {
           // For each bit in the element...
           while (bit < Active_Bits)
@@ -1666,9 +1668,9 @@ namespace etl
     static ETL_CONSTANT size_t       Number_Of_Elements = (Active_Bits % Bits_Per_Element == 0) ? Active_Bits / Bits_Per_Element : Active_Bits / Bits_Per_Element + 1;
     static ETL_CONSTANT size_t       Allocated_Bits     = Number_Of_Elements * Bits_Per_Element;
     static ETL_CONSTANT size_t       Top_Mask_Shift     = ((Bits_Per_Element - (Allocated_Bits - Active_Bits)) % Bits_Per_Element);
-    static ETL_CONSTANT element_type All_Set            = etl::bitset_impl<element_type>::All_Set;
-    static ETL_CONSTANT element_type All_Clear          = etl::bitset_impl<element_type>::All_Clear;
-    static ETL_CONSTANT element_type Top_Mask           = element_type(Top_Mask_Shift == 0 ? All_Set : ~(All_Set << Top_Mask_Shift));
+    static ETL_CONSTANT element_type All_Set_Element    = etl::bitset_impl<element_type>::All_Set_Element;
+    static ETL_CONSTANT element_type All_Clear_Element  = etl::bitset_impl<element_type>::All_Clear_Element;
+    static ETL_CONSTANT element_type Top_Mask           = element_type(Top_Mask_Shift == 0 ? All_Set_Element : ~(All_Set_Element << Top_Mask_Shift));
 
     static ETL_CONSTANT size_t ALLOCATED_BITS = Allocated_Bits; ///< For backward compatibility.
 
@@ -1766,7 +1768,7 @@ namespace etl
     ETL_CONSTEXPR14 bitset(const bitset<Active_Bits, TElement, false>& other) ETL_NOEXCEPT
       : buffer()
     {
-      ibitset.copy_elements(other.buffer, buffer, Number_Of_Elements);
+      etl::copy_n(other.buffer, Number_Of_Elements, buffer);
     }
 
     //*************************************************************************
@@ -1824,7 +1826,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset& operator =(const bitset<Active_Bits, TElement, false>& other) ETL_NOEXCEPT
     {
-      ibitset.copy_elements(other.buffer, buffer, Number_Of_Elements);
+      etl::copy_n(other.buffer, Number_Of_Elements, buffer);
 
       return *this;
     }
@@ -1834,7 +1836,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset<Active_Bits, TElement, false>& set() ETL_NOEXCEPT
     {
-      etl::fill_n(buffer, Number_Of_Elements, All_Set);
+      etl::fill_n(buffer, Number_Of_Elements, All_Set_Element);
       clear_unused_bits_in_msb();
 
       return *this;
@@ -1965,7 +1967,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset<Active_Bits, TElement, false>& reset() ETL_NOEXCEPT
     {
-      etl::fill_n(buffer, Number_Of_Elements, All_Clear);
+      etl::fill_n(buffer, Number_Of_Elements, All_Clear_Element);
 
       return *this;
     }
@@ -2202,8 +2204,6 @@ namespace etl
       else
       {
         ibitset.shift_left_equals(buffer, Number_Of_Elements, shift);
-
-        // Truncate any bits shifted to the left.
         clear_unused_bits_in_msb();
       }
       
