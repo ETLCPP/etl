@@ -183,13 +183,6 @@ namespace etl
   {
     return std::copy_n(sb, count, db);
   }
-#elif ETL_USING_STL && ETL_USING_CPP11 && !ETL_FORCE_CONSTEXPR_ALGORITHMS
-  // Use the STL implementation
-  template <typename TIterator1, typename TSize, typename TIterator2>
-  TIterator2 copy_n(TIterator1 sb, TSize count, TIterator2 db)
-  {
-    return std::copy_n(sb, count, db);
-  }
 #else
   // Non-pointer or not trivially copyable or not using builtin memcpy.
   template <typename TIterator1, typename TSize, typename TIterator2>
@@ -236,12 +229,6 @@ namespace etl
   {
     return std::move(sb, se, db);
   }
-#elif ETL_USING_STL && ETL_USING_CPP11 && !ETL_FORCE_CONSTEXPR_ALGORITHMS
-  template <typename TIterator1, typename TIterator2>
-  TIterator2 move(TIterator1 sb, TIterator1 se, TIterator2 db)
-  {
-    return std::move(sb, se, db);
-  }
 #else
   // non-pointer or not trivially copyable
   template <typename TIterator1, typename TIterator2>
@@ -264,12 +251,6 @@ namespace etl
   template <typename TIterator1, typename TIterator2>
   ETL_CONSTEXPR20
     TIterator2 move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
-  {
-    return std::move_backward(sb, se, de);
-  }
-#elif ETL_USING_STL && ETL_USING_CPP11 && !ETL_FORCE_CONSTEXPR_ALGORITHMS
-  template <typename TIterator1, typename TIterator2>
-  TIterator2 move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
     return std::move_backward(sb, se, de);
   }

@@ -378,12 +378,6 @@ SOFTWARE.
 #endif
 
 //*************************************
-// Set force flag to 0 if not already set.
-#if !defined(ETL_FORCE_CONSTEXPR_ALGORITHMS)
-  #define ETL_FORCE_CONSTEXPR_ALGORITHMS 0
-#endif
-
-//*************************************
 // Check for availability of certain builtins
 #include "profiles/determine_builtin_support.h"
 
