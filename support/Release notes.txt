@@ -4,7 +4,15 @@ Added etl::message_broker to message framework
 Added 'successor' parameter constructors to all etl::imessage_router derived classes
 Added etl::binary_search to algorithm.h
 Standardise conditional compilation macros for ETL_USING_CPP11 and ETL_USING_STL
-Added a new variant of bitset that may be constexpr.
+Added a new variant of bitset that may be constexpr
+Removed the use of ETL_FORCE_CONSTEXPR_ALGORITHMS as all algorithms may be constexpr
+Rationalised etl::send_message functions
+Fixed implicit virtual warning for etl::vector
+Fixed C++03 delegate compatibility
+Added missing char_traits unit tests and char_traits bug fixes
+Added default message id constructors
+Added ability to set the bitset from wchar_t, char16_t and char32_t
+Added ARM5 and ARM6 compiler compatibility for GCC atomics
 
 ===============================================================================
 20.32.1
