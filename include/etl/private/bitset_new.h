@@ -152,7 +152,7 @@ namespace etl
       size_t       index = 0U;
       element_type mask  = element_type(0);
 
-      if (Number_Of_Elements == 1)
+      if (Number_Of_Elements == 1U)
       {
         index = 0;
         mask = element_type(1) << position;
@@ -179,7 +179,7 @@ namespace etl
       {
         return;
       }
-      else if (Number_Of_Elements == 1)
+      else if (Number_Of_Elements == 1U)
       {
         index = 0;
         bit = element_type(1) << position;
