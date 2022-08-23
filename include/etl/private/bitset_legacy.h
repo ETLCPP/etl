@@ -143,22 +143,22 @@ namespace etl
 
     // The type used for each element in the array.
 #if !defined(ETL_BITSET_ELEMENT_TYPE)
-    typedef uint_least8_t element_type;
     #define ETL_BITSET_ELEMENT_TYPE uint_least8_t
 #endif
 
   public:
 
-    typedef typename etl::make_unsigned<ETL_BITSET_ELEMENT_TYPE>::type element_t;
+    typedef typename etl::make_unsigned<ETL_BITSET_ELEMENT_TYPE>::type element_type;
+    typedef element_type element_t; // Backward compatibility
 
-    static ETL_CONSTANT element_t ALL_SET = etl::integral_limits<element_t>::max;
-    static ETL_CONSTANT element_t ALL_CLEAR = 0;
+    static ETL_CONSTANT element_type ALL_SET = etl::integral_limits<element_type>::max;
+    static ETL_CONSTANT element_type ALL_CLEAR = 0;
 
-    static ETL_CONSTANT size_t    Bits_Per_Element = etl::integral_limits<element_t>::bits;
+    static ETL_CONSTANT size_t    Bits_Per_Element = etl::integral_limits<element_type>::bits;
 
 #if ETL_USING_CPP11
-    typedef etl::span<element_t>       span_type;
-    typedef etl::span<const element_t> const_span_type;
+    typedef etl::span<element_type>       span_type;
+    typedef etl::span<const element_type> const_span_type;
 #endif
 
     enum
@@ -272,7 +272,7 @@ namespace etl
     bool test(size_t position) const
     {
       size_t    index;
-      element_t mask;
+      element_type mask;
 
       if (Number_Of_Elements == 0)
       {
@@ -281,12 +281,12 @@ namespace etl
       else if (Number_Of_Elements == 1)
       {
         index = 0;
-        mask = element_t(1) << position;
+        mask = element_type(1) << position;
       }
       else
       {
         index = position >> etl::log2<Bits_Per_Element>::value;
-        mask = element_t(1) << (position & (Bits_Per_Element - 1));
+        mask = element_type(1) << (position & (Bits_Per_Element - 1));
       }
 
       return (pdata[index] & mask) != 0;
@@ -309,7 +309,7 @@ namespace etl
     ibitset& set(size_t position, bool value = true)
     {
       size_t    index;
-      element_t bit;
+      element_type bit;
 
       if (Number_Of_Elements == 0) 
       {
@@ -318,12 +318,12 @@ namespace etl
       else if (Number_Of_Elements == 1)
       {
         index = 0;
-        bit = element_t(1) << position;
+        bit = element_type(1) << position;
       }
       else
       {
         index = position >> etl::log2<Bits_Per_Element>::value;
-        bit = element_t(1) << (position & (Bits_Per_Element - 1));
+        bit = element_type(1) << (position & (Bits_Per_Element - 1));
       }
 
       if (value)
@@ -505,7 +505,7 @@ namespace etl
     ibitset& reset(size_t position)
     {
       size_t       index;
-      element_t bit;
+      element_type bit;
 
       if (Number_Of_Elements == 0)
       {
@@ -514,12 +514,12 @@ namespace etl
       else if (Number_Of_Elements == 1)
       {
         index = 0;
-        bit = element_t(1) << position;
+        bit = element_type(1) << position;
       }
       else
       {
         index = position >> etl::log2<Bits_Per_Element>::value;
-        bit = element_t(1) << (position & (Bits_Per_Element - 1));
+        bit = element_type(1) << (position & (Bits_Per_Element - 1));
       }
 
       pdata[index] &= ~bit;
@@ -550,7 +550,7 @@ namespace etl
       if (position < Active_Bits)
       {
         size_t    index;
-        element_t bit;
+        element_type bit;
         
         if (Number_Of_Elements == 0)
         {
@@ -559,12 +559,12 @@ namespace etl
         else if (Number_Of_Elements == 1)
         {
           index = 0;
-          bit = element_t(1) << position;
+          bit = element_type(1) << position;
         }
         else
         {
           index = position >> log2<Bits_Per_Element>::value;
-          bit = element_t(1) << (position & (Bits_Per_Element - 1));
+          bit = element_type(1) << (position & (Bits_Per_Element - 1));
         }
 
         pdata[index] ^= bit;
@@ -662,12 +662,12 @@ namespace etl
         bit = position & (Bits_Per_Element - 1);
       }
 
-      element_t mask = 1 << bit;
+      element_type mask = 1 << bit;
 
       // For each element in the bitset...
       while (index < Number_Of_Elements)
       {
-        element_t value = pdata[index];
+        element_type value = pdata[index];
 
         // Needs checking?
         if ((state && (value != ALL_CLEAR)) ||
@@ -794,12 +794,12 @@ namespace etl
           const size_t lsb_shift = Bits_Per_Element - split_position;
           const size_t msb_shift = split_position;
 
-          const element_t lsb_mask         = element_t(etl::integral_limits<element_t>::max >> (Bits_Per_Element - split_position));
-          const element_t msb_mask         = etl::integral_limits<element_t>::max - lsb_mask;
-          const element_t lsb_shifted_mask = element_t(lsb_mask << lsb_shift);
+          const element_type lsb_mask         = element_type(etl::integral_limits<element_type>::max >> (Bits_Per_Element - split_position));
+          const element_type msb_mask         = etl::integral_limits<element_type>::max - lsb_mask;
+          const element_type lsb_shifted_mask = element_type(lsb_mask << lsb_shift);
           
           // First lsb.
-          element_t lsb = element_t((pdata[src_index] & lsb_mask) << lsb_shift);
+          element_type lsb = element_type((pdata[src_index] & lsb_mask) << lsb_shift);
           pdata[dst_index] = lsb;
           --src_index;
 
@@ -807,12 +807,12 @@ namespace etl
           while (src_index >= 0)
           {
             // Shift msb.
-            element_t msb = element_t((pdata[src_index] & msb_mask) >> msb_shift);
+            element_type msb = element_type((pdata[src_index] & msb_mask) >> msb_shift);
             pdata[dst_index] = pdata[dst_index] | msb;
             --dst_index;
 
             // Shift lsb.
-            element_t lsb = element_t((pdata[src_index] & lsb_mask) << lsb_shift);
+            element_type lsb = element_type((pdata[src_index] & lsb_mask) << lsb_shift);
             pdata[dst_index] = lsb;
             --src_index;
           }
@@ -874,19 +874,19 @@ namespace etl
           const size_t lsb_shift = Bits_Per_Element - split_position;
           const size_t msb_shift = split_position;
 
-          const element_t lsb_mask         = element_t(etl::integral_limits<element_t>::max >> (Bits_Per_Element - split_position));
-          const element_t msb_mask         = etl::integral_limits<element_t>::max - lsb_mask;
-          const element_t msb_shifted_mask = element_t(msb_mask >> msb_shift);
+          const element_type lsb_mask         = element_type(etl::integral_limits<element_type>::max >> (Bits_Per_Element - split_position));
+          const element_type msb_mask         = etl::integral_limits<element_type>::max - lsb_mask;
+          const element_type msb_shifted_mask = element_type(msb_mask >> msb_shift);
 
           // Now do the shifting.
           while (src_index < int(Number_Of_Elements - 1))
           {
             // Shift msb.
-            element_t msb = element_t((pdata[src_index] & msb_mask) >> msb_shift);
+            element_type msb = element_type((pdata[src_index] & msb_mask) >> msb_shift);
             ++src_index;
             
             // Shift lsb.
-            element_t lsb = element_t((pdata[src_index] & lsb_mask) << lsb_shift);
+            element_type lsb = element_type((pdata[src_index] & lsb_mask) << lsb_shift);
             
             // Combine them.
             pdata[dst_index] = lsb | msb;
@@ -894,7 +894,7 @@ namespace etl
           }
 
           // Final msb.
-          element_t msb = element_t((pdata[src_index] & msb_mask) >> msb_shift);
+          element_type msb = element_type((pdata[src_index] & msb_mask) >> msb_shift);
           pdata[dst_index] = msb;
 
           // Clear the remaining bits.
@@ -969,7 +969,7 @@ namespace etl
       // Can we do it in one hit?
       if (Shift == 0)
       {
-        pdata[0] = element_t(value);
+        pdata[0] = element_type(value);
       }
       else
       {
@@ -1011,14 +1011,14 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    ibitset(size_t nbits_, size_t size_, element_t* pdata_)
+    ibitset(size_t nbits_, size_t size_, element_type* pdata_)
       : Active_Bits(nbits_)
       , Number_Of_Elements(size_)
       , pdata(pdata_)
     {
       const size_t allocated_bits = Number_Of_Elements * Bits_Per_Element;
       const size_t top_mask_shift = ((Bits_Per_Element - (allocated_bits - Active_Bits)) % Bits_Per_Element);
-      Top_Mask = element_t(top_mask_shift == 0 ? ALL_SET : ~(ALL_SET << top_mask_shift));
+      Top_Mask = element_type(top_mask_shift == 0 ? ALL_SET : ~(ALL_SET << top_mask_shift));
     }
 
     //*************************************************************************
@@ -1029,7 +1029,7 @@ namespace etl
       return etl::equal(lhs.pdata, lhs.pdata + lhs.Number_Of_Elements, rhs.pdata);
     }
 
-    element_t Top_Mask;
+    element_type Top_Mask;
 
   private:
 
@@ -1044,9 +1044,9 @@ namespace etl
     // Disable copy construction.
     ibitset(const ibitset&);
 
-    const size_t Active_Bits;
-    const size_t Number_Of_Elements;
-    element_t*   pdata;
+    const size_t  Active_Bits;
+    const size_t  Number_Of_Elements;
+    element_type* pdata;
 
     //*************************************************************************
     /// Destructor.
@@ -1426,7 +1426,7 @@ namespace etl
 
   private:
 
-    element_t data[Array_Size > 0U ? Array_Size : 1U];
+    element_type data[Array_Size > 0U ? Array_Size : 1U];
   };
 
   //***************************************************************************
