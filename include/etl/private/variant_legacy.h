@@ -55,7 +55,7 @@ SOFTWARE.
 //*****************************************************************************
 namespace etl
 {
-#if !defined(ETL_USE_LEGACY_VARIANT)
+#if ETL_USING_CPP11 && !defined(ETL_USE_LEGACY_VARIANT)
   namespace legacy
   {
 #endif
@@ -978,7 +978,7 @@ namespace etl
 
 #undef ETL_GEN_LEGACY_VISIT
 
-#if !defined(ETL_USE_LEGACY_VARIANT)
+#if ETL_USING_CPP11 && !defined(ETL_USE_LEGACY_VARIANT)
   }
 #endif
 }
