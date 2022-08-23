@@ -409,6 +409,7 @@ namespace etl
   // binary_search
   //***************************************************************************
   template <typename TIterator, typename T, typename Compare>
+  ETL_NODISCARD
   bool binary_search(TIterator first, TIterator last, const T& value, Compare compare)
   {
     first = etl::lower_bound(first, last, value, compare);
@@ -417,6 +418,7 @@ namespace etl
   }
 
   template <typename TIterator, typename T>
+  ETL_NODISCARD
   bool binary_search(TIterator first, TIterator last, const T& value)
   {
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
