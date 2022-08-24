@@ -36,12 +36,7 @@ SOFTWARE.
 #include "message_types.h"
 #include "message.h"
 #include "message_router.h"
-#include "array.h"
 #include "span.h"
-
-#if ETL_USING_STL && ETL_USING_CPP11
-  #include <array>
-#endif
 
 namespace etl
 {
