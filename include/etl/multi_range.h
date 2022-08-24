@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2020 jwellbelove
+Copyright(c) 2020 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -115,7 +115,7 @@ namespace etl
     //***************************************************************************
     void detach()
     {
-      inner = ETL_NULLPTR;  
+      inner = ETL_NULLPTR;
     }
 
     //***************************************************************************
@@ -144,7 +144,7 @@ namespace etl
     //***************************************************************************
     size_t number_of_ranges() const
     {
-      size_t count = 1U;
+      size_t count = 1UL;
 
       imulti_range* p_range = inner;
 
@@ -162,7 +162,7 @@ namespace etl
     //***************************************************************************
     size_t number_of_iterations()
     {
-      size_t count = 0U;
+      size_t count = 0UL;
 
       for (start(); !completed(); next())
       {
@@ -242,7 +242,7 @@ namespace etl
     typedef const T& const_reference;
 
     //***************************************************************************
-    /// 
+    ///
     //***************************************************************************
     struct step_type
     {
@@ -252,7 +252,7 @@ namespace etl
     };
 
     //***************************************************************************
-    /// 
+    ///
     //***************************************************************************
     struct forward_step : public step_type
     {
@@ -265,7 +265,7 @@ namespace etl
     };
 
     //***************************************************************************
-    /// 
+    ///
     //***************************************************************************
     struct forward_step_by : public step_type
     {
@@ -285,7 +285,7 @@ namespace etl
     };
 
     //***************************************************************************
-    /// 
+    ///
     //***************************************************************************
     struct reverse_step : public step_type
     {
@@ -298,7 +298,7 @@ namespace etl
     };
 
     //***************************************************************************
-    /// 
+    ///
     //***************************************************************************
     struct reverse_step_by : public step_type
     {
@@ -318,7 +318,7 @@ namespace etl
     };
 
     //***************************************************************************
-    /// 
+    ///
     //***************************************************************************
     struct compare_type
     {
@@ -328,7 +328,7 @@ namespace etl
     };
 
     //***************************************************************************
-    /// 
+    ///
     //***************************************************************************
     struct not_equal_compare : public compare_type
     {
@@ -341,7 +341,7 @@ namespace etl
     };
 
     //***************************************************************************
-    /// 
+    ///
     //***************************************************************************
     struct less_than_compare : public compare_type
     {
@@ -354,7 +354,7 @@ namespace etl
     };
 
     //***************************************************************************
-    /// 
+    ///
     //***************************************************************************
     struct greater_than_compare : public compare_type
     {
@@ -418,8 +418,8 @@ namespace etl
     /// \param first The starting value of the range.
     /// \param last  The terminating value of the range. Equal to the last required value + 1.
     //***************************************************************************
-    multi_range(value_type    first_, 
-                value_type    last_, 
+    multi_range(value_type    first_,
+                value_type    last_,
                 step_type&    stepper_,
                 compare_type& compare_)
       : first(first_)
@@ -509,7 +509,7 @@ namespace etl
 
       return has_rolled_over;
     }
-       
+
     multi_range() ETL_DELETE;
     multi_range(const multi_range&) ETL_DELETE;
     multi_range& operator =(const multi_range&) ETL_DELETE;

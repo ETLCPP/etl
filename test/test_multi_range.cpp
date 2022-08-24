@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2020 jwellbelove
+Copyright(c) 2020 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -53,6 +53,11 @@ namespace
     {
     }
 
+    Index(const Index& other)
+      : index(other.index)
+    {
+    }
+
     Index& operator ++()
     {
       ++index;
@@ -71,7 +76,7 @@ namespace
       return *this;
     }
 
-    bool operator = (const Index& other)
+    Index& operator = (const Index& other)
     {
       index = other.index;
 
@@ -145,7 +150,7 @@ namespace
   Inner inner(strings.begin(), strings.end());
 
   SUITE(test_multi_range)
-  {  
+  {
     //*************************************************************************
     TEST(create_three_loops)
     {
@@ -184,7 +189,7 @@ namespace
     {
       middle.append(inner);
       outer.insert(middle);
-        
+
       CHECK(outer.completed());
       CHECK(middle.completed());
       CHECK(inner.completed());
@@ -277,7 +282,7 @@ namespace
     TEST(run_three_loops)
     {
       outer.append(middle).append(inner);
-     
+
       struct result
       {
         int outer;
@@ -305,7 +310,7 @@ namespace
           result{ 6, -1, "zero" }, result{ 6, -1, "one" }, result{ 6, -1, "two" }, result{ 6, -1, "three" }
       };
 
-      size_t i = 0U;
+      size_t i = 0UL;
 
       //  Create const references to the loop values.
       const int&      value_outer  = outer.value();
@@ -376,7 +381,7 @@ namespace
           result{ 0, -1, "zero" }, result{ 0, -1, "one" }, result{ 0, -1, "two" }, result{ 0, -1, "three" }
       };
 
-      size_t i = 0U;
+      size_t i = 0UL;
 
       //  Create const references to the loop values.
       const int&      value_outer  = outer.value();

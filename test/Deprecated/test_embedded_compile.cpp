@@ -273,23 +273,23 @@ struct dynamic_serial_port
 //*****************************************************************************
 void test_io_port()
 {
-  serial_port<0x1234> port1;
+  serial_port<0x1234U> port1;
 
   uint8_t rxdata  = port1.rxdata;
-  port1.txdata    = 0x34;
-  port1.control   = 0x5678; // Little endian.
+  port1.txdata    = 0x34U;
+  port1.control   = 0x5678U; // Little endian.
   uint16_t status = port1.status;
-  port1.control2  = 0xDE;
+  port1.control2  = 0xDEU;
   int control2    = port1.control2;
 
   uint8_t memory[7];
   dynamic_serial_port port2(memory);
 
   uint8_t rxdata2  = port2.rxdata;
-  port2.txdata     = 0x34;
-  port2.control    = 0x5678; // Little endian.
+  port2.txdata     = 0x34U;
+  port2.control    = 0x5678U; // Little endian.
   uint16_t status2 = port2.status;
-  port2.control2   = 0xDE;
+  port2.control2   = 0xDEU;
   int control22    = port2.control2;
 }
 
@@ -400,10 +400,10 @@ void test_integral_limits()
 //*****************************************************************************
 void test_constant()
 {
-  typedef etl::constant<unsigned int, 0x12345678> C1;
-  
+  typedef etl::constant<unsigned int, 0x12345678UL> C1;
+
   unsigned int i1 = C1::value;
-  
+
   C1 c1;
   unsigned int i2 = c1.value;
 }

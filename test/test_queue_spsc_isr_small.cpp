@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 jwellbelove
+Copyright(c) 2018 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -472,6 +472,46 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_size_push_front_pop)
+    {
+      Access::clear();
+
+      etl::queue_spsc_isr<int, 4, Access, etl::memory_model::MEMORY_MODEL_SMALL> queue;
+
+      CHECK_EQUAL(0U, queue.size());
+
+      queue.push(1);
+      queue.push(2);
+      queue.push(3);
+      queue.push(4);
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(3U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(2U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK_EQUAL(4, queue.front());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK_EQUAL(4, queue.front());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(0U, queue.size());
+    }
+
+    //*************************************************************************
     TEST(test_multiple_emplace)
     {
       etl::queue_spsc_isr<Data, 4, Access, etl::memory_model::MEMORY_MODEL_SMALL> queue;
@@ -609,7 +649,7 @@ namespace
     #define FIX_PROCESSOR_AFFINITY
   #endif
 
-    size_t ticks = 0;
+    size_t ticks = 0UL;
 
     struct ThreadLock
     {
@@ -630,14 +670,14 @@ namespace
 
     etl::queue_spsc_isr<int, 10, ThreadLock> queue;
 
-    const size_t LENGTH = 1000;
+    const size_t LENGTH = 1000UL;
 
     void timer_thread()
     {
       RAISE_THREAD_PRIORITY;
       FIX_PROCESSOR_AFFINITY;
 
-      const size_t TICK = 1;
+      const size_t TICK = 1UL;
       size_t tick = TICK;
       ticks = 1;
 
@@ -681,7 +721,7 @@ namespace
 
       CHECK_EQUAL(LENGTH, tick_list.size());
 
-      for (size_t i = 0; i < LENGTH; ++i)
+      for (size_t i = 0UL; i < LENGTH; ++i)
       {
         CHECK_EQUAL(i + 1, tick_list[i]);
       }

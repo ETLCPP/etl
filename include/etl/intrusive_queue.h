@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2016 jwellbelove
+Copyright(c) 2016 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -128,7 +128,7 @@ namespace etl
     //*************************************************************************
     /// Removes the oldest item from the queue and pushes it to the destination.
     /// Undefined behaviour if the queue is already empty.
-    /// NOTE: The destination must be an intrusize container that supports a push(TLink) member function.
+    /// NOTE: The destination must be an intrusive container that supports a push(TLink) member function.
     //*************************************************************************
     template <typename TContainer>
     void pop_into(TContainer& destination)

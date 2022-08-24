@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -56,6 +56,137 @@ namespace
   {
   };
 
+  // Unscoped enum
+  enum Enum
+  {
+  };
+
+  // Scoped enum
+  enum class EnumClass
+  {
+  };
+
+  // Class which can be implicitly converted to/from any default-constructable type
+  struct ToAny 
+  {
+    ToAny() = default;
+    template <typename T> ToAny(T){};
+    template <typename T> operator T() { return T(); }
+  };
+
+  // Can't be default constructed
+  struct NotDefaultConstructable 
+  {
+    NotDefaultConstructable() = delete;
+  };
+
+  //*********************************************
+  struct Copyable
+  {
+    Copyable() {}
+    Copyable(const Copyable&) noexcept {}
+    Copyable& operator =(const Copyable&) noexcept { return *this; }
+
+    Copyable(Copyable&&) = delete;
+    Copyable& operator =(Copyable&) = delete;
+  };
+
+  //*********************************************
+  struct Moveable
+  {
+    Moveable() {}
+    Moveable(Moveable&&) noexcept { }
+    Moveable& operator =(Moveable&&) noexcept { return *this; }
+
+    Moveable(const Moveable&) = delete;
+    Moveable& operator =(const Moveable&) = delete;
+  };
+
+  //*********************************************
+  struct MoveableCopyable
+  {
+    MoveableCopyable() {}
+    MoveableCopyable(MoveableCopyable&&) noexcept {}
+    MoveableCopyable& operator =(MoveableCopyable&&) noexcept { return *this; }
+    MoveableCopyable(const MoveableCopyable&) {}
+    MoveableCopyable& operator =(const MoveableCopyable&) { return *this; }
+  };
+}
+
+// Definitions for when the STL and compiler built-ins are not available.
+#if ETL_NOT_USING_STL && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
+
+using etl::is_assignable;
+using etl::is_constructible;
+using etl::is_copy_constructible;
+using etl::is_move_constructible;
+
+//*************************
+template <>
+struct etl::is_assignable<Copyable, Copyable> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_constructible<Copyable> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_copy_constructible<Copyable> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_move_constructible<Copyable> : public etl::false_type
+{
+};
+
+//*************************
+template <>
+struct etl::is_assignable<Moveable, Moveable> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_constructible<Moveable> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_copy_constructible<Moveable> : public etl::false_type
+{
+};
+
+template <>
+struct etl::is_move_constructible<Moveable> : public etl::true_type
+{
+};
+
+//*************************
+template <>
+struct etl::is_assignable<MoveableCopyable, MoveableCopyable> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_constructible<MoveableCopyable> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_copy_constructible<MoveableCopyable> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_move_constructible<MoveableCopyable> : public etl::true_type
+{
+};
+#endif
+
+namespace
+{
   SUITE(test_type_traits)
   {
     //*************************************************************************
@@ -197,6 +328,10 @@ namespace
       CHECK(etl::is_reference<const int&>::value          == std::is_reference<const int&>::value);
       CHECK(etl::is_reference<volatile int&>::value       == std::is_reference<volatile int&>::value);
       CHECK(etl::is_reference<const volatile int&>::value == std::is_reference<const volatile int&>::value);
+      CHECK(etl::is_reference<int&&>::value                == std::is_reference<int&&>::value);
+      CHECK(etl::is_reference<const int&&>::value          == std::is_reference<const int&&>::value);
+      CHECK(etl::is_reference<volatile int&&>::value       == std::is_reference<volatile int&&>::value);
+      CHECK(etl::is_reference<const volatile int&&>::value == std::is_reference<const volatile int&&>::value);
     }
 
     //*************************************************************************
@@ -851,6 +986,34 @@ namespace
   }
 
   //*************************************************************************
+  #define CHECK_EQUAL_FOR_TYPE(type) CHECK_EQUAL(std::is_enum_v<type>, etl::is_enum_v<type>)
+
+  TEST(test_is_enum) {
+    CHECK_EQUAL_FOR_TYPE(void);
+    CHECK_EQUAL_FOR_TYPE(void*);
+    CHECK_EQUAL_FOR_TYPE(int);
+    CHECK_EQUAL_FOR_TYPE(int*);
+    CHECK_EQUAL_FOR_TYPE(ToAny);
+    CHECK_EQUAL_FOR_TYPE(NotDefaultConstructable);
+    CHECK_EQUAL_FOR_TYPE(Enum);
+    CHECK_EQUAL_FOR_TYPE(Enum&);
+    CHECK_EQUAL_FOR_TYPE(Enum&&);
+    CHECK_EQUAL_FOR_TYPE(Enum*);
+    CHECK_EQUAL_FOR_TYPE(const Enum);
+    CHECK_EQUAL_FOR_TYPE(volatile Enum);
+    CHECK_EQUAL_FOR_TYPE(const volatile Enum);
+    CHECK_EQUAL_FOR_TYPE(EnumClass);
+    CHECK_EQUAL_FOR_TYPE(EnumClass&);
+    CHECK_EQUAL_FOR_TYPE(EnumClass&&);
+    CHECK_EQUAL_FOR_TYPE(EnumClass*);
+    CHECK_EQUAL_FOR_TYPE(const EnumClass);
+    CHECK_EQUAL_FOR_TYPE(volatile EnumClass);
+    CHECK_EQUAL_FOR_TYPE(const volatile EnumClass);
+
+  }
+  #undef CHECK_EQUAL_FOR_TYPE
+
+  //*************************************************************************
   TEST(test_integral_constants)
   {
     CHECK_EQUAL(1, (etl::integral_constant<int, 1>::value));
@@ -870,5 +1033,115 @@ namespace
   {
     CHECK((etl::are_all_same<int, int, int, int, int>::value == true));
     CHECK((etl::are_all_same<int, int, int, char, int>::value == false));
+  }
+
+  //*************************************************************************
+  TEST(test_conjunction)
+  {
+    CHECK((etl::conjunction_v<etl::true_type, etl::true_type, etl::true_type>));
+    CHECK((!etl::conjunction_v<etl::true_type, etl::false_type, etl::true_type>));
+  }
+
+  //*************************************************************************
+  TEST(test_disjunction)
+  {
+    CHECK((etl::disjunction_v<etl::false_type, etl::true_type, etl::false_type>));
+    CHECK((!etl::disjunction_v<etl::false_type, etl::false_type, etl::false_type>));
+  }
+
+  //*************************************************************************
+  TEST(test_is_assignable)
+  {
+    CHECK((etl::is_assignable_v<Copyable, Copyable>) == (std::is_assignable_v<Copyable, Copyable>));
+    CHECK((etl::is_assignable_v<Moveable, Moveable>) == (std::is_assignable_v<Moveable, Moveable>));
+    CHECK((etl::is_assignable_v<MoveableCopyable, MoveableCopyable>) == (std::is_assignable_v<MoveableCopyable, MoveableCopyable>));
+  }
+
+  //*************************************************************************
+  TEST(test_is_lvalue_assignable)
+  {
+#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
+    CHECK((etl::is_lvalue_assignable_v<Copyable, Copyable>));
+    CHECK(!(etl::is_lvalue_assignable_v<Moveable, Moveable>));
+    CHECK((etl::is_lvalue_assignable_v<MoveableCopyable, MoveableCopyable>));
+#endif
+  }
+
+  //*************************************************************************
+  TEST(test_is_constructible)
+  {
+    CHECK((etl::is_constructible_v<Copyable>) == (std::is_constructible_v<Copyable>));
+    CHECK((etl::is_constructible_v<Moveable>) == (std::is_constructible_v<Moveable>));
+    CHECK((etl::is_constructible_v<MoveableCopyable>) == (std::is_constructible_v<MoveableCopyable>));
+  }
+
+  //*************************************************************************
+  TEST(test_is_copy_constructible)
+  {
+    CHECK((etl::is_copy_constructible_v<Copyable>) == (std::is_copy_constructible_v<Copyable>));
+    CHECK((etl::is_copy_constructible_v<Moveable>) == (std::is_copy_constructible_v<Moveable>));
+    CHECK((etl::is_copy_constructible_v<MoveableCopyable>) == (std::is_copy_constructible_v<MoveableCopyable>));
+  }
+
+  //*************************************************************************
+  TEST(test_is_move_constructible)
+  {
+    CHECK((etl::is_move_constructible_v<Copyable>) == (std::is_move_constructible_v<Copyable>));
+    CHECK((etl::is_move_constructible_v<Moveable>) == (std::is_move_constructible_v<Moveable>));
+    CHECK((etl::is_move_constructible_v<MoveableCopyable>) == (std::is_move_constructible_v<MoveableCopyable>));
+  }
+
+  //*************************************************************************
+  TEST(test_is_trivially_constructible)
+  {
+#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
+    CHECK((etl::is_trivially_constructible_v<Copyable>) == (std::is_trivially_constructible_v<Copyable>));
+    CHECK((etl::is_trivially_constructible_v<Moveable>) == (std::is_trivially_constructible_v<Moveable>));
+    CHECK((etl::is_trivially_constructible_v<MoveableCopyable>) == (std::is_trivially_constructible_v<MoveableCopyable>));
+#endif
+  }
+
+  //*************************************************************************
+  TEST(test_is_trivially_copy_constructible)
+  {
+#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
+    CHECK((etl::is_trivially_copy_constructible_v<Copyable>) == (std::is_trivially_copy_constructible_v<Copyable>));
+    CHECK((etl::is_trivially_copy_constructible_v<Moveable>) == (std::is_trivially_copy_constructible_v<Moveable>));
+    CHECK((etl::is_trivially_copy_constructible_v<MoveableCopyable>) == (std::is_trivially_copy_constructible_v<MoveableCopyable>));
+#endif
+  }
+
+  //*************************************************************************
+  TEST(test_is_trivially_destructible)
+  {
+#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
+    CHECK((etl::is_trivially_destructible_v<Copyable>) == (std::is_trivially_destructible_v<Copyable>));
+    CHECK((etl::is_trivially_destructible_v<Moveable>) == (std::is_trivially_destructible_v<Moveable>));
+    CHECK((etl::is_trivially_destructible_v<MoveableCopyable>) == (std::is_trivially_destructible_v<MoveableCopyable>));
+#endif
+  }
+
+  //*************************************************************************
+  TEST(test_is_trivially_copy_assignable)
+  {
+#if (!(defined(ETL_COMPILER_GCC) && defined(ETL_USE_TYPE_TRAITS_BUILTINS)))
+#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
+    CHECK((etl::is_trivially_copy_assignable_v<Copyable>) == (std::is_trivially_copy_assignable_v<Copyable>));
+    CHECK((etl::is_trivially_copy_assignable_v<Moveable>) == (std::is_trivially_copy_assignable_v<Moveable>));
+    CHECK((etl::is_trivially_copy_assignable_v<MoveableCopyable>) == (std::is_trivially_copy_assignable_v<MoveableCopyable>));
+#endif
+#endif
+  }
+
+  //*************************************************************************
+  TEST(test_is_trivially_copyable)
+  {
+#if (!(defined(ETL_COMPILER_GCC) && defined(ETL_USE_TYPE_TRAITS_BUILTINS)))
+#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
+    CHECK((etl::is_trivially_copyable_v<Copyable>) == (std::is_trivially_copyable_v<Copyable>));
+    CHECK((etl::is_trivially_copyable_v<Moveable>) == (std::is_trivially_copyable_v<Moveable>));
+    CHECK((etl::is_trivially_copyable_v<MoveableCopyable>) == (std::is_trivially_copyable_v<MoveableCopyable>));
+#endif
+#endif
   }
 }

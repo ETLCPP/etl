@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 jwellbelove
+Copyright(c) 2018 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -45,7 +45,7 @@ SOFTWARE.
   #include <Windows.h>
 #endif
 
-#define REALTIME_TEST 1
+#define REALTIME_TEST 0
 
 namespace
 {
@@ -153,6 +153,7 @@ namespace
       CHECK(!queue.pop(i));
     }
 
+#if !defined(ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_move_push_pop)
     {
@@ -187,6 +188,7 @@ namespace
       queue.pop(pr);
       CHECK_EQUAL(4, pr.value);
     }
+#endif
 
     //*************************************************************************
     TEST(test_multiple_emplace)
@@ -297,6 +299,44 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_size_push_front_pop)
+    {
+      etl::queue_mpmc_mutex<int, 4> queue;
+
+      CHECK_EQUAL(0U, queue.size());
+
+      queue.push(1);
+      queue.push(2);
+      queue.push(3);
+      queue.push(4);
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(3U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(2U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK_EQUAL(4, queue.front());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK_EQUAL(4, queue.front());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(0U, queue.size());
+    }
+
+    //*************************************************************************
     TEST(test_clear)
     {
       etl::queue_mpmc_mutex<int, 4> queue;
@@ -368,7 +408,7 @@ namespace
 
     etl::queue_mpmc_mutex<int, 10> queue;
 
-    const size_t LENGTH = 100000;
+    const size_t LENGTH = 100000UL;
 
     std::vector<int> push1;
     std::vector<int> push2;
@@ -383,7 +423,7 @@ namespace
       FIX_PROCESSOR_AFFINITY1;
       SET_THREAD_PRIORITY;
 
-      size_t count = 0;
+      size_t count = 0UL;
       int value = 0;
 
       while (!start.load());
@@ -404,7 +444,7 @@ namespace
       FIX_PROCESSOR_AFFINITY2;
       SET_THREAD_PRIORITY;
 
-      size_t count = 0;
+      size_t count = 0UL;
       int value = LENGTH / 2;
 
       while (!start.load());
@@ -425,7 +465,7 @@ namespace
       FIX_PROCESSOR_AFFINITY3;
       SET_THREAD_PRIORITY;
 
-      size_t count = 0;
+      size_t count = 0UL;
 
       while (!start.load());
 
@@ -446,7 +486,7 @@ namespace
       FIX_PROCESSOR_AFFINITY4;
       SET_THREAD_PRIORITY;
 
-      size_t count = 0;
+      size_t count = 0UL;
 
       while (!start.load());
 
@@ -500,7 +540,7 @@ namespace
       CHECK_EQUAL(LENGTH, push.size());
       CHECK_EQUAL(LENGTH, pop.size());
 
-      for (size_t i = 0; i < LENGTH; ++i)
+      for (size_t i = 0UL; i < LENGTH; ++i)
       {
         CHECK_EQUAL(push[i], pop[i]);
         CHECK_EQUAL(i, pop[i]);

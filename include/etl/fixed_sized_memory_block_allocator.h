@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2021 jwellbelove
+Copyright(c) 2021 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -46,7 +46,6 @@ namespace etl
   class fixed_sized_memory_block_allocator : public imemory_block_allocator
   {
   public:
-
     static ETL_CONSTANT size_t Block_Size = VBlock_Size;
     static ETL_CONSTANT size_t Alignment  = VAlignment;
     static ETL_CONSTANT size_t Size       = VSize;
@@ -57,17 +56,6 @@ namespace etl
     fixed_sized_memory_block_allocator()
     {
     }
-
-#if defined(ETL_IN_UNIT_TEST)
-    //*************************************************************************
-    /// Returns true if the allocator is the owner of the block.
-    /// For unit testing purposes.
-    //*************************************************************************
-    bool is_owner_of(const void* const pblock) const
-    {
-      return pool.is_in_pool(pblock);
-    }
-#endif
 
   private:
 
@@ -108,6 +96,14 @@ namespace etl
       {
         return false;
       }
+    }
+
+    //*************************************************************************
+    /// Returns true if the allocator is the owner of the block.
+    //*************************************************************************
+    virtual bool is_owner_of_block(const void* const pblock) const ETL_OVERRIDE
+    {
+      return pool.is_in_pool(pblock);
     }
 
     /// The generic pool from which allocate memory blocks.

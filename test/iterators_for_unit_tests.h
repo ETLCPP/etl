@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 jwellbelove
+Copyright(c) 2018 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -50,6 +50,12 @@ struct non_random_iterator : public etl::iterator<ETL_OR_STD::bidirectional_iter
   non_random_iterator(const non_random_iterator& other)
   {
     ptr = other.ptr;
+  }
+
+  non_random_iterator& operator =(const non_random_iterator& other)
+  {
+    ptr = other.ptr;
+    return *this;
   }
 
   T& operator *()
@@ -129,6 +135,12 @@ struct random_iterator : public etl::iterator<ETL_OR_STD::random_access_iterator
   random_iterator(const random_iterator& other)
   {
     ptr = other.ptr;
+  }
+
+  random_iterator& operator =(const random_iterator& other)
+  {
+    ptr = other.ptr;
+    return *this;
   }
 
   T& operator *()

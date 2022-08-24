@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2017 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -36,7 +36,6 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 #include "hash.h"
-#include "container.h"
 #include "parameter_type.h"
 
 #include "algorithm.h"
@@ -319,7 +318,7 @@ namespace etl
     {
       using ETL_OR_STD::swap; // Allow ADL
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         swap(ARRAY_[i], other.begin()[i]);
       }
@@ -389,7 +388,7 @@ namespace etl
   //*************************************************************************
   /// Hash function.
   //*************************************************************************
-#if ETL_8BIT_SUPPORT
+#if ETL_USING_8BIT_TYPES
   template <typename T, size_t SIZE, T(&ARRAY)[SIZE]>
   struct hash<etl::array_wrapper<T, SIZE, ARRAY> >
   {

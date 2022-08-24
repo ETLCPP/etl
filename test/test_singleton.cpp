@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2021 jwellbelove
+Copyright(c) 2022 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -30,39 +30,74 @@ SOFTWARE.
 
 #include "etl/singleton.h"
 
+#include <string>
+#include <type_traits>
+
+class Test_Class
+{
+public:
+
+  Test_Class(int i_, std::string text_)
+    : i(i_)
+    , text(text_)
+  {
+  }
+
+  void Increment()
+  {
+    ++i;
+    text += "*";
+  }
+
+  int i;
+  std::string text;
+};
+
+using Test_Singleton = etl::singleton<Test_Class>;
+
 namespace
 {
-  class Test : public etl::singleton<Test>
-  {
-  public:
-
-    using etl::singleton<Test>::get_instance;
-
-    Test()
-      : called(false)
-    {
-    }
-
-    void test()
-    {
-      called = true;
-    }
-
-    bool called;
-  };
-
   SUITE(test_singleton)
-  {      
+  {
     //*************************************************************************
-    TEST(test_instance)
+    TEST(test1)
     {
-      ::Test& test1 = ::Test::get_instance();
-      ::Test& test2 = ::Test::get_instance();
+      CHECK((std::is_same_v<Test_Singleton::type, Test_Class>));
 
-      CHECK(&test1 == &test2);
+      CHECK(!Test_Singleton::is_valid());
+      CHECK_THROW(Test_Singleton::instance(), etl::singleton_not_created);
 
-      test1.test();
-      CHECK(test1.called);
+      Test_Singleton::create(1, "Start:");
+      CHECK(Test_Singleton::is_valid());
+
+      Test_Class& ts = Test_Singleton::instance();
+
+      CHECK_EQUAL(1, ts.i);
+      CHECK_EQUAL("Start:", ts.text);
+
+      ts.Increment();
+
+      CHECK_EQUAL(2, ts.i);
+      CHECK_EQUAL("Start:*", ts.text);
+
+      Test_Class* pts = &Test_Singleton::instance();
+
+      CHECK_EQUAL(2, ts.i);
+      CHECK_EQUAL(2, pts->i);
+      CHECK_EQUAL("Start:*", ts.text);
+      CHECK_EQUAL("Start:*", pts->text);
+
+      pts->Increment();
+
+      CHECK_EQUAL(3, ts.i);
+      CHECK_EQUAL(3, pts->i);
+      CHECK_EQUAL("Start:**", ts.text);
+      CHECK_EQUAL("Start:**", pts->text);
+
+      Test_Singleton::destroy();
+      CHECK(!Test_Singleton::is_valid());
+      CHECK_THROW(Test_Singleton::instance(), etl::singleton_not_created);
     }
-  };
+  }
 }
+

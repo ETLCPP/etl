@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2016 jwellbelove
+Copyright(c) 2016 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -244,9 +244,9 @@ namespace
       CHECK(data.begin() == data.end());
     }
 
-#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
-    TEST(test_cpp17_deduced_constructor)
+    TEST_FIXTURE(SetupFixture, test_cpp17_deduced_constructor)
     {
       etl::unordered_map data{ ElementNDC(K0, N0), ElementNDC(K1, N1), ElementNDC(K2, N2), ElementNDC(K3, N3), ElementNDC(K4, N4),
                                ElementNDC(K5, N5), ElementNDC(K6, N6), ElementNDC(K7, N7), ElementNDC(K8, N8), ElementNDC(K9, N9) };
@@ -299,7 +299,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_destruct_via_iunordered_map)
+    TEST_FIXTURE(SetupFixture, test_destruct_via_iunordered_map)
     {
       int current_count = NDC::get_instance_count();
 
@@ -350,7 +350,9 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       DataNDC other_data(data);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       other_data = other_data;
+#include "etl/private/diagnostic_pop.h" 
 
       bool isEqual = std::equal(data.begin(),
                                 data.end(),
@@ -484,7 +486,7 @@ namespace
 
       DataNDC::iterator idata;
 
-      for (size_t i = 0; i < 10; ++i)
+      for (size_t i = 0UL; i < 10; ++i)
       {
         idata = data.find(K[i]);
         CHECK(idata != data.end());
@@ -542,7 +544,7 @@ namespace
 
       data.insert(initial_data.begin(), initial_data.end());
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         DataNDC::iterator idata = data.find(initial_data[i].first);
         CHECK(idata != data.end());
@@ -599,7 +601,23 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_erase_single)
+    TEST_FIXTURE(SetupFixture, test_erase_single_iterator)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      DataNDC::iterator idata = data.find(K5);
+      DataNDC::iterator inext = idata;
+      ++inext;
+
+      DataNDC::iterator iafter = data.erase(idata);
+      idata = data.find(K5);
+
+      CHECK(idata == data.end());
+      CHECK(inext == iafter);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_single_const_iterator)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
@@ -607,7 +625,7 @@ namespace
       DataNDC::const_iterator inext = idata;
       ++inext;
 
-      DataNDC::const_iterator iafter = data.erase(idata);
+      DataNDC::iterator iafter = data.erase(idata);
       idata = data.find(K5);
 
       CHECK(idata == data.end());
@@ -619,10 +637,10 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      DataNDC::iterator idata     = data.begin();
+      DataNDC::const_iterator idata     = data.begin();
       std::advance(idata, 2);
 
-      DataNDC::iterator idata_end = data.begin();
+      DataNDC::const_iterator idata_end = data.begin();
       std::advance(idata_end, 5);
 
       data.erase(idata, idata_end);
@@ -670,10 +688,10 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      DataNDC::iterator end = data.begin();
+      DataNDC::const_iterator end = data.cbegin();
       etl::advance(end, data.size() / 2);
 
-      auto itr = data.erase(data.begin(), end);
+      auto itr = data.erase(data.cbegin(), end);
 
       CHECK_EQUAL(initial_data.size() / 2, data.size());
       CHECK(!data.full());
@@ -686,10 +704,10 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      DataNDC::iterator begin = data.begin();
+      DataNDC::const_iterator begin = data.cbegin();
       etl::advance(begin, data.size() / 2);
 
-      auto itr = data.erase(begin, data.end());
+      auto itr = data.erase(begin, data.cend());
 
       CHECK_EQUAL(initial_data.size() / 2, data.size());
       CHECK(!data.full());
@@ -702,7 +720,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      auto itr = data.erase(data.begin(), data.end());
+      auto itr = data.erase(data.cbegin(), data.cend());
 
       CHECK_EQUAL(0U, data.size());
       CHECK(!data.full());

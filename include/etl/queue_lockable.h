@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2019 jwellbelove
+Copyright(c) 2019 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -66,7 +66,7 @@ namespace etl
     //*************************************************************************
     size_type available_unlocked() const
     {
-      return available_impementation();
+      return available_implementation();
     }
 
     //*************************************************************************
@@ -76,7 +76,7 @@ namespace etl
     {
       this->lock();
 
-      size_type result = available_impementation();
+      size_type result = available_implementation();
 
       this->unlock();
 
@@ -89,7 +89,7 @@ namespace etl
     //*************************************************************************
     bool empty_unlocked() const
     {
-      return empty_impementation();
+      return empty_implementation();
     }
 
     //*************************************************************************
@@ -99,7 +99,7 @@ namespace etl
     {
       this->lock();
 
-      size_type result = empty_impementation();
+      size_type result = empty_implementation();
 
       this->unlock();
 
@@ -112,7 +112,7 @@ namespace etl
     //*************************************************************************
     bool full_unlocked() const
     {
-      return full_impementation();
+      return full_implementation();
     }
 
     //*************************************************************************
@@ -122,7 +122,7 @@ namespace etl
     {
       this->lock();
 
-      size_type result = full_impementation();
+      size_type result = full_implementation();
 
       this->unlock();
 
@@ -135,7 +135,7 @@ namespace etl
     //*************************************************************************
     size_type size_unlocked() const
     {
-      return size_impementation();
+      return size_implementation();
     }
 
     //*************************************************************************
@@ -145,7 +145,7 @@ namespace etl
     {
       this->lock();
 
-      size_type result = size_impementation();
+      size_type result = size_implementation();
 
       this->unlock();
 
@@ -185,7 +185,7 @@ namespace etl
     {
       ++index;
 
-      if (index == maximum)
+      if (index == maximum) ETL_UNLIKELY
       {
         index = 0;
       }
@@ -209,7 +209,7 @@ namespace etl
     //*************************************************************************
     /// How much free space available in the queue.
     //*************************************************************************
-    size_type available_impementation() const
+    size_type available_implementation() const
     {
       return Max_Size - current_size;
     }
@@ -217,7 +217,7 @@ namespace etl
     //*************************************************************************
     /// Is the queue empty?
     //*************************************************************************
-    bool empty_impementation() const
+    bool empty_implementation() const
     {
       return (current_size == 0);
     }
@@ -225,7 +225,7 @@ namespace etl
     //*************************************************************************
     /// Is the queue full?
     //*************************************************************************
-    bool full_impementation() const
+    bool full_implementation() const
     {
       return (current_size == Max_Size);;
     }
@@ -233,7 +233,7 @@ namespace etl
     //*************************************************************************
     /// How many items in the queue?
     //*************************************************************************
-    size_type size_impementation() const
+    size_type size_implementation() const
     {
       return current_size;
     }
@@ -257,7 +257,7 @@ namespace etl
     typedef T                          value_type;       ///< The type stored in the queue.
     typedef T&                         reference;        ///< A reference to the type used in the queue.
     typedef const T&                   const_reference;  ///< A const reference to the type used in the queue.
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     typedef T&&                        rvalue_reference; ///< An rvalue reference to the type used in the queue.
 #endif
     typedef typename base_t::size_type size_type;        ///< The type used for determining the size of the queue.
@@ -284,7 +284,7 @@ namespace etl
       return result;
     }
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03)
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Push a value to the queue without locking.
     //*************************************************************************
@@ -308,7 +308,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03)
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     //*************************************************************************
@@ -476,6 +476,50 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Peek a value at the front of the queue without locking.
+    //*************************************************************************
+    reference front_unlocked()
+    {
+      return front_implementation();
+    }
+
+    //*************************************************************************
+    /// Peek a value at the front of the queue without locking.
+    //*************************************************************************
+    const_reference front_unlocked() const
+    {
+      return front_implementation();
+    }
+
+    //*************************************************************************
+    /// Peek a value at the front of the queue.
+    //*************************************************************************
+    reference front()
+    {
+      this->lock();
+
+      reference result = front_implementation();
+
+      this->unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Peek a value at the front of the queue.
+    //*************************************************************************
+    const_reference front() const
+    {
+      this->lock();
+
+      const_reference result = front_implementation();
+
+      this->unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
     /// Clear the queue, unlocked.
     //*************************************************************************
     void clear_unlocked()
@@ -534,7 +578,7 @@ namespace etl
       return false;
     }
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03)
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Push a value to the queue without locking.
     //*************************************************************************
@@ -556,7 +600,7 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03)
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     //*************************************************************************
@@ -694,7 +738,7 @@ namespace etl
         return false;
       }
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03)
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
       value = etl::move(p_buffer[this->read_index]);
 #else
       value = p_buffer[this->read_index];
@@ -709,11 +753,27 @@ namespace etl
       return true;
     }
 
+    //*************************************************************************
+    /// Peek a value at the front of the queue without locking
+    //*************************************************************************
+    reference front_implementation()
+    {
+      return p_buffer[this->read_index];;
+    }
+
+    //*************************************************************************
+    /// Peek a value at the front of the queue without locking
+    //*************************************************************************
+    const_reference front_implementation() const
+    {
+      return p_buffer[this->read_index];;
+    }
+
     // Disable copy construction and assignment.
     iqueue_lockable(const iqueue_lockable&) ETL_DELETE;
     iqueue_lockable& operator =(const iqueue_lockable&) ETL_DELETE;
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     iqueue_lockable(iqueue_lockable&&) = delete;
     iqueue_lockable& operator =(iqueue_lockable&&) = delete;
 #endif
@@ -769,7 +829,7 @@ namespace etl
     queue_lockable(const queue_lockable&) ETL_DELETE;
     queue_lockable& operator = (const queue_lockable&) ETL_DELETE;
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     queue_lockable(queue_lockable&&) = delete;
     queue_lockable& operator =(queue_lockable&&) = delete;
 #endif

@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2019 jwellbelove
+Copyright(c) 2019 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -75,6 +75,9 @@ SOFTWARE.
     #if defined(__clang__) || defined(__llvm__)
       #define ETL_COMPILER_CLANG
       #define ETL_COMPILER_TYPE_DETECTED
+      #if __AVR__ == 1
+        #define ETL_CROSS_COMPILING_TO_AVR
+      #endif
     #endif
   #endif
 
@@ -116,6 +119,72 @@ SOFTWARE.
   #if !defined(ETL_COMPILER_TYPE_DETECTED)
     #define ETL_COMPILER_GENERIC
   #endif
+#endif
+
+#if defined(ETL_COMPILER_GCC)
+  #define ETL_USING_GCC_COMPILER 1
+#else
+  #define ETL_USING_GCC_COMPILER 0
+#endif
+
+#if defined(ETL_COMPILER_MICROSOFT)
+  #define ETL_USING_MICROSOFT_COMPILER 1
+#else
+  #define ETL_USING_MICROSOFT_COMPILER 0
+#endif
+
+#if defined(ETL_COMPILER_ARM5)
+  #define ETL_USING_ARM5_COMPILER 1
+#else
+  #define ETL_USING_ARM5_COMPILER 0
+#endif
+
+#if defined(ETL_COMPILER_ARM6)
+  #define ETL_USING_ARM6_COMPILER 1
+#else
+  #define ETL_USING_ARM6_COMPILER 0
+#endif
+
+#if defined(ETL_COMPILER_ARM7)
+  #define ETL_USING_ARM7_COMPILER 1
+#else
+  #define ETL_USING_ARM7_COMPILER 0
+#endif
+
+#if defined(ETL_COMPILER_CLANG)
+  #define ETL_USING_CLANG_COMPILER 1
+#else
+  #define ETL_USING_CLANG_COMPILER 0
+#endif
+
+#if defined(ETL_COMPILER_GREEN_HILLS)
+  #define ETL_USING_GREEN_HILLS_COMPILER 1
+#else
+  #define ETL_USING_GREEN_HILLS_COMPILER 0
+#endif
+
+#if defined(ETL_COMPILER_IAR)
+  #define ETL_USING_IAR_COMPILER 1
+#else
+  #define ETL_USING_IAR_COMPILER 0
+#endif
+
+#if defined(ETL_COMPILER_INTEL)
+  #define ETL_USING_INTEL_COMPILER 1
+#else
+  #define ETL_USING_INTEL_COMPILER 0
+#endif
+
+#if defined(ETL_COMPILER_TEXAS_INSTRUMENTS)
+  #define ETL_USING_TEXAS_INSTRUMENTS_COMPILER 1
+#else
+  #define ETL_USING_TEXAS_INSTRUMENTS_COMPILER 0
+#endif
+
+#if defined(ETL_COMPILER_GENERIC)
+  #define ETL_USING_GENERIC_COMPILER 1
+#else
+  #define ETL_USING_GENERIC_COMPILER 0
 #endif
 
 #endif

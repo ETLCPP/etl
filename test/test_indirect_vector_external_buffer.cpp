@@ -5,7 +5,7 @@
 //https://github.com/ETLCPP/etl
 //https://www.etlcpp.com
 //
-//Copyright(c) 2019 jwellbelove
+//Copyright(c) 2019 John Wellbelove
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files(the "Software"), to deal
@@ -43,7 +43,7 @@ namespace
 {
   SUITE(test_indirect_vector_external_buffer)
   {
-    static const size_t SIZE = 12;
+    static const size_t SIZE = 12UL;
 
     typedef TestDataNDC<std::string> NDC;
     typedef TestDataDC<std::string>  DC;
@@ -149,7 +149,7 @@ namespace
 
       DataDC data(lookup, pool);
 
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK_EQUAL(data.size(), size_t(0UL));
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
@@ -170,7 +170,7 @@ namespace
       LookupNDC lookup;
       PoolNDC   pool;
 
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       const NDC INITIAL_VALUE("1");
 
       int current_count = NDC::get_instance_count();
@@ -206,7 +206,7 @@ namespace
       LookupDC lookup;
       PoolDC   pool;
 
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       DataDC data(INITIAL_SIZE, lookup, pool);
 
       CHECK(data.size() == INITIAL_SIZE);
@@ -219,11 +219,11 @@ namespace
       LookupNDC lookup;
       PoolNDC   pool;
 
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       const NDC INITIAL_VALUE("1");
 
       std::vector<NDC> compare_data(INITIAL_SIZE, INITIAL_VALUE);
-      DataNDC data(size_t(5), NDC("1"), lookup, pool);
+      DataNDC data(size_t(5UL), NDC("1"), lookup, pool);
 
       CHECK(data.size() == INITIAL_SIZE);
       CHECK(!data.empty());
@@ -258,7 +258,7 @@ namespace
       CHECK(!data.empty());
     }
 
-#if ETL_USING_STL
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     TEST(test_constructor_initializer_list)
     {
@@ -463,7 +463,9 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end(), lookup1, pool1);
       DataNDC other_data(data, lookup2, pool2);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       other_data = other_data;
+#include "etl/private/diagnostic_pop.h" 
 
       bool is_equal = std::equal(data.begin(),
                                  data.end(),
@@ -485,7 +487,9 @@ namespace
       const DataDC constData(10, lookup2, pool2);
 
       CHECK_EQUAL(&data[0], &(*data.begin()));
+      CHECK_EQUAL(&data[0], &(*data.cbegin()));
       CHECK_EQUAL(&constData[0], &(*constData.begin()));
+      CHECK_EQUAL(&constData[0], &(*constData.cbegin()));
     }
 
     //*************************************************************************
@@ -500,8 +504,10 @@ namespace
       DataDC data(10, lookup1, pool1);
       const DataDC constData(10, lookup2, pool2);
 
-      CHECK_EQUAL(&data[10], &(*data.end()));
-      CHECK_EQUAL(&constData[10], &(constData.end()));
+      CHECK(std::distance(data.begin(), data.end()) == 10U);
+      CHECK(std::distance(data.cbegin(), data.cend()) == 10U);
+      CHECK(std::distance(constData.begin(), constData.end()) == 10U);
+      CHECK(std::distance(constData.cbegin(), constData.cend()) == 10U);
     }
 
     //*************************************************************************
@@ -510,8 +516,8 @@ namespace
       LookupDC lookup;
       PoolDC   pool;
 
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 8;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = 8UL;
 
       DataDC data(INITIAL_SIZE, lookup, pool);
       data.resize(NEW_SIZE);
@@ -525,8 +531,8 @@ namespace
       LookupNDC lookup;
       PoolNDC   pool;
 
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 8;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = 8UL;
       const NDC INITIAL_VALUE("1");
 
       DataNDC data(INITIAL_SIZE, INITIAL_VALUE, lookup, pool);
@@ -547,8 +553,8 @@ namespace
       LookupDC lookup;
       PoolDC   pool;
 
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = SIZE + 1;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = SIZE + 1UL;
 
       DataDC data(INITIAL_SIZE, lookup, pool);
 
@@ -561,8 +567,8 @@ namespace
       LookupDC lookup;
       PoolDC   pool;
 
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 2;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = 2UL;
 
       DataDC data(INITIAL_SIZE, lookup, pool);
       data.resize(NEW_SIZE);
@@ -576,8 +582,8 @@ namespace
       LookupNDC lookup;
       PoolNDC   pool;
 
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 2;
+      const size_t INITIAL_SIZE = 5UL;
+      const size_t NEW_SIZE = 2UL;
       const NDC INITIAL_VALUE("1");
 
       DataNDC data(INITIAL_SIZE, INITIAL_VALUE, lookup, pool);
@@ -621,7 +627,7 @@ namespace
 
       DataNDC data(compare_data.begin(), compare_data.end(), lookup, pool);
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
@@ -637,7 +643,7 @@ namespace
 
       const DataNDC data(compare_data.begin(), compare_data.end(), lookup, pool);
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
@@ -652,7 +658,7 @@ namespace
       CompareDataNDC compare_data(initial_data.begin(), initial_data.end());
       DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.at(i), compare_data.at(i));
       }
@@ -669,7 +675,7 @@ namespace
       const CompareDataNDC compare_data(initial_data.begin(), initial_data.end());
       const DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.at(i), compare_data.at(i));
       }
@@ -752,7 +758,7 @@ namespace
       LookupNDC lookup;
       PoolNDC   pool;
 
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       const NDC INITIAL_VALUE("1");
       std::vector<NDC> compare_data(INITIAL_SIZE, INITIAL_VALUE);
 
@@ -775,7 +781,7 @@ namespace
       PoolNDC   pool;
 
       const size_t INITIAL_SIZE = SIZE;
-      const size_t EXCESS_SIZE = SIZE + 1;
+      const size_t EXCESS_SIZE = SIZE + 1UL;
       const NDC INITIAL_VALUE("1");
       std::vector<NDC> compare_data(INITIAL_SIZE, INITIAL_VALUE);
 
@@ -793,7 +799,7 @@ namespace
       CompareDataNDC compare_data;
       DataNDC data(lookup, pool);
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         std::string value(" ");
         value[0] = char('A' + i);
@@ -818,7 +824,7 @@ namespace
 
       DataNDC data(lookup, pool);
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         std::string value(" ");
         value[0] = char('A' + i);
@@ -837,7 +843,7 @@ namespace
       CompareDataNDC compare_data;
       DataNDC data(lookup, pool);
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         std::string value(" ");
         value[0] = char('A' + i);
@@ -862,10 +868,10 @@ namespace
 
       etl::indirect_vector_ext<std::unique_ptr<uint32_t>> data(lookup, pool);
 
-      std::unique_ptr<uint32_t> p1(new uint32_t(1));
-      std::unique_ptr<uint32_t> p2(new uint32_t(2));
-      std::unique_ptr<uint32_t> p3(new uint32_t(3));
-      std::unique_ptr<uint32_t> p4(new uint32_t(4));
+      std::unique_ptr<uint32_t> p1(new uint32_t(1U));
+      std::unique_ptr<uint32_t> p2(new uint32_t(2U));
+      std::unique_ptr<uint32_t> p3(new uint32_t(3U));
+      std::unique_ptr<uint32_t> p4(new uint32_t(4U));
 
       data.push_back(std::move(p1));
       data.push_back(std::move(p2));
@@ -915,10 +921,10 @@ namespace
 
       etl::indirect_vector_ext<std::unique_ptr<uint32_t>> data(lookup, pool);
 
-      std::unique_ptr<uint32_t> p1(new uint32_t(1));
-      std::unique_ptr<uint32_t> p2(new uint32_t(2));
-      std::unique_ptr<uint32_t> p3(new uint32_t(3));
-      std::unique_ptr<uint32_t> p4(new uint32_t(4));
+      std::unique_ptr<uint32_t> p1(new uint32_t(1U));
+      std::unique_ptr<uint32_t> p2(new uint32_t(2U));
+      std::unique_ptr<uint32_t> p3(new uint32_t(3U));
+      std::unique_ptr<uint32_t> p4(new uint32_t(4U));
 
       data.insert(data.begin(), std::move(p1));
       data.insert(data.begin(), std::move(p2));
@@ -983,10 +989,10 @@ namespace
       LookupNDC lookup;
       PoolNDC   pool;
 
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       const NDC INITIAL_VALUE("1");
 
-      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
         CompareDataNDC compare_data;
         DataNDC data(lookup, pool);
@@ -1013,10 +1019,10 @@ namespace
       LookupNDC lookup;
       PoolNDC   pool;
 
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       const std::string INITIAL_VALUE("1");
 
-      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
         CompareDataNDC compare_data;
         DataNDC data(lookup, pool);
@@ -1049,7 +1055,7 @@ namespace
 
       DataNDC data(INITIAL_SIZE, INITIAL_VALUE, lookup, pool);
 
-      size_t offset = 2;
+      size_t offset = 2UL;
 
       CHECK_THROW(data.insert(data.begin() + offset, INITIAL_VALUE), etl::vector_full);
 
@@ -1068,11 +1074,11 @@ namespace
       LookupNDC lookup;
       PoolNDC   pool;
 
-      const size_t INITIAL_SIZE     = 5;
-      const size_t INSERT_SIZE      = 3;
+      const size_t INITIAL_SIZE     = 5UL;
+      const size_t INSERT_SIZE      = 3UL;
       const NDC INITIAL_VALUE("1");
 
-      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
         CompareDataNDC compare_data;
         DataNDC data(lookup, pool);
@@ -1099,12 +1105,12 @@ namespace
       PoolNDC   pool;
 
       const size_t INITIAL_SIZE = SIZE;
-      const size_t INSERT_SIZE  = 4;
+      const size_t INSERT_SIZE  = 4UL;
       const NDC INITIAL_VALUE("1");
 
       DataNDC data(INITIAL_SIZE, INITIAL_VALUE, lookup, pool);
 
-      size_t offset = 0;
+      size_t offset = 0UL;
 
       CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, INITIAL_VALUE), etl::vector_full);
 
@@ -1127,10 +1133,10 @@ namespace
       LookupNDC lookup;
       PoolNDC   pool;
 
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       const NDC INITIAL_VALUE("1");
 
-      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
         CompareDataNDC compare_data;
         DataNDC data(lookup, pool);
@@ -1158,12 +1164,12 @@ namespace
       LookupNDC lookup;
       PoolNDC   pool;
 
-      const size_t INITIAL_SIZE = 5;
+      const size_t INITIAL_SIZE = 5UL;
       const NDC INITIAL_VALUE("1");
 
       DataNDC data(INITIAL_SIZE, INITIAL_VALUE, lookup, pool);
 
-      size_t offset = 0;
+      size_t offset = 0UL;
 
       CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
 
@@ -1189,15 +1195,15 @@ namespace
       CompareDataNDC compare_data(initial_data.begin(), initial_data.end());
       DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
 
-      compare_data.erase(compare_data.begin() + 2);
+      compare_data.erase(compare_data.cbegin() + 2);
 
-      data.erase(data.begin() + 2);
+      data.erase(data.cbegin() + 2);
 
       CHECK_EQUAL(compare_data.size(), data.size());
 
-      bool is_equal = std::equal(data.begin(),
-                                data.end(),
-                                compare_data.begin());
+      bool is_equal = std::equal(data.cbegin(),
+                                 data.cend(),
+                                 compare_data.cbegin());
 
       CHECK(is_equal);
     }
@@ -1211,15 +1217,15 @@ namespace
       CompareDataNDC compare_data(initial_data.begin(), initial_data.end());
       DataNDC data(initial_data.begin(), initial_data.end(), lookup, pool);
 
-      compare_data.erase(compare_data.begin() + 2, compare_data.begin() + 4);
+      compare_data.erase(compare_data.cbegin() + 2, compare_data.cbegin() + 4);
 
-      data.erase(data.begin() + 2, data.begin() + 4);
+      data.erase(data.cbegin() + 2, data.cbegin() + 4);
 
       CHECK_EQUAL(compare_data.size(), data.size());
 
-      bool is_equal = std::equal(data.begin(),
-                                data.end(),
-                                compare_data.begin());
+      bool is_equal = std::equal(data.cbegin(),
+                                 data.cend(),
+                                 compare_data.cbegin());
 
       CHECK(is_equal);
     }
@@ -1235,7 +1241,7 @@ namespace
       DataNDC data(compare_data.begin(), compare_data.end(), lookup, pool);
       data.clear();
 
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK_EQUAL(data.size(), size_t(0UL));
     }
 
     //*************************************************************************

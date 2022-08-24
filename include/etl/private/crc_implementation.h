@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2021 jwellbelove
+Copyright(c) 2021 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -569,7 +569,7 @@ namespace etl
     struct crc_policy<TCrcParameters, 256U> : public crc_table<typename TCrcParameters::accumulator_type, 
                                                                TCrcParameters::Accumulator_Bits, 
                                                                8U, 
-                                                               0xFF, 
+                                                               0xFFU, 
                                                                TCrcParameters::Polynomial, 
                                                                TCrcParameters::Reflect, 
                                                                256U> 
@@ -597,7 +597,7 @@ namespace etl
     struct crc_policy<TCrcParameters, 16U> : public crc_table<typename TCrcParameters::accumulator_type, 
                                                               TCrcParameters::Accumulator_Bits, 
                                                               4U, 
-                                                              0x0F, 
+                                                              0x0FU, 
                                                               TCrcParameters::Polynomial, 
                                                               TCrcParameters::Reflect, 
                                                               16U> 
@@ -625,7 +625,7 @@ namespace etl
     struct crc_policy<TCrcParameters, 4U> : public crc_table<typename TCrcParameters::accumulator_type, 
                                                              TCrcParameters::Accumulator_Bits, 
                                                              2U, 
-                                                             0x03, 
+                                                             0x03U, 
                                                              TCrcParameters::Polynomial, 
                                                              TCrcParameters::Reflect, 
                                                              4U> 

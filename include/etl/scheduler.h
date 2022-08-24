@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2017 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -105,7 +105,7 @@ namespace etl
     {
       bool idle = true;
 
-      for (size_t index = 0; index < task_list.size(); ++index)
+      for (size_t index = 0UL; index < task_list.size(); ++index)
       {
         etl::task& task = *(task_list[index]);
 
@@ -134,7 +134,7 @@ namespace etl
     {
       bool idle = true;
 
-      for (size_t index = 0; index < task_list.size(); ++index)
+      for (size_t index = 0UL; index < task_list.size(); ++index)
       {
         etl::task& task = *(task_list[index]);
 
@@ -163,7 +163,7 @@ namespace etl
     {
       bool idle = true;
 
-      size_t index = 0;
+      size_t index = 0UL;
       while (index < task_list.size())
       {
         etl::task& task = *(task_list[index]);
@@ -196,10 +196,10 @@ namespace etl
     {
       bool idle = true;
 
-      size_t most_index = 0;
-      uint32_t most_work = 0;
+      size_t most_index = 0UL;
+      uint32_t most_work = 0UL;
 
-      for (size_t index = 0; index < task_list.size(); ++index)
+      for (size_t index = 0UL; index < task_list.size(); ++index)
       {
         etl::task& task = *(task_list[index]);
 

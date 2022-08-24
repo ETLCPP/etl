@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2015 jwellbelove
+Copyright(c) 2015 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -112,7 +112,8 @@ namespace etl
     /// Constructor.
     //***************************************************************************
     optional()
-      : valid(false)
+      : storage()
+      , valid(false)
     {
     }
 
@@ -120,7 +121,8 @@ namespace etl
     /// Constructor with nullopt.
     //***************************************************************************
     optional(etl::nullopt_t)
-      : valid(false)
+      : storage()
+      , valid(false)
     {
     }
 
@@ -136,7 +138,7 @@ namespace etl
       }
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Move constructor.
     //***************************************************************************
@@ -159,7 +161,7 @@ namespace etl
       valid = true;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Constructor from value type.
     //***************************************************************************
@@ -224,7 +226,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Assignment operator from optional.
     //***************************************************************************
@@ -273,7 +275,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Assignment operator from value type.
     //***************************************************************************
@@ -298,7 +300,7 @@ namespace etl
     //***************************************************************************
     T* operator ->()
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -310,7 +312,7 @@ namespace etl
     //***************************************************************************
     const T* operator ->() const
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -322,7 +324,7 @@ namespace etl
     //***************************************************************************
     T& operator *()
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -334,7 +336,7 @@ namespace etl
     //***************************************************************************
     const T& operator *() const
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -363,7 +365,7 @@ namespace etl
     //***************************************************************************
     T& value()
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -375,7 +377,7 @@ namespace etl
     //***************************************************************************
     const T& value() const
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
@@ -412,7 +414,7 @@ namespace etl
       }
     }
 
-#if ETL_CPP11_SUPPORTED  && ETL_NOT_USING_STLPORT && !defined(ETL_OPTIONAL_FORCE_CPP03)
+#if ETL_USING_CPP11  && ETL_NOT_USING_STLPORT && !defined(ETL_OPTIONAL_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Emplaces a value.
     ///\param args The arguments to construct with.

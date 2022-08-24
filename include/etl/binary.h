@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2015 jwellbelove
+Copyright(c) 2015 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -45,6 +45,10 @@ SOFTWARE.
 #include "smallest.h"
 #include "exception.h"
 #include "error_handler.h"
+
+#if ETL_USING_CPP20 && ETL_USING_STL
+  #include <bit>
+#endif
 
 namespace etl
 {
@@ -97,9 +101,9 @@ namespace etl
   };
 
   template <const size_t NBITS>
-  const typename max_value_for_nbits<NBITS>::value_type max_value_for_nbits<NBITS>::value;
+  ETL_CONSTANT typename max_value_for_nbits<NBITS>::value_type max_value_for_nbits<NBITS>::value;
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <const size_t NBITS>
   inline constexpr typename etl::max_value_for_nbits<NBITS>::value_type max_value_for_nbits_v = max_value_for_nbits<NBITS>::value;
 #endif
@@ -111,11 +115,15 @@ namespace etl
   template <typename T>
   ETL_CONSTEXPR14 T rotate_left(T value)
   {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::rotl(value, 1);
+#else
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
-    const size_t SHIFT = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits - 1;
+    ETL_CONSTANT size_t SHIFT = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits - 1U;
 
-    return (value << 1) | (value >> SHIFT);
+    return (value << 1U) | (value >> SHIFT);
+#endif
   }
 
   //***************************************************************************
@@ -125,13 +133,24 @@ namespace etl
   template <typename T>
   ETL_CONSTEXPR14 T rotate_left(T value, size_t distance)
   {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::rotl(value, distance);
+#else
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
-    const size_t BITS = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits;
+    ETL_CONSTANT size_t BITS = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits;
     distance %= BITS;
     const size_t SHIFT = BITS - distance;
 
-    return (value << distance) | (value >> SHIFT);
+    if (SHIFT == BITS)
+    {
+      return value;
+    }
+    else
+    {
+      return (value << distance) | (value >> SHIFT);
+    }
+#endif
   }
 
   //***************************************************************************
@@ -141,11 +160,15 @@ namespace etl
   template <typename T>
   ETL_CONSTEXPR14 T rotate_right(T value)
   {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::rotr(value, 1);
+#else
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
-    const size_t SHIFT = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits - 1;
+    ETL_CONSTANT size_t SHIFT = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits - 1U;
 
-    return (value >> 1) | (value << SHIFT);
+    return (value >> 1U) | (value << SHIFT);
+#endif
   }
 
   //***************************************************************************
@@ -155,13 +178,24 @@ namespace etl
   template <typename T>
   ETL_CONSTEXPR14 T rotate_right(T value, size_t distance)
   {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::rotr(value, distance);
+#else
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
-    const size_t BITS = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits;
+    ETL_CONSTANT size_t BITS = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits;
     distance %= BITS;
     const size_t SHIFT = BITS - distance;
 
-    return (value >> distance) | (value << SHIFT);
+    if (SHIFT == BITS)
+    {
+      return value;
+    }
+    else
+    {
+      return (value >> distance) | (value << SHIFT);
+    }
+#endif
   }
 
   //***************************************************************************
@@ -197,20 +231,20 @@ namespace etl
   {
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
-    return (value >> 1) ^ value;
+    return (value >> 1U) ^ value;
   }
 
   //***************************************************************************
   /// Fold a binary number down to a set number of bits using XOR.
   ///\ingroup binary
   //***************************************************************************
-  template <typename TReturn, const size_t NBITS, typename TValue>
+  template <typename TReturn, size_t NBITS, typename TValue>
   ETL_CONSTEXPR14 TReturn fold_bits(TValue value)
   {
     ETL_STATIC_ASSERT(integral_limits<TReturn>::bits >= NBITS, "Return type too small to hold result");
 
-    const TValue mask  = etl::power<2, NBITS>::value - 1;
-    const size_t shift = NBITS;
+    ETL_CONSTANT TValue mask  = etl::power<2, NBITS>::value - 1U;
+    ETL_CONSTANT size_t shift = NBITS;
 
     // Fold the value down to fit the width.
     TReturn folded_value = 0;
@@ -233,7 +267,7 @@ namespace etl
   /// Converts an N bit binary number, where bit N-1 is the sign bit, to a signed integral type.
   ///\ingroup binary
   //***************************************************************************
-  template <typename TReturn, const size_t NBITS, typename TValue>
+  template <typename TReturn, size_t NBITS, typename TValue>
   ETL_CONSTEXPR14 TReturn sign_extend(TValue value)
   {
     ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
@@ -254,7 +288,7 @@ namespace etl
   /// is the right shift amount, to a signed integral type.
   ///\ingroup binary
   //***************************************************************************
-  template <typename TReturn, const size_t NBITS, const size_t SHIFT, typename TValue>
+  template <typename TReturn, size_t NBITS, size_t SHIFT, typename TValue>
   ETL_CONSTEXPR14 TReturn sign_extend(TValue value)
   {
     ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
@@ -276,7 +310,7 @@ namespace etl
   ///\ingroup binary
   //***************************************************************************
   template <typename TReturn, typename TValue>
-  ETL_CONSTEXPR14 TReturn sign_extend(TValue value, const size_t NBITS)
+  ETL_CONSTEXPR14 TReturn sign_extend(TValue value, size_t NBITS)
   {
     ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
     ETL_STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
@@ -296,7 +330,7 @@ namespace etl
   ///\ingroup binary
   //***************************************************************************
   template <typename TReturn, typename TValue>
-  ETL_CONSTEXPR14 TReturn sign_extend(TValue value, const size_t NBITS, const size_t SHIFT)
+  ETL_CONSTEXPR14 TReturn sign_extend(TValue value, size_t NBITS, size_t SHIFT)
   {
     ETL_STATIC_ASSERT(etl::is_integral<TValue>::value,  "TValue not an integral type");
     ETL_STATIC_ASSERT(etl::is_integral<TReturn>::value, "TReturn not an integral type");
@@ -361,9 +395,9 @@ namespace etl
   };
 
   template <const size_t POSITION>
-  const typename bit<POSITION>::value_type bit<POSITION>::value;
+  ETL_CONSTANT typename bit<POSITION>::value_type bit<POSITION>::value;
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <const size_t POSITION>
   inline constexpr typename bit<POSITION>::value_type bit_v = bit<POSITION>::value;
 #endif
@@ -378,7 +412,7 @@ namespace etl
     ETL_STATIC_ASSERT(sizeof(TResult) >= sizeof(TValue), "Result must be at least as large as the fill value");
 
     typedef typename etl::make_unsigned<TResult>::type unsigned_r_t;
-    typedef typename etl::make_unsigned<TValue>::type unsigned_v_t;
+    typedef typename etl::make_unsigned<TValue>::type  unsigned_v_t;
 
     return TResult(unsigned_v_t(value) * (unsigned_r_t(~unsigned_r_t(0U)) / unsigned_v_t(~unsigned_v_t(0U))));
   }
@@ -387,24 +421,24 @@ namespace etl
   /// Fills a value with a bit pattern. Partial compile time.
   ///\ingroup binary
   //***************************************************************************
-  template <typename TResult, typename TValue, const TValue N>
+  template <typename TResult, typename TValue, TValue N>
   ETL_CONSTEXPR TResult binary_fill()
   {
     ETL_STATIC_ASSERT(sizeof(TResult) >= sizeof(TValue), "Result must be at least as large as the fill value");
 
     typedef typename etl::make_unsigned<TResult>::type unsigned_r_t;
-    typedef typename etl::make_unsigned<TValue>::type unsigned_v_t;
+    typedef typename etl::make_unsigned<TValue>::type  unsigned_v_t;
 
     return TResult(unsigned_v_t(N) * (unsigned_r_t(~unsigned_r_t(0U)) / unsigned_v_t(~unsigned_v_t(0U))));
   }
 
-#if ETL_8BIT_SUPPORT
+#if ETL_USING_8BIT_TYPES
   //***************************************************************************
   /// Detects the presence of zero bytes.
   ///\ingroup binary
   //***************************************************************************
   template <typename TValue>
-  ETL_CONSTEXPR14 bool has_zero_byte(const TValue value)
+  ETL_CONSTEXPR14 bool has_zero_byte(TValue value)
   {
     typedef typename etl::make_unsigned<TValue>::type unsigned_t;
     const unsigned_t mask = etl::binary_fill<unsigned_t, uint8_t>(0x7FU);
@@ -417,7 +451,7 @@ namespace etl
   /// Detects the presence of zero bytes. Partial compile time.
   ///\ingroup binary
   //***************************************************************************
-  template <typename TValue, const TValue N>
+  template <typename TValue, TValue N>
   ETL_CONSTEXPR14 bool has_zero_byte()
   {
     typedef typename etl::make_unsigned<TValue>::type unsigned_t;
@@ -441,7 +475,7 @@ namespace etl
   /// Detects the presence of a byte of value N. Partial compile time.
   ///\ingroup binary
   //***************************************************************************
-  template <typename TValue, const TValue N>
+  template <typename TValue, TValue N>
   ETL_CONSTEXPR14 bool has_byte_n(TValue value)
   {
     return etl::has_zero_byte(TValue(value ^ etl::binary_fill<TValue, uint8_t>(N)));
@@ -455,7 +489,7 @@ namespace etl
   ///\ingroup binary
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR T binary_merge(const T first, const T second, const T mask)
+  ETL_CONSTEXPR T binary_merge(T first, T second, T mask)
   {
     return second ^ ((second ^ first) & mask);
   }
@@ -466,33 +500,34 @@ namespace etl
   /// Mask is a template parameter.
   ///\ingroup binary
   //***************************************************************************
-  template <typename T, const T MASK>
-  ETL_CONSTEXPR T binary_merge(const T first, const T second)
+  template <typename T, T MASK>
+  ETL_CONSTEXPR T binary_merge(T first, T second)
   {
     return second ^ ((second ^ first) & MASK);
   }
 
+  //***************************************************************************
+  /// Reverse bits.
+  ///\ingroup binary
+  //***************************************************************************
   template <typename T, T Value>
   struct reverse_bits_const;
 
-#if ETL_8BIT_SUPPORT
+#if ETL_USING_8BIT_TYPES
   //***************************************************************************
   /// Reverse 8 bits.
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint8_t reverse_bits(uint8_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), T>::type
+    reverse_bits(T value)
   {
-    value = ((value & 0xAA) >> 1) | ((value & 0x55) << 1);
-    value = ((value & 0xCC) >> 2) | ((value & 0x33) << 2);
-    value = (value >> 4) | (value << 4);
+    value = ((value & 0xAAU) >> 1U) | ((value & 0x55U) << 1U);
+    value = ((value & 0xCCU) >> 2U) | ((value & 0x33U) << 2U);
+    value = (value >> 4U) | ((value & 0x0FU) << 4U);
 
     return value;
-  }
-
-  //***********************************
-  inline ETL_CONSTEXPR14 int8_t reverse_bits(int8_t value)
-  {
-    return int8_t(reverse_bits(uint8_t(value)));
   }
 
   //***********************************
@@ -501,12 +536,12 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT uint8_t value1 = uint8_t(((Value & 0xAA) >> 1) | ((Value & 0x55) << 1));
-    static ETL_CONSTANT uint8_t value2 = uint8_t(((value1 & 0xCC) >> 2) | ((value1 & 0x33) << 2));
+    static ETL_CONSTANT uint8_t value1 = uint8_t(((Value  & 0xAAU) >> 1U) | ((Value  & 0x55U) << 1U));
+    static ETL_CONSTANT uint8_t value2 = uint8_t(((value1 & 0xCCU) >> 2U) | ((value1 & 0x33U) << 2U));
 
   public:
 
-    static ETL_CONSTANT uint8_t value = uint8_t((value2 >> 4) | (value2 << 4));
+    static ETL_CONSTANT uint8_t value = uint8_t((value2 >> 4U) | ((value2 & 0x0FU) << 4U));
   };
 
   //***********************************
@@ -515,12 +550,12 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT int8_t value1 = int8_t(((Value & 0xAA) >> 1) | ((Value & 0x55) << 1));
-    static ETL_CONSTANT int8_t value2 = int8_t(((value1 & 0xCC) >> 2) | ((value1 & 0x33) << 2));
+    static ETL_CONSTANT int8_t value1 = int8_t(((Value  & 0xAAU) >> 1U) | ((Value  & 0x55U) << 1U));
+    static ETL_CONSTANT int8_t value2 = int8_t(((value1 & 0xCCU) >> 2U) | ((value1 & 0x33U) << 2U));
 
   public:
 
-    static ETL_CONSTANT int8_t value = int8_t((value2 >> 4) | (value2 << 4));
+    static ETL_CONSTANT int8_t value = int8_t((value2 >> 4U) | ((value2 & 0x0FU) << 4U));
   };
 #endif
 
@@ -528,20 +563,17 @@ namespace etl
   /// Reverse 16 bits.
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint16_t reverse_bits(uint16_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 16U), T>::type
+    reverse_bits(T value)
   {
-    value = ((value & 0xAAAA) >> 1) | ((value & 0x5555) << 1);
-    value = ((value & 0xCCCC) >> 2) | ((value & 0x3333) << 2);
-    value = ((value & 0xF0F0) >> 4) | ((value & 0x0F0F) << 4);
-    value = (value >> 8) | (value << 8);
+    value = ((value & 0xAAAAU) >> 1U) | ((value & 0x5555U) << 1U);
+    value = ((value & 0xCCCCU) >> 2U) | ((value & 0x3333U) << 2U);
+    value = ((value & 0xF0F0U) >> 4U) | ((value & 0x0F0FU) << 4U);
+    value = (value >> 8U) | ((value & 0xFFU) << 8U);
 
     return value;
-  }
-
-  //***********************************
-  inline ETL_CONSTEXPR14 int16_t reverse_bits(int16_t value)
-  {
-    return int16_t(reverse_bits(uint16_t(value)));
   }
 
   //***********************************
@@ -550,13 +582,13 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT uint16_t value1 = uint16_t(((Value & 0xAAAA) >> 1)  | ((Value & 0x5555) << 1));
-    static ETL_CONSTANT uint16_t value2 = uint16_t(((value1 & 0xCCCC) >> 2) | ((value1 & 0x3333) << 2));
-    static ETL_CONSTANT uint16_t value3 = uint16_t(((value2 & 0xF0F0) >> 4) | ((value2 & 0x0F0F) << 4));   
+    static ETL_CONSTANT uint16_t value1 = uint16_t(((Value  & 0xAAAAU) >> 1U) | ((Value  & 0x5555U) << 1U));
+    static ETL_CONSTANT uint16_t value2 = uint16_t(((value1 & 0xCCCCU) >> 2U) | ((value1 & 0x3333U) << 2U));
+    static ETL_CONSTANT uint16_t value3 = uint16_t(((value2 & 0xF0F0U) >> 4U) | ((value2 & 0x0F0FU) << 4U));
 
   public:
 
-    static ETL_CONSTANT uint16_t value = uint16_t((value3 >> 8) | (value3 << 8));
+    static ETL_CONSTANT uint16_t value = uint16_t((value3 >> 8U) | ((value3 & 0xFFU) << 8U));
   };
 
   //***********************************
@@ -565,34 +597,31 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT int16_t value1 = int16_t(((Value & 0xAAAA) >> 1)  | ((Value & 0x5555) << 1));
-    static ETL_CONSTANT int16_t value2 = int16_t(((value1 & 0xCCCC) >> 2) | ((value1 & 0x3333) << 2));
-    static ETL_CONSTANT int16_t value3 = int16_t(((value2 & 0xF0F0) >> 4) | ((value2 & 0x0F0F) << 4));   
+    static ETL_CONSTANT int16_t value1 = int16_t(((Value  & 0xAAAAU) >> 1U) | ((Value  & 0x5555U) << 1U));
+    static ETL_CONSTANT int16_t value2 = int16_t(((value1 & 0xCCCCU) >> 2U) | ((value1 & 0x3333U) << 2U));
+    static ETL_CONSTANT int16_t value3 = int16_t(((value2 & 0xF0F0U) >> 4U) | ((value2 & 0x0F0FU) << 4U));
 
   public:
 
-    static ETL_CONSTANT int16_t value = int16_t((value3 >> 8) | (value3 << 8));
+    static ETL_CONSTANT int16_t value = int16_t((value3 >> 8U) | ((value3 & 0xFFU) << 8U));
   };
 
   //***************************************************************************
   /// Reverse 32 bits.
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint32_t reverse_bits(uint32_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 32U), T>::type
+    reverse_bits(T value)
   {
-    value = ((value & 0xAAAAAAAA) >>  1) | ((value & 0x55555555) <<  1);
-    value = ((value & 0xCCCCCCCC) >>  2) | ((value & 0x33333333) <<  2);
-    value = ((value & 0xF0F0F0F0) >>  4) | ((value & 0x0F0F0F0F) <<  4);
-    value = ((value & 0xFF00FF00) >>  8) | ((value & 0x00FF00FF) <<  8);
-    value = (value >> 16) | (value << 16);
+    value = ((value & 0xAAAAAAAAUL) >>  1U) | ((value & 0x55555555UL) <<  1U);
+    value = ((value & 0xCCCCCCCCUL) >>  2U) | ((value & 0x33333333UL) <<  2U);
+    value = ((value & 0xF0F0F0F0UL) >>  4U) | ((value & 0x0F0F0F0FUL) <<  4U);
+    value = ((value & 0xFF00FF00UL) >>  8U) | ((value & 0x00FF00FFUL) <<  8U);
+    value = (value >> 16U) | ((value & 0xFFFFU) << 16U);
 
     return value;
-  }
-
-  //***********************************
-  inline ETL_CONSTEXPR14 int32_t reverse_bits(int32_t value)
-  {
-    return int32_t(reverse_bits(uint32_t(value)));
   }
 
   //***********************************
@@ -601,14 +630,14 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT uint32_t value1 = uint32_t(((Value & 0xAAAAAAAA) >>  1) | ((Value & 0x55555555) <<  1));
-    static ETL_CONSTANT uint32_t value2 = uint32_t(((value1 & 0xCCCCCCCC) >>  2) | ((value1 & 0x33333333) <<  2));
-    static ETL_CONSTANT uint32_t value3 = uint32_t(((value2 & 0xF0F0F0F0) >>  4) | ((value2 & 0x0F0F0F0F) <<  4));
-    static ETL_CONSTANT uint32_t value4 = uint32_t(((value3 & 0xFF00FF00) >>  8) | ((value3 & 0x00FF00FF) <<  8));
-    
+    static ETL_CONSTANT uint32_t value1 = uint32_t(((Value  & 0xAAAAAAAAUL) >>  1U) | ((Value  & 0x55555555UL) <<  1U));
+    static ETL_CONSTANT uint32_t value2 = uint32_t(((value1 & 0xCCCCCCCCUL) >>  2U) | ((value1 & 0x33333333UL) <<  2U));
+    static ETL_CONSTANT uint32_t value3 = uint32_t(((value2 & 0xF0F0F0F0UL) >>  4U) | ((value2 & 0x0F0F0F0FUL) <<  4U));
+    static ETL_CONSTANT uint32_t value4 = uint32_t(((value3 & 0xFF00FF00UL) >>  8U) | ((value3 & 0x00FF00FFUL) <<  8U));
+
   public:
 
-    static ETL_CONSTANT uint32_t value = uint32_t((value4 >> 16) | (value4 << 16));
+    static ETL_CONSTANT uint32_t value = uint32_t((value4 >> 16U) | ((value4 & 0xFFFFU) << 16U));
   };
 
   //***********************************
@@ -617,14 +646,14 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT int32_t value1 = int32_t(((Value & 0xAAAAAAAA) >>  1) | ((Value & 0x55555555) <<  1));
-    static ETL_CONSTANT int32_t value2 = int32_t(((value1 & 0xCCCCCCCC) >>  2) | ((value1 & 0x33333333) <<  2));
-    static ETL_CONSTANT int32_t value3 = int32_t(((value2 & 0xF0F0F0F0) >>  4) | ((value2 & 0x0F0F0F0F) <<  4));
-    static ETL_CONSTANT int32_t value4 = int32_t(((value3 & 0xFF00FF00) >>  8) | ((value3 & 0x00FF00FF) <<  8));
-    
+    static ETL_CONSTANT int32_t value1 = int32_t(((Value  & 0xAAAAAAAAUL) >>  1U) | ((Value  & 0x55555555UL) <<  1U));
+    static ETL_CONSTANT int32_t value2 = int32_t(((value1 & 0xCCCCCCCCUL) >>  2U) | ((value1 & 0x33333333UL) <<  2U));
+    static ETL_CONSTANT int32_t value3 = int32_t(((value2 & 0xF0F0F0F0UL) >>  4U) | ((value2 & 0x0F0F0F0FUL) <<  4U));
+    static ETL_CONSTANT int32_t value4 = int32_t(((value3 & 0xFF00FF00UL) >>  8U) | ((value3 & 0x00FF00FFUL) <<  8U));
+
   public:
 
-    static ETL_CONSTANT int32_t value = int32_t((value4 >> 16) | (value4 << 16));
+    static ETL_CONSTANT int32_t value = int32_t((value4 >> 16U) | ((value4 & 0xFFFFUL) << 16U));
   };
 
 #if ETL_USING_64BIT_TYPES
@@ -632,22 +661,19 @@ namespace etl
   /// Reverse 64 bits.
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint64_t reverse_bits(uint64_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), T>::type
+    reverse_bits(T value)
   {
-    value = ((value & 0xAAAAAAAAAAAAAAAA) >>  1) | ((value & 0x5555555555555555) <<  1);
-    value = ((value & 0xCCCCCCCCCCCCCCCC) >>  2) | ((value & 0x3333333333333333) <<  2);
-    value = ((value & 0xF0F0F0F0F0F0F0F0) >>  4) | ((value & 0x0F0F0F0F0F0F0F0F) <<  4);
-    value = ((value & 0xFF00FF00FF00FF00) >>  8) | ((value & 0x00FF00FF00FF00FF) <<  8);
-    value = ((value & 0xFFFF0000FFFF0000) >> 16) | ((value & 0x0000FFFF0000FFFF) << 16);
-    value = (value >> 32) | (value << 32);
+    value = ((value & 0xAAAAAAAAAAAAAAAAULL) >>  1U) | ((value & 0x5555555555555555ULL) <<  1U);
+    value = ((value & 0xCCCCCCCCCCCCCCCCULL) >>  2U) | ((value & 0x3333333333333333ULL) <<  2U);
+    value = ((value & 0xF0F0F0F0F0F0F0F0ULL) >>  4U) | ((value & 0x0F0F0F0F0F0F0F0FULL) <<  4U);
+    value = ((value & 0xFF00FF00FF00FF00ULL) >>  8U) | ((value & 0x00FF00FF00FF00FFULL) <<  8U);
+    value = ((value & 0xFFFF0000FFFF0000ULL) >> 16U) | ((value & 0x0000FFFF0000FFFFULL) << 16U);
+    value = (value >> 32U) | ((value & 0xFFFFFFFFULL) << 32U);
 
     return value;
-  }
-
-  //***********************************
-  inline ETL_CONSTEXPR14 int64_t reverse_bits(int64_t value)
-  {
-    return int64_t(reverse_bits(uint64_t(value)));
   }
 
   //***********************************
@@ -656,15 +682,15 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT uint64_t value1 = uint64_t(((Value & 0xAAAAAAAAAAAAAAAA) >>  1) | ((Value & 0x5555555555555555) <<  1));
-    static ETL_CONSTANT uint64_t value2 = uint64_t(((value1 & 0xCCCCCCCCCCCCCCCC) >>  2) | ((value1 & 0x3333333333333333) <<  2));
-    static ETL_CONSTANT uint64_t value3 = uint64_t(((value2 & 0xF0F0F0F0F0F0F0F0) >>  4) | ((value2 & 0x0F0F0F0F0F0F0F0F) <<  4));
-    static ETL_CONSTANT uint64_t value4 = uint64_t(((value3 & 0xFF00FF00FF00FF00) >>  8) | ((value3 & 0x00FF00FF00FF00FF) <<  8));
-    static ETL_CONSTANT uint64_t value5 = uint64_t(((value4 & 0xFFFF0000FFFF0000) >> 16) | ((value4 & 0x0000FFFF0000FFFF) << 16));
-    
+    static ETL_CONSTANT uint64_t value1 = uint64_t(((Value  & 0xAAAAAAAAAAAAAAAAULL) >>  1U) | ((Value  & 0x5555555555555555ULL) <<  1U));
+    static ETL_CONSTANT uint64_t value2 = uint64_t(((value1 & 0xCCCCCCCCCCCCCCCCULL) >>  2U) | ((value1 & 0x3333333333333333ULL) <<  2U));
+    static ETL_CONSTANT uint64_t value3 = uint64_t(((value2 & 0xF0F0F0F0F0F0F0F0ULL) >>  4U) | ((value2 & 0x0F0F0F0F0F0F0F0FULL) <<  4U));
+    static ETL_CONSTANT uint64_t value4 = uint64_t(((value3 & 0xFF00FF00FF00FF00ULL) >>  8U) | ((value3 & 0x00FF00FF00FF00FFULL) <<  8U));
+    static ETL_CONSTANT uint64_t value5 = uint64_t(((value4 & 0xFFFF0000FFFF0000ULL) >> 16U) | ((value4 & 0x0000FFFF0000FFFFULL) << 16U));
+
   public:
 
-    static ETL_CONSTANT uint64_t value = uint64_t((value5 >> 32) | (value5 << 32));
+    static ETL_CONSTANT uint64_t value = uint64_t((value5 >> 32U) | ((value5 & 0xFFFFFFFFULL) << 32U));
   };
 
   //***********************************
@@ -673,29 +699,41 @@ namespace etl
   {
   private:
 
-    static ETL_CONSTANT int64_t value1 = int64_t(((Value & 0xAAAAAAAAAAAAAAAA) >>  1) | ((Value & 0x5555555555555555) <<  1));
-    static ETL_CONSTANT int64_t value2 = int64_t(((value1 & 0xCCCCCCCCCCCCCCCC) >>  2) | ((value1 & 0x3333333333333333) <<  2));
-    static ETL_CONSTANT int64_t value3 = int64_t(((value2 & 0xF0F0F0F0F0F0F0F0) >>  4) | ((value2 & 0x0F0F0F0F0F0F0F0F) <<  4));
-    static ETL_CONSTANT int64_t value4 = int64_t(((value3 & 0xFF00FF00FF00FF00) >>  8) | ((value3 & 0x00FF00FF00FF00FF) <<  8));
-    static ETL_CONSTANT int64_t value5 = int64_t(((value4 & 0xFFFF0000FFFF0000) >> 16) | ((value4 & 0x0000FFFF0000FFFF) << 16));
-    
+    static ETL_CONSTANT int64_t value1 = int64_t(((Value  & 0xAAAAAAAAAAAAAAAAULL) >>  1U) | ((Value  & 0x5555555555555555ULL) <<  1U));
+    static ETL_CONSTANT int64_t value2 = int64_t(((value1 & 0xCCCCCCCCCCCCCCCCULL) >>  2U) | ((value1 & 0x3333333333333333ULL) <<  2U));
+    static ETL_CONSTANT int64_t value3 = int64_t(((value2 & 0xF0F0F0F0F0F0F0F0ULL) >>  4U) | ((value2 & 0x0F0F0F0F0F0F0F0FULL) <<  4U));
+    static ETL_CONSTANT int64_t value4 = int64_t(((value3 & 0xFF00FF00FF00FF00ULL) >>  8U) | ((value3 & 0x00FF00FF00FF00FFULL) <<  8U));
+    static ETL_CONSTANT int64_t value5 = int64_t(((value4 & 0xFFFF0000FFFF0000ULL) >> 16U) | ((value4 & 0x0000FFFF0000FFFFULL) << 16U));
+
   public:
 
-    static ETL_CONSTANT int64_t value = int64_t((value5 >> 32) | (value5 << 32));
+    static ETL_CONSTANT int64_t value = int64_t((value5 >> 32U) | ((value5 & 0xFFFFFFFFULL) << 32U));
   };
 #endif
+
+  //***************************************************************************
+  /// Reverse bits signed types.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_signed<T>::value, T>::type
+    reverse_bits(T value)
+  {
+    typedef typename etl::make_unsigned<T>::type unsigned_t;
+
+    return static_cast<T>(reverse_bits(static_cast<unsigned_t>(value)));
+  }
 
   //***************************************************************************
   /// Reverse bytes 8 bit.
   ///\ingroup binary
   //***************************************************************************
-#if ETL_8BIT_SUPPORT
-  inline ETL_CONSTEXPR uint8_t reverse_bytes(uint8_t value)
-  {
-    return value;
-  }
-
-  inline ETL_CONSTEXPR int8_t reverse_bytes(int8_t value)
+#if ETL_USING_8BIT_TYPES
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), T>::type
+    reverse_bytes(T value)
   {
     return value;
   }
@@ -705,31 +743,35 @@ namespace etl
   /// Reverse bytes 16 bit.
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR uint16_t reverse_bytes(uint16_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 16U), T>::type
+    reverse_bytes(T value)
   {
-    return (value >> 8) | (value << 8);
-  }
-
-  inline ETL_CONSTEXPR int16_t reverse_bytes(int16_t value)
-  {
-    return int16_t(reverse_bytes(uint16_t(value)));
+#if ETL_CPP23_SUPPORTED && ETL_USING_STL
+    return std::byteswap(value);
+#else
+    return (value >> 8U) | (value << 8U);
+#endif
   }
 
   //***************************************************************************
   /// Reverse bytes 32 bit.
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint32_t reverse_bytes(uint32_t value)
+  template <typename T>
+  ETL_CONSTEXPR14 
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 32U), T>::type
+    reverse_bytes(T value)
   {
-    value = ((value & 0xFF00FF00) >> 8) | ((value & 0x00FF00FF) << 8);
-    value = (value >> 16) | (value << 16);
+#if ETL_CPP23_SUPPORTED && ETL_USING_STL
+    return std::byteswap(value);
+#else
+    value = ((value & 0xFF00FF00UL) >> 8U) | ((value & 0x00FF00FFUL) << 8U);
+    value = (value >> 16U) | (value << 16U);
 
     return value;
-  }
-
-  inline ETL_CONSTEXPR14 int32_t reverse_bytes(int32_t value)
-  {
-    return int32_t(reverse_bytes(uint32_t(value)));
+#endif
   }
 
 #if ETL_USING_64BIT_TYPES
@@ -737,78 +779,88 @@ namespace etl
   /// Reverse bytes 64 bit.
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint64_t reverse_bytes(uint64_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), T>::type
+    reverse_bytes(T value)
   {
-    value = ((value & 0xFF00FF00FF00FF00) >> 8)  | ((value & 0x00FF00FF00FF00FF) << 8);
-    value = ((value & 0xFFFF0000FFFF0000) >> 16) | ((value & 0x0000FFFF0000FFFF) << 16);
-    value = (value >> 32) | (value << 32);
+#if ETL_CPP23_SUPPORTED && ETL_USING_STL
+    return std::byteswap(value);
+#else
+    value = ((value & 0xFF00FF00FF00FF00ULL) >> 8U)  | ((value & 0x00FF00FF00FF00FFULL) << 8U);
+    value = ((value & 0xFFFF0000FFFF0000ULL) >> 16U) | ((value & 0x0000FFFF0000FFFFULL) << 16U);
+    value = (value >> 32U) | (value << 32U);
 
     return value;
-  }
-
-  inline ETL_CONSTEXPR14 int64_t reverse_bytes(int64_t value)
-  {
-    return int64_t(reverse_bytes(uint64_t(value)));
-  }
 #endif
-
-#if ETL_8BIT_SUPPORT
-  //***************************************************************************
-  /// Converts Gray code to binary.
-  ///\ingroup binary
-  //***************************************************************************
-  inline ETL_CONSTEXPR14 uint8_t gray_to_binary(uint8_t value)
-  {
-    value ^= (value >> 4);
-    value ^= (value >> 2);
-    value ^= (value >> 1);
-
-    return value;
-  }
-
-  inline ETL_CONSTEXPR14 int8_t gray_to_binary(int8_t value)
-  {
-    return int8_t(gray_to_binary(uint8_t(value)));
   }
 #endif
 
   //***************************************************************************
-  /// Converts Gray code to binary.
+  /// Reverse bytes signed types.
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint16_t gray_to_binary(uint16_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_signed<T>::value, T>::type
+    reverse_bytes(T value)
   {
-    value ^= (value >> 8);
-    value ^= (value >> 4);
-    value ^= (value >> 2);
-    value ^= (value >> 1);
+    typedef typename etl::make_unsigned<T>::type unsigned_t;
 
-    return value;
+    return static_cast<T>(reverse_bytes(static_cast<unsigned_t>(value)));
   }
 
-  inline ETL_CONSTEXPR14 int16_t gray_to_binary(int16_t value)
-  {
-    return int16_t(gray_to_binary(uint16_t(value)));
-  }
-
+#if ETL_USING_8BIT_TYPES
   //***************************************************************************
   /// Converts Gray code to binary.
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint32_t gray_to_binary(uint32_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), T>::type
+    gray_to_binary(T value)
   {
-    value ^= (value >> 16);
-    value ^= (value >> 8);
-    value ^= (value >> 4);
-    value ^= (value >> 2);
-    value ^= (value >> 1);
+    value ^= (value >> 4U);
+    value ^= (value >> 2U);
+    value ^= (value >> 1U);
+
+    return value;
+  }
+#endif
+
+  //***************************************************************************
+  /// Converts Gray code to binary.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 16U), T>::type
+    gray_to_binary(T value)
+  {
+    value ^= (value >> 8U);
+    value ^= (value >> 4U);
+    value ^= (value >> 2U);
+    value ^= (value >> 1U);
 
     return value;
   }
 
-  inline ETL_CONSTEXPR14 int32_t gray_to_binary(int32_t value)
+  //***************************************************************************
+  /// Converts Gray code to binary.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 32U), T>::type
+    gray_to_binary(T value)
   {
-    return int32_t(gray_to_binary(uint32_t(value)));
+    value ^= (value >> 16U);
+    value ^= (value >> 8U);
+    value ^= (value >> 4U);
+    value ^= (value >> 2U);
+    value ^= (value >> 1U);
+
+    return value;
   }
 
 #if ETL_USING_64BIT_TYPES
@@ -816,88 +868,105 @@ namespace etl
   /// Converts Gray code to binary.
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint64_t gray_to_binary(uint64_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), T>::type
+    gray_to_binary(T value)
   {
-    value ^= (value >> 32);
-    value ^= (value >> 16);
-    value ^= (value >> 8);
-    value ^= (value >> 4);
-    value ^= (value >> 2);
-    value ^= (value >> 1);
+    value ^= (value >> 32U);
+    value ^= (value >> 16U);
+    value ^= (value >> 8U);
+    value ^= (value >> 4U);
+    value ^= (value >> 2U);
+    value ^= (value >> 1U);
 
     return value;
   }
-
-  inline ETL_CONSTEXPR14 int64_t gray_to_binary(int64_t value)
-  {
-    return int64_t(gray_to_binary(uint64_t(value)));
-  }
 #endif
 
-#if ETL_8BIT_SUPPORT
+  //***************************************************************************
+  /// Converts Gray code to binary for signed.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_signed<T>::value, T>::type
+    gray_to_binary(T value)
+  {
+    typedef typename etl::make_unsigned<T>::type unsigned_t;
+
+    return static_cast<T>(gray_to_binary(static_cast<unsigned_t>(value)));
+  }
+
+#if ETL_USING_8BIT_TYPES
   //***************************************************************************
   /// Count set bits. 8 bits.
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint_least8_t count_bits(uint8_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), uint_least8_t>::type
+    count_bits(T value)
   {
+#if ETL_CPP23_SUPPORTED && ETL_USING_STL
+    return std::popcount(value);
+#else
     uint32_t count = 0U;
 
-    count = value - ((value >> 1) & 0x55);
-    count = ((count >> 2) & 0x33) + (count & 0x33);
-    count = ((count >> 4) + count) & 0x0F;
+    count = value - ((value >> 1U) & 0x55U);
+    count = ((count >> 2U) & 0x33U) + (count & 0x33U);
+    count = ((count >> 4U) + count) & 0x0FU;
 
     return uint_least8_t(count);
+#endif
   }
-
-  inline ETL_CONSTEXPR14 uint_least8_t count_bits(int8_t value)
-  {
-    return count_bits(uint8_t(value));
-  }
-
 #endif
 
   //***************************************************************************
   /// Count set bits. 16 bits.
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint_least8_t count_bits(uint16_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 16U), uint_least8_t>::type
+    count_bits(T value)
   {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::popcount(value);
+#else
     uint32_t count = 0U;
 
-    count = value - ((value >> 1) & 0x5555);
-    count = ((count >> 2) & 0x3333) + (count & 0x3333);
-    count = ((count >> 4) + count) & 0x0F0F;
-    count = ((count >> 8) + count) & 0x00FF;
+    count = value - ((value >> 1U) & 0x5555U);
+    count = ((count >> 2U) & 0x3333U) + (count & 0x3333U);
+    count = ((count >> 4U) + count) & 0x0F0FU;
+    count = ((count >> 8U) + count) & 0x00FFU;
 
-    return count;
-  }
-
-  inline ETL_CONSTEXPR14 uint_least8_t count_bits(int16_t value)
-  {
-    return count_bits(uint16_t(value));
+    return static_cast<uint_least8_t>(count);
+#endif
   }
 
   //***************************************************************************
   /// Count set bits. 32 bits.
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint_least8_t count_bits(uint32_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 32U), uint_least8_t>::type
+    count_bits(T value)
   {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::popcount(value);
+#else
     uint32_t count = 0U;
 
-    count = value - ((value >> 1) & 0x55555555);
-    count = ((count >> 2) & 0x33333333) + (count & 0x33333333);
-    count = ((count >> 4)  + count) & 0x0F0F0F0F;
-    count = ((count >> 8)  + count) & 0x00FF00FF;
-    count = ((count >> 16) + count) & 0x0000FF;
+    count = value - ((value >> 1U) & 0x55555555UL);
+    count = ((count >> 2U) & 0x33333333UL) + (count & 0x33333333UL);
+    count = ((count >> 4U)  + count) & 0x0F0F0F0FUL;
+    count = ((count >> 8U)  + count) & 0x00FF00FFUL;
+    count = ((count >> 16U) + count) & 0x0000FFUL;
 
-    return uint_least8_t(count);
-  }
-
-  inline ETL_CONSTEXPR14 uint_least8_t count_bits(int32_t value)
-  {
-    return count_bits(uint32_t(value));
+    return static_cast<uint_least8_t>(count);
+#endif
   }
 
 #if ETL_USING_64BIT_TYPES
@@ -905,41 +974,55 @@ namespace etl
   /// Count set bits. 64 bits.
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint_least8_t count_bits(uint64_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), uint_least8_t>::type
+    count_bits(T value)
   {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::popcount(value);
+#else
     uint64_t count = 0U;
 
-    count = value - ((value >> 1) & 0x5555555555555555);
-    count = ((count >> 2) & 0x3333333333333333) + (count & 0x3333333333333333);
-    count = ((count >> 4)  + count) & 0x0F0F0F0F0F0F0F0F;
-    count = ((count >> 8)  + count) & 0x00FF00FF00FF00FF;
-    count = ((count >> 16) + count) & 0x0000FFFF0000FFFF;
-    count = ((count >> 32) + count) & 0x00000000FFFFFFFF;
+    count = value - ((value >> 1U) & 0x5555555555555555ULL);
+    count = ((count >> 2U) & 0x3333333333333333ULL) + (count & 0x3333333333333333ULL);
+    count = ((count >> 4U)  + count) & 0x0F0F0F0F0F0F0F0FULL;
+    count = ((count >> 8U)  + count) & 0x00FF00FF00FF00FFULL;
+    count = ((count >> 16U) + count) & 0x0000FFFF0000FFFFULL;
+    count = ((count >> 32U) + count) & 0x00000000FFFFFFFFULL;
 
-    return uint_least8_t(count);
-  }
-
-  inline ETL_CONSTEXPR14 uint_least8_t count_bits(int64_t value)
-  {
-    return count_bits(uint64_t(value));
+    return static_cast<uint_least8_t>(count);
+#endif
   }
 #endif
 
-#if ETL_8BIT_SUPPORT
+  //***************************************************************************
+  /// Count set bits for signed.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_signed<T>::value, uint_least8_t>::type
+    count_bits(T value)
+  {
+    typedef typename etl::make_unsigned<T>::type unsigned_t;
+
+    return static_cast<T>(count_bits(static_cast<unsigned_t>(value)));
+  }
+
+#if ETL_USING_8BIT_TYPES
   //***************************************************************************
   /// Parity. 8bits. 0 = even, 1 = odd
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint_least8_t parity(uint8_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), uint_least8_t>::type
+    parity(T value)
   {
-    value ^= value >> 4;
-    value &= 0x0F;
-    return (0x6996 >> value) & 1;
-  }
-
-  inline ETL_CONSTEXPR14 uint_least8_t parity(int8_t value)
-  {
-    return parity(uint8_t(value));
+    value ^= value >> 4U;
+    value &= 0x0FU;
+    return (0x6996U >> value) & 1U;
   }
 #endif
 
@@ -947,35 +1030,31 @@ namespace etl
   /// Parity. 16bits. 0 = even, 1 = odd
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint_least8_t parity(uint16_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 16U), uint_least8_t>::type
+    parity(T value)
   {
-    value ^= value >> 8;
-    value ^= value >> 4;
-    value &= 0x0F;
-    return (0x6996 >> value) & 1;
-  }
-
-  inline ETL_CONSTEXPR14 uint_least8_t parity(int16_t value)
-  {
-    return parity(uint16_t(value));
+    value ^= value >> 8U;
+    value ^= value >> 4U;
+    value &= 0x0FU;
+    return (0x6996U >> value) & 1U;
   }
 
   //***************************************************************************
   /// Parity. 32bits. 0 = even, 1 = odd
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint_least8_t parity(uint32_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 32U), uint_least8_t>::type
+    parity(T value)
   {
-    value ^= value >> 16;
-    value ^= value >> 8;
-    value ^= value >> 4;
-    value &= 0x0F;
-    return (0x6996 >> value) & 1;
-  }
-
-  inline ETL_CONSTEXPR14 uint_least8_t parity(int32_t value)
-  {
-    return parity(uint32_t(value));
+    value ^= value >> 16U;
+    value ^= value >> 8U;
+    value ^= value >> 4U;
+    value &= 0x0FU;
+    return (0x6996U >> value) & 1U;
   }
 
 #if ETL_USING_64BIT_TYPES
@@ -983,61 +1062,81 @@ namespace etl
   /// Parity. 64bits. 0 = even, 1 = odd
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint_least8_t parity(uint64_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), uint_least8_t>::type
+    parity(T value)
   {
-    value ^= value >> 32;
-    value ^= value >> 16;
-    value ^= value >> 8;
-    value ^= value >> 4;
-    value &= 0x0F;
-    return (0x69966996 >> value) & 1;
-  }
-
-  inline ETL_CONSTEXPR14 uint_least8_t parity(int64_t value)
-  {
-    return parity(uint64_t(value));
+    value ^= value >> 32U;
+    value ^= value >> 16U;
+    value ^= value >> 8U;
+    value ^= value >> 4U;
+    value &= 0x0FU;
+    return (0x69966996UL >> value) & 1U;
   }
 #endif
 
-#if ETL_8BIT_SUPPORT
   //***************************************************************************
-  /// Count trailing zeros. bit.
+  /// Parity for signed.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_signed<T>::value, uint_least8_t>::type
+    parity(T value)
+  {
+    typedef typename etl::make_unsigned<T>::type unsigned_t;
+
+    return static_cast<T>(parity(static_cast<unsigned_t>(value)));
+  }
+
+#if ETL_USING_8BIT_TYPES
+  //***************************************************************************
+  /// Count trailing zeros.
   /// Uses a binary search.
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_zeros(uint8_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), uint_least8_t>::type
+    count_trailing_zeros(T value)
   {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::countr_zero(value);
+#else
     uint_least8_t count = 0U;
 
-    if (value & 0x1)
+    if (value & 0x1U)
     {
-      count = 0;
+      count = 0U;
     }
     else
     {
-      count = 1;
+      count = 1U;
 
-      if ((value & 0xF) == 0)
+      if ((value & 0xFU) == 0U)
       {
-        value >>= 4;
-        count += 4;
+        value >>= 4U;
+        count += 4U;
       }
 
-      if ((value & 0x3) == 0)
+      if ((value & 0x3U) == 0U)
       {
-        value >>= 2;
-        count += 2;
+        value >>= 2U;
+        count += 2U;
       }
 
-      count -= value & 0x1;
+      if ((value & 0x1U) == 0U)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
+      count -= (value & 0x1U);
     }
 
     return count;
-  }
-
-  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_zeros(int8_t value)
-  {
-    return count_trailing_zeros(uint8_t(value));
+#endif
   }
 #endif
 
@@ -1046,45 +1145,53 @@ namespace etl
   /// Uses a binary search.
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_zeros(uint16_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 16U), uint_least8_t>::type
+    count_trailing_zeros(T value)
   {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::countr_zero(value);
+#else
     uint_least8_t count = 0U;
 
-    if (value & 0x1)
+    if (value & 0x1U)
     {
-      count = 0;
+      count = 0U;
     }
     else
     {
-      count = 1;
+      count = 1U;
 
-      if ((value & 0xFF) == 0)
+      if ((value & 0xFFU) == 0U)
       {
-        value >>= 8;
-        count += 8;
+        value >>= 8U;
+        count += 8U;
       }
 
-      if ((value & 0xF) == 0)
+      if ((value & 0xFU) == 0U)
       {
-        value >>= 4;
-        count += 4;
+        value >>= 4U;
+        count += 4U;
       }
 
-      if ((value & 0x3) == 0)
+      if ((value & 0x3U) == 0U)
       {
-        value >>= 2;
-        count += 2;
+        value >>= 2U;
+        count += 2U;
       }
 
-      count -= value & 0x1;
+      if ((value & 0x1U) == 0U)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
+      count -= value & 0x1U;
     }
 
     return count;
-  }
-
-  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_zeros(int16_t value)
-  {
-    return count_trailing_zeros(uint16_t(value));
+#endif
   }
 
   //***************************************************************************
@@ -1092,51 +1199,59 @@ namespace etl
   /// Uses a binary search.
   ///\ingroup binary
   //***************************************************************************
-  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_zeros(uint32_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 32U), uint_least8_t>::type
+    count_trailing_zeros(T value)
   {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::countr_zero(value);
+#else
     uint_least8_t count = 0U;
 
-    if (value & 0x1)
+    if (value & 0x1UL)
     {
-      count = 0;
+      count = 0U;
     }
     else
     {
-      count = 1;
+      count = 1U;
 
-      if ((value & 0xFFFF) == 0)
+      if ((value & 0xFFFFUL) == 0UL)
       {
-        value >>= 16;
-        count += 16;
+        value >>= 16U;
+        count += 16U;
       }
 
-      if ((value & 0xFF) == 0)
+      if ((value & 0xFFUL) == 0UL)
       {
-        value >>= 8;
-        count += 8;
+        value >>= 8U;
+        count += 8U;
       }
 
-      if ((value & 0xF) == 0)
+      if ((value & 0xFUL) == 0UL)
       {
-        value >>= 4;
-        count += 4;
+        value >>= 4U;
+        count += 4U;
       }
 
-      if ((value & 0x3) == 0)
+      if ((value & 0x3UL) == 0UL)
       {
-        value >>= 2;
-        count += 2;
+        value >>= 2U;
+        count += 2U;
       }
 
-      count -= value & 0x1;
+      if ((value & 0x1U) == 0U)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
+      count -= value & 0x1UL;
     }
 
     return count;
-  }
-
-  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_zeros(int32_t value)
-  {
-    return count_trailing_zeros(uint32_t(value));
+#endif
   }
 
 #if ETL_USING_64BIT_TYPES
@@ -1145,84 +1260,836 @@ namespace etl
   /// Uses a binary search.
   ///\ingroup binary
   //***************************************************************************
-  ETL_CONSTEXPR14 inline uint_least8_t count_trailing_zeros(uint64_t value)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), uint_least8_t>::type
+    count_trailing_zeros(T value)
   {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::countr_zero(value);
+#else
       uint_least8_t count = 0U;
 
-      if (value & 0x1)
+      if (value & 0x1ULL)
       {
-        count = 0;
+        count = 0U;
       }
       else
       {
-        count = 1;
+        count = 1U;
 
-        if ((value & 0xFFFFFFFF) == 0)
+        if ((value & 0xFFFFFFFFULL) == 0ULL)
         {
-          value >>= 32;
-          count += 32;
+          value >>= 32U;
+          count += 32U;
         }
 
-        if ((value & 0xFFFF) == 0)
+        if ((value & 0xFFFFULL) == 0ULL)
         {
-          value >>= 16;
-          count += 16;
+          value >>= 16U;
+          count += 16U;
         }
 
-        if ((value & 0xFF) == 0)
+        if ((value & 0xFFULL) == 0ULL)
         {
-          value >>= 8;
-          count += 8;
+          value >>= 8U;
+          count += 8U;
         }
 
-        if ((value & 0xF) == 0)
+        if ((value & 0xFULL) == 0ULL)
         {
-          value >>= 4;
-          count += 4;
+          value >>= 4U;
+          count += 4U;
         }
 
-        if ((value & 0x3) == 0)
+        if ((value & 0x3ULL) == 0ULL)
         {
-          value >>= 2;
-          count += 2;
+          value >>= 2U;
+          count += 2U;
         }
 
-        count -= value & 0x1;
+        if ((value & 0x1U) == 0U)
+        {
+          value >>= 1U;
+          count += 1U;
+        }
+
+        count -= value & 0x1ULL;
       }
 
       return count;
-  }
-
-  inline ETL_CONSTEXPR14 uint_least8_t count_trailing_zeros(int64_t value)
-  {
-    return count_trailing_zeros(uint64_t(value));
+#endif
   }
 #endif
 
-#if ETL_8BIT_SUPPORT
+  //***************************************************************************
+  /// Count trailing zeros for signed.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_signed<T>::value, uint_least8_t>::type
+    count_trailing_zeros(T value)
+  {
+    typedef typename etl::make_unsigned<T>::type unsigned_t;
+
+    return static_cast<T>(count_trailing_zeros(static_cast<unsigned_t>(value)));
+  }
+
+#if ETL_USING_8BIT_TYPES
+  //***************************************************************************
+  /// Count trailing zeros. bit.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), uint_least8_t>::type
+    count_trailing_ones(T value)
+  {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::countr_one(value);
+#else
+    uint_least8_t count = 0U;
+
+    if ((value & 0x1U) == 0x0U)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFU) == 0xFU)
+      {
+        value >>= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0x3U) == 0x3U)
+      {
+        value >>= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x1U) == 0x1U)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x1U) == 0x0U);
+    }
+
+    return count;
+#endif
+  }
+#endif
+
+  //***************************************************************************
+  /// Count trailing zeros. 16bit.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 16U), uint_least8_t>::type
+    count_trailing_ones(T value)
+  {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::countr_one(value);
+#else
+    uint_least8_t count = 0U;
+
+    if ((value & 0x1U) == 0x0U)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFU) == 0xFFU)
+      {
+        value >>= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xFU) == 0xFU)
+      {
+        value >>= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0x3U) == 0x3U)
+      {
+        value >>= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x1U) == 0x1U)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x1U) == 0x0U);
+    }
+
+    return count;
+#endif
+  }
+
+  //***************************************************************************
+  /// Count trailing zeros. 32bit.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 32U), uint_least8_t>::type
+    count_trailing_ones(T value)
+  {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::countr_one(value);
+#else
+    uint_least8_t count = 0U;
+
+    if ((value & 0x1UL) == 0x0UL)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFFFUL) == 0xFFFFUL)
+      {
+        value >>= 16U;
+        count += 16U;
+      }
+
+      if ((value & 0xFFUL) == 0xFFUL)
+      {
+        value >>= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xFUL) == 0xFUL)
+      {
+        value >>= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0x3UL) == 0x3UL)
+      {
+        value >>= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x1UL) == 0x1UL)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x1UL) == 0x0UL);
+    }
+
+    return count;
+#endif
+  }
+
+#if ETL_USING_64BIT_TYPES
+  //***************************************************************************
+  /// Count trailing zeros. 64bit.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), uint_least8_t>::type
+    count_trailing_ones(T value)
+  {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::countr_one(value);
+#else
+    uint_least8_t count = 0U;
+
+    if ((value & 0x1ULL) == 0x0ULL)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFFFULL) == 0xFFFFULL)
+      {
+        value >>= 16U;
+        count += 16U;
+      }
+
+      if ((value & 0xFFULL) == 0xFFULL)
+      {
+        value >>= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xFULL) == 0xFULL)
+      {
+        value >>= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0x3ULL) == 0x3ULL)
+      {
+        value >>= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x1ULL) == 0x1ULL)
+      {
+        value >>= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x1ULL) == 0x0ULL);
+    }
+
+    return count;
+#endif
+  }
+#endif
+
+  //***************************************************************************
+  /// Count trailing ones for signed.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value&& etl::is_signed<T>::value, uint_least8_t>::type
+    count_trailing_ones(T value)
+  {
+    typedef typename etl::make_unsigned<T>::type unsigned_t;
+
+    return static_cast<T>(count_trailing_ones(static_cast<unsigned_t>(value)));
+  }
+
+#if ETL_USING_8BIT_TYPES
+  //***************************************************************************
+  /// Count leading zeros.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), uint_least8_t>::type
+    count_leading_zeros(T value)
+  {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::countl_zero(value);
+#else
+    uint_least8_t count = 0U;
+
+    if (value & 0x80U)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xF0U) == 0U)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC0U) == 0U)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x80U) == 0U)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x80U) == 0x80U);
+    }
+
+    return count;
+#endif
+  }
+#endif
+
+  //***************************************************************************
+  /// Count leading zeros.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 16U), uint_least8_t>::type
+    count_leading_zeros(T value)
+  {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::countl_zero(value);
+#else
+    uint_least8_t count = 0U;
+
+    if (value & 0x8000U)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFF00U) == 0U)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xF000U) == 0U)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC000U) == 0U)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x8000U) == 0U)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x8000U) == 0x8000U);
+    }
+
+    return count;
+#endif
+  }
+
+  //***************************************************************************
+  /// Count leading zeros.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 32U), uint_least8_t>::type
+    count_leading_zeros(T value)
+  {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::countl_zero(value);
+#else
+    uint_least8_t count = 0U;
+
+    if (value & 0x80000000UL)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFFF0000UL) == 0U)
+      {
+        value <<= 16U;
+        count += 16U;
+      }
+
+      if ((value & 0xFF000000UL) == 0U)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xF0000000UL) == 0U)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC0000000UL) == 0U)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x80000000UL) == 0U)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x80000000UL) == 0x80000000UL);
+    }
+
+    return count;
+#endif
+  }
+
+#if ETL_USING_64BIT_TYPES
+  //***************************************************************************
+  /// Count leading zeros.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), uint_least8_t>::type
+    count_leading_zeros(T value)
+  {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::countl_zero(value);
+#else
+    uint_least8_t count = 0U;
+
+    if (value & 0x8000000000000000ULL)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFFFFFFFF0000000ULL) == 0U)
+      {
+        value <<= 32U;
+        count += 32U;
+      }
+
+      if ((value & 0xFFFF000000000000ULL) == 0U)
+      {
+        value <<= 16U;
+        count += 16U;
+      }
+
+      if ((value & 0xFF00000000000000ULL) == 0U)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xF000000000000000ULL) == 0U)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC000000000000000ULL) == 0U)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x8000000000000000ULL) == 0U)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x8000000000000000ULL) == 0x8000000000000000ULL);
+    }
+
+    return count;
+#endif
+  }
+#endif
+
+  //***************************************************************************
+  /// Count leading zeros for signed.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_signed<T>::value, uint_least8_t>::type
+    count_leading_zeros(T value)
+  {
+    typedef typename etl::make_unsigned<T>::type unsigned_t;
+
+    return static_cast<T>(count_trailing_ones(static_cast<unsigned_t>(value)));
+  }
+
+#if ETL_USING_8BIT_TYPES
+  //***************************************************************************
+  /// Count leading ones.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), uint_least8_t>::type
+    count_leading_ones(T value)
+  {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::countl_one(value);
+#else
+    uint_least8_t count = 0U;
+
+    if ((value & 0x80U) == 0U)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xF0U) == 0xF0U)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC0U) == 0xC0U)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x80U) == 0x80U)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x80U) == 0x0U);
+    }
+
+    return count;
+#endif
+  }
+#endif
+
+  //***************************************************************************
+  /// Count leading ones.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 16U), uint_least8_t>::type
+    count_leading_ones(T value)
+  {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::countl_one(value);
+#else
+    uint_least8_t count = 0U;
+
+    if ((value & 0x8000U) == 0U)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFF00U) == 0xFF00U)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xF000U) == 0xF000U)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC000U) == 0xC000U)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x8000U) == 0x8000U)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x8000U) == 0U);
+    }
+
+    return count;
+#endif
+  }
+
+  //***************************************************************************
+  /// Count leading ones.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 32U), uint_least8_t>::type
+    count_leading_ones(T value)
+  {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::countl_one(value);
+#else
+    uint_least8_t count = 0U;
+
+    if ((value & 0x80000000UL) == 0UL)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFFF0000UL) == 0xFFFF0000UL)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xFF000000UL) == 0xFF000000UL)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xF0000000UL) == 0xF0000000UL)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC0000000UL) == 0xC0000000UL)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x80000000UL) == 0x80000000UL)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x80000000UL) == 0UL);
+    }
+
+    return count;
+#endif
+  }
+
+#if ETL_USING_64BIT_TYPES
+  //***************************************************************************
+  /// Count leading ones.
+  /// Uses a binary search.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 64U), uint_least8_t>::type
+    count_leading_ones(T value)
+  {
+#if ETL_USING_CPP20 && ETL_USING_STL
+    return std::countl_one(value);
+#else
+    uint_least8_t count = 0U;
+
+    if ((value & 0x8000000000000000ULL) == 0ULL)
+    {
+      count = 0U;
+    }
+    else
+    {
+      count = 1U;
+
+      if ((value & 0xFFFFFFFF00000000ULL) == 0xFFFFFFFF00000000ULL)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xFFFF000000000000ULL) == 0xFFFF000000000000ULL)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xFF00000000000000ULL) == 0xFF00000000000000ULL)
+      {
+        value <<= 8U;
+        count += 8U;
+      }
+
+      if ((value & 0xF000000000000000ULL) == 0xF000000000000000ULL)
+      {
+        value <<= 4U;
+        count += 4U;
+      }
+
+      if ((value & 0xC000000000000000ULL) == 0xC000000000000000ULL)
+      {
+        value <<= 2U;
+        count += 2U;
+      }
+
+      if ((value & 0x8000000000000000ULL) == 0x8000000000000000ULL)
+      {
+        value <<= 1U;
+        count += 1U;
+      }
+
+      count -= ((value & 0x8000000000000000ULL) == 0ULL);
+    }
+
+    return count;
+#endif
+  }
+#endif
+
+  //***************************************************************************
+  /// Count leading ones for signed.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_signed<T>::value, uint_least8_t>::type
+    count_leading_ones(T value)
+  {
+    typedef typename etl::make_unsigned<T>::type unsigned_t;
+
+    return static_cast<T>(count_leading_ones(static_cast<unsigned_t>(value)));
+  }
+
+#if ETL_USING_8BIT_TYPES
   //*****************************************************************************
   /// Binary interleave
   ///\ingroup binary
   //*****************************************************************************
-  inline ETL_CONSTEXPR14 uint16_t binary_interleave(uint8_t first, uint8_t second)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value&& etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 8U), uint16_t>::type
+    binary_interleave(T first, T second)
   {
-	  uint16_t f = first;
-	  uint16_t s = second;
+	  uint16_t f = uint16_t(first);
+	  uint16_t s = uint16_t(second);
 
-	  f = (f | (f << 4)) & 0x0F0F;
-	  f = (f | (f << 2)) & 0x3333;
-	  f = (f | (f << 1)) & 0x5555;
+	  f = (f | (f << 4U)) & 0x0F0FU;
+	  f = (f | (f << 2U)) & 0x3333U;
+	  f = (f | (f << 1U)) & 0x5555U;
 
-	  s = (s | (s << 4)) & 0x0F0F;
-	  s = (s | (s << 2)) & 0x3333;
-	  s = (s | (s << 1)) & 0x5555;
+	  s = (s | (s << 4U)) & 0x0F0FU;
+	  s = (s | (s << 2U)) & 0x3333U;
+	  s = (s | (s << 1U)) & 0x5555U;
 
-	  return (f | (s << 1));
-  }
-
-  inline ETL_CONSTEXPR14 int16_t binary_interleave(int8_t first, int8_t second)
-  {
-    return int16_t(binary_interleave(uint8_t(first), uint8_t(second)));
+	  return (f | (s << 1U));
   }
 #endif
 
@@ -1230,27 +2097,25 @@ namespace etl
   /// Binary interleave
   ///\ingroup binary
   //*****************************************************************************
-  inline ETL_CONSTEXPR14 uint32_t binary_interleave(uint16_t first, uint16_t second)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 16U), uint32_t>::type
+    binary_interleave(T first, T second)
   {
-	  uint32_t f = first;
-	  uint32_t s = second;
+	  uint32_t f = uint32_t(first);
+	  uint32_t s = uint32_t(second);
 
-	  f = (f | (f << 8)) & 0x00FF00FF;
-	  f = (f | (f << 4)) & 0x0F0F0F0F;
-	  f = (f | (f << 2)) & 0x33333333;
-	  f = (f | (f << 1)) & 0x55555555;
+	  f = (f | (f << 8U)) & 0x00FF00FFUL;
+	  f = (f | (f << 4U)) & 0x0F0F0F0FUL;
+	  f = (f | (f << 2U)) & 0x33333333UL;
+	  f = (f | (f << 1U)) & 0x55555555UL;
 
-	  s = (s | (s << 8)) & 0x00FF00FF;
-	  s = (s | (s << 4)) & 0x0F0F0F0F;
-	  s = (s | (s << 2)) & 0x33333333;
-	  s = (s | (s << 1)) & 0x55555555;
+	  s = (s | (s << 8U)) & 0x00FF00FFUL;
+	  s = (s | (s << 4U)) & 0x0F0F0F0FUL;
+	  s = (s | (s << 2U)) & 0x33333333UL;
+	  s = (s | (s << 1U)) & 0x55555555UL;
 
-	  return (f | (s << 1));
-  }
-
-  inline ETL_CONSTEXPR14 int32_t binary_interleave(int16_t first, int16_t second)
-  {
-    return int32_t(binary_interleave(uint16_t(first), uint16_t(second)));
+	  return (f | (s << 1U));
   }
 
 #if ETL_USING_64BIT_TYPES
@@ -1258,31 +2123,41 @@ namespace etl
   /// Binary interleave
   ///\ingroup binary
   //*****************************************************************************
-  inline ETL_CONSTEXPR14 uint64_t binary_interleave(uint32_t first, uint32_t second)
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value && (etl::integral_limits<T>::bits == 32U), uint64_t>::type
+    binary_interleave(T first, T second)
   {
-	  uint64_t f = first;
-	  uint64_t s = second;
+	  uint64_t f = uint64_t(first);
+	  uint64_t s = uint64_t(second);
 
-	  f = (f | (f << 16)) & 0x0000FFFF0000FFFF;
-	  f = (f | (f << 8))  & 0x00FF00FF00FF00FF;
-	  f = (f | (f << 4))  & 0x0F0F0F0F0F0F0F0F;
-	  f = (f | (f << 2))  & 0x3333333333333333;
-	  f = (f | (f << 1))  & 0x5555555555555555;
+	  f = (f | (f << 16U)) & 0x0000FFFF0000FFFFULL;
+	  f = (f | (f << 8U))  & 0x00FF00FF00FF00FFULL;
+	  f = (f | (f << 4U))  & 0x0F0F0F0F0F0F0F0FULL;
+	  f = (f | (f << 2U))  & 0x3333333333333333ULL;
+	  f = (f | (f << 1U))  & 0x5555555555555555ULL;
 
-	  s = (s | (s << 16)) & 0x0000FFFF0000FFFF;
-	  s = (s | (s << 8))  & 0x00FF00FF00FF00FF;
-	  s = (s | (s << 4))  & 0x0F0F0F0F0F0F0F0F;
-	  s = (s | (s << 2))  & 0x3333333333333333;
-	  s = (s | (s << 1))  & 0x5555555555555555;
+	  s = (s | (s << 16U)) & 0x0000FFFF0000FFFFULL;
+	  s = (s | (s << 8U))  & 0x00FF00FF00FF00FFULL;
+	  s = (s | (s << 4U))  & 0x0F0F0F0F0F0F0F0FULL;
+	  s = (s | (s << 2U))  & 0x3333333333333333ULL;
+	  s = (s | (s << 1U))  & 0x5555555555555555ULL;
 
-	  return (f | (s << 1));
+	  return (f | (s << 1U));
   }
+#endif
 
-  inline ETL_CONSTEXPR14 int64_t binary_interleave(int32_t first, int32_t second)
+  //*****************************************************************************
+  /// Binary interleave for signed
+  ///\ingroup binary
+  //*****************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<T>::value && etl::is_signed<T>::value, T>::type  
+    binary_interleave(T first, T second)
   {
     return int64_t(binary_interleave(uint16_t(first), uint16_t(second)));
   }
-#endif
 
   //***************************************************************************
   /// Checks if odd.
@@ -1290,7 +2165,7 @@ namespace etl
   //***************************************************************************
   template <typename T>
   ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, bool>::type
-   is_odd(const T value)
+   is_odd(T value)
   {
 	  return ((static_cast<typename etl::make_unsigned<T>::type>(value) & 1U) != 0U);
   }
@@ -1301,7 +2176,7 @@ namespace etl
   //***************************************************************************
   template <typename T>
   ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, bool>::type
-    is_even(const T value)
+    is_even(T value)
   {
     return ((static_cast<typename etl::make_unsigned<T>::type>(value) & 1U) == 0U);
   }
@@ -1312,264 +2187,263 @@ namespace etl
   //***************************************************************************
   enum binary_constant
   {
-    b00000000 = 0,
-    b00000001 = 1,
-    b00000010 = 2,
-    b00000011 = 3,
-    b00000100 = 4,
-    b00000101 = 5,
-    b00000110 = 6,
-    b00000111 = 7,
-    b00001000 = 8,
-    b00001001 = 9,
-    b00001010 = 10,
-    b00001011 = 11,
-    b00001100 = 12,
-    b00001101 = 13,
-    b00001110 = 14,
-    b00001111 = 15,
-    b00010000 = 16,
-    b00010001 = 17,
-    b00010010 = 18,
-    b00010011 = 19,
-    b00010100 = 20,
-    b00010101 = 21,
-    b00010110 = 22,
-    b00010111 = 23,
-    b00011000 = 24,
-    b00011001 = 25,
-    b00011010 = 26,
-    b00011011 = 27,
-    b00011100 = 28,
-    b00011101 = 29,
-    b00011110 = 30,
-    b00011111 = 31,
-    b00100000 = 32,
-    b00100001 = 33,
-    b00100010 = 34,
-    b00100011 = 35,
-    b00100100 = 36,
-    b00100101 = 37,
-    b00100110 = 38,
-    b00100111 = 39,
-    b00101000 = 40,
-    b00101001 = 41,
-    b00101010 = 42,
-    b00101011 = 43,
-    b00101100 = 44,
-    b00101101 = 45,
-    b00101110 = 46,
-    b00101111 = 47,
-    b00110000 = 48,
-    b00110001 = 49,
-    b00110010 = 50,
-    b00110011 = 51,
-    b00110100 = 52,
-    b00110101 = 53,
-    b00110110 = 54,
-    b00110111 = 55,
-    b00111000 = 56,
-    b00111001 = 57,
-    b00111010 = 58,
-    b00111011 = 59,
-    b00111100 = 60,
-    b00111101 = 61,
-    b00111110 = 62,
-    b00111111 = 63,
-    b01000000 = 64,
-    b01000001 = 65,
-    b01000010 = 66,
-    b01000011 = 67,
-    b01000100 = 68,
-    b01000101 = 69,
-    b01000110 = 70,
-    b01000111 = 71,
-    b01001000 = 72,
-    b01001001 = 73,
-    b01001010 = 74,
-    b01001011 = 75,
-    b01001100 = 76,
-    b01001101 = 77,
-    b01001110 = 78,
-    b01001111 = 79,
-    b01010000 = 80,
-    b01010001 = 81,
-    b01010010 = 82,
-    b01010011 = 83,
-    b01010100 = 84,
-    b01010101 = 85,
-    b01010110 = 86,
-    b01010111 = 87,
-    b01011000 = 88,
-    b01011001 = 89,
-    b01011010 = 90,
-    b01011011 = 91,
-    b01011100 = 92,
-    b01011101 = 93,
-    b01011110 = 94,
-    b01011111 = 95,
-    b01100000 = 96,
-    b01100001 = 97,
-    b01100010 = 98,
-    b01100011 = 99,
-    b01100100 = 100,
-    b01100101 = 101,
-    b01100110 = 102,
-    b01100111 = 103,
-    b01101000 = 104,
-    b01101001 = 105,
-    b01101010 = 106,
-    b01101011 = 107,
-    b01101100 = 108,
-    b01101101 = 109,
-    b01101110 = 110,
-    b01101111 = 111,
-    b01110000 = 112,
-    b01110001 = 113,
-    b01110010 = 114,
-    b01110011 = 115,
-    b01110100 = 116,
-    b01110101 = 117,
-    b01110110 = 118,
-    b01110111 = 119,
-    b01111000 = 120,
-    b01111001 = 121,
-    b01111010 = 122,
-    b01111011 = 123,
-    b01111100 = 124,
-    b01111101 = 125,
-    b01111110 = 126,
-    b01111111 = 127,
-    b10000000 = 128,
-    b10000001 = 129,
-    b10000010 = 130,
-    b10000011 = 131,
-    b10000100 = 132,
-    b10000101 = 133,
-    b10000110 = 134,
-    b10000111 = 135,
-    b10001000 = 136,
-    b10001001 = 137,
-    b10001010 = 138,
-    b10001011 = 139,
-    b10001100 = 140,
-    b10001101 = 141,
-    b10001110 = 142,
-    b10001111 = 143,
-    b10010000 = 144,
-    b10010001 = 145,
-    b10010010 = 146,
-    b10010011 = 147,
-    b10010100 = 148,
-    b10010101 = 149,
-    b10010110 = 150,
-    b10010111 = 151,
-    b10011000 = 152,
-    b10011001 = 153,
-    b10011010 = 154,
-    b10011011 = 155,
-    b10011100 = 156,
-    b10011101 = 157,
-    b10011110 = 158,
-    b10011111 = 159,
-    b10100000 = 160,
-    b10100001 = 161,
-    b10100010 = 162,
-    b10100011 = 163,
-    b10100100 = 164,
-    b10100101 = 165,
-    b10100110 = 166,
-    b10100111 = 167,
-    b10101000 = 168,
-    b10101001 = 169,
-    b10101010 = 170,
-    b10101011 = 171,
-    b10101100 = 172,
-    b10101101 = 173,
-    b10101110 = 174,
-    b10101111 = 175,
-    b10110000 = 176,
-    b10110001 = 177,
-    b10110010 = 178,
-    b10110011 = 179,
-    b10110100 = 180,
-    b10110101 = 181,
-    b10110110 = 182,
-    b10110111 = 183,
-    b10111000 = 184,
-    b10111001 = 185,
-    b10111010 = 186,
-    b10111011 = 187,
-    b10111100 = 188,
-    b10111101 = 189,
-    b10111110 = 190,
-    b10111111 = 191,
-    b11000000 = 192,
-    b11000001 = 193,
-    b11000010 = 194,
-    b11000011 = 195,
-    b11000100 = 196,
-    b11000101 = 197,
-    b11000110 = 198,
-    b11000111 = 199,
-    b11001000 = 200,
-    b11001001 = 201,
-    b11001010 = 202,
-    b11001011 = 203,
-    b11001100 = 204,
-    b11001101 = 205,
-    b11001110 = 206,
-    b11001111 = 207,
-    b11010000 = 208,
-    b11010001 = 209,
-    b11010010 = 210,
-    b11010011 = 211,
-    b11010100 = 212,
-    b11010101 = 213,
-    b11010110 = 214,
-    b11010111 = 215,
-    b11011000 = 216,
-    b11011001 = 217,
-    b11011010 = 218,
-    b11011011 = 219,
-    b11011100 = 220,
-    b11011101 = 221,
-    b11011110 = 222,
-    b11011111 = 223,
-    b11100000 = 224,
-    b11100001 = 225,
-    b11100010 = 226,
-    b11100011 = 227,
-    b11100100 = 228,
-    b11100101 = 229,
-    b11100110 = 230,
-    b11100111 = 231,
-    b11101000 = 232,
-    b11101001 = 233,
-    b11101010 = 234,
-    b11101011 = 235,
-    b11101100 = 236,
-    b11101101 = 237,
-    b11101110 = 238,
-    b11101111 = 239,
-    b11110000 = 240,
-    b11110001 = 241,
-    b11110010 = 242,
-    b11110011 = 243,
-    b11110100 = 244,
-    b11110101 = 245,
-    b11110110 = 246,
-    b11110111 = 247,
-    b11111000 = 248,
-    b11111001 = 249,
-    b11111010 = 250,
-    b11111011 = 251,
-    b11111100 = 252,
-    b11111101 = 253,
-    b11111110 = 254,
-    b11111111 = 255
+    b00000000 = 0U,
+    b00000001 = 1U,
+    b00000010 = 2U,
+    b00000011 = 3U,
+    b00000100 = 4U,
+    b00000101 = 5U,
+    b00000110 = 6U,
+    b00000111 = 7U,
+    b00001000 = 8U,
+    b00001001 = 9U,
+    b00001010 = 10U,
+    b00001011 = 11U,
+    b00001100 = 12U,
+    b00001101 = 13U,
+    b00001110 = 14U,
+    b00001111 = 15U,
+    b00010000 = 16U,
+    b00010001 = 17U,
+    b00010010 = 18U,
+    b00010011 = 19U,
+    b00010100 = 20U,
+    b00010101 = 21U,
+    b00010110 = 22U,
+    b00010111 = 23U,
+    b00011000 = 24U,
+    b00011001 = 25U,
+    b00011010 = 26U,
+    b00011011 = 27U,
+    b00011100 = 28U,
+    b00011101 = 29U,
+    b00011110 = 30U,
+    b00011111 = 31U,
+    b00100000 = 32U,
+    b00100001 = 33U,
+    b00100010 = 34U,
+    b00100011 = 35U,
+    b00100100 = 36U,
+    b00100101 = 37U,
+    b00100110 = 38U,
+    b00100111 = 39U,
+    b00101000 = 40U,
+    b00101001 = 41U,
+    b00101010 = 42U,
+    b00101011 = 43U,
+    b00101100 = 44U,
+    b00101101 = 45U,
+    b00101110 = 46U,
+    b00101111 = 47U,
+    b00110000 = 48U,
+    b00110001 = 49U,
+    b00110010 = 50U,
+    b00110011 = 51U,
+    b00110100 = 52U,
+    b00110101 = 53U,
+    b00110110 = 54U,
+    b00110111 = 55U,
+    b00111000 = 56U,
+    b00111001 = 57U,
+    b00111010 = 58U,
+    b00111011 = 59U,
+    b00111100 = 60U,
+    b00111101 = 61U,
+    b00111110 = 62U,
+    b00111111 = 63U,
+    b01000000 = 64U,
+    b01000001 = 65U,
+    b01000010 = 66U,
+    b01000011 = 67U,
+    b01000100 = 68U,
+    b01000101 = 69U,
+    b01000110 = 70U,
+    b01000111 = 71U,
+    b01001000 = 72U,
+    b01001001 = 73U,
+    b01001010 = 74U,
+    b01001011 = 75U,
+    b01001100 = 76U,
+    b01001101 = 77U,
+    b01001110 = 78U,
+    b01001111 = 79U,
+    b01010000 = 80U,
+    b01010001 = 81U,
+    b01010010 = 82U,
+    b01010011 = 83U,
+    b01010100 = 84U,
+    b01010101 = 85U,
+    b01010110 = 86U,
+    b01010111 = 87U,
+    b01011000 = 88U,
+    b01011001 = 89U,
+    b01011010 = 90U,
+    b01011011 = 91U,
+    b01011100 = 92U,
+    b01011101 = 93U,
+    b01011110 = 94U,
+    b01011111 = 95U,
+    b01100000 = 96U,
+    b01100001 = 97U,
+    b01100010 = 98U,
+    b01100011 = 99U,
+    b01100100 = 100U,
+    b01100101 = 101U,
+    b01100110 = 102U,
+    b01100111 = 103U,
+    b01101000 = 104U,
+    b01101001 = 105U,
+    b01101010 = 106U,
+    b01101011 = 107U,
+    b01101100 = 108U,
+    b01101101 = 109U,
+    b01101110 = 110U,
+    b01101111 = 111U,
+    b01110000 = 112U,
+    b01110001 = 113U,
+    b01110010 = 114U,
+    b01110011 = 115U,
+    b01110100 = 116U,
+    b01110101 = 117U,
+    b01110110 = 118U,
+    b01110111 = 119U,
+    b01111000 = 120U,
+    b01111001 = 121U,
+    b01111010 = 122U,
+    b01111011 = 123U,
+    b01111100 = 124U,
+    b01111101 = 125U,
+    b01111110 = 126U,
+    b01111111 = 127U,
+    b10000000 = 128U,
+    b10000001 = 129U,
+    b10000010 = 130U,
+    b10000011 = 131U,
+    b10000100 = 132U,
+    b10000101 = 133U,
+    b10000110 = 134U,
+    b10000111 = 135U,
+    b10001000 = 136U,
+    b10001001 = 137U,
+    b10001010 = 138U,
+    b10001011 = 139U,
+    b10001100 = 140U,
+    b10001101 = 141U,
+    b10001110 = 142U,
+    b10001111 = 143U,
+    b10010000 = 144U,
+    b10010001 = 145U,
+    b10010010 = 146U,
+    b10010011 = 147U,
+    b10010100 = 148U,
+    b10010101 = 149U,
+    b10010110 = 150U,
+    b10010111 = 151U,
+    b10011000 = 152U,
+    b10011001 = 153U,
+    b10011010 = 154U,
+    b10011011 = 155U,
+    b10011100 = 156U,
+    b10011101 = 157U,
+    b10011110 = 158U,
+    b10011111 = 159U,
+    b10100000 = 160U,
+    b10100001 = 161U,
+    b10100010 = 162U,
+    b10100011 = 163U,
+    b10100100 = 164U,
+    b10100101 = 165U,
+    b10100110 = 166U,
+    b10100111 = 167U,
+    b10101000 = 168U,
+    b10101001 = 169U,
+    b10101010 = 170U,
+    b10101011 = 171U,
+    b10101100 = 172U,
+    b10101101 = 173U,
+    b10101110 = 174U,
+    b10101111 = 175U,
+    b10110000 = 176U,
+    b10110001 = 177U,
+    b10110010 = 178U,
+    b10110011 = 179U,
+    b10110100 = 180U,
+    b10110101 = 181U,
+    b10110110 = 182U,
+    b10110111 = 183U,
+    b10111000 = 184U,
+    b10111001 = 185U,
+    b10111010 = 186U,
+    b10111011 = 187U,
+    b10111100 = 188U,
+    b10111101 = 189U,
+    b10111110 = 190U,
+    b10111111 = 191U,
+    b11000000 = 192U,
+    b11000001 = 193U,
+    b11000010 = 194U,
+    b11000011 = 195U,
+    b11000100 = 196U,
+    b11000101 = 197U,
+    b11000110 = 198U,
+    b11000111 = 199U,
+    b11001000 = 200U,
+    b11001001 = 201U,
+    b11001010 = 202U,
+    b11001011 = 203U,
+    b11001100 = 204U,
+    b11001101 = 205U,
+    b11001110 = 206U,
+    b11001111 = 207U,
+    b11010000 = 208U,
+    b11010001 = 209U,
+    b11010010 = 210U,
+    b11010011 = 211U,
+    b11010100 = 212U,
+    b11010101 = 213U,
+    b11010110 = 214U,
+    b11010111 = 215U,
+    b11011000 = 216U,
+    b11011001 = 217U,
+    b11011010 = 218U,
+    b11011011 = 219U,
+    b11011100 = 220U,
+    b11011101 = 221U,
+    b11011110 = 222U,
+    b11011111 = 223U,
+    b11100000 = 224U,
+    b11100001 = 225U,
+    b11100010 = 226U,
+    b11100011 = 227U,
+    b11100100 = 228U,
+    b11100101 = 229U,
+    b11100110 = 230U,
+    b11100111 = 231U,
+    b11101000 = 232U,
+    b11101001 = 233U,
+    b11101010 = 234U,
+    b11101011 = 235U,
+    b11101100 = 236U,
+    b11101101 = 237U,
+    b11101110 = 238U,
+    b11101111 = 239U,
+    b11110000 = 240U,
+    b11110001 = 241U,
+    b11110010 = 242U,
+    b11110011 = 243U,
+    b11110100 = 244U,
+    b11110101 = 245U,
+    b11110110 = 246U,
+    b11110111 = 247U,
+    b11111000 = 248U,
+    b11111001 = 249U,
+    b11111010 = 250U,
+    b11111011 = 251U,
+    b11111100 = 252U,
+    b11111101 = 253U,
+    b11111110 = 254U,
+    b11111111 = 255U
   };
-
 
   //***************************************************************************
   /// Binary bit constants.
@@ -1577,38 +2451,38 @@ namespace etl
   //***************************************************************************
   enum bit_constant
   {
-    b0  = 0x1,
-    b1  = 0x2,
-    b2  = 0x4,
-    b3  = 0x8,
-    b4  = 0x10,
-    b5  = 0x20,
-    b6  = 0x40,
-    b7  = 0x80,
-    b8  = 0x100,
-    b9  = 0x200,
-    b10 = 0x400,
-    b11 = 0x800,
-    b12 = 0x1000,
-    b13 = 0x2000,
-    b14 = 0x4000,
-    b15 = 0x8000,
-    b16 = 0x10000,
-    b17 = 0x20000,
-    b18 = 0x40000,
-    b19 = 0x80000,
-    b20 = 0x100000,
-    b21 = 0x200000,
-    b22 = 0x400000,
-    b23 = 0x800000,
-    b24 = 0x1000000,
-    b25 = 0x2000000,
-    b26 = 0x4000000,
-    b27 = 0x8000000,
-    b28 = 0x10000000,
-    b29 = 0x20000000,
-    b30 = 0x40000000,
-    b31 = 0x80000000
+    b0  = 0x1UL,
+    b1  = 0x2UL,
+    b2  = 0x4UL,
+    b3  = 0x8UL,
+    b4  = 0x10UL,
+    b5  = 0x20UL,
+    b6  = 0x40UL,
+    b7  = 0x80UL,
+    b8  = 0x100UL,
+    b9  = 0x200UL,
+    b10 = 0x400UL,
+    b11 = 0x800UL,
+    b12 = 0x1000UL,
+    b13 = 0x2000UL,
+    b14 = 0x4000UL,
+    b15 = 0x8000UL,
+    b16 = 0x10000UL,
+    b17 = 0x20000UL,
+    b18 = 0x40000UL,
+    b19 = 0x80000UL,
+    b20 = 0x100000UL,
+    b21 = 0x200000UL,
+    b22 = 0x400000UL,
+    b23 = 0x800000UL,
+    b24 = 0x1000000UL,
+    b25 = 0x2000000UL,
+    b26 = 0x4000000UL,
+    b27 = 0x8000000UL,
+    b28 = 0x10000000UL,
+    b29 = 0x20000000UL,
+    b30 = 0x40000000UL,
+    b31 = 0x80000000UL
   };
 }
 

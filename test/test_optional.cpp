@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2015 jwellbelove
+Copyright(c) 2015 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -130,6 +130,7 @@ namespace
     //*************************************************************************
     TEST(test_moveable)
     {
+#include "etl/private/diagnostic_pessimizing-move_push.h"
       etl::optional<DataM> data(std::move(DataM(1)));
       CHECK_EQUAL(1U, data.value().value);
       CHECK(bool(data));
@@ -141,6 +142,7 @@ namespace
       etl::optional<DataM> data2(etl::move(data));
       CHECK_EQUAL(2U, data2.value().value);
       CHECK(bool(data2));
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************

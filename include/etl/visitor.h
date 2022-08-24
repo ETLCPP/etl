@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -50,7 +50,7 @@ SOFTWARE.
 
 namespace etl
 {
-#if ETL_CPP11_SUPPORTED && !defined(ETL_VISITOR_FORCE_CPP03)
+#if ETL_USING_CPP11 && !defined(ETL_VISITOR_FORCE_CPP03_IMPLEMENTATION)
 
   //*****************************************************************
   /// The visitable class for N types.
@@ -149,7 +149,7 @@ namespace etl
 
 #endif
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_VISITOR_FORCE_CPP03)
+#if ETL_USING_CPP11 && !defined(ETL_VISITOR_FORCE_CPP03_IMPLEMENTATION)
 
   //*****************************************************************
   /// The visitor class for N types.

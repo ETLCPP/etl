@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2020 jwellbelove
+Copyright(c) 2020 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -74,8 +74,335 @@ cog.outl("//********************************************************************
 
 namespace etl
 {
+#if ETL_USING_CPP17 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
+  //***************************************************************************
+  // The definition for all message types.
+  //***************************************************************************
+  template <typename... TMessageTypes>
+  class message_packet
+  {
+
+  private:
+
+    template <typename T>
+    static constexpr bool IsMessagePacket = etl::is_same_v< etl::remove_const_t<etl::remove_reference_t<T>>, etl::message_packet<TMessageTypes...>>;
+
+    template <typename T>
+    static constexpr bool IsInMessageList = etl::is_one_of_v<etl::remove_const_t<etl::remove_reference_t<T>>, TMessageTypes...>;
+
+    template <typename T>
+    static constexpr bool IsIMessage = etl::is_same_v<remove_const_t<etl::remove_reference_t<T>>, etl::imessage>;
+
+  public:
+
+    //********************************************
+    message_packet()
+      : data()
+      , valid(false)
+    {
+    }
+
+    //********************************************
+    /// 
+    //********************************************
+    template <typename T>
+    explicit message_packet(T&& msg)
+      : data()
+      , valid(true)
+    {
+      if constexpr (IsIMessage<T>)
+      {
+        if (accepts(msg))
+        {
+          add_new_message(etl::forward<T>(msg));
+          valid = true;
+        }
+        else
+        {
+          valid = false;
+        }
+
+        ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
+      }
+      else if constexpr (IsInMessageList<T>)
+      {
+        add_new_message_type<T>(etl::forward<T>(msg));
+      }
+      else if constexpr (IsMessagePacket<T>)
+      {
+        copy(etl::forward<T>(msg));
+      }
+      else
+      {
+        ETL_STATIC_ASSERT(IsInMessageList<T>, "Message not in packet type list");
+      }
+    }
+
+    //**********************************************
+    void copy(const message_packet& other)
+    {
+      valid = other.is_valid();
+
+      if (valid)
+      {
+        add_new_message(other.get());
+      }
+    }
+
+    //**********************************************
+    void copy(message_packet&& other)
+    {
+      valid = other.is_valid();
+
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
+    }
+
+    //**********************************************
+    message_packet& operator =(const message_packet& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(rhs.get());
+      }
+
+      return *this;
+    }
+
+    //**********************************************
+    message_packet& operator =(message_packet&& rhs)
+    {
+      delete_current_message();
+      valid = rhs.is_valid();
+      if (valid)
+      {
+        add_new_message(etl::move(rhs.get()));
+      }
+
+      return *this;
+    }
+
+    //********************************************
+    ~message_packet()
+    {
+      delete_current_message();
+    }
+
+    //********************************************
+    etl::imessage& get() ETL_NOEXCEPT
+    {
+      return *static_cast<etl::imessage*>(data);
+    }
+
+    //********************************************
+    const etl::imessage& get() const ETL_NOEXCEPT
+    {
+      return *static_cast<const etl::imessage*>(data);
+    }
+
+    //********************************************
+    bool is_valid() const
+    {
+      return valid;
+    }
+
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(etl::message_id_t id)
+    {
+      return (accepts_message<TMessageTypes::ID>(id) || ...);
+    }
+
+    //**********************************************
+    static ETL_CONSTEXPR bool accepts(const etl::imessage& msg)
+    {
+      return accepts(msg.get_message_id());
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id>
+    static ETL_CONSTEXPR bool accepts()
+    {
+      return (accepts_message<TMessageTypes::ID, Id>() || ...);
+    }
+
+    //**********************************************
+    template <typename TMessage>
+    static ETL_CONSTEXPR
+      typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
+      accepts()
+    {
+      return accepts<TMessage::ID>();
+    }
+
+    enum
+    {
+      SIZE = etl::largest<TMessageTypes...>::size,
+      ALIGNMENT = etl::largest<TMessageTypes...>::alignment
+    };
+
+  private:
+
+    //**********************************************
+    template <etl::message_id_t Id1, etl::message_id_t Id2>
+    static bool accepts_message()
+    {
+      return Id1 == Id2;
+    }
+
+    //**********************************************
+    template <etl::message_id_t Id1>
+    static bool accepts_message(etl::message_id_t id2)
+    {
+      return Id1 == id2;
+    }
+
+    //********************************************
+    void delete_current_message()
+    {
+      if (valid)
+      {
+        etl::imessage* pmsg = static_cast<etl::imessage*>(data);
+
+        pmsg->~imessage();
+      }
+    }
+
+    //********************************************
+    void add_new_message(const etl::imessage& msg)
+    {
+      (add_new_message_type<TMessageTypes>(msg) || ...);
+    }
+
+    //********************************************
+    void add_new_message(etl::imessage&& msg)
+    {
+      (add_new_message_type<TMessageTypes>(etl::move(msg)) || ...);
+    }
+
+    //********************************************
+    /// Only enabled for types that are in the typelist.
+    //********************************************
+    template <typename TMessage>
+    etl::enable_if_t<etl::is_one_of_v<etl::remove_const_t<etl::remove_reference_t<TMessage>>, TMessageTypes...>, void>
+      add_new_message_type(TMessage&& msg)
+    {
+      void* p = data;
+      new (p) etl::remove_reference_t<TMessage>((etl::forward<TMessage>(msg)));
+    }
+
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    bool valid;
+
+    //********************************************
+    template <typename TType>
+    bool add_new_message_type(const etl::imessage& msg)
+    {
+      if (TType::ID == msg.get_message_id())
+      {
+        void* p = data;
+        new (p) TType(static_cast<const TType&>(msg));
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    //********************************************
+    template <typename TType>
+    bool add_new_message_type(etl::imessage&& msg)
+    {
+      if (TType::ID == msg.get_message_id())
+      {
+        void* p = data;
+        new (p) TType(static_cast<TType&&>(msg));
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+  };
+
+#else
+
   /*[[[cog
     import cog
+
+    ################################################
+    def generate_accepts_return(n):
+        cog.out("    return")
+        for i in range(1, n + 1):
+            cog.out(" T%d::ID == id" % i)
+            if i < n:
+                cog.out(" ||")
+                if i % 4 == 0:
+                    cog.outl("")
+                    cog.out("          ")
+        cog.outl(";")
+
+    ################################################
+    def generate_accepts_return_compile_time(n):
+        cog.out("    return")
+        for i in range(1, n + 1):
+            cog.out(" T%d::ID == Id" % i)
+            if i < n:
+                cog.out(" ||")
+                if i % 4 == 0:
+                    cog.outl("")
+                    cog.out("          ")
+        cog.outl(";")
+
+    ################################################
+    def generate_accepts_return_compile_time_TMessage(n):
+        cog.outl("    ETL_CONSTANT etl::message_id_t id = TMessage::ID;")
+        cog.outl("")
+        cog.out("    return")
+        for i in range(1, n + 1):
+            cog.out(" T%d::ID == id" % i)
+            if i < n:
+                cog.out(" ||")
+                if i % 4 == 0:
+                    cog.outl("")
+                    cog.out("          ")
+        cog.outl(";")
+
+    ################################################
+    def generate_static_assert_cpp03(n):
+        cog.outl("    // Not etl::message_packet, not etl::imessage and in typelist.")
+        cog.out("    static const bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<")
+        for i in range(1, n):
+            cog.out("T%d, " % i)
+        cog.outl("T%s> >::value &&" % n)
+        cog.outl("                                 !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&")
+        cog.out("                                 etl::is_one_of<typename etl::remove_reference<TMessage>::type,")
+        for i in range(1, n):
+            cog.out("T%d, " % i)
+        cog.outl("T%s>::value);" % n)      
+        cog.outl("")
+        cog.outl("    ETL_STATIC_ASSERT(Enabled, \"Message not in packet type list\");")   
+
+    ################################################
+    def generate_static_assert_cpp11(n):
+        cog.outl("    // Not etl::message_packet, not etl::imessage and in typelist.")
+        cog.out("    static constexpr bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<")
+        for i in range(1, n):
+            cog.out("T%d, " % i)
+        cog.outl("T%s> >::value &&" % n)
+        cog.outl("                                     !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&")
+        cog.out("                                     etl::is_one_of<typename etl::remove_reference<TMessage>::type,")
+        for i in range(1, n):
+            cog.out("T%d, " % i)
+        cog.outl("T%s>::value);" % n)
+        cog.outl("")
+        cog.outl("    ETL_STATIC_ASSERT(Enabled, \"Message not in packet type list\");")
+
     ################################################
     # The first definition for all of the messages.
     ################################################
@@ -96,29 +423,87 @@ namespace etl
     cog.outl("")
     cog.outl("  //********************************************")
     cog.outl("  message_packet()")
-    cog.outl("    : valid(false)")
+    cog.outl("    : data()")
+    cog.outl("    , valid(false)")
     cog.outl("  {")
     cog.outl("  }")
     cog.outl("")
     cog.outl("  //********************************************")
     cog.outl("  explicit message_packet(const etl::imessage& msg)")
-    cog.outl("    : valid(true)")
+    cog.outl("    : data()")
     cog.outl("  {")
-    cog.outl("    add_new_message(msg);")
+    cog.outl("    if (accepts(msg))")
+    cog.outl("    {")
+    cog.outl("      add_new_message(msg);")
+    cog.outl("      valid = true;")
+    cog.outl("    }")
+    cog.outl("    else")
+    cog.outl("    {")
+    cog.outl("      valid = false;")
+    cog.outl("    }")
+    cog.outl("")
+    cog.outl("    ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));")
     cog.outl("  }")
     cog.outl("")
-    cog.outl("#if ETL_CPP11_SUPPORTED")
+    cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
     cog.outl("  //********************************************")
     cog.outl("  explicit message_packet(etl::imessage&& msg)")
-    cog.outl("    : valid(true)")
+    cog.outl("    : data()")
     cog.outl("  {")
-    cog.outl("    add_new_message(etl::move(msg));")
+    cog.outl("    if (accepts(msg))")
+    cog.outl("    {")
+    cog.outl("      add_new_message(etl::move(msg));")
+    cog.outl("      valid = true;")
+    cog.outl("    }")
+    cog.outl("    else")
+    cog.outl("    {")
+    cog.outl("      valid = false;")
+    cog.outl("    }")
+    cog.outl("")
+    cog.outl("    ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));")
+    cog.outl("  }")
+    cog.outl("#endif")
+    cog.outl("")
+    cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)")
+    cog.outl("  //********************************************")
+    cog.out("  template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<")
+    for n in range(1, int(Handlers)):
+        cog.out("T%s, " % n)
+    cog.outl("T%s> >::value &&" % int(Handlers))
+    cog.outl("                                                                  !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&")
+    cog.out("                                                                  !etl::is_one_of<typename etl::remove_reference<TMessage>::type, ")
+    for n in range(1, int(Handlers)):
+        cog.out("T%s, " % n)
+    cog.outl("T%s>::value, int>::type>" % int(Handlers))
+    cog.outl("  explicit message_packet(TMessage&& msg)")
+    cog.outl("    : data()")
+    cog.outl("    , valid(true)")
+    cog.outl("  {")
+    generate_static_assert_cpp11(int(Handlers))
+    cog.outl("  }")
+    cog.outl("#else")
+    cog.outl("  //********************************************")
+    cog.outl("  template <typename TMessage>")
+    cog.out("  explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<")
+    for n in range(1, int(Handlers)):
+        cog.out("T%s, " % n)
+    cog.outl("T%s> >::value &&" % int(Handlers))
+    cog.outl("                                                                       !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&")
+    cog.out("                                                                       !etl::is_one_of<typename etl::remove_reference<TMessage>::type, ")
+    for n in range(1, int(Handlers)):
+        cog.out("T%s, " % n)
+    cog.outl("T%s>::value, int>::type = 0)" % int(Handlers))
+    cog.outl("    : data()")
+    cog.outl("    , valid(true)")
+    cog.outl("  {")
+    generate_static_assert_cpp03(int(Handlers))
     cog.outl("  }")
     cog.outl("#endif")
     cog.outl("")
     cog.outl("  //**********************************************")
     cog.outl("  message_packet(const message_packet& other)")
-    cog.outl("    : valid(other.is_valid())")
+    cog.outl("    : data()")
+    cog.outl("    , valid(other.is_valid())")
     cog.outl("  {")
     cog.outl("    if (valid)")
     cog.outl("    {")
@@ -126,10 +511,11 @@ namespace etl
     cog.outl("    }")
     cog.outl("  }")
     cog.outl("")
-    cog.outl("#if ETL_CPP11_SUPPORTED")
+    cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
     cog.outl("  //**********************************************")
     cog.outl("  message_packet(message_packet&& other)")
-    cog.outl("    : valid(other.is_valid())")
+    cog.outl("    : data()")
+    cog.outl("    , valid(other.is_valid())")
     cog.outl("  {")
     cog.outl("    if (valid)")
     cog.outl("    {")
@@ -151,7 +537,7 @@ namespace etl
     cog.outl("    return *this;")
     cog.outl("  }")
     cog.outl("")
-    cog.outl("#if ETL_CPP11_SUPPORTED")
+    cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
     cog.outl("  //**********************************************")
     cog.outl("  message_packet& operator =(message_packet&& rhs)")
     cog.outl("  {")
@@ -193,18 +579,7 @@ namespace etl
     cog.outl("  //**********************************************")
     cog.outl("  static ETL_CONSTEXPR bool accepts(etl::message_id_t id)")
     cog.outl("  {")
-    cog.outl("    switch (id)")
-    cog.outl("    {")
-    cog.out("      ")
-    for n in range(1, int(Handlers) + 1):
-        cog.out("case T%d::ID: " % n)
-        if n % 8 == 0:
-            cog.outl("")
-            cog.out("      ")
-    cog.outl("  return true;")
-    cog.outl("      default:")
-    cog.outl("        return false;")
-    cog.outl("    }")
+    generate_accepts_return(int(Handlers))
     cog.outl("  }")
     cog.outl("")
     cog.outl("  //**********************************************")
@@ -217,16 +592,16 @@ namespace etl
     cog.outl("  template <etl::message_id_t Id>")
     cog.outl("  static ETL_CONSTEXPR bool accepts()")
     cog.outl("  {")
-    cog.outl("    return accepts(Id);")
+    generate_accepts_return_compile_time(int(Handlers))
     cog.outl("  }")
     cog.outl("")
     cog.outl("  //**********************************************")
     cog.outl("  template <typename TMessage>")
     cog.outl("  static ETL_CONSTEXPR")
-    cog.outl("  typename etl::enable_if<!etl::is_integral<TMessage>::value, bool>::type")
+    cog.outl("  typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type")
     cog.outl("    accepts()")
     cog.outl("  {")
-    cog.outl("    return accepts(TMessage::ID);")
+    generate_accepts_return_compile_time_TMessage(int(Handlers))
     cog.outl("  }")
     cog.outl("")  
     cog.outl("  enum")
@@ -250,18 +625,7 @@ namespace etl
     cog.outl("    {")
     cog.outl("      etl::imessage* pmsg = static_cast<etl::imessage*>(data);")
     cog.outl("")
-    cog.outl("#if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)")
     cog.outl("      pmsg->~imessage();")
-    cog.outl("#else")
-    cog.outl("      size_t id = pmsg->get_message_id();")
-    cog.outl("")
-    cog.outl("      switch (id)")
-    cog.outl("      {")
-    for n in range(1, int(Handlers) + 1):
-        cog.outl("        case T%s::ID: static_cast<T%s*>(pmsg)->~T%s(); break;" % (n, n, n))
-    cog.outl("        default: assert(false); break;")
-    cog.outl("      }")
-    cog.outl("  #endif")
     cog.outl("    }")
     cog.outl("  }")
     cog.outl("")
@@ -279,7 +643,7 @@ namespace etl
     cog.outl("    }")
     cog.outl("  }")
     cog.outl("")
-    cog.outl("#if ETL_CPP11_SUPPORTED")
+    cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
     cog.outl("  //********************************************")
     cog.outl("  void add_new_message(etl::imessage&& msg)")
     cog.outl("  {")
@@ -334,29 +698,87 @@ namespace etl
         cog.outl("")
         cog.outl("  //********************************************")
         cog.outl("  message_packet()")
-        cog.outl("    : valid(false)")
+        cog.outl("    : data()")
+        cog.outl("    , valid(false)")
         cog.outl("  {")
         cog.outl("  }")
         cog.outl("")
         cog.outl("  //********************************************")
         cog.outl("  explicit message_packet(const etl::imessage& msg)")
-        cog.outl("    : valid(true)")
+        cog.outl("    : data()")
         cog.outl("  {")
-        cog.outl("    add_new_message(msg);")
+        cog.outl("    if (accepts(msg))")
+        cog.outl("    {")
+        cog.outl("      add_new_message(msg);")
+        cog.outl("      valid = true;")
+        cog.outl("    }")
+        cog.outl("    else")
+        cog.outl("    {")
+        cog.outl("      valid = false;")
+        cog.outl("    }")
+        cog.outl("")
+        cog.outl("    ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));")
         cog.outl("  }")
         cog.outl("")
-        cog.outl("#if ETL_CPP11_SUPPORTED")
+        cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
         cog.outl("  //********************************************")
         cog.outl("  explicit message_packet(etl::imessage&& msg)")
-        cog.outl("    : valid(true)")
+        cog.outl("    : data()")
         cog.outl("  {")
-        cog.outl("    add_new_message(etl::move(msg));")
+        cog.outl("    if (accepts(msg))")
+        cog.outl("    {")
+        cog.outl("      add_new_message(etl::move(msg));")
+        cog.outl("      valid = true;")
+        cog.outl("    }")
+        cog.outl("    else")
+        cog.outl("    {")
+        cog.outl("      valid = false;")
+        cog.outl("    }")
+        cog.outl("")
+        cog.outl("    ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));")
+        cog.outl("  }")
+        cog.outl("#endif")
+        cog.outl("")
+        cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)")
+        cog.outl("  //********************************************")
+        cog.out("  template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<")
+        for t in range(1, n):
+            cog.out("T%s, " % t)
+        cog.outl("T%s> >::value &&" % n)
+        cog.outl("                                                                  !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&")
+        cog.out("                                                                  !etl::is_one_of<typename etl::remove_reference<TMessage>::type, ")
+        for t in range(1, n):
+            cog.out("T%s, " % t)
+        cog.outl("T%s>::value, int>::type>" % n)
+        cog.outl("  explicit message_packet(etl::imessage&& msg)")
+        cog.outl("    : data()")
+        cog.outl("    , valid(true)")
+        cog.outl("  {")
+        generate_static_assert_cpp11(n)
+        cog.outl("  }")
+        cog.outl("#else")
+        cog.outl("  //********************************************")
+        cog.outl("  template <typename TMessage>")
+        cog.out("  explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<")
+        for t in range(1, n):
+            cog.out("T%s, " % t)
+        cog.outl("T%s> >::value &&" % n)
+        cog.outl("                                                                       !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&")
+        cog.out("                                                                       !etl::is_one_of<typename etl::remove_reference<TMessage>::type, ")
+        for t in range(1, n):
+            cog.out("T%s, " % t)
+        cog.outl("T%s>::value, int>::type = 0)" % n)
+        cog.outl("    : data()")
+        cog.outl("    , valid(true)")
+        cog.outl("  {")
+        generate_static_assert_cpp03(n)
         cog.outl("  }")
         cog.outl("#endif")
         cog.outl("")
         cog.outl("  //**********************************************")
         cog.outl("  message_packet(const message_packet& other)")
-        cog.outl("    : valid(other.is_valid())")
+        cog.outl("    : data()")
+        cog.outl("    , valid(other.is_valid())")
         cog.outl("  {")
         cog.outl("    if (valid)")
         cog.outl("    {")
@@ -364,10 +786,11 @@ namespace etl
         cog.outl("    }")
         cog.outl("  }")
         cog.outl("")
-        cog.outl("#if ETL_CPP11_SUPPORTED")
+        cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
         cog.outl("  //**********************************************")
         cog.outl("  message_packet(message_packet&& other)")
-        cog.outl("    : valid(other.is_valid())")
+        cog.outl("    : data()")
+        cog.outl("    , valid(other.is_valid())")
         cog.outl("  {")
         cog.outl("    if (valid)")
         cog.outl("    {")
@@ -389,7 +812,7 @@ namespace etl
         cog.outl("    return *this;")
         cog.outl("  }")
         cog.outl("")
-        cog.outl("#if ETL_CPP11_SUPPORTED")
+        cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
         cog.outl("  //**********************************************")
         cog.outl("  message_packet& operator =(message_packet&& rhs)")
         cog.outl("  {")
@@ -431,19 +854,7 @@ namespace etl
         cog.outl("  //**********************************************")
         cog.outl("  static ETL_CONSTEXPR bool accepts(etl::message_id_t id)")
         cog.outl("  {")
-        cog.outl("    switch (id)")
-        cog.outl("    {")
-        cog.out("      ")
-        for t in range(1, n + 1):
-            cog.out("case T%d::ID: " % t)
-            if t % 8 == 0:
-                cog.outl("")
-                cog.out("      ")
-        cog.outl("")
-        cog.outl("        return true;")
-        cog.outl("      default:")
-        cog.outl("        return false;")
-        cog.outl("    }")
+        generate_accepts_return(n)
         cog.outl("  }")
         cog.outl("")
         cog.outl("  //**********************************************")
@@ -456,16 +867,16 @@ namespace etl
         cog.outl("  template <etl::message_id_t Id>")
         cog.outl("  static ETL_CONSTEXPR bool accepts()")
         cog.outl("  {")
-        cog.outl("    return accepts(Id);")
+        generate_accepts_return_compile_time(n)
         cog.outl("  }")
         cog.outl("")
         cog.outl("  //**********************************************")
         cog.outl("  template <typename TMessage>")
         cog.outl("  static ETL_CONSTEXPR")
-        cog.outl("  typename etl::enable_if<!etl::is_integral<TMessage>::value, bool>::type")
+        cog.outl("  typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type")
         cog.outl("    accepts()")
         cog.outl("  {")
-        cog.outl("    return accepts(TMessage::ID);")
+        generate_accepts_return_compile_time_TMessage(n)
         cog.outl("  }")
         cog.outl("")
         cog.outl("  enum")
@@ -489,18 +900,7 @@ namespace etl
         cog.outl("    {")
         cog.outl("      etl::imessage* pmsg = static_cast<etl::imessage*>(data);")
         cog.outl("")
-        cog.outl("#if defined(ETL_MESSAGES_ARE_VIRTUAL) || defined(ETL_POLYMORPHIC_MESSAGES)")
         cog.outl("      pmsg->~imessage();")
-        cog.outl("#else")
-        cog.outl("      size_t id = pmsg->get_message_id();")
-        cog.outl("")
-        cog.outl("      switch (id)")
-        cog.outl("      {")
-        for t in range(1, n + 1):
-            cog.outl("        case T%s::ID: static_cast<T%s*>(pmsg)->~T%s(); break;" % (t, t, t))
-        cog.outl("        default: assert(false); break;")
-        cog.outl("      }")
-        cog.outl("  #endif")
         cog.outl("    }")
         cog.outl("  }")
         cog.outl("")
@@ -514,11 +914,11 @@ namespace etl
         cog.outl("    {")
         for t in range(1, n + 1):
             cog.outl("      case T%d::ID: ::new (p) T%d(static_cast<const T%d&>(msg)); break;" %(t, t, t))
-        cog.outl("      default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;")
+        cog.outl("      default: break;")
         cog.outl("    }")
         cog.outl("  }")
         cog.outl("")
-        cog.outl("#if ETL_CPP11_SUPPORTED")
+        cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
         cog.outl("  //********************************************")
         cog.outl("  void add_new_message(etl::imessage&& msg)")
         cog.outl("  {")
@@ -529,7 +929,7 @@ namespace etl
         cog.outl("    {")
         for t in range(1, n + 1):
             cog.outl("      case T%d::ID: ::new (p) T%d(static_cast<T%d&&>(msg)); break;" %(t, t, t))
-        cog.outl("      default: ETL_ASSERT(false, ETL_ERROR(unhandled_message_exception)); break;")
+        cog.outl("      default: break;")
         cog.outl("    }")
         cog.outl("  }")
         cog.outl("#endif")
@@ -539,6 +939,7 @@ namespace etl
         cog.outl("};")
   ]]]*/
   /*[[[end]]]*/
+#endif
 }
 
 #endif

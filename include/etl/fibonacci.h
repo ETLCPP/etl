@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -43,8 +43,8 @@ namespace etl
 {
   //***************************************************************************
   ///\ingroup fibonacci
-  /// Defines <b>value</b> as the Nth Fibbonacci number.
-  ///\tparam N The number to find the Fibbonacci value of.
+  /// Defines <b>value</b> as the Nth Fibonacci number.
+  ///\tparam N The number to find the Fibonacci value of.
   //***************************************************************************
   template <size_t N>
   struct fibonacci
@@ -58,7 +58,7 @@ namespace etl
   template <>
   struct fibonacci<1>
   {
-    static ETL_CONSTANT size_t value = 1;
+    static ETL_CONSTANT size_t value = 1UL;
   };
 
   //***************************************************************************
@@ -67,10 +67,10 @@ namespace etl
   template <>
   struct fibonacci<0>
   {
-    static ETL_CONSTANT size_t value = 0;
+    static ETL_CONSTANT size_t value = 0UL;
   };
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <size_t N>
   inline constexpr size_t fibonacci_v = fibonacci<N>::value;
 #endif

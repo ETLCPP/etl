@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 jwellbelove
+Copyright(c) 2018 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -44,7 +44,7 @@ namespace
 {
   SUITE(test_forward_list)
   {
-    const size_t SIZE = 20;
+    const size_t SIZE = 20UL;
 
     typedef TestDataDC<std::string>  ItemDC;
     typedef TestDataNDC<std::string> ItemNDC;
@@ -96,7 +96,7 @@ namespace
       PoolDC pool;
       DataDC data(pool);
 
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK_EQUAL(data.size(), size_t(0UL));
       CHECK(data.empty());
       CHECK(!data.full());
       CHECK_EQUAL(data.available(), SIZE);
@@ -119,7 +119,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_constructor_size)
     {
       PoolDC pool;
-      const size_t INITIAL_SIZE = 4;
+      const size_t INITIAL_SIZE = 4UL;
       DataDC data1(INITIAL_SIZE, pool);
       DataDC data2(INITIAL_SIZE, pool);
 
@@ -145,7 +145,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_constructor_size_value)
     {
       PoolNDC pool;
-      const size_t INITIAL_SIZE = 4;
+      const size_t INITIAL_SIZE = 4UL;
       const ItemNDC INITIAL_VALUE("1");
 
       std::array<ItemNDC, INITIAL_SIZE> compare_data = { ItemNDC("1"), ItemNDC("1"), ItemNDC("1"), ItemNDC("1") };
@@ -181,7 +181,7 @@ namespace
       CHECK(are_equal);
     }
 
-#if ETL_USING_STL
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -339,8 +339,8 @@ namespace
     {
       PoolNDC2 pool;
 
-      const size_t INITIAL_SIZE = 4;
-      const size_t NEW_SIZE = 8;
+      const size_t INITIAL_SIZE = 4UL;
+      const size_t NEW_SIZE = 8UL;
       const ItemDC VALUE1("1");
       const ItemDC VALUE2("2");
 
@@ -371,8 +371,8 @@ namespace
     {
       PoolNDC2 pool;
 
-      const size_t INITIAL_SIZE = 4;
-      const size_t NEW_SIZE     = 8;
+      const size_t INITIAL_SIZE = 4UL;
+      const size_t NEW_SIZE     = 8UL;
       const ItemNDC VALUE1("1");
       const ItemNDC VALUE2("2");
 
@@ -403,7 +403,7 @@ namespace
     {
       PoolNDC2 pool;
 
-      const size_t INITIAL_SIZE = 4;
+      const size_t INITIAL_SIZE = 4UL;
       DataDC data1(INITIAL_SIZE, pool);
       DataDC data2(INITIAL_SIZE, pool);
 
@@ -416,8 +416,8 @@ namespace
     {
       PoolNDC2 pool;
 
-      const size_t INITIAL_SIZE = 4;
-      const size_t NEW_SIZE = 2;
+      const size_t INITIAL_SIZE = 4UL;
+      const size_t NEW_SIZE = 2UL;
       const ItemDC VALUE1("1");
       const ItemDC VALUE2("2");
 
@@ -447,8 +447,8 @@ namespace
     TEST_FIXTURE(SetupFixture, test_resize_down_value)
     {
       PoolNDC2 pool;
-      const size_t INITIAL_SIZE = 4;
-      const size_t NEW_SIZE = 2;
+      const size_t INITIAL_SIZE = 4UL;
+      const size_t NEW_SIZE = 2UL;
       const ItemNDC VALUE1("1");
       const ItemNDC VALUE2("2");
 
@@ -496,9 +496,9 @@ namespace
       data2.assign(sorted_data.begin(), sorted_data.end());
       CHECK_EQUAL(sorted_data.size(), data2.size());
       data1.clear();
-      CHECK_EQUAL(size_t(0), data1.size());
+      CHECK_EQUAL(size_t(0UL), data1.size());
       data2.clear();
-      CHECK_EQUAL(size_t(0), data2.size());
+      CHECK_EQUAL(size_t(0UL), data2.size());
     }
 
     //*************************************************************************
@@ -520,12 +520,12 @@ namespace
       data1.resize(SIZE);
       CHECK_EQUAL(SIZE, data1.size());
       data1.clear();
-      CHECK_EQUAL(size_t(0), data1.size());
+      CHECK_EQUAL(size_t(0UL), data1.size());
 
       data2.resize(SIZE);
       CHECK_EQUAL(SIZE, data2.size());
       data2.clear();
-      CHECK_EQUAL(size_t(0), data2.size());
+      CHECK_EQUAL(size_t(0UL), data2.size());
     }
 
     //*************************************************************************
@@ -563,7 +563,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_size_value)
     {
-      const size_t INITIAL_SIZE = 4;
+      const size_t INITIAL_SIZE = 4UL;
       const ItemNDC VALUE0("0");
       const ItemNDC VALUE1("1");
       const ItemNDC VALUE2("2");
@@ -606,7 +606,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_after_position_value)
     {
-      const size_t INITIAL_SIZE = 4;
+      const size_t INITIAL_SIZE = 4UL;
       const ItemNDC VALUE("1");
       const ItemNDC INSERT_VALUE("2");
 
@@ -616,7 +616,7 @@ namespace
       DataNDC data1(INITIAL_SIZE, VALUE, pool);
       DataNDC data2(INITIAL_SIZE, VALUE, pool);
 
-      size_t offset = 2;
+      size_t offset = 2UL;
 
       DataNDC::iterator i_data1 = data1.begin();
       std::advance(i_data1, offset);
@@ -668,7 +668,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_after_position_size_value)
     {
-      const size_t INITIAL_SIZE = 4;
+      const size_t INITIAL_SIZE = 4UL;
       const ItemNDC VALUE("1");
       const ItemNDC INSERT_VALUE("2");
 
@@ -677,7 +677,7 @@ namespace
       DataNDC data1(INITIAL_SIZE, VALUE, pool);
       DataNDC data2(INITIAL_SIZE, VALUE, pool);
 
-      size_t offset = 2;
+      size_t offset = 2UL;
 
       DataNDC::iterator i_data1 = data1.begin();
       std::advance(i_data1, offset);
@@ -1001,7 +1001,7 @@ namespace
       DataNDC data1(pool);
       DataNDC data2(pool);
 
-      for (size_t i = 0; i < 2 * data1.max_size(); ++i)
+      for (size_t i = 0UL; i < 2UL * data1.max_size(); ++i)
       {
         CHECK_NO_THROW(data1.push_front(ItemNDC("1")));
         CHECK_NO_THROW(data2.push_front(ItemNDC("2")));
@@ -1348,7 +1348,9 @@ namespace
       DataNDC data1(sorted_data.begin(), sorted_data.end(), pool);
       DataNDC other_data(data1, pool);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       other_data = other_data;
+#include "etl/private/diagnostic_pop.h" 
 
       CHECK_EQUAL(data1.size(), other_data.size());
 

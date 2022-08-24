@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2019 jwellbelove
+Copyright(c) 2019 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -219,7 +219,7 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Cconstructor.
+    /// Constructor.
     //***************************************************************************
     ETL_CONSTEXPR basic_format_spec(uint_least8_t base__,
                                     uint_least8_t width__,

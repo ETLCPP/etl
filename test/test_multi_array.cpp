@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2019 jwellbelove
+Copyright(c) 2019 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -41,8 +41,8 @@ namespace
 {
   SUITE(test_array)
   {
-    static const size_t SIZE1 = 4;
-    static const size_t SIZE2 = 3;
+    static const size_t SIZE1 = 4UL;
+    static const size_t SIZE2 = 3UL;
 
     using Data         = etl::multi_array<int, SIZE1, SIZE2>;
     using Compare_Data = std::array<std::array<int, SIZE2>, SIZE1>;
@@ -79,9 +79,9 @@ namespace
     {
       Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
-        for (size_t j = 0; j < data[0].size(); ++j)
+        for (size_t j = 0UL; j < data[0].size(); ++j)
         {
           CHECK_EQUAL(data[i].at(j), compare_data[i].at(j));
         }
@@ -96,9 +96,9 @@ namespace
     {
       const Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
-        for (size_t j = 0; j < data[0].size(); ++j)
+        for (size_t j = 0UL; j < data[0].size(); ++j)
         {
           CHECK_EQUAL(data[i].at(j), compare_data[i].at(j));
         }
@@ -112,9 +112,9 @@ namespace
     {
       Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
-        for (size_t j = 0; j < data[0].size(); ++j)
+        for (size_t j = 0UL; j < data[0].size(); ++j)
         {
           CHECK_EQUAL(data[i][j], compare_data[i][j]);
         }
@@ -126,9 +126,9 @@ namespace
     {
       const Data data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
-        for (size_t j = 0; j < data[0].size(); ++j)
+        for (size_t j = 0UL; j < data[0].size(); ++j)
         {
           CHECK_EQUAL(data[i][j], compare_data[i][j]);
         }
@@ -349,6 +349,7 @@ namespace
       Data data1b = { { { 12, 13, 14 }, { 15, 16, 17 }, { 18, 19, 20 }, { 21, 22, 23 } } };
       Data data2b = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
 
+      using ETL_OR_STD::swap;
       swap(data1, data2);
 
       CHECK(std::equal(data1b.begin(), data1b.end(), data1.begin()));

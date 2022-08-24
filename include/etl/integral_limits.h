@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -41,7 +41,7 @@ SOFTWARE.
 
 //*****************************************************************************
 ///\defgroup integral_limits integral_limits
-/// A set of templated compile time constants that mirror some of std::numeric_limits funtionality.
+/// A set of templated compile time constants that mirror some of std::numeric_limits functionality.
 ///\ingroup utilities
 //*****************************************************************************
 
@@ -92,14 +92,21 @@ namespace etl
   //***************************************************************************
   ///\ingroup integral_limits
   //***************************************************************************
+#if defined(ETL_COMPILER_MICROSOFT)
+  #pragma warning(push)
+  #pragma warning(disable : 4309)
+#endif
   template <>
   struct integral_limits<char>
   {
     static ETL_CONSTANT char min       = (etl::is_signed<char>::value) ? SCHAR_MIN : 0;
-    static ETL_CONSTANT char max       = (etl::is_signed<char>::value) ? SCHAR_MAX : char(UCHAR_MAX);
+    static ETL_CONSTANT char max       = (etl::is_signed<char>::value) ? SCHAR_MAX : static_cast<char>(UCHAR_MAX);
     static ETL_CONSTANT int bits       = CHAR_BIT;
     static ETL_CONSTANT bool is_signed = etl::is_signed<char>::value;
   };
+#if defined(ETL_COMPILER_MICROSOFT)
+  #pragma warning(pop)
+#endif
 
   //***************************************************************************
   ///\ingroup integral_limits

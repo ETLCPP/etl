@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2020 jwellbelove
+Copyright(c) 2020 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -80,17 +80,17 @@ namespace
     {
     }
 
-    void on_receive(const Message1& message)
+    void on_receive(const Message1&)
     {
       ++count_message1;
     }
 
-    void on_receive(const Message2& message)
+    void on_receive(const Message2&)
     {
       ++count_message2;
     }
 
-    void on_receive_unknown(const etl::imessage& message)
+    void on_receive_unknown(const etl::imessage&)
     {
 
     }
@@ -118,12 +118,12 @@ namespace
     {
     }
 
-    void on_receive(const Message1& message)
+    void on_receive(const Message1&)
     {
       ++count_message1;
     }
 
-    void on_receive_unknown(const etl::imessage& message)
+    void on_receive_unknown(const etl::imessage&)
     {
       ++count_unknown_message;
     }
@@ -173,7 +173,7 @@ namespace
           return rcm2;
         }
 
-        void release(const etl::ireference_counted_message& msg) override
+        void release(const etl::ireference_counted_message&) override
         {
           // Do nothing.
         }
@@ -182,7 +182,9 @@ namespace
     //*************************************************************************
     TEST(test_move_constructor)
     {
+#include "etl/private/diagnostic_pessimizing-move_push.h"
       etl::shared_message sm1(std::move(etl::shared_message(message_pool, Message1(1))));
+#include "etl/private/diagnostic_pop.h"
       CHECK_EQUAL(1, sm1.get_reference_count());
     }
 
@@ -194,10 +196,16 @@ namespace
       Message2&        m2 = prcm->get_message(); // Check that we can get a non-const reference to the message.
       const Message2& cm2 = prcm->get_message(); // Check that we can get a const reference to the message.
 
+      (void)m2;
+      (void)cm2;
+
       etl::shared_message sm1(*prcm);
 
       etl::imessage&        im = sm1.get_message(); // Check that we can get a non-const reference to the message.
       const etl::imessage& cim = sm1.get_message(); // Check that we can get a const reference to the message.
+
+      (void)im;
+      (void)cim;
 
       CHECK_EQUAL(1, sm1.get_reference_count());
       CHECK(sm1.is_valid());
@@ -207,7 +215,9 @@ namespace
     TEST(test_move_assignment)
     {
       etl::shared_message sm2 = etl::shared_message(message_pool, Message1(2));
+#include "etl/private/diagnostic_pessimizing-move_push.h"
       sm2 = std::move(etl::shared_message(message_pool, Message1(3)));
+#include "etl/private/diagnostic_pop.h"
       CHECK_EQUAL(1, sm2.get_reference_count());
       CHECK(sm2.is_valid());
     }
@@ -230,7 +240,7 @@ namespace
       bus.receive(sm2);
       bus.receive(sm1);
       bus.receive(sm3);
-      bus.receive(sm4);            // sm4 is a copy of sm1
+      etl::send_message(bus, sm4); // sm4 is a copy of sm1. Use non-member function.
       bus.receive(RouterId2, sm1); // Only send sm1 to Router2
 
       CHECK(sm1.is_valid());
@@ -248,6 +258,46 @@ namespace
       CHECK_EQUAL(4, router2.count_message1);
       CHECK_EQUAL(0, router2.count_message2);
       CHECK_EQUAL(0, router2.count_unknown_message);
+    }
+
+    TEST(test_reference_counted_pool_exceptions)
+    {
+      using pool_message_parameters = etl::atomic_counted_message_pool::pool_message_parameters<Message1, Message2>;
+
+      etl::fixed_sized_memory_block_allocator<pool_message_parameters::max_size,
+                                              pool_message_parameters::max_alignment,
+                                              4U> memory_allocator;
+
+      etl::atomic_counted_message_pool message_pool(memory_allocator);
+
+      etl::reference_counted_message<Message1, etl::atomic_int>* prcm;
+      CHECK_NO_THROW(prcm = message_pool.allocate<Message1>(1));
+      CHECK_NO_THROW(prcm = message_pool.allocate<Message1>(2));
+      CHECK_NO_THROW(prcm = message_pool.allocate<Message1>(3));
+      CHECK_NO_THROW(prcm = message_pool.allocate<Message1>(4));
+      
+      (void)prcm;
+
+      try
+      {
+        prcm = message_pool.allocate<Message1>(5);
+      }
+      catch (etl::exception e)
+      {
+        CHECK_EQUAL(std::string("reference_counted_message_pool:allocation failure"), std::string(e.what()));
+      }
+      
+      Message1 message1(6);
+      etl::reference_counted_message<Message1, etl::atomic_int> temp(message1, message_pool);
+
+      try
+      {
+        message_pool.release(temp);
+      }
+      catch (etl::exception e)
+      {
+        CHECK_EQUAL(std::string("reference_counted_message_pool:release failure"), std::string(e.what()));
+      }
     }
   }
 }

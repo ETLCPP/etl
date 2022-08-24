@@ -1,4 +1,369 @@
 ===============================================================================
+20.33.0
+Added etl::message_broker to message framework
+Added 'successor' parameter constructors to all etl::imessage_router derived classes
+Added etl::binary_search to algorithm.h
+Standardise conditional compilation macros for ETL_USING_CPP11 and ETL_USING_STL
+#546: Added a new variant of bitset that may be constexpr
+Removed the use of ETL_FORCE_CONSTEXPR_ALGORITHMS as all algorithms may be constexpr
+Rationalised etl::send_message functions
+Fixed implicit virtual warning for etl::vector
+Fixed C++03 delegate compatibility
+Added missing char_traits unit tests and char_traits bug fixes
+Added default message id constructors
+Added ability to set the bitset from wchar_t, char16_t and char32_t
+Added ARM5 and ARM6 compiler compatibility for GCC atomics
+#579: Fixed Unexpected namespace for variant with non-CPP11 compiler
+
+===============================================================================
+20.32.1
+Added size only constructor, set_buffer() and is_valid() members to circular_buffer_ext
+
+===============================================================================
+20.32.0
+#571 Activate GCC and clang compiler warnings
+#575 Bip buffer improvements
+#576 Invoke function pointers with parenthesis
+#574 Allow users to remove SYSTEM keyword because it forces C linkage for some gcc versions
+
+===============================================================================
+20.31.3
+#569 Fixed swap function for circular_buffer_ext
+#568 Fixed circular_buffer iterator -> operators
+Optimised container move for external buffers
+Added functions and macros to etl::debug_count
+Added tests for error handler macros
+
+===============================================================================
+20.31.2
+#567 error-handler: only return when the condition is false 
+
+===============================================================================
+20.31.1
+Addition of extra ETL_NODISCARD and ETL_NOEXCEPT to etl::span & etl::poly_span.
+Fixed warnings for initialisation order for some etl::poly_span constructors.
+
+===============================================================================
+20.31.0
+Added etl::poly_span
+Refacted parts of etl::span, including prevent compound statements in constexpr methods for C++11
+Added etl::is_enum
+
+===============================================================================
+20.30.1
+Fixed #560 Unable to upcast legacy variant Latest
+Refactored legacy variant to remove upcast functors.
+Added upcast_ptr, is_base_of & 'not a base' error exception to legacy variant.
+If ETL_USE_LEGACY_VARIANT is defined then legacy variant is in the etl namespace.
+If ETL_USE_LEGACY_VARIANT is not defined then legacy variant is in the etl::legacy namespace.
+Added non-member etl::send_message for etl::shared_message
+Green Hills compiler compatibility
+
+===============================================================================
+20.30.0
+Fixed #560 Unable to upcast legacy variant.
+Refactored legacy variant to remove upcast functors.
+Added upcast_ptr, is_base_of & 'not a base' error exception to legacy variant.
+If ETL_USE_LEGACY_VARIANT is defined then legacy variant is in the etl namespace.
+If ETL_USE_LEGACY_VARIANT is not defined then legacy variant is in the etl::legacy namespace.
+Added non-member etl::send_message for etl::shared_message
+
+===============================================================================
+20.29.3
+Updated message_packet_generator.h to match etl::message_packet changes.
+
+===============================================================================
+20.29.2
+#557 QueuedFSM example does not compile.
+
+===============================================================================
+20.29.1
+Added etl::byte_stream_overflow assert to byte_stream_reader 'skip'.
+
+===============================================================================
+20.29.0
+Added etl::bit_stream_writer
+Added etl::bit_stream_reader
+Deprecated etl::bit_stream
+Added callback option to etl::byte_stream_writer
+Added error exceptions to byte_stream_writer
+Added ETL_NODISCARD to etl::delegate 'create' and 'is_valid' functions
+Added etl::visit support to etl::variant
+Refactored C++17 message_packet
+Refactored etl::atomic implementations to allow non-(integrals/pointers/bool)
+Refactors etl::vector and etl::deque resize() to take const reference parameter
+Renamed ETL_ALWAYS_ASSERT to ETL_ASSERT_FAIL
+Removed duplicate void_t definition
+Removed duplicate etl::declvar definition
+Renamed cumulative_moving_average to pseudo_windowed_moving_average to more accurately reflect its algorithm.
+Changed etl::debounce internal state names to avoid clashes with Arduino macros.
+
+===============================================================================
+20.28.0
+Fixed issues raised by sanitizer.
+Added conditional compilation for 8 bit type in hash.h
+Fixed warnings for 64bit compilation.
+Fixed sanity check includes.
+Fixed incorrect returned span length for byte stream read.
+Updates to etl::successor and derived classes.
+
+===============================================================================
+20.27.3
+#531 Fixed: Compilation of etl::reference_counted_message_pool with ETL_LOG_ERROR 
+enabled due to non-public inheritance.
+
+===============================================================================
+20.27.2
+Added scripts to automatically update version information.
+Added ETL version information to etl::traits.
+Small optimisations for computing indexes for queues & cyclic_value.
+#530 Fixed: etl::nth_type not implemented correctly.
+#521 CMake: Add package version file for installation.
+#525 Fixed: plusplus constant type.
+#517 Fixed: unused-local-typedefs warning.
+
+===============================================================================
+20.27.1
+Fixed undefined macros when compiler type is defined by the user.
+
+===============================================================================
+20.27.0
+Added etl::functor for wrapping global/static functions in a functor.
+Added etl::member_function_wrapper for converting a member function to a static function.
+Added etl::functor_wrapper for converting a member function operator to a static function.
+
+===============================================================================
+20.26.0
+Added constexpr support for etl::unaligned_type.
+Added etl::traits namespace containing traits mirroring many ETL macros.
+Traits are const for C++03, constexpr for C++11 and above.
+Removed some uses of GCC builtins due to compatibility with constexpr.
+etl::swap is now ETL_CONSTEXPR14.
+Changed ETL_ENDIANNESS_IS_CONSTEXPR to ETL_HAS_CONSTEXPR_ENDIANNESS.
+Changed ETL_CONSTEXPR17 to ETL_CONSTEXPR14 for reverse iterators
+Added template wrappers around memcpy, memmove, memcmp, memset& memchr.
+The counter in etl::debug_count is atomic, if available.
+Embedded essential UnitTest++ source into the project, as it is no longer maintained on GitHub.
+
+===============================================================================
+20.25.0
+Added message_timer_interrupt
+Added callback_timer_interrupt
+Changed message_timer_atomic and callback_timer_atomic to require an atomic counter template type.
+Added extra condition compile macros to control std::initializer_list.
+Initializer list tests are in a separate project.
+Modified etl::instance_count to take an optional counter type.
+Renamed Arduino files to stop PlatformIO getting confused.
+Changed from C cast to C++ cast in memory.h
+Always use stddef.h
+Modified WCHAR_MIN and WCHAR_MAX checks.
+Added char8_t type.
+Fixed 'unused function parameter' warnings.
+
+===============================================================================
+20.24.1
+callback and message timers now use etl::timer_semaphore_t instead of et::atomic_uint_least16_t
+Fixed send_message function signatures.
+
+===============================================================================
+20.24.0
+#503 Algorithm transform uses expensive post increment operator - Fixed for all occurrences of iterator increment.
+#504 ETL_CONSTANT vs const in binary.h - Fixed.
+Many algorithms will leverage built-ins, if available. Dependant on compiler version.
+Added detection or selection of built-ins.
+Much of etl::string and etl::string_view can be constexpr.
+Added ETL initializer_list implementations that are compatible with major compilers.
+Added etl::construct_at support.
+Added etl::byte
+
+===============================================================================
+20.23.0
+Recoded state_chart to reduce its resource requirements.
+Added compile time state chart variants.
+Added etl::unaligned_type for fundamental types.
+Added reverse engineered functionality from C++20 <bit>.
+Added all permutations of leading/trailing bit tests.
+Changed inline functions to templates in binary.h.
+Added etl::midpoint and etl::lerp
+Recoded etl::endian & etl::endianness to allow constexpr in certain configurations.
+Updates and fixes to etl::bitset. Added to_ulong, to_ullong, to_string member functions.
+Moved void_t definition.
+Renamed 8bit check macro.
+Updated tests to support C++20 STL.
+Modified C++ language level detection.
+Added all permutations of leading/trailing bit tests.
+etl::iterator is more SFINAE compatible.
+Updated C++ standard detection.
+
+===============================================================================
+20.22.0
+Split callback and message timer to atomic and locked interrupt versions.
+#480 Fixed: Double formatting with precision > 9
+#481 Fixed: etl::span const data cannot be created from non const c array of data.
+#482 Fixed: Two or more etl::span/array_view of different types create ambiguous overloading set 
+#483 Fixed: Added Green Hills compiler to minmax push and pop.
+#484 Fixed: etl::vector test_uninitialized_resize_excess not calling uninitialized_resize.
+#485 Fixed: etl::message_packet takes message types that are not in its list.
+
+===============================================================================
+20.21.0
+Added contains() method to etl::map and etl::set + variants.
+Added support for transparent comparators.
+When ETL_NO_ATOMICS is defined the timer.h file does not define timer_semaphore_t.
+etl::deque::resize throws etl::deque_full instead of etl::deque_out_of_bounds, if requested size is too large.
+
+===============================================================================
+20.20.0
+Updated container 'insert' and 'erase' to C++11 style const_iterator parameters. (#463)
+Fixed container template function overload ambiguity. (#466)
+Harmonize copy ctor and assignment for etl::delegate. (#465)
+Added constexpr support for etl::enum_type. (#462)
+Added 'make' functions to construct containers.
+Remove unnecessary casts that causes warnings. (#461)
+Added non-const string pointer overload. (#449)
+Changed != to < in etl::ipool to get rid of erroneous clang-tidy nullptr dereference warning. (#457)
+Added ifdef guard for MSVC pragma (#455)
+
+===============================================================================
+20.19.0
+Updates to etl::delegate. Added more constexpr and set() functions.
+Removed conanfile.py. Now controlled by conan repository.
+Fixed missing 'typename' keyword in etl::multi_span.
+Added missing explicit initialisation from in_place structures.
+Fixed hidden parameter warning in unordered_map, unordered_multimap, unordered_set, unordered_multiset.
+Disable etl::begin(), etl::end() and  etl::size() for STL & >= C++11.
+Add available_bytes to byte_stream_reader & byte_stream_writer.
+Meson tests & style fix (#447).
+Fix constexpr accepts() implementation to be C++11 compliant (#451, #452)
+Fix-compiler-error-msvc-16 #454
+
+===============================================================================
+20.18.1
+Added missing 'start, length' read() variants for byte_stream_reader.
+Added multi_span to 'sanity checks'.
+
+===============================================================================
+20.18.0
+Added front() access to locked queues.
+Added .clang-format rules.
+Added etl::pool_ext and etl::generic_pool_ext.
+Added etl::multi_span.
+Added CMSIS RTOS2 mutex variant.
+Added 'unchecked' read and write members functions to byte_stream_reader and byte_stream_writer.
+Fixed byte_stream_reader to be able to use const buffers.
+Removed compiler warning messages.
+Fixed missing 'public' access for message_router_registry iterator.
+
+===============================================================================
+20.17.3
+Modified etl::cyclic_value for ARMCC v5 compatibility
+
+===============================================================================
+20.17.2
+Replaced std::size_t with size_t in etl::in_place_index
+
+===============================================================================
+20.17.1
+Added successor handling for accepts()
+Added successor handling for pre-C++17 message router
+
+===============================================================================
+20.17.0
+Added etl::result type
+Added etl::byte_stream
+Added denominated etl::to_string overloads
+Added etl::remove_cvref to type traits
+Replaced etl::remove_reference_t with etl::remove_cvref_t in variadic etl::variant
+Added call_if and call_or member functions to etl::delegate
+Improved compliance with MISRA rules
+Extended 'successor' handling for all derived message router types
+
+===============================================================================
+20.16.2 
+Fixed incomplete template specialisations in type_traits.h for C++11
+
+===============================================================================
+20.16.1
+Fix for etl::mutex::try_lock() for GCC
+
+===============================================================================
+20.16.0
+Added C++17 variadic versions of etl::message_router and etl::fsm
+'pop_into' in queue and stack will move if possible.
+Added Force C++03 option to Github CI
+Expanded compiled variants for scripts
+
+===============================================================================
+20.15.1
+Fixed etl::fsm C++03 template definition that was corrupted in 20.10.0
+Fixed meson.build
+
+===============================================================================
+20.15.0
+Added a Bipartite buffer, by Benedek Kupper.
+etl::bip_buffer_spsc_atomic
+notify_observers() takes universal reference for C++11 and above.
+Updated type traits generator.
+
+===============================================================================
+20.14.1
+Changed std::forward to etl::forward in etl::variant (variadic)
+
+===============================================================================
+20.14.0
+Added a variadic version of etl::variant. Usable for C++11 and up.
+Added etl::overload pattern class. Groups lambdas into a functor class.
+Refactored type_traits.h. Uses STL, compiler built-ins or user defined specialisations, dependent on settings.
+Added etl::conditional_t to type_traits.h
+Added etl::conjunction and etl::disjunction to type_traits.h
+Added etl::integer_sequence to utility.h
+Added etl::in_place, etl::in_place_t and etl::in_place_index_t.
+Fixed missing etl::alignment_of specialisation for const void.
+
+===============================================================================
+20.13.0
+Added a specialisation of etl::delegate_service to allow constexpr service.
+
+===============================================================================
+20.12.0
+Added the option to derived etl::message<> from a parent class other than etl::imessage.
+The parent class must ultimately be derived from etl::imessage.
+
+===============================================================================
+20.11.5
+Added Arduino examples.
+
+===============================================================================
+20.11.4
+Fixed etl::circular_buffer copy and move assignment bug where the destination 
+buffer was not cleared before assignment.
+
+===============================================================================
+20.11.3
+Define missing macro when cross compiling with clang for AVR
+
+===============================================================================
+20.11.2
+etl::basic_string::copy is now const and does not affect truncation flags.
+
+===============================================================================
+20.11.1
+Fixed ambiguous function call in etl::mem_cast for clang.
+
+===============================================================================
+20.11.0
+Added etl::mem_cast, etl::mem_cast_ptr & etl::mem_cast_types for reinterpretation of memory blocks.
+State tables in etl::debounce are now constexpr in C++11 or above.
+
+===============================================================================
+20.10.6
+Updated QueuedMessageRouter and QueuedFSM examples to use current message frameworks.
+
+===============================================================================
+20.10.5
+Added container_type to etl::stack, etl::queue and etl::priority_queue.
+
+===============================================================================
 20.10.4
 Fixed cross compiler compatibility for etl::circular_buffer.
 
@@ -43,7 +408,7 @@ Added maths algorithms and functors.
   etl::gamma_encode
   etl:;gamma_decode
   etl::histogram
-  etl::sparce_histogram
+  etl::sparse_histogram
   etl::mean
   etl::invert
   etl::threshold
@@ -130,7 +495,7 @@ Fixed indexing error in find_next() for etl::bitset.
 
 ===============================================================================
 20.2.2
-Added non-const get_message() member funtions in shared message framework.
+Added non-const get_message() member functions in shared message framework.
 
 ===============================================================================
 20.2.1
@@ -157,7 +522,7 @@ Added move constructor and move assignment operator to etl::shared_message.
 ===============================================================================
 19.5.2
 Fixed rollover error for etl::queue_spsc_atomic
-Added 'required_alignment' parameter to 'allocate' for etl::imemeory_block_allocator.
+Added 'required_alignment' parameter to 'allocate' for etl::imemory_block_allocator.
 Updated QueuedMessageRouter example.
 
 ===============================================================================
@@ -170,7 +535,7 @@ Added shared messages to the messaging framework + supporting allocator classes.
 Some refactoring of the messaging framework internals.
 Added example application for shared messages.
 Added a lockable queue with locks implemented as pure virtuals.
-Refeactored the other queues.
+Refactored the other queues.
 Fixed missing virtual destructor for C++11 observer.
 Added etl::successor class for consistant 'chain of responsibilty' pattern generation.
 Added missing constructors to unique_ptr.
@@ -218,7 +583,7 @@ Make etl::span compliant with STL API by adding missing overloads for span::firs
 
 ===============================================================================
 19.3.3
-Added check for existance of <new> in platform.h
+Added check for existence of <new> in platform.h
 Added placement_new.h which selects between <new> and ETL definitions.
 
 ===============================================================================
@@ -292,7 +657,7 @@ Expanded the use of constexpr in etl::flags
 
 ===============================================================================
 18.19.1
-Added ETL_CONSTEXPR for state_chart, transision and state constructors.
+Added ETL_CONSTEXPR for state_chart, transition and state constructors.
 Eliminate ARM compiler v5 warnings for state_chart.
 Fixed return type error for atomic GCC.
 
@@ -652,8 +1017,8 @@ Added partial compile time versions of binary_fill and has_zero_byte.
 ===============================================================================
 17.0.0
 Recoded binary_fill, has_zero_byte and has_byte_n as runtime functions to fix
-compiler compatibilty issues. All functions may be constexpr if the compiler supports it.
-Added tests for binary constextr functions.
+compiler compatibility issues. All functions may be constexpr if the compiler supports it.
+Added tests for binary constexpr functions.
 
 Added option to define ETL_NO_64BIT_TYPES macro if the compiler does not support 64bit types.
 Conditional compilation macros added to affected files.
@@ -905,7 +1270,7 @@ Fixed unordered_map iterator operator* return type
 
 ===============================================================================
 14.29.3
-Minor updatess for etl::delegate
+Minor updates for etl::delegate
 
 ===============================================================================
 14.29.2
@@ -1057,13 +1422,13 @@ Finalised 'to string'.
 
 ===============================================================================
 14.18.1
-Changed etl::format_sepc template to etl::basic_firmat_spec.
+Changed etl::format_spec template to etl::basic_format_spec.
 Created individual format_spec typedefs for each string type.
 
 ===============================================================================
 14.18.0
 Added etl::to_string, etl::to_wstring, etl::to_u16string and etl::to_u32string
-plus formating support for integrals.
+plus formatting support for integrals.
 
 ===============================================================================
 14.17.0
@@ -1312,7 +1677,7 @@ Moved non-template code in pvoidvector to cpp file.
 
 ===============================================================================
 11.12.1
-Made atomic load const for non STL vesions
+Made atomic load const for non STL versions
 
 ===============================================================================
 11.12.0
@@ -1321,11 +1686,11 @@ Removed non-conforming std::nullptr
 
 ===============================================================================
 11.11.1
-Compatibilty changes for Segger IDE, GCC & STLPort
+Compatibility changes for Segger IDE, GCC & STLPort
 
 ===============================================================================
 11.11.0
-Compatibilty changes for Segger IDE, GCC & STLPort
+Compatibility changes for Segger IDE, GCC & STLPort
 
 ===============================================================================
 11.10.0

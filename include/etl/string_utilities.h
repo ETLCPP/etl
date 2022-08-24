@@ -84,7 +84,7 @@ namespace etl
     }
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <>
   struct whitespace<char16_t>
   {
@@ -104,7 +104,7 @@ namespace etl
   };
 #endif
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename TChar>
   inline constexpr const TChar* whitespace_v = whitespace<TChar>::value();
 #endif
@@ -212,7 +212,7 @@ namespace etl
 
   //***************************************************************************
   /// trim_whitespace_right
-  /// Trim firght of whitespace
+  /// Trim from right of whitespace
   //***************************************************************************
   template <typename TIString>
   void trim_whitespace_right(TIString& s)

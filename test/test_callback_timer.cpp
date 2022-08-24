@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2017 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -44,7 +44,7 @@ SOFTWARE.
 
 namespace
 {
-  uint64_t ticks = 0;
+  uint64_t ticks = 0ULL;
 
   //***************************************************************************
   // Class callback via etl::function
@@ -148,7 +148,7 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 1;
+      const uint32_t step = 1UL;
 
       while (ticks <= 100U)
       {
@@ -182,7 +182,7 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 1;
+      const uint32_t step = 1U;
 
       while (ticks <= 100U)
       {
@@ -236,7 +236,7 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 1;
+      const uint32_t step = 1U;
 
       while (ticks <= 100U)
       {
@@ -282,7 +282,7 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 5;
+      const uint32_t step = 5U;
 
       while (ticks <= 100U)
       {
@@ -323,7 +323,7 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 1;
+      const uint32_t step = 1U;
 
       while (ticks <= 100U)
       {
@@ -378,7 +378,7 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 1;
+      const uint32_t step = 1U;
 
       while (ticks <= 200U)
       {
@@ -450,7 +450,7 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 1;
+      const uint32_t step = 1U;
 
       while (ticks <= 100U)
       {
@@ -500,7 +500,7 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 1;
+      const uint32_t step = 1U;
 
       while (ticks <= 100U)
       {
@@ -549,7 +549,7 @@ namespace
       timer_controller.start(id2, etl::timer::start::IMMEDIATE);
       timer_controller.start(id3, etl::timer::start::DELAYED);
 
-      const uint32_t step = 1;
+      const uint32_t step = 1U;
 
       while (ticks <= 100U)
       {
@@ -588,7 +588,7 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 11;
+      const uint32_t step = 11U;
 
       ticks += step;
       timer_controller.tick(step);
@@ -621,9 +621,9 @@ namespace
 
       ticks = 0;
 
-      const uint32_t step = 5;
+      const uint32_t step = 5U;
 
-      for (uint32_t i = 0; i < step; ++i)
+      for (uint32_t i = 0U; i < step; ++i)
       {
         ++ticks;
         timer_controller.tick(1);
@@ -634,7 +634,7 @@ namespace
 
       timer_controller.start(id1);
 
-      for (uint32_t i = 0; i < step; ++i)
+      for (uint32_t i = 0U; i < step; ++i)
       {
         ++ticks;
         timer_controller.tick(1);
@@ -656,13 +656,15 @@ namespace
         ++called;
       }
 
-      size_t called = 0;
+      size_t called = 0UL;
     };
+
+    using callback_type = etl::icallback_timer::callback_type;
 
     TEST(callback_timer_call_etl_delegate)
     {
         test_object test_obj;
-        etl::delegate<void()> delegate_callback = etl::delegate<void()>::create<test_object, &test_object::call>(test_obj);
+        callback_type delegate_callback = callback_type::create<test_object, &test_object::call>(test_obj);
         etl::callback_timer<1> timer_controller;
 
         timer_controller.enable(true);
@@ -692,14 +694,14 @@ namespace
 
     void timer_event()
     {
-      const uint32_t TICK = 1;
+      const uint32_t TICK = 1U;
       uint32_t tick = TICK;
-      ticks = 1;
+      ticks = 1U;
 
       RAISE_THREAD_PRIORITY;
       FIX_PROCESSOR_AFFINITY;
 
-      while (ticks <= 1000)
+      while (ticks <= 1000U)
       {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
 

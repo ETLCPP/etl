@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2017 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -59,6 +59,27 @@ namespace
 
   SUITE(test_string_view)
   {
+    //*************************************************************************
+    TEST(test_constexpr)
+    {
+      constexpr const char* text = "Hello";
+
+      constexpr etl::string_view view1(text);
+      constexpr etl::string_view view2(text, 5U);
+      constexpr etl::string_view view3(text, text + 5U);
+      constexpr etl::string_view view4(view3);
+
+      constexpr const char* str1 = view1.begin();
+      constexpr const char* str2 = view2.begin();
+      constexpr const char* str3 = view3.begin();
+      constexpr const char* str4 = view4.begin();
+
+      CHECK_ARRAY_EQUAL(text, str1, 5U);
+      CHECK_ARRAY_EQUAL(text, str2, 5U);
+      CHECK_ARRAY_EQUAL(text, str3, 5U);
+      CHECK_ARRAY_EQUAL(text, str4, 5U);
+    }
+
     //*************************************************************************
     TEST(test_default_constructor)
     {
@@ -144,6 +165,7 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     TEST(test_template_deduction)
     {
       etl::basic_string_view cview{ "Hello World" };
@@ -156,6 +178,7 @@ namespace
       CHECK(std::equal(u16view.begin(), u16view.end(), text.begin()));
       CHECK(std::equal(u32view.begin(), u32view.end(), text.begin()));
     }
+#endif
 
     //*************************************************************************
     TEST(test_assign_from_string_view)
@@ -223,7 +246,7 @@ namespace
     {
       View  view(text.c_str(), text.size());
 
-      for (size_t i = 0; i < text.size(); ++i)
+      for (size_t i = 0UL; i < text.size(); ++i)
       {
         CHECK(text[i] == view[i]);
       }
@@ -234,7 +257,7 @@ namespace
     {
       View  view(text.c_str(), text.size());
 
-      for (size_t i = 0; i < text.size(); ++i)
+      for (size_t i = 0UL; i < text.size(); ++i)
       {
         CHECK(text[i] == view.at(i));
       }

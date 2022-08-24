@@ -6,7 +6,7 @@ The MIT License(MIT)
 Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -46,17 +46,17 @@ namespace etl
   {
     typedef T value_type;
 
-    inline T initial() const
+    T initial() const
     {
       return 0;
     }
 
-    inline T add(T sum, uint8_t value) const
+    T add(T sum, uint8_t value) const
     {
       return sum + value;
     }
 
-    inline T final(T sum) const
+    T final(T sum) const
     {
       return sum;
     }
@@ -70,17 +70,17 @@ namespace etl
   {
     typedef T value_type;
 
-    inline T initial() const
+    T initial() const
     {
       return 0;
     }
 
-    inline T add(T sum, uint8_t value) const
+    T add(T sum, uint8_t value) const
     {
       return etl::rotate_right(sum) + value;
     }
 
-    inline T final(T sum) const
+    T final(T sum) const
     {
       return sum;
     }
@@ -94,17 +94,17 @@ namespace etl
   {
     typedef T value_type;
 
-    inline T initial() const
+    T initial() const
     {
       return 0;
     }
 
-    inline T add(T sum, uint8_t value) const
+    T add(T sum, uint8_t value) const
     {
       return sum ^ value;
     }
 
-    inline T final(T sum) const
+    T final(T sum) const
     {
       return sum;
     }
@@ -118,17 +118,17 @@ namespace etl
   {
     typedef T value_type;
 
-    inline T initial() const
+    T initial() const
     {
       return 0;
     }
 
-    inline T add(T sum, uint8_t value) const
+    T add(T sum, uint8_t value) const
     {
       return etl::rotate_left(sum) ^ value;
     }
 
-    inline T final(T sum) const
+    T final(T sum) const
     {
       return sum;
     }
@@ -142,17 +142,17 @@ namespace etl
   {
     typedef T value_type;
 
-    inline T initial() const
+    T initial() const
     {
       return 0;
     }
 
-    inline T add(T sum, uint8_t value) const
+    T add(T sum, uint8_t value) const
     {
       return sum ^ etl::parity(value);
     }
 
-    inline T final(T sum) const
+    T final(T sum) const
     {
       return sum;
     }

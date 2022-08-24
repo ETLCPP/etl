@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2017 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -53,15 +53,12 @@ namespace etl
     {
       while (__sync_lock_test_and_set(&flag, 1U))
       {
-        while (flag)
-        {
-        }
       }
     }
 
     bool try_lock()
     {
-      return (__sync_lock_test_and_set(&flag, 1U) == 1U);
+      return (__sync_lock_test_and_set(&flag, 1U) == 0U);
     }
 
     void unlock()
@@ -70,6 +67,9 @@ namespace etl
     }
 
   private:
+
+    mutex(const mutex&) ETL_DELETE;
+    mutex& operator=(const mutex&) ETL_DELETE;
 
     char flag;
   };

@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2016 jwellbelove
+Copyright(c) 2016 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -129,7 +129,7 @@ namespace etl
     template <typename TIterator>
     void assign(TIterator first, TIterator last)
     {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
       intmax_t d = etl::distance(first, last);
       ETL_ASSERT(d >= 0, ETL_ERROR(intrusive_list_iterator_exception));
 #endif
@@ -673,7 +673,7 @@ namespace etl
     //*************************************************************************
     /// Inserts a value to the intrusive_list before the specified position.
     //*************************************************************************
-    iterator insert(iterator position, value_type& value)
+    iterator insert(const_iterator position, value_type& value)
     {
       this->insert_link(position.p_value->link_type::etl_previous, value);
       return iterator(value);
@@ -683,12 +683,13 @@ namespace etl
     /// Inserts a range of values to the intrusive_list after the specified position.
     //*************************************************************************
     template <typename TIterator>
-    void insert(iterator position, TIterator first, TIterator last)
+    void insert(const_iterator position, TIterator first, TIterator last)
     {
       while (first != last)
       {
         // Set up the next free link.
-        this->insert_link(*position.p_value->link_type::etl_previous, *first++);
+        this->insert_link(*position.p_value->link_type::etl_previous, *first);
+        ++first;
       }
     }
 
@@ -706,13 +707,29 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Erases the value at the specified position.
+    //*************************************************************************
+    iterator erase(const_iterator position)
+    {
+      iterator next(position);
+      ++next;
+
+      this->remove_link(*position.p_value);
+
+      return next;
+    }
+
+    //*************************************************************************
     /// Erases a range of elements.
     /// Clears the links after erasing if AUTO or CHECKED.
     //*************************************************************************
-    iterator erase(iterator first, iterator last)
+    iterator erase(const_iterator first, const_iterator last)
     {
-      link_type* p_first = first.p_value;
-      link_type* p_last  = last.p_value;
+      const link_type* cp_first = first.p_value;
+      const link_type* cp_last  = last.p_value;
+
+      link_type* p_first = const_cast<link_type*>(cp_first);
+      link_type* p_last  = const_cast<link_type*>(cp_last);
 
       // Join the ends.
       etl::link<link_type>(p_first->etl_previous, p_last);
@@ -1030,7 +1047,7 @@ namespace etl
     {
       if ((this != &other) && !other.empty())
       {
-#if defined(ETL_DEBUG)
+#if ETL_IS_DEBUG_BUILD
         ETL_ASSERT(etl::is_sorted(other.begin(), other.end(), compare), ETL_ERROR(intrusive_list_unsorted));
         ETL_ASSERT(etl::is_sorted(begin(), end(), compare), ETL_ERROR(intrusive_list_unsorted));
 #endif

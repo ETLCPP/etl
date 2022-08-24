@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2021 jwellbelove
+Copyright(c) 2021 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -52,7 +52,7 @@ namespace
 
       uint64_t crc = etl::crc64_ecma(data.begin(), data.end());
 
-      CHECK_EQUAL(0x6C40DF5F0B497347U, crc);
+      CHECK_EQUAL(0x6C40DF5F0B497347ULL, crc);
     }
 
     //*************************************************************************
@@ -62,14 +62,14 @@ namespace
 
       etl::crc64_ecma crc_calculator;
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         crc_calculator.add(data[i]);
       }
 
       uint64_t crc = crc_calculator;
 
-      CHECK_EQUAL(0x6C40DF5F0B497347U, crc);
+      CHECK_EQUAL(0x6C40DF5F0B497347ULL, crc);
     }
 
     //*************************************************************************
@@ -83,7 +83,7 @@ namespace
 
       uint64_t crc = crc_calculator.value();
 
-      CHECK_EQUAL(0x6C40DF5F0B497347U, crc);
+      CHECK_EQUAL(0x6C40DF5F0B497347ULL, crc);
     }
 
     //*************************************************************************
@@ -97,15 +97,15 @@ namespace
 
       uint64_t crc = crc_calculator.value();
 
-      CHECK_EQUAL(0x6C40DF5F0B497347U, crc);
+      CHECK_EQUAL(0x6C40DF5F0B497347ULL, crc);
     }
 
     //*************************************************************************
     TEST(test_crc64_ecma_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
-      std::vector<uint32_t> data2 = { 0x04030201, 0x08070605 };
-      std::vector<uint8_t>  data3 = { 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
+      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint32_t> data2 = { 0x04030201UL, 0x08070605UL };
+      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
 
       uint64_t crc1 = etl::crc64_ecma(data1.begin(), data1.end());
       uint64_t crc2 = etl::crc64_ecma((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
@@ -124,7 +124,7 @@ namespace
 
       uint64_t crc = etl::crc64_ecma_t16(data.begin(), data.end());
 
-      CHECK_EQUAL(0x6C40DF5F0B497347U, crc);
+      CHECK_EQUAL(0x6C40DF5F0B497347ULL, crc);
     }
 
     //*************************************************************************
@@ -134,14 +134,14 @@ namespace
 
       etl::crc64_ecma_t16 crc_calculator;
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         crc_calculator.add(data[i]);
       }
 
       uint64_t crc = crc_calculator;
 
-      CHECK_EQUAL(0x6C40DF5F0B497347U, crc);
+      CHECK_EQUAL(0x6C40DF5F0B497347ULL, crc);
     }
 
     //*************************************************************************
@@ -155,7 +155,7 @@ namespace
 
       uint64_t crc = crc_calculator.value();
 
-      CHECK_EQUAL(0x6C40DF5F0B497347U, crc);
+      CHECK_EQUAL(0x6C40DF5F0B497347ULL, crc);
     }
 
     //*************************************************************************
@@ -169,15 +169,15 @@ namespace
 
       uint64_t crc = crc_calculator.value();
 
-      CHECK_EQUAL(0x6C40DF5F0B497347U, crc);
+      CHECK_EQUAL(0x6C40DF5F0B497347ULL, crc);
     }
 
     //*************************************************************************
     TEST(test_crc64_ecma_16_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
-      std::vector<uint32_t> data2 = { 0x04030201, 0x08070605 };
-      std::vector<uint8_t>  data3 = { 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
+      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint32_t> data2 = { 0x04030201UL, 0x08070605UL };
+      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
 
       uint64_t crc1 = etl::crc64_ecma_t16(data1.begin(), data1.end());
       uint64_t crc2 = etl::crc64_ecma_t16((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
@@ -196,7 +196,7 @@ namespace
 
       uint64_t crc = etl::crc64_ecma_t4(data.begin(), data.end());
 
-      CHECK_EQUAL(0x6C40DF5F0B497347U, crc);
+      CHECK_EQUAL(0x6C40DF5F0B497347ULL, crc);
     }
 
     //*************************************************************************
@@ -206,14 +206,14 @@ namespace
 
       etl::crc64_ecma_t4 crc_calculator;
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         crc_calculator.add(data[i]);
       }
 
       uint64_t crc = crc_calculator;
 
-      CHECK_EQUAL(0x6C40DF5F0B497347U, crc);
+      CHECK_EQUAL(0x6C40DF5F0B497347ULL, crc);
     }
 
     //*************************************************************************
@@ -227,7 +227,7 @@ namespace
 
       uint64_t crc = crc_calculator.value();
 
-      CHECK_EQUAL(0x6C40DF5F0B497347U, crc);
+      CHECK_EQUAL(0x6C40DF5F0B497347ULL, crc);
     }
 
     //*************************************************************************
@@ -241,15 +241,15 @@ namespace
 
       uint64_t crc = crc_calculator.value();
 
-      CHECK_EQUAL(0x6C40DF5F0B497347U, crc);
+      CHECK_EQUAL(0x6C40DF5F0B497347ULL, crc);
     }
 
     //*************************************************************************
     TEST(test_crc64_ecma_4_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
-      std::vector<uint32_t> data2 = { 0x04030201, 0x08070605 };
-      std::vector<uint8_t>  data3 = { 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01 };
+      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint32_t> data2 = { 0x04030201UL, 0x08070605UL };
+      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
 
       uint64_t crc1 = etl::crc64_ecma_t4(data1.begin(), data1.end());
       uint64_t crc2 = etl::crc64_ecma_t4((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));

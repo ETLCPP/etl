@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2021 jwellbelove
+Copyright(c) 2021 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -84,7 +84,7 @@ namespace
   SUITE(test_covariance)
   {
     //*************************************************************************
-    TEST(test_char_covariance_default_constuctor)
+    TEST(test_char_covariance_default_constructor)
     {
       etl::covariance<etl::covariance_type::Population, char, int32_t> covariance;
 
@@ -94,7 +94,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_float_covariance_default_constuctor)
+    TEST(test_float_covariance_default_constructor)
     {
       etl::covariance<etl::covariance_type::Population, float> covariance;
 
@@ -104,7 +104,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_double_covariance_default_constuctor)
+    TEST(test_double_covariance_default_constructor)
     {
       etl::covariance<etl::covariance_type::Population, double> covariance;
 
@@ -114,7 +114,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_char_covariance_constuctor_population)
+    TEST(test_char_covariance_constructor_population)
     {
       double covariance_result;
 
@@ -135,7 +135,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_char_covariance_constuctor_sample)
+    TEST(test_char_covariance_constructor_sample)
     {
       double covariance_result;
 
@@ -156,7 +156,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_float_covariance_constuctor_population)
+    TEST(test_float_covariance_constructor_population)
     {
       double covariance_result;
 
@@ -177,7 +177,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_float_covariance_constuctor_sample)
+    TEST(test_float_covariance_constructor_sample)
     {
       double covariance_result;
 
@@ -198,7 +198,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_double_covariance_constuctor_population)
+    TEST(test_double_covariance_constructor_population)
     {
       double covariance_result;
 
@@ -219,7 +219,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_double_covariance_constuctor_sample)
+    TEST(test_double_covariance_constructor_sample)
     {
       double covariance_result;
 

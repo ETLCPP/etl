@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2021 jwellbelove
+Copyright(c) 2021 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -36,8 +36,8 @@ SOFTWARE.
 
 namespace
 {
-  constexpr size_t Size = 10U;
- 
+  constexpr size_t Size = 10UL;
+
   using IntGammaEncode    = etl::gamma_encode<int>;
   using DoubleGammaEncode = etl::gamma_encode<double>;
 
@@ -52,36 +52,36 @@ namespace
   };
 
   //***********************************
-  const std::array<int, Size> input1a = 
-  { 
+  const std::array<int, Size> input1a =
+  {
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9
   };
 
-  const std::array<int, Size> result1a = 
-  { 
+  const std::array<int, Size> result1a =
+  {
     0, 0, 0, 1, 1, 2, 4, 5, 7, 9
   };
 
   std::array<int, Size> output1;
 
   //***********************************
-  const std::array<double, Size> input2a = 
-  { 
+  const std::array<double, Size> input2a =
+  {
     0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0
   };
 
-  const std::array<double, Size> result2a = 
-  { 
+  const std::array<double, Size> result2a =
+  {
     0.0, 0.11, 0.44, 1.00, 1.78, 2.78, 4.00, 5.44, 7.11, 9.00
   };
 
-  const std::array<double, Size> input2b = 
-  { 
-    0.0, 0.11, 0.44, 1.00, 1.78, 2.78, 4.00, 5.44, 7.11, 9.00    
+  const std::array<double, Size> input2b =
+  {
+    0.0, 0.11, 0.44, 1.00, 1.78, 2.78, 4.00, 5.44, 7.11, 9.00
   };
 
-  const std::array<double, Size> result2b = 
-  { 
+  const std::array<double, Size> result2b =
+  {
     0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0
   };
 

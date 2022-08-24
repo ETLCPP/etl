@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2017 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -40,10 +40,7 @@ SOFTWARE.
 #include "atomic.h"
 #include "error_handler.h"
 #include "placement_new.h"
-
-#if ETL_CPP11_SUPPORTED
-  #include "delegate.h"
-#endif
+#include "delegate.h"
 
 #if defined(ETL_IN_UNIT_TEST) && ETL_NOT_USING_STL
   #define ETL_DISABLE_TIMER_UPDATES
@@ -84,7 +81,9 @@ namespace etl
   /// The configuration of a timer.
   struct callback_timer_data
   {
-    enum callback_type
+    typedef etl::delegate<void(void)> callback_type;
+
+    enum callback_type_id
     {
       C_CALLBACK,
       IFUNCTION,
@@ -140,14 +139,14 @@ namespace etl
     {
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*******************************************
     /// ETL delegate callback
     //*******************************************
-    callback_timer_data(etl::timer::id::type   id_,
-                        etl::delegate<void()>& callback_,
-                        uint32_t               period_,
-                        bool                   repeating_)
+    callback_timer_data(etl::timer::id::type id_,
+                        callback_type&       callback_,
+                        uint32_t             period_,
+                        bool                 repeating_)
             : p_callback(reinterpret_cast<void*>(&callback_)),
               period(period_),
               delta(etl::timer::state::INACTIVE),
@@ -183,7 +182,7 @@ namespace etl
     uint_least8_t         previous;
     uint_least8_t         next;
     bool                  repeating;
-    callback_type         cbk_type;
+    callback_type_id      cbk_type;
 
   private:
 
@@ -380,6 +379,8 @@ namespace etl
   {
   public:
 
+    typedef etl::delegate<void(void)> callback_type;
+
     //*******************************************
     /// Register a timer.
     //*******************************************
@@ -394,7 +395,7 @@ namespace etl
       if (is_space)
       {
         // Search for the free space.
-        for (uint_least8_t i = 0; i < MAX_TIMERS; ++i)
+        for (uint_least8_t i = 0U; i < MAX_TIMERS; ++i)
         {
           etl::callback_timer_data& timer = timer_array[i];
 
@@ -426,7 +427,7 @@ namespace etl
       if (is_space)
       {
         // Search for the free space.
-        for (uint_least8_t i = 0; i < MAX_TIMERS; ++i)
+        for (uint_least8_t i = 0U; i < MAX_TIMERS; ++i)
         {
           etl::callback_timer_data& timer = timer_array[i];
 
@@ -447,10 +448,10 @@ namespace etl
       //*******************************************
       /// Register a timer.
       //*******************************************
-#if ETL_CPP11_SUPPORTED
-      etl::timer::id::type register_timer(etl::delegate<void()>& callback_,
-                                          uint32_t               period_,
-                                          bool                   repeating_)
+#if ETL_USING_CPP11
+      etl::timer::id::type register_timer(callback_type& callback_,
+                                          uint32_t       period_,
+                                          bool           repeating_)
       {
           etl::timer::id::type id = etl::timer::id::NO_TIMER;
 
@@ -459,7 +460,7 @@ namespace etl
           if (is_space)
           {
               // Search for the free space.
-              for (uint_least8_t i = 0; i < MAX_TIMERS; ++i)
+              for (uint_least8_t i = 0U; i < MAX_TIMERS; ++i)
               {
                   etl::callback_timer_data& timer = timer_array[i];
 
@@ -586,11 +587,11 @@ namespace etl
                   // Call the function wrapper callback.
                   (*reinterpret_cast<etl::ifunction<void>*>(timer.p_callback))();
                 }
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
                 else if(timer.cbk_type == callback_timer_data::DELEGATE)
                 {
                     // Call the delegate callback.
-                    (*reinterpret_cast<etl::delegate<void()>*>(timer.p_callback))();
+                    (*reinterpret_cast<callback_type*>(timer.p_callback))();
                 }
 #endif
               }
@@ -732,6 +733,17 @@ namespace etl
 
     volatile bool enabled;
 #if defined(ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK)
+
+#if defined(ETL_TIMER_SEMAPHORE_TYPE)
+    typedef ETL_TIMER_SEMAPHORE_TYPE timer_semaphore_t;
+#else
+  #if ETL_HAS_ATOMIC
+    typedef etl::atomic_uint16_t timer_semaphore_t;
+  #else
+    #error No atomic type available
+  #endif
+#endif
+
     volatile etl::timer_semaphore_t process_semaphore;
 #endif
     volatile uint_least8_t registered_timers;

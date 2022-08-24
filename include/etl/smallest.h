@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -63,7 +63,7 @@ SOFTWARE.
 
 namespace etl
 {
-#if ETL_CPP11_SUPPORTED && !defined(ETL_SMALLEST_TYPE_FORCE_CPP03)
+#if ETL_USING_CPP11 && !defined(ETL_SMALLEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   /// Template to determine the largest type and size.
   /// Defines 'value_type' which is the type of the largest parameter.
@@ -110,12 +110,12 @@ namespace etl
     };
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename... T>
   using smallest_type_t = typename smallest_type<T...>::type;
 #endif
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <typename... T>
   constexpr size_t smallest_type_v = smallest_type<T...>::size;
 #endif
@@ -299,7 +299,7 @@ namespace etl
     typedef typename private_smallest::best_fit_uint_type<TYPE_INDEX>::type type;
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <size_t NBITS>
   using smallest_uint_for_bits_t = typename smallest_uint_for_bits<NBITS>::type;
 #endif
@@ -325,7 +325,7 @@ namespace etl
     typedef typename private_smallest::best_fit_int_type<TYPE_INDEX>::type type;
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <size_t NBITS>
   using smallest_int_for_bits_t = typename smallest_int_for_bits<NBITS>::type;
 #endif
@@ -351,7 +351,7 @@ namespace etl
     typedef typename private_smallest::best_fit_uint_type<TYPE_INDEX>::type type;
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <uintmax_t VALUE>
   using smallest_uint_for_value_t = typename smallest_uint_for_value<VALUE>::type;
 #endif
@@ -377,7 +377,7 @@ namespace etl
     typedef typename private_smallest::best_fit_int_type<TYPE_INDEX>::type type;
   };
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <intmax_t VALUE>
   using smallest_int_for_value_t = typename smallest_int_for_value<VALUE>::type;
 #endif

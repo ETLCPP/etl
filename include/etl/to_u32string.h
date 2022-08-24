@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2019 jwellbelove
+Copyright(c) 2019 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -63,6 +63,30 @@ namespace etl
     to_string(const T value, etl::iu32string& str, const etl::u32format_spec& format, bool append = false)
   {
     return private_to_string::to_string(value, str, format, append);
+  }
+
+  //***************************************************************************
+  /// Default format spec.
+  /// !etl::iu32string && !etl::u16string_view
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<!etl::is_same<T, etl::iu32string>::value && !etl::is_same<T, etl::u16string_view>::value, const etl::iu32string&>::type
+    to_string(const T value, uint32_t denominator_exponent, etl::iu32string& str, bool append = false)
+  {
+    etl::u32format_spec format;
+
+    return private_to_string::to_string(value, denominator_exponent, str, format, append);
+  }
+
+  //***************************************************************************
+  /// Supplied format spec.
+  /// !etl::u16string_view && !etl::u16string_view
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<!etl::is_same<T, etl::iu32string>::value && !etl::is_same<T, etl::u16string_view>::value, const etl::iu32string&>::type
+    to_string(const T value, uint32_t denominator_exponent, etl::iu32string& str, const etl::u32format_spec& format, bool append = false)
+  {
+    return private_to_string::to_string(value, denominator_exponent, str, format, append);
   }
 
   //***************************************************************************

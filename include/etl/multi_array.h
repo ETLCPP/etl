@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2019 jwellbelove
+Copyright(c) 2019 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -35,12 +35,12 @@ SOFTWARE.
 #include "array.h"
 
 ///\defgroup multi_array multi_array
-/// A multi dimentional array.
+/// A multi dimensional array.
 ///\ingroup containers
 
 namespace etl
 {
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
 
   namespace private_multi_array
   {

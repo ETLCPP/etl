@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -155,9 +155,17 @@ namespace etl
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
+#if defined(ETL_POLYMORPHIC_VECTOR) || defined(ETL_POLYMORPHIC_CONTAINERS) || defined(ETL_IVECTOR_REPAIR_ENABLE)
+  public:
+    virtual ~vector_base()
+    {
+    }
+#else
+  protected:
     ~vector_base()
     {
     }
+#endif
 
     const size_type CAPACITY; ///<The maximum number of elements in the vector.
     ETL_DECLARE_DEBUG_COUNT   ///< Internal debugging.

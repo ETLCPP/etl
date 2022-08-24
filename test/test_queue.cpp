@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -313,7 +313,7 @@ namespace
     {
       etl::queue<int, 4> queue;
 
-      for (size_t i = 0; i < queue.max_size(); ++i)
+      for (size_t i = 0UL; i < queue.max_size(); ++i)
       {
         queue.push(1);
       }
@@ -538,7 +538,9 @@ namespace
       queue.push(3);
       queue.push(4);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       queue = queue;
+#include "etl/private/diagnostic_pop.h" 
 
       CHECK(queue.max_size() == queue.size());
 

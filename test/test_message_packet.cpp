@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2020 jwellbelove
+Copyright(c) 2020 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -190,14 +190,14 @@ namespace
     {
       Message1 message1(1);
       Message2 message2(2.2);
-      Message3 message3("3");
+      const Message3 message3("3");
       Message4 message4;
 
       Packet packet1(message1);
       Packet packet2(message2);
       Packet packet3(message3);
 
-      // The next line should result in a compile error.
+      // Should causes a static assert.
       //Packet packet4(message4);
 
       CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
@@ -217,6 +217,7 @@ namespace
       CHECK_EQUAL("3", static_cast<Message3&>(packet3.get()).x);
     }
 
+#if !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(message_packet_move_construction)
     {
@@ -238,6 +239,7 @@ namespace
       CHECK_EQUAL(1, static_cast<Message1&>(packet1.get()).x);
       CHECK_EQUAL(2.2, static_cast<Message2&>(packet2.get()).x);
     }
+#endif
 
     //*************************************************************************
     TEST(message_constant_packet_construction)
@@ -250,9 +252,6 @@ namespace
       const Packet packet1(message1);
       const Packet packet2(message2);
       const Packet packet3(message3);
-
-      // The next line should result in a compile error.
-      //Packet packet4(message4);
 
       CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
       CHECK_EQUAL(MESSAGE2, packet2.get().get_message_id());
@@ -287,7 +286,30 @@ namespace
     }
 
     //*************************************************************************
-    TEST(message_packet_copy_consructor)
+    TEST(message_packet_move_construction_from_base)
+    {
+      Message1 message1(1);
+      Message2 message2(2.2);
+      Message3 message3("3");
+      Message4 message4;
+
+      Packet packet1(static_cast<etl::imessage&&>(message1));
+      Packet packet2(static_cast<etl::imessage&&>(message2));
+      Packet packet3(static_cast<etl::imessage&&>(message3));
+
+      CHECK_THROW(Packet packet4(static_cast<etl::imessage&>(message4)), etl::unhandled_message_exception);
+
+      CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
+      CHECK_EQUAL(MESSAGE2, packet2.get().get_message_id());
+      CHECK_EQUAL(MESSAGE3, packet3.get().get_message_id());
+
+      CHECK_EQUAL(1, static_cast<Message1&>(packet1.get()).x);
+      CHECK_EQUAL(2.2, static_cast<Message2&>(packet2.get()).x);
+      CHECK_EQUAL("3", static_cast<Message3&>(packet3.get()).x);
+    }
+
+    //*************************************************************************
+    TEST(message_packet_copy_constructor)
     {
       Message1 message1(1);
       Message2 message2(2.2);
@@ -308,14 +330,18 @@ namespace
       CHECK_EQUAL(1, static_cast<Message1&>(packet2.get()).x);
     }
 
+#if !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
-    TEST(message_packet_move_consructor)
+    TEST(message_packet_move_constructor)
     {
       Message1 message1(1);
       Message2 message2(2.2);
 
       Packet packet1(message1);
+
+#include "etl/private/diagnostic_pessimizing-move_push.h"
       Packet packet2(std::move(Packet(message1)));
+#include "etl/private/diagnostic_pop.h"
 
       CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
       CHECK_EQUAL(MESSAGE1, packet2.get().get_message_id());
@@ -329,6 +355,7 @@ namespace
       CHECK_EQUAL(1, static_cast<Message1&>(packet1.get()).x);
       CHECK_EQUAL(1, static_cast<Message1&>(packet2.get()).x);
     }
+#endif
 
     //*************************************************************************
     TEST(message_packet_assignment)
@@ -354,6 +381,7 @@ namespace
       CHECK_EQUAL(1, static_cast<Message1&>(packet2.get()).x);
     }
 
+#if !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(message_packet_move_assignment)
     {
@@ -377,6 +405,7 @@ namespace
       CHECK_EQUAL(1, static_cast<Message1&>(packet1.get()).x);
       CHECK_EQUAL(1, static_cast<Message1&>(packet2.get()).x);
     }
+#endif
 
     //*************************************************************************
     TEST(message_packet_accepts)

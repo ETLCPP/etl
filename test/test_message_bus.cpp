@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2017 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -81,6 +81,7 @@ namespace
   {
     Message3(etl::imessage_router& callback_)
       : callback(callback_)
+      , value()
     {
     }
 
@@ -120,9 +121,9 @@ namespace
         message3_count(0),
         message4_count(0),
         message5_count(0),
-        message_unknown_count(0)
+        message_unknown_count(0),
+        order(0)
     {
-
     }
 
     void on_receive(const Message1& msg)
@@ -185,7 +186,6 @@ namespace
         message5_count(0),
         message_unknown_count(0)
     {
-
     }
 
     void on_receive(const Message1& msg)
@@ -211,7 +211,7 @@ namespace
       ++message5_count;
     }
 
-    void on_receive_unknown(const etl::imessage& msg)
+    void on_receive_unknown(const etl::imessage&)
     {
       ++message_unknown_count;
       //etl::send_message(msg.callback, response);
@@ -224,12 +224,35 @@ namespace
     int message_unknown_count;
   };
 
-  SUITE(test_message_router)
+  //***************************************************************************
+  template <size_t Size>
+  class MessageBus : public etl::message_bus<Size>
+  {
+  public:
+
+    MessageBus()
+      : message_count(0)
+    {
+    }
+
+    using etl::message_bus<Size>::receive;
+
+    // Hook 'receive' to count the incomimg messages.
+    void receive(etl::message_router_id_t id, const etl::imessage& msg)
+    {
+      ++message_count;
+      etl::message_bus<Size>::receive(id, msg);
+    }
+
+    int message_count;
+  };
+
+  SUITE(test_message_bus)
   {
     //*************************************************************************
     TEST(message_bus_subscribe_unsubscribe)
     {
-      etl::message_bus<2> bus1;
+      MessageBus<2> bus1;
 
       RouterA router1(0);
       RouterB router2(1);
@@ -260,14 +283,16 @@ namespace
       // Erase router from empty list.
       bus1.unsubscribe(router2);
       CHECK_EQUAL(0U, bus1.size());
+
+      CHECK_EQUAL(0, bus1.message_count);
     }
 
     //*************************************************************************
     TEST(message_bus_subscribe_unsubscribe_sub_bus)
     {
-      etl::message_bus<4> bus1;
-      etl::message_bus<2> bus2;
-      etl::message_bus<3> bus3;
+      MessageBus<4> bus1;
+      MessageBus<2> bus2;
+      MessageBus<3> bus3;
 
       RouterA router1(ROUTER1);
       RouterA router2(ROUTER2);
@@ -289,12 +314,16 @@ namespace
 
       bus1.unsubscribe(etl::imessage_bus::ALL_MESSAGE_ROUTERS);
       CHECK_EQUAL(0U, bus1.size());
+
+      CHECK_EQUAL(0, bus1.message_count);
+      CHECK_EQUAL(0, bus2.message_count);
+      CHECK_EQUAL(0, bus3.message_count);
     }
 
     //*************************************************************************
     TEST(message_bus_broadcast)
     {
-      etl::message_bus<2> bus1;
+      MessageBus<2> bus1;
 
       RouterA router1(ROUTER1);
       RouterB router2(ROUTER2);
@@ -376,12 +405,14 @@ namespace
       CHECK_EQUAL(0, router2.message_unknown_count);
 
       CHECK_EQUAL(7, callback.message5_count);
+
+      CHECK_EQUAL(4, bus1.message_count);
     }
 
     //*************************************************************************
     TEST(message_bus_broadcast_as_router)
     {
-      etl::message_bus<2> bus1;
+      MessageBus<2> bus1;
 
       RouterA router1(ROUTER1);
       RouterB router2(ROUTER2);
@@ -466,12 +497,14 @@ namespace
       CHECK_EQUAL(0, router2.message_unknown_count);
 
       CHECK_EQUAL(7, callback.message5_count);
+
+      CHECK_EQUAL(4, bus1.message_count);
     }
 
     //*************************************************************************
     TEST(message_bus_addressed)
     {
-      etl::message_bus<2> bus1;
+      MessageBus<2> bus1;
 
       RouterA router1(ROUTER1);
       RouterB router2(ROUTER2);
@@ -571,12 +604,14 @@ namespace
       CHECK_EQUAL(0, router2.message_unknown_count);
 
       CHECK_EQUAL(4, callback.message5_count);
+      
+      CHECK_EQUAL(5, bus1.message_count);
     }
 
     //*************************************************************************
     TEST(message_bus_addressed_duplicate_router_id)
     {
-      etl::message_bus<3> bus1;
+      MessageBus<3> bus1;
 
       RouterA router1(ROUTER1);
       RouterB router2(ROUTER1);
@@ -613,13 +648,15 @@ namespace
       CHECK_EQUAL(0, router3.message_unknown_count);
 
       CHECK_EQUAL(2, callback.message5_count);
+
+      CHECK_EQUAL(1, bus1.message_count);
     }
 
     //*************************************************************************
     TEST(message_bus_broadcast_addressed_sub_bus)
     {
-      etl::message_bus<3> bus1;
-      etl::message_bus<2> bus2;
+      MessageBus<3> bus1;
+      MessageBus<2> bus2;
 
       RouterA router1(ROUTER1);
       RouterA router2(ROUTER2);
@@ -729,14 +766,17 @@ namespace
       CHECK_EQUAL(0, router4.message_unknown_count);
 
       CHECK_EQUAL(6, callback.message5_count);
+
+      CHECK_EQUAL(3, bus1.message_count);
+      CHECK_EQUAL(3, bus2.message_count);
     }
 
     //*************************************************************************
     TEST(message_bus_broadcast_order)
     {
-      etl::message_bus<4> bus1;
-      etl::message_bus<2> bus2;
-      etl::message_bus<2> bus3;
+      MessageBus<4> bus1;
+      MessageBus<2> bus2;
+      MessageBus<2> bus3;
 
       RouterA router1(ROUTER1);
       RouterA router2(ROUTER2);
@@ -766,6 +806,150 @@ namespace
       CHECK_EQUAL(2, router4b.order);
       CHECK_EQUAL(3, router4a.order);
       CHECK_EQUAL(4, router3.order);
+
+      CHECK_EQUAL(1, bus1.message_count);
+      CHECK_EQUAL(1, bus2.message_count);
+      CHECK_EQUAL(1, bus3.message_count);
+    }
+
+    //*************************************************************************
+    TEST(message_bus_broadcast_addressed_successor_bus)
+    {
+      MessageBus<3> bus1;
+      MessageBus<2> bus2;
+
+      RouterA router1(ROUTER1);
+      RouterA router2(ROUTER2);
+      RouterA router3(ROUTER3);
+      RouterA router4(ROUTER4);
+
+      RouterA callback(ROUTER5);
+
+      bus1.subscribe(router1);
+      bus1.subscribe(router2);
+      bus1.set_successor(bus2);
+
+      bus2.subscribe(router3);
+      bus2.subscribe(router4);
+
+      Message1 message1(callback);
+      Message2 message2(callback);
+      Message3 message3(callback);
+      Message4 message4(callback);
+
+      // Broadcast to bus1
+      bus1.receive(message1);
+
+      CHECK_EQUAL(1, router1.message1_count);
+      CHECK_EQUAL(0, router1.message2_count);
+      CHECK_EQUAL(0, router1.message3_count);
+      CHECK_EQUAL(0, router1.message4_count);
+      CHECK_EQUAL(0, router1.message5_count);
+      CHECK_EQUAL(0, router1.message_unknown_count);
+
+      CHECK_EQUAL(1, router2.message1_count);
+      CHECK_EQUAL(0, router2.message2_count);
+      CHECK_EQUAL(0, router2.message4_count);
+      CHECK_EQUAL(0, router2.message5_count);
+      CHECK_EQUAL(0, router2.message_unknown_count);
+
+      CHECK_EQUAL(1, router3.message1_count);
+      CHECK_EQUAL(0, router3.message2_count);
+      CHECK_EQUAL(0, router3.message4_count);
+      CHECK_EQUAL(0, router3.message5_count);
+      CHECK_EQUAL(0, router3.message_unknown_count);
+
+      CHECK_EQUAL(1, router4.message1_count);
+      CHECK_EQUAL(0, router4.message2_count);
+      CHECK_EQUAL(0, router4.message4_count);
+      CHECK_EQUAL(0, router4.message5_count);
+      CHECK_EQUAL(0, router4.message_unknown_count);
+
+      CHECK_EQUAL(4, callback.message5_count);
+
+      // Addressed to ROUTER2
+      bus1.receive(ROUTER2, message1);
+
+      CHECK_EQUAL(1, router1.message1_count);
+      CHECK_EQUAL(0, router1.message2_count);
+      CHECK_EQUAL(0, router1.message3_count);
+      CHECK_EQUAL(0, router1.message4_count);
+      CHECK_EQUAL(0, router1.message5_count);
+      CHECK_EQUAL(0, router1.message_unknown_count);
+
+      CHECK_EQUAL(2, router2.message1_count);
+      CHECK_EQUAL(0, router2.message2_count);
+      CHECK_EQUAL(0, router2.message4_count);
+      CHECK_EQUAL(0, router2.message5_count);
+      CHECK_EQUAL(0, router2.message_unknown_count);
+
+      CHECK_EQUAL(1, router3.message1_count);
+      CHECK_EQUAL(0, router3.message2_count);
+      CHECK_EQUAL(0, router3.message4_count);
+      CHECK_EQUAL(0, router3.message5_count);
+      CHECK_EQUAL(0, router3.message_unknown_count);
+
+      CHECK_EQUAL(1, router4.message1_count);
+      CHECK_EQUAL(0, router4.message2_count);
+      CHECK_EQUAL(0, router4.message4_count);
+      CHECK_EQUAL(0, router4.message5_count);
+      CHECK_EQUAL(0, router4.message_unknown_count);
+
+      CHECK_EQUAL(5, callback.message5_count);
+
+      // Addressed to ROUTER3 via bus2
+      bus1.receive(ROUTER3, message1);
+
+      CHECK_EQUAL(1, router1.message1_count);
+      CHECK_EQUAL(0, router1.message2_count);
+      CHECK_EQUAL(0, router1.message3_count);
+      CHECK_EQUAL(0, router1.message4_count);
+      CHECK_EQUAL(0, router1.message5_count);
+      CHECK_EQUAL(0, router1.message_unknown_count);
+
+      CHECK_EQUAL(2, router2.message1_count);
+      CHECK_EQUAL(0, router2.message2_count);
+      CHECK_EQUAL(0, router2.message4_count);
+      CHECK_EQUAL(0, router2.message5_count);
+      CHECK_EQUAL(0, router2.message_unknown_count);
+
+      CHECK_EQUAL(2, router3.message1_count);
+      CHECK_EQUAL(0, router3.message2_count);
+      CHECK_EQUAL(0, router3.message4_count);
+      CHECK_EQUAL(0, router3.message5_count);
+      CHECK_EQUAL(0, router3.message_unknown_count);
+
+      CHECK_EQUAL(1, router4.message1_count);
+      CHECK_EQUAL(0, router4.message2_count);
+      CHECK_EQUAL(0, router4.message4_count);
+      CHECK_EQUAL(0, router4.message5_count);
+      CHECK_EQUAL(0, router4.message_unknown_count);
+
+      CHECK_EQUAL(6, callback.message5_count);
+
+      CHECK_EQUAL(3, bus1.message_count);
+      CHECK_EQUAL(3, bus2.message_count);
+    }
+
+    //*************************************************************************
+    TEST(message_bus_successor_to_message_producer)
+    {
+      MessageBus<2> bus;
+      etl::message_producer producer(ROUTER2);
+      RouterA router(ROUTER1);
+      Response message;
+
+      bus.subscribe(router);
+      bus.subscribe(producer);
+      producer.set_successor(bus);
+
+      CHECK_EQUAL(0U, router.message5_count);
+
+      producer.receive(message);
+
+      CHECK_EQUAL(1U, router.message5_count);
+
+      CHECK_EQUAL(1, bus.message_count);
     }
   };
 }

@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2017 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -83,7 +83,7 @@ namespace etl
     typedef T2 type2;
   };
 
-#if ETL_CPP11_SUPPORTED && !defined(ETL_TYPE_SELECT_FORCE_CPP03)
+#if ETL_USING_CPP11 && !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   // type_id_lookup 
   //***************************************************************************
@@ -126,10 +126,8 @@ namespace etl
       static_assert(!(etl::is_same<nulltype, type>::value), "Invalid id");
     };
 
-#if ETL_CPP11_SUPPORTED
     template <int ID>
     using type_from_id_t = typename type_from_id<ID>::type;
-#endif
 
   private:
 
@@ -162,7 +160,7 @@ namespace etl
       static_assert(value != UNKNOWN, "Invalid type");
     };
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
     template <typename T>
     static constexpr size_t id_from_type_v = id_from_type<T>::value;
 #endif
@@ -222,11 +220,9 @@ namespace etl
       static_assert(!etl::is_same<type, nulltype>::value, "Type match not found");
     };
 
-#if ETL_CPP11_SUPPORTED
     // Template alias.
     template <typename T>
     using type_from_type_t = typename type_from_type<T>::type;
-#endif
   };
 
 #else
@@ -278,7 +274,7 @@ namespace etl
   cog.outl("    {")
   cog.outl("      value =")
   for n in range(1, int(NTypes) + 1) :
-      cog.outl("        (unsigned int) etl::is_same<T, typename T%s::type>::value ? T%s::ID :" % (n, n))
+      cog.outl("        (unsigned int) etl::is_same<T, typename T%s::type>::value ? (unsigned int)T%s::ID :" % (n, n))
   cog.outl("        (unsigned int) UNKNOWN")
   cog.outl("    };")
   cog.outl("")

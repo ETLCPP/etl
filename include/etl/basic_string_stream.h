@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2020 jwellbelove
+Copyright(c) 2020 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -46,6 +46,7 @@ namespace etl
     typedef TFormat                          format_spec_type;
     typedef TIString                         istring_type;
     typedef typename TIString::value_type    value_type;
+    typedef typename TIString::pointer       pointer;
     typedef typename TIString::const_pointer const_pointer;
 
     //*************************************************************************
@@ -193,7 +194,7 @@ namespace etl
     //*********************************
     /// etl::left_spec from etl::left stream manipulator
     //*********************************
-    friend basic_string_stream& operator <<(basic_string_stream& ss, etl::private_basic_format_spec::left_spec spec)
+    friend basic_string_stream& operator <<(basic_string_stream& ss, etl::private_basic_format_spec::left_spec /*spec*/)
     {
       ss.spec.left();
       return ss;
@@ -202,7 +203,7 @@ namespace etl
     //*********************************
     /// etl::right_spec from etl::left stream manipulator
     //*********************************
-    friend basic_string_stream& operator <<(basic_string_stream& ss, etl::private_basic_format_spec::right_spec spec)
+    friend basic_string_stream& operator <<(basic_string_stream& ss, etl::private_basic_format_spec::right_spec /*spec*/)
     {
       ss.spec.right();
       return ss;
@@ -218,7 +219,17 @@ namespace etl
     }
 
     //*********************************
-    /// From a const pointer to a string
+    /// From a character pointer to a string
+    //*********************************
+    friend basic_string_stream& operator <<(basic_string_stream& ss, pointer p)
+    {
+      TStringView view(p);
+      ss << view;
+      return ss;
+    }
+
+    //*********************************
+    /// From a const character pointer to a string
     //*********************************
     friend basic_string_stream& operator <<(basic_string_stream& ss, const_pointer p)
     {

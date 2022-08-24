@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2021 jwellbelove
+Copyright(c) 2021 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -212,7 +212,7 @@ namespace etl
     etl::reference_counted_object<TMessage, void> rc_object; ///< The reference counted object.
   };
 
-#if ETL_CPP11_SUPPORTED && ETL_HAS_ATOMIC
+#if ETL_USING_CPP11 && ETL_HAS_ATOMIC
   //***************************************************************************
   /// Class for creating reference counted objects using an atomic counter.
   /// \tparam TObject  The type to be reference counted.

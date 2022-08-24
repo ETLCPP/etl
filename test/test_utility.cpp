@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -47,8 +47,32 @@ namespace
     constCalled = true;
   }
 
+  int TestGlobal(int i)
+  {
+    return 2 * i;
+  }
+
   using ItemM1 = TestDataM<int>;
   using ItemM2 = TestDataM<double>;
+
+  //*****************************************************************************
+  // The test class to call.
+  class TestClass
+  {
+  public:
+
+    int MemberFunction(int i)
+    {
+      return 2 * i;
+    }
+
+    int operator()(int i)
+    {
+      return 2 * i;
+    }
+  };
+
+  static TestClass test;
 }
 
 namespace
@@ -144,7 +168,9 @@ namespace
       etl::pair<ItemM1, ItemM2> p1(1, 2.3);
       etl::pair<ItemM1, ItemM2> p2(0, 0);
 
+#include "etl/private/diagnostic_pessimizing-move_push.h"
       p2 = etl::make_pair(std::move(ItemM1(1)), std::move(ItemM2(2.3)));
+#include "etl/private/diagnostic_pop.h"
 
       CHECK_EQUAL(p1.first, p2.first);
       CHECK_EQUAL(p1.second, p2.second);
@@ -206,7 +232,7 @@ namespace
     //*************************************************************************
     TEST(test_pair_conversion)
     {
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
       etl::pair<int, std::string> ep1(1, "Hello");
       std::pair<int, std::string> sp1(2, "World");
 
@@ -302,6 +328,29 @@ namespace
 
       CHECK(!nonConstCalled);
       CHECK(constCalled);
+    }
+
+    //*************************************************************************
+    TEST(test_functor)
+    {
+      constexpr etl::functor fw1(TestGlobal);
+      CHECK_EQUAL(2, fw1(1));
+    }
+
+    //*************************************************************************
+    TEST(test_member_function_wrapper)
+    {
+      constexpr int(*pf)(int) = &etl::member_function_wrapper<int(int)>::function<TestClass, test, &TestClass::MemberFunction>;
+
+      CHECK_EQUAL(2, pf(1));
+    }
+
+    //*************************************************************************
+    TEST(test_functor_wrapper)
+    {
+      constexpr int(*pf)(int) = &etl::functor_wrapper<int(int)>::function<TestClass, test>;
+
+      CHECK_EQUAL(2, pf(1));
     }
   };
 }

@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2020 jwellbelove
+Copyright(c) 2020 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -38,6 +38,14 @@ SOFTWARE.
 
 namespace
 {
+  //***********************************
+  //std::ostream& operator << (std::ostream& os, const etl::iu32string::value_type& c)
+  //{
+  //  os << uint32_t(c);
+
+  //  return os;
+  //}
+
   SUITE(test_string_utilities_u32)
   {
     static const size_t SIZE = 50;
@@ -909,7 +917,7 @@ namespace
         { STR(':'), STR('_') }
       };
 
-      etl::replace_characters(text, etl::begin(lookup), etl::end(lookup));
+      etl::replace_characters(text, ETL_OR_STD11::begin(lookup), ETL_OR_STD11::end(lookup));
 
       CHECK(expected == text);
     }
@@ -929,7 +937,7 @@ namespace
         { STR(':'), STR('_') }
       };
 
-      etl::replace_characters(text, etl::begin(lookup), etl::end(lookup));
+      etl::replace_characters(text, ETL_OR_STD11::begin(lookup), ETL_OR_STD11::end(lookup));
 
       CHECK(expected == text);
     }
@@ -949,7 +957,7 @@ namespace
         { STR(":"),   STR(".txt") }
       };
 
-      etl::replace_strings(text, etl::begin(lookup), etl::end(lookup));
+      etl::replace_strings(text, ETL_OR_STD11::begin(lookup), ETL_OR_STD11::end(lookup));
 
       CHECK(expected == text);
     }
@@ -969,7 +977,7 @@ namespace
         { STR(":"),   STR(".txt") }
       };
 
-      etl::replace_strings(text, etl::begin(lookup), etl::end(lookup));
+      etl::replace_strings(text, ETL_OR_STD11::begin(lookup), ETL_OR_STD11::end(lookup));
 
       CHECK(expected == text);
     }

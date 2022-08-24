@@ -5,7 +5,7 @@
 //https://github.com/ETLCPP/etl
 //https://www.etlcpp.com
 //
-//Copyright(c) 2020 jwellbelove
+//Copyright(c) 2020 John Wellbelove
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files(the "Software"), to deal
@@ -42,7 +42,7 @@ namespace
 {
   SUITE(test_circular_buffer)
   {
-    static const size_t SIZE = 10;
+    static const size_t SIZE = 10UL;
 
     using ItemM    = TestDataM<std::string>;
     using DataM    = etl::circular_buffer<ItemM, SIZE>;
@@ -74,7 +74,6 @@ namespace
       Data data = { Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
       Compare compare = { Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
 
-
       CHECK(data.begin()  != data.end());
       CHECK(data.cbegin() != data.cend());
       CHECK_EQUAL(compare.size(), data.size());
@@ -98,7 +97,7 @@ namespace
     }
 #endif
 
-#if !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED) && ETL_USING_STL
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
@@ -112,8 +111,10 @@ namespace
       bool isEqual = std::equal(data.begin(), data.end(), compare.begin());
       CHECK(isEqual);
     }
+#endif
 
     //*************************************************************************
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     TEST(test_cpp17_deduced_constructor_excess)
     {
       Data data{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
@@ -155,7 +156,7 @@ namespace
       DataM data;
       CompareM compare;
 
-      for (uint32_t i = 0; i < SIZE; ++i)
+      for (uint32_t i = 0U; i < SIZE; ++i)
       {
         data.push(ItemM(std::to_string(i)));
         compare.push_back(ItemM(std::to_string(i)));
@@ -184,6 +185,48 @@ namespace
 
       bool isEqual = std::equal(compare.begin(), compare.end(), data.begin());
       CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_iterator_to_pointer_operator)
+    {
+      Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
+      Data data;
+      data.push(test.begin(), test.end());
+
+      Data::iterator itr = data.begin();
+
+      CHECK_EQUAL(test[0].value, (itr++)->value);
+      CHECK_EQUAL(test[1].value, (itr++)->value);
+      CHECK_EQUAL(test[2].value, (itr++)->value);
+      CHECK_EQUAL(test[3].value, (itr++)->value);
+      CHECK_EQUAL(test[4].value, (itr++)->value);
+      CHECK_EQUAL(test[5].value, (itr++)->value);
+      CHECK_EQUAL(test[6].value, (itr++)->value);
+      CHECK_EQUAL(test[7].value, (itr++)->value);
+      CHECK_EQUAL(test[8].value, (itr++)->value);
+      CHECK_EQUAL(test[9].value, (itr++)->value);
+    }
+
+    //*************************************************************************
+    TEST(test_const_iterator_to_pointer_operator)
+    {
+      Compare test{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
+      Data data;
+      data.push(test.begin(), test.end());
+
+      Data::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(test[0].value, (itr++)->value);
+      CHECK_EQUAL(test[1].value, (itr++)->value);
+      CHECK_EQUAL(test[2].value, (itr++)->value);
+      CHECK_EQUAL(test[3].value, (itr++)->value);
+      CHECK_EQUAL(test[4].value, (itr++)->value);
+      CHECK_EQUAL(test[5].value, (itr++)->value);
+      CHECK_EQUAL(test[6].value, (itr++)->value);
+      CHECK_EQUAL(test[7].value, (itr++)->value);
+      CHECK_EQUAL(test[8].value, (itr++)->value);
+      CHECK_EQUAL(test[9].value, (itr++)->value);
     }
 
     //*************************************************************************
@@ -468,17 +511,17 @@ namespace
       Data data;
       data.push(input1.begin(), input1.end());
 
-      for (int i = 0; i < SIZE; ++i)
+      for (size_t i = 0; i < SIZE; ++i)
       {
         CHECK_EQUAL(input1[i + 3], data[i]);
       }
 
-      for (int i = 0; i < SIZE; ++i)
+      for (size_t i = 0; i < SIZE; ++i)
       {
         data[i] = input2[i];
       }
 
-      for (int i = 0; i < SIZE; ++i)
+      for (size_t i = 0; i < SIZE; ++i)
       {
         CHECK_EQUAL(input2[i], data[i]);
       }
@@ -492,7 +535,7 @@ namespace
       Data data;
       data.push(input.begin(), input.end());
 
-      for (int i = 0; i < SIZE; ++i)
+      for (size_t i = 0; i < SIZE; ++i)
       {
         CHECK_EQUAL(input[i + 3], data[i]);
       }
@@ -712,7 +755,7 @@ namespace
       CompareM input2;
       CompareM compare;
 
-      for (uint32_t i = 0; i < SIZE; ++i)
+      for (uint32_t i = 0U; i < SIZE; ++i)
       {
         input1.push_back(ItemM(std::to_string(i)));
         input2.push_back(ItemM(std::to_string(SIZE - i)));
@@ -746,15 +789,42 @@ namespace
     //*************************************************************************
     TEST(test_assignment)
     {
-      Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9") };
-      Compare input2{ Ndc("9"), Ndc("8"), Ndc("7"), Ndc("6"), Ndc("5"), Ndc("4"), Ndc("3"), Ndc("2"), Ndc("1"), Ndc("0") };
+      Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8") };
+      Compare input2{ Ndc("8"), Ndc("7"), Ndc("6"), Ndc("5"), Ndc("4"), Ndc("3"), Ndc("2"), Ndc("1"), Ndc("0") };
       Data data1;
       data1.push(input1.begin(), input1.end());
 
       // Copy construct from data1
       Data data2;
-      
+      data2.push(Ndc("0"));
+
       data2 = data1;
+
+      // Now change data1
+      data1.clear();
+      data1.push(input2.begin(), input2.end());
+
+      CHECK(data2.begin() != data2.end());
+      CHECK(data2.cbegin() != data2.cend());
+      CHECK_EQUAL(input1.size(), data2.size());
+
+      bool isEqual = std::equal(input1.begin(), input1.end(), data2.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_move_assignment)
+    {
+      Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8") };
+      Compare input2{ Ndc("8"), Ndc("7"), Ndc("6"), Ndc("5"), Ndc("4"), Ndc("3"), Ndc("2"), Ndc("1"), Ndc("0") };
+      Data data1;
+      data1.push(input1.begin(), input1.end());
+
+      // Copy construct from data1
+      Data data2;
+      data2.push(Ndc("0"));
+
+      data2 = etl::move(data1);
 
       // Now change data1
       data1.clear();
@@ -822,14 +892,14 @@ namespace
       Data::iterator begin = data.begin();
       Data::iterator end   = data.begin();
 
-      for (uint32_t i = 0; i < data.size(); ++i)
+      for (uint32_t i = 0U; i < data.size(); ++i)
       {
         CHECK_EQUAL(i, end - begin);
         CHECK_EQUAL(i, -(begin - end));
         ++end;
       }
 
-      for (uint32_t i = 0; i < data.size(); ++i)
+      for (uint32_t i = 0U; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.size() - i, end - begin);
         CHECK_EQUAL(data.size() - i, -(begin - end));
@@ -847,14 +917,14 @@ namespace
       Data::const_iterator begin = data.begin();
       Data::const_iterator end   = data.begin();
 
-      for (uint32_t i = 0; i < data.size(); ++i)
+      for (uint32_t i = 0U; i < data.size(); ++i)
       {
         CHECK_EQUAL(i, end - begin);
         CHECK_EQUAL(i, -(begin - end));
         ++end;
       }
 
-      for (uint32_t i = 0; i < data.size(); ++i)
+      for (uint32_t i = 0U; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.size() - i, end - begin);
         CHECK_EQUAL(data.size() - i, -(begin - end));
@@ -865,18 +935,19 @@ namespace
     //*************************************************************************
     TEST(test_swap)
     {
-      // Over-write by 3
-      Compare input{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
-      Compare output{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
+      Compare input1{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4") };
+      Compare input2{ Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12") };
       Data data1;
       Data data2;
-      data1.push(input.begin(), input.end());
-      data2.push(input.rbegin(), input.rend());
-      
+      data1.push(input1.begin(), input1.end());
+      data2.push(input2.begin(), input2.end());
+
       swap(data1, data2);
 
-      CHECK(std::equal(output.rbegin() + 3, output.rend(), data1.begin()));
-      CHECK(std::equal(output.begin() + 3, output.end(), data2.begin()));
+      CHECK_EQUAL(input1.size(), data2.size());
+      CHECK_EQUAL(input2.size(), data1.size());
+      CHECK(std::equal(input1.begin(), input1.end(), data2.begin()));
+      CHECK(std::equal(input2.begin(), input2.end(), data1.begin()));
     }
 
     //*************************************************************************
@@ -904,6 +975,20 @@ namespace
       data2.push(input2.begin(), input2.end());
 
       CHECK(data1 != data2);
+    }
+
+    //*************************************************************************
+    TEST(test_fill)
+    {
+      Compare input{ Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4"), Ndc("5"), Ndc("6"), Ndc("7"), Ndc("8") };
+      Compare blank{ Ndc("9"), Ndc("9"), Ndc("9"), Ndc("9"), Ndc("9"), Ndc("9"), Ndc("9"), Ndc("9"), Ndc("9") };
+      Data data;
+      data.push(input.begin(), input.end());
+
+      data.fill(Ndc("9"));
+
+      bool isEqual = std::equal(blank.begin(), blank.end(), data.begin());
+      CHECK(isEqual);
     }
   };
 }

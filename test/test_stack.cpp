@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -247,7 +247,7 @@ namespace
     {
       etl::stack<int, 4> stack;
 
-      for (size_t i = 0; i < stack.max_size(); ++i)
+      for (size_t i = 0UL; i < stack.max_size(); ++i)
       {
         stack.push(1);
       }
@@ -342,12 +342,12 @@ namespace
     {
       etl::stack<int, 4> stack;
 
-      for (size_t i = 0; i < stack.max_size(); ++i)
+      for (size_t i = 0UL; i < stack.max_size(); ++i)
       {
         stack.push(1);
       }
 
-      for (size_t i = 0; i < stack.max_size(); ++i)
+      for (size_t i = 0UL; i < stack.max_size(); ++i)
       {
         stack.pop();
       }
@@ -491,8 +491,10 @@ namespace
       stack.push(3);
       stack.push(4);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       stack = stack;
-
+#include "etl/private/diagnostic_pop.h" 
+      
       CHECK(stack.max_size() == stack.size());
 
       CHECK_EQUAL(4, stack.top());

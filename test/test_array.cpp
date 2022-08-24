@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,19 +28,24 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include "data.h"
+
 #include "etl/array.h"
 
 #include <array>
 #include <algorithm>
 #include <iterator>
+#include <type_traits>
 
 #include "etl/integral_limits.h"
 
 namespace
 {
+  using Moveable = TestDataM<int>;
+
   SUITE(test_array)
   {
-    static const size_t SIZE = 10;
+    static const size_t SIZE = 10UL;
 
     typedef etl::array<int, SIZE> Data;
     typedef std::array<int, SIZE> Compare_Data;
@@ -57,7 +62,7 @@ namespace
       CHECK_EQUAL(data.max_size(), SIZE);
     }
 
-#if !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
@@ -87,7 +92,7 @@ namespace
     {
       Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.at(i), compare_data.at(i));
       }
@@ -100,7 +105,7 @@ namespace
     {
       Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data.at(i), compare_data.at(i));
       }
@@ -113,7 +118,7 @@ namespace
     {
       Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
@@ -124,7 +129,7 @@ namespace
     {
       Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(data[i], compare_data[i]);
       }
@@ -205,7 +210,7 @@ namespace
     {
       Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      CHECK_EQUAL(data.end(), &data[SIZE]);
+      CHECK_EQUAL(data.end(), data.data() + SIZE);
     }
 
     //*************************************************************************
@@ -213,7 +218,7 @@ namespace
     {
       const Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      CHECK_EQUAL(data.cbegin(), &data[0]);
+      CHECK_EQUAL(data.cbegin(), data.data());
     }
 
     //*************************************************************************
@@ -221,7 +226,7 @@ namespace
     {
       const Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      CHECK_EQUAL(data.cend(), &data[SIZE]);
+      CHECK_EQUAL(data.cend(), data.data() + SIZE);
     }
 
     //*************************************************************************
@@ -229,7 +234,7 @@ namespace
     {
       Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      CHECK(data.rbegin() == Data::reverse_iterator(&data[SIZE]));
+      CHECK(data.rbegin() == Data::reverse_iterator(data.data() + SIZE));
     }
 
     //*************************************************************************
@@ -245,7 +250,7 @@ namespace
     {
       const Data data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-      CHECK(data.crbegin() == Data::const_reverse_iterator(&data[SIZE]));
+      CHECK(data.crbegin() == Data::const_reverse_iterator(data.data() + SIZE));
     }
 
     //*************************************************************************
@@ -644,5 +649,93 @@ namespace
       CHECK(data     >= data);
       CHECK(!(lesser >= data));
     }
+
+    //*************************************************************************
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    TEST(test_array_template_deduction)
+    {
+      etl::array data{ char(0), short(1), int(2), long(3), 4, 5, 6, 7, 8, 9 };
+
+      using Type = std::remove_reference_t<decltype(data[0])>;
+      CHECK((std::is_same_v<long, Type>));
+
+      CHECK_EQUAL(0, data[0]);
+      CHECK_EQUAL(1, data[1]);
+      CHECK_EQUAL(2, data[2]);
+      CHECK_EQUAL(3, data[3]);
+      CHECK_EQUAL(4, data[4]);
+      CHECK_EQUAL(5, data[5]);
+      CHECK_EQUAL(6, data[6]);
+      CHECK_EQUAL(7, data[7]);
+      CHECK_EQUAL(8, data[8]);
+      CHECK_EQUAL(9, data[9]);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
+    TEST(test_array_template_deduction_for_movable)
+    {
+      etl::array data{ Moveable(0), Moveable(1), Moveable(2), Moveable(3), Moveable(4), Moveable(5), Moveable(6), Moveable(7), Moveable(8), Moveable(9) };
+
+      using Type = std::remove_reference_t<decltype(data[0])>;
+      CHECK((std::is_same_v<Moveable, Type>));
+
+      CHECK_EQUAL(Moveable(0), data[0]);
+      CHECK_EQUAL(Moveable(1), data[1]);
+      CHECK_EQUAL(Moveable(2), data[2]);
+      CHECK_EQUAL(Moveable(3), data[3]);
+      CHECK_EQUAL(Moveable(4), data[4]);
+      CHECK_EQUAL(Moveable(5), data[5]);
+      CHECK_EQUAL(Moveable(6), data[6]);
+      CHECK_EQUAL(Moveable(7), data[7]);
+      CHECK_EQUAL(Moveable(8), data[8]);
+      CHECK_EQUAL(Moveable(9), data[9]);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_HAS_INITIALIZER_LIST
+    TEST(test_make_array)
+    {
+      auto data = etl::make_array<char>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+      using Type = std::remove_reference_t<decltype(data[0])>;
+      CHECK((std::is_same_v<char, Type>));
+
+      CHECK_EQUAL(0, data[0]);
+      CHECK_EQUAL(1, data[1]);
+      CHECK_EQUAL(2, data[2]);
+      CHECK_EQUAL(3, data[3]);
+      CHECK_EQUAL(4, data[4]);
+      CHECK_EQUAL(5, data[5]);
+      CHECK_EQUAL(6, data[6]);
+      CHECK_EQUAL(7, data[7]);
+      CHECK_EQUAL(8, data[8]);
+      CHECK_EQUAL(9, data[9]);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_HAS_INITIALIZER_LIST
+    TEST(test_make_array_for_movable)
+    {
+      auto data = etl::make_array<Moveable>(Moveable(0), Moveable(1), Moveable(2), Moveable(3), Moveable(4), Moveable(5), Moveable(6), Moveable(7), Moveable(8), Moveable(9));
+
+      using Type = std::remove_reference_t<decltype(data[0])>;
+      CHECK((std::is_same_v<Moveable, Type>));
+
+      CHECK_EQUAL(Moveable(0), data[0]);
+      CHECK_EQUAL(Moveable(1), data[1]);
+      CHECK_EQUAL(Moveable(2), data[2]);
+      CHECK_EQUAL(Moveable(3), data[3]);
+      CHECK_EQUAL(Moveable(4), data[4]);
+      CHECK_EQUAL(Moveable(5), data[5]);
+      CHECK_EQUAL(Moveable(6), data[6]);
+      CHECK_EQUAL(Moveable(7), data[7]);
+      CHECK_EQUAL(Moveable(8), data[8]);
+      CHECK_EQUAL(Moveable(9), data[9]);
+    }
+#endif
   };
 }

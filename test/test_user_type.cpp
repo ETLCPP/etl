@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2017 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -38,8 +38,8 @@ ETL_USER_TYPE(East,  90)
 ETL_USER_TYPE(West,  270)
 ETL_END_USER_TYPE(CompassDirection)
 
-namespace 
-{		
+namespace
+{
   SUITE(test_user_type)
   {
     //*************************************************************************
@@ -142,7 +142,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_muliply_equal)
+    TEST(test_multiply_equal)
     {
       CompassDirection value = CompassDirection::North;
       value *= 3;
@@ -175,8 +175,8 @@ namespace
     TEST(test_and_equal)
     {
       CompassDirection value = CompassDirection::North;
-      value &= 0xAAAAAAAA;
-      CompassDirection expected = CompassDirection(CompassDirection::North & 0xAAAAAAAA);
+      value &= 0xAAAAAAAAUL;
+      CompassDirection expected = CompassDirection(CompassDirection::North & 0xAAAAAAAAUL);
 
       CHECK_EQUAL(expected, value);
     }
@@ -185,8 +185,8 @@ namespace
     TEST(test_or_equal)
     {
       CompassDirection value = CompassDirection::North;
-      value |= 0xAAAAAAAA;
-      CompassDirection expected = CompassDirection(CompassDirection::North | 0xAAAAAAAA);
+      value |= 0xAAAAAAAAUL;
+      CompassDirection expected = CompassDirection(CompassDirection::North | 0xAAAAAAAAUL);
 
       CHECK_EQUAL(expected, value);
     }
@@ -195,8 +195,8 @@ namespace
     TEST(test_xor_equal)
     {
       CompassDirection value = CompassDirection::North;
-      value ^= 0xAAAAAAAA;
-      CompassDirection expected = CompassDirection(CompassDirection::North ^ 0xAAAAAAAA);
+      value ^= 0xAAAAAAAAUL;
+      CompassDirection expected = CompassDirection(CompassDirection::North ^ 0xAAAAAAAAUL);
 
       CHECK_EQUAL(expected, value);
     }
@@ -215,8 +215,8 @@ namespace
     TEST(test_shift_right)
     {
       CompassDirection value = CompassDirection::North;
-      value >>= 2;
-      CompassDirection expected = CompassDirection(CompassDirection::North >> 2);
+      value >>= 2U;
+      CompassDirection expected = CompassDirection(CompassDirection::North >> 2U);
 
       CHECK_EQUAL(expected, value);
     }

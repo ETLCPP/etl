@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2019 jwellbelove
+Copyright(c) 2019 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -32,9 +32,9 @@ SOFTWARE.
 
 namespace
 {
-  const bool cpp11_supported = ETL_CPP11_SUPPORTED;
-  const bool cpp14_supported = ETL_CPP14_SUPPORTED;
-  const bool cpp17_supported = ETL_CPP17_SUPPORTED;
+  const bool cpp11_supported = ETL_USING_CPP11;
+  const bool cpp14_supported = ETL_USING_CPP14;
+  const bool cpp17_supported = ETL_USING_CPP17;
 
   SUITE(test_compiler_settings)
   {

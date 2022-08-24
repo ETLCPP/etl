@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2015 jwellbelove
+Copyright(c) 2015 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -42,7 +42,7 @@ SOFTWARE.
 
 namespace
 {
-  static const size_t SIZE = 10;
+  static const size_t SIZE = 10UL;
 
   typedef TestDataDC<std::string>  DC;
   typedef TestDataNDC<std::string> NDC;
@@ -144,45 +144,45 @@ namespace
       std::string d;
     };
 
-    bool operator == (const D1& lhs, const D1& rhs)
-    {
-      return (lhs.a == rhs.a);
-    }
+    //bool operator == (const D1& lhs, const D1& rhs)
+    //{
+    //  return (lhs.a == rhs.a);
+    //}
 
-    bool operator == (const D2& lhs, const D2& rhs)
-    {
-      return (lhs.a == rhs.a) && (lhs.b == rhs.b);
-    }
+    //bool operator == (const D2& lhs, const D2& rhs)
+    //{
+    //  return (lhs.a == rhs.a) && (lhs.b == rhs.b);
+    //}
 
-    bool operator == (const D3& lhs, const D3& rhs)
-    {
-      return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c);
-    }
+    //bool operator == (const D3& lhs, const D3& rhs)
+    //{
+    //  return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c);
+    //}
 
-    bool operator == (const D4& lhs, const D4& rhs)
-    {
-      return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
-    }
+    //bool operator == (const D4& lhs, const D4& rhs)
+    //{
+    //  return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
+    //}
 
-    bool operator != (const D1& lhs, const D1& rhs)
-    {
-      return !(lhs == rhs);
-    }
+    //bool operator != (const D1& lhs, const D1& rhs)
+    //{
+    //  return !(lhs == rhs);
+    //}
 
-    bool operator != (const D2& lhs, const D2& rhs)
-    {
-      return !(lhs == rhs);
-    }
+    //bool operator != (const D2& lhs, const D2& rhs)
+    //{
+    //  return !(lhs == rhs);
+    //}
 
-    bool operator != (const D3& lhs, const D3& rhs)
-    {
-      return !(lhs == rhs);
-    }
+    //bool operator != (const D3& lhs, const D3& rhs)
+    //{
+    //  return !(lhs == rhs);
+    //}
 
-    bool operator != (const D4& lhs, const D4& rhs)
-    {
-      return !(lhs == rhs);
-    }
+    //bool operator != (const D4& lhs, const D4& rhs)
+    //{
+    //  return !(lhs == rhs);
+    //}
 
     bool operator < (const D1& lhs, const D1& rhs)
     {
@@ -213,6 +213,26 @@ namespace
     typedef std::set<D2> Compare2;
     typedef std::set<D3> Compare3;
     typedef std::set<D4> Compare4;
+
+    struct Key
+    {
+      Key(const NDC& k_)
+        : k(k_)
+      {
+      }
+
+      NDC k;
+    };
+
+    bool operator <(const Key& lhs, const NDC& rhs)
+    {
+      return (lhs.k.value < rhs.value);
+    }
+
+    bool operator <(const NDC& lhs, const Key& rhs)
+    {
+      return (lhs.value < rhs.k.value);
+    }
 
     //*************************************************************************
     struct SetupFixture
@@ -251,16 +271,16 @@ namespace
     {
       DataDC data;
 
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK_EQUAL(data.size(), size_t(0UL));
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
       CHECK(data.begin() == data.end());
     }
 
-#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
-    TEST(test_cpp17_deduced_constructor)
+    TEST_FIXTURE(SetupFixture, test_cpp17_deduced_constructor)
     {
       etl::flat_set data{ N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
       etl::flat_set<NDC, 10U> check = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
@@ -277,7 +297,7 @@ namespace
 #endif
 
     //*************************************************************************
-    TEST(test_destruct_via_iflat_set)
+    TEST_FIXTURE(SetupFixture, test_destruct_via_iflat_set)
     {
       int current_count = NDC::get_instance_count();
 
@@ -300,7 +320,7 @@ namespace
       CHECK(!data.empty());
     }
 
-#if ETL_USING_STL
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -319,7 +339,7 @@ namespace
 #endif
 
     //*************************************************************************
-    TEST(test_move_constructor)
+    TEST_FIXTURE(SetupFixture, test_move_constructor)
     {
       using Item = MC;
 
@@ -393,7 +413,9 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       DataNDC other_data(data);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       other_data = other_data;
+#include "etl/private/diagnostic_pop.h" 
 
       bool isEqual = std::equal(data.begin(),
                                  data.end(),
@@ -696,19 +718,92 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_erase_single)
+    TEST_FIXTURE(SetupFixture, test_erase_key_using_transparent_comparator)
+    {
+      using CSet = std::set<NDC>;
+      CSet compare_data(initial_data.begin(), initial_data.end());
+
+      using ESet = etl::flat_set<NDC, SIZE, etl::less<>>;
+      ESet data(initial_data.begin(), initial_data.end());
+
+      size_t count_compare = compare_data.erase(N5);
+      size_t count = data.erase(Key(N5));
+
+      CHECK_EQUAL(count_compare, count);
+
+      bool isEqual = std::equal(data.begin(),
+        data.end(),
+        compare_data.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_single_iterator)
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      Compare_DataNDC::iterator i_compare = compare_data.begin();
-      DataNDC::iterator i_data            = data.begin();
+      Compare_DataNDC::iterator i_compare_begin = compare_data.begin();
+      DataNDC::iterator         i_data_begin    = data.begin();
+
+      Compare_DataNDC::iterator i_compare = i_compare_begin;
+      DataNDC::iterator         i_data    = i_data_begin;
+
+      Compare_DataNDC::iterator i_compare_expected = i_compare_begin;
+      DataNDC::iterator         i_data_expected    = i_data_begin;
 
       std::advance(i_compare, 2);
-      std::advance(i_data,    2);
+      std::advance(i_data, 2);
 
-      compare_data.erase(i_compare);
-      data.erase(i_data);
+      std::advance(i_compare_expected, 3);
+      std::advance(i_data_expected, 3);
+
+      NDC compare_expected = *i_compare_expected;
+      NDC data_expected    = *i_data_expected;
+
+      Compare_DataNDC::iterator i_compare_result = compare_data.erase(i_compare);
+      DataNDC::iterator         i_data_result    = data.erase(i_data);
+
+      CHECK(compare_expected == *i_compare_result);
+      CHECK(data_expected    == *i_data_result);
+
+      bool isEqual = std::equal(data.begin(),
+                                data.end(),
+                                compare_data.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_single_const_iterator)
+    {
+      Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      Compare_DataNDC::iterator i_compare_begin = compare_data.begin();
+      DataNDC::iterator         i_data_begin    = data.begin();
+
+      Compare_DataNDC::const_iterator i_compare = i_compare_begin;
+      DataNDC::const_iterator         i_data    = i_data_begin;
+
+      Compare_DataNDC::iterator i_compare_expected = i_compare_begin;
+      DataNDC::iterator         i_data_expected    = i_data_begin;
+
+      std::advance(i_compare, 2);
+      std::advance(i_data, 2);
+
+      std::advance(i_compare_expected, 3);
+      std::advance(i_data_expected, 3);
+
+      NDC compare_expected = *i_compare_expected;
+      NDC data_expected    = *i_data_expected;
+
+      Compare_DataNDC::iterator i_compare_result = compare_data.erase(i_compare);
+      DataNDC::iterator         i_data_result    = data.erase(i_data);
+
+      CHECK(compare_expected == *i_compare_result);
+      CHECK(data_expected    == *i_data_result);
 
       bool isEqual = std::equal(data.begin(),
                                 data.end(),
@@ -723,20 +818,26 @@ namespace
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      Compare_DataNDC::iterator i_compare = compare_data.begin();
-      DataNDC::iterator i_data            = data.begin();
+      Compare_DataNDC::const_iterator i_compare = compare_data.begin();
+      DataNDC::const_iterator         i_data    = data.begin();
 
-      Compare_DataNDC::iterator i_compare_end = compare_data.begin();
-      DataNDC::iterator i_data_end            = data.begin();
+      Compare_DataNDC::const_iterator i_compare_end = compare_data.begin();
+      DataNDC::const_iterator         i_data_end    = data.begin();
 
       std::advance(i_compare, 2);
-      std::advance(i_data,    2);
+      std::advance(i_data, 2);
 
       std::advance(i_compare_end, 4);
-      std::advance(i_data_end,    4);
+      std::advance(i_data_end, 4);
 
-      compare_data.erase(i_compare, i_compare_end);
-      data.erase(i_data, i_data_end);
+      NDC compare_expected = *i_compare_end;
+      NDC data_expected    = *i_data_end;
+
+      Compare_DataNDC::iterator i_compare_result = compare_data.erase(i_compare, i_compare_end);
+      DataNDC::iterator         i_data_result    = data.erase(i_data, i_data_end);
+
+      CHECK(compare_expected == *i_compare_result);
+      CHECK(data_expected    == *i_data_result);
 
       bool isEqual = std::equal(data.begin(),
                                 data.end(),
@@ -752,13 +853,13 @@ namespace
 
       DataNDC data(compare_data.begin(), compare_data.end());
       data.clear();
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK_EQUAL(data.size(), size_t(0UL));
 
       // Do it again to check that clear() didn't screw up the internals.
       data.assign(compare_data.begin(), compare_data.end());
       CHECK_EQUAL(data.size(), compare_data.size());
       data.clear();
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK_EQUAL(data.size(), size_t(0UL));
     }
 
     //*************************************************************************
@@ -766,13 +867,13 @@ namespace
     {
       DataInt data(int_data.begin(), int_data.end());
       data.clear();
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK_EQUAL(data.size(), size_t(0UL));
 
       // Do it again to check that clear() didn't screw up the internals.
       data.assign(int_data.begin(), int_data.end());
       CHECK_EQUAL(data.size(), int_data.size());
       data.clear();
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK_EQUAL(data.size(), size_t(0UL));
     }
 
     //*************************************************************************
@@ -841,6 +942,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_using_transparent_comparator)
+    {
+      using ESet = etl::flat_set<NDC, SIZE, etl::less<>>;
+      ESet data(initial_data.begin(), initial_data.end());
+
+      ESet::iterator it = data.find(Key(N3));
+      CHECK_EQUAL(N3, *it);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_not_present)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
@@ -849,6 +960,19 @@ namespace
       CHECK(data.end() == it);
 
       it = data.find(NY);
+      CHECK(data.end() == it);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_not_present_using_transparent_comparator)
+    {
+      using ESet = etl::flat_set<NDC, SIZE, etl::less<>>;
+      ESet data(initial_data.begin(), initial_data.end());
+
+      ESet::iterator it = data.find(Key(NX));
+      CHECK(data.end() == it);
+
+      it = data.find(Key(NY));
       CHECK(data.end() == it);
     }
 
@@ -862,11 +986,34 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_const_using_transparent_comparator)
+    {
+      using ESet = etl::flat_set<NDC, SIZE, etl::less<>>;
+      const ESet data(initial_data.begin(), initial_data.end());
+
+      ESet::const_iterator it = data.find(Key(N3));
+      CHECK_EQUAL(N3, *it);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_const_not_present)
     {
       const DataNDC data(initial_data.begin(), initial_data.end());
 
       DataNDC::const_iterator it = data.find(NX);
+      CHECK(data.end() == it);
+
+      it = data.find(NY);
+      CHECK(data.end() == it);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_const_not_present_using_transparent_comparator)
+    {
+      using ESet = etl::flat_set<NDC, SIZE, etl::less<>>;
+      const ESet data(initial_data.begin(), initial_data.end());
+
+      ESet::const_iterator it = data.find(Key(NX));
       CHECK(data.end() == it);
 
       it = data.find(NY);
@@ -886,6 +1033,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_lower_bound_using_transparent_comparator)
+    {
+      using CSet = std::set<NDC>;
+      CSet compare_data(initial_data.begin(), initial_data.end());
+
+      using ESet = etl::flat_set<NDC, SIZE, etl::less<>>;
+      ESet data(initial_data.begin(), initial_data.end());
+
+      CSet::iterator i_compare = compare_data.lower_bound(N5);
+      ESet::iterator         i_data = data.lower_bound(Key(N5));
+
+      CHECK_EQUAL(std::distance(compare_data.begin(), i_compare), std::distance(data.begin(), i_data));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_upper_bound)
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
@@ -893,6 +1055,21 @@ namespace
 
       Compare_DataNDC::iterator i_compare = compare_data.upper_bound(N5);
       DataNDC::iterator         i_data    = data.upper_bound(N5);
+
+      CHECK_EQUAL(std::distance(compare_data.begin(), i_compare), std::distance(data.begin(), i_data));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_upper_bound_using_transparent_comparator)
+    {
+      using CSet = std::set<NDC>;
+      CSet compare_data(initial_data.begin(), initial_data.end());
+
+      using ESet = etl::flat_set<NDC, SIZE, etl::less<>>;
+      ESet data(initial_data.begin(), initial_data.end());
+
+      CSet::iterator i_compare = compare_data.upper_bound(N5);
+      ESet::iterator         i_data = data.upper_bound(Key(N5));
 
       CHECK_EQUAL(std::distance(compare_data.begin(), i_compare), std::distance(data.begin(), i_data));
     }
@@ -911,6 +1088,22 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_equal_range_using_transparent_comparator)
+    {
+      using CSet = std::set<NDC>;
+      CSet compare_data(initial_data.begin(), initial_data.end());
+
+      using ESet = etl::flat_set<NDC, SIZE, etl::less<>>;
+      ESet data(initial_data.begin(), initial_data.end());
+
+      ETL_OR_STD::pair<CSet::iterator, CSet::iterator> i_compare = compare_data.equal_range(N5);
+      ETL_OR_STD::pair<ESet::iterator, ESet::iterator> i_data = data.equal_range(Key(N5));
+
+      CHECK_EQUAL(std::distance(compare_data.begin(), i_compare.first), std::distance(data.begin(), i_data.first));
+      CHECK_EQUAL(std::distance(compare_data.begin(), i_compare.second), std::distance(data.begin(), i_data.second));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_equal_range_not_present)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
@@ -922,6 +1115,23 @@ namespace
       CHECK(data.begin() == i_data.second);
 
       i_data = data.equal_range(NY);
+      CHECK(data.end() == i_data.first);
+      CHECK(data.end() == i_data.second);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_equal_range_not_present_using_transparent_comparator)
+    {
+      using ESet = etl::flat_set<NDC, SIZE, etl::less<>>;
+      ESet data(initial_data.begin(), initial_data.end());
+
+      ETL_OR_STD::pair<ESet::iterator, ESet::iterator> i_data;
+
+      i_data = data.equal_range(Key(NX));
+      CHECK(data.begin() == i_data.first);
+      CHECK(data.begin() == i_data.second);
+
+      i_data = data.equal_range(Key(NY));
       CHECK(data.end() == i_data.first);
       CHECK(data.end() == i_data.second);
     }
@@ -950,6 +1160,77 @@ namespace
       const DataNDC different(different_data.begin(), different_data.end());
 
       CHECK(initial1 != different);
+    }
+
+    //*************************************************************************
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    TEST_FIXTURE(SetupFixture, test_flat_set_template_deduction)
+    {
+      etl::flat_set data{ NDC("A"), NDC("B"), NDC("C"), NDC("D"), NDC("E"), NDC("F") };
+
+      auto v = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same_v<NDC, Type>));
+
+      decltype(data)::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(NDC("A"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("B"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("C"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("D"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("E"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("F"), *itr);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_HAS_INITIALIZER_LIST
+    TEST_FIXTURE(SetupFixture, test_make_flat_set)
+    {
+      auto data = etl::make_flat_set<NDC>(NDC("A"), NDC("B"), NDC("C"), NDC("D"), NDC("E"), NDC("F"));
+
+      auto v = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same_v<NDC, Type>));
+
+      decltype(data)::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(NDC("A"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("B"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("C"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("D"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("E"), *itr);
+      ++itr;
+      CHECK_EQUAL(NDC("F"), *itr);
+    }
+#endif
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_contains)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      CHECK(data.contains(N5));
+      CHECK(!data.contains(NX));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_contains_with_transparent_comparator)
+    {
+      using EMap = etl::flat_set<NDC, SIZE, etl::less<>>;
+      EMap data(initial_data.begin(), initial_data.end());
+
+      CHECK(data.contains(Key(N5)));
+      CHECK(!data.contains(Key(NX)));
     }
   };
 }

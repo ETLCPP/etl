@@ -5,4 +5,5 @@ python -m cogapp -d -e -o../smallest.h -DNTypes=16 smallest_generator.h
 python -m cogapp -d -e -o../type_traits.h -DIsOneOf=16 type_traits_generator.h
 python -m cogapp -d -e -o../type_lookup.h -DNTypes=16 type_lookup_generator.h
 python -m cogapp -d -e -o../type_select.h -DNTypes=16 type_select_generator.h
-python -m cogapp -d -e -o../message_packet.h -DHandlers=16 message_packet_generator.h 
+python -m cogapp -d -e -o../message_packet.h -DHandlers=16 message_packet_generator.h
+python -m cogapp -d -e -o../variant_pool.h -DNTypes=16 variant_pool_generator.h

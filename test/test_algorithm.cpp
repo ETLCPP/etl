@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -274,7 +274,7 @@ namespace
 
       int* p1 = std::is_sorted_until(std::begin(data), std::end(data), std::greater<int>());
       int* p2 = etl::is_sorted_until(std::begin(data), std::end(data), std::greater<int>());
-      CHECK_EQUAL(std::distance(etl::begin(data), p1), std::distance(std::begin(data), p2));
+      CHECK_EQUAL(std::distance(std::begin(data), p1), std::distance(std::begin(data), p2));
     }
 
     //*************************************************************************
@@ -668,8 +668,8 @@ namespace
       int data1[10];
       int data2[10];
 
-      std::fill(std::begin(data1), std::end(data1), 0x12345678);
-      etl::fill(std::begin(data2), std::end(data2), 0x12345678);
+      std::fill(std::begin(data1), std::end(data1), 0x12345678UL);
+      etl::fill(std::begin(data2), std::end(data2), 0x12345678UL);
 
       bool isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
       CHECK(isEqual);
@@ -681,8 +681,8 @@ namespace
       unsigned char data1[10];
       unsigned char data2[10];
 
-      std::fill(std::begin(data1), std::end(data1), char(0x12));
-      etl::fill(std::begin(data2), std::end(data2), char(0x12));
+      std::fill(std::begin(data1), std::end(data1), char(0x12U));
+      etl::fill(std::begin(data2), std::end(data2), char(0x12U));
 
       bool isEqual = std::equal(std::begin(data1), std::end(data1), std::begin(data2));
       CHECK(isEqual);
@@ -1108,7 +1108,7 @@ namespace
     {
       std::vector<int> initial_data = { 1, 2, 3, 4, 5, 6, 7 };
 
-      for (size_t i = 0; i < initial_data.size(); ++i)
+      for (size_t i = 0UL; i < initial_data.size(); ++i)
       {
         std::vector<int> data1(initial_data);
         std::vector<int> data2(initial_data);
@@ -1127,7 +1127,7 @@ namespace
     {
       std::vector<NDC> initial_data = { NDC(1), NDC(2), NDC(3), NDC(4), NDC(5), NDC(6), NDC(7) };
 
-      for (size_t i = 0; i < initial_data.size(); ++i)
+      for (size_t i = 0UL; i < initial_data.size(); ++i)
       {
         std::vector<NDC> data1(initial_data);
         std::vector<NDC> data2(initial_data);
@@ -1203,10 +1203,10 @@ namespace
       is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation));
       CHECK(!is_permutation);
 
-      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), std::equal_to<int>());
+      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), etl::equal_to<int>());
       CHECK(is_permutation);
 
-      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), std::equal_to<int>());
+      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), etl::equal_to<int>());
       CHECK(!is_permutation);
 
       is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), std::end(permutation));
@@ -1215,10 +1215,10 @@ namespace
       is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), std::end(not_permutation));
       CHECK(!is_permutation);
 
-      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), std::end(permutation), std::equal_to<int>());
+      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(permutation), std::end(permutation), etl::equal_to<int>());
       CHECK(is_permutation);
 
-      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), std::end(not_permutation), std::equal_to<int>());
+      is_permutation = etl::is_permutation(std::begin(data1), std::end(data1), std::begin(not_permutation), std::end(not_permutation), etl::equal_to<int>());
       CHECK(!is_permutation);
     }
 
@@ -1601,7 +1601,7 @@ namespace
       etl::transform_s(std::begin(input),
                        std::end(input),
                        std::begin(output),
-                       std::begin(output) + (etl::size(output) / 2),
+                       std::begin(output) + (std::size(output) / 2),
                        std::bind(std::multiplies<int>(), std::placeholders::_1, 2));
 
       bool is_same = std::equal(std::begin(output), std::end(output), std::begin(compare));
@@ -1610,7 +1610,7 @@ namespace
       std::fill(std::begin(output), std::end(output), 0);
 
       etl::transform_s(std::begin(input),
-                       std::begin(input) + (etl::size(input) / 2),
+                       std::begin(input) + (std::size(input) / 2),
                        std::begin(output),
                        std::end(output),
                        std::bind(std::multiplies<int>(), std::placeholders::_1, 2));
@@ -2208,7 +2208,7 @@ namespace
       std::array<int, 4>  expected = { 1, 2, 4, 5 };
 
       etl::remove_if(data.begin(), data.end(), [](int value) { return value >= 7; });
-            
+
       bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
       CHECK(is_same);
     }

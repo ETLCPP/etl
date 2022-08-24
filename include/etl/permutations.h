@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 jwellbelove
+Copyright(c) 2018 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -37,11 +37,11 @@ SOFTWARE.
 /// permutations<N, K> : Calculates K permutations from N.
 ///\ingroup maths
 
-namespace etl 
+namespace etl
 {
   //***************************************************************************
   ///\ingroup permutations
-  /// Calculates permutaions.
+  /// Calculates permutations.
   //***************************************************************************
   template <const size_t NV, const size_t KV>
   struct permutations
@@ -56,10 +56,10 @@ namespace etl
   template <const size_t NV>
   struct permutations<NV, 0>
   {
-    static ETL_CONSTANT size_t value = 1;
+    static ETL_CONSTANT size_t value = 1UL;
   };
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
   template <size_t NV, size_t KV>
   inline constexpr size_t permutations_v = permutations<NV, KV>::value;
 #endif

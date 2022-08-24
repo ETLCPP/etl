@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2017 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -57,7 +57,7 @@ namespace etl
 
     typedef TBase base_t;
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Constructor that static asserts any types that do not conform to the max size and alignment.
     //***************************************************************************
@@ -95,7 +95,7 @@ namespace etl
       static_cast<TBase*>(data)->~TBase();
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Assignment operator for type.
     ///\param value The value to assign.

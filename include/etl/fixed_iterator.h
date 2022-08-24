@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2015 jwellbelove
+Copyright(c) 2015 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -62,6 +62,14 @@ namespace etl
     //***************************************************************************
     fixed_iterator(TIterator it_)
       : it(it_)
+    {
+    }
+
+    //***************************************************************************
+    /// Copy constructor
+    //***************************************************************************
+    fixed_iterator(const fixed_iterator& other)
+      : it(other.it)
     {
     }
 

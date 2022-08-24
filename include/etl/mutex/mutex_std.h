@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2017 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -39,34 +39,7 @@ namespace etl
   ///\ingroup mutex
   ///\brief This mutex class is implemented using std::mutex.
   //***************************************************************************
-  class mutex
-  {
-  public:
-
-    mutex()
-      : access()
-    {
-    }
-
-    void lock()
-    {
-      access.lock();
-    }
-
-    bool try_lock()
-    {
-      return access.try_lock();
-    }
-
-    void unlock()
-    {
-      access.unlock();
-    }
-
-  private:
-
-    std::mutex access;
-  };
+  using mutex = std::mutex;
 }
 
 #endif

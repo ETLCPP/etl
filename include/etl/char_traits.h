@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2016 jwellbelove
+Copyright(c) 2016 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -42,12 +42,6 @@ SOFTWARE.
 /// Character traits
 ///\ingroup string
 //*****************************************************************************
-
-// Define the large character types if necessary.
-#if (ETL_NO_LARGE_CHAR_SUPPORT)
-typedef int16_t char16_t;
-typedef int32_t char32_t;
-#endif
 
 namespace etl
 {
@@ -102,21 +96,21 @@ namespace etl
     typedef typename char_traits_types<T>::state_type state_type;
 
     //*************************************************************************
-    ETL_CONSTEXPR static bool eq(char_type a, char_type b)
+    static ETL_CONSTEXPR bool eq(char_type a, char_type b)
     {
       return a == b;
     }
 
     //*************************************************************************
-    ETL_CONSTEXPR static bool lt(char_type a, char_type b)
+    static ETL_CONSTEXPR bool lt(char_type a, char_type b)
     {
       return a < b;
     }
 
     //*************************************************************************
-    ETL_CONSTEXPR14 static size_t length(const char_type* str)
+    static ETL_CONSTEXPR14 size_t length(const char_type* str)
     {
-      size_t count = 0;
+      size_t count = 0UL;
 
       if (str != 0)
       {
@@ -136,7 +130,7 @@ namespace etl
     }
 
     //*************************************************************************
-    static char_type* assign(char_type* p, size_t n, char_type c)
+    static ETL_CONSTEXPR char_type* assign(char_type* p, size_t n, char_type c)
     {
       if (p != 0)
       {
@@ -147,34 +141,34 @@ namespace etl
     }
 
     //*************************************************************************
-    static char_type* move(char_type* dest, const char_type* src, size_t count)
+    static ETL_CONSTEXPR char_type* move(char_type* dst, const char_type* src, size_t count)
     {
-      if ((dest < src) || (dest > (src + count)))
+      if ((dst < src) || (dst > (src + count)))
       {
-        etl::copy_n(src, src + count, dest);
+        etl::copy_n(src, count, dst);
       }
       else
       {
-        etl::copy_n(ETL_OR_STD::reverse_iterator<char_type*>(src + count),
+        etl::copy_n(ETL_OR_STD::reverse_iterator<const char_type*>(src + count),
                     count,
-                    ETL_OR_STD::reverse_iterator<char_type*>(dest + count));
+                    ETL_OR_STD::reverse_iterator<char_type*>(dst + count));
       }
 
-      return dest;
+      return dst;
     }
 
     //*************************************************************************
-    static char_type* copy(char_type* dest, const char_type* src, size_t count)
+    static ETL_CONSTEXPR char_type* copy(char_type* dst, const char_type* src, size_t count)
     {
-      etl::copy_n(src, src + count, dest);
+      etl::copy_n(src, count, dst);
 
-      return dest;
+      return dst;
     }
 
     //*************************************************************************
-    static int compare(const char_type* s1, const char_type* s2, size_t count)
+    static ETL_CONSTEXPR14 int compare(const char_type* s1, const char_type* s2, size_t count)
     {
-      for (size_t i = 0; i < count; ++i)
+      for (size_t i = 0UL; i < count; ++i)
       {
         if (*s1 < *s2)
         {
@@ -193,9 +187,9 @@ namespace etl
     }
 
     //*************************************************************************
-    static const char_type* find(const char_type* p, size_t count, const char_type& ch)
+    static ETL_CONSTEXPR14 const char_type* find(const char_type* p, size_t count, const char_type& ch)
     {
-      for (size_t i = 0; i < count; ++i)
+      for (size_t i = 0UL; i < count; ++i)
       {
         if (*p == ch)
         {
@@ -209,42 +203,41 @@ namespace etl
     }
 
     //*************************************************************************
-    static char_type to_char_type(int_type c)
+    static ETL_CONSTEXPR char_type to_char_type(int_type c)
     {
       return static_cast<char_type>(c);
     }
 
     //*************************************************************************
-    static int_type to_int_type(char_type c)
+    static ETL_CONSTEXPR int_type to_int_type(char_type c)
     {
       return static_cast<int_type>(c);
     }
 
     //*************************************************************************
-    static bool eq_int_type(int_type c1, int_type c2)
+    static ETL_CONSTEXPR bool eq_int_type(int_type c1, int_type c2)
     {
       return (c1 == c2);
     }
 
     //*************************************************************************
-    static int_type eof()
+    static ETL_CONSTEXPR int_type eof()
     {
       return -1;
     }
 
     //*************************************************************************
-    static int_type not_eof(int_type e)
+    static ETL_CONSTEXPR int_type not_eof(int_type e)
     {
       return (e == eof()) ? eof() - 1 : e;
     }
   };
 
-
   //***************************************************************************
   /// Alternative strlen for all character types.
   //***************************************************************************
   template <typename T>
-  size_t strlen(const T* t)
+  ETL_CONSTEXPR size_t strlen(const T* t)
   {
     return etl::char_traits<T>::length(t);
   }

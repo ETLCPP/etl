@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -34,17 +34,10 @@ SOFTWARE.
 #include <array>
 #include <algorithm>
 
-#if defined(ETL_COMPILER_GCC)
-  #pragma GCC diagnostic push
-  #pragma GCC diagnostic ignored "-Wunused-variable"
-#else
-  #pragma warning(disable:4101) // Unused variable.
-#endif
-
-uint8_t rw  = 0x12;
-uint8_t ro  = 0x34;
-uint8_t wo  = 0x56;
-uint8_t wos = 0x78;
+uint8_t rw  = 0x12U;
+uint8_t ro  = 0x34U;
+uint8_t wo  = 0x56U;
+uint8_t wos = 0x78U;
 
 namespace
 {
@@ -89,7 +82,7 @@ namespace
     //*************************************************************************
     TEST(test_io_port)
     {
-      serial_port<0x1234> port;
+      serial_port<0x1234U> port;
     }
 
     //*************************************************************************
@@ -103,13 +96,13 @@ namespace
 
       uint8_t* memory = &u.memory[0];
 
-      memory[0] = 0x12;
-      memory[1] = 0x00;
-      memory[2] = 0x00;
-      memory[3] = 0x00;
-      memory[4] = 0xBC;
-      memory[5] = 0x9A;
-      memory[6] = 0x00;
+      memory[0] = 0x12U;
+      memory[1] = 0x00U;
+      memory[2] = 0x00U;
+      memory[3] = 0x00U;
+      memory[4] = 0xBCU;
+      memory[5] = 0x9AU;
+      memory[6] = 0x00U;
 
       dynamic_serial_port port(&u.memory[0]);
 
@@ -117,35 +110,35 @@ namespace
       CHECK_EQUAL(memory[0], rxdata);
       CHECK_EQUAL(memory[0], port.rxdata);
 
-      port.txdata = 0x34;
-      CHECK_EQUAL(0x34, memory[1]);
+      port.txdata = 0x34U;
+      CHECK_EQUAL(0x34U, memory[1]);
 
-      port.control = 0x5678; // Little endian.
-      CHECK_EQUAL(0x5678, memory[2] | (memory[3] << 8));
+      port.control = 0x5678U; // Little endian.
+      CHECK_EQUAL(0x5678U, memory[2] | (memory[3] << 8U));
 
       uint16_t status = port.status;
-      CHECK_EQUAL(0x9ABC, status);
-      CHECK_EQUAL(0x9ABC, port.status);
+      CHECK_EQUAL(0x9ABCU, status);
+      CHECK_EQUAL(0x9ABCU, port.status);
 
-      port.control2 = 0xDE;
-      CHECK_EQUAL(0xDE, memory[6]);
+      port.control2 = 0xDEU;
+      CHECK_EQUAL(0xDEU, memory[6]);
 
       int control2 = port.control2;
-      CHECK_EQUAL(0xDE, control2);
-      CHECK_EQUAL(0xDE, port.control2);
+      CHECK_EQUAL(0xDEU, control2);
+      CHECK_EQUAL(0xDEU, port.control2);
 
-      port.control2.set_address((void*)0x1000);
+      port.control2.set_address((void*)0x1000U);
       volatile uint8_t* address = port.control2.get_address();
-      CHECK_EQUAL(reinterpret_cast<volatile uint8_t*>(0x1000), address);
+      CHECK_EQUAL(reinterpret_cast<volatile uint8_t*>(0x1000U), address);
     }
 
     //*************************************************************************
     TEST(test_dynamic_io_port_iterators)
     {
-      uint8_t memory_rw  = 0x12;
-      uint8_t memory_ro  = 0x34;
-      uint8_t memory_wo  = 0x56;
-      uint8_t memory_wos = 0x78;
+      uint8_t memory_rw  = 0x12U;
+      uint8_t memory_ro  = 0x34U;
+      uint8_t memory_wo  = 0x56U;
+      uint8_t memory_wos = 0x78U;
 
       iop_rw.set_address(&memory_rw);
       iop_ro.set_address(&memory_ro);
@@ -157,52 +150,52 @@ namespace
 
       // Read from RW IOP.
       std::copy_n(iop_rw, result.size(), result.begin());
-      compare.fill(0x12);
+      compare.fill(0x12U);
 
-      for (size_t i = 0; i < compare.size(); ++i)
+      for (size_t i = 0UL; i < compare.size(); ++i)
       {
         CHECK_EQUAL(compare[i], result[i]);
       }
 
       // Write to RW IOP.
-      compare.fill(0x34);
+      compare.fill(0x34U);
       std::copy_n(compare.begin(), compare.size(), iop_rw);
 
       CHECK_EQUAL(compare[0], iop_rw);
 
       // Read from RO IOP.
       std::copy_n(iop_ro, result.size(), result.begin());
-      compare.fill(0x34);
+      compare.fill(0x34U);
 
-      for (size_t i = 0; i < compare.size(); ++i)
+      for (size_t i = 0UL; i < compare.size(); ++i)
       {
         CHECK_EQUAL(compare[i], result[i]);
       }
 
       // Write to WO IOP.
-      compare.fill(0x56);
+      compare.fill(0x56U);
       std::copy_n(compare.begin(), compare.size(), iop_wo);
 
       CHECK_EQUAL(compare[0], memory_wo);
 
       // Read from WOS IOP.
-      iop_wos = 0x78;
+      iop_wos = 0x78U;
 
       std::copy_n(iop_wos, result.size(), result.begin());
-      compare.fill(0x78);
+      compare.fill(0x78U);
 
-      for (size_t i = 0; i < compare.size(); ++i)
+      for (size_t i = 0UL; i < compare.size(); ++i)
       {
         CHECK_EQUAL(compare[i], result[i]);
       }
 
       // Write to WOS IOP.
-      compare.fill(0x90);
+      compare.fill(0x90U);
       std::copy_n(compare.begin(), compare.size(), iop_wos.get_iterator());
 
       CHECK_EQUAL(compare[0], iop_wos);
     }
-    
+
     TEST(compile)
     {
     //  etl::io_port_rw<uint8_t,  uintptr_t(1)> p_rw;
@@ -226,7 +219,3 @@ namespace
     }
   };
 }
-
-#if defined(ETL_COMPILER_GCC)
-  #pragma GCC diagnostic pop
-#endif

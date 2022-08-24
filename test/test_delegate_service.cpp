@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2019 jwellbelove
+Copyright(c) 2019 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -31,12 +31,14 @@ SOFTWARE.
 #include "etl/delegate.h"
 #include "etl/delegate_service.h"
 
+#if !defined(ETL_DELEGATE_FORCE_CPP03_IMPLEMENTATION)
+
 namespace
 {
-  const size_t SIZE   = 3U;
-  const size_t OFFSET = 5U;
+  const size_t Size   = 3UL;
+  const size_t Offset = 5UL;
 
-  using Service = etl::delegate_service<SIZE, OFFSET>;
+  using Service = etl::delegate_service<Size, Offset>;
 
   //*****************************************************************************
   bool global_called    = false;
@@ -71,7 +73,7 @@ namespace
   public:
 
     Test()
-      : callback(etl::delegate<void(size_t)>::create<Test, &Test::member1>(*this))
+      : callback(Service::delegate_type::create<Test, &Test::member1>(*this))
     {
     }
 
@@ -94,13 +96,13 @@ namespace
   Test test;
 
   // Callback for 'member2'.
-  etl::delegate<void(size_t)> member_callback = etl::delegate<void(size_t)>::create<Test, test, &Test::member2>();
+  constexpr Service::delegate_type member_callback = Service::delegate_type::create<Test, test, &Test::member2>();
 
   // Callback for 'global'.
-  etl::delegate<void(size_t)> global_callback = etl::delegate<void(size_t)>::create<global>();
+  constexpr Service::delegate_type global_callback = Service::delegate_type::create<global>();
 
   // Callback for 'unhandled'.
-  etl::delegate<void(size_t)> unhandled_callback = etl::delegate<void(size_t)>::create<unhandled>();
+  constexpr Service::delegate_type unhandled_callback = Service::delegate_type::create<unhandled>();
 
   //*****************************************************************************
   // Initialises the test results.
@@ -109,10 +111,10 @@ namespace
   {
     SetupFixture()
     {
-      called_id = UINT_MAX;
-      global_called = false;
-      member1_called = false;
-      member2_called = false;
+      called_id        = UINT_MAX;
+      global_called    = false;
+      member1_called   = false;
+      member2_called   = false;
       unhandled_called = false;
     }
   };
@@ -122,10 +124,10 @@ namespace
 {
   enum
   {
-    GLOBAL = OFFSET,
-    MEMBER1,
-    MEMBER2,
-    OUT_OF_RANGE
+    Global = Offset,
+    Member1,
+    Member2,
+    Out_Of_Range
   };
 
   SUITE(test_delegate_service)
@@ -135,13 +137,13 @@ namespace
     {
       Service service;
 
-      service.register_delegate<GLOBAL>(global_callback);
-      service.register_delegate<MEMBER1>(test.callback);
-      service.register_delegate<MEMBER2>(member_callback);
+      service.register_delegate<Global>(global_callback);
+      service.register_delegate<Member1>(test.callback);
+      service.register_delegate<Member2>(member_callback);
 
-      service.call<GLOBAL>();
+      service.call<Global>();
 
-      CHECK_EQUAL(GLOBAL, called_id);
+      CHECK_EQUAL(Global, called_id);
       CHECK(global_called);
       CHECK(!member1_called);
       CHECK(!member2_called);
@@ -153,13 +155,13 @@ namespace
     {
       Service service;
 
-      service.register_delegate(GLOBAL,  global_callback);
-      service.register_delegate(MEMBER1, test.callback);
-      service.register_delegate(MEMBER2, member_callback);
+      service.register_delegate(Global,  global_callback);
+      service.register_delegate(Member1, test.callback);
+      service.register_delegate(Member2, member_callback);
 
-      service.call(GLOBAL);
+      service.call(Global);
 
-      CHECK_EQUAL(GLOBAL, called_id);
+      CHECK_EQUAL(Global, called_id);
       CHECK(global_called);
       CHECK(!member1_called);
       CHECK(!member2_called);
@@ -171,13 +173,13 @@ namespace
     {
       Service service;
 
-      service.register_delegate<GLOBAL>(global_callback);
-      service.register_delegate<MEMBER1>(test.callback);
-      service.register_delegate<MEMBER2>(member_callback);
+      service.register_delegate<Global>(global_callback);
+      service.register_delegate<Member1>(test.callback);
+      service.register_delegate<Member2>(member_callback);
 
-      service.call<MEMBER1>();
+      service.call<Member1>();
 
-      CHECK_EQUAL(MEMBER1, called_id);
+      CHECK_EQUAL(Member1, called_id);
       CHECK(!global_called);
       CHECK(member1_called);
       CHECK(!member2_called);
@@ -189,13 +191,13 @@ namespace
     {
       Service service;
 
-      service.register_delegate(GLOBAL,  global_callback);
-      service.register_delegate(MEMBER1, test.callback);
-      service.register_delegate(MEMBER2, member_callback);
+      service.register_delegate(Global,  global_callback);
+      service.register_delegate(Member1, test.callback);
+      service.register_delegate(Member2, member_callback);
 
-      service.call(MEMBER1);
+      service.call(Member1);
 
-      CHECK_EQUAL(MEMBER1, called_id);
+      CHECK_EQUAL(Member1, called_id);
       CHECK(!global_called);
       CHECK(member1_called);
       CHECK(!member2_called);
@@ -207,13 +209,13 @@ namespace
     {
       Service service;
 
-      service.register_delegate<GLOBAL>(global_callback);
-      service.register_delegate<MEMBER1>(test.callback);
-      service.register_delegate<MEMBER2>(member_callback);
+      service.register_delegate<Global>(global_callback);
+      service.register_delegate<Member1>(test.callback);
+      service.register_delegate<Member2>(member_callback);
 
-      service.call<MEMBER2>();
+      service.call<Member2>();
 
-      CHECK_EQUAL(MEMBER2, called_id);
+      CHECK_EQUAL(Member2, called_id);
       CHECK(!global_called);
       CHECK(!member1_called);
       CHECK(member2_called);
@@ -225,11 +227,11 @@ namespace
     {
       Service service;
 
-      service.register_delegate<GLOBAL>(global_callback);
-      service.register_delegate<MEMBER1>(test.callback);
-      service.register_delegate<MEMBER2>(member_callback);
+      service.register_delegate<Global>(global_callback);
+      service.register_delegate<Member1>(test.callback);
+      service.register_delegate<Member2>(member_callback);
 
-      service.call(OUT_OF_RANGE);
+      service.call(Out_Of_Range);
 
       CHECK_EQUAL(UINT_MAX, called_id);
       CHECK(!global_called);
@@ -243,15 +245,15 @@ namespace
     {
       Service service;
 
-      service.register_delegate<GLOBAL>(global_callback);
-      service.register_delegate<MEMBER1>(test.callback);
-      service.register_delegate<MEMBER2>(member_callback);
+      service.register_delegate<Global>(global_callback);
+      service.register_delegate<Member1>(test.callback);
+      service.register_delegate<Member2>(member_callback);
 
       service.register_unhandled_delegate(unhandled_callback);
 
-      service.call(OUT_OF_RANGE);
+      service.call(Out_Of_Range);
 
-      CHECK_EQUAL(OUT_OF_RANGE, called_id);
+      CHECK_EQUAL(Out_Of_Range, called_id);
       CHECK(!global_called);
       CHECK(!member1_called);
       CHECK(!member2_called);
@@ -263,10 +265,10 @@ namespace
     {
       Service service;
 
-      service.register_delegate<GLOBAL>(global_callback);
-      service.register_delegate<MEMBER2>(member_callback);
+      service.register_delegate<Global>(global_callback);
+      service.register_delegate<Member2>(member_callback);
 
-      service.call<MEMBER1>();
+      service.call<Member1>();
 
       CHECK_EQUAL(UINT_MAX, called_id);
       CHECK(!global_called);
@@ -280,10 +282,10 @@ namespace
     {
       Service service;
 
-      service.register_delegate(GLOBAL,  global_callback);
-      service.register_delegate(MEMBER2, member_callback);
+      service.register_delegate(Global,  global_callback);
+      service.register_delegate(Member2, member_callback);
 
-      service.call(MEMBER1);
+      service.call(Member1);
 
       CHECK_EQUAL(UINT_MAX, called_id);
       CHECK(!global_called);
@@ -297,14 +299,14 @@ namespace
     {
       Service service;
 
-      service.register_delegate<GLOBAL>(global_callback);
-      service.register_delegate<MEMBER2>(member_callback);
+      service.register_delegate<Global>(global_callback);
+      service.register_delegate<Member2>(member_callback);
 
       service.register_unhandled_delegate(unhandled_callback);
 
-      service.call<MEMBER1>();
+      service.call<Member1>();
 
-      CHECK_EQUAL(MEMBER1, called_id);
+      CHECK_EQUAL(Member1, called_id);
       CHECK(!global_called);
       CHECK(!member1_called);
       CHECK(!member2_called);
@@ -316,14 +318,14 @@ namespace
     {
       Service service;
 
-      service.register_delegate(GLOBAL,  global_callback);
-      service.register_delegate(MEMBER2, member_callback);
+      service.register_delegate(Global,  global_callback);
+      service.register_delegate(Member2, member_callback);
 
       service.register_unhandled_delegate(unhandled_callback);
 
-      service.call(MEMBER1);
+      service.call(Member1);
 
-      CHECK_EQUAL(MEMBER1, called_id);
+      CHECK_EQUAL(Member1, called_id);
       CHECK(!global_called);
       CHECK(!member1_called);
       CHECK(!member2_called);
@@ -331,3 +333,5 @@ namespace
     }
   };
 }
+
+#endif

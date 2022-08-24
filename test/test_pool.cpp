@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -36,11 +36,6 @@ SOFTWARE.
 
 #include "etl/pool.h"
 #include "etl/largest.h"
-
-#if defined(ETL_COMPILER_GCC)
-  #pragma GCC diagnostic push
-  #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
-#endif
 
 typedef TestDataDC<std::string>  Test_Data;
 typedef TestDataNDC<std::string> Test_Data2;
@@ -267,6 +262,7 @@ namespace
       CHECK_EQUAL(4U, pool.available());
 
       Test_Data* p;
+      (void)p;
 
       p = pool.allocate();
       CHECK_EQUAL(3U, pool.available());
@@ -296,6 +292,7 @@ namespace
       CHECK_EQUAL(0U, pool.size());
 
       Test_Data* p;
+      (void)p;
 
       p = pool.allocate();
       CHECK_EQUAL(1U, pool.size());
@@ -318,6 +315,7 @@ namespace
       CHECK(!pool.full());
 
       Test_Data* p;
+      (void)p;
 
       p = pool.allocate();
       CHECK(!pool.empty());
@@ -375,6 +373,11 @@ namespace
       uint32_t*  p2 = nullptr;
       double*    p3 = nullptr;
       Test_Data* p4 = nullptr;
+
+      (void)p1;
+      (void)p2;
+      (void)p3;
+      (void)p4;
 
       CHECK_NO_THROW(p1 = pool.allocate<uint8_t>());
       CHECK_NO_THROW(p2 = pool.allocate<uint32_t>());
@@ -448,9 +451,26 @@ namespace
 
     int* i = pool.allocate();
     pool.release(i);
+  } 
+  
+  //*************************************************************************
+  TEST(test_issue_406_pool_of_c_array)
+  {
+    using elem_type = uint8_t[10];
+
+    etl::pool<elem_type, 3> memPool{};
+
+    CHECK_EQUAL(3, memPool.available());
+    CHECK_EQUAL(0, memPool.size());
+
+    elem_type* memory = memPool.allocate();
+
+    CHECK_EQUAL(2, memPool.available());
+    CHECK_EQUAL(1, memPool.size());
+
+    memPool.release(memory);
+
+    CHECK_EQUAL(3, memPool.available());
+    CHECK_EQUAL(0, memPool.size());
   }
 }
-
-#if defined(ETL_COMPILER_GCC)
-  #pragma GCC diagnostic pop
-#endif

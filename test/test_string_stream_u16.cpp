@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2020 jwellbelove
+Copyright(c) 2020 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -68,7 +68,7 @@ namespace etl
   {
     for (auto c : str)
     {
-      os << c;
+      os << uint16_t(c);
     }
 
     return os;
@@ -80,7 +80,7 @@ namespace
   SUITE(test_string_stream)
   {
     //*************************************************************************
-    TEST(test_default_format)
+    TEST(test_default_format_from_const_char)
     {
       String str;
 
@@ -89,6 +89,22 @@ namespace
       int value = 123;
       String hello(STR("Hello"));
       ss << hello << STR(" World ") << value;
+
+      String result = ss.str();
+
+      CHECK_EQUAL(String(STR("Hello World 123")), result);
+    }
+
+    //*************************************************************************
+    TEST(test_default_format_from_char)
+    {
+      String str;
+
+      Stream ss(str);
+
+      int value = 123;
+      String hello(STR("Hello"));
+      ss << hello << const_cast<char16_t*>(STR(" World ")) << value;
 
       String result = ss.str();
 

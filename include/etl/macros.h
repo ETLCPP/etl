@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 jwellbelove
+Copyright(c) 2018 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -31,13 +31,15 @@ SOFTWARE.
 #ifndef ETL_MACROS_INCLUDED
 #define ETL_MACROS_INCLUDED
 
-#define ETL_CONCAT2(X, Y) X##Y
-#define ETL_CONCAT(X, Y) ETL_CONCAT2(X, Y)
-#define ETL_STRINGIFY2(X) #X
-#define ETL_STRINGIFY(X) ETL_STRINGIFY2(X)
-#define ETL_WIDE_STRING(X) ETL_CONCAT(L, ETL_STRINGIFY(X))
-#define ETL_U16_STRING(X) ETL_CONCAT(u, ETL_STRINGIFY(X))
-#define ETL_U32_STRING(X) ETL_CONCAT(U, ETL_STRINGIFY(X))
+#define ETL_CONCAT2(X, Y)  X##Y
+#define ETL_CONCAT(X, Y)   ETL_CONCAT2(X, Y)
+#define ETL_STRINGIFY2(X)  #X
+#define ETL_STRINGIFY(X)   ETL_STRINGIFY2(X)
+#define ETL_STRING(X)      ETL_CONCAT(  , ETL_STRINGIFY(X))
+#define ETL_WIDE_STRING(X) ETL_CONCAT( L, ETL_STRINGIFY(X))
+#define ETL_U8_STRING(X)   ETL_CONCAT(u8, ETL_STRINGIFY(X))
+#define ETL_U16_STRING(X)  ETL_CONCAT( u, ETL_STRINGIFY(X))
+#define ETL_U32_STRING(X)  ETL_CONCAT( U, ETL_STRINGIFY(X))
 
 #endif
 

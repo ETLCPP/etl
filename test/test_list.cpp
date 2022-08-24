@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -46,7 +46,7 @@ namespace
     typedef TestDataNDC<std::string> ItemNDC;
     typedef TestDataM<uint32_t>      ItemM;
 
-    const size_t SIZE = 10;
+    const size_t SIZE = 10UL;
 
     typedef etl::list<ItemDC, SIZE>      DataDC;
     typedef etl::list<ItemNDC, SIZE>     DataNDC;
@@ -99,13 +99,13 @@ namespace
     {
       DataNDC data;
 
-      CHECK_EQUAL(data.size(), size_t(0));
+      CHECK_EQUAL(data.size(), size_t(0UL));
       CHECK(data.empty());
       CHECK_EQUAL(data.max_size(), SIZE);
       CHECK(data.begin() == data.end());
     }
 
-#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
@@ -139,7 +139,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_size)
     {
-      const size_t INITIAL_SIZE = 4;
+      const size_t INITIAL_SIZE = 4UL;
       DataDC data(INITIAL_SIZE);
 
       CHECK(data.size() == INITIAL_SIZE);
@@ -155,7 +155,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_size_value)
     {
-      const size_t INITIAL_SIZE = 4;
+      const size_t INITIAL_SIZE = 4UL;
       const ItemNDC INITIAL_VALUE = ItemNDC("1");
 
       std::array<ItemNDC, INITIAL_SIZE> compare_data = { ItemNDC("1"), ItemNDC("1"), ItemNDC("1"), ItemNDC("1") };
@@ -185,7 +185,7 @@ namespace
       CHECK(!data.empty());
     }
 
-#if ETL_USING_STL
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_initializer_list)
     {
@@ -304,8 +304,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_up)
     {
-      const size_t INITIAL_SIZE = 4;
-      const size_t NEW_SIZE     = 8;
+      const size_t INITIAL_SIZE = 4UL;
+      const size_t NEW_SIZE     = 8UL;
 
       DataDC data(INITIAL_SIZE);
       data.resize(NEW_SIZE);
@@ -316,8 +316,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_up_value)
     {
-      const size_t INITIAL_SIZE = 4;
-      const size_t NEW_SIZE     = 8;
+      const size_t INITIAL_SIZE = 4UL;
+      const size_t NEW_SIZE     = 8UL;
       const ItemNDC VALUE = ItemNDC("1");
 
       DataNDC data(INITIAL_SIZE, VALUE);
@@ -336,7 +336,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_excess)
     {
-      const size_t INITIAL_SIZE = 4;
+      const size_t INITIAL_SIZE = 4UL;
       const ItemNDC VALUE = ItemNDC("1");
 
       DataNDC data(INITIAL_SIZE, VALUE);
@@ -347,8 +347,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_down)
     {
-      const size_t INITIAL_SIZE = 4;
-      const size_t NEW_SIZE     = 2;
+      const size_t INITIAL_SIZE = 4UL;
+      const size_t NEW_SIZE     = 2UL;
       const ItemNDC VALUE = ItemNDC("1");
 
       DataNDC data(INITIAL_SIZE, VALUE);
@@ -360,8 +360,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_zero)
     {
-      const size_t INITIAL_SIZE = 4;
-      const size_t NEW_SIZE = 0;
+      const size_t INITIAL_SIZE = 4UL;
+      const size_t NEW_SIZE = 0UL;
       const ItemNDC VALUE = ItemNDC("1");
 
       DataNDC data(INITIAL_SIZE, VALUE);
@@ -382,7 +382,7 @@ namespace
       data.assign(sorted_data.begin(), sorted_data.end());
       CHECK_EQUAL(SIZE, data.size());
       data.clear();
-      CHECK_EQUAL(size_t(0), data.size());
+      CHECK_EQUAL(size_t(0UL), data.size());
     }
 
     //*************************************************************************
@@ -397,7 +397,7 @@ namespace
       data.resize(SIZE);
       CHECK_EQUAL(SIZE, data.size());
       data.clear();
-      CHECK_EQUAL(size_t(0), data.size());
+      CHECK_EQUAL(size_t(0UL), data.size());
     }
 
     //*************************************************************************
@@ -420,7 +420,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_size_value)
     {
-      const size_t INITIAL_SIZE = 4;
+      const size_t INITIAL_SIZE = 4UL;
       const ItemNDC VALUE = ItemNDC("1");
 
       CompareData compare_data(INITIAL_SIZE, VALUE);
@@ -450,14 +450,14 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_value)
     {
-      const size_t INITIAL_SIZE  = 4;
+      const size_t INITIAL_SIZE  = 4UL;
       const ItemNDC VALUE        = ItemNDC("1");
       const ItemNDC INSERT_VALUE = ItemNDC("2");
 
       CompareData compare_data(INITIAL_SIZE, VALUE);
       DataNDC data(INITIAL_SIZE, VALUE);
 
-      size_t offset = 2;
+      size_t offset = 2UL;
 
       DataNDC::iterator i_data = data.begin();
       std::advance(i_data, offset);
@@ -532,14 +532,14 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_emplace_position_value)
     {
-      const size_t INITIAL_SIZE = 4;
+      const size_t INITIAL_SIZE = 4UL;
       const ItemNDC VALUE = ItemNDC("1");
       const std::string INSERT_VALUE = "2";
 
       CompareData compare_data(INITIAL_SIZE, VALUE);
       DataNDC data(INITIAL_SIZE, VALUE);
 
-      size_t offset = 2;
+      size_t offset = 2UL;
 
       DataNDC::iterator i_data = data.begin();
       std::advance(i_data, offset);
@@ -733,7 +733,7 @@ namespace
     {
       DataNDC data;
 
-      for (size_t i = 0; i < 2 * data.max_size(); ++i)
+      for (size_t i = 0UL; i < 2UL * data.max_size(); ++i)
       {
         CHECK_NO_THROW(data.push_front(ItemNDC("1")));
         data.pop_front();
@@ -747,7 +747,7 @@ namespace
     {
       DataNDC data;
 
-      for (size_t i = 0; i < 2 * data.max_size(); ++i)
+      for (size_t i = 0UL; i < 2UL * data.max_size(); ++i)
       {
         CHECK_NO_THROW(data.push_front(ItemNDC("1")));
         data.pop_back();
@@ -761,7 +761,7 @@ namespace
     {
       DataNDC data;
 
-      for (size_t i = 0; i < 2 * data.max_size(); ++i)
+      for (size_t i = 0UL; i < 2UL * data.max_size(); ++i)
       {
         CHECK_NO_THROW(data.push_front(ItemNDC("1")));
         data.pop_front();
@@ -775,7 +775,7 @@ namespace
     {
       DataNDC data;
 
-      for (size_t i = 0; i < 2 * data.max_size(); ++i)
+      for (size_t i = 0UL; i < 2UL * data.max_size(); ++i)
       {
         CHECK_NO_THROW(data.push_front(ItemNDC("1")));
         data.pop_back();
@@ -919,7 +919,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_erase_single)
+    TEST_FIXTURE(SetupFixture, test_erase_single_iterator)
     {
       CompareData compare_data(sorted_data.begin(), sorted_data.end());
       DataNDC data(sorted_data.begin(), sorted_data.end());
@@ -971,26 +971,80 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_single_const_iterator)
+    {
+      CompareData compare_data(sorted_data.begin(), sorted_data.end());
+      DataNDC data(sorted_data.begin(), sorted_data.end());
+
+      DataNDC::const_iterator i_data = data.begin();
+      std::advance(i_data, 2);
+
+      CompareData::const_iterator i_compare_data = compare_data.cbegin();
+      std::advance(i_compare_data, 2);
+
+      i_compare_data = compare_data.erase(i_compare_data);
+      i_data = data.erase(i_data);
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      are_equal = std::equal(data.cbegin(), data.cend(), compare_data.cbegin());
+
+      CHECK(are_equal);
+      CHECK(*i_compare_data == *i_data);
+
+      i_compare_data = compare_data.erase(compare_data.cbegin());
+      i_data = data.erase(data.cbegin());
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+
+      are_equal = i_data == data.begin();
+      CHECK(are_equal);
+
+      // Move to the last value and erase.
+      i_compare_data = compare_data.begin();
+      std::advance(i_compare_data, compare_data.size() - 1);
+      i_compare_data = compare_data.erase(i_compare_data);
+
+      i_data = data.begin();
+      std::advance(i_data, data.size() - 1);
+      i_data = data.erase(i_data);
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(are_equal);
+      are_equal = i_data == data.end();
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_range)
     {
       CompareData compare_data(sorted_data.begin(), sorted_data.end());
       DataNDC data(sorted_data.begin(), sorted_data.end());
 
-      DataNDC::iterator i_data_1 = data.begin();
+      DataNDC::const_iterator i_data_1 = data.cbegin();
       std::advance(i_data_1, 2);
 
-      DataNDC::iterator i_data_2 = data.begin();
+      DataNDC::const_iterator i_data_2 = data.cbegin();
       std::advance(i_data_2, 4);
 
-      CompareData::iterator i_compare_data_1 = compare_data.begin();
+      CompareData::const_iterator i_compare_data_1 = compare_data.begin();
       std::advance(i_compare_data_1, 2);
 
-      CompareData::iterator i_compare_data_2 = compare_data.begin();
+      CompareData::const_iterator i_compare_data_2 = compare_data.begin();
       std::advance(i_compare_data_2, 4);
 
-      compare_data.erase(i_compare_data_1, i_compare_data_2);
+      CompareData::iterator citr = compare_data.erase(i_compare_data_1, i_compare_data_2);
+      CHECK(citr == i_compare_data_2);
 
-      data.erase(i_data_1, i_data_2);
+      DataNDC::iterator ditr = data.erase(i_data_1, i_data_2);
+      CHECK(ditr == i_data_2);
 
       CHECK_EQUAL(compare_data.size(), data.size());
 
@@ -1003,8 +1057,8 @@ namespace
     {
       DataNDC data(sorted_data.begin(), sorted_data.end());
 
-      data.erase(data.begin(), data.end());
-
+      DataNDC::iterator itr = data.erase(data.cbegin(), data.cend());
+      CHECK(itr == data.cbegin());
       CHECK(data.empty());
 
       // Check that it is still in a valid state.
@@ -1150,7 +1204,9 @@ namespace
       DataNDC data(sorted_data.begin(), sorted_data.end());
       DataNDC other_data = data;
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       other_data = other_data;
+#include "etl/private/diagnostic_pop.h" 
 
       CHECK_EQUAL(data.size(), other_data.size());
 
@@ -2027,5 +2083,58 @@ namespace
       CHECK_EQUAL(3U, (*itr++).value); // 3
       CHECK_EQUAL(4U, (*itr++).value); // 4
     }
+
+    //*************************************************************************
+    TEST(test_same_type_non_iterator)
+    {
+      etl::list<int, 10> l(10, 1);
+      CHECK(l.size() == 10);
+      l.assign(5, 2);
+      CHECK(l.size() == 5);
+      l.insert(l.begin(), 5, 3);
+      CHECK(l.size() == l.max_size());
+    }
+    
+    //*************************************************************************
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    TEST(test_forward_list_template_deduction)
+    {
+      etl::list data{ ItemNDC("A"), ItemNDC("B"), ItemNDC("C"), ItemNDC("D"), ItemNDC("E"), ItemNDC("F") };
+
+      auto v = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same_v<ItemNDC, Type>));
+
+      decltype(data)::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(ItemNDC("A"), *itr++);
+      CHECK_EQUAL(ItemNDC("B"), *itr++);
+      CHECK_EQUAL(ItemNDC("C"), *itr++);
+      CHECK_EQUAL(ItemNDC("D"), *itr++);
+      CHECK_EQUAL(ItemNDC("E"), *itr++);
+      CHECK_EQUAL(ItemNDC("F"), *itr++);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_HAS_INITIALIZER_LIST
+    TEST(test_make_list)
+    {
+      auto data = etl::make_list<ItemNDC>(ItemNDC("A"), ItemNDC("B"), ItemNDC("C"), ItemNDC("D"), ItemNDC("E"), ItemNDC("F"));
+
+      auto v = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same_v<ItemNDC, Type>));
+
+      decltype(data)::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(ItemNDC("A"), *itr++);
+      CHECK_EQUAL(ItemNDC("B"), *itr++);
+      CHECK_EQUAL(ItemNDC("C"), *itr++);
+      CHECK_EQUAL(ItemNDC("D"), *itr++);
+      CHECK_EQUAL(ItemNDC("E"), *itr++);
+      CHECK_EQUAL(ItemNDC("F"), *itr++);
+    }
+#endif
   };
 }

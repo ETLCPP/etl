@@ -12,6 +12,26 @@ else()
 	message(STATUS "Compiling for STL")
 endif()
 
+if (ETL_USE_TYPE_TRAITS_BUILTINS)
+	message(STATUS "Compiling for built-in type traits")
+	add_definitions(-DETL_USE_TYPE_TRAITS_BUILTINS)
+endif()
+
+if (ETL_USE_MEM_BUILTINS)
+	message(STATUS "Compiling for built-in memory functions")
+	add_definitions(-DETL_USE_MEM_BUILTINS)
+endif()
+
+if (ETL_USER_DEFINED_TYPE_TRAITS)
+	message(STATUS "Compiling for user defined type traits")
+	add_definitions(-DETL_USER_DEFINED_TYPE_TRAITS)
+endif()
+
+if (ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
+	message(STATUS "Compiling for C++03 tests")
+	add_definitions(-DETL_FORCE_TEST_CPP03_IMPLEMENTATION)
+endif()
+
 add_library(t14 OBJECT)
 target_compile_definitions(t14 PRIVATE __STDC_LIMIT_MACROS __STDC_CONSTANT_MACROS __STDC_FORMAT_MACROS)
 target_include_directories(t14 PRIVATE "")
@@ -33,14 +53,22 @@ target_sources(t14 PRIVATE etl_profile.h
         ../basic_string.h.t.cpp
         ../basic_string_stream.h.t.cpp
         ../binary.h.t.cpp
-        ../bitset.h.t.cpp
+        ../bip_buffer_spsc_atomic.h.t.cpp
+        ../bit.h.t.cpp
+        ../bitset_legacy.h.t.cpp
+        ../bitset_new.h.t.cpp
         ../bit_stream.h.t.cpp
+        ../byte.h.t.cpp
+        ../byte_stream.h.t.cpp
         ../bloom_filter.h.t.cpp
         ../bresenham_line.h.t.cpp
         ../buffer_descriptors.h.t.cpp
         ../callback.h.t.cpp
         ../callback_service.h.t.cpp
         ../callback_timer.h.t.cpp
+        ../callback_timer_atomic.h.t.cpp
+        ../callback_timer_interrupt.h.t.cpp
+        ../callback_timer_locked.h.t.cpp
         ../char_traits.h.t.cpp
         ../checksum.h.t.cpp
         ../circular_buffer.h.t.cpp
@@ -95,7 +123,6 @@ target_sources(t14 PRIVATE etl_profile.h
         ../crc8_maxim.h.t.cpp
         ../crc8_rohc.h.t.cpp
         ../crc8_wcdma.h.t.cpp
-        ../cumulative_moving_average.h.t.cpp
         ../cyclic_value.h.t.cpp
         ../debounce.h.t.cpp
         ../debug_count.h.t.cpp
@@ -130,6 +157,7 @@ target_sources(t14 PRIVATE etl_profile.h
         ../histogram.h.t.cpp
         ../imemory_block_allocator.h.t.cpp
         ../indirect_vector.h.t.cpp
+        ../initializer_list.h.t.cpp
         ../instance_count.h.t.cpp
         ../integral_limits.h.t.cpp
         ../intrusive_forward_list.h.t.cpp
@@ -151,27 +179,36 @@ target_sources(t14 PRIVATE etl_profile.h
         ../map.h.t.cpp
         ../math_constants.h.t.cpp
         ../mean.h.t.cpp
+        ../mem_cast.h.t.cpp
         ../memory.h.t.cpp
         ../memory_model.h.t.cpp
         ../message.h.t.cpp
+        ../message_broker.h.t.cpp
         ../message_bus.h.t.cpp
         ../message_packet.h.t.cpp
         ../message_router.h.t.cpp
         ../message_router_registry.h.t.cpp
         ../message_timer.h.t.cpp
+        ../message_timer_atomic.h.t.cpp
+        ../message_timer_interrupt.h.t.cpp
+        ../message_timer_locked.h.t.cpp
         ../message_types.h.t.cpp
         ../multimap.h.t.cpp
         ../multiset.h.t.cpp
         ../multi_array.h.t.cpp
         ../multi_range.h.t.cpp
+        ../multi_span.h.t.cpp
+        ../multi_vector.h.t.cpp
         ../murmur3.h.t.cpp
         ../mutex.h.t.cpp
         ../negative.h.t.cpp
+        ../nth_type.h.t.cpp
         ../nullptr.h.t.cpp
         ../null_type.h.t.cpp
         ../numeric.h.t.cpp
         ../observer.h.t.cpp
         ../optional.h.t.cpp
+        ../overload.h.t.cpp
         ../packet.h.t.cpp
         ../parameter_pack.h.t.cpp
         ../parameter_type.h.t.cpp
@@ -179,9 +216,11 @@ target_sources(t14 PRIVATE etl_profile.h
         ../permutations.h.t.cpp
         ../placement_new.h.t.cpp
         ../platform.h.t.cpp
+        ../poly_span.h.t.cpp
         ../pool.h.t.cpp
         ../power.h.t.cpp
         ../priority_queue.h.t.cpp
+        ../pseudo_moving_average.h.t.cpp
         ../quantize.h.t.cpp
         ../queue.h.t.cpp
         ../queue_lockable.h.t.cpp
@@ -205,6 +244,7 @@ target_sources(t14 PRIVATE etl_profile.h
         ../scheduler.h.t.cpp
         ../set.h.t.cpp
         ../shared_message.h.t.cpp
+        ../singleton.h.t.cpp
         ../smallest.h.t.cpp
         ../span.h.t.cpp
         ../sqrt.h.t.cpp
@@ -234,6 +274,7 @@ target_sources(t14 PRIVATE etl_profile.h
         ../u32format_spec.h.t.cpp
         ../u32string.h.t.cpp
         ../u32string_stream.h.t.cpp
+        ../unaligned_type.h.t.cpp
         ../unordered_map.h.t.cpp
         ../unordered_multimap.h.t.cpp
         ../unordered_multiset.h.t.cpp
@@ -241,7 +282,8 @@ target_sources(t14 PRIVATE etl_profile.h
         ../user_type.h.t.cpp
         ../utility.h.t.cpp
         ../variance.h.t.cpp
-        ../variant.h.t.cpp
+        ../variant_legacy.h.t.cpp
+        ../variant_variadic.h.t.cpp
         ../variant_pool.h.t.cpp
         ../vector.h.t.cpp
         ../version.h.t.cpp

@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove, rlindeman
+Copyright(c) 2014 John Wellbelove, rlindeman
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -37,23 +37,21 @@ SOFTWARE.
 #include "algorithm.h"
 #include "iterator.h"
 #include "functional.h"
-#include "container.h"
 #include "pool.h"
 #include "exception.h"
 #include "error_handler.h"
 #include "debug_count.h"
 #include "nullptr.h"
 #include "type_traits.h"
+#include "nth_type.h"
 #include "parameter_type.h"
 #include "iterator.h"
 #include "utility.h"
 #include "placement_new.h"
-
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
-  #include <initializer_list>
-#endif
+#include "initializer_list.h"
 
 #include "private/minmax_push.h"
+#include "private/comparator_is_transparent.h"
 
 //*****************************************************************************
 /// A multimap with the capacity defined at compile time.
@@ -196,9 +194,12 @@ namespace etl
       /// Constructor
       //***********************************************************************
       Node() :
+        parent(ETL_NULLPTR),
         weight((uint_least8_t) kNeither),
         dir((uint_least8_t) kNeither)
       {
+        children[0] = ETL_NULLPTR;
+        children[1] = ETL_NULLPTR;
       }
 
       //***********************************************************************
@@ -630,7 +631,7 @@ namespace etl
     typedef TKeyCompare                    key_compare;
     typedef value_type&                    reference;
     typedef const value_type&              const_reference;
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     typedef value_type&&                   rvalue_reference;
 #endif
     typedef value_type*                    pointer;
@@ -667,7 +668,7 @@ namespace etl
     };
 
     /// Defines the key value parameter type
-    typedef typename etl::parameter_type<TKey>::type key_parameter_t;
+    typedef const TKey& key_parameter_t;
 
     //*************************************************************************
     /// How to compare node elements.
@@ -686,6 +687,20 @@ namespace etl
     {
       return kcompare(key, node.value.first);
     }
+
+#if ETL_USING_CPP11
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    bool node_comp(const Data_Node& node, const K& key) const
+    {
+      return kcompare(node.value.first, key);
+    }
+
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    bool node_comp(const K& key, const Data_Node& node) const
+    {
+      return kcompare(key, node.value.first);
+    }
+#endif
 
   private:
 
@@ -738,7 +753,7 @@ namespace etl
       friend class imultimap;
       friend class const_iterator;
 
-      iterator()
+      iterator() 
         : p_multimap(ETL_NULLPTR)
         , p_node(ETL_NULLPTR)
       {
@@ -936,6 +951,13 @@ namespace etl
       }
 
     private:
+
+      // Convert to an iterator.
+      imultimap::iterator to_iterator() const
+      {
+        return imultimap::iterator(const_cast<imultimap&>(*p_multimap), const_cast<Node*>(p_node));
+      }
+
       // Pointer to multimap associated with this iterator
       const imultimap* p_multimap;
 
@@ -1077,16 +1099,34 @@ namespace etl
       return count_nodes(key);
     }
 
+#if ETL_USING_CPP11
+    //*********************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    size_type count(const K& key) const
+    {
+      return count_nodes(key);
+    }
+#endif
+
     //*************************************************************************
     /// Returns two iterators with bounding (lower bound, upper bound) the key
     /// provided
     //*************************************************************************
     ETL_OR_STD::pair<iterator, iterator> equal_range(key_parameter_t key)
     {
-      return ETL_OR_STD::make_pair<iterator, iterator>(
-        iterator(*this, find_lower_node(root_node, key)),
-        iterator(*this, find_upper_node(root_node, key)));
+      return ETL_OR_STD::make_pair<iterator, iterator>(iterator(*this, find_lower_node(root_node, key)),
+                                                       iterator(*this, find_upper_node(root_node, key)));
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    ETL_OR_STD::pair<iterator, iterator> equal_range(const K& key)
+    {
+      return ETL_OR_STD::make_pair<iterator, iterator>(iterator(*this, find_lower_node(root_node, key)),
+                                                       iterator(*this, find_upper_node(root_node, key)));
+    }
+#endif
 
     //*************************************************************************
     /// Returns two const iterators with bounding (lower bound, upper bound)
@@ -1094,18 +1134,27 @@ namespace etl
     //*************************************************************************
     ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
     {
-      return ETL_OR_STD::make_pair<const_iterator, const_iterator>(
-        const_iterator(*this, find_lower_node(root_node, key)),
-        const_iterator(*this, find_upper_node(root_node, key)));
+      return ETL_OR_STD::make_pair<const_iterator, const_iterator>(const_iterator(*this, find_lower_node(root_node, key)),
+                                                                   const_iterator(*this, find_upper_node(root_node, key)));
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const K& key) const
+    {
+      return ETL_OR_STD::make_pair<const_iterator, const_iterator>(const_iterator(*this, find_lower_node(root_node, key)),
+                                                                   const_iterator(*this, find_upper_node(root_node, key)));
+    }
+#endif
 
     //*************************************************************************
     /// Erases the value at the specified position.
     //*************************************************************************
-    void erase(iterator position)
+    iterator erase(iterator position)
     {
       // Remove the node by its node specified in iterator position
-      (void)erase(const_iterator(position));
+      return erase(const_iterator(position));
     }
 
     //*************************************************************************
@@ -1140,7 +1189,7 @@ namespace etl
         // Increment count for each node removed
         ++d;
         // Remove node using the other erase method
-        (void)erase(lower++);
+        lower = erase(lower);
       }
 
       // Return the total count erased
@@ -1148,31 +1197,38 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Erases a range of elements.
-    //*************************************************************************
-    iterator erase(iterator first, iterator last)
+#if ETL_USING_CPP11
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    size_type erase(K&& key)
     {
-      iterator next;
-      while (first != last)
+      // Number of nodes removed
+      size_type d = 0;
+      const_iterator lower(*this, find_lower_node(root_node, etl::forward<K>(key)));
+      const_iterator upper(*this, find_upper_node(root_node, etl::forward<K>(key)));
+      while (lower != upper)
       {
-        next = erase(const_iterator(first++));
+        // Increment count for each node removed
+        ++d;
+        // Remove node using the other erase method
+        lower = erase(lower);
       }
 
-      return next;
+      // Return the total count erased
+      return d;
     }
+#endif
 
     //*************************************************************************
     /// Erases a range of elements.
     //*************************************************************************
     iterator erase(const_iterator first, const_iterator last)
     {
-      iterator next;
       while (first != last)
       {
-        next = erase(first++);
+        first = erase(first);
       }
 
-      return next;
+      return last.to_iterator();
     }
 
     //*********************************************************************
@@ -1185,6 +1241,15 @@ namespace etl
       return iterator(*this, find_node(root_node, key));
     }
 
+#if ETL_USING_CPP11
+    //*********************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    iterator find(const K& k)
+    {
+      return iterator(*this, find_node(root_node, k));
+    }
+#endif
+
     //*********************************************************************
     /// Finds an element.
     ///\param key The key to search for.
@@ -1194,6 +1259,15 @@ namespace etl
     {
       return const_iterator(*this, find_node(root_node, key));
     }
+
+#if ETL_USING_CPP11
+    //*********************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    const_iterator find(const K& k) const
+    {
+      return const_iterator(*this, find_node(root_node, k));
+    }
+#endif
 
     //*********************************************************************
     /// Inserts a value to the multimap.
@@ -1217,7 +1291,7 @@ namespace etl
       return iterator(*this, inserted_node);
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Inserts a value to the multimap.
     /// If asserts or exceptions are enabled, emits map_full if the multimap is already full.
@@ -1247,37 +1321,13 @@ namespace etl
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
-    iterator insert(iterator /*position*/, const_reference value)
-    {
-      // Ignore position provided and just do a normal insert
-      return insert(value);
-    }
-
-    //*********************************************************************
-    /// Inserts a value to the multimap starting at the position recommended.
-    /// If asserts or exceptions are enabled, emits map_full if the multimap is already full.
-    ///\param position The position that would precede the value to insert.
-    ///\param value    The value to insert.
-    //*********************************************************************
     iterator insert(const_iterator /*position*/, const_reference value)
     {
       // Ignore position provided and just do a normal insert
       return insert(value);
     }
 
-#if ETL_CPP11_SUPPORTED
-    //*********************************************************************
-    /// Inserts a value to the multimap starting at the position recommended.
-    /// If asserts or exceptions are enabled, emits map_full if the multimap is already full.
-    ///\param position The position that would precede the value to insert.
-    ///\param value    The value to insert.
-    //*********************************************************************
-    iterator insert(iterator /*position*/, rvalue_reference value)
-    {
-      // Ignore position provided and just do a normal insert
-      return insert(etl::move(value));
-    }
-
+#if ETL_USING_CPP11
     //*********************************************************************
     /// Inserts a value to the multimap starting at the position recommended.
     /// If asserts or exceptions are enabled, emits map_full if the multimap is already full.
@@ -1303,7 +1353,8 @@ namespace etl
     {
       while (first != last)
       {
-        insert(*first++);
+        insert(*first);
+        ++first;
       }
     }
 
@@ -1318,6 +1369,15 @@ namespace etl
       return iterator(*this, find_lower_node(root_node, key));
     }
 
+#if ETL_USING_CPP11
+    //*********************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    iterator lower_bound(const K& key)
+    {
+      return iterator(*this, find_lower_node(root_node, key));
+    }
+#endif
+
     //*********************************************************************
     /// Returns a const_iterator pointing to the first element in the
     /// container whose key is not considered to go before the key provided
@@ -1328,6 +1388,15 @@ namespace etl
     {
       return const_iterator(*this, find_lower_node(root_node, key));
     }
+
+#if ETL_USING_CPP11
+    //*********************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    const_iterator lower_bound(const K& key) const
+    {
+      return const_iterator(*this, find_lower_node(root_node, key));
+    }
+#endif
 
     //*********************************************************************
     /// Returns an iterator pointing to the first element in the container
@@ -1340,6 +1409,15 @@ namespace etl
       return iterator(*this, find_upper_node(root_node, key));
     }
 
+#if ETL_USING_CPP11
+    //*********************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    iterator upper_bound(const K& key)
+    {
+      return iterator(*this, find_upper_node(root_node, key));
+    }
+#endif
+
     //*********************************************************************
     /// Returns a const_iterator pointing to the first element in the
     /// container whose key is not considered to go after the key provided
@@ -1350,6 +1428,15 @@ namespace etl
     {
       return const_iterator(*this, find_upper_node(root_node, key));
     }
+
+#if ETL_USING_CPP11
+    //*********************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    const_iterator upper_bound(const K& key) const
+    {
+      return const_iterator(*this, find_upper_node(root_node, key));
+    }
+#endif
 
     //*************************************************************************
     /// Assignment operator.
@@ -1365,7 +1452,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -1380,7 +1467,8 @@ namespace etl
 
         while (from != rhs.end())
         {
-          this->insert(etl::move(*from++));
+          this->insert(etl::move(*from));
+          ++from;
         }
       }
 
@@ -1403,6 +1491,23 @@ namespace etl
     {
       return vcompare;
     };
+
+    //*************************************************************************
+    /// Check if the map contains the key.
+    //*************************************************************************
+    bool contains(const TKey& key) const
+    {
+      return find(key) != end();
+    }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    bool contains(const K& k) const
+    {
+      return find(k) != end();
+    }
+#endif
 
   protected:
 
@@ -1441,7 +1546,7 @@ namespace etl
       return node;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Allocate a Data_Node.
     //*************************************************************************
@@ -1505,10 +1610,43 @@ namespace etl
       return result;
     }
 
+#if ETL_USING_CPP11
+    //*************************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    size_type count_nodes(const K& key) const
+    {
+      // Number of nodes that match the key provided result
+      size_type result = 0;
+
+      // Find lower and upper nodes for the key provided
+      const Node* lower = find_lower_node(root_node, key);
+      const Node* upper = find_upper_node(root_node, key);
+
+      // Loop from lower node to upper node and find nodes that match
+      while (lower != upper)
+      {
+        // Downcast found to Data_Node class for comparison and other operations
+        const Data_Node& data_node = imultimap::data_cast(*lower);
+
+        if (!node_comp(key, data_node) && !node_comp(data_node, key))
+        {
+          // This node matches the key provided
+          ++result;
+        }
+
+        // Move on to the next node
+        next_node(lower);
+      }
+
+      // Return the number of nodes that match
+      return result;
+    }
+#endif
+
     //*************************************************************************
     /// Find the value matching the node provided
     //*************************************************************************
-    Node* find_node(Node* position, key_parameter_t key) const
+    Node* find_node(Node* position, key_parameter_t key)
     {
       Node* found = ETL_NULLPTR;
       while (position)
@@ -1537,6 +1675,40 @@ namespace etl
       // Return the node found (might be ETL_NULLPTR)
       return found;
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    Node* find_node(Node* position, const K& key)
+    {
+      Node* found = ETL_NULLPTR;
+      while (position)
+      {
+        // Downcast found to Data_Node class for comparison and other operations
+        Data_Node& data_node = imultimap::data_cast(*position);
+        // Compare the node value to the current position value
+        if (node_comp(key, data_node))
+        {
+          // Keep searching for the node on the left
+          position = position->children[(uint_least8_t)kLeft];
+        }
+        else if (node_comp(data_node, key))
+        {
+          // Keep searching for the node on the right
+          position = position->children[(uint_least8_t)kRight];
+        }
+        else
+        {
+          // We found one, keep looking for more on the left
+          found = position;
+          position = position->children[(uint_least8_t)kLeft];
+        }
+      }
+
+      // Return the node found (might be ETL_NULLPTR)
+      return found;
+    }
+#endif
 
     //*************************************************************************
     /// Find the value matching the node provided
@@ -1570,6 +1742,42 @@ namespace etl
       // Return the node found (might be ETL_NULLPTR)
       return found;
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    /// Find the value matching the node provided
+    //*************************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    const Node* find_node(const Node* position, const K& key) const
+    {
+      const Node* found = ETL_NULLPTR;
+      while (position)
+      {
+        // Downcast found to Data_Node class for comparison and other operations
+        const Data_Node& data_node = imultimap::data_cast(*position);
+        // Compare the node value to the current position value
+        if (node_comp(key, data_node))
+        {
+          // Keep searching for the node on the left
+          position = position->children[(uint_least8_t)kLeft];
+        }
+        else if (node_comp(data_node, key))
+        {
+          // Keep searching for the node on the right
+          position = position->children[(uint_least8_t)kRight];
+        }
+        else
+        {
+          // We found one, keep looking for more on the left
+          found = position;
+          position = position->children[(uint_least8_t)kLeft];
+        }
+      }
+
+      // Return the node found (might be ETL_NULLPTR)
+      return found;
+    }
+#endif
 
     //*************************************************************************
     /// Find the node whose key is not considered to go before the key provided
@@ -1611,6 +1819,48 @@ namespace etl
       // Return the lower_node position found
       return lower_node;
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    Node* find_lower_node(Node* position, const K& key) const
+    {
+      // Something at this position? keep going
+      Node* lower_node = ETL_NULLPTR;
+      while (position)
+      {
+        // Downcast lower node to Data_Node reference for key comparisons
+        Data_Node& data_node = imultimap::data_cast(*position);
+        // Compare the key value to the current lower node key value
+        if (node_comp(key, data_node))
+        {
+          lower_node = position;
+          if (position->children[(uint_least8_t)kLeft])
+          {
+            position = position->children[(uint_least8_t)kLeft];
+          }
+          else
+          {
+            // Found lowest node
+            break;
+          }
+        }
+        else if (node_comp(data_node, key))
+        {
+          position = position->children[(uint_least8_t)kRight];
+        }
+        else
+        {
+          // Make note of current position, but keep looking to left for more
+          lower_node = position;
+          position = position->children[(uint_least8_t)kLeft];
+        }
+      }
+
+      // Return the lower_node position found
+      return lower_node;
+    }
+#endif
 
     //*************************************************************************
     /// Find the node whose key is considered to go after the key provided
@@ -1654,6 +1904,50 @@ namespace etl
       // Return the upper node position found (might be ETL_NULLPTR)
       return upper_node;
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+    Node* find_upper_node(Node* position, const K& key) const
+    {
+      // Keep track of parent of last upper node
+      Node* upper_node = ETL_NULLPTR;
+      // Has an equal node been found? start with no
+      bool found = false;
+      while (position)
+      {
+        // Downcast position to Data_Node reference for key comparisons
+        Data_Node& data_node = imultimap::data_cast(*position);
+        // Compare the key value to the current upper node key value
+        if (node_comp(data_node, key))
+        {
+          position = position->children[(uint_least8_t)kRight];
+        }
+        else if (node_comp(key, data_node))
+        {
+          upper_node = position;
+          // If a node equal to key hasn't been found go left
+          if (!found && position->children[(uint_least8_t)kLeft])
+          {
+            position = position->children[(uint_least8_t)kLeft];
+          }
+          else
+          {
+            break;
+          }
+        }
+        else
+        {
+          // We found an equal item, break on next bigger item
+          found = true;
+          next_node(position);
+        }
+      }
+
+      // Return the upper node position found (might be ETL_NULLPTR)
+      return upper_node;
+    }
+#endif
 
     //*************************************************************************
     /// Insert a node.
@@ -2045,7 +2339,7 @@ namespace etl
       }
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
@@ -2058,7 +2352,11 @@ namespace etl
 
         while (from != other.end())
         {
-          this->insert(etl::move(*from++));
+          typename etl::imultimap<TKey, TValue, TCompare>::iterator temp = from;
+          ++temp;
+
+          this->insert(etl::move(*from));
+          from = temp;
         }
       }
     }
@@ -2077,7 +2375,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************
@@ -2110,7 +2408,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -2122,7 +2420,11 @@ namespace etl
 
         while (from != rhs.end())
         {
-          this->insert(etl::move(*from++));
+          typename etl::imultimap<TKey, TValue, TCompare>::iterator temp = from;
+          ++temp;
+
+          this->insert(etl::move(*from));
+          from = temp;
         }
       }
 
@@ -2139,13 +2441,23 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
-  template <typename T, typename... Ts>
-  multimap(T, Ts...)
-    ->multimap<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), typename T::first_type>,
-                typename T::second_type,
-                1U + sizeof...(Ts)>;
-#endif 
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
+  template <typename... TPairs>
+  multimap(TPairs...) -> multimap<typename etl::nth_type_t<0, TPairs...>::first_type,
+                                  typename etl::nth_type_t<0, TPairs...>::second_type,
+                                  sizeof...(TPairs)>;
+#endif
+
+  //*************************************************************************
+  /// Make
+  //*************************************************************************
+#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
+  template <typename TKey, typename TMapped, typename TKeyCompare = etl::less<TKey>, typename... TPairs>
+  constexpr auto make_multimap(TPairs&&... pairs) -> etl::multimap<TKey, TMapped, sizeof...(TPairs), TKeyCompare>
+  {
+    return { {etl::forward<TPairs>(pairs)...} };
+  }
+#endif
 
   //***************************************************************************
   /// Equal operator.

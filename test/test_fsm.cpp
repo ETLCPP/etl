@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2017 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -341,7 +341,7 @@ namespace
       CHECK(motorControl.is_producer());
       CHECK(motorControl.is_consumer());
 
-      motorControl.Initialise(stateList, etl::size(stateList));
+      motorControl.Initialise(stateList, std::size(stateList));
       motorControl.reset();
       motorControl.ClearStatistics();
 
@@ -480,7 +480,7 @@ namespace
     {
       etl::null_message_router nmr;
 
-      motorControl.Initialise(stateList, etl::size(stateList)); 
+      motorControl.Initialise(stateList, std::size(stateList)); 
       motorControl.reset();
       motorControl.ClearStatistics();
 
@@ -529,7 +529,7 @@ namespace
     {
       etl::null_message_router nmr;
 
-      motorControl.Initialise(stateList, etl::size(stateList));
+      motorControl.Initialise(stateList, std::size(stateList));
       motorControl.reset();
       motorControl.ClearStatistics();
 

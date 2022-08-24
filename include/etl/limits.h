@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 jwellbelove
+Copyright(c) 2018 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -73,8 +73,8 @@ SOFTWARE.
 #if !defined(HUGE_VAL)
   // Looks like we don't have these macros defined.
   // They're compiler implementation dependent, so we'll make them the same as the max values.
-  #define HUGE_VAL  FLT_MAX
-  #define HUGE_VALF DBL_MAX
+  #define HUGE_VALF FLT_MAX
+  #define HUGE_VAL  DBL_MAX
   #define HUGE_VALL LDBL_MAX
 #endif
 
@@ -271,7 +271,32 @@ namespace etl
     static ETL_CONSTEXPR signed char signaling_NaN() { return 0; }
   };
 
-#if (ETL_NO_LARGE_CHAR_SUPPORT == false)
+#if ETL_HAS_NATIVE_CHAR8_T
+  //***************************************************************************
+  // char8_t
+  template<>
+  class numeric_limits<char8_t> : public etl_integral_limits
+  {
+  public:
+
+    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(char8_t)) - (etl::is_signed<char8_t>::value ? 1 : 0);
+    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
+    static ETL_CONSTANT bool is_signed = etl::is_signed<char8_t>::value;
+    static ETL_CONSTANT bool is_modulo = false;
+
+    static ETL_CONSTEXPR char8_t min() { return char8_t(CHAR_MIN); }
+    static ETL_CONSTEXPR char8_t max() { return char8_t(CHAR_MAX); }
+    static ETL_CONSTEXPR char8_t lowest() { return char8_t(CHAR_MIN); }
+    static ETL_CONSTEXPR char8_t epsilon() { return 0; }
+    static ETL_CONSTEXPR char8_t round_error() { return 0; }
+    static ETL_CONSTEXPR char8_t denorm_min() { return 0; }
+    static ETL_CONSTEXPR char8_t infinity() { return 0; }
+    static ETL_CONSTEXPR char8_t quiet_NaN() { return 0; }
+    static ETL_CONSTEXPR char8_t signaling_NaN() { return 0; }
+  };
+#endif
+
+#if ETL_HAS_NATIVE_CHAR16_T
   //***************************************************************************
   // char16_t
   template<>
@@ -294,7 +319,9 @@ namespace etl
     static ETL_CONSTEXPR char16_t quiet_NaN() { return 0U; }
     static ETL_CONSTEXPR char16_t signaling_NaN() { return 0U; }
   };
+#endif
 
+#if ETL_HAS_NATIVE_CHAR32_T
   //***************************************************************************
   // char32_t
   template<>
@@ -317,7 +344,6 @@ namespace etl
     static ETL_CONSTEXPR char32_t quiet_NaN() { return 0U; }
     static ETL_CONSTEXPR char32_t signaling_NaN() { return 0U; }
   };
-
 #endif
 
   //***************************************************************************
@@ -331,7 +357,6 @@ namespace etl
     static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
     static ETL_CONSTANT bool is_signed = etl::is_signed<wchar_t>::value;
     static ETL_CONSTANT bool is_modulo = etl::is_unsigned<wchar_t>::value;
-
     static ETL_CONSTEXPR wchar_t min() { return WCHAR_MIN; }
     static ETL_CONSTEXPR wchar_t max() { return WCHAR_MAX; }
     static ETL_CONSTEXPR wchar_t lowest() { return WCHAR_MIN; }

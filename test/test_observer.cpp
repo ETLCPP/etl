@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -30,43 +30,46 @@ SOFTWARE.
 
 #include "etl/observer.h"
 
-//*****************************************************************************
-// Notification1
-//*****************************************************************************
-struct Notification1
+namespace
 {
-};
+  //*****************************************************************************
+  // Notification1
+  //*****************************************************************************
+  struct Notification1
+  {
+  };
 
-//*****************************************************************************
-// Notification2
-//*****************************************************************************
-struct Notification2
-{
-};
+  //*****************************************************************************
+  // Notification2
+  //*****************************************************************************
+  struct Notification2
+  {
+  };
 
-//*****************************************************************************
-// Notification3
-//*****************************************************************************
-struct Notification3
-{
-};
+  //*****************************************************************************
+  // Notification3
+  //*****************************************************************************
+  struct Notification3
+  {
+  };
 
-//*****************************************************************************
-// Generic notification.
-//*****************************************************************************
-template <const int ID>
-struct Notification
-{
-};
+  //*****************************************************************************
+  // Generic notification.
+  //*****************************************************************************
+  template <const int ID>
+  struct Notification
+  {
+  };
 
-//*****************************************************************************
-// The observer base type.
-// Declare what notifications you want to observe and how they are passed to 'notification'.
-// The Notification1 is passed by value.
-// The Notification2 is passed by reference.
-// The Notification3 is passed by const reference.
-//*****************************************************************************
-typedef etl::observer<Notification1, Notification2&, const Notification3&> ObserverType;
+  //*****************************************************************************
+  // The observer base type.
+  // Declare what notifications you want to observe and how they are passed to 'notification'.
+  // The Notification1 is passed by value.
+  // The Notification2 is passed by reference.
+  // The Notification3 is passed by const reference.
+  //*****************************************************************************
+  typedef etl::observer<Notification1, Notification2&, const Notification3&> ObserverType;
+}
 
 //*****************************************************************************
 // The concrete observable 1 class.
@@ -77,13 +80,14 @@ public:
 
 	Notification1 data1;
 	Notification2 data2;
+  Notification1& data3 = data1;
 
   //*********************************
   // Notify all of the observers.
   //*********************************
 	void send_notifications()
 	{
-		notify_observers(data1);
+		notify_observers(data3);
     notify_observers(data2);
 	}
 };
@@ -456,31 +460,31 @@ namespace
       Observer observer5;
 
       observable.add_observer(observer1);
-      CHECK_EQUAL(size_t(1), observable.number_of_observers());
+      CHECK_EQUAL(size_t(1UL), observable.number_of_observers());
 
       observable.add_observer(observer2);
-      CHECK_EQUAL(size_t(2), observable.number_of_observers());
+      CHECK_EQUAL(size_t(2UL), observable.number_of_observers());
 
       observable.add_observer(observer3);
-      CHECK_EQUAL(size_t(3), observable.number_of_observers());
+      CHECK_EQUAL(size_t(3UL), observable.number_of_observers());
 
       observable.add_observer(observer2);
-      CHECK_EQUAL(size_t(3), observable.number_of_observers());
+      CHECK_EQUAL(size_t(3UL), observable.number_of_observers());
 
       observable.add_observer(observer4);
-      CHECK_EQUAL(size_t(4), observable.number_of_observers());
+      CHECK_EQUAL(size_t(4UL), observable.number_of_observers());
 
       CHECK_THROW(observable.add_observer(observer5), etl::observer_list_full);
 
       CHECK(observable.remove_observer(observer3));
-      CHECK_EQUAL(size_t(3), observable.number_of_observers());
+      CHECK_EQUAL(size_t(3UL), observable.number_of_observers());
 
       // Try again.
       CHECK(!observable.remove_observer(observer3));
-      CHECK_EQUAL(size_t(3), observable.number_of_observers());
+      CHECK_EQUAL(size_t(3UL), observable.number_of_observers());
 
       observable.clear_observers();
-      CHECK_EQUAL(size_t(0), observable.number_of_observers());
+      CHECK_EQUAL(size_t(0UL), observable.number_of_observers());
     }
   }
 }

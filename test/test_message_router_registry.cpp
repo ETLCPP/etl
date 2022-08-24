@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2021 jwellbelove
+Copyright(c) 2021 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -46,7 +46,7 @@ namespace
     ROUTER5 = 50
   };
 
-  constexpr size_t Registry_Size = 4U;
+  constexpr size_t Registry_Size = 4UL;
 
   struct Message1 : public etl::message<1>
   {
@@ -64,7 +64,7 @@ namespace
     {
     }
 
-    void on_receive(const Message1& msg)
+    void on_receive(const Message1&)
     {
     }
 
@@ -85,7 +85,7 @@ namespace
     {
     }
 
-    void on_receive(const Message1& msg)
+    void on_receive(const Message1&)
     {
     }
 
@@ -106,7 +106,7 @@ namespace
     {
     }
 
-    void on_receive(const Message1& msg)
+    void on_receive(const Message1&)
     {
     }
 
@@ -127,7 +127,7 @@ namespace
     {
     }
 
-    void on_receive(const Message1& msg)
+    void on_receive(const Message1&)
     {
     }
 
@@ -148,7 +148,7 @@ namespace
     {
     }
 
-    void on_receive(const Message1& msg)
+    void on_receive(const Message1&)
     {
     }
 
@@ -264,7 +264,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_registery_contains)
+    TEST(test_registry_contains)
     {
       etl::imessage_router* routers[] = { &router1, &router2, &router3 };
       etl::message_router_registry<Registry_Size> registry(std::begin(routers), std::end(routers));

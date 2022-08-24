@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2016 jwellbelove
+Copyright(c) 2016 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -35,12 +35,9 @@ SOFTWARE.
 #include "basic_string.h"
 #include "string_view.h"
 #include "hash.h"
+#include "initializer_list.h"
 
 #include <ctype.h>
-
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
-  #include <initializer_list>
-#endif
 
 #include "private/minmax_push.h"
 
@@ -154,7 +151,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
@@ -237,7 +234,7 @@ namespace etl
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
     void repair()
-#ifdef ETL_ISTRING_REPAIR_ENABLE
+#if ETL_HAS_ISTRING_REPAIR
       ETL_OVERRIDE
 #endif
     {
@@ -360,7 +357,7 @@ namespace etl
       this->assign(first, last);
     }
 
-#if ETL_CPP11_SUPPORTED && ETL_NOT_USING_STLPORT && ETL_USING_STL
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
@@ -422,7 +419,7 @@ namespace etl
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
     void repair()
-#ifdef ETL_ISTRING_REPAIR_ENABLE
+#if ETL_HAS_ISTRING_REPAIR
       ETL_OVERRIDE
 #endif
     {
@@ -439,7 +436,7 @@ namespace etl
   //*************************************************************************
   /// Hash function.
   //*************************************************************************
-#if ETL_8BIT_SUPPORT
+#if ETL_USING_8BIT_TYPES
   template <>
   struct hash<etl::istring>
   {

@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -36,6 +36,8 @@ SOFTWARE.
 
 #include "platform.h"
 
+#if ETL_USING_8BIT_TYPES
+
 // The default hash calculation.
 #include "fnv_1.h"
 #include "type_traits.h"
@@ -58,7 +60,7 @@ namespace etl
     {
       uint32_t h = fnv_1a_32(begin, end);
 
-      return static_cast<size_t>(h ^ (h >> 16));
+      return static_cast<size_t>(h ^ (h >> 16U));
     }
 
     //*************************************************************************
@@ -237,7 +239,7 @@ namespace etl
     size_t operator ()(long v) const
     {
       // If it's the same size as a size_t.
-      if (sizeof(size_t) >= sizeof(v))
+      if ETL_IF_CONSTEXPR(sizeof(size_t) >= sizeof(v))
       {
         return static_cast<size_t>(v);
       }
@@ -259,7 +261,7 @@ namespace etl
     size_t operator ()(long long v) const
     {
       // If it's the same size as a size_t.
-      if (sizeof(size_t) >= sizeof(v))
+      if ETL_IF_CONSTEXPR(sizeof(size_t) >= sizeof(v))
       {
         return static_cast<size_t>(v);
       }
@@ -281,7 +283,7 @@ namespace etl
     size_t  operator ()(unsigned long v) const
     {
       // If it's the same size as a size_t.
-      if (sizeof(size_t) >= sizeof(v))
+      if ETL_IF_CONSTEXPR(sizeof(size_t) >= sizeof(v))
       {
         return static_cast<size_t>(v);
       }
@@ -303,7 +305,7 @@ namespace etl
     size_t  operator ()(unsigned long long v) const
     {
       // If it's the same size as a size_t.
-      if (sizeof(size_t) >= sizeof(v))
+      if ETL_IF_CONSTEXPR(sizeof(size_t) >= sizeof(v))
       {
         return static_cast<size_t>(v);
       }
@@ -325,7 +327,7 @@ namespace etl
     size_t operator ()(float v) const
     {
       // If it's the same size as a size_t.
-      if (sizeof(size_t) == sizeof(v))
+      if ETL_IF_CONSTEXPR(sizeof(size_t) == sizeof(v))
       {
         union
         {
@@ -355,7 +357,7 @@ namespace etl
     size_t  operator ()(double v) const
     {
       // If it's the same size as a size_t.
-      if (sizeof(size_t) == sizeof(v))
+      if ETL_IF_CONSTEXPR(sizeof(size_t) == sizeof(v))
       {
         union
         {
@@ -385,7 +387,7 @@ namespace etl
     size_t operator ()(long double v) const
     {
       // If it's the same size as a size_t.
-      if (sizeof(size_t) == sizeof(v))
+      if ETL_IF_CONSTEXPR(sizeof(size_t) == sizeof(v))
       {
         union
         {
@@ -435,5 +437,7 @@ namespace etl
     }
   };
 }
+
+#endif // ETL_USING_8BIT_TYPES
 
 #endif

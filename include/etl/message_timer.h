@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2017 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -354,7 +354,7 @@ namespace etl
         if (!router_.is_null_router())
         {
           // Search for the free space.
-          for (uint_least8_t i = 0; i < MAX_TIMERS; ++i)
+          for (uint_least8_t i = 0U; i < MAX_TIMERS; ++i)
           {
             etl::message_timer_data& timer = timer_array[i];
 
@@ -618,6 +618,17 @@ namespace etl
     volatile bool enabled;
 
 #if defined(ETL_MESSAGE_TIMER_USE_ATOMIC_LOCK)
+  
+#if defined(ETL_TIMER_SEMAPHORE_TYPE)
+  typedef ETL_TIMER_SEMAPHORE_TYPE timer_semaphore_t;
+#else
+  #if ETL_HAS_ATOMIC
+    typedef etl::atomic_uint16_t timer_semaphore_t;
+  #else
+    #error No atomic type available
+  #endif
+#endif
+
     volatile etl::timer_semaphore_t process_semaphore;
 #endif
     volatile uint_least8_t registered_timers;

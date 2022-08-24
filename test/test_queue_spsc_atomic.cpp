@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 jwellbelove
+Copyright(c) 2018 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -150,6 +150,7 @@ namespace
       CHECK(!queue.pop(i));
     }
 
+#if !defined(ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_move_push_pop)
     {
@@ -184,6 +185,7 @@ namespace
       queue.pop(pr);
       CHECK_EQUAL(4, pr.value);
     }
+#endif
 
     //*************************************************************************
     TEST(test_size_push_pop_iqueue)
@@ -267,6 +269,44 @@ namespace
 
       CHECK(!queue.pop());
       CHECK(!queue.pop());
+    }
+
+    //*************************************************************************
+    TEST(test_size_push_front_pop)
+    {
+      etl::queue_spsc_atomic<int, 4> queue;
+
+      CHECK_EQUAL(0U, queue.size());
+
+      queue.push(1);
+      queue.push(2);
+      queue.push(3);
+      queue.push(4);
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK_EQUAL(1, queue.front());
+      CHECK_EQUAL(4U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(3U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(2U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK_EQUAL(4, queue.front());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK_EQUAL(4, queue.front());
+      CHECK_EQUAL(1U, queue.size());
+
+      CHECK(queue.pop());
+      CHECK_EQUAL(0U, queue.size());
     }
 
     //*************************************************************************
@@ -360,17 +400,17 @@ namespace
       #error No thread priority modifier defined
     #endif
 
-    size_t ticks = 0;
+    size_t ticks = 0UL;
 
     etl::queue_spsc_atomic<int, 10> queue;
 
-    const size_t LENGTH = 1000000;
+    const size_t LENGTH = 1000000UL;
 
     void timer_event()
     {
       FIX_PROCESSOR_AFFINITY1;
 
-      const size_t TICK = 1;
+      const size_t TICK = 1UL;
       size_t tick = TICK;
       ticks = 1;
 
@@ -407,7 +447,7 @@ namespace
 
       CHECK_EQUAL(LENGTH, tick_list.size());
 
-      for (size_t i = 0; i < LENGTH; ++i)
+      for (size_t i = 0UL; i < LENGTH; ++i)
       {
         CHECK_EQUAL(i + 1, tick_list[i]);
       }

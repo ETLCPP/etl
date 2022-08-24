@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2017 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -44,7 +44,9 @@ namespace etl
 #ifdef ETL_TIMER_SEMAPHORE_TYPE
   typedef ETL_TIMER_SEMAPHORE_TYPE timer_semaphore_t;
 #else
-  typedef etl::atomic_uint32_t timer_semaphore_t;
+  #if ETL_HAS_ATOMIC
+    typedef etl::atomic_uint32_t timer_semaphore_t;
+  #endif
 #endif
 
   //***************************************************************************
@@ -92,7 +94,7 @@ namespace etl
     {
       enum
       {
-        INACTIVE = 0xFFFFFFFF
+        INACTIVE = 0xFFFFFFFFUL
       };
     };
   };

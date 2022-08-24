@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -55,6 +55,7 @@ namespace
       CHECK(type);
     }
 
+#if !defined(ETL_LARGEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_pod_type_vt)
     {
@@ -73,6 +74,7 @@ namespace
       CHECK_EQUAL(sizeof(int), size);
       CHECK(type);
     }
+#endif
 
     //*************************************************************************
     TEST(test_non_pod_type)
@@ -97,6 +99,7 @@ namespace
       CHECK(type);
     }
 
+#if !defined(ETL_LARGEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_non_pod_type_vt)
     {
@@ -119,6 +122,7 @@ namespace
       CHECK_EQUAL(sizeof(S3), size);
       CHECK(type);
     }
+#endif
 
     //*************************************************************************
     TEST(test_pod_alignment)

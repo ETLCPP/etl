@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2017 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -134,6 +134,7 @@ namespace
       CHECK((etl::is_same<Type16, typename Type_Id_Lookup16::type_from_id<Type16::ID>::type>::value));
     }
 
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_type_from_id_t_16)
     {
@@ -154,6 +155,7 @@ namespace
       CHECK((etl::is_same<Type15, typename Type_Id_Lookup16::type_from_id_t<Type15::ID>>::value));
       CHECK((etl::is_same<Type16, typename Type_Id_Lookup16::type_from_id_t<Type16::ID>>::value));
     }
+#endif
 
     //*************************************************************************
     TEST(test_type_from_id_8)
@@ -168,6 +170,7 @@ namespace
       CHECK((etl::is_same<Type16, typename Type_Id_Lookup8::type_from_id<Type16::ID>::type>::value));
     }
 
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_type_from_id_t_8)
     {
@@ -180,6 +183,7 @@ namespace
       CHECK((etl::is_same<Type15, typename Type_Id_Lookup8::type_from_id_t<Type15::ID>>::value));
       CHECK((etl::is_same<Type16, typename Type_Id_Lookup8::type_from_id_t<Type16::ID>>::value));
     }
+#endif
 
     //*************************************************************************
     TEST(test_type_from_id_1)
@@ -187,11 +191,13 @@ namespace
       CHECK((etl::is_same<Type16, typename Type_Id_Lookup1::type_from_id<Type16::ID>::type>::value));
     }
 
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_type_from_id_t_1)
     {
       CHECK((etl::is_same<Type16, typename Type_Id_Lookup1::type_from_id_t<Type16::ID>>::value));
     }
+#endif
 
     //*************************************************************************
     TEST(test_id_from_type_16)
@@ -247,6 +253,7 @@ namespace
       CHECK_EQUAL((unsigned int)Type16::ID, (unsigned int)Type_Id_Lookup16::get_id_from_type(Type16()));
     }
 
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_id_from_type_v_16)
     {
@@ -267,6 +274,7 @@ namespace
       CHECK_EQUAL((unsigned int)Type15::ID, (unsigned int)Type_Id_Lookup16::id_from_type_v<Type15>);
       CHECK_EQUAL((unsigned int)Type16::ID, (unsigned int)Type_Id_Lookup16::id_from_type_v<Type16>);
     }
+#endif
 
     //*************************************************************************
     TEST(test_id_from_type_8)
@@ -298,6 +306,7 @@ namespace
       CHECK_EQUAL((unsigned int)Type16::ID, (unsigned int)Type_Id_Lookup8::get_id_from_type(Type16()));
     }
 
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_id_from_type_v_8)
     {
@@ -310,6 +319,7 @@ namespace
       CHECK_EQUAL((unsigned int)Type15::ID, (unsigned int)Type_Id_Lookup8::id_from_type_v<Type15>);
       CHECK_EQUAL((unsigned int)Type16::ID, (unsigned int)Type_Id_Lookup8::id_from_type_v<Type16>);
     }
+#endif
 
     //*************************************************************************
     TEST(test_id_from_type_1)
@@ -320,11 +330,13 @@ namespace
       CHECK_EQUAL((unsigned int)Type16::ID, (unsigned int)Type_Id_Lookup1::get_id_from_type(Type16()));
     }
 
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_id_from_type_v_1)
     {
       CHECK_EQUAL((unsigned int)Type16::ID, (unsigned int)Type_Id_Lookup1::id_from_type_v<Type16>);
     }
+#endif
 
     //*************************************************************************
     TEST(test_type_from_type_16)
@@ -347,6 +359,7 @@ namespace
       CHECK((etl::is_same<Type15, typename Type_Type_Lookup16::type_from_type<Type16>::type>::value));
     }
 
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_type_from_type_t_16)
     {
@@ -367,6 +380,7 @@ namespace
       CHECK((etl::is_same<Type16, typename Type_Type_Lookup16::type_from_type_t<Type15>>::value));
       CHECK((etl::is_same<Type15, typename Type_Type_Lookup16::type_from_type_t<Type16>>::value));
     }
+#endif
 
     //*************************************************************************
     TEST(test_type_from_type_8)
@@ -381,6 +395,7 @@ namespace
       CHECK((etl::is_same<Type7, typename Type_Type_Lookup8::type_from_type<Type8>::type>::value));
     }
 
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_type_from_type_t_8)
     {
@@ -393,6 +408,7 @@ namespace
       CHECK((etl::is_same<Type8, typename Type_Type_Lookup8::type_from_type_t<Type7>>::value));
       CHECK((etl::is_same<Type7, typename Type_Type_Lookup8::type_from_type_t<Type8>>::value));
     }
+#endif
 
     //*************************************************************************
     TEST(test_type_from_type_1)
@@ -400,10 +416,12 @@ namespace
       CHECK((etl::is_same<Type2, typename Type_Type_Lookup1::type_from_type<Type1>::type>::value));
     }
 
+#if !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_type_from_type_t_1)
     {
       CHECK((etl::is_same<Type2, typename Type_Type_Lookup1::type_from_type_t<Type1>>::value));
     }
+#endif
   };
 }

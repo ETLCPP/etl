@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2019 jwellbelove
+Copyright(c) 2019 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -33,8 +33,8 @@ SOFTWARE.
 
 namespace
 {
-  const size_t SIZE   = 3U;
-  const size_t OFFSET = 5U;
+  const size_t SIZE   = 3UL;
+  const size_t OFFSET = 5UL;
 
   typedef etl::callback_service<SIZE, OFFSET> Service;
 

@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -38,7 +38,7 @@ SOFTWARE.
 #include "etl/murmur3.h"
 
 namespace
-{		
+{
   SUITE(test_murmur3)
   {
     //*************************************************************************
@@ -61,7 +61,7 @@ namespace
 
       etl::murmur3<uint32_t> murmur3_32_calculator;
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         murmur3_32_calculator.add(data[i]);
       }
@@ -94,8 +94,8 @@ namespace
     //*************************************************************************
     TEST(test_murmur3_32_add_range_endian)
     {
-      std::vector<uint8_t>  data1 = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
-      std::vector<uint32_t> data2 = { 0x04030201, 0x08070605 };
+      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint32_t> data2 = { 0x04030201UL, 0x08070605UL };
 
       uint32_t hash1 = etl::murmur3<uint32_t>(data1.begin(), data1.end());
       uint32_t hash2 = etl::murmur3<uint32_t>((uint8_t*)&data2[0], (uint8_t*)&data2[0] + (data2.size() * sizeof(uint32_t)));

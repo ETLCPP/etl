@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2017 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -77,11 +77,11 @@ namespace etl
 
       static_assert(etl::is_one_of<T, TTypes...>::value, "T is not in parameter pack");
 
-      /// The idex value.
+      /// The index value.
       static constexpr size_t value = index_of_type_helper<T, TTypes...>::value - 1;
     };
 
-#if ETL_CPP17_SUPPORTED
+#if ETL_USING_CPP17
     template <typename T>
     static constexpr size_t index_of_type_v = index_of_type<T>::value;
 #endif
@@ -120,6 +120,14 @@ namespace etl
     template <size_t I>
     using type_from_index_t = typename type_from_index<I>::type;
   };
+
+  template <size_t Index, typename... TTypes>
+  using parameter_pack_t = typename etl::parameter_pack<TTypes...>::template type_from_index_t<Index>;
+
+#if ETL_USING_CPP17
+  template <typename T, typename... TTypes>
+  inline constexpr size_t parameter_pack_v = etl::parameter_pack<TTypes...>::template index_of_type<T>::value;
+#endif
 }
 #endif
 #endif

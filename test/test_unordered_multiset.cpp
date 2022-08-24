@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2016 jwellbelove
+Copyright(c) 2016 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -162,9 +162,9 @@ namespace
       CHECK(data.begin() == data.end());
     }
 
-#if ETL_USING_STL && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
-    TEST(test_cpp17_deduced_constructor)
+    TEST_FIXTURE(SetupFixture, test_cpp17_deduced_constructor)
     {
       etl::unordered_multiset data{ N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
       etl::unordered_multiset<NDC, 10U> check = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
@@ -208,14 +208,19 @@ namespace
 
       CHECK(!data1.empty()); // Move does not clear the source.
 
-      CHECK_EQUAL(1, ItemM(1).value);
-      CHECK_EQUAL(2, ItemM(2).value);
-      CHECK_EQUAL(3, ItemM(3).value);
-      CHECK_EQUAL(4, ItemM(4).value);
+      CHECK(data2.find(ItemM(1)) != data2.end());
+      CHECK(data2.find(ItemM(2)) != data2.end());
+      CHECK(data2.find(ItemM(3)) != data2.end());
+      CHECK(data2.find(ItemM(4)) != data2.end());
+
+      CHECK(data2.find(ItemM(1))->valid);
+      CHECK(data2.find(ItemM(2))->valid);
+      CHECK(data2.find(ItemM(3))->valid);
+      CHECK(data2.find(ItemM(4))->valid);
     }
 
     //*************************************************************************
-    TEST(test_destruct_via_iunordered_multiset)
+    TEST_FIXTURE(SetupFixture, test_destruct_via_iunordered_multiset)
     {
       int current_count = NDC::get_instance_count();
 
@@ -266,7 +271,9 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       DataNDC other_data(data);
 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
       other_data = other_data;
+#include "etl/private/diagnostic_pop.h" 
 
       bool isEqual = std::equal(data.begin(),
                                 data.end(),
@@ -294,11 +301,6 @@ namespace
       data2 = std::move(data1);
 
       CHECK(!data1.empty()); // Move does not clear the source.
-
-      CHECK_EQUAL(1, ItemM(1).value);
-      CHECK_EQUAL(2, ItemM(2).value);
-      CHECK_EQUAL(3, ItemM(3).value);
-      CHECK_EQUAL(4, ItemM(4).value);
     }
 
     //*************************************************************************
@@ -324,7 +326,7 @@ namespace
 
       DataNDC::iterator idata;
 
-      for (size_t i = 0; i < 10; ++i)
+      for (size_t i = 0UL; i < 10; ++i)
       {
         idata = data.find(initial_data[i]);
         CHECK(idata != data.end());
@@ -383,7 +385,7 @@ namespace
 
       data.insert(initial_data.begin(), initial_data.end());
 
-      for (size_t i = 0; i < data.size(); ++i)
+      for (size_t i = 0UL; i < data.size(); ++i)
       {
         DataNDC::iterator idata = data.find(initial_data[i]);
         CHECK(idata != data.end());
@@ -443,7 +445,27 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_erase_single)
+    TEST_FIXTURE(SetupFixture, test_erase_single_iterator)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      DataNDC::iterator idata = data.find(N5);
+      DataNDC::iterator inext = idata;
+      ++inext;
+
+      DataNDC::iterator iafter = data.erase(idata);
+      idata = data.find(N5);
+
+      CHECK(idata == data.end());
+      CHECK(inext == iafter);
+
+      // Test that erase really does erase from the pool.
+      CHECK(!data.full());
+      CHECK(!data.empty());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_erase_single_cont_iterator)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
@@ -454,7 +476,7 @@ namespace
       DataNDC::const_iterator iafter = data.erase(idata);
       idata = data.find(N5);
 
-      CHECK(idata == data.end());
+      CHECK(idata == data.cend());
       CHECK(inext == iafter);
 
       // Test that erase really does erase from the pool.
@@ -467,10 +489,10 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      DataNDC::iterator idata = data.begin();
+      DataNDC::const_iterator idata = data.cbegin();
       std::advance(idata, 2);
 
-      DataNDC::iterator idata_end = data.begin();
+      DataNDC::const_iterator idata_end = data.cbegin();
       std::advance(idata_end, 5);
 
       data.erase(idata, idata_end);
@@ -518,10 +540,10 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      DataNDC::iterator end = data.begin();
+      DataNDC::const_iterator end = data.cbegin();
       etl::advance(end, data.size() / 2);
 
-      auto itr = data.erase(data.begin(), end);
+      auto itr = data.erase(data.cbegin(), end);
 
       CHECK_EQUAL(initial_data.size() / 2, data.size());
       CHECK(!data.full());
@@ -534,10 +556,10 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      DataNDC::iterator begin = data.begin();
+      DataNDC::const_iterator begin = data.cbegin();
       etl::advance(begin, data.size() / 2);
 
-      auto itr = data.erase(begin, data.end());
+      auto itr = data.erase(begin, data.cend());
 
       CHECK_EQUAL(initial_data.size() / 2, data.size());
       CHECK(!data.full());
@@ -550,14 +572,13 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      auto itr = data.erase(data.begin(), data.end());
+      auto itr = data.erase(data.cbegin(), data.cend());
 
       CHECK_EQUAL(0U, data.size());
       CHECK(!data.full());
       CHECK(data.empty());
       CHECK(itr == data.end());
     }
-
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_clear)

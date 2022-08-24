@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2021 jwellbelove
+Copyright(c) 2021 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -54,7 +54,7 @@ namespace
   SUITE(test_standard_deviation)
   {
     //*************************************************************************
-    TEST(test_char_standard_deviation_default_constuctor)
+    TEST(test_char_standard_deviation_default_constructor)
     {
       etl::standard_deviation<etl::standard_deviation_type::Population, char, int32_t> standard_deviation;
 
@@ -64,7 +64,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_float_standard_deviation_default_constuctor)
+    TEST(test_float_standard_deviation_default_constructor)
     {
       etl::standard_deviation<etl::standard_deviation_type::Population, float> standard_deviation;
 
@@ -74,7 +74,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_double_standard_deviation_default_constuctor)
+    TEST(test_double_standard_deviation_default_constructor)
     {
       etl::standard_deviation<etl::standard_deviation_type::Population, double> standard_deviation;
 
@@ -84,7 +84,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_char_standard_deviation_constuctor_population)
+    TEST(test_char_standard_deviation_constructor_population)
     {
       double standard_deviation_result;
       double variance_result;
@@ -97,7 +97,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_char_standard_deviation_constuctor_sample)
+    TEST(test_char_standard_deviation_constructor_sample)
     {
       double standard_deviation_result;
       double variance_result;
@@ -110,7 +110,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_float_standard_deviation_constuctor_population)
+    TEST(test_float_standard_deviation_constructor_population)
     {
       double standard_deviation_result;
       double variance_result;
@@ -123,7 +123,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_float_standard_deviation_constuctor_sample)
+    TEST(test_float_standard_deviation_constructor_sample)
     {
       double standard_deviation_result;
       double variance_result;
@@ -136,7 +136,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_double_standard_deviation_constuctor_population)
+    TEST(test_double_standard_deviation_constructor_population)
     {
       double standard_deviation_result;
       double variance_result;
@@ -149,7 +149,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_double_standard_deviation_constuctor_sample)
+    TEST(test_double_standard_deviation_constructor_sample)
     {
       double standard_deviation_result;
       double variance_result;

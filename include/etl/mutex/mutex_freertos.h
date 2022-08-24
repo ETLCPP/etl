@@ -36,44 +36,45 @@ SOFTWARE.
 
 namespace etl
 {
-//***************************************************************************
-///\ingroup mutex
-///\brief This mutex class is implemented using FreeRTOS's mutexes
-//***************************************************************************
-class mutex
-{
- public:
-
-
-  mutex()
+  //***************************************************************************
+  ///\ingroup mutex
+  ///\brief This mutex class is implemented using FreeRTOS's mutexes
+  //***************************************************************************
+  class mutex
   {
-    access = xSemaphoreCreateMutexStatic(&mutex_allocation);
-  }
+  public:
 
-  void lock()
-  {
-    xSemaphoreTake(access, portMAX_DELAY); // portMAX_DELAY=block forever
-  }
+    mutex()
+    {
+      access = xSemaphoreCreateMutexStatic(&mutex_allocation);
+    }
 
-  bool try_lock()
-  {
-    return xSemaphoreTake(access, 0) == pdTRUE;
-  }
+    void lock()
+    {
+      xSemaphoreTake(access, portMAX_DELAY); // portMAX_DELAY=block forever
+    }
 
-  void unlock()
-  {
-    xSemaphoreGive(access);
-  }
+    bool try_lock()
+    {
+      return xSemaphoreTake(access, 0) == pdTRUE;
+    }
 
- private:
-  // Non-copyable
-  mutex(const mutex&);
-  mutex& operator=(const mutex&);
-  // Memory to hold the mutex
-  StaticSemaphore_t mutex_allocation;
-  // The mutex handle itself
-  SemaphoreHandle_t access;
-};
+    void unlock()
+    {
+      xSemaphoreGive(access);
+    }
+
+   private:
+    // Non-copyable
+    mutex(const mutex&) ETL_DELETE;
+    mutex& operator=(const mutex&) ETL_DELETE;
+
+    // Memory to hold the mutex
+    StaticSemaphore_t mutex_allocation;
+  
+    // The mutex handle itself
+    SemaphoreHandle_t access;
+  };
 }
 
 #endif

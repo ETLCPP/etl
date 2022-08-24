@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2020 jwellbelove
+Copyright(c) 2020 John Wellbelove
 
 Permission is hereby granted" free of charge" to any person obtaining a copy
 of this software and associated documentation files(the "Software")" to deal
@@ -92,5 +92,11 @@ SOFTWARE.
 #define ETL_QUEUE_SPSC_LOCKABLE_FILE_ID "59"
 #define ETL_MESSAGE_ROUTER_REGISTRY_FILE_ID "60"
 #define ETL_ARRAY_WRAPPER_FILE_ID "61"
+#define ETL_MEM_CAST_FILE_ID "62"
+#define ETL_SINGLETON_FILE_ID "63"
+#define ETL_SUCCESSOR_FILE_ID "64"
+#define ETL_BIT_STREAM_FILE_ID "65"
+#define ETL_BYTE_STREAM_FILE_ID "66"
+#define ETL_BIP_BUFFER_SPSC_ATOMIC_FILE_ID "67"
 
 #endif

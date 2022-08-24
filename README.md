@@ -1,14 +1,19 @@
 Embedded Template Library (ETL)
 -------------------------
 
+[![Release date](https://img.shields.io/github/release-date/jwellbelove/etl?color=%231182c3)](https://img.shields.io/github/release-date/jwellbelove/etl?color=%231182c3)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/jwellbelove/etl)
+[![Standard](https://img.shields.io/badge/c%2B%2B-98/03/11/14/17-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Sponsors](https://img.shields.io/github/sponsors/ETLCPP)](https://img.shields.io/github/sponsors/ETLCPP)
+
 ![CI](https://github.com/ETLCPP/etl/workflows/vs2019/badge.svg)
 ![CI](https://github.com/ETLCPP/etl/workflows/gcc/badge.svg)
 ![CI](https://github.com/ETLCPP/etl/workflows/clang/badge.svg)
+[![Build status](https://ci.appveyor.com/api/projects/status/b7jgecv7unqjw4u0/branch/master?svg=true)](https://ci.appveyor.com/project/jwellbelove/etl/branch/master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3c14cd918ccf40008d0bcd7b083d5946)](https://www.codacy.com/manual/jwellbelove/etl?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ETLCPP/etl&amp;utm_campaign=Badge_Grade)
 
-**Motivation**
+## Motivation
 
 C++ is a great language to use for embedded applications and templates are a powerful aspect. The standard library can offer a great deal of well tested functionality,  but there are some parts of the standard library that do not fit well with deterministic behaviour and limited resource requirements. These limitations usually preclude the use of dynamically allocated memory and containers with open ended sizes.
 
@@ -16,7 +21,7 @@ What is needed is a template library where the user can declare the size, or max
 
 This is what the ETL attempts to achieve.
 
-**Summary**
+## Summary
 
 The ETL is not designed to completely replace the STL, but complement it.
 Its design objective covers three areas.
@@ -30,7 +35,7 @@ It contains a set of containers, algorithms and utilities, some of which emulate
 There is no dynamic memory allocation. The library makes no use of the heap. All of the containers have a fixed capacity allowing all memory allocation to be determined at compile time.
 The library is intended for any compiler that supports C++ 03.
 
-**Main features:**
+## Main features
 
 - Cross platform. This library is not specific to any processor type.
 - No dynamic memory allocation
@@ -56,3 +61,70 @@ Any help porting the library to work under different platforms and compilers wou
 I am especially interested in people who are using Keil, IAR, Green Hills, TI Code Composer etc, bare metal or RTOS, and DSPs.
 
 See (https://www.etlcpp.com) for up-to-date information.
+
+## Installing this library
+
+You can find the setup steps [here](https://www.etlcpp.com/setup.html).
+
+### CMake
+
+One way to use this library is to drop it somewhere in your project directory
+and then make the library available by using `add_subdirectory`
+
+```cmake
+add_subdirectory(etl)
+add_executable(foo main.cpp)
+target_link_libraries(foo PRIVATE etl::etl)
+```
+
+If ETL library is used as a Git submodule it may require additional configuration for proper ETL version resolution by allowing the lookup for Git folder outside of the library root directory.
+
+```cmake
+set(GIT_DIR_LOOKUP_POLICY ALLOW_LOOKING_ABOVE_CMAKE_SOURCE_DIR)
+add_subdirectory(etl)
+```
+
+If you want to install this library with CMake, you can perform the following steps. On Linux,
+super user rights might be required to install the library, so it might be necessary to add
+`sudo` before the last command:
+
+```sh
+git clone https://github.com/ETLCPP/etl.git
+cd etl
+git checkout <targetVersion>
+cmake -B build .
+cmake --install build/
+```
+
+After the library has been installed, you can use
+[find_package](https://cmake.org/cmake/help/latest/command/find_package.html) to use the library.
+Replace `<majorVersionRequirement>` with your desired major version:
+
+```cmake
+find_package(etl <majorVersionRequirement>)
+add_executable(foo main.cpp)
+target_link_libraries(foo PRIVATE etl::etl)
+```
+
+
+Alternatively you can use [FetchContent](https://cmake.org/cmake/help/latest/module/FetchContent.html),
+replacing `<targetVersion>` with the version to install based on a git tag:
+
+```sh
+Include(FetchContent)
+
+FetchContent_Declare(
+  etl
+  GIT_REPOSITORY https://github.com/ETLCPP/etl
+  GIT_TAG        <targetVersion>
+)
+
+FetchContent_MakeAvailable(etl)
+
+add_executable(foo main.cpp)
+target_link_libraries(foo PRIVATE etl::etl)
+```
+
+## Arduino library
+
+The content of this repo is available as a library in the Arduino IDE (search for the "Embedded Template Library" in the IDE library manager). The Arduino library repository is available at ```https://github.com/ETLCPP/etl-arduino```, see there for more details.

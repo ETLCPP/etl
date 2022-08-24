@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -31,7 +31,7 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if (ETL_CPP11_SUPPORTED)
+#if (ETL_USING_CPP11)
   #define ETL_STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
 #else
   template <bool Condition>

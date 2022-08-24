@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2016 jwellbelove
+Copyright(c) 2016 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -33,10 +33,9 @@ SOFTWARE.
 
 #include "platform.h"
 #include "type_traits.h"
-#include "coordinate.h"
 
 #if defined(ETL_IN_UNIT_TEST) || ETL_USING_STL
-  #if ETL_CPP11_SUPPORTED
+  #if ETL_USING_CPP11
     #include <utility>
   #else
     #include <algorithm>
@@ -48,7 +47,7 @@ SOFTWARE.
 
 namespace etl
 {
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   //******************************************************************************
   template <typename T>
   constexpr typename etl::remove_reference<T>::type&& move(T&& t) ETL_NOEXCEPT
@@ -66,6 +65,7 @@ namespace etl
   template <typename T>
   constexpr T&& forward(typename etl::remove_reference<T>::type&& t) ETL_NOEXCEPT
   {
+    ETL_STATIC_ASSERT(!etl::is_lvalue_reference<T>::value, "Invalid rvalue to lvalue conversion");
     return static_cast<T&&>(t);
   }
 #endif
@@ -75,28 +75,18 @@ namespace etl
 #if ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST)
   //***************************************************************************
   // swap
-#if ETL_CPP11_SUPPORTED
   template <typename T>
-  void swap(T& a, T& b) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 void swap(T& a, T& b) ETL_NOEXCEPT
   {
-    T temp(etl::move(a));
-    a = etl::move(b);
-    b = etl::move(temp);
+    T temp(ETL_MOVE(a));
+    a = ETL_MOVE(b);
+    b = ETL_MOVE(temp);
   }
-#else
-  template <typename T>
-  void swap(T& a, T& b) ETL_NOEXCEPT
-  {
-    T temp(a);
-    a = b;
-    b = temp;
-  }
-#endif
 
   template< class T, size_t N >
-  void swap(T(&a)[N], T(&b)[N]) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 void swap(T(&a)[N], T(&b)[N]) ETL_NOEXCEPT
   {
-    for (size_t i = 0; i < N; ++i)
+    for (size_t i = 0UL; i < N; ++i)
     {
       swap(a[i], b[i]);
     }
@@ -127,7 +117,7 @@ namespace etl
     {
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     /// Move constructor from parameters
     template <typename U1, typename U2>
     ETL_CONSTEXPR14 pair(U1&& a, U2&& b)
@@ -152,7 +142,7 @@ namespace etl
     {
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     /// Move constructor
     template <typename U1, typename U2>
     ETL_CONSTEXPR14 pair(pair<U1, U2>&& other)
@@ -178,7 +168,7 @@ namespace etl
     {
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     /// Constructing to etl::pair
     template <typename U1, typename U2>
     pair(std::pair<U1, U2>&& other)
@@ -214,7 +204,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
     pair<T1, T2>& operator =(pair<T1, T2>&& other)
     {
       first = etl::forward<T1>(other.first);
@@ -235,7 +225,7 @@ namespace etl
   };
 
   //******************************************************************************
-#if ETL_CPP11_SUPPORTED
+#if ETL_USING_CPP11
   template <typename T1, typename T2>
   inline pair<T1, T2> make_pair(T1&& a, T2&& b)
   {
@@ -332,6 +322,194 @@ namespace etl
   {
     return t;
   }
+
+  //***************************************************************************
+  /// integer_sequence
+  //***************************************************************************
+#if ETL_USING_CPP11
+  template <typename T, T... Integers>
+  class integer_sequence
+  {
+  public:
+  
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Integral types only");
+
+    typedef T value_type;
+  
+    static ETL_CONSTEXPR size_t size() ETL_NOEXCEPT 
+    { 
+      return sizeof...(Integers);
+    }
+  };
+
+  namespace private_integer_sequence
+  {
+    template <size_t N, typename IndexSeq>
+    struct make_index_sequence;
+
+    template <size_t N, size_t... Indices>
+    struct make_index_sequence<N, etl::integer_sequence<size_t, Indices...>>
+    {
+      typedef typename make_index_sequence<N - 1, etl::integer_sequence<size_t, N - 1, Indices...>>::type type;
+    };
+
+    template <size_t... Indices>
+    struct make_index_sequence<0, etl::integer_sequence<size_t, Indices...>>
+    {
+      typedef etl::integer_sequence<size_t, Indices...> type;
+    };
+  }
+
+  //***********************************
+  template <size_t N>
+  using make_index_sequence = typename private_integer_sequence::make_index_sequence<N, etl::integer_sequence<size_t>>::type;
+
+  //***********************************
+  template <size_t... Indices>
+  using index_sequence = etl::integer_sequence<size_t, Indices...>;
+#endif
+
+  //***************************************************************************
+  /// 2D coordinate type.
+  //***************************************************************************
+  template <typename T>
+  struct coordinate_2d
+  {
+    coordinate_2d()
+      : x(T(0))
+      , y(T(0))
+    {
+    }
+
+    coordinate_2d(T x_, T y_)
+      : x(x_)
+      , y(y_)
+    {
+    }
+
+    friend bool operator ==(const coordinate_2d& lhs, const coordinate_2d& rhs)
+    {
+      return (lhs.x == rhs.x) && (lhs.y == rhs.y);
+    }
+
+    friend bool operator !=(const coordinate_2d& lhs, const coordinate_2d& rhs)
+    {
+      return !(lhs == rhs);
+    }
+
+    T x;
+    T y;
+  };
+
+  //***************************************************************************
+  /// in_place disambiguation tags.
+  //***************************************************************************
+  
+  //*************************
+  struct in_place_t 
+  {
+    explicit ETL_CONSTEXPR in_place_t() {}
+  };
+
+#if ETL_USING_CPP17
+  inline constexpr in_place_t in_place{};
+#endif
+  
+  //*************************
+  template <typename T> struct in_place_type_t 
+  {
+    explicit ETL_CONSTEXPR in_place_type_t() {};
+  };
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr in_place_type_t<T> in_place_type{};
+#endif
+
+  //*************************
+  template <size_t I> struct in_place_index_t 
+  {
+    explicit ETL_CONSTEXPR in_place_index_t() {}
+  };
+
+#if ETL_USING_CPP17
+  template <size_t I>
+  inline constexpr in_place_index_t<I> in_place_index{};
+#endif
+
+#if ETL_USING_CPP11
+  //*************************************************************************
+  /// A function wrapper for free/global functions.
+  //*************************************************************************
+  template <typename TReturn, typename... TParams>
+  class functor
+  {
+  public:
+
+    //*********************************
+    /// Constructor.
+    //*********************************
+    constexpr functor(TReturn(*ptr_)(TParams...))
+      : ptr(ptr_)
+    {
+    }
+
+    //*********************************
+    /// Const function operator.
+    //*********************************
+    constexpr TReturn operator()(TParams... args) const
+    {
+      return ptr(etl::forward<TParams>(args)...);
+    }
+
+  private:
+
+    /// The pointer to the function.
+    TReturn(*ptr)(TParams...);
+  };
+#endif
+
+#if ETL_USING_CPP11
+  //*****************************************************************************
+  // A wrapper for a member function
+  // Creates a static member function that calls the specified member function.
+  //*****************************************************************************
+  template <typename T>
+  class member_function_wrapper;
+
+  template <typename TReturn, typename... TParams>
+  class member_function_wrapper<TReturn(TParams...)>
+  {
+  public:
+
+    template <typename T, T& Instance, TReturn(T::* Method)(TParams...)>
+    static constexpr TReturn function(TParams... params)
+    {
+      return (Instance.*Method)(etl::forward<TParams>(params)...);
+    }
+  };
+#endif
+
+#if ETL_USING_CPP11
+  //*****************************************************************************
+  // A wrapper for a functor
+  // Creates a static member function that calls the specified functor.
+  //*****************************************************************************
+  template <typename T>
+  class functor_wrapper;
+
+  template <typename TReturn, typename... TParams>
+  class functor_wrapper<TReturn(TParams...)>
+  {
+  public:
+
+    template <typename TFunctor, TFunctor& Instance>
+    static constexpr TReturn function(TParams... params)
+    {
+      return Instance(etl::forward<TParams>(params)...);
+    }
+  };
+#endif
 }
 
 #endif

@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -53,12 +53,37 @@ namespace
   SUITE(test_enum_type)
   {
     //*************************************************************************
-    TEST(Values)
+    TEST(test_values)
     {
       CHECK_EQUAL(0, enum_test::value_type(enum_test::ZERO));
       CHECK_EQUAL(1, enum_test::value_type(enum_test::ONE));
       CHECK_EQUAL(3, enum_test::value_type(enum_test::THREE));
       CHECK_EQUAL(4, enum_test::value_type(enum_test::FOUR));
+    }
+
+    //*************************************************************************
+    TEST(test_constexpr_values)
+    {
+      constexpr enum_test zero = enum_test::ZERO;
+      constexpr enum_test zero2(zero);
+      constexpr enum_test zero3 = zero;
+
+      constexpr int int_zero = zero;
+      constexpr int int_zero2 = zero.get_value();
+
+      constexpr enum_test enum_zero = zero;
+      constexpr enum_test enum_zero2 = zero.get_enum();
+
+      constexpr const char* string_zero = zero.c_str();
+
+      CHECK_EQUAL(0, zero.get_value());
+      CHECK_EQUAL(0, zero2.get_value());
+      CHECK_EQUAL(0, zero3.get_value());
+      CHECK_EQUAL(0, int_zero);
+      CHECK_EQUAL(0, int_zero2);
+      CHECK_EQUAL(0, enum_zero.get_value());
+      CHECK_EQUAL(0, enum_zero2.get_value());
+      CHECK_EQUAL(std::string("ZERO"), std::string(string_zero));
     }
 
     //*************************************************************************

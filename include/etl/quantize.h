@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2021 jwellbelove
+Copyright(c) 2021 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_QUANTATIZE_INCLUDED
-#define ETL_QUANTATIZE_INCLUDED
+#ifndef ETL_QUANTIZE_INCLUDED
+#define ETL_QUANTIZE_INCLUDED
 
 #include "platform.h"
 #include "functional.h"
@@ -64,7 +64,7 @@ namespace etl
     //*****************************************************************
     TInput operator ()(TInput value) const
     {
-      for (size_t i = 0; i < n_levels; ++i)
+      for (size_t i = 0UL; i < n_levels; ++i)
       {
         if (compare(value, p_thresholds[i]))
         {

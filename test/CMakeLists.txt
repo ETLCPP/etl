@@ -3,22 +3,34 @@ project(etl_unit_tests)
 
 add_definitions(-DETL_DEBUG)
 
-option(NO_STL "No STL" OFF)
+option(ETL_NO_STL "No STL" OFF)
 
-if (NO_STL)
+if (NO_STL OR ETL_NO_STL)
 	message(STATUS "Compiling for No STL")
 	add_definitions(-DETL_NO_STL)
 else()
 	message(STATUS "Compiling for STL")
 endif()
 
-if(NOT UnitTest++_FOUND)
-  # Add unittest-cpp as an ExternalProject
-  include(cmake/unit-test_external_project.cmake)
-  add_unittest_cpp()
+if (ETL_USE_TYPE_TRAITS_BUILTINS)
+	message(STATUS "Compiling for built-in type traits")
+	add_definitions(-DETL_USE_TYPE_TRAITS_BUILTINS)
 endif()
 
-include_directories(${UTPP_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/../include)
+if (ETL_USE_MEM_BUILTINS)
+	message(STATUS "Compiling for built-in memory functions")
+	add_definitions(-DETL_USE_MEM_BUILTINS)
+endif()
+
+if (ETL_USER_DEFINED_TYPE_TRAITS)
+	message(STATUS "Compiling for user defined type traits")
+	add_definitions(-DETL_USER_DEFINED_TYPE_TRAITS)
+endif()
+
+if (ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
+	message(STATUS "Compiling for C++03 tests")
+	add_definitions(-DETL_FORCE_TEST_CPP03_IMPLEMENTATION)
+endif()
 
 set(TEST_SOURCE_FILES
 	main.cpp
@@ -28,18 +40,29 @@ set(TEST_SOURCE_FILES
 	test_array.cpp
 	test_array_view.cpp
 	test_array_wrapper.cpp
-	test_atomic_clang_sync.cpp
-	test_atomic_gcc_sync.cpp
-	test_atomic_std.cpp
+	test_atomic.cpp
 	test_binary.cpp
-	test_bitset.cpp
+	test_bip_buffer_spsc_atomic.cpp
+	test_bit.cpp
+	test_bitset_legacy.cpp
+	test_bitset_new_default_element_type.cpp
+	test_bitset_new_explicit_single_element_type.cpp
 	test_bit_stream.cpp
+	test_bit_stream_reader_big_endian.cpp
+	test_bit_stream_reader_little_endian.cpp
+	test_bit_stream_writer_big_endian.cpp
+	test_bit_stream_writer_little_endian.cpp
+	test_byte.cpp
+	test_byte_stream.cpp
 	test_bloom_filter.cpp
 	test_bresenham_line.cpp
 	test_bsd_checksum.cpp
 	test_buffer_descriptors.cpp
 	test_callback_service.cpp
 	test_callback_timer.cpp
+	test_callback_timer_atomic.cpp
+	test_callback_timer_interrupt.cpp
+	test_callback_timer_locked.cpp
 	test_checksum.cpp
 	test_circular_buffer.cpp
 	test_circular_buffer_external_buffer.cpp
@@ -95,15 +118,17 @@ set(TEST_SOURCE_FILES
 	test_crc8_maxim.cpp
 	test_crc8_rohc.cpp
 	test_crc8_wcdma.cpp
-	test_cumulative_moving_average.cpp
 	test_cyclic_value.cpp
 	test_debounce.cpp
 	test_delegate.cpp
+	test_delegate_cpp03.cpp
 	test_delegate_service.cpp
+	test_delegate_service_compile_time.cpp
 	test_deque.cpp
 	test_endian.cpp
 	test_enum_type.cpp
 	test_error_handler.cpp
+	test_etl_traits.cpp
 	test_exception.cpp
 	test_fixed_iterator.cpp
 	test_fixed_sized_memory_block_allocator.cpp
@@ -145,17 +170,25 @@ set(TEST_SOURCE_FILES
 	test_map.cpp
 	test_maths.cpp
 	test_mean.cpp
-	test_memory.cpp
+	test_mem_cast.cpp
+	test_mem_cast_ptr.cpp
+    test_memory.cpp
+	test_message_broker.cpp
 	test_message_bus.cpp
 	test_message_packet.cpp
 	test_message_router.cpp
 	test_message_router_registry.cpp
 	test_message_timer.cpp
+	test_message_timer_atomic.cpp
+    test_message_timer_interrupt.cpp
+	test_message_timer_locked.cpp
 	test_multimap.cpp
 	test_multiset.cpp
 	test_multi_array.cpp
 	test_multi_range.cpp
+	test_multi_vector.cpp
 	test_murmur3.cpp
+	test_nth_type.cpp
 	test_numeric.cpp
 	test_observer.cpp
 	test_optional.cpp
@@ -164,8 +197,12 @@ set(TEST_SOURCE_FILES
 	test_parameter_type.cpp
 	test_parity_checksum.cpp
 	test_pearson.cpp
+	test_poly_span_dynamic_extent.cpp
+	test_poly_span_fixed_extent.cpp
 	test_pool.cpp
+	test_pool_external_buffer.cpp
 	test_priority_queue.cpp
+	test_pseudo_moving_average.cpp
 	test_quantize.cpp
 	test_queue.cpp
 	test_queue_lockable.cpp
@@ -189,13 +226,17 @@ set(TEST_SOURCE_FILES
 	test_scaled_rounding.cpp
 	test_set.cpp
 	test_shared_message.cpp
+	test_singleton.cpp
 	test_smallest.cpp
-	test_span.cpp
+	test_span_dynamic_extent.cpp
+	test_span_fixed_extent.cpp
 	test_stack.cpp
 	test_standard_deviation.cpp
 	test_state_chart.cpp
 	test_state_chart_with_data_parameter.cpp
 	test_state_chart_with_rvalue_data_parameter.cpp
+	test_state_chart_compile_time.cpp
+	test_state_chart_compile_time_with_data_parameter.cpp
 	test_string_char.cpp
 	test_string_char_external_buffer.cpp
 	test_string_stream.cpp
@@ -217,6 +258,7 @@ set(TEST_SOURCE_FILES
 	test_string_view.cpp
 	test_string_wchar_t.cpp
 	test_string_wchar_t_external_buffer.cpp
+	test_successor.cpp
 	test_task_scheduler.cpp
 	test_threshold.cpp
 	test_to_string.cpp
@@ -227,6 +269,8 @@ set(TEST_SOURCE_FILES
 	test_type_lookup.cpp
 	test_type_select.cpp
 	test_type_traits.cpp
+	test_unaligned_type.cpp
+	test_unaligned_type_constexpr.cpp
 	test_unordered_map.cpp
 	test_unordered_multimap.cpp
 	test_unordered_multiset.cpp
@@ -234,8 +278,10 @@ set(TEST_SOURCE_FILES
 	test_user_type.cpp
 	test_utility.cpp
 	test_variance.cpp
-	test_variant.cpp
+	test_variant_legacy.cpp
+	test_variant_variadic.cpp
 	test_variant_pool.cpp
+	test_variant_pool_external_buffer.cpp
 	test_vector.cpp
 	test_vector_external_buffer.cpp
 	test_vector_non_trivial.cpp
@@ -243,34 +289,89 @@ set(TEST_SOURCE_FILES
 	test_vector_pointer_external_buffer.cpp
 	test_visitor.cpp
 	test_xor_checksum.cpp
-	test_xor_rotate_checksum.cpp
+	test_xor_rotate_checksum.cpp 
+  )
+  
+set(UNITTEST_SOURCE_FILES
+    UnitTest++/AssertException.cpp
+    UnitTest++/Checks.cpp
+    UnitTest++/CompositeTestReporter.cpp                                            
+    UnitTest++/CurrentTest.cpp                                                      
+    UnitTest++/DeferredTestReporter.cpp                                             
+    UnitTest++/DeferredTestResult.cpp                                               
+    UnitTest++/MemoryOutStream.cpp                                                  
+    UnitTest++/ReportAssert.cpp                                                     
+    UnitTest++/RequiredCheckException.cpp                                           
+    UnitTest++/RequiredCheckTestReporter.cpp                                        
+    UnitTest++/Test.cpp                                                             
+    UnitTest++/TestDetails.cpp                                                      
+    UnitTest++/TestList.cpp                                                         
+    UnitTest++/TestReporter.cpp                                                     
+    UnitTest++/TestReporterStdout.cpp                                               
+    UnitTest++/TestResults.cpp                                                      
+    UnitTest++/TestRunner.cpp                                                       
+    UnitTest++/ThrowingTestReporter.cpp                                             
+    UnitTest++/TimeConstraint.cpp                                                   
+    UnitTest++/XmlTestReporter.cpp
   )
 
-if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  list(APPEND TEST_SOURCE_FILES "test_atomic_gcc_sync.cpp")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
-endif()
-add_executable(etl_tests
-  ${TEST_SOURCE_FILES}
+set(UNITTEST_DIR
+      UnitTest++
   )
+
+if (WIN32)
+  set(UNITTEST_SOURCE_FILES
+      ${UNITTEST_SOURCE_FILES}
+      UnitTest++/Win32/TimeHelpers.cpp
+  )
+else ()
+  set(UNITTEST_SOURCE_FILES
+	  ${UNITTEST_SOURCE_FILES}
+      UnitTest++/Posix/SignalTranslator.cpp
+      UnitTest++/Posix/TimeHelpers.cpp
+  )
+endif ()
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  message(STATUS "Using MSVC")
+endif()
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  message(STATUS "Using GNU")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+endif()
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  message(STATUS "Using Clang")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+endif()
+
+add_executable(etl_tests ${TEST_SOURCE_FILES})
+add_library(unit_test ${UNITTEST_SOURCE_FILES})
+include_directories(${PROJECT_SOURCE_DIR}/../include)
+target_include_directories(etl_tests SYSTEM PRIVATE ${UNITTEST_DIR})
+target_include_directories(etl_tests PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 
 if(UNIX AND NOT APPLE)
   # atomic is need on Linux with Clang
   set(THREADS_PREFER_PTHREAD_FLAG ON)
   find_package(Threads REQUIRED)
-  target_link_libraries(etl_tests UnitTest++ atomic Threads::Threads)
+  target_link_libraries(etl_tests unit_test atomic Threads::Threads)
 elseif(NOT UNIX AND APPLE)
   set(THREADS_PREFER_PTHREAD_FLAG ON)
   find_package(Threads REQUIRED)
-  target_link_libraries(etl_tests UnitTest++)
+  target_link_libraries(etl_tests unit_test)
 else()
-  target_link_libraries(etl_tests UnitTest++)
+  target_link_libraries(etl_tests unit_test)
 endif()
-
-target_include_directories(etl_tests
-  PUBLIC
-  ${CMAKE_CURRENT_LIST_DIR}
-  )
 
 # Enable the 'make test' CMake target using the executable defined above
 add_test(etl_unit_tests etl_tests)
@@ -280,7 +381,4 @@ add_test(etl_unit_tests etl_tests)
 # as they appear from UnitTest++
 add_custom_target(test_verbose COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
 
-
-#RSG
 set_property(TARGET etl_tests PROPERTY CXX_STANDARD 17)
-

@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2014 jwellbelove
+Copyright(c) 2014 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -43,6 +43,8 @@ SOFTWARE.
 #include "parameter_type.h"
 #include "static_assert.h"
 #include "error_handler.h"
+#include "nth_type.h"
+#include "initializer_list.h"
 
 ///\defgroup array array
 /// A replacement for std::array if you haven't got C++0x11.
@@ -351,7 +353,7 @@ namespace etl
     {
       using ETL_OR_STD::swap; // Allow ADL
 
-      for (size_t i = 0; i < SIZE; ++i)
+      for (size_t i = 0UL; i < SIZE; ++i)
       {
         swap(_buffer[i], other._buffer[i]);
       }
@@ -360,7 +362,7 @@ namespace etl
     //*************************************************************************
     /// Fills the array from the range.
     /// If the range is smaller than the array then the unused array elements are left unmodified.
-    ///\param first The iterator to the first item in the ramge.
+    ///\param first The iterator to the first item in the range.
     ///\param last  The iterator to one past the final item in the range.
     //*************************************************************************
     template <typename TIterator>
@@ -372,7 +374,7 @@ namespace etl
     //*************************************************************************
     /// Fills the array from the range.
     /// If the range is smaller than the array then the unused array elements are initialised with the supplied value.
-    ///\param first The iterator to the first item in the ramge.
+    ///\param first The iterator to the first item in the range.
     ///\param last  The iterator to one past the final item in the range.
     //*************************************************************************
     template <typename TIterator>
@@ -402,7 +404,7 @@ namespace etl
     //*************************************************************************
     iterator insert(const_iterator position, parameter_t value)
     {
-      iterator p = const_cast<iterator>(position);
+      iterator p = to_iterator(position);
 
       etl::move_backward(p, end() - 1, end());
       *p = value;
@@ -431,7 +433,7 @@ namespace etl
     template <typename TIterator>
     iterator insert(const_iterator position, TIterator first, const TIterator last)
     {
-      iterator p = const_cast<iterator>(position);
+      iterator p = to_iterator(position);
       iterator result(p);
 
       size_t source_size       = etl::distance(first, last);
@@ -467,7 +469,7 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator position)
     {
-      iterator p = const_cast<iterator>(position);
+      iterator p = to_iterator(position);
       etl::move(p + 1, end(), p);
 
       return p;
@@ -492,7 +494,7 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator first, const_iterator last)
     {
-      iterator p = const_cast<iterator>(first);
+      iterator p = to_iterator(first);
       etl::move(last, cend(), p);
       return p;
     }
@@ -514,7 +516,7 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator position, parameter_t value)
     {
-      iterator p = const_cast<iterator>(position);
+      iterator p = to_iterator(position);
 
       etl::move(p + 1, end(), p);
       back() = value;
@@ -540,26 +542,46 @@ namespace etl
     //*************************************************************************
     iterator erase(const_iterator first, const_iterator last, parameter_t value)
     {
-      iterator p = const_cast<iterator>(first);
+      iterator p = to_iterator(first);
 
       p = etl::move(last, cend(), p);
       etl::fill(p, end(), value);
 
-      return const_cast<iterator>(first);
+      return to_iterator(first);
     }
 
     /// The array data.
     T _buffer[SIZE];
+
+  private:
+
+    //*************************************************************************
+    /// Convert from const_iterator to iterator
+    //*************************************************************************
+    iterator to_iterator(const_iterator itr) const
+    {
+      return const_cast<iterator>(itr);
+    }
   };
 
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_CPP17_SUPPORTED
-  template <typename T, typename... Ts>
-  array(T, Ts...)
-      -> array<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
+#if ETL_USING_CPP17
+  template <typename... T>
+  array(T...) -> array<typename etl::common_type<T...>::type, sizeof...(T)>;
 #endif  
+
+  //*************************************************************************
+  /// Make
+  //*************************************************************************
+#if ETL_HAS_INITIALIZER_LIST
+  template <typename T, typename... TValues>
+  constexpr auto make_array(TValues&&... values) -> etl::array<T, sizeof...(TValues)>
+  {
+    return { { etl::forward<T>(values)... } };
+  }
+#endif
 
   //*************************************************************************
   /// Overloaded swap for etl::array<T, SIZE>

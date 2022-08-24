@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 jwellbelove
+Copyright(c) 2017 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -39,6 +39,7 @@ namespace
 {
   enum
   {
+    MESSAGE0,
     MESSAGE1,
     MESSAGE2,
     MESSAGE3,
@@ -53,16 +54,42 @@ namespace
     ROUTER3
   };
 
-  struct Message1 : public etl::message<MESSAGE1>
+  //***********************************
+  struct NotInterface
+  {
+    virtual ~NotInterface() {}
+    virtual int VirtualFunction() const = 0;
+  };
+
+  ////***********************************
+  // Uncomment to demonstrate static assert
+  //struct Message0 : public etl::message<MESSAGE0, NotInterface>
+  //{
+  //};
+
+  //***********************************
+  struct Interface : public etl::imessage
+  {
+    virtual int VirtualFunction() const = 0;
+  };
+
+  //***********************************
+  struct Message1 : public etl::message<MESSAGE1, Interface>
   {
     Message1(etl::imessage_router& callback_)
       : callback(callback_)
     {
     }
 
+    int VirtualFunction() const override
+    {
+      return 1;
+    }
+
     etl::imessage_router& callback;
   };
 
+  //***********************************
   struct Message2 : public etl::message<MESSAGE2>
   {
     Message2(etl::imessage_router& callback_)
@@ -73,6 +100,7 @@ namespace
     etl::imessage_router& callback;
   };
 
+  //***********************************
   struct Message3 : public etl::message<MESSAGE3>
   {
     Message3(etl::imessage_router& callback_)
@@ -84,6 +112,7 @@ namespace
     int value[10];
   };
 
+  //***********************************
   struct Message4 : public etl::message<MESSAGE4>
   {
     Message4(etl::imessage_router& callback_)
@@ -94,6 +123,7 @@ namespace
     etl::imessage_router& callback;
   };
 
+  //***********************************
   struct Message5 : public etl::message<MESSAGE5>
   {
   };
@@ -123,6 +153,7 @@ namespace
     {
       ++message1_count;
       etl::send_message(msg.callback, message5);
+      CHECK_EQUAL(1, msg.VirtualFunction());
     }
 
     void on_receive(const Message2& msg)
@@ -180,11 +211,24 @@ namespace
 
     }
 
+    Router2(etl::imessage_router& successor_)
+      : message_router(ROUTER2, successor_),
+        message1_count(0),
+        message2_count(0),
+        message4_count(0),
+        message_unknown_count(0),
+        callback_count(0),
+        sender_id(0)
+    {
+
+    }
+
     void on_receive(const Message1& msg)
     {
       ++message1_count;
       sender_id = msg.callback.get_message_router_id();
       etl::send_message(msg.callback, message5);
+      CHECK_EQUAL(1, msg.VirtualFunction());
     }
 
     void on_receive(const Message2& msg)
@@ -201,7 +245,7 @@ namespace
       etl::send_message(msg.callback, message5);
     }
 
-    void on_receive(const Message5& msg)
+    void on_receive(const Message5&)
     {
       ++callback_count;
     }
@@ -358,7 +402,8 @@ namespace
       CHECK_EQUAL(0, router.sender_id);
 
       // Send from the producer.
-      etl::send_message(router, message1);
+      router.receive(message1);
+      //etl::send_message(router, message1);
       CHECK_EQUAL(1, router.message1_count);
       CHECK_EQUAL(0, router.message2_count);
       CHECK_EQUAL(0, router.message4_count);
@@ -432,6 +477,37 @@ namespace
 
       CHECK(!r2.accepts(message3));
       CHECK(!r2.accepts(message3.get_message_id()));
+
+      CHECK(r2.accepts(message4));
+      CHECK(r2.accepts(message4.get_message_id()));
+
+      CHECK(r2.accepts(message5));
+      CHECK(r2.accepts(message5.get_message_id()));
+    }
+
+    //*************************************************************************
+    TEST(message_router_accepts_successors)
+    {
+      Router1 r1; // M1, M2, M3, M4, M5
+      Router2 r2; // M1, M2, M4, M5
+
+      r2.set_successor(r1);
+
+      etl::null_message_router null_router;
+
+      Message1 message1(null_router);
+      Message2 message2(null_router);
+      Message3 message3(null_router);
+      Message4 message4(null_router);
+
+      CHECK(r2.accepts(message1));
+      CHECK(r2.accepts(message1.get_message_id()));
+
+      CHECK(r2.accepts(message2));
+      CHECK(r2.accepts(message2.get_message_id()));
+
+      CHECK(r2.accepts(message3));
+      CHECK(r2.accepts(message3.get_message_id()));
 
       CHECK(r2.accepts(message4));
       CHECK(r2.accepts(message4.get_message_id()));
@@ -517,7 +593,7 @@ namespace
     TEST(message_router_successor)
     {
       Router1 r1;
-      Router2 r2;
+      Router2 r2(r1);
 
       etl::null_message_router null_router;
 
@@ -525,8 +601,6 @@ namespace
       Message2 message2(r2);
       Message3 message3(r2);
       Message4 message4(r2);
-
-      r2.set_successor(r1);
 
       etl::send_message(r2, message1);
       CHECK_EQUAL(1, r2.message1_count);
@@ -552,7 +626,7 @@ namespace
       CHECK_EQUAL(0, r1.message4_count);
       CHECK_EQUAL(0, r1.message_unknown_count);
 
-      etl::send_message(r2, message3);
+      r2.receive(message3);
       CHECK_EQUAL(1, r2.message1_count);
       CHECK_EQUAL(1, r2.message2_count);
       CHECK_EQUAL(0, r2.message4_count);
