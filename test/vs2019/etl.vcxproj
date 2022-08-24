@@ -2634,6 +2634,9 @@
     <ClInclude Include="..\..\include\etl\callback_timer_atomic.h" />
     <ClInclude Include="..\..\include\etl\callback_timer_interrupt.h" />
     <ClInclude Include="..\..\include\etl\callback_timer_locked.h" />
+    <ClInclude Include="..\..\include\etl\center_of_gravity_1d.h" />
+    <ClInclude Include="..\..\include\etl\center_of_gravity_2d.h" />
+    <ClInclude Include="..\..\include\etl\center_of_gravity_3d.h" />
     <ClInclude Include="..\..\include\etl\circular_buffer.h" />
     <ClInclude Include="..\..\include\etl\circular_iterator.h" />
     <ClInclude Include="..\..\include\etl\combinations.h" />
@@ -12429,6 +12432,9 @@
     <ClCompile Include="..\test_callback_timer_atomic.cpp" />
     <ClCompile Include="..\test_callback_timer_interrupt.cpp" />
     <ClCompile Include="..\test_callback_timer_locked.cpp" />
+    <ClCompile Include="..\test_center_of_gravity_1d.cpp" />
+    <ClCompile Include="..\test_center_of_gravity_2d.cpp" />
+    <ClCompile Include="..\test_center_of_gravity_3d.cpp" />
     <ClCompile Include="..\test_char_traits.cpp" />
     <ClCompile Include="..\test_circular_buffer.cpp" />
     <ClCompile Include="..\test_circular_buffer_external_buffer.cpp" />
