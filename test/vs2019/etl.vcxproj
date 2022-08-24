@@ -2379,6 +2379,7 @@
     <ClInclude Include="..\..\include\etl\bitset.h" />
     <ClInclude Include="..\..\include\etl\bit_stream.h" />
     <ClInclude Include="..\..\include\etl\bresenham_line.h" />
+    <ClInclude Include="..\..\include\etl\bresenham_line_pointer.h" />
     <ClInclude Include="..\..\include\etl\buffer_descriptors.h" />
     <ClInclude Include="..\..\include\etl\byte.h" />
     <ClInclude Include="..\..\include\etl\byte_stream.h" />
@@ -2386,10 +2387,14 @@
     <ClInclude Include="..\..\include\etl\callback_timer_atomic.h" />
     <ClInclude Include="..\..\include\etl\callback_timer_interrupt.h" />
     <ClInclude Include="..\..\include\etl\callback_timer_locked.h" />
+    <ClInclude Include="..\..\include\etl\center_of_gravity_1d.h" />
+    <ClInclude Include="..\..\include\etl\center_of_gravity_2d.h" />
+    <ClInclude Include="..\..\include\etl\center_of_gravity_3d.h" />
     <ClInclude Include="..\..\include\etl\circular_buffer.h" />
     <ClInclude Include="..\..\include\etl\combinations.h" />
     <ClInclude Include="..\..\include\etl\compare.h" />
     <ClInclude Include="..\..\include\etl\constant.h" />
+    <ClInclude Include="..\..\include\etl\coordinate.h" />
     <ClInclude Include="..\..\include\etl\correlation.h" />
     <ClInclude Include="..\..\include\etl\covariance.h" />
     <ClInclude Include="..\..\include\etl\crc.h" />
@@ -11260,6 +11265,7 @@
     <ClCompile Include="..\test_bit_stream_writer_big_endian.cpp" />
     <ClCompile Include="..\test_bit_stream_writer_little_endian.cpp" />
     <ClCompile Include="..\test_bresenham_line.cpp" />
+    <ClCompile Include="..\test_bresenham_line_pointer.cpp" />
     <ClCompile Include="..\test_buffer_descriptors.cpp" />
     <ClCompile Include="..\test_byte.cpp" />
     <ClCompile Include="..\test_byte_stream.cpp" />
@@ -11267,10 +11273,14 @@
     <ClCompile Include="..\test_callback_timer_atomic.cpp" />
     <ClCompile Include="..\test_callback_timer_interrupt.cpp" />
     <ClCompile Include="..\test_callback_timer_locked.cpp" />
+    <ClCompile Include="..\test_center_of_gravity_1d.cpp" />
+    <ClCompile Include="..\test_center_of_gravity_2d.cpp" />
+    <ClCompile Include="..\test_center_of_gravity_3d.cpp" />
     <ClCompile Include="..\test_char_traits.cpp" />
     <ClCompile Include="..\test_circular_buffer.cpp" />
     <ClCompile Include="..\test_circular_buffer_external_buffer.cpp" />
     <ClCompile Include="..\test_compiler_settings.cpp" />
+    <ClCompile Include="..\test_coordinate.cpp" />
     <ClCompile Include="..\test_correlation.cpp" />
     <ClCompile Include="..\test_covariance.cpp" />
     <ClCompile Include="..\test_crc16.cpp" />

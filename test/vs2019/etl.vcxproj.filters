@@ -65,9 +65,6 @@
     <Filter Include="Resource Files\CI\Github">
       <UniqueIdentifier>{c25471f3-451a-4279-925d-cbdcec912ef8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ETL\Pseudo Containers">
-      <UniqueIdentifier>{586d2c92-e504-4dea-9b1f-42d725a5272c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\CI\Appveyor">
       <UniqueIdentifier>{74399f00-a7a3-47e3-9b27-d01fb2b5ce87}</UniqueIdentifier>
     </Filter>
@@ -216,6 +213,12 @@
     </Filter>
     <Filter Include="Tests\Error Handler\Exceptions_And_Log_Errors">
       <UniqueIdentifier>{de372ec9-d193-4956-871f-065414a9d3be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Graphical">
+      <UniqueIdentifier>{15d9b18f-bc5e-42bf-82b1-7cceee7aac38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Graphical">
+      <UniqueIdentifier>{2d8a82e2-31ae-4799-9758-6699893bb3f5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -780,9 +783,6 @@
     <ClInclude Include="..\..\include\etl\string_utilities.h">
       <Filter>ETL\Strings</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\bresenham_line.h">
-      <Filter>ETL\Pseudo Containers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\string.h">
       <Filter>ETL\Strings</Filter>
     </ClInclude>
@@ -1331,6 +1331,24 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\bitset.h">
       <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\bresenham_line_pointer.h">
+      <Filter>ETL\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\center_of_gravity_1d.h">
+      <Filter>ETL\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\center_of_gravity_2d.h">
+      <Filter>ETL\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\center_of_gravity_3d.h">
+      <Filter>ETL\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\bresenham_line.h">
+      <Filter>ETL\Graphical</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\coordinate.h">
+      <Filter>ETL\Graphical</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1960,9 +1978,6 @@
     </ClCompile>
     <ClCompile Include="..\test_integral_limits.cpp">
       <Filter>Tests\Types</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_bresenham_line.cpp">
-      <Filter>Tests\Algorithms</Filter>
     </ClCompile>
     <ClCompile Include="..\test_alignment.cpp">
       <Filter>Tests\Types</Filter>
@@ -3352,6 +3367,24 @@
     </ClCompile>
     <ClCompile Include="..\test_bitset_new_explicit_single_element_type.cpp">
       <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bresenham_line_pointer.cpp">
+      <Filter>Tests\Graphical</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_center_of_gravity_1d.cpp">
+      <Filter>Tests\Graphical</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_center_of_gravity_2d.cpp">
+      <Filter>Tests\Graphical</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_center_of_gravity_3d.cpp">
+      <Filter>Tests\Graphical</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_coordinate.cpp">
+      <Filter>Tests\Graphical</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bresenham_line.cpp">
+      <Filter>Tests\Graphical</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
