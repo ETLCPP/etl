@@ -275,7 +275,7 @@ namespace etl
   //***************************************************************************
   // char8_t
   template<>
-  class numeric_limits<char> : public etl_integral_limits
+  class numeric_limits<char8_t> : public etl_integral_limits
   {
   public:
 
@@ -284,15 +284,15 @@ namespace etl
     static ETL_CONSTANT bool is_signed = etl::is_signed<char8_t>::value;
     static ETL_CONSTANT bool is_modulo = false;
 
-    static ETL_CONSTEXPR char min() { return char(CHAR_MIN); }
-    static ETL_CONSTEXPR char max() { return char(CHAR_MAX); }
-    static ETL_CONSTEXPR char lowest() { return char(CHAR_MIN); }
-    static ETL_CONSTEXPR char epsilon() { return 0; }
-    static ETL_CONSTEXPR char round_error() { return 0; }
-    static ETL_CONSTEXPR char denorm_min() { return 0; }
-    static ETL_CONSTEXPR char infinity() { return 0; }
-    static ETL_CONSTEXPR char quiet_NaN() { return 0; }
-    static ETL_CONSTEXPR char signaling_NaN() { return 0; }
+    static ETL_CONSTEXPR char8_t min() { return char8_t(CHAR_MIN); }
+    static ETL_CONSTEXPR char8_t max() { return char8_t(CHAR_MAX); }
+    static ETL_CONSTEXPR char8_t lowest() { return char8_t(CHAR_MIN); }
+    static ETL_CONSTEXPR char8_t epsilon() { return 0; }
+    static ETL_CONSTEXPR char8_t round_error() { return 0; }
+    static ETL_CONSTEXPR char8_t denorm_min() { return 0; }
+    static ETL_CONSTEXPR char8_t infinity() { return 0; }
+    static ETL_CONSTEXPR char8_t quiet_NaN() { return 0; }
+    static ETL_CONSTEXPR char8_t signaling_NaN() { return 0; }
   };
 #endif
 
