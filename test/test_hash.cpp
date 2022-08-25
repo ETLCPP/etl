@@ -28,6 +28,7 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include <type_traits>
 #include <iterator>
 #include <string>
 #include <vector>
@@ -35,8 +36,21 @@ SOFTWARE.
 
 #include "etl/hash.h"
 
+// for testing user-defined hash specializations
+namespace { class CustomType{}; }
+namespace etl
+{
+  template <>
+  struct hash<CustomType>
+  {
+      size_t operator()(CustomType) {return 0;}
+  };
+}
+
 namespace
 {
+
+
   SUITE(test_hash)
   {
     //*************************************************************************
@@ -212,6 +226,56 @@ namespace
       size_t hash = etl::hash<const int *>()(pi);
 
       CHECK_EQUAL(size_t(&i), hash);
+    }
+
+    //*************************************************************************
+    TEST(test_hash_enums)
+    {
+      enum class MyEnumClass : char {
+        OneE = 0x1E
+      };
+      enum MyEnum : char {
+        MyEnum_TwoF = 0x2F
+      };
+
+      size_t hash = etl::hash<MyEnumClass>()(MyEnumClass::OneE);
+      CHECK_EQUAL(static_cast<size_t>(MyEnumClass::OneE), hash);
+
+      hash = etl::hash<MyEnum>()(MyEnum_TwoF);
+      CHECK_EQUAL(0x2F, hash);
+    }
+
+    TEST(test_hash_big_enums) {
+      constexpr unsigned long long big_number = 0x5AA555AA3CC333CCULL;
+      enum class MyBigEnumClass : unsigned long long {
+        Big = big_number
+      };
+      size_t hash = etl::hash<MyBigEnumClass>()(MyBigEnumClass::Big);
+      size_t expectedHash = etl::hash<unsigned long long>()(big_number);
+      CHECK_EQUAL(expectedHash, hash);
+    }
+
+    TEST(test_hash_poisoned) {
+        // Unspecialized hash<> should be disabled (unusable) - see https://en.cppreference.com/w/cpp/utility/hash
+        class A {};
+        typedef etl::hash<A> general_hasher;
+
+        CHECK_FALSE(std::is_default_constructible<general_hasher>::value);
+        CHECK_FALSE(std::is_copy_constructible<general_hasher>::value);
+        CHECK_FALSE(std::is_move_constructible<general_hasher>::value);
+        CHECK_FALSE(std::is_copy_assignable<general_hasher>::value);
+        CHECK_FALSE(std::is_move_assignable<general_hasher>::value);
+    }
+
+
+    TEST(test_hash_custom) {
+        typedef etl::hash<CustomType> custom_hasher;
+
+        CHECK_TRUE(std::is_default_constructible<custom_hasher>::value);
+        CHECK_TRUE(std::is_copy_constructible<custom_hasher>::value);
+        CHECK_TRUE(std::is_move_constructible<custom_hasher>::value);
+        CHECK_TRUE(std::is_copy_assignable<custom_hasher>::value);
+        CHECK_TRUE(std::is_move_assignable<custom_hasher>::value);
     }
   };
 }
