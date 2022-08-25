@@ -103,20 +103,7 @@ namespace etl
 #endif
     };
 
-    //*************************************************************************
-    /// Specialization for enums
-    //*************************************************************************
-    template<typename T>
-    struct hash_base<T, true>{
-      size_t operator()(T v) const
-      {
-        if (sizeof(size_t) >= sizeof(T)) {
-          return static_cast<size_t>(v);
-        } else {
-          return hash<unsigned long long>{}(static_cast<unsigned long long>(v));
-        }
-      }
-    };
+    // Specialization for enums depends on definitions for integers, so it comes later
   }
 
 #if ETL_USING_CPP11
@@ -476,6 +463,23 @@ namespace etl
       }
     }
   };
+
+  namespace private_hash {
+    //*************************************************************************
+    /// Specialization for enums
+    //*************************************************************************
+    template<typename T>
+    struct hash_base<T, true>{
+      size_t operator()(T v) const
+      {
+        if (sizeof(size_t) >= sizeof(T)) {
+          return static_cast<size_t>(v);
+        } else {
+          return hash<unsigned long long>{}(static_cast<unsigned long long>(v));
+        }
+      }
+    };
+  }
 }
 
 #endif // ETL_USING_8BIT_TYPES
