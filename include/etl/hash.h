@@ -475,7 +475,7 @@ namespace etl
         if (sizeof(size_t) >= sizeof(T)) {
           return static_cast<size_t>(v);
         } else {
-          return hash<unsigned long long>{}(static_cast<unsigned long long>(v));
+          return ::etl::hash<unsigned long long>{}(static_cast<unsigned long long>(v));
         }
       }
     };
