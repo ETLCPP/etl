@@ -197,7 +197,7 @@ namespace
       Packet packet2(message2);
       Packet packet3(message3);
 
-      // Should causes a static assert.
+      // Should cause a static assert.
       //Packet packet4(message4);
 
       CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
