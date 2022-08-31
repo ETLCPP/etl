@@ -750,7 +750,7 @@ namespace etl
         for t in range(1, n):
             cog.out("T%s, " % t)
         cog.outl("T%s>::value, int>::type>" % n)
-        cog.outl("  explicit message_packet(etl::imessage&& msg)")
+        cog.outl("  explicit message_packet(TMessage&& msg)")
         cog.outl("    : data()")
         cog.outl("    , valid(true)")
         cog.outl("  {")
