@@ -227,9 +227,11 @@ namespace etl
   public:
 
     //*******************************************
-    /// Cannot be default constructed
+    /// Default Constructor
     //*******************************************
-    result() = delete;
+    result()
+    {
+    }
 
     //*******************************************
     /// Copy constructor
@@ -286,7 +288,7 @@ namespace etl
     //*******************************************
     bool is_value() const
     {
-      return false;
+      return (data.index() == 0U);
     }
 
     //*******************************************
@@ -294,7 +296,7 @@ namespace etl
     //*******************************************
     bool is_error() const
     {
-      return true;
+      return (data.index() == 1U);
     }
 
     //*******************************************
