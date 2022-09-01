@@ -222,6 +222,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_constructor_for_result_void_value_with_value)
+    {
+       ResultV result;
+
+       CHECK(!result.is_value());
+       CHECK(result.is_error());
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_for_const_result_void_value_with_value)
+    {
+       const ResultV result;
+
+       CHECK(!result.is_value());
+       CHECK(result.is_error());
+    }
+
+    //*************************************************************************
     TEST(test_constructor_for_result_void_value_with_error)
     {
       Error input = { "error 1" };
