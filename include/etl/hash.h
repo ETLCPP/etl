@@ -91,15 +91,16 @@ namespace etl
     /// Primary definition of base hash class, by default is poisoned
     //*************************************************************************
     template<typename T, bool IsEnum=false>
-    struct hash_base {
+    struct hash_base 
+    {
     private:
-      hash_base(); // can't default construct
-      hash_base(const hash_base& other); // can't copy construct
-      hash_base& operator=(const hash_base& other); // can't copy assign
+      hash_base();                                  // Can't default construct
+      hash_base(const hash_base& other);            // Can't copy construct
+      hash_base& operator=(const hash_base& other); // Can't copy assign
 
 #if ETL_USING_CPP11
-      hash_base(hash_base&& other); // can't move construct
-      hash_base& operator=(hash_base&& other); // can't move assign
+      hash_base(hash_base&& other);            // Can't move construct
+      hash_base& operator=(hash_base&& other); // Can't move assign
 #endif
     };
 
@@ -464,17 +465,22 @@ namespace etl
     }
   };
 
-  namespace private_hash {
+  namespace private_hash 
+  {
     //*************************************************************************
     /// Specialization for enums
     //*************************************************************************
     template<typename T>
-    struct hash_base<T, true>{
+    struct hash_base<T, true>
+    {
       size_t operator()(T v) const
       {
-        if (sizeof(size_t) >= sizeof(T)) {
+        if (sizeof(size_t) >= sizeof(T)) 
+        {
           return static_cast<size_t>(v);
-        } else {
+        } 
+        else 
+        {
           return ::etl::hash<unsigned long long>{}(static_cast<unsigned long long>(v));
         }
       }
