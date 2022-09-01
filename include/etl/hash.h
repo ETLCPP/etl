@@ -86,13 +86,40 @@ namespace etl
       return fnv_1a_64(begin, end);
     }
 #endif
+
+    //*************************************************************************
+    /// Primary definition of base hash class, by default is poisoned
+    //*************************************************************************
+    template<typename T, bool IsEnum=false>
+    struct hash_base {
+    private:
+      hash_base(); // can't default construct
+      hash_base(const hash_base& other); // can't copy construct
+      hash_base& operator=(const hash_base& other); // can't copy assign
+
+#if ETL_USING_CPP11
+      hash_base(hash_base&& other); // can't move construct
+      hash_base& operator=(hash_base&& other); // can't move assign
+#endif
+    };
+
+    // Specialization for enums depends on definitions for integers, so it comes later
   }
 
+#if ETL_USING_CPP11
+  //***************************************************************************
+  /// Generic declaration for etl::hash, including default for enums
+  ///\ingroup hash
+  //***************************************************************************
+  template <typename T>
+  struct hash : private_hash::hash_base<T, etl::is_enum<T>::value>{};
+#else
   //***************************************************************************
   /// Generic declaration for etl::hash
   ///\ingroup hash
   //***************************************************************************
   template <typename T> struct hash;
+#endif
 
   //***************************************************************************
   /// Specialisation for bool.
@@ -436,6 +463,23 @@ namespace etl
       }
     }
   };
+
+  namespace private_hash {
+    //*************************************************************************
+    /// Specialization for enums
+    //*************************************************************************
+    template<typename T>
+    struct hash_base<T, true>{
+      size_t operator()(T v) const
+      {
+        if (sizeof(size_t) >= sizeof(T)) {
+          return static_cast<size_t>(v);
+        } else {
+          return ::etl::hash<unsigned long long>{}(static_cast<unsigned long long>(v));
+        }
+      }
+    };
+  }
 }
 
 #endif // ETL_USING_8BIT_TYPES
