@@ -792,7 +792,7 @@ namespace etl
         while (inode != bucket.end())
         {
           // Do we already have this key?
-          if (inode->key_value_pair.first == key)
+          if (key_equal_function(inode->key_value_pair.first, key))
           {
             break;
           }
@@ -851,8 +851,8 @@ namespace etl
         ::new (&node.key_value_pair) value_type(etl::move(key_value_pair));
         ETL_INCREMENT_DEBUG_COUNT
 
-          // Just add the pointer to the bucket;
-          bucket.insert_after(bucket.before_begin(), node);
+        // Just add the pointer to the bucket;
+        bucket.insert_after(bucket.before_begin(), node);
 
         adjust_first_last_markers_after_insert(pbucket);
 
@@ -868,7 +868,7 @@ namespace etl
         while (inode != bucket.end())
         {
           // Do we already have this key?
-          if (inode->key_value_pair.first == key)
+          if (key_equal_function(inode->key_value_pair.first, key))
           {
             break;
           }
@@ -885,8 +885,8 @@ namespace etl
           ::new (&node.key_value_pair) value_type(etl::move(key_value_pair));
           ETL_INCREMENT_DEBUG_COUNT
 
-            // Add the node to the end of the bucket;
-            bucket.insert_after(inode_previous, node);
+          // Add the node to the end of the bucket;
+          bucket.insert_after(inode_previous, node);
           adjust_first_last_markers_after_insert(&bucket);
           ++inode_previous;
 
@@ -1278,6 +1278,8 @@ namespace etl
       // Skip if doing self assignment
       if (this != &rhs)
       {
+        key_hash_function = rhs.hash_function();
+        key_equal_function = rhs.key_eq();
         assign(rhs.cbegin(), rhs.cend());
       }
 
@@ -1292,6 +1294,8 @@ namespace etl
       // Skip if doing self assignment
       if (this != &rhs)
       {
+        key_hash_function = rhs.hash_function();
+        key_equal_function = rhs.key_eq();
         this->move(rhs.begin(), rhs.end());
       }
 
@@ -1304,12 +1308,14 @@ namespace etl
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    iunordered_map(pool_t& node_pool_, bucket_t* pbuckets_, size_t number_of_buckets_)
+    iunordered_map(pool_t& node_pool_, bucket_t* pbuckets_, size_t number_of_buckets_, hasher key_hash_function_, key_equal key_equal_function_)
       : pnodepool(&node_pool_)
       , pbuckets(pbuckets_)
       , number_of_buckets(number_of_buckets_)
       , first(pbuckets)
       , last(pbuckets)
+      , key_hash_function(key_hash_function_)
+      , key_equal_function(key_equal_function_)
     {
     }
 
@@ -1528,8 +1534,8 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    unordered_map()
-      : base(node_pool, buckets, MAX_BUCKETS_)
+    unordered_map(const THash& hash = THash(), const TKeyEqual equal = TKeyEqual())
+      : base(node_pool, buckets, MAX_BUCKETS_, hash, equal)
     {
     }
 
@@ -1537,7 +1543,7 @@ namespace etl
     /// Copy constructor.
     //*************************************************************************
     unordered_map(const unordered_map& other)
-      : base(node_pool, buckets, MAX_BUCKETS_)
+      : base(node_pool, buckets, MAX_BUCKETS_, other.hash_function(), other.key_eq())
     {
       base::assign(other.cbegin(), other.cend());
     }
@@ -1547,7 +1553,7 @@ namespace etl
     /// Move constructor.
     //*************************************************************************
     unordered_map(unordered_map&& other)
-      : base(node_pool, buckets, MAX_BUCKETS_)
+      : base(node_pool, buckets, MAX_BUCKETS_, other.hash_function(), other.key_eq())
     {
       if (this != &other)
       {
@@ -1564,7 +1570,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     unordered_map(TIterator first_, TIterator last_)
-      : base(node_pool, buckets, MAX_BUCKETS_)
+      : unordered_map()
     {
       base::assign(first_, last_);
     }
@@ -1574,7 +1580,7 @@ namespace etl
     /// Construct from initializer_list.
     //*************************************************************************
     unordered_map(std::initializer_list<ETL_OR_STD::pair<TKey, TValue>> init)
-      : base(node_pool, buckets, MAX_BUCKETS_)
+      : unordered_map()
     {
       base::assign(init.begin(), init.end());
     }
@@ -1593,12 +1599,7 @@ namespace etl
     //*************************************************************************
     unordered_map& operator = (const unordered_map& rhs)
     {
-      // Skip if doing self assignment
-      if (this != &rhs)
-      {
-        base::assign(rhs.cbegin(), rhs.cend());
-      }
-
+      base::operator=(rhs);
       return *this;
     }
 
@@ -1608,13 +1609,7 @@ namespace etl
     //*************************************************************************
     unordered_map& operator = (unordered_map&& rhs)
     {
-      // Skip if doing self assignment
-      if (this != &rhs)
-      {
-        base::clear();
-        base::move(rhs.begin(), rhs.end());
-      }
-
+      base::operator=(etl::move(rhs));
       return *this;
     }
 #endif
