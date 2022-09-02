@@ -38,6 +38,8 @@ SOFTWARE.
 #include "char_traits.h"
 #include "optional.h"
 
+#include "private/minmax_push.h"
+
 #include <ctype.h>
 #include <stdint.h>
 
@@ -832,5 +834,7 @@ namespace etl
     etl::transform(itr, s.end(), itr, ::tolower);
   }
 }
+
+#include "private/minmax_pop.h"
 
 #endif
