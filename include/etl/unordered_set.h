@@ -674,7 +674,7 @@ namespace etl
         while (inode != bucket.end())
         {
           // Do we already have this key?
-          if (inode->key == key)
+          if (key_equal_function(inode->key, key))
           {
             break;
           }
@@ -747,7 +747,7 @@ namespace etl
         while (inode != bucket.end())
         {
           // Do we already have this key?
-          if (inode->key == key)
+          if (key_equal_function(inode->key, key))
           {
             break;
           }
@@ -1161,6 +1161,8 @@ namespace etl
       // Skip if doing self assignment
       if (this != &rhs)
       {
+        key_hash_function  = rhs.hash_function();
+        key_equal_function = rhs.key_eq();
         assign(rhs.cbegin(), rhs.cend());
       }
 
@@ -1177,6 +1179,8 @@ namespace etl
       if (this != &rhs)
       {
         clear();
+        key_hash_function = rhs.hash_function();
+        key_equal_function = rhs.key_eq();
         move(rhs.begin(), rhs.end());
       }
 
@@ -1189,12 +1193,14 @@ namespace etl
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    iunordered_set(pool_t& node_pool_, bucket_t* pbuckets_, size_t number_of_buckets_)
+    iunordered_set(pool_t& node_pool_, bucket_t* pbuckets_, size_t number_of_buckets_, hasher key_hash_function_, key_equal key_equal_function_)
       : pnodepool(&node_pool_)
       , pbuckets(pbuckets_)
       , number_of_buckets(number_of_buckets_)
       , first(pbuckets)
       , last(pbuckets)
+      , key_hash_function(key_hash_function_)
+      , key_equal_function(key_equal_function_)
     {
     }
 
@@ -1418,8 +1424,8 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    unordered_set()
-      : base(node_pool, buckets, MAX_BUCKETS)
+    unordered_set(const THash& hash = THash(), const TKeyEqual& equal = TKeyEqual())
+      : base(node_pool, buckets, MAX_BUCKETS, hash, equal)
     {
     }
 
@@ -1427,7 +1433,7 @@ namespace etl
     /// Copy constructor.
     //*************************************************************************
     unordered_set(const unordered_set& other)
-      : base(node_pool, buckets, MAX_BUCKETS)
+      : base(node_pool, buckets, MAX_BUCKETS, other.hash_function(), other.key_eq())
     {
       // Skip if doing self assignment
       if (this != &other)
@@ -1441,7 +1447,7 @@ namespace etl
     /// Move constructor.
     //*************************************************************************
     unordered_set(unordered_set&& other)
-      : base(node_pool, buckets, MAX_BUCKETS)
+      : base(node_pool, buckets, MAX_BUCKETS, other.hash_function(), other.key_eq())
     {
       // Skip if doing self assignment
       if (this != &other)
@@ -1458,8 +1464,8 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    unordered_set(TIterator first_, TIterator last_)
-      : base(node_pool, buckets, MAX_BUCKETS)
+    unordered_set(TIterator first_, TIterator last_, const THash& hash = THash(), const TKeyEqual& equal = TKeyEqual())
+      : base(node_pool, buckets, MAX_BUCKETS, hash, equal)
     {
       base::assign(first_, last_);
     }
@@ -1468,8 +1474,8 @@ namespace etl
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
-    unordered_set(std::initializer_list<TKey> init)
-      : base(node_pool, buckets, MAX_BUCKETS)
+    unordered_set(std::initializer_list<TKey> init, const THash& hash = THash(), const TKeyEqual& equal = TKeyEqual())
+      : base(node_pool, buckets, MAX_BUCKETS, hash, equal)
     {
       base::assign(init.begin(), init.end());
     }
@@ -1488,11 +1494,7 @@ namespace etl
     //*************************************************************************
     unordered_set& operator = (const unordered_set& rhs)
     {
-      // Skip if doing self assignment
-      if (this != &rhs)
-      {
-        base::assign(rhs.cbegin(), rhs.cend());
-      }
+      base::operator=(rhs);
 
       return *this;
     }
@@ -1503,12 +1505,7 @@ namespace etl
     //*************************************************************************
     unordered_set& operator = (unordered_set&& rhs)
     {
-      // Skip if doing self assignment
-      if (this != &rhs)
-      {
-        base::clear();
-        base::move(rhs.begin(), rhs.end());
-      }
+      base::operator=(etl::move(rhs));
 
       return *this;
     }

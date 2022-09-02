@@ -57,6 +57,61 @@ namespace
   };
 
   //*************************************************************************
+  // Non-default-constructible hasher
+  struct ndc_hash
+  {
+    int id;
+    ndc_hash(int id_) : id(id_){}
+
+    size_t operator()(size_t val) const
+    {
+      return val;
+    }
+  };
+
+  //*************************************************************************
+  // Non-default-constructible equality checker
+  struct ndc_key_eq
+  {
+    int id;
+    ndc_key_eq(int id_) : id(id_){}
+
+    bool operator()(size_t val1, size_t val2) const
+    {
+      return val1 == val2;
+    }
+  };
+
+  //*************************************************************************
+  // Hasher whose hash behaviour depends on provided data.
+  struct parameterized_hash
+  {
+    size_t modulus;
+
+    parameterized_hash(size_t modulus_ = 2) : modulus(modulus_){}
+
+    size_t operator()(size_t val) const
+    {
+      return val % modulus;
+    }
+  };
+
+  //*************************************************************************
+  // Equality checker whose behaviour depends on provided data.
+  struct parameterized_equal
+  {
+    size_t modulus;
+
+    // Hasher whose hash behaviour depends on provided data.
+    parameterized_equal(size_t modulus_ = 2) : modulus(modulus_){}
+
+    bool operator()(size_t lhs, size_t rhs) const
+    {
+      return (lhs % modulus) == (rhs % modulus);
+    }
+  };
+
+  //*************************************************************************
   template <typename T1, typename T2>
   bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
   {
@@ -96,6 +151,48 @@ namespace etl
 
 namespace
 {
+  //***************************************************************************
+  struct CustomHashFunction
+  {
+    CustomHashFunction()
+      : id(0)
+    {
+    }
+
+    CustomHashFunction(int id_)
+      : id(id_)
+    {
+    }
+
+    size_t operator ()(uint32_t e) const
+    {
+      return size_t(e);
+    }
+
+    int id;
+  };
+
+  //***************************************************************************
+  struct CustomKeyEq
+  {
+    CustomKeyEq()
+      : id(0)
+    {
+    }
+
+    CustomKeyEq(int id_)
+      : id(id_)
+    {
+    }
+
+    size_t operator ()(uint32_t lhs, uint32_t rhs) const
+    {
+      return (lhs == rhs);
+    }
+
+    int id;
+  };
+
   SUITE(test_unordered_map)
   {
     static const size_t SIZE = 10;
@@ -350,9 +447,9 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       DataNDC other_data(data);
 
-#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h"
       other_data = other_data;
-#include "etl/private/diagnostic_pop.h" 
+#include "etl/private/diagnostic_pop.h"
 
       bool isEqual = std::equal(data.begin(),
                                 data.end(),
@@ -893,6 +990,140 @@ namespace
       CHECK_EQUAL("map[3] = d", s[1]);
       CHECK_EQUAL('c', map[2]);
       CHECK_EQUAL('d', map[3]);
+    }
+
+    //*************************************************************************
+    TEST(test_ndc_hasher_and_key_eq) 
+    {
+      typedef etl::unordered_map<size_t, int, 10, 10, ndc_hash, ndc_key_eq> Map;
+      ndc_hash hasher1(1);
+      ndc_hash hasher2(2);
+      ndc_key_eq eq1(1);
+      ndc_key_eq eq2(2);
+
+      Map map1(hasher1, eq1);
+      CHECK_EQUAL(map1.hash_function().id, 1);
+      CHECK_EQUAL(map1.key_eq().id, 1);
+
+      Map map2(hasher2, eq2);
+
+      Map copyConstructed(map1);
+      CHECK_EQUAL(copyConstructed.hash_function().id, 1);
+      CHECK_EQUAL(copyConstructed.key_eq().id, 1);
+
+      Map copyAssigned(hasher2, eq2);
+      CHECK_EQUAL(copyAssigned.hash_function().id, 2);
+      CHECK_EQUAL(copyAssigned.key_eq().id, 2);
+      copyAssigned = map1;
+      CHECK_EQUAL(copyAssigned.hash_function().id, 1);
+      CHECK_EQUAL(copyAssigned.key_eq().id, 1);
+
+      Map moveConstructed = std::move(map1);
+      CHECK_EQUAL(moveConstructed.hash_function().id, 1);
+      CHECK_EQUAL(moveConstructed.key_eq().id, 1);
+
+      Map moveAssigned(hasher1, eq1);
+      CHECK_EQUAL(moveAssigned.hash_function().id, 1);
+      CHECK_EQUAL(moveAssigned.key_eq().id, 1);
+      moveAssigned = std::move(map2);
+      CHECK_EQUAL(moveAssigned.hash_function().id, 2);
+      CHECK_EQUAL(moveAssigned.key_eq().id, 2);
+
+      // make sure that map operations still work
+      moveAssigned[5] = 7;
+      CHECK_EQUAL(7, moveAssigned[5]);
+    }
+
+    //*************************************************************************
+    TEST(test_parameterized_eq) 
+    {
+      constexpr std::size_t MODULO = 4;
+      parameterized_hash hash{MODULO};
+      parameterized_equal eq{MODULO};
+      // values are equal modulo 4
+      etl::unordered_map<std::size_t, int, 10, 10, parameterized_hash, parameterized_equal> map;
+      map.insert(etl::make_pair(2, 3));
+
+      const auto& constmap = map;
+
+      CHECK_EQUAL(map[10], 3);
+      CHECK_EQUAL(map.at(10), 3);
+      CHECK_EQUAL(constmap.at(10), 3);
+
+      CHECK_FALSE(map.insert(etl::make_pair(6, 7)).second);
+
+      CHECK(map.find(14) != map.end());
+      CHECK(constmap.find(14) != constmap.end());
+
+      map.erase(2);
+      CHECK(map.find(6) == map.end());
+    }
+
+    //*************************************************************************
+    TEST(test_copying_of_hash_and_key_compare_with_copy_construct)
+    {
+      CustomHashFunction chf(1);
+      CustomKeyEq        ceq(2);
+
+      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1(chf, ceq);
+      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set2(set1);
+
+      CHECK_EQUAL(chf.id, set2.hash_function().id);
+      CHECK_EQUAL(ceq.id, set2.key_eq().id);
+    }
+
+    //*************************************************************************
+    TEST(test_copying_of_hash_and_key_compare_with_assignment)
+    {
+      CustomHashFunction chf1(1);
+      CustomKeyEq        ceq2(2);
+
+      CustomHashFunction chf3(3);
+      CustomKeyEq        ceq4(4);
+
+      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1(chf1, ceq2);
+      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set2(chf3, ceq4);
+
+      set2.operator=(set1);
+
+      CHECK_EQUAL(chf1.id, set2.hash_function().id);
+      CHECK_EQUAL(ceq2.id, set2.key_eq().id);
+    }
+
+    //*************************************************************************
+    TEST(test_copying_of_hash_and_key_compare_with_construction_from_iterators)
+    {
+      CustomHashFunction chf1(1);
+      CustomKeyEq        ceq2(2);
+
+      using value_type = etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq>::value_type;
+      std::array<value_type, 5> data = 
+      { 
+        value_type{1, 11}, 
+        value_type{2, 22}, 
+        value_type{3, 33}, 
+        value_type{4, 44}, 
+        value_type{5, 55} 
+      };
+
+      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1(data.begin(), data.end(), chf1, ceq2);
+
+      CHECK_EQUAL(chf1.id, set1.hash_function().id);
+      CHECK_EQUAL(ceq2.id, set1.key_eq().id);
+    }
+
+    //*************************************************************************
+    TEST(test_copying_of_hash_and_key_compare_with_construction_from_initializer_list)
+    {
+      CustomHashFunction chf1(1);
+      CustomKeyEq        ceq2(2);
+
+      using value_type = etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq>::value_type;
+
+      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1({ value_type{1, 11}, value_type{2, 22}, value_type{3, 33}, value_type{4, 44}, value_type{5, 55} }, chf1, ceq2);
+
+      CHECK_EQUAL(chf1.id, set1.hash_function().id);
+      CHECK_EQUAL(ceq2.id, set1.key_eq().id);
     }
   };
 }

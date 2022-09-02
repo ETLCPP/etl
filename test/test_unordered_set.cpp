@@ -63,6 +63,49 @@ namespace etl
 
 namespace
 {
+  //***************************************************************************
+  struct CustomHashFunction
+  {
+    CustomHashFunction()
+      : id(0)
+    {
+    }
+
+    CustomHashFunction(int id_)
+      : id(id_)
+    {
+    }
+
+    size_t operator ()(uint32_t e) const
+    {
+      return size_t(e);
+    }
+
+    int id;
+  };
+
+  //***************************************************************************
+  struct CustomKeyEq
+  {
+    CustomKeyEq()
+      : id(0)
+    {
+    }
+
+    CustomKeyEq(int id_)
+      : id(id_)
+    {
+    }
+
+    size_t operator ()(uint32_t lhs, uint32_t rhs) const
+    {
+      return (lhs == rhs);
+    }
+
+    int id;
+  };
+
+  //***************************************************************************
   SUITE(test_unordered_set)
   {
     static const size_t SIZE = 10;
@@ -662,6 +705,63 @@ namespace
       CHECK_EQUAL(2, s.size());
       CHECK_EQUAL("set = 2", s[0]);
       CHECK_EQUAL("set = 3", s[1]);
+    }
+
+    //*************************************************************************
+    TEST(test_copying_of_hash_and_key_compare_with_copy_construct)
+    {
+      CustomHashFunction chf(1);
+      CustomKeyEq        ceq(2);
+
+      etl::unordered_set<uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1(chf, ceq);
+      etl::unordered_set<uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set2(set1);
+
+      CHECK_EQUAL(chf.id, set2.hash_function().id);
+      CHECK_EQUAL(ceq.id, set2.key_eq().id);
+    }
+
+    //*************************************************************************
+    TEST(test_copying_of_hash_and_key_compare_with_assignment)
+    {
+      CustomHashFunction chf1(1);
+      CustomKeyEq        ceq2(2);
+
+      CustomHashFunction chf3(3);
+      CustomKeyEq        ceq4(4);
+
+      etl::unordered_set<uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1(chf1, ceq2);
+      etl::unordered_set<uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set2(chf3, ceq4);
+      
+      set2.operator=(set1);
+
+      CHECK_EQUAL(chf1.id, set2.hash_function().id);
+      CHECK_EQUAL(ceq2.id, set2.key_eq().id);
+    }
+
+    //*************************************************************************
+    TEST(test_copying_of_hash_and_key_compare_with_construction_from_iterators)
+    {
+      CustomHashFunction chf1(1);
+      CustomKeyEq        ceq2(2);
+
+      std::array<uint32_t, 5> data = { 1, 2, 3, 4, 5 };
+
+      etl::unordered_set<uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1(data.begin(), data.end(), chf1, ceq2);
+
+      CHECK_EQUAL(chf1.id, set1.hash_function().id);
+      CHECK_EQUAL(ceq2.id, set1.key_eq().id);
+    }
+
+    //*************************************************************************
+    TEST(test_copying_of_hash_and_key_compare_with_construction_from_initializer_list)
+    {
+      CustomHashFunction chf1(1);
+      CustomKeyEq        ceq2(2);
+
+      etl::unordered_set<uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1({ 1, 2, 3, 4, 5 }, chf1, ceq2);
+
+      CHECK_EQUAL(chf1.id, set1.hash_function().id);
+      CHECK_EQUAL(ceq2.id, set1.key_eq().id);
     }
   };
 }

@@ -90,6 +90,48 @@ namespace
   typedef ETL_OR_STD::pair<std::string, DC>  ElementDC;
   typedef ETL_OR_STD::pair<std::string, NDC> ElementNDC;
 
+  //***************************************************************************
+  struct CustomHashFunction
+  {
+    CustomHashFunction()
+      : id(0)
+    {
+    }
+
+    CustomHashFunction(int id_)
+      : id(id_)
+    {
+    }
+
+    size_t operator ()(uint32_t e) const
+    {
+      return size_t(e);
+    }
+
+    int id;
+  };
+
+  //***************************************************************************
+  struct CustomKeyEq
+  {
+    CustomKeyEq()
+      : id(0)
+    {
+    }
+
+    CustomKeyEq(int id_)
+      : id(id_)
+    {
+    }
+
+    size_t operator ()(uint32_t lhs, uint32_t rhs) const
+    {
+      return (lhs == rhs);
+    }
+
+    int id;
+  };
+
   SUITE(test_unordered_multimap)
   {
     static const size_t SIZE = 10;
@@ -825,6 +867,73 @@ namespace
       CHECK_EQUAL(2, s.size());
       CHECK_EQUAL("map[2] = c", s[0]);
       CHECK_EQUAL("map[3] = d", s[1]);
+    }
+
+    //*************************************************************************
+    TEST(test_copying_of_hash_and_key_compare_with_copy_construct)
+    {
+      CustomHashFunction chf(1);
+      CustomKeyEq        ceq(2);
+
+      etl::unordered_multimap<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1(chf, ceq);
+      etl::unordered_multimap<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set2(set1);
+
+      CHECK_EQUAL(chf.id, set2.hash_function().id);
+      CHECK_EQUAL(ceq.id, set2.key_eq().id);
+    }
+
+    //*************************************************************************
+    TEST(test_copying_of_hash_and_key_compare_with_assignment)
+    {
+      CustomHashFunction chf1(1);
+      CustomKeyEq        ceq2(2);
+
+      CustomHashFunction chf3(3);
+      CustomKeyEq        ceq4(4);
+
+      etl::unordered_multimap<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1(chf1, ceq2);
+      etl::unordered_multimap<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set2(chf3, ceq4);
+
+      set2.operator=(set1);
+
+      CHECK_EQUAL(chf1.id, set2.hash_function().id);
+      CHECK_EQUAL(ceq2.id, set2.key_eq().id);
+    }
+
+    //*************************************************************************
+    TEST(test_copying_of_hash_and_key_compare_with_construction_from_iterators)
+    {
+      CustomHashFunction chf1(1);
+      CustomKeyEq        ceq2(2);
+
+      using value_type = etl::unordered_multimap<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq>::value_type;
+      std::array<value_type, 5> data =
+      {
+        value_type{1, 11},
+        value_type{2, 22},
+        value_type{3, 33},
+        value_type{4, 44},
+        value_type{5, 55}
+      };
+
+      etl::unordered_multimap<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1(data.begin(), data.end(), chf1, ceq2);
+
+      CHECK_EQUAL(chf1.id, set1.hash_function().id);
+      CHECK_EQUAL(ceq2.id, set1.key_eq().id);
+    }
+
+    //*************************************************************************
+    TEST(test_copying_of_hash_and_key_compare_with_construction_from_initializer_list)
+    {
+      CustomHashFunction chf1(1);
+      CustomKeyEq        ceq2(2);
+
+      using value_type = etl::unordered_multimap<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq>::value_type;
+
+      etl::unordered_multimap<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1({ value_type{1, 11}, value_type{2, 22}, value_type{3, 33}, value_type{4, 44}, value_type{5, 55} }, chf1, ceq2);
+
+      CHECK_EQUAL(chf1.id, set1.hash_function().id);
+      CHECK_EQUAL(ceq2.id, set1.key_eq().id);
     }
   };
 }
