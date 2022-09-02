@@ -146,7 +146,9 @@ namespace etl
 
     typedef etl::forward_link<0> link_t; // Default link.
 
-    struct node_t : public link_t // The nodes that store the elements.
+    //*********************************************************************
+    // The nodes that store the elements.
+    struct node_t : public link_t
     {
       node_t(const_reference key_value_pair_)
         : key_value_pair(key_value_pair_)
@@ -155,6 +157,17 @@ namespace etl
 
       value_type key_value_pair;
     };
+
+    friend bool operator ==(const node_t& lhs, const node_t& rhs)
+    {
+      return (lhs.key_value_pair.first  == rhs.key_value_pair.first) &&
+             (lhs.key_value_pair.second == rhs.key_value_pair.second);
+    }
+
+    friend bool operator !=(const node_t& lhs, const node_t& rhs)
+    {
+      return !(lhs == rhs);
+    }
 
   protected:
 
@@ -165,7 +178,7 @@ namespace etl
 
     // Local iterators iterate over one bucket.
     typedef typename bucket_t::iterator       local_iterator;
-    typedef typename bucket_t::const_iterator local_const_iterator;
+    typedef typename bucket_t::const_iterator const_local_iterator;
 
     //*********************************************************************
     class iterator : public etl::iterator<ETL_OR_STD::forward_iterator_tag, T>
@@ -504,7 +517,7 @@ namespace etl
     /// Returns a const_iterator to the beginning of the unordered_multimap bucket.
     ///\return A const iterator to the beginning of the unordered_multimap bucket.
     //*********************************************************************
-    local_const_iterator begin(size_t i) const
+    const_local_iterator begin(size_t i) const
     {
       return pbuckets[i].cbegin();
     }
@@ -513,7 +526,7 @@ namespace etl
     /// Returns a const_iterator to the beginning of the unordered_multimap bucket.
     ///\return A const iterator to the beginning of the unordered_multimap bucket.
     //*********************************************************************
-    local_const_iterator cbegin(size_t i) const
+    const_local_iterator cbegin(size_t i) const
     {
       return pbuckets[i].cbegin();
     }
@@ -558,7 +571,7 @@ namespace etl
     /// Returns a const_iterator to the end of the unordered_multimap bucket.
     ///\return A const iterator to the end of the unordered_multimap bucket.
     //*********************************************************************
-    local_const_iterator end(size_t i) const
+    const_local_iterator end(size_t i) const
     {
       return pbuckets[i].cend();
     }
@@ -567,7 +580,7 @@ namespace etl
     /// Returns a const_iterator to the end of the unordered_multimap bucket.
     ///\return A const iterator to the end of the unordered_multimap bucket.
     //*********************************************************************
-    local_const_iterator cend(size_t i) const
+    const_local_iterator cend(size_t i) const
     {
       return pbuckets[i].cend();
     }
@@ -1407,7 +1420,21 @@ namespace etl
   template <typename TKey, typename TMapped, typename TKeyCompare>
   bool operator ==(const etl::iunordered_multimap<TKey, TMapped, TKeyCompare>& lhs, const etl::iunordered_multimap<TKey, TMapped, TKeyCompare>& rhs)
   {
-    return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
+    const bool sizes_match = (lhs.size() == rhs.size());
+    bool elements_match = true;
+
+    if (sizes_match)
+    {
+      for (size_t i = 0; (i < lhs.bucket_count()) && elements_match; ++i)
+      {
+        if (!etl::is_permutation(lhs.begin(i), lhs.end(i), rhs.begin(i)))
+        {
+          elements_match = false;
+        }
+      }
+    }
+
+    return (sizes_match && elements_match);
   }
 
   //***************************************************************************

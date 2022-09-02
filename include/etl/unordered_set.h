@@ -144,6 +144,7 @@ namespace etl
 
     typedef etl::forward_link<0> link_t;
 
+    //*********************************************************************
     // The nodes that store the elements.
     struct node_t : public link_t
     {
@@ -155,6 +156,16 @@ namespace etl
       value_type key;
     };
 
+    friend bool operator ==(const node_t& lhs, const node_t& rhs)
+    {
+      return (lhs.key == rhs.key);
+    }
+
+    friend bool operator !=(const node_t& lhs, const node_t& rhs)
+    {
+      return !(lhs == rhs);
+    }
+
   protected:
 
     typedef etl::intrusive_forward_list<node_t, link_t> bucket_t;
@@ -164,7 +175,7 @@ namespace etl
 
     // Local iterators iterate over one bucket.
     typedef typename bucket_t::iterator       local_iterator;
-    typedef typename bucket_t::const_iterator local_const_iterator;
+    typedef typename bucket_t::const_iterator const_local_iterator;
 
     //*********************************************************************
     class iterator : public etl::iterator<ETL_OR_STD::forward_iterator_tag, TKey>
@@ -501,7 +512,7 @@ namespace etl
     /// Returns a const_iterator to the beginning of the unordered_set bucket.
     ///\return A const iterator to the beginning of the unordered_set bucket.
     //*********************************************************************
-    local_const_iterator begin(size_t i) const
+    const_local_iterator begin(size_t i) const
     {
       return pbuckets[i].cbegin();
     }
@@ -510,7 +521,7 @@ namespace etl
     /// Returns a const_iterator to the beginning of the unordered_set bucket.
     ///\return A const iterator to the beginning of the unordered_set bucket.
     //*********************************************************************
-    local_const_iterator cbegin(size_t i) const
+    const_local_iterator cbegin(size_t i) const
     {
       return pbuckets[i].cbegin();
     }
@@ -555,7 +566,7 @@ namespace etl
     /// Returns a const_iterator to the end of the unordered_set bucket.
     ///\return A const iterator to the end of the unordered_set bucket.
     //*********************************************************************
-    local_const_iterator end(size_t i) const
+    const_local_iterator end(size_t i) const
     {
       return pbuckets[i].cend();
     }
@@ -564,7 +575,7 @@ namespace etl
     /// Returns a const_iterator to the end of the unordered_set bucket.
     ///\return A const iterator to the end of the unordered_set bucket.
     //*********************************************************************
-    local_const_iterator cend(size_t i) const
+    const_local_iterator cend(size_t i) const
     {
       return pbuckets[i].cend();
     }
@@ -1303,40 +1314,40 @@ namespace etl
     //*********************************************************************
     void adjust_first_last_markers_after_erase(bucket_t* pcurrent)
     {
-      if (empty())
+if (empty())
+{
+  first = pbuckets;
+  last = pbuckets;
+}
+else
+{
+  if (pcurrent == first)
+  {
+    // We erased the first so, we need to search again from where we erased.
+    while (first->empty())
+    {
+      ++first;
+    }
+  }
+  else if (pcurrent == last)
+  {
+    // We erased the last, so we need to search again. Start from the first, go no further than the current last.
+    bucket_t* pcurrent = first;
+    bucket_t* pend = last;
+
+    last = first;
+
+    while (pcurrent != pend)
+    {
+      if (!pcurrent->empty())
       {
-        first = pbuckets;
-        last  = pbuckets;
+        last = pcurrent;
       }
-      else
-      {
-        if (pcurrent == first)
-        {
-          // We erased the first so, we need to search again from where we erased.
-          while (first->empty())
-          {
-            ++first;
-          }
-        }
-        else if (pcurrent == last)
-        {
-          // We erased the last, so we need to search again. Start from the first, go no further than the current last.
-          bucket_t* pcurrent = first;
-          bucket_t* pend = last;
 
-          last = first;
-
-          while (pcurrent != pend)
-          {
-            if (!pcurrent->empty())
-            {
-              last = pcurrent;
-            }
-
-            ++pcurrent;
-          }
-        }
-      }
+      ++pcurrent;
+    }
+  }
+}
     }
 
     // Disable copy construction.
@@ -1364,9 +1375,9 @@ namespace etl
     /// For library debugging purposes only.
     ETL_DECLARE_DEBUG_COUNT
 
-    //*************************************************************************
-    /// Destructor.
-    //*************************************************************************
+      //*************************************************************************
+      /// Destructor.
+      //*************************************************************************
 #if defined(ETL_POLYMORPHIC_UNORDERED_SET) || defined(ETL_POLYMORPHIC_CONTAINERS)
   public:
     virtual ~iunordered_set()
@@ -1384,20 +1395,34 @@ namespace etl
   /// Equal operator.
   ///\param lhs Reference to the first unordered_set.
   ///\param rhs Reference to the second unordered_set.
-  ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
+  ///\return <b>true</b> if the sets are equal, otherwise <b>false</b>
   ///\ingroup unordered_set
   //***************************************************************************
   template <typename TKey, typename TMapped, typename TKeyCompare>
   bool operator ==(const etl::iunordered_set<TKey, TMapped, TKeyCompare>& lhs, const etl::iunordered_set<TKey, TMapped, TKeyCompare>& rhs)
   {
-    return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
+    const bool sizes_match = (lhs.size() == rhs.size());
+    bool elements_match = true;
+
+    if (sizes_match)
+    {
+      for (size_t i = 0; (i < lhs.bucket_count()) && elements_match; ++i)
+      {
+        if (!etl::is_permutation(lhs.begin(i), lhs.end(i), rhs.begin(i)))
+        {
+          elements_match = false;
+        }
+      }
+    }
+
+    return (sizes_match && elements_match);
   }
 
   //***************************************************************************
   /// Not equal operator.
   ///\param lhs Reference to the first unordered_set.
   ///\param rhs Reference to the second unordered_set.
-  ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
+  ///\return <b>true</b> if the sets are not equal, otherwise <b>false</b>
   ///\ingroup unordered_set
   //***************************************************************************
   template <typename TKey, typename TMapped, typename TKeyCompare>
