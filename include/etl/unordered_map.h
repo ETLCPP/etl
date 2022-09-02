@@ -1294,6 +1294,7 @@ namespace etl
       // Skip if doing self assignment
       if (this != &rhs)
       {
+        clear();
         key_hash_function = rhs.hash_function();
         key_equal_function = rhs.key_eq();
         this->move(rhs.begin(), rhs.end());
@@ -1534,7 +1535,7 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    unordered_map(const THash& hash = THash(), const TKeyEqual equal = TKeyEqual())
+    unordered_map(const THash& hash = THash(), const TKeyEqual& equal = TKeyEqual())
       : base(node_pool, buckets, MAX_BUCKETS_, hash, equal)
     {
     }
@@ -1569,8 +1570,8 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    unordered_map(TIterator first_, TIterator last_)
-      : unordered_map()
+    unordered_map(TIterator first_, TIterator last_, const THash& hash = THash(), const TKeyEqual& equal = TKeyEqual())
+      : base(node_pool, buckets, MAX_BUCKETS_, hash, equal)
     {
       base::assign(first_, last_);
     }
@@ -1579,8 +1580,8 @@ namespace etl
     //*************************************************************************
     /// Construct from initializer_list.
     //*************************************************************************
-    unordered_map(std::initializer_list<ETL_OR_STD::pair<TKey, TValue>> init)
-      : unordered_map()
+    unordered_map(std::initializer_list<ETL_OR_STD::pair<TKey, TValue>> init, const THash& hash = THash(), const TKeyEqual& equal = TKeyEqual())
+      : base(node_pool, buckets, MAX_BUCKETS_, hash, equal)
     {
       base::assign(init.begin(), init.end());
     }

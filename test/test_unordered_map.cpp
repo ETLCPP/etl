@@ -151,6 +151,48 @@ namespace etl
 
 namespace
 {
+  //***************************************************************************
+  struct CustomHashFunction
+  {
+    CustomHashFunction()
+      : id(0)
+    {
+    }
+
+    CustomHashFunction(int id_)
+      : id(id_)
+    {
+    }
+
+    size_t operator ()(uint32_t e) const
+    {
+      return size_t(e);
+    }
+
+    int id;
+  };
+
+  //***************************************************************************
+  struct CustomKeyEq
+  {
+    CustomKeyEq()
+      : id(0)
+    {
+    }
+
+    CustomKeyEq(int id_)
+      : id(id_)
+    {
+    }
+
+    size_t operator ()(uint32_t lhs, uint32_t rhs) const
+    {
+      return (lhs == rhs);
+    }
+
+    int id;
+  };
+
   SUITE(test_unordered_map)
   {
     static const size_t SIZE = 10;
@@ -950,7 +992,9 @@ namespace
       CHECK_EQUAL('d', map[3]);
     }
 
-    TEST(test_ndc_hasher_and_key_eq) {
+    //*************************************************************************
+    TEST(test_ndc_hasher_and_key_eq) 
+    {
       typedef etl::unordered_map<size_t, int, 10, 10, ndc_hash, ndc_key_eq> Map;
       ndc_hash hasher1(1);
       ndc_hash hasher2(2);
@@ -990,7 +1034,9 @@ namespace
       CHECK_EQUAL(7, moveAssigned[5]);
     }
 
-    TEST(test_parameterized_eq) {
+    //*************************************************************************
+    TEST(test_parameterized_eq) 
+    {
       constexpr std::size_t MODULO = 4;
       parameterized_hash hash{MODULO};
       parameterized_equal eq{MODULO};
@@ -1011,6 +1057,73 @@ namespace
 
       map.erase(2);
       CHECK(map.find(6) == map.end());
+    }
+
+    //*************************************************************************
+    TEST(test_copying_of_hash_and_key_compare_with_copy_construct)
+    {
+      CustomHashFunction chf(1);
+      CustomKeyEq        ceq(2);
+
+      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1(chf, ceq);
+      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set2(set1);
+
+      CHECK_EQUAL(chf.id, set2.hash_function().id);
+      CHECK_EQUAL(ceq.id, set2.key_eq().id);
+    }
+
+    //*************************************************************************
+    TEST(test_copying_of_hash_and_key_compare_with_assignment)
+    {
+      CustomHashFunction chf1(1);
+      CustomKeyEq        ceq2(2);
+
+      CustomHashFunction chf3(3);
+      CustomKeyEq        ceq4(4);
+
+      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1(chf1, ceq2);
+      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set2(chf3, ceq4);
+
+      set2.operator=(set1);
+
+      CHECK_EQUAL(chf1.id, set2.hash_function().id);
+      CHECK_EQUAL(ceq2.id, set2.key_eq().id);
+    }
+
+    //*************************************************************************
+    TEST(test_copying_of_hash_and_key_compare_with_construction_from_iterators)
+    {
+      CustomHashFunction chf1(1);
+      CustomKeyEq        ceq2(2);
+
+      using value_type = etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq>::value_type;
+      std::array<value_type, 5> data = 
+      { 
+        value_type{1, 11}, 
+        value_type{2, 22}, 
+        value_type{3, 33}, 
+        value_type{4, 44}, 
+        value_type{5, 55} 
+      };
+
+      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1(data.begin(), data.end(), chf1, ceq2);
+
+      CHECK_EQUAL(chf1.id, set1.hash_function().id);
+      CHECK_EQUAL(ceq2.id, set1.key_eq().id);
+    }
+
+    //*************************************************************************
+    TEST(test_copying_of_hash_and_key_compare_with_construction_from_initializer_list)
+    {
+      CustomHashFunction chf1(1);
+      CustomKeyEq        ceq2(2);
+
+      using value_type = etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq>::value_type;
+
+      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1({ value_type{1, 11}, value_type{2, 22}, value_type{3, 33}, value_type{4, 44}, value_type{5, 55} }, chf1, ceq2);
+
+      CHECK_EQUAL(chf1.id, set1.hash_function().id);
+      CHECK_EQUAL(ceq2.id, set1.key_eq().id);
     }
   };
 }
