@@ -481,7 +481,7 @@ namespace etl
         } 
         else 
         {
-          return ::etl::hash<unsigned long long>{}(static_cast<unsigned long long>(v));
+          return ::etl::hash<unsigned long long>()(static_cast<unsigned long long>(v));
         }
       }
     };
