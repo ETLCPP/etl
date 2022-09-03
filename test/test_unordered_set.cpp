@@ -35,6 +35,7 @@ SOFTWARE.
 #include <string>
 #include <vector>
 #include <numeric>
+#include <unordered_set>
 
 #include "data.h"
 
@@ -707,6 +708,59 @@ namespace
       CHECK_EQUAL("set = 3", s[1]);
     }
 
+    //*************************************************************************
+    TEST(test_equality_comparison_fails_when_hash_collisions_occur_582)
+    {
+      struct bad_hash
+      {
+        // Force hash collisions
+        size_t operator()(int key) const 
+        { 
+          return key % 4; 
+        }
+      };
+     
+      std::vector<int> random_keys1 = { 17, 14, 3,  7, 2, 6, 9,  3, 18, 10,  8, 11,  4, 1, 12, 15, 16,  0,  5, 19 };
+      std::vector<int> random_keys2 = {  3,  6, 5, 17, 2, 7, 3, 19,  8, 15, 14,  0, 18, 4, 10,  9, 16, 11, 12,  1 };
+
+      // Check that the input data is valid.
+      CHECK_EQUAL(random_keys1.size(), random_keys2.size());
+      CHECK(std::is_permutation(random_keys1.begin(), random_keys1.end(), random_keys2.begin()));
+
+      //***************************************************
+      // Fill ETL
+      etl::unordered_set<int, 20, 20, bad_hash> etlset1;
+      etl::unordered_set<int, 20, 20, bad_hash> etlset2;
+
+      for (auto i : random_keys1)
+      {
+        etlset1.insert(i);
+      }
+
+      for (auto i : random_keys2)
+      {
+        etlset2.insert(i);
+      }
+
+      //***************************************************
+      // Fill STD
+      std::unordered_set<int, bad_hash> stdset1;
+      std::unordered_set<int, bad_hash> stdset2;
+
+      for (auto i : random_keys1)
+      {
+        stdset1.insert(i);
+      }
+
+      for (auto i : random_keys2)
+      {
+        stdset2.insert(i);
+      }
+
+      //***************************************************
+      CHECK_EQUAL((stdset1 == stdset2), (etlset1 == etlset2));
+    }
+    
     //*************************************************************************
     TEST(test_copying_of_hash_and_key_compare_with_copy_construct)
     {

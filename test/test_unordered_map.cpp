@@ -961,6 +961,75 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_equality_comparison_fails_when_hash_collisions_occur_582)
+    {
+      struct bad_hash
+      {
+        // Force hash collisions
+        size_t operator()(int key) const
+        {
+          return key % 4;
+        }
+      };
+
+      using etl_map = etl::unordered_map<int, std::string, 20, 20, bad_hash>;
+      using stl_map = std::unordered_map<int, std::string, bad_hash>;
+
+      std::vector<etl_map::value_type> random_keys1 =
+      {
+        {17, "17"}, {14, "14"}, { 3,  "3"}, { 7,  "7"}, { 2,  "2"},
+        { 6,  "6"}, { 9,  "9"}, { 3,  "3"}, {18, "18"}, {10, "10"},
+        { 8,  "8"}, {11, "11"}, { 4,  "4"}, { 1,  "1"}, {12, "12"},
+        {15, "15"}, {16, "16"}, { 0,  "0"}, { 5,  "5"}, {19, "19"} 
+      };
+
+      std::vector<etl_map::value_type> random_keys2 =
+      { 
+        { 3,  "3"}, { 6,  "6"}, { 5,  "5"}, {17, "17"}, { 2,  "2"},
+        { 7,  "7"}, { 3,  "3"}, {19, "19"}, { 8,  "8"}, {15, "15"},
+        {14, "14"}, { 0,  "0"}, {18, "18"}, { 4,  "4"}, {10, "10"},
+        { 9,  "9"}, {16, "16"}, {11, "11"}, {12, "12"}, { 1,  "1"}
+      };
+
+      // Check that the input data is valid.
+      CHECK_EQUAL(random_keys1.size(), random_keys2.size());
+      CHECK(std::is_permutation(random_keys1.begin(), random_keys1.end(), random_keys2.begin()));
+
+      //***************************************************
+      // Fill ETL
+      etl_map etlmap1;
+      etl_map etlmap2;
+
+      for (auto i : random_keys1)
+      {
+        etlmap1.insert(i);
+      }
+
+      for (auto i : random_keys2)
+      {
+        etlmap2.insert(i);
+      }
+
+      //***************************************************
+      // Fill STD
+      stl_map stdmap1;
+      stl_map stdmap2;
+
+      for (auto i : random_keys1)
+      {
+        stdmap1.insert(i);
+      }
+
+      for (auto i : random_keys2)
+      {
+        stdmap2.insert(i);
+      }
+
+      //***************************************************
+      CHECK_EQUAL((stdmap1 == stdmap2), (etlmap1 == etlmap2));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_and_erase_bug)
     {
       etl::unordered_map<uint32_t, char, 5> map;
@@ -1065,11 +1134,11 @@ namespace
       CustomHashFunction chf(1);
       CustomKeyEq        ceq(2);
 
-      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1(chf, ceq);
-      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set2(set1);
+      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> map1(chf, ceq);
+      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> map2(map1);
 
-      CHECK_EQUAL(chf.id, set2.hash_function().id);
-      CHECK_EQUAL(ceq.id, set2.key_eq().id);
+      CHECK_EQUAL(chf.id, map2.hash_function().id);
+      CHECK_EQUAL(ceq.id, map2.key_eq().id);
     }
 
     //*************************************************************************
@@ -1081,13 +1150,13 @@ namespace
       CustomHashFunction chf3(3);
       CustomKeyEq        ceq4(4);
 
-      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1(chf1, ceq2);
-      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set2(chf3, ceq4);
+      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> map1(chf1, ceq2);
+      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> map2(chf3, ceq4);
 
-      set2.operator=(set1);
+      map2.operator=(map1);
 
-      CHECK_EQUAL(chf1.id, set2.hash_function().id);
-      CHECK_EQUAL(ceq2.id, set2.key_eq().id);
+      CHECK_EQUAL(chf1.id, map2.hash_function().id);
+      CHECK_EQUAL(ceq2.id, map2.key_eq().id);
     }
 
     //*************************************************************************
@@ -1106,10 +1175,10 @@ namespace
         value_type{5, 55} 
       };
 
-      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1(data.begin(), data.end(), chf1, ceq2);
+      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> map1(data.begin(), data.end(), chf1, ceq2);
 
-      CHECK_EQUAL(chf1.id, set1.hash_function().id);
-      CHECK_EQUAL(ceq2.id, set1.key_eq().id);
+      CHECK_EQUAL(chf1.id, map1.hash_function().id);
+      CHECK_EQUAL(ceq2.id, map1.key_eq().id);
     }
 
     //*************************************************************************
@@ -1120,10 +1189,10 @@ namespace
 
       using value_type = etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq>::value_type;
 
-      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1({ value_type{1, 11}, value_type{2, 22}, value_type{3, 33}, value_type{4, 44}, value_type{5, 55} }, chf1, ceq2);
+      etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> map1({ value_type{1, 11}, value_type{2, 22}, value_type{3, 33}, value_type{4, 44}, value_type{5, 55} }, chf1, ceq2);
 
-      CHECK_EQUAL(chf1.id, set1.hash_function().id);
-      CHECK_EQUAL(ceq2.id, set1.key_eq().id);
+      CHECK_EQUAL(chf1.id, map1.hash_function().id);
+      CHECK_EQUAL(ceq2.id, map1.key_eq().id);
     }
 
     //*************************************************************************
