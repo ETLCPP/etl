@@ -170,7 +170,7 @@ namespace etl
     {
     public:
 
-      typedef typename iunordered_multiset::value_type      value_type;
+      typedef typename etl::iterator<ETL_OR_STD::forward_iterator_tag, TKey>::value_type value_type;
       typedef typename iunordered_multiset::key_type        key_type;
       typedef typename iunordered_multiset::hasher          hasher;
       typedef typename iunordered_multiset::key_equal       key_equal;
@@ -312,7 +312,7 @@ namespace etl
     {
     public:
 
-      typedef typename iunordered_multiset::value_type      value_type;
+      typedef typename etl::iterator<ETL_OR_STD::forward_iterator_tag, const TKey>::value_type value_type;
       typedef typename iunordered_multiset::key_type        key_type;
       typedef typename iunordered_multiset::hasher          hasher;
       typedef typename iunordered_multiset::key_equal       key_equal;

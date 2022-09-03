@@ -174,7 +174,7 @@ namespace etl
     {
     public:
 
-      typedef typename iunordered_map::value_type      value_type;
+      typedef typename etl::iterator<ETL_OR_STD::forward_iterator_tag, T>::value_type value_type;
       typedef typename iunordered_map::key_type        key_type;
       typedef typename iunordered_map::mapped_type     mapped_type;
       typedef typename iunordered_map::hasher          hasher;
@@ -317,7 +317,7 @@ namespace etl
     {
     public:
 
-      typedef typename iunordered_map::value_type      value_type;
+      typedef typename etl::iterator<ETL_OR_STD::forward_iterator_tag, const T>::value_type value_type;
       typedef typename iunordered_map::key_type        key_type;
       typedef typename iunordered_map::mapped_type     mapped_type;
       typedef typename iunordered_map::hasher          hasher;

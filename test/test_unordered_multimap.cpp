@@ -935,5 +935,12 @@ namespace
       CHECK_EQUAL(chf1.id, set1.hash_function().id);
       CHECK_EQUAL(ceq2.id, set1.key_eq().id);
     }
+
+    //*************************************************************************
+    TEST(test_iterator_value_types_bug_584)
+    {
+      using Map = etl::unordered_multimap<int, int, 1, 1>;
+      CHECK((!std::is_same_v<typename Map::const_iterator::value_type, typename Map::iterator::value_type>));
+    }
   };
 }
