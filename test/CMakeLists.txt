@@ -66,6 +66,7 @@ set(TEST_SOURCE_FILES
 	test_checksum.cpp
 	test_circular_buffer.cpp
 	test_circular_buffer_external_buffer.cpp
+	test_circular_iterator.cpp
 	test_compare.cpp
 	test_compiler_settings.cpp
 	test_constant.cpp

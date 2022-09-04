@@ -88,18 +88,6 @@ namespace etl
       }
 
       //***************************************************************************
-      /// Assignment from span.
-      //***************************************************************************
-      ETL_CONSTEXPR14 circular_iterator_common& operator =(const etl::span<TIterator>& span_)
-      {
-        itr_begin = span_.begin();
-        itr_end   = span_.end();
-        itr       = itr_begin;
-
-        return *this;
-      }
-
-      //***************************************************************************
       /// Assignment from circular_iterator.
       //***************************************************************************
       ETL_CONSTEXPR14 circular_iterator_common& operator =(const circular_iterator_common& other)
@@ -191,14 +179,6 @@ namespace etl
         return itr;
       }
 
-      //***************************************************************************
-      /// Assign from iterator.
-      //***************************************************************************
-      ETL_CONSTEXPR14 void set(TIterator itr_)
-      {
-        itr = itr_;
-      }
-
     protected:
 
       TIterator itr_begin; ///< The underlying begin iterator.
@@ -233,6 +213,8 @@ namespace etl
     typedef etl::private_circular_iterator::circular_iterator_common<TIterator> base_t;
 
   public:
+
+    using base_t::operator=;
 
     typedef typename base_t::value_type        value_type;
     typedef typename base_t::difference_type   difference_type;
@@ -314,16 +296,6 @@ namespace etl
 
       return (original);
     }
-
-    //***************************************************************************
-    /// Assign from iterator.
-    //***************************************************************************
-    ETL_CONSTEXPR14 circular_iterator& operator =(TIterator itr_)
-    {
-      itr = itr_;
-
-      return *this;
-    }
   };
 
   //***************************************************************************
@@ -340,6 +312,8 @@ namespace etl
     typedef etl::private_circular_iterator::circular_iterator_common<TIterator> base_t;
 
   public:
+
+    using base_t::operator=;
 
     typedef typename base_t::value_type        value_type;
     typedef typename base_t::difference_type   difference_type;
@@ -452,16 +426,6 @@ namespace etl
 
       return (original);
     }
-
-    //***************************************************************************
-    /// Assign from iterator.
-    //***************************************************************************
-    ETL_CONSTEXPR14 circular_iterator& operator =(TIterator itr_)
-    {
-      itr = itr_;
-
-      return *this;
-    }
   };
 
   //***************************************************************************
@@ -478,6 +442,8 @@ namespace etl
     typedef etl::private_circular_iterator::circular_iterator_common<TIterator> base_t;
 
   public:
+
+    using base_t::operator=;
 
     typedef typename base_t::value_type        value_type;
     typedef typename base_t::difference_type   difference_type;
@@ -642,16 +608,6 @@ namespace etl
     ETL_CONSTEXPR14 circular_iterator& operator -=(typename etl::iterator_traits<TIterator>::difference_type offset)
     {
       return operator +=(-offset);
-    }
-
-    //***************************************************************************
-    /// Assign from iterator.
-    //***************************************************************************
-    ETL_CONSTEXPR14 circular_iterator& operator =(TIterator itr_)
-    {
-      itr = itr_;
-
-      return *this;
     }
   };
 

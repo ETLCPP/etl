@@ -72,6 +72,7 @@ target_sources(t17 PRIVATE etl_profile.h
         ../char_traits.h.t.cpp
         ../checksum.h.t.cpp
         ../circular_buffer.h.t.cpp
+        ../circular_iterator.h.t.cpp
         ../combinations.h.t.cpp
         ../compare.h.t.cpp
         ../constant.h.t.cpp

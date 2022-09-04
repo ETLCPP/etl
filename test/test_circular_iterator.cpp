@@ -34,14 +34,6 @@ SOFTWARE.
 
 #include "etl/circular_iterator.h"
 
-//template <typename TIterator>
-//std::ostream& operator << (std::ostream& os, const etl::circular_iterator<TIterator>& ci)
-//{
-//  os << ci.begin() "," << ci.end();
-//
-//  return os;
-//}
-
 namespace 
 {		
   using DataE = std::array<int, 10U>;
@@ -60,6 +52,37 @@ namespace
 
       CHECK_EQUAL(0U, size_t(std::distance(ci.begin(), ci.end())));
       CHECK_EQUAL(0U, ci.size());
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_iterators_for_random_access_iterator)
+    {
+      const int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      etl::circular_iterator<ConstPointer> ci(std::begin(data), std::end(data));
+
+      CHECK(std::begin(data) == ci.begin());
+      CHECK(std::end(data)   == ci.end());
+      CHECK(std::begin(data) == ci.current());
+      CHECK_EQUAL(std::size(data), size_t(std::distance(ci.begin(), ci.end())));
+      CHECK_EQUAL(std::size(data), ci.size());
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_start_plus_iterators_for_random_access_iterator)
+    {
+      const int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      ConstPointer start = std::begin(data);
+      start++;
+
+      etl::circular_iterator<ConstPointer> ci(std::begin(data), std::end(data), start);
+
+      CHECK(std::begin(data) == ci.begin());
+      CHECK(std::end(data)   == ci.end());
+      CHECK(start            == ci.current());
+      CHECK_EQUAL(std::size(data), size_t(std::distance(ci.begin(), ci.end())));
+      CHECK_EQUAL(std::size(data), ci.size());
     }
 
     //*************************************************************************
@@ -91,6 +114,37 @@ namespace
       CHECK(start        == ci.current());
       CHECK_EQUAL(data.size(), size_t(std::distance(ci.begin(), ci.end())));
       CHECK_EQUAL(data.size(), ci.size());
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_iterators_for_forward_iterator)
+    {
+      const DataF data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      etl::circular_iterator<DataF::const_iterator> ci(std::begin(data), std::end(data));
+
+      CHECK(data.begin() == ci.begin());
+      CHECK(data.end()   == ci.end());
+      CHECK(data.begin() == ci.current());
+      CHECK_EQUAL(size_t(std::distance(data.begin(), data.end())), size_t(std::distance(ci.begin(), ci.end())));
+      CHECK_EQUAL(size_t(std::distance(data.begin(), data.end())), ci.size());
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_start_plus_iterators_for_forward_iterator)
+    {
+      const DataF data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      DataF::const_iterator start = std::begin(data);
+      start++;
+
+      etl::circular_iterator<DataF::const_iterator> ci(std::begin(data), std::end(data), start);
+
+      CHECK(data.begin() == ci.begin());
+      CHECK(data.end()   == ci.end());
+      CHECK(start        == ci.current());
+      CHECK_EQUAL(size_t(std::distance(data.begin(), data.end())), size_t(std::distance(ci.begin(), ci.end())));
+      CHECK_EQUAL(size_t(std::distance(data.begin(), data.end())), ci.size());
     }
 
     //*************************************************************************
@@ -181,106 +235,6 @@ namespace
       CHECK(ci1.begin() == ci2.begin());
       CHECK(ci1.end()   == ci2.end());
       CHECK_EQUAL(ci1.size(), ci2.size());
-    }
-
-    //*************************************************************************
-    TEST(test_assignment_from_span)
-    {
-      int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-      etl::span<const int> sp(std::begin(data), std::end(data));
-      
-      etl::circular_iterator<ConstPointer> ci;
-      ci.operator=(sp);
-
-      CHECK(std::begin(data) == ci.begin());
-      CHECK(std::end(data)   == ci.end());
-      CHECK_EQUAL(sp.size(), size_t(std::distance(ci.begin(), ci.end())));
-      CHECK_EQUAL(sp.size(), ci.size());
-    }
-
-    //*************************************************************************
-    TEST(test_assign_start_for_random_access_iterator)
-    {
-      const int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-      ConstPointer start = std::begin(data);
-      start++;
-
-      etl::circular_iterator<ConstPointer> ci(std::begin(data), std::end(data));
-
-      ci = start;
-      CHECK(start == ci.current());
-    }
-
-    //*************************************************************************
-    TEST(test_assign_start_for_bidirectional_iterator)
-    {
-      const DataL data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-      DataL::const_iterator start = std::begin(data);
-      start++;
-
-      etl::circular_iterator<DataL::const_iterator> ci(std::begin(data), std::end(data));
-
-      ci = start;
-      CHECK(start == ci.current());
-    }
-
-    //*************************************************************************
-    TEST(test_assign_start_for_forward_iterator)
-    {
-      const DataF data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-      DataF::const_iterator start = std::begin(data);
-      start++;
-
-      etl::circular_iterator<DataF::const_iterator> ci(std::begin(data), std::end(data));
-
-      ci = start;
-      CHECK(start == ci.current());
-    }
-
-    //*************************************************************************
-    TEST(test_set_start_for_random_access_iterator)
-    {
-      const int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-      ConstPointer start = std::begin(data);
-      start++;
-
-      etl::circular_iterator<ConstPointer> ci(std::begin(data), std::end(data));
-
-      ci.set(start);
-      CHECK(start == ci.current());
-    }
-
-    //*************************************************************************
-    TEST(test_set_start_for_bidirectional_iterator)
-    {
-      const DataL data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-      DataL::const_iterator start = std::begin(data);
-      start++;
-
-      etl::circular_iterator<DataL::const_iterator> ci(std::begin(data), std::end(data));
-
-      ci.set(start);
-      CHECK(start == ci.current());
-    }
-
-    //*************************************************************************
-    TEST(test_set_start_for_forward_iterator)
-    {
-      const DataF data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-      DataF::const_iterator start = std::begin(data);
-      start++;
-
-      etl::circular_iterator<DataF::const_iterator> ci(std::begin(data), std::end(data));
-
-      ci.set(start);
-      CHECK(start == ci.current());
     }
 
     //*************************************************************************

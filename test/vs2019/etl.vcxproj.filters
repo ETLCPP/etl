@@ -3356,6 +3356,9 @@
     <ClCompile Include="..\test_circular_iterator.cpp">
       <Filter>Tests\Memory &amp; Iterators</Filter>
     </ClCompile>
+    <ClCompile Include="..\sanity-check\circular_iterator.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
