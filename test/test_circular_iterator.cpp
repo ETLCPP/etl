@@ -177,39 +177,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_construct_from_span)
-    {
-      const int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-      const etl::span<const int> sp(std::begin(data), std::end(data));
-
-      etl::circular_iterator<ConstPointer> ci(sp);
-
-      CHECK(std::begin(data) == ci.begin());
-      CHECK(std::end(data)   == ci.end());
-      CHECK_EQUAL(sp.size(), size_t(std::distance(ci.begin(), ci.end())));
-      CHECK_EQUAL(sp.size(), ci.size());
-    }
-
-    //*************************************************************************
-    TEST(test_construct_from_start_plus_span)
-    {
-      const int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-      ConstPointer start = data + 1;
-
-      const etl::span<const int> sp(std::begin(data), std::end(data));
-
-      etl::circular_iterator<ConstPointer> ci(sp, start);
-
-      CHECK(std::begin(data) == ci.begin());
-      CHECK(std::end(data)   == ci.end());
-      CHECK(start            == ci.current());
-      CHECK_EQUAL(sp.size(), size_t(std::distance(ci.begin(), ci.end())));
-      CHECK_EQUAL(sp.size(), ci.size());
-    }
-
-    //*************************************************************************
     TEST(test_copy_constructor)
     {
       int data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -671,7 +638,6 @@ namespace
 
       etl::circular_iterator<ConstPointer> initial(std::begin(data), std::end(data));
       etl::circular_iterator<ConstPointer> ci;
-      int step;
 
       for (int step = 1; step < 20; ++step)
       {

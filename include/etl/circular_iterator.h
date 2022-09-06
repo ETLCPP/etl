@@ -33,7 +33,6 @@ SOFTWARE.
 
 #include "platform.h"
 #include "iterator.h"
-#include "span.h"
 #include "static_assert.h"
 
 ///\defgroup iterator Iterator types
@@ -88,7 +87,7 @@ namespace etl
       }
 
       //***************************************************************************
-      /// Assignment from circular_iterator.
+      /// Assignment
       //***************************************************************************
       ETL_CONSTEXPR14 circular_iterator_common& operator =(const circular_iterator_common& other)
       {
@@ -209,23 +208,23 @@ namespace etl
     {
     private:
 
-      typedef circular_iterator_common<TIterator> base_t;
+      typedef circular_iterator_common<TIterator> common_t;
 
     public:
 
-      using base_t::operator=;
+      using common_t::operator=;
 
-      typedef typename base_t::value_type        value_type;
-      typedef typename base_t::difference_type   difference_type;
-      typedef typename base_t::pointer           pointer;
-      typedef typename base_t::reference         reference;
-      typedef typename base_t::iterator_category iterator_category;
+      typedef typename common_t::value_type        value_type;
+      typedef typename common_t::difference_type   difference_type;
+      typedef typename common_t::pointer           pointer;
+      typedef typename common_t::reference         reference;
+      typedef typename common_t::iterator_category iterator_category;
 
       //***************************************************************************
       /// Default constructor.
       //***************************************************************************
       ETL_CONSTEXPR14 circular_iterator_impl()
-        : circular_iterator_common()
+        : common_t()
       {
       }
 
@@ -233,7 +232,7 @@ namespace etl
       /// Construct from iterators.
       //***************************************************************************
       ETL_CONSTEXPR14 circular_iterator_impl(TIterator itr_begin_, TIterator itr_end_)
-        : circular_iterator_common(itr_begin_, itr_end_, itr_begin_)
+        : common_t(itr_begin_, itr_end_, itr_begin_)
       {
       }
 
@@ -241,25 +240,7 @@ namespace etl
       /// Construct from start + iterators.
       //***************************************************************************
       ETL_CONSTEXPR14 circular_iterator_impl(TIterator itr_begin_, TIterator itr_end_, TIterator start_)
-        : circular_iterator_common(itr_begin_, itr_end_, start_)
-      {
-      }
-
-      //***************************************************************************
-      /// Construct from span.
-      //***************************************************************************
-      template <typename T>
-      ETL_CONSTEXPR14 circular_iterator_impl(const etl::span<T>& span_)
-        : circular_iterator_common(span_.begin(), span_.end(), span_.begin())
-      {
-      }
-
-      //***************************************************************************
-      /// Construct from start + span.
-      //***************************************************************************
-      template <typename T>
-      ETL_CONSTEXPR14 circular_iterator_impl(const etl::span<T>& span_, TIterator start_)
-        : circular_iterator_common(span_.begin(), span_.end(), start_)
+        : common_t(itr_begin_, itr_end_, start_)
       {
       }
 
@@ -267,8 +248,18 @@ namespace etl
       /// Copy constructor
       //***************************************************************************
       ETL_CONSTEXPR14 circular_iterator_impl(const circular_iterator_impl& other)
-        : circular_iterator_common(other)
+        : common_t(other)
       {
+      }
+
+      //***************************************************************************
+      /// Assignment
+      //***************************************************************************
+      ETL_CONSTEXPR14 circular_iterator_impl& operator =(const circular_iterator_impl& other)
+      {
+        common_t::operator=(other);
+
+        return *this;
       }
 
       //***************************************************************************
@@ -308,23 +299,23 @@ namespace etl
     {
     private:
 
-      typedef circular_iterator_common<TIterator> base_t;
+      typedef circular_iterator_common<TIterator> common_t;
 
     public:
 
-      using base_t::operator=;
+      using common_t::operator=;
 
-      typedef typename base_t::value_type        value_type;
-      typedef typename base_t::difference_type   difference_type;
-      typedef typename base_t::pointer           pointer;
-      typedef typename base_t::reference         reference;
-      typedef typename base_t::iterator_category iterator_category;
+      typedef typename common_t::value_type        value_type;
+      typedef typename common_t::difference_type   difference_type;
+      typedef typename common_t::pointer           pointer;
+      typedef typename common_t::reference         reference;
+      typedef typename common_t::iterator_category iterator_category;
 
       //***************************************************************************
       /// Default constructor.
       //***************************************************************************
       ETL_CONSTEXPR14 circular_iterator_impl()
-        : circular_iterator_common()
+        : common_t()
       {
       }
 
@@ -332,7 +323,7 @@ namespace etl
       /// Construct from iterators.
       //***************************************************************************
       ETL_CONSTEXPR14 circular_iterator_impl(TIterator itr_begin_, TIterator itr_end_)
-        : circular_iterator_common(itr_begin_, itr_end_, itr_begin_)
+        : common_t(itr_begin_, itr_end_, itr_begin_)
       {
       }
 
@@ -340,25 +331,7 @@ namespace etl
       /// Construct from start + iterators.
       //***************************************************************************
       ETL_CONSTEXPR14 circular_iterator_impl(TIterator itr_begin_, TIterator itr_end_, TIterator start_)
-        : circular_iterator_common(itr_begin_, itr_end_, start_)
-      {
-      }
-
-      //***************************************************************************
-      /// Construct from span.
-      //***************************************************************************
-      template <typename T>
-      ETL_CONSTEXPR14 circular_iterator_impl(const etl::span<T>& span_)
-        : circular_iterator_common(span_.begin(), span_.end(), span_.begin())
-      {
-      }
-
-      //***************************************************************************
-      /// Construct from start + span.
-      //***************************************************************************
-      template <typename T>
-      ETL_CONSTEXPR14 circular_iterator_impl(const etl::span<T>& span_, TIterator start_)
-        : circular_iterator_common(span_.begin(), span_.end(), start_)
+        : common_t(itr_begin_, itr_end_, start_)
       {
       }
 
@@ -366,8 +339,18 @@ namespace etl
       /// Copy constructor
       //***************************************************************************
       ETL_CONSTEXPR14 circular_iterator_impl(const circular_iterator_impl& other)
-        : circular_iterator_common(other)
+        : common_t(other)
       {
+      }
+
+      //***************************************************************************
+      /// Assignment
+      //***************************************************************************
+      ETL_CONSTEXPR14 circular_iterator_impl& operator =(const circular_iterator_impl& other)
+      {
+        common_t::operator=(other);
+
+        return *this;
       }
 
       //***************************************************************************
@@ -375,9 +358,9 @@ namespace etl
       //***************************************************************************
       ETL_CONSTEXPR14 circular_iterator_impl& operator ++()
       {
-        if (++itr == itr_end)
+        if (++this->itr == this->itr_end)
         {
-          itr = itr_begin;
+          this->itr = this->itr_begin;
         }
 
         return *this;
@@ -400,15 +383,15 @@ namespace etl
       //***************************************************************************
       ETL_CONSTEXPR14 circular_iterator_impl& operator --()
       {
-        if (itr == itr_begin)
+        if (this->itr == this->itr_begin)
         {
-          typename etl::reverse_iterator<TIterator> ritr(itr_end);
+          typename etl::reverse_iterator<TIterator> ritr(this->itr_end);
           ++ritr;
-          itr = ritr.base();
+          this->itr = ritr.base();
         }
         else
         {
-          --itr;
+          --this->itr;
         }
 
         return *this;
@@ -434,27 +417,27 @@ namespace etl
     //***************************************************************************
     template <typename TIterator>
     class circular_iterator_impl<TIterator, ETL_OR_STD::random_access_iterator_tag>
-      : public circular_iterator_common<TIterator>
+      : public etl::private_circular_iterator::circular_iterator_common<TIterator>
     {
     private:
 
-      typedef circular_iterator_common<TIterator> base_t;
+      typedef etl::private_circular_iterator::circular_iterator_common<TIterator> common_t;
 
     public:
 
-      using base_t::operator=;
+      using common_t::operator=;
 
-      typedef typename base_t::value_type        value_type;
-      typedef typename base_t::difference_type   difference_type;
-      typedef typename base_t::pointer           pointer;
-      typedef typename base_t::reference         reference;
-      typedef typename base_t::iterator_category iterator_category;
+      typedef typename common_t::value_type        value_type;
+      typedef typename common_t::difference_type   difference_type;
+      typedef typename common_t::pointer           pointer;
+      typedef typename common_t::reference         reference;
+      typedef typename common_t::iterator_category iterator_category;
 
       //***************************************************************************
       /// Default constructor.
       //***************************************************************************
       ETL_CONSTEXPR14 circular_iterator_impl()
-        : circular_iterator_common()
+        : common_t()
       {
       }
 
@@ -462,7 +445,7 @@ namespace etl
       /// Construct from iterators.
       //***************************************************************************
       ETL_CONSTEXPR14 circular_iterator_impl(TIterator itr_begin_, TIterator itr_end_)
-        : circular_iterator_common(itr_begin_, itr_end_, itr_begin_)
+        : common_t(itr_begin_, itr_end_, itr_begin_)
       {
       }
 
@@ -470,25 +453,7 @@ namespace etl
       /// Construct from start + iterators.
       //***************************************************************************
       ETL_CONSTEXPR14 circular_iterator_impl(TIterator itr_begin_, TIterator itr_end_, TIterator start_)
-        : circular_iterator_common(itr_begin_, itr_end_, start_)
-      {
-      }
-
-      //***************************************************************************
-      /// Construct from span.
-      //***************************************************************************
-      template <typename T>
-      ETL_CONSTEXPR14 circular_iterator_impl(const etl::span<T>& span_)
-        : circular_iterator_common(span_.begin(), span_.end(), span_.begin())
-      {
-      }
-
-      //***************************************************************************
-      /// Construct from start + span.
-      //***************************************************************************
-      template <typename T>
-      ETL_CONSTEXPR14 circular_iterator_impl(const etl::span<T>& span_, TIterator start_)
-        : circular_iterator_common(span_.begin(), span_.end(), start_)
+        : common_t(itr_begin_, itr_end_, start_)
       {
       }
 
@@ -496,8 +461,18 @@ namespace etl
       /// Copy constructor
       //***************************************************************************
       ETL_CONSTEXPR14 circular_iterator_impl(const circular_iterator_impl& other)
-        : circular_iterator_common(other)
+        : common_t(other)
       {
+      }
+
+      //***************************************************************************
+      /// Assignment
+      //***************************************************************************
+      ETL_CONSTEXPR14 circular_iterator_impl& operator =(const circular_iterator_impl& other)
+      {
+        common_t::operator=(other);
+
+        return *this;
       }
 
       //***************************************************************************
@@ -505,9 +480,9 @@ namespace etl
       //***************************************************************************
       ETL_CONSTEXPR14 circular_iterator_impl& operator ++()
       {
-        if (++itr == itr_end)
+        if (++this->itr == this->itr_end)
         {
-          itr = itr_begin;
+          this->itr = this->itr_begin;
         }
 
         return *this;
@@ -530,15 +505,15 @@ namespace etl
       //***************************************************************************
       ETL_CONSTEXPR14 circular_iterator_impl& operator --()
       {
-        if (itr == itr_begin)
+        if (this->itr == this->itr_begin)
         {
-          typename etl::reverse_iterator<TIterator> ritr(itr_end);
+          typename etl::reverse_iterator<TIterator> ritr(this->itr_end);
           ++ritr;
-          itr = ritr.base();
+          this->itr = ritr.base();
         }
         else
         {
-          --itr;
+          --this->itr;
         }
 
         return *this;
@@ -561,13 +536,13 @@ namespace etl
       //***************************************************************************
       ETL_CONSTEXPR14 circular_iterator_impl& operator +=(difference_type offset)
       {
-        const difference_type length = difference_type(size());
+        const difference_type length = difference_type(this->size());
         offset %= length;
 
         if (offset != 0)
         {
-          const difference_type distance_from_begin = etl::distance(itr_begin, itr);
-          const difference_type distance_to_end = etl::distance(itr, itr_end);
+          const difference_type distance_from_begin = etl::distance(this->itr_begin, this->itr);
+          const difference_type distance_to_end = etl::distance(this->itr, this->itr_end);
 
           if (offset > 0)
           {
@@ -595,7 +570,7 @@ namespace etl
             }
           }
 
-          itr = itr_begin + offset;
+          this->itr = this->itr_begin + offset;
         }
 
         return *this;
@@ -622,23 +597,23 @@ namespace etl
   {
   private:
 
-    typedef typename etl::private_circular_iterator::circular_iterator_impl<TIterator, typename etl::iterator_traits<TIterator>::iterator_category> base_t;
+    typedef typename etl::private_circular_iterator::circular_iterator_impl<TIterator, typename etl::iterator_traits<TIterator>::iterator_category> impl_t;
 
   public:
 
-    using base_t::operator=;
+    using impl_t::operator=;
 
-    typedef typename base_t::value_type        value_type;
-    typedef typename base_t::difference_type   difference_type;
-    typedef typename base_t::pointer           pointer;
-    typedef typename base_t::reference         reference;
-    typedef typename base_t::iterator_category iterator_category;
+    typedef typename impl_t::value_type        value_type;
+    typedef typename impl_t::difference_type   difference_type;
+    typedef typename impl_t::pointer           pointer;
+    typedef typename impl_t::reference         reference;
+    typedef typename impl_t::iterator_category iterator_category;
 
     //***************************************************************************
     /// Default constructor.
     //***************************************************************************
     ETL_CONSTEXPR14 circular_iterator()
-      : circular_iterator_impl()
+      : impl_t()
     {
     }
 
@@ -646,7 +621,7 @@ namespace etl
     /// Construct from iterators.
     //***************************************************************************
     ETL_CONSTEXPR14 circular_iterator(TIterator itr_begin_, TIterator itr_end_)
-      : circular_iterator_impl(itr_begin_, itr_end_, itr_begin_)
+      : impl_t(itr_begin_, itr_end_, itr_begin_)
     {
     }
 
@@ -654,34 +629,26 @@ namespace etl
     /// Construct from start + iterators.
     //***************************************************************************
     ETL_CONSTEXPR14 circular_iterator(TIterator itr_begin_, TIterator itr_end_, TIterator start_)
-      : circular_iterator_impl(itr_begin_, itr_end_, start_)
-    {
-    }
-
-    //***************************************************************************
-    /// Construct from span.
-    //***************************************************************************
-    template <typename T>
-    ETL_CONSTEXPR14 circular_iterator(const etl::span<T>& span_)
-      : circular_iterator_impl(span_.begin(), span_.end(), span_.begin())
-    {
-    }
-
-    //***************************************************************************
-    /// Construct from start + span.
-    //***************************************************************************
-    template <typename T>
-    ETL_CONSTEXPR14 circular_iterator(const etl::span<T>& span_, TIterator start_)
-      : circular_iterator_impl(span_.begin(), span_.end(), start_)
+      : impl_t(itr_begin_, itr_end_, start_)
     {
     }
 
     //***************************************************************************
     /// Copy constructor
     //***************************************************************************
-    ETL_CONSTEXPR14 circular_iterator(const circular_iterator_impl& other)
-      : circular_iterator_impl(other)
+    ETL_CONSTEXPR14 circular_iterator(const circular_iterator& other)
+      : impl_t(other)
     {
+    }
+
+    //***************************************************************************
+    /// Assignment
+    //***************************************************************************
+    ETL_CONSTEXPR14 circular_iterator& operator =(const circular_iterator& other)
+    {
+      impl_t::operator=(other);
+
+      return *this;
     }
   };
 

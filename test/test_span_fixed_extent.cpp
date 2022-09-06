@@ -748,6 +748,218 @@ namespace
       //f_issue_486(c);
     }
 
+    //*************************************************************************
+    TEST(test_circular_iterator_pre_increment)
+    {
+      etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array expected{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
+
+      View view{ data };
+
+      View::circular_iterator sci = view.begin_circular();
+
+      for (int i = 0; i < 20; ++i)
+      {
+        CHECK_EQUAL(expected[i], *++sci);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_circular_iterator_pre_increment_for_subspan)
+    {
+      etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array expected{ 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2 };
+
+      View view{ data };
+      etl::span<int, 4U> subspan = view.subspan<2, 4>();
+
+      View::circular_iterator sci = subspan.begin_circular();
+
+      for (int i = 0; i < 20; ++i)
+      {
+        CHECK_EQUAL(expected[i], *++sci);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_circular_iterator_post_increment)
+    {
+      etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array expected{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      View view{ data };
+
+      View::circular_iterator sci = view.begin_circular();
+
+      for (int i = 0; i < 20; ++i)
+      {
+        CHECK_EQUAL(expected[i % std::size(expected)], *sci++);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_circular_iterator_post_increment_for_subspan)
+    {
+      etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array expected{ 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5 };
+
+      View view{ data };
+      etl::span<int, 4U> subspan = view.subspan<2, 4>();
+
+      View::circular_iterator sci = subspan.begin_circular();
+
+      for (int i = 0; i < 20; ++i)
+      {
+        CHECK_EQUAL(expected[i], *sci++);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_circular_reverse_iterator_pre_increment)
+    {
+      etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array expected{ 8, 7, 6, 5, 4, 3, 2, 1, 0, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 9 };
+
+      View view{ data };
+
+      View::reverse_circular_iterator sci = view.rbegin_circular();
+
+      for (int i = 0; i < 20; ++i)
+      {
+        CHECK_EQUAL(expected[i % std::size(expected)], *++sci);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_circular_reverse_iterator_pre_increment_for_subspan)
+    {
+      etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array expected{ 4, 3, 2, 5, 4, 3, 2, 5, 4, 3, 2, 5, 4, 3, 2, 5, 4, 3, 2, 5 };
+
+      View view{ data };
+      etl::span<int, 4U> subspan = view.subspan<2, 4>();
+
+      etl::span<int, 10U>::reverse_circular_iterator sci = subspan.rbegin_circular();
+
+      for (int i = 0; i < 20; ++i)
+      {
+        CHECK_EQUAL(expected[i % std::size(expected)], *++sci);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_circular_reverse_iterator_post_increment)
+    {
+      etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array expected{ 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
+
+      View view{ data };
+
+      View::reverse_circular_iterator sci = view.rbegin_circular();
+
+      for (int i = 0; i < 20; ++i)
+      {
+        CHECK_EQUAL(expected[i % std::size(expected)], *sci++);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_circular_reverse_iterator_post_increment_for_subspan)
+    {
+      etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array expected{ 5, 4, 3, 2, 5, 4, 3, 2, 5, 4, 3, 2, 5, 4, 3, 2, 5, 4, 3, 2 };
+
+      View view{ data };
+      etl::span<int, 4U> subspan = view.subspan<2, 4>();
+
+      View::reverse_circular_iterator sci = subspan.rbegin_circular();
+
+      for (int i = 0; i < 20; ++i)
+      {
+        CHECK_EQUAL(expected[i % std::size(expected)], *sci++);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_operator_plus_equals)
+    {
+      etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array expected{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      View view{ data };
+
+      for (int step = 1; step < 20; ++step)
+      {
+        View::circular_iterator sci = view.begin_circular();
+
+        for (int i = 0; i < 20; i += step)
+        {
+          CHECK_EQUAL(expected[i % 10], *sci);
+          sci += step;
+        }
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_operator_plus)
+    {
+      etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array expected{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      View view{ data };
+
+      for (int step = 1; step < 20; ++step)
+      {
+        View::circular_iterator sci = view.begin_circular();
+
+        for (int i = 0; i < 20; i += step)
+        {
+          CHECK_EQUAL(expected[i % 10], *sci);
+          sci = sci + step;
+        }
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_operator_minus_equals)
+    {
+      etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array expected{ 0, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+
+      View view{ data };
+
+      for (int step = 1; step < 20; ++step)
+      {
+        View::circular_iterator sci = view.begin_circular();
+
+        for (int i = 0; i < 20; i += step)
+        {
+          CHECK_EQUAL(expected[i % 10], *sci);
+          sci -= step;
+        }
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_operator_minus)
+    {
+      etl::array data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array expected{ 0, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+
+      View view{ data };
+
+      for (int step = 1; step < 20; ++step)
+      {
+        View::circular_iterator sci = view.begin_circular();
+
+        for (int i = 0; i < 20; i += step)
+        {
+          CHECK_EQUAL(expected[i % 10], *sci);
+          sci = sci - step;
+        }
+      }
+    }
+
 #include "etl/private/diagnostic_pop.h"
   };
 }
