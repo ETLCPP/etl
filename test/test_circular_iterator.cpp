@@ -30,7 +30,6 @@ SOFTWARE.
 #include <list>
 #include <forward_list>
 #include <array>
-#include <ostream>
 
 #include "etl/circular_iterator.h"
 

@@ -1332,6 +1332,9 @@
     <ClInclude Include="..\..\include\etl\bitset.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\circular_iterator.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3358,6 +3361,12 @@
     </ClCompile>
     <ClCompile Include="..\sanity-check\circular_iterator.h.t.cpp">
       <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_circular_span_dynamic_extent.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_circular_span_fixed_extent.cpp">
+      <Filter>Tests\Containers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

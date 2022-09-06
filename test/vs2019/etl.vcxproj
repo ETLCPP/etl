@@ -2387,6 +2387,7 @@
     <ClInclude Include="..\..\include\etl\callback_timer_interrupt.h" />
     <ClInclude Include="..\..\include\etl\callback_timer_locked.h" />
     <ClInclude Include="..\..\include\etl\circular_buffer.h" />
+    <ClInclude Include="..\..\include\etl\circular_iterator.h" />
     <ClInclude Include="..\..\include\etl\combinations.h" />
     <ClInclude Include="..\..\include\etl\compare.h" />
     <ClInclude Include="..\..\include\etl\constant.h" />
@@ -11299,6 +11300,8 @@
     <ClCompile Include="..\test_circular_buffer.cpp" />
     <ClCompile Include="..\test_circular_buffer_external_buffer.cpp" />
     <ClCompile Include="..\test_circular_iterator.cpp" />
+    <ClCompile Include="..\test_circular_span_dynamic_extent.cpp" />
+    <ClCompile Include="..\test_circular_span_fixed_extent.cpp" />
     <ClCompile Include="..\test_compiler_settings.cpp" />
     <ClCompile Include="..\test_correlation.cpp" />
     <ClCompile Include="..\test_covariance.cpp" />

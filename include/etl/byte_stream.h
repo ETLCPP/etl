@@ -216,7 +216,7 @@ namespace etl
     typename etl::enable_if<etl::is_integral<T>::value || etl::is_floating_point<T>::value, void>::type
       write_unchecked(const etl::span<T>& range)
     {
-      typename etl::span<T>::const_iterator itr = range.begin();
+      typename etl::span<T>::iterator itr = range.begin();
 
       while (itr != range.end())
       {

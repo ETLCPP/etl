@@ -196,7 +196,7 @@ namespace etl
         {
           message_id_span_t message_ids = sub->message_id_list();
 
-          message_id_span_t::const_iterator itr = etl::find(message_ids.begin(), message_ids.end(), id);
+          message_id_span_t::iterator itr = etl::find(message_ids.begin(), message_ids.end(), id);
 
           if (itr != message_ids.end())
           {
@@ -230,7 +230,7 @@ namespace etl
         {
           message_id_span_t message_ids = sub->message_id_list();
 
-          message_id_span_t::const_iterator itr = etl::find(message_ids.begin(), message_ids.end(), id);
+          message_id_span_t::iterator itr = etl::find(message_ids.begin(), message_ids.end(), id);
 
           if (itr != message_ids.end())
           {
