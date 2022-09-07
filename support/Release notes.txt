@@ -1,4 +1,19 @@
 ===============================================================================
+20.34.0
+Changed explicit message constructor for unsupported message types
+Added etl::circular_iterator and circular iterator extensions to etl::span
+Updates for unordered maps and sets for an API that better matches the STL
+Fixes for etl::result<void, TError>
+Fix non-C++03 code syntax
+Fixed unordered container equality tests to match STL
+#585 Fixed etl::result<void> being unusable due to deleted default constructor
+#587 Fixed IAR build warnings in message_packet
+#581 Hash function for enums
+#583 Permit non-default-constructable hashes and key-equals
+#589 Add minmax_push.h/minmax_pop.h includes
+#584 unordered_set::const_iterator has incorrect value_type
+
+===============================================================================
 20.33.0
 Added etl::message_broker to message framework
 Added 'successor' parameter constructors to all etl::imessage_router derived classes

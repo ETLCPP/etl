@@ -790,7 +790,21 @@ namespace etl
   /// Just defines 'npos'.
   //***************************************************************************
   template <>
-  class bitset<0, void, true>
+  class bitset<0U, void, true>
+  {
+  public:
+
+    enum
+    {
+      npos = etl::integral_limits<size_t>::max
+    };
+  };
+
+  //***************************************************************************
+  /// Specialisation for zero bits.
+  //***************************************************************************
+  template <>
+  class bitset<0U, void, false>
   {
   public:
 
@@ -2299,20 +2313,6 @@ namespace etl
     etl::bitset_impl<element_type> ibitset;
 
     element_type buffer[Number_Of_Elements > 0U ? Number_Of_Elements : 1U];
-  };
-
-  //***************************************************************************
-  /// Specialisation for 0 bits.
-  //***************************************************************************
-  template <>
-  class bitset<0U, void, false>
-  {
-  public:
-
-    enum
-    {
-      npos = etl::integral_limits<size_t>::max
-    };
   };
 
   //***************************************************************************
