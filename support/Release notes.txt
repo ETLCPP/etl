@@ -12,6 +12,7 @@ Fixed unordered container equality tests to match STL
 #583 Permit non-default-constructable hashes and key-equals
 #589 Add minmax_push.h/minmax_pop.h includes
 #584 unordered_set::const_iterator has incorrect value_type
+#593 Workaround for __has_include(<...>) and ICCAVR
 
 ===============================================================================
 20.33.0

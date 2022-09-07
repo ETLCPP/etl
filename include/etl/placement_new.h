@@ -37,7 +37,11 @@ SOFTWARE.
 // Figure out if we can use the standard library <new> header, if haven't already done so in etl_profile.h
 #if !defined(ETL_USING_STD_NEW)
   #if defined(__has_include)
-    #define ETL_USING_STD_NEW __has_include("new")
+    #if __has_include(<new>)
+      #define ETL_USING_STD_NEW 1
+    #else
+      #define ETL_USING_STD_NEW 0
+    #endif
   #elif (defined(ARDUINO) && defined(__AVR__))
     #define ETL_USING_STD_NEW 0
   #else
