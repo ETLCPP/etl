@@ -944,32 +944,19 @@ namespace
     }
 
     //*************************************************************************
-    constexpr etl::bitset<60> test_set_helper()
-    {
-      etl::bitset<60> data;
-      data.set();
-
-      return data;
-    }
-     
     TEST(test_set)
     {
       std::bitset<60> compare;
-      constexpr etl::bitset<60> data(test_set_helper());
+      etl::bitset<60> data;
 
       compare.set();
+      data.set();
 
-      constexpr auto size  = data.size();
-      constexpr auto count = data.count();
-      constexpr auto none  = data.none();
-      constexpr auto any   = data.any();
-      constexpr auto all   = data.all();
-
-      CHECK_EQUAL(compare.size(),  size);
-      CHECK_EQUAL(compare.count(), count);
-      CHECK_EQUAL(compare.none(),  none);
-      CHECK_EQUAL(compare.any(),   any);
-      CHECK_EQUAL(compare.all(),   all);
+      CHECK_EQUAL(compare.size(), data.size());
+      CHECK_EQUAL(compare.count(), data.count());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -1270,26 +1257,19 @@ namespace
     }
 
     //*************************************************************************
-    constexpr etl::bitset<60> test_reset_helper()
-    {
-      etl::bitset<60> data(0xFFFFFFFFFFFFFFFULL);
-      data.reset();
-
-      return data;
-    }
-    
     TEST(test_reset)
     {
       std::bitset<60> compare(0xFFFFFFFFFFFFFFFULL);
-      constexpr etl::bitset<60> data(test_reset_helper());
+      etl::bitset<60> data(0xFFFFFFFFFFFFFFFULL);
 
       compare.reset();
-      
-      CHECK_EQUAL(compare.size(),  data.size());
+      data.reset();
+
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
-      CHECK_EQUAL(compare.none(),  data.none());
-      CHECK_EQUAL(compare.any(),   data.any());
-      CHECK_EQUAL(compare.all(),   data.all());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -1298,32 +1278,26 @@ namespace
     }
 
     //*************************************************************************
-    constexpr etl::bitset<60> test_position_reset_helper()
-    {
-      etl::bitset<60> data(0xFFFFFFFFFFFFFFFULL);
-      data.reset(1);
-      data.reset(3);
-      data.reset(7);
-      data.reset(13);
-
-      return data;
-    }
-
     TEST(test_position_reset)
     {
       std::bitset<60> compare(0xFFFFFFFFFFFFFFFULL);
-      constexpr etl::bitset<60> data(test_position_reset_helper());
+      etl::bitset<60> data(0xFFFFFFFFFFFFFFFULL);
 
       compare.reset(1);
       compare.reset(3);
       compare.reset(7);
       compare.reset(13);
 
-      CHECK_EQUAL(compare.size(),  data.size());
+      data.reset(1);
+      data.reset(3);
+      data.reset(7);
+      data.reset(13);
+
+      CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
-      CHECK_EQUAL(compare.none(),  data.none());
-      CHECK_EQUAL(compare.any(),   data.any());
-      CHECK_EQUAL(compare.all(),   data.all());
+      CHECK_EQUAL(compare.none(), data.none());
+      CHECK_EQUAL(compare.any(), data.any());
+      CHECK_EQUAL(compare.all(), data.all());
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -1355,21 +1329,14 @@ namespace
     }
 
     //*************************************************************************
-    constexpr etl::bitset<60> test_index_operator_write_helper()
+    TEST(test_index_operator_write)
     {
       etl::bitset<60> data;
 
-      data[1U]  = true;
-      data[3U]  = true;
-      data[7U]  = true;
+      data[1U] = true;
+      data[3U] = true;
+      data[7U] = true;
       data[13U] = true;
-
-      return data;
-    }
-
-    TEST(test_index_operator_write)
-    {
-      constexpr etl::bitset<60> data(test_index_operator_write_helper());
 
       CHECK(data[1U]);
       CHECK(data[3U]);
@@ -1435,20 +1402,13 @@ namespace
     }
 
     //*************************************************************************
-    constexpr etl::bitset<60> test_flip_helper()
-    {
-      etl::bitset<60> data;
-      data.flip();
-
-      return data;
-    }
-
     TEST(test_flip)
     {
       std::bitset<60> compare;
-      constexpr etl::bitset<60> data(test_flip_helper());
+      etl::bitset<60> data;
 
       compare.flip();
+      data.flip();
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -1457,27 +1417,21 @@ namespace
     }
 
     //*************************************************************************
-    constexpr etl::bitset<60> test_flip_position_helper()
-    {
-      etl::bitset<60> data;
-      data.flip(1);
-      data.flip(3);
-      data.flip(7);
-      data.flip(13);
-
-      return data;
-    }
-    
     TEST(test_flip_position)
     {
       std::bitset<60> compare;
-      constexpr etl::bitset<60> data(test_flip_position_helper());
+      etl::bitset<60> data;
 
       compare.flip(1);
       compare.flip(3);
       compare.flip(7);
       compare.flip(13);
 
+      data.flip(1);
+      data.flip(3);
+      data.flip(7);
+      data.flip(13);
+
       for (size_t i = 0UL; i < data.size(); ++i)
       {
         CHECK_EQUAL(compare.test(i), data.test(i));
@@ -1485,26 +1439,20 @@ namespace
     }
 
     //*************************************************************************
-    constexpr etl::bitset<60> test_flip_reference_helper()
-    {
-      etl::bitset<60> data;
-      data[1].flip();
-      data[3].flip();
-      data[7].flip();
-      data[13].flip();
-
-      return data;
-    }
-
     TEST(test_flip_reference)
     {
       std::bitset<60> compare;
-      constexpr etl::bitset<60> data(test_flip_reference_helper());
+      etl::bitset<60> data;
 
       compare[1].flip();
       compare[3].flip();
       compare[7].flip();
       compare[13].flip();
+
+      data[1].flip();
+      data[3].flip();
+      data[7].flip();
+      data[13].flip();
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -1524,18 +1472,18 @@ namespace
     }
 
     //*************************************************************************
-    constexpr etl::bitset<60> test_assignment_operator_helper(etl::bitset<60> to, etl::bitset<60> from)
+    void test_assignment_operator_helper(etl::bitset<60>& from, etl::bitset<60>& to)
     {
       to = from;
-
-      return to;
     }
 
     TEST(test_assignment_operator)
     {
-      constexpr std::bitset<60> compare(0xFFFFFFFFFFFFFFFULL);
-      constexpr etl::bitset<60> data1(0xFFFFFFFFFFFFFFFULL);
-      constexpr etl::bitset<60> data2(test_assignment_operator_helper(etl::bitset<60>(), data1));
+      std::bitset<60> compare(0xFFFFFFFFFFFFFFFULL);
+      etl::bitset<60> data1(0xFFFFFFFFFFFFFFFULL);
+      etl::bitset<60> data2;
+
+      test_assignment_operator_helper(data1, data2);
 
       for (size_t i = 0UL; i < data2.size(); ++i)
       {
@@ -1857,88 +1805,69 @@ namespace
     //*************************************************************************
     TEST(test_and_operator)
     {
-      constexpr etl::bitset<60> data1(0x12345678UL);
-      constexpr etl::bitset<60> data2(0x23456789UL);
-      constexpr etl::bitset<60> data4(0x12345678UL & 0x23456789UL);
-
-      constexpr etl::bitset<60> data3 = data1 & data2;
+      etl::bitset<60> data1(0x12345678UL);
+      etl::bitset<60> data2(0x23456789UL);
+      etl::bitset<60> data3(0x12345678UL & 0x23456789UL);
+      etl::bitset<60> data4(data1 & data2);
       CHECK(data3 == data4);
     }
 
     //*************************************************************************
-    constexpr etl::bitset<60> test_and_equals_operator_helper(etl::bitset<60> data1, const etl::bitset<60>& data2)
-    {
-      data1 &= data2;
-
-      return data1;
-    }
-    
     TEST(test_and_equals_operator)
     {
-      constexpr etl::bitset<60> data1(0x12345678UL);
-      constexpr etl::bitset<60> data2(0x23456789UL);
-      
-      constexpr etl::bitset<60> data3(test_and_equals_operator_helper(data1, data2));
+      etl::bitset<60> data1(0x12345678UL);
+      etl::bitset<60> data2(0x23456789UL);
+      etl::bitset<60> data3(0x12345678UL & 0x23456789UL);
 
-      CHECK((data1 & data2) == data3);
+      etl::bitset<60> data4(data1);
+      data4 &= data2;
+      CHECK(data3 == data4);
     }
 
     //*************************************************************************
     TEST(test_or_operator)
     {
-      constexpr etl::bitset<60> data1(0x12345678UL);
-      constexpr etl::bitset<60> data2(0x23456789UL);
-      constexpr etl::bitset<60> data4(0x12345678UL | 0x23456789UL);
+      etl::bitset<60> data1(0x12345678UL);
+      etl::bitset<60> data2(0x23456789UL);
+      etl::bitset<60> data4(0x12345678UL | 0x23456789UL);
 
-      constexpr etl::bitset<60> data3 = data1 | data2;
+      etl::bitset<60> data3(data1 | data2);
       CHECK(data3 == data4);
     }
 
     //*************************************************************************
-    constexpr etl::bitset<60> test_or_equals_operator_helper(etl::bitset<60> data1, const etl::bitset<60>& data2)
-    {
-      data1 |= data2;
-
-      return data1;
-    }
-
     TEST(test_or_equals_operator)
     {
-      constexpr etl::bitset<60> data1(0x12345678UL);
-      constexpr etl::bitset<60> data2(0x23456789UL);
+      etl::bitset<60> data1(0x12345678UL);
+      etl::bitset<60> data2(0x23456789UL);
+      etl::bitset<60> data3(0x12345678UL | 0x23456789UL);
 
-      constexpr etl::bitset<60> data3(test_or_equals_operator_helper(data1, data2));
-
-      CHECK((data1 | data2) == data3);
+      etl::bitset<60> data4(data1);
+      data4 |= data2;
+      CHECK(data3 == data4);
     }
 
     //*************************************************************************
     TEST(test_xor_operator)
     {
-      constexpr etl::bitset<60> data1(0x12345678UL);
-      constexpr etl::bitset<60> data2(0x23456789UL);
-      constexpr etl::bitset<60> data4(0x12345678UL | 0x23456789UL);
+      etl::bitset<60> data1(0x12345678UL);
+      etl::bitset<60> data2(0x23456789UL);
+      etl::bitset<60> data4(0x12345678UL ^ 0x23456789UL);
 
-      constexpr etl::bitset<60> data3 = data1 | data2;
+      etl::bitset<60> data3(data1 ^ data2);
       CHECK(data3 == data4);
     }
 
     //*************************************************************************
-    constexpr etl::bitset<60> test_xor_equals_operator_helper(etl::bitset<60> data1, const etl::bitset<60>& data2)
-    {
-      data1 ^= data2;
-
-      return data1;
-    }
-
     TEST(test_xor_equals_operator)
     {
-      constexpr etl::bitset<60> data1(0x12345678UL);
-      constexpr etl::bitset<60> data2(0x23456789UL);
+      etl::bitset<60> data1(0x12345678UL);
+      etl::bitset<60> data2(0x23456789UL);
+      etl::bitset<60> data3(0x12345678UL ^ 0x23456789UL);
 
-      constexpr etl::bitset<60> data3(test_xor_equals_operator_helper(data1, data2));
-
-      CHECK((data1 ^ data2) == data3);
+      etl::bitset<60> data4(data1);
+      data4 ^= data2;
+      CHECK(data3 == data4);
     }
 
     //*************************************************************************
@@ -2024,25 +1953,18 @@ namespace
     }
 
     //*************************************************************************
-    constexpr std::pair<etl::bitset<9>, etl::bitset<9>> test_swap_helper()
-    {
-      etl::bitset<9> data1(ull(0x2A));
-      etl::bitset<9> data2(ull(0x15));
-
-      swap(data1, data2);
-
-      return std::pair<etl::bitset<9>, etl::bitset<9>>(data1, data2);
-    }
-
+    //*************************************************************************
     TEST(test_swap)
     {
-      constexpr etl::bitset<9> compare1(0x2A);
-      constexpr etl::bitset<9> compare2(0x15);
+      etl::bitset<9> compare1(0x2A);
+      etl::bitset<9> compare2(0x15);
+      etl::bitset<9> compare1a(0x2A);
+      etl::bitset<9> compare2a(0x15);
 
-      constexpr std::pair<etl::bitset<9>, etl::bitset<9>> swapped = test_swap_helper();
+      swap(compare1a, compare2a);
 
-      CHECK(swapped.first == compare2);
-      CHECK(swapped.second == compare1);
+      CHECK(compare1 == compare2a);
+      CHECK(compare2 == compare1a);
     }
 
     //*************************************************************************

@@ -3362,6 +3362,12 @@
     <ClCompile Include="..\sanity-check\circular_iterator.h.t.cpp">
       <Filter>Tests\Sanity Checks\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_bitset_new_ext_default_element_type.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bitset_new_ext_explicit_single_element_type.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">

@@ -11284,6 +11284,8 @@
     <ClCompile Include="..\test_bit.cpp" />
     <ClCompile Include="..\test_bitset_new_default_element_type.cpp" />
     <ClCompile Include="..\test_bitset_new_explicit_single_element_type.cpp" />
+    <ClCompile Include="..\test_bitset_new_ext_default_element_type.cpp" />
+    <ClCompile Include="..\test_bitset_new_ext_explicit_single_element_type.cpp" />
     <ClCompile Include="..\test_bit_stream_reader_big_endian.cpp" />
     <ClCompile Include="..\test_bit_stream_reader_little_endian.cpp" />
     <ClCompile Include="..\test_bit_stream_writer_big_endian.cpp" />
