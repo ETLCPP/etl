@@ -378,6 +378,18 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Enable all limit macros
+#if !defined(__STDC_LIMIT_MACROS)
+  #define __STDC_LIMIT_MACROS
+#endif
+
+//*************************************
+// Enable all constant macros
+#if !defined(__STDC_CONSTANT_MACROS)
+  #define __STDC_CONSTANT_MACROS
+#endif
+
+//*************************************
 // Check for availability of certain builtins
 #include "profiles/determine_builtin_support.h"
 
