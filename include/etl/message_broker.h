@@ -29,14 +29,14 @@ SOFTWARE.
 #ifndef ETL_MESSAGE_BROKER_INCLUDED
 #define ETL_MESSAGE_BROKER_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "nullptr.h"
 #include "message_types.h"
 #include "message.h"
 #include "message_router.h"
 #include "span.h"
+
+#include <stdint.h>
 
 namespace etl
 {

@@ -29,14 +29,14 @@ SOFTWARE.
 #ifndef ETL_MESSAGE_INCLUDED
 #define ETL_MESSAGE_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "error_handler.h"
 #include "exception.h"
 #include "message_types.h"
 #include "type_traits.h"
 #include "static_assert.h"
+
+#include <stdint.h>
 
 namespace etl
 {

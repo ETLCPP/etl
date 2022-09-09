@@ -29,6 +29,8 @@ SOFTWARE.
 #ifndef ETL_NULL_TYPE_INCLUDED
 #define ETL_NULL_TYPE_INCLUDED
 
+#include "platform.h"
+
 #include <stddef.h>
 
 namespace etl

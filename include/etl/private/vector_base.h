@@ -35,12 +35,12 @@ SOFTWARE.
 #ifndef ETL_VECTOR_BASE_INCLUDED
 #define ETL_VECTOR_BASE_INCLUDED
 
-#include <stddef.h>
-
 #include "../platform.h"
 #include "../exception.h"
 #include "../error_handler.h"
 #include "../debug_count.h"
+
+#include <stddef.h>
 
 namespace etl
 {

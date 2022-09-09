@@ -31,10 +31,6 @@ SOFTWARE.
 #ifndef ETL_BITSET_LEGACY_INCLUDED
 #define ETL_BITSET_LEGACY_INCLUDED
 
-#include <string.h>
-#include <stddef.h>
-#include <stdint.h>
-
 #include "../platform.h"
 #include "../algorithm.h"
 #include "../iterator.h"
@@ -50,6 +46,10 @@ SOFTWARE.
 #include "../error_handler.h"
 #include "../span.h"
 #include "../string.h"
+
+#include <string.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #include "minmax_push.h"
 

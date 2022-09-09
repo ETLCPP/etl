@@ -31,9 +31,6 @@ SOFTWARE.
 #ifndef ETL_SPSC_QUEUE_ISR_INCLUDED
 #define ETL_SPSC_QUEUE_ISR_INCLUDED
 
-#include <stddef.h>
-#include <stdint.h>
-
 #include "platform.h"
 #include "alignment.h"
 #include "parameter_type.h"
@@ -41,6 +38,9 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "utility.h"
 #include "placement_new.h"
+
+#include <stddef.h>
+#include <stdint.h>
 
 namespace etl
 {

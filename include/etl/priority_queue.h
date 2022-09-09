@@ -31,10 +31,7 @@ SOFTWARE.
 #ifndef ETL_PRIORITY_QUEUE_INCLUDED
 #define ETL_PRIORITY_QUEUE_INCLUDED
 
-#include <stddef.h>
-
 #include "platform.h"
-
 #include "algorithm.h"
 #include "utility.h"
 #include "functional.h"
@@ -44,6 +41,8 @@ SOFTWARE.
 #include "parameter_type.h"
 #include "error_handler.h"
 #include "exception.h"
+
+#include <stddef.h>
 
 //*****************************************************************************
 ///\defgroup queue queue

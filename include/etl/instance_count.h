@@ -31,9 +31,9 @@ SOFTWARE.
 #ifndef ETL_INSTANCE_COUNT_INCLUDED
 #define ETL_INSTANCE_COUNT_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
+
+#include <stdint.h>
 
 ///\defgroup instance_count instance count
 ///\ingroup utilities

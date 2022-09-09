@@ -31,14 +31,14 @@ SOFTWARE.
 #ifndef ETL_PEARSON_INCLUDED
 #define ETL_PEARSON_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "static_assert.h"
 #include "type_traits.h"
 #include "ihash.h"
 #include "array.h"
 #include "iterator.h"
+
+#include <stdint.h>
 
 ETL_STATIC_ASSERT(ETL_USING_8BIT_TYPES, "This file does not currently support targets with no 8bit type");
 

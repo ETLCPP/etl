@@ -31,9 +31,6 @@ SOFTWARE.
 #ifndef ETL_MEM_CAST_INCLUDED
 #define ETL_MEM_CAST_INCLUDED
 
-#include <stdint.h>
-#include <string.h>
-
 #include "platform.h"
 #include "memory.h"
 #include "static_assert.h"
@@ -44,6 +41,9 @@ SOFTWARE.
 #include "error_handler.h"
 #include "file_error_numbers.h"
 #include "binary.h"
+
+#include <stdint.h>
+#include <string.h>
 
 namespace etl
 {

@@ -31,9 +31,6 @@ SOFTWARE.
 #ifndef ETL_STACK_INCLUDED
 #define ETL_STACK_INCLUDED
 
-#include <stddef.h>
-#include <stdint.h>
-
 #include "platform.h"
 #include "algorithm.h"
 #include "utility.h"
@@ -45,6 +42,9 @@ SOFTWARE.
 #include "debug_count.h"
 #include "type_traits.h"
 #include "placement_new.h"
+
+#include <stddef.h>
+#include <stdint.h>
 
 //*****************************************************************************
 ///\defgroup stack stack

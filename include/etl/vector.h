@@ -33,10 +33,6 @@ SOFTWARE.
 
 #define ETL_IN_VECTOR_H
 
-#include <stddef.h>
-#include <stdint.h>
-#include <stddef.h>
-
 #include "platform.h"
 #include "algorithm.h"
 #include "type_traits.h"
@@ -53,6 +49,10 @@ SOFTWARE.
 #include "placement_new.h"
 #include "algorithm.h"
 #include "initializer_list.h"
+
+#include <stddef.h>
+#include <stdint.h>
+#include <stddef.h>
 
 //*****************************************************************************
 ///\defgroup vector vector

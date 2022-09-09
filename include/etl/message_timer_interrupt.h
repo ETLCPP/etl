@@ -29,9 +29,6 @@ SOFTWARE.
 #ifndef ETL_MESSAGE_TIMER_INTERRUPT_INCLUDED
 #define ETL_MESSAGE_TIMER_INTERRUPT_INCLUDED
 
-#include <stdint.h>
-#include "algorithm.h"
-
 #include "platform.h"
 #include "nullptr.h"
 #include "message_types.h"
@@ -41,6 +38,9 @@ SOFTWARE.
 #include "static_assert.h"
 #include "timer.h"
 #include "delegate.h"
+#include "algorithm.h"
+
+#include <stdint.h>
 
 namespace etl
 {

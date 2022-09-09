@@ -31,9 +31,9 @@ SOFTWARE.
 #ifndef ETL_FACTORIAL_INCLUDED
 #define ETL_FACTORIAL_INCLUDED
 
-#include <stddef.h>
-
 #include "platform.h"
+
+#include <stddef.h>
 
 ///\defgroup factorial factorial
 /// fibonacci<N> : Calculates the Nth factorial value.

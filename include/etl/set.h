@@ -31,8 +31,6 @@ SOFTWARE.
 #ifndef ETL_SET_INCLUDED
 #define ETL_SET_INCLUDED
 
-#include <stddef.h>
-
 #include "platform.h"
 #include "pool.h"
 #include "exception.h"
@@ -51,6 +49,9 @@ SOFTWARE.
 #include "initializer_list.h"
 
 #include "private/comparator_is_transparent.h"
+
+#include <stddef.h>
+
 #include "private/minmax_push.h"
 
 //*****************************************************************************

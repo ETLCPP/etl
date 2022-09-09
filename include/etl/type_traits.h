@@ -53,12 +53,12 @@ SOFTWARE.
 #ifndef ETL_TYPE_TRAITS_INCLUDED
 #define ETL_TYPE_TRAITS_INCLUDED
 
-#include <stddef.h>
-#include <stdint.h>
-
 #include "platform.h"
 #include "nullptr.h"
 #include "static_assert.h"
+
+#include <stddef.h>
+#include <stdint.h>
 
 ///\defgroup type_traits type_traits
 /// A set of type traits definitions.

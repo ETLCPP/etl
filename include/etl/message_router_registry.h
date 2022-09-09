@@ -29,8 +29,6 @@ SOFTWARE.
 #ifndef ETL_MESSAGE_ROUTER_REGISTRY_INCLUDED
 #define ETL_MESSAGE_ROUTER_REGISTRY_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "file_error_numbers.h"
 #include "message_router.h"
@@ -39,6 +37,8 @@ SOFTWARE.
 #include "error_handler.h"
 #include "iterator.h"
 #include "memory.h"
+
+#include <stdint.h>
 
 namespace etl
 {

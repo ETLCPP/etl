@@ -31,11 +31,11 @@ SOFTWARE.
 #ifndef ETL_SQRT_INCLUDED
 #define ETL_SQRT_INCLUDED
 
-#include <stddef.h>
-
 #include "platform.h"
 #include "type_traits.h"
 #include "constant.h"
+
+#include <stddef.h>
 
 namespace etl 
 {

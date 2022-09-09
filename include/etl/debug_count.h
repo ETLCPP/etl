@@ -31,11 +31,11 @@ SOFTWARE.
 #ifndef ETL_DEBUG_COUNT_INCLUDED
 #define ETL_DEBUG_COUNT_INCLUDED
 
+#include "platform.h"
+#include "atomic.h"
+
 #include <assert.h>
 #include <stdint.h>
-
-#include "atomic.h"
-#include "platform.h"
 
 ///\defgroup debug_count debug count
 ///\ingroup utilities

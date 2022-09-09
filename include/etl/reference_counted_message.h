@@ -29,8 +29,6 @@ SOFTWARE.
 #ifndef ETL_REFERENCE_COUNTED_MESSAGE_INCLUDED
 #define ETL_REFERENCE_COUNTED_MESSAGE_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "message.h"
 #include "atomic.h"
@@ -38,6 +36,8 @@ SOFTWARE.
 #include "static_assert.h"
 #include "type_traits.h"
 #include "ireference_counted_message_pool.h"
+
+#include <stdint.h>
 
 namespace etl
 {

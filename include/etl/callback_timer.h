@@ -29,8 +29,6 @@ SOFTWARE.
 #ifndef ETL_CALLBACK_TIMER_INCLUDED
 #define ETL_CALLBACK_TIMER_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "algorithm.h"
 #include "nullptr.h"
@@ -41,6 +39,8 @@ SOFTWARE.
 #include "error_handler.h"
 #include "placement_new.h"
 #include "delegate.h"
+
+#include <stdint.h>
 
 #if defined(ETL_IN_UNIT_TEST) && ETL_NOT_USING_STL
   #define ETL_DISABLE_TIMER_UPDATES

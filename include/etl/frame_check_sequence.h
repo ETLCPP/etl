@@ -27,14 +27,13 @@ SOFTWARE.
 #ifndef ETL_FRAME_CHECK_SEQUENCE_INCLUDED
 #define ETL_FRAME_CHECK_SEQUENCE_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "static_assert.h"
 #include "type_traits.h"
 #include "binary.h"
-
 #include "iterator.h"
+
+#include <stdint.h>
 
 ETL_STATIC_ASSERT(ETL_USING_8BIT_TYPES, "This file does not currently support targets with no 8bit type");
 

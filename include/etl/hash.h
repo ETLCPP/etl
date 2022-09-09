@@ -31,9 +31,6 @@ SOFTWARE.
 #ifndef ETL_HASH_INCLUDED
 #define ETL_HASH_INCLUDED
 
-#include <stdint.h>
-#include <stdlib.h>
-
 #include "platform.h"
 
 #if ETL_USING_8BIT_TYPES
@@ -42,6 +39,9 @@ SOFTWARE.
 #include "fnv_1.h"
 #include "type_traits.h"
 #include "static_assert.h"
+
+#include <stdint.h>
+#include <stdlib.h>
 
 ///\defgroup hash Standard hash calculations
 ///\ingroup maths

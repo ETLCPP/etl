@@ -31,10 +31,10 @@ SOFTWARE.
 #ifndef ETL_RADIX_INCLUDED
 #define ETL_RADIX_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "enum_type.h"
+
+#include <stdint.h>
 
 ///\defgroup radix radix
 /// Radix constants for binary, octal, decimal and hex.

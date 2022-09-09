@@ -38,14 +38,14 @@ SOFTWARE.
 /// Additional new variants of certain algorithms.
 ///\ingroup utilities
 
-#include <stdint.h>
-#include <string.h>
-
 #include "platform.h"
 #include "type_traits.h"
 #include "iterator.h"
 #include "functional.h"
 #include "utility.h"
+
+#include <stdint.h>
+#include <string.h>
 
 #include "private/minmax_push.h"
 

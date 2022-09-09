@@ -53,10 +53,10 @@ SOFTWARE.
 #ifndef ETL_SMALLEST_INCLUDED
 #define ETL_SMALLEST_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "integral_limits.h"
+
+#include <stdint.h>
 
 ///\defgroup smallest smallest
 ///\ingroup utilities

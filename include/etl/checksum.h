@@ -27,11 +27,11 @@ SOFTWARE.
 #ifndef ETL_CHECKSUM_INCLUDED
 #define ETL_CHECKSUM_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "binary.h"
 #include "frame_check_sequence.h"
+
+#include <stdint.h>
 
 ///\defgroup checksum Checksum calculation
 ///\ingroup maths

@@ -31,10 +31,10 @@ SOFTWARE.
 #ifndef ETL_DEBOUNCE_INCLUDED
 #define ETL_DEBOUNCE_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "static_assert.h"
+
+#include <stdint.h>
 
 namespace etl
 {

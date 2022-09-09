@@ -29,10 +29,7 @@ SOFTWARE.
 #ifndef ETL_CALLBACK_TIMER_LOCKED_INCLUDED
 #define ETL_CALLBACK_TIMER_LOCKED_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
-
 #include "algorithm.h"
 #include "nullptr.h"
 #include "delegate.h"
@@ -40,6 +37,8 @@ SOFTWARE.
 #include "timer.h"
 #include "error_handler.h"
 #include "placement_new.h"
+
+#include <stdint.h>
 
 namespace etl
 {

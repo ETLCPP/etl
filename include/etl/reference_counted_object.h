@@ -29,10 +29,10 @@
 #ifndef ETL_REFERENCE_COUNTED_OBJECT_INCLUDED
 #define ETL_REFERENCE_COUNTED_OBJECT_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "atomic.h"
+
+#include <stdint.h>
 
 namespace etl
 {

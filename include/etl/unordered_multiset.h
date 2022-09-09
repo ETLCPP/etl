@@ -31,8 +31,6 @@ SOFTWARE.
 #ifndef ETL_UNORDERED_MULTISET_INCLUDED
 #define ETL_UNORDERED_MULTISET_INCLUDED
 
-#include <stddef.h>
-
 #include "platform.h"
 #include "algorithm.h"
 #include "iterator.h"
@@ -52,6 +50,8 @@ SOFTWARE.
 #include "iterator.h"
 #include "placement_new.h"
 #include "initializer_list.h"
+
+#include <stddef.h>
 
 //*****************************************************************************
 ///\defgroup unordered_multiset unordered_multiset

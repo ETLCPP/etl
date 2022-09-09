@@ -31,9 +31,6 @@ SOFTWARE.
 #ifndef ETL_BYTE_STREAM_INCLUDED
 #define ETL_BYTE_STREAM_INCLUDED
 
-#include <stdint.h>
-#include <limits.h>
-
 #include "platform.h"
 #include "type_traits.h"
 #include "nullptr.h"
@@ -48,6 +45,9 @@ SOFTWARE.
 #include "delegate.h"
 #include "exception.h"
 #include "error_handler.h"
+
+#include <stdint.h>
+#include <limits.h>
 
 namespace etl
 {

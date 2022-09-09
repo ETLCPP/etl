@@ -31,8 +31,6 @@ SOFTWARE.
 #ifndef ETL_STRING_VIEW_INCLUDED
 #define ETL_STRING_VIEW_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "memory.h"
 #include "iterator.h"
@@ -44,6 +42,8 @@ SOFTWARE.
 #include "basic_string.h"
 #include "algorithm.h"
 #include "private/minmax_push.h"
+
+#include <stdint.h>
 
 namespace etl
 {

@@ -29,8 +29,6 @@ SOFTWARE.
 #ifndef ETL_SCHEDULER_INCLUDED
 #define ETL_SCHEDULER_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "vector.h"
 #include "nullptr.h"
@@ -39,6 +37,8 @@ SOFTWARE.
 #include "task.h"
 #include "type_traits.h"
 #include "function.h"
+
+#include <stdint.h>
 
 namespace etl
 {

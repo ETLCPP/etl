@@ -33,16 +33,15 @@ SOFTWARE.
 
 #define ETL_IN_PVOIDVECTOR
 
-#include <stddef.h>
-
 #include "../platform.h"
 #include "../algorithm.h"
 #include "vector_base.h"
 #include "../type_traits.h"
 #include "../error_handler.h"
-
 #include "../functional.h"
 #include "../iterator.h"
+
+#include <stddef.h>
 
 #include "minmax_push.h"
 

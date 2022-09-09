@@ -31,8 +31,6 @@ SOFTWARE.
 #ifndef ETL_REFERENCE_FLAT_MULTIMAP_INCLUDED
 #define ETL_REFERENCE_FLAT_MULTIMAP_INCLUDED
 
-#include <stddef.h>
-
 #include "platform.h"
 #include "exception.h"
 #include "error_handler.h"
@@ -44,6 +42,8 @@ SOFTWARE.
 #include "type_traits.h"
 
 #include "private/comparator_is_transparent.h"
+
+#include <stddef.h>
 
 namespace etl
 {

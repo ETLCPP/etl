@@ -38,9 +38,6 @@ SOFTWARE.
 #ifndef ETL_BIP_BUFFER_SPSC_ATOMIC_INCLUDED
 #define ETL_BIP_BUFFER_SPSC_ATOMIC_INCLUDED
 
-#include <stddef.h>
-#include <stdint.h>
-
 #include "platform.h"
 #include "alignment.h"
 #include "parameter_type.h"
@@ -52,6 +49,9 @@ SOFTWARE.
 #include "error_handler.h"
 #include "span.h"
 #include "file_error_numbers.h"
+
+#include <stddef.h>
+#include <stdint.h>
 
 #if ETL_HAS_ATOMIC
 

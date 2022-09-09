@@ -29,13 +29,13 @@ SOFTWARE.
 #ifndef ETL_TYPE_LOOKUP_INCLUDED
 #define ETL_TYPE_LOOKUP_INCLUDED
 
-#include <limits.h>
-
 #include "platform.h"
 #include "type_traits.h"
 #include "static_assert.h"
 #include "integral_limits.h"
 #include "null_type.h"
+
+#include <limits.h>
 
 /*[[[cog
 import cog

@@ -31,9 +31,9 @@ SOFTWARE.
 #ifndef ETL_LOG_INCLUDED
 #define ETL_LOG_INCLUDED
 
-#include <stddef.h>
-
 #include "platform.h"
+
+#include <stddef.h>
 
 ///\defgroup log log
 /// log<N, BASE> : Calculates logs to any base, rounded down to the nearest integer.<br>

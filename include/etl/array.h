@@ -31,10 +31,7 @@ SOFTWARE.
 #ifndef ETL_ARRAY_INCLUDED
 #define ETL_ARRAY_INCLUDED
 
-#include <stddef.h>
-
 #include "platform.h"
-
 #include "algorithm.h"
 #include "iterator.h"
 #include "functional.h"
@@ -45,6 +42,8 @@ SOFTWARE.
 #include "error_handler.h"
 #include "nth_type.h"
 #include "initializer_list.h"
+
+#include <stddef.h>
 
 ///\defgroup array array
 /// A replacement for std::array if you haven't got C++0x11.

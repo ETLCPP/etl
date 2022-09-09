@@ -31,9 +31,6 @@ SOFTWARE.
 #ifndef ETL_QUEUE_INCLUDED
 #define ETL_QUEUE_INCLUDED
 
-#include <stddef.h>
-#include <stdint.h>
-
 #include "platform.h"
 #include "iterator.h"
 #include "alignment.h"
@@ -47,6 +44,9 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "utility.h"
 #include "placement_new.h"
+
+#include <stddef.h>
+#include <stdint.h>
 
 //*****************************************************************************
 ///\defgroup queue queue

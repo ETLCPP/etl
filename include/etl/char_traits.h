@@ -31,11 +31,11 @@ SOFTWARE.
 #ifndef ETL_CHAR_TRAITS_INCLUDED
 #define ETL_CHAR_TRAITS_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "algorithm.h"
 #include "iterator.h"
+
+#include <stdint.h>
 
 //*****************************************************************************
 ///\defgroup char_traits char_traits

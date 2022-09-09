@@ -31,10 +31,10 @@ SOFTWARE.
 #ifndef ETL_CONTAINER_INCLUDED
 #define ETL_CONTAINER_INCLUDED
 
-#include <stddef.h>
-
 #include "platform.h"
 #include "iterator.h"
+
+#include <stddef.h>
 
 #endif
 

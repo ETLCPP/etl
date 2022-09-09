@@ -31,14 +31,13 @@ SOFTWARE.
 #ifndef ETL_FNV_1_INCLUDED
 #define ETL_FNV_1_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "static_assert.h"
 #include "type_traits.h"
 #include "ihash.h"
 #include "frame_check_sequence.h"
 
+#include <stdint.h>
 
 #if defined(ETL_COMPILER_KEIL)
 #pragma diag_suppress 1300

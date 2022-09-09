@@ -31,8 +31,6 @@ SOFTWARE.
 #ifndef ETL_REFERENCE_FLAT_MAP_INCLUDED
 #define ETL_REFERENCE_FLAT_MAP_INCLUDED
 
-#include <stddef.h>
-
 #include "platform.h"
 #include "vector.h"
 #include "error_handler.h"
@@ -46,6 +44,8 @@ SOFTWARE.
 #include "type_traits.h"
 
 #include "private/comparator_is_transparent.h"
+
+#include <stddef.h>
 
 //*****************************************************************************
 ///\defgroup reference_flat_map reference_flat_map

@@ -31,13 +31,13 @@ SOFTWARE.
 #ifndef ETL_BRESENHAM_LINE_INCLUDED
 #define ETL_BRESENHAM_LINE_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "iterator.h"
 #include "static_assert.h"
 #include "type_traits.h"
 #include "utility.h"
+
+#include <stdint.h>
 
 namespace etl
 {

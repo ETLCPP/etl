@@ -29,10 +29,10 @@ SOFTWARE.
 #ifndef ETL_PARAMETER_PACK
 #define ETL_PARAMETER_PACK
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "type_traits.h"
+
+#include <stdint.h>
 
 #if ETL_CPP11_NOT_SUPPORTED
   #if !defined(ETL_IN_UNIT_TEST)

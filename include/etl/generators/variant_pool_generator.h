@@ -63,13 +63,13 @@ cog.outl("//********************************************************************
 #ifndef ETL_VARIANT_POOL_INCLUDED
 #define ETL_VARIANT_POOL_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "pool.h"
 #include "type_traits.h"
 #include "static_assert.h"
 #include "largest.h"
+
+#include <stdint.h>
 
 namespace etl
 {

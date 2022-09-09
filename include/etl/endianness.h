@@ -31,11 +31,11 @@ SOFTWARE.
 #ifndef ETL_ENDIAN_INCLUDED
 #define ETL_ENDIAN_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "enum_type.h"
 #include "binary.h"
+
+#include <stdint.h>
 
 #if ETL_USING_CPP20 && ETL_USING_STL
   #include <bit>

@@ -29,13 +29,13 @@ SOFTWARE.
 #ifndef ETL_STATE_CHART_INCLUDED
 #define ETL_STATE_CHART_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "nullptr.h"
 #include "array.h"
 #include "array_view.h"
 #include "utility.h"
+
+#include <stdint.h>
 
 namespace etl
 {

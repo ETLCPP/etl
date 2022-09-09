@@ -29,11 +29,11 @@ SOFTWARE.
 #ifndef ETL_TASK_INCLUDED
 #define ETL_TASK_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "error_handler.h"
 #include "exception.h"
+
+#include <stdint.h>
 
 namespace etl
 {

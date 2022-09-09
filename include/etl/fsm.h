@@ -51,8 +51,6 @@ SOFTWARE.
 #ifndef ETL_FSM_INCLUDED
 #define ETL_FSM_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "array.h"
 #include "nullptr.h"
@@ -62,6 +60,8 @@ SOFTWARE.
 #include "message_router.h"
 #include "integral_limits.h"
 #include "largest.h"
+
+#include <stdint.h>
 
 #include "private/minmax_push.h"
 

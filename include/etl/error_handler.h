@@ -36,12 +36,12 @@ SOFTWARE.
 /// Error handler for when throwing exceptions is not required.
 ///\ingroup utilities
 
-#include <assert.h>
-
 #include "platform.h"
 #include "exception.h"
 #include "function.h"
 #include "nullptr.h"
+
+#include <assert.h>
 
 #if defined(ETL_LOG_ERRORS) || defined(ETL_IN_UNIT_TEST)
 namespace etl

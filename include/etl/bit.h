@@ -31,14 +31,14 @@ SOFTWARE.
 #ifndef ETL_BIT_INCLUDED
 #define ETL_BIT_INCLUDED
 
-#include <string.h>
-
 #include "platform.h"
 #include "type_traits.h"
 #include "binary.h"
 #include "integral_limits.h"
 #include "endianness.h"
 #include "type_traits.h"
+
+#include <string.h>
 
 #if ETL_USING_CPP20 && ETL_USING_STL
   #include <bit>

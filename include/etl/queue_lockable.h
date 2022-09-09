@@ -31,9 +31,6 @@ SOFTWARE.
 #ifndef ETL_QUEUE_LOCKABLE_INCLUDED
 #define ETL_QUEUE_LOCKABLE_INCLUDED
 
-#include <stddef.h>
-#include <stdint.h>
-
 #include "platform.h"
 #include "memory.h"
 #include "parameter_type.h"
@@ -42,6 +39,9 @@ SOFTWARE.
 #include "function.h"
 #include "utility.h"
 #include "placement_new.h"
+
+#include <stddef.h>
+#include <stdint.h>
 
 namespace etl
 {

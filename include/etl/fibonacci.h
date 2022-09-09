@@ -31,9 +31,9 @@ SOFTWARE.
 #ifndef ETL_FIBONACCI_INCLUDED
 #define ETL_FIBONACCI_INCLUDED
 
-#include <stddef.h>
-
 #include "platform.h"
+
+#include <stddef.h>
 
 ///\defgroup fibonacci fibonacci
 /// fibonacci<N> : Calculates the Nth Fibonacci value.

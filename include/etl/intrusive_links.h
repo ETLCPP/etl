@@ -31,16 +31,15 @@ SOFTWARE.
 #ifndef ETL_INTRUSIVE_LINKS_INCLUDED
 #define ETL_INTRUSIVE_LINKS_INCLUDED
 
-#include <assert.h>
-
 #include "platform.h"
 #include "nullptr.h"
 #include "type_traits.h"
 #include "exception.h"
 #include "error_handler.h"
-
 #include "utility.h"
 #include "algorithm.h"
+
+#include <assert.h>
 
 //*****************************************************************************
 // Note:

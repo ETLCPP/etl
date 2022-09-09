@@ -31,9 +31,6 @@ SOFTWARE.
 #ifndef ETL_MPMC_QUEUE_MUTEX_INCLUDED
 #define ETL_MPMC_QUEUE_MUTEX_INCLUDED
 
-#include <stddef.h>
-#include <stdint.h>
-
 #include "platform.h"
 #include "mutex.h"
 
@@ -45,6 +42,9 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "utility.h"
 #include "placement_new.h"
+
+#include <stddef.h>
+#include <stdint.h>
 
 namespace etl
 {

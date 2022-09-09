@@ -31,11 +31,11 @@ SOFTWARE.
 #ifndef ETL_ALIGNMENT_INCLUDED
 #define ETL_ALIGNMENT_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "type_traits.h"
 #include "static_assert.h"
+
+#include <stdint.h>
 
 ///\defgroup alignment alignment
 /// Creates a variable of the specified type at the specified alignment.

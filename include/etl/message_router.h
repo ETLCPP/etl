@@ -51,8 +51,6 @@ SOFTWARE.
 #ifndef ETL_MESSAGE_ROUTER_INCLUDED
 #define ETL_MESSAGE_ROUTER_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "message.h"
 #include "shared_message.h"
@@ -66,6 +64,8 @@ SOFTWARE.
 #include "placement_new.h"
 #include "successor.h"
 #include "type_traits.h"
+
+#include <stdint.h>
 
 namespace etl
 {

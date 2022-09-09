@@ -38,10 +38,10 @@ SOFTWARE.
 #include "char_traits.h"
 #include "optional.h"
 
-#include "private/minmax_push.h"
-
 #include <ctype.h>
 #include <stdint.h>
+
+#include "private/minmax_push.h"
 
 namespace etl
 {

@@ -29,11 +29,10 @@ SOFTWARE.
 #ifndef ETL_TIMER_INCLUDED
 #define ETL_TIMER_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
-
 #include "atomic.h"
+
+#include <stdint.h>
 
 //*****************************************************************************
 // Definitions common to timers.

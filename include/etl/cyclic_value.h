@@ -31,8 +31,6 @@ SOFTWARE.
 #ifndef ETL_CYCLIC_VALUE_INCLUDED
 #define ETL_CYCLIC_VALUE_INCLUDED
 
-#include <stddef.h>
-
 ///\defgroup cyclic_value cyclic_value
 /// Provides a value that cycles between two limits.
 /// \ingroup utilities
@@ -42,8 +40,9 @@ SOFTWARE.
 #include "exception.h"
 #include "static_assert.h"
 #include "type_traits.h"
-
 #include "algorithm.h"
+
+#include <stddef.h>
 
 namespace etl
 {

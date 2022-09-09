@@ -32,23 +32,18 @@ SOFTWARE.
 #define ETL_INTRUSIVE_FORWARD_LIST_INCLUDED
 
 #include "platform.h"
-
 #include "algorithm.h"
 #include "iterator.h"
 #include "functional.h"
-
-#include "private/minmax_push.h"
-
-#include <stddef.h>
-
-#include "platform.h"
 #include "nullptr.h"
 #include "type_traits.h"
 #include "exception.h"
 #include "error_handler.h"
 #include "intrusive_links.h"
-#include "algorithm.h"
-#include "iterator.h"
+
+#include <stddef.h>
+
+#include "private/minmax_push.h"
 
 namespace etl
 {

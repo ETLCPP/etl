@@ -31,12 +31,12 @@ SOFTWARE.
 #ifndef ETL_MURMUR3_INCLUDED
 #define ETL_MURMUR3_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "ihash.h"
 #include "binary.h"
 #include "error_handler.h"
+
+#include <stdint.h>
 
 #if defined(ETL_COMPILER_KEIL)
 #pragma diag_suppress 1300

@@ -35,13 +35,11 @@ SOFTWARE.
 /// IO port access
 ///\ingroup utilities
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "nullptr.h"
 #include "iterator.h"
 
-#include "iterator.h"
+#include <stdint.h>
 
 namespace etl
 {

@@ -32,12 +32,6 @@ SOFTWARE.
 #define ETL_INTRUSIVE_LIST_INCLUDED
 
 #include "platform.h"
-
-#include "private/minmax_push.h"
-
-#include <stddef.h>
-
-#include "platform.h"
 #include "nullptr.h"
 #include "type_traits.h"
 #include "exception.h"
@@ -46,10 +40,11 @@ SOFTWARE.
 #include "static_assert.h"
 #include "algorithm.h"
 #include "iterator.h"
-
-#include "algorithm.h"
-#include "iterator.h"
 #include "functional.h"
+
+#include <stddef.h>
+
+#include "private/minmax_push.h"
 
 namespace etl
 {

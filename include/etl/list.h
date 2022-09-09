@@ -31,8 +31,6 @@ SOFTWARE.
 #ifndef ETL_LIST_INCLUDED
 #define ETL_LIST_INCLUDED
 
-#include <stddef.h>
-
 #include "platform.h"
 #include "algorithm.h"
 #include "iterator.h"
@@ -50,6 +48,8 @@ SOFTWARE.
 #include "parameter_type.h"
 #include "placement_new.h"
 #include "initializer_list.h"
+
+#include <stddef.h>
 
 #include "private/minmax_push.h"
 

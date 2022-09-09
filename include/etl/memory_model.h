@@ -31,9 +31,11 @@ SOFTWARE.
 #ifndef ETL_MEMORY_MODEL_INCLUDED
 #define ETL_MEMORY_MODEL_INCLUDED
 
+#include "platform.h"
 #include "user_type.h"
-#include <stdint.h>
 #include "type_lookup.h"
+
+#include <stdint.h>
 
 namespace etl
 {

@@ -31,10 +31,10 @@ SOFTWARE.
 #ifndef ETL_RANDOM_INCLUDED
 #define ETL_RANDOM_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
 #include "binary.h"
+
+#include <stdint.h>
 
 namespace etl
 {

@@ -31,14 +31,12 @@ SOFTWARE.
 #ifndef ETL_IHASH_INCLUDED
 #define ETL_IHASH_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
-
 #include "utility.h"
-
 #include "exception.h"
 #include "error_handler.h"
+
+#include <stdint.h>
 
 ///\defgroup ihash Common data for all hash type classes.
 ///\ingroup hash

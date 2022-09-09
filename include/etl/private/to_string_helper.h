@@ -33,8 +33,6 @@ SOFTWARE.
 
 ///\ingroup private
 
-#include <math.h>
-
 #include "../platform.h"
 #include "../absolute.h"
 #include "../negative.h"
@@ -45,6 +43,8 @@ SOFTWARE.
 #include "../algorithm.h"
 #include "../iterator.h"
 #include "../limits.h"
+
+#include <math.h>
 
 #if ETL_USING_STL && ETL_USING_CPP11
   #include <iterator> // For std::begin, std::end and std::size

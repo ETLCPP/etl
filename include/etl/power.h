@@ -31,11 +31,11 @@ SOFTWARE.
 #ifndef ETL_POW_INCLUDED
 #define ETL_POW_INCLUDED
 
-#include <stddef.h>
-#include <stdint.h>
-
 #include "platform.h"
 #include "log.h"
+
+#include <stddef.h>
+#include <stdint.h>
 
 ///\defgroup power power
 /// power<N, POWER> : Calculates N to the power POWER.

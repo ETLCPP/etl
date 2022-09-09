@@ -31,8 +31,6 @@ SOFTWARE.
 #ifndef ETL_MULTISET_INCLUDED
 #define ETL_MULTISET_INCLUDED
 
-#include <stddef.h>
-
 #include "platform.h"
 #include "algorithm.h"
 #include "iterator.h"
@@ -48,6 +46,8 @@ SOFTWARE.
 #include "utility.h"
 #include "placement_new.h"
 #include "initializer_list.h"
+
+#include <stddef.h>
 
 #include "private/minmax_push.h"
 #include "private/comparator_is_transparent.h"

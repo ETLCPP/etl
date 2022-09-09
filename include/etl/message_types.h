@@ -29,9 +29,9 @@ SOFTWARE.
 #ifndef ETL_MESSAGE_DEFS_INCLUDED
 #define ETL_MESSAGE_DEFS_INCLUDED
 
-#include <stdint.h>
-
 #include "platform.h"
+
+#include <stdint.h>
 
 namespace etl
 {

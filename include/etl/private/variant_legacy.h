@@ -28,8 +28,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <stdint.h>
-
 #include "../platform.h"
 #include "../utility.h"
 #include "../array.h"
@@ -42,6 +40,8 @@ SOFTWARE.
 #include "../error_handler.h"
 #include "../null_type.h"
 #include "../placement_new.h"
+
+#include <stdint.h>
 
 #if defined(ETL_COMPILER_KEIL)
   #pragma diag_suppress 940

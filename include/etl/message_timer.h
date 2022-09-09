@@ -29,9 +29,6 @@ SOFTWARE.
 #ifndef ETL_MESSAGE_TIMER_INCLUDED
 #define ETL_MESSAGE_TIMER_INCLUDED
 
-#include <stdint.h>
-#include "algorithm.h"
-
 #include "platform.h"
 #include "nullptr.h"
 #include "message_types.h"
@@ -41,6 +38,9 @@ SOFTWARE.
 #include "static_assert.h"
 #include "timer.h"
 #include "atomic.h"
+#include "algorithm.h"
+
+#include <stdint.h>
 
 #if defined(ETL_IN_UNIT_TEST) && ETL_NOT_USING_STL
   #define ETL_DISABLE_TIMER_UPDATES

@@ -31,12 +31,7 @@ SOFTWARE.
 #ifndef ETL_BASIC_STRING_INCLUDED
 #define ETL_BASIC_STRING_INCLUDED
 
-#include <stddef.h>
-#include <stdint.h>
-#include <string.h>
-
 #include "platform.h"
-
 #include "algorithm.h"
 #include "iterator.h"
 #include "functional.h"
@@ -52,6 +47,10 @@ SOFTWARE.
 #include "exception.h"
 #include "binary.h"
 #include "flags.h"
+
+#include <stddef.h>
+#include <stdint.h>
+#include <string.h>
 
 #include "private/minmax_push.h"
 

@@ -31,9 +31,6 @@ SOFTWARE.
 #ifndef ETL_DEQUE_INCLUDED
 #define ETL_DEQUE_INCLUDED
 
-#include <stddef.h>
-#include <stdint.h>
-
 #include "platform.h"
 #include "algorithm.h"
 #include "iterator.h"
@@ -47,6 +44,9 @@ SOFTWARE.
 #include "iterator.h"
 #include "placement_new.h"
 #include "initializer_list.h"
+
+#include <stddef.h>
+#include <stdint.h>
 
 #include "private/minmax_push.h"
 

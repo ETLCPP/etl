@@ -29,7 +29,6 @@ SOFTWARE.
 #ifndef ETL_MESSAGE_BUS_INCLUDED
 #define ETL_MESSAGE_BUS_INCLUDED
 
-#include <stdint.h>
 #include "platform.h"
 #include "algorithm.h"
 #include "vector.h"
@@ -39,6 +38,8 @@ SOFTWARE.
 #include "message_types.h"
 #include "message.h"
 #include "message_router.h"
+
+#include <stdint.h>
 
 namespace etl
 {

@@ -31,10 +31,7 @@ SOFTWARE.
 #ifndef ETL_REFERENCE_FLAT_MULTISET_INCLUDED
 #define ETL_REFERENCE_FLAT_MULTISET_INCLUDED
 
-#include <stddef.h>
-
 #include "platform.h"
-
 #include "algorithm.h"
 #include "iterator.h"
 #include "functional.h"
@@ -47,6 +44,8 @@ SOFTWARE.
 #include "exception.h"
 
 #include "private/comparator_is_transparent.h"
+
+#include <stddef.h>
 
 namespace etl
 {

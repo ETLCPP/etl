@@ -31,16 +31,16 @@ SOFTWARE.
 #ifndef ETL_FLAGS_INCLUDED
 #define ETL_FLAGS_INCLUDED
 
-#include <string.h>
-#include <stddef.h>
-#include <stdint.h>
-
 #include "platform.h"
 #include "algorithm.h"
 #include "type_traits.h"
 #include "integral_limits.h"
 #include "static_assert.h"
 #include "initializer_list.h"
+
+#include <string.h>
+#include <stddef.h>
+#include <stdint.h>
 
 namespace etl
 {

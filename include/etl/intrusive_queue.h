@@ -31,12 +31,12 @@ SOFTWARE.
 #ifndef ETL_INTRUSIVE_QUEUE_INCLUDED
 #define ETL_INTRUSIVE_QUEUE_INCLUDED
 
-#include <stddef.h>
-
 #include "platform.h"
 #include "type_traits.h"
 #include "error_handler.h"
 #include "intrusive_links.h"
+
+#include <stddef.h>
 
 namespace etl
 {
