@@ -854,7 +854,6 @@ namespace etl
     static ETL_CONSTANT size_t       Top_Mask_Shift     = 0U;
     static ETL_CONSTANT element_type Top_Mask           = All_Set_Element;
 
-
     typedef etl::span<element_type, Number_Of_Elements>       span_type;
     typedef etl::span<const element_type, Number_Of_Elements> const_span_type;
 
@@ -1015,6 +1014,16 @@ namespace etl
     ETL_CONSTEXPR14 bitset<Active_Bits, TElement, true>& set() ETL_NOEXCEPT
     {
       buffer = All_Set_Element;
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Set from a value.
+    //*************************************************************************
+    ETL_CONSTEXPR14 bitset<Active_Bits, TElement, true>& set(element_type value) ETL_NOEXCEPT
+    {
+      buffer = value;
 
       return *this;
     }
@@ -2432,18 +2441,18 @@ namespace etl
     typedef element_type* pointer;
     typedef const element_type* const_pointer;
 
-    static ETL_CONSTANT size_t       Bits_Per_Element = etl::integral_limits<element_type>::bits;
+    static ETL_CONSTANT size_t       Bits_Per_Element   = etl::integral_limits<element_type>::bits;
     static ETL_CONSTANT size_t       Number_Of_Elements = 1U;
-    static ETL_CONSTANT size_t       Allocated_Bits = Bits_Per_Element;
-    static ETL_CONSTANT element_type All_Set_Element = etl::integral_limits<typename etl::make_unsigned<element_type>::type>::max;
-    static ETL_CONSTANT element_type All_Clear_Element = element_type(0);
-    static ETL_CONSTANT size_t       Top_Mask_Shift = 0U;
-    static ETL_CONSTANT element_type Top_Mask = All_Set_Element;
+    static ETL_CONSTANT size_t       Allocated_Bits     = Bits_Per_Element;
+    static ETL_CONSTANT element_type All_Set_Element    = etl::integral_limits<typename etl::make_unsigned<element_type>::type>::max;
+    static ETL_CONSTANT element_type All_Clear_Element  = element_type(0);
+    static ETL_CONSTANT size_t       Top_Mask_Shift     = 0U;
+    static ETL_CONSTANT element_type Top_Mask           = All_Set_Element;
 
     typedef etl::span<element_type, Number_Of_Elements>       span_type;
     typedef etl::span<const element_type, Number_Of_Elements> const_span_type;
 
-    typedef etl::array<element_type, Number_Of_Elements> buffer_type;
+    typedef element_type buffer_type;
 
     enum
     {
@@ -2539,7 +2548,7 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext(buffer_type& buffer) ETL_NOEXCEPT
-      : pbuffer(buffer.data())
+      : pbuffer(&buffer)
     {
       *pbuffer = All_Clear_Element;
     }
@@ -2557,7 +2566,7 @@ namespace etl
     /// Copy constructor.
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext(const bitset_ext<Active_Bits, TElement, true>& other, buffer_type& buffer) ETL_NOEXCEPT
-      : pbuffer(buffer.data())
+      : pbuffer(&buffer)
     {
       *pbuffer = *other.pbuffer;
     }
@@ -2575,7 +2584,7 @@ namespace etl
     /// Construct from a value.
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext(unsigned long long value, buffer_type& buffer) ETL_NOEXCEPT
-      : pbuffer(buffer.data())
+      : pbuffer(&buffer)
     {
       *pbuffer = element_type(value);
     }
@@ -2594,7 +2603,7 @@ namespace etl
     /// Construct from a string.
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext(const char* text, buffer_type& buffer) ETL_NOEXCEPT
-      : pbuffer(buffer.data())
+      : pbuffer(&buffer)
     {
       *pbuffer = All_Clear_Element;
       set(text);
@@ -2614,7 +2623,7 @@ namespace etl
     /// Construct from a string.
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext(const wchar_t* text, buffer_type& buffer) ETL_NOEXCEPT
-      : pbuffer(buffer.data())
+      : pbuffer(&buffer)
     {
       *pbuffer = All_Clear_Element;
       set(text);
@@ -2634,7 +2643,7 @@ namespace etl
     /// Construct from a string.
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext(const char16_t* text, buffer_type& buffer) ETL_NOEXCEPT
-      : pbuffer(buffer.data())
+      : pbuffer(&buffer)
     {
       *pbuffer = All_Clear_Element;
       set(text);
@@ -2654,7 +2663,7 @@ namespace etl
     /// Construct from a string.
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext(const char32_t* text, buffer_type& buffer) ETL_NOEXCEPT
-      : pbuffer(buffer.data())
+      : pbuffer(&buffer)
     {
       *pbuffer = All_Clear_Element;
       set(text);
@@ -2676,6 +2685,16 @@ namespace etl
     ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, true>& set() ETL_NOEXCEPT
     {
       *pbuffer = All_Set_Element;
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Set from a value.
+    //*************************************************************************
+    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, true>& set(element_type value) ETL_NOEXCEPT
+    {
+      *pbuffer = value;
 
       return *this;
     }
@@ -3356,13 +3375,13 @@ namespace etl
     typedef element_type* pointer;
     typedef const element_type* const_pointer;
 
-    static ETL_CONSTANT size_t       Bits_Per_Element = etl::bitset_impl<element_type>::Bits_Per_Element;
+    static ETL_CONSTANT size_t       Bits_Per_Element   = etl::bitset_impl<element_type>::Bits_Per_Element;
     static ETL_CONSTANT size_t       Number_Of_Elements = (Active_Bits % Bits_Per_Element == 0) ? Active_Bits / Bits_Per_Element : Active_Bits / Bits_Per_Element + 1;
-    static ETL_CONSTANT size_t       Allocated_Bits = Number_Of_Elements * Bits_Per_Element;
-    static ETL_CONSTANT size_t       Top_Mask_Shift = ((Bits_Per_Element - (Allocated_Bits - Active_Bits)) % Bits_Per_Element);
-    static ETL_CONSTANT element_type All_Set_Element = etl::bitset_impl<element_type>::All_Set_Element;
-    static ETL_CONSTANT element_type All_Clear_Element = etl::bitset_impl<element_type>::All_Clear_Element;
-    static ETL_CONSTANT element_type Top_Mask = element_type(Top_Mask_Shift == 0 ? All_Set_Element : ~(All_Set_Element << Top_Mask_Shift));
+    static ETL_CONSTANT size_t       Allocated_Bits     = Number_Of_Elements * Bits_Per_Element;
+    static ETL_CONSTANT size_t       Top_Mask_Shift     = ((Bits_Per_Element - (Allocated_Bits - Active_Bits)) % Bits_Per_Element);
+    static ETL_CONSTANT element_type All_Set_Element    = etl::bitset_impl<element_type>::All_Set_Element;
+    static ETL_CONSTANT element_type All_Clear_Element  = etl::bitset_impl<element_type>::All_Clear_Element;
+    static ETL_CONSTANT element_type Top_Mask           = element_type(Top_Mask_Shift == 0 ? All_Set_Element : ~(All_Set_Element << Top_Mask_Shift));
 
     static ETL_CONSTANT size_t ALLOCATED_BITS = Allocated_Bits; ///< For backward compatibility.
 

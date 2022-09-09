@@ -85,7 +85,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Construct from pointer + size
+    /// Construct from iterators + size
     //*************************************************************************
     template <typename TIterator, typename TSize>
     ETL_CONSTEXPR span(const TIterator begin_, const TSize /*size_*/) ETL_NOEXCEPT
