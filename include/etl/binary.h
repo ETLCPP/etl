@@ -441,7 +441,7 @@ namespace etl
   ETL_CONSTEXPR14 bool has_zero_byte(TValue value)
   {
     typedef typename etl::make_unsigned<TValue>::type unsigned_t;
-    const unsigned_t mask = etl::binary_fill<unsigned_t, uint8_t>(0x7FU);
+    ETL_CONSTEXPR14 const unsigned_t mask = etl::binary_fill<unsigned_t, uint8_t>(0x7FU);
     const unsigned_t temp = unsigned_t(~((((unsigned_t(value) & mask) + mask) | unsigned_t(value)) | mask));
 
     return (temp != 0U);
@@ -455,7 +455,7 @@ namespace etl
   ETL_CONSTEXPR14 bool has_zero_byte()
   {
     typedef typename etl::make_unsigned<TValue>::type unsigned_t;
-    const unsigned_t mask = etl::binary_fill<unsigned_t, uint8_t>(0x7FU);
+    ETL_CONSTEXPR14 const unsigned_t mask = etl::binary_fill<unsigned_t, uint8_t>(0x7FU);
     const unsigned_t temp = unsigned_t(~((((unsigned_t(N) & mask) + mask) | unsigned_t(N)) | mask));
 
     return (temp != 0U);
@@ -2180,6 +2180,41 @@ namespace etl
   {
     return ((static_cast<typename etl::make_unsigned<T>::type>(value) & 1U) == 0U);
   }
+
+  //***********************************
+  template <typename T, size_t NBits>
+  class lsb_mask
+  {
+  public:
+
+    static ETL_CONSTANT T value = static_cast<T>(etl::max_value_for_nbits<NBits>::value);
+  };
+
+  //***********************************
+  template <typename T>
+  ETL_CONSTEXPR14 T make_lsb_mask(size_t nbits)
+  {
+    typedef typename etl::make_unsigned<T>::type type;
+
+    return (nbits == etl::integral_limits<type>::bits) ? static_cast<T>(etl::integral_limits<type>::max)
+                                                       : static_cast<T>((static_cast<type>(1U) << nbits) - 1U);
+  };
+
+  //***********************************
+  template <typename T, size_t NBits>
+  class msb_mask
+  {
+  public:
+
+    static ETL_CONSTANT T value = static_cast<T>(etl::reverse_bits_const<T, lsb_mask<T, NBits>::value>::value);
+  };
+
+  //***********************************
+  template <typename T>
+  ETL_CONSTEXPR T make_msb_mask(size_t nbits)
+  {
+    return static_cast<T>(etl::reverse_bits(make_lsb_mask<T>(nbits)));
+  };
 
   //***************************************************************************
   /// 8 bit binary byte constants.

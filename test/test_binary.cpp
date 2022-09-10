@@ -1685,6 +1685,51 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_binary_constants)
+    {
+      uint8_t constants[] =
+      {
+        etl::b00000000, etl::b00000001, etl::b00000010, etl::b00000011, etl::b00000100, etl::b00000101, etl::b00000110, etl::b00000111,
+        etl::b00001000, etl::b00001001, etl::b00001010, etl::b00001011, etl::b00001100, etl::b00001101, etl::b00001110, etl::b00001111,
+        etl::b00010000, etl::b00010001, etl::b00010010, etl::b00010011, etl::b00010100, etl::b00010101, etl::b00010110, etl::b00010111,
+        etl::b00011000, etl::b00011001, etl::b00011010, etl::b00011011, etl::b00011100, etl::b00011101, etl::b00011110, etl::b00011111,
+        etl::b00100000, etl::b00100001, etl::b00100010, etl::b00100011, etl::b00100100, etl::b00100101, etl::b00100110, etl::b00100111,
+        etl::b00101000, etl::b00101001, etl::b00101010, etl::b00101011, etl::b00101100, etl::b00101101, etl::b00101110, etl::b00101111,
+        etl::b00110000, etl::b00110001, etl::b00110010, etl::b00110011, etl::b00110100, etl::b00110101, etl::b00110110, etl::b00110111,
+        etl::b00111000, etl::b00111001, etl::b00111010, etl::b00111011, etl::b00111100, etl::b00111101, etl::b00111110, etl::b00111111,
+        etl::b01000000, etl::b01000001, etl::b01000010, etl::b01000011, etl::b01000100, etl::b01000101, etl::b01000110, etl::b01000111,
+        etl::b01001000, etl::b01001001, etl::b01001010, etl::b01001011, etl::b01001100, etl::b01001101, etl::b01001110, etl::b01001111,
+        etl::b01010000, etl::b01010001, etl::b01010010, etl::b01010011, etl::b01010100, etl::b01010101, etl::b01010110, etl::b01010111,
+        etl::b01011000, etl::b01011001, etl::b01011010, etl::b01011011, etl::b01011100, etl::b01011101, etl::b01011110, etl::b01011111,
+        etl::b01100000, etl::b01100001, etl::b01100010, etl::b01100011, etl::b01100100, etl::b01100101, etl::b01100110, etl::b01100111,
+        etl::b01101000, etl::b01101001, etl::b01101010, etl::b01101011, etl::b01101100, etl::b01101101, etl::b01101110, etl::b01101111,
+        etl::b01110000, etl::b01110001, etl::b01110010, etl::b01110011, etl::b01110100, etl::b01110101, etl::b01110110, etl::b01110111,
+        etl::b01111000, etl::b01111001, etl::b01111010, etl::b01111011, etl::b01111100, etl::b01111101, etl::b01111110, etl::b01111111,
+        etl::b10000000, etl::b10000001, etl::b10000010, etl::b10000011, etl::b10000100, etl::b10000101, etl::b10000110, etl::b10000111,
+        etl::b10001000, etl::b10001001, etl::b10001010, etl::b10001011, etl::b10001100, etl::b10001101, etl::b10001110, etl::b10001111,
+        etl::b10010000, etl::b10010001, etl::b10010010, etl::b10010011, etl::b10010100, etl::b10010101, etl::b10010110, etl::b10010111,
+        etl::b10011000, etl::b10011001, etl::b10011010, etl::b10011011, etl::b10011100, etl::b10011101, etl::b10011110, etl::b10011111,
+        etl::b10100000, etl::b10100001, etl::b10100010, etl::b10100011, etl::b10100100, etl::b10100101, etl::b10100110, etl::b10100111,
+        etl::b10101000, etl::b10101001, etl::b10101010, etl::b10101011, etl::b10101100, etl::b10101101, etl::b10101110, etl::b10101111,
+        etl::b10110000, etl::b10110001, etl::b10110010, etl::b10110011, etl::b10110100, etl::b10110101, etl::b10110110, etl::b10110111,
+        etl::b10111000, etl::b10111001, etl::b10111010, etl::b10111011, etl::b10111100, etl::b10111101, etl::b10111110, etl::b10111111,
+        etl::b11000000, etl::b11000001, etl::b11000010, etl::b11000011, etl::b11000100, etl::b11000101, etl::b11000110, etl::b11000111,
+        etl::b11001000, etl::b11001001, etl::b11001010, etl::b11001011, etl::b11001100, etl::b11001101, etl::b11001110, etl::b11001111,
+        etl::b11010000, etl::b11010001, etl::b11010010, etl::b11010011, etl::b11010100, etl::b11010101, etl::b11010110, etl::b11010111,
+        etl::b11011000, etl::b11011001, etl::b11011010, etl::b11011011, etl::b11011100, etl::b11011101, etl::b11011110, etl::b11011111,
+        etl::b11100000, etl::b11100001, etl::b11100010, etl::b11100011, etl::b11100100, etl::b11100101, etl::b11100110, etl::b11100111,
+        etl::b11101000, etl::b11101001, etl::b11101010, etl::b11101011, etl::b11101100, etl::b11101101, etl::b11101110, etl::b11101111,
+        etl::b11110000, etl::b11110001, etl::b11110010, etl::b11110011, etl::b11110100, etl::b11110101, etl::b11110110, etl::b11110111,
+        etl::b11111000, etl::b11111001, etl::b11111010, etl::b11111011, etl::b11111100, etl::b11111101, etl::b11111110, etl::b11111111
+      };
+
+      for (int i = 0; i < 256; ++i)
+      {
+        CHECK_EQUAL(i, int(constants[i]));
+      }
+    }
+
+    //*************************************************************************
     TEST(test_binary_fill)
     {
       CHECK_EQUAL(0x12U, (etl::binary_fill<uint8_t>(uint8_t(0x12U))));
@@ -2344,6 +2389,198 @@ namespace
       CHECK_EQUAL(test_leading_ones(uint64_t(0xF000000000000000UL)), sizeof(temp));
     }
 #endif
+
+    //*************************************************************************
+    TEST(test_lsb_mask_8_bit)
+    {
+      CHECK(int8_t(etl::b00000000) == (etl::lsb_mask<int8_t, 0>::value));
+      CHECK(int8_t(etl::b00000001) == (etl::lsb_mask<int8_t, 1>::value));
+      CHECK(int8_t(etl::b00000011) == (etl::lsb_mask<int8_t, 2>::value));
+      CHECK(int8_t(etl::b00000111) == (etl::lsb_mask<int8_t, 3>::value));
+      CHECK(int8_t(etl::b00001111) == (etl::lsb_mask<int8_t, 4>::value));
+      CHECK(int8_t(etl::b00011111) == (etl::lsb_mask<int8_t, 5>::value));
+      CHECK(int8_t(etl::b00111111) == (etl::lsb_mask<int8_t, 6>::value));
+      CHECK(int8_t(etl::b01111111) == (etl::lsb_mask<int8_t, 7>::value));
+      CHECK(int8_t(etl::b11111111) == (etl::lsb_mask<int8_t, 8>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_lsb_mask_64_bit)
+    {
+      CHECK(int64_t(0x0000000000000000) == (etl::lsb_mask<int64_t, 0>::value));
+      CHECK(int64_t(0x00000000000000FF) == (etl::lsb_mask<int64_t, 8>::value));
+      CHECK(int64_t(0x000000000000FFFF) == (etl::lsb_mask<int64_t, 16>::value));
+      CHECK(int64_t(0x0000000000FFFFFF) == (etl::lsb_mask<int64_t, 24>::value));
+      CHECK(int64_t(0x00000000FFFFFFFF) == (etl::lsb_mask<int64_t, 32>::value));
+      CHECK(int64_t(0x000000FFFFFFFFFF) == (etl::lsb_mask<int64_t, 40>::value));
+      CHECK(int64_t(0x0000FFFFFFFFFFFF) == (etl::lsb_mask<int64_t, 48>::value));
+      CHECK(int64_t(0x00FFFFFFFFFFFFFF) == (etl::lsb_mask<int64_t, 56>::value));
+      CHECK(int64_t(0xFFFFFFFFFFFFFFFF) == (etl::lsb_mask<int64_t, 64>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_make_lsb_mask_8_bit)
+    {
+      constexpr int8_t mask0 = etl::make_lsb_mask<int8_t>(0);
+      constexpr int8_t mask1 = etl::make_lsb_mask<int8_t>(1);
+      constexpr int8_t mask2 = etl::make_lsb_mask<int8_t>(2);
+      constexpr int8_t mask3 = etl::make_lsb_mask<int8_t>(3);
+      constexpr int8_t mask4 = etl::make_lsb_mask<int8_t>(4);
+      constexpr int8_t mask5 = etl::make_lsb_mask<int8_t>(5);
+      constexpr int8_t mask6 = etl::make_lsb_mask<int8_t>(6);
+      constexpr int8_t mask7 = etl::make_lsb_mask<int8_t>(7);
+      constexpr int8_t mask8 = etl::make_lsb_mask<int8_t>(8);
+
+      CHECK(int8_t(etl::b00000000) == mask0);
+      CHECK(int8_t(etl::b00000001) == mask1);
+      CHECK(int8_t(etl::b00000011) == mask2);
+      CHECK(int8_t(etl::b00000111) == mask3);
+      CHECK(int8_t(etl::b00001111) == mask4);
+      CHECK(int8_t(etl::b00011111) == mask5);
+      CHECK(int8_t(etl::b00111111) == mask6);
+      CHECK(int8_t(etl::b01111111) == mask7);
+      CHECK(int8_t(etl::b11111111) == mask8);
+
+      CHECK(int8_t(etl::b00000000) == etl::make_lsb_mask<int8_t>(0));
+      CHECK(int8_t(etl::b00000001) == etl::make_lsb_mask<int8_t>(1));
+      CHECK(int8_t(etl::b00000011) == etl::make_lsb_mask<int8_t>(2));
+      CHECK(int8_t(etl::b00000111) == etl::make_lsb_mask<int8_t>(3));
+      CHECK(int8_t(etl::b00001111) == etl::make_lsb_mask<int8_t>(4));
+      CHECK(int8_t(etl::b00011111) == etl::make_lsb_mask<int8_t>(5));
+      CHECK(int8_t(etl::b00111111) == etl::make_lsb_mask<int8_t>(6));
+      CHECK(int8_t(etl::b01111111) == etl::make_lsb_mask<int8_t>(7));
+      CHECK(int8_t(etl::b11111111) == etl::make_lsb_mask<int8_t>(8));
+    }
+
+    //*************************************************************************
+    TEST(test_make_lsb_mask_64_bit)
+    {
+      constexpr int64_t mask0 = etl::make_lsb_mask<int64_t>(0);
+      constexpr int64_t mask1 = etl::make_lsb_mask<int64_t>(8);
+      constexpr int64_t mask2 = etl::make_lsb_mask<int64_t>(16);
+      constexpr int64_t mask3 = etl::make_lsb_mask<int64_t>(24);
+      constexpr int64_t mask4 = etl::make_lsb_mask<int64_t>(32);
+      constexpr int64_t mask5 = etl::make_lsb_mask<int64_t>(40);
+      constexpr int64_t mask6 = etl::make_lsb_mask<int64_t>(48);
+      constexpr int64_t mask7 = etl::make_lsb_mask<int64_t>(56);
+      constexpr int64_t mask8 = etl::make_lsb_mask<int64_t>(64);
+
+      CHECK_EQUAL(int64_t(0x0000000000000000), mask0);
+      CHECK_EQUAL(int64_t(0x00000000000000FF), mask1);
+      CHECK_EQUAL(int64_t(0x000000000000FFFF), mask2);
+      CHECK_EQUAL(int64_t(0x0000000000FFFFFF), mask3);
+      CHECK_EQUAL(int64_t(0x00000000FFFFFFFF), mask4);
+      CHECK_EQUAL(int64_t(0x000000FFFFFFFFFF), mask5);
+      CHECK_EQUAL(int64_t(0x0000FFFFFFFFFFFF), mask6);
+      CHECK_EQUAL(int64_t(0x00FFFFFFFFFFFFFF), mask7);
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFFFFFFFF), mask8);
+
+      CHECK_EQUAL(int64_t(0x0000000000000000), etl::make_lsb_mask<int64_t>(0));
+      CHECK_EQUAL(int64_t(0x00000000000000FF), etl::make_lsb_mask<int64_t>(8));
+      CHECK_EQUAL(int64_t(0x000000000000FFFF), etl::make_lsb_mask<int64_t>(16));
+      CHECK_EQUAL(int64_t(0x0000000000FFFFFF), etl::make_lsb_mask<int64_t>(24));
+      CHECK_EQUAL(int64_t(0x00000000FFFFFFFF), etl::make_lsb_mask<int64_t>(32));
+      CHECK_EQUAL(int64_t(0x000000FFFFFFFFFF), etl::make_lsb_mask<int64_t>(40));
+      CHECK_EQUAL(int64_t(0x0000FFFFFFFFFFFF), etl::make_lsb_mask<int64_t>(48));
+      CHECK_EQUAL(int64_t(0x00FFFFFFFFFFFFFF), etl::make_lsb_mask<int64_t>(56));
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFFFFFFFF), etl::make_lsb_mask<int64_t>(64));
+    }
+
+    //*************************************************************************
+    TEST(test_msb_mask_8_bit_8_bit)
+    {
+      CHECK(int8_t(etl::b00000000) == (etl::msb_mask<int8_t, 0>::value));
+      CHECK(int8_t(etl::b10000000) == (etl::msb_mask<int8_t, 1>::value));
+      CHECK(int8_t(etl::b11000000) == (etl::msb_mask<int8_t, 2>::value));
+      CHECK(int8_t(etl::b11100000) == (etl::msb_mask<int8_t, 3>::value));
+      CHECK(int8_t(etl::b11110000) == (etl::msb_mask<int8_t, 4>::value));
+      CHECK(int8_t(etl::b11111000) == (etl::msb_mask<int8_t, 5>::value));
+      CHECK(int8_t(etl::b11111100) == (etl::msb_mask<int8_t, 6>::value));
+      CHECK(int8_t(etl::b11111110) == (etl::msb_mask<int8_t, 7>::value));
+      CHECK(int8_t(etl::b11111111) == (etl::msb_mask<int8_t, 8>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_msb_mask_64_bit)
+    {
+      CHECK(int64_t(0x0000000000000000) == (etl::msb_mask<int64_t, 0>::value));
+      CHECK(int64_t(0xFF00000000000000) == (etl::msb_mask<int64_t, 8>::value));
+      CHECK(int64_t(0xFFFF000000000000) == (etl::msb_mask<int64_t, 16>::value));
+      CHECK(int64_t(0xFFFFFF0000000000) == (etl::msb_mask<int64_t, 24>::value));
+      CHECK(int64_t(0xFFFFFFFF00000000) == (etl::msb_mask<int64_t, 32>::value));
+      CHECK(int64_t(0xFFFFFFFFFF000000) == (etl::msb_mask<int64_t, 40>::value));
+      CHECK(int64_t(0xFFFFFFFFFFFF0000) == (etl::msb_mask<int64_t, 48>::value));
+      CHECK(int64_t(0xFFFFFFFFFFFFFF00) == (etl::msb_mask<int64_t, 56>::value));
+      CHECK(int64_t(0xFFFFFFFFFFFFFFFF) == (etl::msb_mask<int64_t, 64>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_make_msb_mask_8_bit)
+    {
+      constexpr int8_t mask0 = etl::make_msb_mask<int8_t>(0);
+      constexpr int8_t mask1 = etl::make_msb_mask<int8_t>(1);
+      constexpr int8_t mask2 = etl::make_msb_mask<int8_t>(2);
+      constexpr int8_t mask3 = etl::make_msb_mask<int8_t>(3);
+      constexpr int8_t mask4 = etl::make_msb_mask<int8_t>(4);
+      constexpr int8_t mask5 = etl::make_msb_mask<int8_t>(5);
+      constexpr int8_t mask6 = etl::make_msb_mask<int8_t>(6);
+      constexpr int8_t mask7 = etl::make_msb_mask<int8_t>(7);
+      constexpr int8_t mask8 = etl::make_msb_mask<int8_t>(8);
+
+      CHECK(int8_t(etl::b00000000) == mask0);
+      CHECK(int8_t(etl::b10000000) == mask1);
+      CHECK(int8_t(etl::b11000000) == mask2);
+      CHECK(int8_t(etl::b11100000) == mask3);
+      CHECK(int8_t(etl::b11110000) == mask4);
+      CHECK(int8_t(etl::b11111000) == mask5);
+      CHECK(int8_t(etl::b11111100) == mask6);
+      CHECK(int8_t(etl::b11111110) == mask7);
+      CHECK(int8_t(etl::b11111111) == mask8);
+
+      CHECK(int8_t(etl::b00000000) == etl::make_msb_mask<int8_t>(0));
+      CHECK(int8_t(etl::b10000000) == etl::make_msb_mask<int8_t>(1));
+      CHECK(int8_t(etl::b11000000) == etl::make_msb_mask<int8_t>(2));
+      CHECK(int8_t(etl::b11100000) == etl::make_msb_mask<int8_t>(3));
+      CHECK(int8_t(etl::b11110000) == etl::make_msb_mask<int8_t>(4));
+      CHECK(int8_t(etl::b11111000) == etl::make_msb_mask<int8_t>(5));
+      CHECK(int8_t(etl::b11111100) == etl::make_msb_mask<int8_t>(6));
+      CHECK(int8_t(etl::b11111110) == etl::make_msb_mask<int8_t>(7));
+      CHECK(int8_t(etl::b11111111) == etl::make_msb_mask<int8_t>(8));
+    }
+
+    //*************************************************************************
+    TEST(test_make_msb_mask_64_bit)
+    {
+      constexpr int64_t mask0 = etl::make_msb_mask<int64_t>(0);
+      constexpr int64_t mask1 = etl::make_msb_mask<int64_t>(8);
+      constexpr int64_t mask2 = etl::make_msb_mask<int64_t>(16);
+      constexpr int64_t mask3 = etl::make_msb_mask<int64_t>(24);
+      constexpr int64_t mask4 = etl::make_msb_mask<int64_t>(32);
+      constexpr int64_t mask5 = etl::make_msb_mask<int64_t>(40);
+      constexpr int64_t mask6 = etl::make_msb_mask<int64_t>(48);
+      constexpr int64_t mask7 = etl::make_msb_mask<int64_t>(56);
+      constexpr int64_t mask8 = etl::make_msb_mask<int64_t>(64);
+
+      CHECK_EQUAL(int64_t(0x0000000000000000), mask0);
+      CHECK_EQUAL(int64_t(0xFF00000000000000), mask1);
+      CHECK_EQUAL(int64_t(0xFFFF000000000000), mask2);
+      CHECK_EQUAL(int64_t(0xFFFFFF0000000000), mask3);
+      CHECK_EQUAL(int64_t(0xFFFFFFFF00000000), mask4);
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFF000000), mask5);
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFFFF0000), mask6);
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFFFFFF00), mask7);
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFFFFFFFF), mask8);
+
+      CHECK_EQUAL(int64_t(0x0000000000000000), etl::make_msb_mask<int64_t>(0));
+      CHECK_EQUAL(int64_t(0xFF00000000000000), etl::make_msb_mask<int64_t>(8));
+      CHECK_EQUAL(int64_t(0xFFFF000000000000), etl::make_msb_mask<int64_t>(16));
+      CHECK_EQUAL(int64_t(0xFFFFFF0000000000), etl::make_msb_mask<int64_t>(24));
+      CHECK_EQUAL(int64_t(0xFFFFFFFF00000000), etl::make_msb_mask<int64_t>(32));
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFF000000), etl::make_msb_mask<int64_t>(40));
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFFFF0000), etl::make_msb_mask<int64_t>(48));
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFFFFFF00), etl::make_msb_mask<int64_t>(56));
+      CHECK_EQUAL(int64_t(0xFFFFFFFFFFFFFFFF), etl::make_msb_mask<int64_t>(64));
+    }
   };
 }
 
