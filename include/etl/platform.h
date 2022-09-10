@@ -228,6 +228,8 @@ SOFTWARE.
   #define ETL_FINAL     final
   #define ETL_NORETURN  [[noreturn]]
   #define ETL_MOVE(x)   etl::move(x)
+  #define ETL_ENUM_CLASS(name)            enum class name
+  #define ETL_ENUM_CLASS_TYPE(name, type) enum class name : type
 
   #if ETL_USING_EXCEPTIONS
     #define ETL_NOEXCEPT noexcept
@@ -247,6 +249,8 @@ SOFTWARE.
   #define ETL_NOEXCEPT
   #define ETL_NOEXCEPT_EXPR(expression)
   #define ETL_MOVE(x) x
+  #define ETL_ENUM_CLASS(name)            enum name
+  #define ETL_ENUM_CLASS_TYPE(name, type) enum name
 #endif
 
 //*************************************
