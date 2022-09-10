@@ -3,6 +3,7 @@
 Changed explicit message constructor for unsupported message types
 Added etl::circular_iterator and circular iterator extensions to etl::span
 Added etl::bitset_ext
+Added etl::lsb_mask, etl::make_lsb_mask, etl::msb_mask and etl::make_msb_mask to binary utilities
 Updates for unordered maps and sets for an API that better matches the STL
 Fixes for etl::result<void, TError>
 Fix non-C++03 code syntax
