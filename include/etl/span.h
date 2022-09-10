@@ -88,7 +88,7 @@ namespace etl
     /// Construct from iterators + size
     //*************************************************************************
     template <typename TIterator, typename TSize>
-    ETL_CONSTEXPR span(const TIterator begin_, const TSize /*size_*/) ETL_NOEXCEPT
+    ETL_CONSTEXPR explicit span(const TIterator begin_, const TSize /*size_*/) ETL_NOEXCEPT
       : pbegin(etl::addressof(*begin_))
     {
     }
@@ -97,7 +97,7 @@ namespace etl
     /// Construct from iterators
     //*************************************************************************
     template <typename TIterator>
-    ETL_CONSTEXPR span(const TIterator begin_, const TIterator /*end_*/)
+    ETL_CONSTEXPR explicit span(const TIterator begin_, const TIterator /*end_*/)
       : pbegin(etl::addressof(*begin_))
     {
     }
@@ -211,6 +211,15 @@ namespace etl
     /// Copy constructor
     //*************************************************************************
     ETL_CONSTEXPR span(const span& other) ETL_NOEXCEPT
+      : pbegin(other.pbegin)
+    {
+    }
+
+    //*************************************************************************
+    /// Copy constructor
+    //*************************************************************************
+    template <typename U, size_t N>
+    ETL_CONSTEXPR span(const etl::span<U, N>& other, typename etl::enable_if<(Extent == etl::dynamic_extent) || (N == etl::dynamic_extent) || (N == Extent), void>::type) ETL_NOEXCEPT
       : pbegin(other.pbegin)
     {
     }
@@ -587,6 +596,16 @@ namespace etl
     ETL_CONSTEXPR span(const span& other) ETL_NOEXCEPT
       : pbegin(other.pbegin)
       , pend(other.pend)
+    {
+    }
+
+    //*************************************************************************
+    /// Copy constructor
+    //*************************************************************************
+    template <typename U, size_t N>
+    ETL_CONSTEXPR span(const etl::span<U, N>& other) ETL_NOEXCEPT
+      : pbegin(other.begin())
+      , pend(other.begin() + N)
     {
     }
 
