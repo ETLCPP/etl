@@ -47,6 +47,8 @@ set(TEST_SOURCE_FILES
 	test_bitset_legacy.cpp
 	test_bitset_new_default_element_type.cpp
 	test_bitset_new_explicit_single_element_type.cpp
+	test_bitset_new_ext_default_element_type.cpp
+	test_bitset_new_ext_explicit_single_element_type.cpp
 	test_bit_stream.cpp
 	test_bit_stream_reader_big_endian.cpp
 	test_bit_stream_reader_little_endian.cpp

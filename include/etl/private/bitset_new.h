@@ -1,5 +1,4 @@
 ///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -77,6 +76,11 @@ SOFTWARE.
 
 namespace etl
 {
+  struct bitset_constants
+  {
+    static ETL_CONSTANT size_t npos = etl::integral_limits<size_t>::max;
+  };
+
   //***************************************************************************
   /// Exception base for bitset
   ///\ingroup bitset
@@ -110,7 +114,7 @@ namespace etl
   ///\ingroup bitset
   //*************************************************************************
   template <typename TElement>
-  class bitset_impl
+  class bitset_impl : public bitset_constants
   {
   public:
 
@@ -122,11 +126,6 @@ namespace etl
     static ETL_CONSTANT size_t       Bits_Per_Element   = etl::integral_limits<element_type>::bits;
     static ETL_CONSTANT element_type All_Set_Element    = etl::integral_limits<element_type>::max;
     static ETL_CONSTANT element_type All_Clear_Element  = element_type(0);
-
-    enum
-    {
-      npos = etl::integral_limits<size_t>::max
-    };
 
     //*************************************************************************
     /// Count the number of bits set.
@@ -807,28 +806,16 @@ namespace etl
   /// Just defines 'npos'.
   //***************************************************************************
   template <>
-  class bitset<0U, void, true>
+  class bitset<0U, void, true> : public bitset_constants
   {
-  public:
-
-    enum
-    {
-      npos = etl::integral_limits<size_t>::max
-    };
   };
 
   //***************************************************************************
   /// Specialisation for zero bits.
   //***************************************************************************
   template <>
-  class bitset<0U, void, false>
+  class bitset<0U, void, false> : public bitset_constants
   {
-  public:
-
-    enum
-    {
-      npos = etl::integral_limits<size_t>::max
-    };
   };
 
   //***************************************************************************
@@ -836,7 +823,7 @@ namespace etl
   /// same size as the number of active bits.
   //***************************************************************************
   template <size_t   Active_Bits, typename TElement>
-  class bitset<Active_Bits, TElement, true>
+  class bitset<Active_Bits, TElement, true> : public bitset_constants
   {
   public:
 
@@ -856,11 +843,6 @@ namespace etl
 
     typedef etl::span<element_type, Number_Of_Elements>       span_type;
     typedef etl::span<const element_type, Number_Of_Elements> const_span_type;
-
-    enum
-    {
-      npos = etl::integral_limits<size_t>::max
-    };
 
     //*************************************************************************
     /// The reference type returned.
@@ -1616,7 +1598,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset<Active_Bits, TElement, true> operator >>(size_t shift) const ETL_NOEXCEPT
     {
-      bitset<Active_Bits, TElement> temp(*this);
+      etl::bitset<Active_Bits, TElement> temp(*this);
 
       temp >>= shift;
 
@@ -1685,7 +1667,7 @@ namespace etl
   /// The specialisation that uses an array of the default element type.
   //*************************************************************************
   template <size_t Active_Bits, typename TElement>
-  class bitset<Active_Bits, TElement, false>
+  class bitset<Active_Bits, TElement, false> : public bitset_constants
   {
   private:
 
@@ -2402,28 +2384,16 @@ namespace etl
   /// Just defines 'npos'.
   //***************************************************************************
   template <>
-  class bitset_ext<0U, void, true>
+  class bitset_ext<0U, void, true> : public bitset_constants
   {
-  public:
-
-    enum
-    {
-      npos = etl::integral_limits<size_t>::max
-    };
   };
 
   //***************************************************************************
   /// Specialisation for zero bits.
   //***************************************************************************
   template <>
-  class bitset_ext<0U, void, false>
+  class bitset_ext<0U, void, false> : public bitset_constants
   {
-  public:
-
-    enum
-    {
-      npos = etl::integral_limits<size_t>::max
-    };
   };
 
   //***************************************************************************
@@ -2431,7 +2401,7 @@ namespace etl
   /// same size as the number of active bits.
   //***************************************************************************
   template <size_t   Active_Bits, typename TElement>
-  class bitset_ext<Active_Bits, TElement, true>
+  class bitset_ext<Active_Bits, TElement, true> : public bitset_constants
   {
   public:
 
@@ -2453,11 +2423,6 @@ namespace etl
     typedef etl::span<const element_type, Number_Of_Elements> const_span_type;
 
     typedef element_type buffer_type;
-
-    enum
-    {
-      npos = etl::integral_limits<size_t>::max
-    };
 
     //*************************************************************************
     /// The reference type returned.
@@ -2554,7 +2519,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Copy constructor.
+    /// Construct copy.
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext(const bitset_ext<Active_Bits, TElement, true>& other, element_type* pbuffer_) ETL_NOEXCEPT
       : pbuffer(pbuffer_)
@@ -2563,13 +2528,18 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Copy constructor.
+    /// Construct copy.
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext(const bitset_ext<Active_Bits, TElement, true>& other, buffer_type& buffer) ETL_NOEXCEPT
       : pbuffer(&buffer)
     {
       *pbuffer = *other.pbuffer;
     }
+
+    //*************************************************************************
+    /// Copy Constructor (Deleted).
+    //*************************************************************************
+    ETL_CONSTEXPR14 bitset_ext(const bitset_ext<Active_Bits, TElement, true>& other) ETL_NOEXCEPT ETL_DELETE;
 
     //*************************************************************************
     /// Construct from a value.
@@ -2685,16 +2655,6 @@ namespace etl
     ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, true>& set() ETL_NOEXCEPT
     {
       *pbuffer = All_Set_Element;
-
-      return *this;
-    }
-
-    //*************************************************************************
-    /// Set from a value.
-    //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, true>& set(element_type value) ETL_NOEXCEPT
-    {
-      *pbuffer = value;
 
       return *this;
     }
@@ -3176,18 +3136,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// operator &
-    //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, true> operator &(const bitset_ext<Active_Bits, TElement, true>& other) const ETL_NOEXCEPT
-    {
-      etl::bitset_ext<Active_Bits, TElement, true> temp(*this);
-
-      temp &= other;
-
-      return temp;
-    }
-
-    //*************************************************************************
     /// operator &=
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, true>& operator &=(const bitset_ext<Active_Bits, TElement, true>& other) ETL_NOEXCEPT
@@ -3195,18 +3143,6 @@ namespace etl
       *pbuffer &= *other.pbuffer;
 
       return *this;
-    }
-
-    //*************************************************************************
-    /// operator |
-    //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, true> operator |(const bitset_ext<Active_Bits, TElement, true>& other) const ETL_NOEXCEPT
-    {
-      etl::bitset_ext<Active_Bits, TElement, true> temp(*this);
-
-      temp |= other;
-
-      return temp;
     }
 
     //*************************************************************************
@@ -3220,18 +3156,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// operator ^
-    //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, true> operator ^(const bitset_ext<Active_Bits, TElement, true>& other) const ETL_NOEXCEPT
-    {
-      etl::bitset_ext<Active_Bits, TElement, true> temp(*this);
-
-      temp ^= other;
-
-      return temp;
-    }
-
-    //*************************************************************************
     /// operator ^=
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, true>& operator ^=(const bitset_ext<Active_Bits, TElement, true>& other) ETL_NOEXCEPT
@@ -3239,30 +3163,6 @@ namespace etl
       *pbuffer ^= *other.pbuffer;
 
       return *this;
-    }
-
-    //*************************************************************************
-    /// operator ~
-    //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, true> operator ~() const ETL_NOEXCEPT
-    {
-      etl::bitset_ext<Active_Bits, TElement, true> temp(*this);
-
-      temp.flip();
-
-      return temp;
-    }
-
-    //*************************************************************************
-    /// operator <<
-    //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, true> operator <<(size_t shift) const ETL_NOEXCEPT
-    {
-      etl::bitset_ext<Active_Bits, TElement, true> temp(*this);
-
-      temp <<= shift;
-
-      return temp;
     }
 
     //*************************************************************************
@@ -3280,18 +3180,6 @@ namespace etl
       }
 
       return *this;
-    }
-
-    //*************************************************************************
-    /// operator >>
-    //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, true> operator >>(size_t shift) const ETL_NOEXCEPT
-    {
-      bitset_ext<Active_Bits, TElement> temp(*this);
-
-      temp >>= shift;
-
-      return temp;
     }
 
     //*************************************************************************
@@ -3356,7 +3244,7 @@ namespace etl
   /// The specialisation that uses an array of the default element type.
   //*************************************************************************
   template <size_t Active_Bits, typename TElement>
-  class bitset_ext<Active_Bits, TElement, false>
+  class bitset_ext<Active_Bits, TElement, false> : public bitset_constants
   {
   private:
 
@@ -3485,7 +3373,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Copy constructor.
+    /// Construct copy.
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext(const bitset_ext<Active_Bits, TElement, false>& other, element_type* pbuffer_) ETL_NOEXCEPT
       : pbuffer(pbuffer_)
@@ -3494,13 +3382,18 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Copy constructor.
+    /// Construct copy.
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext(const bitset_ext<Active_Bits, TElement, false>& other, buffer_type& buffer) ETL_NOEXCEPT
       : pbuffer(buffer.data())
     {
       etl::copy_n(other.pbuffer, Number_Of_Elements, pbuffer);
     }
+
+    //*************************************************************************
+    /// Copy Constructor (Deleted).
+    //*************************************************************************
+    ETL_CONSTEXPR14 bitset_ext(const bitset_ext<Active_Bits, TElement, false>& other) ETL_NOEXCEPT ETL_DELETE;
 
     //*************************************************************************
     /// Construct from a value.
@@ -3884,18 +3777,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// operator &
-    //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, false> operator &(const bitset_ext<Active_Bits, TElement, false>& other) const ETL_NOEXCEPT
-    {
-      etl::bitset_ext<Active_Bits, TElement, false> temp(*this);
-
-      temp &= other;
-
-      return temp;
-    }
-
-    //*************************************************************************
     /// operator &=
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, false>& operator &=(const bitset_ext<Active_Bits, TElement, false>& other) ETL_NOEXCEPT
@@ -3903,18 +3784,6 @@ namespace etl
       ibitset.and_equals(&pbuffer[0], &other.pbuffer[0], Number_Of_Elements);
 
       return *this;
-    }
-
-    //*************************************************************************
-    /// operator |
-    //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, false> operator |(const bitset_ext<Active_Bits, TElement, false>& other) const ETL_NOEXCEPT
-    {
-      etl::bitset_ext<Active_Bits, TElement, false> temp(*this);
-
-      temp |= other;
-
-      return temp;
     }
 
     //*************************************************************************
@@ -3928,18 +3797,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// operator ^
-    //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, false> operator ^(const bitset_ext<Active_Bits, TElement, false>& other) const ETL_NOEXCEPT
-    {
-      etl::bitset_ext<Active_Bits, TElement, false> temp(*this);
-
-      temp ^= other;
-
-      return temp;
-    }
-
-    //*************************************************************************
     /// operator ^=
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, false>& operator ^=(const bitset_ext<Active_Bits, TElement, false>& other) ETL_NOEXCEPT
@@ -3947,30 +3804,6 @@ namespace etl
       ibitset.xor_equals(&pbuffer[0], &other.pbuffer[0], Number_Of_Elements);
 
       return *this;
-    }
-
-    //*************************************************************************
-    /// operator ~
-    //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, false> operator ~() const ETL_NOEXCEPT
-    {
-      etl::bitset_ext<Active_Bits, TElement, false> temp(*this);
-
-      temp.flip();
-
-      return temp;
-    }
-
-    //*************************************************************************
-    /// operator <<
-    //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, false> operator <<(size_t shift) const ETL_NOEXCEPT
-    {
-      etl::bitset_ext<Active_Bits, TElement, false> temp(*this);
-
-      temp <<= shift;
-
-      return temp;
     }
 
     //*************************************************************************
@@ -3989,18 +3822,6 @@ namespace etl
       }
 
       return *this;
-    }
-
-    //*************************************************************************
-    /// operator >>
-    //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, false> operator >>(size_t shift) const ETL_NOEXCEPT
-    {
-      bitset_ext<Active_Bits, TElement, false> temp(*this);
-
-      temp >>= shift;
-
-      return temp;
     }
 
     //*************************************************************************
@@ -4069,42 +3890,6 @@ namespace etl
     etl::bitset_impl<element_type> ibitset;
     element_type* pbuffer;
   };
-
-  //***************************************************************************
-  /// operator &
-  ///\ingroup bitset
-  //***************************************************************************
-  template <size_t Active_Bits, typename TElement, bool IsSingleElement>
-  ETL_CONSTEXPR14 bitset_ext<Active_Bits> operator & (const bitset_ext<Active_Bits, TElement, IsSingleElement>& lhs, const bitset_ext<Active_Bits, TElement, IsSingleElement>& rhs) ETL_NOEXCEPT
-  {
-    bitset_ext<Active_Bits> temp(lhs);
-    temp &= rhs;
-    return temp;
-  }
-
-  //***************************************************************************
-  /// operator |
-  ///\ingroup bitset
-  //***************************************************************************
-  template<size_t Active_Bits, typename TElement, bool IsSingleElement>
-  ETL_CONSTEXPR14 bitset_ext<Active_Bits> operator | (const bitset_ext<Active_Bits, TElement, IsSingleElement>& lhs, const bitset_ext<Active_Bits, TElement, IsSingleElement>& rhs) ETL_NOEXCEPT
-  {
-    bitset_ext<Active_Bits> temp(lhs);
-    temp |= rhs;
-    return temp;
-  }
-
-  //***************************************************************************
-  /// operator ^
-  ///\ingroup bitset
-  //***************************************************************************
-  template<size_t Active_Bits, typename TElement, bool IsSingleElement>
-  ETL_CONSTEXPR14 bitset_ext<Active_Bits> operator ^ (const bitset_ext<Active_Bits, TElement, IsSingleElement>& lhs, const bitset_ext<Active_Bits, TElement, IsSingleElement>& rhs) ETL_NOEXCEPT
-  {
-    bitset_ext<Active_Bits> temp(lhs);
-    temp ^= rhs;
-    return temp;
-  }
 
   //***************************************************************************
   /// operator !=
