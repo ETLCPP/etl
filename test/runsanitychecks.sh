@@ -4,7 +4,7 @@ clear
 cd sanity-check || exit 1
 echo "" > log.txt
 
-export CMAKE_BUILD_PARALLEL_LEVEL=$(nproc --all)
+export CMAKE_BUILD_PARALLEL_LEVEL=4
 
 ###############################################################################
 cd c++03 || exit 1
