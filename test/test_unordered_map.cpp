@@ -417,12 +417,7 @@ namespace
 
       other_data = data;
 
-      bool isEqual = std::equal(data.begin(),
-                                data.end(),
-                                other_data.begin(),
-                                std::equal_to<DataNDC::value_type>());
-
-      CHECK(isEqual);
+      CHECK(data == other_data);
     }
 
     //*************************************************************************
@@ -436,11 +431,7 @@ namespace
 
       idata2 = idata1;
 
-      bool isEqual = etl::equal(data1.begin(),
-                                data1.end(),
-                                data2.begin());
-
-      CHECK(isEqual);
+      CHECK(idata2 == idata1);
     }
 
     //*************************************************************************
@@ -453,11 +444,7 @@ namespace
       other_data = other_data;
 #include "etl/private/diagnostic_pop.h"
 
-      bool isEqual = etl::equal(data.begin(),
-                                data.end(),
-                                other_data.begin());
-
-      CHECK(isEqual);
+      CHECK(data == other_data);
     }
 
     //*************************************************************************
