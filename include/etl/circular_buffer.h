@@ -1235,7 +1235,7 @@ namespace etl
 #endif
 
     //*************************************************************************
-    /// Copy Constructor.
+    /// Construct a copy.
     //*************************************************************************
     circular_buffer_ext(const circular_buffer_ext& other, void* buffer, size_t max_size)
       : icircular_buffer<T>(reinterpret_cast<T*>(buffer), max_size)
@@ -1245,6 +1245,11 @@ namespace etl
         this->push(other.begin(), other.end());
       }
     }
+
+    //*************************************************************************
+    /// Copy Constructor (Deleted)
+    //*************************************************************************
+    circular_buffer_ext(const circular_buffer_ext& other) ETL_DELETE;
 
     //*************************************************************************
     /// Assignment operator

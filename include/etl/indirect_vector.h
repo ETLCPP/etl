@@ -1509,7 +1509,7 @@ namespace etl
 #endif
 
     //*************************************************************************
-    /// Copy constructor.
+    /// Construct a copy.
     //*************************************************************************
     indirect_vector_ext(const indirect_vector_ext& other, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
@@ -1517,6 +1517,11 @@ namespace etl
       ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
       this->assign(other.begin(), other.end());
     }
+
+    //*************************************************************************
+    /// Copy constructor (Deleted)
+    //*************************************************************************
+    indirect_vector_ext(const indirect_vector_ext& other) ETL_DELETE;
 
     //*************************************************************************
     /// Assignment operator.
@@ -1533,7 +1538,7 @@ namespace etl
 
 #if ETL_USING_CPP11
     //*************************************************************************
-    /// Move constructor.
+    /// Move construct.
     //*************************************************************************
     indirect_vector_ext(indirect_vector_ext&& other, etl::ivector<T*>& lookup_, etl::ipool& pool_)
       : etl::iindirect_vector<T>(lookup_, pool_)
@@ -1541,6 +1546,11 @@ namespace etl
       ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));
       this->move_container(etl::move(other));
     }
+
+    //*************************************************************************
+    /// Move constructor.
+    //*************************************************************************
+    indirect_vector_ext(indirect_vector_ext&& other) ETL_DELETE;
 
     //*************************************************************************
     /// Move assignment operator.

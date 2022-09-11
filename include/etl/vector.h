@@ -1726,13 +1726,18 @@ namespace etl
 #endif
 
     //*************************************************************************
-    /// Copy constructor.
+    /// Construct a copy.
     //*************************************************************************
     vector_ext(const vector_ext& other, void* buffer, size_t max_size)
       : etl::ivector<T*>(reinterpret_cast<T**>(buffer), max_size)
     {
       (void)etl::ivector<T*>::operator = (other);
     }
+
+    //*************************************************************************
+    /// Copy constructor (Deleted)
+    //*************************************************************************
+    vector_ext(const vector_ext& other) ETL_DELETE;
 
     //*************************************************************************
     /// Assignment operator.
@@ -1753,6 +1758,11 @@ namespace etl
     {
       (void)etl::ivector<T*>::operator = (etl::move(other));
     }
+
+    //*************************************************************************
+    /// Move constructor (Deleted)
+    //*************************************************************************
+    vector_ext(vector_ext&& other) ETL_DELETE;
 
     //*************************************************************************
     /// Move assignment operator.
