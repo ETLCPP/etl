@@ -37,6 +37,7 @@ SOFTWARE.
 #include <vector>
 #include <numeric>
 #include <functional>
+#include <unordered_map>
 
 #include "data.h"
 

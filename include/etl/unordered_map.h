@@ -52,8 +52,6 @@ SOFTWARE.
 #include "placement_new.h"
 #include "initializer_list.h"
 
-#include <unordered_map>
-
 #include <stddef.h>
 
 //*****************************************************************************
