@@ -44,12 +44,16 @@ namespace
     //*************************************************************************
     TEST(test_murmur3_32_constructor)
     {
-      std::string data("123456789");
+      std::aligned_storage_t<sizeof(char), std::alignment_of_v<uint32_t>> storage[10];
+      std::string data("123456789");      
 
-      uint32_t hash = etl::murmur3<uint32_t>(data.begin(), data.end());
+      char* begin = (char*)&storage[0];
+      strcpy(begin, data.c_str());
+      
+      uint32_t hash = etl::murmur3<uint32_t>(begin, begin + 10);
 
       uint32_t compare;
-      MurmurHash3_x86_32(data.c_str(), data.size(), 0, &compare);
+      MurmurHash3_x86_32(begin, data.size(), 0, &compare);
 
       CHECK_EQUAL(compare, hash);
     }
@@ -57,7 +61,11 @@ namespace
     //*************************************************************************
     TEST(test_murmur3_32_add_values)
     {
+      std::aligned_storage_t<sizeof(char), std::alignment_of_v<uint32_t>> storage[10];
       std::string data("123456789");
+
+      char* begin = (char*)&storage[0];
+      strcpy(begin, data.c_str());
 
       etl::murmur3<uint32_t> murmur3_32_calculator;
 
@@ -69,7 +77,7 @@ namespace
       uint32_t hash = murmur3_32_calculator;
 
       uint32_t compare;
-      MurmurHash3_x86_32(data.c_str(), data.size(), 0, &compare);
+      MurmurHash3_x86_32(begin, data.size(), 0, &compare);
 
       CHECK_EQUAL(compare, hash);
     }
@@ -77,7 +85,11 @@ namespace
     //*************************************************************************
     TEST(test_murmur3_32_add_range)
     {
+      std::aligned_storage_t<sizeof(char), std::alignment_of_v<uint32_t>> storage[10];
       std::string data("123456789");
+
+      char* begin = (char*)&storage[0];
+      strcpy(begin, data.c_str());
 
       etl::murmur3<uint32_t> murmur3_32_calculator;
 
@@ -86,7 +98,7 @@ namespace
       uint32_t hash = murmur3_32_calculator.value();
 
       uint32_t compare;
-      MurmurHash3_x86_32(data.c_str(), data.size(), 0, &compare);
+      MurmurHash3_x86_32(begin, data.size(), 0, &compare);
 
       CHECK_EQUAL(compare, hash);
     }
