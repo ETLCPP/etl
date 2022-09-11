@@ -50,7 +50,7 @@ namespace
       char* begin = (char*)&storage[0];
       strcpy(begin, data.c_str());
       
-      uint32_t hash = etl::murmur3<uint32_t>(begin, begin + 10);
+      uint32_t hash = etl::murmur3<uint32_t>(begin, begin + data.size());
 
       uint32_t compare;
       MurmurHash3_x86_32(begin, data.size(), 0, &compare);
