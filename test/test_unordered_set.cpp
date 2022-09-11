@@ -267,7 +267,7 @@ namespace
 
       other_data = data;
 
-      bool isEqual = std::equal(data.begin(),
+      bool isEqual = etl::equal(data.begin(),
                                 data.end(),
                                 other_data.begin());
 
@@ -285,7 +285,7 @@ namespace
 
       idata2 = idata1;
 
-      bool isEqual = std::equal(data1.begin(),
+      bool isEqual = etl::equal(data1.begin(),
                                 data1.end(),
                                 data2.begin());
 
@@ -302,7 +302,7 @@ namespace
       other_data = other_data;
 #include "etl/private/diagnostic_pop.h" 
 
-      bool isEqual = std::equal(data.begin(),
+      bool isEqual = etl::equal(data.begin(),
                                 data.end(),
                                 other_data.begin());
 

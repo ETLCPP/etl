@@ -158,13 +158,13 @@ namespace etl
       value_type key_value_pair;
     };
 
-    friend static bool operator ==(const node_t& lhs, const node_t& rhs)
+    friend bool operator ==(const node_t& lhs, const node_t& rhs)
     {
       return (lhs.key_value_pair.first  == rhs.key_value_pair.first) &&
              (lhs.key_value_pair.second == rhs.key_value_pair.second);
     }
 
-    friend static bool operator !=(const node_t& lhs, const node_t& rhs)
+    friend bool operator !=(const node_t& lhs, const node_t& rhs)
     {
       return !(lhs == rhs);
     }
