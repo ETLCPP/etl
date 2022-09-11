@@ -1,7 +1,7 @@
 name: clang
 on:
   push:
-    branches: [ development ]
+    branches: [ hotfix/attempt-to-fix-clang-ci-error ]
   pull_request:
     branches: [ master ]
 
