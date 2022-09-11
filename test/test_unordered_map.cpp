@@ -417,7 +417,7 @@ namespace
 
       other_data = data;
 
-      bool isEqual = etl::equal(data.begin(),
+      bool isEqual = std::equal(data.begin(),
                                 data.end(),
                                 other_data.begin(),
                                 std::equal_to<>{});
