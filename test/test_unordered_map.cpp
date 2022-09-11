@@ -417,9 +417,10 @@ namespace
 
       other_data = data;
 
-      bool isEqual = std::equal(data.begin(),
+      bool isEqual = etl::equal(data.begin(),
                                 data.end(),
-                                other_data.begin());
+                                other_data.begin(),
+                                std::equal_to<>{});
 
       CHECK(isEqual);
     }
