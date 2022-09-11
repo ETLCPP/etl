@@ -420,7 +420,7 @@ namespace
       bool isEqual = etl::equal(data.begin(),
                                 data.end(),
                                 other_data.begin(),
-                                std::equal_to<DataNDC::key_type>());
+                                std::equal_to<DataNDC::value_type>());
 
       CHECK(isEqual);
     }
