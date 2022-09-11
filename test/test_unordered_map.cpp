@@ -420,7 +420,7 @@ namespace
       bool isEqual = std::equal(data.begin(),
                                 data.end(),
                                 other_data.begin(),
-                                std::equal_to<>{});
+                                std::equal_to<DataNDC::key_type>());
 
       CHECK(isEqual);
     }
