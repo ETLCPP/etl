@@ -158,16 +158,16 @@ namespace etl
       value_type key_value_pair;
     };
 
-    friend bool operator ==(const node_t& lhs, const node_t& rhs)
-    {
-      return (lhs.key_value_pair.first  == rhs.key_value_pair.first) &&
-             (lhs.key_value_pair.second == rhs.key_value_pair.second);
-    }
+    //friend bool operator ==(const node_t& lhs, const node_t& rhs)
+    //{
+    //  return (lhs.key_value_pair.first  == rhs.key_value_pair.first) &&
+    //         (lhs.key_value_pair.second == rhs.key_value_pair.second);
+    //}
 
-    friend bool operator !=(const node_t& lhs, const node_t& rhs)
-    {
-      return !(lhs == rhs);
-    }
+    //friend bool operator !=(const node_t& lhs, const node_t& rhs)
+    //{
+    //  return !(lhs == rhs);
+    //}
 
   protected:
 
@@ -1512,21 +1512,23 @@ namespace etl
   template <typename TKey, typename T, typename TKeyCompare>
   bool operator ==(const etl::iunordered_map<TKey, T, TKeyCompare>& lhs, const etl::iunordered_map<TKey, T, TKeyCompare>& rhs)
   {
-    const bool sizes_match = (lhs.size() == rhs.size());
-    bool elements_match = true;
+    return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
 
-    if (sizes_match)
-    {
-      for (size_t i = 0; (i < lhs.bucket_count()) && elements_match; ++i)
-      {
-        if (!etl::is_permutation(lhs.begin(i), lhs.end(i), rhs.begin(i)))
-        {
-          elements_match = false;
-        }
-      }
-    }
+    //const bool sizes_match = (lhs.size() == rhs.size());
+    //bool elements_match = true;
 
-    return (sizes_match && elements_match);
+    //if (sizes_match)
+    //{
+    //  for (size_t i = 0; (i < lhs.bucket_count()) && elements_match; ++i)
+    //  {
+    //    if (!etl::is_permutation(lhs.begin(i), lhs.end(i), rhs.begin(i)))
+    //    {
+    //      elements_match = false;
+    //    }
+    //  }
+    //}
+
+    //return (sizes_match && elements_match);
   }
 
   //***************************************************************************
