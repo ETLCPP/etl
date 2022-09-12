@@ -8,7 +8,7 @@ There are two APIs available: :cpp:class:`etl::vector_ext` and :cpp:class:`etl::
 Both inherit from :cpp:class:`etl::ivector`, which may be used as a size independency pointer
 or reference type for any :cpp:class:`etl::vector` instance.
 
-Has the ability to be copied by low level functions such as memcpy by use of a :cpp:method:`etl::vector::repair` function.
+Has the ability to be copied by low level functions such as memcpy by use of a :cpp:func:`etl::vector::repair` function.
 See the function reference for an example of use.
 
 API

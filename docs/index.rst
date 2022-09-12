@@ -109,9 +109,11 @@ replacing ``<targetVersion>`` with the version to install based on a git tag:
    add_executable(foo main.cpp)
    target_link_libraries(foo PRIVATE etl::etl)
 
+Table of Contents
+===================
+
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    api
 
