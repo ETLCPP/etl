@@ -304,7 +304,7 @@ namespace
     //*************************************************************************
     TEST(test_empty)
     {
-      Data data;
+      Data data = { 0 };
 
       CHECK(!data.empty());
     }
@@ -312,7 +312,7 @@ namespace
     //*************************************************************************
     TEST(test_size)
     {
-      Data data;
+      Data data = { 0 };
 
       CHECK_EQUAL(SIZE, data.size());
     }
@@ -320,7 +320,7 @@ namespace
     //*************************************************************************
     TEST(test_max_size)
     {
-      Data data;
+      Data data = { 0 };
 
       CHECK_EQUAL(SIZE, data.max_size());
     }
@@ -329,7 +329,7 @@ namespace
     //*************************************************************************
     TEST(test_fill)
     {
-      Data data;
+      Data data = { 0 };
       data.fill(1);
 
       Compare_Data compare;
@@ -373,7 +373,7 @@ namespace
       int check1[]  = { 0, 1, 2, 3, 4, -1, -1, -1, -1, -1 };
       int check2[]  = { 0, 1, 2, 3, 4, 99, 99, 99, 99, 99 };
 
-      Data data;
+      Data data = { 0 };
 
       // Initial data.
       data.assign(std::begin(initial), std::end(initial));
@@ -401,7 +401,7 @@ namespace
       int check2[]  = { 0, 1, 2, 3, 4, 99, 5, 6, 7, 8 };
       int check3[]  = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 99 };
 
-      Data data;
+      Data data = { 0 };
       Data::iterator result;
 
       // Insert beginning.
@@ -437,7 +437,7 @@ namespace
       int check4[]  = { 12, 11, 10, 9, 8, 7, 6, 5, 4, 3 };
       int check5[]  = { 0, 1, 2, 3, 12, 11, 10, 9, 8, 7, 6 };
 
-      Data data;
+      Data data = { 0 };
       Data::iterator result;
 
       // Insert smaller, beginning.
@@ -487,7 +487,7 @@ namespace
       int check3a[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
       int check3b[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 99 };
 
-      Data data;
+      Data data = { 0 };
       Data::iterator result;
 
       // Erase beginning.
@@ -541,7 +541,7 @@ namespace
       int check3a[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
       int check3b[] = { 0, 1, 2, 3, 4, 99, 99, 99, 99, 99 };
 
-      Data data;
+      Data data = { 0 };
       Data::iterator result;
 
       // Erase beginning.
