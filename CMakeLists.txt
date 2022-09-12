@@ -88,3 +88,7 @@ endif()
 if (BUILD_DOCS)
   add_subdirectory(docs)
 endif()
+
+if (BUILD_DOCS)
+  add_subdirectory(docs)
+endif()
