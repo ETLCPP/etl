@@ -298,7 +298,7 @@ namespace
     //*************************************************************************
     TEST(test_empty)
     {
-      Data data;
+      Data data{};
 
       CHECK(!data.empty());
       CHECK(!data[0].empty());
