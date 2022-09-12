@@ -43,12 +43,77 @@ I am especially interested in people who are using Keil, IAR, Green Hills, TI Co
 
 See (https://www.etlcpp.com) for up-to-date information.
 
+Installing the library
+-------------------------
+
+You can find the setup steps `here <https://www.etlcpp.com/setup.html>`_.
+
+CMake
+~~~~~~~
+
+One way to use this library is to drop it somewhere in your project directory
+and then make the library available by using `add_subdirectory`
+
+
+.. code:: cmake
+
+   add_subdirectory(etl)
+   add_executable(foo main.cpp)
+   target_link_libraries(foo PRIVATE etl::etl)
+
+
+If ETL library is used as a Git submodule it may require additional configuration for proper ETL version resolution by allowing the lookup for Git folder outside of the library root directory.
+
+
+.. code:: cmake
+
+   set(GIT_DIR_LOOKUP_POLICY ALLOW_LOOKING_ABOVE_CMAKE_SOURCE_DIR)
+   add_subdirectory(etl)
+
+
+If you want to install this library with CMake, you can perform the following steps. On Linux,
+super user rights might be required to install the library, so it might be necessary to add
+``sudo`` before the last command:
+
+.. code:: shell
+
+   git clone https://github.com/ETLCPP/etl.git
+   cd etl
+   git checkout <targetVersion>
+   cmake -B build .
+   cmake --install build/
+
+After the library has been installed, you can use
+`find_package <https://cmake.org/cmake/help/latest/command/find_package.html>`_ to use the library.
+Replace ``<majorVersionRequirement>`` with your desired major version:
+
+.. code:: cmake
+
+   find_package(etl <majorVersionRequirement>)
+   add_executable(foo main.cpp)
+   target_link_libraries(foo PRIVATE etl::etl)
+
+
+Alternatively you can use `FetchContent <https://cmake.org/cmake/help/latest/module/FetchContent.html>`_,
+replacing ``<targetVersion>`` with the version to install based on a git tag:
+
+.. code:: cmake
+
+   Include(FetchContent)
+   FetchContent_Declare(
+     etl
+     GIT_REPOSITORY https://github.com/ETLCPP/etl
+     GIT_TAG        <targetVersion>
+   )
+   FetchContent_MakeAvailable(etl)
+   add_executable(foo main.cpp)
+   target_link_libraries(foo PRIVATE etl::etl)
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-
+   api
 
 Indices and tables
 ==================
