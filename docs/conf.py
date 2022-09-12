@@ -12,8 +12,10 @@
 #
 # import os
 # import sys
-# sys.path.insert(0, os.path.abspath('.'))
+# sys.path.insert(0, os.path.abspath('..'))
 
+with open("../version.txt") as rf:
+	version_from_file = rf.readline()
 
 # -- Project information -----------------------------------------------------
 
@@ -22,7 +24,7 @@ copyright = '2022, John Wellbelove'
 author = 'John Wellbelove'
 
 # The full version, including alpha/beta/rc tags
-release = '20.33.0'
+release = version_from_file
 
 
 # -- General configuration ---------------------------------------------------
