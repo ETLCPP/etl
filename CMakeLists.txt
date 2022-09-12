@@ -3,7 +3,9 @@
 #######################################################################
 cmake_minimum_required(VERSION 3.5.0)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/helpers.cmake)
+# Add the cmake folder so the FindSphinx module and other helper modules are found
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(helpers)
 
 set(MSG_PREFIX "etl |")
 determine_version_with_git(${GIT_DIR_LOOKUP_POLICY})
@@ -14,6 +16,7 @@ endif()
 project(etl VERSION ${ETL_VERSION})
 
 option(BUILD_TESTS "Build unit tests" OFF)
+option(BUILD_DOCS "Build documentation" OFF)
 option(NO_STL "No STL" OFF)
 # There is a bug on old gcc versions for some targets that causes all system headers
 # to be implicitly wrapped with 'extern "C"'
@@ -29,6 +32,8 @@ add_library(${PROJECT_NAME} INTERFACE)
 # This allows users which use the add_subdirectory or FetchContent
 # to use the same target as users which use find_package
 add_library(etl::etl ALIAS ${PROJECT_NAME})
+
+add_subdirectory(include)
 
 include(GNUInstallDirs)
 
@@ -78,4 +83,8 @@ endif()
 if (BUILD_TESTS)
   enable_testing()
   add_subdirectory(test) 
+endif()
+
+if (BUILD_DOCS)
+  add_subdirectory(docs)
 endif()
