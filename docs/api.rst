@@ -5,4 +5,5 @@ API
    :maxdepth: 2
    :caption: Contents:
 
-   map
+   api/vector
+   api/map
