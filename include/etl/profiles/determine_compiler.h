@@ -112,13 +112,6 @@ SOFTWARE.
     #endif
   #endif
 
-  #if !defined(ETL_COMPILER_TYPE_DETECTED) && !defined(ETL_COMPILER_ICCAVR)
-    #if defined(__ICCAVR__)
-      #define ETL_COMPILER_ICCAVR
-      #define ETL_COMPILER_TYPE_DETECTED
-    #endif
-  #endif
-
   #if !defined(ETL_COMPILER_TYPE_DETECTED) && !defined(ETL_COMPILER_MICROSOFT)
     #if defined(_MSC_VER)
       #define ETL_COMPILER_MICROSOFT
@@ -138,12 +131,6 @@ SOFTWARE.
   #define ETL_USING_GCC_COMPILER 1
 #else
   #define ETL_USING_GCC_COMPILER 0
-#endif
-
-#if defined(ETL_COMPILER_ICCAVR)
-  #define ETL_USING_ICCAVR_COMPILER 1
-#else
-  #define ETL_USING_ICCAVR_COMPILER 0
 #endif
 
 #if defined(ETL_COMPILER_MICROSOFT)
