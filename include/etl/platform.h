@@ -31,6 +31,20 @@ SOFTWARE.
 #ifndef ETL_PLATFORM_INCLUDED
 #define ETL_PLATFORM_INCLUDED
 
+//*************************************
+// Enable all limit macros
+// Note: This macro must be defined before the first include of stdint.h
+#if !defined(__STDC_LIMIT_MACROS)
+  #define __STDC_LIMIT_MACROS
+#endif
+
+//*************************************
+// Enable all constant macros
+// Note: This macro must be defined before the first include of stdint.h
+#if !defined(__STDC_CONSTANT_MACROS)
+  #define __STDC_CONSTANT_MACROS
+#endif
+
 #include <stddef.h>
 #include <stdint.h>
 #include <limits.h>
@@ -380,18 +394,6 @@ SOFTWARE.
   #endif
 #else
   #define ETL_HAS_INITIALIZER_LIST 0
-#endif
-
-//*************************************
-// Enable all limit macros
-#if !defined(__STDC_LIMIT_MACROS)
-  #define __STDC_LIMIT_MACROS
-#endif
-
-//*************************************
-// Enable all constant macros
-#if !defined(__STDC_CONSTANT_MACROS)
-  #define __STDC_CONSTANT_MACROS
 #endif
 
 //*************************************
