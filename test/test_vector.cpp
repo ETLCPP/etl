@@ -34,7 +34,7 @@ SOFTWARE.
 #include <cstring>
 
 #include "etl/vector.h"
-#include "etl/back_insert_iterator.h"
+#include "etl/iterator.h"
 
 namespace
 {
