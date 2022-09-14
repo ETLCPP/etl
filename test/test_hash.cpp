@@ -199,6 +199,30 @@ namespace
       }
     }
 
+    TEST(test_hash_floating_point_negative_zero)
+    {
+      if (sizeof(float) == sizeof(size_t)) {
+        etl::hash<float> hasher{};
+        size_t hash1 = hasher(0.0);
+        size_t hash2 = hasher(-0.0);
+        CHECK_EQUAL(hash1, hash2);
+      }
+
+      if (sizeof(double) == sizeof(size_t)) {
+        etl::hash<double> hasher{};
+        size_t hash1 = hasher(0.0);
+        size_t hash2 = hasher(-0.0);
+        CHECK_EQUAL(hash1, hash2);
+      }
+
+      if (sizeof(long double) == sizeof(size_t)) {
+        etl::hash<long double> hasher{};
+        size_t hash1 = hasher(0.0);
+        size_t hash2 = hasher(-0.0);
+        CHECK_EQUAL(hash1, hash2);
+      }
+    }
+
     //*************************************************************************
     TEST(test_hash_pointer)
     {
