@@ -648,7 +648,6 @@ namespace
         return value*value;
       };
 
-      //etl::transform(data.cbegin(),data.cend(),etl::back_inserter(transformed),squared);
       etl::transform(data.cbegin(),data.cend(),etl::back_inserter(transformed),squared);
 
       CHECK_EQUAL(expected.size(), transformed.size());
