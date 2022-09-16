@@ -604,6 +604,9 @@ namespace etl
     return etl::move_iterator<TIterator>(itr);
   }
 
+#endif //ETL_USING_CPP11
+
+#if ETL_USING_CPP11
   //***************************************************************************
   // back_insert_iterator
   //***************************************************************************
