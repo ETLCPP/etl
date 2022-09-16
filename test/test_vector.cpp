@@ -638,6 +638,7 @@ namespace
 
 
     //*************************************************************************
+#if ETL_USING_CPP11    
     TEST_FIXTURE(SetupFixture, test_back_insert_iterator)
     {
       Data data={0,1,2,3,4,5,6,7,8,9};
@@ -657,6 +658,7 @@ namespace
                                         expected.begin());
       CHECK(transformed_equals_expected);
     }
+#endif //ETL_USING_CPP11
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_emplace_back)
