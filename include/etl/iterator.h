@@ -625,7 +625,7 @@ namespace etl
 
     /// The only way to create this %iterator is with a container.
     explicit back_insert_iterator(TContainer& c)
-      : container_(addressof(c))
+      : container(addressof(c))
     {
     }
 
@@ -641,13 +641,13 @@ namespace etl
      */
     back_insert_iterator& operator=(const typename TContainer::value_type& value)
     {
-      container_->push_back(value);
+      container->push_back(value);
       return (*this);
     }
 
     back_insert_iterator& operator=(typename TContainer::value_type&& value)
     {
-      container_->push_back(move(value));
+      container->push_back(move(value));
       return (*this);
     }
 
@@ -670,7 +670,7 @@ namespace etl
     }
 
   protected:
-    TContainer* container_;
+    TContainer* container;
   };
 
   /**
