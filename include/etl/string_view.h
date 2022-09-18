@@ -435,7 +435,7 @@ namespace etl
     ETL_CONSTEXPR14 bool starts_with(etl::basic_string_view<T, TTraits> view) const
     {
       return (size() >= view.size()) &&
-        (compare(0, view.size(), view) == 0);
+              (compare(0, view.size(), view) == 0);
     }
 
     ETL_CONSTEXPR14 bool starts_with(T c) const
@@ -448,7 +448,7 @@ namespace etl
       size_t lengthtext = TTraits::length(text);
 
       return (size() >= lengthtext) &&
-        (compare(0, lengthtext, text) == 0);
+              (compare(0, lengthtext, text) == 0);
     }
 
     //*************************************************************************
@@ -457,7 +457,7 @@ namespace etl
     ETL_CONSTEXPR14 bool ends_with(etl::basic_string_view<T, TTraits> view) const
     {
       return (size() >= view.size()) &&
-        (compare(size() - view.size(), npos, view) == 0);
+              (compare(size() - view.size(), npos, view) == 0);
     }
 
     ETL_CONSTEXPR14 bool ends_with(T c) const
@@ -471,7 +471,7 @@ namespace etl
       size_t lengthview = size();
 
       return (lengthview >= lengthtext) &&
-        (compare(lengthview - lengthtext, lengthtext, text) == 0);
+              (compare(lengthview - lengthtext, lengthtext, text) == 0);
     }
 
     //*************************************************************************
