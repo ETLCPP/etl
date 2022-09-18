@@ -2587,6 +2587,7 @@
     <ClInclude Include="..\..\include\etl\task.h" />
     <ClInclude Include="..\..\include\etl\threshold.h" />
     <ClInclude Include="..\..\include\etl\timer.h" />
+    <ClInclude Include="..\..\include\etl\to_arithmetic.h" />
     <ClInclude Include="..\..\include\etl\to_string.h" />
     <ClInclude Include="..\..\include\etl\to_u16string.h" />
     <ClInclude Include="..\..\include\etl\to_u32string.h" />
@@ -12106,6 +12107,7 @@
     <ClCompile Include="..\test_state_chart_compile_time_with_data_parameter.cpp" />
     <ClCompile Include="..\test_state_chart_with_data_parameter.cpp" />
     <ClCompile Include="..\test_state_chart_with_rvalue_data_parameter.cpp" />
+    <ClCompile Include="..\test_string_to_arithmetic.cpp" />
     <ClCompile Include="..\test_string_utilities_std.cpp" />
     <ClCompile Include="..\test_string_char.cpp" />
     <ClCompile Include="..\test_string_char_external_buffer.cpp" />
