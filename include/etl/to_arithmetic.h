@@ -53,6 +53,19 @@ namespace etl
     }
   };
 
+  //***************************************************************************
+  /// 
+  //***************************************************************************
+  class to_arithmetic_radix_not_supported : public to_arithmetic_exception
+  {
+  public:
+
+    to_arithmetic_radix_not_supported(string_type file_name_, numeric_type line_number_)
+      : to_arithmetic_exception(ETL_ERROR_TEXT("to arithmetic:radix not supported", ETL_TO_ARITHMETIC_FILE_ID"C"), file_name_, line_number_)
+    {
+    }
+  };
+
   namespace private_to_arithmetic
   {
     template <typename TChar>
@@ -105,20 +118,6 @@ namespace etl
 
     //*******************************
     template <typename TChar>
-    bool has_valid_characters(etl::basic_string_view<TChar> view, etl::basic_string_view<TChar> valid_characters)
-    {
-      if (valid_characters.empty())
-      {
-        return false;
-      }
-
-      size_t position = view.find_first_not_of(valid_characters);
-
-      return position == etl::basic_string_view<TChar>::npos;
-    }
-
-    //*******************************
-    template <typename TChar>
     char get_digit_value(TChar c)
     {
       size_t length = etl::strlen(character_set<TChar>::numeric_chars);
@@ -134,49 +133,44 @@ namespace etl
       return 0;
     }
 
-    //*******************************
-    template <typename TChar>
-    struct processed_string
-    {
-      etl::basic_string_view<TChar> view;
-      bool is_negative;
-      bool is_valid;
-    };
-
     //***************************************************************************
     /// 
     //***************************************************************************
     template <typename TChar>
-    processed_string<TChar> preprocess_string(etl::basic_string_view<TChar> view, const etl::radix::value_type radix)
+    ETL_CONSTEXPR14 bool is_valid_numeric_character(const TChar c, 
+                                                    const etl::basic_string_view<TChar>& valid_characters)
     {
       using namespace etl::private_to_arithmetic;
 
-      view = etl::trim_view_whitespace(view);
+      etl::basic_string_view<TChar> itr = etl::find(valid_characters.begin(), valid_characters.end(), c);
 
-      const bool has_positive_prefix = (view[0] == character_set<TChar>::positive_char);
-      const bool has_negative_prefix = (view[0] == character_set<TChar>::negative_char);
+      return (itr != valid_characters.end());
+    }
 
-      // Remove positive or negative prefixes.
-      if (has_positive_prefix || has_negative_prefix)
-      {
-        view.remove_prefix(1);
-      }
-      
-      etl::basic_string_view<TChar> valid_characters;
-
+    //***************************************************************************
+/// 
+//***************************************************************************
+    template <typename T>
+    ETL_CONSTEXPR14 T accumulate_value(T value, const char digit, const bool is_negative, int shift, const etl::radix::value_type radix)
+    {
       switch (radix)
       {
-        case etl::radix::binary:  { valid_characters = etl::basic_string_view<TChar>(character_set<TChar>::numeric_chars, binary_length);  break; }
-        case etl::radix::octal:   { valid_characters = etl::basic_string_view<TChar>(character_set<TChar>::numeric_chars, octal_length);   break; }
-        case etl::radix::decimal: { valid_characters = etl::basic_string_view<TChar>(character_set<TChar>::numeric_chars, decimal_length); break; }
-        case etl::radix::hex:     { valid_characters = etl::basic_string_view<TChar>(character_set<TChar>::numeric_chars, hex_length);     break; }
-        default: { break; } // No conversion available.
+        case etl::radix::decimal:
+        {
+          value *= radix;
+          is_negative ? value -= digit : value += digit;
+          break;
+        }
+
+        default: // Binary, octal or hex.
+        {
+          value <<= shift;
+          value = value | digit;
+          break;
+        }
       }
 
-      const bool has_valid_prefix = !has_negative_prefix || (radix == etl::radix::decimal);
-      const bool is_valid         = has_valid_prefix && has_valid_characters(view, valid_characters);
-
-      return processed_string<TChar>{ view, has_negative_prefix, is_valid };
+      return value;
     }
   }
 
@@ -185,65 +179,72 @@ namespace etl
   //***************************************************************************
   template <typename T, typename TChar>
   ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value, etl::optional<T> >::type
-    to_integer(etl::basic_string_view<TChar> view, const etl::radix::value_type radix)
+    to_arithmetic(etl::basic_string_view<TChar> view, const etl::radix::value_type radix)
   {
     using namespace etl::private_to_arithmetic;
 
-    processed_string<TChar> data = preprocess_string(view, radix);
-
     etl::optional<T> result;
 
-    // String input was not in a valid format.    
-    if (!data.is_valid)
+    bool finished_parsing = false;
+
+    etl::basic_string_view<TChar> valid_characters;
+
+    switch (radix)
     {
-      ETL_ASSERT_FAIL_AND_RETURN_VALUE(ETL_ERROR(etl::to_arithmetic_invalid_format), result);
+      case etl::radix::binary:  { valid_characters = etl::basic_string_view<TChar>(character_set<TChar>::numeric_chars, binary_length);  break; }
+      case etl::radix::octal:   { valid_characters = etl::basic_string_view<TChar>(character_set<TChar>::numeric_chars, octal_length);   break; }
+      case etl::radix::decimal: { valid_characters = etl::basic_string_view<TChar>(character_set<TChar>::numeric_chars, decimal_length); break; }
+      case etl::radix::hex:     { valid_characters = etl::basic_string_view<TChar>(character_set<TChar>::numeric_chars, hex_length);     break; }
+      default:                  { ETL_ASSERT_FAIL(ETL_ERROR(etl::to_arithmetic_radix_not_supported)); finished_parsing = false; break; }
     }
 
-    // Can't convert signed to unsigned.    
-    if (data.is_negative && etl::is_unsigned<T>::value)
-    {
-      ETL_ASSERT_FAIL_AND_RETURN_VALUE(ETL_ERROR(etl::to_arithmetic_signed_to_unsigned), result);
-    }
-
-    if (data.is_valid)
+    if (!finished_parsing)
     {
       T value = 0;
 
-      switch (radix)
+      // Only used for binary, octal and hex.
+      int shift = (radix == etl::radix::binary) ? 1 : (radix == etl::radix::octal) ? 3 : 4;
+
+      etl::basic_string_view<TChar>::const_iterator itr = view.begin();
+
+      // Search for a prefix.
+      const bool has_positive_prefix = (*itr == character_set<TChar>::positive_char);
+      const bool has_negative_prefix = (*itr == character_set<TChar>::negative_char);
+
+      if (has_positive_prefix || has_negative_prefix)
       {
-        case etl::radix::decimal:
-        {
-          for (etl::basic_string_view<TChar>::const_iterator itr = data.view.begin(); itr != data.view.end(); ++itr)
-          {
-            value *= radix;
-
-            char digit = get_digit_value(*itr);
-
-            data.is_negative ? value -= digit : value += digit;
-          }
-
-          break;
-        }
-
-        default:
-        {
-          int shift = (radix == etl::radix::binary) ? 1 : (radix == etl::radix::octal) ? 3 : 4;
-
-          for (etl::basic_string_view<TChar>::const_iterator itr = data.view.begin(); itr != data.view.end(); ++itr)
-          {
-            value <<= shift;
-
-            char digit = get_digit_value(*itr);
-
-            value = value | digit;
-          }
-
-          break;
-        }
-
+        ++itr;
       }
 
-      result = value;
+      // Negative prefix is only allowed with decimals.
+      if (has_negative_prefix && (radix != etl::radix::decimal))
+      {
+        ETL_ASSERT_FAIL(ETL_ERROR(etl::to_arithmetic_invalid_format));
+        finished_parsing = true;
+      }
+      
+      // Parse the numeric part.
+      while (!finished_parsing)
+      {
+        if (is_valid_numeric_character(*itr, valid_characters))
+        {
+          value = accumulate_value(value, get_digit_value(*itr), has_negative_prefix, shift, radix);
+
+          ++itr;
+
+          if (itr == view.end())
+          {
+            result = value;
+            finished_parsing = true;
+          }
+        }
+        else
+        {
+          // Character was not a valid numeric, so fail.
+          ETL_ASSERT_FAIL(ETL_ERROR(etl::to_arithmetic_invalid_format));
+          finished_parsing = true;
+        }
+      }
     }
 
     return result;
@@ -254,9 +255,9 @@ namespace etl
   //***************************************************************************
   template <typename T, typename TChar>
   ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value, etl::optional<T> >::type
-    to_integer(const etl::basic_string_view<TChar>& view)
+    to_arithmetic(const etl::basic_string_view<TChar>& view)
   {
-    return etl::to_integer<T, TChar>(view, etl::radix::decimal);
+    return etl::to_arithmetic<T, TChar>(view, etl::radix::decimal);
   }
 
   //***************************************************************************
@@ -264,9 +265,9 @@ namespace etl
   //***************************************************************************
   template <typename T, typename TChar>
   ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value, etl::optional<T> >::type
-    to_integer(const etl::basic_string_view<TChar>& view, const etl::basic_format_spec<etl::ibasic_string<TChar> >& spec)
+    to_arithmetic(const etl::basic_string_view<TChar>& view, const etl::basic_format_spec<etl::ibasic_string<TChar> >& spec)
   {
-    return etl::to_integer<T, TChar>(view, spec.get_base());
+    return etl::to_arithmetic<T, TChar>(view, spec.get_base());
   }
 
   //***************************************************************************
@@ -274,9 +275,9 @@ namespace etl
   //***************************************************************************
   template <typename T, typename TChar>
   ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value, etl::optional<T> >::type
-    to_integer(const TChar* cp, size_t length, const etl::radix::value_type radix)
+    to_arithmetic(const TChar* cp, size_t length, const etl::radix::value_type radix)
   {
-    return etl::to_integer<T, TChar>(etl::basic_string_view<TChar>(cp, length), radix);
+    return etl::to_arithmetic<T, TChar>(etl::basic_string_view<TChar>(cp, length), radix);
   }
 
   //***************************************************************************
@@ -284,9 +285,9 @@ namespace etl
   //***************************************************************************
   template <typename T, typename TChar>
   ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value, etl::optional<T> >::type
-    to_integer(const TChar* cp, size_t length)
+    to_arithmetic(const TChar* cp, size_t length)
   {
-    return etl::to_integer<T, TChar>(etl::basic_string_view<TChar>(cp, length), etl::radix::decimal);;
+    return etl::to_arithmetic<T, TChar>(etl::basic_string_view<TChar>(cp, length), etl::radix::decimal);;
   }
 
   //***************************************************************************
@@ -294,9 +295,9 @@ namespace etl
   //***************************************************************************
   template <typename T, typename TChar>
   ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value, etl::optional<T> >::type
-    to_integer(const TChar* cp, size_t length, const typename etl::private_basic_format_spec::base_spec& spec)
+    to_arithmetic(const TChar* cp, size_t length, const typename etl::private_basic_format_spec::base_spec& spec)
   {
-    return etl::to_integer<T, TChar>(etl::basic_string_view<TChar>(cp, length), spec.base);;
+    return etl::to_arithmetic<T, TChar>(etl::basic_string_view<TChar>(cp, length), spec.base);;
   }
 
   //***************************************************************************
@@ -304,9 +305,9 @@ namespace etl
   //***************************************************************************
   template <typename T, typename TChar>
   ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value, etl::optional<T> >::type
-    to_integer(const etl::ibasic_string<TChar>& str, const etl::radix::value_type radix)
+    to_arithmetic(const etl::ibasic_string<TChar>& str, const etl::radix::value_type radix)
   {
-    return etl::to_integer<T, TChar>(etl::basic_string_view<TChar>(str), radix);;
+    return etl::to_arithmetic<T, TChar>(etl::basic_string_view<TChar>(str), radix);;
   }
 
   //***************************************************************************
@@ -314,9 +315,9 @@ namespace etl
   //***************************************************************************
   template <typename T, typename TChar>
   ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value, etl::optional<T> >::type
-    to_integer(const etl::ibasic_string<TChar>& str)
+    to_arithmetic(const etl::ibasic_string<TChar>& str)
   {
-    return etl::to_integer<T, TChar>(etl::basic_string_view<TChar>(str), radix);;
+    return etl::to_arithmetic<T, TChar>(etl::basic_string_view<TChar>(str), radix);;
   }
 
   //***************************************************************************
@@ -324,22 +325,15 @@ namespace etl
   //***************************************************************************
   template <typename T, typename TChar>
   ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value, etl::optional<T> >::type
-    to_integer(const etl::ibasic_string<TChar>& str, const etl::basic_format_spec<etl::ibasic_string<TChar> >& spec)
+    to_arithmetic(const etl::ibasic_string<TChar>& str, const etl::basic_format_spec<etl::ibasic_string<TChar> >& spec)
   {
-    return etl::to_integer<T, TChar>(etl::basic_string_view<TChar>(str), spec);;
+    return etl::to_arithmetic<T, TChar>(etl::basic_string_view<TChar>(str), spec);;
   }
 
-  template <typename T, typename TChar>
-  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value, etl::optional<T> >::type
-    to_arithmetic(etl::basic_string_view<TChar> view, const etl::radix::value_type radix)
-  {
-    return to_integer<T>(view, radix);
-  }
-
-  template <typename T, typename TChar>
-  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_floating_point<T>::value, etl::optional<T> >::type
-    to_arithmetic(etl::basic_string_view<TChar> view, const etl::radix::value_type radix)
-  {
-    return to_floating_point<T>(view, radix);
-  }
+  //template <typename T, typename TChar>
+  //ETL_CONSTEXPR14 typename etl::enable_if<etl::is_floating_point<T>::value, etl::optional<T> >::type
+  //  to_arithmetic(etl::basic_string_view<TChar> view, const etl::radix::value_type radix)
+  //{
+  //  return to_floating_point<T>(view, radix);
+  //}
 }
