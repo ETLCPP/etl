@@ -606,7 +606,6 @@ namespace etl
 
 #endif //ETL_USING_CPP11
 
-#if ETL_USING_CPP11
   //***************************************************************************
   // back_insert_iterator
   //***************************************************************************
@@ -627,7 +626,7 @@ namespace etl
     typedef TContainer container_type;
 
     /// The only way to create this %iterator is with a container.
-    explicit back_insert_iterator(TContainer& c)
+    explicit ETL_CONSTEXPR17 back_insert_iterator(TContainer& c)
       : container(addressof(c))
     {
     }
@@ -642,32 +641,34 @@ namespace etl
      *              presumably a reference-to-const T for container<T>.
      * @return This %iterator, for chained operations.
      */
-    back_insert_iterator& operator=(const typename TContainer::value_type& value)
+    ETL_CONSTEXPR17 back_insert_iterator& operator=(const typename TContainer::value_type& value)
     {
       container->push_back(value);
       return (*this);
     }
 
-    back_insert_iterator& operator=(typename TContainer::value_type&& value)
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR17 back_insert_iterator& operator=(typename TContainer::reference value)
     {
       container->push_back(move(value));
       return (*this);
     }
+#endif  // ETL_USING_CPP11
 
     /// Simply returns *this.
-    back_insert_iterator& operator*()
+    ETL_NODISCARD ETL_CONSTEXPR17 back_insert_iterator& operator*()
     {
       return (*this);
     }
 
     /// Simply returns *this.  (This %iterator does not @a move.)
-    back_insert_iterator& operator++()
+    ETL_CONSTEXPR17 back_insert_iterator& operator++()
     {
       return (*this);
     }
 
     /// Simply returns *this.  (This %iterator does not @a move.)
-    back_insert_iterator operator++(int)
+    ETL_CONSTEXPR17 back_insert_iterator operator++(int)
     {
       return (*this);
     }
@@ -688,12 +689,106 @@ namespace etl
    * @return An instance of back_insert_iterator working on @p container.
    */
   template <class TContainer>
-  inline ETL_OR_STD::back_insert_iterator<TContainer> back_inserter(TContainer& container)
+  ETL_NODISCARD ETL_CONSTEXPR17 inline ETL_OR_STD::back_insert_iterator<TContainer> back_inserter(TContainer& container)
   {
     return ETL_OR_STD::back_insert_iterator<TContainer>(container);
   }
 
-#endif //ETL_USING_CPP11
+  //***************************************************************************
+  // front_insert_iterator
+  //***************************************************************************
+
+  /**
+   *  @brief  Turns assignment into insertion.
+   *
+   *  These are output iterators, constructed from a container-of-T.
+   *  Assigning a T to the iterator prepends it to the container using
+   *  push_front.
+   *
+   *  Tip:  Using the front_inserter function to create these iterators can
+   *  save typing.
+   *
+   * @tparam TContainer The container type.
+   */
+  template <typename TContainer>
+  class front_insert_iterator
+    : public iterator<output_iterator_tag, void, void, void, void>
+  {
+  public:
+    /// A nested typedef for the type of whatever container you used.
+    typedef TContainer container_type;
+
+    /// The only way to create this %iterator is with a container.
+    explicit ETL_CONSTEXPR17 front_insert_iterator(TContainer& c)
+      : container(addressof(c))
+    {
+    }
+
+    /**
+     *  This kind of %iterator doesn't really have a @a position in the
+     *  container (you can think of the position as being permanently at
+     *  the front, if you like).  Assigning a value to the %iterator will
+     *  always prepend the value to the front of the container.
+     *
+     *  @param  value  An instance of whatever type
+     *                 container_type::const_reference is; presumably a
+     *                 reference-to-const T for container<T>.
+     *  @return  This %iterator, for chained operations.
+     *
+     */
+    ETL_CONSTEXPR17 front_insert_iterator& operator=(const typename TContainer::value_type& value)
+    {
+      container->push_front(value);
+      return (*this);
+    }
+
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR17 front_insert_iterator& operator=(typename TContainer::reference value)
+    {
+      container->push_front(move(value));
+      return (*this);
+    }
+#endif  // ETL_USING_CPP11
+
+    /// Simply returns *this.
+    ETL_NODISCARD ETL_CONSTEXPR17 front_insert_iterator& operator*()
+    {
+      return (*this);
+    }
+
+    /// Simply returns *this.  (This %iterator does not @a move.)
+    ETL_CONSTEXPR17 front_insert_iterator& operator++()
+    {
+      return (*this);
+    }
+
+    /// Simply returns *this.  (This %iterator does not @a move.)
+    ETL_CONSTEXPR17 front_insert_iterator operator++(int)
+    {
+      return (*this);
+    }
+
+  protected:
+    TContainer* container;
+  };
+
+  /**
+   *  This wrapper function helps in creating front_insert_iterator instances.
+   *  Typing the name of the %iterator requires knowing the precise full
+   *  type of the container, which can be tedious and impedes generic
+   *  programming.  Using this function lets you take advantage of automatic
+   *  template parameter deduction, making the compiler match the correct
+   *  types for you.
+   *
+   * @tparam TContainer The container type.
+   * @param container A container of arbitrary type.
+   * @return An instance of front_insert_iterator working on @p x.
+   */
+  template <typename TContainer>
+  ETL_NODISCARD ETL_CONSTEXPR17 inline ETL_OR_STD::front_insert_iterator<TContainer> front_inserter(TContainer& container)
+  {
+    return ETL_OR_STD::front_insert_iterator<TContainer>(container);
+  }
 
   //***************************************************************************
   // Helper templates.
