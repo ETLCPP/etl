@@ -313,6 +313,76 @@ namespace etl
     return !(a < b);
   }
 
+  /**
+   * @brief Functor to select @ref pair::first
+   *
+   * @ref select1st is a functor object that takes a single argument, a @ref pair, and returns the @ref pair::first element.
+   *
+   * @b Example
+   * @snippet test_utility.cpp test_select1st_example
+   *
+   * @tparam TPair The function object's argument type.
+   *
+   * @see select2nd
+   */
+  template <typename TPair>
+  struct select1st
+  {
+    typedef typename TPair::first_type type;  ///< type of member @ref pair::first.
+
+    /**
+     * @brief Function call that return @c p.first.
+     * @return a reference to member @ref pair::first of the @c pair `p`
+     */
+    type& operator()(TPair& p) const
+    {
+      return p.first;
+    }
+
+    /**
+     * @copydoc operator()(TPair&)const
+     */
+    const type& operator()(const TPair& p) const
+    {
+      return p.first;
+    }
+  };
+
+  /**
+   * @brief Functor to select @ref pair::second
+   *
+   * @ref select2nd is a functor object that takes a single argument, a @ref pair, and returns the @ref pair::second element.
+   *
+   * @b Example
+   * @snippet test_utility.cpp test_select2nd_example
+   *
+   * @tparam TPair The function object's argument type.
+   *
+   * @see select1st
+   */
+  template <typename TPair>
+  struct select2nd
+  {
+    typedef typename TPair::second_type type;  ///< type of member @ref pair::second.
+
+    /**
+     * @brief Function call. The return value is `p.second`.
+     * @return a reference to member `second` of the pair `p`.
+     */
+    type& operator()(TPair& p) const
+    {
+      return p.second;
+    }
+
+    /**
+     * @copydoc operator()(TPair&)const
+     */
+    const type& operator()(const TPair& p) const
+    {
+      return p.second;
+    }
+  };
+
 #if ETL_NOT_USING_STL || ETL_CPP14_NOT_SUPPORTED
   //***************************************************************************
   /// exchange (const)

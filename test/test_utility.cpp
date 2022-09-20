@@ -29,7 +29,6 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/utility.h"
-#include "etl/utility_pair_selectors.h"
 
 #include <map>
 #include <vector>
