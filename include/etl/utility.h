@@ -93,24 +93,36 @@ namespace etl
   }
 #endif
 
-  //******************************************************************************
+  /**
+   * @brief pair holds two objects of arbitrary type
+   *
+   * @tparam T1, T2 The types of the elements that the pair stores
+   */
   template <typename T1, typename T2>
   struct pair
   {
-    typedef T1 first_type;
-    typedef T2 second_type;
+    typedef T1 first_type;   ///< @c first_type is the first bound type
+    typedef T2 second_type;  ///< @c second_type is the second bound type
 
-    T1 first;
-    T2 second;
+    T1 first;   ///< @c first is a copy of the first object
+    T2 second;  ///< @c second is a copy of the second object
 
-    /// Default constructor
+    /**
+     * @brief Default constructor
+     *
+     * The default constructor creates @c first and @c second using their respective default constructors.
+     */
     ETL_CONSTEXPR pair()
       : first(T1())
       , second(T2())
     {
     }
 
-    /// Constructor from parameters
+    /**
+     * @brief Constructor from parameters
+     *
+     * Two objects may be passed to a @c pair constructor to be copied.
+     */
     ETL_CONSTEXPR14 pair(const T1& a, const T2& b)
       : first(a)
       , second(b)
@@ -118,7 +130,9 @@ namespace etl
     }
 
 #if ETL_USING_CPP11
-    /// Move constructor from parameters
+    /**
+     * @brief Move constructor from parameters.
+     */
     template <typename U1, typename U2>
     ETL_CONSTEXPR14 pair(U1&& a, U2&& b)
       : first(etl::forward<U1>(a))
@@ -127,7 +141,11 @@ namespace etl
     }
 #endif
 
-    /// Copy constructor
+    /**
+     * @brief Copy constructor
+     *
+     * There is also a templated copy constructor for the @c pair class itself.
+     */
     template <typename U1, typename U2>
     ETL_CONSTEXPR14 pair(const pair<U1, U2>& other)
       : first(other.first)
@@ -224,7 +242,14 @@ namespace etl
 #endif
   };
 
-  //******************************************************************************
+  /**
+   *  @brief A convenience wrapper for creating a @ref pair from two objects.
+   *
+   *  @param a The first object.
+   *  @param b The second object.
+   *
+   *  @return A newly-constructed @ref pair object of the appropriate type.
+   */
 #if ETL_USING_CPP11
   template <typename T1, typename T2>
   inline pair<T1, T2> make_pair(T1&& a, T2&& b)
@@ -246,13 +271,14 @@ namespace etl
     a.swap(b);
   }
 
-  //******************************************************************************
+  ///  Two pairs of the same type are equal iff their members are equal.
   template <typename T1, typename T2>
   inline bool operator ==(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return (a.first == b.first) && (a.second == b.second);
   }
 
+  /// Uses @c operator== to find the result.
   template <typename T1, typename T2>
   inline bool operator !=(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
@@ -266,18 +292,21 @@ namespace etl
       (!(b.first < a.first) && (a.second < b.second));
   }
 
+  /// Uses @c operator< to find the result.
   template <typename T1, typename T2>
   inline bool operator >(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return (b < a);
   }
 
+  /// Uses @c operator< to find the result.
   template <typename T1, typename T2>
   inline bool operator <=(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return !(b < a);
   }
 
+  /// Uses @c operator< to find the result.
   template <typename T1, typename T2>
   inline bool operator >=(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
