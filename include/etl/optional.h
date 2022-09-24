@@ -103,8 +103,14 @@ namespace etl
   ///\tparam The type to store.
   ///\ingroup utilities
   //*****************************************************************************
+  template <typename T, bool is_pod = etl::is_pod<T>::value>
+  class optional;
+
+  //*****************************************************************************
+  /// For non POD types.
+  //*****************************************************************************
   template <typename T>
-  class optional
+  class optional<T, false>
   {
   public:
 
@@ -361,7 +367,6 @@ namespace etl
       return valid;
     }
 
-
     //***************************************************************************
     /// Get a reference to the value.
     //***************************************************************************
@@ -509,11 +514,322 @@ namespace etl
     bool valid;
   };
 
+  //*****************************************************************************
+  /// For POD types.
+  //*****************************************************************************
+  template <typename T>
+  class optional<T, true>
+  {
+  public:
+
+    //***************************************************************************
+    /// Constructor.
+    //***************************************************************************
+    ETL_CONSTEXPR14 optional()
+      : storage()
+      , valid(false)
+    {
+    }
+
+    //***************************************************************************
+    /// Constructor with nullopt.
+    //***************************************************************************
+    ETL_CONSTEXPR14 optional(etl::nullopt_t)
+      : storage()
+      , valid(false)
+    {
+    }
+
+    //***************************************************************************
+    /// Copy constructor.
+    //***************************************************************************
+    ETL_CONSTEXPR14 optional(const optional& other)
+      : valid(bool(other))
+      , storage(other.storage)
+    {
+    }
+
+#if ETL_USING_CPP11
+    //***************************************************************************
+    /// Move constructor.
+    //***************************************************************************
+    ETL_CONSTEXPR14 optional(optional&& other)
+      : valid(bool(other))
+      , storage(etl::move(other.storage))
+    {
+    }
+#endif
+
+    //***************************************************************************
+    /// Constructor from value type.
+    //***************************************************************************
+    ETL_CONSTEXPR14 optional(const T& value_)
+      : storage(value_)
+      , valid(true)
+    {
+    }
+
+#if ETL_USING_CPP11
+    //***************************************************************************
+    /// Constructor from value type.
+    //***************************************************************************
+    ETL_CONSTEXPR14 optional(T&& value_)
+      : storage(etl::move(value_))
+      , valid(true)
+    {
+    }
+#endif
+
+    //***************************************************************************
+    /// Assignment operator from nullopt.
+    //***************************************************************************
+    ETL_CONSTEXPR14 optional& operator =(etl::nullopt_t)
+    {
+      return *this;
+    }
+
+    //***************************************************************************
+    /// Assignment operator from optional.
+    //***************************************************************************
+    ETL_CONSTEXPR14 optional& operator =(const optional& other)
+    {
+      if (this != &other)
+      {
+        storage = other.storage;
+        valid   = other.valid;
+      }
+
+      return *this;
+    }
+
+#if ETL_USING_CPP11
+    //***************************************************************************
+    /// Assignment operator from optional.
+    //***************************************************************************
+    ETL_CONSTEXPR14 optional& operator =(optional&& other)
+    {
+      if (this != &other)
+      {
+        storage = etl::move(other.storage);
+        valid = true;
+      }
+
+      return *this;
+    }
+#endif
+
+    //***************************************************************************
+    /// Assignment operator from value type.
+    //***************************************************************************
+    ETL_CONSTEXPR14 optional& operator =(const T& value_)
+    {
+      storage = value_;
+      valid = true;
+
+      return *this;
+    }
+
+#if ETL_USING_CPP11
+    //***************************************************************************
+    /// Assignment operator from value type.
+    //***************************************************************************
+    ETL_CONSTEXPR14 optional& operator =(T&& value_)
+    {
+      storage = etl::move(value_);
+      valid = true;
+
+      return *this;
+    }
+#endif
+
+    //***************************************************************************
+    /// Pointer operator.
+    //***************************************************************************
+    ETL_CONSTEXPR14 T* operator ->()
+    {
+#if ETL_IS_DEBUG_BUILD
+      ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
+#endif
+
+      return &storage;
+    }
+
+    //***************************************************************************
+    /// Pointer operator.
+    //***************************************************************************
+    ETL_CONSTEXPR14 const T* operator ->() const
+    {
+#if ETL_IS_DEBUG_BUILD
+      ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
+#endif
+
+      return &storage;
+    }
+
+    //***************************************************************************
+    /// Dereference operator.
+    //***************************************************************************
+    ETL_CONSTEXPR14 T& operator *()
+    {
+#if ETL_IS_DEBUG_BUILD
+      ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
+#endif
+
+      return storage;
+    }
+
+    //***************************************************************************
+    /// Dereference operator.
+    //***************************************************************************
+    ETL_CONSTEXPR14 const T& operator *() const
+    {
+#if ETL_IS_DEBUG_BUILD
+      ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
+#endif
+
+      return storage;
+    }
+
+    //***************************************************************************
+    /// Bool conversion operator.
+    //***************************************************************************
+    ETL_CONSTEXPR14 operator bool() const
+    {
+      return valid;
+    }
+
+    //***************************************************************************
+    // Check whether optional contains value
+    //***************************************************************************
+    ETL_CONSTEXPR14 bool has_value() const ETL_NOEXCEPT
+    {
+      return valid;
+    }
+
+    //***************************************************************************
+    /// Get a reference to the value.
+    //***************************************************************************
+    ETL_CONSTEXPR14 T& value()
+    {
+#if ETL_IS_DEBUG_BUILD
+      ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
+#endif
+
+      return storage;
+    }
+
+    //***************************************************************************
+    /// Get a const reference to the value.
+    //***************************************************************************
+    ETL_CONSTEXPR14 const T& value() const
+    {
+#if ETL_IS_DEBUG_BUILD
+      ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
+#endif
+
+      return storage;
+    }
+
+    //***************************************************************************
+    /// Gets the value or a default if no valid.
+    //***************************************************************************
+    ETL_CONSTEXPR14 T value_or(T default_value) const
+    {
+      return valid ? value() : default_value;
+    }
+
+    //***************************************************************************
+    /// Swaps this value with another.
+    //***************************************************************************
+    ETL_CONSTEXPR14 void swap(optional& other)
+    {
+      optional temp(*this);
+      *this = other;
+      other = temp;
+    }
+
+    //***************************************************************************
+    /// Reset back to invalid.
+    //***************************************************************************
+    ETL_CONSTEXPR14 void reset()
+    {
+      valid = false;
+    }
+
+#if ETL_USING_CPP11  && ETL_NOT_USING_STLPORT && !defined(ETL_OPTIONAL_FORCE_CPP03_IMPLEMENTATION)
+    //*************************************************************************
+    /// Emplaces a value.
+    ///\param args The arguments to construct with.
+    //*************************************************************************
+    template <typename ... Args>
+    ETL_CONSTEXPR14 void emplace(Args && ... args)
+    {
+      if (valid)
+      {
+        // Destroy the old one.
+        storage.template get_reference<T>().~T();
+      }
+
+      storage = T(ETL_OR_STD::forward<Args>(args)...);
+      valid = true;
+    }
+#else
+    //*************************************************************************
+    /// Emplaces a value.
+    /// 1 parameter.
+    //*************************************************************************
+    template <typename T1>
+    void emplace(const T1& value1)
+    {
+      storage = value1;
+      valid = true;
+    }
+
+    //*************************************************************************
+    /// Emplaces a value.
+    /// 2 parameters.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    void emplace(const T1& value1, const T2& value2)
+    {
+      storage = T(value1, value2);
+      valid = true;
+    }
+
+    //*************************************************************************
+    /// Emplaces a value.
+    /// 3 parameters.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    void emplace(const T1& value1, const T2& value2, const T3& value3)
+    {
+      storage = T(value1, value2, value3);
+      valid = true;
+    }
+
+    //*************************************************************************
+    /// Emplaces a value.
+    /// 4 parameters.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    void emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      storage = T(value1, value2, value3, value4);
+      valid = true;
+    }
+#endif
+
+  private:
+
+    T    storage;
+    bool valid;
+  };
+
   //***************************************************************************
   /// Equality operator. cppreference 1
   //***************************************************************************
   template <typename T>
-  bool operator ==(const etl::optional<T>& lhs, const etl::optional<T>& rhs)
+  ETL_CONSTEXPR14 bool operator ==(const etl::optional<T>& lhs, const etl::optional<T>& rhs)
   {
     if (bool(lhs) != bool(rhs))
     {
@@ -533,7 +849,7 @@ namespace etl
   /// Equality operator. cppreference 2
   //***************************************************************************
   template <typename T>
-  bool operator !=(const etl::optional<T>& lhs, const etl::optional<T>& rhs)
+  ETL_CONSTEXPR14 bool operator !=(const etl::optional<T>& lhs, const etl::optional<T>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -542,7 +858,7 @@ namespace etl
   /// Less than operator. cppreference 3
   //***************************************************************************
   template <typename T>
-  bool operator <(const etl::optional<T>& lhs, const etl::optional<T>& rhs)
+  ETL_CONSTEXPR14 bool operator <(const etl::optional<T>& lhs, const etl::optional<T>& rhs)
   {
     if (!bool(rhs))
     {
@@ -562,7 +878,7 @@ namespace etl
   /// Less than equal operator. cppreference 4
   //***************************************************************************
   template <typename T>
-  bool operator <=(const etl::optional<T>& lhs, const etl::optional<T>& rhs)
+  ETL_CONSTEXPR14 bool operator <=(const etl::optional<T>& lhs, const etl::optional<T>& rhs)
   {
     if (!bool(lhs))
     {
@@ -582,7 +898,7 @@ namespace etl
   /// greater than operator. cppreference 5
   //***************************************************************************
   template <typename T>
-  bool operator >(const etl::optional<T>& lhs, const etl::optional<T>& rhs)
+  ETL_CONSTEXPR14 bool operator >(const etl::optional<T>& lhs, const etl::optional<T>& rhs)
   {
       if (!bool(lhs))
       {
@@ -602,7 +918,7 @@ namespace etl
   /// greater than equal operator. cppreference 6
   //***************************************************************************
   template <typename T>
-  bool operator >=(const etl::optional<T>& lhs, const etl::optional<T>& rhs)
+  ETL_CONSTEXPR14 bool operator >=(const etl::optional<T>& lhs, const etl::optional<T>& rhs)
   {
     if (!bool(rhs))
     {
@@ -622,7 +938,7 @@ namespace etl
   /// Equality operator. cppreference 7
   //***************************************************************************
   template <typename T>
-  bool operator ==(const etl::optional<T>& lhs, etl::nullopt_t)
+  ETL_CONSTEXPR14 bool operator ==(const etl::optional<T>& lhs, etl::nullopt_t)
   {
     return !bool(lhs);
   }
@@ -631,7 +947,7 @@ namespace etl
   /// Equality operator. cppreference 8
   //***************************************************************************
   template <typename T>
-  bool operator ==(etl::nullopt_t, const etl::optional<T>& rhs)
+  ETL_CONSTEXPR14 bool operator ==(etl::nullopt_t, const etl::optional<T>& rhs)
   {
     return !bool(rhs);
   }
@@ -640,7 +956,7 @@ namespace etl
   /// Inequality operator. cppreference 9
   //***************************************************************************
   template <typename T>
-  bool operator !=(const etl::optional<T>& lhs, etl::nullopt_t)
+  ETL_CONSTEXPR14 bool operator !=(const etl::optional<T>& lhs, etl::nullopt_t)
   {
     return !(lhs == etl::nullopt);
   }
@@ -649,7 +965,7 @@ namespace etl
   /// Inequality operator. cppreference 10
   //***************************************************************************
   template <typename T>
-  bool operator !=(etl::nullopt_t , const etl::optional<T>& rhs)
+  ETL_CONSTEXPR14 bool operator !=(etl::nullopt_t , const etl::optional<T>& rhs)
   {
     return !(etl::nullopt == rhs);
   }
@@ -658,7 +974,7 @@ namespace etl
   /// Less than operator. cppreference 11
   //***************************************************************************
   template <typename T>
-  bool operator <(const etl::optional<T>&, etl::nullopt_t)
+  ETL_CONSTEXPR14 bool operator <(const etl::optional<T>&, etl::nullopt_t)
   {
     return false;
   }
@@ -667,7 +983,7 @@ namespace etl
   /// Less than operator. cppreference 12
   //***************************************************************************
   template <typename T>
-  bool operator <(etl::nullopt_t, const etl::optional<T>& rhs)
+  ETL_CONSTEXPR14 bool operator <(etl::nullopt_t, const etl::optional<T>& rhs)
   {
     return bool(rhs);
   }
@@ -676,7 +992,7 @@ namespace etl
   /// Less than equal operator. cppreference 13
   //***************************************************************************
   template <typename T>
-  bool operator <=(const etl::optional<T>& lhs, etl::nullopt_t)
+  ETL_CONSTEXPR14 bool operator <=(const etl::optional<T>& lhs, etl::nullopt_t)
   {
     return !bool(lhs);
   }
@@ -685,7 +1001,7 @@ namespace etl
   /// Less than equal operator. cppreference 14
   //***************************************************************************
   template <typename T>
-  bool operator <=(etl::nullopt_t, const etl::optional<T>&)
+  ETL_CONSTEXPR14 bool operator <=(etl::nullopt_t, const etl::optional<T>&)
   {
     return true;
   }
@@ -694,7 +1010,7 @@ namespace etl
   /// Greater than operator. cppreference 15
   //***************************************************************************
   template <typename T>
-  bool operator >(const etl::optional<T>& lhs, etl::nullopt_t)
+  ETL_CONSTEXPR14 bool operator >(const etl::optional<T>& lhs, etl::nullopt_t)
   {
     return bool(lhs);
   }
@@ -703,7 +1019,7 @@ namespace etl
   /// Greater than operator. cppreference 16
   //***************************************************************************
   template <typename T>
-  bool operator >(etl::nullopt_t, const etl::optional<T>&)
+  ETL_CONSTEXPR14 bool operator >(etl::nullopt_t, const etl::optional<T>&)
   {
     return false;
   }
@@ -712,7 +1028,7 @@ namespace etl
   /// Greater than equal operator. cppreference 17
   //***************************************************************************
   template <typename T>
-  bool operator >=(const etl::optional<T>&, etl::nullopt_t)
+  ETL_CONSTEXPR14 bool operator >=(const etl::optional<T>&, etl::nullopt_t)
   {
     return true;
   }
@@ -721,7 +1037,7 @@ namespace etl
   /// Greater than equal operator. cppreference 18
   //***************************************************************************
   template <typename T>
-  bool operator >=(etl::nullopt_t, const etl::optional<T>& rhs)
+  ETL_CONSTEXPR14 bool operator >=(etl::nullopt_t, const etl::optional<T>& rhs)
   {
     return !bool(rhs);
   }
@@ -730,7 +1046,7 @@ namespace etl
   /// Equality operator. cppreference 19
   //**************************************************************************
   template <typename T, typename U>
-  bool operator ==(const etl::optional<T>& lhs, const U& rhs)
+  ETL_CONSTEXPR14 bool operator ==(const etl::optional<T>& lhs, const U& rhs)
   {
     return bool(lhs) ? lhs.value() == rhs : false;
   }
@@ -739,7 +1055,7 @@ namespace etl
   /// Inequality operator. cppreference 21
   //**************************************************************************
   template <typename T, typename U>
-  bool operator !=(const etl::optional<T>& lhs, const U& rhs)
+  ETL_CONSTEXPR14 bool operator !=(const etl::optional<T>& lhs, const U& rhs)
   {
     return !(lhs == rhs);
   }
@@ -748,7 +1064,7 @@ namespace etl
   /// Equality operator. cppreference 20
   //**************************************************************************
   template <typename T, typename U>
-  bool operator ==(const U& lhs, const etl::optional<T>& rhs)
+  ETL_CONSTEXPR14 bool operator ==(const U& lhs, const etl::optional<T>& rhs)
   {
     return bool(rhs) ? rhs.value() == lhs : false;
   }
@@ -757,7 +1073,7 @@ namespace etl
   /// Inequality operator. cppreference 22
   //**************************************************************************
   template <typename T, typename U>
-  bool operator !=(const U& lhs, const etl::optional<T>& rhs)
+  ETL_CONSTEXPR14 bool operator !=(const U& lhs, const etl::optional<T>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -766,7 +1082,7 @@ namespace etl
   /// Less than operator. cppreference 23
   //***************************************************************************
   template <typename T, typename U>
-  bool operator <(const etl::optional<T>& lhs, const U& rhs)
+  ETL_CONSTEXPR14 bool operator <(const etl::optional<T>& lhs, const U& rhs)
   {
     return bool(lhs) ? lhs.value() < rhs : true;
   }
@@ -775,7 +1091,7 @@ namespace etl
   /// Less than operator. cppreference 24
   //***************************************************************************
   template <typename T, typename U>
-  bool operator <(const U& lhs, const etl::optional<T>& rhs)
+  ETL_CONSTEXPR14 bool operator <(const U& lhs, const etl::optional<T>& rhs)
   {
     return bool(rhs) ? lhs < rhs.value() : false;
   }
@@ -784,7 +1100,7 @@ namespace etl
   /// Less than equal operator. cppreference 25
   //***************************************************************************
   template <typename T, typename U>
-  bool operator <=(const etl::optional<T>& lhs, const U& rhs)
+  ETL_CONSTEXPR14 bool operator <=(const etl::optional<T>& lhs, const U& rhs)
   {
     return bool(lhs) ? lhs.value() <= rhs : true;
   }
@@ -793,7 +1109,7 @@ namespace etl
   /// Less than equal operator. cppreference 26
   //***************************************************************************
   template <typename T, typename U>
-  bool operator <=(const U& lhs, const etl::optional<T>& rhs)
+  ETL_CONSTEXPR14 bool operator <=(const U& lhs, const etl::optional<T>& rhs)
   {
     return bool(rhs) ? lhs <= rhs.value() : false;
   }
@@ -802,7 +1118,7 @@ namespace etl
   /// Greater than operator. cppreference 27
   //***************************************************************************
   template <typename T, typename U>
-  bool operator >(const etl::optional<T>& lhs, const U& rhs)
+  ETL_CONSTEXPR14 bool operator >(const etl::optional<T>& lhs, const U& rhs)
   {
     return bool(lhs) ? lhs.value() > rhs  : false;
   }
@@ -811,7 +1127,7 @@ namespace etl
   /// Greater than operator. cppreference 28
   //***************************************************************************
   template <typename T, typename U>
-  bool operator >(const U& lhs, const etl::optional<T>& rhs)
+  ETL_CONSTEXPR14 bool operator >(const U& lhs, const etl::optional<T>& rhs)
   {
     return bool(rhs) ? lhs > rhs.value() : true;
   }
@@ -820,7 +1136,7 @@ namespace etl
   /// Greater than equal operator. cppreference 29
   //***************************************************************************
   template <typename T, typename U>
-  bool operator >=(const etl::optional<T>& lhs, const U& rhs)
+  ETL_CONSTEXPR14 bool operator >=(const etl::optional<T>& lhs, const U& rhs)
   {
     return bool(lhs) ? lhs.value() >= rhs : false;
   }
@@ -829,7 +1145,7 @@ namespace etl
   /// Greater than equal operator. cppreference 30
   //***************************************************************************
   template <typename T, typename U>
-  bool operator >=(const U& lhs, const etl::optional<T>& rhs)
+  ETL_CONSTEXPR14 bool operator >=(const U& lhs, const etl::optional<T>& rhs)
   {
     return bool(rhs) ? lhs >= rhs.value() : true;
   }
@@ -838,17 +1154,25 @@ namespace etl
   /// Make an optional.
   //***************************************************************************
   template <typename T>
-  etl::optional<typename etl::decay<T>::type> make_optional(T& value)
+  ETL_CONSTEXPR14 etl::optional<typename etl::decay<T>::type> make_optional(T& value)
   {
     return etl::optional<typename etl::decay<T>::type>(value);
   }
+
+  //***************************************************************************
+  /// Template deduction guides.
+  //***************************************************************************
+#if ETL_CPP17_SUPPORTED
+  template <typename T>
+  etl::optional(T) -> etl::optional<T>;
+#endif
 }
 
 //*************************************************************************
 /// Swaps the values.
 //*************************************************************************
 template <typename T>
-void swap(etl::optional<T>& lhs, etl::optional<T>& rhs)
+ETL_CONSTEXPR14 void swap(etl::optional<T>& lhs, etl::optional<T>& rhs)
 {
   lhs.swap(rhs);
 }

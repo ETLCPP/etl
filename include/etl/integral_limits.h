@@ -215,6 +215,8 @@ namespace etl
     static ETL_CONSTANT int bits               = CHAR_BIT * (sizeof(unsigned long long) / sizeof(char));
     static ETL_CONSTANT bool is_signed         = etl::is_signed<unsigned long long>::value;
   };
+
+  static ETL_CONSTANT size_t npos = etl::integral_limits<size_t>::max;
 }
 
 #include "private/minmax_pop.h"
