@@ -68,128 +68,182 @@ namespace etl
 
   namespace private_to_arithmetic
   {
+    static ETL_CONSTANT char binary_length  = 2;
+    static ETL_CONSTANT char octal_length   = 8;
+    static ETL_CONSTANT char decimal_length = 10;
+    static ETL_CONSTANT char hex_length     = 16;
+    static ETL_CONSTANT int  valid_length   = 28;
+
     //***********************************************************************
     /// 
+    //***********************************************************************
+    struct valid_character_set
+    {
+      typedef char value_type;
+      typedef const value_type* string_type;
+      static ETL_CONSTANT string_type valid_chars   = "+-.,eE0123456789abcdefABCDEF";
+      static ETL_CONSTANT string_type numeric_chars = "0123456789abcdef";
+      static ETL_CONSTANT value_type  positive_char = '+';
+      static ETL_CONSTANT value_type  negative_char = '-';
+      static ETL_CONSTANT value_type  radix_point1  = '.';
+      static ETL_CONSTANT value_type  radix_point2  = ',';
+      static ETL_CONSTANT value_type  exponential   = 'e';
+      static ETL_CONSTANT value_type  unknown_char  = '?';
+
+      //*******************************************
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
+      bool is_valid(char c, etl::radix::value_type radix)
+      {
+        const string_type itr_begin = numeric_chars;
+        const string_type itr_end   = numeric_chars + get_length(radix);
+
+        string_type itr = etl::find(itr_begin, itr_end, c);
+
+        return (itr != itr_end);
+      }
+
+      //*******************************************
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
+      char digit_value(char c, etl::radix::value_type radix)
+      {
+        switch (radix)
+        {
+          case etl::radix::binary:
+          case etl::radix::octal:
+          case etl::radix::decimal: 
+          { 
+            return c - '0';
+            break; 
+          }
+
+          case etl::radix::hex:
+          {
+            for (int i = 0; i < 16; ++i)
+            {
+              if (c == numeric_chars[i])
+              {
+                return i;
+              }
+            }
+          }
+
+          default: 
+          { 
+            return 0;
+            break; 
+          }
+        }
+      }
+
+    private:
+
+      //*******************************************
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
+      int get_length(etl::radix::value_type radix)
+      {
+        switch (radix)
+        {
+          case etl::radix::binary:  { return binary_length;  break; }
+          case etl::radix::octal:   { return octal_length;   break; }
+          case etl::radix::decimal: { return decimal_length; break; }
+          case etl::radix::hex:     { return hex_length;     break; }
+          default:                  { return 0;              break; }
+        }
+      }
+    };
+
+    //***********************************************************************
+    /// The character sets for character types.
     //***********************************************************************
     template <typename TChar>
     struct character_set;
 
+    //*******************************************
     template <>
     struct character_set<char>
     {
-      typedef char value_type;
-      typedef const value_type* string_type;
-      static ETL_CONSTANT string_type numeric_chars = "0123456789abcdefABCDEF";
-      static ETL_CONSTANT value_type  positive_char = '+';
-      static ETL_CONSTANT value_type  negative_char = '-';
-      static ETL_CONSTANT string_type radix_point   = ".,";
-      static ETL_CONSTANT string_type exponential   = "eE";
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
+      char lookup(char c)
+      {
+        return c;
+      }
     };
 
+    //*******************************************
     template <>
     struct character_set<wchar_t>
     {
       typedef wchar_t value_type;
       typedef const value_type* string_type;
-      static ETL_CONSTANT string_type numeric_chars = L"0123456789abcdefABCDEF";
-      static ETL_CONSTANT value_type  positive_char = L'+';
-      static ETL_CONSTANT value_type  negative_char = L'-';
-      static ETL_CONSTANT string_type radix_point   = L".,";
-      static ETL_CONSTANT string_type exponential   = L"eE";
+      static ETL_CONSTANT string_type valid_chars = L"+-.,eE0123456789abcdefABCDEF";
+
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
+      char lookup(wchar_t c)
+      {
+        for (int i = 0; i < valid_length; ++i)
+        {
+          if (c == valid_chars[i])
+          {
+            return tolower(valid_character_set::valid_chars[i]);
+          }
+        }
+
+        return valid_character_set::unknown_char;
+      }
     };
 
+    //*******************************************
     template <>
     struct character_set<char16_t>
     {
       typedef char16_t value_type;
       typedef const value_type* string_type;
-      static ETL_CONSTANT string_type numeric_chars = u"0123456789abcdefABCDEF";
-      static ETL_CONSTANT value_type  positive_char = u'+';
-      static ETL_CONSTANT value_type  negative_char = u'-';
-      static ETL_CONSTANT string_type radix_point   = u".,";
-      static ETL_CONSTANT string_type exponential   = u"eE";
+      static ETL_CONSTANT string_type valid_chars = u"+-.,eE0123456789abcdefABCDEF";
+
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
+      char lookup(wchar_t c)
+      {
+        for (int i = 0; i < valid_length; ++i)
+        {
+          if (c == valid_chars[i])
+          {
+            return tolower(valid_character_set::valid_chars[i]);
+          }
+        }
+
+        return valid_character_set::unknown_char;
+      }
     };
 
+    //*******************************************
     template <>
     struct character_set<char32_t>
     {
       typedef char32_t value_type;
       typedef const value_type* string_type;
-      static ETL_CONSTANT string_type numeric_chars = U"0123456789abcdefABCDEF";
-      static ETL_CONSTANT value_type  positive_char = U'+';
-      static ETL_CONSTANT value_type  negative_char = U'-';
-      static ETL_CONSTANT string_type radix_point   = U".,";
-      static ETL_CONSTANT string_type exponential   = U"eE";
-    };
+      static ETL_CONSTANT string_type valid_chars = U"+-.,eE0123456789abcdefABCDEF";
 
-    static ETL_CONSTANT char binary_length  = 2;
-    static ETL_CONSTANT char octal_length   = 8;
-    static ETL_CONSTANT char decimal_length = 10;
-    static ETL_CONSTANT char hex_length     = 16 + 6;
-
-    //***************************************************************************
-    /// 
-    //***************************************************************************
-    template <typename TChar>
-    ETL_NODISCARD
-    ETL_CONSTEXPR14
-    char get_digit_value(TChar c)
-    {
-      size_t length = etl::strlen(character_set<TChar>::numeric_chars);
-
-      for (int i = 0; i < length; ++i)
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
+      char lookup(wchar_t c)
       {
-        if (c == character_set<TChar>::numeric_chars[i])
+        for (int i = 0; i < valid_length; ++i)
         {
-          return (i < 16) ? i : i - 6;
+          if (c == valid_chars[i])
+          {
+            return tolower(valid_character_set::valid_chars[i]);
+          }
         }
+
+        return valid_character_set::unknown_char;
       }
-
-      return 0;
-    }
-
-    //***************************************************************************
-    /// 
-    //***************************************************************************
-    template <typename TChar>
-    ETL_NODISCARD
-    ETL_CONSTEXPR14
-    etl::basic_string_view<TChar> get_character_set(const etl::radix::value_type radix)
-    {
-      switch (radix)
-      {
-        case etl::radix::binary:  { return etl::basic_string_view<TChar>(character_set<TChar>::numeric_chars, binary_length);  break; }
-        case etl::radix::octal:   { return etl::basic_string_view<TChar>(character_set<TChar>::numeric_chars, octal_length);   break; }
-        case etl::radix::decimal: { return etl::basic_string_view<TChar>(character_set<TChar>::numeric_chars, decimal_length); break; }
-        case etl::radix::hex:     { return etl::basic_string_view<TChar>(character_set<TChar>::numeric_chars, hex_length);     break; }
-        default: { ETL_ASSERT_FAIL(ETL_ERROR(etl::to_arithmetic_invalid_radix)); return etl::basic_string_view<TChar>(); break; }
-      }
-    }
-
-    //***************************************************************************
-    /// 
-    //***************************************************************************
-    template <typename TChar>
-    ETL_NODISCARD
-    ETL_CONSTEXPR14
-    bool is_valid_numeric_character(const TChar c, 
-                                    const etl::basic_string_view<TChar>& valid_characters)
-    {
-      etl::basic_string_view<TChar> itr = etl::find(valid_characters.begin(), valid_characters.end(), c);
-
-      return (itr != valid_characters.end());
-    }
-
-    //***************************************************************************
-    /// 
-    //***************************************************************************
-    template <typename TChar>
-    ETL_NODISCARD
-    ETL_CONSTEXPR14
-    bool is_valid_decimal_character(const TChar c)
-    {
-      return (c >= character_set<TChar>::numeric_chars[0]) && (c <= character_set<TChar>::numeric_chars[9]);
-    }
+    };
 
     //***************************************************************************
     /// 
@@ -326,6 +380,39 @@ namespace etl
 
       return value;
     }
+
+    template <typename TValue>
+    struct to_integral_implementation
+    {
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
+      to_integral_implementation(const numeric_information& info_)
+        : info(info_)
+        , count(0)
+        , value(0)
+        , is_negative(false)
+      {
+      }
+
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
+      bool add(char c)
+      {
+        if (valid_character_set::is_valid(c))
+        {
+          value = accumulate_value(value, info)
+          return true;
+        }
+        else
+        {
+          return false;
+        }
+      }
+
+      const numeric_information& info;
+      int    count;
+      TValue value;
+    };
   }
 
   //***************************************************************************
@@ -340,9 +427,10 @@ namespace etl
     using namespace etl::private_to_arithmetic;
 
     etl::optional<TValue>         result;
-    etl::basic_string_view<TChar> valid_characters;
     view_information<TChar>       view_info;
     numeric_information           numeric_info;
+
+    to_integral_implementation<TValue> implementation(numeric_info);
 
     bool parsing = validate_information_from_view<TChar>(view, radix, view_info, numeric_info);
 
@@ -363,23 +451,13 @@ namespace etl
 
         while (parsing)
         {
-          if (is_valid_numeric_character(*itr, view_info.valid_characters))
-          {
-            numeric_info.digit = get_digit_value(*itr);
-            value = accumulate_value(value, numeric_info);
+          implementation.add(character_set<TChar>::lookup(*itr));
 
-            ++itr;
+          ++itr;
 
-            if (itr == view.end())
-            {
-              result = value;
-              parsing = false;
-            }
-          }
-          else
+          if (itr == view.end())
           {
-            // Character was not a valid numeric, so fail.
-            ETL_ASSERT_FAIL(ETL_ERROR(etl::to_arithmetic_invalid_format));
+            result = implementation.value;
             parsing = false;
           }
         }
