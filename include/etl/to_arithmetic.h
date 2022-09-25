@@ -158,6 +158,19 @@ namespace etl
       }
     };
 
+    //*******************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    char to_lower(char c)
+    {
+      if ((c >= 'A') && (c <= 'Z'))
+      {
+        c += 32;
+      }
+
+      return c;
+    }
+
     //***********************************************************************
     /// The character sets for character types.
     //***********************************************************************
@@ -172,7 +185,7 @@ namespace etl
       ETL_CONSTEXPR14
       static char lookup(char c)
       {
-        return c;
+        return to_lower(c);
       }
     };
 
@@ -192,7 +205,7 @@ namespace etl
         {
           if (c == valid_chars[i])
           {
-            return tolower(valid_character_set::valid_chars[i]);
+            return to_lower(valid_character_set::valid_chars[i]);
           }
         }
 
@@ -216,7 +229,7 @@ namespace etl
         {
           if (c == valid_chars[i])
           {
-            return tolower(valid_character_set::valid_chars[i]);
+            return to_lower(valid_character_set::valid_chars[i]);
           }
         }
 
@@ -240,7 +253,7 @@ namespace etl
         {
           if (c == valid_chars[i])
           {
-            return tolower(valid_character_set::valid_chars[i]);
+            return to_lower(valid_character_set::valid_chars[i]);
           }
         }
 
@@ -397,6 +410,7 @@ namespace etl
         : count(0)
         , value(0)
         , is_negative(false)
+        , valid_value(false)
         , radix(radix_)
       {
       }
@@ -433,6 +447,7 @@ namespace etl
               if (is_valid)
               {
                 value = accumulate_value(value, valid_character_set::digit_value(c, radix), radix, is_negative);
+                valid_value = true;
               }
             }
             break;
@@ -445,6 +460,7 @@ namespace etl
             if (is_valid)
             {
               value = accumulate_value(value, valid_character_set::digit_value(c, radix), radix, is_negative);
+              valid_value = true;
             }
             break;
           }
@@ -458,7 +474,7 @@ namespace etl
       //*********************************
       bool has_value() const
       {
-        return !(count == 1)/* && */;
+        return (valid_value == true);
       }
 
       //*********************************
@@ -472,6 +488,7 @@ namespace etl
       int    count;
       TValue value;
       bool   is_negative;
+      bool   valid_value;
       etl::radix::value_type radix;
     };
   }
