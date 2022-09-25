@@ -93,7 +93,7 @@ namespace etl
       //*******************************************
       ETL_NODISCARD
       ETL_CONSTEXPR14
-      bool is_valid(char c, etl::radix::value_type radix)
+      static bool is_valid(char c, etl::radix::value_type radix)
       {
         const string_type itr_begin = numeric_chars;
         const string_type itr_end   = numeric_chars + get_length(radix);
@@ -106,7 +106,7 @@ namespace etl
       //*******************************************
       ETL_NODISCARD
       ETL_CONSTEXPR14
-      char digit_value(char c, etl::radix::value_type radix)
+      static char digit_value(char c, etl::radix::value_type radix)
       {
         switch (radix)
         {
@@ -127,6 +127,9 @@ namespace etl
                 return i;
               }
             }
+
+            return 0;
+            break;
           }
 
           default: 
@@ -142,15 +145,15 @@ namespace etl
       //*******************************************
       ETL_NODISCARD
       ETL_CONSTEXPR14
-      int get_length(etl::radix::value_type radix)
+      static int get_length(etl::radix::value_type radix)
       {
         switch (radix)
         {
-          case etl::radix::binary:  { return binary_length;  break; }
-          case etl::radix::octal:   { return octal_length;   break; }
-          case etl::radix::decimal: { return decimal_length; break; }
-          case etl::radix::hex:     { return hex_length;     break; }
-          default:                  { return 0;              break; }
+          case etl::radix::binary:  { return binary_length;  }
+          case etl::radix::octal:   { return octal_length;   }
+          case etl::radix::decimal: { return decimal_length; }
+          case etl::radix::hex:     { return hex_length;     }
+          default:                  { ETL_ASSERT_FAIL_AND_RETURN_VALUE(ETL_ERROR(etl::to_arithmetic_invalid_radix), 0) }
         }
       }
     };
@@ -167,7 +170,7 @@ namespace etl
     {
       ETL_NODISCARD
       ETL_CONSTEXPR14
-      char lookup(char c)
+      static char lookup(char c)
       {
         return c;
       }
@@ -183,7 +186,7 @@ namespace etl
 
       ETL_NODISCARD
       ETL_CONSTEXPR14
-      char lookup(wchar_t c)
+      static char lookup(wchar_t c)
       {
         for (int i = 0; i < valid_length; ++i)
         {
@@ -207,7 +210,7 @@ namespace etl
 
       ETL_NODISCARD
       ETL_CONSTEXPR14
-      char lookup(wchar_t c)
+      static char lookup(wchar_t c)
       {
         for (int i = 0; i < valid_length; ++i)
         {
@@ -231,7 +234,7 @@ namespace etl
 
       ETL_NODISCARD
       ETL_CONSTEXPR14
-      char lookup(wchar_t c)
+      static char lookup(wchar_t c)
       {
         for (int i = 0; i < valid_length; ++i)
         {
@@ -248,77 +251,77 @@ namespace etl
     //***************************************************************************
     /// 
     //***************************************************************************
-    template <typename TChar>
-    struct view_information
-    {
-      ETL_CONSTEXPR14
-      view_information()
-        : valid_characters()
-      {
-      }
+    //template <typename TChar>
+    //struct view_information
+    //{
+    //  ETL_CONSTEXPR14
+    //  view_information()
+    //    : valid_characters()
+    //  {
+    //  }
 
-      etl::basic_string_view<TChar> valid_characters;
-    };
+    //  etl::basic_string_view<TChar> valid_characters;
+    //};
 
     //*********************************
-    struct numeric_information
-    {
-      ETL_CONSTEXPR14
-      numeric_information()  
-        : digit(0)
-        , is_negative(false)
-        , radix(0)
-        , radix_point_position(etl::npos)
-        , exponential_position(etl::npos)
-      {
-      }
-      
-      char digit;
-      bool is_negative;
-      etl::radix::value_type radix;
-      size_t radix_point_position;
-      size_t exponential_position;
-    };
+    //struct numeric_information
+    //{
+    //  ETL_CONSTEXPR14
+    //  numeric_information()  
+    //    : digit(0)
+    //    , is_negative(false)
+    //    , radix(0)
+    //    , radix_point_position(etl::npos)
+    //    , exponential_position(etl::npos)
+    //  {
+    //  }
+    //  
+    //  char digit;
+    //  bool is_negative;
+    //  etl::radix::value_type radix;
+    //  size_t radix_point_position;
+    //  size_t exponential_position;
+    //};
 
     //***************************************************************************
     /// 
     //***************************************************************************
-    template <typename TChar>
-    ETL_NODISCARD
-    ETL_CONSTEXPR14
-    bool validate_information_from_view(etl::basic_string_view<TChar>& view, etl::radix::value_type radix, view_information<TChar>& view_info, numeric_information& numeric_info)
-    {
-      numeric_info.radix = radix;
-      view_info.valid_characters = get_character_set<TChar>(numeric_info.radix);
+    //template <typename TChar>
+    //ETL_NODISCARD
+    //ETL_CONSTEXPR14
+    //bool validate_information_from_view(etl::basic_string_view<TChar>& view, etl::radix::value_type radix, view_information<TChar>& view_info, numeric_information& numeric_info)
+    //{
+    //  numeric_info.radix = radix;
+    //  view_info.valid_characters = get_character_set<TChar>(numeric_info.radix);
 
-      bool is_valid = !view_info.valid_characters.empty();    
+    //  bool is_valid = !view_info.valid_characters.empty();    
 
-      if (is_valid)
-      {
-        // Look for a prefix.
-        const bool has_positive_prefix = (view[0] == character_set<TChar>::positive_char);
-        numeric_info.is_negative       = (view[0] == character_set<TChar>::negative_char);
+    //  if (is_valid)
+    //  {
+    //    // Look for a prefix.
+    //    const bool has_positive_prefix = (view[0] == character_set<TChar>::positive_char);
+    //    numeric_info.is_negative       = (view[0] == character_set<TChar>::negative_char);
 
-        if (has_positive_prefix || numeric_info.is_negative)
-        {
-          view.remove_prefix(1U);
-          is_valid = (view.begin() != view.end());
-        }
-      }
+    //    if (has_positive_prefix || numeric_info.is_negative)
+    //    {
+    //      view.remove_prefix(1U);
+    //      is_valid = (view.begin() != view.end());
+    //    }
+    //  }
 
-      if (is_valid)
-      {
-        // Look for a radix point.
-        numeric_info.radix_point_position = view.find_first_of(character_set<TChar>::radix_point);
+    //  if (is_valid)
+    //  {
+    //    // Look for a radix point.
+    //    numeric_info.radix_point_position = view.find_first_of(character_set<TChar>::radix_point);
 
-        // Look for an exponential.
-        numeric_info.exponential_position = view.find_first_of(character_set<TChar>::exponential);
-      }
+    //    // Look for an exponential.
+    //    numeric_info.exponential_position = view.find_first_of(character_set<TChar>::exponential);
+    //  }
 
-      ETL_ASSERT(is_valid, ETL_ERROR(etl::to_arithmetic_invalid_format));
+    //  ETL_ASSERT(is_valid, ETL_ERROR(etl::to_arithmetic_invalid_format));
 
-      return is_valid;
-    }
+    //  return is_valid;
+    //}
 
     //***************************************************************************
     /// 
@@ -327,10 +330,10 @@ namespace etl
     ETL_NODISCARD
     ETL_CONSTEXPR14
     typename etl::enable_if<etl::is_integral<TValue>::value && etl::is_unsigned<TValue>::value, TValue>::type
-      accumulate_value(TValue value, const numeric_information& info)
+      accumulate_value(TValue value, char digit, etl::radix::value_type radix, bool is_negative)
     {
-      value *= info.radix;
-      value += info.digit;
+      value *= radix;
+      value += digit;
 
       return value;
     }
@@ -342,10 +345,10 @@ namespace etl
     ETL_NODISCARD
     ETL_CONSTEXPR14
     typename etl::enable_if<etl::is_integral<TValue>::value && etl::is_signed<TValue>::value, TValue>::type
-      accumulate_value(TValue value, const numeric_information& info)
+      accumulate_value(TValue value, char digit, etl::radix::value_type radix, bool is_negative)
     {
-      value *= info.radix;
-      info.is_negative ? value -= info.digit : value += info.digit;
+      value *= radix;
+      is_negative ? value -= digit : value += digit;
 
       return value;
     }
@@ -353,69 +356,179 @@ namespace etl
     //***************************************************************************
     /// 
     //***************************************************************************
-    template <typename TValue>
-    ETL_NODISCARD
-    ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_floating_point<TValue>::value, TValue>::type
-      accumulate_integral_part(TValue value, const numeric_information& info)
-    {
-      value *= info.radix;
-      info.is_negative ? value -= info.digit : value += info.digit;
+    //template <typename TValue>
+    //ETL_NODISCARD
+    //ETL_CONSTEXPR14
+    //typename etl::enable_if<etl::is_floating_point<TValue>::value, TValue>::type
+    //  accumulate_integral_part(TValue value, const numeric_information& info)
+    //{
+    //  value *= info.radix;
+    //  info.is_negative ? value -= info.digit : value += info.digit;
 
-      return value;
-    }
+    //  return value;
+    //}
 
     //***************************************************************************
     /// 
     //***************************************************************************
-    template <typename TValue>
-    ETL_NODISCARD
-    ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_floating_point<TValue>::value, TValue>::type
-      accumulate_fractional_part(TValue value, const numeric_information& info)
-    {
-      value /= info.radix;
-      TValue d = TValue(info.digit) / info.radix;
-      info.is_negative ? value -= d : value += d;
+    //template <typename TValue>
+    //ETL_NODISCARD
+    //ETL_CONSTEXPR14
+    //typename etl::enable_if<etl::is_floating_point<TValue>::value, TValue>::type
+    //  accumulate_fractional_part(TValue value, const numeric_information& info)
+    //{
+    //  value /= info.radix;
+    //  TValue d = TValue(info.digit) / info.radix;
+    //  info.is_negative ? value -= d : value += d;
 
-      return value;
-    }
+    //  return value;
+    //}
 
+    //***************************************************************************
+    /// 
+    //***************************************************************************
     template <typename TValue>
     struct to_integral_implementation
     {
+      //*********************************
       ETL_NODISCARD
       ETL_CONSTEXPR14
-      to_integral_implementation(const numeric_information& info_)
-        : info(info_)
-        , count(0)
+      to_integral_implementation(etl::radix::value_type radix_)
+        : count(0)
         , value(0)
         , is_negative(false)
+        , radix(radix_)
       {
       }
 
+      //*********************************
       ETL_NODISCARD
       ETL_CONSTEXPR14
       bool add(char c)
       {
-        if (valid_character_set::is_valid(c))
+        bool is_valid = true;
+
+        switch (count)
         {
-          value = accumulate_value(value, info)
-          return true;
+          case 0:
+          {
+            // Check for prefix.
+            const bool has_positive_prefix = (c == valid_character_set::positive_char);
+            const bool has_negative_prefix = (c == valid_character_set::negative_char);
+
+            if (has_positive_prefix || has_negative_prefix)
+            {
+              is_negative = has_negative_prefix;
+
+              if (etl::is_unsigned<TValue>::value && is_negative)
+              {
+                is_valid = false;
+                ETL_ASSERT_FAIL(ETL_ERROR(etl::to_arithmetic_signed_to_unsigned));
+              }
+            }
+            else
+            {
+              is_valid = valid_character_set::is_valid(c, radix);
+              
+              if (is_valid)
+              {
+                value = accumulate_value(value, valid_character_set::digit_value(c, radix), radix, is_negative);
+              }
+            }
+            break;
+          }
+
+          default:
+          {
+            is_valid = valid_character_set::is_valid(c, radix);
+
+            if (is_valid)
+            {
+              value = accumulate_value(value, valid_character_set::digit_value(c, radix), radix, is_negative);
+            }
+            break;
+          }
         }
-        else
-        {
-          return false;
-        }
+
+        ++count;
+
+        return is_valid;
       }
 
-      const numeric_information& info;
+      //*********************************
+      bool has_value() const
+      {
+        return !(count == 1)/* && */;
+      }
+
+      //*********************************
+      TValue get_value() const
+      {
+        return value;
+      }
+
+    private:
+
       int    count;
       TValue value;
+      bool   is_negative;
+      etl::radix::value_type radix;
     };
   }
 
   //***************************************************************************
+  /// Text to integral from view and radix value type.
+  //***************************************************************************
+  //template <typename TValue, typename TChar>
+  //ETL_NODISCARD
+  //ETL_CONSTEXPR14
+  //typename etl::enable_if<etl::is_integral<TValue>::value, etl::optional<TValue> >::type
+  //  to_arithmetic(etl::basic_string_view<TChar> view, const etl::radix::value_type radix)
+  //{
+  //  using namespace etl::private_to_arithmetic;
+
+  //  etl::optional<TValue>         result;
+  //  view_information<TChar>       view_info;
+  //  numeric_information           numeric_info;
+
+  //  to_integral_implementation<TValue> implementation(numeric_info);
+
+  //  bool parsing = validate_information_from_view<TChar>(view, radix, view_info, numeric_info);
+
+  //  if (parsing)
+  //  {
+  //    if (etl::is_unsigned<TValue>::value && numeric_info.is_negative)
+  //    {
+  //      parsing = false;
+  //      ETL_ASSERT_FAIL(ETL_ERROR(etl::to_arithmetic_signed_to_unsigned));
+  //    }
+
+  //    if (parsing)
+  //    {
+  //      // Parse the numeric part.
+  //      TValue value = 0;
+
+  //      etl::basic_string_view<TChar>::const_iterator itr = view.begin();
+
+  //      while (parsing)
+  //      {
+  //        implementation.add(character_set<TChar>::lookup(*itr));
+
+  //        ++itr;
+
+  //        if (itr == view.end())
+  //        {
+  //          result = implementation.value;
+  //          parsing = false;
+  //        }
+  //      }
+  //    }
+  //  }
+
+  //  return result;
+  //}
+
+    //***************************************************************************
   /// Text to integral from view and radix value type.
   //***************************************************************************
   template <typename TValue, typename TChar>
@@ -426,42 +539,41 @@ namespace etl
   {
     using namespace etl::private_to_arithmetic;
 
-    etl::optional<TValue>         result;
-    view_information<TChar>       view_info;
-    numeric_information           numeric_info;
-
-    to_integral_implementation<TValue> implementation(numeric_info);
-
-    bool parsing = validate_information_from_view<TChar>(view, radix, view_info, numeric_info);
-
-    if (parsing)
+    etl::optional<TValue> result;
+    
+    if (!view.empty())
     {
-      if (etl::is_unsigned<TValue>::value && numeric_info.is_negative)
+      to_integral_implementation<TValue> implementation(radix);
+
+      etl::basic_string_view<TChar>::const_iterator itr = view.begin();
+
+      bool parsing = true;
+
+      while (parsing)
       {
-        parsing = false;
-        ETL_ASSERT_FAIL(ETL_ERROR(etl::to_arithmetic_signed_to_unsigned));
-      }
+        parsing = implementation.add(character_set<TChar>::lookup(*itr));
 
-      if (parsing)
-      {
-        // Parse the numeric part.
-        TValue value = 0;
-
-        etl::basic_string_view<TChar>::const_iterator itr = view.begin();
-
-        while (parsing)
+        if (parsing)
         {
-          implementation.add(character_set<TChar>::lookup(*itr));
-
           ++itr;
 
           if (itr == view.end())
           {
-            result = implementation.value;
+            ETL_ASSERT(implementation.has_value(), ETL_ERROR(etl::to_arithmetic_invalid_format));
+
+            result = implementation.get_value();
             parsing = false;
           }
         }
+        else
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(etl::to_arithmetic_invalid_format));
+        }
       }
+    }
+    else
+    {
+      ETL_ASSERT_FAIL(ETL_ERROR(etl::to_arithmetic_invalid_format));
     }
 
     return result;
