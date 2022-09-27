@@ -42,7 +42,7 @@ SOFTWARE.
 #endif
 
 ///\defgroup endian endian
-/// Constants & utilities for endianess
+/// Constants & utilities for endianness
 ///\ingroup utilities
 
 #if !defined(ETL_ENDIAN_NATIVE) && defined(__IAR_SYSTEMS_ICC__) && defined(__LITTLE_ENDIAN__)
