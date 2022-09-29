@@ -42,8 +42,16 @@ SOFTWARE.
 #endif
 
 ///\defgroup endian endian
-/// Constants & utilities for endianess
+/// Constants & utilities for endianness
 ///\ingroup utilities
+
+#if !defined(ETL_ENDIAN_NATIVE) && defined(__IAR_SYSTEMS_ICC__) && defined(__LITTLE_ENDIAN__)
+  #if __LITTLE_ENDIAN__ == 1
+    #define ETL_ENDIAN_NATIVE 0
+  #elif __LITTLE_ENDIAN__ == 0
+    #define ETL_ENDIAN_NATIVE 1
+  #endif
+#endif
 
 // Have we not already defined ETL_ENDIAN_NATIVE?
 #if !defined(ETL_ENDIAN_NATIVE)
