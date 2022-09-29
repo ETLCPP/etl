@@ -627,7 +627,7 @@ namespace etl
 
     /// The only way to create this %iterator is with a container.
     explicit ETL_CONSTEXPR17 back_insert_iterator(TContainer& c)
-      : container(addressof(c))
+      : container(etl::addressof(c))
     {
     }
 
@@ -650,7 +650,7 @@ namespace etl
 #if ETL_USING_CPP11
     ETL_CONSTEXPR17 back_insert_iterator& operator=(typename TContainer::reference value)
     {
-      container->push_back(move(value));
+      container->push_back(etl::move(value));
       return (*this);
     }
 #endif  // ETL_USING_CPP11
@@ -720,7 +720,7 @@ namespace etl
 
     /// The only way to create this %iterator is with a container.
     explicit ETL_CONSTEXPR17 front_insert_iterator(TContainer& c)
-      : container(addressof(c))
+      : container(etl::addressof(c))
     {
     }
 
@@ -745,7 +745,7 @@ namespace etl
 #if ETL_USING_CPP11
     ETL_CONSTEXPR17 front_insert_iterator& operator=(typename TContainer::reference value)
     {
-      container->push_front(move(value));
+      container->push_front(etl::move(value));
       return (*this);
     }
 #endif  // ETL_USING_CPP11
