@@ -45,14 +45,6 @@ SOFTWARE.
 /// Constants & utilities for endianness
 ///\ingroup utilities
 
-#if !defined(ETL_ENDIAN_NATIVE) && defined(__IAR_SYSTEMS_ICC__) && defined(__LITTLE_ENDIAN__)
-  #if __LITTLE_ENDIAN__ == 1
-    #define ETL_ENDIAN_NATIVE 0
-  #elif __LITTLE_ENDIAN__ == 0
-    #define ETL_ENDIAN_NATIVE 1
-  #endif
-#endif
-
 // Have we not already defined ETL_ENDIAN_NATIVE?
 #if !defined(ETL_ENDIAN_NATIVE)
   // Can we use the C++20 definitions?
@@ -60,6 +52,15 @@ SOFTWARE.
     #define ETL_ENDIAN_LITTLE std::endian::little
     #define ETL_ENDIAN_BIG    std::endian::big
     #define ETL_ENDIAN_NATIVE std::endian::native
+  // Is this the IAR compiler?
+  #elif defined(ETL_COMPILER_IAR) && defined(__LITTLE_ENDIAN__)
+    #define ETL_ENDIAN_LITTLE 0
+    #define ETL_ENDIAN_BIG    1
+    #if __LITTLE_ENDIAN__ == 1
+      #define ETL_ENDIAN_NATIVE ETL_ENDIAN_LITTLE
+    #elif __LITTLE_ENDIAN__ == 0
+      #define ETL_ENDIAN_NATIVE ETL_ENDIAN_BIG
+    #endif
   // If not can we use the compiler macros?
   #elif defined(__BYTE_ORDER__)
     // Test the two versions of the macro we are likely to see.
