@@ -202,7 +202,7 @@ namespace
     //*************************************************************************
     TEST(test_hash_pointer)
     {
-      int i;
+      int i{};
       size_t hash = etl::hash<int*>()(&i);
 
       CHECK_EQUAL(size_t(&i), hash);
@@ -211,7 +211,7 @@ namespace
     //*************************************************************************
     TEST(test_hash_const_pointer)
     {
-      int i;
+      int i{};
       size_t hash = etl::hash<const int*>()(&i);
 
       CHECK_EQUAL(size_t(&i), hash);
@@ -220,7 +220,7 @@ namespace
     //*************************************************************************
     TEST(test_hash_const_pointer_const)
     {
-      int i;
+      int i{};
       const int * const pi = &i;
 
       size_t hash = etl::hash<const int *>()(pi);

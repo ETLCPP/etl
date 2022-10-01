@@ -32,7 +32,7 @@ SOFTWARE.
  * The header include guard has been intentionally omitted.
  * This file is intended to evaluated multiple times by design.
  */
-#if !defined(ETL_COMPILER_GREEN_HILLS) && !defined(ETL_COMPILER_ICCAVR)
+#if !defined(ETL_COMPILER_GREEN_HILLS) && !defined(ETL_COMPILER_IAR)
   #if !defined(ETL_COMPILER_ARM5)
     #pragma pop_macro("min")
     #pragma pop_macro("max")
