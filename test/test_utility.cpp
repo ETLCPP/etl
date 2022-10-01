@@ -30,6 +30,9 @@ SOFTWARE.
 
 #include "etl/utility.h"
 
+#include <map>
+#include <vector>
+
 #include "data.h"
 
 namespace
@@ -328,6 +331,80 @@ namespace
 
       CHECK(!nonConstCalled);
       CHECK(constCalled);
+    }
+
+    //*************************************************************************
+    TEST(test_select1st)
+    {
+      typedef etl::pair<int, std::string> EtlPair;
+      typedef std::pair<int, std::string> StdPair;
+
+      EtlPair ep1(1, "Hello");
+      StdPair sp2(2, "World");
+
+      auto selector = etl::select1st<EtlPair>();
+
+      CHECK_EQUAL(1, selector(ep1));
+      CHECK_EQUAL(2, selector(sp2));
+    }
+
+    //*************************************************************************
+    TEST(test_select1st_example)
+    {
+      //! [test_select1st_example]
+      using Map = std::map<int, double>;
+      using Vector = std::vector<int>;
+
+      const Map map = {{1, 0.3},
+                       {47, 0.8},
+                       {33, 0.1}};
+      Vector    result{};
+
+      // extract the map keys into a vector
+      std::transform(map.begin(), map.end(), std::back_inserter(result), etl::select1st<Map::value_type>());
+      //! [test_select1st_example]
+
+      CHECK_EQUAL(3, result.size());
+
+      const Vector expected{1, 33, 47};
+      CHECK_ARRAY_EQUAL(expected, result, 3);
+    }
+
+    //*************************************************************************
+    TEST(test_select2nd)
+    {
+      typedef etl::pair<int, std::string> EtlPair;
+      typedef std::pair<int, std::string> StdPair;
+
+      EtlPair ep1(1, "Hello");
+      StdPair sp2(2, "World");
+
+      auto selector = etl::select2nd<EtlPair>();
+      CHECK_EQUAL(std::string("Hello"), selector(ep1));
+      CHECK_EQUAL(std::string("World"), selector(sp2));
+    }
+
+    //*************************************************************************
+    TEST(test_select2nd_example)
+    {
+      //! [test_select2nd_example]
+      using Map = std::map<int, double>;
+      using Vector = std::vector<double>;
+
+      const Map map = {{1, 0.3},
+                       {47, 0.8},
+                       {33, 0.1}};
+      Vector    result{};
+
+      // extract the map values into a vector
+      std::transform(map.begin(), map.end(), std::back_inserter(result), etl::select2nd<Map::value_type>());
+      //! [test_select2nd_example]
+
+      CHECK_EQUAL(3, result.size());
+
+      const Vector expected{0.1, 0.3, 0.8};
+      sort(result.begin(), result.end());  // sort for comparison
+      CHECK_ARRAY_CLOSE(expected, result, 3, 0.0001);
     }
 
     //*************************************************************************
