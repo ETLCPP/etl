@@ -93,24 +93,36 @@ namespace etl
   }
 #endif
 
-  //******************************************************************************
+  //***************************************************************************
+  ///\brief pair holds two objects of arbitrary type
+  ///
+  ///\tparam T1, T2 The types of the elements that the pair stores
+  //***************************************************************************
   template <typename T1, typename T2>
   struct pair
   {
-    typedef T1 first_type;
-    typedef T2 second_type;
+    typedef T1 first_type;   ///< @c first_type is the first bound type
+    typedef T2 second_type;  ///< @c second_type is the second bound type
 
-    T1 first;
-    T2 second;
+    T1 first;   ///< @c first is a copy of the first object
+    T2 second;  ///< @c second is a copy of the second object
 
-    /// Default constructor
+    //***************************************************************************
+    ///\brief Default constructor
+    ///
+    /// The default constructor creates @c first and @c second using their respective default constructors.
+    //***************************************************************************
     ETL_CONSTEXPR pair()
       : first(T1())
       , second(T2())
     {
     }
 
-    /// Constructor from parameters
+    //***************************************************************************
+    ///\brief Constructor from parameters
+    ///
+    /// Two objects may be passed to a @c pair constructor to be copied.
+    //***************************************************************************
     ETL_CONSTEXPR14 pair(const T1& a, const T2& b)
       : first(a)
       , second(b)
@@ -118,7 +130,9 @@ namespace etl
     }
 
 #if ETL_USING_CPP11
-    /// Move constructor from parameters
+    //***************************************************************************
+    ///\brief Move constructor from parameters.
+    //***************************************************************************
     template <typename U1, typename U2>
     ETL_CONSTEXPR14 pair(U1&& a, U2&& b)
       : first(etl::forward<U1>(a))
@@ -127,7 +141,11 @@ namespace etl
     }
 #endif
 
-    /// Copy constructor
+    //***************************************************************************
+    ///\brief Copy constructor
+    ///
+    /// There is also a templated copy constructor for the @c pair class itself.
+    //***************************************************************************
     template <typename U1, typename U2>
     ETL_CONSTEXPR14 pair(const pair<U1, U2>& other)
       : first(other.first)
@@ -224,7 +242,14 @@ namespace etl
 #endif
   };
 
-  //******************************************************************************
+  //***************************************************************************
+  ///\brief A convenience wrapper for creating a @ref pair from two objects.
+  ///
+  ///\param a The first object.
+  ///\param b The second object.
+  ///
+  ///\return A newly-constructed @ref pair object of the appropriate type.
+  //***************************************************************************
 #if ETL_USING_CPP11
   template <typename T1, typename T2>
   inline pair<T1, T2> make_pair(T1&& a, T2&& b)
@@ -246,13 +271,14 @@ namespace etl
     a.swap(b);
   }
 
-  //******************************************************************************
+  ///  Two pairs of the same type are equal iff their members are equal.
   template <typename T1, typename T2>
   inline bool operator ==(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return (a.first == b.first) && (a.second == b.second);
   }
 
+  /// Uses @c operator== to find the result.
   template <typename T1, typename T2>
   inline bool operator !=(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
@@ -266,23 +292,116 @@ namespace etl
       (!(b.first < a.first) && (a.second < b.second));
   }
 
+  /// Uses @c operator< to find the result.
   template <typename T1, typename T2>
   inline bool operator >(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return (b < a);
   }
 
+  /// Uses @c operator< to find the result.
   template <typename T1, typename T2>
   inline bool operator <=(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return !(b < a);
   }
 
+  /// Uses @c operator< to find the result.
   template <typename T1, typename T2>
   inline bool operator >=(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return !(a < b);
   }
+
+  //***************************************************************************
+  ///\brief Functor to select @ref pair::first
+  ///
+  ///\ref select1st is a functor object that takes a single argument, a @ref pair, and returns the @ref pair::first element.
+  ///
+  ///\b Example
+  ///\snippet test_utility.cpp test_select1st_example
+  ///
+  ///\tparam TPair The function object's argument type.
+  ///
+  ///\see select2nd
+  //***************************************************************************
+  template <typename TPair>
+  struct select1st
+  {
+    typedef typename TPair::first_type type;  ///< type of member @ref pair::first.
+
+    //***************************************************************************
+    ///\brief Function call that return @c p.first.
+    ///\return a reference to member @ref pair::first of the @c pair `p`
+    //***************************************************************************
+    type& operator()(TPair& p) const
+    {
+      return p.first;
+    }
+
+    //***************************************************************************
+    ///\copydoc operator()(TPair&)const
+    //
+    const type& operator()(const TPair& p) const
+    {
+      return p.first;
+    }
+
+#if ETL_CPP11_SUPPORTED
+    //***************************************************************************
+    ///\copydoc operator()(TPair&)const
+    //***************************************************************************
+    type&& operator()(TPair&& p) const
+    {
+      return etl::move(p.first);
+    }
+#endif
+  };
+
+  //***************************************************************************
+  ///\brief Functor to select @ref pair::second
+  ///
+  ///\ref select2nd is a functor object that takes a single argument, a @ref pair, and returns the @ref pair::second element.
+  ///
+  ///\b Example
+  ///\snippet test_utility.cpp test_select2nd_example
+  ///
+  ///\tparam TPair The function object's argument type.
+  ///
+  ///\see select1st
+  //***************************************************************************
+  template <typename TPair>
+  struct select2nd
+  {
+    typedef typename TPair::second_type type;  ///< type of member @ref pair::second.
+
+    //***************************************************************************
+    ///\brief Function call. The return value is `p.second`.
+    ///\return a reference to member `second` of the pair `p`.
+    //***************************************************************************
+    type& operator()(TPair& p) const
+    {
+      return p.second;
+    }
+
+    //***************************************************************************
+    ///\copydoc operator()(TPair&)const
+    //***************************************************************************
+    const type& operator()(const TPair& p) const
+    {
+      return p.second;
+    }
+
+#if ETL_CPP11_SUPPORTED
+    //***************************************************************************
+    ///\copydoc operator()(TPair&)const
+    //***************************************************************************
+    type&& operator()(TPair&& p) const
+    {
+      return etl::move(p.second);
+    }
+#endif
+  };
 
 #if ETL_NOT_USING_STL || ETL_CPP14_NOT_SUPPORTED
   //***************************************************************************
