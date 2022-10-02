@@ -217,6 +217,9 @@ namespace etl
 
   //*************************************************************************
   /// unaligned_type
+  ///\brief Allows an arithmetic type to be stored at an unaligned address.
+  ///\tparam T      The arithmetic type.
+  ///\tparam Endian The endianness of the arithmetic type.
   //*************************************************************************
   template <typename T, int Endian_>
   class unaligned_type : public private_unaligned_type::unaligned_type_common<sizeof(T)>
