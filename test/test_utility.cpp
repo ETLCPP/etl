@@ -32,6 +32,7 @@ SOFTWARE.
 
 #include <map>
 #include <vector>
+#include <algorithm>
 
 #include "data.h"
 
@@ -349,10 +350,22 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_select1st_move)
+    {
+      typedef etl::pair<int, std::string> EtlPair;
+      typedef std::pair<int, std::string> StdPair;
+
+      auto selector = etl::select1st<EtlPair>();
+
+      CHECK_EQUAL(1, selector(std::move(EtlPair(1, "Hello"))));
+      CHECK_EQUAL(2, selector(std::move(StdPair(2, "Hello"))));
+    }
+
+    //*************************************************************************
     TEST(test_select1st_example)
     {
       //! [test_select1st_example]
-      using Map = std::map<int, double>;
+      using Map    = std::map<int, double>;
       using Vector = std::vector<int>;
 
       const Map map = {{1, 0.3},
@@ -360,7 +373,7 @@ namespace
                        {33, 0.1}};
       Vector    result{};
 
-      // extract the map keys into a vector
+      // Extract the map keys into a vector
       std::transform(map.begin(), map.end(), std::back_inserter(result), etl::select1st<Map::value_type>());
       //! [test_select1st_example]
 
@@ -385,10 +398,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_select2nd_move)
+    {
+      typedef etl::pair<int, std::string> EtlPair;
+      typedef std::pair<int, std::string> StdPair;
+
+      EtlPair ep1(1, "Hello");
+      StdPair sp2(2, "World");
+
+      auto selector = etl::select2nd<EtlPair>();
+      CHECK_EQUAL(std::string("Hello"), selector(std::move(EtlPair(1, "Hello"))));
+      CHECK_EQUAL(std::string("World"), selector(std::move(StdPair(1, "World"))));
+    }
+
+    //*************************************************************************
     TEST(test_select2nd_example)
     {
       //! [test_select2nd_example]
-      using Map = std::map<int, double>;
+      using Map    = std::map<int, double>;
       using Vector = std::vector<double>;
 
       const Map map = {{1, 0.3},
@@ -396,7 +423,7 @@ namespace
                        {33, 0.1}};
       Vector    result{};
 
-      // extract the map values into a vector
+      // Extract the map values into a vector
       std::transform(map.begin(), map.end(), std::back_inserter(result), etl::select2nd<Map::value_type>());
       //! [test_select2nd_example]
 
