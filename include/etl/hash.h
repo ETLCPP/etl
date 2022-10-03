@@ -91,7 +91,7 @@ namespace etl
     /// Primary definition of base hash class, by default is poisoned
     //*************************************************************************
     template<typename T, bool IsEnum=false>
-    struct hash_base 
+    struct hash_base
     {
     private:
       hash_base();                                  // Can't default construct
@@ -363,6 +363,10 @@ namespace etl
           float  v;
         } u;
 
+        if (v == -0.0f)
+        { // -0.0 and 0.0 are represented differently at bit level
+          v = 0.0f;
+        }
         u.v = v;
 
         return u.s;
@@ -393,6 +397,10 @@ namespace etl
           double v;
         } u;
 
+        if (v == -0.0)
+        { // -0.0 and 0.0 are represented differently at bit level
+          v = 0.0;
+        }
         u.v = v;
 
         return u.s;
@@ -423,6 +431,10 @@ namespace etl
           long double v;
         } u;
 
+        if (v == -0.0L)
+        { // -0.0 and 0.0 are represented differently at bit level
+          v = 0.0L;
+        }
         u.v = v;
 
         return u.s;
@@ -465,7 +477,7 @@ namespace etl
     }
   };
 
-  namespace private_hash 
+  namespace private_hash
   {
     //*************************************************************************
     /// Specialization for enums
@@ -475,11 +487,11 @@ namespace etl
     {
       size_t operator()(T v) const
       {
-        if (sizeof(size_t) >= sizeof(T)) 
+        if (sizeof(size_t) >= sizeof(T))
         {
           return static_cast<size_t>(v);
-        } 
-        else 
+        }
+        else
         {
           return ::etl::hash<unsigned long long>()(static_cast<unsigned long long>(v));
         }
