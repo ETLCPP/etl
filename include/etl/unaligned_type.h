@@ -231,8 +231,13 @@ namespace etl
 
     typedef T value_type;
 
-    typedef typename private_unaligned_type::unaligned_type_common<sizeof(T)>::pointer       pointer;
-    typedef typename private_unaligned_type::unaligned_type_common<sizeof(T)>::const_pointer const_pointer;
+    typedef typename private_unaligned_type::unaligned_type_common<sizeof(T)>::storage_type           storage_type;
+    typedef typename private_unaligned_type::unaligned_type_common<sizeof(T)>::pointer                pointer;
+    typedef typename private_unaligned_type::unaligned_type_common<sizeof(T)>::const_pointer          const_pointer;
+    typedef typename private_unaligned_type::unaligned_type_common<sizeof(T)>::iterator               iterator;
+    typedef typename private_unaligned_type::unaligned_type_common<sizeof(T)>::const_iterator         const_iterator;
+    typedef typename private_unaligned_type::unaligned_type_common<sizeof(T)>::reverse_iterator       reverse_iterator;
+    typedef typename private_unaligned_type::unaligned_type_common<sizeof(T)>::const_reverse_iterator const_reverse_iterator;
 
     static ETL_CONSTANT int Endian  = Endian_;
     static ETL_CONSTANT size_t Size = private_unaligned_type::unaligned_type_common<sizeof(T)>::Size;
@@ -363,7 +368,8 @@ namespace etl
     struct unaligned_copy;
 
     //*******************************************
-    // Size == 1
+    /// Unaligned copy
+    /// Size == 1
     //*******************************************
     template <typename U>
     struct unaligned_copy<U, 1U>
@@ -388,7 +394,8 @@ namespace etl
     };
 
     //*******************************************
-    // Size == 2
+    /// Unaligned copy
+    /// Size == 2
     //*******************************************
     template <typename U>
     struct unaligned_copy<U, 2U>
@@ -440,7 +447,8 @@ namespace etl
     };
 
     //*******************************************
-    // Size == 4
+    /// Unaligned copy
+    /// Size == 4
     //*******************************************
     template <typename U>
     struct unaligned_copy<U, 4U>
@@ -503,7 +511,8 @@ namespace etl
     };
 
     //*******************************************
-    // Size == 8
+    /// Unaligned copy
+    /// Size == 8
     //*******************************************
     template <typename U>
     struct unaligned_copy<U, 8U>
