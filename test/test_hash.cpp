@@ -255,10 +255,13 @@ namespace
     //*************************************************************************
     TEST(test_hash_enums)
     {
-      enum class MyEnumClass : char {
+      enum class MyEnumClass : char 
+      {
         OneE = 0x1E
       };
-      enum MyEnum : char {
+      
+      enum MyEnum : char 
+      {
         MyEnum_TwoF = 0x2F
       };
 
@@ -269,17 +272,23 @@ namespace
       CHECK_EQUAL(0x2F, hash);
     }
 
-    TEST(test_hash_big_enums) {
+    //*************************************************************************
+    TEST(test_hash_big_enums) 
+    {
       constexpr unsigned long long big_number = 0x5AA555AA3CC333CCULL;
-      enum class MyBigEnumClass : unsigned long long {
+      enum class MyBigEnumClass : unsigned long long 
+      {
         Big = big_number
       };
+      
       size_t hash = etl::hash<MyBigEnumClass>()(MyBigEnumClass::Big);
       size_t expectedHash = etl::hash<unsigned long long>()(big_number);
       CHECK_EQUAL(expectedHash, hash);
     }
 
-    TEST(test_hash_poisoned) {
+    //*************************************************************************
+    TEST(test_hash_poisoned) 
+    {
         // Unspecialized hash<> should be disabled (unusable) - see https://en.cppreference.com/w/cpp/utility/hash
         class A {};
         typedef etl::hash<A> general_hasher;
@@ -291,8 +300,9 @@ namespace
         CHECK_FALSE(std::is_move_assignable<general_hasher>::value);
     }
 
-
-    TEST(test_hash_custom) {
+    //*************************************************************************
+    TEST(test_hash_custom) 
+    {
         typedef etl::hash<CustomType> custom_hasher;
 
         CHECK_TRUE(std::is_default_constructible<custom_hasher>::value);
