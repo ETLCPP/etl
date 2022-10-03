@@ -191,88 +191,85 @@ namespace etl
     struct character_set;
 
     //*******************************************
-    template <>
-    struct character_set<char>
+    static char convert(char c)
     {
-      ETL_NODISCARD
-      ETL_CONSTEXPR14
-      static char lookup(char c)
-      {
-        return to_lower(c);
-      }
-    };
+      return to_lower(c);
+    }
 
     //*******************************************
-    template <>
-    struct character_set<wchar_t>
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    static char convert(wchar_t c)
     {
       typedef wchar_t value_type;
       typedef const value_type* string_type;
-      static ETL_CONSTANT string_type valid_chars = L"+-.,eE0123456789abcdefABCDEF";
 
-      ETL_NODISCARD
-      ETL_CONSTEXPR14
-      static char lookup(wchar_t c)
+#if ETL_USING_CPP14
+      constexpr string_type valid_chars = L"+-.,eE0123456789abcdefABCDEF";
+#else
+      static const string_type valid_chars = L"+-.,eE0123456789abcdefABCDEF";
+#endif
+
+      for (int i = 0; i < valid_length; ++i)
       {
-        for (int i = 0; i < valid_length; ++i)
+        if (c == valid_chars[i])
         {
-          if (c == valid_chars[i])
-          {
-            return to_lower(valid_character_set::valid_chars[i]);
-          }
+          return to_lower(valid_character_set::valid_chars[i]);
         }
-
-        return valid_character_set::unknown_char;
       }
-    };
+
+      return valid_character_set::unknown_char;
+    }
 
     //*******************************************
-    template <>
-    struct character_set<char16_t>
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    static char convert(char16_t c)
     {
       typedef char16_t value_type;
       typedef const value_type* string_type;
-      static ETL_CONSTANT string_type valid_chars = u"+-.,eE0123456789abcdefABCDEF";
 
-      ETL_NODISCARD
-      ETL_CONSTEXPR14
-      static char lookup(char16_t c)
+#if ETL_USING_CPP14
+      constexpr string_type valid_chars = u"+-.,eE0123456789abcdefABCDEF";
+#else
+      static const string_type valid_chars = u"+-.,eE0123456789abcdefABCDEF";
+#endif
+
+      for (int i = 0; i < valid_length; ++i)
       {
-        for (int i = 0; i < valid_length; ++i)
+        if (c == valid_chars[i])
         {
-          if (c == valid_chars[i])
-          {
-            return to_lower(valid_character_set::valid_chars[i]);
-          }
+          return to_lower(valid_character_set::valid_chars[i]);
         }
-
-        return valid_character_set::unknown_char;
       }
-    };
 
+      return valid_character_set::unknown_char;
+    }
+ 
     //*******************************************
-    template <>
-    struct character_set<char32_t>
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    static char convert(char32_t c)
     {
       typedef char32_t value_type;
       typedef const value_type* string_type;
-      static ETL_CONSTANT string_type valid_chars = U"+-.,eE0123456789abcdefABCDEF";
+      
+#if ETL_USING_CPP14
+      constexpr string_type valid_chars = U"+-.,eE0123456789abcdefABCDEF";
+#else
+      static const string_type valid_chars = U"+-.,eE0123456789abcdefABCDEF";
+#endif
 
-      ETL_NODISCARD
-      ETL_CONSTEXPR14
-      static char lookup(wchar_t c)
+      for (int i = 0; i < valid_length; ++i)
       {
-        for (int i = 0; i < valid_length; ++i)
+        if (c == valid_chars[i])
         {
-          if (c == valid_chars[i])
-          {
-            return to_lower(valid_character_set::valid_chars[i]);
-          }
+          return to_lower(valid_character_set::valid_chars[i]);
         }
-
-        return valid_character_set::unknown_char;
       }
-    };
+
+      return valid_character_set::unknown_char;
+    }
 
     //***************************************************************************
     /// 
@@ -304,12 +301,29 @@ namespace etl
       return value;
     }
 
+    //***************************************************************************
+    /// 
+    //***************************************************************************
+    template <typename TValue>
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_floating_point<TValue>::value, TValue>::type
+      accumulate_value(TValue value, char digit, bool is_negative)
+    {
+      value *= etl::radix::decimal;
+      is_negative ? value -= digit : value += digit;
+
+      return value;
+    }
+
     //*******************************************
     template <typename TChar>
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
     bool check_has_negative_prefix(etl::basic_string_view<TChar>& view)
     {
       // Check for prefix.
-      const char c = character_set<TChar>::lookup(view[0]);
+      const char c = character_set<TChar>::convert(view[0]);
       const bool has_positive_prefix = (c == valid_character_set::positive_char);
       const bool has_negative_prefix = (c == valid_character_set::negative_char);
 
@@ -356,12 +370,16 @@ namespace etl
       }
 
       //*********************************
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
       bool has_value() const
       {
         return (valid_value == true);
       }
 
       //*********************************
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
       TValue get_value() const
       {
         return value;
@@ -373,6 +391,61 @@ namespace etl
       bool   is_negative;
       bool   valid_value;
       etl::radix::value_type radix;
+    };
+
+    //***************************************************************************
+    /// 
+    //***************************************************************************
+    template <typename TValue>
+    struct to_float_implementation
+    {
+      //*********************************
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
+        to_float_implementation(bool is_negative_)
+        : value(0)
+        , is_negative(is_negative_)
+        , valid_value(false)
+      {
+      }
+
+      //*********************************
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
+      bool add(char c)
+      {
+        bool is_valid = valid_character_set::is_valid(c, etl::radix::decimal);
+
+        if (is_valid)
+        {
+          value = accumulate_value(value, valid_character_set::digit_value(c, etl::radix::decimal), is_negative);
+          valid_value = true;
+        }
+
+        return is_valid;
+      }
+
+      //*********************************
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
+      bool has_value() const
+      {
+        return (valid_value == true);
+      }
+
+      //*********************************
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
+      TValue get_value() const
+      {
+        return value;
+      }
+
+    private:
+
+      TValue value;
+      bool   is_negative;
+      bool   valid_value;
     };
     
     //***************************************************************************
@@ -401,7 +474,7 @@ namespace etl
 
         while (parsing)
         {
-          parsing = implementation.add(character_set<TChar>::lookup(*itr));
+          parsing = implementation.add(character_set<TChar>::convert(*itr));
 
           if (parsing)
           {
@@ -458,7 +531,7 @@ namespace etl
 
         while (parsing)
         {
-          parsing = implementation.add(character_set<TChar>::lookup(*itr));
+          parsing = implementation.add(character_set<TChar>::convert(*itr));
 
           if (parsing)
           {
@@ -513,7 +586,7 @@ namespace etl
 
         while (parsing)
         {
-          parsing = implementation.add(character_set<TChar>::lookup(*itr));
+          parsing = implementation.add(character_set<TChar>::convert(*itr));
 
           if (parsing)
           {
@@ -570,7 +643,7 @@ namespace etl
 
         while (parsing)
         {
-          parsing = implementation.add(character_set<TChar>::lookup(*itr));
+          parsing = implementation.add(character_set<TChar>::convert(*itr));
 
           if (parsing)
           {
@@ -800,81 +873,27 @@ namespace etl
     using namespace etl::private_to_arithmetic;
 
     etl::optional<TValue>         result;
-    etl::basic_string_view<TChar> valid_characters;
-    view_information<TChar>       view_info;
-    numeric_information           numeric_info;
 
-    bool parsing = validate_information_from_view<TChar>(view, etl::radix::decimal, view_info, numeric_info);
+    bool is_negative = false;
 
-    if (parsing)
+    if (!view.empty())
     {
-      // Integral part.
-      etl::basic_string_view<TChar>::const_iterator itr_integral_begin = view.begin();
-      etl::basic_string_view<TChar>::const_iterator itr_integral_end   = (numeric_info.radix_point_position == etl::npos)
-                                                                           ? view.end()
-                                                                           : itr_integral_begin + numeric_info.radix_point_position;
+      is_negative = check_has_negative_prefix(view);
+    }
 
-      TValue intergal_value = 0;
-
-      while (itr_integral_begin != itr_integral_end)
-      {
-        if (is_valid_decimal_character(*itr_integral_begin))
-        {
-          numeric_info.digit = get_digit_value(*itr_integral_begin);
-          intergal_value = accumulate_integral_part(intergal_value, numeric_info);
-          ++itr_integral_begin;
-        }
-        else
-        {
-          // Character was not a valid numeric, so fail.
-          ETL_ASSERT_FAIL(ETL_ERROR(etl::to_arithmetic_invalid_format));
-          parsing = false;
-          itr_integral_begin = itr_integral_end;
-        }
-      }
-
-      // Fractional part.
-      etl::basic_string_view<TChar>::const_reverse_iterator itr_fractional_end = ETL_OR_STD::reverse_iterator(itr_integral_begin + 1);
-      etl::basic_string_view<TChar>::const_reverse_iterator itr_fractional_begin = (numeric_info.radix_point_position == etl::npos)
-                                                                                     ? itr_fractional_end
-                                                                                     : (numeric_info.exponential_position == etl::npos)
-                                                                                         ? view.rbegin()
-                                                                                         : ETL_OR_STD::reverse_iterator(view.begin() + numeric_info.exponential_position);
-      
-      TValue fractional_value = 0;
-      
-      while (itr_fractional_begin != itr_fractional_end)
-      {
-        if (is_valid_decimal_character(*itr_fractional_begin))
-        {
-          numeric_info.digit = get_digit_value(*itr_fractional_begin);
-          fractional_value = accumulate_fractional_part(fractional_value, numeric_info);
-          ++itr_fractional_begin;
-        }
-        else
-        {
-          // Character was not a valid numeric, so fail.
-          ETL_ASSERT_FAIL(ETL_ERROR(etl::to_arithmetic_invalid_format));
-          parsing = false;
-          itr_fractional_begin = itr_fractional_end;
-        }
-      }
-
-      // Exponetial part.
-      etl::basic_string_view<TChar>::const_iterator itr_exponential_end = view.end();
-      etl::basic_string_view<TChar>::const_iterator itr_exponential_begin = (numeric_info.exponential_position == etl::npos)
-                                                                              ? view.end()
-                                                                              : view.begin() + numeric_info.exponential_position + 1;
-
-      //optional<int> exponential_value = to_arithmetic<int, TChar>(etl::basic_string_view<TChar>(itr_exponential_begin, itr_exponential_end));
-
-      // Combine the integral and fractional parts.
-      TValue value = 0;
+    if (!view.empty())
+    {
+      bool parsing = true;
 
       if (parsing)
       {
-        value = intergal_value + fractional_value;
-        result = value;
+        // Integral part.
+
+
+        // Fractional part.
+
+        // Exponetial part.
+
       }
     }
 
