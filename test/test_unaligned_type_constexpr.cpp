@@ -544,8 +544,8 @@ namespace
     {
       static constexpr etl::be_uint16_t test(0x1234);
       
-      constexpr const char* p1 = test.data();
-      constexpr const char* p2 = test.data() + 1U;
+      constexpr etl::be_uint16_t::const_pointer p1 = test.data();
+      constexpr etl::be_uint16_t::const_pointer p2 = test.data() + 1U;
 
       CHECK_EQUAL(0x12, *p1);
       CHECK_EQUAL(0x34, *p2);
@@ -617,6 +617,24 @@ namespace
 
       CHECK_EQUAL(0x1234, lev);
       CHECK_EQUAL(0x1234, bev);
+    }
+
+    //*************************************************************************
+    TEST(test_storage_bytes)
+    {
+      constexpr etl::le_uint16_t test_le(0x1234);
+      constexpr etl::be_uint16_t test_be(0x1234);
+
+      constexpr int lev0 = test_le[0];
+      constexpr int lev1 = test_le[1];
+      
+      constexpr int bev0 = test_be[0];
+      constexpr int bev1 = test_be[1];
+
+      CHECK_EQUAL(0x34, lev0);
+      CHECK_EQUAL(0x12, lev1);
+      CHECK_EQUAL(0x12, bev0);
+      CHECK_EQUAL(0x34, bev1);
     }
   };
 }
