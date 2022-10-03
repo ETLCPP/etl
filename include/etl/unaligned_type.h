@@ -384,7 +384,7 @@ namespace etl
       }
 
       //*******************************
-      static ETL_CONSTEXPR14 void copy(const_pointer src, int /*endian_src*/, unsigned char* dst)
+      static ETL_CONSTEXPR14 void copy(const_pointer src, int /*endian_src*/, pointer dst)
       {
         dst[0] = src[0];
       }
@@ -398,7 +398,7 @@ namespace etl
     struct unaligned_copy<U, 2U>
     {
       //*******************************
-      static ETL_CONSTEXPR14 void copy(T value, unsigned char* store)
+      static ETL_CONSTEXPR14 void copy(T value, pointer store)
       {
         if (Endian == etl::endianness::value())
         {
@@ -417,18 +417,18 @@ namespace etl
       {
         if (Endian == etl::endianness::value())
         {
-          value  = static_cast<T>(static_cast<unsigned char>(store[0]));
-          value |= static_cast<T>(static_cast<unsigned char>(store[1])) << (1U * CHAR_BIT);
+          value  = static_cast<T>(store[0]);
+          value |= static_cast<T>(store[1]) << (1U * CHAR_BIT);
         }
         else
         {
-          value  = static_cast<T>(static_cast<unsigned char>(store[1]));
-          value |= static_cast<T>(static_cast<unsigned char>(store[0])) << (1U * CHAR_BIT);
+          value  = static_cast<T>(store[1]);
+          value |= static_cast<T>(store[0]) << (1U * CHAR_BIT);
         }
       }
 
       //*******************************
-      static ETL_CONSTEXPR14 void copy(const_pointer src, int endian_src, unsigned char* dst)
+      static ETL_CONSTEXPR14 void copy(const_pointer src, int endian_src, pointer dst)
       {
         if (Endian == endian_src)
         {
@@ -450,7 +450,7 @@ namespace etl
     template <typename U>
     struct unaligned_copy<U, 4U>
     {
-      static ETL_CONSTEXPR14 void copy(T value, unsigned char* store)
+      static ETL_CONSTEXPR14 void copy(T value, pointer store)
       {
         if (Endian == etl::endianness::value())
         {
@@ -473,22 +473,22 @@ namespace etl
       {
         if (Endian == etl::endianness::value())
         {
-          value  = static_cast<T>(static_cast<unsigned char>(store[0]));
-          value |= static_cast<T>(static_cast<unsigned char>(store[1])) << (1U * CHAR_BIT);
-          value |= static_cast<T>(static_cast<unsigned char>(store[2])) << (2U * CHAR_BIT);
-          value |= static_cast<T>(static_cast<unsigned char>(store[3])) << (3U * CHAR_BIT);
+          value  = static_cast<T>(store[0]);
+          value |= static_cast<T>(store[1]) << (1U * CHAR_BIT);
+          value |= static_cast<T>(store[2]) << (2U * CHAR_BIT);
+          value |= static_cast<T>(store[3]) << (3U * CHAR_BIT);
         }
         else
         {
-          value  = static_cast<T>(static_cast<unsigned char>(store[3]));
-          value |= static_cast<T>(static_cast<unsigned char>(store[2])) << (1U * CHAR_BIT);
-          value |= static_cast<T>(static_cast<unsigned char>(store[1])) << (2U * CHAR_BIT);
-          value |= static_cast<T>(static_cast<unsigned char>(store[0])) << (3U * CHAR_BIT);
+          value  = static_cast<T>(store[3]);
+          value |= static_cast<T>(store[2]) << (1U * CHAR_BIT);
+          value |= static_cast<T>(store[1]) << (2U * CHAR_BIT);
+          value |= static_cast<T>(store[0]) << (3U * CHAR_BIT);
         }
       }
 
       //*******************************
-      static ETL_CONSTEXPR14 void copy(const_pointer src, int endian_src, unsigned char* dst)
+      static ETL_CONSTEXPR14 void copy(const_pointer src, int endian_src, pointer dst)
       {
         if (Endian == endian_src)
         {
@@ -514,7 +514,7 @@ namespace etl
     template <typename U>
     struct unaligned_copy<U, 8U>
     {
-      static ETL_CONSTEXPR14 void copy(T value, unsigned char* store)
+      static ETL_CONSTEXPR14 void copy(T value, pointer store)
       {
         if (Endian == etl::endianness::value())
         {
@@ -545,30 +545,30 @@ namespace etl
       {
         if (Endian == etl::endianness::value())
         {
-          value  = static_cast<T>(static_cast<unsigned char>(store[0]));
-          value |= static_cast<T>(static_cast<unsigned char>(store[1])) << (1U * CHAR_BIT);
-          value |= static_cast<T>(static_cast<unsigned char>(store[2])) << (2U * CHAR_BIT);
-          value |= static_cast<T>(static_cast<unsigned char>(store[3])) << (3U * CHAR_BIT);
-          value |= static_cast<T>(static_cast<unsigned char>(store[4])) << (4U * CHAR_BIT);
-          value |= static_cast<T>(static_cast<unsigned char>(store[5])) << (5U * CHAR_BIT);
-          value |= static_cast<T>(static_cast<unsigned char>(store[6])) << (6U * CHAR_BIT);
-          value |= static_cast<T>(static_cast<unsigned char>(store[7])) << (7U * CHAR_BIT);
+          value  = static_cast<T>(store[0]);
+          value |= static_cast<T>(store[1]) << (1U * CHAR_BIT);
+          value |= static_cast<T>(store[2]) << (2U * CHAR_BIT);
+          value |= static_cast<T>(store[3]) << (3U * CHAR_BIT);
+          value |= static_cast<T>(store[4]) << (4U * CHAR_BIT);
+          value |= static_cast<T>(store[5]) << (5U * CHAR_BIT);
+          value |= static_cast<T>(store[6]) << (6U * CHAR_BIT);
+          value |= static_cast<T>(store[7]) << (7U * CHAR_BIT);
         }
         else
         {
-          value  = static_cast<T>(static_cast<unsigned char>(store[7]));
-          value |= static_cast<T>(static_cast<unsigned char>(store[6])) << (1U * CHAR_BIT);
-          value |= static_cast<T>(static_cast<unsigned char>(store[5])) << (2U * CHAR_BIT);
-          value |= static_cast<T>(static_cast<unsigned char>(store[4])) << (3U * CHAR_BIT);
-          value |= static_cast<T>(static_cast<unsigned char>(store[3])) << (4U * CHAR_BIT);
-          value |= static_cast<T>(static_cast<unsigned char>(store[2])) << (5U * CHAR_BIT);
-          value |= static_cast<T>(static_cast<unsigned char>(store[1])) << (6U * CHAR_BIT);
-          value |= static_cast<T>(static_cast<unsigned char>(store[0])) << (7U * CHAR_BIT);
+          value  = static_cast<T>(store[7]);
+          value |= static_cast<T>(store[6]) << (1U * CHAR_BIT);
+          value |= static_cast<T>(store[5]) << (2U * CHAR_BIT);
+          value |= static_cast<T>(store[4]) << (3U * CHAR_BIT);
+          value |= static_cast<T>(store[3]) << (4U * CHAR_BIT);
+          value |= static_cast<T>(store[2]) << (5U * CHAR_BIT);
+          value |= static_cast<T>(store[1]) << (6U * CHAR_BIT);
+          value |= static_cast<T>(store[0]) << (7U * CHAR_BIT);
         }
       }
 
       //*******************************
-      static ETL_CONSTEXPR14 void copy(const_pointer src, int endian_src, unsigned char* dst)
+      static ETL_CONSTEXPR14 void copy(const_pointer src, int endian_src, pointer dst)
       {
         if (Endian == endian_src)
         {
