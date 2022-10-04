@@ -357,8 +357,10 @@ namespace
 
       auto selector = etl::select1st<EtlPair>();
 
+#include "etl/private/diagnostic_pessimizing-move_push.h"
       CHECK_EQUAL(1, selector(std::move(EtlPair(1, "Hello"))));
       CHECK_EQUAL(2, selector(std::move(StdPair(2, "Hello"))));
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -407,8 +409,11 @@ namespace
       StdPair sp2(2, "World");
 
       auto selector = etl::select2nd<EtlPair>();
+
+#include "etl/private/diagnostic_pessimizing-move_push.h"
       CHECK_EQUAL(std::string("Hello"), selector(std::move(EtlPair(1, "Hello"))));
       CHECK_EQUAL(std::string("World"), selector(std::move(StdPair(1, "World"))));
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
