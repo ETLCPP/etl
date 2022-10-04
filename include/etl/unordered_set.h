@@ -846,7 +846,7 @@ namespace etl
       local_iterator icurrent = bucket.begin();
 
       // Search for the key, if we have it.
-      while ((icurrent != bucket.end()) && (icurrent->key != key))
+      while ((icurrent != bucket.end()) && (!key_equal_function(icurrent->key, key)))
       {
         ++iprevious;
         ++icurrent;
