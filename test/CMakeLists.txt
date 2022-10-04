@@ -1,38 +1,7 @@
 cmake_minimum_required(VERSION 3.5.0)
-project(etl_unit_tests)
+project(etl_unit_tests LANGUAGES CXX)
 
-add_definitions(-DETL_DEBUG)
-
-option(ETL_NO_STL "No STL" OFF)
-
-if (NO_STL OR ETL_NO_STL)
-	message(STATUS "Compiling for No STL")
-	add_definitions(-DETL_NO_STL)
-else()
-	message(STATUS "Compiling for STL")
-endif()
-
-if (ETL_USE_TYPE_TRAITS_BUILTINS)
-	message(STATUS "Compiling for built-in type traits")
-	add_definitions(-DETL_USE_TYPE_TRAITS_BUILTINS)
-endif()
-
-if (ETL_USE_MEM_BUILTINS)
-	message(STATUS "Compiling for built-in memory functions")
-	add_definitions(-DETL_USE_MEM_BUILTINS)
-endif()
-
-if (ETL_USER_DEFINED_TYPE_TRAITS)
-	message(STATUS "Compiling for user defined type traits")
-	add_definitions(-DETL_USER_DEFINED_TYPE_TRAITS)
-endif()
-
-if (ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
-	message(STATUS "Compiling for C++03 tests")
-	add_definitions(-DETL_FORCE_TEST_CPP03_IMPLEMENTATION)
-endif()
-
-set(TEST_SOURCE_FILES
+add_executable(etl_tests
 	main.cpp
 	murmurhash3.cpp
 	test_algorithm.cpp
@@ -294,87 +263,58 @@ set(TEST_SOURCE_FILES
 	test_xor_checksum.cpp
 	test_xor_rotate_checksum.cpp 
   )
-  
-set(UNITTEST_SOURCE_FILES
-    UnitTest++/AssertException.cpp
-    UnitTest++/Checks.cpp
-    UnitTest++/CompositeTestReporter.cpp                                            
-    UnitTest++/CurrentTest.cpp                                                      
-    UnitTest++/DeferredTestReporter.cpp                                             
-    UnitTest++/DeferredTestResult.cpp                                               
-    UnitTest++/MemoryOutStream.cpp                                                  
-    UnitTest++/ReportAssert.cpp                                                     
-    UnitTest++/RequiredCheckException.cpp                                           
-    UnitTest++/RequiredCheckTestReporter.cpp                                        
-    UnitTest++/Test.cpp                                                             
-    UnitTest++/TestDetails.cpp                                                      
-    UnitTest++/TestList.cpp                                                         
-    UnitTest++/TestReporter.cpp                                                     
-    UnitTest++/TestReporterStdout.cpp                                               
-    UnitTest++/TestResults.cpp                                                      
-    UnitTest++/TestRunner.cpp                                                       
-    UnitTest++/ThrowingTestReporter.cpp                                             
-    UnitTest++/TimeConstraint.cpp                                                   
-    UnitTest++/XmlTestReporter.cpp
-  )
 
-set(UNITTEST_DIR
-      UnitTest++
-  )
+target_compile_definitions(etl_tests PRIVATE -DETL_DEBUG)
 
-if (WIN32)
-  set(UNITTEST_SOURCE_FILES
-      ${UNITTEST_SOURCE_FILES}
-      UnitTest++/Win32/TimeHelpers.cpp
-  )
-else ()
-  set(UNITTEST_SOURCE_FILES
-	  ${UNITTEST_SOURCE_FILES}
-      UnitTest++/Posix/SignalTranslator.cpp
-      UnitTest++/Posix/TimeHelpers.cpp
-  )
-endif ()
+option(ETL_NO_STL "No STL" OFF)
 
-if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  message(STATUS "Using MSVC")
-endif()
-
-if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  message(STATUS "Using GNU")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
-endif()
-
-if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  message(STATUS "Using Clang")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
-endif()
-
-add_executable(etl_tests ${TEST_SOURCE_FILES})
-add_library(unit_test ${UNITTEST_SOURCE_FILES})
-include_directories(${PROJECT_SOURCE_DIR}/../include)
-target_include_directories(etl_tests SYSTEM PRIVATE ${UNITTEST_DIR})
-target_include_directories(etl_tests PUBLIC ${CMAKE_CURRENT_LIST_DIR})
-
-if(UNIX AND NOT APPLE)
-  # atomic is need on Linux with Clang
-  set(THREADS_PREFER_PTHREAD_FLAG ON)
-  find_package(Threads REQUIRED)
-  target_link_libraries(etl_tests unit_test atomic Threads::Threads)
-elseif(NOT UNIX AND APPLE)
-  set(THREADS_PREFER_PTHREAD_FLAG ON)
-  find_package(Threads REQUIRED)
-  target_link_libraries(etl_tests unit_test)
+if (NO_STL OR ETL_NO_STL)
+	message(STATUS "Compiling for No STL")
+	target_compile_definitions(etl_tests PRIVATE -DETL_NO_STL)
 else()
-  target_link_libraries(etl_tests unit_test)
+	message(STATUS "Compiling for STL")
 endif()
+
+if (ETL_USE_TYPE_TRAITS_BUILTINS)
+	message(STATUS "Compiling for built-in type traits")
+	target_compile_definitions(etl_tests PRIVATE -DETL_USE_TYPE_TRAITS_BUILTINS)
+endif()
+
+if (ETL_USE_MEM_BUILTINS)
+	message(STATUS "Compiling for built-in memory functions")
+	target_compile_definitions(etl_tests PRIVATE -DETL_USE_MEM_BUILTINS)
+endif()
+
+if (ETL_USER_DEFINED_TYPE_TRAITS)
+	message(STATUS "Compiling for user defined type traits")
+	target_compile_definitions(etl_tests PRIVATE -DETL_USER_DEFINED_TYPE_TRAITS)
+endif()
+
+if (ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
+	message(STATUS "Compiling for C++03 tests")
+	target_compile_definitions(etl_tests PRIVATE -DETL_FORCE_TEST_CPP03_IMPLEMENTATION)
+endif()
+
+target_include_directories(etl_tests
+		PRIVATE
+		${PROJECT_SOURCE_DIR}/../include)
+
+add_subdirectory(UnitTest++)
+target_link_libraries(etl_tests PRIVATE UnitTestpp)
+
+if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+	target_compile_options(etl_tests
+			PRIVATE
+			-fsanitize=address,undefined
+			-Wall
+			-Wextra
+			-Werror
+			)
+	target_link_options(etl_tests
+			PRIVATE
+			-fsanitize=address,undefined
+			)
+endif ()
 
 # Enable the 'make test' CMake target using the executable defined above
 add_test(etl_unit_tests etl_tests)
