@@ -302,27 +302,19 @@ target_include_directories(etl_tests
 add_subdirectory(UnitTest++)
 target_link_libraries(etl_tests PRIVATE UnitTestpp)
 
-if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-  message(STATUS "Using MSVC")
-elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  message(STATUS "Using GNU")
-  target_compile_options(etl_tests
-		  PRIVATE
-		  -fsanitize=address,undefined
-		  -Wall
-		  -Wextra
-		  -Werror
-		  )
-elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  message(STATUS "Using Clang")
-  target_compile_options(etl_tests
-		  PRIVATE
-		  -fsanitize=address,undefined
-		  -Wall
-		  -Wextra
-		  -Werror
-		  )
-endif()
+if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+	target_compile_options(etl_tests
+			PRIVATE
+			-fsanitize=address,undefined
+			-Wall
+			-Wextra
+			-Werror
+			)
+	target_link_options(etl_tests
+			PRIVATE
+			-fsanitize=address,undefined
+			)
+endif ()
 
 # Enable the 'make test' CMake target using the executable defined above
 add_test(etl_unit_tests etl_tests)
