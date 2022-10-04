@@ -360,3 +360,4 @@ test/etl_error_handler/build-exceptions_and_log_errors-GCC-Debug
 test/etl_error_handler/build-exceptions-GCC-Debug
 test/etl_error_handler/exceptions_and_log_errors/.vs
 examples/ArmTimerCallbacks - C++/ArmTimerCallbacks.uvoptx
+test/vs2022/.vs
