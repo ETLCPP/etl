@@ -634,6 +634,29 @@ namespace
       CHECK(is_equal);
     }
 
+
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_back_insert_iterator)
+    {
+      Data data={0,1,2,3,4,5,6,7,8,9};
+      Data expected={0,1,4,9,16,25,36,49,64,81};
+      Data transformed;
+
+      auto squared = [](int value){
+        return value*value;
+      };
+
+      etl::transform(data.cbegin(),data.cend(),etl::back_inserter(transformed),squared);
+
+      CHECK_EQUAL(expected.size(), transformed.size());
+
+      bool transformed_equals_expected = std::equal(transformed.begin(),
+                                        transformed.end(),
+                                        expected.begin());
+      CHECK(transformed_equals_expected);
+    }
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_emplace_back)
     {
