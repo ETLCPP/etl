@@ -306,7 +306,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   message(STATUS "Using MSVC")
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   message(STATUS "Using GNU")
-  target_link_options(etl_tests
+  target_compile_options(etl_tests
 		  PRIVATE
 		  -fsanitize=address,undefined
 		  -Wall
@@ -315,7 +315,7 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 		  )
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   message(STATUS "Using Clang")
-  target_link_options(etl_tests
+  target_compile_options(etl_tests
 		  PRIVATE
 		  -fsanitize=address,undefined
 		  -Wall
