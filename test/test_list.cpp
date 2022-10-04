@@ -302,6 +302,28 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_front_insert_iterator)
+    {
+      DataInt data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      DataInt expected = {81, 64, 49, 36, 25, 16, 9, 4, 1, 0};
+      DataInt transformed;
+
+      auto squared = [](int value)
+      {
+        return value * value;
+      };
+
+      etl::transform(data.cbegin(), data.cend(), etl::front_inserter(transformed), squared);
+
+      CHECK_EQUAL(expected.size(), transformed.size());
+
+      bool transformed_equals_expected = std::equal(transformed.begin(),
+                                                    transformed.end(),
+                                                    expected.begin());
+      CHECK(transformed_equals_expected);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_up)
     {
       const size_t INITIAL_SIZE = 4UL;
