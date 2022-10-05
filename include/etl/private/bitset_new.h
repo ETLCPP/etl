@@ -507,7 +507,7 @@ namespace etl
     {
       // Where to start.
       size_t index = position >> log2<Bits_Per_Element>::value;
-      size_t bit   = position;
+      size_t bit   = position & (Bits_Per_Element - 1);
 
       element_type mask = 1 << bit;
 
