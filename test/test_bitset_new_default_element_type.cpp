@@ -1953,6 +1953,28 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_find_next_github_issue_617)
+    {
+      constexpr etl::bitset<64> bs1(ull(0xC000'0000'0000'0031));
+      constexpr size_t bs1fnt1 = bs1.find_next(true, 10);
+      constexpr size_t bs1fnt2 = bs1.find_next(true, 59);
+      CHECK_EQUAL(62U, bs1fnt1);
+      CHECK_EQUAL(62U, bs1fnt2);
+
+      constexpr etl::bitset<64> bs2(ull(0x3FFF'FFFF'FFFF'FFCE));
+      constexpr size_t bs2fnf1 = bs2.find_next(false, 10);
+      constexpr size_t bs2fnf2 = bs2.find_next(false, 59);
+      CHECK_EQUAL(62U, bs2fnf1);
+      CHECK_EQUAL(62U, bs2fnf2);
+
+      constexpr etl::bitset<64, uint32_t> bs32(ull(0xC000'0000'0000'0031));
+      constexpr size_t bs32fnt1 = bs32.find_next(true, 10);
+      constexpr size_t bs32fnt2 = bs32.find_next(true, 59);
+      CHECK_EQUAL(62U, bs32fnt1);
+      CHECK_EQUAL(62U, bs32fnt2);
+    }
+
+    //*************************************************************************
     //*************************************************************************
     TEST(test_swap)
     {
