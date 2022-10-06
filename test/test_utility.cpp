@@ -350,20 +350,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_select1st_move)
-    {
-      typedef etl::pair<int, std::string> EtlPair;
-      typedef std::pair<int, std::string> StdPair;
-
-      auto selector = etl::select1st<EtlPair>();
-
-#include "etl/private/diagnostic_pessimizing-move_push.h"
-      CHECK_EQUAL(1, selector(std::move(EtlPair(1, "Hello"))));
-      CHECK_EQUAL(2, selector(std::move(StdPair(2, "Hello"))));
-#include "etl/private/diagnostic_pop.h"
-    }
-
-    //*************************************************************************
     TEST(test_select1st_example)
     {
       //! [test_select1st_example]
@@ -397,23 +383,6 @@ namespace
       auto selector = etl::select2nd<EtlPair>();
       CHECK_EQUAL(std::string("Hello"), selector(ep1));
       CHECK_EQUAL(std::string("World"), selector(sp2));
-    }
-
-    //*************************************************************************
-    TEST(test_select2nd_move)
-    {
-      typedef etl::pair<int, std::string> EtlPair;
-      typedef std::pair<int, std::string> StdPair;
-
-      EtlPair ep1(1, "Hello");
-      StdPair sp2(2, "World");
-
-      auto selector = etl::select2nd<EtlPair>();
-
-#include "etl/private/diagnostic_pessimizing-move_push.h"
-      CHECK_EQUAL(std::string("Hello"), selector(std::move(EtlPair(1, "Hello"))));
-      CHECK_EQUAL(std::string("World"), selector(std::move(StdPair(1, "World"))));
-#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
