@@ -37,14 +37,13 @@ SOFTWARE.
 
 namespace etl
 {
-
   template <typename T>
   struct scaled_rounding_t
   {
     typedef typename etl::conditional<etl::is_signed<T>::value, int32_t, uint32_t>::type type;
   };
 
-    //*****************************************************************************
+  //*****************************************************************************
   /// A set of rounding algorithms for scaled integrals.
   /// \tparam T       The integral type.
   /// \tparam SCALING The scaling factor.
@@ -64,7 +63,7 @@ namespace etl
   /// \param value Scaled integral.
   /// \return Unscaled, rounded integral.
   //***************************************************************************
-  template <const size_t SCALING, typename T>
+  template <uint32_t SCALING, typename T>
   T round_ceiling_unscaled(T value)
   {
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
@@ -85,7 +84,7 @@ namespace etl
   /// \param value Scaled integral.
   /// \return Scaled, rounded integral.
   //***************************************************************************
-  template <const size_t SCALING, typename T>
+  template <uint32_t SCALING, typename T>
   T round_ceiling_scaled(T value)
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
@@ -98,7 +97,7 @@ namespace etl
   /// \param value Scaled integral.
   /// \return Unscaled, rounded integral.
   //***************************************************************************
-  template <const size_t SCALING, typename T>
+  template <uint32_t SCALING, typename T>
   T round_floor_unscaled(T value)
   {
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
@@ -119,7 +118,7 @@ namespace etl
   /// \param value Scaled integral.
   /// \return Scaled, rounded integral.
   //***************************************************************************
-  template <const size_t SCALING, typename T>
+  template <uint32_t SCALING, typename T>
   T round_floor_scaled(T value)
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
@@ -133,7 +132,7 @@ namespace etl
   /// \param value Scaled integral.
   /// \return Unscaled, rounded integral.
   //***************************************************************************
-  template <const size_t SCALING, typename T>
+  template <uint32_t SCALING, typename T>
   T round_half_up_unscaled(T value)
   {
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
@@ -156,7 +155,7 @@ namespace etl
   /// \param value Scaled integral.
   /// \return Scaled, rounded integral.
   //***************************************************************************
-  template <const size_t SCALING, typename T>
+  template <uint32_t SCALING, typename T>
   T round_half_up_scaled(T value)
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
@@ -170,7 +169,7 @@ namespace etl
   /// \param value Scaled integral.
   /// \return Unscaled, rounded integral.
   //***************************************************************************
-  template <const size_t SCALING, typename T>
+  template <uint32_t SCALING, typename T>
   T round_half_down_unscaled(T value)
   {
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
@@ -193,7 +192,7 @@ namespace etl
   /// \param value Scaled integral.
   /// \return Scaled, rounded integral.
   //***************************************************************************
-  template <const size_t SCALING, typename T>
+  template <uint32_t SCALING, typename T>
   T round_half_down_scaled(T value)
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
@@ -206,7 +205,7 @@ namespace etl
   /// \param value Scaled integral.
   /// \return Unscaled, rounded integral.
   //***************************************************************************
-  template <const size_t SCALING, typename T>
+  template <uint32_t SCALING, typename T>
   T round_zero_unscaled(T value)
   {
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
@@ -220,7 +219,7 @@ namespace etl
   /// \param value Scaled integral.
   /// \return Scaled, rounded integral.
   //***************************************************************************
-  template <const size_t SCALING, typename T>
+  template <uint32_t SCALING, typename T>
   T round_zero_scaled(T value)
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
@@ -233,7 +232,7 @@ namespace etl
   /// \param value Scaled integral.
   /// \return Unscaled, rounded integral.
   //***************************************************************************
-  template <const size_t SCALING, typename T>
+  template <uint32_t SCALING, typename T>
   T round_infinity_unscaled(T value)
   {
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
@@ -254,7 +253,7 @@ namespace etl
   /// \param value Scaled integral.
   /// \return Scaled, rounded integral.
   //***************************************************************************
-  template <const size_t SCALING, typename T>
+  template <uint32_t SCALING, typename T>
   T round_infinity_scaled(T value)
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
@@ -268,7 +267,7 @@ namespace etl
   /// \param value Scaled integral.
   /// \return Unscaled, rounded integral.
   //***************************************************************************
-  template <const size_t SCALING, typename T>
+  template <uint32_t SCALING, typename T>
   T round_half_even_unscaled(T value)
   {
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
@@ -299,7 +298,7 @@ namespace etl
   /// \param value Scaled integral.
   /// \return Scaled, rounded integral.
   //***************************************************************************
-  template <const size_t SCALING, typename T>
+  template <uint32_t SCALING, typename T>
   T round_half_even_scaled(T value)
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
@@ -313,7 +312,7 @@ namespace etl
   /// \param value Scaled integral.
   /// \return Unscaled, rounded integral.
   //***************************************************************************
-  template <const size_t SCALING, typename T>
+  template <uint32_t SCALING, typename T>
   T round_half_odd_unscaled(T value)
   {
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Type must be an integral");
@@ -344,7 +343,7 @@ namespace etl
   /// \param value Scaled integral.
   /// \return Scaled, rounded integral.
   //***************************************************************************
-  template <const size_t SCALING, typename T>
+  template <uint32_t SCALING, typename T>
   T round_half_odd_scaled(T value)
   {
     typedef typename scaled_rounding_t<T>::type scale_t;
