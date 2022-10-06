@@ -346,16 +346,6 @@ namespace etl
     {
       return p.first;
     }
-
-#if ETL_CPP11_SUPPORTED
-    //***************************************************************************
-    ///\copydoc operator()(TPair&)const
-    //***************************************************************************
-    type&& operator()(TPair&& p) const
-    {
-      return etl::move(p.first);
-    }
-#endif
   };
 
   //***************************************************************************
@@ -391,16 +381,6 @@ namespace etl
     {
       return p.second;
     }
-
-#if ETL_CPP11_SUPPORTED
-    //***************************************************************************
-    ///\copydoc operator()(TPair&)const
-    //***************************************************************************
-    type&& operator()(TPair&& p) const
-    {
-      return etl::move(p.second);
-    }
-#endif
   };
 
 #if ETL_NOT_USING_STL || ETL_CPP14_NOT_SUPPORTED
