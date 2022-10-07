@@ -191,15 +191,18 @@ namespace etl
     struct character_set;
 
     //*******************************************
-    static char convert(char c)
+    ETL_NODISCARD
+    static ETL_CONSTEXPR14
+    char convert(char c)
     {
       return to_lower(c);
     }
 
     //*******************************************
     ETL_NODISCARD
+    static
     ETL_CONSTEXPR14
-    static char convert(wchar_t c)
+    char convert(wchar_t c)
     {
       typedef wchar_t value_type;
       typedef const value_type* string_type;
@@ -223,8 +226,9 @@ namespace etl
 
     //*******************************************
     ETL_NODISCARD
+    static 
     ETL_CONSTEXPR14
-    static char convert(char16_t c)
+    char convert(char16_t c)
     {
       typedef char16_t value_type;
       typedef const value_type* string_type;
@@ -248,8 +252,9 @@ namespace etl
  
     //*******************************************
     ETL_NODISCARD
+    static
     ETL_CONSTEXPR14
-    static char convert(char32_t c)
+    char convert(char32_t c)
     {
       typedef char32_t value_type;
       typedef const value_type* string_type;
@@ -323,7 +328,7 @@ namespace etl
     bool check_has_negative_prefix(etl::basic_string_view<TChar>& view)
     {
       // Check for prefix.
-      const char c = character_set<TChar>::convert(view[0]);
+      const char c = convert(view[0]);
       const bool has_positive_prefix = (c == valid_character_set::positive_char);
       const bool has_negative_prefix = (c == valid_character_set::negative_char);
 
@@ -474,7 +479,7 @@ namespace etl
 
         while (parsing)
         {
-          parsing = implementation.add(character_set<TChar>::convert(*itr));
+          parsing = implementation.add(convert(*itr));
 
           if (parsing)
           {
@@ -531,7 +536,7 @@ namespace etl
 
         while (parsing)
         {
-          parsing = implementation.add(character_set<TChar>::convert(*itr));
+          parsing = implementation.add(convert(*itr));
 
           if (parsing)
           {
@@ -586,7 +591,7 @@ namespace etl
 
         while (parsing)
         {
-          parsing = implementation.add(character_set<TChar>::convert(*itr));
+          parsing = implementation.add(convert(*itr));
 
           if (parsing)
           {
@@ -643,7 +648,7 @@ namespace etl
 
         while (parsing)
         {
-          parsing = implementation.add(character_set<TChar>::convert(*itr));
+          parsing = implementation.add(convert(*itr));
 
           if (parsing)
           {

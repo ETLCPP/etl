@@ -262,20 +262,20 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_valid_float)
-    {
-      const std::string text1("-123.456789");
+    //TEST(test_valid_float)
+    //{
+    //  const std::string text1("-123.456789");
 
-      float f1 = strtof(text1.c_str(), nullptr);
-      float f2 = etl::to_arithmetic<float>(text1.c_str(), text1.size()).value();
+    //  float f1 = strtof(text1.c_str(), nullptr);
+    //  float f2 = etl::to_arithmetic<float>(text1.c_str(), text1.size()).value();
 
-     CHECK_EQUAL(f1, f2);
+    // CHECK_EQUAL(f1, f2);
 
-     const std::string text2("-1.23456789e2");
-     float f3 = etl::to_arithmetic<float>(text2.c_str(), text2.size()).value();
+    // const std::string text2("-1.23456789e2");
+    // float f3 = etl::to_arithmetic<float>(text2.c_str(), text2.size()).value();
 
-     CHECK_EQUAL(f1, f3);
-    }
+    // CHECK_EQUAL(f1, f3);
+    //}
 
     //*************************************************************************
     //TEST(test_valid_double)
