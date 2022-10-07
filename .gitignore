@@ -3,6 +3,8 @@
 ## Personal
 #################
 docs/html
+include/etl/html/
+include/etl/latex/
 test/vs2013/Debug
 test/vs2013/Release
 test/keil/Debug
@@ -91,14 +93,12 @@ build/
 *.tlb
 *.tli
 *.tlh
-*.tmp
 *.tmp_proj
 *.log
 *.vspscc
 *.vssscc
 .builds
 *.pidb
-*.log
 *.scc
 
 # Visual C++ cache files
@@ -219,7 +219,6 @@ $RECYCLE.BIN/
 *.egg
 *.egg-info
 dist/
-build/
 eggs/
 parts/
 var/
@@ -240,7 +239,6 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
-*.depend
 *.depend
 *.layout
 *.session
@@ -270,12 +268,8 @@ test/kdevelopbuild/unittest++
 test/random_clcg.csv
 test/random_hash.csv
 test/random_lcg.csv
-test/random_lcg.csv
-test/random_lcg.csv
-test/random_lsfr.csv
 test/random_lsfr.csv
 test/random_mwc.csv
-test/random_pcg.csv
 test/random_pcg.csv
 test/random_xorshift.csv
 test/cmake_install.cmake
@@ -331,21 +325,16 @@ test/vs2019/Test2
 test/vs2019/Debug MSVC - Force C++03
 test/vs2019/Debug LLVM - No STL
 test/vs2019/Debug - No STL
-test/meson-info
 test/etl_unit_tests.p
-test/meson-logs
-test/meson-private
 test/.ninja_deps
 test/.ninja_log
 test/build.ninja
 test/compile_commands.json
 test/etl_unit_tests
 test/build-make
-test/build-make
 test/meson-info
 test/meson-logs
 test/meson-private
-test/build-make
 test/build-ninja
 test/vs2019/Debug MSVC C++20
 test/vs2019/Debug MSVC C++20 - No STL
@@ -370,14 +359,6 @@ test/etl_error_handler/build-log_errors-GCC-Debug
 test/etl_error_handler/build-exceptions_and_log_errors-GCC-Debug
 test/etl_error_handler/build-exceptions-GCC-Debug
 test/etl_error_handler/exceptions_and_log_errors/.vs
-test/etl_error_handler/exceptions/build-make
-test/etl_error_handler/log_errors/build-make
-test/etl_error_handler/log_errors_and_exceptions/build-make
-test/etl_error_handler/log_errors_and_exceptions/.vs
-test/etl_error_handler/exceptions/build-make
-test/etl_error_handler/log_errors/build-make
-test/etl_error_handler/log_errors_and_exceptions/.vs
-test/etl_error_handler/log_errors_and_exceptions/build-make
 examples/ArmTimerCallbacks - C++/ArmTimerCallbacks.uvoptx
 test/vs2022/.vs
 test/vs2022/random_clcg.csv

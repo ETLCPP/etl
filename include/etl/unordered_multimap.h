@@ -983,7 +983,7 @@ namespace etl
         ++l;
         ++n;
 
-        while ((l != end()) && (key == l->first))
+        while ((l != end()) && key_equal_function(key, l->first))
         {
           ++l;
           ++n;
@@ -1078,7 +1078,7 @@ namespace etl
       {
         ++l;
 
-        while ((l != end()) && (key == l->first))
+        while ((l != end()) && key_equal_function(key, l->first))
         {
           ++l;
         }
@@ -1104,7 +1104,7 @@ namespace etl
       {
         ++l;
 
-        while ((l != end()) && (key == l->first))
+        while ((l != end()) && key_equal_function(key, l->first))
         {
           ++l;
         }

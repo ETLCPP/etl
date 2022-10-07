@@ -3481,6 +3481,9 @@
     <None Include="..\..\scripts\generator_test.py">
       <Filter>Tests\Scripts</Filter>
     </None>
+    <None Include="..\meson.build">
+      <Filter>Tests\Test Support</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\support\Release notes.txt">

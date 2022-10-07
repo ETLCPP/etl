@@ -12216,6 +12216,7 @@
     <None Include="..\..\README.md" />
     <None Include="..\..\scripts\generator_test.py" />
     <None Include="..\..\scripts\update_release.py" />
+    <None Include="..\meson.build" />
     <None Include="..\runsanitychecks.sh" />
     <None Include="..\runtests.sh" />
     <None Include="cpp.hint" />

@@ -964,7 +964,7 @@ namespace etl
         ++l;
         ++n;
 
-        while ((l != end()) && (key == *l))
+        while ((l != end()) && key_equal_function(key, *l))
         {
           ++l;
           ++n;
@@ -1059,7 +1059,7 @@ namespace etl
       {
         ++l;
 
-        while ((l != end()) && (key == *l))
+        while ((l != end()) && key_equal_function(key, *l))
         {
           ++l;
         }
@@ -1085,7 +1085,7 @@ namespace etl
       {
         ++l;
 
-        while ((l != end()) && (key == *l))
+        while ((l != end()) && key_equal_function(key, *l))
         {
           ++l;
         }

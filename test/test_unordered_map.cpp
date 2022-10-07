@@ -969,11 +969,11 @@ namespace
         {17, "17"}, {14, "14"}, { 3,  "3"}, { 7,  "7"}, { 2,  "2"},
         { 6,  "6"}, { 9,  "9"}, { 3,  "3"}, {18, "18"}, {10, "10"},
         { 8,  "8"}, {11, "11"}, { 4,  "4"}, { 1,  "1"}, {12, "12"},
-        {15, "15"}, {16, "16"}, { 0,  "0"}, { 5,  "5"}, {19, "19"} 
+        {15, "15"}, {16, "16"}, { 0,  "0"}, { 5,  "5"}, {19, "19"}
       };
 
       std::vector<etl_map::value_type> random_keys2 =
-      { 
+      {
         { 3,  "3"}, { 6,  "6"}, { 5,  "5"}, {17, "17"}, { 2,  "2"},
         { 7,  "7"}, { 3,  "3"}, {19, "19"}, { 8,  "8"}, {15, "15"},
         {14, "14"}, { 0,  "0"}, {18, "18"}, { 4,  "4"}, {10, "10"},
@@ -1051,7 +1051,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_ndc_hasher_and_key_eq) 
+    TEST(test_ndc_hasher_and_key_eq)
     {
       typedef etl::unordered_map<size_t, int, 10, 10, ndc_hash, ndc_key_eq> Map;
       ndc_hash hasher1(1);
@@ -1093,7 +1093,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_parameterized_eq) 
+    TEST(test_parameterized_eq)
     {
       constexpr std::size_t MODULO = 4;
       parameterized_hash hash{MODULO};
@@ -1108,12 +1108,14 @@ namespace
       CHECK_EQUAL(map.at(10), 3);
       CHECK_EQUAL(constmap.at(10), 3);
 
-      CHECK_FALSE(map.insert(etl::make_pair(6, 7)).second);
+      const std::pair<const std::size_t, int> keyvaluepair{6, 7};
+      CHECK_FALSE(map.insert(keyvaluepair).second);
+      CHECK_FALSE(map.insert(std::move(keyvaluepair)).second);
 
       CHECK(map.find(14) != map.end());
       CHECK(constmap.find(14) != constmap.end());
 
-      map.erase(2);
+      map.erase(14);
       CHECK(map.find(6) == map.end());
     }
 
@@ -1155,13 +1157,13 @@ namespace
       CustomKeyEq        ceq2(2);
 
       using value_type = etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq>::value_type;
-      std::array<value_type, 5> data = 
-      { 
-        value_type{1, 11}, 
-        value_type{2, 22}, 
-        value_type{3, 33}, 
-        value_type{4, 44}, 
-        value_type{5, 55} 
+      std::array<value_type, 5> data =
+      {
+        value_type{1, 11},
+        value_type{2, 22},
+        value_type{3, 33},
+        value_type{4, 44},
+        value_type{5, 55}
       };
 
       etl::unordered_map<uint32_t, uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> map1(data.begin(), data.end(), chf1, ceq2);
