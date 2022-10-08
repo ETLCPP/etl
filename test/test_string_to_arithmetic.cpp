@@ -289,16 +289,16 @@ namespace
     //}
 
     //*************************************************************************
-    TEST(test_constexpr_integral)
-    {
-      constexpr const char* text{ "123" };
-      constexpr etl::string_view view(text, 3);
+    //TEST(test_constexpr_integral)
+    //{
+    //  constexpr const char* text{ "123" };
+    //  constexpr etl::string_view view(text, 3);
 
-      constexpr etl::optional<int> opt = etl::to_arithmetic<int>(view, etl::radix::decimal);
-      constexpr int i = opt.value();
+    //  constexpr etl::optional<int> opt = etl::to_arithmetic<int>(view, etl::radix::decimal);
+    //  constexpr int i = opt.value();
 
-      CHECK_EQUAL(123, i);
-    }
+    //  CHECK_EQUAL(123, i);
+    //}
 
     //*************************************************************************
     TEST(test_constexpr_floating_point)
