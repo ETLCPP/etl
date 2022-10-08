@@ -829,6 +829,7 @@ namespace etl
 
     //***************************************************************************
     /// Text to integral from view and radix value type.
+    ///\tparam TIntermediate One of int32t, uint32_t, int64_t or uint64_t.
     //***************************************************************************
     template <typename TIntermediate, typename TChar>
     ETL_NODISCARD
@@ -836,11 +837,9 @@ namespace etl
     etl::optional<TIntermediate> to_arithmetic_integral(const etl::basic_string_view<TChar>& view,
                                                         const etl::radix::value_type         radix)
     {
-      using namespace etl::private_to_arithmetic;
-
       ETL_ASSERT_AND_RETURN_VALUE(is_valid_radix(radix), ETL_ERROR(etl::to_arithmetic_invalid_radix), false);
 
-      etl::optional<TValue> result;
+      etl::optional<TIntermediate> intermediate_result;
 
       etl::basic_string_view<TChar>::const_iterator itr = view.begin();
       const etl::basic_string_view<TChar>::const_iterator itr_end = view.end();
@@ -853,23 +852,19 @@ namespace etl
       {
         const char first_char = convert(*itr);
 
-        ETL_ASSERT(!((first_char == valid_character_set::negative_char) && etl::is_unsigned<TValue>::value), ETL_ERROR(etl::to_arithmetic_signed_to_unsigned));
+        ETL_ASSERT(!((first_char == valid_character_set::negative_char) && etl::is_unsigned<TIntermediate>::value), ETL_ERROR(etl::to_arithmetic_signed_to_unsigned));
 
-        typedef typename intermediate<TValue>::type intermediate_type;
-        integral_accumulator<intermediate_type> accumulator(radix);
+        integral_accumulator<TIntermediate> accumulator(radix);
 
         while ((itr != itr_end) && accumulator.add(convert(*itr)))
         {
           // Keep looping until done or an error occurs.
           ++itr;
-        }
-
-        etl::optional<intermediate_type> intermediate_result;
+        }        
 
         if (accumulator.has_value())
         {
           intermediate_result = accumulator.get_value();
-          result = static_cast<TValue>(intermediate_result.value());
         }
         else
         {
@@ -877,7 +872,7 @@ namespace etl
         }
       }
 
-      return result;
+      return intermediate_result;
     }
   }
 
@@ -893,45 +888,17 @@ namespace etl
   {
     using namespace etl::private_to_arithmetic;
 
-    ETL_ASSERT_AND_RETURN_VALUE(is_valid_radix(radix), ETL_ERROR(etl::to_arithmetic_invalid_radix), false);
-
     etl::optional<TValue> result;
-
-    etl::basic_string_view<TChar>::const_iterator itr           = view.begin();
-    const etl::basic_string_view<TChar>::const_iterator itr_end = view.end();
-
-    if (itr == itr_end)
-    {
-      ETL_ASSERT_FAIL_AND_RETURN_VALUE(ETL_ERROR(etl::to_arithmetic_invalid_format), false);
-    }
-    else
-    {
-      const char first_char = convert(*itr);
-
-      ETL_ASSERT(!((first_char == valid_character_set::negative_char) && etl::is_unsigned<TValue>::value), ETL_ERROR(etl::to_arithmetic_signed_to_unsigned));
-
-      typedef typename intermediate<TValue>::type intermediate_type;
-      integral_accumulator<intermediate_type> accumulator(radix);
-
-      while ((itr != itr_end) && accumulator.add(convert(*itr)))
-      {
-        // Keep looping until done or an error occurs.
-        ++itr;
-      }
-
-      etl::optional<intermediate_type> intermediate_result;
-
-      if (accumulator.has_value())
-      {
-        intermediate_result = accumulator.get_value();
-        result = static_cast<TValue>(intermediate_result.value());
-      }
-      else
-      {
-        ETL_ASSERT_FAIL_AND_RETURN_VALUE(ETL_ERROR(etl::to_arithmetic_invalid_format), false);
-      }
-    }
+    typedef typename intermediate<TValue>::type intermediate_type;
+    etl::optional<intermediate_type> intermediate_result;
    
+    intermediate_result = to_arithmetic_integral<intermediate_type, TChar>(view, radix);
+
+    if (intermediate_result.has_value())
+    {
+      result = intermediate_result.value();
+    }
+
     return result;
   }
 
