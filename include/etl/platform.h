@@ -235,19 +235,20 @@ SOFTWARE.
 // The macros below are dependent on the profile.
 // C++11
 #if ETL_USING_CPP11 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
-  #define ETL_CONSTEXPR constexpr
-  #define ETL_CONSTANT  constexpr
-  #define ETL_DELETE =  delete
-  #define ETL_EXPLICIT  explicit
-  #define ETL_OVERRIDE  override
-  #define ETL_FINAL     final
-  #define ETL_NORETURN  [[noreturn]]
-  #define ETL_MOVE(x)   etl::move(x)
+  #define ETL_CONSTEXPR                   constexpr
+  #define ETL_CONSTANT                    constexpr
+  #define ETL_STATIC_CONSTANT             constexpr
+  #define ETL_DELETE                      = delete
+  #define ETL_EXPLICIT                    explicit
+  #define ETL_OVERRIDE                    override
+  #define ETL_FINAL                       final
+  #define ETL_NORETURN                    [[noreturn]]
+  #define ETL_MOVE(x)                     etl::move(x)
   #define ETL_ENUM_CLASS(name)            enum class name
   #define ETL_ENUM_CLASS_TYPE(name, type) enum class name : type
 
   #if ETL_USING_EXCEPTIONS
-    #define ETL_NOEXCEPT noexcept
+    #define ETL_NOEXCEPT                  noexcept
     #define ETL_NOEXCEPT_EXPR(expression) noexcept(expression)
   #else
     #define ETL_NOEXCEPT
@@ -255,7 +256,8 @@ SOFTWARE.
   #endif
 #else
   #define ETL_CONSTEXPR
-  #define ETL_CONSTANT const
+  #define ETL_CONSTANT                    const
+  #define ETL_STATIC_CONSTANT             static const
   #define ETL_DELETE
   #define ETL_EXPLICIT
   #define ETL_OVERRIDE
@@ -271,8 +273,8 @@ SOFTWARE.
 //*************************************
 // C++14
 #if ETL_USING_CPP14 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
-  #define ETL_CONSTEXPR14 constexpr
-  #define ETL_DEPRECATED  [[deprecated]]
+  #define ETL_CONSTEXPR14               constexpr
+  #define ETL_DEPRECATED                [[deprecated]]
   #define ETL_DEPRECATED_REASON(reason) [[deprecated(reason)]]
 #else
   #define ETL_CONSTEXPR14
@@ -301,11 +303,11 @@ SOFTWARE.
 //*************************************
 // C++20
 #if ETL_USING_CPP20 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
-  #define ETL_LIKELY [[likely]]
-  #define ETL_UNLIKELY [[unlikely]]
-  #define ETL_CONSTEXPR20 constexpr
-  #define ETL_CONSTEVAL consteval
-  #define ETL_CONSTINIT constinit
+  #define ETL_LIKELY            [[likely]]
+  #define ETL_UNLIKELY          [[unlikely]]
+  #define ETL_CONSTEXPR20       constexpr
+  #define ETL_CONSTEVAL         consteval
+  #define ETL_CONSTINIT         constinit
   #define ETL_NO_UNIQUE_ADDRESS [[no_unique_address]]
 #else
   #define ETL_LIKELY

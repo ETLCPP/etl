@@ -58,7 +58,19 @@ namespace etl
   {
     TDestination destination;
 
+#if defined(__has_builtin)
+  #if __has_builtin(__builtin_memcpy)
+    #define ETL_USE_BUILTIN_MEMCPY
+  #endif
+#endif
+
+#if defined(ETL_USE_BUILTIN_MEMCPY)
+    __builtin_memcpy(&destination, &source, sizeof(TDestination));
+#else
     memcpy(&destination, &source, sizeof(TDestination));
+#endif
+
+#undef ETL_USE_BUILTIN_MEMCPY
 
     return destination;
   }
