@@ -348,19 +348,7 @@ namespace etl
               value += digit;
               value_is_valid = true;
             }
-            else
-            {
-              int i = 0;
-            }
           }
-          else
-          {
-            int i = 0; // <<<<<<<< Test to catch this.
-          }
-        }
-        else
-        {
-          int i = 0;
         }
 
         return value_is_valid;
@@ -401,14 +389,14 @@ namespace etl
     //***************************************************************************
     /// Text to integral from view and radix value type.
     //***************************************************************************
-    template <typename TChar, typename TIntermediate>
+    template <typename TChar, typename TAccumulatorType>
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    etl::optional<TIntermediate> to_arithmetic_integral(const etl::basic_string_view<TChar>& view,
-                                                        const etl::radix::value_type         radix,
-                                                        const TIntermediate                  maximum)
+    etl::optional<TAccumulatorType> to_arithmetic_integral(const etl::basic_string_view<TChar>& view,
+                                                           const etl::radix::value_type         radix,
+                                                           const TAccumulatorType               maximum)
     {
-      etl::optional<TIntermediate> intermediate_result;
+      etl::optional<TAccumulatorType> intermediate_result;
 
       etl::basic_string_view<TChar>::const_iterator       itr     = view.begin();
       const etl::basic_string_view<TChar>::const_iterator itr_end = view.end();
@@ -417,7 +405,7 @@ namespace etl
       {
         const char first_char = convert(*itr);
 
-        integral_accumulator<TIntermediate> accumulator(radix, maximum);
+        integral_accumulator<TAccumulatorType> accumulator(radix, maximum);
 
         while ((itr != itr_end) && accumulator.add(convert(*itr)))
         {
