@@ -1,3 +1,34 @@
+///\file
+/******************************************************************************
+The MIT License(MIT)
+
+Embedded Template Library.
+https://github.com/ETLCPP/etl
+https://www.etlcpp.com
+
+Copyright(c) 2022 John Wellbelove
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files(the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions :
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+******************************************************************************/
+
+#ifndef ETL_TO_ARITHMETIC_INCLUDED
+#define ETL_TO_ARITHMETIC_INCLUDED
 
 #include "platform.h"
 #include "type_traits.h"
@@ -17,24 +48,22 @@ namespace etl
 {
   namespace private_to_arithmetic
   {
-    static ETL_CONSTANT char Numeric_Length = 16;
-    static ETL_CONSTANT int  Valid_Length   = 28;
-
     //***********************************************************************
     /// 
     //***********************************************************************
-    struct valid_character_set
+    struct character_set
     {
       typedef char value_type;
       typedef const value_type* string_type;
-      static ETL_CONSTANT string_type valid_chars   = "+-.,eE0123456789abcdefABCDEF";
-      static ETL_CONSTANT string_type numeric_chars = "0123456789abcdef";
-      static ETL_CONSTANT value_type  positive_char = '+';
-      static ETL_CONSTANT value_type  negative_char = '-';
-      static ETL_CONSTANT value_type  radix_point1  = '.';
-      static ETL_CONSTANT value_type  radix_point2  = ',';
-      static ETL_CONSTANT value_type  exponential   = 'e';
-      static ETL_CONSTANT value_type  unknown_char  = '?';
+      static ETL_CONSTANT string_type Valid_Chars   = "+-.,eE0123456789abcdefABCDEF";
+      static ETL_CONSTANT string_type Numeric_Chars = "0123456789abcdef";
+      static ETL_CONSTANT int         Valid_Length  = etl::strlen(Numeric_Chars);
+      static ETL_CONSTANT value_type  Positive_Char = '+';
+      static ETL_CONSTANT value_type  Negative_Char = '-';
+      static ETL_CONSTANT value_type  Radix_Point1  = '.';
+      static ETL_CONSTANT value_type  Radix_Point2  = ',';
+      static ETL_CONSTANT value_type  Exponential   = 'e';
+      static ETL_CONSTANT value_type  Unknown_Char  = '?';
 
       //*******************************************
       ETL_NODISCARD
@@ -125,12 +154,6 @@ namespace etl
       return c;
     }
 
-    //***********************************************************************
-    /// The character sets for character types.
-    //***********************************************************************
-    template <typename TChar>
-    struct character_set;
-
     //*******************************************
     ETL_NODISCARD
     static ETL_CONSTEXPR14
@@ -145,20 +168,17 @@ namespace etl
     ETL_CONSTEXPR14
     char convert(wchar_t c)
     {
-      typedef wchar_t value_type;
-      typedef const value_type* string_type;
+      ETL_STATIC_CONSTANT wchar_t* Valid_Chars = L"+-.,eE0123456789abcdefABCDEF";
 
-      ETL_STATIC_CONSTANT string_type valid_chars = L"+-.,eE0123456789abcdefABCDEF";
-
-      for (int i = 0; i < Valid_Length; ++i)
+      for (int i = 0; i < character_set::Valid_Length; ++i)
       {
-        if (c == valid_chars[i])
+        if (c == Valid_Chars[i])
         {
-          return to_lower(valid_character_set::valid_chars[i]);
+          return to_lower(character_set::Valid_Chars[i]);
         }
       }
 
-      return valid_character_set::unknown_char;
+      return character_set::Unknown_Char;
     }
 
     //*******************************************
@@ -170,17 +190,17 @@ namespace etl
       typedef char16_t value_type;
       typedef const value_type* string_type;
 
-      ETL_STATIC_CONSTANT string_type valid_chars = u"+-.,eE0123456789abcdefABCDEF";
+      ETL_STATIC_CONSTANT char16_t* Valid_Chars = u"+-.,eE0123456789abcdefABCDEF";
 
-      for (int i = 0; i < Valid_Length; ++i)
+      for (int i = 0; i < character_set::Valid_Length; ++i)
       {
-        if (c == valid_chars[i])
+        if (c == Valid_Chars[i])
         {
-          return to_lower(valid_character_set::valid_chars[i]);
+          return to_lower(character_set::Valid_Chars[i]);
         }
       }
 
-      return valid_character_set::unknown_char;
+      return character_set::Unknown_Char;
     }
  
     //*******************************************
@@ -190,19 +210,19 @@ namespace etl
     char convert(char32_t c)
     {
       typedef char32_t value_type;
-      typedef const value_type* string_type;
+      typedef const char32_t* string_type;
       
-      ETL_STATIC_CONSTANT string_type valid_chars = U"+-.,eE0123456789abcdefABCDEF";
+      ETL_STATIC_CONSTANT string_type Valid_Chars = U"+-.,eE0123456789abcdefABCDEF";
 
-      for (int i = 0; i < Valid_Length; ++i)
+      for (int i = 0; i < character_set::Valid_Length; ++i)
       {
-        if (c == valid_chars[i])
+        if (c == Valid_Chars[i])
         {
-          return to_lower(valid_character_set::valid_chars[i]);
+          return to_lower(character_set::Valid_Chars[i]);
         }
       }
 
-      return valid_character_set::unknown_char;
+      return character_set::Unknown_Char;
     }
 
     //***************************************************************************
@@ -220,7 +240,9 @@ namespace etl
       return value;
     }
 
-    //*******************************************
+    //***************************************************************************
+    /// 
+    //***************************************************************************
     template <typename TChar>
     ETL_NODISCARD
     ETL_CONSTEXPR14
@@ -228,8 +250,8 @@ namespace etl
     {
       // Check for prefix.
       const char c = convert(view[0]);
-      const bool has_positive_prefix = (c == valid_character_set::positive_char);
-      const bool has_negative_prefix = (c == valid_character_set::negative_char);
+      const bool has_positive_prefix = (c == character_set::Positive_Char);
+      const bool has_negative_prefix = (c == character_set::Negative_Char);
 
       // Step over the prefix, if present.
       if (has_positive_prefix || has_negative_prefix)
@@ -261,11 +283,11 @@ namespace etl
       ETL_CONSTEXPR14
       bool add(char c)
       {
-        bool is_valid = valid_character_set::is_valid(c, etl::radix::decimal);
+        bool is_valid = character_set::is_valid(c, etl::radix::decimal);
 
         if (is_valid)
         {
-          value = accumulate_floating_point_value(value, valid_character_set::digit_value(c, etl::radix::decimal), is_negative);
+          value = accumulate_floating_point_value(value, character_set::digit_value(c, etl::radix::decimal), is_negative);
           valid_value = true;
         }
 
@@ -283,7 +305,7 @@ namespace etl
       //*********************************
       ETL_NODISCARD
       ETL_CONSTEXPR14
-      TValue get_value() const
+      TValue value() const
       {
         return value;
       }
@@ -320,7 +342,7 @@ namespace etl
       integral_accumulator(etl::radix::value_type radix_, TValue maximum_)
         : radix(radix_)
         , maximum(maximum_)
-        , value(0)
+        , integral_value(0)
         , value_is_valid(false)
       {
       }
@@ -332,20 +354,20 @@ namespace etl
       {
         value_is_valid = false;
 
-        if (valid_character_set::is_valid(c, radix))
+        if (character_set::is_valid(c, radix))
         {
-          TValue old_value = value;
-          value *= radix;
+          TValue old_value = integral_value;
+          integral_value *= radix;
 
           // No multipication overflow?
-          if ((value / radix) == old_value)
+          if ((integral_value / radix) == old_value)
           {
-            const char digit = valid_character_set::digit_value(c, radix);
+            const char digit = character_set::digit_value(c, radix);
 
             // No addition overflow?
-            if ((maximum - digit) >= value)
+            if ((maximum - digit) >= integral_value)
             {
-              value += digit;
+              integral_value += digit;
               value_is_valid = true;
             }
           }
@@ -364,21 +386,21 @@ namespace etl
       //*********************************
       ETL_NODISCARD
       ETL_CONSTEXPR14
-      TValue get_value() const
+      TValue value() const
       {
-        return value;
+        return integral_value;
       }
 
     private:
 
       etl::radix::value_type radix;
       TValue maximum;
-      TValue value;
+      TValue integral_value;
       bool value_is_valid;
     };
 
     //***************************************************************************
-    // Define an intermediate type that is larger than TValue.
+    // Define an unsigned intermediate type that is at least as large as TValue.
     //***************************************************************************
     template <typename TValue>
     struct intermediate
@@ -413,7 +435,7 @@ namespace etl
 
         if (accumulator.has_value())
         {
-          intermediate_result = accumulator.get_value();
+          intermediate_result = accumulator.value();
         }
       }
 
@@ -434,8 +456,7 @@ namespace etl
     using namespace etl::private_to_arithmetic;
 
     etl::optional<TValue> result;
-    typedef typename intermediate<TValue>::type intermediate_type;
-   
+       
     // Is this a negative number?
     const bool is_negative = check_and_remove_sign_prefix(view);
 
@@ -445,8 +466,7 @@ namespace etl
       const bool is_decimal = (radix == etl::radix::decimal);
 
       // What's the maximum absolute value for the type value we're trying to convert to?
-      //const intermediate_type maximum = (is_negative || non_decimal) ? etl::absolute_unsigned(etl::integral_limits<TValue>::min)
-      //                                                               : etl::integral_limits<TValue>::max;
+      typedef typename intermediate<TValue>::type intermediate_type;
 
       const intermediate_type maximum = is_negative ? etl::absolute_unsigned(etl::integral_limits<TValue>::min)
                                                     : is_decimal ? etl::integral_limits<TValue>::max
@@ -616,3 +636,5 @@ namespace etl
     return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(str));
   }
 }
+
+#endif
