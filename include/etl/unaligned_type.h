@@ -697,12 +697,12 @@ namespace etl
   typedef be_double_t      net_double_t;
   typedef be_long_double_t net_long_double_t;
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T, int Endian>
   using unaligned_type_t = typename etl::unaligned_type<T, Endian>::type;
 #endif
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T, int Endian>
   constexpr size_t unaligned_type_v = etl::unaligned_type<T, Endian>::Size;
 #endif

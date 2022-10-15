@@ -171,7 +171,7 @@ namespace etl
       this->accumulator = other.accumulator;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************
     /// Move constructor
     //*********************************
@@ -191,7 +191,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************
     /// Move assignment
     //*********************************
@@ -295,7 +295,7 @@ namespace etl
       this->accumulator = other.accumulator;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************
     /// Move constructor
     //*********************************
@@ -315,7 +315,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************
     /// Move assignment
     //*********************************
@@ -425,7 +425,7 @@ namespace etl
       this->accumulator = other.accumulator;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************
     /// Move constructor
     //*********************************
@@ -445,7 +445,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************
     /// Move assignment
     //*********************************

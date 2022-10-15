@@ -60,11 +60,7 @@ namespace etl
   // For signed types.
   // Returns the result as the unsigned type.
   //***************************************************************************
-#if ETL_USING_CPP11
   template <typename T, typename TReturn = typename etl::make_unsigned<T>::type>
-#else
-  template <typename T, typename TReturn>
-  #endif
   ETL_CONSTEXPR typename etl::enable_if<etl::is_signed<T>::value, TReturn>::type
     absolute_unsigned(T value)
   {

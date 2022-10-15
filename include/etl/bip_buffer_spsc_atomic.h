@@ -378,7 +378,7 @@ namespace etl
     typedef T                          value_type;      ///< The type stored in the buffer.
     typedef T&                         reference;       ///< A reference to the type used in the buffer.
     typedef const T&                   const_reference; ///< A const reference to the type used in the buffer.
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     typedef T&&                        rvalue_reference;///< An rvalue_reference to the type used in the buffer.
 #endif
     typedef typename base_t::size_type size_type;       ///< The type used for determining the size of the buffer.
@@ -474,7 +474,7 @@ namespace etl
     ibip_buffer_spsc_atomic(const ibip_buffer_spsc_atomic&) ETL_DELETE;
     ibip_buffer_spsc_atomic& operator =(const ibip_buffer_spsc_atomic&) ETL_DELETE;
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     ibip_buffer_spsc_atomic(ibip_buffer_spsc_atomic&&) = delete;
     ibip_buffer_spsc_atomic& operator =(ibip_buffer_spsc_atomic&&) = delete;
 #endif
@@ -533,6 +533,6 @@ namespace etl
   };
 }
 
-#endif /* ETL_HAS_ATOMIC && ETL_USING_CPP11 */
+#endif
 
-#endif /* ETL_BIP_BUFFER_SPSC_ATOMIC_INCLUDED */
+#endif

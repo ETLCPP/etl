@@ -371,7 +371,7 @@ namespace etl
     typedef const T& const_reference;
     typedef size_t   size_type;
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     typedef T&&      rvalue_reference;
 #endif
 
@@ -702,7 +702,7 @@ namespace etl
       insert_node_after(start_node, data_node);
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Pushes a value to the front of the forward_list.
     //*************************************************************************
@@ -717,7 +717,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT
     //*************************************************************************
     /// Emplaces a value to the front of the list..
     //*************************************************************************
@@ -792,7 +792,7 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
       insert_node_after(start_node, *p_data_node);
     }
-#endif // ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+#endif
 
     //*************************************************************************
     /// Removes a value from the front of the forward_list.
@@ -874,7 +874,7 @@ namespace etl
       return iterator(&data_node);
     }
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT
     //*************************************************************************
     /// Emplaces a value to the forward_list after the specified position.
     //*************************************************************************
@@ -954,7 +954,7 @@ namespace etl
 
       return iterator(p_data_node);
     }
-#endif // ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+#endif
 
     //*************************************************************************
     /// Inserts 'n' copies of a value to the forward_list after the specified position.
@@ -1386,7 +1386,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -1459,7 +1459,7 @@ namespace etl
       return *p_node;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Allocate a data_node_t.
     //*************************************************************************
@@ -1473,7 +1473,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move a forward list
     //*************************************************************************
@@ -1671,7 +1671,7 @@ namespace etl
       this->assign(other.cbegin(), other.cend());
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
@@ -1724,7 +1724,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -1746,7 +1746,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_deduction_guides && ETL_HAS_INITIALIZER_LIST
   template <typename... T>
   forward_list(T...) ->forward_list<typename etl::common_type_t<T...>, sizeof...(T)>;
 #endif
@@ -1754,7 +1754,7 @@ namespace etl
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_variadic_templates && ETL_HAS_INITIALIZER_LIST
   template <typename... T>
   constexpr auto make_forward_list(T... t) -> etl::forward_list<typename etl::common_type_t<T...>, sizeof...(T)>
   {
@@ -1833,7 +1833,7 @@ namespace etl
       this->assign(other.cbegin(), other.cend());
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move constructor. Implicit pool
     //*************************************************************************
@@ -1895,7 +1895,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************

@@ -212,7 +212,7 @@ namespace etl
     etl::reference_counted_object<TMessage, void> rc_object; ///< The reference counted object.
   };
 
-#if ETL_USING_CPP11 && ETL_HAS_ATOMIC
+#if __cpp_alias_templates && ETL_HAS_ATOMIC
   //***************************************************************************
   /// Class for creating reference counted objects using an atomic counter.
   /// \tparam TObject  The type to be reference counted.

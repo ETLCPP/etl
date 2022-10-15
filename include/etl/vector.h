@@ -75,7 +75,7 @@ namespace etl
     typedef T                                     value_type;
     typedef T&                                    reference;
     typedef const T&                              const_reference;
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     typedef T&&                                   rvalue_reference;
 #endif
     typedef T*                                    pointer;
@@ -437,7 +437,7 @@ namespace etl
       create_back(value);
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************************************************
     /// Inserts a value at the end of the vector.
     /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
@@ -452,7 +452,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_VECTOR_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT && !defined(ETL_VECTOR_FORCE_CPP03_IMPLEMENTATION)
     //*********************************************************************
     /// Constructs a value at the end of the vector.
     /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
@@ -572,7 +572,7 @@ namespace etl
       return position_;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************************************************
     /// Inserts a value to the vector.
     /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
@@ -603,7 +603,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the vector at the specified position.
     //*************************************************************************
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT
     template <typename ... Args>
     iterator emplace(const_iterator position, Args && ... args)
     {
@@ -924,7 +924,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -1050,7 +1050,7 @@ namespace etl
       ++p_end;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************************************************
     /// Create a new element with a value at the back
     //*********************************************************************
@@ -1264,7 +1264,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
@@ -1343,7 +1343,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_deduction_guides && ETL_HAS_INITIALIZER_LIST
   template <typename... T>
   vector(T...) -> vector<typename etl::common_type_t<T...>, sizeof...(T)>;
 #endif
@@ -1351,7 +1351,7 @@ namespace etl
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_variadic_templates && ETL_HAS_INITIALIZER_LIST
   template <typename... T>
   constexpr auto make_vector(T... t) -> etl::vector<typename etl::common_type_t<T...>, sizeof...(T)>
   {
@@ -1448,7 +1448,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
@@ -1605,7 +1605,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
@@ -1645,12 +1645,12 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_deduction_guides && ETL_HAS_INITIALIZER_LIST
   template <typename... T>
   vector(T*...) -> vector<typename etl::common_type_t<T*...>, sizeof...(T)>;
 #endif
 
-#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_variadic_templates && ETL_HAS_INITIALIZER_LIST
   template <typename... T>
   constexpr auto make_vector(T*... t) -> etl::vector<typename etl::common_type_t<T*...>, sizeof...(T)>
   {
@@ -1749,7 +1749,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************

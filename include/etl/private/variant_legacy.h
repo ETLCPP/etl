@@ -493,7 +493,7 @@ namespace etl
         type_id = other.type_id;
       }
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_VARIANT_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT && !defined(ETL_VARIANT_FORCE_CPP03_IMPLEMENTATION)
       //*************************************************************************
       /// Emplace with variadic constructor parameters.
       //*************************************************************************

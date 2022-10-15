@@ -33,7 +33,7 @@ SOFTWARE.
 
 namespace etl
 {
-#if ETL_USING_CPP11
+#if __cpp_variadic_templates
   template <size_t N, typename T1, typename... TRest>
   struct nth_type
   {

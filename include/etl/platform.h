@@ -364,7 +364,7 @@ SOFTWARE.
   #error ETL_FORCE_ETL_INITIALIZER_LIST and ETL_FORCE_STD_INITIALIZER_LIST both been defined. Choose one or neither.
 #endif
 
-#if (ETL_USING_CPP11 && !defined(ETL_NO_INITIALIZER_LIST))
+#if (__cpp_initializer_lists && !defined(ETL_NO_INITIALIZER_LIST))
   // Use the compiler's std::initializer_list?
   #if (ETL_USING_STL && ETL_NOT_USING_STLPORT && !defined(ETL_FORCE_ETL_INITIALIZER_LIST)) || defined(ETL_IN_UNIT_TEST) || defined(ETL_FORCE_STD_INITIALIZER_LIST)
     #define ETL_HAS_INITIALIZER_LIST 1

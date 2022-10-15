@@ -74,7 +74,7 @@ namespace etl
     static ETL_CONSTANT private_power::type value = 1;
   };
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <size_t NV, size_t POWER>
   inline constexpr size_t power_v = power<NV, POWER>::value;
 #endif
@@ -106,7 +106,7 @@ namespace etl
     };
   };
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <size_t NV>
   inline constexpr size_t power_of_2_round_up_v = power_of_2_round_up<NV>::value;
 #endif
@@ -166,7 +166,7 @@ namespace etl
     };
   };
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <size_t NV>
   inline constexpr size_t power_of_2_round_down_v = power_of_2_round_down<NV>::value;
 #endif
@@ -203,7 +203,7 @@ namespace etl
     static ETL_CONSTANT bool value = false;
   };
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <size_t NV>
   inline constexpr size_t is_power_of_2_v = is_power_of_2<NV>::value;
 #endif

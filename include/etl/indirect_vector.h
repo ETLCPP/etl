@@ -75,7 +75,7 @@ namespace etl
     typedef T              value_type;
     typedef T&             reference;
     typedef const T&       const_reference;
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     typedef T&&            rvalue_reference;
 #endif
     typedef T*             pointer;
@@ -759,7 +759,7 @@ namespace etl
       lookup.push_back(p);
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************************************************
     /// Inserts a value at the end of the indirect_vector.
     /// If asserts or exceptions are enabled, emits vector_full if the indirect_vector is already full.
@@ -775,7 +775,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_VECTOR_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT && !defined(ETL_VECTOR_FORCE_CPP03_IMPLEMENTATION)
     //*********************************************************************
     /// Constructs a value at the end of the indirect_vector.
     /// If asserts or exceptions are enabled, emits vector_full if the indirect_vector is already full.
@@ -865,7 +865,7 @@ namespace etl
       return to_iterator(position);
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************************************************
     /// Inserts a value to the indirect_vector.
     /// If asserts or exceptions are enabled, emits vector_full if the indirect_vector is already full.
@@ -886,7 +886,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the vector at the specified position.
     //*************************************************************************
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT
     template <typename ... Args>
     iterator emplace(iterator position, Args && ... args)
     {
@@ -1057,7 +1057,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -1161,7 +1161,7 @@ namespace etl
       lookup.clear();
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************************************************
     /// Move from a container.
     //*********************************************************************
@@ -1384,7 +1384,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
@@ -1422,7 +1422,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_deduction_guides && ETL_HAS_INITIALIZER_LIST
   template <typename T, typename... Ts>
   indirect_vector(T, Ts...)
     ->indirect_vector<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
@@ -1431,7 +1431,7 @@ namespace etl
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_variadic_templates && ETL_HAS_INITIALIZER_LIST
   template <typename... T>
   constexpr auto make_indirect_vector(T... t) -> etl::indirect_vector<typename etl::common_type_t<T...>, sizeof...(T)>
   {
@@ -1536,7 +1536,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move construct.
     //*************************************************************************

@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if ETL_USING_CPP11 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_variadic_templates && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
   #include "private/delegate_cpp11.h"
 #else
   #include "private/delegate_cpp03.h"

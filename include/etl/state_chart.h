@@ -514,7 +514,7 @@ namespace etl
               // Shall we execute the action?
               if (t->action != ETL_NULLPTR)
               {
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
                 (TObject_Ref.*t->action)(etl::forward<parameter_t>(data));
 #else
                 (TObject_Ref.*t->action)(data);
@@ -744,7 +744,7 @@ namespace etl
               // Shall we execute the action?
               if (t->action != ETL_NULLPTR)
               {
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
                 (object.*t->action)(etl::forward<parameter_t>(data));
 #else
                 (object.*t->action)(data);

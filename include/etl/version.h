@@ -60,7 +60,7 @@ namespace etl
     static ETL_CONSTANT long version_minor             = ETL_VERSION_MINOR;
     static ETL_CONSTANT long version_patch             = ETL_VERSION_PATCH;
 
-#if ETL_USING_CPP11
+#if __cpp_constexpr
     static constexpr const char* version_string        = ETL_VERSION;
     static constexpr const wchar_t*  version_wstring   = ETL_VERSION_W;
   #if ETL_HAS_NATIVE_CHAR8_T

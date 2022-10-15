@@ -56,7 +56,7 @@ cog.outl("//********************************************************************
 
 namespace etl
 {
-#if ETL_USING_CPP11 && !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_variadic_templates && !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   // Variadic version.
   //***************************************************************************

@@ -132,7 +132,7 @@ namespace etl
     typedef TKeyEqual         key_equal;
     typedef value_type&       reference;
     typedef const value_type& const_reference;
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     typedef value_type&&      rvalue_reference;
 #endif
     typedef value_type*       pointer;
@@ -710,7 +710,7 @@ namespace etl
       return result;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************************************************
     /// Inserts a value to the unordered_multiset.
     /// If asserts or exceptions are enabled, emits unordered_multiset_full if the unordered_multiset is already full.
@@ -1186,7 +1186,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
@@ -1259,7 +1259,7 @@ namespace etl
       last  = first;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move from a range
     //*************************************************************************
@@ -1469,7 +1469,7 @@ namespace etl
     }
 
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
@@ -1526,7 +1526,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -1550,7 +1550,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_deduction_guides && ETL_HAS_INITIALIZER_LIST
   template <typename... T>
   unordered_multiset(T...) -> unordered_multiset<etl::nth_type_t<0, T...>, sizeof...(T)>;
 #endif
@@ -1558,7 +1558,7 @@ namespace etl
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_HAS_INITIALIZER_LIST
   template <typename TKey, typename THash = etl::hash<TKey>, typename TKeyEqual = etl::equal_to<TKey>, typename... T>
   constexpr auto make_unordered_multiset(T&&... keys) -> etl::unordered_multiset<TKey, sizeof...(T), sizeof...(T), THash, TKeyEqual>
   {

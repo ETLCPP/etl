@@ -135,7 +135,7 @@ namespace etl
     typedef TKeyEqual         key_equal;
     typedef value_type&       reference;
     typedef const value_type& const_reference;
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     typedef value_type&&      rvalue_reference;
 #endif
     typedef value_type*       pointer;
@@ -833,7 +833,7 @@ namespace etl
       return result;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************************************************
     /// Inserts a value to the unordered_map.
     /// If asserts or exceptions are enabled, emits unordered_map_full if the unordered_map is already full.
@@ -921,7 +921,7 @@ namespace etl
       return insert(key_value_pair).first;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************************************************
     /// Inserts a value to the unordered_map.
     /// If asserts or exceptions are enabled, emits unordered_map_full if the unordered_map is already full.
@@ -1296,7 +1296,7 @@ namespace etl
 
       return *this;
     }
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -1370,7 +1370,7 @@ namespace etl
       last  = first;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move from a range
     //*************************************************************************
@@ -1574,7 +1574,7 @@ namespace etl
       base::assign(other.cbegin(), other.cend());
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
@@ -1629,7 +1629,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -1652,7 +1652,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_deduction_guides && ETL_HAS_INITIALIZER_LIST
   template <typename... TPairs>
   unordered_map(TPairs...) -> unordered_map<typename etl::nth_type_t<0, TPairs...>::first_type,
                                             typename etl::nth_type_t<0, TPairs...>::second_type,
@@ -1662,7 +1662,7 @@ namespace etl
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_HAS_INITIALIZER_LIST
   template <typename TKey, typename T, typename THash = etl::hash<TKey>, typename TKeyEqual = etl::equal_to<TKey>, typename... TPairs>
   constexpr auto make_unordered_map(TPairs&&... pairs) -> etl::unordered_map<TKey, T, sizeof...(TPairs), sizeof...(TPairs), THash, TKeyEqual>
   {

@@ -74,7 +74,7 @@ namespace etl
     typedef TKeyCompare       key_compare;
     typedef value_type&       reference;
     typedef const value_type& const_reference;
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     typedef value_type&&      rvalue_reference;
 #endif
     typedef value_type*       pointer;
@@ -247,7 +247,7 @@ namespace etl
       return result;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************************************************
     /// Inserts a value to the flat_set.
     /// If asserts or exceptions are enabled, emits flat_set_full if the flat_set is already full.
@@ -285,7 +285,7 @@ namespace etl
       return insert(value).first;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************************************************
     /// Inserts a value to the flat_set.
     /// If asserts or exceptions are enabled, emits flat_set_full if the flat_set is already full.
@@ -326,7 +326,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the set.
     //*************************************************************************
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT
     template <typename ... Args>
     ETL_OR_STD::pair<iterator, bool> emplace(Args && ... args)
     {
@@ -513,7 +513,7 @@ namespace etl
       }
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************************************************
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     size_t erase(K&& key)
@@ -808,7 +808,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -885,7 +885,7 @@ namespace etl
     {
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move a flat_set.
     /// Assumes the flat_set is initialised and empty.
@@ -997,7 +997,7 @@ namespace etl
       this->assign(other.cbegin(), other.cend());
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
@@ -1056,7 +1056,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -1085,7 +1085,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_deduction_guides && ETL_HAS_INITIALIZER_LIST
   template <typename... T>
   flat_set(T...) -> flat_set<etl::nth_type_t<0, T...>, sizeof...(T)>;
 #endif
@@ -1093,7 +1093,7 @@ namespace etl
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_variadic_templates && ETL_HAS_INITIALIZER_LIST
   template <typename TKey, typename TKeyCompare = etl::less<TKey>, typename... T>
   constexpr auto make_flat_set(T&&... keys) -> etl::flat_set<TKey, sizeof...(T), TKeyCompare>
   {

@@ -231,7 +231,7 @@ namespace etl
     typedef size_t   size_type;
     typedef T& reference;
     typedef const T& const_reference;
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     typedef T&& rvalue_reference;
 #endif
     typedef T* pointer;
@@ -1000,7 +1000,7 @@ namespace etl
       return position;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Inserts data into the deque.
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
@@ -1059,7 +1059,7 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is full.
     ///\param insert_position>The insert position.
     //*************************************************************************
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT
     template <typename ... Args>
     iterator emplace(const_iterator insert_position, Args && ... args)
     {
@@ -1721,7 +1721,7 @@ namespace etl
       create_element_back(item);
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Adds an item to the back of the deque.
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
@@ -1736,7 +1736,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT
     //*************************************************************************
     /// Emplaces an item to the back of the deque.
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
@@ -1849,7 +1849,7 @@ namespace etl
       create_element_front(item);
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Adds an item to the front of the deque.
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
@@ -1864,7 +1864,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT
     //*************************************************************************
     /// Emplaces an item to the front of the deque.
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
@@ -2039,7 +2039,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -2188,7 +2188,7 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************************************************
     /// Create a new element with a default value at the front.
     //*********************************************************************
@@ -2350,7 +2350,7 @@ namespace etl
       }
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
@@ -2414,7 +2414,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -2462,7 +2462,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_deduction_guides && ETL_HAS_INITIALIZER_LIST
   template <typename... T>
   deque(T...) -> deque<typename etl::common_type_t<T...>, sizeof...(T)>;
 #endif
@@ -2470,7 +2470,7 @@ namespace etl
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_rvalue_references && ETL_HAS_INITIALIZER_LIST
   template <typename T, typename... TValues>
   constexpr auto make_deque(TValues&&... values) -> etl::deque<T, sizeof...(TValues)>
   {

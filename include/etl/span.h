@@ -169,7 +169,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Construct from a container or other type that supports
     /// data() and size() member functions.
@@ -549,7 +549,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Construct from a container or other type that supports
     /// data() and size() member functions.
@@ -812,7 +812,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_USING_CPP17
+#if __cpp_deduction_guides
   template <typename TIterator>
   span(const TIterator begin_, const TIterator end_)
     ->span<etl::remove_pointer_t<TIterator>, etl::dynamic_extent>;

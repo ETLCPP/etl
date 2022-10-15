@@ -172,7 +172,7 @@ namespace etl
       ETL_ASSERT(released, ETL_ERROR(etl::reference_counted_message_pool_release_failure));
     }
 
-#if ETL_USING_CPP11
+#if __cpp_variadic_templates
     //*****************************************************
     template <typename TMessage1, typename... TMessages>
     struct pool_message_parameters

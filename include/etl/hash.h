@@ -98,7 +98,7 @@ namespace etl
       hash_base(const hash_base& other);            // Can't copy construct
       hash_base& operator=(const hash_base& other); // Can't copy assign
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
       hash_base(hash_base&& other);            // Can't move construct
       hash_base& operator=(hash_base&& other); // Can't move assign
 #endif

@@ -37,8 +37,8 @@ SOFTWARE.
 
 namespace etl
 {
-#if ETL_USING_CPP11
-#if ETL_USING_CPP17 && !defined(ETL_OVERLOAD_FORCE_CPP14)
+#if __cpp_variadic_templates
+#if __cpp_deduction_guides && !defined(ETL_OVERLOAD_FORCE_CPP14)
 
   //*************************************************************************
   /// Variadic template definition of overload for C++17 and above.

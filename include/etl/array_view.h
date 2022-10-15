@@ -194,7 +194,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Construct from a container or other type that supports
     /// data() and size() member functions.
@@ -613,7 +613,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_USING_CPP17
+#if __cpp_deduction_guides
   template <typename TArray>
   array_view(TArray& a) 
     -> array_view<typename TArray::value_type>;

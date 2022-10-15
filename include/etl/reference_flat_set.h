@@ -498,7 +498,7 @@ namespace etl
     }
 
     //*********************************************************************
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     size_t erase(K&& key)
     {
@@ -984,7 +984,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_deduction_guides && ETL_HAS_INITIALIZER_LIST
   template <typename... T>
   reference_flat_set(T...) -> reference_flat_set<etl::nth_type_t<0, T...>, sizeof...(T)>;
 #endif
@@ -992,7 +992,7 @@ namespace etl
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_HAS_INITIALIZER_LIST
   template <typename TKey, typename TKeyCompare = etl::less<TKey>, typename... T>
   constexpr auto make_reference_flat_set(T&&... keys) -> etl::reference_flat_set<TKey, sizeof...(T), TKeyCompare>
   {

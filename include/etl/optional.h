@@ -138,7 +138,7 @@ namespace etl
       }
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //***************************************************************************
     /// Move constructor.
     //***************************************************************************
@@ -161,7 +161,7 @@ namespace etl
       valid = true;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //***************************************************************************
     /// Constructor from value type.
     //***************************************************************************
@@ -226,7 +226,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //***************************************************************************
     /// Assignment operator from optional.
     //***************************************************************************
@@ -275,7 +275,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //***************************************************************************
     /// Assignment operator from value type.
     //***************************************************************************
@@ -414,7 +414,7 @@ namespace etl
       }
     }
 
-#if ETL_USING_CPP11  && ETL_NOT_USING_STLPORT && !defined(ETL_OPTIONAL_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT && !defined(ETL_OPTIONAL_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Emplaces a value.
     ///\param args The arguments to construct with.

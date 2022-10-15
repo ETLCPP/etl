@@ -257,7 +257,7 @@ namespace etl
     typedef T                          value_type;       ///< The type stored in the queue.
     typedef T&                         reference;        ///< A reference to the type used in the queue.
     typedef const T&                   const_reference;  ///< A const reference to the type used in the queue.
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     typedef T&&                        rvalue_reference; ///< An rvalue reference to the type used in the queue.
 #endif
     typedef typename base_t::size_type size_type;        ///< The type used for determining the size of the queue.
@@ -284,7 +284,7 @@ namespace etl
       return result;
     }
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_rvalue_references && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Push a value to the queue without locking.
     //*************************************************************************
@@ -308,7 +308,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     //*************************************************************************
@@ -578,7 +578,7 @@ namespace etl
       return false;
     }
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_rvalue_references && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Push a value to the queue without locking.
     //*************************************************************************
@@ -600,7 +600,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     //*************************************************************************
@@ -738,7 +738,7 @@ namespace etl
         return false;
       }
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_rvalue_references && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
       value = etl::move(p_buffer[this->read_index]);
 #else
       value = p_buffer[this->read_index];
@@ -773,7 +773,7 @@ namespace etl
     iqueue_lockable(const iqueue_lockable&) ETL_DELETE;
     iqueue_lockable& operator =(const iqueue_lockable&) ETL_DELETE;
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     iqueue_lockable(iqueue_lockable&&) = delete;
     iqueue_lockable& operator =(iqueue_lockable&&) = delete;
 #endif
@@ -829,7 +829,7 @@ namespace etl
     queue_lockable(const queue_lockable&) ETL_DELETE;
     queue_lockable& operator = (const queue_lockable&) ETL_DELETE;
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     queue_lockable(queue_lockable&&) = delete;
     queue_lockable& operator =(queue_lockable&&) = delete;
 #endif

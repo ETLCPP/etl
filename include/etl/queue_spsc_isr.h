@@ -55,7 +55,7 @@ namespace etl
     typedef T        value_type;      ///< The type stored in the queue.
     typedef T&       reference;       ///< A reference to the type used in the queue.
     typedef const T& const_reference; ///< A const reference to the type used in the queue.
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     typedef T&&      rvalue_reference;///< An rvalue reference to the type used in the queue.
 #endif
 
@@ -67,7 +67,7 @@ namespace etl
       return push_implementation(value);
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Push a value to the queue from an ISR.
     //*************************************************************************
@@ -82,7 +82,7 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
     ///\param value The value to use to construct the item to push to the queue.
     //*************************************************************************
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_ISR_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_ISR_FORCE_CPP03_IMPLEMENTATION)
     template <typename ... Args>
     bool emplace_from_isr(Args&&... args)
     {
@@ -216,7 +216,7 @@ namespace etl
       return false;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Push a value to the queue.
     //*************************************************************************
@@ -238,7 +238,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_ISR_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_ISR_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
@@ -363,7 +363,7 @@ namespace etl
         return false;
       }
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_rvalue_references && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
       value = etl::move(p_buffer[read_index]);
 #else
       value = p_buffer[read_index];
@@ -476,7 +476,7 @@ namespace etl
     typedef typename base_t::value_type       value_type;      ///< The type stored in the queue.
     typedef typename base_t::reference        reference;       ///< A reference to the type used in the queue.
     typedef typename base_t::const_reference  const_reference; ///< A const reference to the type used in the queue.
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     typedef typename base_t::rvalue_reference rvalue_reference;///< A const reference to the type used in the queue.
 #endif
     typedef typename base_t::size_type        size_type;       ///< The type used for determining the size of the queue.
@@ -495,7 +495,7 @@ namespace etl
       return result;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Push a value to the queue.
     //*************************************************************************
@@ -515,7 +515,7 @@ namespace etl
     /// Constructs a value in the queue 'in place'.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
     //*************************************************************************
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_ISR_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_ISR_FORCE_CPP03_IMPLEMENTATION)
     template <typename ... Args>
     bool emplace(Args&&... args)
     {
@@ -736,7 +736,7 @@ namespace etl
     iqueue_spsc_isr(const iqueue_spsc_isr&) ETL_DELETE;
     iqueue_spsc_isr& operator =(const iqueue_spsc_isr&) ETL_DELETE;
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     iqueue_spsc_isr(iqueue_spsc_isr&&) = delete;
     iqueue_spsc_isr& operator =(iqueue_spsc_isr&&) = delete;
 #endif
@@ -789,7 +789,7 @@ namespace etl
     queue_spsc_isr(const queue_spsc_isr&);
     queue_spsc_isr& operator = (const queue_spsc_isr&);
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     queue_spsc_isr(queue_spsc_isr&&) = delete;
     queue_spsc_isr& operator =(queue_spsc_isr&&) = delete;
 #endif

@@ -35,6 +35,14 @@ SOFTWARE.
 
 #include "determine_compiler.h"
 
+#ifdef __has_include
+  #if __has_include(<version>)
+    #include <version>
+  #else
+    #define ETL_NO_STD_FEATURE_TESTS
+  #endif
+#endif
+
 // Determine C++23 support
 #if !defined(ETL_CPP23_SUPPORTED)
   #define ETL_CPP23_SUPPORTED 0
@@ -150,7 +158,11 @@ SOFTWARE.
 #endif
 
 #if !defined(ETL_NO_SMALL_CHAR_SUPPORT)
-  #define ETL_NO_SMALL_CHAR_SUPPORT ETL_CPP20_NOT_SUPPORTED
+  #if __cpp_char8_t
+    #define ETL_NO_SMALL_CHAR_SUPPORT 0
+  #else
+    #define ETL_NO_SMALL_CHAR_SUPPORT 1
+  #endif
 #endif
 
 #if !defined(ETL_NO_LARGE_CHAR_SUPPORT)
@@ -187,5 +199,119 @@ SOFTWARE.
 #if !defined(NAN) || defined(__CROSSWORKS_ARM) || defined(ETL_COMPILER_ARM5) || defined(ARDUINO)
   #define ETL_NO_CPP_NAN_SUPPORT
 #endif
+
+#ifdef ETL_NO_STD_FEATURE_TESTS
+
+// TODO: fill in any dependencies from https://en.cppreference.com/w/cpp/feature_test
+// why testing the existence of a header is not sufficient: https://isocpp.org/std/standing-documents/sd-6-sg10-feature-test-recommendations#example
+
+#if (__cplusplus >= 201806L) && !defined(__cpp_lib_constexpr_algorithms)
+  #define __cpp_lib_constexpr_algorithms 201806L
+#endif
+
+#if (__cplusplus >= 200704L) && !defined(__cpp_alias_templates)
+  #define __cpp_alias_templates 200704L
+#endif
+
+#if (__cplusplus >= 200704L) && !defined(__cpp_variadic_templates)
+  #define __cpp_variadic_templates 200704L
+#endif
+
+#if (__cplusplus >= 200610L) && !defined(__cpp_rvalue_references)
+  #define __cpp_rvalue_references 200610L
+#endif
+
+#if defined(__cpp_deduction_guides)
+#elif (__cplusplus >= 201907L)
+  #define __cpp_deduction_guides 201907L
+#elif (__cplusplus >= 201703L)
+  #define __cpp_deduction_guides 201703L
+#endif
+
+#if (__cplusplus >= 200806L) && !defined(__cpp_initializer_lists)
+  #define __cpp_initializer_lists 200806L
+#endif
+
+#if defined(__cpp_lib_array_constexpr)
+#elif (__cplusplus >= 201811L)
+  #define __cpp_lib_array_constexpr 201811L
+#elif (__cplusplus >= 201603L)
+  #define __cpp_lib_array_constexpr 201603L
+#endif
+
+#if defined(__cpp_constexpr)
+#elif (__cplusplus >= 202207L)
+  #define __cpp_constexpr 202207L
+#elif (__cplusplus >= 202110L)
+  #define __cpp_constexpr 202110L
+#elif (__cplusplus >= 202002L)
+  #define __cpp_constexpr 202002L
+#elif (__cplusplus >= 201907L)
+  #define __cpp_constexpr 201907L
+#elif (__cplusplus >= 201603L)
+  #define __cpp_constexpr 201603L
+#elif (__cplusplus >= 201304L)
+  #define __cpp_constexpr 201304L
+#elif (__cplusplus >= 200704L)
+  #define __cpp_constexpr 200704L
+#endif
+
+#if (__cplusplus >= 201907L) && !defined(__cpp_lib_bitops)
+  #define __cpp_lib_bitops 201907L
+#endif
+
+#if (__cplusplus >= 201606L) && !defined(__cpp_inline_variables)
+  #define __cpp_inline_variables 201606L
+#endif
+
+#if (__cplusplus >= 202110L) && !defined(__cpp_lib_byteswap)
+  #define __cpp_lib_byteswap 202110L
+#endif
+
+#if (__cplusplus >= 201907L) && !defined(__cpp_lib_endian)
+  #define __cpp_lib_endian 201907L
+#endif
+
+#if (__cplusplus >= 201505L) && !defined(__cpp_lib_bool_constant)
+  #define __cpp_lib_bool_constant 201505L
+#endif
+
+#if (__cplusplus >= 201510L) && !defined(__cpp_lib_logical_traits)
+  #define __cpp_lib_logical_traits 201510L
+#endif
+
+#if (__cplusplus >= 200710L) && !defined(__cpp_unicode_literals)
+  #define __cpp_unicode_literals 200710L
+#endif
+
+#if (__cplusplus >= 201603L) && !defined(__cpp_fold_expressions)
+  #define __cpp_fold_expressions 201603L
+#endif
+
+#if (__cplusplus >= 200410L) && !defined(__cpp_static_assert)
+  #define __cpp_static_assert 200410L
+#endif
+
+// FIXME: no feature test macro for 'alignas' specifier
+
+// FIXME: no feature test macro for std::array
+
+// FIXME: no feature test macro for <atomic>
+
+// FIXME: add ETL macro for delegate11 support -> (__cpp_variadic_templates)
+
+// FIXME: no feature test macro for 'using'
+
+// FIXME: no feature test macro for <type_traits>
+
+// FIXME: no feature test macro for std::addressof
+
+// FIXME: no feature test macro for std::construct_at / std::destroy_at
+
+// FIXME: no feature test macro for nullptr
+
+// FIXME: no feature test macro for std::thread and co.
+
+#endif // ETL_NO_STD_FEATURE_TESTS
 
 #endif

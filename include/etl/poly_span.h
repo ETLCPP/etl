@@ -987,7 +987,7 @@ protected:
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_USING_CPP17
+#if __cpp_deduction_guides
   template <typename TIterator>
   poly_span(const TIterator begin_, const TIterator end_)
     ->poly_span<etl::remove_pointer_t<TIterator>, etl::dynamic_extent>;

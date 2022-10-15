@@ -141,7 +141,7 @@ namespace etl
     typedef T                          value_type;      ///< The type stored in the queue.
     typedef T&                         reference;       ///< A reference to the type used in the queue.
     typedef const T&                   const_reference; ///< A const reference to the type used in the queue.
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     typedef T&&                        rvalue_reference;///< An rvalue reference to the type used in the queue.
 #endif
     typedef typename base_t::size_type size_type;       ///< The type used for determining the size of the queue.
@@ -166,7 +166,7 @@ namespace etl
       return result;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Push a value to the queue.
     //*************************************************************************
@@ -182,7 +182,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_MPMC_MUTEX_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_MPMC_MUTEX_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
@@ -424,7 +424,7 @@ namespace etl
       return false;
     }
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_MPMC_MUTEX_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_rvalue_references && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_MPMC_MUTEX_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Push a value to the queue.
     //*************************************************************************
@@ -446,7 +446,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_MPMC_MUTEX_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_MPMC_MUTEX_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     //*************************************************************************
@@ -564,7 +564,7 @@ namespace etl
         return false;
       }
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_rvalue_references && ETL_NOT_USING_STLPORT && !defined(ETL_QUEUE_LOCKABLE_FORCE_CPP03_IMPLEMENTATION)
       value = etl::move(p_buffer[read_index]);
 #else
       value = p_buffer[read_index];
@@ -668,7 +668,7 @@ namespace etl
     queue_mpmc_mutex(const queue_mpmc_mutex&) ETL_DELETE;
     queue_mpmc_mutex& operator = (const queue_mpmc_mutex&) ETL_DELETE;
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     queue_mpmc_mutex(queue_mpmc_mutex&&) = delete;
     queue_mpmc_mutex& operator = (queue_mpmc_mutex&&) = delete;
 #endif

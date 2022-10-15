@@ -57,7 +57,7 @@ SOFTWARE.
 #pragma diag_suppress 1300
 #endif
 
-#if ETL_USING_CPP11
+#if __cpp_unicode_literals
   #define ETL_STR(x)  x
   #define ETL_STRL(x) L##x
   #define ETL_STRu(x) u##x

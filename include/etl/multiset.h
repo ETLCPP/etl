@@ -630,7 +630,7 @@ namespace etl
     typedef TCompare            value_compare;
     typedef value_type&         reference;
     typedef const value_type&   const_reference;
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     typedef value_type&&        rvalue_reference;
 #endif
     typedef value_type*         pointer;
@@ -1183,7 +1183,7 @@ namespace etl
     }
 
     //*************************************************************************
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     template <typename K, typename KC = TCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     size_type erase(K&& key_value)
     {
@@ -1278,7 +1278,7 @@ namespace etl
       return iterator(*this, inserted_node);
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************************************************
     /// Inserts a value to the multiset.
     /// If asserts or exceptions are enabled, emits set_full if the multiset is already full.
@@ -1314,7 +1314,7 @@ namespace etl
       return insert(value);
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*********************************************************************
     /// Inserts a value to the multiset starting at the position recommended.
     /// If asserts or exceptions are enabled, emits set_full if the multiset is already full.
@@ -1439,7 +1439,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -1534,7 +1534,7 @@ namespace etl
       return node;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Allocate a Data_Node.
     //*************************************************************************
@@ -2322,7 +2322,7 @@ namespace etl
       this->assign(other.cbegin(), other.cend());
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
@@ -2391,7 +2391,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -2423,7 +2423,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_deduction_guides && ETL_HAS_INITIALIZER_LIST
   template <typename... T>
   multiset(T...) -> multiset<etl::nth_type_t<0, T...>, sizeof...(T)>;
 #endif
@@ -2431,7 +2431,7 @@ namespace etl
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_HAS_INITIALIZER_LIST
   template <typename TKey, typename TKeyCompare = etl::less<TKey>, typename... T>
   constexpr auto make_multiset(T&&... keys) -> etl::multiset<TKey, sizeof...(T), TKeyCompare>
   {

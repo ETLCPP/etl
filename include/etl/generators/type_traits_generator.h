@@ -83,7 +83,7 @@ cog.outl("//********************************************************************
 
 namespace etl
 {
-#if ETL_USING_CPP11
+#if __cpp_variadic_templates
   template <typename...>
   using void_t = void;
 #endif
@@ -117,7 +117,7 @@ namespace etl
   template <typename T, const T VALUE>
   const T integral_constant<T, VALUE>::value;
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <bool B>
   using bool_constant = integral_constant<bool, B>;
 #else
@@ -132,7 +132,7 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool negation_v = negation<T>::value;
 #endif
@@ -141,11 +141,11 @@ namespace etl
   /// remove_reference
   template <typename T> struct remove_reference { typedef T type; };
   template <typename T> struct remove_reference<T&> { typedef T type; };
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
   template <typename T> struct remove_reference<T&&> { typedef T type; };
 #endif
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using remove_reference_t = typename remove_reference<T>::type;
 #endif
@@ -162,7 +162,7 @@ namespace etl
   template <typename T> struct remove_pointer<volatile T* const> { typedef volatile T type; };
   template <typename T> struct remove_pointer<const volatile T* const> { typedef const volatile T type; };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using remove_pointer_t = typename remove_pointer<T>::type;
 #endif
@@ -171,7 +171,7 @@ namespace etl
   /// add_pointer
   template <typename T> struct add_pointer { typedef typename remove_reference<T>::type* type; };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using add_pointer_t = typename add_pointer<T>::type;
 #endif
@@ -182,7 +182,7 @@ namespace etl
   template <typename T> struct is_const<const T> : true_type {};
   template <typename T> struct is_const<const volatile T> : true_type {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_const_v = is_const<T>::value;
 #endif
@@ -192,7 +192,7 @@ namespace etl
   template <typename T> struct remove_const { typedef T type; };
   template <typename T> struct remove_const<const T> { typedef T type; };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using remove_const_t = typename remove_const<T>::type;
 #endif
@@ -202,7 +202,7 @@ namespace etl
   template <typename T> struct add_const { typedef const T type; };
   template <typename T> struct add_const<const T> { typedef const T type; };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using add_const_t = typename add_const<T>::type;
 #endif
@@ -213,7 +213,7 @@ namespace etl
   template <typename T> struct is_volatile<volatile T> : true_type {};
   template <typename T> struct is_volatile<const volatile T> : true_type {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_volatile_v = is_volatile<T>::value;
 #endif
@@ -223,7 +223,7 @@ namespace etl
   template <typename T> struct remove_volatile { typedef T type; };
   template <typename T> struct remove_volatile<volatile T> { typedef T type; };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using remove_volatile_t = typename remove_volatile<T>::type;
 #endif
@@ -233,7 +233,7 @@ namespace etl
   template <typename T> struct add_volatile { typedef volatile T type; };
   template <typename T> struct add_volatile<volatile T> { typedef volatile T type; };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using add_volatile_t = typename add_volatile<T>::type;
 #endif
@@ -245,7 +245,7 @@ namespace etl
     typedef typename remove_volatile<typename remove_const<T>::type>::type type;
   };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using remove_cv_t = typename remove_cv<T>::type;
 #endif
@@ -257,7 +257,7 @@ namespace etl
     typedef typename add_volatile<typename add_const<T>::type>::type type;
   };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using add_cv_t = typename add_cv<T>::type;
 #endif
@@ -269,7 +269,7 @@ namespace etl
     typedef typename remove_cv<typename remove_reference<T>::type>::type type;
   };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using remove_cvref_t = typename remove_cvref<T>::type;
 #endif
@@ -294,7 +294,7 @@ namespace etl
   template <typename T> struct is_integral<volatile T> : is_integral<T> {};
   template <typename T> struct is_integral<const volatile T> : is_integral<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_integral_v = is_integral<T>::value;
 #endif
@@ -316,7 +316,7 @@ namespace etl
   template <typename T> struct is_signed<volatile T> : is_signed<T> {};
   template <typename T> struct is_signed<const volatile T> : is_signed<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_signed_v = is_signed<T>::value;
 #endif
@@ -336,7 +336,7 @@ namespace etl
   template <typename T> struct is_unsigned<volatile T> : is_unsigned<T> {};
   template <typename T> struct is_unsigned<const volatile T> : is_unsigned<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_unsigned_v = is_unsigned<T>::value;
 #endif
@@ -351,7 +351,7 @@ namespace etl
   template <typename T> struct is_floating_point<volatile T> : is_floating_point<T> {};
   template <typename T> struct is_floating_point<const volatile T> : is_floating_point<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_floating_point_v = is_floating_point<T>::value;
 #endif
@@ -361,7 +361,7 @@ namespace etl
   template <typename T1, typename T2> struct is_same : public false_type {};
   template <typename T> struct is_same<T, T> : public true_type {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T1, typename T2>
   inline constexpr bool is_same_v = is_same<T1, T2>::value;
 #endif
@@ -371,7 +371,7 @@ namespace etl
   template<typename T> struct is_void : false_type {};
   template<> struct is_void<void> : true_type {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_void_v = is_void<T>::value;
 #endif
@@ -380,7 +380,7 @@ namespace etl
   /// is_arithmetic
   template<typename T> struct is_arithmetic : etl::bool_constant<is_integral<T>::value || is_floating_point<T>::value> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_arithmetic_v = is_arithmetic<T>::value;
 #endif
@@ -389,7 +389,7 @@ namespace etl
   /// is_fundamental
   template <typename T> struct is_fundamental : etl::bool_constant<is_arithmetic<T>::value || is_void<T>::value> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_fundamental_v = is_fundamental<T>::value;
 #endif
@@ -398,7 +398,7 @@ namespace etl
   /// is_compound
   template <typename T> struct is_compound : etl::bool_constant<!is_fundamental<T>::value> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_compound_v = is_compound<T>::value;
 #endif
@@ -409,7 +409,7 @@ namespace etl
   template <typename T> struct is_array<T[]> : true_type {};
   template <typename T, size_t MAXN> struct is_array<T[MAXN]> : true_type {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_array_v = is_array<T>::value;
 #endif
@@ -420,7 +420,7 @@ namespace etl
   template<typename T> struct is_pointer_helper<T*> : true_type {};
   template<typename T> struct is_pointer : is_pointer_helper<typename remove_cv<T>::type> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_pointer_v = is_pointer<T>::value;
 #endif
@@ -431,19 +431,19 @@ namespace etl
   template<typename T> struct is_lvalue_reference_helper<T&> : true_type {};
   template<typename T> struct is_lvalue_reference : is_lvalue_reference_helper<typename remove_cv<T>::type> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_lvalue_reference_v = etl::is_lvalue_reference<T>::value;
 #endif
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
   //***************************************************************************
   /// is_rvalue_reference
   template<typename T> struct is_rvalue_reference_helper : false_type {};
   template<typename T> struct is_rvalue_reference_helper<T&&> : true_type {};
   template<typename T> struct is_rvalue_reference : is_rvalue_reference_helper<typename remove_cv<T>::type> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_rvalue_reference_v = etl::is_rvalue_reference<T>::value;
 #endif
@@ -454,12 +454,12 @@ namespace etl
   // Either lvalue or rvalue (for CPP11)
   template<typename T> struct is_reference : integral_constant<bool,
     is_lvalue_reference<T>::value
-    #if ETL_USING_CPP11
+    #if __cpp_rvalue_references
         || is_rvalue_reference<T>::value
     #endif
   >{};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_reference_v = is_reference<T>::value;
 #endif
@@ -469,7 +469,7 @@ namespace etl
   /// Only fundamental and pointers types are recognised.
   template <typename T> struct is_pod : etl::bool_constant<etl::is_fundamental<T>::value || etl::is_pointer<T>::value> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_pod_v = etl::is_pod<T>::value;
 #endif
@@ -479,7 +479,7 @@ namespace etl
   template <bool B, typename T, typename F>  struct conditional { typedef T type; };
   template <typename T, typename F> struct conditional<false, T, F> { typedef F type; };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <bool B, typename T, typename F>
   using conditional_t = typename conditional<B, T, F>::type;
 #endif
@@ -507,7 +507,7 @@ namespace etl
   template <typename T> struct make_signed<volatile T> : add_volatile<typename make_signed<T>::type> {};
   template <typename T> struct make_signed<const volatile T> : add_const<typename add_volatile<typename make_signed<T>::type>::type> {};
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using make_signed_t = typename make_signed<T>::type;
 #endif
@@ -535,7 +535,7 @@ namespace etl
   template <typename T> struct make_unsigned<volatile T> : add_volatile<typename make_unsigned<T>::type> {};
   template <typename T> struct make_unsigned<const volatile T> : add_const<typename add_volatile<typename make_unsigned<T>::type>::type> {};
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using make_unsigned_t = typename make_unsigned<T>::type;
 #endif
@@ -545,7 +545,7 @@ namespace etl
   template <bool B, typename T = void> struct enable_if {};
   template <typename T> struct enable_if<true, T> { typedef T type; };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <bool B, typename T = void>
   using enable_if_t = typename enable_if<B, T>::type;
 #endif
@@ -567,7 +567,7 @@ namespace etl
   template <typename T, unsigned I, unsigned MAXN>
   struct extent<T[I], MAXN> : integral_constant<size_t, extent<T, MAXN - 1>::value> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T, unsigned N = 0U>
   inline constexpr size_t extent_v = extent<T, N>::value;
 #endif
@@ -578,7 +578,7 @@ namespace etl
   template <typename T> struct remove_extent<T[]> { typedef T type; };
   template <typename T, size_t MAXN> struct remove_extent<T[MAXN]> { typedef T type; };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using remove_extent_t = typename remove_extent<T>::type;
 #endif
@@ -589,7 +589,7 @@ namespace etl
   template <typename T> struct remove_all_extents<T[]> { typedef typename remove_all_extents<T>::type type; };
   template <typename T, size_t MAXN> struct remove_all_extents<T[MAXN]> { typedef typename remove_all_extents<T>::type type; };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using remove_all_extents_t = typename remove_all_extents<T>::type;
 #endif
@@ -600,7 +600,7 @@ namespace etl
   template <typename T> struct rank<T[]> : public integral_constant<size_t, rank<T>::value + 1> {};
   template <typename T, size_t MAXN> struct rank<T[MAXN]> : public integral_constant<size_t, rank<T>::value + 1> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr size_t rank_v = rank<T>::value;
 #endif
@@ -616,7 +616,7 @@ namespace etl
                                       typename etl::remove_cv<U>::type>::type type;
   };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using decay_t = typename decay<T>::type;
 #endif
@@ -650,7 +650,7 @@ namespace etl
     static const bool value = false;
   };
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T1, typename T2>
   inline constexpr bool is_base_of_v = is_base_of<T1, T2>::value;
 #endif
@@ -668,7 +668,7 @@ namespace etl
   template <typename T>
   struct is_class : etl::bool_constant<sizeof(private_type_traits::test<T>(0)) == 1U> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_class_v = is_class<T>::value;
 #endif
@@ -682,14 +682,14 @@ namespace etl
   template <>           struct add_lvalue_reference<volatile void> { typedef volatile void type; };
   template <>           struct add_lvalue_reference<const volatile void> { typedef const volatile void type; };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using add_lvalue_reference_t = typename etl::add_lvalue_reference<T>::type;
 #endif
 
   //***************************************************************************
   /// add_rvalue_reference
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
   template <typename T> struct add_rvalue_reference { using type = T && ; };
   template <typename T> struct add_rvalue_reference<T&> { using type = T & ; };
   template <>           struct add_rvalue_reference<void> { using type = void; };
@@ -698,14 +698,14 @@ namespace etl
   template <>           struct add_rvalue_reference<const volatile void> { using type = const volatile void; };
 #endif
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using add_rvalue_reference_t = typename etl::add_rvalue_reference<T>::type;
 #endif
 
   //***************************************************************************
   /// declval
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
   template <typename T>
   typename etl::add_rvalue_reference<T>::type declval() ETL_NOEXCEPT;
 #endif
@@ -742,7 +742,7 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_enum_v = etl::is_enum<T>::value;
 #endif
@@ -751,7 +751,7 @@ namespace etl
 
   //***************************************************************************
   /// is_convertible
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   namespace private_type_traits
   {
     template <typename>
@@ -781,7 +781,7 @@ namespace etl
 #endif
 #endif
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename TFrom, typename TTo >
   inline constexpr bool is_convertible_v = etl::is_convertible<TFrom, TTo>::value;
 #endif
@@ -804,7 +804,7 @@ namespace etl
   template <> struct alignment_of<void> : integral_constant <size_t, 0> {};
   template <> struct alignment_of<const void> : integral_constant <size_t, 0> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr size_t alignment_of_v = etl::alignment_of<T>::value;
 #endif
@@ -826,7 +826,7 @@ namespace etl
   typedef integral_constant<bool, false> false_type;
   typedef integral_constant<bool, true>  true_type;
 
-#if ETL_USING_CPP17
+#if __cpp_lib_bool_constant
   template <bool B>
   using bool_constant = std::bool_constant<B>;
 #else
@@ -837,7 +837,7 @@ namespace etl
   //***************************************************************************
   /// negation
   ///\ingroup type_traits
-#if ETL_USING_CPP17
+#if __cpp_lib_logical_traits
   template <typename T>
   struct negation : std::negation<T>
   {
@@ -852,7 +852,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct remove_reference : std::remove_reference<T> {};
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using remove_reference_t = typename std::remove_reference<T>::type;
 #endif
@@ -862,7 +862,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct remove_pointer : std::remove_pointer<T> {};
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using remove_pointer_t = typename std::remove_pointer<T>::type;
 #endif
@@ -872,7 +872,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct add_pointer : std::add_pointer<T> {};
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using add_pointer_t = typename std::add_pointer<T>::type;
 #endif
@@ -882,7 +882,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_const : std::is_const<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_const_v = std::is_const_v<T>;
 #endif
@@ -892,7 +892,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct remove_const : std::remove_const<T> {};
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using remove_const_t = typename std::remove_const<T>::type;
 #endif
@@ -902,7 +902,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct add_const : std::add_const<T> {};
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using add_const_t = typename std::add_const<T>::type;
 #endif
@@ -912,7 +912,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_volatile : std::is_volatile<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_volatile_v = std::is_volatile_v<T>;
 #endif
@@ -922,7 +922,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct remove_volatile : std::remove_volatile<T> {};
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using remove_volatile_t = typename std::remove_volatile<T>::type;
 #endif
@@ -932,7 +932,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct add_volatile : std::add_volatile<T> {};
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using add_volatile_t = typename std::add_volatile<T>::type;
 #endif
@@ -942,7 +942,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct remove_cv : std::remove_cv<T> {};
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using remove_cv_t = typename std::remove_cv<T>::type;
 #endif
@@ -952,7 +952,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct add_cv : std::add_cv<T> {};
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using add_cv_t = typename std::add_cv<T>::type;
 #endif
@@ -965,7 +965,7 @@ namespace etl
     typedef typename std::remove_cv<typename std::remove_reference<T>::type>::type type;
   };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using remove_cvref_t = typename etl::remove_cvref<T>::type;
 #endif
@@ -975,7 +975,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_integral : std::is_integral<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_integral_v = std::is_integral_v<T>;
 #endif
@@ -985,7 +985,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_signed : std::is_signed<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_signed_v = std::is_signed_v<T>;
 #endif
@@ -995,7 +995,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_unsigned : std::is_unsigned<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_unsigned_v = std::is_unsigned_v<T>;
 #endif
@@ -1005,7 +1005,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_floating_point : std::is_floating_point<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_floating_point_v = std::is_floating_point_v<T>;
 #endif
@@ -1015,7 +1015,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T1, typename T2> struct is_same : std::is_same<T1, T2> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T1, typename T2>
   inline constexpr bool is_same_v = std::is_same_v<T1, T2>;
 #endif
@@ -1025,7 +1025,7 @@ namespace etl
   ///\ingroup type_traits
   template<typename T> struct is_void : std::is_void<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_void_v = std::is_void_v<T>;
 #endif
@@ -1035,7 +1035,7 @@ namespace etl
   ///\ingroup type_traits
   template<typename T> struct is_arithmetic : std::is_arithmetic<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_arithmetic_v = std::is_arithmetic_v<T>;
 #endif
@@ -1045,7 +1045,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_fundamental : std::is_fundamental<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_fundamental_v = std::is_fundamental_v<T>;
 #endif
@@ -1055,7 +1055,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_compound : std::is_compound<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_compound_v = std::is_compound_v<T>;
 #endif
@@ -1065,7 +1065,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct is_array : std::is_array<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_array_v = std::is_array_v<T>;
 #endif
@@ -1075,7 +1075,7 @@ namespace etl
   ///\ingroup type_traits
   template<typename T> struct is_pointer : std::is_pointer<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_pointer_v = std::is_pointer_v<T>;
 #endif
@@ -1085,7 +1085,7 @@ namespace etl
   ///\ingroup type_traits
   template<typename T> struct is_reference : std::is_reference<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_reference_v = std::is_reference_v<T>;
 #endif
@@ -1095,7 +1095,7 @@ namespace etl
   ///\ingroup type_traits
   template<typename T> struct is_lvalue_reference : std::is_lvalue_reference<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_lvalue_reference_v = std::is_lvalue_reference_v<T>;
 #endif
@@ -1103,10 +1103,10 @@ namespace etl
   //***************************************************************************
   /// is_rvalue_reference
   ///\ingroup type_traits
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
   template<typename T> struct is_rvalue_reference : std::is_rvalue_reference<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_rvalue_reference_v = std::is_rvalue_reference_v<T>;
 #endif
@@ -1118,7 +1118,7 @@ namespace etl
   template <typename T>
   struct is_pod : std::integral_constant<bool, std::is_standard_layout<T>::value && std::is_trivial<T>::value> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_pod_v = std::is_standard_layout_v<T> && std::is_trivial_v<T>;
 #endif
@@ -1135,7 +1135,7 @@ namespace etl
   template <bool B, typename T, typename F>  struct conditional { typedef T type; };
   template <typename T, typename F> struct conditional<false, T, F> { typedef F type; };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <bool B, typename T, typename F>
   using conditional_t = typename conditional<B, T, F>::type;
 #endif
@@ -1145,7 +1145,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct make_signed : std::make_signed<T> {};
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using make_signed_t = typename std::make_signed<T>::type;
 #endif
@@ -1155,7 +1155,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct make_unsigned : std::make_unsigned<T> {};
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using make_unsigned_t = typename std::make_unsigned<T>::type;
 #endif
@@ -1165,7 +1165,7 @@ namespace etl
   ///\ingroup type_traits
   template <bool B, typename T = void> struct enable_if : std::enable_if<B, T> {};
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <bool B, typename T = void>
   using enable_if_t = typename std::enable_if<B, T>::type;
 #endif
@@ -1176,7 +1176,7 @@ namespace etl
   template <typename T, unsigned MAXN = 0U>
   struct extent : std::extent<T, MAXN> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T, unsigned MAXN = 0U>
   inline constexpr size_t extent_v = std::extent_v<T, MAXN>;
 #endif
@@ -1186,7 +1186,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct remove_extent : std::remove_extent<T> { };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using remove_extent_t = typename std::remove_extent<T>::type;
 #endif
@@ -1196,7 +1196,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct remove_all_extents : std::remove_all_extents<T> { };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using remove_all_extents_t = typename std::remove_all_extents<T>::type;
 #endif
@@ -1206,7 +1206,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T>struct rank : std::rank<T> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr size_t rank_v = std::rank_v<T>;
 #endif
@@ -1216,7 +1216,7 @@ namespace etl
   ///\ingroup type_traits
   template <typename T> struct decay : std::decay<T> {};
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using decay_t = typename std::decay<T>::type;
 #endif
@@ -1226,7 +1226,7 @@ namespace etl
   ///\ingroup type_traits
   template<typename TBase, typename TDerived> struct is_base_of : std::is_base_of<TBase, TDerived> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename TBase, typename TDerived>
   inline constexpr bool is_base_of_v = std::is_base_of_v<TBase, TDerived>;
 #endif
@@ -1235,7 +1235,7 @@ namespace etl
   /// is_class
   template <typename T> struct is_class : std::is_class<T>{};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_class_v = is_class<T>::value;
 #endif
@@ -1244,25 +1244,25 @@ namespace etl
   /// add_lvalue_reference
   template <typename T> struct add_lvalue_reference : std::add_lvalue_reference<T> {};
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <typename T>
   using add_lvalue_reference_t = typename std::add_lvalue_reference<T>::type;
 #endif
 
   //***************************************************************************
   /// add_rvalue_reference
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
   template <typename T> struct add_rvalue_reference : std::add_rvalue_reference<T> {};
 #endif
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates && __cpp_rvalue_references
   template <typename T>
   using add_rvalue_reference_t = typename std::add_rvalue_reference<T>::type;
 #endif
 
   //***************************************************************************
   /// declval
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
   template <typename T>
   typename std::add_rvalue_reference<T>::type declval() ETL_NOEXCEPT;
 #endif
@@ -1276,7 +1276,7 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr bool is_enum_v = etl::is_enum<T>::value;
 #endif
@@ -1291,7 +1291,7 @@ namespace etl
   struct is_convertible : std::is_convertible<TFrom, TTo> {};
 #endif
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename TFrom, typename TTo>
   inline constexpr bool is_convertible_v = std::is_convertible_v<TFrom, TTo>;
 #endif
@@ -1303,7 +1303,7 @@ namespace etl
   template <> struct alignment_of<void> : std::integral_constant<size_t, 0> {};
   template <> struct alignment_of<const void> : std::integral_constant <size_t, 0> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr size_t alignment_of_v = std::alignment_of_v<T>;
 #endif
@@ -1334,7 +1334,7 @@ namespace etl
     static const T value = FALSE_VALUE;
   };
 
-#if ETL_USING_CPP11
+#if __cpp_variadic_templates
   //***************************************************************************
   /// Template to determine if a type is one of a specified list.
   ///\ingroup types
@@ -1376,7 +1376,7 @@ namespace etl
   /*[[[end]]]*/
 #endif
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr && __cpp_variadic_templates
   template <typename T, typename... TRest>
   inline constexpr bool is_one_of_v = etl::is_one_of<T, TRest...>::value;
 #endif
@@ -1402,7 +1402,7 @@ namespace etl
     typedef const type_t*       const_pointer;
     typedef const type_t* const const_pointer_const;
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     typedef type_t&&            rvalue_reference;
 #endif
   };
@@ -1424,7 +1424,7 @@ namespace etl
     typedef const type_t*       const_pointer;
     typedef const type_t* const const_pointer_const;
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     typedef type_t&&            rvalue_reference;
 #endif
   };
@@ -1446,7 +1446,7 @@ namespace etl
     typedef const type_t* const_pointer;
     typedef const type_t* const const_pointer_const;
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     typedef type_t&&            rvalue_reference;
 #endif
   };
@@ -1468,12 +1468,12 @@ namespace etl
     typedef const type_t*       const_pointer;
     typedef const type_t* const const_pointer_const;
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     typedef type_t&&            rvalue_reference;
 #endif
   };
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
   // rvalue References.
   template <typename T>
   struct types<T&&>
@@ -1490,14 +1490,11 @@ namespace etl
     typedef type_t*             pointer;
     typedef const type_t*       const_pointer;
     typedef const type_t* const const_pointer_const;
-
-#if ETL_USING_CPP11
     typedef type_t&&            rvalue_reference;
-#endif
   };
 #endif
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
   template <typename T>
   using types_t = typename types<T>::type;
 
@@ -1526,12 +1523,12 @@ namespace etl
   template <typename T> struct size_of : etl::integral_constant<size_t, sizeof(T)> {};
   template <> struct size_of<void> : etl::integral_constant<size_t, 1U> {};
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T>
   inline constexpr size_t size_of_v = etl::size_of<T>::value;
 #endif
 
-#if ETL_USING_CPP11
+#if __cpp_variadic_templates
   //***************************************************************************
   /// are_all_same
   template <typename T, typename T1, typename... TRest>
@@ -1548,14 +1545,14 @@ namespace etl
   };
 #endif
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename T, typename T1, typename... TRest>
   inline constexpr bool are_all_same_v = are_all_same<T, T1, TRest...>::value;
 #endif
 
   //***************************************************************************
   /// conjunction
-#if ETL_USING_CPP11
+#if __cpp_variadic_templates
   template <typename...>
   struct conjunction : public etl::true_type
   {
@@ -1572,14 +1569,14 @@ namespace etl
   };
 #endif
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename... T>
   inline constexpr bool conjunction_v = conjunction<T...>::value;
 #endif
 
   //***************************************************************************
   /// disjunction
-#if ETL_USING_CPP11
+#if __cpp_variadic_templates
   template <typename...>
   struct disjunction : public etl::false_type
   {
@@ -1595,7 +1592,7 @@ namespace etl
   };
 #endif
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename... T>
   inline constexpr bool disjunction_v = etl::disjunction<T...>::value;
 #endif
@@ -1719,7 +1716,7 @@ namespace etl
     static ETL_CONSTANT bool value = __is_assignable(T1, T2);
   };
 
-#if ETL_USING_CPP11
+#if __cpp_variadic_templates
   //*********************************************
   // is_constructible
   template<typename T, typename... TArgs>
@@ -1759,7 +1756,7 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP11
+#if __cpp_variadic_templates
   //*********************************************
   // is_trivially_constructible
   template <typename T, typename... TArgs>
@@ -1862,7 +1859,7 @@ namespace etl
   template <typename T1, typename T2>
   struct is_assignable<T1, T2, false>;
 
-#if ETL_USING_CPP11
+#if __cpp_variadic_templates
   //*********************************************
   // is_constructible
   template <typename T, bool B, typename... TArgs>
@@ -1987,7 +1984,7 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP11
+#if __cpp_variadic_templates
   //*********************************************
   // is_constructible
   template <typename T, typename... TArgs>
@@ -2053,7 +2050,7 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
 
   template <typename T1, typename T2>
   inline constexpr bool is_assignable_v = etl::is_assignable<T1, T2>::value;
@@ -2087,7 +2084,7 @@ namespace etl
 
 #endif
 
-#if ETL_USING_CPP11
+#if __cpp_variadic_templates
   //*********************************************
   // common_type
   // Based on the sample implementation detailed on
@@ -2185,7 +2182,7 @@ namespace etl
             unsigned long long>::type>::type>::type>::type type;
   };
 
-#if ETL_USING_CPP11
+#if __cpp_variadic_templates
   template <typename T>
   using unsigned_type_t = typename unsigned_type<T>::type;
 #endif
@@ -2203,7 +2200,7 @@ namespace etl
             long long>::type>::type>::type>::type type;
   };
 
-#if ETL_USING_CPP11
+#if __cpp_variadic_templates
   template <typename T>
   using signed_type_t = typename signed_type<T>::type;
 #endif

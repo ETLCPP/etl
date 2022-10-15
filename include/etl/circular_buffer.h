@@ -171,7 +171,7 @@ namespace etl
     typedef T           value_type;
     typedef T&          reference;
     typedef const T&    const_reference;
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     typedef T&&         rvalue_reference;
 #endif
     typedef T*          pointer;
@@ -874,7 +874,7 @@ namespace etl
       }
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// push.
     /// Adds an item to the buffer.
@@ -1130,7 +1130,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move Constructor.
     //*************************************************************************
@@ -1266,7 +1266,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move Constructor.
     //*************************************************************************
@@ -1348,7 +1348,7 @@ namespace etl
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
-#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
+#if __cpp_deduction_guides && ETL_HAS_INITIALIZER_LIST
   template <typename T, typename... Ts>
   circular_buffer(T, Ts...)
     ->circular_buffer<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;

@@ -37,7 +37,7 @@ SOFTWARE.
 
 #if ETL_HAS_INITIALIZER_LIST
 
-#if (ETL_USING_CPP11 && !defined(ETL_NO_INITIALIZER_LIST))
+#if (__cpp_initializer_lists && !defined(ETL_NO_INITIALIZER_LIST))
 
 #include <stddef.h>
 
@@ -223,6 +223,6 @@ namespace std
 }
 
 #endif // (ETL_USING_STL && ETL_NOT_USING_STLPORT && !defined(ETL_FORCE_ETL_INITIALIZER_LIST)) || defined(ETL_IN_UNIT_TEST) || defined(ETL_FORCE_STD_INITIALIZER_LIST)
-#endif // ETL_USING_CPP11 && !defined(ETL_NO_INITIALIZER_LIST)
+#endif // __cpp_initializer_lists && !defined(ETL_NO_INITIALIZER_LIST)
 #endif // ETL_HAS_INITIALIZER_LIST
 #endif // ETL_INITIALIZER_LIST_INCLUDED

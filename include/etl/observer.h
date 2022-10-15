@@ -274,7 +274,7 @@ namespace etl
     Observer_List observer_list;
   };
 
-#if ETL_USING_CPP11 && !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_variadic_templates && !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
 
   //*****************************************************************
   /// The observer class for N types.

@@ -37,7 +37,7 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#if ETL_USING_CPP20 && ETL_USING_STL
+#if __cpp_lib_endian && ETL_USING_STL
   #include <bit>
 #endif
 
@@ -48,7 +48,7 @@ SOFTWARE.
 // Have we not already defined ETL_ENDIAN_NATIVE?
 #if !defined(ETL_ENDIAN_NATIVE)
   // Can we use the C++20 definitions?
-  #if ETL_USING_CPP20 && ETL_USING_STL
+  #if __cpp_lib_endian && ETL_USING_STL
     #define ETL_ENDIAN_LITTLE std::endian::little
     #define ETL_ENDIAN_BIG    std::endian::big
     #define ETL_ENDIAN_NATIVE std::endian::native
@@ -75,7 +75,7 @@ SOFTWARE.
 #endif
 
 // If true, then the endianness of the platform can be constexpr.
-#if (ETL_USING_CPP11 && defined(ETL_ENDIAN_NATIVE))
+#if (__cpp_constexpr && defined(ETL_ENDIAN_NATIVE))
   #define ETL_HAS_CONSTEXPR_ENDIANNESS 1
 #else
   #define ETL_HAS_CONSTEXPR_ENDIANNESS 0

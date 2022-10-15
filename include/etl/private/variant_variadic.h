@@ -798,7 +798,7 @@ namespace etl
     //***************************************************************************
     void accept_visitor(etl::visitor<TTypes...>& v)
     {
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+#if __cpp_fold_expressions && !defined(ETL_VARIANT_FORCE_CPP11)
       do_accept(v, etl::make_index_sequence<sizeof...(TTypes)>{});
 #else
       do_accept(v);
@@ -811,7 +811,7 @@ namespace etl
     template <typename TVisitor>
     void accept_functor(TVisitor& v)
     {
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+#if __cpp_fold_expressions && !defined(ETL_VARIANT_FORCE_CPP11)
       do_operator(v, etl::make_index_sequence<sizeof...(TTypes)>{});
 #else
       do_operator(v);
@@ -867,7 +867,7 @@ namespace etl
       ::new (pstorage) type();
     }
 
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+#if __cpp_fold_expressions && !defined(ETL_VARIANT_FORCE_CPP11)
     //***************************************************************************
     /// Call the relevent visitor by attempting each one.
     //***************************************************************************
@@ -944,7 +944,7 @@ namespace etl
       }
     }
 
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+#if __cpp_fold_expressions && !defined(ETL_VARIANT_FORCE_CPP11)
     //***************************************************************************
     /// Call the relevent visitor by attempting each one.
     //***************************************************************************
@@ -1089,7 +1089,7 @@ namespace etl
   ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<TTypes...>>&
     get(etl::variant<TTypes...>& v)
   {
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+#if __cpp_fold_expressions && !defined(ETL_VARIANT_FORCE_CPP11)
     static_assert(Index < sizeof...(TTypes), "Index out of range");
 #endif
 
@@ -1105,7 +1105,7 @@ namespace etl
   ETL_CONSTEXPR14 etl::variant_alternative_t<Index, etl::variant<TTypes...>>&&
     get(etl::variant<TTypes...>&& v)
   {
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+#if __cpp_fold_expressions && !defined(ETL_VARIANT_FORCE_CPP11)
     static_assert(Index < sizeof...(TTypes), "Index out of range");
 #endif
 
@@ -1119,7 +1119,7 @@ namespace etl
   ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<TTypes...>>&
     get(const etl::variant<TTypes...>& v)
   {
-#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+#if __cpp_fold_expressions && !defined(ETL_VARIANT_FORCE_CPP11)
     static_assert(Index < sizeof...(TTypes), "Index out of range");
 #endif
 
@@ -1135,7 +1135,7 @@ namespace etl
   ETL_CONSTEXPR14 const etl::variant_alternative_t<Index, const etl::variant<TTypes...>>&&
     get(const etl::variant<TTypes...>&& v)
   {
-#if ETL_USING_CPP17 & !defined(ETL_VARIANT_FORCE_CPP11)
+#if __cpp_fold_expressions & !defined(ETL_VARIANT_FORCE_CPP11)
     static_assert(Index < sizeof...(TTypes), "Index out of range");
 #endif
 
@@ -1273,7 +1273,7 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP17
+#if __cpp_variadic_templates
   template <typename... TTypes>
   inline constexpr size_t variant_size_v = variant_size<TTypes...>::value;
 #endif

@@ -121,7 +121,7 @@ namespace etl
     typedef TCompare              compare_type;       ///< The comparison type.
     typedef T&                    reference;          ///< A reference to the type used in the queue.
     typedef const T&              const_reference;    ///< A const reference to the type used in the queue.
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     typedef T&&                   rvalue_reference;   ///< An rvalue reference to the type used in the queue.
 #endif
     typedef typename TContainer::size_type size_type; ///< The type used for determining the size of the queue.
@@ -161,7 +161,7 @@ namespace etl
       etl::push_heap(container.begin(), container.end(), compare);
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Moves a value to the queue.
     /// If asserts or exceptions are enabled, throws an etl::priority_queue_full
@@ -179,7 +179,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_PRIORITY_QUEUE_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_rvalue_references && __cpp_variadic_templates && ETL_NOT_USING_STLPORT && !defined(ETL_PRIORITY_QUEUE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Emplaces a value to the queue.
     /// If asserts or exceptions are enabled, throws an etl::priority_queue_full
@@ -375,7 +375,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
@@ -400,7 +400,7 @@ namespace etl
       assign(other.container.cbegin(), other.container.cend());
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Make this a moved version of the supplied priority queue
     //*************************************************************************
@@ -466,7 +466,7 @@ namespace etl
       etl::ipriority_queue<T, TContainer, TCompare>::clone(rhs);
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move constructor
     //*************************************************************************
@@ -511,7 +511,7 @@ namespace etl
       return *this;
     }
 
-#if ETL_USING_CPP11
+#if __cpp_rvalue_references
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************

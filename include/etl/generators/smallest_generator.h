@@ -75,7 +75,7 @@ cog.outl("//********************************************************************
 
 namespace etl
 {
-#if ETL_USING_CPP11 && !defined(ETL_SMALLEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
+#if __cpp_variadic_templates && !defined(ETL_SMALLEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
   //***************************************************************************
   /// Template to determine the largest type and size.
   /// Defines 'value_type' which is the type of the largest parameter.
@@ -122,12 +122,12 @@ namespace etl
     };
   };
 
-#if ETL_USING_CPP11
+#if __cpp_variadic_templates
   template <typename... T>
   using smallest_type_t = typename smallest_type<T...>::type;
 #endif
 
-#if ETL_USING_CPP17
+#if __cpp_inline_variables && __cpp_constexpr
   template <typename... T>
   constexpr size_t smallest_type_v = smallest_type<T...>::size;
 #endif
@@ -329,7 +329,7 @@ namespace etl
     typedef typename private_smallest::best_fit_uint_type<TYPE_INDEX>::type type;
   };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <size_t NBITS>
   using smallest_uint_for_bits_t = typename smallest_uint_for_bits<NBITS>::type;
 #endif
@@ -355,7 +355,7 @@ namespace etl
     typedef typename private_smallest::best_fit_int_type<TYPE_INDEX>::type type;
   };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <size_t NBITS>
   using smallest_int_for_bits_t = typename smallest_int_for_bits<NBITS>::type;
 #endif
@@ -381,7 +381,7 @@ namespace etl
     typedef typename private_smallest::best_fit_uint_type<TYPE_INDEX>::type type;
   };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <uintmax_t VALUE>
   using smallest_uint_for_value_t = typename smallest_uint_for_value<VALUE>::type;
 #endif
@@ -407,7 +407,7 @@ namespace etl
     typedef typename private_smallest::best_fit_int_type<TYPE_INDEX>::type type;
   };
 
-#if ETL_USING_CPP11
+#if __cpp_alias_templates
   template <intmax_t VALUE>
   using smallest_int_for_value_t = typename smallest_int_for_value<VALUE>::type;
 #endif
