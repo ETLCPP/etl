@@ -344,7 +344,8 @@ SOFTWARE.
 // Determine if the ETL should support atomics.
 #if defined(ETL_NO_ATOMICS) || \
     defined(ETL_TARGET_DEVICE_ARM_CORTEX_M0) || \
-    defined(ETL_TARGET_DEVICE_ARM_CORTEX_M0_PLUS)
+    defined(ETL_TARGET_DEVICE_ARM_CORTEX_M0_PLUS) || \
+    defined(__STDC_NO_ATOMICS__)
   #define ETL_HAS_ATOMIC 0
 #else
   #if ((ETL_USING_CPP11 && (ETL_USING_STL || defined(ETL_IN_UNIT_TEST))) || \
