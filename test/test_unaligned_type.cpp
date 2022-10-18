@@ -102,8 +102,8 @@ namespace
     //*************************************************************************
     TEST(test_endianness)
     {
-      CHECK_EQUAL(etl::endian::big,    etl::be_int16_t::Endian);
-      CHECK_EQUAL(etl::endian::little, etl::le_int16_t::Endian);
+      CHECK_EQUAL(etl::endian::big,    static_cast<int>(etl::be_int16_t::Endian));
+      CHECK_EQUAL(etl::endian::little, static_cast<int>(etl::le_int16_t::Endian));
     }
 
     //*************************************************************************

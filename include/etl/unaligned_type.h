@@ -227,9 +227,13 @@ namespace etl
 
     typedef T value_type;
 
+#if ETL_CPP17_SUPPORTED
     static ETL_CONSTANT int Endian  = Endian_;
     static ETL_CONSTANT size_t Size = private_unaligned_type::unaligned_type_common<sizeof(T)>::Size;
-
+#else
+    enum : int { Endian  = Endian_ };
+    enum : size_t { Size = private_unaligned_type::unaligned_type_common<sizeof(T)>::Size};
+#endif
     //*************************************************************************
     /// Default constructor
     //*************************************************************************
