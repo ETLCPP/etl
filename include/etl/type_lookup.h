@@ -125,14 +125,14 @@ namespace etl
     template <typename T, typename T1, typename... TRest>
     struct id_from_type_helper
     {
-      static constexpr size_t value = etl::is_same<T, typename T1::type>::value ? T1::ID : id_from_type_helper<T, TRest...>::value;
+      static constexpr size_t value = etl::is_same<T, typename T1::type>::value ? static_cast<size_t>(T1::ID) : static_cast<size_t>(id_from_type_helper<T, TRest...>::value);
     };
 
     // Specialisation for 1 type pair.
     template <typename T, typename T1>
     struct id_from_type_helper<T, T1>
     {
-      static constexpr size_t value = etl::is_same<T, typename T1::type>::value ? T1::ID : UNKNOWN;
+      static constexpr size_t value = etl::is_same<T, typename T1::type>::value ? static_cast<size_t>(T1::ID) : static_cast<size_t>(UNKNOWN);
     };
 
   public:
@@ -148,7 +148,7 @@ namespace etl
       static_assert(value != UNKNOWN, "Invalid type");
     };
 
-#if ETL_USING_CPP17
+#if ETL_USING_CPP14
     template <typename T>
     static constexpr size_t id_from_type_v = id_from_type<T>::value;
 #endif
