@@ -43,7 +43,7 @@ namespace
 {
   // Test variant_etl types.
   using test_variant_etl_3 = etl::variant<char, int, std::string>;
-  using test_variant_std_3 = std::variant<char, int, std::string>;
+  //using test_variant_std_3 = std::variant<char, int, std::string>;
 
   struct D1
   {
@@ -834,6 +834,7 @@ namespace
       CHECK_EQUAL("3", visitor.result_s);
     }
 
+#if ETL_CPP17_SUPPORTED
     //*************************************************************************
 
     TEST(test_variant_accept_functor_with_overload)
@@ -860,6 +861,7 @@ namespace
       variant_etl.accept_functor(visitor);
       CHECK_EQUAL("3", result_s);
     }
+#endif
 
     //*************************************************************************
     TEST(test_get_if_index)
@@ -911,6 +913,7 @@ namespace
       CHECK_EQUAL(3U, etl::variant_size_v<test_variant_etl_3>);
     }
 
+#if ETL_CPP17_SUPPORTED
     //*************************************************************************
     TEST(test_compare_etl_and_stl_variant_with_moveable_type)
     {
@@ -1097,6 +1100,7 @@ namespace
       CHECK_EQUAL(value_vcrr_std.moved_to,   value_vcrr_etl.moved_to);
       CHECK_EQUAL(value_vcrr_std.copied_to,  value_vcrr_etl.copied_to);
     }
+#endif
 
     //*************************************************************************
     TEST(test_get_if_by_type)
@@ -1350,6 +1354,7 @@ namespace
       CHECK_EQUAL(false, variant_was_signed);
     }
 
+#if ETL_CPP17_SUPPORTED
     //*************************************************************************
     TEST(test_variant_visit_with_overload)
     {
@@ -1420,5 +1425,7 @@ namespace
 
       CHECK_EQUAL(std::string("TypeD"), result);
     }
+#endif
+
   };
 }

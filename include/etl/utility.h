@@ -424,6 +424,9 @@ namespace etl
 #if ETL_USING_CPP17
   template <typename T>
   inline constexpr in_place_type_t<T> in_place_type{};
+#elif ETL_USING_CPP14
+  template <typename T>
+  static constexpr in_place_type_t<T> in_place_type{};
 #endif
 
   //*************************
@@ -435,6 +438,9 @@ namespace etl
 #if ETL_USING_CPP17
   template <size_t I>
   inline constexpr in_place_index_t<I> in_place_index{};
+#elif ETL_USING_CPP14
+  template <size_t I>
+  static constexpr in_place_index_t<I> in_place_index{};
 #endif
 
 #if ETL_USING_CPP11

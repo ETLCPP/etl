@@ -1276,6 +1276,9 @@ namespace etl
 #if ETL_USING_CPP17
   template <typename... TTypes>
   inline constexpr size_t variant_size_v = variant_size<TTypes...>::value;
+#elif ETL_USING_CPP14
+  template <typename... TTypes>
+  static constexpr size_t variant_size_v = variant_size<TTypes...>::value;
 #endif
 
   //***************************************************************************
