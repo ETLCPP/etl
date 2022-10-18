@@ -944,7 +944,8 @@ namespace
     CHECK(!(etl::is_convertible<int*, int(*)()>::value));
     CHECK(!(etl::is_convertible<void*, int*>::value));
   }
-
+  
+#if ETL_CPP17_SUPPORTED
   //*************************************************************************
   TEST(test_add_lvalue_reference)
   {
@@ -1144,4 +1145,5 @@ namespace
 #endif
 #endif
   }
+#endif
 }
