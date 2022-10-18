@@ -483,6 +483,7 @@ namespace
       CHECK_EQUAL(hashdata, hashview);
     }
 
+#if ETL_CPP17_SUPPORTED
     //*************************************************************************
     TEST(test_template_deduction_guide_for_c_array)
     {
@@ -544,5 +545,6 @@ namespace
       CHECK_EQUAL(4U, s.size());
       CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
     }
+#endif
   }
 }
