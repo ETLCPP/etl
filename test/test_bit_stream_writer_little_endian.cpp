@@ -854,7 +854,7 @@ namespace
     {
       std::array<char, 2 * sizeof(Object)> storage;
       storage.fill(0);
-      std::array expected{ char(0x74), char(0xDE), char(0xA2), char(0xCF),
+      std::array<char, 12> expected{ char(0x74), char(0xDE), char(0xA2), char(0xCF),
                            char(0x6A), char(0xFB), char(0xA3), char(0x5E),
                            char(0x5D), char(0x30), char(0x9F), char(0x80) };
 
