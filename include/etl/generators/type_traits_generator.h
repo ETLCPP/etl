@@ -1306,6 +1306,9 @@ namespace etl
 #if ETL_USING_CPP17
   template <typename T>
   inline constexpr size_t alignment_of_v = std::alignment_of_v<T>;
+#elif ETL_USING_CPP14
+  template <typename T>
+  static constexpr size_t alignment_of_v = std::alignment_of<T>::value;
 #endif
 
 #endif // Condition = ETL_USING_STL && ETL_USING_CPP11
