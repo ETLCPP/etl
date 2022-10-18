@@ -30,46 +30,43 @@ SOFTWARE.
 
 #include "etl/observer.h"
 
-namespace
+//*****************************************************************************
+// Notification1
+//*****************************************************************************
+struct Notification1
 {
-  //*****************************************************************************
-  // Notification1
-  //*****************************************************************************
-  struct Notification1
-  {
-  };
+};
 
-  //*****************************************************************************
-  // Notification2
-  //*****************************************************************************
-  struct Notification2
-  {
-  };
+//*****************************************************************************
+// Notification2
+//*****************************************************************************
+struct Notification2
+{
+};
 
-  //*****************************************************************************
-  // Notification3
-  //*****************************************************************************
-  struct Notification3
-  {
-  };
+//*****************************************************************************
+// Notification3
+//*****************************************************************************
+struct Notification3
+{
+};
 
-  //*****************************************************************************
-  // Generic notification.
-  //*****************************************************************************
-  template <const int ID>
-  struct Notification
-  {
-  };
+//*****************************************************************************
+// Generic notification.
+//*****************************************************************************
+template <const int ID>
+struct Notification
+{
+};
 
-  //*****************************************************************************
-  // The observer base type.
-  // Declare what notifications you want to observe and how they are passed to 'notification'.
-  // The Notification1 is passed by value.
-  // The Notification2 is passed by reference.
-  // The Notification3 is passed by const reference.
-  //*****************************************************************************
-  typedef etl::observer<Notification1, Notification2&, const Notification3&> ObserverType;
-}
+//*****************************************************************************
+// The observer base type.
+// Declare what notifications you want to observe and how they are passed to 'notification'.
+// The Notification1 is passed by value.
+// The Notification2 is passed by reference.
+// The Notification3 is passed by const reference.
+//*****************************************************************************
+typedef etl::observer<Notification1, Notification2&, const Notification3&> ObserverType;
 
 //*****************************************************************************
 // The concrete observable 1 class.
@@ -80,14 +77,13 @@ public:
 
 	Notification1 data1;
 	Notification2 data2;
-  Notification1& data3 = data1;
 
   //*********************************
   // Notify all of the observers.
   //*********************************
 	void send_notifications()
 	{
-		notify_observers(data3);
+		notify_observers(data1);
     notify_observers(data2);
 	}
 };

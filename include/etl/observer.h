@@ -232,9 +232,31 @@ namespace etl
       return observer_list.size();
     }
 
+#if ETL_USING_CPP11 && !defined(ETL_OBSERVER_FORCE_CPP03_IMPLEMENTATION)
     //*****************************************************************
     /// Notify all of the observers, sending them the notification.
-    ///\tparam TNotification The notification type.
+    ///\tparam TNotification the notification type.
+    ///\param n The notification.
+    //*****************************************************************
+    template <typename TNotification>
+    void notify_observers(TNotification&& n)
+    {
+      typename Observer_List::iterator i_observer_item = observer_list.begin();
+
+      while (i_observer_item != observer_list.end())
+      {
+        if (i_observer_item->enabled)
+        {
+          i_observer_item->p_observer->notification(etl::forward<TNotification>(n));
+        }
+
+        ++i_observer_item;
+      }
+    }
+#else
+    //*****************************************************************
+    /// Notify all of the observers, sending them the notification.
+    ///\tparam TNotification the notification type.
     ///\param n The notification.
     //*****************************************************************
     template <typename TNotification>
@@ -252,6 +274,7 @@ namespace etl
         ++i_observer_item;
       }
     }
+#endif
 
   protected:
 
