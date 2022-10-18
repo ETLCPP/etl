@@ -626,7 +626,7 @@ namespace
       CHECK_EQUAL(0, r1.message4_count);
       CHECK_EQUAL(0, r1.message_unknown_count);
 
-      r2.receive(message3);
+      etl::send_message(r2, message3);
       CHECK_EQUAL(1, r2.message1_count);
       CHECK_EQUAL(1, r2.message2_count);
       CHECK_EQUAL(0, r2.message4_count);
