@@ -42,7 +42,9 @@ namespace
     {
         CHECK(cpp11_supported);
         CHECK(cpp14_supported);
+#if ETL_CPP17_SUPPORTED
         CHECK(cpp17_supported);
+#endif
     }
   };
 }

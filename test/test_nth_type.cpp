@@ -29,7 +29,7 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/nth_type.h"
-#include <type_traits>
+#include "etl/type_traits.h"
 
 namespace
 {
@@ -38,9 +38,9 @@ namespace
     //*************************************************************************
     TEST(test_nth_type)
     {
-      CHECK((std::is_same_v<etl::nth_type_t<0, int, long, double>, int>));
-      CHECK((std::is_same_v<etl::nth_type_t<1, int, long, double>, long>));
-      CHECK((std::is_same_v<etl::nth_type_t<2, int, long, double>, double>));
+      CHECK((etl::is_same_v<etl::nth_type_t<0, int, long, double>, int>));
+      CHECK((etl::is_same_v<etl::nth_type_t<1, int, long, double>, long>));
+      CHECK((etl::is_same_v<etl::nth_type_t<2, int, long, double>, double>));
     }
   }
 }

@@ -108,10 +108,12 @@ namespace
 
       CHECK_EQUAL(CAPACITY, ctext.max_size());
       CHECK_EQUAL(length, ctext.size());
+#if ETL_CPP17_SUPPORTED
       if  constexpr (etl::traits::has_string_truncation_checks)
       {
         CHECK(!ctext.is_truncated());
       }
+#endif
 
       CHECK_EQUAL(CAPACITY, wtext.max_size());
       CHECK_EQUAL(length, wtext.size());

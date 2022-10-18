@@ -1153,6 +1153,7 @@ namespace
       }
     }
 
+#if !defined(__OPTIMIZE__)
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_value_excess)
     {
@@ -1173,6 +1174,7 @@ namespace
 
       CHECK_THROW(data.insert(data.begin() + offset, &INITIAL_VALUE), etl::vector_full);
     }
+#endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_emplace_position_value)

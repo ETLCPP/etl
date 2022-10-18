@@ -49,7 +49,7 @@ namespace etl
                                       etl::constant<intmax_t, I - 1>,
                                       etl::sqrt<VALUE, I + 1> >::type type;
 
-#if ETL_USING_CPP11
+#if ETL_USING_CPP17
     static constexpr size_t value = type::value;
 #else
     enum

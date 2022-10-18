@@ -833,6 +833,7 @@ namespace etl
     typedef element_type*       pointer;
     typedef const element_type* const_pointer;
 
+#if ETL_CPP17_SUPPORTED
     static ETL_CONSTANT size_t       Bits_Per_Element   = etl::integral_limits<element_type>::bits;
     static ETL_CONSTANT size_t       Number_Of_Elements = 1U;
     static ETL_CONSTANT size_t       Allocated_Bits     = Bits_Per_Element;
@@ -840,6 +841,22 @@ namespace etl
     static ETL_CONSTANT element_type All_Clear_Element  = element_type(0);
     static ETL_CONSTANT size_t       Top_Mask_Shift     = 0U;
     static ETL_CONSTANT element_type Top_Mask           = All_Set_Element;
+#else
+    enum : size_t
+    {
+      Bits_Per_Element = etl::integral_limits<element_type>::bits,
+      Number_Of_Elements = 1U,
+      Allocated_Bits = Bits_Per_Element,
+      Top_Mask_Shift = 0U,
+    };
+
+    enum : element_type
+    {
+      All_Set_Element = etl::integral_limits<typename etl::make_unsigned<element_type>::type>::max,
+      All_Clear_Element = element_type(0),
+      Top_Mask = All_Set_Element,
+    };
+#endif
 
     typedef etl::span<element_type, Number_Of_Elements>       span_type;
     typedef etl::span<const element_type, Number_Of_Elements> const_span_type;
@@ -1685,7 +1702,8 @@ namespace etl
     typedef typename select_element_type::type element_type;
     typedef element_type*       pointer;
     typedef const element_type* const_pointer;
-      
+
+#if ETL_CPP17_SUPPORTED
     static ETL_CONSTANT size_t       Bits_Per_Element   = etl::bitset_impl<element_type>::Bits_Per_Element;
     static ETL_CONSTANT size_t       Number_Of_Elements = (Active_Bits % Bits_Per_Element == 0) ? Active_Bits / Bits_Per_Element : Active_Bits / Bits_Per_Element + 1;
     static ETL_CONSTANT size_t       Allocated_Bits     = Number_Of_Elements * Bits_Per_Element;
@@ -1695,6 +1713,23 @@ namespace etl
     static ETL_CONSTANT element_type Top_Mask           = element_type(Top_Mask_Shift == 0 ? All_Set_Element : ~(All_Set_Element << Top_Mask_Shift));
 
     static ETL_CONSTANT size_t ALLOCATED_BITS = Allocated_Bits; ///< For backward compatibility.
+#else
+    enum : size_t
+    {
+      Bits_Per_Element = etl::bitset_impl<element_type>::Bits_Per_Element,
+      Number_Of_Elements = (Active_Bits % Bits_Per_Element == 0) ? Active_Bits / Bits_Per_Element : Active_Bits / Bits_Per_Element + 1,
+      Allocated_Bits = Number_Of_Elements * Bits_Per_Element,
+      Top_Mask_Shift = ((Bits_Per_Element - (Allocated_Bits - Active_Bits)) % Bits_Per_Element),
+      ALLOCATED_BITS = Allocated_Bits  ///< For backward compatibility
+    };
+
+    enum : element_type
+    {
+      All_Set_Element = etl::bitset_impl<element_type>::All_Set_Element,
+      All_Clear_Element = etl::bitset_impl<element_type>::All_Clear_Element,
+      Top_Mask = element_type(Top_Mask_Shift == 0 ? All_Set_Element : ~(All_Set_Element << Top_Mask_Shift)),
+    };
+#endif
 
     typedef etl::span<element_type, Number_Of_Elements>       span_type;
     typedef etl::span<const element_type, Number_Of_Elements> const_span_type;
@@ -1989,8 +2024,11 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset<Active_Bits, TElement, false>& reset() ETL_NOEXCEPT
     {
+#if ETL_CPP17_SUPPORTED
       etl::fill_n(buffer, Number_Of_Elements, All_Clear_Element);
-
+#else
+      etl::fill_n(buffer, std::underlying_type_t<decltype(Number_Of_Elements)>(Number_Of_Elements), std::underlying_type_t<decltype(All_Clear_Element)>(All_Clear_Element));
+#endif
       return *this;
     }
 
@@ -2309,7 +2347,11 @@ namespace etl
 
     etl::bitset_impl<element_type> ibitset;
 
+#if ETL_CPP17_SUPPORTED
     element_type buffer[Number_Of_Elements > 0U ? Number_Of_Elements : 1U];
+#else
+    element_type buffer[std::underlying_type_t<decltype(Number_Of_Elements)>(Number_Of_Elements) > 0U ? std::underlying_type_t<decltype(Number_Of_Elements)>(Number_Of_Elements) : 1U];
+#endif
   };
 
   //***************************************************************************
@@ -2411,6 +2453,7 @@ namespace etl
     typedef element_type* pointer;
     typedef const element_type* const_pointer;
 
+#if ETL_CPP17_SUPPORTED
     static ETL_CONSTANT size_t       Bits_Per_Element   = etl::integral_limits<element_type>::bits;
     static ETL_CONSTANT size_t       Number_Of_Elements = 1U;
     static ETL_CONSTANT size_t       Allocated_Bits     = Bits_Per_Element;
@@ -2418,6 +2461,22 @@ namespace etl
     static ETL_CONSTANT element_type All_Clear_Element  = element_type(0);
     static ETL_CONSTANT size_t       Top_Mask_Shift     = 0U;
     static ETL_CONSTANT element_type Top_Mask           = All_Set_Element;
+#else
+    enum : size_t
+    {
+      Bits_Per_Element = etl::integral_limits<element_type>::bits,
+      Number_Of_Elements = 1U,
+      Allocated_Bits = Bits_Per_Element,
+      Top_Mask_Shift = 0U,
+    };
+
+    enum : element_type
+    {
+      All_Set_Element = etl::integral_limits<typename etl::make_unsigned<element_type>::type>::max,
+      All_Clear_Element = element_type(0),
+      Top_Mask = All_Set_Element,
+    };
+#endif
 
     typedef etl::span<element_type, Number_Of_Elements>       span_type;
     typedef etl::span<const element_type, Number_Of_Elements> const_span_type;
@@ -3263,6 +3322,7 @@ namespace etl
     typedef element_type* pointer;
     typedef const element_type* const_pointer;
 
+#if ETL_CPP17_SUPPORTED
     static ETL_CONSTANT size_t       Bits_Per_Element   = etl::bitset_impl<element_type>::Bits_Per_Element;
     static ETL_CONSTANT size_t       Number_Of_Elements = (Active_Bits % Bits_Per_Element == 0) ? Active_Bits / Bits_Per_Element : Active_Bits / Bits_Per_Element + 1;
     static ETL_CONSTANT size_t       Allocated_Bits     = Number_Of_Elements * Bits_Per_Element;
@@ -3272,6 +3332,23 @@ namespace etl
     static ETL_CONSTANT element_type Top_Mask           = element_type(Top_Mask_Shift == 0 ? All_Set_Element : ~(All_Set_Element << Top_Mask_Shift));
 
     static ETL_CONSTANT size_t ALLOCATED_BITS = Allocated_Bits; ///< For backward compatibility.
+#else
+    enum : size_t
+    {
+      Bits_Per_Element = etl::bitset_impl<element_type>::Bits_Per_Element,
+      Number_Of_Elements = (Active_Bits % Bits_Per_Element == 0) ? Active_Bits / Bits_Per_Element : Active_Bits / Bits_Per_Element + 1,
+      Allocated_Bits = Number_Of_Elements * Bits_Per_Element,
+      Top_Mask_Shift = ((Bits_Per_Element - (Allocated_Bits - Active_Bits)) % Bits_Per_Element),
+      ALLOCATED_BITS = Allocated_Bits  ///< For backward compatibility
+    };
+
+    enum : element_type
+    {
+      All_Set_Element = etl::bitset_impl<element_type>::All_Set_Element,
+      All_Clear_Element = etl::bitset_impl<element_type>::All_Clear_Element,
+      Top_Mask = element_type(Top_Mask_Shift == 0 ? All_Set_Element : ~(All_Set_Element << Top_Mask_Shift)),
+    };
+#endif
 
     typedef etl::span<element_type, Number_Of_Elements>       span_type;
     typedef etl::span<const element_type, Number_Of_Elements> const_span_type;

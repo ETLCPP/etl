@@ -62,7 +62,7 @@ namespace
     //*************************************************************************
     TEST(test1)
     {
-      CHECK((std::is_same_v<Test_Singleton::type, Test_Class>));
+      CHECK((etl::is_same_v<Test_Singleton::type, Test_Class>));
 
       CHECK(!Test_Singleton::is_valid());
       CHECK_THROW(Test_Singleton::instance(), etl::singleton_not_created);

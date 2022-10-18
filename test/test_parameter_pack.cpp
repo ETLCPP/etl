@@ -36,6 +36,7 @@ namespace
 
   SUITE(test_type_lookup)
   {
+#if ETL_CPP17_SUPPORTED
     //*************************************************************************
     TEST(test_index_of_type)
     {
@@ -53,23 +54,23 @@ namespace
       // Static assert
       //CHECK_EQUAL(0U, (etl::parameter_pack_v<long, char, short, int>));
     }
-
+#endif
     //*************************************************************************
     TEST(test_type_from_index)
     {
-      CHECK((std::is_same_v<char,  typename Pack::type_from_index_t<0U>>));
-      CHECK((std::is_same_v<short, typename Pack::type_from_index_t<1U>>));
-      CHECK((std::is_same_v<int,   typename Pack::type_from_index_t<2U>>));
+      CHECK((etl::is_same_v<char,  typename Pack::type_from_index_t<0U>>));
+      CHECK((etl::is_same_v<short, typename Pack::type_from_index_t<1U>>));
+      CHECK((etl::is_same_v<int,   typename Pack::type_from_index_t<2U>>));
 
       // Static assert
-      //CHECK((std::is_same_v<long, typename Pack::type_from_index_t<3U>>));
+      //CHECK((etl::is_same_v<long, typename Pack::type_from_index_t<3U>>));
 
-      CHECK((std::is_same_v<char,  etl::parameter_pack_t<0U, char, short, int>>));
-      CHECK((std::is_same_v<short, etl::parameter_pack_t<1U, char, short, int>>));
-      CHECK((std::is_same_v<int,   etl::parameter_pack_t<2U, char, short, int>>));
+      CHECK((etl::is_same_v<char,  etl::parameter_pack_t<0U, char, short, int>>));
+      CHECK((etl::is_same_v<short, etl::parameter_pack_t<1U, char, short, int>>));
+      CHECK((etl::is_same_v<int,   etl::parameter_pack_t<2U, char, short, int>>));
 
       // Static assert
-      //CHECK((std::is_same_v<long, etl::parameter_pack_t<3U, char, short, int>>));
+      //CHECK((etl::is_same_v<long, etl::parameter_pack_t<3U, char, short, int>>));
     }
   };
 }

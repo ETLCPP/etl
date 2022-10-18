@@ -98,6 +98,7 @@ namespace
       CHECK(!data4.has_value());
     }
 
+#if ETL_CPP17_SUPPORTED
     //*************************************************************************
     TEST(test_deduced_initialisation)
     {
@@ -109,6 +110,7 @@ namespace
       CHECK(bool(opt));
       CHECK_EQUAL(data, opt);
     }
+#endif
 
     //*************************************************************************
     TEST(test_emplace)

@@ -109,6 +109,9 @@ namespace etl
 #if ETL_USING_CPP17
   template <typename TChar>
   inline constexpr const TChar* whitespace_v = whitespace<TChar>::value();
+#else
+  template <typename TChar>
+  static constexpr const TChar* whitespace_v = whitespace<TChar>::value();
 #endif
 
   //***************************************************************************

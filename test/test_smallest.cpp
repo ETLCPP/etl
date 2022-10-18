@@ -55,6 +55,7 @@ namespace
       CHECK(type);
     }
 
+#if ETL_CPP17_SUPPORTED
     //*************************************************************************
     TEST(test_pod_vt)
     {
@@ -73,6 +74,7 @@ namespace
       CHECK_EQUAL(sizeof(char), size);
       CHECK(type);
     }
+#endif
 
     //*************************************************************************
     TEST(test_non_pod)
@@ -97,6 +99,7 @@ namespace
       CHECK(type);
     }
 
+#if ETL_CPP17_SUPPORTED
     //*************************************************************************
     TEST(test_non_pod_vt)
     {
@@ -119,6 +122,7 @@ namespace
       CHECK_EQUAL(sizeof(S1), size);
       CHECK(type);
     }
+#endif
 
     //*************************************************************************
     TEST(test_smallest_uint_for_bits)

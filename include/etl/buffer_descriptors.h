@@ -62,8 +62,16 @@ namespace etl
     typedef size_t      size_type;
     typedef TFlag       flag_type;
 
+#if ETL_CPP17_SUPPORTED
     static ETL_CONSTANT size_type N_BUFFERS   = N_BUFFERS_;
     static ETL_CONSTANT size_type BUFFER_SIZE = BUFFER_SIZE_;
+#else
+    enum : size_type
+    {
+      N_BUFFERS = N_BUFFERS_,
+      BUFFER_SIZE = BUFFER_SIZE_,
+    };
+#endif
 
     //*********************************
     /// Describes a buffer.
@@ -74,7 +82,13 @@ namespace etl
 
       friend class buffer_descriptors;
 
+#if ETL_CPP17_SUPPORTED
       static ETL_CONSTANT size_type MAX_SIZE = buffer_descriptors::BUFFER_SIZE;
+#else
+      enum : size_type {
+        MAX_SIZE = buffer_descriptors::BUFFER_SIZE
+      };
+#endif
 
       //*********************************
       descriptor()
@@ -271,7 +285,11 @@ namespace etl
 
       if (desc.is_valid())
       {
+#if ETL_CPP17_SUPPORTED
         etl::fill_n(desc.data(), BUFFER_SIZE, fill_);
+#else
+        etl::fill_n(desc.data(), std::underlying_type_t<decltype(BUFFER_SIZE)>(BUFFER_SIZE), fill_);
+#endif
       }
 
       return desc;

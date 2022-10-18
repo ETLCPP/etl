@@ -2124,7 +2124,7 @@ namespace
 
       auto v = *data.begin();
       using Type = decltype(v);
-      CHECK((std::is_same_v<ItemNDC, Type>));
+      CHECK((etl::is_same_v<ItemNDC, Type>));
 
       decltype(data)::const_iterator itr = data.begin();
 

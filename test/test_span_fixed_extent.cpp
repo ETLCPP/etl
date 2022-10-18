@@ -625,7 +625,7 @@ namespace
     {
       int data[] = { 1, 2, 3, 4 };
 
-      etl::span s = data;
+      etl::span<int> s = data;
 
       CHECK_EQUAL(std::size(data), s.extent);
       CHECK_EQUAL(std::size(data), s.size());

@@ -142,10 +142,10 @@ namespace etl
 
     typedef size_t size_type;
 
-#if ETL_USING_CPP11
+#if ETL_USING_CPP17
     static constexpr size_type npos = etl::integral_limits<size_type>::max;
 #else
-    enum
+    enum : size_type
     {
       npos = etl::integral_limits<size_type>::max
     };

@@ -810,7 +810,7 @@ namespace
     TEST(test_iterator_value_types_bug_584)
     {
       using Set = etl::unordered_set<int, 1, 1>;
-      CHECK((!std::is_same_v<typename Set::const_iterator::value_type, typename Set::iterator::value_type>));
+      CHECK((!etl::is_same_v<typename Set::const_iterator::value_type, typename Set::iterator::value_type>));
     }
   };
 }
