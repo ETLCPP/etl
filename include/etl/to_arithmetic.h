@@ -425,8 +425,6 @@ namespace etl
 
       if (itr != itr_end)
       {
-        const char first_char = convert(*itr);
-
         integral_accumulator<TAccumulatorType> accumulator(radix, maximum);
 
         while ((itr != itr_end) && accumulator.add(convert(*itr)))
