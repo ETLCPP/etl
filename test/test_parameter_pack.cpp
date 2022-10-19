@@ -36,14 +36,14 @@ namespace
 
   SUITE(test_type_lookup)
   {
-#if ETL_CPP17_SUPPORTED
     //*************************************************************************
     TEST(test_index_of_type)
     {
+#if ETL_CPP17_SUPPORTED
       CHECK_EQUAL(0U, Pack::index_of_type_v<char>);
       CHECK_EQUAL(1U, Pack::index_of_type_v<short>);
       CHECK_EQUAL(2U, Pack::index_of_type_v<int>);
-
+#endif
       // Static assert
       //CHECK_EQUAL(0U, Pack::index_of_type_v<long>);
 
@@ -54,7 +54,7 @@ namespace
       // Static assert
       //CHECK_EQUAL(0U, (etl::parameter_pack_v<long, char, short, int>));
     }
-#endif
+
     //*************************************************************************
     TEST(test_type_from_index)
     {
