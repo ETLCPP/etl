@@ -78,10 +78,14 @@ namespace etl
 {
   struct bitset_constants
   {
+#if ETL_CPP17_SUPPORTED
+    static ETL_CONSTANT size_t npos = etl::integral_limits<size_t>::max;
+#else
     template<typename Enum>
     static constexpr std::underlying_type_t<Enum> to_underlying(Enum e) { return static_cast<std::underlying_type_t<decltype(e)>>(e); }
 
-    static ETL_CONSTANT size_t npos = etl::integral_limits<size_t>::max;
+    enum : size_t { npos = etl::integral_limits<size_t>::max };
+#endif
   };
 
   //***************************************************************************
@@ -126,9 +130,17 @@ namespace etl
     typedef element_type*       pointer;
     typedef const element_type* const_pointer;
 
+#if ETL_CPP17_SUPPORTED
     static ETL_CONSTANT size_t       Bits_Per_Element   = etl::integral_limits<element_type>::bits;
     static ETL_CONSTANT element_type All_Set_Element    = etl::integral_limits<element_type>::max;
     static ETL_CONSTANT element_type All_Clear_Element  = element_type(0);
+#else
+    enum : size_t { Bits_Per_Element = etl::integral_limits<element_type>::bits };
+    enum : element_type {
+      All_Set_Element    = etl::integral_limits<element_type>::max,
+      All_Clear_Element  = element_type(0)
+    };
+#endif
 
     //*************************************************************************
     /// Count the number of bits set.
@@ -754,7 +766,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 void initialise(pointer pbuffer, size_t number_of_elements, unsigned long long value) ETL_NOEXCEPT
     {
-      const size_t Shift = (etl::integral_limits<unsigned long long>::bits <= (int)Bits_Per_Element) ? 0 : Bits_Per_Element;
+      const size_t Shift = (etl::integral_limits<unsigned long long>::bits <= (int)Bits_Per_Element) ? 0 : static_cast<size_t>(Bits_Per_Element);
 
       // Can we do it in one hit?
       if (Shift == 0)
