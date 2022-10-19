@@ -386,4 +386,4 @@ add_test(etl_unit_tests etl_tests)
 # as they appear from UnitTest++
 add_custom_target(test_verbose COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
 
-#set_property(TARGET etl_tests PROPERTY CXX_STANDARD 17)
+set_property(TARGET etl_tests PROPERTY CXX_STANDARD 17)
