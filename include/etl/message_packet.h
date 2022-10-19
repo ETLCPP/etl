@@ -84,19 +84,20 @@ namespace etl
   public:
 
     //********************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     message_packet()
-      : data()
-      , valid(false)
+      : valid(false)
     {
     }
+#include "etl/private/diagnostic_pop.h"
 
     //********************************************
     /// 
     //********************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     template <typename T>
     explicit message_packet(T&& msg)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       if constexpr (IsIMessage<T>)
       {
@@ -125,6 +126,7 @@ namespace etl
         ETL_STATIC_ASSERT(IsInMessageList<T>, "Message not in packet type list");
       }
     }
+#include "etl/private/diagnostic_pop.h"
 
     //**********************************************
     void copy(const message_packet& other)
@@ -332,15 +334,16 @@ namespace etl
   public:
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet()
-      : data()
-      , valid(false)
+      : valid(false)
     {
     }
+  #include "etl/private/diagnostic_pop.h"
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(const etl::imessage& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -354,11 +357,12 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(etl::imessage&& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -372,16 +376,17 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> >::value &&
                                                                     !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value, int>::type>
     explicit message_packet(TMessage&& msg)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static constexpr bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> >::value &&
@@ -390,14 +395,15 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #else
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> >::value &&
                                                                          !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                          !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value, int>::type = 0)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static const bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> >::value &&
@@ -406,30 +412,33 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(const message_packet& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(other.get());
       }
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(message_packet&& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(etl::move(other.get()));
       }
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
@@ -616,15 +625,16 @@ namespace etl
   public:
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet()
-      : data()
-      , valid(false)
+      : valid(false)
     {
     }
+  #include "etl/private/diagnostic_pop.h"
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(const etl::imessage& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -638,11 +648,12 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(etl::imessage&& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -656,16 +667,17 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> >::value &&
                                                                     !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::value, int>::type>
     explicit message_packet(TMessage&& msg)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static constexpr bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> >::value &&
@@ -674,14 +686,15 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #else
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> >::value &&
                                                                          !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                          !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::value, int>::type = 0)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static const bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> >::value &&
@@ -690,30 +703,33 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(const message_packet& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(other.get());
       }
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(message_packet&& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(etl::move(other.get()));
       }
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
@@ -898,15 +914,16 @@ namespace etl
   public:
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet()
-      : data()
-      , valid(false)
+      : valid(false)
     {
     }
+  #include "etl/private/diagnostic_pop.h"
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(const etl::imessage& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -920,11 +937,12 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(etl::imessage&& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -938,16 +956,17 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> >::value &&
                                                                     !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::value, int>::type>
     explicit message_packet(TMessage&& msg)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static constexpr bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> >::value &&
@@ -956,14 +975,15 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #else
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> >::value &&
                                                                          !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                          !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::value, int>::type = 0)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static const bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> >::value &&
@@ -972,30 +992,33 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(const message_packet& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(other.get());
       }
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(message_packet&& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(etl::move(other.get()));
       }
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
@@ -1178,15 +1201,16 @@ namespace etl
   public:
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet()
-      : data()
-      , valid(false)
+      : valid(false)
     {
     }
+  #include "etl/private/diagnostic_pop.h"
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(const etl::imessage& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -1200,11 +1224,12 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(etl::imessage&& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -1218,16 +1243,17 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> >::value &&
                                                                     !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::value, int>::type>
     explicit message_packet(TMessage&& msg)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static constexpr bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> >::value &&
@@ -1236,14 +1262,15 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #else
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> >::value &&
                                                                          !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                          !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::value, int>::type = 0)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static const bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> >::value &&
@@ -1252,30 +1279,33 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(const message_packet& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(other.get());
       }
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(message_packet&& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(etl::move(other.get()));
       }
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
@@ -1455,15 +1485,16 @@ namespace etl
   public:
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet()
-      : data()
-      , valid(false)
+      : valid(false)
     {
     }
+  #include "etl/private/diagnostic_pop.h"
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(const etl::imessage& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -1477,11 +1508,12 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(etl::imessage&& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -1495,16 +1527,17 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> >::value &&
                                                                     !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::value, int>::type>
     explicit message_packet(TMessage&& msg)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static constexpr bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> >::value &&
@@ -1513,14 +1546,15 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #else
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> >::value &&
                                                                          !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                          !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::value, int>::type = 0)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static const bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> >::value &&
@@ -1529,30 +1563,33 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(const message_packet& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(other.get());
       }
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(message_packet&& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(etl::move(other.get()));
       }
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
@@ -1727,15 +1764,16 @@ namespace etl
   public:
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet()
-      : data()
-      , valid(false)
+      : valid(false)
     {
     }
+  #include "etl/private/diagnostic_pop.h"
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(const etl::imessage& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -1749,11 +1787,12 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(etl::imessage&& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -1767,16 +1806,17 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> >::value &&
                                                                     !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::value, int>::type>
     explicit message_packet(TMessage&& msg)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static constexpr bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> >::value &&
@@ -1785,14 +1825,15 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #else
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> >::value &&
                                                                          !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                          !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::value, int>::type = 0)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static const bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> >::value &&
@@ -1801,30 +1842,33 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(const message_packet& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(other.get());
       }
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(message_packet&& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(etl::move(other.get()));
       }
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
@@ -1997,15 +2041,16 @@ namespace etl
   public:
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet()
-      : data()
-      , valid(false)
+      : valid(false)
     {
     }
+  #include "etl/private/diagnostic_pop.h"
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(const etl::imessage& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -2019,11 +2064,12 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(etl::imessage&& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -2037,16 +2083,17 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> >::value &&
                                                                     !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::value, int>::type>
     explicit message_packet(TMessage&& msg)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static constexpr bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> >::value &&
@@ -2055,14 +2102,15 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #else
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> >::value &&
                                                                          !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                          !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::value, int>::type = 0)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static const bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> >::value &&
@@ -2071,30 +2119,33 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(const message_packet& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(other.get());
       }
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(message_packet&& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(etl::move(other.get()));
       }
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
@@ -2265,15 +2316,16 @@ namespace etl
   public:
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet()
-      : data()
-      , valid(false)
+      : valid(false)
     {
     }
+  #include "etl/private/diagnostic_pop.h"
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(const etl::imessage& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -2287,11 +2339,12 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(etl::imessage&& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -2305,16 +2358,17 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9> >::value &&
                                                                     !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9>::value, int>::type>
     explicit message_packet(TMessage&& msg)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static constexpr bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9> >::value &&
@@ -2323,14 +2377,15 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #else
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9> >::value &&
                                                                          !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                          !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9>::value, int>::type = 0)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static const bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9> >::value &&
@@ -2339,30 +2394,33 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(const message_packet& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(other.get());
       }
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(message_packet&& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(etl::move(other.get()));
       }
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
@@ -2530,15 +2588,16 @@ namespace etl
   public:
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet()
-      : data()
-      , valid(false)
+      : valid(false)
     {
     }
+  #include "etl/private/diagnostic_pop.h"
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(const etl::imessage& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -2552,11 +2611,12 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(etl::imessage&& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -2570,16 +2630,17 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8> >::value &&
                                                                     !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8>::value, int>::type>
     explicit message_packet(TMessage&& msg)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static constexpr bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8> >::value &&
@@ -2588,14 +2649,15 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #else
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8> >::value &&
                                                                          !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                          !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8>::value, int>::type = 0)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static const bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8> >::value &&
@@ -2604,30 +2666,33 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(const message_packet& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(other.get());
       }
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(message_packet&& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(etl::move(other.get()));
       }
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
@@ -2790,15 +2855,16 @@ namespace etl
   public:
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet()
-      : data()
-      , valid(false)
+      : valid(false)
     {
     }
+  #include "etl/private/diagnostic_pop.h"
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(const etl::imessage& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -2812,11 +2878,12 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(etl::imessage&& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -2830,16 +2897,17 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7> >::value &&
                                                                     !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7>::value, int>::type>
     explicit message_packet(TMessage&& msg)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static constexpr bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7> >::value &&
@@ -2848,14 +2916,15 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #else
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7> >::value &&
                                                                          !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                          !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6, T7>::value, int>::type = 0)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static const bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7> >::value &&
@@ -2864,30 +2933,33 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(const message_packet& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(other.get());
       }
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(message_packet&& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(etl::move(other.get()));
       }
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
@@ -3048,15 +3120,16 @@ namespace etl
   public:
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet()
-      : data()
-      , valid(false)
+      : valid(false)
     {
     }
+  #include "etl/private/diagnostic_pop.h"
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(const etl::imessage& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -3070,11 +3143,12 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(etl::imessage&& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -3088,16 +3162,17 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6> >::value &&
                                                                     !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6>::value, int>::type>
     explicit message_packet(TMessage&& msg)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static constexpr bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6> >::value &&
@@ -3106,14 +3181,15 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #else
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6> >::value &&
                                                                          !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                          !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5, T6>::value, int>::type = 0)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static const bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6> >::value &&
@@ -3122,30 +3198,33 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(const message_packet& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(other.get());
       }
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(message_packet&& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(etl::move(other.get()));
       }
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
@@ -3304,15 +3383,16 @@ namespace etl
   public:
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet()
-      : data()
-      , valid(false)
+      : valid(false)
     {
     }
+  #include "etl/private/diagnostic_pop.h"
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(const etl::imessage& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -3326,11 +3406,12 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(etl::imessage&& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -3344,16 +3425,17 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5> >::value &&
                                                                     !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5>::value, int>::type>
     explicit message_packet(TMessage&& msg)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static constexpr bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5> >::value &&
@@ -3362,14 +3444,15 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #else
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5> >::value &&
                                                                          !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                          !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4, T5>::value, int>::type = 0)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static const bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5> >::value &&
@@ -3378,30 +3461,33 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(const message_packet& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(other.get());
       }
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(message_packet&& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(etl::move(other.get()));
       }
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
@@ -3557,15 +3643,16 @@ namespace etl
   public:
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet()
-      : data()
-      , valid(false)
+      : valid(false)
     {
     }
+  #include "etl/private/diagnostic_pop.h"
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(const etl::imessage& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -3579,11 +3666,12 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(etl::imessage&& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -3597,16 +3685,17 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4> >::value &&
                                                                     !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4>::value, int>::type>
     explicit message_packet(TMessage&& msg)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static constexpr bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4> >::value &&
@@ -3615,14 +3704,15 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #else
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4> >::value &&
                                                                          !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                          !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3, T4>::value, int>::type = 0)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static const bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3, T4> >::value &&
@@ -3631,30 +3721,33 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(const message_packet& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(other.get());
       }
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(message_packet&& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(etl::move(other.get()));
       }
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
@@ -3805,15 +3898,16 @@ namespace etl
   public:
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet()
-      : data()
-      , valid(false)
+      : valid(false)
     {
     }
+  #include "etl/private/diagnostic_pop.h"
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(const etl::imessage& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -3827,11 +3921,12 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(etl::imessage&& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -3845,16 +3940,17 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3> >::value &&
                                                                     !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3>::value, int>::type>
     explicit message_packet(TMessage&& msg)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static constexpr bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3> >::value &&
@@ -3863,14 +3959,15 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #else
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3> >::value &&
                                                                          !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                          !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2, T3>::value, int>::type = 0)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static const bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2, T3> >::value &&
@@ -3879,30 +3976,33 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(const message_packet& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(other.get());
       }
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(message_packet&& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(etl::move(other.get()));
       }
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
@@ -4051,15 +4151,16 @@ namespace etl
   public:
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet()
-      : data()
-      , valid(false)
+      : valid(false)
     {
     }
+  #include "etl/private/diagnostic_pop.h"
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(const etl::imessage& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -4073,11 +4174,12 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(etl::imessage&& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -4091,16 +4193,17 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2> >::value &&
                                                                     !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2>::value, int>::type>
     explicit message_packet(TMessage&& msg)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static constexpr bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2> >::value &&
@@ -4109,14 +4212,15 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #else
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2> >::value &&
                                                                          !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                          !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1, T2>::value, int>::type = 0)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static const bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1, T2> >::value &&
@@ -4125,30 +4229,33 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(const message_packet& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(other.get());
       }
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(message_packet&& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(etl::move(other.get()));
       }
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
@@ -4295,15 +4402,16 @@ namespace etl
   public:
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet()
-      : data()
-      , valid(false)
+      : valid(false)
     {
     }
+  #include "etl/private/diagnostic_pop.h"
 
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(const etl::imessage& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -4317,11 +4425,12 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     explicit message_packet(etl::imessage&& msg)
-      : data()
     {
       if (accepts(msg))
       {
@@ -4335,16 +4444,17 @@ namespace etl
 
       ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1> >::value &&
                                                                     !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1>::value, int>::type>
     explicit message_packet(TMessage&& msg)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static constexpr bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1> >::value &&
@@ -4353,14 +4463,15 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #else
     //********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1> >::value &&
                                                                          !etl::is_same<typename etl::remove_reference<TMessage>::type, etl::imessage>::value &&
                                                                          !etl::is_one_of<typename etl::remove_reference<TMessage>::type, T1>::value, int>::type = 0)
-      : data()
-      , valid(true)
+      : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
       static const bool Enabled = (!etl::is_same<typename etl::remove_reference<TMessage>::type, etl::message_packet<T1> >::value &&
@@ -4369,30 +4480,33 @@ namespace etl
 
       ETL_STATIC_ASSERT(Enabled, "Message not in packet type list");
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(const message_packet& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(other.get());
       }
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet(message_packet&& other)
-      : data()
-      , valid(other.is_valid())
+      : valid(other.is_valid())
     {
       if (valid)
       {
         add_new_message(etl::move(other.get()));
       }
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //**********************************************

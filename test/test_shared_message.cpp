@@ -182,7 +182,7 @@ namespace
     //*************************************************************************
     TEST(test_move_constructor)
     {
-#include "etl/private/diagnostic_pessimizing-move_push.h"
+#include "etl/private/diagnostic_pessimizing_move_push.h"
       etl::shared_message sm1(std::move(etl::shared_message(message_pool, Message1(1))));
 #include "etl/private/diagnostic_pop.h"
       CHECK_EQUAL(1, sm1.get_reference_count());
@@ -215,7 +215,7 @@ namespace
     TEST(test_move_assignment)
     {
       etl::shared_message sm2 = etl::shared_message(message_pool, Message1(2));
-#include "etl/private/diagnostic_pessimizing-move_push.h"
+#include "etl/private/diagnostic_pessimizing_move_push.h"
       sm2 = std::move(etl::shared_message(message_pool, Message1(3)));
 #include "etl/private/diagnostic_pop.h"
       CHECK_EQUAL(1, sm2.get_reference_count());

@@ -111,20 +111,22 @@ namespace etl
     //***************************************************************************
     /// Constructor.
     //***************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     optional()
-      : storage()
-      , valid(false)
+      : valid(false)
     {
     }
+#include "etl/private/diagnostic_pop.h"
 
     //***************************************************************************
     /// Constructor with nullopt.
     //***************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     optional(etl::nullopt_t)
-      : storage()
-      , valid(false)
+      : valid(false)
     {
     }
+#include "etl/private/diagnostic_pop.h"
 
     //***************************************************************************
     /// Copy constructor.

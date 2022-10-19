@@ -172,7 +172,7 @@ namespace
       etl::pair<ItemM1, ItemM2> p1(1, 2.3);
       etl::pair<ItemM1, ItemM2> p2(0, 0);
 
-#include "etl/private/diagnostic_pessimizing-move_push.h"
+#include "etl/private/diagnostic_pessimizing_move_push.h"
       p2 = etl::make_pair(std::move(ItemM1(1)), std::move(ItemM2(2.3)));
 #include "etl/private/diagnostic_pop.h"
 
