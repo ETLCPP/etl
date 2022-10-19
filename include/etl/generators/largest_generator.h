@@ -240,6 +240,9 @@ namespace etl
 #if ETL_USING_CPP17
   template <typename... T>
   inline constexpr size_t largest_alignment_v = largest_alignment<T...>::value;
+#elif
+  template <typename... T>
+  static constexpr size_t largest_alignment_v = largest_alignment<T...>::value;
 #endif
 
 #else
