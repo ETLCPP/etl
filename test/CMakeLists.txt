@@ -346,6 +346,8 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+  # Not compiling for a library, so the following check is not necessary
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-noexcept-type")
 endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -384,4 +386,4 @@ add_test(etl_unit_tests etl_tests)
 # as they appear from UnitTest++
 add_custom_target(test_verbose COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
 
-set_property(TARGET etl_tests PROPERTY CXX_STANDARD 17)
+#set_property(TARGET etl_tests PROPERTY CXX_STANDARD 17)
