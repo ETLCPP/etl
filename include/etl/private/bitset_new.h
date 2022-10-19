@@ -78,6 +78,9 @@ namespace etl
 {
   struct bitset_constants
   {
+    template<typename Enum>
+    static constexpr std::underlying_type_t<Enum> to_underlying(Enum e) { return static_cast<std::underlying_type_t<decltype(e)>>(e); }
+
     static ETL_CONSTANT size_t npos = etl::integral_limits<size_t>::max;
   };
 
@@ -1825,7 +1828,11 @@ namespace etl
     ETL_CONSTEXPR14 bitset(const bitset<Active_Bits, TElement, false>& other) ETL_NOEXCEPT
       : buffer()
     {
+#if ETL_CPP17_SUPPORTED
       etl::copy_n(other.buffer, Number_Of_Elements, buffer);
+#else
+      etl::copy_n(other.buffer, to_underlying(Number_Of_Elements), buffer);
+#endif
     }
 
     //*************************************************************************
@@ -1883,7 +1890,11 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset& operator =(const bitset<Active_Bits, TElement, false>& other) ETL_NOEXCEPT
     {
+#if ETL_CPP17_SUPPORTED
       etl::copy_n(other.buffer, Number_Of_Elements, buffer);
+#else
+      etl::copy_n(other.buffer, to_underlying(Number_Of_Elements), buffer);
+#endif
 
       return *this;
     }
@@ -1893,7 +1904,11 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset<Active_Bits, TElement, false>& set() ETL_NOEXCEPT
     {
+#if ETL_CPP17_SUPPORTED
       etl::fill_n(buffer, Number_Of_Elements, All_Set_Element);
+#else
+      etl::fill_n(buffer, to_underlying(Number_Of_Elements), All_Set_Element);
+#endif
       clear_unused_bits_in_msb();
 
       return *this;
@@ -3464,7 +3479,11 @@ namespace etl
     ETL_CONSTEXPR14 bitset_ext(const bitset_ext<Active_Bits, TElement, false>& other, buffer_type& buffer) ETL_NOEXCEPT
       : pbuffer(buffer.data())
     {
+#if ETL_CPP17_SUPPORTED
       etl::copy_n(other.pbuffer, Number_Of_Elements, pbuffer);
+#else
+      etl::copy_n(other.pbuffer, to_underlying(Number_Of_Elements), pbuffer);
+#endif
     }
 
     //*************************************************************************
@@ -3577,7 +3596,11 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext& operator =(const bitset_ext<Active_Bits, TElement, false>& other) ETL_NOEXCEPT
     {
+#if ETL_CPP17_SUPPORTED
       etl::copy_n(other.pbuffer, Number_Of_Elements, pbuffer);
+#else
+      etl::copy_n(other.pbuffer, to_underlying(Number_Of_Elements), pbuffer);
+#endif
 
       return *this;
     }
@@ -3587,7 +3610,11 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, false>& set() ETL_NOEXCEPT
     {
+#if ETL_CPP17_SUPPORTED
       etl::fill_n(pbuffer, Number_Of_Elements, All_Set_Element);
+#else
+      etl::fill_n(pbuffer, to_underlying(Number_Of_Elements), All_Set_Element);
+#endif
       clear_unused_bits_in_msb();
 
       return *this;
@@ -3718,7 +3745,11 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, false>& reset() ETL_NOEXCEPT
     {
+#if ETL_CPP17_SUPPORTED
       etl::fill_n(pbuffer, Number_Of_Elements, All_Clear_Element);
+#else
+      etl::fill_n(pbuffer, to_underlying(Number_Of_Elements), All_Clear_Element);
+#endif
 
       return *this;
     }
