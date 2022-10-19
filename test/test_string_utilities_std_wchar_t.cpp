@@ -38,6 +38,8 @@ SOFTWARE.
 #undef STR
 #define STR(x) L##x
 
+#if ETL_CPP17_SUPPORTED
+
 namespace
 {
   //***********************************
@@ -1579,3 +1581,4 @@ namespace
     }
   };
 }
+#endif

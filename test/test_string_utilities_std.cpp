@@ -40,6 +40,8 @@ SOFTWARE.
 #undef STR
 #define STR(x) x
 
+#if ETL_CPP17_SUPPORTED
+
 namespace
 {
   SUITE(test_string_utilities_std_char)
@@ -1606,3 +1608,4 @@ namespace
     }
   };
 }
+#endif
