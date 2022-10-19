@@ -1317,7 +1317,7 @@
     <ClInclude Include="..\..\include\etl\private\diagnostic_self_assign_overloaded_push.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\diagnostic_pessimizing-move_push.h">
+    <ClInclude Include="..\..\include\etl\private\diagnostic_pessimizing_move_push.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\message_broker.h">
@@ -1334,6 +1334,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\circular_iterator.h">
       <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\diagnostic_uninitialized_push.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

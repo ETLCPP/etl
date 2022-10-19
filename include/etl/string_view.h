@@ -809,27 +809,38 @@ namespace etl
   /// make_string_view.
   //*************************************************************************
   template<size_t ARRAY_SIZE>
-  ETL_CONSTEXPR string_view make_string_view(const char(&text)[ARRAY_SIZE])
+  ETL_CONSTEXPR14 string_view make_string_view(const char(&text)[ARRAY_SIZE])
   {
-    return string_view(text, ARRAY_SIZE - 1U);
+    size_t length = etl::char_traits<char>::length(text, ARRAY_SIZE - 1U);
+
+    return string_view(text, length);
   }
 
+  //***********************************
   template<size_t ARRAY_SIZE>
-  ETL_CONSTEXPR wstring_view make_string_view(const wchar_t(&text)[ARRAY_SIZE])
+  ETL_CONSTEXPR14 wstring_view make_string_view(const wchar_t(&text)[ARRAY_SIZE])
   {
-    return wstring_view(text, ARRAY_SIZE - 1U);
+    size_t length = etl::char_traits<wchar_t>::length(text, ARRAY_SIZE - 1U);
+
+    return wstring_view(text, length);
   }
 
+  //***********************************
   template<size_t ARRAY_SIZE>
-  ETL_CONSTEXPR u16string_view make_string_view(const char16_t(&text)[ARRAY_SIZE])
+  ETL_CONSTEXPR14 u16string_view make_string_view(const char16_t(&text)[ARRAY_SIZE])
   {
-    return u16string_view(text, ARRAY_SIZE - 1U);
+    size_t length = etl::char_traits<char16_t>::length(text, ARRAY_SIZE - 1U);
+
+    return u16string_view(text, length);
   }
 
+  //***********************************
   template<size_t ARRAY_SIZE>
-  ETL_CONSTEXPR u32string_view make_string_view(const char32_t(&text)[ARRAY_SIZE])
+  ETL_CONSTEXPR14 u32string_view make_string_view(const char32_t(&text)[ARRAY_SIZE])
   {
-    return u32string_view(text, ARRAY_SIZE - 1U);
+    size_t length = etl::char_traits<char32_t>::length(text, ARRAY_SIZE - 1U);
+
+    return u32string_view(text, length);
   }
 
   //*************************************************************************

@@ -124,6 +124,22 @@ namespace etl
     }
 
     //*************************************************************************
+    ETL_CONSTEXPR14 static size_t length(const char_type* str, size_t max_length)
+    {
+      size_t count = 0UL;
+
+      if (str != 0)
+      {
+        while ((count < max_length) && (*str++ != 0))
+        {
+          ++count;
+        }
+      }
+
+      return count;
+    }
+
+    //*************************************************************************
     static void assign(char_type& r, const char_type& c)
     {
       r = c;
@@ -240,6 +256,15 @@ namespace etl
   ETL_CONSTEXPR size_t strlen(const T* t)
   {
     return etl::char_traits<T>::length(t);
+  }
+
+  //***************************************************************************
+  /// Alternative strlen for all character types, with maximum length.
+  //***************************************************************************
+  template <typename T>
+  size_t strlen(const T* t, size_t max_length)
+  {
+    return etl::char_traits<T>::length(t, max_length);
   }
 }
 
