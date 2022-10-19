@@ -32,7 +32,7 @@ jobs:
       run: ./test/etl_tests
 
   build-clang-9-linux-stl-cpp14:
-    name: Clang-9 Linux - STL
+    name: Clang-9 Linux - STL - CPP14
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -84,7 +84,7 @@ jobs:
       run: ./test/etl_tests
 
   build-clang-9-linux-no-stl-cpp14:
-    name: Clang-9 Linux - No STL
+    name: Clang-9 Linux - No STL - CPP14
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -159,7 +159,7 @@ jobs:
       run: ./test/etl_tests
 
   build-clang-10-osx-stl-cpp14:
-    name: Clang-10 OSX - STL
+    name: Clang-10 OSX - STL - CPP14
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -205,7 +205,7 @@ jobs:
       run: ./test/etl_tests
 
   build-clang-10-osx-no-stl-cpp14:
-    name: Clang-10 OSX - No STL
+    name: Clang-10 OSX - No STL - CPP14
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

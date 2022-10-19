@@ -28,7 +28,7 @@ jobs:
       run: ./test/etl_tests
 
   build-gcc-linux-stl-cpp14:
-    name: GCC Linux - STL
+    name: GCC Linux - STL - CPP14
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -70,7 +70,7 @@ jobs:
       run: ./test/etl_tests
 
   build-gcc-linux-no-stl-cpp14:
-    name: GCC Linux - No STL
+    name: GCC Linux - No STL - CPP14
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
