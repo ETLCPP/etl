@@ -1326,10 +1326,10 @@ namespace etl
     /// in which every recursive instantiation of `visit_result_helper` appends
     /// more elements and give it a pass through `common_type_t`.
     //***************************************************************************
-    template <template <typename...> typename, typename...>
+    template <template <typename...> class, typename...>
     struct visit_result_helper;
 
-    template <template <typename...> typename TToInject, size_t... tAltIndices, typename TCur>
+    template <template <typename...> class TToInject, size_t... tAltIndices, typename TCur>
     struct visit_result_helper<TToInject, index_sequence<tAltIndices...>, TCur>
     {
       template <size_t tIndex>
@@ -1339,7 +1339,7 @@ namespace etl
       using type = common_type_t<TToInject<var_type<tAltIndices> >...>;
     };
 
-    template <template <typename...> typename TToInject, size_t... tAltIndices, typename TCur, typename TNext, typename... TVs>
+    template <template <typename...> class TToInject, size_t... tAltIndices, typename TCur, typename TNext, typename... TVs>
     struct visit_result_helper<TToInject, index_sequence<tAltIndices...>, TCur, TNext, TVs...>
     {
       template <size_t tIndex>
