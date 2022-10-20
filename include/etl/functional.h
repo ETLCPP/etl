@@ -63,6 +63,8 @@ namespace etl
       return *this;
     }
 
+    ETL_CONSTEXPR20 reference_wrapper<T>(const reference_wrapper& rhs) ETL_NOEXCEPT = default;
+
     ETL_CONSTEXPR20 T& get() const ETL_NOEXCEPT
     {
       return *t;

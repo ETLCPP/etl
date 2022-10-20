@@ -202,6 +202,11 @@ namespace etl
       }
 
       //*******************************
+      /// Copy constructor.
+      //*******************************
+      bit_reference(const bit_reference& r) = default;
+
+      //*******************************
       /// Flip the bit.
       //*******************************
       bit_reference& flip()

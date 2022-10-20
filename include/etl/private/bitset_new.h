@@ -912,6 +912,11 @@ namespace etl
       }
 
       //*******************************
+      /// Copy Constructor.
+      //*******************************
+      ETL_CONSTEXPR14 bit_reference(const bit_reference& r) ETL_NOEXCEPT = default;
+
+      //*******************************
       /// Flip the bit.
       //*******************************
       ETL_CONSTEXPR14 bit_reference& flip() ETL_NOEXCEPT
@@ -1785,6 +1790,11 @@ namespace etl
       }
 
       //*******************************
+      /// Copy constructor
+      //*******************************
+      ETL_CONSTEXPR14 bit_reference(const bit_reference& r) ETL_NOEXCEPT = default;
+
+      //*******************************
       /// Flip the bit.
       //*******************************
       ETL_CONSTEXPR14 bit_reference& flip() ETL_NOEXCEPT
@@ -2544,6 +2554,11 @@ namespace etl
         p_bitset->set(position, bool(r));
         return *this;
       }
+
+      //*******************************
+      /// Copy constructor
+      //*******************************
+      ETL_CONSTEXPR14 bit_reference(const bit_reference& r) ETL_NOEXCEPT = default;
 
       //*******************************
       /// Flip the bit.
@@ -3416,6 +3431,11 @@ namespace etl
         p_bitset->set(position, bool(r));
         return *this;
       }
+
+      //*******************************
+      /// Copy constructor.
+      //*******************************
+      ETL_CONSTEXPR14 bit_reference(const bit_reference& r) ETL_NOEXCEPT = default;
 
       //*******************************
       /// Flip the bit.
