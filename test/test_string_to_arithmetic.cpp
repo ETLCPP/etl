@@ -41,6 +41,22 @@ SOFTWARE.
 
 namespace
 {
+  //*************************************************************************
+  template <typename T>
+  std::ostream& operator <<(std::ostream& os, const etl::to_arithmetic_result<T>& result)
+  {
+    if (result.has_value())
+    {
+      os << result.value();
+    }
+    else
+    {
+      os << result.status().c_str();
+    }
+
+    return os;
+  }
+
   typedef etl::format_spec Format;
 
   SUITE(test_to_arithmetic)
@@ -73,16 +89,18 @@ namespace
       const std::string text3("121");
       const std::string text4("");
       const std::string text5("-101");
-      const std::string text6("100000000");
-      const std::string text7("-100000000");
 
       CHECK(!etl::to_arithmetic<int8_t>(text1.c_str(), text1.size(), etl::bin));
       CHECK(!etl::to_arithmetic<int8_t>(text2.c_str(), text2.size(), etl::bin));
       CHECK(!etl::to_arithmetic<int8_t>(text3.c_str(), text3.size(), etl::bin));
       CHECK(!etl::to_arithmetic<int8_t>(text4.c_str(), text4.size(), etl::bin));
       CHECK(!etl::to_arithmetic<uint8_t>(text5.c_str(), text5.size(), etl::bin));
-      CHECK(!etl::to_arithmetic<int8_t>(text6.c_str(), text6.size(), etl::bin));
-      CHECK(!etl::to_arithmetic<int8_t>(text7.c_str(), text7.size(), etl::bin));
+
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<int8_t>(text1.c_str(), text1.size(), etl::bin).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<int8_t>(text2.c_str(), text2.size(), etl::bin).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<int8_t>(text3.c_str(), text3.size(), etl::bin).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<int8_t>(text4.c_str(), text4.size(), etl::bin).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Signed_To_Unsigned, etl::to_arithmetic<uint8_t>(text5.c_str(), text5.size(), etl::bin).status());
     }
 
     //*************************************************************************
@@ -103,6 +121,14 @@ namespace
       CHECK_EQUAL(int(83),  int(etl::to_arithmetic<int8_t>(value5.c_str(), value5.size(), etl::bin).value()));
       CHECK_EQUAL(int(-84), int(etl::to_arithmetic<int8_t>(value6.c_str(), value6.size(), etl::bin).value()));
       CHECK_EQUAL(int(-84), int(etl::to_arithmetic<int8_t>(value7.c_str(), value7.size(), etl::bin).value()));
+
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, int(etl::to_arithmetic<int8_t>(value1.c_str(), value1.size(), etl::bin).status()));
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, int(etl::to_arithmetic<int8_t>(value2.c_str(), value2.size(), etl::bin).status()));
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, int(etl::to_arithmetic<int8_t>(value3.c_str(), value3.size(), etl::bin).status()));
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, int(etl::to_arithmetic<int8_t>(value4.c_str(), value4.size(), etl::bin).status()));
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, int(etl::to_arithmetic<int8_t>(value5.c_str(), value5.size(), etl::bin).status()));
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, int(etl::to_arithmetic<int8_t>(value6.c_str(), value6.size(), etl::bin).status()));
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, int(etl::to_arithmetic<int8_t>(value7.c_str(), value7.size(), etl::bin).status()));
     }
 
     //*************************************************************************
@@ -172,49 +198,62 @@ namespace
       const std::string int8_overflow_min("-100000000");
 
       const std::string uint8_overflow_max("100000000");
-      const std::string uint8_overflow_min("-00000001");
 
       const std::string int16_overflow_max("10000000000000000");
       const std::string int16_overflow_min("-10000000000000000");
 
       const std::string uint16_overflow_max("10000000000000000");
-      const std::string uint16_overflow_min("-0000000000000001");
 
       const std::string int32_overflow_max("100000000000000000000000000000000");
       const std::string int32_overflow_min("-100000000000000000000000000000000");
 
       const std::string uint32_overflow_max("100000000000000000000000000000000");
-      const std::string uint32_overflow_min("-00000000000000000000000000000001");
 
       const std::string int64_overflow_max("10000000000000000000000000000000000000000000000000000000000000000");
       const std::string int64_overflow_min("-10000000000000000000000000000000000000000000000000000000000000000");
 
       const std::string uint64_overflow_max("10000000000000000000000000000000000000000000000000000000000000000");
-      const std::string uint64_overflow_min("-0000000000000000000000000000000000000000000000000000000000000001");
 
       CHECK(!etl::to_arithmetic<int8_t>(int8_overflow_max.c_str(), int8_overflow_max.size(), etl::bin));
       CHECK(!etl::to_arithmetic<int8_t>(int8_overflow_min.c_str(), int8_overflow_min.size(), etl::bin));
 
       CHECK(!etl::to_arithmetic<uint8_t>(uint8_overflow_max.c_str(), uint8_overflow_max.size(), etl::bin));
-      CHECK(!etl::to_arithmetic<uint8_t>(uint8_overflow_min.c_str(), uint8_overflow_min.size(), etl::bin));
 
       CHECK(!etl::to_arithmetic<int16_t>(int16_overflow_max.c_str(), int16_overflow_max.size(), etl::bin));
       CHECK(!etl::to_arithmetic<int16_t>(int16_overflow_min.c_str(), int16_overflow_min.size(), etl::bin));
 
       CHECK(!etl::to_arithmetic<uint16_t>(uint16_overflow_max.c_str(), uint16_overflow_max.size(), etl::bin));
-      CHECK(!etl::to_arithmetic<uint16_t>(uint16_overflow_min.c_str(), uint16_overflow_min.size(), etl::bin));
 
       CHECK(!etl::to_arithmetic<int32_t>(int32_overflow_max.c_str(), int32_overflow_max.size(), etl::bin));
       CHECK(!etl::to_arithmetic<int32_t>(int32_overflow_min.c_str(), int32_overflow_min.size(), etl::bin));
 
       CHECK(!etl::to_arithmetic<uint32_t>(uint32_overflow_max.c_str(), uint32_overflow_max.size(), etl::bin));
-      CHECK(!etl::to_arithmetic<uint32_t>(uint32_overflow_min.c_str(), uint32_overflow_min.size(), etl::bin));
 
       CHECK(!etl::to_arithmetic<int64_t>(int64_overflow_max.c_str(), int64_overflow_max.size(), etl::bin));
       CHECK(!etl::to_arithmetic<int64_t>(int64_overflow_min.c_str(), int64_overflow_min.size(), etl::bin));
 
       CHECK(!etl::to_arithmetic<uint64_t>(uint64_overflow_max.c_str(), uint64_overflow_max.size(), etl::bin));
-      CHECK(!etl::to_arithmetic<uint64_t>(uint64_overflow_min.c_str(), uint64_overflow_min.size(), etl::bin));
+
+
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int8_t>(int8_overflow_max.c_str(), int8_overflow_max.size(), etl::bin).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int8_t>(int8_overflow_min.c_str(), int8_overflow_min.size(), etl::bin).status());
+
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<uint8_t>(uint8_overflow_max.c_str(), uint8_overflow_max.size(), etl::bin).status());
+
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int16_t>(int16_overflow_max.c_str(), int16_overflow_max.size(), etl::bin).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int16_t>(int16_overflow_min.c_str(), int16_overflow_min.size(), etl::bin).status());
+
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<uint16_t>(uint16_overflow_max.c_str(), uint16_overflow_max.size(), etl::bin).status());
+
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int32_t>(int32_overflow_max.c_str(), int32_overflow_max.size(), etl::bin).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int32_t>(int32_overflow_min.c_str(), int32_overflow_min.size(), etl::bin).status());
+
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<uint32_t>(uint32_overflow_max.c_str(), uint32_overflow_max.size(), etl::bin).status());
+
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int64_t>(int64_overflow_max.c_str(), int64_overflow_max.size(), etl::bin).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int64_t>(int64_overflow_min.c_str(), int64_overflow_min.size(), etl::bin).status());
+
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<uint64_t>(uint64_overflow_max.c_str(), uint64_overflow_max.size(), etl::bin).status());
     }
 
     //*************************************************************************
@@ -318,49 +357,41 @@ namespace
       const std::string int8_overflow_min("-400");
 
       const std::string uint8_overflow_max("400");
-      const std::string uint8_overflow_min("-001");
 
       const std::string int16_overflow_max("200000");
       const std::string int16_overflow_min("-200000");
 
       const std::string uint16_overflow_max("200000");
-      const std::string uint16_overflow_min("-000001");
 
       const std::string int32_overflow_max("40000000000");
       const std::string int32_overflow_min("-40000000000");
 
       const std::string uint32_overflow_max("40000000000");
-      const std::string uint32_overflow_min("-00000000001");
 
       const std::string int64_overflow_max("2000000000000000000000");
       const std::string int64_overflow_min("-2000000000000000000000");
 
       const std::string uint64_overflow_max("2000000000000000000000");
-      const std::string uint64_overflow_min("-0000000000000000000001");
 
       CHECK(!etl::to_arithmetic<int8_t>(int8_overflow_max.c_str(), int8_overflow_max.size(), etl::oct));
       CHECK(!etl::to_arithmetic<int8_t>(int8_overflow_min.c_str(), int8_overflow_min.size(), etl::oct));
 
       CHECK(!etl::to_arithmetic<uint8_t>(uint8_overflow_max.c_str(), uint8_overflow_max.size(), etl::oct));
-      CHECK(!etl::to_arithmetic<uint8_t>(uint8_overflow_min.c_str(), uint8_overflow_min.size(), etl::oct));
 
       CHECK(!etl::to_arithmetic<int16_t>(int16_overflow_max.c_str(), int16_overflow_max.size(), etl::oct));
       CHECK(!etl::to_arithmetic<int16_t>(int16_overflow_min.c_str(), int16_overflow_min.size(), etl::oct));
 
       CHECK(!etl::to_arithmetic<uint16_t>(uint16_overflow_max.c_str(), uint16_overflow_max.size(), etl::oct));
-      CHECK(!etl::to_arithmetic<uint16_t>(uint16_overflow_min.c_str(), uint16_overflow_min.size(), etl::oct));
 
       CHECK(!etl::to_arithmetic<int32_t>(int32_overflow_max.c_str(), int32_overflow_max.size(), etl::oct));
       CHECK(!etl::to_arithmetic<int32_t>(int32_overflow_min.c_str(), int32_overflow_min.size(), etl::oct));
 
       CHECK(!etl::to_arithmetic<uint32_t>(uint32_overflow_max.c_str(), uint32_overflow_max.size(), etl::oct));
-      CHECK(!etl::to_arithmetic<uint32_t>(uint32_overflow_min.c_str(), uint32_overflow_min.size(), etl::oct));
 
       CHECK(!etl::to_arithmetic<int64_t>(int64_overflow_max.c_str(), int64_overflow_max.size(), etl::oct));
       CHECK(!etl::to_arithmetic<int64_t>(int64_overflow_min.c_str(), int64_overflow_min.size(), etl::oct));
 
       CHECK(!etl::to_arithmetic<uint64_t>(uint64_overflow_max.c_str(), uint64_overflow_max.size(), etl::oct));
-      CHECK(!etl::to_arithmetic<uint64_t>(uint64_overflow_min.c_str(), uint64_overflow_min.size(), etl::oct));
     }
 
     //*************************************************************************
@@ -470,25 +501,21 @@ namespace
       const std::string int8_overflow_min_plus("-1000");
 
       const std::string uint8_overflow_max("256");
-      const std::string uint8_overflow_min("-1");
 
       const std::string int16_overflow_max("32768");
       const std::string int16_overflow_min("-32769");
       
       const std::string uint16_overflow_max("65536");
-      const std::string uint16_overflow_min("-1");
 
       const std::string int32_overflow_max("2147483648");
       const std::string int32_overflow_min("-2147483649");
       
       const std::string uint32_overflow_max("4294967296");
-      const std::string uint32_overflow_min("-1");
 
       const std::string int64_overflow_max("9223372036854775808");
       const std::string int64_overflow_min("-9223372036854775809");
 
       const std::string uint64_overflow_max("18446744073709551616");
-      const std::string uint64_overflow_min("-1");
 
       CHECK(!etl::to_arithmetic<int8_t>(int8_overflow_max.c_str(), int8_overflow_max.size(), etl::dec));
       CHECK(!etl::to_arithmetic<int8_t>(int8_overflow_min.c_str(), int8_overflow_min.size(), etl::dec));
@@ -497,25 +524,21 @@ namespace
       CHECK(!etl::to_arithmetic<int8_t>(int8_overflow_min_plus.c_str(), int8_overflow_min_plus.size(), etl::dec));
 
       CHECK(!etl::to_arithmetic<uint8_t>(uint8_overflow_max.c_str(), uint8_overflow_max.size(), etl::dec));
-      CHECK(!etl::to_arithmetic<uint8_t>(uint8_overflow_min.c_str(), uint8_overflow_min.size(), etl::dec));
 
       CHECK(!etl::to_arithmetic<int16_t>(int16_overflow_max.c_str(), int16_overflow_max.size(), etl::dec));
       CHECK(!etl::to_arithmetic<int16_t>(int16_overflow_min.c_str(), int16_overflow_min.size(), etl::dec));
 
       CHECK(!etl::to_arithmetic<uint16_t>(uint16_overflow_max.c_str(), uint16_overflow_max.size(), etl::dec));
-      CHECK(!etl::to_arithmetic<uint16_t>(uint16_overflow_min.c_str(), uint16_overflow_min.size(), etl::dec));
 
       CHECK(!etl::to_arithmetic<int32_t>(int32_overflow_max.c_str(), int32_overflow_max.size(), etl::dec));
       CHECK(!etl::to_arithmetic<int32_t>(int32_overflow_min.c_str(), int32_overflow_min.size(), etl::dec));
 
       CHECK(!etl::to_arithmetic<uint32_t>(uint32_overflow_max.c_str(), uint32_overflow_max.size(), etl::dec));
-      CHECK(!etl::to_arithmetic<uint32_t>(uint32_overflow_min.c_str(), uint32_overflow_min.size(), etl::dec));
 
       CHECK(!etl::to_arithmetic<int64_t>(int64_overflow_max.c_str(), int64_overflow_max.size(), etl::dec));
       CHECK(!etl::to_arithmetic<int64_t>(int64_overflow_min.c_str(), int64_overflow_min.size(), etl::dec));
 
       CHECK(!etl::to_arithmetic<uint64_t>(uint64_overflow_max.c_str(), uint64_overflow_max.size(), etl::dec));
-      CHECK(!etl::to_arithmetic<uint64_t>(uint64_overflow_min.c_str(), uint64_overflow_min.size(), etl::dec));
     }
 
     //*************************************************************************
@@ -619,76 +642,179 @@ namespace
       const std::string int8_overflow_min("-100");
 
       const std::string uint8_overflow_max("100");
-      const std::string uint8_overflow_min("-01");
 
       const std::string int16_overflow_max("10000");
       const std::string int16_overflow_min("-10000");
 
       const std::string uint16_overflow_max("10000");
-      const std::string uint16_overflow_min("-01");
 
       const std::string int32_overflow_max("100000000");
       const std::string int32_overflow_min("-100000000");
 
       const std::string uint32_overflow_max("100000000");
-      const std::string uint32_overflow_min("-000000001");
 
       const std::string int64_overflow_max("10000000000000000");
       const std::string int64_overflow_min("-10000000000000000");
 
       const std::string uint64_overflow_max("10000000000000000");
-      const std::string uint64_overflow_min("-0000000000000001");
 
       CHECK(!etl::to_arithmetic<int8_t>(int8_overflow_max.c_str(), int8_overflow_max.size(), etl::hex));
       CHECK(!etl::to_arithmetic<int8_t>(int8_overflow_min.c_str(), int8_overflow_min.size(), etl::hex));
 
       CHECK(!etl::to_arithmetic<uint8_t>(uint8_overflow_max.c_str(), uint8_overflow_max.size(), etl::hex));
-      CHECK(!etl::to_arithmetic<uint8_t>(uint8_overflow_min.c_str(), uint8_overflow_min.size(), etl::hex));
 
       CHECK(!etl::to_arithmetic<int16_t>(int16_overflow_max.c_str(), int16_overflow_max.size(), etl::hex));
       CHECK(!etl::to_arithmetic<int16_t>(int16_overflow_min.c_str(), int16_overflow_min.size(), etl::hex));
 
       CHECK(!etl::to_arithmetic<uint16_t>(uint16_overflow_max.c_str(), uint16_overflow_max.size(), etl::hex));
-      CHECK(!etl::to_arithmetic<uint16_t>(uint16_overflow_min.c_str(), uint16_overflow_min.size(), etl::hex));
 
       CHECK(!etl::to_arithmetic<int32_t>(int32_overflow_max.c_str(), int32_overflow_max.size(), etl::hex));
       CHECK(!etl::to_arithmetic<int32_t>(int32_overflow_min.c_str(), int32_overflow_min.size(), etl::hex));
 
       CHECK(!etl::to_arithmetic<uint32_t>(uint32_overflow_max.c_str(), uint32_overflow_max.size(), etl::hex));
-      CHECK(!etl::to_arithmetic<uint32_t>(uint32_overflow_min.c_str(), uint32_overflow_min.size(), etl::hex));
 
       CHECK(!etl::to_arithmetic<int64_t>(int64_overflow_max.c_str(), int64_overflow_max.size(), etl::hex));
       CHECK(!etl::to_arithmetic<int64_t>(int64_overflow_min.c_str(), int64_overflow_min.size(), etl::hex));
 
       CHECK(!etl::to_arithmetic<uint64_t>(uint64_overflow_max.c_str(), uint64_overflow_max.size(), etl::hex));
-      CHECK(!etl::to_arithmetic<uint64_t>(uint64_overflow_min.c_str(), uint64_overflow_min.size(), etl::hex));
     }
 
     //*************************************************************************
     TEST(test_valid_float)
     {
-    //  const std::string text1("-123.456789");
+      std::string text;
 
-    //  float f1 = strtof(text1.c_str(), nullptr);
-    //  float f2 = etl::to_arithmetic<float>(text1.c_str(), text1.size()).value();
+      //*********************************
+      text = "-123.456789";
 
-    // CHECK_EQUAL(f1, f2);
+      float f1 = strtof(text.c_str(), nullptr);
+      float f2 = etl::to_arithmetic<float>(text.c_str(), text.size()).value();
 
-    // const std::string text2("-1.23456789e2");
-    // float f3 = etl::to_arithmetic<float>(text2.c_str(), text2.size()).value();
+      CHECK_CLOSE(f1, f2, 0.00001);
 
-    // CHECK_EQUAL(f1, f3);
+      //*********************************
+      text = "123.456789";
+
+      f1 = strtof(text.c_str(), nullptr);
+      f2 = etl::to_arithmetic<float>(text.c_str(), text.size()).value();
+
+      CHECK_CLOSE(f1, f2, 0.00001);
+
+      //*********************************
+      text = "-1.23456789e2";
+
+      f1 = strtof(text.c_str(), nullptr);
+      f2 = etl::to_arithmetic<float>(text.c_str(), text.size()).value();
+
+      CHECK_CLOSE(f1, f2, 0.00001);
+
+      //*********************************
+      text = "-12345.6789e-2";
+
+      f1 = strtof(text.c_str(), nullptr);
+      f2 = etl::to_arithmetic<float>(text.c_str(), text.size()).value();
+
+      CHECK_CLOSE(f1, f2, 0.00001);
+
+      //*********************************
+      text = "+12345E-2";
+
+      f1 = strtof(text.c_str(), nullptr);
+      f2 = etl::to_arithmetic<float>(text.c_str(), text.size()).value();
+
+      CHECK_CLOSE(f1, f2, 0.00001);
     }
 
     //*************************************************************************
     TEST(test_valid_double)
     {
-    //  const std::string text1("-123.45678901234567");
+      std::string text;
 
-    //  double f1 = strtod(text1.c_str(), nullptr);
-    //  double f2 = etl::to_arithmetic<double>(text1.c_str(), text1.size()).value();
+      //*********************************
+      text = "-123.45678901234567";
 
-    //  CHECK_EQUAL(f1, f2);
+      double f1 = strtof(text.c_str(), nullptr);
+      double f2 = etl::to_arithmetic<double>(text.c_str(), text.size()).value();
+
+      CHECK_CLOSE(f1, f2, 0.00001);
+
+      //*********************************
+      text = "123.45678901234567";
+
+      f1 = strtof(text.c_str(), nullptr);
+      f2 = etl::to_arithmetic<double>(text.c_str(), text.size()).value();
+
+      CHECK_CLOSE(f1, f2, 0.00001);
+
+      //*********************************
+      text = "-1.2345678901234567e2";
+
+      f1 = strtof(text.c_str(), nullptr);
+      f2 = etl::to_arithmetic<double>(text.c_str(), text.size()).value();
+
+      CHECK_CLOSE(f1, f2, 0.00001);
+
+      //*********************************
+      text = "-12345.678901234567e-2";
+
+      f1 = strtof(text.c_str(), nullptr);
+      f2 = etl::to_arithmetic<double>(text.c_str(), text.size()).value();
+
+      CHECK_CLOSE(f1, f2, 0.00001);
+
+      //*********************************
+      text = "+12345E-2";
+
+      f1 = strtof(text.c_str(), nullptr);
+      f2 = etl::to_arithmetic<double>(text.c_str(), text.size()).value();
+
+      CHECK_CLOSE(f1, f2, 0.00001);
+    }
+
+    //*************************************************************************
+    TEST(test_valid_long_double)
+    {
+      std::string text;
+
+      //*********************************
+      text = "-123.45678901234567";
+
+      long double f1 = strtof(text.c_str(), nullptr);
+      long double f2 = etl::to_arithmetic<long double>(text.c_str(), text.size()).value();
+
+      CHECK_CLOSE(f1, f2, 0.00001);
+
+      //*********************************
+      text = "123.45678901234567";
+
+      f1 = strtof(text.c_str(), nullptr);
+      f2 = etl::to_arithmetic<long double>(text.c_str(), text.size()).value();
+
+      CHECK_CLOSE(f1, f2, 0.00001);
+
+      //*********************************
+      text = "-1.2345678901234567e2";
+
+      f1 = strtof(text.c_str(), nullptr);
+      f2 = etl::to_arithmetic<long double>(text.c_str(), text.size()).value();
+
+      CHECK_CLOSE(f1, f2, 0.00001);
+
+      //*********************************
+      text = "-12345.678901234567e-2";
+
+      f1 = strtof(text.c_str(), nullptr);
+      f2 = etl::to_arithmetic<long double>(text.c_str(), text.size()).value();
+
+      CHECK_CLOSE(f1, f2, 0.00001);
+
+      //*********************************
+      text = "+12345E-2";
+
+      f1 = strtof(text.c_str(), nullptr);
+      f2 = etl::to_arithmetic<long double>(text.c_str(), text.size()).value();
+
+      CHECK_CLOSE(f1, f2, 0.00001);
     }
 
     //*************************************************************************

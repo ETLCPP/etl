@@ -33,11 +33,11 @@ SOFTWARE.
 #include "platform.h"
 #include "type_traits.h"
 #include "integral_limits.h"
+#include "limits.h"
 #include "string_view.h"
 #include "basic_string.h"
 #include "format_spec.h"
 #include "radix.h"
-#include "optional.h"
 #include "string_utilities.h"
 #include "iterator.h"
 #include "bit.h"
@@ -46,6 +46,128 @@ SOFTWARE.
 
 namespace etl
 {
+  //***************************************************************************
+  /// Status values for to_arithmetic.
+  //***************************************************************************
+  struct to_arithmetic_status
+  {
+    enum enum_type
+    {
+      Not_Set,
+      Valid,
+      Invalid_Format,
+      Signed_To_Unsigned,
+      Overflow
+    };
+
+    ETL_DECLARE_ENUM_TYPE(to_arithmetic_status, int)
+    ETL_ENUM_TYPE(Not_Set,            "Not_Set")
+    ETL_ENUM_TYPE(Valid,              "Valid")
+    ETL_ENUM_TYPE(Invalid_Format,     "Invalid Format")
+    ETL_ENUM_TYPE(Signed_To_Unsigned, "Signed To Unsigned")
+    ETL_ENUM_TYPE(Overflow,           "Overflow")
+    ETL_END_ENUM_TYPE
+  };
+
+  //***************************************************************************
+  /// Status values for to_arithmetic.
+  //***************************************************************************
+  template<typename TValue>
+  class to_arithmetic_result
+  {
+  public:
+
+    typedef TValue                    value_type;
+    typedef etl::to_arithmetic_status status_type;
+
+    //*******************************************
+    /// Default constructor.
+    //*******************************************
+    to_arithmetic_result()
+      : conversion_value(static_cast<value_type>(0))
+      , conversion_status(status_type::Not_Set)
+    {
+    }
+
+    //*******************************************
+    /// Copy constructor.
+    //*******************************************
+    to_arithmetic_result(const to_arithmetic_result& other)
+      : conversion_value(other.conversion_value)
+      , conversion_status(other.conversion_status)
+    {
+    }
+
+    //*******************************************
+    /// Returns <b>true</b> if the result has a valid value.
+    //*******************************************
+    bool has_value() const
+    {
+      return (conversion_status == status_type::Valid);
+    }
+
+    //*******************************************
+    /// Returns <b>true</b> if the result has a valid value.
+    //*******************************************
+    operator bool() const
+    {
+      return has_value();
+    }
+
+    //*******************************************
+    /// Returns the value, if valid.
+    /// Otherwise undefined.
+    //*******************************************
+    value_type value() const
+    {
+      return conversion_value;
+    }
+
+    //*******************************************
+    /// Sets the value.
+    //*******************************************
+    void value(value_type value)
+    {
+      conversion_value = value;
+    }
+
+    //*******************************************
+    /// Returns the value, if valid.
+    /// Otherwise undefined.
+    //*******************************************
+    operator value_type() const
+    {
+      return value();
+    }
+
+    //*******************************************
+    /// Returns the conversion status.
+    /// One of the following:-
+    /// Not_Set
+    /// Valid
+    /// Invalid_Format
+    /// Signed_To_Unsigned
+    /// Overflow
+    //*******************************************
+    status_type status() const
+    {
+      return conversion_status;
+    }
+
+    //*******************************************
+    /// Sets the status.
+    //*******************************************
+    void status(status_type status_)
+    {
+      conversion_status = status_;
+    }
+
+  private:
+
+    value_type  conversion_value;
+    status_type conversion_status;
+  };
+
   namespace private_to_arithmetic
   {
     //***********************************************************************
@@ -55,15 +177,16 @@ namespace etl
     {
       typedef char value_type;
       typedef const value_type* string_type;
-      static ETL_CONSTANT string_type Valid_Chars   = "+-.,eE0123456789abcdefABCDEF";
-      static ETL_CONSTANT string_type Numeric_Chars = "0123456789abcdef";
-      static ETL_CONSTANT int         Valid_Length  = etl::strlen(Numeric_Chars);
-      static ETL_CONSTANT value_type  Positive_Char = '+';
-      static ETL_CONSTANT value_type  Negative_Char = '-';
-      static ETL_CONSTANT value_type  Radix_Point1  = '.';
-      static ETL_CONSTANT value_type  Radix_Point2  = ',';
-      static ETL_CONSTANT value_type  Exponential   = 'e';
-      static ETL_CONSTANT value_type  Unknown_Char  = '?';
+      static ETL_CONSTANT string_type Valid_Chars          = "+-.,eE0123456789abcdefABCDEF";
+      static ETL_CONSTANT string_type Numeric_Chars        = "0123456789abcdef";
+      static ETL_CONSTANT string_type Floating_Point_Chars = "0123456789e.,";
+      static ETL_CONSTANT int         Valid_Length         = etl::strlen(Numeric_Chars);
+      static ETL_CONSTANT value_type  Positive_Char        = '+';
+      static ETL_CONSTANT value_type  Negative_Char        = '-';
+      static ETL_CONSTANT value_type  Radix_Point1         = '.';
+      static ETL_CONSTANT value_type  Radix_Point2         = ',';
+      static ETL_CONSTANT value_type  Exponential          = 'e';
+      static ETL_CONSTANT value_type  Unknown_Char         = '?';
 
       //*******************************************
       ETL_NODISCARD
@@ -143,6 +266,7 @@ namespace etl
 
     //*******************************************
     ETL_NODISCARD
+    inline 
     ETL_CONSTEXPR14
     char to_lower(char c)
     {
@@ -156,7 +280,8 @@ namespace etl
 
     //*******************************************
     ETL_NODISCARD
-    static ETL_CONSTEXPR14
+    inline 
+    ETL_CONSTEXPR14
     char convert(char c)
     {
       return to_lower(c);
@@ -164,7 +289,7 @@ namespace etl
 
     //*******************************************
     ETL_NODISCARD
-    static
+    inline
     ETL_CONSTEXPR14
     char convert(wchar_t c)
     {
@@ -183,13 +308,10 @@ namespace etl
 
     //*******************************************
     ETL_NODISCARD
-    static 
+    inline
     ETL_CONSTEXPR14
     char convert(char16_t c)
     {
-      typedef char16_t value_type;
-      typedef const value_type* string_type;
-
       ETL_STATIC_CONSTANT char16_t* Valid_Chars = u"+-.,eE0123456789abcdefABCDEF";
 
       for (int i = 0; i < character_set::Valid_Length; ++i)
@@ -205,14 +327,11 @@ namespace etl
  
     //*******************************************
     ETL_NODISCARD
-    static
+    inline
     ETL_CONSTEXPR14
     char convert(char32_t c)
     {
-      typedef char32_t value_type;
-      typedef const char32_t* string_type;
-      
-      ETL_STATIC_CONSTANT string_type Valid_Chars = U"+-.,eE0123456789abcdefABCDEF";
+      ETL_STATIC_CONSTANT char32_t* Valid_Chars = U"+-.,eE0123456789abcdefABCDEF";
 
       for (int i = 0; i < character_set::Valid_Length; ++i)
       {
@@ -228,99 +347,34 @@ namespace etl
     //***************************************************************************
     /// 
     //***************************************************************************
-    template <typename TValue>
-    ETL_NODISCARD
-    ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_floating_point<TValue>::value, TValue>::type
-      accumulate_floating_point_value(TValue value, char digit, bool is_negative)
-    {
-      value *= etl::radix::decimal;
-      is_negative ? value -= digit : value += digit;
-
-      return value;
-    }
-
-    //***************************************************************************
-    /// 
-    //***************************************************************************
     template <typename TChar>
     ETL_NODISCARD
     ETL_CONSTEXPR14
     bool check_and_remove_sign_prefix(etl::basic_string_view<TChar>& view)
     {
-      // Check for prefix.
-      const char c = convert(view[0]);
-      const bool has_positive_prefix = (c == character_set::Positive_Char);
-      const bool has_negative_prefix = (c == character_set::Negative_Char);
-
-      // Step over the prefix, if present.
-      if (has_positive_prefix || has_negative_prefix)
+      if (!view.empty())
       {
-        view.remove_prefix(1);
-      }
+        // Check for prefix.
+        const char c = convert(view[0]);
+        const bool has_positive_prefix = (c == character_set::Positive_Char);
+        const bool has_negative_prefix = (c == character_set::Negative_Char);
 
-      return has_negative_prefix;
-    }
-
-    //***************************************************************************
-    /// 
-    //***************************************************************************
-    template <typename TValue>
-    struct float_accumulator
-    {
-      //*********************************
-      ETL_NODISCARD
-      ETL_CONSTEXPR14
-        float_accumulator(bool is_negative_)
-        : value(0)
-        , is_negative(is_negative_)
-        , valid_value(false)
-      {
-      }
-
-      //*********************************
-      ETL_NODISCARD
-      ETL_CONSTEXPR14
-      bool add(char c)
-      {
-        bool is_valid = character_set::is_valid(c, etl::radix::decimal);
-
-        if (is_valid)
+        // Step over the prefix, if present.
+        if (has_positive_prefix || has_negative_prefix)
         {
-          value = accumulate_floating_point_value(value, character_set::digit_value(c, etl::radix::decimal), is_negative);
-          valid_value = true;
+          view.remove_prefix(1);
+          return has_negative_prefix;
         }
-
-        return is_valid;
       }
 
-      //*********************************
-      ETL_NODISCARD
-      ETL_CONSTEXPR14
-      bool has_value() const
-      {
-        return (valid_value == true);
-      }
-
-      //*********************************
-      ETL_NODISCARD
-      ETL_CONSTEXPR14
-      TValue value() const
-      {
-        return value;
-      }
-
-    private:
-
-      TValue value;
-      bool   is_negative;
-      bool   valid_value;
-    };
-    
+      return false;
+    }
+ 
     //***************************************************************************
     /// 
     //***************************************************************************
     ETL_NODISCARD
+    inline
     ETL_CONSTEXPR14
     bool is_valid_radix(const etl::radix::value_type radix)
     {
@@ -331,7 +385,7 @@ namespace etl
     }
 
     //***************************************************************************
-    /// 
+    /// Accumulate integrals
     //***************************************************************************
     template <typename TValue>
     struct integral_accumulator
@@ -343,7 +397,7 @@ namespace etl
         : radix(radix_)
         , maximum(maximum_)
         , integral_value(0)
-        , value_is_valid(false)
+        , conversion_status(to_arithmetic_status::Valid)
       {
       }
 
@@ -352,43 +406,69 @@ namespace etl
       ETL_CONSTEXPR14
       bool add(const char c)
       {
-        value_is_valid = false;
+        bool is_success      = false;
+        bool is_not_overflow = false;
 
-        if (character_set::is_valid(c, radix))
+        const bool is_valid_char = character_set::is_valid(c, radix);
+
+        if (is_valid_char)
         {
           TValue old_value = integral_value;
           integral_value *= radix;
 
           // No multipication overflow?
-          if ((integral_value / radix) == old_value)
+          is_not_overflow = ((integral_value / radix) == old_value);
+
+          if (is_not_overflow)
           {
             const char digit = character_set::digit_value(c, radix);
 
             // No addition overflow?
+            is_not_overflow = ((maximum - digit) >= integral_value);
+
             if ((maximum - digit) >= integral_value)
             {
               integral_value += digit;
-              value_is_valid = true;
+              is_success = true;
             }
           }
         }
 
-        return value_is_valid;
+        // Check the status of the conversion.
+        if (is_valid_char == false)
+        {
+          conversion_status = to_arithmetic_status::Invalid_Format;
+        }
+        else if (is_not_overflow == false)
+        {
+          conversion_status = to_arithmetic_status::Overflow;
+        }
+
+        return is_success;
       }
 
       //*********************************
       ETL_NODISCARD
-      ETL_CONSTEXPR14
-      bool has_value() const
+        ETL_CONSTEXPR14
+        bool has_value() const
       {
-        return value_is_valid;
+        return conversion_status == to_arithmetic_status::Valid;
       }
+
       //*********************************
       ETL_NODISCARD
-      ETL_CONSTEXPR14
-      TValue value() const
+        ETL_CONSTEXPR14
+        TValue value() const
       {
         return integral_value;
+      }
+
+      //*********************************
+      ETL_NODISCARD
+        ETL_CONSTEXPR14
+        to_arithmetic_status status() const
+      {
+        return conversion_status;
       }
 
     private:
@@ -396,50 +476,235 @@ namespace etl
       etl::radix::value_type radix;
       TValue maximum;
       TValue integral_value;
-      bool value_is_valid;
+      to_arithmetic_status conversion_status;
     };
 
     //***************************************************************************
-    // Define an unsigned intermediate type that is at least as large as TValue.
+    /// Accumulate floating point
+    //***************************************************************************
+    struct floating_point_accumulator
+    {
+      //*********************************
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
+      floating_point_accumulator()
+        : divisor(1)
+        , floating_point_value(0)
+        , is_negative_mantissa(false)
+        , is_negative_exponent(false)
+        , exponent_value(0)
+        , conversion_status(to_arithmetic_status::Valid)
+        , state(Integral)
+        , expecting_sign(true)
+      {
+      }
+
+      //*********************************
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
+      bool add(char c)
+      {
+        bool is_success = true;
+
+        switch (state)
+        {
+          //***************************
+          case Integral:
+          {
+            if (expecting_sign && ((c == character_set::Positive_Char) || (c == character_set::Negative_Char)))
+            {
+              is_negative_mantissa = (c == character_set::Negative_Char);
+              expecting_sign = false;
+            }
+            // Radix point?
+            else if ((c == character_set::Radix_Point1) || (c == character_set::Radix_Point2))
+            {
+              expecting_sign = false;
+              state = Fractional;
+            }
+            // Exponential?
+            else if (c == character_set::Exponential)
+            {
+              expecting_sign = true;
+              state = Exponential;
+            }
+            else if (character_set::is_valid(c, etl::radix::decimal))
+            {
+              const char digit = character_set::digit_value(c, etl::radix::decimal);
+              floating_point_value *= 10;
+              is_negative_mantissa ? floating_point_value -= digit : floating_point_value += digit;
+              conversion_status = to_arithmetic_status::Valid;
+              expecting_sign = false;
+            }
+            else
+            {
+              conversion_status = to_arithmetic_status::Invalid_Format;
+              is_success = false;
+            }
+            break;
+          }
+
+          //***************************
+          case Fractional:
+          {
+            // Radix point?
+            if ((c == character_set::Radix_Point1) || (c == character_set::Radix_Point2))
+            {
+              conversion_status = to_arithmetic_status::Invalid_Format;
+              is_success = false;
+            }
+            // Exponential?
+            else if (c == character_set::Exponential)
+            {
+              expecting_sign = true;
+              state = Exponential;
+            }
+            else if (character_set::is_valid(c, etl::radix::decimal))
+            {
+              const char digit = character_set::digit_value(c, etl::radix::decimal);
+              divisor *= 10;
+              long double fraction = digit / divisor;
+              is_negative_mantissa ? floating_point_value -= fraction : floating_point_value += fraction;
+              conversion_status = to_arithmetic_status::Valid;
+            }
+            else
+            {
+              conversion_status = to_arithmetic_status::Invalid_Format;
+              is_success = false;
+            }
+            break;
+          }
+
+          //***************************
+          case Exponential:
+          {
+            if (expecting_sign && ((c == character_set::Positive_Char) || (c == character_set::Negative_Char)))
+            {
+              is_negative_exponent = (c == character_set::Negative_Char);
+              expecting_sign = false;
+            }
+            // Radix point?
+            else if ((c == character_set::Radix_Point1) || (c == character_set::Radix_Point2) || (c == character_set::Exponential))
+            {
+              conversion_status = to_arithmetic_status::Invalid_Format;
+              is_success = false;
+            }
+            else if (character_set::is_valid(c, etl::radix::decimal))
+            {
+              const char digit = character_set::digit_value(c, etl::radix::decimal);
+              exponent_value *= etl::radix::decimal;
+              is_negative_exponent ? exponent_value -= digit : exponent_value += digit;
+            }
+            else
+            {
+              conversion_status = to_arithmetic_status::Invalid_Format;
+              is_success = false;
+            }
+            break;
+          }
+
+          //***************************
+          default:
+          {
+            is_success = false;
+            break;
+          }
+        }
+
+        return is_success;
+      }
+
+      //*********************************
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
+      bool has_value() const
+      {
+        return (conversion_status == to_arithmetic_status::Valid);
+      }
+
+      //*********************************
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
+      long double value() const
+      {
+        return floating_point_value;
+      }
+
+      //*********************************
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
+      to_arithmetic_status status() const
+      {
+        return conversion_status;
+      }
+
+      //*********************************
+      ETL_NODISCARD
+      ETL_CONSTEXPR14
+      int exponent() const
+      {
+        return exponent_value;
+      }
+
+    private:
+
+      enum
+      {
+        Integral,
+        Fractional,
+        Exponential
+      };
+
+      long double divisor;
+      long double floating_point_value;
+      bool   is_negative_mantissa;
+      bool   is_negative_exponent;
+      int    exponent_value;
+      to_arithmetic_status conversion_status;
+      int state;
+      bool expecting_sign;
+    };
+
+    //***************************************************************************
+    // Define an unsigned accumulator type that is at least as large as TValue.
     //***************************************************************************
     template <typename TValue>
-    struct intermediate
+    struct accumulator_type_select
     {
       typedef typename etl::smallest_uint_for_bits<etl::integral_limits<TValue>::bits>::type type;
     };
 
     //***************************************************************************
-    /// Text to integral from view and radix value type.
+    /// Text to integral from view, radix value and maximum.
     //***************************************************************************
     template <typename TChar, typename TAccumulatorType>
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    etl::optional<TAccumulatorType> to_arithmetic_integral(const etl::basic_string_view<TChar>& view,
-                                                           const etl::radix::value_type         radix,
-                                                           const TAccumulatorType               maximum)
+    etl::to_arithmetic_result<TAccumulatorType> to_arithmetic_integral(const etl::basic_string_view<TChar>& view,
+                                                                       const etl::radix::value_type         radix,
+                                                                       const TAccumulatorType               maximum)
     {
-      etl::optional<TAccumulatorType> intermediate_result;
+      etl::to_arithmetic_result<TAccumulatorType> accumulator_result;
 
       etl::basic_string_view<TChar>::const_iterator       itr     = view.begin();
       const etl::basic_string_view<TChar>::const_iterator itr_end = view.end();
 
-      if (itr != itr_end)
+      integral_accumulator<TAccumulatorType> accumulator(radix, maximum);
+
+      while ((itr != itr_end) && accumulator.add(convert(*itr)))
       {
-        integral_accumulator<TAccumulatorType> accumulator(radix, maximum);
-
-        while ((itr != itr_end) && accumulator.add(convert(*itr)))
-        {
-          // Keep looping until done or an error occurs.
-          ++itr;
-        }
-
-        if (accumulator.has_value())
-        {
-          intermediate_result = accumulator.value();
-        }
+        // Keep looping until done or an error occurs.
+        ++itr;
       }
 
-      return intermediate_result;
+      accumulator_result.status(accumulator.status());
+
+      if (accumulator.has_value())
+      {
+        accumulator_result.value(accumulator.value());
+      }
+
+      return accumulator_result;
     }
   }
 
@@ -449,36 +714,49 @@ namespace etl
   template <typename TValue, typename TChar>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<TValue>::value, etl::optional<TValue> >::type
+  typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
     to_arithmetic(etl::basic_string_view<TChar> view,
                   const etl::radix::value_type  radix)
   {
     using namespace etl::private_to_arithmetic;
 
-    etl::optional<TValue> result;
+    etl::to_arithmetic_result<TValue> result;
        
     // Is this a negative number?
     const bool is_negative = check_and_remove_sign_prefix(view);
 
-    // Make sure we're not trying to put a negative value into an unsigned type.
-    if (!(is_negative && etl::is_unsigned<TValue>::value))
+    if (view.empty())
     {
-      const bool is_decimal = (radix == etl::radix::decimal);
-
-      // What's the maximum absolute value for the type value we're trying to convert to?
-      typedef typename intermediate<TValue>::type intermediate_type;
-
-      const intermediate_type maximum = is_negative ? etl::absolute_unsigned(etl::integral_limits<TValue>::min)
-                                                    : is_decimal ? etl::integral_limits<TValue>::max
-                                                                 : etl::integral_limits<typename etl::make_unsigned<TValue>::type>::max;
-      // Do the conversion.
-      etl::optional<intermediate_type> intermediate_result = to_arithmetic_integral<TChar>(view, radix, maximum);
-
-      // Was it successful?
-      if (intermediate_result.has_value())
+      result.status(to_arithmetic_status::Invalid_Format);
+    }
+    else
+    {
+      // Make sure we're not trying to put a negative value into an unsigned type.
+      if (is_negative && etl::is_unsigned<TValue>::value)
       {
-        // Convert from the intermediate type to the desired type.
-        result = is_negative ? TValue(0) - intermediate_result.value() : etl::bit_cast<TValue>(intermediate_result.value());
+        result.status(to_arithmetic_status::Signed_To_Unsigned);
+      }
+      else
+      {
+        const bool is_decimal = (radix == etl::radix::decimal);
+
+        // What's the maximum absolute value for the type value we're trying to convert to?
+        typedef typename accumulator_type_select<TValue>::type accumulator_type;
+
+        const accumulator_type maximum = is_negative ? etl::absolute_unsigned(etl::integral_limits<TValue>::min)
+                                                     : is_decimal ? etl::integral_limits<TValue>::max
+                                                                  : etl::integral_limits<typename etl::make_unsigned<TValue>::type>::max;
+        // Do the conversion.
+        etl::to_arithmetic_result<accumulator_type> accumulator_result = to_arithmetic_integral<TChar>(view, radix, maximum);
+
+        result.status(accumulator_result.status());
+
+        // Was it successful?
+        if (accumulator_result.has_value())
+        {
+          // Convert from the accumulator type to the desired type.
+          result.value(is_negative ? static_cast<TValue>(0) - accumulator_result.value() : etl::bit_cast<TValue>(accumulator_result.value()));
+        }
       }
     }
 
@@ -491,7 +769,7 @@ namespace etl
   template <typename TValue, typename TChar>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<TValue>::value, etl::optional<TValue> >::type
+  typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
     to_arithmetic(const etl::basic_string_view<TChar>& view)
   {
     return etl::to_arithmetic<TValue, TChar>(view, etl::radix::decimal);
@@ -503,7 +781,7 @@ namespace etl
   template <typename TValue, typename TChar>
   ETL_NODISCARD
   ETL_CONSTEXPR14 
-  typename etl::enable_if<etl::is_integral<TValue>::value, etl::optional<TValue> >::type
+  typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
     to_arithmetic(const etl::basic_string_view<TChar>& view, const etl::basic_format_spec<etl::ibasic_string<TChar> >& spec)
   {
     return etl::to_arithmetic<TValue, TChar>(view, spec.get_base());
@@ -515,7 +793,7 @@ namespace etl
   template <typename TValue, typename TChar>
   ETL_NODISCARD
   ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<TValue>::value, etl::optional<TValue> >::type
+  typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
     to_arithmetic(const TChar* cp, size_t length, const etl::radix::value_type radix)
   {
     return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(cp, length), radix);
@@ -526,10 +804,11 @@ namespace etl
   //***************************************************************************
   template <typename TValue, typename TChar>
   ETL_NODISCARD
-  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<TValue>::value, etl::optional<TValue> >::type
+  ETL_CONSTEXPR14 
+  typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
     to_arithmetic(const TChar* cp, size_t length)
   {
-    return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(cp, length), etl::radix::decimal);;
+    return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(cp, length), etl::radix::decimal);
   }
 
   //***************************************************************************
@@ -537,10 +816,47 @@ namespace etl
   //***************************************************************************
   template <typename TValue, typename TChar>
   ETL_NODISCARD
-  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<TValue>::value, etl::optional<TValue> >::type
+  ETL_CONSTEXPR14 
+  typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
     to_arithmetic(const TChar* cp, size_t length, const typename etl::private_basic_format_spec::base_spec& spec)
   {
-    return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(cp, length), spec.base);;
+    return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(cp, length), spec.base);
+  }
+
+  //***************************************************************************
+  /// Text to integral from pointer and radix value type.
+  //***************************************************************************
+  template <typename TValue, typename TChar>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14
+  typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
+    to_arithmetic(const TChar* cp, const etl::radix::value_type radix)
+  {
+    return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(cp, etl::strlen<TChar>(cp), radix));
+  }
+
+  //***************************************************************************
+  /// Text to integral from pointer and default decimal radix.
+  //***************************************************************************
+  template <typename TValue, typename TChar>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14 
+  typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
+    to_arithmetic(const TChar* cp)
+  {
+    return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(cp, etl::strlen<TChar>(cp)), etl::radix::decimal);;
+  }
+
+  //***************************************************************************
+  /// Text to integral from pointer and radix format spec.
+  //***************************************************************************
+  template <typename TValue, typename TChar>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14 
+  typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
+    to_arithmetic(const TChar* cp, const typename etl::private_basic_format_spec::base_spec& spec)
+  {
+    return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(cp, etl::strlen<TChar>(cp)), spec.base);;
   }
 
   //***************************************************************************
@@ -548,7 +864,8 @@ namespace etl
   //***************************************************************************
   template <typename TValue, typename TChar>
   ETL_NODISCARD
-  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<TValue>::value, etl::optional<TValue> >::type
+  ETL_CONSTEXPR14 
+  typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
     to_arithmetic(const etl::ibasic_string<TChar>& str, const etl::radix::value_type radix)
   {
     return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(str), radix);;
@@ -559,7 +876,8 @@ namespace etl
   //***************************************************************************
   template <typename TValue, typename TChar>
   ETL_NODISCARD
-  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<TValue>::value, etl::optional<TValue> >::type
+  ETL_CONSTEXPR14 
+  typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
     to_arithmetic(const etl::ibasic_string<TChar>& str)
   {
     return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(str), etl::radix::decimal);;
@@ -570,7 +888,8 @@ namespace etl
   //***************************************************************************
   template <typename TValue, typename TChar>
   ETL_NODISCARD
-  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<TValue>::value, etl::optional<TValue> >::type
+  ETL_CONSTEXPR14 
+  typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
     to_arithmetic(const etl::ibasic_string<TChar>& str, const etl::basic_format_spec<etl::ibasic_string<TChar> >& spec)
   {
     return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(str), spec);;
@@ -581,33 +900,41 @@ namespace etl
   //***************************************************************************
   template <typename TValue, typename TChar>
   ETL_NODISCARD
-  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_floating_point<TValue>::value, etl::optional<TValue> >::type
-    to_arithmetic(const etl::basic_string_view<TChar>& view)
+  ETL_CONSTEXPR14 
+  typename etl::enable_if<etl::is_floating_point<TValue>::value, etl::to_arithmetic_result<TValue> >::type
+    to_arithmetic(etl::basic_string_view<TChar> view)
   {
     using namespace etl::private_to_arithmetic;
 
-    etl::optional<TValue>         result;
+    etl::to_arithmetic_result<TValue> result;
 
-    bool is_negative = false;
-
-    if (!view.empty())
+    if (view.empty())
     {
-      is_negative = check_and_remove_sign_prefix(view);
+      result.status(to_arithmetic_status::Invalid_Format);
     }
-
-    if (!view.empty())
+    else
     {
-      bool parsing = true;
+      floating_point_accumulator accumulator;
 
-      if (parsing)
+      etl::basic_string_view<TChar>::const_iterator itr     = view.begin();
+      etl::basic_string_view<TChar>::const_iterator itr_end = view.end();
+
+      while ((itr != itr_end) && accumulator.add(convert(*itr)))
       {
-        // Integral part.
+        // Keep looping until done or an error occurs.
+        ++itr;
+      }
 
+      result.status(accumulator.status());
 
-        // Fractional part.
+      if (result.has_value())
+      {
+        TValue value = static_cast<TValue>(accumulator.value());
+        int exponent = accumulator.exponent();
 
-        // Exponetial part.
+        value *= pow(10.0, exponent);
 
+        result.value(value);
       }
     }
 
@@ -619,10 +946,23 @@ namespace etl
   //***************************************************************************
   template <typename TValue, typename TChar>
   ETL_NODISCARD
-  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_floating_point<TValue>::value, etl::optional<TValue> >::type
+  ETL_CONSTEXPR14 
+  typename etl::enable_if<etl::is_floating_point<TValue>::value, etl::to_arithmetic_result<TValue> >::type
     to_arithmetic(const TChar* cp, size_t length)
   {
     return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(cp, length));
+  }
+
+  //***************************************************************************
+  /// Floating point from pointer.
+  //***************************************************************************
+  template <typename TValue, typename TChar>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14
+  typename etl::enable_if<etl::is_floating_point<TValue>::value, etl::to_arithmetic_result<TValue> >::type
+    to_arithmetic(const TChar* cp)
+  {
+    return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(cp, etl::strlen<TChar>(cp)));
   }
 
   //***************************************************************************
@@ -630,11 +970,73 @@ namespace etl
   //***************************************************************************
   template <typename TValue, typename TChar>
   ETL_NODISCARD
-  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_floating_point<TValue>::value, etl::optional<TValue> >::type
+  ETL_CONSTEXPR14 
+  typename etl::enable_if<etl::is_floating_point<TValue>::value, etl::to_arithmetic_result<TValue> >::type
     to_arithmetic(const etl::ibasic_string<TChar>& str)
   {
     return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(str));
   }
+}
+
+//***************************************************************************
+/// Equality test for etl::to_arithmetic_result
+//***************************************************************************
+template <typename T>
+ETL_CONSTEXPR14 bool operator ==(const etl::to_arithmetic_result<T>& lhs, const etl::to_arithmetic_result<T>& rhs)
+{
+  if (lhs.has_value() && rhs.has_value())
+  {
+    return (lhs.value() == rhs.value());
+  }
+  else
+  {
+    return (lhs.status() == rhs.status());
+  }
+}
+
+//***************************************************************************
+/// Equality test for etl::to_arithmetic_result
+//***************************************************************************
+template <typename T, typename U>
+ETL_CONSTEXPR14 bool operator ==(const etl::to_arithmetic_result<T>& lhs, const U& rhs)
+{
+  return bool(lhs) ? lhs.value() == rhs : false;
+}
+
+//***************************************************************************
+/// Equality test for etl::to_arithmetic_result
+//***************************************************************************
+template <typename T, typename U>
+ETL_CONSTEXPR14 bool operator ==(const T& lhs, const etl::to_arithmetic_result<U>& rhs)
+{
+  return bool(rhs) ? rhs.value() == lhs : false;
+}
+
+//***************************************************************************
+/// Inequality test for etl::to_arithmetic_result
+//***************************************************************************
+template <typename T>
+ETL_CONSTEXPR14 bool operator !=(const etl::to_arithmetic_result<T>& lhs, const etl::to_arithmetic_result<T>& rhs)
+{
+  return !(lhs == rhs);
+}
+
+//***************************************************************************
+/// Inequality test for etl::to_arithmetic_result
+//***************************************************************************
+template <typename T, typename U>
+ETL_CONSTEXPR14 bool operator !=(const etl::to_arithmetic_result<T>& lhs, const U& rhs)
+{
+  return !(lhs == rhs);
+}
+
+//***************************************************************************
+/// Inequality test for etl::to_arithmetic_result
+//***************************************************************************
+template <typename T, typename U>
+ETL_CONSTEXPR14 bool operator !=(const T& lhs, const etl::to_arithmetic_result<T>& rhs)
+{
+  return !(lhs == rhs);
 }
 
 #endif
