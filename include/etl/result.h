@@ -163,6 +163,14 @@ namespace etl
     //*******************************************
     /// <b>true</b> if result contains a value
     //*******************************************
+    bool has_value() const
+    {
+      return (data.index() == 0U);
+    }
+
+    //*******************************************
+    /// <b>true</b> if result contains a value
+    //*******************************************
     bool is_value() const
     {
       return (data.index() == 0U);
