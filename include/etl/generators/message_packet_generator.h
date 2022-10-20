@@ -466,6 +466,8 @@ namespace etl
     cog.outl("")
     cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)")
     cog.outl("  //********************************************")
+    cog.outl("  // The following constructor is never actually used. It is only enabled when attempting to put an object into a")
+    cog.outl("  // packet that is not in the packet's message list. In that case, the assertion check below will then occur.")
     cog.out("  template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<")
     for n in range(1, int(Handlers)):
         cog.out("T%s, " % n)
@@ -475,7 +477,7 @@ namespace etl
     for n in range(1, int(Handlers)):
         cog.out("T%s, " % n)
     cog.outl("T%s>::value, int>::type>" % int(Handlers))
-    cog.outl("  explicit message_packet(TMessage&& msg)")
+    cog.outl("  explicit message_packet(TMessage&& /*msg*/)")
     cog.outl("    : data()")
     cog.outl("    , valid(true)")
     cog.outl("  {")
@@ -483,6 +485,8 @@ namespace etl
     cog.outl("  }")
     cog.outl("#else")
     cog.outl("  //********************************************")
+    cog.outl("  // The following constructor is never actually used. It is only enabled when attempting to put an object into a")
+    cog.outl("  // packet that is not in the packet's message list. In that case, the assertion check below will then occur.")
     cog.outl("  template <typename TMessage>")
     cog.out("  explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<")
     for n in range(1, int(Handlers)):
@@ -741,6 +745,8 @@ namespace etl
         cog.outl("")
         cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)")
         cog.outl("  //********************************************")
+        cog.outl("  // The following constructor is never actually used. It is only enabled when attempting to put an object into a ")
+        cog.outl("  // packet that is not in the packet's message list. In that case, the assertion check below will then occur.")
         cog.out("  template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<")
         for t in range(1, n):
             cog.out("T%s, " % t)
@@ -750,7 +756,7 @@ namespace etl
         for t in range(1, n):
             cog.out("T%s, " % t)
         cog.outl("T%s>::value, int>::type>" % n)
-        cog.outl("  explicit message_packet(TMessage&& msg)")
+        cog.outl("  explicit message_packet(TMessage&& /*msg*/)")
         cog.outl("    : data()")
         cog.outl("    , valid(true)")
         cog.outl("  {")
@@ -758,6 +764,8 @@ namespace etl
         cog.outl("  }")
         cog.outl("#else")
         cog.outl("  //********************************************")
+        cog.outl("  // The following constructor is never actually used. It is only enabled when attempting to put an object into a ")
+        cog.outl("  // packet that is not in the packet's message list. In that case, the assertion check below will then occur.")
         cog.outl("  template <typename TMessage>")
         cog.out("  explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<")
         for t in range(1, n):

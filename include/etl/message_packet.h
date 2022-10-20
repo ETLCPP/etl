@@ -376,10 +376,12 @@ namespace etl
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref_t<TMessage>, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : data()
       , valid(true)
     {
@@ -392,6 +394,8 @@ namespace etl
     }
   #else
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> >::value &&
                                                                          !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
@@ -660,10 +664,12 @@ namespace etl
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref_t<TMessage>, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : data()
       , valid(true)
     {
@@ -676,6 +682,8 @@ namespace etl
     }
   #else
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> >::value &&
                                                                          !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
@@ -942,10 +950,12 @@ namespace etl
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref_t<TMessage>, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : data()
       , valid(true)
     {
@@ -958,6 +968,8 @@ namespace etl
     }
   #else
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> >::value &&
                                                                          !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
@@ -1222,10 +1234,12 @@ namespace etl
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref_t<TMessage>, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : data()
       , valid(true)
     {
@@ -1238,6 +1252,8 @@ namespace etl
     }
   #else
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> >::value &&
                                                                          !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
@@ -1499,10 +1515,12 @@ namespace etl
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref_t<TMessage>, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : data()
       , valid(true)
     {
@@ -1515,6 +1533,8 @@ namespace etl
     }
   #else
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> >::value &&
                                                                          !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
@@ -1771,10 +1791,12 @@ namespace etl
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref_t<TMessage>, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : data()
       , valid(true)
     {
@@ -1787,6 +1809,8 @@ namespace etl
     }
   #else
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> >::value &&
                                                                          !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
@@ -2041,10 +2065,12 @@ namespace etl
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref_t<TMessage>, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : data()
       , valid(true)
     {
@@ -2057,6 +2083,8 @@ namespace etl
     }
   #else
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> >::value &&
                                                                          !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
@@ -2309,10 +2337,12 @@ namespace etl
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref_t<TMessage>, T1, T2, T3, T4, T5, T6, T7, T8, T9>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : data()
       , valid(true)
     {
@@ -2325,6 +2355,8 @@ namespace etl
     }
   #else
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9> >::value &&
                                                                          !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
@@ -2574,10 +2606,12 @@ namespace etl
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref_t<TMessage>, T1, T2, T3, T4, T5, T6, T7, T8>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : data()
       , valid(true)
     {
@@ -2590,6 +2624,8 @@ namespace etl
     }
   #else
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8> >::value &&
                                                                          !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
@@ -2834,10 +2870,12 @@ namespace etl
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref_t<TMessage>, T1, T2, T3, T4, T5, T6, T7>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : data()
       , valid(true)
     {
@@ -2850,6 +2888,8 @@ namespace etl
     }
   #else
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6, T7> >::value &&
                                                                          !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
@@ -3092,10 +3132,12 @@ namespace etl
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref_t<TMessage>, T1, T2, T3, T4, T5, T6>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : data()
       , valid(true)
     {
@@ -3108,6 +3150,8 @@ namespace etl
     }
   #else
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5, T6> >::value &&
                                                                          !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
@@ -3348,10 +3392,12 @@ namespace etl
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref_t<TMessage>, T1, T2, T3, T4, T5>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : data()
       , valid(true)
     {
@@ -3364,6 +3410,8 @@ namespace etl
     }
   #else
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4, T5> >::value &&
                                                                          !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
@@ -3601,10 +3649,12 @@ namespace etl
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref_t<TMessage>, T1, T2, T3, T4>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : data()
       , valid(true)
     {
@@ -3617,6 +3667,8 @@ namespace etl
     }
   #else
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3, T4> >::value &&
                                                                          !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
@@ -3849,10 +3901,12 @@ namespace etl
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref_t<TMessage>, T1, T2, T3>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : data()
       , valid(true)
     {
@@ -3865,6 +3919,8 @@ namespace etl
     }
   #else
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2, T3> >::value &&
                                                                          !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
@@ -4095,10 +4151,12 @@ namespace etl
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref_t<TMessage>, T1, T2>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : data()
       , valid(true)
     {
@@ -4111,6 +4169,8 @@ namespace etl
     }
   #else
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1, T2> >::value &&
                                                                          !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
@@ -4339,10 +4399,12 @@ namespace etl
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref_t<TMessage>, T1>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : data()
       , valid(true)
     {
@@ -4355,6 +4417,8 @@ namespace etl
     }
   #else
     //********************************************
+    // The following constructor is never actually used. It is only enabled when attempting to put an object into a 
+    // packet that is not in the packet's message list. In that case, the assertion check below will then occur.
     template <typename TMessage>
     explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::message_packet<T1> >::value &&
                                                                          !etl::is_same<typename etl::remove_cvref_t<TMessage>, etl::imessage>::value &&
