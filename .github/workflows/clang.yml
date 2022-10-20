@@ -26,7 +26,7 @@ jobs:
         git fetch --tags
         cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
         clang --version
-        make
+        make -j$(nproc)
 
     - name: Run tests
       run: ./test/etl_tests
@@ -51,7 +51,7 @@ jobs:
           git fetch --tags
           cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DCMAKE_CXX_STANDARD=14 ./
           clang --version
-          make
+          make -j$(nproc)
 
       - name: Run tests
         run: ./test/etl_tests
@@ -78,7 +78,7 @@ jobs:
         gcc --version
         cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
         clang --version
-        make
+        make -j$(nproc)
     
     - name: Run tests
       run: ./test/etl_tests
@@ -105,7 +105,7 @@ jobs:
           gcc --version
           cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DCMAKE_CXX_STANDARD=14./
           clang --version
-          make
+          make -j$(nproc)
 
       - name: Run tests
         run: ./test/etl_tests
@@ -130,7 +130,7 @@ jobs:
         git fetch --tags
         cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ./
         clang --version
-        make
+        make -j$(nproc)
 
     - name: Run tests
       run: ./test/etl_tests
@@ -153,7 +153,7 @@ jobs:
         git fetch --tags
         cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
         clang --version
-        make
+        make -j$(sysctl -n hw.ncpu)
 
     - name: Run tests
       run: ./test/etl_tests
@@ -176,7 +176,7 @@ jobs:
           git fetch --tags
           cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DCMAKE_CXX_STANDARD=14 ./
           clang --version
-          make
+          make -j$(sysctl -n hw.ncpu)
 
       - name: Run tests
         run: ./test/etl_tests
@@ -199,7 +199,7 @@ jobs:
         git fetch --tags
         cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
         clang --version
-        make
+        make -j$(sysctl -n hw.ncpu)
 
     - name: Run tests
       run: ./test/etl_tests
@@ -222,7 +222,7 @@ jobs:
           git fetch --tags
           cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DCMAKE_CXX_STANDARD=14 ./
           clang --version
-          make
+          make -j$(sysctl -n hw.ncpu)
 
       - name: Run tests
         run: ./test/etl_tests
@@ -245,7 +245,7 @@ jobs:
         git fetch --tags
         cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ./
         clang --version
-        make
+        make -j$(sysctl -n hw.ncpu)
 
     - name: Run tests
       run: ./test/etl_tests

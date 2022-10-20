@@ -22,7 +22,7 @@ jobs:
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
         gcc --version
-        make
+        make -j$(nproc)
     
     - name: Run tests
       run: ./test/etl_tests
@@ -43,7 +43,7 @@ jobs:
           export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
           cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DCMAKE_CXX_STANDARD=14 ./
           gcc --version
-          make
+          make -j$(nproc)
 
       - name: Run tests
         run: ./test/etl_tests
@@ -64,7 +64,7 @@ jobs:
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
         gcc --version
-        make
+        make -j$(nproc)
     
     - name: Run tests
       run: ./test/etl_tests
@@ -85,7 +85,7 @@ jobs:
           export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
           cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DCMAKE_CXX_STANDARD=14 ./
           gcc --version
-          make
+          make -j$(nproc)
 
       - name: Run tests
         run: ./test/etl_tests
@@ -106,7 +106,7 @@ jobs:
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ./
         gcc --version
-        make
+        make -j$(nproc)
     
     - name: Run tests
       run: ./test/etl_tests
