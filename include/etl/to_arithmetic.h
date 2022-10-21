@@ -56,6 +56,7 @@ namespace etl
       Not_Set,
       Valid,
       Invalid_Format,
+      Invalid_Float,
       Signed_To_Unsigned,
       Overflow
     };
@@ -64,6 +65,7 @@ namespace etl
     ETL_ENUM_TYPE(Not_Set,            "Not_Set")
     ETL_ENUM_TYPE(Valid,              "Valid")
     ETL_ENUM_TYPE(Invalid_Format,     "Invalid Format")
+    ETL_ENUM_TYPE(Invalid_Float,      "Invalid Float")
     ETL_ENUM_TYPE(Signed_To_Unsigned, "Signed To Unsigned")
     ETL_ENUM_TYPE(Overflow,           "Overflow")
     ETL_END_ENUM_TYPE
@@ -178,9 +180,7 @@ namespace etl
       typedef char value_type;
       typedef const value_type* string_type;
       static ETL_CONSTANT string_type Valid_Chars          = "+-.,eE0123456789abcdefABCDEF";
-      static ETL_CONSTANT string_type Numeric_Chars        = "0123456789abcdef";
-      static ETL_CONSTANT string_type Floating_Point_Chars = "0123456789e.,";
-      static ETL_CONSTANT int         Valid_Length         = etl::strlen(Numeric_Chars);
+      static ETL_CONSTANT int         Valid_Length         = etl::strlen(Valid_Chars);
       static ETL_CONSTANT value_type  Positive_Char        = '+';
       static ETL_CONSTANT value_type  Negative_Char        = '-';
       static ETL_CONSTANT value_type  Radix_Point1         = '.';
@@ -934,7 +934,19 @@ namespace etl
 
         value *= pow(10.0, exponent);
 
-        result.value(value);
+        // Check that the result is a valid floating point number.
+        if (value == etl::numeric_limits<TValue>::infinity())
+        {
+          result.status(to_arithmetic_status::Overflow);
+        }
+        else if (value == etl::numeric_limits<TValue>::quiet_NaN())
+        {
+          result.status(to_arithmetic_status::Invalid_Float);
+        }
+        else
+        {
+          result.value(value);
+        }
       }
     }
 

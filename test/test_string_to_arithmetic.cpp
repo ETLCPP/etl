@@ -691,6 +691,7 @@ namespace
       float f2 = etl::to_arithmetic<float>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
 
       //*********************************
       text = "123.456789";
@@ -699,6 +700,7 @@ namespace
       f2 = etl::to_arithmetic<float>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
 
       //*********************************
       text = "-1.23456789e2";
@@ -707,6 +709,7 @@ namespace
       f2 = etl::to_arithmetic<float>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
 
       //*********************************
       text = "-12345.6789e-2";
@@ -715,6 +718,7 @@ namespace
       f2 = etl::to_arithmetic<float>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
 
       //*********************************
       text = "+12345E-2";
@@ -723,6 +727,50 @@ namespace
       f2 = etl::to_arithmetic<float>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "+12345.6789E000";
+
+      f1 = strtof(text.c_str(), nullptr);
+      f2 = etl::to_arithmetic<float>(text.c_str(), text.size()).value();
+
+      CHECK_CLOSE(f1, f2, 0.00001);
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+    }
+
+    //*************************************************************************
+    TEST(test_invalid_float)
+    {
+      std::string text;
+
+      //*********************************
+      text = " -123.456789";
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "-123.456789 ";
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+      
+      //*********************************
+      text = "-12A.456789";
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "-123.456A89";
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "123.-456789";
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "123E.45";
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "123.45E1000";
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
     }
 
     //*************************************************************************
@@ -733,42 +781,90 @@ namespace
       //*********************************
       text = "-123.45678901234567";
 
-      double f1 = strtof(text.c_str(), nullptr);
+      double f1 = strtod(text.c_str(), nullptr);
       double f2 = etl::to_arithmetic<double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
 
       //*********************************
       text = "123.45678901234567";
 
-      f1 = strtof(text.c_str(), nullptr);
+      f1 = strtod(text.c_str(), nullptr);
       f2 = etl::to_arithmetic<double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
 
       //*********************************
       text = "-1.2345678901234567e2";
 
-      f1 = strtof(text.c_str(), nullptr);
+      f1 = strtod(text.c_str(), nullptr);
       f2 = etl::to_arithmetic<double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
 
       //*********************************
       text = "-12345.678901234567e-2";
 
-      f1 = strtof(text.c_str(), nullptr);
+      f1 = strtod(text.c_str(), nullptr);
       f2 = etl::to_arithmetic<double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
 
       //*********************************
       text = "+12345E-2";
 
-      f1 = strtof(text.c_str(), nullptr);
+      f1 = strtod(text.c_str(), nullptr);
       f2 = etl::to_arithmetic<double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "+12345.678901234567E0";
+
+      f1 = strtod(text.c_str(), nullptr);
+      f2 = etl::to_arithmetic<double>(text.c_str(), text.size()).value();
+
+      CHECK_CLOSE(f1, f2, 0.00001);
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+    }
+
+    //*************************************************************************
+    TEST(test_invalid_double)
+    {
+      std::string text;
+
+      //*********************************
+      text = " -123.456789";
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "-123.456789 ";
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "-12A.456789";
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "-123.456A89";
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "123.-456789";
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "123E.45";
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "123.45E1000";
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
     }
 
     //*************************************************************************
@@ -779,42 +875,90 @@ namespace
       //*********************************
       text = "-123.45678901234567";
 
-      long double f1 = strtof(text.c_str(), nullptr);
+      long double f1 = strtold(text.c_str(), nullptr);
       long double f2 = etl::to_arithmetic<long double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
 
       //*********************************
       text = "123.45678901234567";
 
-      f1 = strtof(text.c_str(), nullptr);
+      f1 = strtold(text.c_str(), nullptr);
       f2 = etl::to_arithmetic<long double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
 
       //*********************************
       text = "-1.2345678901234567e2";
 
-      f1 = strtof(text.c_str(), nullptr);
+      f1 = strtold(text.c_str(), nullptr);
       f2 = etl::to_arithmetic<long double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
 
       //*********************************
       text = "-12345.678901234567e-2";
 
-      f1 = strtof(text.c_str(), nullptr);
+      f1 = strtold(text.c_str(), nullptr);
       f2 = etl::to_arithmetic<long double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
 
       //*********************************
       text = "+12345E-2";
 
-      f1 = strtof(text.c_str(), nullptr);
+      f1 = strtold(text.c_str(), nullptr);
       f2 = etl::to_arithmetic<long double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "+12345.678901234567E000";
+
+      f1 = strtold(text.c_str(), nullptr);
+      f2 = etl::to_arithmetic<long double>(text.c_str(), text.size()).value();
+
+      CHECK_CLOSE(f1, f2, 0.00001);
+      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+    }
+
+    //*************************************************************************
+    TEST(test_invalid_long_double)
+    {
+      std::string text;
+
+      //*********************************
+      text = " -123.456789";
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<long double>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "-123.456789 ";
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<long double>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "-12A.456789";
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<long double>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "-123.456A89";
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<long double>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "123.-456789";
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<long double>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "123E.45";
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<long double>(text.c_str(), text.size()).status());
+
+      //*********************************
+      text = "123.45E1000";
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<long double>(text.c_str(), text.size()).status());
     }
 
     //*************************************************************************
