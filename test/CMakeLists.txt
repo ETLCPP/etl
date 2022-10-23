@@ -233,6 +233,10 @@ add_executable(etl_tests
 	test_successor.cpp
 	test_task_scheduler.cpp
 	test_threshold.cpp
+	test_to_arithmetic.cpp
+	test_to_arithmetic_u16.cpp
+	test_to_arithmetic_u32.cpp
+	test_to_arithmetic_wchar_t.cpp
 	test_to_string.cpp
 	test_to_u16string.cpp
 	test_to_u32string.cpp
