@@ -510,8 +510,8 @@ namespace etl
 
   private:
 
-    typename etl::aligned_storage_as<sizeof(T), T>::type storage;
     bool valid;
+    typename etl::aligned_storage_as<sizeof(T), T>::type storage;
   };
 
   //*****************************************************************************
@@ -526,8 +526,8 @@ namespace etl
     /// Constructor.
     //***************************************************************************
     ETL_CONSTEXPR14 optional()
-      : storage()
-      , valid(false)
+      : valid(false)
+      , storage()
     {
     }
 
@@ -535,8 +535,8 @@ namespace etl
     /// Constructor with nullopt.
     //***************************************************************************
     ETL_CONSTEXPR14 optional(etl::nullopt_t)
-      : storage()
-      , valid(false)
+      : valid(false)
+      , storage()
     {
     }
 
@@ -564,8 +564,8 @@ namespace etl
     /// Constructor from value type.
     //***************************************************************************
     ETL_CONSTEXPR14 optional(const T& value_)
-      : storage(value_)
-      , valid(true)
+      : valid(true)
+      , storage(value_)
     {
     }
 
@@ -574,8 +574,8 @@ namespace etl
     /// Constructor from value type.
     //***************************************************************************
     ETL_CONSTEXPR14 optional(T&& value_)
-      : storage(etl::move(value_))
-      , valid(true)
+      : valid(true)
+      , storage(etl::move(value_))
     {
     }
 #endif
@@ -821,8 +821,8 @@ namespace etl
 
   private:
 
-    T    storage;
     bool valid;
+    T    storage;
   };
 
   //***************************************************************************
@@ -1164,7 +1164,7 @@ namespace etl
   //***************************************************************************
 #if ETL_CPP17_SUPPORTED
   template <typename T>
-  etl::optional(T) -> etl::optional<T>;
+  optional(T) -> optional<T>;
 #endif
 }
 
