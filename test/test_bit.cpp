@@ -196,12 +196,31 @@ namespace
   SUITE(test_bit)
   {
     //*************************************************************************
-    TEST(test_bit_cast)
+    TEST(test_bit_cast_integrals)
     {
-      int32_t i = 0x12345678;
-      uint32_t ui = etl::bit_cast<uint32_t>(i);
+      int32_t  i;
+      uint32_t ui;
 
+      i  = 0x12345678;
+      ui = etl::bit_cast<uint32_t>(i);
       CHECK_EQUAL(i, ui);
+
+      i  = -1234567890;
+      ui = etl::bit_cast<uint32_t>(i);
+      CHECK_EQUAL(i, static_cast<int32_t>(ui));
+    }
+
+    //*************************************************************************
+    TEST(test_bit_cast_different_types)
+    {
+      using Int = etl::smallest_int_for_bits_t<sizeof(float) * CHAR_BIT>;
+
+      Int i1;
+      float f = 123.456789f;
+      memcpy(&i1, &f, sizeof(float));
+
+      Int i2 = etl::bit_cast<Int>(f);
+      CHECK_EQUAL(i1, i2);
     }
 
     //*************************************************************************

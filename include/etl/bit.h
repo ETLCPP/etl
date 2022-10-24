@@ -47,12 +47,14 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// bit_cast
+  /// bit_cast - Type to different type.
   //***************************************************************************
   template <typename TDestination, typename TSource>
-  typename etl::enable_if<(sizeof(TDestination) == sizeof(TSource)) &&
-                           etl::is_trivially_copyable<TSource>::value &&
-                           etl::is_trivially_copyable<TDestination>::value, TDestination>::type
+  ETL_NODISCARD
+  typename etl::enable_if<!(etl::is_integral<TDestination>::value&& etl::is_integral<TSource>::value) &&
+                          (sizeof(TDestination) == sizeof(TSource)) &&
+                          etl::is_trivially_copyable<TSource>::value &&
+                          etl::is_trivially_copyable<TDestination>::value, TDestination>::type
     bit_cast(const TSource& source) ETL_NOEXCEPT
   {
     TDestination destination;
@@ -60,6 +62,19 @@ namespace etl
     memcpy(&destination, &source, sizeof(TDestination));
 
     return destination;
+  }
+
+  //***************************************************************************
+  /// bit_cast - Integral to integral
+  //***************************************************************************
+  template <typename TDestination, typename TSource>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14
+  typename etl::enable_if<(etl::is_integral<TDestination>::value && etl::is_integral<TSource>::value) && 
+                          (sizeof(TDestination) == sizeof(TSource)), TDestination>::type
+    bit_cast(const TSource& source) ETL_NOEXCEPT
+  {
+    return static_cast<TDestination>(source);
   }
 
   //***************************************************************************
