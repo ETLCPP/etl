@@ -280,12 +280,14 @@ static const unexpect_t unexpect;
   //*****************************************************************************
   struct unexpect_t 
   {
-    explicit unexpect_t()
+    ETL_CONSTEXPR14 explicit unexpect_t()
     {
     }
   };
 
+#if ETL_CPP14_SUPPORTED
   inline ETL_CONSTEXPR14 unexpect_t unexpect{};
+#endif
 
   //*****************************************************************************
   /// Expected type.
@@ -580,7 +582,14 @@ static const unexpect_t unexpect;
   template<typename TError>
   class expected<void, TError>
   {
+  public:
 
+
+
+  private:
+
+    TError error;
+  };
 }
 
 
