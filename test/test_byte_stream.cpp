@@ -109,7 +109,7 @@ namespace
     {
       char storage[7];
 
-      etl::byte_stream_writer writer(storage, etl::size(storage), etl::endian::big);
+      etl::byte_stream_writer writer(storage, ETL_OR_STD17::size(storage), etl::endian::big);
       etl::byte_stream_reader reader(storage, writer.size_bytes(), etl::endian::big); // Capacity is zero.
 
       CHECK(writer.empty());
@@ -120,7 +120,7 @@ namespace
       CHECK_EQUAL(0U, writer.size_bytes());
       CHECK_EQUAL(0U, reader.size_bytes());
 
-      CHECK_EQUAL(etl::size(storage), writer.capacity());
+      CHECK_EQUAL(ETL_OR_STD17::size(storage), writer.capacity());
 
       CHECK_EQUAL(0U, reader.available<int8_t>());
 
@@ -136,9 +136,9 @@ namespace
     {
       char storage[8];
 
-      etl::byte_stream_writer writer(storage, etl::size(storage), etl::endian::big);
+      etl::byte_stream_writer writer(storage, ETL_OR_STD17::size(storage), etl::endian::big);
 
-      etl::span<char> storage_span(storage, storage + etl::size(storage));
+      etl::span<char> storage_span(storage, storage + ETL_OR_STD17::size(storage));
       etl::span<char> writer_span = writer.data();
       CHECK(writer_span.begin() == storage_span.begin());
       CHECK(writer_span.end()   == storage_span.end());
@@ -150,7 +150,7 @@ namespace
       etl::span<char> free_span = writer.free_data();
 
       CHECK_EQUAL(sizeof(uint8_t) + sizeof(uint16_t), (std::distance(used_span.begin(), used_span.end())));
-      CHECK_EQUAL(etl::size(storage) - sizeof(uint8_t) - sizeof(uint16_t), (std::distance(free_span.begin(), free_span.end())));
+      CHECK_EQUAL(ETL_OR_STD17::size(storage) - sizeof(uint8_t) - sizeof(uint16_t), (std::distance(free_span.begin(), free_span.end())));
 
       CHECK(writer.write(uint32_t(0x12345678U)));  // 4 more written.
       CHECK_THROW(writer.write(uint32_t(0x12345678U)), etl::byte_stream_overflow); // Can't write 4 more.

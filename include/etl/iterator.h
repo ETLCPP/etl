@@ -894,6 +894,7 @@ namespace etl
   }
 #endif
 
+#if ETL_NOT_USING_STL || ETL_CPP17_NOT_SUPPORTED
   ///**************************************************************************
   /// Get the size of a container.
   /// Expects the container to have defined 'size_type'.
@@ -914,6 +915,7 @@ namespace etl
   {
     return ARRAY_SIZE;
   }
+#endif
 
   ///**************************************************************************
   /// Get the size of an array in elements at compile time for C++03

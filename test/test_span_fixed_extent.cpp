@@ -801,7 +801,7 @@ namespace
 
       for (int i = 0; i < 20; ++i)
       {
-        CHECK_EQUAL(expected[i % etl::size(expected)], *sci++);
+        CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *sci++);
       }
     }
 
@@ -834,7 +834,7 @@ namespace
 
       for (int i = 0; i < 20; ++i)
       {
-        CHECK_EQUAL(expected[i % etl::size(expected)], *++sci);
+        CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *++sci);
       }
     }
 
@@ -851,7 +851,7 @@ namespace
 
       for (int i = 0; i < 20; ++i)
       {
-        CHECK_EQUAL(expected[i % etl::size(expected)], *++sci);
+        CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *++sci);
       }
     }
 
@@ -867,7 +867,7 @@ namespace
 
       for (int i = 0; i < 20; ++i)
       {
-        CHECK_EQUAL(expected[i % etl::size(expected)], *sci++);
+        CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *sci++);
       }
     }
 
@@ -884,7 +884,7 @@ namespace
 
       for (int i = 0; i < 20; ++i)
       {
-        CHECK_EQUAL(expected[i % etl::size(expected)], *sci++);
+        CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *sci++);
       }
     }
 

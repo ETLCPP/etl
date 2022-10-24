@@ -158,7 +158,7 @@ namespace
       etl::poly_span<Base, 4U> s(data);
       CHECK_EQUAL(sizeof(Derived), s.size_of_element());
       CHECK(!s.empty());
-      CHECK_EQUAL(etl::size(data), s.size());
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.size());
       CHECK_EQUAL(s.size() * sizeof(Derived), s.size_bytes());
       CHECK_EQUAL(data[0].value(), s[0].value());
       CHECK_EQUAL(data[1].value(), s[1].value());
@@ -173,7 +173,7 @@ namespace
       etl::poly_span<const Base, 4U> s(data);
       CHECK_EQUAL(sizeof(Derived), s.size_of_element());
       CHECK(!s.empty());
-      CHECK_EQUAL(etl::size(data), s.size());
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.size());
       CHECK_EQUAL(s.size() * sizeof(Derived), s.size_bytes());
       CHECK_EQUAL(data[0].value(), s[0].value());
       CHECK_EQUAL(data[1].value(), s[1].value());

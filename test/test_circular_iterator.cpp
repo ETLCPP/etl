@@ -63,8 +63,8 @@ namespace
       CHECK(std::begin(data) == ci.begin());
       CHECK(std::end(data)   == ci.end());
       CHECK(std::begin(data) == ci.current());
-      CHECK_EQUAL(etl::size(data), size_t(std::distance(ci.begin(), ci.end())));
-      CHECK_EQUAL(etl::size(data), ci.size());
+      CHECK_EQUAL(ETL_OR_STD17::size(data), size_t(std::distance(ci.begin(), ci.end())));
+      CHECK_EQUAL(ETL_OR_STD17::size(data), ci.size());
     }
 
     //*************************************************************************
@@ -80,8 +80,8 @@ namespace
       CHECK(std::begin(data) == ci.begin());
       CHECK(std::end(data)   == ci.end());
       CHECK(start            == ci.current());
-      CHECK_EQUAL(etl::size(data), size_t(std::distance(ci.begin(), ci.end())));
-      CHECK_EQUAL(etl::size(data), ci.size());
+      CHECK_EQUAL(ETL_OR_STD17::size(data), size_t(std::distance(ci.begin(), ci.end())));
+      CHECK_EQUAL(ETL_OR_STD17::size(data), ci.size());
     }
 
     //*************************************************************************
@@ -645,7 +645,7 @@ namespace
         
         for (int i = 0; i < 20; i += step)
         {
-          CHECK_EQUAL(expected[i % etl::size(data)], *ci);
+          CHECK_EQUAL(expected[i % ETL_OR_STD17::size(data)], *ci);
           ci -= step;
         }
       }
@@ -663,7 +663,7 @@ namespace
 
         for (int i = 0; i < 20; i += step)
         {
-          CHECK_EQUAL(expected[i % etl::size(data)], *ci);
+          CHECK_EQUAL(expected[i % ETL_OR_STD17::size(data)], *ci);
           ci = ci - step;
         }
       }
