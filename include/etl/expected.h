@@ -95,6 +95,7 @@ namespace etl
       : error_value(etl::forward<Args>(args)...)
     {
     }
+#endif
 
 #if ETL_HAS_INITIALIZER_LIST
     //*******************************************
@@ -171,12 +172,14 @@ namespace etl
   //*****************************************************************************
   struct unexpect_t 
   {
-    explicit unexpect_t()
+    ETL_CONSTEXPR14 explicit unexpect_t()
     {
     }
   };
 
+#if ETL_CPP14_SUPPORTED
   inline ETL_CONSTEXPR14 unexpect_t unexpect{};
+#endif
 
   //*****************************************************************************
   /// Expected type.
@@ -471,7 +474,14 @@ namespace etl
   template<typename TError>
   class expected<void, TError>
   {
+  public:
 
+
+
+  private:
+
+    TError error;
+  };
 }
 
 
