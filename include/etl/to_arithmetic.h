@@ -43,6 +43,7 @@ SOFTWARE.
 #include "bit.h"
 #include "smallest.h"
 #include "absolute.h"
+//#include "expected.h"
 
 namespace etl
 {
@@ -72,6 +73,16 @@ namespace etl
     ETL_ENUM_TYPE(Overflow,           "Overflow")
     ETL_END_ENUM_TYPE
   };
+
+//#if ETL_CPP11_SUPPORTED
+//  template <typename TValue>
+//  using to_arithmetic_result = etl::expected<TValue, etl::unexpected<to_arithmetic_status>>;
+//#else
+//  struct to_arithmetic_result
+//  {
+//    typedef etl::expected<TValue, etl::unexpected<etl::to_arithmetic_status> > type;
+//  };
+//#endif
 
   //***************************************************************************
   /// Status values for to_arithmetic.
