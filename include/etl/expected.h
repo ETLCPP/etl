@@ -34,11 +34,56 @@ SOFTWARE.
 ///\defgroup expected expected
 ///\ingroup utilities
 #include "platform.h"
-#include "type_traits.h"
+#include "exception.h"
+#include "error_handler.h"
 #include "utility.h"
+#include "variant.h"
 
 namespace etl
 {
+  //***************************************************************************
+  /// Base exception for et::expected
+  //***************************************************************************
+  class expected_exception : public etl::exception
+  {
+  public:
+
+    expected_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// expected_invalid
+  //***************************************************************************
+  template <typename TError>
+  class expected_invalid;
+
+  //*******************************************
+  template<>
+  class expected_invalid<void> : public etl::expected_exception
+  {
+  public:
+
+    expected_invalid(string_type file_name_, numeric_type line_number_)
+      : expected_exception(ETL_ERROR_TEXT("expected:invalid", ETL_EXPECTED_FILE_ID"A"), file_name_, line_number_)
+    {
+    }
+  };
+
+  //*******************************************
+  template <typename TError>
+  class expected_invalid : etl::expected_invalid<void>
+  {
+  public:
+
+    expected_invalid(string_type file_name_, numeric_type line_number_)
+      : expected_invalid<void>(file_name_, line_number_)
+    {
+    }
+  };
+
   //***************************************************************************
   /// Unexpected type.
   /// etl::unexpected represents an unexpected value stored in etl::expected.
@@ -64,24 +109,25 @@ namespace etl
       : error_value(etl::move(other.error_value))
     {
     }
+#endif
 
 #if ETL_CPP11_SUPPORTED
     //*******************************************
     /// Construct from argument.
     //*******************************************
-    template <typename E = TError, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<Err>::type, etl::unexpected>::value &&
-                                                                      !etl::is_same<typename etl::remove_cvref<Err>::type, etl::in_place_t>::value, int>::type>
-    constexpr explicit unexpected(E&& e)
-      : error_value(etl::forward<TError>(e))
+    template <typename TErr = TError, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TErr>::type, etl::unexpected>::value &&
+                                                                         !etl::is_same<typename etl::remove_cvref<TErr>::type, etl::in_place_t>::value, int>::type>
+    constexpr explicit unexpected(TErr&& e)
+      : error_value(etl::forward<TErr>(e))
     {
     }
 #else
     //*******************************************
     /// Construct from argument.
     //*******************************************
-    template <typename E>
-    explicit unexpected(const E& e, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<Err>::type, etl::unexpected>::value &&
-                                                            !etl::is_same<typename etl::remove_cvref<Err>::type, etl::in_place_t>::value, int>::type = 0)
+    template <typename TErr>
+    explicit unexpected(const TErr& e, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TErr>::type, etl::unexpected>::value &&
+                                                               !etl::is_same<typename etl::remove_cvref<TErr>::type, etl::in_place_t>::value, int>::type = 0)
       : error_value(e)
     {
     }
@@ -303,13 +349,13 @@ static const unexpect_t unexpect;
 
 #if ETL_CPP11_SUPPORTED
     template <typename U>
-    using rebind = etl::expected<U, error_type>;
+    using rebind = etl::expected<U, TError>;
 #endif
 
     //*******************************************
     /// Default constructor
     //*******************************************
-    ETL_CONSTEXPR14 expected(const expected& other) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 expected() ETL_NOEXCEPT
       : data(TValue())
     {
     }
@@ -317,7 +363,7 @@ static const unexpect_t unexpect;
     //*******************************************
     /// Copy constructor
     //*******************************************
-    ETL_CONSTEXPR14 expected(const expected& other)
+    ETL_CONSTEXPR14 expected(const expected& other) ETL_NOEXCEPT
       : data(other.data)
     {
     }
@@ -332,109 +378,47 @@ static const unexpect_t unexpect;
     }
 #endif
 
-    template <typename U, typename F>
-    constexpr explicit() expected(const expected<U, F>& other)
-    {
-    }
-
-    template <typename U, typename F>
-    constexpr explicit(expected(expected<U, F>&& other)
-    {
-    }
-
-#if ETL_CPP11_SUPPORTED
-    template <typename U = T>
-    constexpr explicit expected(U&& v)
-    {
-    }
-#endif
-
     template <typename F>
-    constexpr explicit expected(const etl::unexpected<F>& e)
+    ETL_CONSTEXPR14 explicit expected(const etl::unexpected<F>& ue)
+      : data(ue)
     {
     }
 
 #if ETL_CPP11_SUPPORTED
     template <typename F>
-    constexpr explicit expected(etl::unexpected<F>&& e)
+    ETL_CONSTEXPR14 explicit expected(etl::unexpected<F>&& ue)
+      : data(etl::move(ue))
     {
     }
 #endif
 
-    constexpr explicit expected(etl::in_place_t) noexcept
+    ETL_CONSTEXPR14 explicit expected(etl::in_place_t) ETL_NOEXCEPT
+      : data(TValue())
     {
     }
 
     template <typename... Args>
-    constexpr explicit expected(etl::in_place_t, Args&&... args)
+    ETL_CONSTEXPR14 explicit expected(etl::in_place_t, Args&&... args)
+      : data(etl::forward<Args>(args)...)
     {
     }
 
     template <typename U, typename... Args>
-    constexpr explicit expected(etl::in_place_t, std::initializer_list<U> il, Args&&... args)
+    ETL_CONSTEXPR14 explicit expected(etl::in_place_t, std::initializer_list<U> il, Args&&... args)
+      : data(il, etl::forward<Args>(args)...)
     {
     }
 
     template <typename... Args>
-    constexpr explicit expected(etl::unexpect_t, Args&&... args)
+    ETL_CONSTEXPR14 explicit expected(etl::unexpect_t, Args&&... args)
+      : data(etl::unexpected<TError>(args...))
     {
     }
 
     template <typename U, typename... Args>
-    constexpr explicit expected(etl::unexpect_t, std::initializer_list<U> il, Args&&... args)
+    ETL_CONSTEXPR14 explicit expected(etl::unexpect_t, std::initializer_list<U> il, Args&&... args)
+      : data(etl::unexpected<TError>(il, args...))
     {
-    }
-
-//    //*******************************************
-//    // Construct from a value
-//    //*******************************************
-//    expected(const TValue& value)
-//      : data(value)
-//    {
-//    }
-//
-//#if ETL_CPP11_SUPPORTED
-//    //*******************************************
-//    // Move construct from a value
-//    //*******************************************
-//    expected(TValue&& value)
-//      : data(etl::move(value))
-//    {
-//    }
-//#endif
-
-    ////*******************************************
-    ///// Construct from error
-    ////*******************************************
-    //expected(const TError& error)
-    //  : data(error)
-    //{
-    //}
-
-    ////*******************************************
-    ///// Move construct from error
-    ////*******************************************
-    //expected(TError&& error)
-    //  : data(etl::move(error))
-    //{
-    //}
-
-    //*******************************************
-    /// Copy assign
-    //*******************************************
-    expected& operator =(const expected& other)
-    {
-      data = other.data;
-      return *this;
-    }
-
-    //*******************************************
-    /// Move assign 
-    //*******************************************
-    expected& operator =(expected&& other)
-    {
-      data = etl::move(other.data);
-      return *this;
     }
 
     //*******************************************
@@ -473,6 +457,39 @@ static const unexpect_t unexpect;
       return *this;
     }
 
+#if ETL_CPP11_SUPPORTED
+    //*******************************************
+    /// 
+    //*******************************************
+    ETL_CONSTEXPR14 T& value() &
+    {
+      return etl::get<TValue>(data);
+    }
+
+    //*******************************************
+    /// 
+    //*******************************************
+    ETL_CONSTEXPR14 const T& value() const&
+    {
+      return etl::get<TValue>(data);
+    }
+
+    //*******************************************
+    /// 
+    //*******************************************
+    ETL_CONSTEXPR14 T&& value() &&
+    {
+      return etl::move(etl::get<TValue>(data));
+    }
+
+    //*******************************************
+    /// 
+    //*******************************************
+    ETL_CONSTEXPR14 const T&& value() const&&
+    {
+      return etl::move(etl::get<TValue>(data));
+    }
+#else
     //*******************************************
     /// Returns a const reference to the value.
     /// Undefined if the expected does not contain an value.
@@ -481,15 +498,7 @@ static const unexpect_t unexpect;
     {
       return etl::get<TValue>(data);
     }
-
-    //*******************************************
-    /// Returns an rvalue reference to the value.
-    /// Undefined if the expected does not contain an value.
-    //*******************************************
-    ETL_CONSTEXPR14 TValue&& value()
-    {
-      return etl::move(etl::get<TValue>(etl::move(data)));
-    }
+#endif
 
 #if ETL_CPP11_SUPPORTED
     //*******************************************
@@ -541,6 +550,39 @@ static const unexpect_t unexpect;
     }
 #endif
 
+#if ETL_CPP11_SUPPORTED
+    //*******************************************
+    /// 
+    //*******************************************
+    ETL_CONSTEXPR14 const TError& error() const& ETL_NOEXCEPT
+    {
+      return etl::get<TError>(data);
+    }
+
+    //*******************************************
+    /// 
+    //*******************************************
+    ETL_CONSTEXPR14 TError& error() & ETL_NOEXCEPT
+    {
+      return etl::get<TError>(data);
+    }
+    
+    //*******************************************
+    /// 
+    //*******************************************
+    ETL_CONSTEXPR14 const TError&& error() const&& ETL_NOEXCEPT
+    {
+      return etl::move(etl::get<TError>(data));
+    }
+     
+    //*******************************************
+    /// 
+    //*******************************************
+    ETL_CONSTEXPR14 TError&& error() && ETL_NOEXCEPT
+    {
+      return etl::move(etl::get<TError>(data));
+    }
+#else
     //*******************************************
     /// Returns a const reference to the error.
     /// Undefined if the expected does not contain an error.
@@ -549,26 +591,75 @@ static const unexpect_t unexpect;
     {
       return etl::get<TError>(data);
     }
+#endif
 
-#if (ETL_CPP11_SUPPORTED)
+#if ETL_CPP11_SUPPORTED
     //*******************************************
-    /// Returns an rvalue reference to the error.
-    /// Undefined if the expected does not contain an error.
+    /// 
     //*******************************************
-    ETL_CONSTEXPR14 TError&& error() &&
+    template <typename... Args>
+    ETL_CONSTEXPR14 T& emplace(Args&&... args) ETL_NOEXCEPT
     {
-      return etl::move(etl::get<TError>(data));
+      data.emplace(args...);
     }
 
     //*******************************************
-    /// Returns an rvalue reference to the error.
-    /// Undefined if the expected does not contain an error.
+    /// 
     //*******************************************
-    ETL_CONSTEXPR14 TError&& error() const &&
+    template <typename U, typename... Args>
+    ETL_CONSTEXPR14 T& emplace(std::initializer_list<U>& il, Args&&... args) ETL_NOEXCEPT
     {
-      return etl::move(etl::get<TError>(data));
+      data.emplace(il, args...);
     }
 #endif
+
+    //*******************************************
+    /// 
+    //*******************************************
+    TValue* operator ->()
+    {
+#if ETL_IS_DEBUG_BUILD
+      ETL_ASSERT(valid, ETL_ERROR(expected_invalid));
+#endif
+
+      return etl::addressof(data.get<TValue>());
+    }
+
+    //*******************************************
+    /// 
+    //*******************************************
+    const TValue* operator ->() const
+    {
+#if ETL_IS_DEBUG_BUILD
+      ETL_ASSERT(valid, ETL_ERROR(expected_invalid));
+#endif
+
+      return etl::addressof(data.get<TValue>());
+    }
+
+    //*******************************************
+    /// 
+    //*******************************************
+    TValue& operator *()
+    {
+#if ETL_IS_DEBUG_BUILD
+      ETL_ASSERT(valid, ETL_ERROR(expected_invalid));
+#endif
+
+      return data.get<TValue>();
+    }
+
+    //*******************************************
+    /// 
+    //*******************************************
+    const TValue& operator *() const
+    {
+#if ETL_IS_DEBUG_BUILD
+      ETL_ASSERT(valid, ETL_ERROR(expected_invalid));
+#endif
+
+      return data.get<TValue>();
+    }
 
   private:
 
@@ -576,7 +667,6 @@ static const unexpect_t unexpect;
   };
 
   //*****************************************************************************
-  /// Result type.
   /// Specialisation for void value type.
   //*****************************************************************************
   template<typename TError>

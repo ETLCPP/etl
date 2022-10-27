@@ -279,8 +279,9 @@ namespace etl
     //*******************************************
     /// Move construct from error
     //*******************************************
-    result(TError&& error)
-      : data(etl::move(error))
+#if ETL_CPP11_SUPPORTED
+    result(TError&& err_)
+      : err(etl::move(err_))
     {
     }
 #endif
@@ -297,7 +298,8 @@ namespace etl
     //*******************************************
     /// Move assign from error
     //*******************************************
-    result& operator =(TError&& error)
+#if ETL_CPP11_SUPPORTED
+    result& operator =(TError&& err_)
     {
       data = etl::move(error);
       return *this;
@@ -460,6 +462,7 @@ namespace etl
     {
       return etl::move(data.value());
     }
+#endif
 
   private:
 
