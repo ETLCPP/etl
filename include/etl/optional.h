@@ -91,7 +91,7 @@ namespace etl
   public:
 
     optional_invalid(string_type file_name_, numeric_type line_number_)
-      : optional_exception("optional: invalid", file_name_, line_number_)
+      : optional_exception("optional:invalid", file_name_, line_number_)
     {
     }
   };
@@ -100,7 +100,7 @@ namespace etl
   /// An optional type.
   /// If the optional type is not initialised then a type is not constructed.
   /// See http://en.cppreference.com/w/cpp/utility/optional
-  ///\tparam The type to store.
+  ///\tparam T The type to store.
   ///\ingroup utilities
   //*****************************************************************************
   template <typename T, bool is_pod = etl::is_pod<T>::value>
@@ -521,6 +521,8 @@ namespace etl
 
   //*****************************************************************************
   /// For POD types.
+  ///\tparam T The type to store.
+  ///\ingroup utilities
   //*****************************************************************************
   template <typename T>
   class optional<T, true>

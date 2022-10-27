@@ -50,7 +50,7 @@ namespace etl
   /// Result type.
   //*****************************************************************************
   template <typename TValue, typename TError>
-  class result
+  class ETL_DEPRECATED result
   {
   public:
 
@@ -67,6 +67,7 @@ namespace etl
     {
     }
 
+#if ETL_CPP11_SUPPORTED
     //*******************************************
     /// Move constructor
     //*******************************************
@@ -74,6 +75,7 @@ namespace etl
       : data(etl::move(other.data))
     {
     }
+#endif
 
     //*******************************************
     // Construct from a value
@@ -86,7 +88,7 @@ namespace etl
     //*******************************************
     // Move construct from a value
     //*******************************************
-    result(TValue&& value)
+      result(TValue&& value)
       : data(etl::move(value))
     {
     }
@@ -102,10 +104,12 @@ namespace etl
     //*******************************************
     /// Move construct from error
     //*******************************************
+#if ETL_CPP11_SUPPORTED
     result(TError&& error)
       : data(etl::move(error))
     {
     }
+#endif
 
     //*******************************************
     /// Copy assign
@@ -137,11 +141,13 @@ namespace etl
     //*******************************************
     /// Move assign from value
     //*******************************************
+#if ETL_CPP11_SUPPORTED
     result& operator =(TValue&& value)
     {
       data = etl::move(value);
       return *this;
     }
+#endif
 
     //*******************************************
     /// Copy assign from error
@@ -155,11 +161,13 @@ namespace etl
     //*******************************************
     /// Move assign from error
     //*******************************************
+#if ETL_CPP11_SUPPORTED
     result& operator =(TError&& error)
     {
       data = etl::move(error);
       return *this;
     }
+#endif
 
     //*******************************************
     /// <b>true</b> if result contains a value
@@ -216,10 +224,12 @@ namespace etl
     /// Returns an rvalue reference to the error.
     /// Undefined if the result does not contain an error.
     //*******************************************
+#if ETL_CPP11_SUPPORTED
     TError&& error()
     {
       return etl::move(etl::get<TError>(data));
     }
+#endif
 
   private:
 
@@ -273,6 +283,7 @@ namespace etl
       : data(etl::move(error))
     {
     }
+#endif
 
     //*******************************************
     /// Copy assign from error
@@ -291,6 +302,7 @@ namespace etl
       data = etl::move(error);
       return *this;
     }
+#endif
 
     //*******************************************
     /// <b>true</b> if result contains a value
@@ -329,10 +341,12 @@ namespace etl
     /// Returns an rvalue reference to the error.
     /// Undefined if the result does not contain an error.
     //*******************************************
+#if ETL_CPP11_SUPPORTED
     TError&& error()
     {
       return etl::move(data.value());
     }
+#endif
 
   private:
 
