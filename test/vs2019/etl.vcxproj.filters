@@ -1341,6 +1341,9 @@
     <ClInclude Include="..\..\include\etl\to_arithmetic.h">
       <Filter>ETL\Strings</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\expected.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">

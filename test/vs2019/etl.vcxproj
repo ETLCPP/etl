@@ -2439,6 +2439,7 @@
     <ClInclude Include="..\..\include\etl\crc8_maxim.h" />
     <ClInclude Include="..\..\include\etl\crc8_rohc.h" />
     <ClInclude Include="..\..\include\etl\crc8_wcdma.h" />
+    <ClInclude Include="..\..\include\etl\expected.h" />
     <ClInclude Include="..\..\include\etl\message_broker.h" />
     <ClInclude Include="..\..\include\etl\poly_span.h" />
     <ClInclude Include="..\..\include\etl\private\bitset_legacy.h" />

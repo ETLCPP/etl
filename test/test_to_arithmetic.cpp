@@ -38,7 +38,7 @@ SOFTWARE.
 
 #undef STR
 #define STR(x) x
-using Text = std::string;
+using Text  = std::string;
 
 namespace
 {
@@ -52,7 +52,7 @@ namespace
     }
     else
     {
-      os << result.status().c_str();
+      os << result.error().c_str();
     }
 
     return os;
@@ -96,20 +96,20 @@ namespace
       CHECK(!etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 15).has_value());
       CHECK(!etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 17).has_value());
 
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 0).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 1).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 3).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 4).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 5).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 6).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 7).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 9).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 11).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 12).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 13).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 14).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 15).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 17).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 0).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 1).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 3).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 4).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 5).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 6).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 7).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 9).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 11).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 12).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 13).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 14).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 15).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Radix, etl::to_arithmetic<int8_t>(text.c_str(), text.size(), 17).error());
     }
 
     //*************************************************************************
@@ -127,11 +127,11 @@ namespace
       CHECK(!etl::to_arithmetic<int8_t>(text4.c_str(), text4.size(), etl::bin));
       CHECK(!etl::to_arithmetic<uint8_t>(text5.c_str(), text5.size(), etl::bin));
 
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<int8_t>(text1.c_str(), text1.size(), etl::bin).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<int8_t>(text2.c_str(), text2.size(), etl::bin).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<int8_t>(text3.c_str(), text3.size(), etl::bin).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<int8_t>(text4.c_str(), text4.size(), etl::bin).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Signed_To_Unsigned, etl::to_arithmetic<uint8_t>(text5.c_str(), text5.size(), etl::bin).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<int8_t>(text1.c_str(), text1.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<int8_t>(text2.c_str(), text2.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<int8_t>(text3.c_str(), text3.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<int8_t>(text4.c_str(), text4.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Signed_To_Unsigned, etl::to_arithmetic<uint8_t>(text5.c_str(), text5.size(), etl::bin).error());
     }
 
     //*************************************************************************
@@ -153,13 +153,13 @@ namespace
       CHECK_EQUAL(int(-84), int(etl::to_arithmetic<int8_t>(value6.c_str(), value6.size(), etl::bin).value()));
       CHECK_EQUAL(int(-84), int(etl::to_arithmetic<int8_t>(value7.c_str(), value7.size(), etl::bin).value()));
 
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, int(etl::to_arithmetic<int8_t>(value1.c_str(), value1.size(), etl::bin).status()));
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, int(etl::to_arithmetic<int8_t>(value2.c_str(), value2.size(), etl::bin).status()));
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, int(etl::to_arithmetic<int8_t>(value3.c_str(), value3.size(), etl::bin).status()));
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, int(etl::to_arithmetic<int8_t>(value4.c_str(), value4.size(), etl::bin).status()));
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, int(etl::to_arithmetic<int8_t>(value5.c_str(), value5.size(), etl::bin).status()));
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, int(etl::to_arithmetic<int8_t>(value6.c_str(), value6.size(), etl::bin).status()));
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, int(etl::to_arithmetic<int8_t>(value7.c_str(), value7.size(), etl::bin).status()));
+      CHECK(etl::to_arithmetic<int8_t>(value1.c_str(), value1.size(), etl::bin).has_value());
+      CHECK(etl::to_arithmetic<int8_t>(value2.c_str(), value2.size(), etl::bin).has_value());
+      CHECK(etl::to_arithmetic<int8_t>(value3.c_str(), value3.size(), etl::bin).has_value());
+      CHECK(etl::to_arithmetic<int8_t>(value4.c_str(), value4.size(), etl::bin).has_value());
+      CHECK(etl::to_arithmetic<int8_t>(value5.c_str(), value5.size(), etl::bin).has_value());
+      CHECK(etl::to_arithmetic<int8_t>(value6.c_str(), value6.size(), etl::bin).has_value());
+      CHECK(etl::to_arithmetic<int8_t>(value7.c_str(), value7.size(), etl::bin).has_value());
     }
 
     //*************************************************************************
@@ -266,25 +266,25 @@ namespace
       CHECK(!etl::to_arithmetic<uint64_t>(uint64_overflow_max.c_str(), uint64_overflow_max.size(), etl::bin));
 
 
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int8_t>(int8_overflow_max.c_str(), int8_overflow_max.size(), etl::bin).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int8_t>(int8_overflow_min.c_str(), int8_overflow_min.size(), etl::bin).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int8_t>(int8_overflow_max.c_str(), int8_overflow_max.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int8_t>(int8_overflow_min.c_str(), int8_overflow_min.size(), etl::bin).error());
 
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<uint8_t>(uint8_overflow_max.c_str(), uint8_overflow_max.size(), etl::bin).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<uint8_t>(uint8_overflow_max.c_str(), uint8_overflow_max.size(), etl::bin).error());
 
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int16_t>(int16_overflow_max.c_str(), int16_overflow_max.size(), etl::bin).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int16_t>(int16_overflow_min.c_str(), int16_overflow_min.size(), etl::bin).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int16_t>(int16_overflow_max.c_str(), int16_overflow_max.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int16_t>(int16_overflow_min.c_str(), int16_overflow_min.size(), etl::bin).error());
 
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<uint16_t>(uint16_overflow_max.c_str(), uint16_overflow_max.size(), etl::bin).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<uint16_t>(uint16_overflow_max.c_str(), uint16_overflow_max.size(), etl::bin).error());
 
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int32_t>(int32_overflow_max.c_str(), int32_overflow_max.size(), etl::bin).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int32_t>(int32_overflow_min.c_str(), int32_overflow_min.size(), etl::bin).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int32_t>(int32_overflow_max.c_str(), int32_overflow_max.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int32_t>(int32_overflow_min.c_str(), int32_overflow_min.size(), etl::bin).error());
 
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<uint32_t>(uint32_overflow_max.c_str(), uint32_overflow_max.size(), etl::bin).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<uint32_t>(uint32_overflow_max.c_str(), uint32_overflow_max.size(), etl::bin).error());
 
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int64_t>(int64_overflow_max.c_str(), int64_overflow_max.size(), etl::bin).status());
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int64_t>(int64_overflow_min.c_str(), int64_overflow_min.size(), etl::bin).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int64_t>(int64_overflow_max.c_str(), int64_overflow_max.size(), etl::bin).error());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<int64_t>(int64_overflow_min.c_str(), int64_overflow_min.size(), etl::bin).error());
 
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<uint64_t>(uint64_overflow_max.c_str(), uint64_overflow_max.size(), etl::bin).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<uint64_t>(uint64_overflow_max.c_str(), uint64_overflow_max.size(), etl::bin).error());
     }
 
     //*************************************************************************
@@ -722,7 +722,7 @@ namespace
       float f2 = etl::to_arithmetic<float>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+      CHECK(etl::to_arithmetic<float>(text.c_str(), text.size()).has_value());
 
       //*********************************
       text = STR("123.456789");
@@ -731,7 +731,7 @@ namespace
       f2 = etl::to_arithmetic<float>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+      CHECK(etl::to_arithmetic<float>(text.c_str(), text.size()).has_value());
 
       //*********************************
       text = STR("-1.23456789e2");
@@ -740,7 +740,7 @@ namespace
       f2 = etl::to_arithmetic<float>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+      CHECK(etl::to_arithmetic<float>(text.c_str(), text.size()).has_value());
 
       //*********************************
       text = STR("-12345.6789e-2");
@@ -749,7 +749,7 @@ namespace
       f2 = etl::to_arithmetic<float>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+      CHECK(etl::to_arithmetic<float>(text.c_str(), text.size()).has_value());
 
       //*********************************
       text = STR("+12345E-2");
@@ -758,7 +758,7 @@ namespace
       f2 = etl::to_arithmetic<float>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+      CHECK(etl::to_arithmetic<float>(text.c_str(), text.size()).has_value());
 
       //*********************************
       text = STR("+12345.6789E000");
@@ -767,7 +767,7 @@ namespace
       f2 = etl::to_arithmetic<float>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+      CHECK(etl::to_arithmetic<float>(text.c_str(), text.size()).has_value());
     }
 
     //*************************************************************************
@@ -777,35 +777,35 @@ namespace
 
       //*********************************
       text = STR(" -123.456789");
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<float>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("-123.456789 ");
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<float>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("-12A.456789");
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<float>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("-123.456A89");
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<float>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("123.-456789");
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<float>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("123E.45");
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<float>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("123.45E10000");
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<float>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("-123.45E10000");
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<float>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<float>(text.c_str(), text.size()).error());
     }
 
     //*************************************************************************
@@ -820,7 +820,7 @@ namespace
       double f2 = etl::to_arithmetic<double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK(etl::to_arithmetic<double>(text.c_str(), text.size()).has_value());
 
       //*********************************
       text = STR("123.45678901234567");
@@ -829,7 +829,7 @@ namespace
       f2 = etl::to_arithmetic<double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK(etl::to_arithmetic<double>(text.c_str(), text.size()).has_value());
 
       //*********************************
       text = STR("-1.2345678901234567e7");
@@ -838,7 +838,7 @@ namespace
       f2 = etl::to_arithmetic<double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK(etl::to_arithmetic<double>(text.c_str(), text.size()).has_value());
 
       //*********************************
       text = STR("-12345.678901234567e-2");
@@ -847,7 +847,7 @@ namespace
       f2 = etl::to_arithmetic<double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK(etl::to_arithmetic<double>(text.c_str(), text.size()).has_value());
 
       //*********************************
       text = STR("+12345E-2");
@@ -856,7 +856,7 @@ namespace
       f2 = etl::to_arithmetic<double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK(etl::to_arithmetic<double>(text.c_str(), text.size()).has_value());
 
       //*********************************
       text = STR("+12345.678901234567E0");
@@ -865,7 +865,7 @@ namespace
       f2 = etl::to_arithmetic<double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK(etl::to_arithmetic<double>(text.c_str(), text.size()).has_value());
     }
 
     //*************************************************************************
@@ -875,35 +875,35 @@ namespace
 
       //*********************************
       text = STR(" -123.456789");
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<double>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("-123.456789 ");
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<double>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("-12A.456789");
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<double>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("-123.456A89");
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<double>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("123.-456789");
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<double>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("123E.45");
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<double>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("123.45E10000");
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<double>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("-123.45E10000");
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<double>(text.c_str(), text.size()).error());
     }
 
     //*************************************************************************
@@ -918,7 +918,7 @@ namespace
       long double f2 = etl::to_arithmetic<long double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK(etl::to_arithmetic<double>(text.c_str(), text.size()).has_value());
 
       //*********************************
       text = STR("123.45678901234567");
@@ -927,7 +927,7 @@ namespace
       f2 = etl::to_arithmetic<long double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK(etl::to_arithmetic<double>(text.c_str(), text.size()).has_value());
 
       //*********************************
       text = STR("-1.2345678901234567e2");
@@ -936,7 +936,7 @@ namespace
       f2 = etl::to_arithmetic<long double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK(etl::to_arithmetic<double>(text.c_str(), text.size()).has_value());
 
       //*********************************
       text = STR("-12345.678901234567e-2");
@@ -945,7 +945,7 @@ namespace
       f2 = etl::to_arithmetic<long double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK(etl::to_arithmetic<double>(text.c_str(), text.size()).has_value());
 
       //*********************************
       text = STR("+12345E-2");
@@ -954,7 +954,7 @@ namespace
       f2 = etl::to_arithmetic<long double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK(etl::to_arithmetic<double>(text.c_str(), text.size()).has_value());
 
       //*********************************
       text = STR("+12345.678901234567E000");
@@ -963,7 +963,7 @@ namespace
       f2 = etl::to_arithmetic<long double>(text.c_str(), text.size()).value();
 
       CHECK_CLOSE(f1, f2, 0.00001);
-      CHECK_EQUAL(etl::to_arithmetic_status::Valid, etl::to_arithmetic<double>(text.c_str(), text.size()).status());
+      CHECK(etl::to_arithmetic<double>(text.c_str(), text.size()).has_value());
     }
 
     //*************************************************************************
@@ -973,44 +973,43 @@ namespace
 
       //*********************************
       text = STR(" -123.456789");
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<long double>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<long double>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("-123.456789 ");
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<long double>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<long double>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("-12A.456789");
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<long double>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<long double>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("-123.456A89");
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<long double>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<long double>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("123.-456789");
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<long double>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<long double>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("123E.45");
-      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<long double>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<long double>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("123.45E10000");
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<long double>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<long double>(text.c_str(), text.size()).error());
 
       //*********************************
       text = STR("-123.45E10000");
-      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<long double>(text.c_str(), text.size()).status());
+      CHECK_EQUAL(etl::to_arithmetic_status::Overflow, etl::to_arithmetic<long double>(text.c_str(), text.size()).error());
     }
 
     //*************************************************************************
     TEST(test_constexpr_integral)
     {
-      constexpr const char* text{ "123" };
-      constexpr etl::string_view view(text, 3);
+      constexpr Text::const_pointer text{ STR("123") };
 
-      constexpr etl::to_arithmetic_result<int> result = etl::to_arithmetic<int>(view, etl::radix::decimal);
+      constexpr etl::to_arithmetic_result<int> result = etl::to_arithmetic<int>(text, 3U, etl::radix::decimal);
       constexpr int i = result.value();
 
       CHECK_EQUAL(123, i);

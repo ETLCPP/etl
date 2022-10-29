@@ -43,7 +43,7 @@ SOFTWARE.
 #include "bit.h"
 #include "smallest.h"
 #include "absolute.h"
-//#include "expected.h"
+#include "expected.h"
 
 namespace etl
 {
@@ -54,7 +54,6 @@ namespace etl
   {
     enum enum_type
     {
-      Not_Set,
       Valid,
       Invalid_Radix,
       Invalid_Format,
@@ -64,7 +63,6 @@ namespace etl
     };
 
     ETL_DECLARE_ENUM_TYPE(to_arithmetic_status, int)
-    ETL_ENUM_TYPE(Not_Set,            "Not Set")
     ETL_ENUM_TYPE(Valid,              "Valid")
     ETL_ENUM_TYPE(Invalid_Radix,      "Invalid Radix")
     ETL_ENUM_TYPE(Invalid_Format,     "Invalid Format")
@@ -74,16 +72,6 @@ namespace etl
     ETL_END_ENUM_TYPE
   };
 
-//#if ETL_CPP11_SUPPORTED
-//  template <typename TValue>
-//  using to_arithmetic_result = etl::expected<TValue, etl::unexpected<to_arithmetic_status>>;
-//#else
-//  struct to_arithmetic_result
-//  {
-//    typedef etl::expected<TValue, etl::unexpected<etl::to_arithmetic_status> > type;
-//  };
-//#endif
-
   //***************************************************************************
   /// Status values for to_arithmetic.
   //***************************************************************************
@@ -92,8 +80,9 @@ namespace etl
   {
   public:
 
-    typedef TValue                    value_type;
-    typedef etl::to_arithmetic_status status_type;
+    typedef TValue                                     value_type;
+    typedef etl::to_arithmetic_status                  error_type;
+    typedef etl::unexpected<etl::to_arithmetic_status> unexpected_type;
 
     //*******************************************
     /// Default constructor.
@@ -102,7 +91,7 @@ namespace etl
     ETL_CONSTEXPR14
     to_arithmetic_result()
       : conversion_value(static_cast<value_type>(0))
-      , conversion_status(status_type::Not_Set)
+      , conversion_status(error_type::Valid)
     {
     }
 
@@ -124,7 +113,7 @@ namespace etl
     ETL_CONSTEXPR14
     bool has_value() const
     {
-      return (conversion_status == status_type::Valid);
+      return (conversion_status.error() == error_type::Valid);
     }
 
     //*******************************************
@@ -149,15 +138,6 @@ namespace etl
     }
 
     //*******************************************
-    /// Sets the value.
-    //*******************************************
-    ETL_CONSTEXPR14
-    void value(value_type value)
-    {
-      conversion_value = value;
-    }
-
-    //*******************************************
     /// Returns the value, if valid.
     /// Otherwise undefined.
     //*******************************************
@@ -171,7 +151,6 @@ namespace etl
     //*******************************************
     /// Returns the conversion status.
     /// One of the following:-
-    /// Not_Set
     /// Valid
     /// Invalid_Radix
     /// Invalid_Format
@@ -181,32 +160,37 @@ namespace etl
     //*******************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    status_type status() const
+    error_type error() const
     {
-      return conversion_status;
+      return etl::to_arithmetic_status(conversion_status.error());
     }
 
     //*******************************************
-    /// Sets the status.
-    /// One of the following:-
-    /// Not_Set
-    /// Valid
-    /// Invalid_Radix
-    /// Invalid_Format
-    /// Invalid_Float
-    /// Signed_To_Unsigned
-    /// Overflow
+    /// 
     //*******************************************
     ETL_CONSTEXPR14
-    void status(status_type status_)
+    to_arithmetic_result& operator =(value_type value_)
+    {
+      conversion_value = value_;
+
+      return *this;
+    }
+
+    //*******************************************
+    /// 
+    //*******************************************
+    ETL_CONSTEXPR14
+    to_arithmetic_result& operator =(unexpected_type status_)
     {
       conversion_status = status_;
+
+      return *this;
     }
 
   private:
 
-    value_type  conversion_value;
-    status_type conversion_status;
+    value_type      conversion_value;
+    unexpected_type conversion_status;
   };
 
   namespace private_to_arithmetic
@@ -467,7 +451,7 @@ namespace etl
         , is_negative_exponent(false)
         , expecting_sign(true)
         , exponent_value(0)
-        , state(Integral)
+        , state(Parsing_Integral)
         , conversion_status(to_arithmetic_status::Valid)
       {
       }
@@ -482,7 +466,7 @@ namespace etl
         switch (state)
         {
           //***************************
-          case Integral:
+          case Parsing_Integral:
           {
             if (expecting_sign && ((c == Positive_Char) || (c == Negative_Char)))
             {
@@ -493,13 +477,13 @@ namespace etl
             else if ((c == Radix_Point1_Char) || (c == Radix_Point2_Char))
             {
               expecting_sign = false;
-              state = Fractional;
+              state = Parsing_Fractional;
             }
             // Exponential?
             else if (c == Exponential_Char)
             {
               expecting_sign = true;
-              state = Exponential;
+              state = Parsing_Exponential;
             }
             else if (is_valid(c, etl::radix::decimal))
             {
@@ -518,7 +502,7 @@ namespace etl
           }
 
           //***************************
-          case Fractional:
+          case Parsing_Fractional:
           {
             // Radix point?
             if ((c == Radix_Point1_Char) || (c == Radix_Point2_Char))
@@ -530,7 +514,7 @@ namespace etl
             else if (c == Exponential_Char)
             {
               expecting_sign = true;
-              state = Exponential;
+              state = Parsing_Exponential;
             }
             else if (is_valid(c, etl::radix::decimal))
             {
@@ -549,7 +533,7 @@ namespace etl
           }
 
           //***************************
-          case Exponential:
+          case Parsing_Exponential:
           {
             if (expecting_sign && ((c == Positive_Char) || (c == Negative_Char)))
             {
@@ -623,9 +607,9 @@ namespace etl
 
       enum
       {
-        Integral,
-        Fractional,
-        Exponential
+        Parsing_Integral,
+        Parsing_Fractional,
+        Parsing_Exponential
       };
 
       long double divisor;
@@ -680,7 +664,8 @@ namespace etl
                                                                        const etl::radix::value_type         radix,
                                                                        const TAccumulatorType               maximum)
     {
-      etl::to_arithmetic_result<TAccumulatorType> accumulator_result;
+      etl::to_arithmetic_result<TAccumulatorType>   accumulator_result;
+      typedef typename etl::unexpected<etl::to_arithmetic_status> unexpected_type;
 
       typename etl::basic_string_view<TChar>::const_iterator       itr     = view.begin();
       const typename etl::basic_string_view<TChar>::const_iterator itr_end = view.end();
@@ -693,11 +678,13 @@ namespace etl
         ++itr;
       }
 
-      accumulator_result.status(accumulator.status());
-
       if (accumulator.has_value())
       {
-        accumulator_result.value(accumulator.value());
+        accumulator_result = accumulator.value();
+      }
+      else
+      {
+        accumulator_result = unexpected_type(accumulator.status());
       }
 
       return accumulator_result;
@@ -716,7 +703,10 @@ namespace etl
   {
     using namespace etl::private_to_arithmetic;
 
-    etl::to_arithmetic_result<TValue> result;
+    typedef etl::to_arithmetic_result<TValue>     result_type;
+    typedef typename result_type::unexpected_type unexpected_type;
+
+    result_type result;    
 
     if (is_valid_radix(radix))
     {
@@ -725,14 +715,14 @@ namespace etl
 
       if (view.empty())
       {
-        result.status(to_arithmetic_status::Invalid_Format);
+        result = unexpected_type(to_arithmetic_status::Invalid_Format);
       }
       else
       {
         // Make sure we're not trying to put a negative value into an unsigned type.
         if (is_negative && etl::is_unsigned<TValue>::value)
         {
-          result.status(to_arithmetic_status::Signed_To_Unsigned);
+          result = unexpected_type(to_arithmetic_status::Signed_To_Unsigned);
         }
         else
         {
@@ -748,7 +738,7 @@ namespace etl
           // Do the conversion.
           etl::to_arithmetic_result<accumulator_type> accumulator_result = to_arithmetic_integral<TChar>(view, radix, maximum);
 
-          result.status(accumulator_result.status());
+          result = unexpected_type(accumulator_result.error());
 
           // Was it successful?
           if (accumulator_result.has_value())
@@ -757,14 +747,14 @@ namespace etl
             const uvalue_t uvalue = static_cast<uvalue_t>(accumulator_result.value());
 
             // Convert from the accumulator type to the desired type.
-            result.value(is_negative ? static_cast<TValue>(0) - uvalue : etl::bit_cast<TValue>(uvalue));
+            result = (is_negative ? static_cast<TValue>(0) - uvalue : etl::bit_cast<TValue>(uvalue));
           }
         }
       }
     }
     else
     {
-      result.status(to_arithmetic_status::Invalid_Radix);
+      result = unexpected_type(to_arithmetic_status::Invalid_Radix);
     }
 
     return result;
@@ -913,11 +903,14 @@ namespace etl
   {
     using namespace etl::private_to_arithmetic;
 
-    etl::to_arithmetic_result<TValue> result;
+    typedef etl::to_arithmetic_result<TValue>     result_type;
+    typedef typename result_type::unexpected_type unexpected_type;
+
+    result_type result;
 
     if (view.empty())
     {
-      result.status(to_arithmetic_status::Invalid_Format);
+      result = unexpected_type(to_arithmetic_status::Invalid_Format);
     }
     else
     {
@@ -932,7 +925,7 @@ namespace etl
         ++itr;
       }
 
-      result.status(accumulator.status());
+      result = unexpected_type(accumulator.status());
 
       if (result.has_value())
       {
@@ -945,16 +938,16 @@ namespace etl
         if ((value == etl::numeric_limits<TValue>::infinity()) ||
             (value == -etl::numeric_limits<TValue>::infinity()))
         {
-          result.status(to_arithmetic_status::Overflow);
+          result = unexpected_type(to_arithmetic_status::Overflow);
         }
         // Check for NaN.
         else if (value != value)
         {
-          result.status(to_arithmetic_status::Invalid_Float);
+          result = unexpected_type(to_arithmetic_status::Invalid_Float);
         }
         else
         {
-          result.value(value);
+          result = value;
         }
       }
     }
