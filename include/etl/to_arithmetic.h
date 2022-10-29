@@ -87,7 +87,6 @@ namespace etl
     //*******************************************
     /// Default constructor.
     //*******************************************
-    ETL_NODISCARD
     ETL_CONSTEXPR14
     to_arithmetic_result()
       : conversion_value(static_cast<value_type>(0))
@@ -98,7 +97,6 @@ namespace etl
     //*******************************************
     /// Copy constructor.
     //*******************************************
-    ETL_NODISCARD
     ETL_CONSTEXPR14
     to_arithmetic_result(const to_arithmetic_result& other)
       : conversion_value(other.conversion_value)
@@ -348,7 +346,6 @@ namespace etl
     struct integral_accumulator
     {
       //*********************************
-      ETL_NODISCARD 
       ETL_CONSTEXPR14
       integral_accumulator(etl::radix::value_type radix_, TValue maximum_)
         : radix(radix_)
@@ -442,7 +439,6 @@ namespace etl
     struct floating_point_accumulator
     {
       //*********************************
-      ETL_NODISCARD
       ETL_CONSTEXPR14
       floating_point_accumulator()
         : divisor(1)
