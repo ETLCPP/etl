@@ -164,7 +164,7 @@ namespace etl
     }
 
     //*******************************************
-    /// 
+    /// Assignment from a value.
     //*******************************************
     ETL_CONSTEXPR14
     to_arithmetic_result& operator =(value_type value_)
@@ -175,7 +175,7 @@ namespace etl
     }
 
     //*******************************************
-    /// 
+    /// Assignment from an unexpected_type.
     //*******************************************
     ETL_CONSTEXPR14
     to_arithmetic_result& operator =(unexpected_type status_)
@@ -300,7 +300,8 @@ namespace etl
     }
 
     //***************************************************************************
-    /// 
+    /// Checks to see if the text starts with a '+' or '-' prefix, and modifies the view to remove it.
+    /// Returns true if the text has a '-' prefix.
     //***************************************************************************
     template <typename TChar>
     ETL_NODISCARD
@@ -326,7 +327,7 @@ namespace etl
     }
  
     //***************************************************************************
-    /// 
+    /// Checks to see if the radix is valid.
     //***************************************************************************
     ETL_NODISCARD
     inline
@@ -775,9 +776,9 @@ namespace etl
   ETL_NODISCARD
   ETL_CONSTEXPR14 
   typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
-    to_arithmetic(const etl::basic_string_view<TChar>& view, const etl::basic_format_spec<etl::ibasic_string<TChar> >& spec)
+    to_arithmetic(const etl::basic_string_view<TChar>& view, const typename etl::private_basic_format_spec::base_spec& spec)
   {
-    return etl::to_arithmetic<TValue, TChar>(view, spec.get_base());
+    return etl::to_arithmetic<TValue, TChar>(view, spec.base);
   }
 
   //***************************************************************************
@@ -817,42 +818,6 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Text to integral from pointer and radix value type.
-  //***************************************************************************
-  template <typename TValue, typename TChar>
-  ETL_NODISCARD
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
-    to_arithmetic(const TChar* cp, const etl::radix::value_type radix)
-  {
-    return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(cp, etl::strlen<TChar>(cp), radix));
-  }
-
-  //***************************************************************************
-  /// Text to integral from pointer and default decimal radix.
-  //***************************************************************************
-  template <typename TValue, typename TChar>
-  ETL_NODISCARD
-  ETL_CONSTEXPR14 
-  typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
-    to_arithmetic(const TChar* cp)
-  {
-    return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(cp, etl::strlen<TChar>(cp)), etl::radix::decimal);;
-  }
-
-  //***************************************************************************
-  /// Text to integral from pointer and radix format spec.
-  //***************************************************************************
-  template <typename TValue, typename TChar>
-  ETL_NODISCARD
-  ETL_CONSTEXPR14 
-  typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
-    to_arithmetic(const TChar* cp, const typename etl::private_basic_format_spec::base_spec& spec)
-  {
-    return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(cp, etl::strlen<TChar>(cp)), spec.base);;
-  }
-
-  //***************************************************************************
   /// Text to integral from string and radix value type.
   //***************************************************************************
   template <typename TValue, typename TChar>
@@ -869,8 +834,8 @@ namespace etl
   //***************************************************************************
   template <typename TValue, typename TChar>
   ETL_NODISCARD
-  ETL_CONSTEXPR14 
-  typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
+    ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
     to_arithmetic(const etl::ibasic_string<TChar>& str)
   {
     return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(str), etl::radix::decimal);;
@@ -883,7 +848,7 @@ namespace etl
   ETL_NODISCARD
   ETL_CONSTEXPR14 
   typename etl::enable_if<etl::is_integral<TValue>::value, etl::to_arithmetic_result<TValue> >::type
-    to_arithmetic(const etl::ibasic_string<TChar>& str, const etl::basic_format_spec<etl::ibasic_string<TChar> >& spec)
+    to_arithmetic(const etl::ibasic_string<TChar>& str, const typename etl::private_basic_format_spec::base_spec& spec)
   {
     return etl::to_arithmetic<TValue, TChar>(etl::basic_string_view<TChar>(str), spec);;
   }

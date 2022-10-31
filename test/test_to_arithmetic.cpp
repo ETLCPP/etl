@@ -1005,6 +1005,29 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_all_api_variants)
+    {
+      const Text text(STR("83"));
+
+      using ETLText = etl::string<2>;
+
+      // Default radix
+      CHECK_EQUAL(int(83), int(etl::to_arithmetic<int8_t>(etl::string_view(text.c_str(), text.size())).value()));
+      CHECK_EQUAL(int(83), int(etl::to_arithmetic<int8_t>(text.c_str(), text.size()).value()));
+      CHECK_EQUAL(int(83), int(etl::to_arithmetic<int8_t>(ETLText(text.c_str(), text.size())).value()));
+
+      // Format spec radix
+      CHECK_EQUAL(int(83), int(etl::to_arithmetic<int8_t>(etl::string_view(text.c_str(), text.size()), etl::dec).value()));
+      CHECK_EQUAL(int(83), int(etl::to_arithmetic<int8_t>(text.c_str(), text.size(), etl::dec).value()));
+      CHECK_EQUAL(int(83), int(etl::to_arithmetic<int8_t>(ETLText(text.c_str(), text.size()), etl::dec).value()));
+
+      // Numeric radix
+      CHECK_EQUAL(int(83), int(etl::to_arithmetic<int8_t>(etl::string_view(text.c_str(), text.size()), etl::radix::decimal).value()));
+      CHECK_EQUAL(int(83), int(etl::to_arithmetic<int8_t>(text.c_str(), text.size(), etl::radix::decimal).value()));
+      CHECK_EQUAL(int(83), int(etl::to_arithmetic<int8_t>(ETLText(text.c_str(), text.size()), etl::radix::decimal).value()));
+    }
+
+    //*************************************************************************
     TEST(test_constexpr_integral)
     {
       constexpr Text::const_pointer text{ STR("123") };
