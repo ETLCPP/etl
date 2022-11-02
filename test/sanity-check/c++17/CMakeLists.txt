@@ -129,6 +129,7 @@ target_sources(t17 PRIVATE etl_profile.h
         ../enum_type.h.t.cpp
         ../error_handler.h.t.cpp
         ../exception.h.t.cpp
+        ../expected.h.t.cpp
         ../factorial.h.t.cpp
         ../fibonacci.h.t.cpp
         ../file_error_numbers.h.t.cpp

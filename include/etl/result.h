@@ -54,6 +54,9 @@ namespace etl
   {
   public:
 
+    typedef TValue value_type;
+    typedef TError error_type;
+
     //*******************************************
     /// Cannot be default constructed
     //*******************************************
@@ -245,6 +248,9 @@ namespace etl
   {
   public:
 
+    typedef void   value_type;
+    typedef TError error_type;
+
     //*******************************************
     /// Default Constructor
     //*******************************************
@@ -280,8 +286,8 @@ namespace etl
     /// Move construct from error
     //*******************************************
 #if ETL_CPP11_SUPPORTED
-    result(TError&& err_)
-      : err(etl::move(err_))
+    result(TError&& error)
+      : data(etl::move(error))
     {
     }
 #endif
