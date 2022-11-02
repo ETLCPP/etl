@@ -41,6 +41,8 @@ SOFTWARE.
 #include <stdint.h>
 #include <vector>
 
+#include <memory>
+
 
 namespace
 {
@@ -1300,6 +1302,47 @@ namespace
       CHECK_EQUAL(uint32_t(0x29), uint32_t(*p1));
       CHECK((reinterpret_cast<const char*>(data) + 18) == p1);
       CHECK((reinterpret_cast<const char*>(data) + 32) == p2);
+    }
+
+    //*************************************************************************
+    class Base 
+    {
+    public:
+      virtual ~Base() {};
+      virtual void function() = 0;
+    };
+
+    static bool function_was_called = false;
+
+    class Derived : public Base 
+    {
+    public:
+      Derived() 
+      {
+        function_was_called = false;
+      }
+
+      void function() 
+      {
+        function_was_called = true;
+      }
+    };
+
+    void call(etl::unique_ptr<Base> ptr) 
+    {
+      ptr->function();
+    }
+
+    TEST(test_derived_type)
+    {
+      CHECK(!function_was_called);
+
+      etl::unique_ptr<Derived> ptr(new Derived());
+      CHECK(ptr.get() != ETL_NULLPTR);
+      
+      call(etl::move(ptr));
+      CHECK(function_was_called);
+      CHECK(ptr.get() == ETL_NULLPTR);
     }
   };
 }

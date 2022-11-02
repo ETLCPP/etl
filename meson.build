@@ -12,10 +12,8 @@ project('etl',
 )
 
 compile_args = []
-if get_option('use_stl')
-    compile_args += '-DETL_NO_STL=0'
-elif
-    compile_args += '-DETL_NO_STL=1'
+if not get_option('use_stl')
+    compile_args += '-DETL_NO_STL'
 endif
 
 etl_dep = declare_dependency(

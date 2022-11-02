@@ -119,6 +119,13 @@ SOFTWARE.
     #endif
   #endif
 
+  #if !defined(ETL_COMPILER_TYPE_DETECTED) && !defined(ETL_COMPILER_TASKING)
+    #if defined(__TASKING__)
+      #define ETL_COMPILER_TASKING
+      #define ETL_COMPILER_TYPE_DETECTED
+    #endif
+  #endif
+
   #if !defined(ETL_COMPILER_TYPE_DETECTED)
     #define ETL_COMPILER_GENERIC
   #endif
@@ -185,6 +192,12 @@ SOFTWARE.
   #define ETL_USING_TEXAS_INSTRUMENTS_COMPILER 1
 #else
   #define ETL_USING_TEXAS_INSTRUMENTS_COMPILER 0
+#endif
+
+#if defined(ETL_COMPILER_TASKING)
+  #define ETL_USING_TASKING_COMPILER 1
+#else
+  #define ETL_USING_TASKING_COMPILER 0
 #endif
 
 #if defined(ETL_COMPILER_GENERIC)

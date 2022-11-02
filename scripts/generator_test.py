@@ -37,6 +37,9 @@ for generator in generator_folder.iterdir():
         print(f"Generator for {output_name} does not match file contents")
         all_ok = False
 
-if not all_ok:
+if all_ok:
+    print(f"\nAll generator tests passed\n")
+    exit(0)
+else:
+    print(f"\nGenerator tests failed\n")
     exit(1)
-exit(0)

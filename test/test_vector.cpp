@@ -635,31 +635,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_emplace_back)
-    {
-      Compare_Data compare_data;
-      Data data;
-
-      for (int i = 0; i < int(SIZE); ++i)
-      {
-        compare_data.emplace_back(i);
-      }
-
-      for (int i = 0; i < int(SIZE); ++i)
-      {
-        data.emplace_back(i);
-      }
-
-      CHECK_EQUAL(compare_data.size(), data.size());
-
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 compare_data.begin());
-
-      CHECK(is_equal);
-    }
-
-    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_back_literal)
     {
       Compare_Data compare_data;
@@ -695,6 +670,41 @@ namespace
       }
 
       CHECK_THROW(data.push_back(SIZE), etl::vector_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back)
+    {
+      Compare_Data compare_data;
+      Data data;
+
+      for (int i = 0; i < int(SIZE); ++i)
+      {
+        compare_data.emplace_back(i);
+      }
+
+      for (int i = 0; i < int(SIZE); ++i)
+      {
+        data.emplace_back(i);
+      }
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      bool is_equal = std::equal(data.begin(),
+        data.end(),
+        compare_data.begin());
+
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back_return)
+    {
+      Data data;
+
+      data.emplace_back(24);
+      auto back = data.emplace_back(42);
+      CHECK_EQUAL(back, data.back());
     }
 
     //*************************************************************************

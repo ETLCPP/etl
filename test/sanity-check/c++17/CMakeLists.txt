@@ -17,11 +17,6 @@ if (ETL_USE_TYPE_TRAITS_BUILTINS)
 	add_definitions(-DETL_USE_TYPE_TRAITS_BUILTINS)
 endif()
 
-if (ETL_USE_MEM_BUILTINS)
-	message(STATUS "Compiling for built-in memory functions")
-	add_definitions(-DETL_USE_MEM_BUILTINS)
-endif()
-
 if (ETL_USER_DEFINED_TYPE_TRAITS)
 	message(STATUS "Compiling for user defined type traits")
 	add_definitions(-DETL_USER_DEFINED_TYPE_TRAITS)
@@ -134,6 +129,7 @@ target_sources(t17 PRIVATE etl_profile.h
         ../enum_type.h.t.cpp
         ../error_handler.h.t.cpp
         ../exception.h.t.cpp
+        ../expected.h.t.cpp
         ../factorial.h.t.cpp
         ../fibonacci.h.t.cpp
         ../file_error_numbers.h.t.cpp

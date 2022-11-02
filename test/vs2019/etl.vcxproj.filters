@@ -1344,6 +1344,9 @@
     <ClInclude Include="..\..\include\etl\optional.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\optional.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -2226,9 +2229,6 @@
       <Filter>Tests\Misc</Filter>
     </ClCompile>
     <ClCompile Include="..\test_parameter_type.cpp">
-      <Filter>Tests\Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_result.cpp">
       <Filter>Tests\Misc</Filter>
     </ClCompile>
     <ClCompile Include="..\test_utility.cpp">
@@ -3391,6 +3391,15 @@
     </ClCompile>
     <ClCompile Include="..\test_optional.cpp">
       <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_result.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_expected.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\expected.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

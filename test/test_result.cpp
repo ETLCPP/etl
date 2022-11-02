@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 John Wellbelove
+Copyright(c) 2022 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -85,69 +85,21 @@ namespace
     std::string e;
   };
 
-  using Result  = etl::result<Value, Error>;
-  using ResultV = etl::result<void, Error>;
-  using ResultM = etl::result<ValueM, ErrorM>;
+  using ResultValueError = etl::result<Value,  Error>;
+  using ResultVoidError  = etl::result<void,   Error>;
+  using ResultValueVoid  = etl::result<Value,  void>;
+  using ResultM          = etl::result<ValueM, ErrorM>;
 }
-
-// Definitions for when the STL and compiler built-ins are not available.
-#if ETL_NOT_USING_STL && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
-
-using etl::is_copy_constructible;
-using etl::is_move_constructible;
-
-//*************************
-template <>
-struct etl::is_copy_constructible<Value> : public etl::true_type
-{
-};
-
-template <>
-struct etl::is_move_constructible<Value> : public etl::true_type
-{
-};
-
-template <>
-struct etl::is_copy_constructible<Error> : public etl::true_type
-{
-};
-
-template <>
-struct etl::is_move_constructible<Error> : public etl::true_type
-{
-};
-
-//*************************
-template <>
-struct etl::is_copy_constructible<ValueM> : public etl::false_type
-{
-};
-
-template <>
-struct etl::is_move_constructible<ValueM> : public etl::false_type
-{
-};
-
-template <>
-struct etl::is_copy_constructible<ErrorM> : public etl::false_type
-{
-};
-
-template <>
-struct etl::is_move_constructible<ErrorM> : public etl::false_type
-{
-};
-#endif
 
 namespace
 {
   SUITE(test_result)
   {
     //*************************************************************************
-    TEST(test_constructor_for_result_with_value)
+    TEST(test_construct_result_value_error_type_with_value)
     {
       Value input = { "value 1" };
-      Result result(input);
+      ResultValueError result(input);
 
       Value output = result.value();
 
@@ -157,10 +109,10 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_constructor_for_const_result_with_value)
+    TEST(test_construct_const_result_value_error_type_with_value)
     {
       Value input = { "value 1" };
-      const Result result(input);
+      const ResultValueError result(input);
 
       const Value& output = result.value();
 
@@ -170,7 +122,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_constructor_for_moveable_result_with_value)
+    TEST(test_construct_moveable_result_value_error_type_with_value)
     {
       ValueM input = { "value 1" };
       ResultM result(etl::move(input));
@@ -183,10 +135,10 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_constructor_for_result_with_error)
+    TEST(test_construct_result_value_error_type_with_error)
     {
       Error input = { "error 1" };
-      Result result(input);
+      ResultValueError result(input);
 
       Error output = result.error();
 
@@ -196,10 +148,10 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_constructor_for_const_result_with_error)
+    TEST(test_construct_const_result_value_error_type_with_error)
     {
       Error input = { "error 1" };
-      const Result result(input);
+      const ResultValueError result(input);
 
       const Error& output = result.error();
 
@@ -209,7 +161,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_constructor_for_moveable_result_with_error)
+    TEST(test_construct_moveable_result_value_error_type_with_error)
     {
       ErrorM input = { "error 1" };
       ResultM result(etl::move(input));
@@ -222,28 +174,28 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_constructor_for_result_void_value_with_value)
+    TEST(test_default_construct_result_void_error_type)
     {
-       ResultV result;
+       ResultVoidError result;
 
-       CHECK(!result.is_value());
-       CHECK(result.is_error());
+       CHECK(result.is_value());
+       CHECK(!result.is_error());
     }
 
     //*************************************************************************
-    TEST(test_constructor_for_const_result_void_value_with_value)
+    TEST(test_default_construct_const_result_void_error_type)
     {
-       const ResultV result;
+       const ResultVoidError result;
 
-       CHECK(!result.is_value());
-       CHECK(result.is_error());
+       CHECK(result.is_value());
+       CHECK(!result.is_error());
     }
 
     //*************************************************************************
-    TEST(test_constructor_for_result_void_value_with_error)
+    TEST(test_construct_result_void_error_type_with_error)
     {
       Error input = { "error 1" };
-      ResultV result(input);
+      ResultVoidError result(input);
 
       Error output = result.error();
 
@@ -253,10 +205,10 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_constructor_for_const_result_void_value_with_error)
+    TEST(test_construct_const_result_void_error_type_with_error)
     {
       Error input = { "error 1" };
-      const ResultV result(input);
+      const ResultVoidError result(input);
 
       const Error& output = result.error();
 
@@ -266,10 +218,10 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_constructor_for_moveable_result_void_value_with_error)
+    TEST(test_construct_moveable_result_void_error_type_with_error)
     {
       Error input = { "error 1" };
-      ResultV result(etl::move(input));
+      ResultVoidError result(etl::move(input));
 
       Error output = etl::move(result.error());
 
@@ -279,25 +231,95 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_constructor_for_moveable_const_result_void_value_with_error)
+    TEST(test_construct_moveable_const_result_void_error_type_with_error)
     {
       Error input = { "error 1" };
-      const ResultV result(etl::move(input));
+      const ResultVoidError result(etl::move(input));
 
       Error output = etl::move(result.error());
 
       CHECK(!result.is_value());
       CHECK(result.is_error());
       CHECK(output.e == std::string("error 1"));
+    }
+
+    //*************************************************************************
+    TEST(test_default_construct_result_value_void_type)
+    {
+      ResultValueVoid result;
+
+      CHECK(!result.is_value());
+      CHECK(result.is_error());
+    }
+
+    //*************************************************************************
+    TEST(test_default_construct_const_result_value_void_type)
+    {
+      const ResultValueVoid result;
+
+      CHECK(!result.is_value());
+      CHECK(result.is_error());
+    }
+
+    //*************************************************************************
+    TEST(test_construct_result_value_void_type_with_value)
+    {
+      Value input = { "value 1" };
+      ResultValueVoid result(input);
+
+      Value output = result.value();
+
+      CHECK(result.is_value());
+      CHECK(!result.is_error());
+      CHECK(output.v == input.v);
+    }
+
+    //*************************************************************************
+    TEST(test_construct_const_result_value_void_type_with_value)
+    {
+      Value input = { "value 1" };
+      const ResultValueVoid result(input);
+
+      const Value output = result.value();
+
+      CHECK(result.is_value());
+      CHECK(!result.is_error());
+      CHECK(output.v == input.v);
+    }
+
+    //*************************************************************************
+    TEST(test_construct_moveable_result_value_void_type_with_value)
+    {
+      Value input = { "value 1" };
+      ResultValueVoid result(etl::move(input));
+
+      Value output = etl::move(result.value());
+
+      CHECK(result.is_value());
+      CHECK(!result.is_error());
+      CHECK(output.v == std::string("value 1"));
+    }
+
+    //*************************************************************************
+    TEST(test_construct_moveable_const_result_value_void_type_with_value)
+    {
+      Value input = { "value 1" };
+      const ResultValueVoid result(etl::move(input));
+
+      Value output = etl::move(result.value());
+
+      CHECK(result.is_value());
+      CHECK(!result.is_error());
+      CHECK(output.v == std::string("value 1"));
     }
 
     //*************************************************************************
     TEST(test_copy_construct_result)
     {
       Value input = { "value 1" };
-      Result result(input);
+      ResultValueError result(input);
 
-      Result result2(result);
+      ResultValueError result2(result);
 
       Value output = result2.value();
 
@@ -312,9 +334,9 @@ namespace
     TEST(test_move_construct_result)
     {
       Value input = { "value 1" };
-      Result result(input);
+      ResultValueError result(input);
 
-      Result result2(etl::move(result));
+      ResultValueError result2(etl::move(result));
 
       Value output = result.value();
       Value output2 = result2.value();
@@ -331,10 +353,10 @@ namespace
     TEST(test_move_assign_result)
     {
       Value input = { "value 1" };
-      Result result(input);
+      ResultValueError result(input);
 
       Value input2 = { "value 2" };
-      Result result2(result);
+      ResultValueError result2(result);
 
       result2 = etl::move(result);
 

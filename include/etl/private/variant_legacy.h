@@ -954,22 +954,22 @@ namespace etl
       return get<typename variant_alternative<tIndex, TVariant>::type>(variant);
     }
 
-#define ETL_GEN_LEGACY_VISIT(VISITQUAL, VARIANTQUAL)                             \
-  template <typename TReturn, typename TVisitor, typename TVariant>              \
-  static TReturn visit(TVisitor VISITQUAL visitor, TVariant VARIANTQUAL variant) \
-  {                                                                              \
-    switch (variant.index())                                                     \
-    {                                                                            \
-      case 0: return static_cast<TReturn>(visitor(get<0>(variant)));             \
-      case 1: return static_cast<TReturn>(visitor(get<1>(variant)));             \
-      case 2: return static_cast<TReturn>(visitor(get<2>(variant)));             \
-      case 3: return static_cast<TReturn>(visitor(get<3>(variant)));             \
-      case 4: return static_cast<TReturn>(visitor(get<4>(variant)));             \
-      case 5: return static_cast<TReturn>(visitor(get<5>(variant)));             \
-      case 6: return static_cast<TReturn>(visitor(get<6>(variant)));             \
-      case 7: return static_cast<TReturn>(visitor(get<7>(variant)));             \
-      default: ETL_ASSERT(false, ETL_ERROR(bad_variant_access));                 \
-    }                                                                            \
+#define ETL_GEN_LEGACY_VISIT(VISITQUAL, VARIANTQUAL)                                       \
+  template <typename TReturn, typename TVisitor, typename TVariant>                        \
+  static TReturn visit(TVisitor VISITQUAL visitor, TVariant VARIANTQUAL variant)           \
+  {                                                                                        \
+    switch (variant.index())                                                               \
+    {                                                                                      \
+      case 0: return static_cast<TReturn>(visitor(get<0>(variant)));                       \
+      case 1: return static_cast<TReturn>(visitor(get<1>(variant)));                       \
+      case 2: return static_cast<TReturn>(visitor(get<2>(variant)));                       \
+      case 3: return static_cast<TReturn>(visitor(get<3>(variant)));                       \
+      case 4: return static_cast<TReturn>(visitor(get<4>(variant)));                       \
+      case 5: return static_cast<TReturn>(visitor(get<5>(variant)));                       \
+      case 6: return static_cast<TReturn>(visitor(get<6>(variant)));                       \
+      case 7: return static_cast<TReturn>(visitor(get<7>(variant)));                       \
+      default: ETL_ASSERT_FAIL_AND_RETURN_VALUE(ETL_ERROR(bad_variant_access), TReturn()); \
+    }                                                                                      \
   }
 
     ETL_GEN_LEGACY_VISIT(&, &)

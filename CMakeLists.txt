@@ -8,7 +8,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/helpers.cmake)
 set(MSG_PREFIX "etl |")
 determine_version_with_git(${GIT_DIR_LOOKUP_POLICY})
 if(NOT ETL_VERSION)
-    determine_version("version.txt")
+    determine_version_with_file("version.txt")
 endif()
 
 project(etl VERSION ${ETL_VERSION} LANGUAGES CXX)
@@ -73,9 +73,9 @@ if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
         "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
         DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake)
     install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/etl DESTINATION include)
-endif()
-
-if (BUILD_TESTS)
-  enable_testing()
-  add_subdirectory(test) 
+    
+    if (BUILD_TESTS)
+        enable_testing()
+        add_subdirectory(test) 
+    endif()
 endif()

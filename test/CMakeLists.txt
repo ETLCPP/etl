@@ -102,6 +102,7 @@ add_executable(etl_tests
 	test_error_handler.cpp
 	test_etl_traits.cpp
 	test_exception.cpp
+	test_expected.cpp
 	test_fixed_iterator.cpp
 	test_fixed_sized_memory_block_allocator.cpp
 	test_flags.cpp
@@ -284,11 +285,6 @@ if (ETL_USE_TYPE_TRAITS_BUILTINS)
 	target_compile_definitions(etl_tests PRIVATE -DETL_USE_TYPE_TRAITS_BUILTINS)
 endif()
 
-if (ETL_USE_MEM_BUILTINS)
-	message(STATUS "Compiling for built-in memory functions")
-	target_compile_definitions(etl_tests PRIVATE -DETL_USE_MEM_BUILTINS)
-endif()
-
 if (ETL_USER_DEFINED_TYPE_TRAITS)
 	message(STATUS "Compiling for user defined type traits")
 	target_compile_definitions(etl_tests PRIVATE -DETL_USER_DEFINED_TYPE_TRAITS)
@@ -329,3 +325,4 @@ add_test(etl_unit_tests etl_tests)
 add_custom_target(test_verbose COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
 
 set_property(TARGET etl_tests PROPERTY CXX_STANDARD 17)
+ 

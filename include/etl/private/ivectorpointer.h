@@ -354,9 +354,11 @@ namespace etl
     /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
     ///\param value The value to add.
     //*********************************************************************
-    void emplace_back(parameter_t value)
+    reference emplace_back(parameter_t value)
     {
       base_t::emplace_back(value);
+
+      return back();
     }
 
     //*************************************************************************

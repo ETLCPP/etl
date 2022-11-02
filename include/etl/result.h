@@ -36,6 +36,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "variant.h"
+#include "optional.h"
 
 #if ETL_CPP11_NOT_SUPPORTED
   #if !defined(ETL_IN_UNIT_TEST)
@@ -52,6 +53,9 @@ namespace etl
   class ETL_DEPRECATED result
   {
   public:
+
+    typedef TValue value_type;
+    typedef TError error_type;
 
     //*******************************************
     /// Cannot be default constructed
@@ -181,7 +185,7 @@ namespace etl
     //*******************************************
     bool is_value() const
     {
-      return (data.index() == 0U);
+      return has_value();
     }
 
     //*******************************************
@@ -189,7 +193,7 @@ namespace etl
     //*******************************************
     bool is_error() const
     {
-      return (data.index() == 1U);
+      return !has_value();
     }
 
     //*******************************************
@@ -207,7 +211,7 @@ namespace etl
     //*******************************************
     TValue&& value()
     {
-      return etl::move(etl::get<TValue>(etl::move(data)));
+      return etl::move(etl::get<TValue>(data));
     }
 
     //*******************************************
@@ -226,7 +230,7 @@ namespace etl
 #if ETL_CPP11_SUPPORTED
     TError&& error()
     {
-      return etl::move(etl::get<TError>(etl::move(data)));
+      return etl::move(etl::get<TError>(data));
     }
 #endif
 
@@ -244,11 +248,13 @@ namespace etl
   {
   public:
 
+    typedef void   value_type;
+    typedef TError error_type;
+
     //*******************************************
     /// Default Constructor
     //*******************************************
     result()
-      : err(TError())
     {
     }
 
@@ -256,7 +262,7 @@ namespace etl
     /// Copy constructor
     //*******************************************
     result(const result& other)
-      : err(other.err)
+      : data(other.data)
     {
     }
 
@@ -264,15 +270,15 @@ namespace etl
     /// Move constructor
     //*******************************************
     result(result&& other)
-      : err(etl::move(other.err))
+      : data(etl::move(other.data))
     {
     }
 
     //*******************************************
     /// Construct from error
     //*******************************************
-    result(const TError& err_)
-      : err(err_)
+    result(const TError& error)
+      : data(error)
     {
     }
 
@@ -280,8 +286,8 @@ namespace etl
     /// Move construct from error
     //*******************************************
 #if ETL_CPP11_SUPPORTED
-    result(TError&& err_)
-      : err(etl::move(err_))
+    result(TError&& error)
+      : data(etl::move(error))
     {
     }
 #endif
@@ -289,9 +295,9 @@ namespace etl
     //*******************************************
     /// Copy assign from error
     //*******************************************
-    result& operator =(const TError& err_)
+    result& operator =(const TError& error)
     {
-      err = err_;
+      data = error;
       return *this;
     }
 
@@ -301,7 +307,7 @@ namespace etl
 #if ETL_CPP11_SUPPORTED
     result& operator =(TError&& err_)
     {
-      err = etl::move(err_);
+      data = etl::move(error);
       return *this;
     }
 #endif
@@ -309,9 +315,17 @@ namespace etl
     //*******************************************
     /// <b>true</b> if result contains a value
     //*******************************************
+    bool has_value() const
+    {
+      return !data.has_value();
+    }
+
+    //*******************************************
+    /// <b>true</b> if result contains a value
+    //*******************************************
     bool is_value() const
     {
-      return false;
+      return has_value();
     }
 
     //*******************************************
@@ -319,7 +333,7 @@ namespace etl
     //*******************************************
     bool is_error() const
     {
-      return true;
+      return !has_value();
     }
 
     //*******************************************
@@ -328,7 +342,7 @@ namespace etl
     //*******************************************
     const TError& error() const
     {
-      return err;
+      return data.value();
     }
 
     //*******************************************
@@ -338,13 +352,126 @@ namespace etl
 #if ETL_CPP11_SUPPORTED
     TError&& error()
     {
-      return etl::move(err);
+      return etl::move(data.value());
     }
 #endif
 
   private:
 
-    TError err;
+    etl::optional<TError> data;
+  };
+
+  //*****************************************************************************
+  /// Result type.
+  /// Specialisation for void error type.
+  //*****************************************************************************
+  template<typename TValue>
+  class result<TValue, void>
+  {
+  public:
+
+    //*******************************************
+    /// Default Constructor
+    //*******************************************
+    result()
+    {
+    }
+
+    //*******************************************
+    /// Copy constructor
+    //*******************************************
+    result(const result& other)
+      : data(other.data)
+    {
+    }
+
+    //*******************************************
+    /// Move constructor
+    //*******************************************
+    result(result&& other)
+      : data(etl::move(other.data))
+    {
+    }
+
+    //*******************************************
+    /// Construct from error
+    //*******************************************
+    result(const TValue& value)
+      : data(value)
+    {
+    }
+
+    //*******************************************
+    /// Move construct from error
+    //*******************************************
+    result(TValue&& value)
+      : data(etl::move(value))
+    {
+    }
+
+    //*******************************************
+    /// Copy assign from error
+    //*******************************************
+    result& operator =(const TValue& value)
+    {
+      data = value;
+      return *this;
+    }
+
+    //*******************************************
+    /// Move assign from error
+    //*******************************************
+    result& operator =(TValue&& value)
+    {
+      data = etl::move(value);
+      return *this;
+    }
+
+    //*******************************************
+    /// <b>true</b> if result contains a value
+    //*******************************************
+    bool has_value() const
+    {
+      return data.has_value();
+    }
+
+    //*******************************************
+    /// <b>true</b> if result contains a value
+    //*******************************************
+    bool is_value() const
+    {
+      return has_value();
+    }
+
+    //*******************************************
+    /// <b>true</b> if result contains an error
+    //*******************************************
+    bool is_error() const
+    {
+      return !has_value();
+    }
+
+    //*******************************************
+    /// Returns a const reference to the error.
+    /// Undefined if the result does not contain an error.
+    //*******************************************
+    const TValue& value() const
+    {
+      return data.value();
+    }
+
+    //*******************************************
+    /// Returns an rvalue reference to the error.
+    /// Undefined if the result does not contain an error.
+    //*******************************************
+    TValue&& value()
+    {
+      return etl::move(data.value());
+    }
+
+  private:
+
+    etl::optional<TValue> data;
   };
 }
 

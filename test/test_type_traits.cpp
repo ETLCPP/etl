@@ -128,11 +128,6 @@ struct etl::is_assignable<Copyable, Copyable> : public etl::true_type
 };
 
 template <>
-struct etl::is_constructible<Copyable> : public etl::true_type
-{
-};
-
-template <>
 struct etl::is_copy_constructible<Copyable> : public etl::true_type
 {
 };
@@ -149,11 +144,6 @@ struct etl::is_assignable<Moveable, Moveable> : public etl::true_type
 };
 
 template <>
-struct etl::is_constructible<Moveable> : public etl::true_type
-{
-};
-
-template <>
 struct etl::is_copy_constructible<Moveable> : public etl::false_type
 {
 };
@@ -166,11 +156,6 @@ struct etl::is_move_constructible<Moveable> : public etl::true_type
 //*************************
 template <>
 struct etl::is_assignable<MoveableCopyable, MoveableCopyable> : public etl::true_type
-{
-};
-
-template <>
-struct etl::is_constructible<MoveableCopyable> : public etl::true_type
 {
 };
 
