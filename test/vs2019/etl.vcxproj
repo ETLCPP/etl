@@ -2439,11 +2439,13 @@
     <ClInclude Include="..\..\include\etl\crc8_maxim.h" />
     <ClInclude Include="..\..\include\etl\crc8_rohc.h" />
     <ClInclude Include="..\..\include\etl\crc8_wcdma.h" />
+    <ClInclude Include="..\..\include\etl\expected.h" />
     <ClInclude Include="..\..\include\etl\message_broker.h" />
     <ClInclude Include="..\..\include\etl\poly_span.h" />
     <ClInclude Include="..\..\include\etl\private\bitset_legacy.h" />
     <ClInclude Include="..\..\include\etl\private\bitset_new.h" />
-    <ClInclude Include="..\..\include\etl\private\diagnostic_pessimizing-move_push.h" />
+    <ClInclude Include="..\..\include\etl\private\diagnostic_uninitialized_push.h" />
+    <ClInclude Include="..\..\include\etl\private\diagnostic_pessimizing_move_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_pop.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_self_assign_overloaded_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_unused_function_push.h" />
@@ -2587,6 +2589,7 @@
     <ClInclude Include="..\..\include\etl\task.h" />
     <ClInclude Include="..\..\include\etl\threshold.h" />
     <ClInclude Include="..\..\include\etl\timer.h" />
+    <ClInclude Include="..\..\include\etl\to_arithmetic.h" />
     <ClInclude Include="..\..\include\etl\to_string.h" />
     <ClInclude Include="..\..\include\etl\to_u16string.h" />
     <ClInclude Include="..\..\include\etl\to_u32string.h" />
@@ -10193,6 +10196,34 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MSVC Debug - Appveyor|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug64|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\sanity-check\to_arithmetic.h.t.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Small Strings|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No Tests|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MSVC Debug - Appveyor|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MSVC Debug - No STL - Appveyor|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Force Constexpr Algorithms|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM C++20|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - No Unit Tests|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Built-ins|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Force Built-ins|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug LLVM - No STL - Built-ins|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug64|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - String Truncation Is Error|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Clang|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug - No STL - Force No Advanced|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Force cpp03|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Intel - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Intel|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC  - No Checks|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - Force C++03|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\sanity-check\to_string.h.t.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Built-ins|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No STL - Force Built-ins|Win32'">true</ExcludedFromBuild>
@@ -12127,6 +12158,10 @@
     <ClCompile Include="..\test_successor.cpp" />
     <ClCompile Include="..\test_task_scheduler.cpp" />
     <ClCompile Include="..\test_threshold.cpp" />
+    <ClCompile Include="..\test_to_arithmetic.cpp" />
+    <ClCompile Include="..\test_to_arithmetic_u16.cpp" />
+    <ClCompile Include="..\test_to_arithmetic_u32.cpp" />
+    <ClCompile Include="..\test_to_arithmetic_wchar_t.cpp" />
     <ClCompile Include="..\test_to_string.cpp" />
     <ClCompile Include="..\test_to_u16string.cpp" />
     <ClCompile Include="..\test_to_u32string.cpp" />
@@ -12214,6 +12249,7 @@
     <None Include="..\..\README.md" />
     <None Include="..\..\scripts\generator_test.py" />
     <None Include="..\..\scripts\update_release.py" />
+    <None Include="..\meson.build" />
     <None Include="..\runsanitychecks.sh" />
     <None Include="..\runtests.sh" />
     <None Include="cpp.hint" />

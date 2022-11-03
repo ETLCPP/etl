@@ -314,6 +314,8 @@ namespace etl
     enum : bool { is_signed = etl::is_signed<unsigned long long>::value };
 #endif
   };
+
+  static ETL_CONSTANT size_t npos = etl::integral_limits<size_t>::max;
 }
 
 #include "private/minmax_pop.h"

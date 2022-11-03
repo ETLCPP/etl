@@ -1,1 +1,1 @@
-option('use_stl', type : 'boolean', value : true)
+option('use_stl', description: 'Compiling for STL', type: 'boolean', value: true)

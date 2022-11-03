@@ -132,7 +132,7 @@ namespace
     //*************************************************************************
     TEST(test_moveable)
     {
-#include "etl/private/diagnostic_pessimizing-move_push.h"
+#include "etl/private/diagnostic_pessimizing_move_push.h"
       etl::optional<DataM> data(std::move(DataM(1)));
       CHECK_EQUAL(1U, data.value().value);
       CHECK(bool(data));

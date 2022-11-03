@@ -452,11 +452,12 @@ namespace etl
       /// Default constructor.
       /// Sets the state of the instance to containing no valid data.
       //***************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
       variant()
-        : data()
-        , type_id(UNSUPPORTED_TYPE_ID)
+        : type_id(UNSUPPORTED_TYPE_ID)
       {
       }
+#include "etl/private/diagnostic_pop.h"
 
       //***************************************************************************
       /// Constructor that catches any types that are not supported.

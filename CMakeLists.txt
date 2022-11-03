@@ -11,7 +11,7 @@ if(NOT ETL_VERSION)
     determine_version("version.txt")
 endif()
 
-project(etl VERSION ${ETL_VERSION})
+project(etl VERSION ${ETL_VERSION} LANGUAGES CXX)
 
 option(BUILD_TESTS "Build unit tests" OFF)
 option(NO_STL "No STL" OFF)

@@ -261,6 +261,7 @@ target_sources(t14 PRIVATE etl_profile.h
         ../task.h.t.cpp
         ../threshold.h.t.cpp
         ../timer.h.t.cpp
+        ../to_arithmetic.h.t.cpp
         ../to_string.h.t.cpp
         ../to_u16string.h.t.cpp
         ../to_u32string.h.t.cpp

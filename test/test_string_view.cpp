@@ -54,8 +54,12 @@ namespace
   std::string text_shorter   = "Hello Worl";
   std::string text_different = "Goodbye!!!!";
 
-  char ctext[] = { 'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '\0' };
-  char* pctext = ctext;
+  constexpr char     cctext[] = { 'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '\0' };
+  constexpr wchar_t  cwtext[] = { L'H', L'e', L'l', L'l', L'o', L' ', L'W', L'o', L'r', L'l', L'd', L'\0' };
+  constexpr char16_t cu16text[] = { u'H', u'e', u'l', u'l', u'o', u' ', u'W', u'o', u'r', u'l', u'd', u'\0' };
+  constexpr char32_t cu32text[] = { U'H', U'e', U'l', U'l', U'o', U' ', U'W', U'o', U'r', U'l', U'd', U'\0' };
+  
+  const char* pctext = cctext;
 
   SUITE(test_string_view)
   {
@@ -159,9 +163,91 @@ namespace
       auto u32view = etl::make_string_view(U"Hello World");
     
       CHECK(std::equal(cview.begin(),   cview.end(),   text.begin()));
+      CHECK(std::equal(wview.begin(),   wview.end(),   wtext.begin()));
+      CHECK(std::equal(u16view.begin(), u16view.end(), u16text.begin()));
+      CHECK(std::equal(u32view.begin(), u32view.end(), u32text.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_constexpr_make_string_view)
+    {
+      constexpr auto cview   = etl::make_string_view(cctext);
+      constexpr auto wview   = etl::make_string_view(cwtext);
+      constexpr auto u16view = etl::make_string_view(cu16text);
+      constexpr auto u32view = etl::make_string_view(cu32text);
+
+      CHECK(std::equal(cview.begin(),   cview.end(),   text.begin()));
       CHECK(std::equal(wview.begin(),   wview.end(),   text.begin()));
       CHECK(std::equal(u16view.begin(), u16view.end(), text.begin()));
       CHECK(std::equal(u32view.begin(), u32view.end(), text.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_make_string_view_check_consistent_strings_from_arrays_of_char)
+    {
+      char text_extra_nulls[10] = { 'H', 'e', 'l', 'l', 'o' };
+      char text_no_null[10]     = { 'H', 'e', 'l', 'l', 'o' };
+      std::string text_expected = "Hello";
+
+      auto view_extra_nulls = etl::make_string_view(text_extra_nulls);
+      auto view_no_null     = etl::make_string_view(text_no_null);
+
+      CHECK_EQUAL(text_expected.size(), view_extra_nulls.size());
+      CHECK_EQUAL(text_expected.size(), view_no_null.size());
+
+      CHECK(std::equal(view_extra_nulls.begin(), view_extra_nulls.end(), text_expected.begin()));
+      CHECK(std::equal(view_no_null.begin(),     view_no_null.end(),     text_expected.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_make_string_view_check_consistent_strings_from_arrays_of_wchar_t)
+    {
+      wchar_t text_extra_nulls[10] = { L'H', L'e', L'l', L'l', L'o' };
+      wchar_t text_no_null[10] = { L'H', L'e', L'l', L'l', L'o' };
+      std::wstring text_expected = L"Hello";
+
+      auto view_extra_nulls = etl::make_string_view(text_extra_nulls);
+      auto view_no_null = etl::make_string_view(text_no_null);
+
+      CHECK_EQUAL(text_expected.size(), view_extra_nulls.size());
+      CHECK_EQUAL(text_expected.size(), view_no_null.size());
+
+      CHECK(std::equal(view_extra_nulls.begin(), view_extra_nulls.end(), text_expected.begin()));
+      CHECK(std::equal(view_no_null.begin(), view_no_null.end(), text_expected.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_make_string_view_check_consistent_strings_from_arrays_of_char16_t)
+    {
+      char16_t text_extra_nulls[10] = { u'H', u'e', u'l', u'l', u'o' };
+      char16_t text_no_null[10] = { u'H', u'e', u'l', u'l', u'o' };
+      std::u16string text_expected = u"Hello";
+
+      auto view_extra_nulls = etl::make_string_view(text_extra_nulls);
+      auto view_no_null = etl::make_string_view(text_no_null);
+
+      CHECK_EQUAL(text_expected.size(), view_extra_nulls.size());
+      CHECK_EQUAL(text_expected.size(), view_no_null.size());
+
+      CHECK(std::equal(view_extra_nulls.begin(), view_extra_nulls.end(), text_expected.begin()));
+      CHECK(std::equal(view_no_null.begin(), view_no_null.end(), text_expected.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_make_string_view_check_consistent_strings_from_arrays_of_char32_t)
+    {
+      char32_t text_extra_nulls[10] = { U'H', U'e', U'l', U'l', U'o' };
+      char32_t text_no_null[10] = { U'H', U'e', U'l', U'l', U'o' };
+      std::u32string text_expected = U"Hello";
+
+      auto view_extra_nulls = etl::make_string_view(text_extra_nulls);
+      auto view_no_null = etl::make_string_view(text_no_null);
+
+      CHECK_EQUAL(text_expected.size(), view_extra_nulls.size());
+      CHECK_EQUAL(text_expected.size(), view_no_null.size());
+
+      CHECK(std::equal(view_extra_nulls.begin(), view_extra_nulls.end(), text_expected.begin()));
+      CHECK(std::equal(view_no_null.begin(), view_no_null.end(), text_expected.begin()));
     }
 
     //*************************************************************************

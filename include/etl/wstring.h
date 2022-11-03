@@ -455,18 +455,18 @@ namespace etl
   /// Make string from string literal or array
   //***************************************************************************
   template<size_t ARRAY_SIZE>
-  etl::wstring<ARRAY_SIZE == 1 ? 1 : ARRAY_SIZE - 1> make_string(const wchar_t(&text)[ARRAY_SIZE])
+  etl::wstring<ARRAY_SIZE - 1U> make_string(const wchar_t(&text)[ARRAY_SIZE])
   {
-    return etl::wstring<ARRAY_SIZE == 1 ? 1 : ARRAY_SIZE - 1>(text, etl::strlen(text));
+    return etl::wstring<ARRAY_SIZE - 1U>(text, etl::strlen(text, ARRAY_SIZE - 1U));
   }
 
   //***************************************************************************
-  /// Make string with max capacity from string literal or char array
+  /// Make string with max capacity from string literal or array
   //***************************************************************************
   template<const size_t MAX_SIZE, const size_t SIZE>
   etl::wstring<MAX_SIZE> make_string_with_capacity(const wchar_t(&text)[SIZE])
   {
-    return etl::wstring<MAX_SIZE>(text, etl::strlen(text));
+    return etl::wstring<MAX_SIZE>(text, etl::strlen(text, SIZE));
   }
 }
 

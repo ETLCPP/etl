@@ -106,6 +106,35 @@ namespace
     int id;
   };
 
+  //*************************************************************************
+  // Hasher whose hash behaviour depends on provided data.
+  struct parameterized_hash
+  {
+    size_t modulus;
+
+    parameterized_hash(size_t modulus_ = 2) : modulus(modulus_){}
+
+    size_t operator()(size_t val) const
+    {
+      return val % modulus;
+    }
+  };
+
+  //*************************************************************************
+  // Equality checker whose behaviour depends on provided data.
+  struct parameterized_equal
+  {
+    size_t modulus;
+
+    // Hasher whose hash behaviour depends on provided data.
+    parameterized_equal(size_t modulus_ = 2) : modulus(modulus_){}
+
+    bool operator()(size_t lhs, size_t rhs) const
+    {
+      return (lhs % modulus) == (rhs % modulus);
+    }
+  };
+
   //***************************************************************************
   SUITE(test_unordered_set)
   {
@@ -290,9 +319,9 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       DataNDC other_data(data);
 
-#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h"
       other_data = other_data;
-#include "etl/private/diagnostic_pop.h" 
+#include "etl/private/diagnostic_pop.h"
 
       CHECK(data == other_data);
     }
@@ -696,18 +725,40 @@ namespace
       CHECK_EQUAL("set = 3", s[1]);
     }
 
+    TEST(test_parameterized_eq)
+    {
+      constexpr std::size_t MODULO = 4;
+      parameterized_hash hash{MODULO};
+      parameterized_equal eq{MODULO};
+      // values are equal modulo 4
+      etl::unordered_set<std::size_t, 10, 10, parameterized_hash, parameterized_equal> set;
+      set.insert(2);
+
+      const auto& constset = set;
+
+      const size_t key = 6;
+      CHECK_FALSE(set.insert(key).second);
+      CHECK_FALSE(set.insert(std::move(key)).second);
+
+      CHECK(set.find(14) != set.end());
+      CHECK(constset.find(14) != constset.end());
+
+      set.erase(14);
+      CHECK(set.find(6) == set.end());
+    }
+
     //*************************************************************************
     TEST(test_equality_comparison_fails_when_hash_collisions_occur_582)
     {
       struct bad_hash
       {
         // Force hash collisions
-        size_t operator()(int key) const 
-        { 
-          return key % 4; 
+        size_t operator()(int key) const
+        {
+          return key % 4;
         }
       };
-     
+
       std::vector<int> random_keys1 = { 17, 14, 3,  7, 2, 6, 9,  3, 18, 10,  8, 11,  4, 1, 12, 15, 16,  0,  5, 19 };
       std::vector<int> random_keys2 = {  3,  6, 5, 17, 2, 7, 3, 19,  8, 15, 14,  0, 18, 4, 10,  9, 16, 11, 12,  1 };
 
@@ -748,7 +799,7 @@ namespace
       //***************************************************
       CHECK_EQUAL((stdset1 == stdset2), (etlset1 == etlset2));
     }
-    
+
     //*************************************************************************
     TEST(test_copying_of_hash_and_key_compare_with_copy_construct)
     {
@@ -773,7 +824,7 @@ namespace
 
       etl::unordered_set<uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1(chf1, ceq2);
       etl::unordered_set<uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set2(chf3, ceq4);
-      
+
       set2.operator=(set1);
 
       CHECK_EQUAL(chf1.id, set2.hash_function().id);

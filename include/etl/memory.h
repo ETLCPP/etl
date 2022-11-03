@@ -39,6 +39,7 @@ SOFTWARE.
 #include "nullptr.h"
 #include "alignment.h"
 #include "placement_new.h"
+#include "private/addressof.h"
 
 #include <assert.h>
 #include <string.h>
@@ -52,21 +53,6 @@ SOFTWARE.
 
 namespace etl
 {
-  //*****************************************************************************
-  /// Gets the address of an object.
-  /// https://en.cppreference.com/w/cpp/memory/addressof
-  ///\ingroup memory
-  //*****************************************************************************
-  template <typename T>
-  ETL_CONSTEXPR17 T* addressof(T& t)
-  {
-#if ETL_USING_STL && ETL_USING_CPP11
-    return std::addressof(t);
-#else
-    return reinterpret_cast<T*>(&const_cast<char&>(reinterpret_cast<const volatile char&>(t)));
-#endif
-  }
-
 #if ETL_NOT_USING_STL
   //*****************************************************************************
   /// Fills uninitialised memory range with a value.

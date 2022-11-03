@@ -1,4 +1,30 @@
 ===============================================================================
+20.35.0
+#596 Helper functions to convert strings to numeric values. etl::to_arithmetic
+#600 Fix 'maybe-uninitialized' g++ error on macros
+#601 Move __STDC_LIMIT_MACROS and __STDC_CONSTANT_MACROS before `#include <stdint.h>`
+#602 Replace ETL_COMPILER_ICCAVR by ETL_COMPILER_IAR
+#603 Add back/front insert iterator
+#604 Update-test-sources-in-meson-build
+#605 Special case check for hashing -0.0
+#606 Fix non-usage of key equal function
+#610 Added select1st and select2nd
+#612 Automatically detect native endianness for IAR compiler platform
+#613 Fix bare assert in reference_counted_object.h
+#614 unaligned types: use unsigned storage type
+#615 Addition of etl::expected (partial). Implementation of etl::unexpected
+#616 Provide cmake library for UnitTest++
+#618 fix bug in find_next of (new) bitset class
+#621 No need to initialize the C-compiler, small speed improvement
+#626 Empty etl::optional ctor storage initialization performance
+Removed constexpr for etl::bit_cast due to unreliability of compiler support
+Added has_value() as an alias for is_value() for etl::result (consistancy with STL conventions)
+Added ETL_ERROR_WITH_VALUE macro for exceptions that require a value
+Changed scaling template parameter for etl::scaled_rounding to uint32_t
+Remove redundant etl::pair functions
+Updated string_view and char traits
+
+===============================================================================
 20.34.0
 Changed explicit message constructor for unsupported message types
 Added etl::circular_iterator and circular iterator extensions to etl::span

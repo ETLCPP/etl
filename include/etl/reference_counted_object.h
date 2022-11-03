@@ -31,11 +31,39 @@
 
 #include "platform.h"
 #include "atomic.h"
+#include "error_handler.h"
 
 #include <stdint.h>
 
 namespace etl
 {
+
+  //***************************************************************************
+  /// Exceptions for reference counting
+  ///\ingroup reference_counting
+  //***************************************************************************
+  class reference_counting_exception : public etl::exception
+  {
+  public:
+    reference_counting_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// Reference counter overrun exception
+  ///\ingroup reference_counting
+  //***************************************************************************
+  class reference_count_overrun : public etl::reference_counting_exception
+  {
+  public:
+    reference_count_overrun(string_type file_name_, numeric_type line_number_)
+      : etl::reference_counting_exception(ETL_ERROR_TEXT("reference_counting:overrun", ETL_REFERENCE_COUNTED_OBJECT_FILE_ID"A"), file_name_, line_number_)
+    {
+    }
+  };
+
   //***************************************************************************
   /// The base of all reference counters.
   //***************************************************************************
@@ -87,7 +115,7 @@ namespace etl
     //***************************************************************************
     ETL_NODISCARD virtual int32_t decrement_reference_count() ETL_OVERRIDE
     {
-      assert(reference_count > 0);
+      ETL_ASSERT(reference_count > 0, ETL_ERROR(reference_count_overrun));
 
       return int32_t(--reference_count);
     }

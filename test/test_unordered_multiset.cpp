@@ -106,6 +106,35 @@ namespace
     int id;
   };
 
+  //*************************************************************************
+  // Hasher whose hash behaviour depends on provided data.
+  struct parameterized_hash
+  {
+    size_t modulus;
+
+    parameterized_hash(size_t modulus_ = 2) : modulus(modulus_){}
+
+    size_t operator()(size_t val) const
+    {
+      return val % modulus;
+    }
+  };
+
+  //*************************************************************************
+  // Equality checker whose behaviour depends on provided data.
+  struct parameterized_equal
+  {
+    size_t modulus;
+
+    // Hasher whose hash behaviour depends on provided data.
+    parameterized_equal(size_t modulus_ = 2) : modulus(modulus_){}
+
+    bool operator()(size_t lhs, size_t rhs) const
+    {
+      return (lhs % modulus) == (rhs % modulus);
+    }
+  };
+
   SUITE(test_unordered_multiset)
   {
     static const size_t SIZE = 10;
@@ -306,9 +335,9 @@ namespace
       DataNDC data(initial_data.begin(), initial_data.end());
       DataNDC other_data(data);
 
-#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h"
       other_data = other_data;
-#include "etl/private/diagnostic_pop.h" 
+#include "etl/private/diagnostic_pop.h"
 
       CHECK(data == other_data);
     }
@@ -874,6 +903,30 @@ namespace
     {
       using Set = etl::unordered_multiset<int, 1, 1>;
       CHECK((!etl::is_same_v<typename Set::const_iterator::value_type, typename Set::iterator::value_type>));
+    }
+
+    TEST(test_parameterized_eq)
+    {
+      constexpr std::size_t MODULO = 4;
+      parameterized_hash hash{MODULO};
+      parameterized_equal eq{MODULO};
+      // values are equal modulo 4
+      etl::unordered_multiset<std::size_t, 10, 10, parameterized_hash, parameterized_equal> set;
+      set.insert(2);
+      set.insert(6);
+      set.insert(10);
+
+      const auto& constset = set;
+
+      CHECK_EQUAL(constset.count(6), 3);
+      {
+        auto range = set.equal_range(6);
+        CHECK_EQUAL(std::distance(range.first, range.second), 3);
+      }
+      {
+        auto range = constset.equal_range(6);
+        CHECK_EQUAL(std::distance(range.first, range.second), 3);
+      }
     }
   };
 }

@@ -524,8 +524,8 @@ namespace etl
     /// Default constructor.
     /// Sets the state of the instance to containing no valid data.
     //***************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     ETL_CONSTEXPR14 variant()
-      : data()
     {
       using type = typename etl::private_variant::parameter_pack<TTypes...>::template type_from_index<0U>::type;
 
@@ -533,42 +533,45 @@ namespace etl
       operation = operation_type<type, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
       type_id   = 0U;
     }
+#include "etl/private/diagnostic_pop.h"
 
     //***************************************************************************
     /// Constructor from a value.
     //***************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     template <typename T, etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value, int> = 0>
     ETL_CONSTEXPR14 variant(T&& value)
-      : data()
-      , operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T>>::value, etl::is_move_constructible<etl::remove_cvref_t<T>>::value>::do_operation)
+      : operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T>>::value, etl::is_move_constructible<etl::remove_cvref_t<T>>::value>::do_operation)
       , type_id(etl::private_variant::parameter_pack<TTypes...>::template index_of_type<etl::remove_cvref_t<T>>::value)
     {
       static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, "Unsupported type");
 
       construct_in_place<etl::remove_cvref_t<T>>(data, etl::forward<T>(value));
     }
+#include "etl/private/diagnostic_pop.h"
 
     //***************************************************************************
     /// Construct from arguments.
     //***************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     template <typename T, typename... TArgs>
     ETL_CONSTEXPR14 explicit variant(etl::in_place_type_t<T>, TArgs&&... args)
-      : data()
-      , operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T>>::value, etl::is_move_constructible<etl::remove_cvref_t<T>>::value>::do_operation)
+      : operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T>>::value, etl::is_move_constructible<etl::remove_cvref_t<T>>::value>::do_operation)
       , type_id(etl::private_variant::parameter_pack<TTypes...>::template index_of_type<etl::remove_cvref_t<T>>::value)
     {
       static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, "Unsupported type");
 
       construct_in_place_args<etl::remove_cvref_t<T>>(data, etl::forward<TArgs>(args)...);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //***************************************************************************
     /// Construct from arguments.
     //***************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     template <size_t Index, typename... TArgs>
     ETL_CONSTEXPR14 explicit variant(etl::in_place_index_t<Index>, TArgs&&... args)
-      : data()
-      , type_id(Index)
+      : type_id(Index)
     {
       using type = typename private_variant::parameter_pack<TTypes...>:: template type_from_index_t<Index>;
       static_assert(etl::is_one_of<type, TTypes...> ::value, "Unsupported type");
@@ -577,29 +580,31 @@ namespace etl
 
       operation = operation_type<type, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
     }
+#include "etl/private/diagnostic_pop.h"
 
 #if ETL_HAS_INITIALIZER_LIST
     //***************************************************************************
     /// Construct from type, initializer_list and arguments.
     //***************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     template <typename T, typename U, typename... TArgs >
     ETL_CONSTEXPR14 explicit variant(etl::in_place_type_t<T>, std::initializer_list<U> init, TArgs&&... args)
-      : data()
-      , operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T>>::value, etl::is_move_constructible<etl::remove_cvref_t<T>>::value>::do_operation)
+      : operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T>>::value, etl::is_move_constructible<etl::remove_cvref_t<T>>::value>::do_operation)
       , type_id(private_variant::parameter_pack<TTypes...>:: template index_of_type<etl::remove_cvref_t<T>>::value)
     {
       static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...> ::value, "Unsupported type");
 
       construct_in_place_args<etl::remove_cvref_t<T>>(data, init, etl::forward<TArgs>(args)...);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //***************************************************************************
     /// Construct from index, initializer_list and arguments.
     //***************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     template <size_t Index, typename U, typename... TArgs >
     ETL_CONSTEXPR14 explicit variant(etl::in_place_index_t<Index>, std::initializer_list<U> init, TArgs&&... args)
-      : data()
-      , type_id(Index)
+      : type_id(Index)
     {
       using type = typename private_variant::parameter_pack<TTypes...>:: template type_from_index_t<Index>;
       static_assert(etl::is_one_of<type, TTypes...> ::value, "Unsupported type");
@@ -608,15 +613,16 @@ namespace etl
 
       operation = operation_type<type, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
     }
+#include "etl/private/diagnostic_pop.h"
 #endif
 
     //***************************************************************************
     /// Copy constructor.
     ///\param other The other variant object to copy.
     //***************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     ETL_CONSTEXPR14 variant(const variant& other)
-      : data()
-      , operation(other.operation)
+      : operation(other.operation)
       , type_id(other.type_id)
     {
       if (this != &other)
@@ -631,14 +637,15 @@ namespace etl
         }
       }
     }
+#include "etl/private/diagnostic_pop.h"
 
     //***************************************************************************
     /// Move constructor.
     ///\param other The other variant object to copy.
     //***************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     ETL_CONSTEXPR14 variant(variant&& other)
-      : data()
-      , operation(other.operation)
+      : operation(other.operation)
       , type_id(other.type_id)
     {
       if (this != &other)
@@ -657,6 +664,7 @@ namespace etl
         type_id = variant_npos;
       }
     }
+#include "etl/private/diagnostic_pop.h"
 
     //***************************************************************************
     /// Destructor.

@@ -339,7 +339,7 @@ namespace
 
       Packet packet1(message1);
 
-#include "etl/private/diagnostic_pessimizing-move_push.h"
+#include "etl/private/diagnostic_pessimizing_move_push.h"
       Packet packet2(std::move(Packet(message1)));
 #include "etl/private/diagnostic_pop.h"
 
