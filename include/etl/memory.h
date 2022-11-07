@@ -39,6 +39,7 @@ SOFTWARE.
 #include "nullptr.h"
 #include "alignment.h"
 #include "placement_new.h"
+
 #include "private/addressof.h"
 
 #include <assert.h>
@@ -1231,7 +1232,19 @@ namespace etl
   template <typename T>
   struct default_delete
   {
-    void operator()(T* p) const
+    //*********************************
+    ETL_CONSTEXPR default_delete() ETL_NOEXCEPT
+    {
+    }
+
+    //*********************************
+    template <typename U>
+    default_delete(const default_delete<U>&) ETL_NOEXCEPT 
+    {
+    }
+
+    //*********************************
+    void operator()(T * p) const ETL_NOEXCEPT
     {
       delete p;
     }
@@ -1246,6 +1259,18 @@ namespace etl
   template <typename T>
   struct default_delete<T[]>
   {
+    //*********************************
+    ETL_CONSTEXPR default_delete() ETL_NOEXCEPT
+    {
+    }
+
+    //*********************************
+    template <typename U>
+    default_delete(const default_delete<U>&) ETL_NOEXCEPT
+    {
+    }
+
+    //*********************************
     template <class U>
     void operator()(U* p) const
     {
@@ -1306,6 +1331,13 @@ namespace etl
     {
     }
 #endif
+
+    template <typename U, typename E>
+    unique_ptr(unique_ptr<U, E>&& u) ETL_NOEXCEPT
+      : p(u.release())
+      , deleter(etl::forward<E>(u.get_deleter()))
+    {
+    }
 
     //*********************************
     ~unique_ptr()
