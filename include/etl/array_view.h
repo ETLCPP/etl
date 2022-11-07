@@ -40,7 +40,6 @@ SOFTWARE.
 #include "nullptr.h"
 #include "hash.h"
 #include "algorithm.h"
-#include "memory.h"
 #include "type_traits.h"
 
 #if ETL_USING_STL && ETL_USING_CPP11
