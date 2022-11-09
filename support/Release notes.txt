@@ -1,4 +1,10 @@
 ===============================================================================
+20.35.1
+#628 Fixed set of ETL_NO_STL flag in meson.build
+#631 unique_ptr derived copy or move to base does not compile
+Removed duplicate include in etl::array_view
+
+===============================================================================
 20.35.0
 #596 Helper functions to convert strings to numeric values. etl::to_arithmetic
 #600 Fix 'maybe-uninitialized' g++ error on macros

@@ -1307,10 +1307,23 @@ namespace etl
 
 #if ETL_USING_CPP11
     //*********************************
-    unique_ptr(unique_ptr&& p_) ETL_NOEXCEPT
-      : p(p_.release())
-      , deleter(etl::move(p_.deleter))
+    unique_ptr(unique_ptr&& other) ETL_NOEXCEPT
     {
+      if (&other != this)
+      {
+        p = other.release();
+        deleter = etl::move(other.deleter);
+      }
+    }
+#else
+    //*********************************
+    unique_ptr(unique_ptr& other) ETL_NOEXCEPT
+    {
+      if (&other != this)
+      {
+        p = other.release();
+        deleter = other.deleter;
+      }
     }
 #endif
 
@@ -1328,6 +1341,13 @@ namespace etl
     unique_ptr(pointer p_, typename etl::remove_reference<TDeleter>::type&& deleter_) ETL_NOEXCEPT
       : p(p_)
       , deleter(etl::move(deleter_))
+    {
+    }
+
+    template <typename U, typename E>
+    unique_ptr(unique_ptr<U, E>&& u) ETL_NOEXCEPT
+      : p(u.release())
+      , deleter(etl::forward<E>(u.get_deleter()))
     {
     }
 #endif
@@ -1419,9 +1439,25 @@ namespace etl
 
 #if ETL_USING_CPP11
     //*********************************
-    unique_ptr&	operator =(unique_ptr&& p_) ETL_NOEXCEPT
+    unique_ptr&	operator =(unique_ptr&& other) ETL_NOEXCEPT
     {
-      reset(p_.release());
+      if (&other != this)
+      {
+        reset(other.release());
+        deleter = etl::move(other.deleter);
+      }
+
+      return *this;
+    }
+#else
+    //*********************************
+    unique_ptr& operator =(unique_ptr& other) ETL_NOEXCEPT
+    {
+      if (&other != this)
+      {
+        reset(other.release());
+        deleter = other.deleter;
+      }
 
       return *this;
     }
@@ -1471,7 +1507,7 @@ namespace etl
     typedef T& reference;
 
     //*********************************
-    ETL_CONSTEXPR		unique_ptr() ETL_NOEXCEPT
+    ETL_CONSTEXPR	unique_ptr() ETL_NOEXCEPT
       : p(ETL_NULLPTR)
     {
     }
@@ -1484,17 +1520,31 @@ namespace etl
 
 #if ETL_USING_CPP11
     //*********************************
-    unique_ptr(unique_ptr&& p_) ETL_NOEXCEPT
-      : p(p_.release())
-      , deleter(etl::move(p_.deleter))
+    unique_ptr(unique_ptr&& other) ETL_NOEXCEPT
     {
+      if (&other != this)
+      {
+        p = other.release();
+        deleter = etl::move(other.deleter);
+      }
+    }
+#else
+    //*********************************
+    unique_ptr(unique_ptr& other) ETL_NOEXCEPT
+    {
+      if (&other != this)
+      {
+        p = other.release();
+        deleter = other.deleter;
+      }
     }
 #endif
 
     //*********************************
-    unique_ptr(pointer p_, typename etl::conditional<etl::is_reference<TDeleter>::value,
-                                                     TDeleter,
-                                                     typename etl::add_lvalue_reference<const TDeleter>::type>::type deleter_) ETL_NOEXCEPT
+    unique_ptr(pointer p_, 
+               typename etl::conditional<etl::is_reference<TDeleter>::value,
+                                         TDeleter,
+                                         typename etl::add_lvalue_reference<const TDeleter>::type>::type deleter_) ETL_NOEXCEPT
       : p(p_)
       , deleter(deleter_)
     {
@@ -1505,6 +1555,13 @@ namespace etl
     unique_ptr(pointer p_, typename etl::remove_reference<TDeleter>::type&& deleter_) ETL_NOEXCEPT
       : p(p_)
       , deleter(etl::move(deleter_))
+    {
+    }
+
+    template <typename U, typename E>
+    unique_ptr(unique_ptr<U, E>&& u) ETL_NOEXCEPT
+      : p(u.release())
+      , deleter(etl::forward<E>(u.get_deleter()))
     {
     }
 #endif
@@ -1588,9 +1645,25 @@ namespace etl
 
 #if ETL_USING_CPP11
     //*********************************
-    unique_ptr& operator =(unique_ptr&& p_) ETL_NOEXCEPT
+    unique_ptr& operator =(unique_ptr&& other) ETL_NOEXCEPT
     {
-      reset(p_.release());
+      if (&other != this)
+      {
+        reset(other.release());
+        deleter = etl::move(other.deleter);
+      }
+
+      return *this;
+    }
+#else
+    //*********************************
+    unique_ptr& operator =(unique_ptr& other) ETL_NOEXCEPT
+    {
+      if (&other != this)
+      {
+        reset(other.release());
+        deleter = other.deleter;
+      }
 
       return *this;
     }
