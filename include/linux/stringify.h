@@ -2,7 +2,7 @@
 #pragma once
 
 /** Helper macro for STRINGIFY. */
-#define STRINGIFY_1(x...) #x
+#define STRINGIFY_1(...) #__VA_ARGS__
 
 /**
  * Indirect stringification.
@@ -13,4 +13,4 @@
  * \param x will be converted to one string, including the spaces and commas between arguments.
  *             For example `STRINGIFY( a , b )` will be expanded to "a , b".
  */
-#define STRINGIFY(x...) STRINGIFY_1(x)
+#define STRINGIFY(...) STRINGIFY_1(__VA_ARGS__)
