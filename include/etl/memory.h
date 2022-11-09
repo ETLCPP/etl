@@ -1352,13 +1352,6 @@ namespace etl
     }
 #endif
 
-    template <typename U, typename E>
-    unique_ptr(unique_ptr<U, E>&& u) ETL_NOEXCEPT
-      : p(u.release())
-      , deleter(etl::forward<E>(u.get_deleter()))
-    {
-    }
-
     //*********************************
     ~unique_ptr()
     {
