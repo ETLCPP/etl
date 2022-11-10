@@ -2441,6 +2441,7 @@
     <ClInclude Include="..\..\include\etl\crc8_wcdma.h" />
     <ClInclude Include="..\..\include\etl\expected.h" />
     <ClInclude Include="..\..\include\etl\message_broker.h" />
+    <ClInclude Include="..\..\include\etl\object_pool.h" />
     <ClInclude Include="..\..\include\etl\poly_span.h" />
     <ClInclude Include="..\..\include\etl\private\bitset_legacy.h" />
     <ClInclude Include="..\..\include\etl\private\bitset_new.h" />
@@ -11382,6 +11383,7 @@
     <ClCompile Include="..\test_crc8_rohc.cpp" />
     <ClCompile Include="..\test_crc8_wcdma.cpp" />
     <ClCompile Include="..\test_message_broker.cpp" />
+    <ClCompile Include="..\test_object_pool.cpp" />
     <ClCompile Include="..\test_poly_span_dynamic_extent.cpp" />
     <ClCompile Include="..\test_poly_span_fixed_extent.cpp" />
     <ClCompile Include="..\test_pseudo_moving_average.cpp" />

@@ -1344,6 +1344,9 @@
     <ClInclude Include="..\..\include\etl\expected.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\object_pool.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3391,6 +3394,9 @@
     </ClCompile>
     <ClCompile Include="..\sanity-check\to_arithmetic.h.t.cpp">
       <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_object_pool.cpp">
+      <Filter>Tests\Containers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
