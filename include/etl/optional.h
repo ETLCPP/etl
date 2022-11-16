@@ -611,7 +611,7 @@ namespace etl
       if (this != &other)
       {
         storage = etl::move(other.storage);
-        valid = true;
+        valid   = other.valid;
       }
 
       return *this;

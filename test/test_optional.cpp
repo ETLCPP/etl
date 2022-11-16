@@ -466,5 +466,23 @@ namespace
       data.reset();
       CHECK(!bool(data));
     }
+
+    //*************************************************************************
+    etl::optional<std::uint8_t> get_optional_test_bug_634()
+    {
+      etl::optional<std::uint8_t> result = 8;
+      result.reset();
+      
+      return result;
+    }
+
+    TEST(test_bug_634)
+    {
+      etl::optional<std::uint8_t> result;
+
+      result = get_optional_test_bug_634();
+
+      CHECK_EQUAL(false, result.has_value());
+    }
   };
 }
