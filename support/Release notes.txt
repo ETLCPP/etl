@@ -1,4 +1,8 @@
 ===============================================================================
+20.35.2
+#634 Strange behavior in move assignment of optional
+
+===============================================================================
 20.35.1
 #628 Fixed set of ETL_NO_STL flag in meson.build
 #631 unique_ptr derived copy or move to base does not compile
