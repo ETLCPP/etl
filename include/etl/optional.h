@@ -767,7 +767,7 @@ namespace etl
       if (valid)
       {
         // Destroy the old one.
-        storage.template get_reference<T>().~T();
+        storage.~T();
       }
 
       storage = T(ETL_OR_STD::forward<Args>(args)...);
