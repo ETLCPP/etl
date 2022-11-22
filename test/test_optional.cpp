@@ -484,5 +484,15 @@ namespace
 
       CHECK_EQUAL(false, result.has_value());
     }
+
+    //*************************************************************************
+    TEST(test_optional_emplace_bug_636)
+    {
+      etl::optional<std::uint8_t> result = 1;
+      result.emplace(2);
+
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL(2, result.value());
+    }
   };
 }
