@@ -71,7 +71,7 @@ namespace etl
     //*************************************************************************
     /// 
     //*************************************************************************
-    template <typename T, typename... TArgs>
+    template <typename T>
     void release(T&& object)
     {
       release_block(reinterpret_cast<char*>(&object));
@@ -126,7 +126,7 @@ namespace etl
       }
 
       //*******************************
-      size_t data_size() const
+      size_t size() const
       {
         return size_t(reinterpret_cast<const char*>(next) - data());
       }
@@ -214,6 +214,58 @@ namespace etl
 
       // No space available.
       return nullptr;
+    }
+
+    //*************************************************************************
+    /// 
+    //*************************************************************************
+    void release_block(char* ptr)
+    {
+      header* block;
+      header* p;
+
+      // acquire pointer to block header
+      block = reinterpret_cast<header*>(ptr) - 1;
+
+      // Find the correct place to place the block in (the free list is sorted by
+      // address, increasing order)
+      //
+      for (p = head; !(block > p && block < p->next); p = p->next)
+      {
+        // Since the free list is circular, there is one link where a
+        // higher-addressed block points to a lower-addressed block.
+        // This condition checks if the block should be actually
+        // inserted between them
+        //
+        if (p >= p->next && (block > p || block < p->next))
+          break;
+      }
+
+      // Try to combine with the higher neighbor
+      //
+      if (block + block->size() == p->next)
+      {
+        block->size += p->next->size;
+        block->next = p->next->next;
+      }
+      else
+      {
+        block->next = p->next;
+      }
+
+      // Try to combine with the lower neighbor
+      //
+      if (p + p->size == block)
+      {
+        p->size += block->size;
+        p->next = block->next;
+      }
+      else
+      {
+        p->next = block;
+      }
+
+      free_p = p;
     }
 
     char*   pbuffer;
