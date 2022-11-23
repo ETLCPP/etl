@@ -71,7 +71,7 @@ namespace etl
     //*************************************************************************
     /// 
     //*************************************************************************
-    template <typename T, typename... TArgs>
+    template <typename T>
     void release(T&& object)
     {
       release_block(reinterpret_cast<char*>(&object));
@@ -126,7 +126,7 @@ namespace etl
       }
 
       //*******************************
-      size_t data_size() const
+      size_t size() const
       {
         return size_t(reinterpret_cast<const char*>(next) - data());
       }
