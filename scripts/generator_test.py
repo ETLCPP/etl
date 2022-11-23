@@ -39,7 +39,7 @@ for generator in generator_folder.iterdir():
 
 if all_ok:
     print(f"\nAll generator tests passed\n")
-
-if not all_ok:
-    exit(1)
-exit(0)
+    exit(0)
+else:
+    print(f"\nGenerator tests failed\n")
+    exit(1)   
