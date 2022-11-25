@@ -42,4 +42,4 @@ if all_ok:
     exit(0)
 else:
     print(f"\nGenerator tests failed\n")
-    exit(1)   
+    exit(1)
