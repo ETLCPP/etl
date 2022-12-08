@@ -134,7 +134,7 @@ namespace etl
     /// Construct from etl::array.
     //*************************************************************************
     template <typename U, size_t N>
-    ETL_CONSTEXPR span(etl::array<U, N>& a, typename etl::enable_if<(N == Extent) && etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type) ETL_NOEXCEPT
+    ETL_CONSTEXPR span(etl::array<U, N>& a, typename etl::enable_if<(N == Extent) && etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type* = 0) ETL_NOEXCEPT
       : pbegin(a.data())
     {
     }
@@ -143,7 +143,7 @@ namespace etl
     /// Construct from etl::array.
     //*************************************************************************
     template <typename U, size_t N>
-    ETL_CONSTEXPR span(const etl::array<U, N>& a, typename etl::enable_if<(N == Extent) && etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type) ETL_NOEXCEPT
+    ETL_CONSTEXPR span(const etl::array<U, N>& a, typename etl::enable_if<(N == Extent) && etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type* = 0) ETL_NOEXCEPT
       : pbegin(a.data())
     {
     }
@@ -189,7 +189,7 @@ namespace etl
     template <typename TContainer>
     span(TContainer& a, typename etl::enable_if<!etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
                                                 !etl::is_array<TContainer>::value &&
-                                                etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type) ETL_NOEXCEPT
+                                                etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type* = 0) ETL_NOEXCEPT
       : pbegin(a.data())
     {
     }
@@ -201,7 +201,7 @@ namespace etl
     template <typename TContainer>
     ETL_CONSTEXPR span(const TContainer& a, typename etl::enable_if<!etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
                                                                     !etl::is_array<TContainer>::value&&
-                                                                    etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type) ETL_NOEXCEPT
+                                                                    etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type* = 0) ETL_NOEXCEPT
       : pbegin(a.data())
     {
     }
@@ -510,7 +510,7 @@ namespace etl
     /// Construct from etl::array.
     //*************************************************************************
     template <typename U, size_t N>
-    ETL_CONSTEXPR span(etl::array<U, N>& a, typename etl::enable_if<etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type) ETL_NOEXCEPT
+    ETL_CONSTEXPR span(etl::array<U, N>& a, typename etl::enable_if<etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type* = 0) ETL_NOEXCEPT
       : pbegin(a.data())
       , pend(a.data() + a.size())
     {
@@ -520,7 +520,7 @@ namespace etl
     /// Construct from etl::array.
     //*************************************************************************
     template <typename U, size_t N>
-    ETL_CONSTEXPR span(const etl::array<U, N>& a, typename etl::enable_if<etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type) ETL_NOEXCEPT
+    ETL_CONSTEXPR span(const etl::array<U, N>& a, typename etl::enable_if<etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type* = 0) ETL_NOEXCEPT
       : pbegin(a.data())
       , pend(a.data() + a.size())
     {
@@ -570,7 +570,7 @@ namespace etl
     template <typename TContainer>
     ETL_CONSTEXPR span(TContainer& a, typename etl::enable_if<!etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
                                                               !etl::is_array<TContainer>::value &&
-                                                              etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type) ETL_NOEXCEPT
+                                                              etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type* = 0) ETL_NOEXCEPT
       : pbegin(a.data())
       , pend(a.data() + a.size())
     {
@@ -583,7 +583,7 @@ namespace etl
     template <typename TContainer>
     ETL_CONSTEXPR span(const TContainer& a, typename etl::enable_if<!etl::is_pointer<typename etl::remove_reference<TContainer>::type>::value &&
                                                                     !etl::is_array<TContainer>::value &&
-                                                                    etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type) ETL_NOEXCEPT
+                                                                    etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<typename etl::remove_reference<TContainer>::type::value_type>::type>::value, void>::type* = 0) ETL_NOEXCEPT
       : pbegin(a.data())
       , pend(a.data() + a.size())
     {
