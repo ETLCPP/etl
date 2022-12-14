@@ -1,4 +1,4 @@
-function(etl_determine_version_with_file VER_FILE_NAME)
+function(determine_version_with_file VER_FILE_NAME)
     file(READ ${VER_FILE_NAME} ETL_VERSION_RAW)
     # Remove trailing whitespaces and/or newline
     string(STRIP ${ETL_VERSION_RAW} ETL_VERSION)
@@ -8,12 +8,12 @@ function(etl_determine_version_with_file VER_FILE_NAME)
     message(STATUS "${MSG_PREFIX} Determined ETL version ${ETL_VERSION} from version.txt file")
 endfunction()
 
-function(etl_determine_version_with_git)
+function(determine_version_with_git)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/GetGitRevisionDescription.cmake)
-    etl_git_describe(VERSION ${ARGN})
+    git_describe(VERSION ${ARGN})
     string(FIND ${VERSION} "." VALID_VERSION)
     if(VALID_VERSION EQUAL -1)
-        if(CMAKE_CURRENT_LIST_DIR STREQUAL PROJECT_SOURCE_DIR)
+        if(PROJECT_IS_TOP_LEVEL)
             # only warn if this is the top-level project, since we may be
             # building from a tarball as a subproject
             message(WARNING "Version string ${VERSION} retrieved with git describe is invalid")
