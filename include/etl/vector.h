@@ -459,7 +459,7 @@ namespace etl
     ///\param value The value to add.
     //*********************************************************************
     template <typename ... Args>
-    void emplace_back(Args && ... args)
+    reference emplace_back(Args && ... args)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
@@ -467,6 +467,7 @@ namespace etl
       ::new (p_end) T(etl::forward<Args>(args)...);
       ++p_end;
       ETL_INCREMENT_DEBUG_COUNT
+      return back();
     }
 #else
     //*********************************************************************
@@ -475,7 +476,7 @@ namespace etl
     ///\param value The value to add.
     //*********************************************************************
     template <typename T1>
-    void emplace_back(const T1& value1)
+    reference emplace_back(const T1& value1)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
@@ -483,6 +484,7 @@ namespace etl
       ::new (p_end) T(value1);
       ++p_end;
       ETL_INCREMENT_DEBUG_COUNT
+      return back();
     }
 
     //*********************************************************************
@@ -491,7 +493,7 @@ namespace etl
     ///\param value The value to add.
     //*********************************************************************
     template <typename T1, typename T2>
-    void emplace_back(const T1& value1, const T2& value2)
+    reference emplace_back(const T1& value1, const T2& value2)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
@@ -499,6 +501,7 @@ namespace etl
       ::new (p_end) T(value1, value2);
       ++p_end;
       ETL_INCREMENT_DEBUG_COUNT
+      return back();
     }
 
     //*********************************************************************
@@ -507,7 +510,7 @@ namespace etl
     ///\param value The value to add.
     //*********************************************************************
     template <typename T1, typename T2, typename T3>
-    void emplace_back(const T1& value1, const T2& value2, const T3& value3)
+    reference emplace_back(const T1& value1, const T2& value2, const T3& value3)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
@@ -515,6 +518,7 @@ namespace etl
       ::new (p_end) T(value1, value2, value3);
       ++p_end;
       ETL_INCREMENT_DEBUG_COUNT
+      return back();
     }
 
     //*********************************************************************
@@ -523,7 +527,7 @@ namespace etl
     ///\param value The value to add.
     //*********************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
-    void emplace_back(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    reference emplace_back(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
@@ -531,6 +535,7 @@ namespace etl
       ::new (p_end) T(value1, value2, value3, value4);
       ++p_end;
       ETL_INCREMENT_DEBUG_COUNT
+      return back();
     }
 #endif
 
@@ -1353,7 +1358,7 @@ namespace etl
   //*************************************************************************
 #if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
   template <typename... T>
-  constexpr auto make_vector(T... t) -> etl::vector<typename etl::common_type_t<T...>, sizeof...(T)>
+  constexpr auto make_vector(T&&... t) -> etl::vector<typename etl::common_type_t<T...>, sizeof...(T)>
   {
     return { { etl::forward<T>(t)... } };
   }

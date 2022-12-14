@@ -80,7 +80,6 @@ namespace etl
 
       virtual void start() = 0;
       virtual void step(size_t n) = 0;
-
       virtual void save(const char* data, size_t length) = 0;
       virtual void load(char* data, size_t length) = 0;
 

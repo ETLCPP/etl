@@ -97,7 +97,7 @@
    })                                                                                                                                                \
    UNITTEST_MULTILINE_MACRO_END
 
-#define UNITTEST_CHECK_FALSE_EQUAL(expected, actual)                                                                                                                \
+#define UNITTEST_CHECK_NOT_EQUAL(expected, actual)                                                                                                                \
    UNITTEST_MULTILINE_MACRO_BEGIN                                                                                                                    \
    UNITTEST_IMPL_TRY                                                                                                                                            \
    ({                                                                                                                                                \
@@ -254,16 +254,16 @@
       #define CHECK_EQUAL_HEX UNITTEST_CHECK_EQUAL_HEX
    #endif
 
-   #ifdef CHECK_FALSE_EQUAL
-      #error CHECK_FALSE_EQUAL already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_FALSE_EQUAL instead
+   #ifdef CHECK_NOT_EQUAL
+      #error CHECK_NOT_EQUAL already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_NOT_EQUAL instead
    #else
-      #define CHECK_FALSE_EQUAL UNITTEST_CHECK_FALSE_EQUAL
+      #define CHECK_NOT_EQUAL UNITTEST_CHECK_NOT_EQUAL
    #endif
 
-   #ifdef CHECK_FALSE_EQUAL_HEX
-      #error CHECK_FALSE_EQUAL_HEX already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_FALSE_EQUAL_HEX instead
+   #ifdef CHECK_NOT_EQUAL_HEX
+      #error CHECK_NOT_EQUAL_HEX already defined, re-configure with UNITTEST_ENABLE_SHORT_MACROS set to 0 and use UNITTEST_CHECK_NOT_EQUAL_HEX instead
    #else
-      #define CHECK_FALSE_EQUAL_HEX UNITTEST_CHECK_FALSE_EQUAL_HEX
+      #define CHECK_NOT_EQUAL_HEX UNITTEST_CHECK_NOT_EQUAL_HEX
    #endif
 
    #ifdef CHECK_CLOSE

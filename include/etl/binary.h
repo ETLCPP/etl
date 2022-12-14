@@ -2198,7 +2198,7 @@ namespace etl
 
     return (nbits == etl::integral_limits<type>::bits) ? static_cast<T>(etl::integral_limits<type>::max)
                                                        : static_cast<T>((static_cast<type>(1U) << nbits) - 1U);
-  };
+  }
 
   //***********************************
   template <typename T, size_t NBits>
@@ -2214,7 +2214,7 @@ namespace etl
   ETL_CONSTEXPR T make_msb_mask(size_t nbits)
   {
     return static_cast<T>(etl::reverse_bits(make_lsb_mask<T>(nbits)));
-  };
+  }
 
   //***************************************************************************
   /// 8 bit binary byte constants.

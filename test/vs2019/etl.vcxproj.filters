@@ -217,6 +217,9 @@
     <Filter Include="Tests\Error Handler\Exceptions_And_Log_Errors">
       <UniqueIdentifier>{de372ec9-d193-4956-871f-065414a9d3be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Experimental">
+      <UniqueIdentifier>{d5c3f952-af31-4454-8616-de1614bf928d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -1248,9 +1251,6 @@
     <ClInclude Include="..\..\include\etl\object_allocator.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\persistence.h">
-      <Filter>ETL\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\ireference_counted_message_pool.h">
       <Filter>ETL\Messaging</Filter>
     </ClInclude>
@@ -1349,6 +1349,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\expected.h">
       <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\persistence.h">
+      <Filter>ETL\Experimental</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -732,6 +732,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_front_return)
+    {
+      DataNDC data;
+
+      data.emplace_front("24");
+      auto& front = data.emplace_front("42");
+      CHECK_EQUAL(front, data.front());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_front_excess)
     {
       DataNDC data;
@@ -885,6 +895,16 @@ namespace
 
       are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
       CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back_return)
+    {
+      DataNDC data;
+
+      data.emplace_back("24");
+      auto& back = data.emplace_back("42");
+      CHECK_EQUAL(back, data.back());
     }
 
     //*************************************************************************

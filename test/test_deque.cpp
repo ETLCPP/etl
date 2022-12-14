@@ -1491,6 +1491,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_emplace_back_return)
+    {
+      DataNDC data;
+
+      data.emplace_back("24");
+      auto& back = data.emplace_back("42");
+      CHECK_EQUAL(back, data.back());
+    }
+
+    //*************************************************************************
     TEST(test_push_back_excess)
     {
       DataNDC data;
@@ -1600,6 +1610,16 @@ namespace
       CHECK_NO_THROW(data.emplace_front("5"));
       CHECK_EQUAL(size_t(5), data.size());
       CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_emplace_front_return)
+    {
+      DataNDC data;
+
+      data.emplace_front("24");
+      auto& front = data.emplace_front("42");
+      CHECK_EQUAL(front, data.front());
     }
 
     //*************************************************************************
