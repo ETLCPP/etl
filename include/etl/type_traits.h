@@ -702,7 +702,7 @@ namespace etl
   //***************************************************************************
   /// is_enum
   ///\ingroup type_traits
-  /// Implemented by checking if type is convertable to an integer thru static_cast
+  /// Implemented by checking if type is convertible to an integer through static_cast
 
   namespace private_type_traits 
   {
