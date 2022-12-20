@@ -968,6 +968,7 @@ namespace etl
       case 6: return static_cast<TReturn>(visitor(get<6>(variant)));             \
       case 7: return static_cast<TReturn>(visitor(get<7>(variant)));             \
       default: ETL_ASSERT(false, ETL_ERROR(bad_variant_access));                 \
+               return TReturn();                                                 \
     }                                                                            \
   }
 
