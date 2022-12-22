@@ -284,11 +284,6 @@ if (ETL_USE_TYPE_TRAITS_BUILTINS)
 	target_compile_definitions(etl_tests PRIVATE -DETL_USE_TYPE_TRAITS_BUILTINS)
 endif()
 
-if (ETL_USE_MEM_BUILTINS)
-	message(STATUS "Compiling for built-in memory functions")
-	target_compile_definitions(etl_tests PRIVATE -DETL_USE_MEM_BUILTINS)
-endif()
-
 if (ETL_USER_DEFINED_TYPE_TRAITS)
 	message(STATUS "Compiling for user defined type traits")
 	target_compile_definitions(etl_tests PRIVATE -DETL_USER_DEFINED_TYPE_TRAITS)
