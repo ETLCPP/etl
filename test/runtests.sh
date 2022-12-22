@@ -15,7 +15,7 @@ echo " GCC - STL" | tee -a log.txt
 echo "-----------------------------------------------" | tee -a log.txt
 rm * -rf
 gcc --version | grep gcc | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed Compilation >>>>"
@@ -36,7 +36,7 @@ echo " GCC - STL - Force C++03" | tee -a log.txt
 echo "-----------------------------------------------" | tee -a log.txt
 rm * -rf
 gcc --version | grep gcc | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
+cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed Compilation >>>>"
@@ -57,28 +57,7 @@ echo " GCC - No STL" | tee -a log.txt
 echo "-----------------------------------------------" | tee -a log.txt
 rm * -rf
 gcc --version | grep gcc | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
-make -j4
-if [ $? -eq 0 ]; then
-  echo "<<<< Passed Compilation >>>>"
-else
-  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  echo "<<<< Passed Tests >>>>"
-else
-  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
-  exit $?
-fi
-echo ""
-echo "-----------------------------------------------" | tee -a log.txt
-echo " GCC - No STL - Force Builtins" | tee -a log.txt
-echo "-----------------------------------------------" | tee -a log.txt
-rm * -rf
-gcc --version | grep gcc | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USE_MEM_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed Compilation >>>>"
@@ -103,7 +82,7 @@ echo " Clang - STL" | tee -a log.txt
 echo "-----------------------------------------------" | tee -a log.txt
 rm * -rf
 clang --version | grep clang | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed Compilation >>>>"
@@ -124,7 +103,7 @@ echo " Clang - STL - Force C++03" | tee -a log.txt
 echo "-----------------------------------------------" | tee -a log.txt
 rm * -rf
 clang --version | grep clang | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
+cmake -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed Compilation >>>>"
@@ -145,28 +124,7 @@ echo " Clang - No STL" | tee -a log.txt
 echo "-----------------------------------------------" | tee -a log.txt
 rm * -rf
 clang --version | grep clang | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USE_MEM_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
-make -j4
-if [ $? -eq 0 ]; then
-  echo "<<<< Passed Compilation >>>>"
-else
-  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
-  exit $?
-fi
-./etl_tests
-if [ $? -eq 0 ]; then
-  echo "<<<< Passed Tests >>>>"
-else
-  echo "****************\n**** Failed ****\n****************" | tee -a ../log.txt
-  exit $?
-fi
-echo ""
-echo "-----------------------------------------------" | tee -a log.txt
-echo " Clang - No STL - Builtins" | tee -a log.txt
-echo "-----------------------------------------------" | tee -a log.txt
-rm * -rf
-clang --version | grep clang | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USE_MEM_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed Compilation >>>>"
