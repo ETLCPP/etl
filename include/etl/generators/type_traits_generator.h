@@ -714,7 +714,7 @@ namespace etl
   //***************************************************************************
   /// is_enum
   ///\ingroup type_traits
-  /// Implemented by checking if type is convertable to an integer thru static_cast
+  /// Implemented by checking if type is convertible to an integer through static_cast
 
   namespace private_type_traits 
   {
@@ -1988,13 +1988,40 @@ namespace etl
   };
 
 #if ETL_USING_CPP11
+  //***************************************************************************
+  /// is_constructible
+  namespace private_type_traits 
+  {
+    template <class, class T, class... Args>
+    struct is_constructible_ : etl::false_type {};
+
+    template <class T, class... Args>
+    struct is_constructible_<void_t<decltype(T(etl::declval<Args>()...))>, T, Args...> : etl::true_type {};
+  };
+
+
   //*********************************************
   // is_constructible
-  template <typename T, typename... TArgs>
-  struct is_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
-  {
-  };
-#endif
+  template <class T, class... Args>
+  using is_constructible = private_type_traits::is_constructible_<void_t<>, T, Args...>;
+
+  //*********************************************
+  // is_copy_constructible
+  template <class T> struct is_copy_constructible : public is_constructible<T,  typename etl::add_lvalue_reference<typename etl::add_const<T>::type>::type>{};
+  template <> struct is_copy_constructible<void> : public false_type{};
+  template <> struct is_copy_constructible<void const> : public false_type{};
+  template <> struct is_copy_constructible<void volatile> : public false_type{};
+  template <> struct is_copy_constructible<void const volatile> : public false_type{};
+
+  //*********************************************
+  // is_move_constructible
+  template <typename T> struct is_move_constructible: public is_constructible<T, typename etl::add_rvalue_reference<T>::type>{};
+  template <> struct is_move_constructible<void> : public false_type{};
+  template <> struct is_move_constructible<void const> : public false_type{};
+  template <> struct is_move_constructible<void volatile> : public false_type{};
+  template <> struct is_move_constructible<void const volatile> : public false_type{};
+
+#else
 
   //*********************************************
   // is_copy_constructible
@@ -2009,6 +2036,7 @@ namespace etl
   struct is_move_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
   {
   };
+#endif
 
   //*********************************************
   // is_trivially_constructible
