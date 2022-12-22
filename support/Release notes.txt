@@ -1,4 +1,10 @@
 ===============================================================================
+20.35.8
+#648 Improve is_constructible, is_copy_constructible, is_move_constructible for type traits with default definitions 
+#645 Avoid 'missing return statement at end of non-void function' in `etl::visit<>()`.
+Removed unused ETL_USE_MEM_BUILTINS option
+
+===============================================================================
 20.35.7
 Updated etl::delgate to handle const functors correctly
 
