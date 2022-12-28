@@ -36,6 +36,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "variant.h"
+#include "optional.h"
 
 #if ETL_CPP11_NOT_SUPPORTED
   #if !defined(ETL_IN_UNIT_TEST)
@@ -181,7 +182,7 @@ namespace etl
     //*******************************************
     bool is_error() const
     {
-      return (data.index() == 1U);
+      return !has_value();
     }
 
     //*******************************************
@@ -199,7 +200,7 @@ namespace etl
     //*******************************************
     TValue&& value()
     {
-      return etl::move(etl::get<TValue>(etl::move(data)));
+      return etl::move(etl::get<TValue>(data));
     }
 
     //*******************************************
@@ -217,7 +218,7 @@ namespace etl
     //*******************************************
     TError&& error()
     {
-      return etl::move(etl::get<TError>(etl::move(data)));
+      return etl::move(etl::get<TError>(data));
     }
 
   private:
@@ -260,34 +261,34 @@ namespace etl
     //*******************************************
     /// Construct from error
     //*******************************************
-    result(const TError& err)
-      : data(err)
+    result(const TError& error)
+      : data(error)
     {
     }
 
     //*******************************************
     /// Move construct from error
     //*******************************************
-    result(TError&& err)
-      : data(etl::move(err))
+    result(TError&& error)
+      : data(etl::move(error))
     {
     }
 
     //*******************************************
     /// Copy assign from error
     //*******************************************
-    result& operator =(const TError& err)
+    result& operator =(const TError& error)
     {
-      data = err;
+      data = error;
       return *this;
     }
 
     //*******************************************
     /// Move assign from error
     //*******************************************
-    result& operator =(TError&& err)
+    result& operator =(TError&& error)
     {
-      data = etl::move(err);
+      data = etl::move(error);
       return *this;
     }
 
@@ -296,7 +297,7 @@ namespace etl
     //*******************************************
     bool has_value() const
     {
-      return (data.index() == 0U);
+      return !data.has_value();
     }
 
     //*******************************************
@@ -312,7 +313,7 @@ namespace etl
     //*******************************************
     bool is_error() const
     {
-      return (data.index() == 1U);
+      return !has_value();
     }
 
     //*******************************************
@@ -321,7 +322,7 @@ namespace etl
     //*******************************************
     const TError& error() const
     {
-      return etl::get<TError>(data);
+      return data.value();
     }
 
     //*******************************************
@@ -330,12 +331,12 @@ namespace etl
     //*******************************************
     TError&& error()
     {
-      return etl::get<TError>(etl::move(data));
+      return etl::move(data.value());
     }
 
   private:
 
-    etl::variant<etl::monostate, TError> data;
+    etl::optional<TError> data;
   };
 
   //*****************************************************************************
@@ -400,7 +401,7 @@ namespace etl
     //*******************************************
     result& operator =(TValue&& value)
     {
-      data = etl::move(err);
+      data = etl::move(value);
       return *this;
     }
 
@@ -409,7 +410,7 @@ namespace etl
     //*******************************************
     bool has_value() const
     {
-      return (data.index() == 1U);
+      return data.has_value();
     }
 
     //*******************************************
@@ -425,7 +426,7 @@ namespace etl
     //*******************************************
     bool is_error() const
     {
-      return (data.index() == 0U);
+      return !has_value();
     }
 
     //*******************************************
@@ -434,7 +435,7 @@ namespace etl
     //*******************************************
     const TValue& value() const
     {
-      return etl::get<TValue>(data);
+      return data.value();
     }
 
     //*******************************************
@@ -443,12 +444,12 @@ namespace etl
     //*******************************************
     TValue&& value()
     {
-      return etl::get<TValue>(etl::move(data));
+      return etl::move(data.value());
     }
 
   private:
 
-    etl::variant<etl::monostate, TValue> data;
+    etl::optional<TValue> data;
   };
 }
 
