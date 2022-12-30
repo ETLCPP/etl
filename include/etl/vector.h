@@ -1353,7 +1353,7 @@ namespace etl
   //*************************************************************************
 #if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
   template <typename... T>
-  constexpr auto make_vector(T... t) -> etl::vector<typename etl::common_type_t<T...>, sizeof...(T)>
+  constexpr auto make_vector(T&&... t) -> etl::vector<typename etl::common_type_t<T...>, sizeof...(T)>
   {
     return { { etl::forward<T>(t)... } };
   }
