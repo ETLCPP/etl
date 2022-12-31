@@ -1,4 +1,4 @@
-function(determine_version VER_FILE_NAME)
+function(determine_version_with_file VER_FILE_NAME)
     file(READ ${VER_FILE_NAME} ETL_VERSION_RAW)
     # Remove trailing whitespaces and/or newline
     string(STRIP ${ETL_VERSION_RAW} ETL_VERSION)
@@ -13,7 +13,11 @@ function(determine_version_with_git)
     git_describe(VERSION ${ARGN})
     string(FIND ${VERSION} "." VALID_VERSION)
     if(VALID_VERSION EQUAL -1)
-        message(WARNING "Version string ${VERSION} retrieved with git describe is invalid")
+        if(PROJECT_IS_TOP_LEVEL)
+            # only warn if this is the top-level project, since we may be
+            # building from a tarball as a subproject
+            message(WARNING "Version string ${VERSION} retrieved with git describe is invalid")
+        endif()
         return()
     endif()
     message(STATUS "${MSG_PREFIX} Version string determined with git describe: ${VERSION}")
