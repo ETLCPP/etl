@@ -1,4 +1,9 @@
 ===============================================================================
+20.35.9
+#657 -Wpedantic-failure. Removed superfluous semicolons
+#653 CMake - Don't warn on tag missing when subproject
+
+===============================================================================
 20.35.8
 #648 Improve is_constructible, is_copy_constructible, is_move_constructible for type traits with default definitions 
 #645 Avoid 'missing return statement at end of non-void function' in `etl::visit<>()`.
