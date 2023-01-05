@@ -2,6 +2,8 @@
 20.35.9
 #657 -Wpedantic-failure. Removed superfluous semicolons
 #653 CMake - Don't warn on tag missing when subproject
+Removed Ubuntu 18.04 from Github Actions
+Added Ubuntu 22.04 to Github Actions
 
 ===============================================================================
 20.35.8
