@@ -660,6 +660,13 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back_return)
+    {
+       Data data;
+       CHECK_EQUAL(42, data.emplace_back(42));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_back_literal)
     {
       Compare_Data compare_data;

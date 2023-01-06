@@ -128,6 +128,13 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_emplace_return)
+    {
+      etl::optional<DataM> data;
+      CHECK_EQUAL(42U, data.emplace(42U).value);
+    }
+
+    //*************************************************************************
     TEST(test_moveable)
     {
 #include "etl/private/diagnostic_pessimizing_move_push.h"
