@@ -699,6 +699,7 @@ namespace
     {
       DataNDC data;
 
+      data.emplace_front("24");
       auto& front = data.emplace_front("42");
       CHECK_EQUAL(front, data.front());
     }

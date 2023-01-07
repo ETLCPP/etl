@@ -1047,9 +1047,11 @@ namespace
     TEST_FIXTURE(SetupFixture, test_emplace_back_return)
     {
       Data data(buffer1, SIZE);
-      int d = 42;
+      int d1 = 42;
+      int d2 = 24;
 
-      CHECK_EQUAL(&d, data.emplace_back(&d));
+      data.emplace_back(&d1);
+      CHECK_EQUAL(&d2, data.emplace_back(&d2));
     }
 
     //*************************************************************************

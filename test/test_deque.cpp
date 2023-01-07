@@ -1495,6 +1495,7 @@ namespace
     {
       DataNDC data;
 
+      data.emplace_back("24");
       auto& back = data.emplace_back("42");
       CHECK_EQUAL(back, data.back());
     }
@@ -1616,6 +1617,7 @@ namespace
     {
       DataNDC data;
 
+      data.emplace_front("24");
       auto& front = data.emplace_front("42");
       CHECK_EQUAL(front, data.front());
     }

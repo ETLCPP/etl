@@ -714,6 +714,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_emplace_back_return)
     {
       Data data(buffer1, SIZE);
+      data.emplace_back(24);
       CHECK_EQUAL(42, data.emplace_back(42));
     }
 

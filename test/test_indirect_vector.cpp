@@ -719,9 +719,11 @@ namespace
     TEST_FIXTURE(SetupFixture, test_emplace_back_return)
     {
        DataNDC data;
-       std::string value("A");
+       std::string value1("A");
+       std::string value2("B");
 
-       auto& back = data.emplace_back(value);
+       data.emplace_back(value1);
+       auto& back = data.emplace_back(value2);
        CHECK_EQUAL(back, data.back());
     }
 
