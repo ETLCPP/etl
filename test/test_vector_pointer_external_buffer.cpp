@@ -1044,6 +1044,15 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back_return)
+    {
+      Data data(buffer1, SIZE);
+      int d = 42;
+
+      CHECK_EQUAL(&d, data.emplace_back(&d));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_pop_back)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
