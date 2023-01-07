@@ -717,7 +717,8 @@ namespace
       DataNDC data;
 
       data.emplace_back("A", 24);
-      CHECK_EQUAL(NDC("B", 42), data.emplace_back("B", 42));
+      auto back = data.emplace_back("B", 42);
+      CHECK_EQUAL(back, data.back());
     }
 
     //*************************************************************************

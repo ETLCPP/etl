@@ -701,8 +701,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_emplace_back_return)
     {
       Data data;
+
       data.emplace_back(24);
-      CHECK_EQUAL(42, data.emplace_back(42));
+      auto back = data.emplace_back(42);
+      CHECK_EQUAL(back, data.back());
     }
 
     //*************************************************************************
