@@ -782,10 +782,11 @@ namespace etl
     ///\param value The value to add.
     //*********************************************************************
     template <typename ... Args>
-    void emplace_back(Args && ... args)
+    reference emplace_back(Args && ... args)
     {
       T* p = storage.create<T>(etl::forward<Args>(args)...);
       lookup.push_back(p);
+      return back();
     }
 #else
     //*********************************************************************
@@ -794,10 +795,11 @@ namespace etl
     ///\param value The value to add.
     //*********************************************************************
     template <typename T1>
-    void emplace_back(const T1& value1)
+    reference emplace_back(const T1& value1)
     {
       T* p = storage.create<T>(T(value1));
       lookup.push_back(p);
+      return back();
     }
 
     //*********************************************************************
@@ -806,10 +808,11 @@ namespace etl
     ///\param value The value to add.
     //*********************************************************************
     template <typename T1, typename T2>
-    void emplace_back(const T1& value1, const T2& value2)
+    reference emplace_back(const T1& value1, const T2& value2)
     {
       T* p = storage.create<T>(T(value1, value2));
       lookup.push_back(p);
+      return back();
     }
 
     //*********************************************************************
@@ -818,10 +821,11 @@ namespace etl
     ///\param value The value to add.
     //*********************************************************************
     template <typename T1, typename T2, typename T3>
-    void emplace_back(const T1& value1, const T2& value2, const T3& value3)
+    reference emplace_back(const T1& value1, const T2& value2, const T3& value3)
     {
       T* p = storage.create<T>(T(value1, value2, value3));
       lookup.push_back(p);
+      return back();
     }
 
     //*********************************************************************
@@ -830,10 +834,11 @@ namespace etl
     ///\param value The value to add.
     //*********************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
-    void emplace_back(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    reference emplace_back(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
       T* p = storage.create<T>(T(value1, value2, value3, value4));
       lookup.push_back(p);
+      return back();
     }
 #endif
 

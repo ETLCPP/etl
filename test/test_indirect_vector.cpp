@@ -716,6 +716,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back_return)
+    {
+       DataNDC data;
+       std::string value("A");
+
+       auto& back = data.emplace_back(value);
+       CHECK_EQUAL(back, data.back());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_back_unique_ptr)
     {
       etl::indirect_vector<std::unique_ptr<int>, SIZE> data;

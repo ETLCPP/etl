@@ -427,7 +427,7 @@ namespace etl
     ///\param args The arguments to construct with.
     //*************************************************************************
     template <typename ... Args>
-    void emplace(Args && ... args)
+    T& emplace(Args && ... args)
     {
       if (valid)
       {
@@ -437,6 +437,7 @@ namespace etl
 
       ::new (storage.template get_address<T>()) T(ETL_OR_STD::forward<Args>(args)...);
       valid = true;
+      return storage;
     }
 #else
     //*************************************************************************
@@ -444,7 +445,7 @@ namespace etl
     /// 1 parameter.
     //*************************************************************************
     template <typename T1>
-    void emplace(const T1& value1)
+    T& emplace(const T1& value1)
     {
       if (valid)
       {
@@ -454,6 +455,7 @@ namespace etl
 
       ::new (storage.template get_address<T>()) T(value1);
       valid = true;
+      return storage;
     }
 
     //*************************************************************************
@@ -461,7 +463,7 @@ namespace etl
     /// 2 parameters.
     //*************************************************************************
     template <typename T1, typename T2>
-    void emplace(const T1& value1, const T2& value2)
+    T& emplace(const T1& value1, const T2& value2)
     {
       if (valid)
       {
@@ -471,6 +473,7 @@ namespace etl
 
       ::new (storage.template get_address<T>()) T(value1, value2);
       valid = true;
+      return storage;
     }
 
     //*************************************************************************
@@ -478,7 +481,7 @@ namespace etl
     /// 3 parameters.
     //*************************************************************************
     template <typename T1, typename T2, typename T3>
-    void emplace(const T1& value1, const T2& value2, const T3& value3)
+    T& emplace(const T1& value1, const T2& value2, const T3& value3)
     {
       if (valid)
       {
@@ -488,6 +491,7 @@ namespace etl
 
       ::new (storage.template get_address<T>()) T(value1, value2, value3);
       valid = true;
+      return storage;
     }
 
     //*************************************************************************
@@ -495,7 +499,7 @@ namespace etl
     /// 4 parameters.
     //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
-    void emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    T& emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
       if (valid)
       {
@@ -505,6 +509,7 @@ namespace etl
 
       ::new (storage.template get_address<T>()) T(value1, value2, value3, value4);
       valid = true;
+      return storage;
     }
 #endif
 
