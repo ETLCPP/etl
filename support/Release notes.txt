@@ -1,6 +1,6 @@
 ===============================================================================
 20.35.10
-#659-emplace-member-functions-return-reference-to-emplaced-value
+#659 emplace member functions return reference to emplaced value
 
 ===============================================================================
 20.35.9
