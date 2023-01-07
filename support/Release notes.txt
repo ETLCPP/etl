@@ -1,4 +1,8 @@
 ===============================================================================
+20.35.10
+#659-emplace-member-functions-return-reference-to-emplaced-value
+
+===============================================================================
 20.35.9
 #657 -Wpedantic-failure. Removed superfluous semicolons
 #653 CMake - Don't warn on tag missing when subproject
