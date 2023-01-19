@@ -1333,5 +1333,15 @@ namespace
         CHECK_EQUAL(expected[i], result[i]);
       }
     }
+    //*************************************************************************
+    TEST(read_byte_stream_skip)
+    {
+      etl::array<uint8_t, 4> data;
+      etl::byte_stream_reader r(data.begin(), data.size(), etl::endian::little);
+      CHECK_TRUE(r.skip<uint8_t>(4));
+      etl::optional<etl::span<const uint8_t>> result = r.read<uint8_t>(4);
+      CHECK_FALSE(result.has_value());
+      CHECK_TRUE(r.empty());
+    }
   };
 }

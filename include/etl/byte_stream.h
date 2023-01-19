@@ -749,7 +749,7 @@ namespace etl
     template <typename T>
     bool skip(size_t n)
     {
-      if (n < available<T>())
+      if (n <= available<T>())
       {
         pcurrent += (n * sizeof(T));
         return true;
