@@ -542,7 +542,7 @@ namespace
 #endif
 
     //*************************************************************************
-    TEST(test_emplace_value)
+    TEST(test_emplace_value_by_type)
     {
       // Char.
       char c = 'a';
@@ -567,6 +567,37 @@ namespace
       test_variant_etl_3 variant_text_etl;
 
       variant_text_etl.emplace<std::string>(text);
+      CHECK(text == "Some Text");
+      CHECK(etl::holds_alternative<std::string>(variant_text_etl));
+      CHECK_EQUAL(text, etl::get<std::string>(variant_text_etl));
+    }
+
+    //*************************************************************************
+    TEST(test_emplace_value_by_index)
+    {
+      // Char.
+      char c = 'a';
+      test_variant_etl_3 variant_char_etl;
+
+      c = variant_char_etl.emplace<0>(c);
+      CHECK(c == 'a');
+      CHECK(etl::holds_alternative<char>(variant_char_etl));
+      CHECK_EQUAL(c, etl::get<char>(variant_char_etl));
+
+      // Int.
+      int i = 1;
+      test_variant_etl_3 variant_int_etl;
+
+      i = variant_int_etl.emplace<1>(i);
+      CHECK(i == 1);
+      CHECK(etl::holds_alternative<int>(variant_int_etl));
+      CHECK_EQUAL(i, etl::get<int>(variant_int_etl));
+
+      // String.
+      std::string text("Some Text");
+      test_variant_etl_3 variant_text_etl;
+
+      text = variant_text_etl.emplace<2>(text);
       CHECK(text == "Some Text");
       CHECK(etl::holds_alternative<std::string>(variant_text_etl));
       CHECK_EQUAL(text, etl::get<std::string>(variant_text_etl));
