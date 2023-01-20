@@ -1,4 +1,9 @@
 ===============================================================================
+20.35.11
+Added emplace by index to variant (variadic)
+#660 byte_stream_reader::skip error
+
+===============================================================================
 20.35.10
 #659 emplace member functions return reference to emplaced value
 

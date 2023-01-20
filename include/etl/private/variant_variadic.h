@@ -709,7 +709,7 @@ namespace etl
     {    
       static_assert(Index < etl::private_variant::parameter_pack<TTypes...>::size, "Index out of range");
 
-      using type = typename etl::private_variant::parameter_pack<TTypes...>::type_from_index<Index>::type;
+      using type = typename etl::private_variant::parameter_pack<TTypes...>::template type_from_index<Index>::type;
 
       operation(private_variant::Destroy, data, nullptr);
 
