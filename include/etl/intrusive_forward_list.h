@@ -332,11 +332,6 @@ namespace etl
       {
       }
 
-      iterator(value_type* value)
-        : p_value(value)
-      {
-      }
-
       iterator(const iterator& other)
         : p_value(other.p_value)
       {
@@ -390,6 +385,11 @@ namespace etl
 
     private:
 
+      iterator(value_type* value)
+        : p_value(value)
+      {
+      }
+
       value_type* p_value;
     };
 
@@ -404,11 +404,6 @@ namespace etl
 
       const_iterator()
         : p_value(ETL_NULLPTR)
-      {
-      }
-
-      const_iterator(const value_type* value)
-        : p_value(value)
       {
       }
 
@@ -469,6 +464,11 @@ namespace etl
       }
 
     private:
+
+      const_iterator(const value_type* value)
+        : p_value(value)
+      {
+      }
 
       const value_type* p_value;
     };

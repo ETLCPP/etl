@@ -387,11 +387,6 @@ namespace etl
       {
       }
 
-      iterator(value_type& value)
-        : p_value(&value)
-      {
-      }
-
       iterator(const iterator& other)
         : p_value(other.p_value)
       {
@@ -460,6 +455,11 @@ namespace etl
 
     private:
 
+      iterator(value_type* value)
+        : p_value(value)
+      {
+      }
+
       value_type* p_value;
     };
 
@@ -474,11 +474,6 @@ namespace etl
 
       const_iterator()
         : p_value(ETL_NULLPTR)
-      {
-      }
-
-      const_iterator(const value_type& value)
-        : p_value(&value)
       {
       }
 
@@ -555,6 +550,11 @@ namespace etl
 
     private:
 
+      const_iterator(const value_type* value)
+        : p_value(value)
+      {
+      }
+
       const value_type* p_value;
     };
 
@@ -590,7 +590,7 @@ namespace etl
     //*************************************************************************
     iterator begin()
     {
-      return iterator(static_cast<value_type&>(*this->get_head()));
+      return iterator(static_cast<value_type*>(this->get_head()));
     }
 
     //*************************************************************************
@@ -598,7 +598,7 @@ namespace etl
     //*************************************************************************
     const_iterator begin() const
     {
-      return const_iterator(static_cast<const value_type&>(*this->get_head()));
+      return const_iterator(reinterpret_cast<const value_type*>(this->get_head()));
     }
 
     //*************************************************************************
@@ -606,7 +606,7 @@ namespace etl
     //*************************************************************************
     const_iterator cbegin() const
     {
-      return const_iterator(static_cast<const value_type&>(*this->get_head()));
+      return const_iterator(reinterpret_cast<const value_type*>(this->get_head()));
     }
 
     //*************************************************************************
@@ -614,7 +614,7 @@ namespace etl
     //*************************************************************************
     iterator end()
     {
-      return iterator(static_cast<value_type&>(this->terminal_link));
+      return iterator(static_cast<value_type*>(&this->terminal_link));
     }
 
     //*************************************************************************
@@ -622,7 +622,7 @@ namespace etl
     //*************************************************************************
     const_iterator end() const
     {
-      return const_iterator(static_cast<const value_type&>(this->terminal_link));
+      return const_iterator(static_cast<const value_type*>(&this->terminal_link));
     }
 
     //*************************************************************************
@@ -630,7 +630,7 @@ namespace etl
     //*************************************************************************
     const_iterator cend() const
     {
-      return const_iterator(static_cast<const value_type&>(this->terminal_link));
+      return const_iterator(static_cast<const value_type*>(&this->terminal_link));
     }
 
     //*************************************************************************
@@ -671,7 +671,7 @@ namespace etl
     iterator insert(const_iterator position, value_type& value)
     {
       this->insert_link(position.p_value->link_type::etl_previous, value);
-      return iterator(value);
+      return iterator(&value);
     }
 
     //*************************************************************************
@@ -737,7 +737,7 @@ namespace etl
       }
       else
       {
-        return iterator(*static_cast<value_type*>(p_last));
+        return iterator(static_cast<value_type*>(p_last));
       }
     }
 
