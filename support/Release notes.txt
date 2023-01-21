@@ -1,4 +1,8 @@
 ===============================================================================
+20.35.12
+#649 subscript-1 is out of bounds. Changed intrusive_list and intrusive_forward_list iterator constructor parameter from reference to pointer.
+
+===============================================================================
 20.35.11
 Added emplace by index to variant (variadic)
 #660 byte_stream_reader::skip error
