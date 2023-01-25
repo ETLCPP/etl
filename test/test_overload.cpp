@@ -72,6 +72,7 @@ namespace
 
   SUITE(test_overload)
   {
+#if ETL_USING_CPP17
     //*************************************************************************
     TEST(test_overload_lambdas)
     {
@@ -97,11 +98,12 @@ namespace
       CHECK(result.bd == false);
       CHECK(result.bs == true);
     }
+#endif
 
     //*************************************************************************
     TEST(test_overload_lambdas_cpp17)
     {
-#if !defined(ETL_OVERLOAD_FORCE_CPP14)
+#if ETL_USING_CPP17 && !defined(ETL_OVERLOAD_FORCE_CPP14)
       result.clear();
       Function(int(1), etl::overload
                        {
@@ -137,6 +139,7 @@ namespace
 #endif
     }
 
+#if ETL_USING_CPP17
     //*************************************************************************
     TEST(test_visitor_overload)
     {
@@ -160,5 +163,6 @@ namespace
       CHECK(result.bd == false);
       CHECK(result.bs == true);
     }
+#endif
   };
 }

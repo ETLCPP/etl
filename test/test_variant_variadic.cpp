@@ -39,6 +39,8 @@ SOFTWARE.
 #include <variant>
 #include <type_traits>
 
+#if ETL_USING_CPP17
+
 namespace
 {
   // Test variant_etl types.
@@ -1453,3 +1455,5 @@ namespace
     }
   };
 }
+
+#endif
