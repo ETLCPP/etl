@@ -39,6 +39,7 @@ namespace
     //*************************************************************************
     TEST(test_index_of_type)
     {
+#if ETL_USING_CPP17
       CHECK_EQUAL(0U, Pack::index_of_type_v<char>);
       CHECK_EQUAL(1U, Pack::index_of_type_v<short>);
       CHECK_EQUAL(2U, Pack::index_of_type_v<int>);
@@ -52,6 +53,21 @@ namespace
 
       // Static assert
       //CHECK_EQUAL(0U, (etl::parameter_pack_v<long, char, short, int>));
+#else
+      CHECK_EQUAL(0U, Pack::index_of_type<char>::value);
+      CHECK_EQUAL(1U, Pack::index_of_type<short>::value);
+      CHECK_EQUAL(2U, Pack::index_of_type<int>::value);
+
+      // Static assert
+      //CHECK_EQUAL(0U, Pack::index_of_type_v<long>);
+
+      CHECK_EQUAL(0U, (etl::parameter_pack<char,  char, short, int>::index_of_type<char>::value));
+      CHECK_EQUAL(1U, (etl::parameter_pack<short, char, short, int>::index_of_type<short>::value));
+      CHECK_EQUAL(2U, (etl::parameter_pack<int,   char, short, int>::index_of_type<int>::value));
+
+      // Static assert
+      //CHECK_EQUAL(0U, (etl::parameter_pack_v<long, char, short, int>));
+#endif
     }
 
     //*************************************************************************
