@@ -103,7 +103,7 @@ namespace
     {
       Data data("Hello");
 
-      etl::optional opt{ data };
+      etl::optional<Data> opt{ data };
 
       CHECK(opt.has_value());
       CHECK(bool(opt));

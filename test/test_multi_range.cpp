@@ -290,7 +290,7 @@ namespace
         std::string inner;
       };
 
-      std::array results
+      std::array<result, 64U> results
       {
           result{ 0,  2, "zero" }, result{ 0,  2, "one" }, result{ 0,  2, "two" }, result{ 0,  2, "three" },
           result{ 0,  1, "zero" }, result{ 0,  1, "one" }, result{ 0,  1, "two" }, result{ 0,  1, "three" },
@@ -373,7 +373,7 @@ namespace
         std::string inner;
       };
 
-      std::array results
+      std::array<result, 16U> results
       {
           result{ 0,  2, "zero" }, result{ 0,  2, "one" }, result{ 0,  2, "two" }, result{ 0,  2, "three" },
           result{ 0,  1, "zero" }, result{ 0,  1, "one" }, result{ 0,  1, "two" }, result{ 0,  1, "three" },

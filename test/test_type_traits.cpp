@@ -1041,15 +1041,15 @@ namespace
   {
 #if ETL_USING_CPP17
     CHECK_EQUAL(1, (etl::integral_constant_v<int, 1>));
-    CHECK((std::is_same<int, etl::integral_constant_v<int, 1>>));
+    CHECK((std::is_same_v<int, etl::integral_constant<int, 1>::value_type>));
 
-    CHECK_EQUAL(false, (etl::bool_constant_v<false>));
-    CHECK_EQUAL(true,  (etl::bool_constant_v<true>));
-    CHECK((std::is_same<bool, etl::bool_constant<true>::value_type>));
+    CHECK_EQUAL(false, etl::bool_constant_v<false>);
+    CHECK_EQUAL(true,  etl::bool_constant_v<true>);
+    CHECK((std::is_same_v<bool, etl::bool_constant<true>::value_type>));
 
     CHECK_EQUAL(true,  etl::negation_v<etl::bool_constant<false>>);
     CHECK_EQUAL(false, etl::negation_v<etl::bool_constant<true>>);
-    CHECK((std::is_same<bool, etl::bool_constant<true>::value_type>));
+    CHECK((std::is_same_v<bool, etl::bool_constant<false>::value_type>));
 #else
     CHECK_EQUAL(1, (etl::integral_constant<int, 1>::value));
     CHECK((std::is_same<int, etl::integral_constant<int, 1>::value_type>::value));
