@@ -38,6 +38,9 @@ SOFTWARE.
 #undef STR
 #define STR(x) x
 
+#undef STR_PTR
+#define STR_PTR const char*
+
 namespace
 {
   SUITE(test_string_utilities_char)
@@ -51,7 +54,11 @@ namespace
     using Vector     = etl::vector<String, 15>;
     using SizeType   = etl::istring::size_type;
 
+#if ETL_USING_CPP17
     constexpr auto Whitespace = etl::whitespace_v<String::value_type>;
+#else
+    STR_PTR Whitespace = etl::whitespace<String::value_type>::value();
+#endif
 
     //*************************************************************************
     TEST(test_trim_whitespace_left_empty)

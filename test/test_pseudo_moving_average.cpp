@@ -65,7 +65,7 @@ namespace
     //*************************************************************************
     TEST(integral_signed_average_positive_via_iterator)
     {
-      std::array data{ 9, 1, 8, 2, 7, 3, 6, 4, 5 };
+      std::array<int, 10> data{ 9, 1, 8, 2, 7, 3, 6, 4, 5 };
 
       using CMA = etl::pseudo_moving_average<int, SAMPLE_SIZE, SCALING>;
       CMA cma(0);
@@ -101,7 +101,7 @@ namespace
     //*************************************************************************
     TEST(integral_signed_average_negative_via_iterator)
     {
-      std::array data{ -9, -1, -8, -2, -7, -3, -6, -4, -5 };
+      std::array<int, 10> data{ -9, -1, -8, -2, -7, -3, -6, -4, -5 };
 
       using CMA = etl::pseudo_moving_average<int, SAMPLE_SIZE, SCALING>;
       CMA cma(0);
@@ -137,7 +137,7 @@ namespace
     //*************************************************************************
     TEST(integral_unsigned_average_positive_via_iterator)
     {
-      std::array data{ 9U, 1U, 8U, 2U, 7U, 3U, 6U, 4U, 5U };
+      std::array<unsigned int, 10> data{ 9U, 1U, 8U, 2U, 7U, 3U, 6U, 4U, 5U };
 
       using CMA = etl::pseudo_moving_average<unsigned int, SAMPLE_SIZE, SCALING>;
       CMA cma(0U);
@@ -175,7 +175,7 @@ namespace
     //*************************************************************************
     TEST(integral_signed_average_positive_runtime_sample_size_via_iterator)
     {
-      std::array data{ 9, 1, 8, 2, 7, 3, 6, 4, 5 };
+      std::array<int, 10> data{ 9, 1, 8, 2, 7, 3, 6, 4, 5 };
 
       using CMA = etl::pseudo_moving_average<int, 0U, SCALING>;
       CMA cma(0, SAMPLE_SIZE * 2U);
@@ -215,7 +215,7 @@ namespace
     //*************************************************************************
     TEST(integral_signed_average_negative_runtime_sample_size_via_iterator)
     {
-      std::array data{ -9, -1, -8, -2, -7, -3, -6, -4, -5 };
+      std::array<int, 10> data{ -9, -1, -8, -2, -7, -3, -6, -4, -5 };
 
       using CMA = etl::pseudo_moving_average<int, 0U, SCALING>;
       CMA cma(0, SAMPLE_SIZE * 2U);
@@ -255,7 +255,7 @@ namespace
     //*************************************************************************
     TEST(integral_unsigned_average_positive_runtime_sample_size_via_iterator)
     {
-      std::array data{ 9U, 1U, 8U, 2U, 7U, 3U, 6U, 4U, 5U };
+      std::array<unsigned int, 10> data{ 9U, 1U, 8U, 2U, 7U, 3U, 6U, 4U, 5U };
 
       using CMA = etl::pseudo_moving_average<int, 0U, SCALING>;
       CMA cma(0U, SAMPLE_SIZE * 2U);
@@ -293,7 +293,7 @@ namespace
     //*************************************************************************
     TEST(floating_point_average_via_iterator)
     {
-      std::array data{ 9.0, 1.0, 8.0, 2.0, 7.0, 3.0, 6.0, 4.0, 5.0 };
+      std::array<double, 10> data{ 9.0, 1.0, 8.0, 2.0, 7.0, 3.0, 6.0, 4.0, 5.0 };
 
       using CMA = etl::pseudo_moving_average<double, SAMPLE_SIZE>;
       CMA cma(0);
@@ -331,7 +331,7 @@ namespace
     //*************************************************************************
     TEST(floating_point_average_runtime_sample_size_via_iterator)
     {
-      std::array data{ 9.0, 1.0, 8.0, 2.0, 7.0, 3.0, 6.0, 4.0, 5.0 };
+      std::array<double, 10> data{ 9.0, 1.0, 8.0, 2.0, 7.0, 3.0, 6.0, 4.0, 5.0 };
 
       using CMA = etl::pseudo_moving_average<double, 0U>;
       CMA cma(0, SAMPLE_SIZE * 2);
