@@ -260,6 +260,7 @@ namespace
       CHECK_EQUAL(0, router2.count_unknown_message);
     }
 
+    //*************************************************************************
     TEST(test_reference_counted_pool_exceptions)
     {
       using pool_message_parameters = etl::atomic_counted_message_pool::pool_message_parameters<Message1, Message2>;
