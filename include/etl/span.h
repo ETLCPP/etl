@@ -604,8 +604,8 @@ namespace etl
     //*************************************************************************
     template <typename U, size_t N>
     ETL_CONSTEXPR span(const etl::span<U, N>& other) ETL_NOEXCEPT
-      : pbegin(other.begin())
-      , pend(other.begin() + N)
+      : pbegin(other.pbegin)
+      , pend(other.pend)
     {
     }
 
