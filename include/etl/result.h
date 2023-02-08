@@ -91,7 +91,7 @@ namespace etl
     //*******************************************
     // Move construct from a value
     //*******************************************
-      result(TValue&& value)
+    result(TValue&& value)
       : data(etl::move(value))
     {
     }
@@ -472,123 +472,8 @@ namespace etl
 
   private:
 
-    etl::optional<TError> data;
-  };
-
-  //*****************************************************************************
-  /// Result type.
-  /// Specialisation for void error type.
-  //*****************************************************************************
-  template<typename TValue>
-  class result<TValue, void>
-  {
-  public:
-
-    //*******************************************
-    /// Default Constructor
-    //*******************************************
-    result()
-    {
-    }
-
-    //*******************************************
-    /// Copy constructor
-    //*******************************************
-    result(const result& other)
-      : data(other.data)
-    {
-    }
-
-    //*******************************************
-    /// Move constructor
-    //*******************************************
-    result(result&& other)
-      : data(etl::move(other.data))
-    {
-    }
-
-    //*******************************************
-    /// Construct from error
-    //*******************************************
-    result(const TValue& value)
-      : data(value)
-    {
-    }
-
-    //*******************************************
-    /// Move construct from error
-    //*******************************************
-    result(TValue&& value)
-      : data(etl::move(value))
-    {
-    }
-
-    //*******************************************
-    /// Copy assign from error
-    //*******************************************
-    result& operator =(const TValue& value)
-    {
-      data = value;
-      return *this;
-    }
-
-    //*******************************************
-    /// Move assign from error
-    //*******************************************
-    result& operator =(TValue&& value)
-    {
-      data = etl::move(value);
-      return *this;
-    }
-
-    //*******************************************
-    /// <b>true</b> if result contains a value
-    //*******************************************
-    bool has_value() const
-    {
-      return data.has_value();
-    }
-
-    //*******************************************
-    /// <b>true</b> if result contains a value
-    //*******************************************
-    bool is_value() const
-    {
-      return has_value();
-    }
-
-    //*******************************************
-    /// <b>true</b> if result contains an error
-    //*******************************************
-    bool is_error() const
-    {
-      return !has_value();
-    }
-
-    //*******************************************
-    /// Returns a const reference to the error.
-    /// Undefined if the result does not contain an error.
-    //*******************************************
-    const TValue& value() const
-    {
-      return data.value();
-    }
-
-    //*******************************************
-    /// Returns an rvalue reference to the error.
-    /// Undefined if the result does not contain an error.
-    //*******************************************
-    TValue&& value()
-    {
-      return etl::move(data.value());
-    }
-#endif
-
-  private:
-
     etl::optional<TValue> data;
   };
 }
 
-#endif
 #endif
