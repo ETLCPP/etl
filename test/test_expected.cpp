@@ -185,6 +185,7 @@ namespace
     TEST(test_constructor_for_result_with_error)
     {
       Error      input = { "error 1" };
+
       Unexpected unexpected(input);
       Expected   expected(unexpected);
 
