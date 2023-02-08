@@ -227,7 +227,7 @@ namespace etl
           default:
           {
             // This should never occur.
-  #if defined(ETL_IN_UNIT_TEST)
+  #if defined(ETL_DEBUG)
             assert(false);
   #endif
             break;

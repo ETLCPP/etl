@@ -345,9 +345,6 @@
     <ClInclude Include="..\..\include\etl\io_port.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\optional.h">
-      <Filter>ETL\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\set.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
@@ -1344,6 +1341,12 @@
     <ClInclude Include="..\..\include\etl\expected.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\optional.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\optional.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -2192,9 +2195,6 @@
     <ClCompile Include="..\test_random.cpp">
       <Filter>Tests\Maths</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_optional.cpp">
-      <Filter>Tests\Containers</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_error_handler.cpp">
       <Filter>Tests\Errors</Filter>
     </ClCompile>
@@ -2229,9 +2229,6 @@
       <Filter>Tests\Misc</Filter>
     </ClCompile>
     <ClCompile Include="..\test_parameter_type.cpp">
-      <Filter>Tests\Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_result.cpp">
       <Filter>Tests\Misc</Filter>
     </ClCompile>
     <ClCompile Include="..\test_utility.cpp">
@@ -3390,6 +3387,18 @@
       <Filter>Tests\Strings</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\to_arithmetic.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_optional.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_result.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_expected.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\expected.h.t.cpp">
       <Filter>Tests\Sanity Checks\Source</Filter>
     </ClCompile>
   </ItemGroup>
