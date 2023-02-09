@@ -346,6 +346,24 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Compare two spans for equality.
+    //*************************************************************************
+    template <typename Type2, size_t N2, etl::enable_if_t<etl::is_same<etl::remove_cv_t<Type2>, value_type>::value, bool> = true>
+    ETL_NODISCARD ETL_CONSTEXPR bool operator==(const etl::span<Type2, N2>& other) const ETL_NOEXCEPT
+    {
+      return ((pbegin == other.pbegin) && (Extent == other.size()));
+    }
+
+    //*************************************************************************
+    /// Compare two spans for non-equality.
+    //*************************************************************************
+    template <typename Type2, size_t N2, etl::enable_if_t<etl::is_same<etl::remove_cv_t<Type2>, value_type>::value, bool> = true>
+    ETL_NODISCARD ETL_CONSTEXPR bool operator!=(const etl::span<Type2, N2>& other) const ETL_NOEXCEPT
+    {
+      return !(*this == other);
+    }
+
+    //*************************************************************************
     /// Obtains a span that is a view over the first COUNT elements of this span.
     //*************************************************************************
     template <size_t COUNT>
@@ -729,6 +747,24 @@ namespace etl
     ETL_CONSTEXPR reference operator[](const size_t i) const
     {
       return pbegin[i];
+    }
+
+    //*************************************************************************
+    /// Compare two spans for equality.
+    //*************************************************************************
+    template <typename Type2, etl::enable_if_t<etl::is_same<etl::remove_cv_t<Type2>, value_type>::value, bool> = true>
+    ETL_NODISCARD ETL_CONSTEXPR bool operator==(const etl::span<Type2>& other) const ETL_NOEXCEPT
+    {
+      return ((pbegin == other.pbegin) && (pend == other.pend));
+    }
+
+    //*************************************************************************
+    /// Compare two spans for non-equality.
+    //*************************************************************************
+    template <typename Type2, etl::enable_if_t<etl::is_same<etl::remove_cv_t<Type2>, value_type>::value, bool> = true>
+    ETL_NODISCARD ETL_CONSTEXPR bool operator!=(const etl::span<Type2>& other) const ETL_NOEXCEPT
+    {
+      return !(*this == other);
     }
 
     //*************************************************************************

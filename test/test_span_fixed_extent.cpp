@@ -960,6 +960,34 @@ namespace
       }
     }
 
+    //*************************************************************************
+    TEST(test_operator_equality)
+    {
+      etl::array data1{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      etl::array data2{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      View view1{data1};
+      View view2{data1};
+      View view3{data2};
+
+      CHECK_TRUE((view1 == view2));
+      CHECK_FALSE((view1 == view3));
+    }
+
+    //*************************************************************************
+    TEST(test_operator_not_equal)
+    {
+      etl::array data1{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      etl::array data2{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      View view1{data1};
+      View view2{data1};
+      View view3{data2};
+
+      CHECK_FALSE((view1 != view2));
+      CHECK_TRUE((view1 != view3));
+    }
+
 #include "etl/private/diagnostic_pop.h"
   };
 }
