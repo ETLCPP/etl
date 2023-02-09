@@ -129,8 +129,8 @@ namespace etl
     /// Construct from argument.
     //*******************************************
     template <typename TErr>
-    explicit unexpected(const TErr& e, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TErr>::type, unexpected>::value &&
-                                                                          !etl::is_same<typename etl::remove_cvref<TErr>::type, etl::in_place_t>::value, int>::type = 0)
+    explicit unexpected(const TErr& e, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TErr>::type, unexpected>::value &&
+                                                               !etl::is_same<typename etl::remove_cvref<TErr>::type, etl::in_place_t>::value, int>::type = 0)
       : error_value(e)
     {
     }
@@ -188,7 +188,7 @@ namespace etl
     //*******************************************
     /// Get the error.
     //*******************************************
-    constexpr TError& error() & noexcept
+    TError& error() & noexcept
     {
       return error_value;
     }
@@ -204,7 +204,7 @@ namespace etl
     //*******************************************
     /// Get the error.
     //*******************************************    
-    constexpr TError&& error() && noexcept
+    TError&& error() && noexcept
     {
       return etl::move(error_value);
     }
@@ -270,14 +270,16 @@ namespace etl
     typedef TError                        error_type;
     typedef etl::unexpected<TError>       unexpected_type;
 
+#if ETL_USING_CPP11
     template <typename U>
     using rebind = expected<U, TError>;
+#endif
 
     //*******************************************
     /// Default constructor
     //*******************************************
     ETL_CONSTEXPR14 expected() ETL_NOEXCEPT
-      : storage(etl::in_place_index<Value_Type>, value_type())
+      : storage(etl::in_place_index_t<Value_Type>(), value_type())
     {
     }
 
@@ -285,17 +287,19 @@ namespace etl
     /// Constructor
     //*******************************************
     ETL_CONSTEXPR14 expected(const value_type& value_) ETL_NOEXCEPT
-      : storage(etl::in_place_index<Value_Type>, value_)
+      : storage(etl::in_place_index_t<Value_Type>(), value_)
     {
     }
 
+#if ETL_USING_CPP11
     //*******************************************
     /// Constructor
     //*******************************************
     ETL_CONSTEXPR14 expected(value_type&& value_) ETL_NOEXCEPT
-      : storage(etl::in_place_index<Value_Type>, etl::move(value_))
+      : storage(etl::in_place_index_t<Value_Type>(), etl::move(value_))
     {
     }
+#endif
 
     //*******************************************
     /// Copy constructor
@@ -305,6 +309,7 @@ namespace etl
     {
     }
 
+#if ETL_USING_CPP11
     //*******************************************
     /// Move constructor
     //*******************************************
@@ -312,24 +317,27 @@ namespace etl
       : storage(etl::move(other.storage))
     {
     }
+#endif
 
     //*******************************************
     /// Copy construct from unexpected type.
     //*******************************************
     template <typename F>
     ETL_CONSTEXPR14 explicit expected(const etl::unexpected<F>& ue)
-      : storage(etl::in_place_index<Error_Type>, ue.error())
+      : storage(etl::in_place_index_t<Error_Type>(), ue.error())
     {
     }
 
+#if ETL_USING_CPP11
     //*******************************************
     /// Move construct from unexpected type.
     //*******************************************
     template <typename F>
     ETL_CONSTEXPR14 explicit expected(etl::unexpected<F>&& ue)
-      : storage(etl::in_place_index<Error_Type>, etl::move(ue.error()))
+      : storage(etl::in_place_index_t<Error_Type>(), etl::move(ue.error()))
     {
     }
+#endif
 
     //*******************************************
     /// Construct with default value type.
@@ -339,6 +347,7 @@ namespace etl
     {
     }
 
+#if ETL_USING_CPP11
     //*******************************************
     /// Construct value type from arguments.
     //*******************************************
@@ -366,6 +375,7 @@ namespace etl
     {
     }
 
+#if ETL_HAS_INITIALIZER_LIST
     //*******************************************
     /// Construct error type from initializser_list and arguments.
     //*******************************************
@@ -374,6 +384,8 @@ namespace etl
       : storage(error_type(il, etl::forward<Args>(args)...))
     {
     }
+#endif
+#endif
 
     //*******************************************
     /// 
@@ -387,6 +399,7 @@ namespace etl
       return *this;
     }
 
+#if ETL_USING_CPP11
     //*******************************************
     /// 
     //*******************************************
@@ -397,6 +410,7 @@ namespace etl
       storage = etl::move(other.storage);
       return *this;
     }
+#endif
 
     //*******************************************
     /// Copy assign from value
@@ -405,10 +419,11 @@ namespace etl
     {
       ETL_STATIC_ASSERT(etl::is_copy_constructible<TValue>::value, "Value not copy assignable");
 
-      storage.emplace<Value_Type>(value);
+      storage.template emplace<Value_Type>(value);
       return *this;
     }
 
+#if ETL_USING_CPP11
     //*******************************************
     /// Move assign from value
     //*******************************************
@@ -416,9 +431,10 @@ namespace etl
     {
       ETL_STATIC_ASSERT(etl::is_move_constructible<TValue>::value, "Value not move assignable");
 
-      storage.emplace<Value_Type>(etl::move(value));
+      storage.template emplace<Value_Type>(etl::move(value));
       return *this;
     }
+#endif
 
     //*******************************************
     /// Copy assign from error
@@ -427,10 +443,11 @@ namespace etl
     {
       ETL_STATIC_ASSERT(etl::is_copy_constructible<TError>::value, "Error not copy assignable");
 
-      storage.emplace<Error_Type>(error);
+      storage.template emplace<Error_Type>(error);
       return *this;
     }
 
+#if ETL_USING_CPP11
     //*******************************************
     /// Move assign from error
     //*******************************************
@@ -438,12 +455,14 @@ namespace etl
     {
       ETL_STATIC_ASSERT(etl::is_move_constructible<TError>::value, "Error not move assignable");
 
-      storage.emplace<Error_Type>(etl::move(error));
+      storage.template emplace<Error_Type>(etl::move(error));
       return *this;
     }
+#endif
 
+#if ETL_USING_CPP11
     //*******************************************
-    /// 
+    /// Get the value.
     //*******************************************
     ETL_CONSTEXPR14 value_type& value()&
     {
@@ -451,7 +470,7 @@ namespace etl
     }
 
     //*******************************************
-    /// 
+    /// Get the value.
     //*******************************************
     ETL_CONSTEXPR14 const value_type& value() const&
     {
@@ -459,7 +478,7 @@ namespace etl
     }
 
     //*******************************************
-    /// 
+    /// Get the value.
     //*******************************************
     ETL_CONSTEXPR14 value_type&& value()&&
     {
@@ -467,12 +486,21 @@ namespace etl
     }
 
     //*******************************************
-    /// 
+    /// Get the value.
     //*******************************************
     ETL_CONSTEXPR14 const value_type&& value() const&&
     {
       return etl::move(etl::get<Value_Type>(storage));
     }
+#else
+    //*******************************************
+    /// Get the value.
+    //*******************************************
+    value_type& value() const
+    {
+      return etl::get<Value_Type>(storage);
+    }
+#endif
 
     //*******************************************
     /// 
@@ -494,6 +522,7 @@ namespace etl
       return has_value();
     }
 
+#if ETL_USING_CPP11
     //*******************************************
     /// 
     //*******************************************
@@ -587,6 +616,31 @@ namespace etl
     {
       storage.emplace(il, args...);
     }
+#else
+    //*******************************************
+    /// 
+    //*******************************************
+    template <typename U>
+    value_type value_or(const U& default_value) const
+    {
+      if (has_value())
+      {
+        return value();
+      }
+      else
+      {
+        return default_value;
+      }
+    }
+
+    //*******************************************
+    /// 
+    //*******************************************
+    error_type& error() const
+    {
+      return etl::get<Error_Type>(storage);
+    }
+#endif
 
     //*******************************************
     /// 
@@ -594,10 +648,10 @@ namespace etl
     value_type* operator ->()
     {
 #if ETL_IS_DEBUG_BUILD
-      ETL_ASSERT(valid, ETL_ERROR(expected_invalid));
+      ETL_ASSERT(storage.index() == Value_Type, ETL_ERROR(expected_invalid<TError>));
 #endif
 
-      return etl::addressof(storage.get<Value_Type>());
+      return etl::addressof(etl::get<value_type>(storage));
     }
 
     //*******************************************
@@ -606,10 +660,10 @@ namespace etl
     const value_type* operator ->() const
     {
 #if ETL_IS_DEBUG_BUILD
-      ETL_ASSERT(valid, ETL_ERROR(expected_invalid));
+      ETL_ASSERT(storage.index() == Value_Type, ETL_ERROR(expected_invalid<TError>));
 #endif
 
-      return etl::addressof(storage.get<Value_Type>());
+      return etl::addressof(etl::get<value_type>(storage));
     }
 
     //*******************************************
@@ -618,10 +672,10 @@ namespace etl
     value_type& operator *()
     {
 #if ETL_IS_DEBUG_BUILD
-      ETL_ASSERT(valid, ETL_ERROR(expected_invalid));
+      ETL_ASSERT(storage.index() == Value_Type, ETL_ERROR(expected_invalid<TError>));
 #endif
 
-      return storage.get<Value_Type>();
+      return etl::get<value_type>(storage);
     }
 
     //*******************************************
@@ -630,10 +684,10 @@ namespace etl
     const value_type& operator *() const
     {
 #if ETL_IS_DEBUG_BUILD
-      ETL_ASSERT(valid, ETL_ERROR(expected_invalid));
+      ETL_ASSERT(storage.index() == Value_Type, ETL_ERROR(expected_invalid<TError>));
 #endif
 
-      return storage.get<Value_Type>();
+      return etl::get<value_type>(storage);
     }
 
   private:
@@ -645,7 +699,7 @@ namespace etl
       Error_Type
     };
 
-    using storage_type = etl::variant<etl::monostate, value_type, error_type>;
+    typedef etl::variant<etl::monostate, value_type, error_type> storage_type;
     storage_type storage;
   };
 
@@ -679,6 +733,7 @@ namespace etl
     {
     }
 
+#if ETL_USING_CPP11
     //*******************************************
     /// Move construct from unexpected
     //*******************************************
@@ -687,6 +742,7 @@ namespace etl
       : storage(etl::move(ue_.error()))
     {
     }
+#endif
 
     //*******************************************
     /// Copy construct
@@ -697,6 +753,7 @@ namespace etl
     {
     }
 
+#if ETL_USING_CPP11
     //*******************************************
     /// Move construct
     //*******************************************
@@ -705,6 +762,7 @@ namespace etl
       : storage(etl::move(other.storage))
     {
     }
+#endif
 
     //*******************************************
     /// Copy assign
@@ -717,6 +775,7 @@ namespace etl
       return *this;
     }
 
+#if ETL_USING_CPP11
     //*******************************************
     /// Move assign
     //*******************************************
@@ -727,6 +786,7 @@ namespace etl
       storage = etl::move(other.storage);
       return *this;
     }
+#endif
 
     //*******************************************
     /// Copy assign from error
@@ -735,10 +795,11 @@ namespace etl
     {
       ETL_STATIC_ASSERT(etl::is_copy_constructible<TError>::value, "Error not copy assignable");
 
-      storage.emplace<Error_Type>(error);
+      storage.template emplace<Error_Type>(error);
       return *this;
     }
 
+#if ETL_USING_CPP11
     //*******************************************
     /// Move assign from error
     //*******************************************
@@ -746,9 +807,10 @@ namespace etl
     {
       ETL_STATIC_ASSERT(etl::is_move_constructible<TError>::value, "Error not move assignable");
 
-      storage.emplace<Error_Type>(etl::move(error));
+      storage.template emplace<Error_Type>(etl::move(error));
       return *this;
     }
+#endif
 
     //*******************************************
     /// Returns true if expected has a value
@@ -770,6 +832,7 @@ namespace etl
       return has_value();
     }
 
+#if ETL_USING_CPP11
     //*******************************************
     /// Returns the error
     /// Undefined behaviour if an error has not been set.
@@ -813,6 +876,16 @@ namespace etl
     {
       return etl::move(etl::get<Error_Type>(storage));
     }
+#else
+    //*******************************************
+    /// Returns the error
+    /// Undefined behaviour if an error has not been set.
+    //*******************************************
+    error_type& error() const
+    {
+      return etl::get<Error_Type>(storage);
+    }
+#endif
 
   private:
 
