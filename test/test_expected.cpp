@@ -91,6 +91,7 @@ namespace
     Error& operator =(const std::string e_)
     {
       e = e_;
+      return *this;
     }
 
     operator std::string() const
