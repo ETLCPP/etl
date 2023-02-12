@@ -3392,6 +3392,9 @@
     <ClCompile Include="..\sanity-check\to_arithmetic.h.t.cpp">
       <Filter>Tests\Sanity Checks\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_crc16_m17.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">

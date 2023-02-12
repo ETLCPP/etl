@@ -11350,6 +11350,7 @@
     <ClCompile Include="..\test_crc16_en13757.cpp" />
     <ClCompile Include="..\test_crc16_genibus.cpp" />
     <ClCompile Include="..\test_crc16_kermit.cpp" />
+    <ClCompile Include="..\test_crc16_m17.cpp" />
     <ClCompile Include="..\test_crc16_maxim.cpp" />
     <ClCompile Include="..\test_crc16_mcrf4xx.cpp" />
     <ClCompile Include="..\test_crc16_profibus.cpp" />
