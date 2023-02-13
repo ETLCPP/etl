@@ -41,6 +41,19 @@ SOFTWARE.
 
 namespace etl
 {
+#if ETL_USING_CPP11
+  inline namespace literals
+  {
+    inline namespace string_literals
+    {
+      constexpr etl::wstring_view operator ""_sv(const wchar_t* str, size_t length) noexcept
+      {
+        return etl::wstring_view{ str, length };
+      }
+    }
+  }
+#endif
+
   typedef ibasic_string<wchar_t> iwstring;
 
   //***************************************************************************
