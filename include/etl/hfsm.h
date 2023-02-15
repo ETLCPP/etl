@@ -50,6 +50,41 @@ namespace etl
     {
     }
 
+    //*******************************************
+    /// Starts the HFSM.
+    /// Can only be called once.
+    /// Subsequent calls will do nothing.
+    ///\param call_on_enter_state If true will call on_enter_state() for the first state. Default = true.
+    //*******************************************
+    void start(bool call_on_enter_state = true) ETL_OVERRIDE
+    {
+      // Can only be started once.
+      if (p_state == ETL_NULLPTR)
+      {
+        p_state = state_list[0];
+        ETL_ASSERT(p_state != ETL_NULLPTR, ETL_ERROR(etl::fsm_null_state_exception));
+
+        if (call_on_enter_state)
+        {
+            do_enters(ETL_NULLPTR, p_state, true);
+        }
+      }
+    }
+
+    //*******************************************
+    /// Reset the HFSM to pre-started state.
+    ///\param call_on_exit_state If true will call on_exit_state() for the current state. Default = false.
+    //*******************************************
+    virtual void reset(bool call_on_exit_state = false) ETL_OVERRIDE
+    {
+      if ((p_state != ETL_NULLPTR) && call_on_exit_state)
+      {
+        do_exits(ETL_NULLPTR, p_state);
+      }
+
+      p_state = ETL_NULLPTR;
+    }
+
     using fsm::receive;
 
     //*******************************************
