@@ -1514,9 +1514,6 @@ namespace etl
       ETL_OVERRIDE
 #endif
     {
-      ETL_ASSERT(etl::is_trivially_copyable<T>::value, ETL_ERROR(etl::vector_incompatible_type));
-
-      etl::ivector<T>::repair_buffer(this->p_buffer);
     }
   };
 
