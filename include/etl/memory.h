@@ -2446,6 +2446,103 @@ namespace etl
 
     return (result == 0U) ? reinterpret_cast<const char*>(sb + n) : reinterpret_cast<const char*>(result);
   }
+
+#if ETL_USING_CPP11
+  //*****************************************************************************
+  /// Move construct the container at 'p'.
+  //*****************************************************************************
+  template <typename TObject>
+  TObject& construct_object_at(void* p, TObject&& other)
+  {
+#if ETL_IS_DEBUG_BUILD
+    ETL_ASSERT(is_aligned<TObject>(p), ETL_ERROR(alignment_error));
+#endif
+
+    return *etl::construct_at(reinterpret_cast<typename etl::remove_reference<TObject>::type*>(p), etl::forward<TObject>(other));
+  }
+
+  //*****************************************************************************
+  /// Construct the container at 'p' from arguments.
+  //*****************************************************************************
+  template <typename TObject, typename... TArgs>
+  TObject& construct_object_at(void* p, TArgs&&... args)
+  {
+#if ETL_IS_DEBUG_BUILD
+    ETL_ASSERT(is_aligned<TObject>(p), ETL_ERROR(alignment_error));
+#endif
+
+    return *etl::construct_at(reinterpret_cast<TObject*>(p), etl::forward<TArgs>(args)...);
+  }
+#else
+  //*****************************************************************************
+  /// Default construct the container at 'p'.
+  //*****************************************************************************
+  template <typename TObject>
+  TObject& construct_object_at(void* p)
+  {
+#if ETL_IS_DEBUG_BUILD
+    ETL_ASSERT(is_aligned<TObject>(p), ETL_ERROR(alignment_error));
+#endif
+
+    return *etl::construct_at(reinterpret_cast<TObject*>(p));
+  }
+
+  //*****************************************************************************
+  /// Copy construct the container at 'p'.
+  //*****************************************************************************
+  template <typename TObject>
+  TObject& construct_object_at(void* p, const TObject& other)
+  {
+#if ETL_IS_DEBUG_BUILD
+    ETL_ASSERT(is_aligned<TObject>(p), ETL_ERROR(alignment_error));
+#endif
+
+    return *etl::construct_at(reinterpret_cast<TObject*>(p), other);
+  }
+
+  //*****************************************************************************
+  /// Construct the container at 'p' from argument.
+  //*****************************************************************************
+  template <typename TObject, typename TArg>
+  TObject& construct_object_at(void* p, const TArg& arg)
+  {
+#if ETL_IS_DEBUG_BUILD
+    ETL_ASSERT(is_aligned<TObject>(p), ETL_ERROR(alignment_error));
+#endif
+
+    return *etl::construct_at(reinterpret_cast<TObject*>(p), arg);
+  }
+#endif
+
+  //*****************************************************************************
+  /// Get the container at 'p'.
+  //*****************************************************************************
+  template <typename TObject>
+  TObject& get_object_at(void* p)
+  {
+#if ETL_IS_DEBUG_BUILD
+    ETL_ASSERT(is_aligned<TObject>(p), ETL_ERROR(alignment_error));
+#endif
+
+    TObject& v = *reinterpret_cast<TObject*>(p);
+
+    return v;
+  }
+
+  //*****************************************************************************
+  /// Destroy the container at 'p'.
+  /// For a container that contains a type that is not trivially destructible.
+  //*****************************************************************************
+  template <typename TObject>
+  void destroy_object_at(void* p)
+  {
+#if ETL_IS_DEBUG_BUILD
+    ETL_ASSERT(is_aligned<TObject>(p), ETL_ERROR(alignment_error));
+#endif
+
+    TObject& v = get_object_at<TObject>(p);
+    v.~TObject();
+  }
 }
 
 #endif
