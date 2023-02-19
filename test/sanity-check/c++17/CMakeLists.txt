@@ -88,6 +88,7 @@ target_sources(t17 PRIVATE etl_profile.h
         ../crc16_en13757.h.t.cpp
         ../crc16_genibus.h.t.cpp
         ../crc16_kermit.h.t.cpp
+        ../crc16_m17.h.t.cpp
         ../crc16_maxim.h.t.cpp
         ../crc16_mcrf4xx.h.t.cpp
         ../crc16_modbus.h.t.cpp

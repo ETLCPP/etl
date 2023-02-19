@@ -1441,22 +1441,22 @@ namespace
       Data& rdata1b = etl::get_object_at<Data>(pbuffer1b);
       CHECK_FALSE(flags.constructed);
       CHECK_FALSE(flags.destructed);
-      CHECK_EQUAL(1, rdata1.a);
-      CHECK_EQUAL(2, rdata1.b);
+      CHECK_EQUAL(1, rdata1b.a);
+      CHECK_EQUAL(2, rdata1b.b);
       
       flags.Clear();
       Data& rdata2b = etl::get_object_at<Data>(pbuffer2b);
       CHECK_FALSE(flags.constructed);
       CHECK_FALSE(flags.destructed);
-      CHECK_EQUAL(data2.a, rdata2.a);
-      CHECK_EQUAL(data2.b, rdata2.b);
+      CHECK_EQUAL(data2.a, rdata2b.a);
+      CHECK_EQUAL(data2.b, rdata2b.b);
       
       flags.Clear();
       Data& rdata3b = etl::get_object_at<Data>(pbuffer3b);
       CHECK_FALSE(flags.constructed);
       CHECK_FALSE(flags.destructed);
-      CHECK_EQUAL(5, rdata3.a);
-      CHECK_EQUAL(6, rdata3.b);
+      CHECK_EQUAL(5, rdata3b.a);
+      CHECK_EQUAL(6, rdata3b.b);
 
       flags.Clear();
       etl::destroy_object_at<Data>(pbuffer1b);
