@@ -130,7 +130,7 @@ namespace
     //*************************************************************************
     TEST(test_is_aligned_tests)
     {
-      char buffer[2U * sizeof(uint32_t)] alignas(uint32_t);
+      alignas(uint32_t) char buffer[2U * sizeof(uint32_t)];
 
       char* p = buffer;
 
