@@ -881,7 +881,7 @@ namespace etl
   /// 3. The values in the two ranges are equal.
   //*************************************************************************
   template <typename T1, size_t N1, typename T2, size_t N2>
-  etl::enable_if_t<etl::is_same_v<etl::remove_cv_t<T1>, etl::remove_cv_t<T2>>, bool>
+  typename etl::enable_if<etl::is_same<typename etl::remove_cv<T1>::type, typename etl::remove_cv<T2>::type>::value, bool>::type
     equal(const etl::span<T1, N1>& lhs, const etl::span<T2, N2>& rhs)
   {
     return (lhs.empty() && rhs.empty()) ||
