@@ -238,10 +238,10 @@ namespace
     using etl::message_bus<Size>::receive;
 
     // Hook 'receive' to count the incomimg messages.
-    void receive(etl::message_router_id_t id, const etl::imessage& msg)
+    void receive(etl::message_router_id_t dst_id, const etl::imessage& msg, etl::message_router_id_t src_id)
     {
       ++message_count;
-      etl::message_bus<Size>::receive(id, msg);
+      etl::message_bus<Size>::receive(dst_id, msg, src_id);
     }
 
     int message_count;

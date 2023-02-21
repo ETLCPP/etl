@@ -146,21 +146,31 @@ namespace etl
     //*******************************************
     virtual void receive(const etl::imessage& message) ETL_OVERRIDE
     {
-      receive(etl::imessage_router::ALL_MESSAGE_ROUTERS, message);
+      receive(etl::imessage_router::ALL_MESSAGE_ROUTERS, message, etl::imessage_router::NULL_MESSAGE_ROUTER);
+    }
+
+    //*******************************************
+    virtual void receive(etl::message_router_id_t destination_router_id, 
+                         const etl::imessage& message) ETL_OVERRIDE
+    {
+      receive(destination_router_id,
+              message,
+              etl::imessage_router::NULL_MESSAGE_ROUTER);
+    }
+
+    //*******************************************
+    virtual void receive(const etl::imessage& message, 
+                         etl::message_router_id_t source_router_id)  ETL_OVERRIDE
+    {
+      receive(etl::imessage_router::ALL_MESSAGE_ROUTERS,
+              message,
+              source_router_id);
     }
 
     //*******************************************
     virtual void receive(etl::shared_message shared_msg) ETL_OVERRIDE
     {
-      receive(etl::imessage_router::ALL_MESSAGE_ROUTERS, shared_msg);
-    }
-
-    virtual void receive(const etl::imessage& message, 
-                         etl::message_router_id_t source_router_id)
-    {
-      receive(etl::imessage_router::ALL_MESSAGE_ROUTERS,
-              message,
-              source_router_id);
+      receive(etl::imessage_router::ALL_MESSAGE_ROUTERS, shared_msg, etl::imessage_router::NULL_MESSAGE_ROUTER);
     }
 
     //*******************************************
@@ -170,6 +180,15 @@ namespace etl
       receive(etl::imessage_router::ALL_MESSAGE_ROUTERS, 
               shared_msg,
               source_router_id);
+    }
+
+    //*******************************************
+    virtual void receive(etl::message_router_id_t destination_router_id, 
+                         etl::shared_message shared_msg) ETL_OVERRIDE
+    {
+      receive(destination_router_id,
+              shared_msg,
+              etl::imessage_router::NULL_MESSAGE_ROUTER);
     }
 
     //*******************************************
@@ -190,7 +209,7 @@ namespace etl
           {
             etl::imessage_router& router = **irouter;
 
-            if (router.accepts(message.get_message_id()))
+            if (router.accepts(message.get_message_id()) && (router.get_message_router_id() != source_router_id))
             {
               router.receive(message);
             }
@@ -216,7 +235,7 @@ namespace etl
           // Call all of them.
           while (range.first != range.second)
           {
-            if ((*(range.first))->accepts(message.get_message_id()))
+            if ((*(range.first))->accepts(message.get_message_id()) && ((*(range.first))->get_message_router_id() != source_router_id))
             {
               (*(range.first))->receive(message);
             }
@@ -233,8 +252,11 @@ namespace etl
 
           while (irouter != router_list.end())
           {
-            // So pass it on.
-            (*irouter)->receive(destination_router_id, message);
+            if ((*irouter)->get_message_router_id() != source_router_id)
+            {
+              // So pass it on.
+              (*irouter)->receive(destination_router_id, message);
+            }
 
             ++irouter;
           }
@@ -249,7 +271,7 @@ namespace etl
 
         if (successor.accepts(message.get_message_id()))
         {
-          successor.receive(destination_router_id, message);
+          successor.receive(destination_router_id, message, source_router_id);
         }
       }
     }
@@ -263,64 +285,67 @@ namespace etl
       {
         //*****************************
         // Broadcast to all routers.
-      case etl::imessage_router::ALL_MESSAGE_ROUTERS:
-      {
-        router_list_t::iterator irouter = router_list.begin();
-
-        // Broadcast to everyone.
-        while (irouter != router_list.end())
+        case etl::imessage_router::ALL_MESSAGE_ROUTERS:
         {
-          etl::imessage_router& router = **irouter;
+          router_list_t::iterator irouter = router_list.begin();
 
-          if (router.accepts(shared_msg.get_message().get_message_id()))
+          // Broadcast to everyone.
+          while (irouter != router_list.end())
           {
-            router.receive(shared_msg);
+            etl::imessage_router& router = **irouter;
+
+            if (router.accepts(shared_msg.get_message().get_message_id()) && (router.get_message_router_id() != source_router_id))
+            {
+              router.receive(shared_msg);
+            }
+
+            ++irouter;
           }
 
-          ++irouter;
+          break;
         }
 
-        break;
-      }
-
-      //*****************************
-      // Must be an addressed message.
-      default:
-      {
-        // Find routers with the id.
-        ETL_OR_STD::pair<router_list_t::iterator, router_list_t::iterator> range = etl::equal_range(router_list.begin(),
-                                                                                                    router_list.end(),
-                                                                                                    destination_router_id,
-                                                                                                    compare_router_id());
-
-        // Call all of them.
-        while (range.first != range.second)
+        //*****************************
+        // Must be an addressed message.
+        default:
         {
-          if ((*(range.first))->accepts(shared_msg.get_message().get_message_id()))
+          // Find routers with the id.
+          ETL_OR_STD::pair<router_list_t::iterator, router_list_t::iterator> range = etl::equal_range(router_list.begin(),
+                                                                                                      router_list.end(),
+                                                                                                      destination_router_id,
+                                                                                                      compare_router_id());
+
+          // Call all of them.
+          while (range.first != range.second)
           {
-            (*(range.first))->receive(shared_msg);
+            if ((*(range.first))->accepts(shared_msg.get_message().get_message_id()) && ((*(range.first))->get_message_router_id() != source_router_id))
+            {
+              (*(range.first))->receive(shared_msg);
+            }
+
+            ++range.first;
           }
 
-          ++range.first;
+          // Do any message buses.
+          // These are always at the end of the list.
+          router_list_t::iterator irouter = etl::lower_bound(router_list.begin(),
+                                                             router_list.end(),
+                                                             etl::imessage_bus::MESSAGE_BUS,
+                                                             compare_router_id());
+
+          while (irouter != router_list.end())
+          {
+            if ((*irouter)->get_message_router_id() != source_router_id)
+            {
+              // So pass it on.
+              (*irouter)->receive(destination_router_id, shared_msg);
+            }
+
+            ++irouter;
+          }
+
+          break;
         }
-
-        // Do any message buses.
-        // These are always at the end of the list.
-        router_list_t::iterator irouter = etl::lower_bound(router_list.begin(),
-                                                           router_list.end(),
-                                                           etl::imessage_bus::MESSAGE_BUS,
-                                                           compare_router_id());
-
-        while (irouter != router_list.end())
-        {
-          // So pass it on.
-          (*irouter)->receive(destination_router_id, shared_msg);
-
-          ++irouter;
-        }
-
-        break;
-      }
       }
 
       if (has_successor())

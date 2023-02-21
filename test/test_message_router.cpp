@@ -650,5 +650,19 @@ namespace
       CHECK_EQUAL(0, r1.message4_count);
       CHECK_EQUAL(0, r1.message_unknown_count);
     }
+
+    //*************************************************************************
+    TEST(pass_message_to_self_with_source)
+    {
+      Router1 r1a;
+      Router1 r1b;
+
+      etl::null_message_router null_router;
+      Message1 message1(null_router);
+
+      r1a.receive(message1, r1a.get_message_router_id());
+      r1a.receive(r1a.get_message_router_id(), message1, r1a.get_message_router_id());
+      r1a.receive(r1b.get_message_router_id(), message1, r1a.get_message_router_id());
+    }
   };
 }
