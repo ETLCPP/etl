@@ -150,14 +150,32 @@ namespace etl
     }
 
     //*******************************************
-    virtual void receive(etl::shared_message   shared_msg) ETL_OVERRIDE
+    virtual void receive(etl::shared_message shared_msg) ETL_OVERRIDE
     {
       receive(etl::imessage_router::ALL_MESSAGE_ROUTERS, shared_msg);
     }
 
+    virtual void receive(const etl::imessage& message, 
+                         etl::message_router_id_t source_router_id)
+    {
+      receive(etl::imessage_router::ALL_MESSAGE_ROUTERS,
+              message,
+              source_router_id);
+    }
+
+    //*******************************************
+    virtual void receive(etl::shared_message      shared_msg, 
+                         etl::message_router_id_t source_router_id) ETL_OVERRIDE
+    {
+      receive(etl::imessage_router::ALL_MESSAGE_ROUTERS, 
+              shared_msg,
+              source_router_id);
+    }
+
     //*******************************************
     virtual void receive(etl::message_router_id_t destination_router_id,
-                         const etl::imessage&     message) ETL_OVERRIDE
+                         const etl::imessage&     message,
+                         etl::message_router_id_t source_router_id) ETL_OVERRIDE
     {
       switch (destination_router_id)
       {
@@ -238,7 +256,8 @@ namespace etl
 
     //********************************************
     virtual void receive(etl::message_router_id_t destination_router_id,
-                         etl::shared_message      shared_msg) ETL_OVERRIDE
+                         etl::shared_message      shared_msg,
+                         etl::message_router_id_t source_router_id) ETL_OVERRIDE
     {
       switch (destination_router_id)
       {

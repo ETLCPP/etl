@@ -70,6 +70,92 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
+  /// 
+  //***************************************************************************
+  class router_id
+  {
+  public:
+
+    typedef etl::message_router_id_t value_type;
+
+    //***********************************
+    explicit ETL_CONSTEXPR router_id(value_type id_)
+      : id(id_)
+    {
+    }
+
+    //***********************************
+    ETL_CONSTEXPR value_type value() const
+    {
+      return id;
+    }
+
+    //***********************************
+    ETL_CONSTEXPR operator value_type() const
+    {
+      return value();
+    }
+
+    //***********************************
+    ETL_CONSTEXPR bool is_all_routers() const
+    {
+      return (id == imessage_router::ALL_MESSAGE_ROUTERS);
+    }
+
+    //***********************************
+    ETL_CONSTEXPR bool is_null_router() const
+    {
+      return (id == imessage_router::NULL_MESSAGE_ROUTER);
+    }
+
+    //***********************************
+    ETL_CONSTEXPR bool is_message_bus() const
+    {
+      return (id == imessage_router::MESSAGE_BUS);
+    }
+
+    //***********************************
+    ETL_CONSTEXPR bool is_message_broker() const
+    {
+      return (id == imessage_router::MESSAGE_BROKER);
+    }
+
+  private:
+
+    etl::message_router_id_t id;
+  };
+
+  //***************************************************************************
+  /// 
+  //***************************************************************************
+  class source_router_id : public router_id
+  {
+  public:
+
+    typedef etl::message_router_id_t value_type;
+
+    explicit ETL_CONSTEXPR source_router_id(value_type id_)
+      : router_id(id_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// 
+  //***************************************************************************
+  class destination_router_id : public router_id
+  {
+  public:
+
+    typedef etl::message_router_id_t value_type;
+
+    explicit ETL_CONSTEXPR destination_router_id(value_type id_)
+      : router_id(id_)
+    {
+    }
+  };
+
+  //***************************************************************************
   /// Base exception class for message router
   //***************************************************************************
   class message_router_exception : public etl::exception
@@ -116,10 +202,28 @@ namespace etl
     virtual bool is_producer() const = 0;
     virtual bool is_consumer() const = 0;
 
+    virtual void receive(const etl::imessage& message, etl::message_router_id_t source_router_id)
+    {
+      if (source_router_id != get_message_router_id())
+      {
+        receive(message);
+      }
+    }
+
     //********************************************
     virtual void receive(etl::message_router_id_t destination_router_id, const etl::imessage& message)
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
+      {
+        receive(message);
+      }
+    }
+
+    //********************************************
+    virtual void receive(etl::message_router_id_t destination_router_id, const etl::imessage& message, etl::message_router_id_t source_router_id)
+    {
+      if (((destination_router_id == get_message_router_id()) && (source_router_id != get_message_router_id())) ||
+          (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
         receive(message);
       }
@@ -135,6 +239,25 @@ namespace etl
     virtual void receive(etl::message_router_id_t destination_router_id, etl::shared_message shared_msg)
     {
       if ((destination_router_id == get_message_router_id()) || (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
+      {
+        receive(shared_msg);
+      }
+    }
+
+    //********************************************
+    virtual void receive(etl::shared_message shared_msg, etl::message_router_id_t source_router_id)
+    {
+      if (source_router_id != get_message_router_id())
+      {
+        receive(shared_msg);
+      }
+    }
+
+    //********************************************
+    virtual void receive(etl::message_router_id_t destination_router_id, etl::shared_message shared_msg, etl::message_router_id_t source_router_id)
+    {
+      if (((destination_router_id == get_message_router_id()) && (source_router_id != get_message_router_id())) ||
+          (destination_router_id == imessage_router::ALL_MESSAGE_ROUTERS))
       {
         receive(shared_msg);
       }
