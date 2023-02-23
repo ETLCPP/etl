@@ -1,6 +1,21 @@
 ===============================================================================
 20.35.12
-#649 subscript-1 is out of bounds. Changed intrusive_list and intrusive_forward_list iterator constructor parameter from reference to pointer.
+#615 Addition of etl::expected
+#649 Changed intrusive_list and intrusive_forward_list iterator constructor parameter from reference to pointer.
+#667 etl::span copy constructor with original span with fixed extent causes pend iterator to be invalid
+#668 byte_stream changes that add error exceptions have changed previous behaviour
+#670 span equality operators
+#672 HFSM-specific start() and reset()
+Fixed span templated copy constructor
+Added destination_router_id parameter overrides to receive() virtual functions
+Added ""_sv string view operators
+Added M17 CRC
+Added repair() to etl::circular_buffer
+Added etl::contruct_object_at, etl::get_object_at and etl::destroy_object_at
+Added etl::is_aligned, etl::alignment_exception and etl::alignment_error
+Removed unnecessary code in etl::vector_ext::repair()
+Updated sanity check make files
+C++03 compatibility improvements
 
 ===============================================================================
 20.35.11
