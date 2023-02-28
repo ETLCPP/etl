@@ -363,8 +363,8 @@ examples/ArmTimerCallbacks - C++/ArmTimerCallbacks.uvoptx
 test/vs2022/.vs
 test/vs2022/random_clcg.csv
 test/vs2022/random_hash.csv
-test/vs2022/random_lcg.csv
 test/vs2022/random_lsfr.csv
+test/vs2022/random_lcg.csv
 test/vs2022/random_mwc.csv
 test/vs2022/random_pcg.csv
 test/vs2022/random_xorshift.csv

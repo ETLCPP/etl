@@ -34,6 +34,8 @@ SOFTWARE.
 #include "platform.h"
 #include "type_traits.h"
 #include "static_assert.h"
+#include "error_handler.h"
+#include "exception.h"
 
 #include <stdint.h>
 
@@ -43,12 +45,68 @@ SOFTWARE.
 
 namespace etl
 {
+  //***************************************************************************
+  /// Exception base for alignment
+  //***************************************************************************
+  class alignment_exception : public etl::exception
+  {
+  public:
+
+    alignment_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// Memory misalignment exception.
+  //***************************************************************************
+  class alignment_error : public alignment_exception
+  {
+  public:
+
+    alignment_error(string_type file_name_, numeric_type line_number_)
+      : alignment_exception(ETL_ERROR_TEXT("alignment:error", ETL_ALIGNMENT_FILE_ID"A"), file_name_, line_number_)
+    {
+    }
+  };
+
+  //*****************************************************************************
+  /// Check that 'p' has 'required_alignment'.
+  //*****************************************************************************
+  inline bool is_aligned(void* p, size_t required_alignment)
+  {
+    uintptr_t alignment = static_cast<uintptr_t>(required_alignment);
+    uintptr_t address = reinterpret_cast<uintptr_t>(p);
+    return (address % alignment) == 0U;
+  }
+
+  //*****************************************************************************
+  /// Check that 'p' has 'Alignment'.
+  //*****************************************************************************
+  template <size_t Alignment>
+  bool is_aligned(void* p)
+  {
+    uintptr_t address = reinterpret_cast<uintptr_t>(p);
+    return (address % static_cast<uintptr_t>(Alignment)) == 0U;
+  }
+
+  //*****************************************************************************
+  /// Check that 'p' has the alignment of 'T'.
+  //*****************************************************************************
+  template <typename T>
+  bool is_aligned(void* p)
+  {
+    return is_aligned<etl::alignment_of<T>::value>(p);
+  }
+
   namespace private_alignment
   {
     //***************************************************************************
     // Matcher.
     //***************************************************************************
-    template <const bool IS_MATCH, const size_t ALIGNMENT, typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void, typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void>
+    template <const bool IS_MATCH, const size_t ALIGNMENT, typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void, 
+                                                           typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void>
     class type_with_alignment_matcher;
 
     // Matching alignment.
@@ -81,7 +139,8 @@ namespace etl
     //***************************************************************************
     // Helper.
     //***************************************************************************
-    template <const size_t ALIGNMENT, typename T1, typename T2 = void, typename T3 = void, typename T4 = void, typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void>
+    template <const size_t ALIGNMENT, typename T1,        typename T2 = void, typename T3 = void, typename T4 = void,
+                                      typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void>
     class type_with_alignment_helper
     {
     public:

@@ -1,4 +1,41 @@
 ===============================================================================
+20.35.12
+#615 Addition of etl::expected
+#649 Changed intrusive_list and intrusive_forward_list iterator constructor parameter from reference to pointer.
+#667 etl::span copy constructor with original span with fixed extent causes pend iterator to be invalid
+#668 byte_stream changes that add error exceptions have changed previous behaviour
+#670 span equality operators
+#672 HFSM-specific start() and reset()
+Fixed span templated copy constructor
+Added destination_router_id parameter overrides to receive() virtual functions
+Added ""_sv string view operators
+Added M17 CRC
+Added repair() to etl::circular_buffer
+Added etl::contruct_object_at, etl::get_object_at and etl::destroy_object_at
+Added etl::is_aligned, etl::alignment_exception and etl::alignment_error
+Removed unnecessary code in etl::vector_ext::repair()
+Updated sanity check make files
+C++03 compatibility improvements
+
+===============================================================================
+20.35.11
+Added emplace by index to variant (variadic)
+#660 byte_stream_reader::skip error
+
+===============================================================================
+20.35.10
+#659 emplace member functions return reference to emplaced value
+
+===============================================================================
+20.35.9
+#657 -Wpedantic-failure. Removed superfluous semicolons
+#653 CMake - Don't warn on tag missing when subproject
+#651 result<T, void> specialization
+#650 Fix result<void, E> default ctor
+Removed Ubuntu 18.04 from Github Actions
+Added Ubuntu 22.04 to Github Actions
+
+===============================================================================
 20.35.8
 #648 Improve is_constructible, is_copy_constructible, is_move_constructible for type traits with default definitions 
 #645 Avoid 'missing return statement at end of non-void function' in `etl::visit<>()`.

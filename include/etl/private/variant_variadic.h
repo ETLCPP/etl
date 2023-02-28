@@ -227,7 +227,7 @@ namespace etl
           default:
           {
             // This should never occur.
-  #if defined(ETL_IN_UNIT_TEST)
+  #if defined(ETL_DEBUG)
             assert(false);
   #endif
             break;
@@ -681,7 +681,7 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Emplace with variadic constructor parameters.
+    /// Emplace by type with variadic constructor parameters.
     //***************************************************************************
     template <typename T, typename... TArgs>
     T& emplace(TArgs&&... args)
@@ -699,6 +699,27 @@ namespace etl
       type_id = etl::private_variant::parameter_pack<TTypes...>::template index_of_type<T>::value;
 
       return *static_cast<T*>(data);
+    }
+
+    //***************************************************************************
+    /// Emplace by index with variadic constructor parameters.
+    //***************************************************************************
+    template <size_t Index, typename... TArgs>
+    typename etl::variant_alternative<Index, variant<TArgs...>>::type emplace(TArgs&&... args)
+    {    
+      static_assert(Index < etl::private_variant::parameter_pack<TTypes...>::size, "Index out of range");
+
+      using type = typename etl::private_variant::parameter_pack<TTypes...>::template type_from_index<Index>::type;
+
+      operation(private_variant::Destroy, data, nullptr);
+
+      construct_in_place_args<type>(data, etl::forward<TArgs>(args)...);
+
+      operation = operation_type<type, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
+
+      type_id = Index;
+
+      return *static_cast<type*>(data);
     }
 
     //***************************************************************************

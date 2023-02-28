@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "iterator.h"
+#include "algorithm.h"
 #include "circular_iterator.h"
 #include "nullptr.h"
 #include "hash.h"
@@ -345,6 +346,25 @@ namespace etl
       return pbegin[i];
     }
 
+    ////*************************************************************************
+    ///// Compare two spans for equality.
+    ////*************************************************************************
+    //template <typename Type2, size_t N2, typename etl::enable_if<etl::is_same<typename etl::remove_cv<Type2>::type, value_type>::value, bool>::type = true>
+    //ETL_NODISCARD ETL_CONSTEXPR bool operator==(const etl::span<Type2, N2>& other) const ETL_NOEXCEPT
+    //{
+    //  return ((begin() == other.begin()) && (Extent == other.size())) ||
+    //         etl::equal(begin(), end(), other.begin(), other.end());
+    //}
+
+    ////*************************************************************************
+    ///// Compare two spans for non-equality.
+    ////*************************************************************************
+    //template <typename Type2, size_t N2, typename etl::enable_if<etl::is_same<typename etl::remove_cv<Type2>::type, value_type>::value, bool>::type = true>
+    //ETL_NODISCARD ETL_CONSTEXPR bool operator!=(const etl::span<Type2, N2>& other) const ETL_NOEXCEPT
+    //{
+    //  return !(*this == other);
+    //}
+
     //*************************************************************************
     /// Obtains a span that is a view over the first COUNT elements of this span.
     //*************************************************************************
@@ -604,8 +624,8 @@ namespace etl
     //*************************************************************************
     template <typename U, size_t N>
     ETL_CONSTEXPR span(const etl::span<U, N>& other) ETL_NOEXCEPT
-      : pbegin(other.begin())
-      , pend(other.begin() + N)
+      : pbegin(other.pbegin)
+      , pend(other.pend)
     {
     }
 
@@ -731,6 +751,26 @@ namespace etl
       return pbegin[i];
     }
 
+    ////*************************************************************************
+    ///// Compare two spans for equality.
+    ////*************************************************************************
+    //template <typename Type2, typename etl::enable_if<etl::is_same<typename etl::remove_cv<Type2>::type, value_type>::value, bool>::type = true>
+    //ETL_NODISCARD ETL_CONSTEXPR bool operator==(const etl::span<Type2>& other) const ETL_NOEXCEPT
+    //{
+    //  return (empty() && other.empty()) ||
+    //         ((begin() == other.begin()) && (end() == other.end())) ||
+    //         etl::equal(begin(), end(), other.begin(), other.end());
+    //}
+
+    ////*************************************************************************
+    ///// Compare two spans for non-equality.
+    ////*************************************************************************
+    //template <typename Type2, typename etl::enable_if<etl::is_same<typename etl::remove_cv<Type2>::type, value_type>::value, bool>::type = true>
+    //ETL_NODISCARD ETL_CONSTEXPR bool operator!=(const etl::span<Type2>& other) const ETL_NOEXCEPT
+    //{
+    //  return !(*this == other);
+    //}
+
     //*************************************************************************
     /// Obtains a span that is a view over the first COUNT elements of this span.
     //*************************************************************************
@@ -810,6 +850,46 @@ namespace etl
   };
 
   //*************************************************************************
+  /// Compare two spans for equality.
+  //*************************************************************************
+  template <typename T1, size_t N1, typename T2, size_t N2>
+  ETL_NODISCARD 
+  ETL_CONSTEXPR
+  typename etl::enable_if<etl::is_same<typename etl::remove_cv<T1>::type, typename etl::remove_cv<T2>::type>::value, bool>::type
+    operator ==(const etl::span<T1, N1>& lhs, const etl::span<T2, N2>& rhs) ETL_NOEXCEPT
+  {
+    return (lhs.begin() == rhs.begin()) && (lhs.size() == rhs.size());
+  }
+
+  //*************************************************************************
+  /// Compare two spans for inequality.
+  //*************************************************************************
+  template <typename T1, size_t N1, typename T2, size_t N2>
+  ETL_NODISCARD
+  ETL_CONSTEXPR
+  bool operator !=(const etl::span<T1, N1>& lhs, const etl::span<T2, N2>& rhs) ETL_NOEXCEPT
+  {
+    return !(lhs == rhs);
+  }
+
+  //*************************************************************************
+  /// Equality function.
+  /// Performs a comparision of the range values.
+  /// Returns <b>true</b> if one of the following are <b>true</b>
+  /// 1. Both spans are empty.
+  /// 2. They both point to the same range of data.
+  /// 3. The values in the two ranges are equal.
+  //*************************************************************************
+  template <typename T1, size_t N1, typename T2, size_t N2>
+  typename etl::enable_if<etl::is_same<typename etl::remove_cv<T1>::type, typename etl::remove_cv<T2>::type>::value, bool>::type
+    equal(const etl::span<T1, N1>& lhs, const etl::span<T2, N2>& rhs)
+  {
+    return (lhs.empty() && rhs.empty()) ||
+           ((lhs.begin() == rhs.begin()) && (lhs.size() == rhs.size())) ||
+           etl::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+  }
+
+  //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
 #if ETL_USING_CPP17
@@ -833,7 +913,7 @@ namespace etl
   span(const etl::array<T, N>&)
     -> span<const T, N>;
 
-#if ETL_USING_STL
+#if ETL_USING_STL && ETL_USING_CPP11
   template <typename T, size_t N>
   span(std::array<T, N>&)
     ->span<T, N>;
@@ -854,7 +934,7 @@ namespace etl
     size_t operator()(const etl::span<T>& view) const
     {
       return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&view[0]),
-        reinterpret_cast<const uint8_t*>(&view[view.size()]));
+                                                     reinterpret_cast<const uint8_t*>(&view[view.size()]));
     }
   };
 #endif

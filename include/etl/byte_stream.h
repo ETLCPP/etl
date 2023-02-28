@@ -52,33 +52,6 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// Exception base for byte streams
-  //***************************************************************************
-  class byte_stream_exception : public etl::exception
-  {
-  public:
-
-    byte_stream_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
-      : exception(reason_, file_name_, line_number_)
-    {
-    }
-  };
-
-  //***************************************************************************
-  ///\ingroup string
-  /// String empty exception.
-  //***************************************************************************
-  class byte_stream_overflow : public etl::byte_stream_exception
-  {
-  public:
-
-    byte_stream_overflow(string_type file_name_, numeric_type line_number_)
-      : byte_stream_exception(ETL_ERROR_TEXT("byte_stream:overflow", ETL_BYTE_STREAM_FILE_ID"A"), file_name_, line_number_)
-    {
-    }
-  };
-
-  //***************************************************************************
   /// Encodes a byte stream.
   //***************************************************************************
   class byte_stream_writer
@@ -170,10 +143,6 @@ namespace etl
       {
         write_unchecked(value);
       }
-      else
-      {
-        ETL_ASSERT_FAIL(ETL_ERROR(etl::byte_stream_overflow));
-      }
  
       return success;
     }
@@ -200,10 +169,6 @@ namespace etl
       if (success)
       {
         write_unchecked(value);        
-      }
-      else
-      {
-        ETL_ASSERT_FAIL(ETL_ERROR(etl::byte_stream_overflow));
       }
 
       return success;
@@ -238,10 +203,6 @@ namespace etl
       {
         write_unchecked(range);
       }
-      else
-      {
-        ETL_ASSERT_FAIL(ETL_ERROR(etl::byte_stream_overflow));
-      }
 
       return success;
     }
@@ -273,10 +234,6 @@ namespace etl
       {
         write_unchecked(start, length);
       }
-      else
-      {
-        ETL_ASSERT_FAIL(ETL_ERROR(etl::byte_stream_overflow));
-      }
 
       return success;
     }
@@ -294,10 +251,6 @@ namespace etl
       if (success)
       {
         step(n * sizeof(T));
-      }
-      else
-      {
-        ETL_ASSERT_FAIL(ETL_ERROR(etl::byte_stream_overflow));
       }
 
       return success;
@@ -749,14 +702,13 @@ namespace etl
     template <typename T>
     bool skip(size_t n)
     {
-      if (n < available<T>())
+      if (n <= available<T>())
       {
         pcurrent += (n * sizeof(T));
         return true;
       }
       else
       {
-        ETL_ASSERT_FAIL(ETL_ERROR(etl::byte_stream_overflow));
         return false;
       }
     }

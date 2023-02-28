@@ -152,8 +152,8 @@ namespace
       CHECK_EQUAL(sizeof(uint8_t) + sizeof(uint16_t), (std::distance(used_span.begin(), used_span.end())));
       CHECK_EQUAL(std::size(storage) - sizeof(uint8_t) - sizeof(uint16_t), (std::distance(free_span.begin(), free_span.end())));
 
-      CHECK(writer.write(uint32_t(0x12345678U)));  // 4 more written.
-      CHECK_THROW(writer.write(uint32_t(0x12345678U)), etl::byte_stream_overflow); // Can't write 4 more.
+      CHECK(writer.write(uint32_t(0x12345678U)));       // 4 more written.
+      CHECK_FALSE(writer.write(uint32_t(0x12345678U))); // Can't write 4 more.
 
       CHECK(!writer.empty());
       CHECK(!writer.full());
@@ -186,7 +186,7 @@ namespace
       CHECK(byte_stream.write(false));
 
       // One too many.
-      CHECK_THROW(byte_stream.write(true), etl::byte_stream_overflow);
+      CHECK_FALSE(byte_stream.write(true));
 
       CHECK_ARRAY_EQUAL(result, storage, 8);
     }
@@ -207,7 +207,7 @@ namespace
       }
 
       // One too many.
-      CHECK_THROW(byte_stream.write(int8_t(0)), etl::byte_stream_overflow);
+      CHECK_FALSE(byte_stream.write(int8_t(0)));
 
       for (size_t i = 0; i < storage.size(); ++i)
       {
@@ -231,7 +231,7 @@ namespace
       }
 
       // One too many.
-      CHECK_THROW(byte_stream.write(uint8_t(0U)), etl::byte_stream_overflow);
+      CHECK_FALSE(byte_stream.write(uint8_t(0U)));
 
       for (size_t i = 0U; i < storage.size(); ++i)
       {
@@ -255,7 +255,7 @@ namespace
       CHECK(byte_stream.write(int16_t(0xFFFF)));
 
       // One too many.
-      CHECK_THROW(byte_stream.write(int16_t(0)), etl::byte_stream_overflow);
+      CHECK_FALSE(byte_stream.write(int16_t(0)));
 
       for (size_t i = 0; i < storage.size(); ++i)
       {
@@ -279,7 +279,7 @@ namespace
       CHECK(byte_stream.write(uint16_t(0xFFFFU)));
 
       // One too many.
-      CHECK_THROW(byte_stream.write(uint16_t(0U)), etl::byte_stream_overflow);
+      CHECK_FALSE(byte_stream.write(uint16_t(0U)));
 
       for (size_t i = 0; i < storage.size(); ++i)
       {
@@ -306,7 +306,7 @@ namespace
       CHECK(byte_stream.write(int32_t(0xFFFFFFFF)));
 
       // One too many.
-      CHECK_THROW(byte_stream.write(int32_t(0)), etl::byte_stream_overflow);
+      CHECK_FALSE(byte_stream.write(int32_t(0)));
 
       for (size_t i = 0U; i < storage.size(); ++i)
       {
@@ -333,7 +333,7 @@ namespace
       CHECK(byte_stream.write(uint32_t(0xFFFFFFFFU)));
 
       // One too many.
-      CHECK_THROW(byte_stream.write(uint32_t(0)), etl::byte_stream_overflow);
+      CHECK_FALSE(byte_stream.write(uint32_t(0)));
 
       for (size_t i = 0U; i < storage.size(); ++i)
       {
@@ -360,7 +360,7 @@ namespace
       CHECK(byte_stream.write(int64_t(0xFFFFFFFFFFFFFFFF)));
 
       // One too many.
-      CHECK_THROW(byte_stream.write(int64_t(0)), etl::byte_stream_overflow);
+      CHECK_FALSE(byte_stream.write(int64_t(0)));
 
       for (size_t i = 0U; i < storage.size(); ++i)
       {
@@ -387,7 +387,7 @@ namespace
       CHECK(byte_stream.write(uint64_t(0xFFFFFFFFFFFFFFFFU)));
 
       // One too many.
-      CHECK_THROW(byte_stream.write(uint64_t(0)), etl::byte_stream_overflow);
+      CHECK_FALSE(byte_stream.write(uint64_t(0)));
 
       for (size_t i = 0U; i < storage.size(); ++i)
       {
@@ -413,7 +413,7 @@ namespace
       CHECK(byte_stream.write(int32_t(0x01020304)));
       CHECK(byte_stream.skip<int32_t>(2));
       CHECK(byte_stream.write(int32_t(0x05060708)));
-      CHECK_THROW(byte_stream.skip<int32_t>(1), etl::byte_stream_overflow);
+      CHECK_FALSE(byte_stream.skip<int32_t>(1));
 
       for (size_t i = 0U; i < storage.size(); ++i)
       {
@@ -437,7 +437,7 @@ namespace
       CHECK(result[0] = byte_stream.read<int32_t>());
       CHECK(byte_stream.skip<int32_t>(2));
       CHECK(result[3] = byte_stream.read<int32_t>());
-      CHECK_THROW(byte_stream.skip<int32_t>(2), etl::byte_stream_overflow);
+      CHECK_FALSE(byte_stream.skip<int32_t>(2));
 
       for (size_t i = 0U; i < result.size(); ++i)
       {
@@ -1242,7 +1242,7 @@ namespace
 
       reader.restart();
       // Skip five int16_t (too many)
-      CHECK_THROW(reader.skip<int16_t>(5U), etl::byte_stream_overflow);
+      CHECK_FALSE(reader.skip<int16_t>(5U));
     }
 
     //*************************************************************************
@@ -1332,6 +1332,16 @@ namespace
       {
         CHECK_EQUAL(expected[i], result[i]);
       }
+    }
+    //*************************************************************************
+    TEST(read_byte_stream_skip)
+    {
+      etl::array<uint8_t, 4> data;
+      etl::byte_stream_reader r(data.begin(), data.size(), etl::endian::little);
+      CHECK_TRUE(r.skip<uint8_t>(4));
+      etl::optional<etl::span<const uint8_t>> result = r.read<uint8_t>(4);
+      CHECK_FALSE(result.has_value());
+      CHECK_TRUE(r.empty());
     }
   };
 }

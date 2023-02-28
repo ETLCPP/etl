@@ -6,12 +6,12 @@ on:
     branches: [ master ]
 
 jobs:
-  build-clang-9-linux-stl:
-    name: Clang-9 Linux - STL
+  build-clang-linux-stl:
+    name: Clang Linux - STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-20.04, ubuntu-22.04]
 
     steps:
     - uses: actions/checkout@v2
@@ -19,9 +19,9 @@ jobs:
     - name: Build
       run: |
         sudo apt-get update
-        sudo apt-get install -y "clang-9" "lldb-9" "lld-9" "clang-format-9"
-        export CC=clang-9
-        export CXX=clang++-9
+        sudo apt-get install -y "clang" "lldb" "lld" "clang-format"
+        export CC=clang
+        export CXX=clang++
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         git fetch --tags
         cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
@@ -31,12 +31,12 @@ jobs:
     - name: Run tests
       run: ./test/etl_tests
 
-  build-clang-9-linux-no-stl:
-    name: Clang-9 Linux - No STL
+  build-clang-linux-no-stl:
+    name: Clang Linux - No STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-20.04, ubuntu-22.04]
 
     steps:
     - uses: actions/checkout@v2
@@ -44,26 +44,24 @@ jobs:
     - name: Build
       run: |
         sudo apt-get update
-        sudo apt-get install -y "clang-9" "lldb-9" "lld-9" "clang-format-9"
-        export CC=clang-9
-        export CXX=clang++-9
+        sudo apt-get install -y "clang" "lldb" "lld" "clang-format"
+        export CC=clang
+        export CXX=clang++
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         git fetch --tags
         cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
-        gcc --version
-        cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
         clang --version
         make
     
     - name: Run tests
       run: ./test/etl_tests
 
-  build-clang-9-linux-stl-force-cpp03:
-    name: Clang-9 Linux - STL - Force C++03
+  build-clang-linux-stl-force-cpp03:
+    name: Clang Linux - STL - Force C++03
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-20.04, ubuntu-22.04]
 
     steps:
     - uses: actions/checkout@v2
@@ -71,9 +69,9 @@ jobs:
     - name: Build
       run: |
         sudo apt-get update
-        sudo apt-get install -y "clang-9" "lldb-9" "lld-9" "clang-format-9"
-        export CC=clang-9
-        export CXX=clang++-9
+        sudo apt-get install -y "clang" "lldb" "lld" "clang-format"
+        export CC=clang
+        export CXX=clang++
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         git fetch --tags
         cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ./

@@ -960,6 +960,114 @@ namespace
       }
     }
 
+    //*************************************************************************
+    TEST(test_operator_equality)
+    {
+      etl::array data1{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array data2{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array data3{ 0, 1, 2, 3, 4, 4, 6, 7, 8, 9 };
+
+      View view1{ data1 };
+      View view2{ data1 };
+      View view3{ data2 };
+      View view4{ data3 };
+      View view6;
+      View view7;
+
+      CHECK_TRUE(etl::equal(view1, view2));
+      CHECK_TRUE(etl::equal(view1, view3));
+      CHECK_FALSE(etl::equal(view1, view4));
+      CHECK_TRUE(etl::equal(view6, view6));
+      CHECK_TRUE(etl::equal(view6, view7));
+
+      CHECK_TRUE(view1 == view2);
+      CHECK_FALSE(view1 == view3);
+      CHECK_FALSE(view1 == view4);
+      CHECK_TRUE(view6 == view6);
+      CHECK_TRUE(view6 == view7);
+    }
+
+    //*************************************************************************
+    TEST(test_operator_equality_one_is_const)
+    {
+      etl::array data1{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array data2{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array data3{ 0, 1, 2, 3, 4, 4, 6, 7, 8, 9 };
+
+      View view1{ data1 };
+      CView view2{ data1 };
+      CView view3{ data2 };
+      CView view4{ data3 };
+      View view6;
+      CView view7;
+
+      CHECK_TRUE(etl::equal(view1, view2));
+      CHECK_TRUE(etl::equal(view1, view3));
+      CHECK_FALSE(etl::equal(view1, view4));
+      CHECK_TRUE(etl::equal(view6, view6));
+      CHECK_TRUE(etl::equal(view6, view7));
+
+      CHECK_TRUE(view1 == view2);
+      CHECK_FALSE(view1 == view3);
+      CHECK_FALSE(view1 == view4);
+      CHECK_TRUE(view6 == view6);
+      CHECK_TRUE(view6 == view7);
+    }
+
+    //*************************************************************************
+    TEST(test_operator_not_equal)
+    {
+      etl::array data1{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array data2{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array data3{ 0, 1, 2, 3, 4, 4, 6, 7, 8, 9 };
+
+      View view1{ data1 };
+      View view2{ data1 };
+      View view3{ data2 };
+      View view4{ data3 };
+      View view6;
+      View view7;
+
+      CHECK_TRUE(etl::equal(view1, view2));
+      CHECK_TRUE(etl::equal(view1, view3));
+      CHECK_FALSE(etl::equal(view1, view4));
+      CHECK_TRUE(etl::equal(view6, view6));
+      CHECK_TRUE(etl::equal(view6, view7));
+
+      CHECK_FALSE(view1 != view2);
+      CHECK_TRUE(view1 != view3);
+      CHECK_TRUE(view1 != view4);
+      CHECK_FALSE(view6 != view6);
+      CHECK_FALSE(view6 != view7);
+    }
+
+    //*************************************************************************
+    TEST(test_operator_not_equal_one_is_const)
+    {
+      etl::array data1{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array data2{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::array data3{ 0, 1, 2, 3, 4, 4, 6, 7, 8, 9 };
+
+      View view1{ data1 };
+      CView view2{ data1 };
+      CView view3{ data2 };
+      CView view4{ data3 };
+      View view6;
+      View view7;
+
+      CHECK_TRUE(etl::equal(view1, view2));
+      CHECK_TRUE(etl::equal(view1, view3));
+      CHECK_FALSE(etl::equal(view1, view4));
+      CHECK_TRUE(etl::equal(view6, view6));
+      CHECK_TRUE(etl::equal(view6, view7));
+
+      CHECK_FALSE(view1 != view2);
+      CHECK_TRUE(view1 != view3);
+      CHECK_TRUE(view1 != view4);
+      CHECK_FALSE(view6 != view6);
+      CHECK_FALSE(view6 != view7);
+    }
+
 #include "etl/private/diagnostic_pop.h"
   };
 }

@@ -92,7 +92,7 @@ namespace etl
   public:
 
     optional_invalid(string_type file_name_, numeric_type line_number_)
-      : optional_exception("optional: invalid", file_name_, line_number_)
+      : optional_exception("optional:invalid", file_name_, line_number_)
     {
     }
   };
@@ -101,7 +101,7 @@ namespace etl
   /// An optional type.
   /// If the optional type is not initialised then a type is not constructed.
   /// See http://en.cppreference.com/w/cpp/utility/optional
-  ///\tparam The type to store.
+  ///\tparam T The type to store.
   ///\ingroup utilities
   //*****************************************************************************
   template <typename T, bool is_pod = etl::is_pod<T>::value>
@@ -414,7 +414,7 @@ namespace etl
     /// 1 parameter.
     //*************************************************************************
     template <typename T1>
-    void emplace(const T1& value1)
+    T& emplace(const T1& value1)
     {
       if (has_value())
       {
@@ -430,7 +430,7 @@ namespace etl
     /// 2 parameters.
     //*************************************************************************
     template <typename T1, typename T2>
-    void emplace(const T1& value1, const T2& value2)
+    T& emplace(const T1& value1, const T2& value2)
     {
       if (has_value())
       {
@@ -446,7 +446,7 @@ namespace etl
     /// 3 parameters.
     //*************************************************************************
     template <typename T1, typename T2, typename T3>
-    void emplace(const T1& value1, const T2& value2, const T3& value3)
+    T& emplace(const T1& value1, const T2& value2, const T3& value3)
     {
       if (has_value())
       {
@@ -462,7 +462,7 @@ namespace etl
     /// 4 parameters.
     //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
-    void emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    T& emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
       if (has_value())
       {
@@ -573,6 +573,8 @@ namespace etl
 
   //*****************************************************************************
   /// For POD types.
+  ///\tparam T The type to store.
+  ///\ingroup utilities
   //*****************************************************************************
   template <typename T>
   class optional<T, true>

@@ -439,6 +439,27 @@ namespace
     }
 
     //*************************************************************************
+    TEST(message_broker_send_messages_to_specific_subscribers)
+    {
+      Broker broker;
+      Router router1(1);
+      Router router2(2);
+      Router router3(3);
+
+      Subscription subscription1{ router1, { Message1::ID, Message2::ID, Message3::ID, Message4::ID } };
+      Subscription subscription2{ router2, { Message1::ID, Message2::ID } };
+      Subscription subscription3{ router2, { Message1::ID, Message3::ID } };
+
+      broker.subscribe(subscription1);
+      broker.subscribe(subscription2);
+      broker.set_successor(router3);
+
+      broker.receive(Message1());
+      broker.receive(1, Message1());
+      broker.receive(2, Message2());
+    }
+
+    //*************************************************************************
     TEST(message_broker_send_messages_to_subscribers_after_unsubscribe)
     {
       Broker broker;

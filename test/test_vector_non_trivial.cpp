@@ -663,29 +663,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST_FIXTURE(SetupFixture, test_emplace_back)
-    {
-      CompareDataNDC compare_data;
-      DataNDC data;
-
-      for (size_t i = 0UL; i < SIZE; ++i)
-      {
-        std::string value(" ");
-        value[0] = char('A' + i);
-        compare_data.emplace_back(value, i);
-        data.emplace_back(value, i);
-      }
-
-      CHECK_EQUAL(compare_data.size(), data.size());
-
-      bool is_equal = std::equal(data.begin(),
-                                 data.end(),
-                                 compare_data.begin());
-
-      CHECK(is_equal);
-    }
-
-    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_back_unique_ptr)
     {
       etl::vector<std::unique_ptr<int>, SIZE> data;
@@ -709,6 +686,39 @@ namespace
       CHECK_EQUAL(2, *data[1]);
       CHECK_EQUAL(3, *data[2]);
       CHECK_EQUAL(4, *data[3]);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back)
+    {
+      CompareDataNDC compare_data;
+      DataNDC data;
+
+      for (size_t i = 0UL; i < SIZE; ++i)
+      {
+        std::string value(" ");
+        value[0] = char('A' + i);
+        compare_data.emplace_back(value, i);
+        data.emplace_back(value, i);
+      }
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      bool is_equal = std::equal(data.begin(),
+        data.end(),
+        compare_data.begin());
+
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back_return)
+    {
+      DataNDC data;
+
+      data.emplace_back("A", 24);
+      auto back = data.emplace_back("B", 42);
+      CHECK_EQUAL(back, data.back());
     }
 
     //*************************************************************************

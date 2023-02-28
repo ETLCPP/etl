@@ -41,6 +41,19 @@ SOFTWARE.
 
 namespace etl
 {
+#if ETL_USING_CPP11
+  inline namespace literals
+  {
+    inline namespace string_literals
+    {
+      constexpr etl::u16string_view operator ""_sv(const char16_t* str, size_t length) noexcept
+      {
+        return etl::u16string_view{ str, length };
+      }
+    }
+  }
+#endif
+
   typedef ibasic_string<char16_t> iu16string;
 
   //***************************************************************************

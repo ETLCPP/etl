@@ -1344,5 +1344,179 @@ namespace
       CHECK(function_was_called);
       CHECK(ptr.get() == ETL_NULLPTR);
     }
+
+    //*************************************************************************
+    struct Flags
+    {
+      Flags()
+        : constructed(false)
+        , destructed(false)
+      {
+      }
+
+      void Clear()
+      {
+        constructed = false;
+        destructed = false;
+      }
+
+      bool constructed;
+      bool destructed;
+    };
+
+    static Flags flags;
+
+    TEST(test_construct_get_destroy_object_aligned)
+    {
+      struct Data
+      {
+        Data()
+          : a(1)
+          , b(2)
+        {
+          flags.constructed = true;
+        }
+
+        Data(int a_, int b_)
+          : a(a_)
+          , b(b_)
+        {
+          flags.constructed = true;
+        }
+
+        ~Data()
+        {
+          flags.destructed = true;
+        }
+
+        int a;
+        int b;
+      };
+     
+      alignas(Data) char buffer1[sizeof(Data)];
+      char* pbuffer1 = buffer1;
+
+      alignas(Data) char buffer1b[sizeof(Data)];
+      char* pbuffer1b = buffer1b;
+
+      alignas(Data) char buffer2[sizeof(Data)];
+      char* pbuffer2 = buffer2;
+
+      alignas(Data) char buffer2b[sizeof(Data)];
+      char* pbuffer2b = buffer2b;
+
+      alignas(Data) char buffer3[sizeof(Data)];
+      char* pbuffer3 = buffer3;
+
+      alignas(Data) char buffer3b[sizeof(Data)];
+      char* pbuffer3b = buffer3b;
+
+      flags.Clear();
+      Data& rdata1 = etl::construct_object_at<Data>(pbuffer1);
+      CHECK_TRUE(flags.constructed);
+      CHECK_FALSE(flags.destructed);
+      CHECK_EQUAL(1, rdata1.a);
+      CHECK_EQUAL(2, rdata1.b);
+
+      flags.Clear();
+      Data data2(3, 4);
+      Data& rdata2 = etl::construct_object_at(pbuffer2, data2);
+      CHECK_TRUE(flags.constructed);
+      CHECK_FALSE(flags.destructed);
+      CHECK_EQUAL(data2.a, rdata2.a);
+      CHECK_EQUAL(data2.b, rdata2.b);
+
+      flags.Clear();
+      Data& rdata3 = etl::construct_object_at<Data>(pbuffer3, 5, 6);
+      CHECK_TRUE(flags.constructed);
+      CHECK_FALSE(flags.destructed);
+      CHECK_EQUAL(5, rdata3.a);
+      CHECK_EQUAL(6, rdata3.b);
+
+      memcpy(buffer1b, buffer1, sizeof(Data));
+      memcpy(buffer2b, buffer2, sizeof(Data));
+      memcpy(buffer3b, buffer3, sizeof(Data));
+
+      flags.Clear();
+      Data& rdata1b = etl::get_object_at<Data>(pbuffer1b);
+      CHECK_FALSE(flags.constructed);
+      CHECK_FALSE(flags.destructed);
+      CHECK_EQUAL(1, rdata1b.a);
+      CHECK_EQUAL(2, rdata1b.b);
+      
+      flags.Clear();
+      Data& rdata2b = etl::get_object_at<Data>(pbuffer2b);
+      CHECK_FALSE(flags.constructed);
+      CHECK_FALSE(flags.destructed);
+      CHECK_EQUAL(data2.a, rdata2b.a);
+      CHECK_EQUAL(data2.b, rdata2b.b);
+      
+      flags.Clear();
+      Data& rdata3b = etl::get_object_at<Data>(pbuffer3b);
+      CHECK_FALSE(flags.constructed);
+      CHECK_FALSE(flags.destructed);
+      CHECK_EQUAL(5, rdata3b.a);
+      CHECK_EQUAL(6, rdata3b.b);
+
+      flags.Clear();
+      etl::destroy_object_at<Data>(pbuffer1b);
+      CHECK_FALSE(flags.constructed);
+      CHECK_TRUE(flags.destructed);
+
+      flags.Clear();
+      etl::destroy_object_at<Data>(pbuffer2b);
+      CHECK_FALSE(flags.constructed);
+      CHECK_TRUE(flags.destructed);
+
+      flags.Clear();
+      etl::destroy_object_at<Data>(pbuffer3b);
+      CHECK_FALSE(flags.constructed);
+      CHECK_TRUE(flags.destructed);
+    }
+
+    TEST(test_construct_get_destroy_object_misaligned)
+    {
+      struct Data
+      {
+        Data()
+          : a(1)
+          , b(2)
+        {
+        }
+
+        Data(int a_, int b_)
+          : a(a_)
+          , b(b_)
+        {
+        }
+
+        ~Data()
+        {
+        }
+
+        int a;
+        int b;
+      };
+
+      alignas(Data) char buffer1[sizeof(Data)];
+      char* pbuffer1 = buffer1 + 1;
+
+      alignas(Data) char buffer2[sizeof(Data)];
+      char* pbuffer2 = buffer2 + 1;
+
+      alignas(Data) char buffer3[sizeof(Data)];
+      char* pbuffer3 = buffer3 + 1;
+
+      CHECK_THROW(etl::construct_object_at<Data>(pbuffer1), etl::alignment_error);
+
+      Data data2(3, 4);
+      CHECK_THROW(etl::construct_object_at(pbuffer2, data2), etl::alignment_error);
+
+      CHECK_THROW(etl::construct_object_at<Data>(pbuffer3, 5, 6), etl::alignment_error);
+
+      CHECK_THROW(etl::get_object_at<Data>(pbuffer1), etl::alignment_error);
+
+      CHECK_THROW(etl::destroy_object_at<Data>(pbuffer1), etl::alignment_error);
+    }
   };
 }

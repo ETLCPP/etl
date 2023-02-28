@@ -1058,6 +1058,17 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back_return)
+    {
+      Data data;
+      int d1 = 22;
+      int d2 = 42;
+
+      data.emplace_back(&d1);
+      CHECK_EQUAL(&d2, data.emplace_back(&d2));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_pop_back)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
