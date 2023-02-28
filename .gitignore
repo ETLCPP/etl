@@ -368,3 +368,4 @@ test/vs2022/random_lsfr.csv
 test/vs2022/random_mwc.csv
 test/vs2022/random_pcg.csv
 test/vs2022/random_xorshift.csv
+test/vs2019/MSVC - No STL -O2

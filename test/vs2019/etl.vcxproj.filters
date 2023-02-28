@@ -1305,9 +1305,6 @@
     <ClInclude Include="..\etl_error_handler\exceptions\etl_profile.h">
       <Filter>Tests\Error Handler\Exceptions</Filter>
     </ClInclude>
-    <ClInclude Include="..\etl_error_handler\exceptions_and_log_errors\etl_profile.h">
-      <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\private\diagnostic_pop.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
@@ -1343,6 +1340,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\expected.h">
       <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\etl_error_handler\log_errors_and_exceptions\etl_profile.h">
+      <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3344,9 +3344,6 @@
     <ClCompile Include="..\etl_error_handler\exceptions\test_error_handler.cpp">
       <Filter>Tests\Error Handler\Exceptions</Filter>
     </ClCompile>
-    <ClCompile Include="..\etl_error_handler\exceptions_and_log_errors\test_error_handler.cpp">
-      <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_message_broker.cpp">
       <Filter>Tests\Messaging</Filter>
     </ClCompile>
@@ -3391,6 +3388,9 @@
     </ClCompile>
     <ClCompile Include="..\sanity-check\to_arithmetic.h.t.cpp">
       <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\etl_error_handler\log_errors_and_exceptions\test_error_handler.cpp">
+      <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3543,7 +3543,7 @@
     <Text Include="..\etl_error_handler\exceptions\CMakeLists.txt">
       <Filter>Tests\Error Handler\Exceptions</Filter>
     </Text>
-    <Text Include="..\etl_error_handler\exceptions_and_log_errors\CMakeLists.txt">
+    <Text Include="..\etl_error_handler\log_errors_and_exceptions\CMakeLists.txt">
       <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
     </Text>
   </ItemGroup>

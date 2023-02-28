@@ -116,6 +116,11 @@ namespace etl
   {
     struct type
     {
+      //type() 
+      //  : data()
+      //{
+      //}
+
       /// Convert to T reference.
       template <typename T>
       operator T& ()

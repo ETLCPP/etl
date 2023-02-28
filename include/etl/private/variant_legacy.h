@@ -476,6 +476,7 @@ namespace etl
       /// Copy constructor.
       ///\param other The other variant object to copy.
       //***************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
       variant(const variant& other)
       {
         switch (other.type_id)
@@ -493,6 +494,7 @@ namespace etl
 
         type_id = other.type_id;
       }
+#include "etl/private/diagnostic_pop.h"
 
 #if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_VARIANT_FORCE_CPP03_IMPLEMENTATION)
       //*************************************************************************
@@ -845,6 +847,7 @@ namespace etl
 
     private:
 
+#include "etl/private/diagnostic_uninitialized_push.h"
       //***************************************************************************
       /// Destruct the current occupant of the variant.
       //***************************************************************************
@@ -865,6 +868,7 @@ namespace etl
 
         type_id = UNSUPPORTED_TYPE_ID;
       }
+#include "etl/private/diagnostic_pop.h"
 
       //***************************************************************************
       /// The internal storage.

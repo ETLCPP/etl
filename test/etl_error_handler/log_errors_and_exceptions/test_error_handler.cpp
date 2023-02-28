@@ -41,7 +41,7 @@ struct ErrorLog
     {
     }
 
-    void Log(const etl::exception& e)
+    void Log(const etl::exception& /*e*/)
     {
         ++log_count;
     }
