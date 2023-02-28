@@ -321,7 +321,6 @@ target_link_libraries(etl_tests PRIVATE UnitTestpp)
 if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
 	target_compile_options(etl_tests
 			PRIVATE
-			-pipe
 			-fsanitize=address,undefined,bounds
 			-fno-omit-frame-pointer
 			-Wall

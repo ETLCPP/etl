@@ -1,4 +1,10 @@
 ===============================================================================
+20.35.13
+#649 Fixed the false positive 'array-bounds' errors for ETL unit tests.
+#652 Fixed false positives 'maybe-uninitialized' errors for ETL unit tests.
+Moved virtual functions in etl::fixed_sized_memory_block_allocator from 'private' to 'protected'. 
+
+===============================================================================
 20.35.12
 #615 Addition of etl::expected
 #649 Changed intrusive_list and intrusive_forward_list iterator constructor parameter from reference to pointer.

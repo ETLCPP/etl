@@ -1344,6 +1344,9 @@
     <ClInclude Include="..\..\include\etl\optional.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\diagnostic_array_bounds_push.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3513,6 +3516,15 @@
     </None>
     <None Include="..\meson.build">
       <Filter>Tests\Test Support</Filter>
+    </None>
+    <None Include="..\runtests-01.sh">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\runtests-03.sh">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\runtests-02.sh">
+      <Filter>Tests\Scripts</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

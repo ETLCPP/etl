@@ -2525,6 +2525,7 @@
     <ClInclude Include="..\..\include\etl\poly_span.h" />
     <ClInclude Include="..\..\include\etl\private\bitset_legacy.h" />
     <ClInclude Include="..\..\include\etl\private\bitset_new.h" />
+    <ClInclude Include="..\..\include\etl\private\diagnostic_array_bounds_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_uninitialized_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_pessimizing_move_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_pop.h" />
@@ -12697,6 +12698,9 @@
     <None Include="..\..\scripts\update_release.py" />
     <None Include="..\meson.build" />
     <None Include="..\runsanitychecks.sh" />
+    <None Include="..\runtests-01.sh" />
+    <None Include="..\runtests-02.sh" />
+    <None Include="..\runtests-03.sh" />
     <None Include="..\runtests.sh" />
     <None Include="cpp.hint" />
   </ItemGroup>

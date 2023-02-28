@@ -286,9 +286,6 @@ namespace etl
       new (p) etl::remove_reference_t<TMessage>((etl::forward<TMessage>(msg)));
     }
 
-    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    bool valid;
-
     //********************************************
     template <typename TType>
     bool add_new_message_type(const etl::imessage& msg)
@@ -320,6 +317,9 @@ namespace etl
         return false;
       }
     }
+
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    bool valid;
   };
 
 #else
@@ -543,7 +543,7 @@ namespace etl
   private:
 
     //********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+    #include "etl/private/diagnostic_uninitialized_push.h"
     void delete_current_message()
     {
       if (valid)
@@ -553,7 +553,7 @@ namespace etl
         pmsg->~imessage();
       }
     }
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -836,7 +836,7 @@ namespace etl
   private:
 
     //********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+    #include "etl/private/diagnostic_uninitialized_push.h"
     void delete_current_message()
     {
       if (valid)
@@ -846,7 +846,7 @@ namespace etl
         pmsg->~imessage();
       }
     }
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -1127,7 +1127,7 @@ namespace etl
   private:
 
     //********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+    #include "etl/private/diagnostic_uninitialized_push.h"
     void delete_current_message()
     {
       if (valid)
@@ -1137,7 +1137,7 @@ namespace etl
         pmsg->~imessage();
       }
     }
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -1416,7 +1416,7 @@ namespace etl
   private:
 
     //********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+    #include "etl/private/diagnostic_uninitialized_push.h"
     void delete_current_message()
     {
       if (valid)
@@ -1426,7 +1426,7 @@ namespace etl
         pmsg->~imessage();
       }
     }
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -1699,7 +1699,7 @@ namespace etl
   private:
 
     //********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+    #include "etl/private/diagnostic_uninitialized_push.h"
     void delete_current_message()
     {
       if (valid)
@@ -1709,7 +1709,7 @@ namespace etl
         pmsg->~imessage();
       }
     }
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -1980,7 +1980,7 @@ namespace etl
   private:
 
     //********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+    #include "etl/private/diagnostic_uninitialized_push.h"
     void delete_current_message()
     {
       if (valid)
@@ -1990,7 +1990,7 @@ namespace etl
         pmsg->~imessage();
       }
     }
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -2259,7 +2259,7 @@ namespace etl
   private:
 
     //********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+    #include "etl/private/diagnostic_uninitialized_push.h"
     void delete_current_message()
     {
       if (valid)
@@ -2269,7 +2269,7 @@ namespace etl
         pmsg->~imessage();
       }
     }
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -2536,7 +2536,7 @@ namespace etl
   private:
 
     //********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+    #include "etl/private/diagnostic_uninitialized_push.h"
     void delete_current_message()
     {
       if (valid)
@@ -2546,7 +2546,7 @@ namespace etl
         pmsg->~imessage();
       }
     }
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -2807,7 +2807,7 @@ namespace etl
   private:
 
     //********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+    #include "etl/private/diagnostic_uninitialized_push.h"
     void delete_current_message()
     {
       if (valid)
@@ -2817,7 +2817,7 @@ namespace etl
         pmsg->~imessage();
       }
     }
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -3076,7 +3076,7 @@ namespace etl
   private:
 
     //********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+    #include "etl/private/diagnostic_uninitialized_push.h"
     void delete_current_message()
     {
       if (valid)
@@ -3086,7 +3086,7 @@ namespace etl
         pmsg->~imessage();
       }
     }
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -3343,7 +3343,7 @@ namespace etl
   private:
 
     //********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+    #include "etl/private/diagnostic_uninitialized_push.h"
     void delete_current_message()
     {
       if (valid)
@@ -3353,7 +3353,7 @@ namespace etl
         pmsg->~imessage();
       }
     }
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -3608,7 +3608,7 @@ namespace etl
   private:
 
     //********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+    #include "etl/private/diagnostic_uninitialized_push.h"
     void delete_current_message()
     {
       if (valid)
@@ -3618,7 +3618,7 @@ namespace etl
         pmsg->~imessage();
       }
     }
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -3867,7 +3867,7 @@ namespace etl
   private:
 
     //********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+    #include "etl/private/diagnostic_uninitialized_push.h"
     void delete_current_message()
     {
       if (valid)
@@ -3877,7 +3877,7 @@ namespace etl
         pmsg->~imessage();
       }
     }
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -4124,7 +4124,7 @@ namespace etl
   private:
 
     //********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+    #include "etl/private/diagnostic_uninitialized_push.h"
     void delete_current_message()
     {
       if (valid)
@@ -4134,7 +4134,7 @@ namespace etl
         pmsg->~imessage();
       }
     }
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -4379,7 +4379,7 @@ namespace etl
   private:
 
     //********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+    #include "etl/private/diagnostic_uninitialized_push.h"
     void delete_current_message()
     {
       if (valid)
@@ -4389,7 +4389,7 @@ namespace etl
         pmsg->~imessage();
       }
     }
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -4632,7 +4632,7 @@ namespace etl
   private:
 
     //********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+    #include "etl/private/diagnostic_uninitialized_push.h"
     void delete_current_message()
     {
       if (valid)
@@ -4642,7 +4642,7 @@ namespace etl
         pmsg->~imessage();
       }
     }
-#include "etl/private/diagnostic_pop.h"
+    #include "etl/private/diagnostic_pop.h"
 
     //********************************************
     void add_new_message(const etl::imessage& msg)

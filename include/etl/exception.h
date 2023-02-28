@@ -66,11 +66,10 @@ namespace etl
     /// Constructor.
     //*************************************************************************
     ETL_CONSTEXPR
-    exception(string_type reason_, string_type file_, numeric_type line_)
+    exception(string_type reason_, string_type /*file_*/, numeric_type line_)
       : reason_text(reason_),
         line(line_)
     {
-    (void)file_;
     }
 #endif
 
