@@ -1,4 +1,8 @@
 ===============================================================================
+20.35.14
+Convert the Visual Studio project to VS2022
+
+===============================================================================
 20.35.13
 #649 Fixed the false positive 'array-bounds' errors for ETL unit tests.
 #652 Fixed false positives 'maybe-uninitialized' errors for ETL unit tests.
