@@ -1,0 +1,3599 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="UnitTest++">
+      <UniqueIdentifier>{ecfaf316-dc6d-4dc1-9838-24061047ad63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL">
+      <UniqueIdentifier>{53c3a373-0496-4db0-a981-86bf14a1fac9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Containers">
+      <UniqueIdentifier>{dc39d09c-75c9-453f-8feb-9631a200c0f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Utilities">
+      <UniqueIdentifier>{ab41d19f-82fe-4974-a73b-16aebfa1d03f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Patterns">
+      <UniqueIdentifier>{d56ca96b-66e1-46cb-83fd-1cd72c51d962}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Maths">
+      <UniqueIdentifier>{1c55dd7d-c04b-428c-810b-dd3a08fc4c65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Private">
+      <UniqueIdentifier>{7028012c-30c4-4993-b2d9-3b1521a610ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Frameworks">
+      <UniqueIdentifier>{6be3bc76-e17c-4be0-8b0b-d1053e1a1761}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Frameworks\Generators">
+      <UniqueIdentifier>{c1264f38-22fa-4fcb-8cab-f254b1290eab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Utilities\Generators">
+      <UniqueIdentifier>{39015d44-a7cb-47f0-a7dd-27714f852363}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Utilities\Atomic">
+      <UniqueIdentifier>{1c95b9c1-96c0-4c1e-8e5a-e6680d88276c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Profiles">
+      <UniqueIdentifier>{0a77d88b-f9f0-456a-be4b-c0a0ce6b437b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Containers\Generators">
+      <UniqueIdentifier>{e4a699ae-e7f3-418e-bf9f-211c21f7f4b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Generators">
+      <UniqueIdentifier>{7371282e-fddc-4269-891b-e909f74ff8e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Images">
+      <UniqueIdentifier>{4d08353c-b393-47c7-a9eb-c9f2f8c25887}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Utilities\Mutex">
+      <UniqueIdentifier>{0bcdf7f9-8e2b-4f70-932b-bde56404f421}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Strings">
+      <UniqueIdentifier>{da88d71d-e5ea-4c26-9807-94616d31addb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\CI">
+      <UniqueIdentifier>{0eaad66f-3ce3-4952-8ae8-c935e6aa7c1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\CI\CircleCI">
+      <UniqueIdentifier>{0d5824b1-3ef9-43e0-b2d5-15d6246b843e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\CI\Github">
+      <UniqueIdentifier>{c25471f3-451a-4279-925d-cbdcec912ef8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Pseudo Containers">
+      <UniqueIdentifier>{586d2c92-e504-4dea-9b1f-42d725a5272c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\CI\Appveyor">
+      <UniqueIdentifier>{74399f00-a7a3-47e3-9b27-d01fb2b5ce87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Arduino">
+      <UniqueIdentifier>{afc65d0e-d846-4e30-8723-06c8cefa3a36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Git">
+      <UniqueIdentifier>{ffb65df4-d5c7-44ab-a9c7-1150ddce2d6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\CMake">
+      <UniqueIdentifier>{3353062c-e8dc-4095-b7cf-d11fc952263e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Conan">
+      <UniqueIdentifier>{49e974a8-2dcc-40e6-b4ca-bad29f0cde52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Tests\Sanity Checks">
+      <UniqueIdentifier>{8a3300fa-c2cd-44dd-8582-692f97ec4dc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Sanity Checks\C++03">
+      <UniqueIdentifier>{ca522a34-8cf0-4f64-8ca1-33f52f65a9a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Sanity Checks\C++11">
+      <UniqueIdentifier>{ba2bf848-6023-4906-a0d4-14a4c8fba0e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Sanity Checks\C++14">
+      <UniqueIdentifier>{527f4d9a-8968-4352-8cdf-f6ccc391dcf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Sanity Checks\C++17">
+      <UniqueIdentifier>{57b110fa-b3d8-4cc4-9619-ca510a29c213}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Sanity Checks\Logs">
+      <UniqueIdentifier>{5b76fd56-eb83-489f-b9a6-798c07c5fa76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Scripts">
+      <UniqueIdentifier>{562466b5-677d-4448-9e9e-f70805cd71ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Maths\CRC">
+      <UniqueIdentifier>{66b8d39a-b610-4d5e-925a-4995f2ac74b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Maths\Hash">
+      <UniqueIdentifier>{a1af709b-90d3-4506-b742-3231d0fff1f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Strings">
+      <UniqueIdentifier>{43578ed8-b61d-4210-b5d4-bb4a26351934}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Messaging">
+      <UniqueIdentifier>{c75cedd3-8b6c-4662-b965-aecbe7fd5d1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\CRC">
+      <UniqueIdentifier>{da470864-7708-4e89-a24c-93a9ca2c4856}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Containers">
+      <UniqueIdentifier>{0873470d-a6d9-445c-bbc0-33252978ecff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Queues">
+      <UniqueIdentifier>{b42bb316-6e55-4336-a72a-fc5f28d82ea5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Callbacks &amp; Delegates">
+      <UniqueIdentifier>{a300635d-25da-4af6-b7e7-1e27ec9df921}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\State Machines">
+      <UniqueIdentifier>{e260d680-649f-41b5-844d-c736a252dcb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Algorithms">
+      <UniqueIdentifier>{21e56de9-b458-4395-9949-3abfb1f5723b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Binary">
+      <UniqueIdentifier>{d115746e-4d33-41b4-b88f-9fb2ca225286}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Hashes">
+      <UniqueIdentifier>{a1417994-24a2-40ae-a934-ea318299f91c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Test Support">
+      <UniqueIdentifier>{126a3068-3048-4210-8cdf-41ec9e2e1436}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Types">
+      <UniqueIdentifier>{a8738fb5-ff9c-40c2-b3c0-4843ca55097c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Patterns">
+      <UniqueIdentifier>{89fc701f-b9ea-4ff3-beac-199c003c4b3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Atomic">
+      <UniqueIdentifier>{d266eb8f-3f48-4625-98d8-47b6cd9f13a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Maths">
+      <UniqueIdentifier>{66f5995b-c1a1-4bc7-b09a-b0148613d77a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Memory &amp; Iterators">
+      <UniqueIdentifier>{3820f2db-3b02-48c1-ac8c-c3ee4507ee45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Errors">
+      <UniqueIdentifier>{2682377b-6037-4163-9097-3e3e9824e215}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Tasks">
+      <UniqueIdentifier>{d37e1c04-f45f-4513-99cc-debbbcf7dead}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Misc">
+      <UniqueIdentifier>{236aa242-d71f-48bd-9169-cfa7cbff9f10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UnitTest++\Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files\Arduino">
+      <UniqueIdentifier>{d138997a-b860-4420-9f45-87e9e2c52f3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Callback Timers">
+      <UniqueIdentifier>{dc898ba2-50f4-4c3d-abee-039670df8582}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Sanity Checks\Source">
+      <UniqueIdentifier>{a05ae045-3218-4ca2-9f25-08cc977898df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UnitTest++\Header Files\Win32">
+      <UniqueIdentifier>{4dd0f57a-eeab-4910-a243-42c0950f0536}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UnitTest++\Source Files">
+      <UniqueIdentifier>{2759f13a-3c3c-4e91-a2f0-a300f1f50f77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UnitTest++\Source Files\Win32">
+      <UniqueIdentifier>{107d7e33-580f-4dc5-be11-a4b2076c2c10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Scripts">
+      <UniqueIdentifier>{4ee68175-3bc2-4d30-b8bf-be7261124979}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Messaging">
+      <UniqueIdentifier>{ba688ff7-bea4-4f7e-bfab-1033d3401426}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ETL\Messaging\Generators">
+      <UniqueIdentifier>{ba80408c-0198-432a-a213-e4e2db946aab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Initializer List">
+      <UniqueIdentifier>{0014395b-c658-4903-a15f-d21acb676d79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Error Handler">
+      <UniqueIdentifier>{69ed2e1e-f009-4a1a-abf2-a9144142b533}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Error Handler\Log Errors">
+      <UniqueIdentifier>{78498646-3058-4d15-9d21-2243ca5d5cd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Error Handler\Exceptions">
+      <UniqueIdentifier>{19d7da41-01e8-4449-8b9b-14be81447752}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Error Handler\Exceptions_And_Log_Errors">
+      <UniqueIdentifier>{de372ec9-d193-4956-871f-065414a9d3be}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\etl\enum_type.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\exception.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\function.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\array.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\container.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\queue.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\stack.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\vector.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\largest.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\nullptr.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\numeric.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\cyclic_value.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\static_assert.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\type_traits.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\visitor.h">
+      <Filter>ETL\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\observer.h">
+      <Filter>ETL\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\functional.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\list.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\map.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\log.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\deque.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\forward_list.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\smallest.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\integral_limits.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\variant.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\parameter_type.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\alignment.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\pool.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\power.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\fibonacci.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\factorial.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\algorithm.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\error_handler.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\instance_count.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\radix.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\bloom_filter.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\fixed_iterator.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\binary.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\flat_map.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\flat_set.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\unordered_map.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\io_port.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\set.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\multimap.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\multiset.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\priority_queue.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\flat_multimap.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\flat_multiset.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\intrusive_forward_list.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\char_traits.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\intrusive_links.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\intrusive_list.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\unordered_set.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\unordered_multiset.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\debounce.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\platform.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\pvoidvector.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\type_def.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\intrusive_stack.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\utility.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\intrusive_queue.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\unordered_multimap.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\user_type.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\debug_count.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\iterator.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\memory.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\reference_flat_map.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\reference_flat_multimap.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\reference_flat_multiset.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\reference_flat_set.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\fsm.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\packet.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\scheduler.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\task.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\random.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\endianness.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\constant.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\sqrt.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\type_lookup.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\compare.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\callback_timer.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\timer.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\atomic.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\cpp03.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\cpp11.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\cpp14.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\armv5.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\armv6.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\ticc.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\gcc_generic.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\gcc_linux_x86.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\gcc_windows_x86.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\arduino_arm.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\msvc_x86.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\atomic\atomic_arm.h">
+      <Filter>ETL\Utilities\Atomic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\variant_pool.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\array_view.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\array_wrapper.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\version.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\atomic\atomic_std.h">
+      <Filter>ETL\Utilities\Atomic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\atomic\atomic_gcc_sync.h">
+      <Filter>ETL\Utilities\Atomic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\queue_mpmc_mutex.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\queue_spsc_isr.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\queue_spsc_atomic.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\mutex\mutex_gcc_sync.h">
+      <Filter>ETL\Utilities\Mutex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\mutex\mutex_std.h">
+      <Filter>ETL\Utilities\Mutex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\mutex\mutex_arm.h">
+      <Filter>ETL\Utilities\Mutex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\mutex.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\combinations.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\permutations.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\type_select.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\memory_model.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\ratio.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\segger_gcc_stlport.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\vector_base.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\armv5_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\armv6_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\cpp03_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\cpp11_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\cpp14_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\math_constants.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\bit_stream.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\ivectorpointer.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\minmax_pop.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\minmax_push.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\state_chart.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\pseudo_moving_average.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\scaled_rounding.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\absolute.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\callback_service.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\queue_spsc_locked.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\negative.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\to_string_helper.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\multi_array.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\delegate.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\delegate_service.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\string_view.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\u16string.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\u32string.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\wstring.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\to_string.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\to_u16string.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\to_u32string.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\to_wstring.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\wformat_spec.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\u32format_spec.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\u16format_spec.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\format_spec.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\basic_format_spec.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\basic_string.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\macros.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\armv7.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\armv7_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\clang_generic.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\cpp17.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\cpp17_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\indirect_vector.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\determine_compiler_version.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\determine_compiler.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\determine_compiler_language_support.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\choose_namespace.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\limits.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\mutex\mutex_freertos.h">
+      <Filter>ETL\Utilities\Mutex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\null_type.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\span.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\determine_development_os.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\msvc_x86_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\ticc_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\gcc_windows_x86_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\gcc_linux_x86_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\gcc_generic_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\clang_generic_no_stl.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\largest_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\smallest_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\type_lookup_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\type_select_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\type_traits_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\fsm_generator.h">
+      <Filter>ETL\Frameworks\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\variant_pool_generator.h">
+      <Filter>ETL\Containers\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\parameter_pack.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\string_stream.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\wstring_stream.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\u16string_stream.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\u32string_stream.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\basic_string_stream.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\string_utilities.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\bresenham_line.h">
+      <Filter>ETL\Pseudo Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\string.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\circular_buffer.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\flags.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\atomic\atomic_clang_sync.h">
+      <Filter>ETL\Utilities\Atomic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\buffer_descriptors.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\placement_new.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\mutex\mutex_clang_sync.h">
+      <Filter>ETL\Utilities\Mutex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\arduino\Embedded_Template_Library.h">
+      <Filter>ETL\Arduino</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\multi_range.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generic_pool.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\ipool.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\file_error_numbers.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\reference_counted_object.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\fixed_sized_memory_block_allocator.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\queue_lockable.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\successor.h">
+      <Filter>ETL\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\imemory_block_allocator.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sanity-check\c++03\etl_profile.h">
+      <Filter>Tests\Sanity Checks\C++03</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sanity-check\c++11\etl_profile.h">
+      <Filter>Tests\Sanity Checks\C++11</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sanity-check\c++14\etl_profile.h">
+      <Filter>Tests\Sanity Checks\C++14</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sanity-check\c++17\etl_profile.h">
+      <Filter>Tests\Sanity Checks\C++17</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\crc_implementation.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\crc_parameters.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\correlation.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\covariance.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\histogram.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\standard_deviation.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\variance.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\gamma.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\rms.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\threshold.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\quantize.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\invert.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\mean.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\limiter.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\rescale.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\hfsm.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\variant_legacy.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\variant_variadic.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\mem_cast.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\bip_buffer_spsc_atomic.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\variant_legacy.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\overload.h">
+      <Filter>ETL\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\overload.h">
+      <Filter>ETL\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\byte_stream.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\result.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\multi_vector.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\mutex\mutex_cmsis_os2.h">
+      <Filter>ETL\Utilities\Mutex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\multi_span.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\nth_type.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\comparator_is_transparent.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\callback_timer_atomic.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\callback_timer_locked.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\delegate_cpp03.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\delegate_cpp11.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\bit.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\unaligned_type.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc8_ccitt.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc8_cdma2000.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc8_darc.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc8_dvbs2.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc8_ebu.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc8_icode.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc8_itu.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc8_maxim.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc8_rohc.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc8_wcdma.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_a.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_arc.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_aug_ccitt.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_buypass.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_ccitt.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_cdma2000.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_dds110.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_dectr.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_dectx.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_dnp.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_en13757.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_genibus.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_kermit.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_maxim.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_mcrf4xx.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_modbus.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_profibus.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_riello.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_t10dif.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_teledisk.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_tms37157.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_usb.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_x25.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_xmodem.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc32.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc32_bzip2.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc32_c.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc32_d.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc32_jamcrc.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc32_mpeg2.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc32_posix.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc32_q.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc32_xfer.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc64_ecma.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\checksum.h">
+      <Filter>ETL\Maths\Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\fnv_1.h">
+      <Filter>ETL\Maths\Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\frame_check_sequence.h">
+      <Filter>ETL\Maths\Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\hash.h">
+      <Filter>ETL\Maths\Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\ihash.h">
+      <Filter>ETL\Maths\Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\jenkins.h">
+      <Filter>ETL\Maths\Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\murmur3.h">
+      <Filter>ETL\Maths\Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\pearson.h">
+      <Filter>ETL\Maths\Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\murmurhash3.h">
+      <Filter>Tests\Test Support</Filter>
+    </ClInclude>
+    <ClInclude Include="..\iterators_for_unit_tests.h">
+      <Filter>Tests\Test Support</Filter>
+    </ClInclude>
+    <ClInclude Include="..\etl_profile.h">
+      <Filter>Tests\Test Support</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unit_test_framework.h">
+      <Filter>Tests\Test Support</Filter>
+    </ClInclude>
+    <ClInclude Include="..\data.h">
+      <Filter>Tests\Test Support</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\profiles\determine_builtin_support.h">
+      <Filter>ETL\Profiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\singleton.h">
+      <Filter>ETL\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\initializer_list.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\byte.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\callback_timer_interrupt.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\AssertException.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\CheckMacros.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\Checks.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\CompositeTestReporter.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\Config.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\CurrentTest.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\DeferredTestReporter.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\DeferredTestResult.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\ExceptionMacros.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\ExecuteTest.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\HelperMacros.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\MemoryOutStream.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\ReportAssert.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\ReportAssertImpl.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\RequiredCheckException.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\RequiredCheckTestReporter.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\RequireMacros.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\Test.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\TestDetails.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\TestList.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\TestMacros.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\TestReporter.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\TestReporterStdout.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\TestResults.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\TestRunner.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\TestSuite.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\ThrowingTestReporter.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\TimeConstraint.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\TimeHelpers.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\UnitTest++.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\UnitTestPP.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\XmlTestReporter.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unittest++\Win32\TimeHelpers.h">
+      <Filter>UnitTest++\Header Files\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\ireference_counted_message_pool.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_bus.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_packet.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_router.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_router_registry.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_timer.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_timer_atomic.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_timer_interrupt.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_timer_locked.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_types.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\reference_counted_message.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\reference_counted_message_pool.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\shared_message.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\message_packet_generator.h">
+      <Filter>ETL\Messaging\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\message_router_generator.h">
+      <Filter>ETL\Messaging\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\poly_span.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\etl_initializer_list\etl_profile.h">
+      <Filter>Tests\Initializer List</Filter>
+    </ClInclude>
+    <ClInclude Include="..\etl_error_handler\log_errors\etl_profile.h">
+      <Filter>Tests\Error Handler\Log Errors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\etl_error_handler\exceptions\etl_profile.h">
+      <Filter>Tests\Error Handler\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\diagnostic_pop.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\diagnostic_unused_function_push.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\diagnostic_self_assign_overloaded_push.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\diagnostic_pessimizing_move_push.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_broker.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\bitset_legacy.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\bitset_new.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\bitset.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\circular_iterator.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\diagnostic_uninitialized_push.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\to_arithmetic.h">
+      <Filter>ETL\Strings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\expected.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\etl_error_handler\log_errors_and_exceptions\etl_profile.h">
+      <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\optional.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\diagnostic_array_bounds_push.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\test_string_char.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_char_external_buffer.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_stream.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_stream_u16.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_stream_u32.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_stream_wchar_t.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_u16.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_u16_external_buffer.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_u32.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_u32_external_buffer.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_std.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_std_u16.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_std_u32.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_std_wchar_t.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_u16.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_u32.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_utilities_wchar_t.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_view.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_wchar_t.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_string_wchar_t_external_buffer.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_to_string.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_to_u32string.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_to_u16string.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_to_wstring.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_message_bus.cpp">
+      <Filter>Tests\Messaging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_message_packet.cpp">
+      <Filter>Tests\Messaging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_message_router.cpp">
+      <Filter>Tests\Messaging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_message_router_registry.cpp">
+      <Filter>Tests\Messaging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_message_timer.cpp">
+      <Filter>Tests\Messaging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_message_timer_atomic.cpp">
+      <Filter>Tests\Messaging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_message_timer_locked.cpp">
+      <Filter>Tests\Messaging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_shared_message.cpp">
+      <Filter>Tests\Messaging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_cdma2000.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_darc.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_dvbs2.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_ebu.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_icode.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_itu.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_maxim.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_rohc.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_wcdma.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_a.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_arc.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_aug_ccitt.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_buypass.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_ccitt.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_cdma2000.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_dds110.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_dectr.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_dectx.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_dnp.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_en13757.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_genibus.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_kermit.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_maxim.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_mcrf4xx.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_modbus.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_profibus.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_riello.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_t10dif.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_teledisk.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_tms37157.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_usb.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_x25.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_xmodem.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc32.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc32_bzip2.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc32_c.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc32_d.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc32_jamcrc.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc32_mpeg2.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc32_posix.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc32_q.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc32_xfer.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc64_ecma.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_ccitt.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bsd_checksum.cpp">
+      <Filter>Tests\Hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_checksum.cpp">
+      <Filter>Tests\Hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_jenkins.cpp">
+      <Filter>Tests\Hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_murmur3.cpp">
+      <Filter>Tests\Hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_pearson.cpp">
+      <Filter>Tests\Hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_xor_checksum.cpp">
+      <Filter>Tests\Hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_xor_rotate_checksum.cpp">
+      <Filter>Tests\Hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_fnv_1.cpp">
+      <Filter>Tests\Hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_hash.cpp">
+      <Filter>Tests\Hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_array.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_array_view.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_array_wrapper.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_circular_buffer.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_circular_buffer_external_buffer.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_container.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_flat_map.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_flat_multimap.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_flat_multiset.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_flat_set.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_indirect_vector.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_indirect_vector_external_buffer.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_intrusive_forward_list.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_intrusive_list.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_list_shared_pool.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_list.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_map.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_multi_array.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_multi_span.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_multi_range.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_multi_vector.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_multimap.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_multiset.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_reference_flat_map.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_reference_flat_multimap.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_reference_flat_multiset.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_reference_flat_set.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_vector.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_vector_external_buffer.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_vector_non_trivial.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_vector_pointer.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_vector_pointer_external_buffer.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_unordered_map.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_unordered_multimap.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_unordered_multiset.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_unordered_set.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_forward_list.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_forward_list_shared_pool.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bip_buffer_spsc_atomic.cpp">
+      <Filter>Tests\Queues</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue.cpp">
+      <Filter>Tests\Queues</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_lockable.cpp">
+      <Filter>Tests\Queues</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_lockable_small.cpp">
+      <Filter>Tests\Queues</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_memory_model_small.cpp">
+      <Filter>Tests\Queues</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_mpmc_mutex.cpp">
+      <Filter>Tests\Queues</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_mpmc_mutex_small.cpp">
+      <Filter>Tests\Queues</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_spsc_atomic.cpp">
+      <Filter>Tests\Queues</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_spsc_atomic_small.cpp">
+      <Filter>Tests\Queues</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_spsc_isr.cpp">
+      <Filter>Tests\Queues</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_spsc_isr_small.cpp">
+      <Filter>Tests\Queues</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_spsc_locked.cpp">
+      <Filter>Tests\Queues</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_queue_spsc_locked_small.cpp">
+      <Filter>Tests\Queues</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_priority_queue.cpp">
+      <Filter>Tests\Queues</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_callback_service.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_delegate_service.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_delegate_cpp03.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_delegate.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_delegate_service_compile_time.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_delegate_service_cpp03.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_function.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_callback_timer.cpp">
+      <Filter>Tests\Callback Timers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_callback_timer_atomic.cpp">
+      <Filter>Tests\Callback Timers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_callback_timer_locked.cpp">
+      <Filter>Tests\Callback Timers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_format_spec.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_set.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_span_dynamic_extent.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_stack.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_pool_external_buffer.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_pool.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_intrusive_stack.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_deque.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_fixed_sized_memory_block_allocator.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_intrusive_queue.cpp">
+      <Filter>Tests\Queues</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_state_chart.cpp">
+      <Filter>Tests\State Machines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_state_chart_compile_time.cpp">
+      <Filter>Tests\State Machines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_state_chart_compile_time_with_data_parameter.cpp">
+      <Filter>Tests\State Machines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_state_chart_with_data_parameter.cpp">
+      <Filter>Tests\State Machines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_state_chart_with_rvalue_data_parameter.cpp">
+      <Filter>Tests\State Machines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_fsm.cpp">
+      <Filter>Tests\State Machines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_hfsm.cpp">
+      <Filter>Tests\State Machines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_algorithm.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_correlation.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_covariance.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_pseudo_moving_average.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_cyclic_value.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_debounce.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_gamma.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_histogram.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_invert.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_limiter.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_mean.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_quantize.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_rescale.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_rms.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_scaled_rounding.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_standard_deviation.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_variance.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_binary.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bit.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bitset_legacy.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bit_stream.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_byte_stream.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_parity_checksum.cpp">
+      <Filter>Tests\Hashes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_variant_pool.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_variant_pool_external_buffer.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_variant_variadic.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\main.cpp">
+      <Filter>Tests\Test Support</Filter>
+    </ClCompile>
+    <ClCompile Include="..\murmurhash3.cpp">
+      <Filter>Tests\Test Support</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_make_string.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_packet.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_maths.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_endian.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_enum_type.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_largest.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_smallest.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_type_def.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_type_lookup.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_type_select.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_type_traits.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_unaligned_type.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_user_type.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_intrusive_links.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_integral_limits.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bresenham_line.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_alignment.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_limits.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_visitor.cpp">
+      <Filter>Tests\Patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_observer.cpp">
+      <Filter>Tests\Patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bip_buffer_spsc_atomic.cpp">
+      <Filter>Tests\Queues</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_ccitt.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_cdma2000.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_darc.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_dvbs2.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_ebu.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_icode.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_itu.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_maxim.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_rohc.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_wcdma.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_a.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_arc.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_aug_ccitt.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_buypass.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_ccitt.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_cdma2000.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_dds110.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_dectr.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_dectx.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_dnp.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_en13757.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_genibus.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_kermit.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_maxim.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_mcrf4xx.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_modbus.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_profibus.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_riello.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_t10dif.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_teledisk.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_tms37157.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_usb.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_x25.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_xmodem.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc32.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc32_bzip2.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc32_c.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc32_d.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc32_jamcrc.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc32_mpeg2.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc32_posix.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc32_q.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc32_xfer.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc64_ecma.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_constant.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_correlation.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_covariance.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_gamma.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_histogram.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_invert.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_mean.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_limiter.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_rms.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_rescale.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_standard_deviation.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_threshold.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_variance.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bloom_filter.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_fixed_iterator.cpp">
+      <Filter>Tests\Memory &amp; Iterators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_iterator.cpp">
+      <Filter>Tests\Memory &amp; Iterators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_mem_cast.cpp">
+      <Filter>Tests\Memory &amp; Iterators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_mem_cast_ptr.cpp">
+      <Filter>Tests\Memory &amp; Iterators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_buffer_descriptors.cpp">
+      <Filter>Tests\Memory &amp; Iterators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_io_port.cpp">
+      <Filter>Tests\Memory &amp; Iterators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_quantize.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_random.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_error_handler.cpp">
+      <Filter>Tests\Errors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_exception.cpp">
+      <Filter>Tests\Errors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_overload.cpp">
+      <Filter>Tests\Patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_task_scheduler.cpp">
+      <Filter>Tests\Tasks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_compare.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_compiler_settings.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_flags.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_functional.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_instance_count.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_numeric.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_parameter_pack.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_parameter_type.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_utility.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_mem_cast.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_mem_cast_ptr.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_compare.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_threshold.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_memory.cpp">
+      <Filter>Tests\Memory &amp; Iterators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_singleton.cpp">
+      <Filter>Tests\Patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_byte.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_etl_traits.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_callback_timer_interrupt.cpp">
+      <Filter>Tests\Callback Timers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_message_timer_interrupt.cpp">
+      <Filter>Tests\Messaging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\algorithm.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\alignment.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\array.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\array_view.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\array_wrapper.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\atomic.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\basic_format_spec.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\basic_string.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\basic_string_stream.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\binary.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\bip_buffer_spsc_atomic.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\bit.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\bit_stream.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\bitset_legacy.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\bloom_filter.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\bresenham_line.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\buffer_descriptors.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\byte.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\byte_stream.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\callback.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\callback_service.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\callback_timer.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\callback_timer_atomic.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\callback_timer_interrupt.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\callback_timer_locked.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\char_traits.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\checksum.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\circular_buffer.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\combinations.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\compare.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\constant.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\container.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\correlation.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\covariance.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_ccitt.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_cdma2000.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_darc.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_dvbs2.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_ebu.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_icode.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_itu.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_maxim.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_rohc.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_wcdma.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_a.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_arc.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_aug_ccitt.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_buypass.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_ccitt.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_cdma2000.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dds110.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dectr.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dectx.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dnp.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_en13757.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_genibus.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_kermit.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_maxim.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_mcrf4xx.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_modbus.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_profibus.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_riello.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_t10dif.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_teledisk.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_tms37157.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_usb.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_x25.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_xmodem.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_bzip2.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_c.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_d.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_jamcrc.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_mpeg2.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_posix.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_q.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_xfer.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc64_ecma.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\pseudo_moving_average.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\cyclic_value.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\debounce.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\debug_count.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\delegate.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\delegate_service.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\deque.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\endianness.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\enum_type.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\error_handler.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\exception.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\factorial.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\fibonacci.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\file_error_numbers.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\fixed_iterator.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\fixed_sized_memory_block_allocator.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\flags.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\flat_map.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\flat_multimap.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\flat_multiset.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\flat_set.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\fnv_1.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\format_spec.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\forward_list.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\frame_check_sequence.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\fsm.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\function.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\functional.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\gamma.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\generic_pool.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\hash.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\histogram.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\ihash.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\imemory_block_allocator.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\indirect_vector.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\initializer_list.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\instance_count.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\integral_limits.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\intrusive_forward_list.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\intrusive_links.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\intrusive_list.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\intrusive_queue.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\intrusive_stack.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\invert.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\io_port.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\ipool.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\ireference_counted_message_pool.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\iterator.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\jenkins.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\largest.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\limiter.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\limits.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\list.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\log.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\macros.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\map.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\math_constants.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\mean.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\mem_cast.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\memory.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\memory_model.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\message.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\message_bus.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\message_packet.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\message_router.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\message_router_registry.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\message_timer.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\message_timer_atomic.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\message_timer_interrupt.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\message_timer_locked.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\message_types.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\multi_array.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\multi_range.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\multi_span.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\multi_vector.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\multimap.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\multiset.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\murmur3.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\mutex.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\negative.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\nth_type.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\null_type.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\nullptr.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\numeric.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\observer.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\optional.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\overload.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\packet.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\parameter_pack.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\parameter_type.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\pearson.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\permutations.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\placement_new.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\platform.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\pool.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\power.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\priority_queue.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\quantize.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\queue.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\queue_lockable.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\queue_mpmc_mutex.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\queue_spsc_atomic.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\queue_spsc_isr.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\queue_spsc_locked.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\radix.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\random.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\ratio.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\reference_counted_message.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\reference_counted_message_pool.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\reference_counted_object.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\reference_flat_map.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\reference_flat_multimap.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\reference_flat_multiset.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\reference_flat_set.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\rescale.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\rms.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\scaled_rounding.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\scheduler.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\set.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\shared_message.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\singleton.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\smallest.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\span.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\sqrt.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\stack.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\standard_deviation.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\state_chart.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\static_assert.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\string.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\string_stream.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\string_utilities.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\string_view.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\successor.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\task.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\threshold.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\timer.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\to_string.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\to_u16string.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\to_u32string.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\to_wstring.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\type_def.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\type_lookup.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\type_select.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\type_traits.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\u16format_spec.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\u16string.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\u16string_stream.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\u32format_spec.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\u32string.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\u32string_stream.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\unaligned_type.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\unordered_map.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\unordered_multimap.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\unordered_multiset.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\unordered_set.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\user_type.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\utility.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\variance.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\variant.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\variant_legacy.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\variant_old.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\variant_pool.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\variant_variadic.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\vector.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\version.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\visitor.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\wformat_spec.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\wstring.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\wstring_stream.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\correlation.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\covariance.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_cdma2000.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_darc.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_dvbs2.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_rohc.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_aug_ccitt.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_ccitt.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_genibus.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_modbus.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_usb.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_mpeg2.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc64_ecma.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\gamma.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\variant.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\variant_pool.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\vector.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\version.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\visitor.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\wformat_spec.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\wstring.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_ebu.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_icode.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_itu.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_maxim.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_wcdma.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_a.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_arc.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_buypass.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_cdma2000.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dds110.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dectr.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dectx.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dnp.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_en13757.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_maxim.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_mcrf4xx.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_profibus.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_riello.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_t10dif.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_teledisk.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_tms37157.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_d.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_jamcrc.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_q.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_xfer.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_unaligned_type_constexpr.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\AssertException.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\Checks.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\CompositeTestReporter.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\CurrentTest.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\DeferredTestReporter.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\DeferredTestResult.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\MemoryOutStream.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\ReportAssert.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\RequiredCheckException.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\RequiredCheckTestReporter.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\Test.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\TestDetails.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\TestList.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\TestReporter.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\TestReporterStdout.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\TestResults.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\TestRunner.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\ThrowingTestReporter.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\TimeConstraint.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\XmlTestReporter.cpp">
+      <Filter>UnitTest++\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unittest++\Win32\TimeHelpers.cpp">
+      <Filter>UnitTest++\Source Files\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_nth_type.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_successor.cpp">
+      <Filter>Tests\Patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\absolute.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_ebu.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_icode.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_itu.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_maxim.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc8_wcdma.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_a.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_arc.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_buypass.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_cdma2000.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dds110.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dectr.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dectx.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_dnp.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_en13757.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_maxim.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_mcrf4xx.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_profibus.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_riello.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_t10dif.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_teledisk.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_tms37157.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_d.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_jamcrc.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_q.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc32_xfer.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\delegate_cpp03.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bit_stream_writer_big_endian.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_variant_legacy.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_atomic.cpp">
+      <Filter>Tests\Atomic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bit_stream_reader_big_endian.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bit_stream_writer_little_endian.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bit_stream_reader_little_endian.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\poly_span.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_poly_span_dynamic_extent.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_span_fixed_extent.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_poly_span_fixed_extent.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\etl_initializer_list\test_initializer_list.cpp">
+      <Filter>Tests\Initializer List</Filter>
+    </ClCompile>
+    <ClCompile Include="..\etl_error_handler\log_errors\test_error_handler.cpp">
+      <Filter>Tests\Error Handler\Log Errors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\etl_error_handler\exceptions\test_error_handler.cpp">
+      <Filter>Tests\Error Handler\Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_message_broker.cpp">
+      <Filter>Tests\Messaging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\message_broker.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_char_traits.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bitset_new_default_element_type.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\bitset_new.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bitset_new_explicit_single_element_type.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_circular_iterator.cpp">
+      <Filter>Tests\Memory &amp; Iterators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\circular_iterator.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bitset_new_ext_default_element_type.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_bitset_new_ext_explicit_single_element_type.cpp">
+      <Filter>Tests\Binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_to_arithmetic_wchar_t.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_to_arithmetic.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_to_arithmetic_u16.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_to_arithmetic_u32.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\to_arithmetic.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_m17.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_optional.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_result.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_expected.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\expected.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sanity-check\crc16_m17.h.t.cpp">
+      <Filter>Tests\Sanity Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\etl_error_handler\log_errors_and_exceptions\test_error_handler.cpp">
+      <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\library.properties">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\etl.pspimage">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="..\..\etl.xar">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="..\..\library.json">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\README.md">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="cpp.hint">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_variant_pool.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_type_traits.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_type_select.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_type_lookup.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_smallest.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_message_router.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_message_packet.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_largest.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate_fsm.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\include\etl\generators\generate.bat">
+      <Filter>Resource Files\Generators</Filter>
+    </None>
+    <None Include="..\..\.circleci\config.yml">
+      <Filter>Resource Files\CI\CircleCI</Filter>
+    </None>
+    <None Include="..\..\appveyor.yml">
+      <Filter>Resource Files\CI\Appveyor</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\vs2019.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\runsanitychecks.sh">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\runtests.sh">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\..\.clang-format">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\.gitattributes">
+      <Filter>Resource Files\Git</Filter>
+    </None>
+    <None Include="..\..\.gitignore">
+      <Filter>Resource Files\Git</Filter>
+    </None>
+    <None Include="..\..\.gitmodules">
+      <Filter>Resource Files\Git</Filter>
+    </None>
+    <None Include="..\..\meson.build">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\arduino\library-arduino.json">
+      <Filter>Resource Files\Arduino</Filter>
+    </None>
+    <None Include="..\..\arduino\library-arduino.properties">
+      <Filter>Resource Files\Arduino</Filter>
+    </None>
+    <None Include="..\..\cmake\GetGitRevisionDescription.cmake">
+      <Filter>Resource Files\CMake</Filter>
+    </None>
+    <None Include="..\..\cmake\GetGitRevisionDescription.cmake.in">
+      <Filter>Resource Files\CMake</Filter>
+    </None>
+    <None Include="..\..\cmake\helpers.cmake">
+      <Filter>Resource Files\CMake</Filter>
+    </None>
+    <None Include="..\..\scripts\update_release.py">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\generator_test.py">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\meson.build">
+      <Filter>Tests\Test Support</Filter>
+    </None>
+    <None Include="..\runtests-01.sh">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\runtests-03.sh">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\runtests-02.sh">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\support\Release notes.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="..\..\todo.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="..\..\CMakeLists.txt">
+      <Filter>Resource Files\CMake</Filter>
+    </Text>
+    <Text Include="..\sanity-check\c++03\CMakeLists.txt">
+      <Filter>Tests\Sanity Checks\C++03</Filter>
+    </Text>
+    <Text Include="..\sanity-check\c++11\CMakeLists.txt">
+      <Filter>Tests\Sanity Checks\C++11</Filter>
+    </Text>
+    <Text Include="..\sanity-check\c++14\CMakeLists.txt">
+      <Filter>Tests\Sanity Checks\C++14</Filter>
+    </Text>
+    <Text Include="..\sanity-check\c++17\CMakeLists.txt">
+      <Filter>Tests\Sanity Checks\C++17</Filter>
+    </Text>
+    <Text Include="..\sanity-check\log.txt">
+      <Filter>Tests\Sanity Checks\Logs</Filter>
+    </Text>
+    <Text Include="..\CMakeLists.txt">
+      <Filter>Tests\Test Support</Filter>
+    </Text>
+    <Text Include="..\..\version.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="..\etl_initializer_list\CMakeLists.txt">
+      <Filter>Tests\Initializer List</Filter>
+    </Text>
+    <Text Include="..\etl_error_handler\log_errors\CMakeLists.txt">
+      <Filter>Tests\Error Handler\Log Errors</Filter>
+    </Text>
+    <Text Include="..\etl_error_handler\exceptions\CMakeLists.txt">
+      <Filter>Tests\Error Handler\Exceptions</Filter>
+    </Text>
+    <Text Include="..\etl_error_handler\log_errors_and_exceptions\CMakeLists.txt">
+      <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\etl.ico">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\etl.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\etl16.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\etl32.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\etl48.png">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+    <Image Include="..\..\favicon.ico">
+      <Filter>Resource Files\Images</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="NatvisFile.natvis">
+      <Filter>Resource Files</Filter>
+    </Natvis>
+  </ItemGroup>
+</Project>
