@@ -1,0 +1,76 @@
+name: vs2022
+on:
+  push:
+    branches: [ master, development]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-windows-vs2019-stl:
+    name: Windows VS2019 Debug - STL
+    runs-on: [windows-2019]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Build
+      run: |
+        git fetch --tags
+        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
+        MSBuild.exe -version
+        MSBuild.exe .\etl.sln
+        
+    - name: Run tests
+      run: test/Debug/etl_tests.exe
+
+  build-windows-vs2019-no-stl:
+    name: Windows VS2019 Debug - No STL
+    runs-on: [windows-2019]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Build
+      run: |
+        git fetch --tags
+        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
+        MSBuild.exe -version
+        MSBuild.exe .\etl.sln
+        
+    - name: Run tests
+      run: test/Debug/etl_tests.exe
+
+  build-windows-vs2019-stl-force-cpp03:
+    name: Windows VS2019 Debug - STL - Force C++03
+    runs-on: [windows-2019]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Build
+      run: |
+        git fetch --tags
+        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ./
+        MSBuild.exe -version
+        MSBuild.exe .\etl.sln
+        
+    - name: Run tests
+      run: test/Debug/etl_tests.exe
+
