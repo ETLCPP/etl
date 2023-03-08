@@ -8,7 +8,7 @@ on:
 jobs:
   build-windows-vs2019-stl:
     name: Windows VS2022 Debug - STL
-    runs-on: [windows-2019]
+    runs-on: [windows-2022]
 
     steps:
     - name: Checkout
@@ -31,7 +31,7 @@ jobs:
 
   build-windows-vs2019-no-stl:
     name: Windows VS2022 Debug - No STL
-    runs-on: [windows-2019]
+    runs-on: [windows-2022]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -53,7 +53,7 @@ jobs:
 
   build-windows-vs2019-stl-force-cpp03:
     name: Windows VS2022 Debug - STL - Force C++03
-    runs-on: [windows-2019]
+    runs-on: [windows-2022]
 
     steps:
     - name: Checkout
