@@ -1347,6 +1347,9 @@
     <ClInclude Include="..\..\include\etl\private\diagnostic_array_bounds_push.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\diagnostic_deprecated_push.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">

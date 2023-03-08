@@ -50,7 +50,7 @@ namespace etl
   /// Result type.
   //*****************************************************************************
   template <typename TValue, typename TError>
-  class ETL_DEPRECATED result
+  class result
   {
   public:
 
@@ -305,7 +305,7 @@ namespace etl
     /// Move assign from error
     //*******************************************
 #if ETL_CPP11_SUPPORTED
-    result& operator =(TError&& err_)
+    result& operator =(TError&& error)
     {
       data = etl::move(error);
       return *this;

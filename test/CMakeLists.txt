@@ -34,6 +34,7 @@ add_executable(etl_tests
 	test_callback_timer_atomic.cpp
 	test_callback_timer_interrupt.cpp
 	test_callback_timer_locked.cpp
+	test_char_traits.cpp
 	test_checksum.cpp
 	test_circular_buffer.cpp
 	test_circular_buffer_external_buffer.cpp
@@ -196,6 +197,7 @@ add_executable(etl_tests
 	test_reference_flat_multiset.cpp
 	test_reference_flat_set.cpp
 	test_rescale.cpp
+	test_result.cpp
 	test_rms.cpp
 	test_scaled_rounding.cpp
 	test_set.cpp
