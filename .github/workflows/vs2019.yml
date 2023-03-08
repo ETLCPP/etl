@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         submodules: recursive
 
@@ -34,7 +34,7 @@ jobs:
     runs-on: [windows-2019]
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         submodules: recursive
 
@@ -57,7 +57,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         submodules: recursive
 
