@@ -16,11 +16,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Set up GCC
-      uses: egor-tensin/setup-gcc@v1
-      with:
-        version: latest
-
     - name: Build
       run: |
         git fetch --tags
@@ -42,11 +37,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Set up GCC
-      uses: egor-tensin/setup-gcc@v1
-      with:
-        version: latest
-
     - name: Build
       run: |
         git fetch --tags
@@ -67,12 +57,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-
-    - name: Set up GCC
-      uses: egor-tensin/setup-gcc@v1
-      with:
-        version: latest
-
 
     - name: Build
       run: |
