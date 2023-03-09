@@ -3529,6 +3529,9 @@
     <None Include="..\runtests-02.sh">
       <Filter>Tests\Scripts</Filter>
     </None>
+    <None Include="..\..\.github\workflows\vs2022.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\support\Release notes.txt">
