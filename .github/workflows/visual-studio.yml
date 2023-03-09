@@ -1,4 +1,4 @@
-name: vs2022
+name: visual-studio
 on:
   push:
     branches: [ master, development]
