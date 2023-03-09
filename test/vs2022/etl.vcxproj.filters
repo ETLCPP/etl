@@ -3472,9 +3472,6 @@
     <None Include="..\..\.github\workflows\gcc.yml">
       <Filter>Resource Files\CI\Github</Filter>
     </None>
-    <None Include="..\..\.github\workflows\vs2019.yml">
-      <Filter>Resource Files\CI\Github</Filter>
-    </None>
     <None Include="..\runsanitychecks.sh">
       <Filter>Tests\Scripts</Filter>
     </None>
@@ -3529,7 +3526,7 @@
     <None Include="..\runtests-02.sh">
       <Filter>Tests\Scripts</Filter>
     </None>
-    <None Include="..\..\.github\workflows\vs2022.yml">
+    <None Include="..\..\.github\workflows\visual-studio.yml">
       <Filter>Resource Files\CI\Github</Filter>
     </None>
   </ItemGroup>
