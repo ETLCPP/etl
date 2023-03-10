@@ -374,3 +374,5 @@ test/vs2022/Debug MSVC C++20
 test/vs2022/Debug MSVC - Force C++03
 test/vs2022/Debug MSVC - No STL - Built-ins
 test/vs2022/Debug MSVC - No STL - Force Built-ins
+test/vs2022/Debug MSVC C++14
+test/vs2022/Debug MSVC C++20 - No STL
