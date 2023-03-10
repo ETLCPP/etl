@@ -136,7 +136,7 @@ namespace
       char_type* p_dst;
 
       char_traits::assign(r, c);
-      CHECK_EQUAL(r, 'B');
+      CHECK_EQUAL(r, L'B');
 
       CHECK(char_traits::eq(1, 1));
       CHECK(!char_traits::eq(1, 2));

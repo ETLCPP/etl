@@ -65,6 +65,17 @@ namespace etl
     typedef char      state_type;
   };
 
+#if ETL_USING_CPP20
+  template<> struct char_traits_types<char8_t>
+  {
+    typedef char8_t       char_type;
+    typedef unsigned int  int_type;
+    typedef long long     off_type;
+    typedef size_t        pos_type;
+    typedef char          state_type;
+  };
+#endif
+
   template<> struct char_traits_types<char16_t>
   {
     typedef char16_t       char_type;
@@ -186,17 +197,17 @@ namespace etl
     {
       for (size_t i = 0UL; i < count; ++i)
       {
-        if (*s1 < *s2)
+        const char_type c1 = *s1++;
+        const char_type c2 = *s2++;
+
+        if (c1 < c2)
         {
           return -1;
         }
-          else if (*s1 > *s2)
+        else if (c1 > c2)
         {
           return 1;
         }
-
-        ++s1;
-        ++s2;
       }
 
       return 0;
