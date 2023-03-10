@@ -1,4 +1,4 @@
-name: visual-studio
+name: msvc
 on:
   push:
     branches: [ master, development]
@@ -6,7 +6,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build-windows-vs2019-stl:
+  build-windows-msvc-stl:
     name: Windows VS2022 Debug - STL
     runs-on: [windows-2022]
 
@@ -29,7 +29,7 @@ jobs:
     - name: Run tests
       run: test/Debug/etl_tests.exe
 
-  build-windows-vs2019-no-stl:
+  build-windows-msvc-no-stl:
     name: Windows VS2022 Debug - No STL
     runs-on: [windows-2022]
     steps:
@@ -51,7 +51,7 @@ jobs:
     - name: Run tests
       run: test/Debug/etl_tests.exe
 
-  build-windows-vs2019-stl-force-cpp03:
+  build-windows-msvc-stl-force-cpp03:
     name: Windows VS2022 Debug - STL - Force C++03
     runs-on: [windows-2022]
 
