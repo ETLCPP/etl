@@ -185,6 +185,18 @@ namespace etl
     //*******************************************
     virtual void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
+      receive(etl::imessage_router::ALL_MESSAGE_ROUTERS, msg);
+    }
+
+    virtual void receive(etl::shared_message shared_msg) ETL_OVERRIDE
+    {
+      receive(etl::imessage_router::ALL_MESSAGE_ROUTERS, shared_msg);
+    }
+
+    //*******************************************
+    virtual void receive(etl::message_router_id_t destination_router_id,
+                         const etl::imessage&     msg) ETL_OVERRIDE
+    {
       const etl::message_id_t id = msg.get_message_id();
 
       if (!empty())
@@ -200,7 +212,13 @@ namespace etl
 
           if (itr != message_ids.end())
           {
-            sub->get_router()->receive(msg);
+            etl::imessage_router* router = sub->get_router();
+
+            if (destination_router_id == etl::imessage_router::ALL_MESSAGE_ROUTERS ||
+                destination_router_id == router->get_message_router_id())
+            {
+              router->receive(msg);
+            }
           }
 
           sub = sub->next_subscription();
@@ -212,12 +230,13 @@ namespace etl
       {
         etl::imessage_router& successor = get_successor();
 
-        successor.receive(msg);
+        successor.receive(destination_router_id, msg);
       }
     }
 
     //*******************************************
-    virtual void receive(etl::shared_message shared_msg) ETL_OVERRIDE
+    virtual void receive(etl::message_router_id_t destination_router_id, 
+                         etl::shared_message      shared_msg) ETL_OVERRIDE
     {
       const etl::message_id_t id = shared_msg.get_message().get_message_id();
 
@@ -234,7 +253,13 @@ namespace etl
 
           if (itr != message_ids.end())
           {
-            sub->get_router()->receive(shared_msg);
+            etl::imessage_router* router = sub->get_router();
+
+            if (destination_router_id == etl::imessage_router::ALL_MESSAGE_ROUTERS ||
+                destination_router_id == router->get_message_router_id())
+            {
+              router->receive(shared_msg);
+            }
           }
 
           sub = sub->next_subscription();
@@ -244,7 +269,7 @@ namespace etl
       // Always pass the message on to a successor.
       if (has_successor())
       {
-        get_successor().receive(shared_msg);
+        get_successor().receive(destination_router_id, shared_msg);
       }
     }
 

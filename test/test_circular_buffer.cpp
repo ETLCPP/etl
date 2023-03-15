@@ -990,5 +990,79 @@ namespace
       bool isEqual = std::equal(blank.begin(), blank.end(), data.begin());
       CHECK(isEqual);
     }
+
+    //*************************************************************************
+    TEST(test_memcpy_repair)
+    {
+      using CB = etl::circular_buffer<int, SIZE>;
+
+      std::vector<int> input = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      CB data(input.begin(), input.end());;
+
+      char buffer[sizeof(CB)];
+
+      memcpy(&buffer, (const void*)&data, sizeof(data));
+
+      CB& rdata(*reinterpret_cast<CB*>(buffer));
+      rdata.repair();
+
+      // Check that the memcpy'd vector is the same.
+      CHECK_EQUAL(data.size(), rdata.size());
+      CHECK(!rdata.empty());
+      CHECK(rdata.full());
+
+      bool is_equal = std::equal(rdata.begin(),
+                                 rdata.end(),
+                                 data.begin());
+
+      CHECK(is_equal);
+
+      // Modify the original and check that the memcpy'd vector is not the same.
+      std::reverse(data.begin(), data.end());
+
+      is_equal = std::equal(rdata.begin(),
+                            rdata.end(),
+                            data.begin());
+
+      CHECK(!is_equal);
+    }
+
+    //*************************************************************************
+    TEST(test_memcpy_repair_virtual)
+    {
+      using CB  = etl::circular_buffer<int, SIZE>;
+      using ICB = etl::icircular_buffer<int>;
+
+      std::vector<int> input = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      CB data(input.begin(), input.end());;
+
+      char buffer[sizeof(CB)];
+
+      memcpy(&buffer, (const void*)&data, sizeof(data));
+
+      ICB& rdata(*reinterpret_cast<CB*>(buffer));
+      rdata.repair();
+
+      // Check that the memcpy'd vector is the same.
+      CHECK_EQUAL(data.size(), rdata.size());
+      CHECK(!rdata.empty());
+      CHECK(rdata.full());
+
+      bool is_equal = std::equal(rdata.begin(),
+                                 rdata.end(),
+                                 data.begin());
+
+      CHECK(is_equal);
+
+      // Modify the original and check that the memcpy'd vector is not the same.
+      std::reverse(data.begin(), data.end());
+
+      is_equal = std::equal(rdata.begin(),
+                            rdata.end(),
+                            data.begin());
+
+      CHECK(!is_equal);
+    }
+
   };
 }

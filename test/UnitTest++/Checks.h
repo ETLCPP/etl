@@ -31,8 +31,14 @@ namespace UnitTest {
      return !value;
    }
 
+#if __cplusplus >= 202002L
    template< typename Expected, typename Actual >
-   void CheckEqual(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)
+   std::enable_if_t<!(std::is_same_v<wchar_t,  std::remove_cvref_t<std::remove_pointer_t<Expected>>> || std::is_same_v<wchar_t,  std::remove_cvref_t<std::remove_pointer_t<Actual>>> ||
+
+                      std::is_same_v<char8_t, std::remove_cvref_t<std::remove_pointer_t<Expected>>> || std::is_same_v<char8_t, std::remove_cvref_t<std::remove_pointer_t<Actual>>> ||
+                      std::is_same_v<char16_t, std::remove_cvref_t<std::remove_pointer_t<Expected>>> || std::is_same_v<char16_t, std::remove_cvref_t<std::remove_pointer_t<Actual>>> ||
+                      std::is_same_v<char32_t, std::remove_cvref_t<std::remove_pointer_t<Expected>>> || std::is_same_v<char32_t, std::remove_cvref_t<std::remove_pointer_t<Actual>>>), void>
+     CheckEqual(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)
    {
       if (!(expected == actual))
       {
@@ -42,6 +48,38 @@ namespace UnitTest {
          results.OnTestFailure(details, stream.GetText());
       }
    }
+
+   template< typename Expected, typename Actual >
+   std::enable_if_t<(std::is_same_v<wchar_t,  std::remove_cvref_t<std::remove_pointer_t<Expected>>> || std::is_same_v<wchar_t,  std::remove_cvref_t<std::remove_pointer_t<Actual>>> ||
+                     std::is_same_v<char8_t,  std::remove_cvref_t<std::remove_pointer_t<Expected>>> || std::is_same_v<char8_t,  std::remove_cvref_t<std::remove_pointer_t<Actual>>> ||
+                     std::is_same_v<char16_t, std::remove_cvref_t<std::remove_pointer_t<Expected>>> || std::is_same_v<char16_t, std::remove_cvref_t<std::remove_pointer_t<Actual>>> ||
+                     std::is_same_v<char32_t, std::remove_cvref_t<std::remove_pointer_t<Expected>>> || std::is_same_v<char32_t, std::remove_cvref_t<std::remove_pointer_t<Actual>>>), void>
+     CheckEqual(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)
+   {
+     if (!(expected == actual))
+     {
+       using int_type_expected = std::char_traits<Expected>::int_type;
+       using int_type_actual   = std::char_traits<Actual>::int_type;
+
+       UnitTest::MemoryOutStream stream;
+       stream << "Expected " << int_type_expected(expected) << " but was " << int_type_actual(actual);
+
+       results.OnTestFailure(details, stream.GetText());
+     }
+   }
+#else
+   template< typename Expected, typename Actual >
+   void CheckEqual(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)
+   {
+     if (!(expected == actual))
+     {
+       UnitTest::MemoryOutStream stream;
+       stream << "Expected " << expected << " but was " << actual;
+
+       results.OnTestFailure(details, stream.GetText());
+     }
+   }
+#endif
 
    template< typename Expected, typename Actual >
    void CheckEqualHex(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)
@@ -106,11 +144,11 @@ namespace UnitTest {
       }
    }
 
-
+#if __cplusplus >= 202002L
    template< typename Expected, typename Actual >
    void CheckArrayEqual(TestResults& results, Expected const& expected, Actual const& actual,
                         size_t const count, TestDetails const& details)
-   {
+   {    
       bool equal = true;
       for (size_t i = 0; i < count; ++i)
          equal &= (expected[i] == actual[i]);
@@ -121,19 +159,72 @@ namespace UnitTest {
 
          stream << "Expected [ ";
 
-         for (size_t expectedIndex = 0; expectedIndex < count; ++expectedIndex)
-            stream << expected[expectedIndex] << " ";
+         using expected_type = std::remove_cvref_t<decltype(expected[0])>;
+         using actual_type   = std::remove_cvref_t<decltype(actual[0])>;
 
-         stream << "] but was [ ";
+         if constexpr (std::is_same_v<wchar_t,  expected_type> || std::is_same_v<wchar_t,  actual_type> ||
+                       std::is_same_v<char8_t,  expected_type> || std::is_same_v<char8_t,  actual_type> ||
+                       std::is_same_v<char16_t, expected_type> || std::is_same_v<char16_t, actual_type> ||
+                       std::is_same_v<char32_t, expected_type> || std::is_same_v<char32_t, actual_type>)
+         {
+           using int_type_expected = std::char_traits<expected_type>::int_type;
+           using int_type_actual   = std::char_traits<actual_type>::int_type;
 
-         for (size_t actualIndex = 0; actualIndex < count; ++actualIndex)
-            stream << actual[actualIndex] << " ";
+           for (size_t expectedIndex = 0; expectedIndex < count; ++expectedIndex)
+             stream << int_type_expected(expected[expectedIndex]) << " ";
 
-         stream << "]";
+           stream << "] but was [ ";
+
+           for (size_t actualIndex = 0; actualIndex < count; ++actualIndex)
+             stream << int_type_actual(actual[actualIndex]) << " ";
+
+           stream << "]";
+         }
+         else
+         {
+           for (size_t expectedIndex = 0; expectedIndex < count; ++expectedIndex)
+             stream << expected[expectedIndex] << " ";
+
+           stream << "] but was [ ";
+
+           for (size_t actualIndex = 0; actualIndex < count; ++actualIndex)
+             stream << actual[actualIndex] << " ";
+
+           stream << "]";
+         }
 
          results.OnTestFailure(details, stream.GetText());
       }
    }
+#else
+   template< typename Expected, typename Actual >
+   void CheckArrayEqual(TestResults& results, Expected const& expected, Actual const& actual,
+                        size_t const count, TestDetails const& details)
+   {
+     bool equal = true;
+     for (size_t i = 0; i < count; ++i)
+       equal &= (expected[i] == actual[i]);
+
+     if (!equal)
+     {
+       UnitTest::MemoryOutStream stream;
+
+       stream << "Expected [ ";
+
+       for (size_t expectedIndex = 0; expectedIndex < count; ++expectedIndex)
+         stream << expected[expectedIndex] << " ";
+
+       stream << "] but was [ ";
+
+       for (size_t actualIndex = 0; actualIndex < count; ++actualIndex)
+         stream << actual[actualIndex] << " ";
+
+       stream << "]";
+
+       results.OnTestFailure(details, stream.GetText());
+     }
+   }
+#endif
 
    template< typename Expected, typename Actual, typename Tolerance >
    bool ArrayAreClose(Expected const& expected, Actual const& actual, size_t const count, Tolerance const& tolerance)

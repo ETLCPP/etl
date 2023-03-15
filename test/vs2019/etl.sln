@@ -45,6 +45,8 @@ Global
 		Debug MSVC|x64 = Debug MSVC|x64
 		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
+		MSVC - No STL -O2|Win32 = MSVC - No STL -O2|Win32
+		MSVC - No STL -O2|x64 = MSVC - No STL -O2|x64
 		MSVC Debug Appveyor|Win32 = MSVC Debug Appveyor|Win32
 		MSVC Debug Appveyor|x64 = MSVC Debug Appveyor|x64
 		MSVC Debug No STL Appveyor|Win32 = MSVC Debug No STL Appveyor|Win32
@@ -129,6 +131,10 @@ Global
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug|Win32.Build.0 = Debug|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug|x64.ActiveCfg = Debug|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug|x64.Build.0 = Debug|x64
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.MSVC - No STL -O2|Win32.ActiveCfg = MSVC - No STL -O2|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.MSVC - No STL -O2|Win32.Build.0 = MSVC - No STL -O2|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.MSVC - No STL -O2|x64.ActiveCfg = MSVC - No STL -O2|x64
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.MSVC - No STL -O2|x64.Build.0 = MSVC - No STL -O2|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.MSVC Debug Appveyor|Win32.ActiveCfg = Debug|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.MSVC Debug Appveyor|Win32.Build.0 = Debug|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.MSVC Debug Appveyor|x64.ActiveCfg = MSVC Debug Appveyor|x64

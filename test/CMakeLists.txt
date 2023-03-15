@@ -34,6 +34,7 @@ add_executable(etl_tests
 	test_callback_timer_atomic.cpp
 	test_callback_timer_interrupt.cpp
 	test_callback_timer_locked.cpp
+	test_char_traits.cpp
 	test_checksum.cpp
 	test_circular_buffer.cpp
 	test_circular_buffer_external_buffer.cpp
@@ -59,6 +60,7 @@ add_executable(etl_tests
 	test_crc16_en13757.cpp
 	test_crc16_genibus.cpp
 	test_crc16_kermit.cpp
+	test_crc16_m17.cpp
 	test_crc16_maxim.cpp
 	test_crc16_mcrf4xx.cpp
 	test_crc16_modbus.cpp
@@ -102,6 +104,7 @@ add_executable(etl_tests
 	test_error_handler.cpp
 	test_etl_traits.cpp
 	test_exception.cpp
+	test_expected.cpp
 	test_fixed_iterator.cpp
 	test_fixed_sized_memory_block_allocator.cpp
 	test_flags.cpp
@@ -194,6 +197,7 @@ add_executable(etl_tests
 	test_reference_flat_multiset.cpp
 	test_reference_flat_set.cpp
 	test_rescale.cpp
+	test_result.cpp
 	test_rms.cpp
 	test_scaled_rounding.cpp
 	test_set.cpp
@@ -294,6 +298,21 @@ if (ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 	target_compile_definitions(etl_tests PRIVATE -DETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 endif()
 
+if (ETL_OPTIMISATION MATCHES "-O1")
+	message(STATUS "Compiling with -O1 optimisations")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O1")
+endif()
+
+if (ETL_OPTIMISATION MATCHES "-O2")
+	message(STATUS "Compiling with -O2 optimisations")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
+endif()
+
+if (ETL_OPTIMISATION MATCHES "-O3")
+	message(STATUS "Compiling with -O3 optimisations")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+endif()
+
 target_include_directories(etl_tests
 		PRIVATE
 		${PROJECT_SOURCE_DIR}/../include)
@@ -304,14 +323,15 @@ target_link_libraries(etl_tests PRIVATE UnitTestpp)
 if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
 	target_compile_options(etl_tests
 			PRIVATE
-			-fsanitize=address,undefined
+			-fsanitize=address,undefined,bounds
+			-fno-omit-frame-pointer
 			-Wall
 			-Wextra
 			-Werror
 			)
 	target_link_options(etl_tests
 			PRIVATE
-			-fsanitize=address,undefined
+			-fsanitize=address,undefined,bounds
 			)
 endif ()
 

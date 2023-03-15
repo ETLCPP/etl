@@ -318,6 +318,12 @@ SOFTWARE.
   #define ETL_NO_UNIQUE_ADDRESS
 #endif
 
+#if ETL_USING_CPP20 && ETL_USING_STL
+  #define ETL_CONSTEXPR20_STL constexpr
+#else
+  #define ETL_CONSTEXPR20_STL
+#endif
+
 //*************************************
 // Determine if the ETL can use char8_t type.
 #if ETL_USING_8BIT_TYPES

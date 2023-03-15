@@ -91,6 +91,7 @@ namespace etl
     typedef crc_parameters<uint16_t, 0x1021U, 0x89ECU, 0x0000U, true>  crc16_tms37157_parameters;
     typedef crc_parameters<uint16_t, 0x1021U, 0xC6C6U, 0x0000U, true>  crc16_a_parameters;
     typedef crc_parameters<uint16_t, 0x8005U, 0x0000U, 0x0000U, true>  crc16_arc_parameters;
+    typedef crc_parameters<uint16_t, 0x5935U, 0xFFFFU, 0x0000U, false> crc16_m17_parameters;
 
     // 32 bit.
     typedef crc_parameters<uint32_t, 0x04C11DB7UL, 0xFFFFFFFFUL, 0xFFFFFFFFUL, true>  crc32_parameters;

@@ -67,6 +67,7 @@ SOFTWARE.
 #include "crc16_usb.h"
 #include "crc16_x25.h"
 #include "crc16_xmodem.h"
+#include "crc16_m17.h"
 
 #include "crc32.h"
 #include "crc32_bzip2.h"

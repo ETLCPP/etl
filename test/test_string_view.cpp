@@ -1013,5 +1013,26 @@ namespace
       CHECK(etl::hash<U16Text>()(u16text) == etl::hash<U16View>()(u16view));
       CHECK(etl::hash<U32Text>()(u32text) == etl::hash<U32View>()(u32view));
     }
+
+    //*************************************************************************
+    TEST(string_view_literal)
+    {
+      typedef etl::string_view    View;
+      typedef etl::wstring_view   WView;
+      typedef etl::u16string_view U16View;
+      typedef etl::u32string_view U32View;
+
+      using namespace etl::literals::string_literals;
+
+      View    view    =  "Hello World"_sv;
+      WView   wview   = L"Hello World"_sv;
+      U16View u16view = u"Hello World"_sv;
+      U32View u32view = U"Hello World"_sv;
+
+      CHECK_TRUE((view    == View{ "Hello World",     etl::strlen("Hello World") }));
+      CHECK_TRUE((wview   == WView{ L"Hello World",   etl::strlen(L"Hello World") }));
+      CHECK_TRUE((u16view == U16View{ u"Hello World", etl::strlen(u"Hello World") }));
+      CHECK_TRUE((u32view == U32View{ U"Hello World", etl::strlen(U"Hello World") }));
+    }
   };
 }

@@ -1179,10 +1179,11 @@ namespace
     }
 
     //*************************************************************************
+#include "etl/private/diagnostic_array_bounds_push.h"
     TEST_FIXTURE(SetupFixture, test_insert_position_value_excess)
     {
-      const size_t INITIAL_SIZE     = SIZE;
-      int INITIAL_VALUE       = 1;
+      const size_t INITIAL_SIZE = SIZE;
+      int INITIAL_VALUE = 1;
 
       Data data(INITIAL_SIZE, &INITIAL_VALUE);
 
@@ -1198,6 +1199,7 @@ namespace
 
       CHECK_THROW(data.insert(data.begin() + offset, &INITIAL_VALUE), etl::vector_full);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_emplace_position_value)

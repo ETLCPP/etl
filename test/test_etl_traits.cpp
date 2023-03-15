@@ -81,7 +81,13 @@ namespace
       CHECK_EQUAL(ETL_VERSION_MINOR,                           etl::traits::version_minor);
       CHECK_EQUAL(ETL_VERSION_PATCH,                           etl::traits::version_patch);
       CHECK_EQUAL(ETL_VERSION_VALUE,                           etl::traits::version);
+#if ETL_USING_CPP20
+      CHECK_EQUAL(20,                                          etl::traits::language_standard);
+#elif ETL_USING_CPP17
       CHECK_EQUAL(17,                                          etl::traits::language_standard);
+#elif ETL_USING_CPP14
+      CHECK_EQUAL(14,                                          etl::traits::language_standard);
+#endif
 
       CHECK_ARRAY_EQUAL(ETL_VERSION, etl::traits::version_string,    etl::strlen(ETL_VERSION));
       CHECK_ARRAY_EQUAL(ETL_VERSION, etl::traits::version_wstring,   etl::strlen(ETL_VERSION_W));

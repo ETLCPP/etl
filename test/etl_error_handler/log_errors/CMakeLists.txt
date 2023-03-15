@@ -14,10 +14,40 @@ add_executable(etl_tests
   ${TEST_SOURCE_FILES}
   )
 
+if (ETL_OPTIMISATION MATCHES "-O1")
+  message(STATUS "Compiling with -O1 optimisations")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O1")
+endif()
+
+if (ETL_OPTIMISATION MATCHES "-O2")
+  message(STATUS "Compiling with -O2 optimisations")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
+endif()
+
+if (ETL_OPTIMISATION MATCHES "-O3")
+  message(STATUS "Compiling with -O3 optimisations")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+endif()
+
 target_include_directories(etl_tests
   PUBLIC
   ${CMAKE_CURRENT_LIST_DIR}
   )
+
+if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+	target_compile_options(etl_tests
+			PRIVATE
+			-fsanitize=address,undefined,bounds
+			-fno-omit-frame-pointer
+			-Wall
+			-Wextra
+			-Werror
+			)
+	target_link_options(etl_tests
+			PRIVATE
+			-fsanitize=address,undefined,bounds
+			)
+endif ()
 
 # Enable the 'make test' CMake target using the executable defined above
 add_test(etl_error_handler_unit_tests etl_tests)

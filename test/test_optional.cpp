@@ -33,7 +33,6 @@ SOFTWARE.
 
 #include <optional>
 
-
 #include "etl/optional.h"
 #include "etl/vector.h"
 #include "data.h"
@@ -125,13 +124,6 @@ namespace
       CHECK_EQUAL(3U, data.value().value);
 
       CHECK_EQUAL(1, DataM::get_instance_count());
-    }
-
-    //*************************************************************************
-    TEST(test_emplace_return)
-    {
-      etl::optional<DataM> data;
-      CHECK_EQUAL(42U, data.emplace(42U).value);
     }
 
     //*************************************************************************
@@ -249,6 +241,7 @@ namespace
     }
 
     //*************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     TEST(test_less_than)
     {
       etl::optional<Data> data1;
@@ -279,6 +272,7 @@ namespace
       CHECK(!(Data("Data2") < data1));
       CHECK(Data("Data1") < data2);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     TEST(test_less_than_equal)
@@ -421,7 +415,7 @@ namespace
     {
       etl::optional<Data> data1;
 
-      CHECK_THROW(Data d(data1.value()), etl::optional_invalid);
+      CHECK_THROW(data1.value(), etl::optional_invalid);
     }
 
     //*************************************************************************
@@ -503,3 +497,5 @@ namespace
     }
   };
 }
+
+

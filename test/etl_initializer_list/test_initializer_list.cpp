@@ -37,8 +37,8 @@ public:
 
 //#if ETL_USING_INITIALIZER_LIST
   constexpr Container(std::initializer_list<T> init)
-    : buffer()
-    , length(init.size())
+    : length(init.size())
+    , buffer()
   {
     typename std::initializer_list<T>::const_iterator itr = std::begin(init);
     T* p = buffer;

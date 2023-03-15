@@ -88,6 +88,7 @@ target_sources(t98 PRIVATE etl_profile.h
         ../crc16_en13757.h.t.cpp
         ../crc16_genibus.h.t.cpp
         ../crc16_kermit.h.t.cpp
+        ../crc16_m17.h.t.cpp
         ../crc16_maxim.h.t.cpp
         ../crc16_mcrf4xx.h.t.cpp
         ../crc16_modbus.h.t.cpp
@@ -129,6 +130,7 @@ target_sources(t98 PRIVATE etl_profile.h
         ../enum_type.h.t.cpp
         ../error_handler.h.t.cpp
         ../exception.h.t.cpp
+        ../expected.h.t.cpp
         ../factorial.h.t.cpp
         ../fibonacci.h.t.cpp
         ../file_error_numbers.h.t.cpp

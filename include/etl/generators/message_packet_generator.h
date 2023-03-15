@@ -263,6 +263,7 @@ namespace etl
     }
 
     //********************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     void delete_current_message()
     {
       if (valid)
@@ -272,6 +273,7 @@ namespace etl
         pmsg->~imessage();
       }
     }
+#include "etl/private/diagnostic_pop.h"
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -295,9 +297,6 @@ namespace etl
       void* p = data;
       new (p) etl::remove_reference_t<TMessage>((etl::forward<TMessage>(msg)));
     }
-
-    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
-    bool valid;
 
     //********************************************
     template <typename TType>
@@ -330,6 +329,9 @@ namespace etl
         return false;
       }
     }
+
+    typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
+    bool valid;
   };
 
 #else
@@ -628,6 +630,7 @@ namespace etl
     cog.outl("private:")
     cog.outl("")
     cog.outl("  //********************************************")
+    cog.outl("  #include \"etl/private/diagnostic_uninitialized_push.h\"")
     cog.outl("  void delete_current_message()")
     cog.outl("  {")
     cog.outl("    if (valid)")
@@ -637,6 +640,7 @@ namespace etl
     cog.outl("      pmsg->~imessage();")
     cog.outl("    }")
     cog.outl("  }")
+    cog.outl("  #include \"etl/private/diagnostic_pop.h\"")
     cog.outl("")
     cog.outl("  //********************************************")
     cog.outl("  void add_new_message(const etl::imessage& msg)")
@@ -910,6 +914,7 @@ namespace etl
         cog.outl("private:")
         cog.outl("")
         cog.outl("  //********************************************")
+        cog.outl("  #include \"etl/private/diagnostic_uninitialized_push.h\"")
         cog.outl("  void delete_current_message()")
         cog.outl("  {")
         cog.outl("    if (valid)")
@@ -919,6 +924,7 @@ namespace etl
         cog.outl("      pmsg->~imessage();")
         cog.outl("    }")
         cog.outl("  }")
+        cog.outl("  #include \"etl/private/diagnostic_pop.h\"")
         cog.outl("")
         cog.outl("  //********************************************")
         cog.outl("  void add_new_message(const etl::imessage& msg)")

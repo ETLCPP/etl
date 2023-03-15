@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 John Wellbelove
+Copyright(c) 2022 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -90,55 +90,6 @@ namespace
   using ResultValueVoid  = etl::result<Value,  void>;
   using ResultM          = etl::result<ValueM, ErrorM>;
 }
-
-// Definitions for when the STL and compiler built-ins are not available.
-#if ETL_NOT_USING_STL && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
-
-using etl::is_copy_constructible;
-using etl::is_move_constructible;
-
-//*************************
-template <>
-struct etl::is_copy_constructible<Value> : public etl::true_type
-{
-};
-
-template <>
-struct etl::is_move_constructible<Value> : public etl::true_type
-{
-};
-
-template <>
-struct etl::is_copy_constructible<Error> : public etl::true_type
-{
-};
-
-template <>
-struct etl::is_move_constructible<Error> : public etl::true_type
-{
-};
-
-//*************************
-template <>
-struct etl::is_copy_constructible<ValueM> : public etl::false_type
-{
-};
-
-template <>
-struct etl::is_move_constructible<ValueM> : public etl::false_type
-{
-};
-
-template <>
-struct etl::is_copy_constructible<ErrorM> : public etl::false_type
-{
-};
-
-template <>
-struct etl::is_move_constructible<ErrorM> : public etl::false_type
-{
-};
-#endif
 
 namespace
 {

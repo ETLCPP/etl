@@ -439,19 +439,24 @@ namespace etl
     //*********************************************************************
     iterator insert(const_iterator position, value_type value)
     {
+      
+
       iterator position_ = to_iterator(position);
 
       ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
 
-      if (position_ != end())
+      if (size() != CAPACITY)
       {
-        ++p_end;
-        etl::copy_backward(position_, end() - 1, end());
-        *position_ = value;
-      }
-      else
-      {
-        *p_end++ = value;
+        if (position_ != end())
+        {
+          ++p_end;
+          etl::copy_backward(position_, end() - 1, end());
+          *position_ = value;
+        }
+        else
+        {
+          *p_end++ = value;
+        }
       }
 
       return position_;

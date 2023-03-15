@@ -332,11 +332,6 @@ namespace etl
       {
       }
 
-      iterator(value_type* value)
-        : p_value(value)
-      {
-      }
-
       iterator(const iterator& other)
         : p_value(other.p_value)
       {
@@ -345,7 +340,7 @@ namespace etl
       iterator& operator ++()
       {
         // Read the appropriate 'etl_next'.
-        p_value = static_cast<value_type*>(p_value->link_type::etl_next);
+        p_value = p_value->etl_next;
         return *this;
       }
 
@@ -353,7 +348,7 @@ namespace etl
       {
         iterator temp(*this);
         // Read the appropriate 'etl_next'.
-        p_value = static_cast<value_type*>(p_value->link_type::etl_next);
+        p_value = p_value->etl_next;
         return temp;
       }
 
@@ -365,17 +360,17 @@ namespace etl
 
       reference operator *() const
       {
-        return *p_value;
+        return *static_cast<pointer>(p_value);
       }
 
       pointer operator &() const
       {
-        return p_value;
+        return static_cast<pointer>(p_value);
       }
 
       pointer operator ->() const
       {
-        return p_value;
+        return static_cast<pointer>(p_value);
       }
 
       friend bool operator == (const iterator& lhs, const iterator& rhs)
@@ -390,7 +385,12 @@ namespace etl
 
     private:
 
-      value_type* p_value;
+      iterator(link_type* value)
+        : p_value(value)
+      {
+      }
+
+      link_type* p_value;
     };
 
     //*************************************************************************
@@ -407,11 +407,6 @@ namespace etl
       {
       }
 
-      const_iterator(const value_type* value)
-        : p_value(value)
-      {
-      }
-
       const_iterator(const typename intrusive_forward_list::iterator& other)
         : p_value(other.p_value)
       {
@@ -425,7 +420,7 @@ namespace etl
       const_iterator& operator ++()
       {
         // Read the appropriate 'etl_next'.
-        p_value = static_cast<value_type*>(p_value->link_type::etl_next);
+        p_value = p_value->etl_next;
         return *this;
       }
 
@@ -433,7 +428,7 @@ namespace etl
       {
         const_iterator temp(*this);
         // Read the appropriate 'etl_next'.
-        p_value = static_cast<value_type*>(p_value->link_type::etl_next);
+        p_value = p_value->etl_next;
         return temp;
       }
 
@@ -445,17 +440,17 @@ namespace etl
 
       const_reference operator *() const
       {
-        return *p_value;
+        return *static_cast<const value_type*>(p_value);
       }
 
       const_pointer operator &() const
       {
-        return p_value;
+        return static_cast<const value_type*>(p_value);
       }
 
       const_pointer operator ->() const
       {
-        return p_value;
+        return static_cast<const value_type*>(p_value);
       }
 
       friend bool operator == (const const_iterator& lhs, const const_iterator& rhs)
@@ -470,7 +465,12 @@ namespace etl
 
     private:
 
-      const value_type* p_value;
+      const_iterator(const link_type* value)
+        : p_value(value)
+      {
+      }
+
+      const link_type* p_value;
     };
 
     typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
@@ -505,7 +505,7 @@ namespace etl
     //*************************************************************************
     iterator begin()
     {
-      return iterator(static_cast<value_type*>(this->get_head()));
+      return iterator(this->get_head());
     }
 
     //*************************************************************************
@@ -513,7 +513,7 @@ namespace etl
     //*************************************************************************
     const_iterator begin() const
     {
-      return const_iterator(static_cast<const value_type*>(this->get_head()));
+      return const_iterator(this->get_head());
     }
 
     //*************************************************************************
@@ -521,7 +521,7 @@ namespace etl
     //*************************************************************************
     iterator before_begin()
     {
-      return iterator(&(static_cast<value_type&>(this->start_link)));
+      return iterator(&this->start_link);
     }
 
     //*************************************************************************
@@ -529,7 +529,7 @@ namespace etl
     //*************************************************************************
     const_iterator before_begin() const
     {
-      return const_iterator(&(static_cast<const value_type&>(this->start_link)));
+      return const_iterator(&this->start_link);
     }
 
     //*************************************************************************
@@ -537,7 +537,7 @@ namespace etl
     //*************************************************************************
     const_iterator cbegin() const
     {
-      return const_iterator(static_cast<const value_type*>(this->get_head()));
+      return const_iterator(this->get_head());
     }
 
     //*************************************************************************
@@ -569,7 +569,7 @@ namespace etl
     //*************************************************************************
     reference front()
     {
-      return static_cast<value_type&>(*(this->get_head()));
+      return *static_cast<pointer>(this->get_head());
     }
 
     //*************************************************************************
@@ -577,7 +577,7 @@ namespace etl
     //*************************************************************************
     const_reference front() const
     {
-      return static_cast<const value_type&>(*(this->get_head()));
+      return *static_cast<const value_type*>(this->get_head());
     }
 
     //*************************************************************************
@@ -672,7 +672,7 @@ namespace etl
       while (current != ETL_NULLPTR)
       {
         // Is this value the same as the last?
-        if (isEqual(*static_cast<value_type*>(current), *static_cast<value_type*>(last)))
+        if (isEqual(*static_cast<pointer>(current), *static_cast<pointer>(last)))
         {
           this->remove_link_after(*last);
         }
@@ -813,7 +813,7 @@ namespace etl
               i_tail = i_link;
             }
 
-            i_tail.p_value->link_type::etl_next = ETL_NULLPTR;
+            i_tail.p_value->etl_next = ETL_NULLPTR;
           }
 
           // Now left has stepped `list_size' places along, and right has too.
@@ -894,14 +894,14 @@ namespace etl
           }
 
           link_type& before = *position.p_value;
-          link_type& after  = *position.p_value->link_type::etl_next;
+          link_type& after  = *position.p_value->etl_next;
 
           etl::link<link_type>(before, first);
 
           link_type* last = &before;
-          while (last->link_type::etl_next != ETL_NULLPTR)
+          while (last->etl_next != ETL_NULLPTR)
           {
-            last = last->link_type::etl_next;
+            last = last->etl_next;
           }
 
           etl::link<link_type>(last, after);
@@ -945,13 +945,13 @@ namespace etl
         link_type* first = begin_.p_value;
         link_type* last  = first;
 
-        while (last->link_type::etl_next != end_.p_value)
+        while (last->etl_next != end_.p_value)
         {
-          last = last->link_type::etl_next;
+          last = last->etl_next;
         }
 
         // Unlink from the source list.
-        link_type* first_next = first->link_type::etl_next;
+        link_type* first_next = first->etl_next;
         etl::unlink_after(*first, *last);
 
         // Fix our links.
@@ -982,17 +982,17 @@ namespace etl
         ETL_ASSERT(etl::is_sorted(begin(), end(), compare), ETL_ERROR(intrusive_forward_list_unsorted));
 #endif
 
-        value_type* other_begin    = static_cast<value_type*>(other.get_head());
-        value_type* other_terminal = ETL_NULLPTR;
+        link_type* other_begin    = other.get_head();
+        link_type* other_terminal = ETL_NULLPTR;
 
-        value_type* before      = static_cast<value_type*>(&this->start_link);
-        value_type* before_next = get_next(before);
-        value_type* terminal    = ETL_NULLPTR;
+        link_type* before      = &this->start_link;
+        link_type* before_next = get_next(before);
+        link_type* terminal    = ETL_NULLPTR;
 
-        while ((before->link_type::etl_next != terminal) && (other_begin != other_terminal))
+        while ((before->etl_next != terminal) && (other_begin != other_terminal))
         {
           // Find the place to insert.
-          while ((before_next != terminal) && !(compare(*other_begin, *before_next)))
+          while ((before_next != terminal) && !(compare(*static_cast<pointer>(other_begin), *static_cast<pointer>(before_next))))
           {
             before      = before_next;
             before_next = get_next(before_next);
@@ -1001,9 +1001,9 @@ namespace etl
           // Insert.
           if (before_next != terminal)
           {
-            while ((other_begin != other_terminal) && (compare(*other_begin, *before_next)))
+            while ((other_begin != other_terminal) && (compare(*static_cast<pointer>(other_begin), *static_cast<pointer>(before_next))))
             {
-              value_type* value = other_begin;
+              link_type* value = other_begin;
               other_begin = get_next(other_begin);
               etl::link_splice<link_type>(*before, *value);
               before = get_next(before);
@@ -1016,7 +1016,7 @@ namespace etl
         {
           while (other_begin != other_terminal)
           {
-            value_type* value = other_begin;
+            link_type* value = other_begin;
             other_begin = get_next(other_begin);
             etl::link_splice<link_type>(*before, *value);
             before = get_next(before);
@@ -1034,9 +1034,9 @@ namespace etl
     //*************************************************************************
     /// Get the next value.
     //*************************************************************************
-    value_type* get_next(link_type* link) const
+    link_type* get_next(link_type* link) const
     {
-      return static_cast<value_type*>(link->etl_next);
+      return link->etl_next;
     }
 
     // Disabled.

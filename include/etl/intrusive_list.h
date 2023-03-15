@@ -387,11 +387,6 @@ namespace etl
       {
       }
 
-      iterator(value_type& value)
-        : p_value(&value)
-      {
-      }
-
       iterator(const iterator& other)
         : p_value(other.p_value)
       {
@@ -400,7 +395,7 @@ namespace etl
       iterator& operator ++()
       {
         // Read the appropriate 'etl_next'.
-        p_value = static_cast<value_type*>(p_value->link_type::etl_next);
+        p_value = p_value->etl_next;
         return *this;
       }
 
@@ -408,14 +403,14 @@ namespace etl
       {
         iterator temp(*this);
         // Read the appropriate 'etl_next'.
-        p_value = static_cast<value_type*>(p_value->link_type::etl_next);
+        p_value = p_value->etl_next;
         return temp;
       }
 
       iterator& operator --()
       {
         // Read the appropriate 'etl_previous'.
-        p_value = static_cast<value_type*>(p_value->link_type::etl_previous);
+        p_value = p_value->etl_previous;
         return *this;
       }
 
@@ -423,7 +418,7 @@ namespace etl
       {
         iterator temp(*this);
         // Read the appropriate 'etl_previous'.
-        p_value = static_cast<value_type*>(p_value->link_type::etl_previous);
+        p_value = p_value->etl_previous;
         return temp;
       }
 
@@ -435,17 +430,17 @@ namespace etl
 
       reference operator *() const
       {
-        return *p_value;
+        return *static_cast<pointer>(p_value);
       }
 
       pointer operator &() const
       {
-        return p_value;
+        return static_cast<pointer>(p_value);
       }
 
       pointer operator ->() const
       {
-        return p_value;
+        return *static_cast<pointer>(p_value);
       }
 
       friend bool operator == (const iterator& lhs, const iterator& rhs)
@@ -460,7 +455,12 @@ namespace etl
 
     private:
 
-      value_type* p_value;
+      iterator(link_type* value)
+        : p_value(value)
+      {
+      }
+
+      link_type* p_value;
     };
 
     //*************************************************************************
@@ -477,11 +477,6 @@ namespace etl
       {
       }
 
-      const_iterator(const value_type& value)
-        : p_value(&value)
-      {
-      }
-
       const_iterator(const typename intrusive_list::iterator& other)
         : p_value(other.p_value)
       {
@@ -495,7 +490,7 @@ namespace etl
       const_iterator& operator ++()
       {
         // Read the appropriate 'etl_next'.
-        p_value = static_cast<value_type*>(p_value->link_type::etl_next);
+        p_value = p_value->etl_next;
         return *this;
       }
 
@@ -503,14 +498,14 @@ namespace etl
       {
         const_iterator temp(*this);
         // Read the appropriate 'etl_next'.
-        p_value = static_cast<value_type*>(p_value->link_type::etl_next);
+        p_value = p_value->etl_next;
         return temp;
       }
 
       const_iterator& operator --()
       {
         // Read the appropriate 'etl_previous'.
-        p_value = static_cast<value_type*>(p_value->link_type::etl_previous);
+        p_value = p_value->etl_previous;
         return *this;
       }
 
@@ -518,7 +513,7 @@ namespace etl
       {
         const_iterator temp(*this);
         // Read the appropriate 'etl_previous'.
-        p_value = static_cast<value_type*>(p_value->link_type::etl_previous);
+        p_value = p_value->etl_previous;
         return temp;
       }
 
@@ -530,17 +525,17 @@ namespace etl
 
       const_reference operator *() const
       {
-        return *p_value;
+        return *static_cast<const_pointer>(p_value);
       }
 
       const_pointer operator &() const
       {
-        return p_value;
+        return static_cast<const_pointer>(p_value);
       }
 
       const_pointer operator ->() const
       {
-        return p_value;
+        return static_cast<const_pointer>(p_value);
       }
 
       friend bool operator == (const const_iterator& lhs, const const_iterator& rhs)
@@ -555,7 +550,12 @@ namespace etl
 
     private:
 
-      const value_type* p_value;
+      const_iterator(const link_type* value)
+        : p_value(value)
+      {
+      }
+
+      const link_type* p_value;
     };
 
     typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
@@ -590,7 +590,7 @@ namespace etl
     //*************************************************************************
     iterator begin()
     {
-      return iterator(static_cast<value_type&>(*this->get_head()));
+      return iterator(this->get_head());
     }
 
     //*************************************************************************
@@ -598,7 +598,7 @@ namespace etl
     //*************************************************************************
     const_iterator begin() const
     {
-      return const_iterator(static_cast<const value_type&>(*this->get_head()));
+      return const_iterator(this->get_head());
     }
 
     //*************************************************************************
@@ -606,7 +606,7 @@ namespace etl
     //*************************************************************************
     const_iterator cbegin() const
     {
-      return const_iterator(static_cast<const value_type&>(*this->get_head()));
+      return const_iterator(this->get_head());
     }
 
     //*************************************************************************
@@ -614,7 +614,7 @@ namespace etl
     //*************************************************************************
     iterator end()
     {
-      return iterator(static_cast<value_type&>(this->terminal_link));
+      return iterator(&this->terminal_link);
     }
 
     //*************************************************************************
@@ -622,7 +622,7 @@ namespace etl
     //*************************************************************************
     const_iterator end() const
     {
-      return const_iterator(static_cast<const value_type&>(this->terminal_link));
+      return const_iterator(&this->terminal_link);
     }
 
     //*************************************************************************
@@ -630,7 +630,7 @@ namespace etl
     //*************************************************************************
     const_iterator cend() const
     {
-      return const_iterator(static_cast<const value_type&>(this->terminal_link));
+      return const_iterator(&this->terminal_link);
     }
 
     //*************************************************************************
@@ -638,7 +638,7 @@ namespace etl
     //*************************************************************************
     reference front()
     {
-      return *static_cast<value_type*>(this->get_head());
+      return *static_cast<pointer>(this->get_head());
     }
 
     //*************************************************************************
@@ -646,7 +646,7 @@ namespace etl
     //*************************************************************************
     const_reference front() const
     {
-      return *static_cast<const value_type*>(this->get_head());
+      return *static_cast<const_pointer>(this->get_head());
     }
 
     //*************************************************************************
@@ -654,7 +654,7 @@ namespace etl
     //*************************************************************************
     reference back()
     {
-      return *static_cast<value_type*>(this->get_tail());
+      return *static_cast<pointer>(this->get_tail());
     }
 
     //*************************************************************************
@@ -662,7 +662,7 @@ namespace etl
     //*************************************************************************
     const_reference back() const
     {
-      return *static_cast<const value_type*>(this->get_tail());
+      return *static_cast<const_pointer>(this->get_tail());
     }
 
     //*************************************************************************
@@ -671,7 +671,7 @@ namespace etl
     iterator insert(const_iterator position, value_type& value)
     {
       this->insert_link(position.p_value->link_type::etl_previous, value);
-      return iterator(value);
+      return iterator(&value);
     }
 
     //*************************************************************************
@@ -737,7 +737,7 @@ namespace etl
       }
       else
       {
-        return iterator(*static_cast<value_type*>(p_last));
+        return iterator(static_cast<pointer>(p_last));
       }
     }
 
@@ -1047,28 +1047,28 @@ namespace etl
         ETL_ASSERT(etl::is_sorted(begin(), end(), compare), ETL_ERROR(intrusive_list_unsorted));
 #endif
 
-        value_type* other_begin = static_cast<value_type*>(other.get_head());
-        value_type* other_end   = static_cast<value_type*>(&other.terminal_link);
+        link_type* other_begin = other.get_head();
+        link_type* other_end   = &other.terminal_link;
 
-        value_type* this_begin = static_cast<value_type*>(this->get_head());
-        value_type* this_end   = static_cast<value_type*>(&this->terminal_link);
+        link_type* this_begin  = this->get_head();
+        link_type* this_end    = &this->terminal_link;
 
         while ((this_begin != this_end) && (other_begin != other_end))
         {
           // Find the place to insert.
-          while ((this_begin != this_end) && !(compare(*other_begin, *this_begin)))
+          while ((this_begin != this_end) && !(compare(*static_cast<pointer>(other_begin), *static_cast<pointer>(this_begin))))
           {
-            this_begin = static_cast<value_type*>(this_begin->link_type::etl_next);
+            this_begin = this_begin->etl_next;
           }
 
           // Insert.
           if (this_begin != this_end)
           {
-            while ((other_begin != other_end) && (compare(*other_begin, *this_begin)))
+            while ((other_begin != other_end) && (compare(*static_cast<pointer>(other_begin), *static_cast<pointer>(this_begin))))
             {
-              value_type* value = other_begin;
-              other_begin = static_cast<value_type*>(other_begin->link_type::etl_next);
-              etl::link_splice<link_type>(*this_begin->link_type::etl_previous, *value);
+              link_type* value = other_begin;
+              other_begin = other_begin->etl_next;
+              etl::link_splice<link_type>(*this_begin->etl_previous, *value);
             }
           }
         }
@@ -1076,7 +1076,7 @@ namespace etl
         // Any left over?
         if ((this_begin == this_end) && (other_begin != other_end))
         {
-          etl::link_splice<link_type>(*this->get_tail(), *other_begin, *other_end->link_type::etl_previous);
+          etl::link_splice<link_type>(*this->get_tail(), *other_begin, *other_end->etl_previous);
         }
 
         this->current_size += other.size();
