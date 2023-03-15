@@ -31,8 +31,6 @@ SOFTWARE.
 #include <string>
 #include <ostream>
 
-#include <optional>
-
 #include "etl/optional.h"
 #include "etl/vector.h"
 #include "data.h"

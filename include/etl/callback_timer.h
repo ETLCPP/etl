@@ -744,9 +744,9 @@ namespace etl
   #endif
 #endif
 
-    volatile etl::timer_semaphore_t process_semaphore;
+    etl::timer_semaphore_t process_semaphore;
 #endif
-    volatile uint_least8_t registered_timers;
+    uint_least8_t registered_timers;
 
   public:
 

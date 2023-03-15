@@ -457,7 +457,7 @@ namespace etl
 
       const bool OK = (sizeof(T) * CHAR_BIT) >= (Number_Of_Elements * Bits_Per_Element);
 
-      ETL_ASSERT_AND_RETURN_VALUE(OK, ETL_ERROR(etl::bitset_type_too_small), T(0));
+      ETL_ASSERT_OR_RETURN_VALUE(OK, ETL_ERROR(etl::bitset_type_too_small), T(0));
 
       if (OK)
       {
@@ -1170,7 +1170,7 @@ namespace etl
     //*************************************************************************
     bitset<MaxN>& set(const char* text)
     {
-      ETL_ASSERT_AND_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
+      ETL_ASSERT_OR_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
       etl::ibitset::set(text);
 
       return *this;
@@ -1181,7 +1181,7 @@ namespace etl
     //*************************************************************************
     bitset<MaxN>& set(const wchar_t* text)
     {
-      ETL_ASSERT_AND_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
+      ETL_ASSERT_OR_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
       etl::ibitset::set(text);
 
       return *this;
@@ -1192,7 +1192,7 @@ namespace etl
     //*************************************************************************
     bitset<MaxN>& set(const char16_t* text)
     {
-      ETL_ASSERT_AND_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
+      ETL_ASSERT_OR_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
       etl::ibitset::set(text);
 
       return *this;
@@ -1203,7 +1203,7 @@ namespace etl
     //*************************************************************************
     bitset<MaxN>& set(const char32_t* text)
     {
-      ETL_ASSERT_AND_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
+      ETL_ASSERT_OR_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
       etl::ibitset::set(text);
 
       return *this;
@@ -1312,7 +1312,7 @@ namespace etl
 
       result.resize(MaxN, '\0');
 
-      ETL_ASSERT_AND_RETURN_VALUE((result.size() == MaxN), ETL_ERROR(etl::bitset_overflow), result);
+      ETL_ASSERT_OR_RETURN_VALUE((result.size() == MaxN), ETL_ERROR(etl::bitset_overflow), result);
 
       for (size_t i = MaxN; i > 0; --i) 
       {

@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.5.0)
 project(etl_unit_tests LANGUAGES CXX)
 
+#include(FetchContent)
+#FetchContent_Declare(
+#  googletest
+#  URL https://github.com/google/googletest/archive/refs/heads/main.zip
+#)
+
+#set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+#FetchContent_MakeAvailable(googletest)
+
 add_executable(etl_tests
 	main.cpp
 	murmurhash3.cpp
@@ -40,7 +49,6 @@ add_executable(etl_tests
 	test_circular_buffer_external_buffer.cpp
 	test_circular_iterator.cpp
 	test_compare.cpp
-	test_compiler_settings.cpp
 	test_constant.cpp
 	test_container.cpp
 	test_correlation.cpp
@@ -276,6 +284,26 @@ target_compile_definitions(etl_tests PRIVATE -DETL_DEBUG)
 
 option(ETL_NO_STL "No STL" OFF)
 
+if (ETL_CXX_STANDARD MATCHES "98")
+	message(STATUS "Compiling for C++98")
+    set_property(TARGET etl_tests PROPERTY CXX_STANDARD 98)
+elseif (ETL_CXX_STANDARD MATCHES "03")
+	message(STATUS "Compiling for C++98")    
+	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 98)
+elseif (ETL_CXX_STANDARD MATCHES "11")
+	message(STATUS "Compiling for C++11")    
+	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 11)
+elseif (ETL_CXX_STANDARD MATCHES "14")
+	message(STATUS "Compiling for C++14")    
+	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 14)
+elseif (ETL_CXX_STANDARD MATCHES "17")
+	message(STATUS "Compiling for C++17")    
+	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 17)
+else()
+	message(STATUS "Compiling for C++20")
+	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 20)
+endif()
+
 if (NO_STL OR ETL_NO_STL)
 	message(STATUS "Compiling for No STL")
 	target_compile_definitions(etl_tests PRIVATE -DETL_NO_STL)
@@ -343,5 +371,4 @@ add_test(etl_unit_tests etl_tests)
 # as they appear from UnitTest++
 add_custom_target(test_verbose COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
 
-set_property(TARGET etl_tests PROPERTY CXX_STANDARD 17)
  

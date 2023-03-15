@@ -66,12 +66,12 @@ namespace
   {
     static const size_t SIZE = 11;
 
-    typedef etl::wstring<SIZE> Text;
-    typedef etl::iwstring      IText;
-    typedef std::wstring       Compare_Text;
-    typedef Text::value_type   value_t;
-    typedef etl::wstring<52>   TextL;
-    typedef etl::wstring<4>    TextS;
+    using Text         = etl::wstring<SIZE>;
+    using IText        = etl::iwstring;
+    using Compare_Text = std::wstring;
+    using value_t      = Text::value_type;
+    using TextL        = etl::wstring<52>;
+    using TextS        = etl::wstring<4>;
 
     Compare_Text initial_text;
     Compare_Text less_text;
@@ -596,8 +596,8 @@ namespace
     {
       Text text(initial_text.c_str());
       const Text constText(initial_text.c_str());
-
-      CHECK_EQUAL(&text[0], text.begin());
+      
+      CHECK_EQUAL(&text[0],      text.begin());
       CHECK_EQUAL(&constText[0], constText.begin());
     }
 
@@ -607,7 +607,7 @@ namespace
       Text text(initial_text.c_str());
       const Text constText(initial_text.c_str());
 
-      CHECK_EQUAL(&text[initial_text.size()], text.end());
+      CHECK_EQUAL(&text[initial_text.size()],      text.end());
       CHECK_EQUAL(&constText[initial_text.size()], constText.end());
     }
 

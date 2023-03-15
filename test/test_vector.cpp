@@ -1380,7 +1380,7 @@ namespace
       auto data = etl::make_vector<char>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
       using Type = std::remove_reference_t<decltype(data[0])>;
-      CHECK((std::is_same_v<int, Type>));
+      CHECK((std::is_same<int, Type>::value));
 
       CHECK_EQUAL(0, data[0]);
       CHECK_EQUAL(1, data[1]);

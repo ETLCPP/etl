@@ -1190,7 +1190,7 @@ namespace
     TEST(test_iterator_value_types_bug_584)
     {
       using Map = etl::unordered_map<int, int, 1, 1>;
-      CHECK((!std::is_same_v<typename Map::const_iterator::value_type, typename Map::iterator::value_type>));
+      CHECK((!std::is_same<typename Map::const_iterator::value_type, typename Map::iterator::value_type>::value));
     }
   };
 }

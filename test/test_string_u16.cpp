@@ -66,12 +66,12 @@ namespace
   {
     static const size_t SIZE = 11;
 
-    typedef etl::u16string<SIZE> Text;
-    typedef etl::iu16string      IText;
-    typedef std::u16string       Compare_Text;
-    typedef Text::value_type     value_t;
-    typedef etl::u16string<52>   TextL;
-    typedef etl::u16string<4>    TextS;
+    using Text         = etl::u16string<SIZE>;
+    using IText        = etl::iu16string;
+    using Compare_Text = std::u16string;
+    using value_t      = Text::value_type;
+    using TextL        = etl::u16string<52>;
+    using TextS        = etl::u16string<4>;
 
     Compare_Text initial_text;
     Compare_Text less_text;
@@ -600,7 +600,6 @@ namespace
       CHECK_EQUAL(&text[0], text.begin());
       CHECK_EQUAL(&constText[0], constText.begin());
     }
-
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_end)

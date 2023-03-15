@@ -615,7 +615,7 @@ namespace etl
     // The list of active timers.
     private_message_timer::list active_list;
 
-    volatile bool enabled;
+    bool enabled;
 
 #if defined(ETL_MESSAGE_TIMER_USE_ATOMIC_LOCK)
   
@@ -629,9 +629,9 @@ namespace etl
   #endif
 #endif
 
-    volatile etl::timer_semaphore_t process_semaphore;
+    etl::timer_semaphore_t process_semaphore;
 #endif
-    volatile uint_least8_t registered_timers;
+    uint_least8_t registered_timers;
 
   public:
 
