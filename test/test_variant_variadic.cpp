@@ -32,14 +32,14 @@ SOFTWARE.
 #include "etl/visitor.h"
 #include "etl/overload.h"
 
+#if ETL_USING_CPP17
+
 #include <array>
 #include <vector>
 #include <algorithm>
 #include <string>
-#include <variant>
 #include <type_traits>
-
-#if ETL_USING_CPP17
+#include <variant>
 
 namespace
 {

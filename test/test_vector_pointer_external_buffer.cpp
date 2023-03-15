@@ -33,6 +33,8 @@ SOFTWARE.
 #include <algorithm>
 #include <cstring>
 
+#include <iostream>
+
 #include "etl/vector.h"
 
 namespace
@@ -200,6 +202,7 @@ namespace
       CHECK(is_equal);
     }
 
+#include "etl/private/diagnostic_array_bounds_push.h"
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_size_excess)
     {
@@ -211,6 +214,7 @@ namespace
     {
       CHECK_THROW(CData data(SIZE + 1, buffer1, SIZE), etl::vector_full);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_range)
@@ -518,6 +522,7 @@ namespace
       CHECK(is_equal);
     }
 
+#include "etl/private/diagnostic_array_bounds_push.h"
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_excess)
     {
@@ -539,6 +544,7 @@ namespace
 
       CHECK_THROW(data.resize(NEW_SIZE), etl::vector_full);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_down)
@@ -916,6 +922,7 @@ namespace
       CHECK(is_equal);
     }
 
+#include "etl/private/diagnostic_array_bounds_push.h"
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_size_value_excess)
     {
@@ -943,6 +950,7 @@ namespace
 
       CHECK_THROW(data.assign(EXCESS_SIZE, &INITIAL_VALUE), etl::vector_full);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_back)
@@ -990,6 +998,7 @@ namespace
       CHECK(is_equal);
     }
 
+#include "etl/private/diagnostic_array_bounds_push.h"
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_back_excess)
     {
@@ -1019,6 +1028,7 @@ namespace
 
       CHECK_THROW(data.push_back(&d), etl::vector_full);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_emplace_back)
@@ -1258,6 +1268,7 @@ namespace
       }
     }
 
+#include "etl/private/diagnostic_array_bounds_push.h"
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_n_value_excess)
     {
@@ -1309,6 +1320,7 @@ namespace
 
       CHECK_THROW(data.insert(data.begin() + offset, INSERT_SIZE, &INITIAL_VALUE), etl::vector_full);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_range)
@@ -1356,6 +1368,7 @@ namespace
       }
     }
 
+#include "etl/private/diagnostic_array_bounds_push.h"
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_range_excess)
     {
@@ -1405,6 +1418,7 @@ namespace
 
       CHECK_THROW(data.insert(data.begin() + offset, initial_data.begin(), initial_data.end()), etl::vector_full);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_single)

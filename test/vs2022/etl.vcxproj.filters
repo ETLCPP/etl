@@ -2213,9 +2213,6 @@
     <ClCompile Include="..\test_compare.cpp">
       <Filter>Tests\Misc</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_compiler_settings.cpp">
-      <Filter>Tests\Misc</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_flags.cpp">
       <Filter>Tests\Misc</Filter>
     </ClCompile>
@@ -3526,8 +3523,11 @@
     <None Include="..\runtests-02.sh">
       <Filter>Tests\Scripts</Filter>
     </None>
-    <None Include="..\..\.github\workflows\visual-studio.yml">
+    <None Include="..\..\.github\workflows\msvc.yml">
       <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\runtests-c++14.sh">
+      <Filter>Tests\Scripts</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

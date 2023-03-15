@@ -89,7 +89,7 @@ namespace etl
     //*************************************************************************
     /// Move constructor
     //*************************************************************************
-    shared_message(etl::shared_message&& other)
+    shared_message(etl::shared_message&& other) ETL_NOEXCEPT
       : p_rcmessage(etl::move(other.p_rcmessage))
     {
       other.p_rcmessage = ETL_NULLPTR;
@@ -121,7 +121,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator
     //*************************************************************************
-    shared_message& operator =(etl::shared_message&& other)
+    shared_message& operator =(etl::shared_message&& other) ETL_NOEXCEPT
     {
       if (&other != this)
       {

@@ -147,7 +147,7 @@ namespace
       CHECK_EQUAL(false, result.value());
 
       // One too many.
-      CHECK_THROW(bit_stream.read<bool>(), etl::bit_stream_overflow);
+      CHECK_FALSE(bit_stream.read<bool>());
     }
 
     //*************************************************************************
@@ -202,7 +202,7 @@ namespace
       CHECK_EQUAL(false, result.value());
 
       // One too many.
-      CHECK_THROW(etl::read<bool>(bit_stream), etl::bit_stream_overflow);
+      CHECK_FALSE(etl::read<bool>(bit_stream));
     }
 
     //*************************************************************************
@@ -238,7 +238,7 @@ namespace
       CHECK_EQUAL(int(expected[3]), int(result.value()));
 
       // One too many.
-      CHECK_THROW(bit_stream.read<int8_t>(), etl::bit_stream_overflow);
+      CHECK_FALSE(bit_stream.read<int8_t>());
     }
 
     //*************************************************************************
@@ -274,7 +274,7 @@ namespace
       CHECK_EQUAL(int(expected[3]), int(result.value()));
 
       // One too many.
-      CHECK_THROW(etl::read<int8_t>(bit_stream), etl::bit_stream_overflow);
+      CHECK_FALSE(etl::read<int8_t>(bit_stream));
     }
 
     //*************************************************************************
@@ -305,7 +305,7 @@ namespace
     //*************************************************************************
     TEST(test_read_int8_t_5bits)
     {
-      std::array<char, 4U> storage = { char(0x0E), char(0x8B), char(0xF0) };
+      std::array<char, 3U> storage = { char(0x0E), char(0x8B), char(0xF0) };
       std::array<char, 4U> expected = { int8_t(0x01), int8_t(0xFA), int8_t(0x05), int8_t(0xFF) };
 
       etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
@@ -335,13 +335,13 @@ namespace
       CHECK_EQUAL(int(expected[3]), int(result.value()));
 
       // One too many.
-      CHECK_THROW(bit_stream.read<int8_t>(5U), etl::bit_stream_overflow);
+      CHECK_FALSE(bit_stream.read<int8_t>(5U));
     }
 
     //*************************************************************************
     TEST(test_read_int8_t_5bits_with_skip)
     {
-      std::array<char, 4U> storage = { char(0x0E), char(0x8B), char(0xF0) };
+      std::array<char, 3U> storage = { char(0x0E), char(0x8B), char(0xF0) };
       std::array<int8_t, 4U> expected = { int8_t(0x01), int8_t(0xFA), int8_t(0x05), int8_t(0xFF) };
 
       etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
@@ -369,13 +369,13 @@ namespace
       CHECK_EQUAL(int(expected[3]), int(result.value()));
 
       // One too many.
-      CHECK_THROW(bit_stream.read<int8_t>(5U), etl::bit_stream_overflow);
+      CHECK_FALSE(bit_stream.read<int8_t>(5U));
     }
 
     //*************************************************************************
     TEST(test_read_checked_int8_t_5bits_using_non_member_function)
     {
-      std::array<char, 4U> storage = { char(0x0E), char(0x8B), char(0xF0) };
+      std::array<char, 3U> storage = { char(0x0E), char(0x8B), char(0xF0) };
       std::array<int8_t, 4U> expected = { int8_t(0x01), int8_t(0xFA), int8_t(0x05), int8_t(0xFF) };
 
       etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
@@ -405,13 +405,13 @@ namespace
       CHECK_EQUAL(int(expected[3]), int(result.value()));
 
       // One too many.
-      CHECK_THROW(etl::read<int8_t>(bit_stream, 5U), etl::bit_stream_overflow);
+      CHECK_FALSE(etl::read<int8_t>(bit_stream, 5U));
     }
 
     //*************************************************************************
     TEST(test_read_unchecked_int8_t_5bits_using_non_member_function)
     {
-      std::array<char, 4U> storage = { char(0x0E), char(0x8B), char(0xF0) };
+      std::array<char, 3U> storage = { char(0x0E), char(0x8B), char(0xF0) };
       std::array<int8_t, 4U> expected = { int8_t(0x01), int8_t(0xFA), int8_t(0x05), int8_t(0xFF) };
 
       etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
@@ -466,13 +466,13 @@ namespace
       CHECK_EQUAL(int(expected[3]), int(result.value()));
 
       // One too many.
-      CHECK_THROW(bit_stream.read<uint8_t>(), etl::bit_stream_overflow);
+      CHECK_FALSE(bit_stream.read<uint8_t>());
     }
 
     //*************************************************************************
     TEST(test_read_uint8_t_5bits)
     {
-      std::array<char, 4U> storage = { char(0x0E), char(0x8B), char(0xF0) };
+      std::array<char, 3U> storage = { char(0x0E), char(0x8B), char(0xF0) };
       std::array<char, 4U> expected = { uint8_t(0x01), uint8_t(0x1A), uint8_t(0x05), uint8_t(0x1F) };
 
       etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
@@ -502,7 +502,7 @@ namespace
       CHECK_EQUAL(int(expected[3]), int(result.value()));
 
       // One too many.
-      CHECK_THROW(bit_stream.read<uint8_t>(5U), etl::bit_stream_overflow);
+      CHECK_FALSE(bit_stream.read<uint8_t>(5U));
     }
 
     //*************************************************************************
@@ -538,7 +538,7 @@ namespace
       CHECK_EQUAL(expected[3], result.value());
 
       // One too many.
-      CHECK_THROW(bit_stream.read<int16_t>(), etl::bit_stream_overflow);
+      CHECK_FALSE(bit_stream.read<int16_t>());
     }
 
     //*************************************************************************
@@ -574,7 +574,7 @@ namespace
       CHECK_EQUAL(expected[3], result.value());
 
       // One too many.
-      CHECK_THROW(bit_stream.read<int16_t>(10U), etl::bit_stream_overflow);
+      CHECK_FALSE(bit_stream.read<int16_t>(10U));
     }
 
     //*************************************************************************
@@ -610,7 +610,7 @@ namespace
       CHECK_EQUAL(expected[3], result.value());
 
       // One too many.
-      CHECK_THROW(bit_stream.read<uint16_t>(), etl::bit_stream_overflow);
+      CHECK_FALSE(bit_stream.read<uint16_t>());
     }
 
     //*************************************************************************
@@ -646,7 +646,7 @@ namespace
       CHECK_EQUAL(expected[3], result.value());
 
       // One too many.
-      CHECK_THROW(bit_stream.read<uint16_t>(10U), etl::bit_stream_overflow);
+      CHECK_FALSE(bit_stream.read<uint16_t>(10U));
     }
 
     //*************************************************************************
@@ -685,15 +685,15 @@ namespace
       CHECK_EQUAL(expected[3], result.value());
 
       // One too many.
-      CHECK_THROW(bit_stream.read<int32_t>(), etl::bit_stream_overflow);
+      CHECK_FALSE(bit_stream.read<int32_t>());
     }
 
     //*************************************************************************
     TEST(test_read_int32_t_22bits)
     {
-      std::array<char, 16U> storage = { char(0x00), char(0x00), char(0x05), char(0xAA),
-                             char(0x55), char(0xA9), char(0x56), char(0xA9),
-                             char(0x7F), char(0xFF), char(0xFF) };
+      std::array<char, 11U> storage = { char(0x00), char(0x00), char(0x05), char(0xAA),
+                                        char(0x55), char(0xA9), char(0x56), char(0xA9),
+                                        char(0x7F), char(0xFF), char(0xFF) };
       std::array<int32_t, 4U> expected = { int32_t(0x00000001), int32_t(0x001AA55A), int32_t(0xFFE55AA5), int32_t(0xFFFFFFFF) };
 
       etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
@@ -723,7 +723,7 @@ namespace
       CHECK_EQUAL(expected[3], result.value());
 
       // One too many.
-      CHECK_THROW(bit_stream.read<int32_t>(22U), etl::bit_stream_overflow);
+      CHECK_FALSE(bit_stream.read<int32_t>(22U));
     }
 
     //*************************************************************************
@@ -762,15 +762,15 @@ namespace
       CHECK_EQUAL(expected[3], result.value());
 
       // One too many.
-      CHECK_THROW(bit_stream.read<uint32_t>(), etl::bit_stream_overflow);
+      CHECK_FALSE(bit_stream.read<uint32_t>());
     }
 
     //*************************************************************************
     TEST(test_read_uint32_t_22bits)
     {
-      std::array<char, 16U> storage = { char(0x00), char(0x00), char(0x05), char(0xAA),
-                             char(0x55), char(0xA9), char(0x56), char(0xA9),
-                             char(0x7F), char(0xFF), char(0xFF) };
+      std::array<char, 11U> storage = { char(0x00), char(0x00), char(0x05), char(0xAA),
+                                        char(0x55), char(0xA9), char(0x56), char(0xA9),
+                                        char(0x7F), char(0xFF), char(0xFF) };
       std::array<uint32_t, 4U> expected = { uint32_t(0x00000001), uint32_t(0x001AA55A), uint32_t(0x00255AA5), uint32_t(0x003FFFFF) };
 
       etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
@@ -800,7 +800,7 @@ namespace
       CHECK_EQUAL(expected[3], result.value());
 
       // One too many.
-      CHECK_THROW(bit_stream.read<uint32_t>(22U), etl::bit_stream_overflow);
+      CHECK_FALSE(bit_stream.read<uint32_t>(22U));
     }
 
     //*************************************************************************
@@ -839,7 +839,7 @@ namespace
       CHECK_EQUAL(expected[3], result.value());
 
       // One too many.
-      CHECK_THROW(bit_stream.read<int64_t>(), etl::bit_stream_overflow);
+      CHECK_FALSE(bit_stream.read<int64_t>());
     }
 
     //*************************************************************************
@@ -877,7 +877,7 @@ namespace
       CHECK_EQUAL(expected[3], result.value());
 
       // One too many.
-      CHECK_THROW(bit_stream.read<int64_t>(47U), etl::bit_stream_overflow);
+      CHECK_FALSE(bit_stream.read<int64_t>(47U));
     }
 
     //*************************************************************************
@@ -916,7 +916,7 @@ namespace
       CHECK_EQUAL(expected[3], result.value());
 
       // One too many.
-      CHECK_THROW(bit_stream.read<uint64_t>(), etl::bit_stream_overflow);
+      CHECK_FALSE(bit_stream.read<uint64_t>());
     }
 
     //*************************************************************************
@@ -954,7 +954,7 @@ namespace
       CHECK_EQUAL(expected[3], result.value());
 
       // One too many.
-      CHECK_THROW(bit_stream.read<uint64_t>(47U), etl::bit_stream_overflow);
+      CHECK_FALSE(bit_stream.read<uint64_t>(47U));
     }
 
     //*************************************************************************

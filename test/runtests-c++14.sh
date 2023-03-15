@@ -6,16 +6,8 @@ cd build-make || exit 1
 
 echo "ETL Tests" > log.txt
 
-# Set the optimisation level
-if [ "$1" = "1" ]; then
-  opt="-O1"
-elif [ "$1" = "2" ]; then
-  opt="-O2"
-elif [ "$1" = "3" ]; then
-  opt="-O3" 
-else
-  opt="-O0"
-fi
+opt="-O0"
+cxx_standard="14"
 
 #******************************************************************************
 # GCC
@@ -26,8 +18,7 @@ echo " GCC - STL" | tee -a log.txt
 echo "-----------------------------------------------" | tee -a log.txt
 rm * -rf
 gcc --version | grep gcc | tee -a log.txt
-echo "Using optimisation" $opt | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt ..
+cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed Compilation >>>>"
@@ -48,8 +39,7 @@ echo " GCC - STL - Force C++03" | tee -a log.txt
 echo "-----------------------------------------------" | tee -a log.txt
 rm * -rf
 gcc --version | grep gcc | tee -a log.txt
-echo "Using optimisation" $opt | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_OPTIMISATION=$opt ..
+cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed Compilation >>>>"
@@ -70,8 +60,7 @@ echo " GCC - No STL" | tee -a log.txt
 echo "-----------------------------------------------" | tee -a log.txt
 rm * -rf
 gcc --version | grep gcc | tee -a log.txt
-echo "Using optimisation" $opt | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt ..
+cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed Compilation >>>>"
@@ -96,8 +85,7 @@ echo " Clang - STL" | tee -a log.txt
 echo "-----------------------------------------------" | tee -a log.txt
 rm * -rf
 clang --version | grep clang | tee -a log.txt
-echo "Using optimisation" $opt | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt ..
+cmake -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed Compilation >>>>"
@@ -118,8 +106,7 @@ echo " Clang - STL - Force C++03" | tee -a log.txt
 echo "-----------------------------------------------" | tee -a log.txt
 rm * -rf
 clang --version | grep clang | tee -a log.txt
-echo "Using optimisation" $opt | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_OPTIMISATION=$opt ..
+cmake -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed Compilation >>>>"
@@ -140,8 +127,7 @@ echo " Clang - No STL" | tee -a log.txt
 echo "-----------------------------------------------" | tee -a log.txt
 rm * -rf
 clang --version | grep clang | tee -a log.txt
-echo "Using optimisation" $opt | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt ..
+cmake -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed Compilation >>>>"
@@ -166,8 +152,7 @@ mkdir -p build-make || exit 1
 cd build-make || exit 1
 rm * -rf
 gcc --version | grep gcc | tee -a log.txt
-echo "Using optimisation" $opt | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="g++" -DETL_OPTIMISATION=$opt ..
+cmake -DCMAKE_CXX_COMPILER="g++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed initializer_list Compilation >>>>"
@@ -189,8 +174,7 @@ echo " Clang - Initializer list test" | tee -a log.txt
 echo "-----------------------------------------------" | tee -a log.txt
 rm * -rf
 clang --version | grep clang | tee -a log.txt
-echo "Using optimisation" $opt | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="clang++" -DETL_OPTIMISATION=$opt ..
+cmake -DCMAKE_CXX_COMPILER="clang++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed initializer_list Compilation >>>>"
@@ -215,8 +199,7 @@ mkdir -p build-make || exit 1
 cd build-make || exit 1
 rm * -rf
 gcc --version | grep gcc | tee -a log.txt
-echo "Using optimisation" $opt | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="g++" -DETL_OPTIMISATION=$opt ..
+cmake -DCMAKE_CXX_COMPILER="g++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed Error macros 'log_errors' Compilation >>>>"
@@ -241,8 +224,7 @@ mkdir -p build-make || exit 1
 cd build-make || exit 1
 rm * -rf
 gcc --version | grep gcc | tee -a log.txt
-echo "Using optimisation" $opt | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="g++" -DETL_OPTIMISATION=$opt ..
+cmake -DCMAKE_CXX_COMPILER="g++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed Error macros 'exceptions' Compilation >>>>"
@@ -267,8 +249,7 @@ mkdir -p build-make || exit 1
 cd build-make || exit 1
 rm * -rf
 gcc --version | grep gcc | tee -a log.txt
-echo "Using optimisation" $opt | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="g++" -DETL_OPTIMISATION=$opt ..
+cmake -DCMAKE_CXX_COMPILER="g++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed Error macros 'log_errors and exceptions' Compilation >>>>"
@@ -293,8 +274,7 @@ mkdir -p build-make || exit 1
 cd build-make || exit 1
 rm * -rf
 clang --version | grep clang | tee -a log.txt
-echo "Using optimisation" $opt | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="clang++" -DETL_OPTIMISATION=$opt ..
+cmake -DCMAKE_CXX_COMPILER="clang++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed Error macros 'log_errors' Compilation >>>>"
@@ -319,8 +299,7 @@ mkdir -p build-make || exit 1
 cd build-make || exit 1
 rm * -rf
 clang --version | grep clang | tee -a log.txt
-echo "Using optimisation" $opt | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="clang++" -DETL_OPTIMISATION=$opt ..
+cmake -DCMAKE_CXX_COMPILER="clang++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed Error macros 'exceptions' Compilation >>>>"
@@ -345,8 +324,7 @@ mkdir -p build-make || exit 1
 cd build-make || exit 1
 rm * -rf
 clang --version | grep clang | tee -a log.txt
-echo "Using optimisation" $opt | tee -a log.txt
-cmake -DCMAKE_CXX_COMPILER="clang++" -DETL_OPTIMISATION=$opt ..
+cmake -DCMAKE_CXX_COMPILER="clang++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
 make -j4
 if [ $? -eq 0 ]; then
   echo "<<<< Passed Error macros 'log_errors and exceptions' Compilation >>>>"

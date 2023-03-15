@@ -565,7 +565,7 @@ namespace etl
       result.resize(active_bits, '\0');
 
       // Check that the string type can contain the digits.
-      ETL_ASSERT_AND_RETURN_VALUE(result.size() == active_bits, ETL_ERROR(etl::bitset_string_too_small), result);      
+      ETL_ASSERT_OR_RETURN_VALUE(result.size() == active_bits, ETL_ERROR(etl::bitset_string_too_small), result);      
 
       for (size_t i = active_bits; i > 0; --i)
       {
@@ -1429,7 +1429,7 @@ namespace etl
       result.resize(Active_Bits, '\0');
 
       // Check that the string type can contain the digits.
-      ETL_ASSERT_AND_RETURN_VALUE(result.size() == Active_Bits, ETL_ERROR(etl::bitset_string_too_small), result);
+      ETL_ASSERT_OR_RETURN_VALUE(result.size() == Active_Bits, ETL_ERROR(etl::bitset_string_too_small), result);
 
       for (size_t i = Active_Bits; i > 0; --i)
       {
@@ -3078,7 +3078,7 @@ namespace etl
       result.resize(Active_Bits, '\0');
 
       // Check that the string type can contain the digits.
-      ETL_ASSERT_AND_RETURN_VALUE(result.size() == Active_Bits, ETL_ERROR(etl::bitset_string_too_small), result);
+      ETL_ASSERT_OR_RETURN_VALUE(result.size() == Active_Bits, ETL_ERROR(etl::bitset_string_too_small), result);
 
       for (size_t i = Active_Bits; i > 0; --i)
       {

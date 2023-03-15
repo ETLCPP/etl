@@ -49,33 +49,6 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// Exception base for bit streams
-  //***************************************************************************
-  class bit_stream_exception : public etl::exception
-  {
-  public:
-
-    bit_stream_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
-      : exception(reason_, file_name_, line_number_)
-    {
-    }
-  };
-
-  //***************************************************************************
-  ///\ingroup string
-  /// String empty exception.
-  //***************************************************************************
-  class bit_stream_overflow : public etl::bit_stream_exception
-  {
-  public:
-
-    bit_stream_overflow(string_type file_name_, numeric_type line_number_)
-      : bit_stream_exception(ETL_ERROR_TEXT("bit_stream:overflow", ETL_BIT_STREAM_FILE_ID"A"), file_name_, line_number_)
-    {
-    }
-  };
-
-  //***************************************************************************
   /// Encodes and decodes bitstreams.
   /// Data must be stored in the stream in network order.
   //***************************************************************************
@@ -89,8 +62,8 @@ namespace etl
     /// Default constructor.
     //***************************************************************************
     bit_stream()
-      : pdata(ETL_NULLPTR),
-        length_chars(0U)
+      : pdata(ETL_NULLPTR)
+      , length_chars(0U)
     {
       restart();
     }
@@ -99,8 +72,8 @@ namespace etl
     /// Construct from range.
     //***************************************************************************
     bit_stream(void* begin_, void* end_)
-      : pdata(reinterpret_cast<unsigned char*>(begin_)),
-        length_chars(etl::distance(reinterpret_cast<unsigned char*>(begin_), reinterpret_cast<unsigned char*>(end_)))
+      : pdata(reinterpret_cast<unsigned char*>(begin_))
+      , length_chars(etl::distance(reinterpret_cast<unsigned char*>(begin_), reinterpret_cast<unsigned char*>(end_)))
     {
       restart();
     }
@@ -109,8 +82,8 @@ namespace etl
     /// Construct from begin and length.
     //***************************************************************************
     bit_stream(void* begin_, size_t length_)
-      : pdata(reinterpret_cast<unsigned char*>(begin_)),
-        length_chars(length_)
+      : pdata(reinterpret_cast<unsigned char*>(begin_))
+      , length_chars(length_)
     {
       restart();
     }
@@ -667,10 +640,6 @@ namespace etl
       {
         write_unchecked(value);
       }
-      else
-      {
-        ETL_ASSERT_FAIL(ETL_ERROR(etl::bit_stream_overflow));
-      }
 
       return success;
     }
@@ -700,10 +669,6 @@ namespace etl
       {
         write_unchecked(value, nbits);
       }
-      else
-      {
-        ETL_ASSERT_FAIL(ETL_ERROR(etl::bit_stream_overflow));
-      }
 
       return success;
     }
@@ -729,10 +694,6 @@ namespace etl
         {
           step(static_cast<unsigned char>(nbits));
         }
-      }
-      else
-      {
-        ETL_ASSERT_FAIL(ETL_ERROR(etl::bit_stream_overflow));
       }
 
       return success;
@@ -1144,10 +1105,6 @@ namespace etl
       {
         result = read_unchecked<bool>();
       }
-      else
-      {
-        ETL_ASSERT_FAIL(ETL_ERROR(etl::bit_stream_overflow));
-      }
 
       return result;
     }
@@ -1179,10 +1136,6 @@ namespace etl
       if (bits_available >= nbits)
       {
         result = read_unchecked<T>(nbits); 
-      }
-      else
-      {
-        ETL_ASSERT_FAIL(ETL_ERROR(etl::bit_stream_overflow));
       }
 
       return result;
@@ -1265,10 +1218,6 @@ namespace etl
         {
           step(static_cast<unsigned char>(nbits));
         }
-      }
-      else
-      {
-        ETL_ASSERT_FAIL_AND_RETURN_VALUE(ETL_ERROR(etl::bit_stream_overflow), false);
       }
 
       return success;

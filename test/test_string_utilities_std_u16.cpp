@@ -26,6 +26,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
+#include "etl/platform.h"
+#if ETL_USING_CPP17
+
 #include "unit_test_framework.h"
 
 #include <string>
@@ -1588,3 +1591,5 @@ namespace
     }
   };
 }
+
+#endif

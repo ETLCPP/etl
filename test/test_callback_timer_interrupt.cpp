@@ -50,10 +50,10 @@ namespace
       --guard_count;
     }
 
-    volatile static int guard_count;
+    static int guard_count;
   };
 
-  volatile int ScopedGuard::guard_count = 0;
+  int ScopedGuard::guard_count = 0;
 
   //***************************************************************************
   struct TimerLogEntry
@@ -791,7 +791,7 @@ namespace
       }
 
       // Check the results log.
-      for (auto t : timer_log)
+      for (auto& t : timer_log)
       {
         switch (t.id)
         {
