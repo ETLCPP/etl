@@ -117,6 +117,11 @@ namespace etl
   template <typename T, const T VALUE>
   const T integral_constant<T, VALUE>::value;
 
+#if ETL_USING_CPP17
+  template <typename T>
+  using integral_constant_v = std::integral_constant<T>::value;
+#endif
+
 #if ETL_USING_CPP11
   template <bool B>
   using bool_constant = integral_constant<bool, B>;
@@ -842,7 +847,14 @@ namespace etl
   struct negation : std::negation<T>
   {
   };
+#else
+  template <typename T>
+  struct negation : etl::bool_constant<!bool(T::value)>
+  {
+  };
+#endif
 
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool negation_v = std::negation_v<T>;
 #endif

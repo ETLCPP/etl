@@ -109,9 +109,9 @@ SOFTWARE.
 #include "../include/etl/profiles/determine_compiler_version.h"
 #include "../include/etl/profiles/determine_development_os.h"
 
-#if ETL_CPP17_NOT_SUPPORTED
-  #error THE UNIT TESTS REQUIRE C++17 SUPPORT
-#endif
+//#if ETL_CPP17_NOT_SUPPORTED
+//  #error THE UNIT TESTS REQUIRE C++17 SUPPORT
+//#endif
 
 #if defined(ETL_COMPILER_GCC)
   #if (ETL_COMPILER_VERSION < 8)

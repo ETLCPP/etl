@@ -107,7 +107,7 @@ namespace etl
     //*************************************************************************
     static counter_type& current_instance_count()
     {
-      static counter_type counter = 0;
+      static counter_type counter = { 0 };
       return counter;
     }
   };

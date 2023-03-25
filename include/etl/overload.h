@@ -37,7 +37,6 @@ SOFTWARE.
 
 namespace etl
 {
-#if ETL_USING_CPP11
 #if ETL_USING_CPP17 && !defined(ETL_OVERLOAD_FORCE_CPP14)
 
   //*************************************************************************
@@ -74,6 +73,7 @@ namespace etl
 
 #endif
 
+#if ETL_USING_CPP17
   //*************************************************************************
   /// Make an overload.
   //*************************************************************************
@@ -82,7 +82,6 @@ namespace etl
   {
     return overload<TOverloads...>{ etl::forward<TOverloads>(overloads)... };
   }
-
 #endif
 }
 

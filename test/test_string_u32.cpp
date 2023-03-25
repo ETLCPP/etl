@@ -66,12 +66,12 @@ namespace
   {
     static const size_t SIZE = 11;
 
-    typedef etl::u32string<SIZE> Text;
-    typedef etl::iu32string      IText;
-    typedef std::u32string       Compare_Text;
-    typedef Text::value_type     value_t;
-    typedef etl::u32string<52>   TextL;
-    typedef etl::u32string<4>    TextS;
+    using Text         = etl::u32string<SIZE>;
+    using IText        = etl::iu32string;
+    using Compare_Text = std::u32string;
+    using value_t      = Text::value_type;
+    using TextL        = etl::u32string<52>;
+    using TextS        = etl::u32string<4>;
 
     Compare_Text initial_text;
     Compare_Text less_text;
@@ -595,12 +595,11 @@ namespace
     TEST_FIXTURE(SetupFixture, test_begin)
     {
       Text text(initial_text.c_str());
-      const Text constText(initial_text.c_str());
+      const Text constText(initial_text.c_str());      
 
-      CHECK_EQUAL(&text[0], text.begin());
+      CHECK_EQUAL(&text[0],      text.begin());
       CHECK_EQUAL(&constText[0], constText.begin());
     }
-
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_end)
@@ -608,7 +607,7 @@ namespace
       Text text(initial_text.c_str());
       const Text constText(initial_text.c_str());
 
-      CHECK_EQUAL(&text[initial_text.size()], text.end());
+      CHECK_EQUAL(&text[initial_text.size()],      text.end());
       CHECK_EQUAL(&constText[initial_text.size()], constText.end());
     }
 

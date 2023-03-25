@@ -32,7 +32,6 @@ SOFTWARE.
 #include "etl/type_traits.h"
 
 #include <string>
-#include <variant>
 
 namespace
 {

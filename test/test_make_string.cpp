@@ -108,7 +108,7 @@ namespace
 
       CHECK_EQUAL(CAPACITY, ctext.max_size());
       CHECK_EQUAL(length, ctext.size());
-      if  constexpr (etl::traits::has_string_truncation_checks)
+      if (etl::traits::has_string_truncation_checks)
       {
         CHECK(!ctext.is_truncated());
       }

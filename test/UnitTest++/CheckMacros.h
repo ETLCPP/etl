@@ -341,5 +341,16 @@ if (caught_) \
    #endif
 #endif
 
+#define CHECK_MESSAGE(m1)              std::cerr << (m1) << "\n";
+#define CHECK_MESSAGE1(m1)             std::cerr << (m1) << "\n";
+#define CHECK_MESSAGE2(m1, m2)         std::cerr << (m1) << (m2) << "\n";
+#define CHECK_MESSAGE3(m1, m2, m3)     std::cerr << (m1) << (m2) << (m3) << "\n";
+#define CHECK_MESSAGE4(m1, m2, m3, m4) std::cerr << (m1) << (m2) << (m3) << (m4) << "\n";
+
+#define CHECK_MESSAGE_IF(b, m1)           { if (b) std::cerr << (m1) << "\n"; }
+#define CHECK_MESSAGE1_IF(m1)             { if (b) std::cerr << (m1) << "\n"; }
+#define CHECK_MESSAGE2_IF(m1, m2)         { if (b) std::cerr << (m1) << (m2) << "\n"; }
+#define CHECK_MESSAGE3_IF(m1, m2, m3)     { if (b) std::cerr << (m1) << (m2) << (m3) << "\n"; }
+#define CHECK_MESSAGE4_IF(m1, m2, m3, m4) { if (b) std::cerr << (m1) << (m2) << (m3) << (m4) << "\n"; }
 #endif
 

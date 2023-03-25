@@ -573,8 +573,8 @@ namespace etl
     // The list of active timers.
     timer_list active_list;
 
-    volatile bool enabled;
-    volatile uint_least8_t number_of_registered_timers;
+    bool enabled;
+    uint_least8_t number_of_registered_timers;
 
     try_lock_type try_lock; ///< The callback that tries to lock.
     lock_type     lock;     ///< The callback that locks.

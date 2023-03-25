@@ -368,11 +368,14 @@ test/vs2022/random_lcg.csv
 test/vs2022/random_mwc.csv
 test/vs2022/random_pcg.csv
 test/vs2022/random_xorshift.csv
+test/vs2019/Debug MSVC C++14
+test/vs2019/Debug MSVC C++14 - No STL
 test/vs2019/MSVC - No STL -O2
 test/vs2022/Debug - No STL
 test/vs2022/Debug MSVC C++20
 test/vs2022/Debug MSVC - Force C++03
 test/vs2022/Debug MSVC - No STL - Built-ins
 test/vs2022/Debug MSVC - No STL - Force Built-ins
+test/temp
 test/vs2022/Debug MSVC C++14
 test/vs2022/Debug MSVC C++20 - No STL

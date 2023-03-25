@@ -31,8 +31,6 @@ SOFTWARE.
 #include <string>
 #include <ostream>
 
-#include <optional>
-
 #include "etl/optional.h"
 #include "etl/vector.h"
 #include "data.h"
@@ -102,7 +100,7 @@ namespace
     {
       Data data("Hello");
 
-      etl::optional opt{ data };
+      etl::optional<Data> opt{ data };
 
       CHECK(opt.has_value());
       CHECK(bool(opt));

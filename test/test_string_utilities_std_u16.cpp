@@ -26,6 +26,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
+#include "etl/platform.h"
+#if ETL_USING_CPP17
+
 #include "unit_test_framework.h"
 
 #include <string>
@@ -36,7 +39,10 @@ SOFTWARE.
 #include "etl/string_utilities.h"
 
 #undef STR
-#define STR(x) L##x
+#define STR(x) u##x
+
+#undef STR_PTR
+#define STR_PTR const char16_t*
 
 namespace
 {
@@ -50,13 +56,19 @@ namespace
 
   SUITE(test_string_utilities_std_u16)
   {
-    using String     = std::wstring;
-    using IString    = std::wstring;
-    using StringView = std::wstring_view;
-    using Char       = std::wstring::value_type;
+    using String     = std::u16string;
+    using IString    = std::u16string;
+#if ETL_USING_CPP17
+    using StringView = std::u16string_view;
+#endif
+    using Char       = std::u16string::value_type;
     using Vector     = std::vector<String>;
 
+#if ETL_USING_CPP17
     constexpr auto Whitespace = etl::whitespace_v<String::value_type>;
+#else
+    STR_PTR Whitespace = etl::whitespace<String::value_type>::value();
+#endif
 
     //*************************************************************************
     TEST(test_trim_whitespace_left_empty)
@@ -1579,3 +1591,5 @@ namespace
     }
   };
 }
+
+#endif

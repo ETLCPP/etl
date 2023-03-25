@@ -588,8 +588,8 @@ namespace etl
     // The list of active timers.
     timer_list active_list;
 
-    volatile bool enabled;
-    volatile uint_least8_t number_of_registered_timers;
+    bool enabled;
+    uint_least8_t number_of_registered_timers;
 
   public:
 

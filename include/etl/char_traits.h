@@ -58,11 +58,11 @@ namespace etl
 
   template<> struct char_traits_types<wchar_t>
   {
-    typedef wchar_t   char_type;
-    typedef wchar_t   int_type;
-    typedef long long off_type;
-    typedef size_t    pos_type;
-    typedef char      state_type;
+    typedef wchar_t        char_type;
+    typedef uint_least16_t int_type;
+    typedef long long      off_type;
+    typedef size_t         pos_type;
+    typedef char           state_type;
   };
 
 #if ETL_USING_CPP20

@@ -267,12 +267,12 @@ namespace etl
         // Wrapped around already
         if (write_index < read_index)
         {
-          ETL_ASSERT_AND_RETURN((windex == write_index) && ((wsize + 1) <= read_index), ETL_ERROR(bip_buffer_reserve_invalid));
+          ETL_ASSERT_OR_RETURN((windex == write_index) && ((wsize + 1) <= read_index), ETL_ERROR(bip_buffer_reserve_invalid));
         }
         // No wraparound so far, also not wrapping around with this block
         else if (windex == write_index)
         {
-          ETL_ASSERT_AND_RETURN(wsize <= (capacity() - write_index), ETL_ERROR(bip_buffer_reserve_invalid));
+          ETL_ASSERT_OR_RETURN(wsize <= (capacity() - write_index), ETL_ERROR(bip_buffer_reserve_invalid));
 
           // Move both indexes forward
           last.store(windex + wsize, etl::memory_order_release);
@@ -280,7 +280,7 @@ namespace etl
         // Wrapping around now
         else
         {
-          ETL_ASSERT_AND_RETURN((windex == 0) && ((wsize + 1) <= read_index), ETL_ERROR(bip_buffer_reserve_invalid));
+          ETL_ASSERT_OR_RETURN((windex == 0) && ((wsize + 1) <= read_index), ETL_ERROR(bip_buffer_reserve_invalid));
         }
         
         // Always update write index
@@ -330,7 +330,7 @@ namespace etl
       if (rsize > 0)
       {
         size_type rsize_checker = rsize;
-        ETL_ASSERT_AND_RETURN((rindex == get_read_reserve(&rsize_checker)) && (rsize == rsize_checker), ETL_ERROR(bip_buffer_reserve_invalid));
+        ETL_ASSERT_OR_RETURN((rindex == get_read_reserve(&rsize_checker)) && (rsize == rsize_checker), ETL_ERROR(bip_buffer_reserve_invalid));
 
         read.store(rindex + rsize, etl::memory_order_release);
       }
