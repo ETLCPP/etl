@@ -1,4 +1,10 @@
 ===============================================================================
+20.35.15
+#627 Make tests build with C++14
+#663 Make unit tests compile for C++20
+#675 Compilation error in optional.h line 405
+
+===============================================================================
 20.35.14
 Convert the Visual Studio project to VS2022
 
