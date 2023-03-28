@@ -118,8 +118,8 @@ namespace etl
   const T integral_constant<T, VALUE>::value;
 
 #if ETL_USING_CPP17
-  template <typename T>
-  using integral_constant_v = std::integral_constant<T>::value;
+  template <typename T, T VALUE>
+  inline constexpr T integral_constant_v = std::integral_constant<T, VALUE>::value;
 #endif
 
 #if ETL_USING_CPP11
@@ -128,6 +128,11 @@ namespace etl
 #else
   template <bool B>
   struct bool_constant : etl::integral_constant<bool, B> { };
+#endif
+
+#if ETL_USING_CPP17
+  template <bool B>
+  inline constexpr bool bool_constant_v = std::bool_constant<B>::value;
 #endif
 
   //***************************************************************************
@@ -816,20 +821,25 @@ namespace etl
 
 #else // Condition = ETL_USING_STL && ETL_USING_CPP11
 
-  //*****************************************************************************
-  // Traits are derived from the STL
-  //*****************************************************************************
+//*****************************************************************************
+// Traits are derived from the STL
+//*****************************************************************************
 
-  //***************************************************************************
-  /// integral_constant
-  ///\ingroup type_traits
-  template <typename T, const T VALUE>
-  struct integral_constant : std::integral_constant<T, VALUE> {};
+//***************************************************************************
+/// integral_constant
+///\ingroup type_traits
+template <typename T, T VALUE>
+struct integral_constant : std::integral_constant<T, VALUE> {};
 
-  /// integral_constant specialisations
-  ///\ingroup type_traits
-  typedef integral_constant<bool, false> false_type;
-  typedef integral_constant<bool, true>  true_type;
+/// integral_constant specialisations
+///\ingroup type_traits
+typedef integral_constant<bool, false> false_type;
+typedef integral_constant<bool, true>  true_type;
+
+#if ETL_USING_CPP17
+  template <typename T, T VALUE>
+  inline constexpr T integral_constant_v = std::integral_constant<T, VALUE>::value;
+#endif
 
 #if ETL_USING_CPP17
   template <bool B>
@@ -837,6 +847,11 @@ namespace etl
 #else
   template <bool B>
   struct bool_constant : std::integral_constant<bool, B> { };
+#endif
+
+#if ETL_USING_CPP17
+  template <bool B>
+  inline constexpr bool bool_constant_v = std::bool_constant<B>::value;
 #endif
 
   //***************************************************************************
