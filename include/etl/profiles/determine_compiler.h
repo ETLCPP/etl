@@ -44,6 +44,7 @@ SOFTWARE.
     !defined(ETL_COMPILER_IAR) && \
     !defined(ETL_COMPILER_INTEL) && \
     !defined(ETL_COMPILER_TEXAS_INSTRUMENTS) && \
+    !defined(ETL_COMPILER_TASKING) && \
     !defined(ETL_COMPILER_GENERIC)
 
   #if !defined(ETL_COMPILER_TYPE_DETECTED) && !defined(ETL_COMPILER_ARM5)
