@@ -39,12 +39,12 @@ SOFTWARE.
 #include <stdint.h>
 #include <string.h>
 
-// Select the amtomic builtins based on the ARM5 version of the GCC compiler.
+// Select the atomic builtins based on the ARM5 version of the GCC compiler.
 #if defined(ETL_COMPILER_ARM5)
   #define ETL_USE_SYNC_BUILTINS
 #endif
 
-// Select the amtomic builtins based on the ARM6 version of the GCC compiler.
+// Select the atomic builtins based on the ARM6 version of the GCC compiler.
 #if defined(ETL_COMPILER_ARM6)
   #if ETL_COMPILER_FULL_VERSION >= 40700
     #define ETL_USE_ATOMIC_BUILTINS
@@ -53,7 +53,7 @@ SOFTWARE.
   #endif
 #endif
 
-// Select the amtomic builtins based on the version of the GCC compiler.
+// Select the atomic builtins based on the version of the GCC compiler.
 #if defined(ETL_COMPILER_GCC)
   #if ETL_COMPILER_FULL_VERSION >= 40700
     #define ETL_USE_ATOMIC_BUILTINS
@@ -62,7 +62,7 @@ SOFTWARE.
   #endif
 #endif
 
-// Select the amtomic builtins based on the version of the Clang compiler.
+// Select the atomic builtins based on the version of the Clang compiler.
 #if defined(ETL_COMPILER_CLANG)
   #if ETL_COMPILER_FULL_VERSION >= 50000
     #define ETL_USE_ATOMIC_BUILTINS
