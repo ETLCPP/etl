@@ -353,6 +353,7 @@ if ((CMAKE_CXX_COMPILER_ID MATCHES "MSVC"))
 			PRIVATE
 			/Zc:__cplusplus
 			)
+endif ()
 
 if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
 	target_compile_options(etl_tests
