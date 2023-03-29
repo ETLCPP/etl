@@ -3514,19 +3514,19 @@
     <None Include="..\meson.build">
       <Filter>Tests\Test Support</Filter>
     </None>
-    <None Include="..\runtests-01.sh">
-      <Filter>Tests\Scripts</Filter>
-    </None>
-    <None Include="..\runtests-03.sh">
-      <Filter>Tests\Scripts</Filter>
-    </None>
-    <None Include="..\runtests-02.sh">
-      <Filter>Tests\Scripts</Filter>
-    </None>
     <None Include="..\..\.github\workflows\msvc.yml">
       <Filter>Resource Files\CI\Github</Filter>
     </None>
     <None Include="..\runtests-c++14.sh">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\runtests-O1.sh">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\runtests-O2.sh">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\runtests-O3.sh">
       <Filter>Tests\Scripts</Filter>
     </None>
   </ItemGroup>
