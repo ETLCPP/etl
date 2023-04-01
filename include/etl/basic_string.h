@@ -1315,7 +1315,7 @@ namespace etl
 
     //*********************************************************************
     /// Copies a portion of a string.
-    ///\param s     Pointer to the string to copy.
+    ///\param dest  Pointer to the destination buffer.
     ///\param count The number of characters to copy.
     ///\param pos   The position to start copying from.
     //*********************************************************************
