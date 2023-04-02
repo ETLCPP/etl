@@ -18,9 +18,9 @@
 
 namespace UnitTest 
 {
-  template <typename TChar>
-  typename std::enable_if<!std::is_pointer<TChar>::value, std::string>::type
-    DisplayValue(const TChar& c)
+  template <typename T>
+  typename std::enable_if<!std::is_pointer<T>::value, std::string>::type
+    DisplayValue(const T& c)
   {
     std::ostringstream oss;
 
@@ -93,8 +93,8 @@ namespace UnitTest
   }
 #endif
 
-  template <typename TChar>
-  std::string DisplayValue(const TChar* c)
+  template <typename T>
+  std::string DisplayValue(const T* c)
   {
     std::ostringstream oss;
 

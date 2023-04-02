@@ -33,8 +33,9 @@ SOFTWARE.
 
 #include "platform.h"
 
-//*************************************
-// Figure out if we can use the standard library <new> header, if haven't already done so in etl_profile.h
+//*****************************************************************************
+// Figure out if we can use the standard library <new> header, if haven't already done so.
+//*****************************************************************************
 #if !defined(ETL_USING_STD_NEW)
   #if defined(__has_include)
     #if __has_include(<new>)
@@ -52,9 +53,11 @@ SOFTWARE.
 #if ETL_USING_STD_NEW
   #include <new>
 #else
-  // Define placement new if no new header is available
-  inline void* operator new(size_t, void* p) { return p; }
-  inline void* operator new[](size_t, void* p) { return p; }
+  //*****************************************************************************
+  // Define placement new if no new header is available.
+  //*****************************************************************************
+  inline void* operator new(size_t, void* p) ETL_NOEXCEPT { return p; }
+  inline void* operator new[](size_t, void* p) ETL_NOEXCEPT { return p; }
 
   inline void operator delete(void*, void*) ETL_NOEXCEPT {}
   inline void operator delete[](void*, void*) ETL_NOEXCEPT{}
