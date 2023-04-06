@@ -170,7 +170,7 @@ namespace etl
     size_type buffer_size;
     size_type in;            ///< Index to the next write.
     size_type out;           ///< Index to the next read.
-    ETL_DECLARE_DEBUG_COUNT; ///< Internal debugging.
+    ETL_DECLARE_DEBUG_COUNT  ///< Internal debugging.
   };
 
   //***************************************************************************
