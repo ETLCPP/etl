@@ -323,16 +323,24 @@ target_link_libraries(etl_tests PRIVATE UnitTestpp)
 if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
 	target_compile_options(etl_tests
 			PRIVATE
-			-fsanitize=address,undefined,bounds
 			-fno-omit-frame-pointer
 			-Wall
 			-Wextra
 			-Werror
 			)
-	target_link_options(etl_tests
+	
+	# MinGW doesn't presently support sanitization
+	if (NOT MINGW)
+		target_compile_options(etl_tests
 			PRIVATE
 			-fsanitize=address,undefined,bounds
 			)
+
+		target_link_options(etl_tests
+			PRIVATE
+			-fsanitize=address,undefined,bounds
+			)	
+	endif()
 endif ()
 
 # Enable the 'make test' CMake target using the executable defined above
