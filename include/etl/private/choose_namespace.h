@@ -33,6 +33,7 @@ SOFTWARE.
 
 #undef ETL_OR_STD
 #undef ETL_OR_STD11
+#undef ETL_OR_STD14
 
 #if ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST)
   // If we're not using the STL and we are not unit testing, then use the ETL's definitions under the etl namespace
@@ -56,6 +57,30 @@ SOFTWARE.
   #define ETL_OR_STD11 std
   #define ETL_USING_STD11_NAMESPACE 1
   #define ETL_USING_ETL11_NAMESPACE 0
+#endif
+
+#if (ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST)) || ETL_CPP14_NOT_SUPPORTED
+  // If we're not using the STL and we are not unit testing or C++14 is not supported, then use the ETL's definitions under the etl namespace
+  #define ETL_OR_STD14 etl
+  #define ETL_USING_STD14_NAMESPACE 0
+  #define ETL_USING_ETL14_NAMESPACE 1
+#else
+  // We will use the STL's definitions under the std namespace
+  #define ETL_OR_STD14 std
+  #define ETL_USING_STD14_NAMESPACE 1
+  #define ETL_USING_ETL14_NAMESPACE 0
+#endif
+
+#if (ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST)) || ETL_CPP17_NOT_SUPPORTED
+  // If we're not using the STL and we are not unit testing or C++17 is not supported, then use the ETL's definitions under the etl namespace
+  #define ETL_OR_STD17 etl
+  #define ETL_USING_STD17_NAMESPACE 0
+  #define ETL_USING_ETL17_NAMESPACE 1
+#else
+  // We will use the STL's definitions under the std namespace
+  #define ETL_OR_STD17 std
+  #define ETL_USING_STD17_NAMESPACE 1
+  #define ETL_USING_ETL17_NAMESPACE 0
 #endif
 
 #endif
