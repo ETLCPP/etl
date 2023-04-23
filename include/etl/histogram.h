@@ -126,6 +126,9 @@ namespace etl
 
       etl::array<TCount, Max_Size> accumulator;
     };
+
+    template <typename TCount, size_t Max_Size_>   
+    ETL_CONSTANT size_t histogram_common<TCount, Max_Size_>::Max_Size;
   }
 
   //***************************************************************************
@@ -592,6 +595,9 @@ namespace etl
 
     etl::flat_map<key_type, count_type, Max_Size> accumulator;
   };
+
+  template <typename TKey, typename TCount, size_t Max_Size_>
+  ETL_CONSTANT size_t sparse_histogram<TKey, TCount, Max_Size_>::Max_Size;
 }
 
 #endif

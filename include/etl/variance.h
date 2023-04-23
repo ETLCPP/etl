@@ -43,7 +43,7 @@ namespace etl
   namespace private_variance
   {
     //***************************************************************************
-    /// Types for generic correlation.
+    /// Types for generic variance.
     //***************************************************************************
     template <typename TInput, typename TCalc>
     struct variance_traits
@@ -52,7 +52,7 @@ namespace etl
     };
 
     //***************************************************************************
-    /// Types for float correlation.
+    /// Types for float variance.
     //***************************************************************************
     template <typename TCalc>
     struct variance_traits<float, TCalc>
@@ -61,7 +61,7 @@ namespace etl
     };
 
     //***************************************************************************
-    /// Types for double correlation.
+    /// Types for double variance.
     //***************************************************************************
     template <typename TCalc>
     struct variance_traits<double, TCalc>
@@ -73,10 +73,24 @@ namespace etl
   //***************************************************************************
   /// Variance Type.
   //***************************************************************************
-  struct variance_type
+  namespace private_variance
   {
-    static ETL_CONSTANT bool Sample     = false;
-    static ETL_CONSTANT bool Population = true;
+    template<typename T = void>
+    struct variance_type_helper
+    {
+      static ETL_CONSTANT bool Sample = false;
+      static ETL_CONSTANT bool Population = true;
+    };
+
+    template <typename T>
+    ETL_CONSTANT bool variance_type_helper<T>::Sample;
+
+    template <typename T>
+    ETL_CONSTANT bool variance_type_helper<T>::Population;
+  }
+
+  struct variance_type : public private_variance::variance_type_helper<>
+  {
   };
 
   //***************************************************************************

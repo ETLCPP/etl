@@ -1424,6 +1424,9 @@ namespace etl
     etl::pool<T, MAX_SIZE>    storage_pool;
   };
 
+  template <typename T, const size_t MAX_SIZE_>
+  ETL_CONSTANT size_t indirect_vector<T, MAX_SIZE_>::MAX_SIZE;
+
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************

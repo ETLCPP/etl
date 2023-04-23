@@ -290,6 +290,15 @@ namespace etl
     etl::array<descriptor_item, N_BUFFERS> descriptor_items;
     etl::cyclic_value<uint_least8_t, 0U, N_BUFFERS - 1> next;
   };
+
+  template <typename TBuffer, size_t BUFFER_SIZE_, size_t N_BUFFERS_, typename TFlag>
+  ETL_CONSTANT typename buffer_descriptors<TBuffer, BUFFER_SIZE_, N_BUFFERS_, TFlag>::size_type buffer_descriptors<TBuffer, BUFFER_SIZE_, N_BUFFERS_, TFlag>::N_BUFFERS;
+
+  template <typename TBuffer, size_t BUFFER_SIZE_, size_t N_BUFFERS_, typename TFlag>
+  ETL_CONSTANT typename buffer_descriptors<TBuffer, BUFFER_SIZE_, N_BUFFERS_, TFlag>::size_type buffer_descriptors<TBuffer, BUFFER_SIZE_, N_BUFFERS_, TFlag>::BUFFER_SIZE;
+  
+  template <typename TBuffer, size_t BUFFER_SIZE_, size_t N_BUFFERS_, typename TFlag>
+  ETL_CONSTANT typename buffer_descriptors<TBuffer, BUFFER_SIZE_, N_BUFFERS_, TFlag>::size_type buffer_descriptors<TBuffer, BUFFER_SIZE_, N_BUFFERS_, TFlag>::descriptor::MAX_SIZE;
 }
 #endif
 #endif

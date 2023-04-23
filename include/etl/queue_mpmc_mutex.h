@@ -676,6 +676,9 @@ namespace etl
     /// The uninitialised buffer of T used in the queue_mpmc_mutex.
     typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[MAX_SIZE];
   };
+
+  template <typename T, size_t SIZE, const size_t MEMORY_MODEL>  
+  ETL_CONSTANT typename queue_mpmc_mutex<T, SIZE, MEMORY_MODEL>::size_type queue_mpmc_mutex<T, SIZE, MEMORY_MODEL>::MAX_SIZE;
 }
 
 #endif

@@ -1064,6 +1064,12 @@ namespace etl
 #endif
   };
 
+  ETL_CONSTANT ibitset::element_type ibitset::ALL_SET;
+
+  ETL_CONSTANT ibitset::element_type ibitset::ALL_CLEAR;
+
+  ETL_CONSTANT size_t ibitset::Bits_Per_Element;
+
   //*************************************************************************
   /// The class emulates an array of bool elements, but optimized for space allocation.
   /// Will accommodate any number of bits.
@@ -1428,6 +1434,12 @@ namespace etl
 
     element_type data[Array_Size > 0U ? Array_Size : 1U];
   };
+
+  template <const size_t MaxN>
+  ETL_CONSTANT size_t bitset<MaxN>::ALLOCATED_BITS;
+  
+  template <const size_t MaxN>
+  ETL_CONSTANT size_t bitset<MaxN>::Allocated_Bits;
 
   //***************************************************************************
   /// operator &

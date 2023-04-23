@@ -1739,6 +1739,9 @@ namespace etl
     static ETL_CONSTANT bool value = __is_assignable(T1, T2);
   };
 
+  template<typename T1, typename T2>
+  ETL_CONSTANT bool is_assignable::value;
+
 #if ETL_USING_CPP11
   //*********************************************
   // is_constructible
@@ -1747,6 +1750,9 @@ namespace etl
   {
     static ETL_CONSTANT bool value = __is_constructible(T, TArgs...);
   };
+
+  template<typename T, typename... TArgs>
+  ETL_CONSTANT bool is_constructible<T, TArgs...>::value;
 #else
   //*********************************************
   // is_constructible
@@ -1763,6 +1769,9 @@ namespace etl
   {
     static ETL_CONSTANT bool value = __is_constructible(T);
   };
+
+  template<typename T, typename TArgs>
+  ETL_CONSTANT bool is_constructible<T, TArgs>::value;
 #endif
 
   //*********************************************
@@ -1791,6 +1800,8 @@ namespace etl
     static ETL_CONSTANT bool value = __is_trivially_constructible(T, TArgs...);
 #endif
   };
+  template <typename T, typename... TArgs>
+  ETL_CONSTANT bool is_trivially_constructible<T, TArgs...>::value;
 #else
   //*********************************************
   // is_trivially_constructible
@@ -1816,6 +1827,9 @@ namespace etl
 #endif
   };
 #endif
+
+  template <typename T, typename TArgs>
+  ETL_CONSTANT bool is_trivially_constructible<T, TArgs>::value;
 
   //*********************************************
   // is_trivially_copy_constructible

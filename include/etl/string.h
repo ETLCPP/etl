@@ -259,6 +259,9 @@ namespace etl
     value_type buffer[MAX_SIZE + 1];
   };
 
+  template <size_t MAX_SIZE_>
+  ETL_CONSTANT size_t string<MAX_SIZE_>::MAX_SIZE;
+
   //***************************************************************************
   /// A string implementation that uses a fixed size external buffer.
   ///\ingroup string

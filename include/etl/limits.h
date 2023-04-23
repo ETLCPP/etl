@@ -101,69 +101,169 @@ namespace etl
 {
   enum float_round_style
   {
-    round_indeterminate       = -1,
-    round_toward_zero         = 0,
-    round_to_nearest          = 1,
-    round_toward_infinity     = 2,
+    round_indeterminate = -1,
+    round_toward_zero = 0,
+    round_to_nearest = 1,
+    round_toward_infinity = 2,
     round_toward_neg_infinity = 3,
   };
 
   enum float_denorm_style
   {
     denorm_indeterminate = -1,
-    denorm_absent        = 0,
-    denorm_present       = 1
+    denorm_absent = 0,
+    denorm_present = 1
   };
 
-
+  template <typename T = void>
   class etl_integral_limits
   {
   public:
 
-    static ETL_CONSTANT bool is_specialized    = true;
-    static ETL_CONSTANT bool is_integer        = true;
-    static ETL_CONSTANT bool is_exact          = true;
-    static ETL_CONSTANT int  max_digits10      = 0;
-    static ETL_CONSTANT int  radix             = 2;
-    static ETL_CONSTANT int  min_exponent      = 0;
-    static ETL_CONSTANT int  min_exponent10    = 0;
-    static ETL_CONSTANT int  max_exponent      = 0;
-    static ETL_CONSTANT int  max_exponent10    = 0;
-    static ETL_CONSTANT bool has_infinity      = false;
-    static ETL_CONSTANT bool has_quiet_NaN     = false;
-    static ETL_CONSTANT bool has_signaling_NaN = false;
-    static ETL_CONSTANT bool has_denorm_loss   = false;
-    static ETL_CONSTANT bool is_iec559         = false;
-    static ETL_CONSTANT bool is_bounded        = true;
-    static ETL_CONSTANT bool traps             = false;
-    static ETL_CONSTANT bool tinyness_before   = false;
+    static ETL_CONSTANT bool is_specialized           = true;
+    static ETL_CONSTANT bool is_integer               = true;
+    static ETL_CONSTANT bool is_exact                 = true;
+    static ETL_CONSTANT int  max_digits10             = 0;
+    static ETL_CONSTANT int  radix                    = 2;
+    static ETL_CONSTANT int  min_exponent             = 0;
+    static ETL_CONSTANT int  min_exponent10           = 0;
+    static ETL_CONSTANT int  max_exponent             = 0;
+    static ETL_CONSTANT int  max_exponent10           = 0;
+    static ETL_CONSTANT bool has_infinity             = false;
+    static ETL_CONSTANT bool has_quiet_NaN            = false;
+    static ETL_CONSTANT bool has_signaling_NaN        = false;
+    static ETL_CONSTANT bool has_denorm_loss          = false;
+    static ETL_CONSTANT bool is_iec559                = false;
+    static ETL_CONSTANT bool is_bounded               = true;
+    static ETL_CONSTANT bool traps                    = false;
+    static ETL_CONSTANT bool tinyness_before          = false;
     static ETL_CONSTANT float_denorm_style has_denorm = denorm_absent;
     static ETL_CONSTANT float_round_style round_style = round_toward_zero;
   };
 
+  template <typename T>
+  ETL_CONSTANT bool etl_integral_limits<T>::is_specialized;
+
+  template <typename T>
+  ETL_CONSTANT bool etl_integral_limits<T>::is_integer;
+
+  template <typename T>
+  ETL_CONSTANT bool etl_integral_limits<T>::is_exact;
+
+  template <typename T>
+  ETL_CONSTANT int  etl_integral_limits<T>::max_digits10;
+
+  template <typename T>
+  ETL_CONSTANT int  etl_integral_limits<T>::radix;
+
+  template <typename T>
+  ETL_CONSTANT int  etl_integral_limits<T>::min_exponent;
+
+  template <typename T>
+  ETL_CONSTANT int  etl_integral_limits<T>::min_exponent10;
+
+  template <typename T>
+  ETL_CONSTANT int  etl_integral_limits<T>::max_exponent;
+
+  template <typename T>
+  ETL_CONSTANT int  etl_integral_limits<T>::max_exponent10;
+
+  template <typename T>
+  ETL_CONSTANT bool etl_integral_limits<T>::has_infinity;
+
+  template <typename T>
+  ETL_CONSTANT bool etl_integral_limits<T>::has_quiet_NaN;
+
+  template <typename T>
+  ETL_CONSTANT bool etl_integral_limits<T>::has_signaling_NaN;
+
+  template <typename T>
+  ETL_CONSTANT bool etl_integral_limits<T>::has_denorm_loss;
+  
+  template <typename T>
+  ETL_CONSTANT bool etl_integral_limits<T>::is_iec559;
+  
+  template <typename T>
+  ETL_CONSTANT bool etl_integral_limits<T>::is_bounded;
+  
+  template <typename T>
+  ETL_CONSTANT bool etl_integral_limits<T>::traps;
+  
+  template <typename T>
+  ETL_CONSTANT bool etl_integral_limits<T>::tinyness_before;
+
+  template <typename T>
+  ETL_CONSTANT float_denorm_style etl_integral_limits<T>::has_denorm;
+  
+  template <typename T>
+  ETL_CONSTANT float_round_style etl_integral_limits<T>::round_style;
+
+  template <typename T = void>
   class etl_floating_point_limits
   {
   public:
 
-    static ETL_CONSTANT bool is_specialized    = true;
-    static ETL_CONSTANT bool is_signed         = true;
-    static ETL_CONSTANT bool is_integer        = false;
-    static ETL_CONSTANT bool is_exact          = false;
-    static ETL_CONSTANT int radix              = 2;
-    static ETL_CONSTANT bool has_infinity      = true;
-    static ETL_CONSTANT bool has_quiet_NaN     = ETL_HAS_NAN;
+    static ETL_CONSTANT bool is_specialized = true;
+    static ETL_CONSTANT bool is_signed = true;
+    static ETL_CONSTANT bool is_integer = false;
+    static ETL_CONSTANT bool is_exact = false;
+    static ETL_CONSTANT int radix = 2;
+    static ETL_CONSTANT bool has_infinity = true;
+    static ETL_CONSTANT bool has_quiet_NaN = ETL_HAS_NAN;
     static ETL_CONSTANT bool has_signaling_NaN = ETL_HAS_NAN;
-    static ETL_CONSTANT bool has_denorm_loss   = false;
-    static ETL_CONSTANT bool is_iec559         = false;
-    static ETL_CONSTANT bool is_bounded        = true;
-    static ETL_CONSTANT bool is_modulo         = false;
-    static ETL_CONSTANT bool traps             = false;
-    static ETL_CONSTANT bool tinyness_before   = false;
+    static ETL_CONSTANT bool has_denorm_loss = false;
+    static ETL_CONSTANT bool is_iec559 = false;
+    static ETL_CONSTANT bool is_bounded = true;
+    static ETL_CONSTANT bool is_modulo = false;
+    static ETL_CONSTANT bool traps = false;
+    static ETL_CONSTANT bool tinyness_before = false;
     static ETL_CONSTANT float_denorm_style has_denorm = denorm_indeterminate;
     static ETL_CONSTANT float_round_style round_style = round_indeterminate;
 
     static float round_error() { return float(0.5); }
   };
+
+  template <typename T>
+  ETL_CONSTANT bool etl_floating_point_limits<T>::is_specialized;
+
+  template <typename T>
+  ETL_CONSTANT bool etl_floating_point_limits<T>::is_integer;
+
+  template <typename T>
+  ETL_CONSTANT bool etl_floating_point_limits<T>::is_exact;
+
+  template <typename T>
+  ETL_CONSTANT int  etl_floating_point_limits<T>::radix;
+
+  template <typename T>
+  ETL_CONSTANT bool etl_floating_point_limits<T>::has_infinity;
+
+  template <typename T>
+  ETL_CONSTANT bool etl_floating_point_limits<T>::has_quiet_NaN;
+
+  template <typename T>
+  ETL_CONSTANT bool etl_floating_point_limits<T>::has_signaling_NaN;
+
+  template <typename T>
+  ETL_CONSTANT bool etl_floating_point_limits<T>::has_denorm_loss;
+
+  template <typename T>
+  ETL_CONSTANT bool etl_floating_point_limits<T>::is_iec559;
+
+  template <typename T>
+  ETL_CONSTANT bool etl_floating_point_limits<T>::is_bounded;
+  
+  template <typename T>
+  ETL_CONSTANT bool etl_floating_point_limits<T>::traps;
+  
+  template <typename T>
+  ETL_CONSTANT bool etl_floating_point_limits<T>::tinyness_before;
+  
+  template <typename T>
+  ETL_CONSTANT float_denorm_style etl_floating_point_limits<T>::has_denorm;
+  
+  template <typename T>
+  ETL_CONSTANT float_round_style etl_floating_point_limits<T>::round_style;
 
   //***************************************************************************
   // Default
@@ -182,12 +282,12 @@ namespace etl
   //***************************************************************************
   // bool
   template<>
-  class numeric_limits<bool> : public etl_integral_limits
+  class numeric_limits<bool> : public etl_integral_limits<>
   {
   public:
 
-    static ETL_CONSTANT int  digits    = 1;
-    static ETL_CONSTANT int  digits10  = 0;
+    static ETL_CONSTANT int  digits = 1;
+    static ETL_CONSTANT int  digits10 = 0;
     static ETL_CONSTANT bool is_signed = false;
     static ETL_CONSTANT bool is_modulo = false;
 
@@ -202,15 +302,20 @@ namespace etl
     static ETL_CONSTEXPR bool signaling_NaN() { return false; }
   };
 
+  ETL_CONSTANT int  numeric_limits<bool>::digits;
+  ETL_CONSTANT int  numeric_limits<bool>::digits10;
+  ETL_CONSTANT bool numeric_limits<bool>::is_signed;
+  ETL_CONSTANT bool numeric_limits<bool>::is_modulo;
+
   //***************************************************************************
   // char
   template<>
-  class numeric_limits<char> : public etl_integral_limits
+  class numeric_limits<char> : public etl_integral_limits<>
   {
   public:
 
-    static ETL_CONSTANT int digits     = (CHAR_BIT * sizeof(char)) - (etl::is_signed<char>::value ? 1 : 0);
-    static ETL_CONSTANT int digits10   = ETL_LOG10_OF_2(digits);
+    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(char)) - (etl::is_signed<char>::value ? 1 : 0);
+    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
     static ETL_CONSTANT bool is_signed = etl::is_signed<char>::value;
     static ETL_CONSTANT bool is_modulo = false;
 
@@ -225,15 +330,20 @@ namespace etl
     static ETL_CONSTEXPR char signaling_NaN() { return 0; }
   };
 
+  ETL_CONSTANT int  numeric_limits<char>::digits;
+  ETL_CONSTANT int  numeric_limits<char>::digits10;
+  ETL_CONSTANT bool numeric_limits<char>::is_signed;
+  ETL_CONSTANT bool numeric_limits<char>::is_modulo;
+
   //***************************************************************************
   // unsigned char
   template<>
-  class numeric_limits<unsigned char> : public etl_integral_limits
+  class numeric_limits<unsigned char> : public etl_integral_limits<>
   {
   public:
 
-    static ETL_CONSTANT int digits     = (CHAR_BIT * sizeof(unsigned char)) - (etl::is_signed<unsigned char>::value ? 1 : 0);
-    static ETL_CONSTANT int digits10   = ETL_LOG10_OF_2(digits);
+    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(unsigned char)) - (etl::is_signed<unsigned char>::value ? 1 : 0);
+    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
     static ETL_CONSTANT bool is_signed = false;
     static ETL_CONSTANT bool is_modulo = true;
 
@@ -248,10 +358,15 @@ namespace etl
     static ETL_CONSTEXPR unsigned char signaling_NaN() { return 0U; }
   };
 
+  ETL_CONSTANT int  numeric_limits<unsigned char>::digits;
+  ETL_CONSTANT int  numeric_limits<unsigned char>::digits10;
+  ETL_CONSTANT bool numeric_limits<unsigned char>::is_signed;
+  ETL_CONSTANT bool numeric_limits<unsigned char>::is_modulo;
+
   //***************************************************************************
   // signed char
   template<>
-  class numeric_limits<signed char> : public etl_integral_limits
+  class numeric_limits<signed char> : public etl_integral_limits<>
   {
   public:
 
@@ -271,11 +386,16 @@ namespace etl
     static ETL_CONSTEXPR signed char signaling_NaN() { return 0; }
   };
 
+  ETL_CONSTANT int  numeric_limits<signed char>::digits;
+  ETL_CONSTANT int  numeric_limits<signed char>::digits10;
+  ETL_CONSTANT bool numeric_limits<signed char>::is_signed;
+  ETL_CONSTANT bool numeric_limits<signed char>::is_modulo;
+
 #if ETL_HAS_NATIVE_CHAR8_T
   //***************************************************************************
   // char8_t
   template<>
-  class numeric_limits<char8_t> : public etl_integral_limits
+  class numeric_limits<char8_t> : public etl_integral_limits<>
   {
   public:
 
@@ -294,13 +414,18 @@ namespace etl
     static ETL_CONSTEXPR char8_t quiet_NaN() { return 0; }
     static ETL_CONSTEXPR char8_t signaling_NaN() { return 0; }
   };
+
+  ETL_CONSTANT int  numeric_limits<char8_t>::digits;
+  ETL_CONSTANT int  numeric_limits<char8_t>::digits10;
+  ETL_CONSTANT bool numeric_limits<char8_t>::is_signed;
+  ETL_CONSTANT bool numeric_limits<char8_t>::is_modulo;
 #endif
 
 #if ETL_HAS_NATIVE_CHAR16_T
   //***************************************************************************
   // char16_t
   template<>
-  class numeric_limits<char16_t> : public etl_integral_limits
+  class numeric_limits<char16_t> : public etl_integral_limits<>
   {
   public:
 
@@ -319,13 +444,18 @@ namespace etl
     static ETL_CONSTEXPR char16_t quiet_NaN() { return 0U; }
     static ETL_CONSTEXPR char16_t signaling_NaN() { return 0U; }
   };
+
+  ETL_CONSTANT int  numeric_limits<char16_t>::digits;
+  ETL_CONSTANT int  numeric_limits<char16_t>::digits10;
+  ETL_CONSTANT bool numeric_limits<char16_t>::is_signed;
+  ETL_CONSTANT bool numeric_limits<char16_t>::is_modulo;
 #endif
 
 #if ETL_HAS_NATIVE_CHAR32_T
   //***************************************************************************
   // char32_t
   template<>
-  class numeric_limits<char32_t> : public etl_integral_limits
+  class numeric_limits<char32_t> : public etl_integral_limits<>
   {
   public:
 
@@ -344,12 +474,17 @@ namespace etl
     static ETL_CONSTEXPR char32_t quiet_NaN() { return 0U; }
     static ETL_CONSTEXPR char32_t signaling_NaN() { return 0U; }
   };
+
+  ETL_CONSTANT int  numeric_limits<char32_t>::digits;
+  ETL_CONSTANT int  numeric_limits<char32_t>::digits10;
+  ETL_CONSTANT bool numeric_limits<char32_t>::is_signed;
+  ETL_CONSTANT bool numeric_limits<char32_t>::is_modulo;
 #endif
 
   //***************************************************************************
   // wchar_t
   template<>
-  class numeric_limits<wchar_t> : public etl_integral_limits
+  class numeric_limits<wchar_t> : public etl_integral_limits<>
   {
   public:
 
@@ -368,10 +503,15 @@ namespace etl
     static ETL_CONSTEXPR wchar_t signaling_NaN() { return wchar_t(0); }
   };
 
+  ETL_CONSTANT int  numeric_limits<wchar_t>::digits;
+  ETL_CONSTANT int  numeric_limits<wchar_t>::digits10;
+  ETL_CONSTANT bool numeric_limits<wchar_t>::is_signed;
+  ETL_CONSTANT bool numeric_limits<wchar_t>::is_modulo;
+
   //***************************************************************************
   // short
   template<>
-  class numeric_limits<short> : public etl_integral_limits
+  class numeric_limits<short> : public etl_integral_limits<>
   {
   public:
 
@@ -391,10 +531,15 @@ namespace etl
     static ETL_CONSTEXPR short signaling_NaN() { return 0; }
   };
 
+  ETL_CONSTANT int  numeric_limits<short>::digits;
+  ETL_CONSTANT int  numeric_limits<short>::digits10;
+  ETL_CONSTANT bool numeric_limits<short>::is_signed;
+  ETL_CONSTANT bool numeric_limits<short>::is_modulo;
+
   //***************************************************************************
   // unsigned short
   template<>
-  class numeric_limits<unsigned short> : public etl_integral_limits
+  class numeric_limits<unsigned short> : public etl_integral_limits<>
   {
   public:
 
@@ -412,13 +557,17 @@ namespace etl
     static ETL_CONSTEXPR unsigned short infinity() { return 0U; }
     static ETL_CONSTEXPR unsigned short quiet_NaN() { return 0U; }
     static ETL_CONSTEXPR unsigned short signaling_NaN() { return 0U; }
-
   };
+
+  ETL_CONSTANT int  numeric_limits<unsigned short>::digits;
+  ETL_CONSTANT int  numeric_limits<unsigned short>::digits10;
+  ETL_CONSTANT bool numeric_limits<unsigned short>::is_signed;
+  ETL_CONSTANT bool numeric_limits<unsigned short>::is_modulo;
 
   //***************************************************************************
   // int
   template<>
-  class numeric_limits<int> : public etl_integral_limits
+  class numeric_limits<int> : public etl_integral_limits<>
   {
   public:
 
@@ -438,10 +587,15 @@ namespace etl
     static ETL_CONSTEXPR int signaling_NaN() { return 0; }
   };
 
+  ETL_CONSTANT int  numeric_limits<int>::digits;
+  ETL_CONSTANT int  numeric_limits<int>::digits10;
+  ETL_CONSTANT bool numeric_limits<int>::is_signed;
+  ETL_CONSTANT bool numeric_limits<int>::is_modulo;
+
   //***************************************************************************
   // unsigned int
   template<>
-  class numeric_limits<unsigned int> : public etl_integral_limits
+  class numeric_limits<unsigned int> : public etl_integral_limits<>
   {
   public:
 
@@ -461,10 +615,15 @@ namespace etl
     static ETL_CONSTEXPR unsigned int signaling_NaN() { return 0U; }
   };
 
+  ETL_CONSTANT int  numeric_limits<unsigned int>::digits;
+  ETL_CONSTANT int  numeric_limits<unsigned int>::digits10;
+  ETL_CONSTANT bool numeric_limits<unsigned int>::is_signed;
+  ETL_CONSTANT bool numeric_limits<unsigned int>::is_modulo;
+
   //***************************************************************************
   // long
   template<>
-  class numeric_limits<long> : public etl_integral_limits
+  class numeric_limits<long> : public etl_integral_limits<>
   {
   public:
 
@@ -484,10 +643,15 @@ namespace etl
     static ETL_CONSTEXPR long signaling_NaN() { return 0; }
   };
 
+  ETL_CONSTANT int  numeric_limits<long>::digits;
+  ETL_CONSTANT int  numeric_limits<long>::digits10;
+  ETL_CONSTANT bool numeric_limits<long>::is_signed;
+  ETL_CONSTANT bool numeric_limits<long>::is_modulo;
+
   //***************************************************************************
   // unsigned long
   template<>
-  class numeric_limits<unsigned long> : public etl_integral_limits
+  class numeric_limits<unsigned long> : public etl_integral_limits<>
   {
   public:
 
@@ -507,10 +671,15 @@ namespace etl
     static ETL_CONSTEXPR unsigned long signaling_NaN() { return 0U; }
   };
 
+  ETL_CONSTANT int  numeric_limits<unsigned long>::digits;
+  ETL_CONSTANT int  numeric_limits<unsigned long>::digits10;
+  ETL_CONSTANT bool numeric_limits<unsigned long>::is_signed;
+  ETL_CONSTANT bool numeric_limits<unsigned long>::is_modulo;
+
   //***************************************************************************
   // long long
   template<>
-  class numeric_limits<long long> : public etl_integral_limits
+  class numeric_limits<long long> : public etl_integral_limits<>
   {
   public:
 
@@ -530,10 +699,15 @@ namespace etl
     static ETL_CONSTEXPR long long signaling_NaN() { return 0; }
   };
 
+  ETL_CONSTANT int  numeric_limits<long long>::digits;
+  ETL_CONSTANT int  numeric_limits<long long>::digits10;
+  ETL_CONSTANT bool numeric_limits<long long>::is_signed;
+  ETL_CONSTANT bool numeric_limits<long long>::is_modulo;
+
   //***************************************************************************
   // unsigned long long
   template<>
-  class numeric_limits<unsigned long long> : public etl_integral_limits
+  class numeric_limits<unsigned long long> : public etl_integral_limits<>
   {
   public:
 
@@ -553,10 +727,15 @@ namespace etl
     static ETL_CONSTEXPR unsigned long long signaling_NaN() { return 0U; }
   };
 
+  ETL_CONSTANT int  numeric_limits<unsigned long long>::digits;
+  ETL_CONSTANT int  numeric_limits<unsigned long long>::digits10;
+  ETL_CONSTANT bool numeric_limits<unsigned long long>::is_signed;
+  ETL_CONSTANT bool numeric_limits<unsigned long long>::is_modulo;
+
   //***************************************************************************
   // float
   template<>
-  class numeric_limits<float> : public etl_floating_point_limits
+  class numeric_limits<float> : public etl_floating_point_limits<>
   {
   public:
 
@@ -569,20 +748,29 @@ namespace etl
     static float quiet_NaN() { return ETL_NANF; }
     static float signaling_NaN() { return ETL_NANF; }
 
-    static ETL_CONSTANT int digits       = FLT_MANT_DIG;
-    static ETL_CONSTANT int digits10     = FLT_DIG;
+    static ETL_CONSTANT int digits = FLT_MANT_DIG;
+    static ETL_CONSTANT int digits10 = FLT_DIG;
     static ETL_CONSTANT int max_digits10 = ETL_LOG10_OF_2(FLT_MANT_DIG) + 2;
 
-    static ETL_CONSTANT int min_exponent   = FLT_MIN_EXP;
+    static ETL_CONSTANT int min_exponent = FLT_MIN_EXP;
     static ETL_CONSTANT int min_exponent10 = FLT_MIN_10_EXP;
-    static ETL_CONSTANT int max_exponent   = FLT_MAX_EXP;
+    static ETL_CONSTANT int max_exponent = FLT_MAX_EXP;
     static ETL_CONSTANT int max_exponent10 = FLT_MAX_10_EXP;
   };
+
+  ETL_CONSTANT int numeric_limits<float>::digits;
+  ETL_CONSTANT int numeric_limits<float>::digits10;
+  ETL_CONSTANT int numeric_limits<float>::max_digits10;
+
+  ETL_CONSTANT int numeric_limits<float>::min_exponent;
+  ETL_CONSTANT int numeric_limits<float>::min_exponent10;
+  ETL_CONSTANT int numeric_limits<float>::max_exponent;
+  ETL_CONSTANT int numeric_limits<float>::max_exponent10;
 
   //***************************************************************************
   // double
   template<>
-  class numeric_limits<double> : public etl_floating_point_limits
+  class numeric_limits<double> : public etl_floating_point_limits<>
   {
   public:
 
@@ -595,20 +783,29 @@ namespace etl
     static double quiet_NaN() { return ETL_NAN; }
     static double signaling_NaN() { return ETL_NAN; }
 
-    static ETL_CONSTANT int digits       = DBL_MANT_DIG;
-    static ETL_CONSTANT int digits10     = DBL_DIG;
+    static ETL_CONSTANT int digits = DBL_MANT_DIG;
+    static ETL_CONSTANT int digits10 = DBL_DIG;
     static ETL_CONSTANT int max_digits10 = ETL_LOG10_OF_2(DBL_MANT_DIG) + 2;
 
-    static ETL_CONSTANT int min_exponent   = DBL_MIN_EXP;
+    static ETL_CONSTANT int min_exponent = DBL_MIN_EXP;
     static ETL_CONSTANT int min_exponent10 = DBL_MIN_10_EXP;
-    static ETL_CONSTANT int max_exponent   = DBL_MAX_EXP;
+    static ETL_CONSTANT int max_exponent = DBL_MAX_EXP;
     static ETL_CONSTANT int max_exponent10 = DBL_MAX_10_EXP;
   };
+
+  ETL_CONSTANT int numeric_limits<double>::digits;
+  ETL_CONSTANT int numeric_limits<double>::digits10;
+  ETL_CONSTANT int numeric_limits<double>::max_digits10;
+
+  ETL_CONSTANT int numeric_limits<double>::min_exponent;
+  ETL_CONSTANT int numeric_limits<double>::min_exponent10;
+  ETL_CONSTANT int numeric_limits<double>::max_exponent;
+  ETL_CONSTANT int numeric_limits<double>::max_exponent10;
 
   //***************************************************************************
   // long double
   template<>
-  class numeric_limits<long double> : public etl_floating_point_limits
+  class numeric_limits<long double> : public etl_floating_point_limits<>
   {
   public:
 
@@ -621,15 +818,24 @@ namespace etl
     static long double quiet_NaN() { return ETL_NANL; }
     static long double signaling_NaN() { return ETL_NANL; }
 
-    static ETL_CONSTANT int digits       = LDBL_MANT_DIG;
-    static ETL_CONSTANT int digits10     = LDBL_DIG;
+    static ETL_CONSTANT int digits = LDBL_MANT_DIG;
+    static ETL_CONSTANT int digits10 = LDBL_DIG;
     static ETL_CONSTANT int max_digits10 = ETL_LOG10_OF_2(LDBL_MANT_DIG) + 2;
 
-    static ETL_CONSTANT int min_exponent   = LDBL_MIN_EXP;
+    static ETL_CONSTANT int min_exponent = LDBL_MIN_EXP;
     static ETL_CONSTANT int min_exponent10 = LDBL_MIN_10_EXP;
-    static ETL_CONSTANT int max_exponent   = LDBL_MAX_EXP;
+    static ETL_CONSTANT int max_exponent = LDBL_MAX_EXP;
     static ETL_CONSTANT int max_exponent10 = LDBL_MAX_10_EXP;
   };
+
+  ETL_CONSTANT int numeric_limits<long double>::digits;
+  ETL_CONSTANT int numeric_limits<long double>::digits10;
+  ETL_CONSTANT int numeric_limits<long double>::max_digits10;
+
+  ETL_CONSTANT int numeric_limits<long double>::min_exponent;
+  ETL_CONSTANT int numeric_limits<long double>::min_exponent10;
+  ETL_CONSTANT int numeric_limits<long double>::max_exponent;
+  ETL_CONSTANT int numeric_limits<long double>::max_exponent10;
 }
 
 #else

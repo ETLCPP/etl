@@ -526,6 +526,9 @@ namespace etl
     }
 #endif
   };
+
+  template <typename T, const size_t SIZE, typename TContainer, typename TCompare>
+  ETL_CONSTANT typename priority_queue<T, SIZE, TContainer, TCompare>::size_type priority_queue<T, SIZE, TContainer, TCompare>::MAX_SIZE;
 }
 
 #endif

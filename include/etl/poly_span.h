@@ -611,6 +611,9 @@ namespace etl
     size_t  element_size;
   };
 
+  template <typename TBase, size_t Extent>
+  ETL_CONSTANT size_t poly_span<TBase, Extent>::extent;
+
   //***************************************************************************
   /// Poly Span - Dynamic Extent
   //***************************************************************************
@@ -983,6 +986,9 @@ protected:
     size_t  element_size;
     size_t  span_extent;
   };
+
+  template <typename TBase>
+  ETL_CONSTANT size_t poly_span<TBase, etl::dynamic_extent>::extent;
 
   //*************************************************************************
   /// Template deduction guides.

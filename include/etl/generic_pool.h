@@ -194,6 +194,15 @@ namespace etl
     generic_pool& operator =(const generic_pool&) ETL_DELETE;
   };
 
+  template <const size_t VTypeSize, const size_t VAlignment, const size_t VSize>
+  ETL_CONSTANT size_t generic_pool<VTypeSize, VAlignment, VSize>::SIZE;
+  
+  template <const size_t VTypeSize, const size_t VAlignment, const size_t VSize>
+  ETL_CONSTANT size_t generic_pool<VTypeSize, VAlignment, VSize>::ALIGNMENT;
+  
+  template <const size_t VTypeSize, const size_t VAlignment, const size_t VSize>
+  ETL_CONSTANT size_t generic_pool<VTypeSize, VAlignment, VSize>::TYPE_SIZE;
+
   //*************************************************************************
   /// A templated abstract pool implementation that uses a fixed size pool.
   /// The storage for the pool is supplied externally.
@@ -338,6 +347,12 @@ namespace etl
     generic_pool_ext(const generic_pool_ext&) ETL_DELETE;
     generic_pool_ext& operator=(const generic_pool_ext&) ETL_DELETE;
   };
+
+  template <const size_t VTypeSize, const size_t VAlignment>
+  ETL_CONSTANT size_t generic_pool_ext<VTypeSize, VAlignment>::ALIGNMENT;
+
+  template <const size_t VTypeSize, const size_t VAlignment>
+  ETL_CONSTANT size_t generic_pool_ext<VTypeSize, VAlignment>::TYPE_SIZE;
 }
 
 #endif

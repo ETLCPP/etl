@@ -849,6 +849,9 @@ namespace etl
     pointer pend;
   };
 
+  template <typename T, size_t Extent>
+  ETL_CONSTANT size_t span<T, Extent>::extent;
+
   //*************************************************************************
   /// Compare two spans for equality.
   //*************************************************************************
