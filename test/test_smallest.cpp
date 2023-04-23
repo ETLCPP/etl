@@ -102,7 +102,6 @@ namespace
     //*************************************************************************
     TEST(test_non_pod_vt)
     {
-      size_t size;
       bool   type;
 
       struct S1 { char a; char  b; char c; };
@@ -110,6 +109,8 @@ namespace
       struct S3 { int  a; short b; char c; };
 
 #if ETL_USING_CPP17
+      size_t size;
+      
       size = etl::smallest_type_v<S1, S2, S3>;
       CHECK_EQUAL(sizeof(S1), size);
 #endif
