@@ -94,6 +94,10 @@ namespace etl
   template <typename TReturn, typename... TParams>
   class delegate<TReturn(TParams...)> final
   {
+  private:
+
+    using stub_type = TReturn(*)(void* object, TParams...);
+
   public:
 
     //*************************************************************************
@@ -425,9 +429,12 @@ namespace etl
       return is_valid();
     }
 
-  private:
+    stub_type get_invocation_element_stub() const
+    {
+      return invocation.stub;
+    }
 
-    using stub_type = TReturn(*)(void* object, TParams...);
+  private:
 
     //*************************************************************************
     /// The internal invocation object.
