@@ -184,6 +184,15 @@ namespace etl
       }
 
       //*******************************
+      /// Copy constructor.
+      //*******************************
+      bit_reference(const bit_reference& other)
+        : p_bitset(other.p_bitset)
+        , position(other.position)
+      {
+      }
+
+      //*******************************
       /// Assignment operator.
       //*******************************
       bit_reference& operator = (bool b)

@@ -57,6 +57,11 @@ namespace etl
     {
     }
 
+    ETL_CONSTEXPR20 reference_wrapper(const reference_wrapper& rhs) ETL_NOEXCEPT
+      : t(rhs.t)
+    {
+    }
+
     ETL_CONSTEXPR20 reference_wrapper<T>& operator = (const reference_wrapper& rhs) ETL_NOEXCEPT
     {
       t = rhs.t;

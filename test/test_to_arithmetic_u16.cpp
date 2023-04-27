@@ -31,6 +31,7 @@ SOFTWARE.
 #include <ostream>
 #include <sstream>
 #include <iomanip>
+#include <limits>
 
 #include "etl/to_arithmetic.h"
 #include "etl/u16string.h"

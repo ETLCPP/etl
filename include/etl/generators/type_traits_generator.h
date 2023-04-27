@@ -1622,99 +1622,71 @@ namespace etl
   //*********************************************
   // is_assignable
   template<typename T1, typename T2>
-  struct is_assignable : public std::is_assignable<T1, T2>
-  {
-  };
+  using is_assignable = std::is_assignable<T1, T2>;
 
   //*********************************************
   // is_constructible
   template<typename T, typename... TArgs>
-  struct is_constructible : public std::is_constructible<T, TArgs...>
-  {
-  };
+  using is_constructible = std::is_constructible<T, TArgs...>;
 
   //*********************************************
   // is_copy_constructible
   template <typename T>
-  struct is_copy_constructible : public std::is_copy_constructible<T>
-  {
-  };
+  using is_copy_constructible = std::is_copy_constructible<T>;
 
   //*********************************************
   // is_move_constructible
   template <typename T>
-  struct is_move_constructible : public std::is_move_constructible<T>
-  {
-  };
+  using is_move_constructible = std::is_move_constructible<T>;
 
   //*********************************************
   // is_trivially_constructible
 #if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
   template <typename T>
-  struct is_trivially_constructible : public std::is_trivially_constructible<T>
-  {
-  };
+  using is_trivially_constructible = std::is_trivially_constructible<T>;
 #else
   template <typename T>
-  struct is_trivially_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
-  {
-  };
+  using is_trivially_constructible = etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>;
 #endif
 
   //*********************************************
   // is_trivially_copy_constructible
 #if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
   template <typename T>
-  struct is_trivially_copy_constructible : public std::is_trivially_copy_constructible<T>
-  {
-  };
+  using is_trivially_copy_constructible = std::is_trivially_copy_constructible<T>;
 #else
   template <typename T>
-  struct is_trivially_copy_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
-  {
-  };
+  using is_trivially_copy_constructible = etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>;
 #endif
 
   //*********************************************
   // is_trivially_destructible
 #if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
   template <typename T>
-  struct is_trivially_destructible : public std::is_trivially_destructible<T>
-  {
-  };
+  using is_trivially_destructible = std::is_trivially_destructible<T>;
 #else
   template <typename T>
-  struct is_trivially_destructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
-  {
-  };
+  using is_trivially_destructible = etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>;
 #endif
 
   //*********************************************
   // is_trivially_copy_assignable
 #if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
   template <typename T>
-  struct is_trivially_copy_assignable : public std::is_trivially_copy_assignable<T>
-  {
-  };
+  using is_trivially_copy_assignable = std::is_trivially_copy_assignable<T>;
 #else
   template <typename T>
-  struct is_trivially_copy_assignable : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
-  {
-  };
+  using is_trivially_copy_assignable = etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>;
 #endif
 
   //*********************************************
   // is_trivially_copyable
 #if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
   template <typename T>
-  struct is_trivially_copyable : public std::is_trivially_copyable<T>
-  {
-  };
+  using is_trivially_copyable = std::is_trivially_copyable<T>;
 #else
   template <typename T>
-  struct is_trivially_copyable : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
-  {
-  };
+  using is_trivially_copyable = etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>;
 #endif
 
 #elif defined(ETL_USE_TYPE_TRAITS_BUILTINS) && !defined(ETL_USER_DEFINED_TYPE_TRAITS)

@@ -144,8 +144,19 @@ namespace etl
     {
     public:
 
+      typedef size_t size_type;
+
       static ETL_CONSTANT uint_least8_t IS_TRUNCATED    = etl::bit<0>::value;
       static ETL_CONSTANT uint_least8_t CLEAR_AFTER_USE = etl::bit<1>::value;
+
+#if ETL_USING_CPP11
+      static constexpr size_type npos = etl::integral_limits<size_type>::max;
+#else
+      enum
+      {
+        npos = etl::integral_limits<size_type>::max
+      };
+#endif
     };
 
     template <typename T>
@@ -153,6 +164,9 @@ namespace etl
 
     template <typename T>
     ETL_CONSTANT uint_least8_t string_base_statics<T>::CLEAR_AFTER_USE;
+
+    template <typename T>
+    ETL_CONSTANT typename string_base_statics<T>::size_type string_base_statics<T>::npos;
   }
 
   //***************************************************************************
@@ -161,15 +175,6 @@ namespace etl
   public:
 
     typedef size_t size_type;
-
-#if ETL_USING_CPP11
-    static constexpr size_type npos = etl::integral_limits<size_type>::max;
-#else
-    enum
-    {
-      npos = etl::integral_limits<size_type>::max
-    };
-#endif
 
     //*************************************************************************
     /// Gets the current size of the string.

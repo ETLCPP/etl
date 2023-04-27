@@ -810,7 +810,7 @@ namespace etl
 
   //***************************************************************************
   template <size_t Active_Bits = 0U,
-            typename TElement = void,
+            typename TElement = char,
             bool IsSingleElement = etl::integral_limits<TElement>::bits == Active_Bits>
   class bitset;
 
@@ -819,7 +819,7 @@ namespace etl
   /// Just defines 'npos'.
   //***************************************************************************
   template <>
-  class bitset<0U, void, true> : public bitset_constants<>
+  class bitset<0U, char, true> : public bitset_constants<>
   {
   };
 
@@ -827,7 +827,7 @@ namespace etl
   /// Specialisation for zero bits.
   //***************************************************************************
   template <>
-  class bitset<0U, void, false> : public bitset_constants<>
+  class bitset<0U, char, false> : public bitset_constants<>
   {
   };
 
@@ -867,6 +867,15 @@ namespace etl
       friend class bitset;
 
       //*******************************
+      /// Copy constructor.
+      //*******************************
+      ETL_CONSTEXPR14 bit_reference(const bit_reference& other) ETL_NOEXCEPT
+        : p_bitset(other.p_bitset)
+        , position(other.position)
+      {
+      }
+
+      //*******************************
       /// Conversion operator.
       //*******************************
       ETL_CONSTEXPR14 operator bool() const ETL_NOEXCEPT
@@ -890,15 +899,6 @@ namespace etl
       {
         p_bitset->set(position, bool(r));
         return *this;
-      }
-
-      //*******************************
-      /// Copy constructor.
-      //*******************************
-      ETL_CONSTEXPR14 bit_reference(const bit_reference& other) ETL_NOEXCEPT
-        : p_bitset(other.p_bitset)
-        , position(other.position)
-      {
       }
 
       //*******************************
@@ -1752,6 +1752,15 @@ namespace etl
       friend class bitset;
 
       //*******************************
+      /// Copy constructor.
+      //*******************************
+      ETL_CONSTEXPR14 bit_reference(const bit_reference& other) ETL_NOEXCEPT
+        : p_bitset(other.p_bitset)
+        , position(other.position)
+      {
+      }
+
+      //*******************************
       /// Conversion operator.
       //*******************************
       ETL_CONSTEXPR14 operator bool() const ETL_NOEXCEPT
@@ -1775,15 +1784,6 @@ namespace etl
       {
         p_bitset->set(position, bool(r));
         return *this;
-      }
-
-      //*******************************
-      /// Copy constructor.
-      //*******************************
-      ETL_CONSTEXPR14 bit_reference(const bit_reference& other) ETL_NOEXCEPT
-        : p_bitset(other.p_bitset)
-        , position(other.position)
-      {
       }
 
       //*******************************
@@ -2448,7 +2448,7 @@ namespace etl
 {
   //***************************************************************************
   template <size_t Active_Bits = 0U,
-            typename TElement = void,
+            typename TElement = char,
             bool IsSingleElement = etl::integral_limits<TElement>::bits == Active_Bits>
     class bitset_ext;
 
@@ -2457,7 +2457,7 @@ namespace etl
   /// Just defines 'npos'.
   //***************************************************************************
   template <>
-  class bitset_ext<0U, void, true> : public bitset_constants<>
+  class bitset_ext<0U, char, true> : public bitset_constants<>
   {
   };
 
@@ -2465,7 +2465,7 @@ namespace etl
   /// Specialisation for zero bits.
   //***************************************************************************
   template <>
-  class bitset_ext<0U, void, false> : public bitset_constants<>
+  class bitset_ext<0U, char, false> : public bitset_constants<>
   {
   };
 
@@ -2505,6 +2505,15 @@ namespace etl
     public:
 
       friend class bitset_ext;
+
+      //*******************************
+      /// Copy constructor.
+      //*******************************
+      ETL_CONSTEXPR14 bit_reference(const bit_reference& other) ETL_NOEXCEPT
+        : p_bitset(other.p_bitset)
+        , position(other.position)
+      {
+      }
 
       //*******************************
       /// Conversion operator.
@@ -3380,6 +3389,15 @@ namespace etl
     public:
 
       friend class bitset_ext;
+
+      //*******************************
+      /// Copy constructor
+      //*******************************
+      ETL_CONSTEXPR14 bit_reference(const bit_reference& other) ETL_NOEXCEPT
+        : p_bitset(other.p_bitset)
+        , position(other.position)
+      {
+      }
 
       //*******************************
       /// Conversion operator.

@@ -174,26 +174,28 @@ namespace etl
     template <typename T = void>
     class ifsm_state_helper
     {
+    public:
+
       // Pass this whenever no state change is desired.
       // The highest unsigned value of fsm_state_id_t.
       static ETL_CONSTANT fsm_state_id_t No_State_Change = etl::integral_limits<fsm_state_id_t>::max;
       // Pass this when this event also needs to be passed to the parent.
       static ETL_CONSTANT fsm_state_id_t Pass_To_Parent = No_State_Change - 1U;
     };
+
+    template <typename T>
+    ETL_CONSTANT fsm_state_id_t ifsm_state_helper<T>::No_State_Change;
+
+    template <typename T>
+    ETL_CONSTANT fsm_state_id_t ifsm_state_helper<T>::Pass_To_Parent;
   }
 
   //***************************************************************************
   /// Interface class for FSM states.
   //***************************************************************************
-  class ifsm_state : private_fsm::ifsm_state_helper<>
+  class ifsm_state : public private_fsm::ifsm_state_helper<>
   {
   public:
-
-    // Pass this whenever no state change is desired.
-    // The highest unsigned value of fsm_state_id_t.
-    static ETL_CONSTANT fsm_state_id_t No_State_Change = etl::integral_limits<fsm_state_id_t>::max;
-    // Pass this when this event also needs to be passed to the parent.
-    static ETL_CONSTANT fsm_state_id_t Pass_To_Parent = No_State_Change - 1U;
 
     /// Allows ifsm_state functions to be private.
     friend class etl::fsm;

@@ -33,6 +33,7 @@ SOFTWARE.
 #include "etl/list.h"
 
 #include <algorithm>
+#include <limits>
 #include <numeric>
 #include <vector>
 #include <deque>

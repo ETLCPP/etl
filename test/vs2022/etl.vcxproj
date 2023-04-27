@@ -13452,10 +13452,6 @@
     <None Include="..\..\scripts\update_release.py" />
     <None Include="..\meson.build" />
     <None Include="..\runsanitychecks.sh" />
-    <None Include="..\runtests-O1.sh" />
-    <None Include="..\runtests-O2.sh" />
-    <None Include="..\runtests-O3.sh" />
-    <None Include="..\runtests-c++14.sh" />
     <None Include="..\runtests.sh" />
     <None Include="cpp.hint" />
   </ItemGroup>

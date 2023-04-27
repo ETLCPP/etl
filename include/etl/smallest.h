@@ -361,8 +361,8 @@ namespace etl
     typedef typename private_smallest::best_fit_uint_type<TYPE_INDEX>::type type;
   };
 
-  template <uintmax_t VALUE>
-  ETL_CONSTANT int smallest_uint_for_value<VALUE>::TYPE_INDEX;
+  template <uintmax_t NBITS>
+  ETL_CONSTANT int smallest_uint_for_value<NBITS>::TYPE_INDEX;
 
 #if ETL_USING_CPP11
   template <uintmax_t VALUE>
@@ -390,8 +390,8 @@ namespace etl
     typedef typename private_smallest::best_fit_int_type<TYPE_INDEX>::type type;
   };
 
-  template <intmax_t VALUE>
-  ETL_CONSTANT int smallest_int_for_value<VALUE>::TYPE_INDEX;
+  template <intmax_t NBITS>
+  ETL_CONSTANT int smallest_int_for_value<NBITS>::TYPE_INDEX;
 
 #if ETL_USING_CPP11
   template <intmax_t VALUE>
