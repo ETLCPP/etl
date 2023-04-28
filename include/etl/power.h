@@ -63,6 +63,9 @@ namespace etl
     static ETL_CONSTANT private_power::type value = NV * power<NV, POWER - 1>::value;
   };
 
+  template <const size_t NV, const size_t POWER>
+  ETL_CONSTANT private_power::type power<NV, POWER>::value;
+
   //***************************************************************************
   /// Calculates powers.
   ///\note Only supports positive N.
@@ -73,6 +76,9 @@ namespace etl
   {
     static ETL_CONSTANT private_power::type value = 1;
   };
+
+  template <const size_t NV>
+  ETL_CONSTANT private_power::type power<NV, 0>::value;
 
 #if ETL_USING_CPP17
   template <size_t NV, size_t POWER>
@@ -202,6 +208,9 @@ namespace etl
   {
     static ETL_CONSTANT bool value = false;
   };
+
+  template <const size_t NV>
+  ETL_CONSTANT bool is_power_of_2<NV>::value;
 
 #if ETL_USING_CPP17
   template <size_t NV>

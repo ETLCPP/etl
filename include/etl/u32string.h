@@ -438,8 +438,8 @@ namespace etl
   {
     size_t operator()(const etl::iu32string& text) const
     {
-      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(text.data()),
+                                                     reinterpret_cast<const uint8_t*>(text.data() + text.size()));
     }
   };
 
@@ -448,8 +448,8 @@ namespace etl
   {
     size_t operator()(const etl::u32string<SIZE>& text) const
     {
-      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(text.data()),
+                                                     reinterpret_cast<const uint8_t*>(text.data() + text.size()));
     }
   };
 
@@ -458,8 +458,8 @@ namespace etl
   {
     size_t operator()(const etl::u32string_ext& text) const
     {
-      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-        reinterpret_cast<const uint8_t*>(&text[text.size()]));
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(text.data()),
+                                                     reinterpret_cast<const uint8_t*>(text.data() + text.size()));
     }
   };
 #endif

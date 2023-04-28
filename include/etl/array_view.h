@@ -636,8 +636,8 @@ namespace etl
   {
     size_t operator()(const etl::array_view<T>& view) const
     {
-      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&view[0]),
-                                                     reinterpret_cast<const uint8_t*>(&view[view.size()]));
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(view.data()),
+                                                     reinterpret_cast<const uint8_t*>(view.data() + view.size()));
     }
   };
 #endif

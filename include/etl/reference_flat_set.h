@@ -981,6 +981,9 @@ namespace etl
     etl::vector<value_type*, MAX_SIZE> lookup;
   };
 
+  template <typename TKey, const size_t MAX_SIZE_, typename TCompare>
+  ETL_CONSTANT size_t reference_flat_set<TKey, MAX_SIZE_, TCompare>::MAX_SIZE;
+
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************

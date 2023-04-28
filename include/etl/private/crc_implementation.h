@@ -66,6 +66,9 @@ namespace etl
                                                        : TAccumulator(Do_Poly ? (Entry << 1U) ^ Polynomial : (Entry << 1U));
     };
 
+    template <typename TAccumulator, size_t Accumulator_Bits, TAccumulator Polynomial, bool Reflect, TAccumulator Entry>
+    ETL_CONSTANT TAccumulator crc_partial_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, Entry>::value;
+
     //*****************************************************************************
     /// CRC Table Entry
     //*****************************************************************************
@@ -89,6 +92,15 @@ namespace etl
                                                crc_partial_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, Entry>::value>::value;
     };
 
+    template <typename TAccumulator, size_t Accumulator_Bits, TAccumulator Polynomial, bool Reflect, size_t Index>
+    ETL_CONSTANT size_t crc_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, Index, 2U>::Shift_Bits;
+
+    template <typename TAccumulator, size_t Accumulator_Bits, TAccumulator Polynomial, bool Reflect, size_t Index>
+    ETL_CONSTANT TAccumulator crc_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, Index, 2U>::Entry;
+
+    template <typename TAccumulator, size_t Accumulator_Bits, TAccumulator Polynomial, bool Reflect, size_t Index>
+    ETL_CONSTANT TAccumulator crc_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, Index, 2U>::value;
+
     //*********************************
     // Chunk bit size of 4.
     template <typename TAccumulator, size_t Accumulator_Bits, TAccumulator Polynomial, bool Reflect, size_t Index>
@@ -104,6 +116,15 @@ namespace etl
                                                crc_partial_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect,
                                                crc_partial_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, Entry>::value>::value>::value>::value;
     };
+
+    template <typename TAccumulator, size_t Accumulator_Bits, TAccumulator Polynomial, bool Reflect, size_t Index>
+    ETL_CONSTANT size_t crc_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, Index, 4U>::Shift_Bits;
+
+    template <typename TAccumulator, size_t Accumulator_Bits, TAccumulator Polynomial, bool Reflect, size_t Index>
+    ETL_CONSTANT TAccumulator crc_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, Index, 4U>::Entry;
+
+    template <typename TAccumulator, size_t Accumulator_Bits, TAccumulator Polynomial, bool Reflect, size_t Index>
+    ETL_CONSTANT TAccumulator crc_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, Index, 4U>::value;
 
     //*********************************
     // Chunk bit size of 8.
@@ -124,6 +145,15 @@ namespace etl
                                                crc_partial_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect,
                                                crc_partial_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, Entry>::value>::value>::value>::value>::value>::value>::value>::value;
     };
+
+    template <typename TAccumulator, size_t Accumulator_Bits, TAccumulator Polynomial, bool Reflect, size_t Index>
+    ETL_CONSTANT size_t crc_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, Index, 8U>::Shift_Bits;
+
+    template <typename TAccumulator, size_t Accumulator_Bits, TAccumulator Polynomial, bool Reflect, size_t Index>
+    ETL_CONSTANT TAccumulator crc_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, Index, 8U>::Entry;
+
+    template <typename TAccumulator, size_t Accumulator_Bits, TAccumulator Polynomial, bool Reflect, size_t Index>
+    ETL_CONSTANT TAccumulator crc_table_entry<TAccumulator, Accumulator_Bits, Polynomial, Reflect, Index, 8U>::value;
 
     //*****************************************************************************
     /// CRC Update Chunk

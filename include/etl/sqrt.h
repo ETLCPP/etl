@@ -60,6 +60,11 @@ namespace etl
 #endif
   };
 
+#if ETL_USING_CPP11
+  template <size_t VALUE, size_t I>
+  constexpr size_t sqrt<VALUE, I>::value;
+#endif
+
 #if ETL_USING_CPP17
   template <size_t VALUE, size_t I = 1>
   inline constexpr size_t sqrt_v = sqrt<VALUE, I>::value;

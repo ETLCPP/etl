@@ -722,8 +722,8 @@ namespace
       View  view(etldata.begin(), etldata.end());
       CView cview(etldata.begin(), etldata.end());
 
-      size_t hashdata = etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&etldata[0]),
-                                                                reinterpret_cast<const uint8_t*>(&etldata[etldata.size()]));
+      size_t hashdata = etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(etldata.data()),
+                                                                reinterpret_cast<const uint8_t*>(etldata.data() + etldata.size()));
 
       size_t hashview  = etl::hash<View>()(view);
       size_t hashcview = etl::hash<CView>()(cview);

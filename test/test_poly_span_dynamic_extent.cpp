@@ -158,7 +158,7 @@ namespace
       etl::poly_span<Base> s(data);
       CHECK_EQUAL(sizeof(Derived), s.size_of_element());
       CHECK(!s.empty());
-      CHECK_EQUAL(ETL_OR_STD::size(data), s.size());
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.size());
       CHECK_EQUAL(s.size() * sizeof(Derived), s.size_bytes());
       CHECK_EQUAL(data[0].value(), s[0].value());
       CHECK_EQUAL(data[1].value(), s[1].value());
@@ -173,7 +173,7 @@ namespace
       etl::poly_span<const Base> s(data);
       CHECK_EQUAL(sizeof(Derived), s.size_of_element());
       CHECK(!s.empty());
-      CHECK_EQUAL(ETL_OR_STD::size(data), s.size());
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.size());
       CHECK_EQUAL(s.size() * sizeof(Derived), s.size_bytes());
       CHECK_EQUAL(data[0].value(), s[0].value());
       CHECK_EQUAL(data[1].value(), s[1].value());
@@ -491,8 +491,8 @@ namespace
 
       etl::poly_span s = data;
 
-      CHECK_EQUAL(ETL_OR_STD::size(data), s.extent);
-      CHECK_EQUAL(ETL_OR_STD::size(data), s.size());
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.size());
       CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
     }
 
@@ -504,8 +504,8 @@ namespace
 
       etl::poly_span s = data;
 
-      CHECK_EQUAL(ETL_OR_STD::size(data), s.extent);
-      CHECK_EQUAL(ETL_OR_STD::size(data), s.size());
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.size());
       CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
     }
 #endif
@@ -517,8 +517,8 @@ namespace
 
       etl::poly_span s = data;
 
-      CHECK_EQUAL(ETL_OR_STD::size(data), s.extent);
-      CHECK_EQUAL(ETL_OR_STD::size(data), s.size());
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.size());
       CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
     }
 

@@ -67,6 +67,14 @@ namespace etl
         if (call_on_enter_state)
         {
             do_enters(ETL_NULLPTR, p_state, true);
+
+
+            //etl::fsm_state_id_t next_state = do_enters(ETL_NULLPTR, p_state, true);
+
+            //if (ifsm_state::No_State_Change != next_state)
+            //{
+            //  p_state = state_list[next_state];
+            //}
         }
       }
     }

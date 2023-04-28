@@ -214,6 +214,7 @@ namespace etl
       // The maximum alignment.
       static constexpr size_t max_alignment = etl::alignment_of<etl::reference_counted_message<TMessage1, TCounter>>::value;
     };
+
 #else
     template <typename TMessage1,              typename TMessage2  = TMessage1, typename TMessage3  = TMessage1, typename TMessage4  = TMessage1,
               typename TMessage5  = TMessage1, typename TMessage6  = TMessage1, typename TMessage7  = TMessage1, typename TMessage8  = TMessage1>
@@ -247,6 +248,7 @@ namespace etl
                                                        etl::reference_counted_message<TMessage7, TCounter>,
                                                        etl::reference_counted_message<TMessage8, TCounter> >::alignment;
     };
+
 #endif
 
   private:
@@ -258,6 +260,30 @@ namespace etl
     reference_counted_message_pool(const reference_counted_message_pool&) ETL_DELETE;
     reference_counted_message_pool& operator =(const reference_counted_message_pool&) ETL_DELETE;
   };
+
+#if ETL_USING_CPP11
+
+  template <typename TCounter>
+  template <typename TMessage1, typename... TMessages>
+  constexpr size_t reference_counted_message_pool<TCounter>::pool_message_parameters<TMessage1, TMessages...>::max_size;
+
+  template <typename TCounter>
+  template <typename TMessage1, typename... TMessages>
+  constexpr size_t reference_counted_message_pool<TCounter>::pool_message_parameters<TMessage1, TMessages...>::max_alignment;
+
+#else
+
+  template <typename TCounter>
+  template <typename TMessage1, typename TMessage2, typename TMessage3, typename TMessage4,
+            typename TMessage5, typename TMessage6, typename TMessage7, typename TMessage8>
+  const size_t reference_counted_message_pool<TCounter>::pool_message_parameters<TMessage1, TMessage2, TMessage3, TMessage4, TMessage5, TMessage6, TMessage7, TMessage8>::max_size;
+
+  template <typename TCounter>
+  template <typename TMessage1, typename TMessage2, typename TMessage3, typename TMessage4,
+            typename TMessage5, typename TMessage6, typename TMessage7, typename TMessage8>
+  const size_t reference_counted_message_pool<TCounter>::pool_message_parameters<TMessage1, TMessage2, TMessage3, TMessage4, TMessage5, TMessage6, TMessage7, TMessage8>::max_alignment;
+
+#endif
 
 #if ETL_USING_CPP11 && ETL_HAS_ATOMIC
   using  atomic_counted_message_pool = reference_counted_message_pool<etl::atomic_int>;

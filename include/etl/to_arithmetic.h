@@ -193,11 +193,34 @@ namespace etl
 
   namespace private_to_arithmetic
   {
-    static ETL_CONSTANT char Positive_Char     = '+';
-    static ETL_CONSTANT char Negative_Char     = '-';
-    static ETL_CONSTANT char Radix_Point1_Char = '.';
-    static ETL_CONSTANT char Radix_Point2_Char = ',';
-    static ETL_CONSTANT char Exponential_Char  = 'e';
+    template <typename T = void>
+    struct char_statics
+    {
+      static ETL_CONSTANT char Positive_Char = '+';
+      static ETL_CONSTANT char Negative_Char = '-';
+      static ETL_CONSTANT char Radix_Point1_Char = '.';
+      static ETL_CONSTANT char Radix_Point2_Char = ',';
+      static ETL_CONSTANT char Exponential_Char = 'e';
+    };
+
+    template <typename T>
+    ETL_CONSTANT char char_statics<T>::Positive_Char;
+
+    template <typename T>
+    ETL_CONSTANT char char_statics<T>::Negative_Char;
+
+    template <typename T>
+    ETL_CONSTANT char char_statics<T>::Radix_Point1_Char;
+
+    template <typename T>
+    ETL_CONSTANT char char_statics<T>::Radix_Point2_Char;
+
+    template <typename T>
+    ETL_CONSTANT char char_statics<T>::Exponential_Char;
+
+    struct char_constant : char_statics<>
+    {
+    };
 
     //*******************************************
     ETL_NODISCARD
@@ -312,8 +335,8 @@ namespace etl
       {
         // Check for prefix.
         const char c = convert(view[0]);
-        const bool has_positive_prefix = (c == Positive_Char);
-        const bool has_negative_prefix = (c == Negative_Char);
+        const bool has_positive_prefix = (c == char_constant::Positive_Char);
+        const bool has_negative_prefix = (c == char_constant::Negative_Char);
 
         // Step over the prefix, if present.
         if (has_positive_prefix || has_negative_prefix)
@@ -465,19 +488,19 @@ namespace etl
           //***************************
           case Parsing_Integral:
           {
-            if (expecting_sign && ((c == Positive_Char) || (c == Negative_Char)))
+            if (expecting_sign && ((c == char_constant::Positive_Char) || (c == char_constant::Negative_Char)))
             {
-              is_negative_mantissa = (c == Negative_Char);
+              is_negative_mantissa = (c == char_constant::Negative_Char);
               expecting_sign = false;
             }
             // Radix point?
-            else if ((c == Radix_Point1_Char) || (c == Radix_Point2_Char))
+            else if ((c == char_constant::Radix_Point1_Char) || (c == char_constant::Radix_Point2_Char))
             {
               expecting_sign = false;
               state = Parsing_Fractional;
             }
             // Exponential?
-            else if (c == Exponential_Char)
+            else if (c == char_constant::Exponential_Char)
             {
               expecting_sign = true;
               state = Parsing_Exponential;
@@ -502,13 +525,13 @@ namespace etl
           case Parsing_Fractional:
           {
             // Radix point?
-            if ((c == Radix_Point1_Char) || (c == Radix_Point2_Char))
+            if ((c == char_constant::Radix_Point1_Char) || (c == char_constant::Radix_Point2_Char))
             {
               conversion_status = to_arithmetic_status::Invalid_Format;
               is_success = false;
             }
             // Exponential?
-            else if (c == Exponential_Char)
+            else if (c == char_constant::Exponential_Char)
             {
               expecting_sign = true;
               state = Parsing_Exponential;
@@ -532,13 +555,13 @@ namespace etl
           //***************************
           case Parsing_Exponential:
           {
-            if (expecting_sign && ((c == Positive_Char) || (c == Negative_Char)))
+            if (expecting_sign && ((c == char_constant::Positive_Char) || (c == char_constant::Negative_Char)))
             {
-              is_negative_exponent = (c == Negative_Char);
+              is_negative_exponent = (c == char_constant::Negative_Char);
               expecting_sign = false;
             }
             // Radix point?
-            else if ((c == Radix_Point1_Char) || (c == Radix_Point2_Char) || (c == Exponential_Char))
+            else if ((c == char_constant::Radix_Point1_Char) || (c == char_constant::Radix_Point2_Char) || (c == char_constant::Exponential_Char))
             {
               conversion_status = to_arithmetic_status::Invalid_Format;
               is_success = false;

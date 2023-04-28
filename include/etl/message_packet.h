@@ -387,7 +387,7 @@ namespace etl
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
@@ -680,7 +680,7 @@ namespace etl
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
@@ -971,7 +971,7 @@ namespace etl
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
@@ -1260,7 +1260,7 @@ namespace etl
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
@@ -1546,7 +1546,7 @@ namespace etl
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
@@ -1827,7 +1827,7 @@ namespace etl
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
@@ -2106,7 +2106,7 @@ namespace etl
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
@@ -2383,7 +2383,7 @@ namespace etl
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8, T9>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
@@ -2657,7 +2657,7 @@ namespace etl
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref<TMessage>::type, T1, T2, T3, T4, T5, T6, T7, T8>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
@@ -2926,7 +2926,7 @@ namespace etl
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6, T7> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref<TMessage>::type, T1, T2, T3, T4, T5, T6, T7>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
@@ -3193,7 +3193,7 @@ namespace etl
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5, T6> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref<TMessage>::type, T1, T2, T3, T4, T5, T6>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
@@ -3458,7 +3458,7 @@ namespace etl
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<T1, T2, T3, T4, T5> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref<TMessage>::type, T1, T2, T3, T4, T5>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
@@ -3720,7 +3720,7 @@ namespace etl
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<T1, T2, T3, T4> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref<TMessage>::type, T1, T2, T3, T4>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
@@ -3977,7 +3977,7 @@ namespace etl
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<T1, T2, T3> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref<TMessage>::type, T1, T2, T3>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
@@ -4232,7 +4232,7 @@ namespace etl
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<T1, T2> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref<TMessage>::type, T1, T2>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.
@@ -4485,7 +4485,7 @@ namespace etl
     template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<T1> >::value &&
                                                                     !etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::imessage>::value &&
                                                                     !etl::is_one_of<typename etl::remove_cvref<TMessage>::type, T1>::value, int>::type>
-    explicit message_packet(TMessage&& msg)
+    explicit message_packet(TMessage&& /*msg*/)
       : valid(true)
     {
       // Not etl::message_packet, not etl::imessage and in typelist.

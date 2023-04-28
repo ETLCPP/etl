@@ -379,3 +379,7 @@ test/vs2022/Debug MSVC - No STL - Force Built-ins
 test/temp
 test/vs2022/Debug MSVC C++14
 test/vs2022/Debug MSVC C++20 - No STL
+build-test-Desktop_x86_windows_msvc2019_pe_64bit-Debug
+test/vs2022/Debug MSVC C++14 - No STL
+test/log.txt
+test/etl_error_handler/log.txt

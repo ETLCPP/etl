@@ -236,7 +236,7 @@ namespace etl
     //*************************************************************************
     iterator end() ETL_NOEXCEPT
     {
-      return &_buffer[SIZE];
+      return _buffer + SIZE;
     }
 
     //*************************************************************************
@@ -244,7 +244,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR const_iterator end() const ETL_NOEXCEPT
     {
-      return &_buffer[SIZE];
+      return _buffer + SIZE;
     }
 
     //*************************************************************************
@@ -252,7 +252,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR const_iterator cend() const ETL_NOEXCEPT
     {
-      return &_buffer[SIZE];
+      return _buffer + SIZE;
     }
 
     //*************************************************************************

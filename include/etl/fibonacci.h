@@ -70,6 +70,9 @@ namespace etl
     static ETL_CONSTANT size_t value = 0UL;
   };
 
+  template <size_t N>
+  ETL_CONSTANT size_t fibonacci<N>::value;
+
 #if ETL_USING_CPP17
   template <size_t N>
   inline constexpr size_t fibonacci_v = fibonacci<N>::value;

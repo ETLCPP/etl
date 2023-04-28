@@ -112,6 +112,15 @@ namespace etl
     /// The generic pool from which allocate memory blocks.
     etl::generic_pool<Block_Size, Alignment, Size> pool;
   };
+
+  template <size_t VBlock_Size, size_t VAlignment, size_t VSize>
+  ETL_CONSTANT size_t fixed_sized_memory_block_allocator<VBlock_Size, VAlignment, VSize>::Block_Size;
+
+  template <size_t VBlock_Size, size_t VAlignment, size_t VSize>
+  ETL_CONSTANT size_t fixed_sized_memory_block_allocator<VBlock_Size, VAlignment, VSize>::Alignment;
+
+  template <size_t VBlock_Size, size_t VAlignment, size_t VSize>
+  ETL_CONSTANT size_t fixed_sized_memory_block_allocator<VBlock_Size, VAlignment, VSize>::Size;
 }
 
 #endif

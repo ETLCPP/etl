@@ -611,6 +611,9 @@ namespace etl
     size_t  element_size;
   };
 
+  template <typename TBase, size_t Extent>
+  ETL_CONSTANT size_t poly_span<TBase, Extent>::extent;
+
   //***************************************************************************
   /// Poly Span - Dynamic Extent
   //***************************************************************************
@@ -984,6 +987,9 @@ protected:
     size_t  span_extent;
   };
 
+  template <typename TBase>
+  ETL_CONSTANT size_t poly_span<TBase, etl::dynamic_extent>::extent;
+
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************
@@ -1028,8 +1034,8 @@ protected:
   {
     size_t operator()(const etl::poly_span<TBase, Extent>& view) const
     {
-      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&view[0]),
-                                                     reinterpret_cast<const uint8_t*>(&view[view.size()]));
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(view.data()),
+                                                     reinterpret_cast<const uint8_t*>(view.data() + view.size()));
     }
   };
 #endif

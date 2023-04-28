@@ -170,7 +170,7 @@ namespace UnitTest
    }
 
    template< typename Expected, typename Actual >
-   void CheckEqual(TestResults& results, Expected const& expected, Actual const& actual, TestDetails const& details)
+   void CheckEqual(TestResults& results, Expected&& expected, Actual&& actual, TestDetails const& details)
    {
      if (!(expected == actual))
      {

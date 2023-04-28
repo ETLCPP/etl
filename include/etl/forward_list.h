@@ -1748,6 +1748,9 @@ namespace etl
     etl::pool<typename etl::iforward_list<T>::data_node_t, MAX_SIZE> node_pool;
   };
 
+  template <typename T, const size_t MAX_SIZE_>
+  ETL_CONSTANT size_t forward_list<T, MAX_SIZE_>::MAX_SIZE;
+
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************

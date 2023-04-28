@@ -349,6 +349,15 @@ namespace etl
     value_type data;
   };
 
+  template <typename T, T MASK>
+  ETL_CONSTANT typename flags<T, MASK>::value_type flags<T, MASK>::ALL_SET;
+
+  template <typename T, T MASK>
+  ETL_CONSTANT typename flags<T, MASK>::value_type flags<T, MASK>::ALL_CLEAR;
+
+  template <typename T, T MASK>
+  ETL_CONSTANT size_t flags<T, MASK>::NBITS;
+
   //***************************************************************************
   /// operator ==
   //***************************************************************************

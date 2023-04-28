@@ -483,7 +483,7 @@ namespace etl
     for n in range(1, int(Handlers)):
         cog.out("T%s, " % n)
     cog.outl("T%s>::value, int>::type>" % int(Handlers))
-    cog.outl("  explicit message_packet(TMessage&& msg)")
+    cog.outl("  explicit message_packet(TMessage&& /*msg*/)")
     cog.outl("    : valid(true)")
     cog.outl("  {")
     generate_static_assert_cpp11(int(Handlers))
@@ -767,7 +767,7 @@ namespace etl
         for t in range(1, n):
             cog.out("T%s, " % t)
         cog.outl("T%s>::value, int>::type>" % n)
-        cog.outl("  explicit message_packet(TMessage&& msg)")
+        cog.outl("  explicit message_packet(TMessage&& /*msg*/)")
         cog.outl("    : valid(true)")
         cog.outl("  {")
         generate_static_assert_cpp11(n)

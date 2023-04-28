@@ -620,8 +620,8 @@ namespace
       View  view(etldata.begin(), etldata.end());
       CView cview(etldata.begin(), etldata.end());
 
-      size_t hashdata = etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&etldata[0]),
-                                                                reinterpret_cast<const uint8_t*>(&etldata[etldata.size()]));
+      size_t hashdata = etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(etldata.data()),
+                                                                reinterpret_cast<const uint8_t*>(etldata.data() + etldata.size()));
 
       size_t hashview  = etl::hash<View>()(view);
       size_t hashcview = etl::hash<CView>()(cview);
@@ -638,8 +638,8 @@ namespace
 
       etl::span s = data;
 
-      CHECK_EQUAL(ETL_OR_STD::size(data), s.extent);
-      CHECK_EQUAL(ETL_OR_STD::size(data), s.size());
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.size());
       CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
     }
 
@@ -651,8 +651,8 @@ namespace
 
       etl::span s = data;
 
-      CHECK_EQUAL(ETL_OR_STD::size(data), s.extent);
-      CHECK_EQUAL(ETL_OR_STD::size(data), s.size());
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.size());
       CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
     }
 #endif
@@ -664,8 +664,8 @@ namespace
 
       etl::span s = data;
 
-      CHECK_EQUAL(ETL_OR_STD::size(data), s.extent);
-      CHECK_EQUAL(ETL_OR_STD::size(data), s.size());
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.size());
       CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
     }
 
@@ -805,7 +805,7 @@ namespace
 
       for (int i = 0; i < 20; ++i)
       {
-        CHECK_EQUAL(expected[i % ETL_OR_STD::size(expected)], *sci++);
+        CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *sci++);
       }
     }
 
@@ -838,7 +838,7 @@ namespace
 
       for (int i = 0; i < 20; ++i)
       {
-        CHECK_EQUAL(expected[i % ETL_OR_STD::size(expected)], *++sci);
+        CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *++sci);
       }
     }
 
@@ -855,7 +855,7 @@ namespace
 
       for (int i = 0; i < 20; ++i)
       {
-        CHECK_EQUAL(expected[i % ETL_OR_STD::size(expected)], *++sci);
+        CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *++sci);
       }
     }
 
@@ -871,7 +871,7 @@ namespace
 
       for (int i = 0; i < 20; ++i)
       {
-        CHECK_EQUAL(expected[i % ETL_OR_STD::size(expected)], *sci++);
+        CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *sci++);
       }
     }
 
@@ -888,7 +888,7 @@ namespace
 
       for (int i = 0; i < 20; ++i)
       {
-        CHECK_EQUAL(expected[i % ETL_OR_STD::size(expected)], *sci++);
+        CHECK_EQUAL(expected[i % ETL_OR_STD17::size(expected)], *sci++);
       }
     }
 

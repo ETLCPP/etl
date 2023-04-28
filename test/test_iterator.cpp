@@ -79,7 +79,7 @@ namespace
     //*************************************************************************
     TEST(distance_non_random)
     {
-      ptrdiff_t d = etl::distance(non_random_iterator<int>(&dataA[0]), non_random_iterator<int>(&dataA[SIZE]));
+      ptrdiff_t d = etl::distance(non_random_iterator<int>(&dataA[0]), non_random_iterator<int>(dataA + SIZE));
 
       CHECK_EQUAL(SIZE, d);
     }
@@ -87,7 +87,7 @@ namespace
     //*************************************************************************
     TEST(distance_random)
     {
-      ptrdiff_t d = etl::distance(random_iterator<int>(&dataA[0]), random_iterator<int>(&dataA[SIZE]));
+      ptrdiff_t d = etl::distance(random_iterator<int>(&dataA[0]), random_iterator<int>(dataA + SIZE));
 
       CHECK_EQUAL(SIZE, d);
     }

@@ -259,6 +259,9 @@ namespace etl
     value_type buffer[MAX_SIZE + 1];
   };
 
+  template <size_t MAX_SIZE_>
+  ETL_CONSTANT size_t string<MAX_SIZE_>::MAX_SIZE;
+
   //***************************************************************************
   /// A string implementation that uses a fixed size external buffer.
   ///\ingroup string
@@ -455,8 +458,8 @@ namespace etl
   {
     size_t operator()(const etl::istring& text) const
     {
-      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(text.data()),
+                                                     reinterpret_cast<const uint8_t*>(text.data() + text.size()));
     }
   };
 
@@ -465,8 +468,8 @@ namespace etl
   {
     size_t operator()(const etl::string<SIZE>& text) const
     {
-      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(text.data()),
+                                                     reinterpret_cast<const uint8_t*>(text.data() + text.size()));
     }
   };
 
@@ -475,8 +478,8 @@ namespace etl
   {
     size_t operator()(const etl::string_ext& text) const
     {
-      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(text.data()),
+                                                     reinterpret_cast<const uint8_t*>(text.data() + text.size()));
     }
   };
 #endif

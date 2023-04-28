@@ -125,14 +125,14 @@ namespace etl
     template <typename T, typename T1, typename... TRest>
     struct id_from_type_helper
     {
-      static constexpr size_t value = etl::is_same<T, typename T1::type>::value ? T1::ID : id_from_type_helper<T, TRest...>::value;
+      static constexpr size_t value = etl::is_same<T, typename T1::type>::value ? size_t(T1::ID) : id_from_type_helper<T, TRest...>::value;
     };
 
     // Specialisation for 1 type pair.
     template <typename T, typename T1>
     struct id_from_type_helper<T, T1>
     {
-      static constexpr size_t value = etl::is_same<T, typename T1::type>::value ? T1::ID : UNKNOWN;
+      static constexpr size_t value = etl::is_same<T, typename T1::type>::value ? size_t(T1::ID) : UNKNOWN;
     };
 
   public:

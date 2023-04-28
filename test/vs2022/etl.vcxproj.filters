@@ -3472,9 +3472,6 @@
     <None Include="..\runsanitychecks.sh">
       <Filter>Tests\Scripts</Filter>
     </None>
-    <None Include="..\runtests.sh">
-      <Filter>Tests\Scripts</Filter>
-    </None>
     <None Include="..\..\.clang-format">
       <Filter>Resource Files</Filter>
     </None>
@@ -3517,22 +3514,7 @@
     <None Include="..\..\.github\workflows\msvc.yml">
       <Filter>Resource Files\CI\Github</Filter>
     </None>
-    <None Include="..\runtests-c++14.sh">
-      <Filter>Tests\Scripts</Filter>
-    </None>
-    <None Include="..\runtests-O1.sh">
-      <Filter>Tests\Scripts</Filter>
-    </None>
-    <None Include="..\runtests-O2.sh">
-      <Filter>Tests\Scripts</Filter>
-    </None>
-    <None Include="..\runtests-O3.sh">
-      <Filter>Tests\Scripts</Filter>
-    </None>
-    <None Include="..\..\.github\workflows\msvc.yml">
-      <Filter>Resource Files\CI\Github</Filter>
-    </None>
-    <None Include="..\runtests-c++14.sh">
+    <None Include="..\runtests.sh">
       <Filter>Tests\Scripts</Filter>
     </None>
   </ItemGroup>

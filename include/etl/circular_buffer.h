@@ -1226,6 +1226,9 @@ namespace etl
     etl::uninitialized_buffer_of<T, MAX_SIZE + 1> buffer;
   };
 
+  template <typename T, size_t MAX_SIZE_>
+  ETL_CONSTANT typename icircular_buffer<T>::size_type circular_buffer<T, MAX_SIZE_>::MAX_SIZE;
+
   //***************************************************************************
   /// A fixed capacity circular buffer.
   /// External buffer.

@@ -849,6 +849,12 @@ namespace etl
     pointer pend;
   };
 
+  template <typename T, size_t Extent>
+  ETL_CONSTANT size_t span<T, Extent>::extent;
+
+  template <typename T>
+  ETL_CONSTANT size_t span<T, etl::dynamic_extent>::extent;
+
   //*************************************************************************
   /// Compare two spans for equality.
   //*************************************************************************
@@ -933,8 +939,8 @@ namespace etl
   {
     size_t operator()(const etl::span<T>& view) const
     {
-      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&view[0]),
-                                                     reinterpret_cast<const uint8_t*>(&view[view.size()]));
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(view.data()),
+                                                     reinterpret_cast<const uint8_t*>(view.data() + view.size()));
     }
   };
 #endif

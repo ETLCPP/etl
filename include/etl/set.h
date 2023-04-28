@@ -2625,6 +2625,9 @@ namespace etl
     etl::pool<typename etl::iset<TKey, TCompare>::Data_Node, MAX_SIZE> node_pool;
   };
 
+  template <typename TKey, const size_t MAX_SIZE_, typename TCompare>
+  ETL_CONSTANT size_t set<TKey, MAX_SIZE_, TCompare>::MAX_SIZE;
+
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************

@@ -16,10 +16,10 @@ add_executable(etl_tests
 	test_algorithm.cpp
 	test_alignment.cpp
 	test_array.cpp
-	test_array_view.cpp
+    test_array_view.cpp
 	test_array_wrapper.cpp
 	test_atomic.cpp
-	test_binary.cpp
+    test_binary.cpp
 	test_bip_buffer_spsc_atomic.cpp
 	test_bit.cpp
 	test_bitset_legacy.cpp
@@ -147,7 +147,7 @@ add_executable(etl_tests
 	test_largest.cpp
 	test_limiter.cpp
 	test_limits.cpp
-	test_list.cpp
+    test_list.cpp
 	test_list_shared_pool.cpp
 	test_make_string.cpp
 	test_map.cpp
@@ -156,7 +156,7 @@ add_executable(etl_tests
 	test_mem_cast.cpp
 	test_mem_cast_ptr.cpp
     test_memory.cpp
-	test_message_broker.cpp
+    test_message_broker.cpp
 	test_message_bus.cpp
 	test_message_packet.cpp
 	test_message_router.cpp
@@ -164,7 +164,7 @@ add_executable(etl_tests
 	test_message_timer.cpp
 	test_message_timer_atomic.cpp
     test_message_timer_interrupt.cpp
-	test_message_timer_locked.cpp
+    test_message_timer_locked.cpp
 	test_multimap.cpp
 	test_multiset.cpp
 	test_multi_array.cpp
@@ -288,7 +288,7 @@ if (ETL_CXX_STANDARD MATCHES "98")
 	message(STATUS "Compiling for C++98")
     set_property(TARGET etl_tests PROPERTY CXX_STANDARD 98)
 elseif (ETL_CXX_STANDARD MATCHES "03")
-	message(STATUS "Compiling for C++98")    
+	message(STATUS "Compiling for C++03 (C++98)")    
 	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 98)
 elseif (ETL_CXX_STANDARD MATCHES "11")
 	message(STATUS "Compiling for C++11")    
@@ -359,6 +359,7 @@ if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Cla
 	target_compile_options(etl_tests
 			PRIVATE
 			-fno-omit-frame-pointer
+			-fno-common
 			-Wall
 			-Wextra
 			-Werror

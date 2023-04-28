@@ -214,6 +214,9 @@ namespace etl
 
       unsigned char storage[Size];
     };
+
+    template <size_t Size_>
+    ETL_CONSTANT size_t unaligned_type_common<Size_>::Size;
   }
 
   //*************************************************************************
@@ -598,6 +601,12 @@ namespace etl
       }
     };
   };
+
+  template <typename T, int Endian_>
+  ETL_CONSTANT int unaligned_type<T, Endian_>::Endian;
+    
+  template <typename T, int Endian_>
+  ETL_CONSTANT size_t unaligned_type<T, Endian_>::Size;
 
 #if ETL_HAS_CONSTEXPR_ENDIANNESS
   // Host order

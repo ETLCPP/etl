@@ -526,11 +526,14 @@ namespace etl
       base_t::clear();
     }
 
-  private:
+  private: 
 
     /// The uninitialised buffer of T used in the bip_buffer_spsc.
     etl::uninitialized_buffer_of<T, RESERVED_SIZE> buffer;
   };
+
+  template <typename T, const size_t SIZE, const size_t MEMORY_MODEL> 
+  ETL_CONSTANT typename bip_buffer_spsc_atomic<T, SIZE, MEMORY_MODEL>::size_type bip_buffer_spsc_atomic<T, SIZE, MEMORY_MODEL>::RESERVED_SIZE;
 }
 
 #endif /* ETL_HAS_ATOMIC && ETL_USING_CPP11 */
