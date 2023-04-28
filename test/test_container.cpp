@@ -74,7 +74,7 @@ namespace
       CHECK(&data[0] == iBegin);
 
       int* iEnd = etl::end(data);
-      CHECK(&data[SIZE] == iEnd);
+      CHECK((data + SIZE) == iEnd);
     }
 
     //*************************************************************************
@@ -87,7 +87,7 @@ namespace
       CHECK(&data[0] == iBegin);
 
       const int* const iEnd = etl::end(data);
-      CHECK(&data[SIZE] == iEnd);
+      CHECK((data + SIZE) == iEnd);
     }
 
 

@@ -689,7 +689,7 @@ namespace etl
     //*************************************************************************
     const_iterator end() const
     {
-      return const_iterator(static_cast<const data_node_t&>(terminal_node));
+      return const_iterator(terminal_node);
     }
 
     //*************************************************************************
@@ -705,7 +705,7 @@ namespace etl
     //*************************************************************************
     const_iterator cend() const
     {
-      return const_iterator(static_cast<const data_node_t&>(terminal_node));
+      return const_iterator(terminal_node);
     }
 
     //*************************************************************************
@@ -721,7 +721,7 @@ namespace etl
     //*************************************************************************
     const_reverse_iterator rbegin() const
     {
-      return const_reverse_iterator(static_cast<const data_node_t&>(terminal_node));
+      return const_reverse_iterator(terminal_node);
     }
 
     //*************************************************************************
@@ -745,7 +745,7 @@ namespace etl
     //*************************************************************************
     const_reverse_iterator crbegin() const
     {
-      return const_reverse_iterator(static_cast<const data_node_t&>(terminal_node));
+      return const_reverse_iterator(terminal_node);
     }
 
     //*************************************************************************

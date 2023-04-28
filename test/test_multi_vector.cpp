@@ -253,11 +253,11 @@ namespace
       Data data;
       Copy(initial, data);
 
-      CHECK(data.end() == &data[SIZE1]);
-      CHECK(data[0].end() == &data[0][SIZE2]);
-      CHECK(data[1].end() == &data[1][SIZE2]);
-      CHECK(data[2].end() == &data[2][SIZE2]);
-      CHECK(data[3].end() == &data[3][SIZE2]);
+      CHECK(data.end() == &data[0] + SIZE1);
+      CHECK(data[0].end() == &data[0][0] + SIZE2);
+      CHECK(data[1].end() == &data[1][0] + SIZE2);
+      CHECK(data[2].end() == &data[2][0] + SIZE2);
+      CHECK(data[3].end() == &data[3][0] + SIZE2);
     }
 
     //*************************************************************************
@@ -281,11 +281,11 @@ namespace
       Data data;
       Copy(initial, data);
 
-      CHECK(data.cend() == &data[SIZE1]);
-      CHECK(data[0].cend() == &data[0][SIZE2]);
-      CHECK(data[1].cend() == &data[1][SIZE2]);
-      CHECK(data[2].cend() == &data[2][SIZE2]);
-      CHECK(data[3].cend() == &data[3][SIZE2]);
+      CHECK(data.cend() == &data[0] + SIZE1);
+      CHECK(data[0].cend() == &data[0][0] + SIZE2);
+      CHECK(data[1].cend() == &data[1][0] + SIZE2);
+      CHECK(data[2].cend() == &data[2][0] + SIZE2);
+      CHECK(data[3].cend() == &data[3][0] + SIZE2);
     }
 
     //*************************************************************************
@@ -297,11 +297,11 @@ namespace
 
       typedef etl::multi_vector<int, SIZE2> Inner;
 
-      CHECK(data.rbegin() == Data::reverse_iterator(&data[SIZE1]));
-      CHECK(data[0].rbegin() == Inner::reverse_iterator(&data[0][SIZE2]));
-      CHECK(data[1].rbegin() == Inner::reverse_iterator(&data[1][SIZE2]));
-      CHECK(data[2].rbegin() == Inner::reverse_iterator(&data[2][SIZE2]));
-      CHECK(data[3].rbegin() == Inner::reverse_iterator(&data[3][SIZE2]));
+      CHECK(data.rbegin() == Data::reverse_iterator(&data[0] + SIZE1));
+      CHECK(data[0].rbegin() == Inner::reverse_iterator(&data[0][0] + SIZE2));
+      CHECK(data[1].rbegin() == Inner::reverse_iterator(&data[1][0] + SIZE2));
+      CHECK(data[2].rbegin() == Inner::reverse_iterator(&data[2][0] + SIZE2));
+      CHECK(data[3].rbegin() == Inner::reverse_iterator(&data[3][0] + SIZE2));
     }
 
     //*************************************************************************
@@ -329,11 +329,11 @@ namespace
 
       typedef etl::multi_vector<int, SIZE2> Inner;
 
-      CHECK(data.rbegin() == Data::const_reverse_iterator(&data[SIZE1]));
-      CHECK(data[0].rbegin() == Inner::const_reverse_iterator(&data[0][SIZE2]));
-      CHECK(data[1].rbegin() == Inner::const_reverse_iterator(&data[1][SIZE2]));
-      CHECK(data[2].rbegin() == Inner::const_reverse_iterator(&data[2][SIZE2]));
-      CHECK(data[3].rbegin() == Inner::const_reverse_iterator(&data[3][SIZE2]));
+      CHECK(data.rbegin() == Data::const_reverse_iterator(&data[0] + SIZE1));
+      CHECK(data[0].rbegin() == Inner::const_reverse_iterator(&data[0][0] + SIZE2));
+      CHECK(data[1].rbegin() == Inner::const_reverse_iterator(&data[1][0] + SIZE2));
+      CHECK(data[2].rbegin() == Inner::const_reverse_iterator(&data[2][0] + SIZE2));
+      CHECK(data[3].rbegin() == Inner::const_reverse_iterator(&data[3][0] + SIZE2));
     }
 
     //*************************************************************************

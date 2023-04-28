@@ -148,15 +148,8 @@ namespace etl
 
       static ETL_CONSTANT uint_least8_t IS_TRUNCATED    = etl::bit<0>::value;
       static ETL_CONSTANT uint_least8_t CLEAR_AFTER_USE = etl::bit<1>::value;
-
-#if ETL_USING_CPP11
-      static constexpr size_type npos = etl::integral_limits<size_type>::max;
-#else
-      enum
-      {
-        npos = etl::integral_limits<size_type>::max
-      };
-#endif
+      
+      static ETL_CONSTANT size_type npos = etl::integral_limits<size_type>::max;
     };
 
     template <typename T>

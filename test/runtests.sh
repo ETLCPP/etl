@@ -28,6 +28,11 @@ else
   opt="-O0"
 fi
 
+export ASAN_OPTIONS=symbol_line=1
+export ASAN_SYMBOLIZER_PATH=/usr/lib/llvm-14/bin//llvm-symbolizer
+
+echo -e
+
 testname="Test Name Not Set"
 
 FailColour='\033[38;2;255;128;128m'
@@ -35,9 +40,7 @@ PassColour='\033[38;2;128;255;128m'
 TitleColour='\033[38;2;100;173;254m'
 NoColour='\033[0m'
 
-echo -e
-
-TestName()
+SetTestName()
 {
 	testname=$1
 }
@@ -47,8 +50,8 @@ PrintHeader()
 	echo "${TitleColour}"
 	echo "----------------------------------------------------------------------------" | tee -a log.txt
 	echo " $testname" | tee -a log.txt
-	echo " Language standard : C++${cxx_standard}"
-    echo " Optimisation      : ${opt}"
+	echo " Language standard : C++${cxx_standard}" | tee -a log.txt
+    echo " Optimisation      : ${opt}" | tee -a log.txt
 	echo "----------------------------------------------------------------------------" | tee -a log.txt
 	echo "${NoColour}"
 }
@@ -56,14 +59,18 @@ PrintHeader()
 PassedCompilation()
 {
 	echo "${PassColour}"
-	echo "<<<< Passed Compilation - $testname >>>>" | tee -a ../log.txt
+	echo "-----------------------------------------------" | tee -a log.txt
+	echo " Passed Compilation - $testname" | tee -a ../log.txt
+	echo "-----------------------------------------------" | tee -a log.txt
 	echo "${NoColour}"
 }
 
 PassedTests()
 {
 	echo "${PassColour}"
-	echo "<<<< Passed Tests - $testname >>>>" | tee -a ../log.txt
+	echo "-----------------------------------------------" | tee -a log.txt
+	echo " Passed Tests - $testname" | tee -a ../log.txt
+	echo "-----------------------------------------------" | tee -a log.txt
 	echo "${NoColour}"
 }
 
@@ -97,72 +104,93 @@ TestsCompleted()
 #******************************************************************************
 # GCC
 #******************************************************************************
-#TestName "GCC - STL"
-#PrintHeader
-#rm * -rf
-#gcc --version | grep gcc | tee -a log.txt
-#cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
-#make -j4
-#if [ $? -eq 0 ]; then
-#  PassedCompilation
-#else
-#  FailedCompilation
-#  exit $?
-#fi
-#./etl_tests
-#if [ $? -eq 0 ]; then
-#  PassedTests
-#else
-#  FailedTests
-#  exit $?
-#fi
+SetTestName "GCC - STL"
+PrintHeader
+rm * -rf
+gcc --version | grep gcc | tee -a log.txt
+cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
+make -j4
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+./etl_tests
+if [ $? -eq 0 ]; then
+  PassedTests
+else
+  FailedTests
+  exit $?
+fi
 
 #******************************************************************************
-#TestName "GCC - STL - Force C++03"
-#PrintHeader
-#rm * -rf
-#gcc --version | grep gcc | tee -a log.txt
-#cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
-#make -j4
-#if [ $? -eq 0 ]; then
-#  PassedCompilation
-#else
-#  FailedCompilation
-#  exit $?
-#fi
-#./etl_tests
-#if [ $? -eq 0 ]; then
-#  PassedTests
-#else
-#  FailedTests
-#  exit $?
-#fi
+SetTestName "GCC - STL - Force C++03"
+PrintHeader
+rm * -rf
+gcc --version | grep gcc | tee -a log.txt
+cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
+make -j4
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+./etl_tests
+if [ $? -eq 0 ]; then
+  PassedTests
+else
+  FailedTests
+  exit $?
+fi
 
 #******************************************************************************
-#TestName "GCC - No STL"
-#PrintHeader
-#rm * -rf
-#gcc --version | grep gcc | tee -a log.txt
-#cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
-#make -j4
-#if [ $? -eq 0 ]; then
-#  PassedCompilation
-#else
-#  FailedCompilation
-#  exit $?
-#fi
-#./etl_tests
-#if [ $? -eq 0 ]; then
-#  PassedTests
-#else
-#  FailedTests
-#  exit $?
-#fi
+SetTestName "GCC - No STL"
+PrintHeader
+rm * -rf
+gcc --version | grep gcc | tee -a log.txt
+cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
+make -j4
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+./etl_tests
+if [ $? -eq 0 ]; then
+  PassedTests
+else
+  FailedTests
+  exit $?
+fi
+
+#******************************************************************************
+SetTestName "GCC - No STL - Force C++03"
+PrintHeader
+rm * -rf
+gcc --version | grep gcc | tee -a log.txt
+cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
+make -j4
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+./etl_tests
+if [ $? -eq 0 ]; then
+  PassedTests
+else
+  FailedTests
+  exit $?
+fi
 
 #******************************************************************************
 # CLANG
 #******************************************************************************
-TestName "Clang - STL"
+SetTestName "Clang - STL"
 PrintHeader
 rm * -rf
 clang --version | grep clang | tee -a log.txt
@@ -183,7 +211,7 @@ else
 fi
 
 #******************************************************************************
-TestName "Clang - STL - Force C++03"
+SetTestName "Clang - STL - Force C++03"
 PrintHeader
 rm * -rf
 clang --version | grep clang | tee -a log.txt
@@ -204,7 +232,7 @@ else
 fi
 
 #******************************************************************************
-TestName "Clang - No STL"
+SetTestName "Clang - No STL"
 PrintHeader
 rm * -rf
 clang --version | grep clang | tee -a log.txt
@@ -225,7 +253,28 @@ else
 fi
 
 #******************************************************************************
-TestName "GCC - Initializer list test"
+SetTestName "Clang - No STL - Force C++03"
+PrintHeader
+rm * -rf
+clang --version | grep clang | tee -a log.txt
+cmake -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
+make -j4
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+./etl_tests
+if [ $? -eq 0 ]; then
+  PassedTests
+else
+  FailedTests
+  exit $?
+fi
+
+#******************************************************************************
+SetTestName "GCC - Initializer list test"
 PrintHeader
 cd ../etl_initializer_list/
 mkdir -p build-make || exit 1
@@ -249,7 +298,7 @@ else
 fi
 
 #******************************************************************************
-TestName "Clang - Initializer list test"
+SetTestName "Clang - Initializer list test"
 PrintHeader
 rm * -rf
 clang --version | grep clang | tee -a log.txt
@@ -270,7 +319,7 @@ else
 fi
 
 #******************************************************************************
-TestName "GCC - Error macros 'log_errors' test"
+SetTestName "GCC - Error macros 'log_errors' test"
 PrintHeader
 cd ../../etl_error_handler/log_errors
 mkdir -p build-make || exit 1
@@ -294,7 +343,7 @@ else
 fi
 
 #******************************************************************************
-TestName "GCC - Error macros 'exceptions' test"
+SetTestName "GCC - Error macros 'exceptions' test"
 PrintHeader
 cd ../../../etl_error_handler/exceptions
 mkdir -p build-make || exit 1
@@ -318,7 +367,7 @@ else
 fi
 
 #******************************************************************************
-TestName "GCC - Error macros 'log_errors and exceptions' test"
+SetTestName "GCC - Error macros 'log_errors and exceptions' test"
 PrintHeader
 cd ../../../etl_error_handler/log_errors_and_exceptions
 mkdir -p build-make || exit 1
@@ -342,7 +391,7 @@ else
 fi
 
 #******************************************************************************
-TestName "Clang - Error macros 'log_errors' test"
+SetTestName "Clang - Error macros 'log_errors' test"
 PrintHeader
 cd ../../../etl_error_handler/log_errors
 mkdir -p build-make || exit 1
@@ -366,7 +415,7 @@ else
 fi
 
 #******************************************************************************
-TestName "Clang - Error macros 'exceptions' test"
+SetTestName "Clang - Error macros 'exceptions' test"
 PrintHeader
 cd ../../../etl_error_handler/exceptions
 mkdir -p build-make || exit 1
@@ -390,7 +439,7 @@ else
 fi
 
 #******************************************************************************
-TestName "Clang - Error macros 'log_errors and exceptions' test"
+SetTestName "Clang - Error macros 'log_errors and exceptions' test"
 PrintHeader
 cd ../../../etl_error_handler/log_errors_and_exceptions
 mkdir -p build-make || exit 1
