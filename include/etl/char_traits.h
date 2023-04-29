@@ -151,15 +151,15 @@ namespace etl
     }
 
     //*************************************************************************
-    static void assign(char_type& r, const char_type& c)
+    static ETL_CONSTEXPR14 void assign(char_type& r, const char_type& c)
     {
       r = c;
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR char_type* assign(char_type* p, size_t n, char_type c)
+    static ETL_CONSTEXPR14 char_type* assign(char_type* p, size_t n, char_type c)
     {
-      if (p != 0)
+      if (p != ETL_NULLPTR)
       {
         etl::fill_n(p, n, c);
       }
@@ -168,7 +168,7 @@ namespace etl
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR char_type* move(char_type* dst, const char_type* src, size_t count)
+    static ETL_CONSTEXPR14 char_type* move(char_type* dst, const char_type* src, size_t count)
     {
       if ((dst < src) || (dst > (src + count)))
       {
@@ -185,7 +185,7 @@ namespace etl
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR char_type* copy(char_type* dst, const char_type* src, size_t count)
+    static ETL_CONSTEXPR14 char_type* copy(char_type* dst, const char_type* src, size_t count)
     {
       etl::copy_n(src, count, dst);
 

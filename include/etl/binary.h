@@ -2241,7 +2241,7 @@ namespace etl
 
   //***********************************
   template <typename T>
-  ETL_CONSTEXPR T make_msb_mask(size_t nbits)
+  ETL_CONSTEXPR14 T make_msb_mask(size_t nbits)
   {
     return static_cast<T>(etl::reverse_bits(make_lsb_mask<T>(nbits)));
   }
