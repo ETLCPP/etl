@@ -6,28 +6,6 @@ cd build-make || exit 1
 
 echo "ETL Tests" > log.txt
 
-# Set the language standard. Default C++20
-if [ "$1" = "11" ]; then
-  cxx_standard="11"
-elif [ "$1" = "14" ]; then
-  cxx_standard="14"
-elif [ "$1" = "17" ]; then
-  cxx_standard="17"
-else
-  cxx_standard="20"
-fi
-
-# Set the optimisation level. Default -O0
-if [ "$2" = "1" ]; then
-  opt="-O1"
-elif [ "$2" = "2" ]; then
-  opt="-O2"
-elif [ "$2" = "3" ]; then
-  opt="-O3" 
-else
-  opt="-O0"
-fi
-
 export ASAN_OPTIONS=symbol_line=1
 export ASAN_SYMBOLIZER_PATH=/usr/lib/llvm-14/bin//llvm-symbolizer
 
@@ -38,11 +16,17 @@ testname="Test Name Not Set"
 FailColour='\033[38;2;255;128;128m'
 PassColour='\033[38;2;128;255;128m'
 TitleColour='\033[38;2;100;173;254m'
+HelpColour='\033[38;2;250;180;250m'
 NoColour='\033[0m'
 
 SetTestName()
 {
 	testname=$1
+}
+
+Bell()
+{
+	echo -n $'\a'
 }
 
 PrintHeader()
@@ -53,6 +37,17 @@ PrintHeader()
 	echo " Language standard : C++${cxx_standard}" | tee -a log.txt
     echo " Optimisation      : ${opt}" | tee -a log.txt
 	echo "----------------------------------------------------------------------------" | tee -a log.txt
+	echo "${NoColour}"
+}
+
+PrintHelp()
+{
+	echo "${HelpColour}"
+	echo "----------------------------------------------------------------------------"
+	echo " Syntax       : ./runtests.sh <C++ Standard> <Optimisation>"
+	echo " C++ Standard : 11, 14, 17 or 20"
+	echo " Optimisation : 0, 1, 2 or 3. Default = 0"
+	echo "----------------------------------------------------------------------------"
 	echo "${NoColour}"
 }
 
@@ -71,7 +66,6 @@ PassedTests()
 	echo "-----------------------------------------------" | tee -a log.txt
 	echo " Passed Tests - $testname" | tee -a ../log.txt
 	echo "-----------------------------------------------" | tee -a log.txt
-	echo "${NoColour}"
 }
 
 FailedCompilation()
@@ -81,6 +75,7 @@ FailedCompilation()
     echo "**** Failed Compilation $testname" | tee -a log.txt
 	echo "****************************************************************************" | tee -a ../log.txt
 	echo "${NoColour}"
+	Bell
 }
 
 FailedTests()
@@ -90,6 +85,7 @@ FailedTests()
     echo "**** Failed Tests $testname" | tee -a log.txt
 	echo "****************************************************************************" | tee -a ../log.txt
 	echo "${NoColour}"
+	Bell
 }
 
 TestsCompleted()
@@ -100,6 +96,35 @@ TestsCompleted()
 	echo "-----------------------------------------------" | tee -a log.txt
 	echo "${NoColour}"
 }
+
+#******************************************************************************
+# Set the language standard.
+#******************************************************************************
+if [ "$1" = "11" ]; then
+  cxx_standard="11"
+elif [ "$1" = "14" ]; then
+  cxx_standard="14"
+elif [ "$1" = "17" ]; then
+  cxx_standard="17"
+elif [ "$1" = "20" ]; then
+  cxx_standard="20"
+else
+  PrintHelp
+  exit
+fi
+
+#******************************************************************************
+# Set the optimisation level. Default -O0
+#******************************************************************************
+if [ "$2" = "1" ]; then
+  opt="-O1"
+elif [ "$2" = "2" ]; then
+  opt="-O2"
+elif [ "$2" = "3" ]; then
+  opt="-O3" 
+else
+  opt="-O0"
+fi
 
 #******************************************************************************
 # GCC
