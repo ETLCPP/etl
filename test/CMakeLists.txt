@@ -16,7 +16,7 @@ add_executable(etl_tests
 	test_algorithm.cpp
 	test_alignment.cpp
 	test_array.cpp
-    test_array_view.cpp
+	test_array_view.cpp
 	test_array_wrapper.cpp
 	test_atomic.cpp
     test_binary.cpp
@@ -147,7 +147,7 @@ add_executable(etl_tests
 	test_largest.cpp
 	test_limiter.cpp
 	test_limits.cpp
-    test_list.cpp
+	test_list.cpp
 	test_list_shared_pool.cpp
 	test_make_string.cpp
 	test_map.cpp
@@ -155,16 +155,16 @@ add_executable(etl_tests
 	test_mean.cpp
 	test_mem_cast.cpp
 	test_mem_cast_ptr.cpp
-    test_memory.cpp
-    test_message_broker.cpp
+	test_memory.cpp
+	test_message_broker.cpp
 	test_message_bus.cpp
 	test_message_packet.cpp
 	test_message_router.cpp
 	test_message_router_registry.cpp
 	test_message_timer.cpp
 	test_message_timer_atomic.cpp
-    test_message_timer_interrupt.cpp
-    test_message_timer_locked.cpp
+	test_message_timer_interrupt.cpp
+	test_message_timer_locked.cpp
 	test_multimap.cpp
 	test_multiset.cpp
 	test_multi_array.cpp
