@@ -504,17 +504,17 @@ namespace etl
     bool have_changed_state(etl::fsm_state_id_t next_state_id) const
     {
       return (next_state_id != p_state->get_state_id()) &&
-        (next_state_id != ifsm_state::No_State_Change);
+             (next_state_id != ifsm_state::No_State_Change);
     }
 
-    etl::ifsm_state* p_state;          ///< A pointer to the current state.
-    etl::ifsm_state** state_list;       ///< The list of added states.
+    etl::ifsm_state*    p_state;          ///< A pointer to the current state.
+    etl::ifsm_state**   state_list;       ///< The list of added states.
     etl::fsm_state_id_t number_of_states; ///< The number of states.
   };
 
-//*************************************************************************************************
-// For C++17 and above.
-//*************************************************************************************************
+  //*************************************************************************************************
+  // For C++17 and above.
+  //*************************************************************************************************
 #if ETL_USING_CPP17 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
   //***************************************************************************
   // The definition for all types.
@@ -524,12 +524,7 @@ namespace etl
   {
   public:
 
-  public:
-
-    enum
-    {
-      STATE_ID = STATE_ID_
-    };
+    static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
     fsm_state()
       : ifsm_state(STATE_ID)
@@ -586,6 +581,11 @@ namespace etl
       }
     }
   };
+
+  /// Definition of STATE_ID
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, typename... TMessageTypes>
+  ETL_CONSTANT etl::fsm_state_id_t fsm_state<TContext, TDerived, STATE_ID_, TMessageTypes...>::STATE_ID;
+
 #else
 //*************************************************************************************************
 // For C++14 and below.
@@ -602,10 +602,7 @@ namespace etl
   {
   public:
 
-    enum
-    {
-      STATE_ID = STATE_ID_
-    };
+    static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
     fsm_state()
       : ifsm_state(STATE_ID)
@@ -667,10 +664,7 @@ namespace etl
   {
   public:
 
-    enum
-    {
-      STATE_ID = STATE_ID_
-    };
+    static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
     fsm_state()
       : ifsm_state(STATE_ID)
@@ -731,10 +725,7 @@ namespace etl
   {
   public:
 
-    enum
-    {
-      STATE_ID = STATE_ID_
-    };
+    static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
     fsm_state()
       : ifsm_state(STATE_ID)
@@ -794,10 +785,7 @@ namespace etl
   {
   public:
 
-    enum
-    {
-      STATE_ID = STATE_ID_
-    };
+    static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
     fsm_state()
       : ifsm_state(STATE_ID)
@@ -855,10 +843,7 @@ namespace etl
   {
   public:
 
-    enum
-    {
-      STATE_ID = STATE_ID_
-    };
+    static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
     fsm_state()
       : ifsm_state(STATE_ID)
@@ -915,10 +900,7 @@ namespace etl
   {
   public:
 
-    enum
-    {
-      STATE_ID = STATE_ID_
-    };
+    static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
     fsm_state()
       : ifsm_state(STATE_ID)
@@ -974,10 +956,7 @@ namespace etl
   {
   public:
 
-    enum
-    {
-      STATE_ID = STATE_ID_
-    };
+    static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
     fsm_state()
       : ifsm_state(STATE_ID)
@@ -1032,10 +1011,7 @@ namespace etl
   {
   public:
 
-    enum
-    {
-      STATE_ID = STATE_ID_
-    };
+    static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
     fsm_state()
       : ifsm_state(STATE_ID)
@@ -1088,10 +1064,7 @@ namespace etl
   {
   public:
 
-    enum
-    {
-      STATE_ID = STATE_ID_
-    };
+    static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
     fsm_state()
       : ifsm_state(STATE_ID)
@@ -1143,10 +1116,7 @@ namespace etl
   {
   public:
 
-    enum
-    {
-      STATE_ID = STATE_ID_
-    };
+    static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
     fsm_state()
       : ifsm_state(STATE_ID)
@@ -1197,10 +1167,7 @@ namespace etl
   {
   public:
 
-    enum
-    {
-      STATE_ID = STATE_ID_
-    };
+    static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
     fsm_state()
       : ifsm_state(STATE_ID)
@@ -1250,10 +1217,7 @@ namespace etl
   {
   public:
 
-    enum
-    {
-      STATE_ID = STATE_ID_
-    };
+    static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
     fsm_state()
       : ifsm_state(STATE_ID)
@@ -1301,10 +1265,7 @@ namespace etl
   {
   public:
 
-    enum
-    {
-      STATE_ID = STATE_ID_
-    };
+    static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
     fsm_state()
       : ifsm_state(STATE_ID)
@@ -1351,10 +1312,7 @@ namespace etl
   {
   public:
 
-    enum
-    {
-      STATE_ID = STATE_ID_
-    };
+    static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
     fsm_state()
       : ifsm_state(STATE_ID)
@@ -1400,10 +1358,7 @@ namespace etl
   {
   public:
 
-    enum
-    {
-      STATE_ID = STATE_ID_
-    };
+    static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
     fsm_state()
       : ifsm_state(STATE_ID)
@@ -1448,10 +1403,7 @@ namespace etl
   {
   public:
 
-    enum
-    {
-      STATE_ID = STATE_ID_
-    };
+    static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
     fsm_state()
       : ifsm_state(STATE_ID)
@@ -1494,10 +1446,7 @@ namespace etl
   {
   public:
 
-    enum
-    {
-      STATE_ID = STATE_ID_
-    };
+    static ETL_CONSTANT etl::fsm_state_id_t STATE_ID = STATE_ID_;
 
     fsm_state()
       : ifsm_state(STATE_ID)
@@ -1521,6 +1470,13 @@ namespace etl
       return p_parent ? p_parent->process_event(message) : static_cast<TDerived*>(this)->on_event_unknown(message);
     }
   };
+
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
+            typename T1, typename T2, typename T3, typename T4, 
+            typename T5, typename T6, typename T7, typename T8, 
+            typename T9, typename T10, typename T11, typename T12, 
+            typename T13, typename T14, typename T15, typename T16>
+  ETL_CONSTANT etl::fsm_state_id_t fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::STATE_ID;
 #endif
 }
 
