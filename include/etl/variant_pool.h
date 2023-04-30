@@ -62,7 +62,7 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  template <const size_t MAX_SIZE_,
+  template <size_t MAX_SIZE_,
             typename T1,
             typename T2 = void,
             typename T3 = void,

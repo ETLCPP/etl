@@ -105,12 +105,12 @@ namespace etl
     //***************************************************************************
     // Matcher.
     //***************************************************************************
-    template <const bool IS_MATCH, const size_t ALIGNMENT, typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void, 
-                                                           typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void>
+    template <bool IS_MATCH, const size_t ALIGNMENT, typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void, 
+                                                     typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void>
     class type_with_alignment_matcher;
 
     // Matching alignment.
-    template <const size_t ALIGNMENT, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8>
+    template <size_t ALIGNMENT, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8>
     class type_with_alignment_matcher <true, ALIGNMENT, T1, T2, T3, T4, T5, T6, T7, T8>
     {
     public:
@@ -119,7 +119,7 @@ namespace etl
     };
 
     // Non-matching alignment.
-    template <const size_t ALIGNMENT, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8>
+    template <size_t ALIGNMENT, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8>
     class type_with_alignment_matcher <false, ALIGNMENT, T1, T2, T3, T4, T5, T6, T7, T8>
     {
     public:
@@ -128,7 +128,7 @@ namespace etl
     };
 
     // Non-matching alignment, none left.
-    template <const size_t ALIGNMENT>
+    template <size_t ALIGNMENT>
     class type_with_alignment_matcher <false, ALIGNMENT, void, void, void, void, void, void, void, void>
     {
     public:
@@ -139,7 +139,7 @@ namespace etl
     //***************************************************************************
     // Helper.
     //***************************************************************************
-    template <const size_t ALIGNMENT, typename T1,        typename T2 = void, typename T3 = void, typename T4 = void,
+    template <size_t ALIGNMENT, typename T1,        typename T2 = void, typename T3 = void, typename T4 = void,
                                       typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void>
     class type_with_alignment_helper
     {
@@ -153,7 +153,7 @@ namespace etl
   /// Gets a type that has the same as the specified alignment.
   ///\ingroup alignment
   //***************************************************************************
-  template <const size_t ALIGNMENT>
+  template <size_t ALIGNMENT>
   class type_with_alignment
   {
   public:
@@ -170,7 +170,7 @@ namespace etl
   /// LENGTH should be determined in terms of sizeof()
   ///\ingroup alignment
   //***************************************************************************
-  template <const size_t LENGTH, const size_t ALIGNMENT>
+  template <size_t LENGTH, const size_t ALIGNMENT>
   struct aligned_storage
   {
     struct type
@@ -261,7 +261,7 @@ namespace etl
   };
 
 #if ETL_USING_CPP11
-  template <const size_t LENGTH, const size_t ALIGNMENT>
+  template <size_t LENGTH, const size_t ALIGNMENT>
   using aligned_storage_t = typename aligned_storage<LENGTH, ALIGNMENT>::type;
 #endif
 

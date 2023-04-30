@@ -86,7 +86,7 @@ namespace etl
   //***************************************************************************
   /// The common base for a bip_buffer_spsc_atomic_base.
   //***************************************************************************
-  template <const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
+  template <size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class bip_buffer_spsc_atomic_base
   {
   public:

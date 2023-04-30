@@ -56,7 +56,7 @@ namespace etl
   ///\tparam HASH_LENGTH The number of elements in the hash.
   /// \ingroup pearson
   //***************************************************************************
-  template <const size_t HASH_LENGTH>
+  template <size_t HASH_LENGTH>
   class pearson
   {
   public:

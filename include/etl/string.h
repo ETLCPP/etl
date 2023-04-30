@@ -63,7 +63,7 @@ namespace etl
   ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
   ///\ingroup string
   //***************************************************************************
-  template <const size_t MAX_SIZE_>
+  template <size_t MAX_SIZE_>
   class string : public istring
   {
   public:
@@ -463,7 +463,7 @@ namespace etl
     }
   };
 
-  template <const size_t SIZE>
+  template <size_t SIZE>
   struct hash<etl::string<SIZE> >
   {
     size_t operator()(const etl::string<SIZE>& text) const
@@ -496,7 +496,7 @@ namespace etl
   //***************************************************************************
   /// Make string with max capacity from string literal or array
   //***************************************************************************
-  template<const size_t MAX_SIZE, const size_t SIZE>
+  template<size_t MAX_SIZE, size_t SIZE>
   etl::string<MAX_SIZE> make_string_with_capacity(const char(&text)[SIZE])
   {
     return etl::string<MAX_SIZE>(text, etl::strlen(text, SIZE));

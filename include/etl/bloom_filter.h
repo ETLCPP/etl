@@ -69,7 +69,7 @@ namespace etl
   /// The hash classes must define <b>argument_type</b>.
   ///\ingroup bloom_filter
   //***************************************************************************
-  template <const size_t DESIRED_WIDTH,
+  template <size_t DESIRED_WIDTH,
             typename     THash1,
             typename     THash2 = private_bloom_filter::null_hash,
             typename     THash3 = private_bloom_filter::null_hash>

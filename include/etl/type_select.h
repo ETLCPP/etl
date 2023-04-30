@@ -114,7 +114,7 @@ namespace etl
   {
   public:
 
-    template <const size_t ID>
+    template <size_t ID>
     struct select
     {
       typedef typename etl::conditional<ID == 0, T0,
@@ -162,7 +162,7 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>
   {
   public:
-    template <const size_t ID>
+    template <size_t ID>
     struct select
     {
       typedef typename etl::conditional<ID == 0, T0,
@@ -208,7 +208,7 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>
   {
   public:
-    template <const size_t ID>
+    template <size_t ID>
     struct select
     {
       typedef typename etl::conditional<ID == 0, T0,
@@ -252,7 +252,7 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>
   {
   public:
-    template <const size_t ID>
+    template <size_t ID>
     struct select
     {
       typedef typename etl::conditional<ID == 0, T0,
@@ -294,7 +294,7 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>
   {
   public:
-    template <const size_t ID>
+    template <size_t ID>
     struct select
     {
       typedef typename etl::conditional<ID == 0, T0,
@@ -334,7 +334,7 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>
   {
   public:
-    template <const size_t ID>
+    template <size_t ID>
     struct select
     {
       typedef typename etl::conditional<ID == 0, T0,
@@ -372,7 +372,7 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>
   {
   public:
-    template <const size_t ID>
+    template <size_t ID>
     struct select
     {
       typedef typename etl::conditional<ID == 0, T0,
@@ -408,7 +408,7 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7, T8>
   {
   public:
-    template <const size_t ID>
+    template <size_t ID>
     struct select
     {
       typedef typename etl::conditional<ID == 0, T0,
@@ -442,7 +442,7 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5, T6, T7>
   {
   public:
-    template <const size_t ID>
+    template <size_t ID>
     struct select
     {
       typedef typename etl::conditional<ID == 0, T0,
@@ -473,7 +473,7 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5, T6>
   {
   public:
-    template <const size_t ID>
+    template <size_t ID>
     struct select
     {
       typedef typename etl::conditional<ID == 0, T0,
@@ -502,7 +502,7 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4, T5>
   {
   public:
-    template <const size_t ID>
+    template <size_t ID>
     struct select
     {
       typedef typename etl::conditional<ID == 0, T0,
@@ -529,7 +529,7 @@ namespace etl
   struct type_select<T0, T1, T2, T3, T4>
   {
   public:
-    template <const size_t ID>
+    template <size_t ID>
     struct select
     {
       typedef typename etl::conditional<ID == 0, T0,
@@ -554,7 +554,7 @@ namespace etl
   struct type_select<T0, T1, T2, T3>
   {
   public:
-    template <const size_t ID>
+    template <size_t ID>
     struct select
     {
       typedef typename etl::conditional<ID == 0, T0,
@@ -577,7 +577,7 @@ namespace etl
   struct type_select<T0, T1, T2>
   {
   public:
-    template <const size_t ID>
+    template <size_t ID>
     struct select
     {
       typedef typename etl::conditional<ID == 0, T0,
@@ -598,7 +598,7 @@ namespace etl
   struct type_select<T0, T1>
   {
   public:
-    template <const size_t ID>
+    template <size_t ID>
     struct select
     {
       typedef typename etl::conditional<ID == 0, T0,
@@ -617,7 +617,7 @@ namespace etl
   struct type_select<T0>
   {
   public:
-    template <const size_t ID>
+    template <size_t ID>
     struct select
     {
       typedef typename etl::conditional<ID == 0, T0,

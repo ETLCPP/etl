@@ -403,7 +403,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a span that is a view from OFFSET over the next COUNT elements of this span.
     //*************************************************************************
-    template <const size_t OFFSET, size_t COUNT = etl::dynamic_extent>
+    template <size_t OFFSET, size_t COUNT = etl::dynamic_extent>
     ETL_NODISCARD ETL_CONSTEXPR
     etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET> subspan() const ETL_NOEXCEPT
     {
@@ -414,7 +414,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a span that is a view from OFFSET over the next COUNT elements of this span.
     //*************************************************************************
-    template <const size_t OFFSET, size_t COUNT>
+    template <size_t OFFSET, size_t COUNT>
     etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET> subspan() const
     {
       if (COUNT == etl::dynamic_extent)
@@ -809,7 +809,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a span that is a view from OFFSET over the next COUNT elements of this span.
     //*************************************************************************
-    template <const size_t OFFSET, size_t COUNT = etl::dynamic_extent>
+    template <size_t OFFSET, size_t COUNT = etl::dynamic_extent>
     ETL_NODISCARD ETL_CONSTEXPR
     etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent> subspan() const ETL_NOEXCEPT
     {
@@ -820,7 +820,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a span that is a view from OFFSET over the next COUNT elements of this span.
     //*************************************************************************
-    template <const size_t OFFSET, size_t COUNT>
+    template <size_t OFFSET, size_t COUNT>
     etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent> subspan() const
     {
       if (COUNT == etl::dynamic_extent)

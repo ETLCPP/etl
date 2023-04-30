@@ -154,7 +154,7 @@ namespace etl
   cog.outl("private:")
   cog.outl("")
   cog.outl("  // Declaration.")
-  cog.outl("  template <const bool Boolean, typename TrueType, typename FalseType>")
+  cog.outl("  template <bool Boolean, typename TrueType, typename FalseType>")
   cog.outl("  struct choose_type;")
   cog.outl("")
   cog.outl("  // Specialisation for 'true'.")
@@ -226,7 +226,7 @@ namespace etl
     //*************************************************************************
     // Determine the type to hold the number of bits based on the index.
     //*************************************************************************
-    template <const int index>
+    template <int index>
     struct best_fit_uint_type;
 
     //*************************************************************************
@@ -270,7 +270,7 @@ namespace etl
     //*************************************************************************
     // Determine the type to hold the number of bits based on the index.
     //*************************************************************************
-    template <const int index>
+    template <int index>
     struct best_fit_int_type;
 
     //*************************************************************************

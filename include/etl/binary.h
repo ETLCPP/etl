@@ -85,7 +85,7 @@ namespace etl
   ///\ingroup binary
   //***************************************************************************
   /// Definition for non-zero NBITS.
-  template <const size_t NBITS>
+  template <size_t NBITS>
   struct max_value_for_nbits
   {
     typedef typename etl::smallest_uint_for_bits<NBITS>::type value_type;
@@ -100,11 +100,11 @@ namespace etl
     static ETL_CONSTANT value_type value = 0;
   };
 
-  template <const size_t NBITS>
+  template <size_t NBITS>
   ETL_CONSTANT typename max_value_for_nbits<NBITS>::value_type max_value_for_nbits<NBITS>::value;
 
 #if ETL_USING_CPP17
-  template <const size_t NBITS>
+  template <size_t NBITS>
   inline constexpr typename etl::max_value_for_nbits<NBITS>::value_type max_value_for_nbits_v = max_value_for_nbits<NBITS>::value;
 #endif
 
@@ -387,18 +387,18 @@ namespace etl
   /// Starts from LSB.
   ///\ingroup binary
   //***************************************************************************
-  template <const size_t POSITION>
+  template <size_t POSITION>
   struct bit
   {
     typedef typename etl::smallest_uint_for_bits<POSITION + 1>::type value_type;
     static ETL_CONSTANT value_type value = value_type(1) << POSITION;
   };
 
-  template <const size_t POSITION>
+  template <size_t POSITION>
   ETL_CONSTANT typename bit<POSITION>::value_type bit<POSITION>::value;
 
 #if ETL_USING_CPP17
-  template <const size_t POSITION>
+  template <size_t POSITION>
   inline constexpr typename bit<POSITION>::value_type bit_v = bit<POSITION>::value;
 #endif
 

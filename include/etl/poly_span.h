@@ -544,7 +544,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a poly_span that is a view from OFFSET over the next COUNT elements of this poly_span.
     //*************************************************************************
-    template <const size_t OFFSET, size_t COUNT = etl::dynamic_extent>
+    template <size_t OFFSET, size_t COUNT = etl::dynamic_extent>
     ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET> subspan() const ETL_NOEXCEPT
     {
       return (COUNT == etl::dynamic_extent) ? etl::poly_span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET>(pbegin, OFFSET, Extent, element_size)
@@ -554,7 +554,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a poly_span that is a view from OFFSET over the next COUNT elements of this poly_span.
     //*************************************************************************
-    template <const size_t OFFSET, size_t COUNT>
+    template <size_t OFFSET, size_t COUNT>
     etl::poly_span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET> subspan() const
     {
       if (COUNT == etl::dynamic_extent)
@@ -919,7 +919,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a poly_span that is a view from OFFSET over the next COUNT elements of this poly_span.
     //*************************************************************************
-    template <const size_t OFFSET, size_t COUNT = etl::dynamic_extent>
+    template <size_t OFFSET, size_t COUNT = etl::dynamic_extent>
     ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent> subspan() const ETL_NOEXCEPT
     {
       return (COUNT == etl::dynamic_extent) ? etl::poly_span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent>(pbegin, OFFSET, span_extent, element_size)
@@ -929,7 +929,7 @@ namespace etl
     //*************************************************************************
     /// Obtains a poly_span that is a view from OFFSET over the next COUNT elements of this poly_span.
     //*************************************************************************
-    template <const size_t OFFSET, size_t COUNT>
+    template <size_t OFFSET, size_t COUNT>
     etl::poly_span<element_type, COUNT != etl::dynamic_extent ? COUNT : etl::dynamic_extent> subspan() const
     {
       if (COUNT == etl::dynamic_extent)

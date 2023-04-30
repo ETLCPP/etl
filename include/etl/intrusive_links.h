@@ -83,7 +83,7 @@ namespace etl
   //***************************************************************************
   /// A forward link.
   //***************************************************************************
-  template <const size_t ID_>
+  template <size_t ID_>
   struct forward_link
   {
     enum
@@ -240,7 +240,7 @@ namespace etl
   //***************************************************************************
   /// A bidirectional link.
   //***************************************************************************
-  template <const size_t ID_>
+  template <size_t ID_>
   struct bidirectional_link
   {
     enum
@@ -497,7 +497,7 @@ namespace etl
   //***************************************************************************
   /// A binary tree link.
   //***************************************************************************
-  template <const size_t ID_>
+  template <size_t ID_>
   struct tree_link
   {
       enum

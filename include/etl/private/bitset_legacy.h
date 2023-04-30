@@ -1086,7 +1086,7 @@ namespace etl
   ///\tparam MaxN The number of bits.
   ///\ingroup bitset
   //*************************************************************************
-  template <const size_t MaxN>
+  template <size_t MaxN>
   class bitset : public etl::ibitset
   {
 
@@ -1444,17 +1444,17 @@ namespace etl
     element_type data[Array_Size > 0U ? Array_Size : 1U];
   };
 
-  template <const size_t MaxN>
+  template <size_t MaxN>
   ETL_CONSTANT size_t bitset<MaxN>::ALLOCATED_BITS;
   
-  template <const size_t MaxN>
+  template <size_t MaxN>
   ETL_CONSTANT size_t bitset<MaxN>::Allocated_Bits;
 
   //***************************************************************************
   /// operator &
   ///\ingroup bitset
   //***************************************************************************
-  template <const size_t MaxN>
+  template <size_t MaxN>
   bitset<MaxN> operator & (const bitset<MaxN>& lhs, const bitset<MaxN>& rhs)
   {
     bitset<MaxN> temp(lhs);
@@ -1466,7 +1466,7 @@ namespace etl
   /// operator |
   ///\ingroup bitset
   //***************************************************************************
-  template<const size_t MaxN>
+  template<size_t MaxN>
   bitset<MaxN> operator | (const bitset<MaxN>& lhs, const bitset<MaxN>& rhs)
   {
     bitset<MaxN> temp(lhs);
@@ -1478,7 +1478,7 @@ namespace etl
   /// operator ^
   ///\ingroup bitset
   //***************************************************************************
-  template<const size_t MaxN>
+  template<size_t MaxN>
   bitset<MaxN> operator ^ (const bitset<MaxN>& lhs, const bitset<MaxN>& rhs)
   {
     bitset<MaxN> temp(lhs);
@@ -1490,7 +1490,7 @@ namespace etl
   /// operator !=
   ///\ingroup bitset
   //***************************************************************************
-  template<const size_t MaxN>
+  template<size_t MaxN>
   bool operator != (const bitset<MaxN>& lhs, const bitset<MaxN>& rhs)
   {
     return !(lhs == rhs);
@@ -1500,7 +1500,7 @@ namespace etl
 //*************************************************************************
 /// swap
 //*************************************************************************
-template <const size_t MaxN>
+template <size_t MaxN>
 void swap(etl::bitset<MaxN>& lhs, etl::bitset<MaxN>& rhs)
 {
   lhs.swap(rhs);

@@ -103,7 +103,7 @@ namespace etl
   /// The base class for all queues.
   ///\ingroup queue
   //***************************************************************************
-  template <const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
+  template <size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_base
   {
   public:
