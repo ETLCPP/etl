@@ -81,10 +81,10 @@ namespace etl
   typedef typename etl::larger_type<etl::message_id_t>::type fsm_internal_id_t;
 
 #if ETL_USING_CPP17 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
-  template <typename, typename, const etl::fsm_state_id_t, typename...>
+  template <typename, typename, etl::fsm_state_id_t, typename...>
   class fsm_state;
 #else
-  template <typename, typename, const etl::fsm_state_id_t,
+  template <typename, typename, etl::fsm_state_id_t,
             typename, typename, typename, typename, 
             typename, typename, typename, typename, 
             typename, typename, typename, typename, 
@@ -179,6 +179,7 @@ namespace etl
       // Pass this whenever no state change is desired.
       // The highest unsigned value of fsm_state_id_t.
       static ETL_CONSTANT fsm_state_id_t No_State_Change = etl::integral_limits<fsm_state_id_t>::max;
+      
       // Pass this when this event also needs to be passed to the parent.
       static ETL_CONSTANT fsm_state_id_t Pass_To_Parent = No_State_Change - 1U;
     };
@@ -201,11 +202,14 @@ namespace etl
     friend class etl::fsm;
     friend class etl::hfsm;
 
+    using private_fsm::ifsm_state_helper<>::No_State_Change;
+    using private_fsm::ifsm_state_helper<>::Pass_To_Parent;
+
 #if ETL_USING_CPP17 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
-    template <typename, typename, const etl::fsm_state_id_t, typename...>
+    template <typename, typename, etl::fsm_state_id_t, typename...>
     friend class fsm_state;
 #else
-    template <typename, typename, const etl::fsm_state_id_t,
+    template <typename, typename, etl::fsm_state_id_t,
               typename, typename, typename, typename, 
               typename, typename, typename, typename, 
               typename, typename, typename, typename, 
@@ -515,7 +519,7 @@ namespace etl
   //***************************************************************************
   // The definition for all types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, typename... TMessageTypes>
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, typename... TMessageTypes>
   class fsm_state : public ifsm_state
   {
   public:
@@ -589,7 +593,7 @@ namespace etl
   //***************************************************************************
   // The definition for all 16 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
             typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void, 
             typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void, 
             typename T9 = void, typename T10 = void, typename T11 = void, typename T12 = void, 
@@ -654,7 +658,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 15 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7, typename T8, 
             typename T9, typename T10, typename T11, typename T12, 
@@ -718,7 +722,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 14 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7, typename T8, 
             typename T9, typename T10, typename T11, typename T12, 
@@ -781,7 +785,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 13 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7, typename T8, 
             typename T9, typename T10, typename T11, typename T12, 
@@ -843,7 +847,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 12 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7, typename T8, 
             typename T9, typename T10, typename T11, typename T12>
@@ -903,7 +907,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 11 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7, typename T8, 
             typename T9, typename T10, typename T11>
@@ -962,7 +966,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 10 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7, typename T8, 
             typename T9, typename T10>
@@ -1020,7 +1024,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 9 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7, typename T8, 
             typename T9>
@@ -1077,7 +1081,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 8 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7, typename T8>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, T8, void, void, void, void, void, void, void, void> : public ifsm_state
@@ -1132,7 +1136,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 7 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6, typename T7>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, T7, void, void, void, void, void, void, void, void, void> : public ifsm_state
@@ -1186,7 +1190,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 6 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5, typename T6>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, T6, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
@@ -1239,7 +1243,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 5 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4, 
             typename T5>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, T5, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
@@ -1291,7 +1295,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 4 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3, typename T4>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, T4, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
@@ -1341,7 +1345,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 3 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2, typename T3>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, T3, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
@@ -1390,7 +1394,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 2 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
             typename T1, typename T2>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, T2, void, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
@@ -1438,7 +1442,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 1 message type.
   //***************************************************************************
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_, 
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_, 
             typename T1>
   class fsm_state<TContext, TDerived, STATE_ID_, T1, void, void, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
@@ -1485,7 +1489,7 @@ namespace etl
   //***************************************************************************
   // Specialisation for 0 message types.
   //***************************************************************************
-  template <typename TContext, typename TDerived, const etl::fsm_state_id_t STATE_ID_>
+  template <typename TContext, typename TDerived, etl::fsm_state_id_t STATE_ID_>
   class fsm_state<TContext, TDerived, STATE_ID_, void, void, void, void, void, void, void, void, void, void, void, void, void, void, void, void> : public ifsm_state
   {
   public:

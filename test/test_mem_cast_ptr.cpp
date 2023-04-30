@@ -72,7 +72,7 @@ namespace
     return reinterpret_cast<char*>(uintptr_t(i));
   }
 
-  std::aligned_storage_t<Size, Alignment> buffer;
+  typename std::aligned_storage<Size, Alignment>::type buffer;
   
   SUITE(test_mem_cast_ptr)
   {

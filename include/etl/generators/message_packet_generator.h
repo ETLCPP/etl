@@ -365,11 +365,9 @@ namespace etl
 
     ################################################
     def generate_accepts_return_compile_time_TMessage(n):
-        cog.outl("    ETL_CONSTANT etl::message_id_t id = TMessage::ID;")
-        cog.outl("")
         cog.out("    return")
         for i in range(1, n + 1):
-            cog.out(" T%d::ID == id" % i)
+            cog.out(" T%d::ID == TMessage::ID" % i)
             if i < n:
                 cog.out(" ||")
                 if i % 4 == 0:

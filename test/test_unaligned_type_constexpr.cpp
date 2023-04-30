@@ -31,6 +31,8 @@ SOFTWARE.
 #include "etl/unaligned_type.h"
 #include "etl/integral_limits.h"
 
+#if ETL_USING_CPP14
+
 namespace
 {
   SUITE(test_unaligned_type_constexpr)
@@ -638,3 +640,5 @@ namespace
     }
   };
 }
+
+#endif

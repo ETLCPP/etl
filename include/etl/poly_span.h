@@ -589,7 +589,7 @@ namespace etl
     typedef typename char_ptr_type<TBase>::type char_ptr_t;
 
     //***************************************************************************
-    ETL_CONSTEXPR pointer element_at(size_t index) const ETL_NOEXCEPT
+    pointer element_at(size_t index) const ETL_NOEXCEPT
     {
       char_ptr_t base = reinterpret_cast<char_ptr_t>(pbegin);
       return reinterpret_cast<pointer>(base + (index * element_size));
@@ -599,7 +599,7 @@ namespace etl
     /// Construct from iterator + offset + element size
     /// extent_ is ignored.
     //*************************************************************************
-    ETL_CONSTEXPR poly_span(TBase* pbegin_, size_t offset_, size_t /*extent_*/, size_t element_size_) ETL_NOEXCEPT
+    poly_span(TBase* pbegin_, size_t offset_, size_t /*extent_*/, size_t element_size_) ETL_NOEXCEPT
       : pbegin(reinterpret_cast<pointer>(reinterpret_cast<char_ptr_t>(pbegin_) + (offset_ * element_size_)))
       , element_size(element_size_)
     {
@@ -957,7 +957,7 @@ protected:
   //*************************************************************************
   /// Construct from iterator + offset + size + element size
   //*************************************************************************
-  ETL_CONSTEXPR poly_span(TBase* pbegin_, size_t offset_, size_t extent_, size_t element_size_) ETL_NOEXCEPT
+  poly_span(TBase* pbegin_, size_t offset_, size_t extent_, size_t element_size_) ETL_NOEXCEPT
     : pbegin(reinterpret_cast<pointer>(reinterpret_cast<char_ptr_t>(pbegin_) + (offset_ * element_size_)))
     , element_size(element_size_)
     , span_extent(extent_)
@@ -976,7 +976,7 @@ protected:
     typedef typename char_ptr_type<TBase>::type char_ptr_t;
 
     //***************************************************************************
-    ETL_CONSTEXPR pointer element_at(size_t index) const ETL_NOEXCEPT
+    pointer element_at(size_t index) const ETL_NOEXCEPT
     {
       char_ptr_t base = reinterpret_cast<char_ptr_t>(pbegin);
       return reinterpret_cast<pointer>(base + (index * element_size));

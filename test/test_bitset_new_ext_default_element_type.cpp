@@ -1802,13 +1802,13 @@ namespace
       etl::bitset_ext<64>::element_type buffer1[etl::bitset_ext<64>::Number_Of_Elements];
       etl::bitset_ext<64>::element_type buffer2[etl::bitset_ext<64>::Number_Of_Elements];
 
-      etl::bitset_ext<64> bs1(ull(0xC000'0000'0000'0031), buffer1);
+      etl::bitset_ext<64> bs1(ull(0xC000000000000031), buffer1);
       size_t bs1fnt1 = bs1.find_next(true, 10);
       size_t bs1fnt2 = bs1.find_next(true, 59);
       CHECK_EQUAL(62U, bs1fnt1);
       CHECK_EQUAL(62U, bs1fnt2);
 
-      etl::bitset_ext<64> bs2(ull(0x3FFF'FFFF'FFFF'FFCE), buffer2);
+      etl::bitset_ext<64> bs2(ull(0x3FFFFFFFFFFFFFCE), buffer2);
       size_t bs2fnf1 = bs2.find_next(false, 10);
       size_t bs2fnf2 = bs2.find_next(false, 59);
       CHECK_EQUAL(62U, bs2fnf1);

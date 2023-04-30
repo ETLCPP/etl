@@ -326,7 +326,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reference to the indexed value.
     //*************************************************************************
-    ETL_CONSTEXPR const_reference at(size_t i) const
+    const_reference at(size_t i) const
     {
       ETL_ASSERT((mbegin != ETL_NULLPTR && mend != ETL_NULLPTR), ETL_ERROR(string_view_uninitialised));
       ETL_ASSERT(i < size(), ETL_ERROR(string_view_bounds));

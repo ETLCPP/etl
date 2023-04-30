@@ -1185,6 +1185,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <CCppSupport>Cpp17Support</CCppSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

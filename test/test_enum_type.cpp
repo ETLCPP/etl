@@ -62,6 +62,7 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP14
     TEST(test_constexpr_values)
     {
       constexpr enum_test zero = enum_test::ZERO;
@@ -85,6 +86,7 @@ namespace
       CHECK_EQUAL(0, enum_zero2.get_value());
       CHECK_EQUAL(std::string("ZERO"), std::string(string_zero));
     }
+#endif
 
     //*************************************************************************
     TEST(test_c_str)

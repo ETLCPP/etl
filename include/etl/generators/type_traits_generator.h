@@ -114,7 +114,7 @@ namespace etl
   typedef integral_constant<bool, false> false_type;
   typedef integral_constant<bool, true>  true_type;
 
-  template <typename T, const T VALUE>
+  template <typename T, T VALUE>
   const T integral_constant<T, VALUE>::value;
 
 #if ETL_USING_CPP17
@@ -842,11 +842,6 @@ typedef integral_constant<bool, true>  true_type;
 #endif
 
 #if ETL_USING_CPP17
-  template <typename T, T VALUE>
-  inline constexpr T integral_constant_v = std::integral_constant<T, VALUE>::value;
-#endif
-
-#if ETL_USING_CPP17
   template <bool B>
   using bool_constant = std::bool_constant<B>;
 #else
@@ -864,9 +859,7 @@ typedef integral_constant<bool, true>  true_type;
   ///\ingroup type_traits
 #if ETL_USING_CPP17
   template <typename T>
-  struct negation : std::negation<T>
-  {
-  };
+  using negation = std::negation<T>;
 #else
   template <typename T>
   struct negation : etl::bool_constant<!bool(T::value)>

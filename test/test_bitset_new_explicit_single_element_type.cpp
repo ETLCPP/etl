@@ -44,7 +44,7 @@ namespace
 
   //*************************************************************************
   template <size_t Active_Bits, typename TElement>
-  constexpr etl::bitset<Active_Bits, TElement> generate_shift_left_bitset(ull value, size_t shift)
+  ETL_CONSTEXPR14 etl::bitset<Active_Bits, TElement> generate_shift_left_bitset(ull value, size_t shift)
   {
     ull mask = 0ULL;
     
@@ -71,7 +71,7 @@ namespace
 
   //*************************************************************************
   template <size_t Active_Bits, typename TElement>
-  constexpr etl::bitset<Active_Bits, TElement> generate_shift_left_bitset_copy(ull value, size_t shift)
+  ETL_CONSTEXPR14 etl::bitset<Active_Bits, TElement> generate_shift_left_bitset_copy(ull value, size_t shift)
   {
     etl::bitset<Active_Bits, TElement> data1(value);
     etl::bitset<Active_Bits, TElement> data2;
@@ -86,7 +86,7 @@ namespace
 
   //*************************************************************************
   template <size_t Active_Bits, typename TElement>
-  constexpr etl::bitset<Active_Bits, TElement> generate_shift_right_bitset(ull value, size_t shift)
+  ETL_CONSTEXPR14 etl::bitset<Active_Bits, TElement> generate_shift_right_bitset(ull value, size_t shift)
   {
     etl::bitset<Active_Bits, TElement> data(value);
 
@@ -104,7 +104,7 @@ namespace
 
   //*************************************************************************
   template <size_t Active_Bits, typename TElement>
-  constexpr etl::bitset<Active_Bits, TElement> generate_shift_right_bitset_copy(ull value, size_t shift)
+  ETL_CONSTEXPR14 etl::bitset<Active_Bits, TElement> generate_shift_right_bitset_copy(ull value, size_t shift)
   {
     etl::bitset<Active_Bits, TElement> data1(value);
     etl::bitset<Active_Bits, TElement> data2;
@@ -122,8 +122,8 @@ namespace
     //*************************************************************************
     TEST(test_default_constructor)
     {
-      constexpr std::bitset<64> compare;
-      constexpr etl::bitset<64, int64_t> data;
+      ETL_CONSTEXPR14 std::bitset<64> compare;
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data;
 
       CHECK_EQUAL(compare.size(),  data.size());
       CHECK_EQUAL(compare.count(), data.count());
@@ -151,8 +151,8 @@ namespace
     //*************************************************************************
     TEST(test_construct_from_value)
     {
-      constexpr std::bitset<64> compare(0x123456731234567ULL);
-      constexpr etl::bitset<64, int64_t> data(0x123456731234567ULL);
+      ETL_CONSTEXPR14 std::bitset<64> compare(0x123456731234567ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data(0x123456731234567ULL);
 
       CHECK_EQUAL(compare.size(),  data.size());
       CHECK_EQUAL(compare.count(), data.count());
@@ -167,9 +167,9 @@ namespace
     //*************************************************************************
     TEST(test_copy_construct)
     {
-      constexpr std::bitset<64> compare(0x123456731234567ULL);
-      constexpr etl::bitset<64, int64_t> data(0x123456731234567ULL);
-      constexpr etl::bitset<64, int64_t> data_copy(data);
+      ETL_CONSTEXPR14 std::bitset<64> compare(0x123456731234567ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data(0x123456731234567ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data_copy(data);
 
       CHECK_EQUAL(compare.size(), data_copy.size());
       CHECK_EQUAL(compare.count(), data_copy.count());
@@ -183,8 +183,8 @@ namespace
     //*************************************************************************
     TEST(test_construct_from_excess_value)
     {
-      constexpr std::bitset<64> compare(0x8765432187654321ULL);
-      constexpr etl::bitset<64, int64_t> data(0x8765432187654321ULL);
+      ETL_CONSTEXPR14 std::bitset<64> compare(0x8765432187654321ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data(0x8765432187654321ULL);
 
       CHECK_EQUAL(compare.size(),  data.size());
       CHECK_EQUAL(compare.count(), data.count());
@@ -276,7 +276,7 @@ namespace
     }
 
     //*************************************************************************
-    constexpr etl::bitset<64, int64_t> test_set_helper()
+    ETL_CONSTEXPR14 etl::bitset<64, int64_t> test_set_helper()
     {
       etl::bitset<64, int64_t> data;
       data.set();
@@ -287,15 +287,15 @@ namespace
     TEST(test_set)
     {
       std::bitset<64> compare;
-      constexpr etl::bitset<64, int64_t> data(test_set_helper());
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data(test_set_helper());
 
       compare.set();
 
-      constexpr auto size  = data.size();
-      constexpr auto count = data.count();
-      constexpr auto none  = data.none();
-      constexpr auto any   = data.any();
-      constexpr auto all   = data.all();
+      ETL_CONSTEXPR14 auto size  = data.size();
+      ETL_CONSTEXPR14 auto count = data.count();
+      ETL_CONSTEXPR14 auto none  = data.none();
+      ETL_CONSTEXPR14 auto any   = data.any();
+      ETL_CONSTEXPR14 auto all   = data.all();
 
       CHECK_EQUAL(compare.size(),  size);
       CHECK_EQUAL(compare.count(), count);
@@ -472,8 +472,8 @@ namespace
     //*************************************************************************
     TEST(test_value_u8_min)
     {
-      constexpr etl::bitset<8> data((unsigned long long)etl::integral_limits<uint8_t>::min);
-      constexpr uint8_t value = data.value<uint8_t>();
+      ETL_CONSTEXPR14 etl::bitset<8> data((unsigned long long)etl::integral_limits<uint8_t>::min);
+      ETL_CONSTEXPR14 uint8_t value = data.value<uint8_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint8_t>::min(), value);
     }
@@ -481,8 +481,8 @@ namespace
     //*************************************************************************
     TEST(test_value_u8_max)
     {
-      constexpr etl::bitset<8> data((unsigned long long)etl::integral_limits<uint8_t>::max);
-      constexpr uint8_t value = data.value<uint8_t>();
+      ETL_CONSTEXPR14 etl::bitset<8> data((unsigned long long)etl::integral_limits<uint8_t>::max);
+      ETL_CONSTEXPR14 uint8_t value = data.value<uint8_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint8_t>::max(), value);
     }
@@ -490,8 +490,8 @@ namespace
     //*************************************************************************
     TEST(test_value_s8_min)
     {
-      constexpr etl::bitset<8> data((unsigned long long)etl::integral_limits<int8_t>::min);
-      constexpr int8_t value = data.value<int8_t>();
+      ETL_CONSTEXPR14 etl::bitset<8> data((unsigned long long)etl::integral_limits<int8_t>::min);
+      ETL_CONSTEXPR14 int8_t value = data.value<int8_t>();
 
       CHECK_EQUAL(std::numeric_limits<int8_t>::min(), value);
     }
@@ -499,8 +499,8 @@ namespace
     //*************************************************************************
     TEST(test_value_s8_max)
     {
-      constexpr etl::bitset<8> data((unsigned long long)etl::integral_limits<int8_t>::max);
-      constexpr int8_t value = data.value<int8_t>();
+      ETL_CONSTEXPR14 etl::bitset<8> data((unsigned long long)etl::integral_limits<int8_t>::max);
+      ETL_CONSTEXPR14 int8_t value = data.value<int8_t>();
 
       CHECK_EQUAL(std::numeric_limits<int8_t>::max(), value);
     }
@@ -508,8 +508,8 @@ namespace
     //*************************************************************************
     TEST(test_value_u16_min)
     {
-      constexpr etl::bitset<16> data((unsigned long long)etl::integral_limits<uint16_t>::min);
-      constexpr uint16_t value = data.value<uint16_t>();
+      ETL_CONSTEXPR14 etl::bitset<16> data((unsigned long long)etl::integral_limits<uint16_t>::min);
+      ETL_CONSTEXPR14 uint16_t value = data.value<uint16_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint16_t>::min(), value);
     }
@@ -517,8 +517,8 @@ namespace
     //*************************************************************************
     TEST(test_value_u16_max)
     {
-      constexpr etl::bitset<16> data((unsigned long long)etl::integral_limits<uint16_t>::max);
-      constexpr uint16_t value = data.value<uint16_t>();
+      ETL_CONSTEXPR14 etl::bitset<16> data((unsigned long long)etl::integral_limits<uint16_t>::max);
+      ETL_CONSTEXPR14 uint16_t value = data.value<uint16_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint16_t>::max(), value);
     }
@@ -526,8 +526,8 @@ namespace
     //*************************************************************************
     TEST(test_value_s16_min)
     {
-      constexpr etl::bitset<16> data((unsigned long long)etl::integral_limits<int16_t>::min);
-      constexpr int16_t value = data.value<int16_t>();
+      ETL_CONSTEXPR14 etl::bitset<16> data((unsigned long long)etl::integral_limits<int16_t>::min);
+      ETL_CONSTEXPR14 int16_t value = data.value<int16_t>();
 
       CHECK_EQUAL(std::numeric_limits<int16_t>::min(), value);
     }
@@ -535,8 +535,8 @@ namespace
     //*************************************************************************
     TEST(test_value_s16_max)
     {
-      constexpr etl::bitset<16> data((unsigned long long)etl::integral_limits<int16_t>::max);
-      constexpr int16_t value = data.value<int16_t>();
+      ETL_CONSTEXPR14 etl::bitset<16> data((unsigned long long)etl::integral_limits<int16_t>::max);
+      ETL_CONSTEXPR14 int16_t value = data.value<int16_t>();
 
       CHECK_EQUAL(std::numeric_limits<int16_t>::max(), value);
     }
@@ -544,8 +544,8 @@ namespace
     //*************************************************************************
     TEST(test_value_u32_min)
     {
-      constexpr etl::bitset<32> data((unsigned long long)etl::integral_limits<int32_t>::min);
-      constexpr int32_t value = data.value<int32_t>();
+      ETL_CONSTEXPR14 etl::bitset<32> data((unsigned long long)etl::integral_limits<int32_t>::min);
+      ETL_CONSTEXPR14 int32_t value = data.value<int32_t>();
 
       CHECK_EQUAL(std::numeric_limits<int32_t>::min(), value);
     }
@@ -553,8 +553,8 @@ namespace
     //*************************************************************************
     TEST(test_value_u32_max)
     {
-      constexpr etl::bitset<32> data((unsigned long long)etl::integral_limits<int32_t>::max);
-      constexpr int32_t value = data.value<int32_t>();
+      ETL_CONSTEXPR14 etl::bitset<32> data((unsigned long long)etl::integral_limits<int32_t>::max);
+      ETL_CONSTEXPR14 int32_t value = data.value<int32_t>();
 
       CHECK_EQUAL(std::numeric_limits<int32_t>::max(), value);
     }
@@ -562,8 +562,8 @@ namespace
     //*************************************************************************
     TEST(test_value_s32_min)
     {
-      constexpr etl::bitset<32> data((unsigned long long)etl::integral_limits<int32_t>::min);
-      constexpr int32_t value = data.value<int32_t>();
+      ETL_CONSTEXPR14 etl::bitset<32> data((unsigned long long)etl::integral_limits<int32_t>::min);
+      ETL_CONSTEXPR14 int32_t value = data.value<int32_t>();
 
       CHECK_EQUAL(std::numeric_limits<int32_t>::min(), value);
     }
@@ -571,8 +571,8 @@ namespace
     //*************************************************************************
     TEST(test_value_s32_max)
     {
-      constexpr etl::bitset<32> data((unsigned long long)etl::integral_limits<int32_t>::max);
-      constexpr int32_t value = data.value<int32_t>();
+      ETL_CONSTEXPR14 etl::bitset<32> data((unsigned long long)etl::integral_limits<int32_t>::max);
+      ETL_CONSTEXPR14 int32_t value = data.value<int32_t>();
 
       CHECK_EQUAL(std::numeric_limits<int32_t>::max(), value);
     }
@@ -580,8 +580,8 @@ namespace
     //*************************************************************************
     TEST(test_value_u64_min)
     {
-      constexpr etl::bitset<64> data((unsigned long long)etl::integral_limits<int64_t>::min);
-      constexpr int64_t value = data.value<int64_t>();
+      ETL_CONSTEXPR14 etl::bitset<64> data((unsigned long long)etl::integral_limits<int64_t>::min);
+      ETL_CONSTEXPR14 int64_t value = data.value<int64_t>();
 
       CHECK_EQUAL(std::numeric_limits<int64_t>::min(), value);
     }
@@ -589,8 +589,8 @@ namespace
     //*************************************************************************
     TEST(test_value_u64_max)
     {
-      constexpr etl::bitset<64> data((unsigned long long)etl::integral_limits<int64_t>::max);
-      constexpr int64_t value = data.value<int64_t>();
+      ETL_CONSTEXPR14 etl::bitset<64> data((unsigned long long)etl::integral_limits<int64_t>::max);
+      ETL_CONSTEXPR14 int64_t value = data.value<int64_t>();
 
       CHECK_EQUAL(std::numeric_limits<int64_t>::max(), value);
     }
@@ -598,8 +598,8 @@ namespace
     //*************************************************************************
     TEST(test_value_s64_min)
     {
-      constexpr etl::bitset<64> data((unsigned long long)etl::integral_limits<int64_t>::min);
-      constexpr int64_t value = data.value<int64_t>();
+      ETL_CONSTEXPR14 etl::bitset<64> data((unsigned long long)etl::integral_limits<int64_t>::min);
+      ETL_CONSTEXPR14 int64_t value = data.value<int64_t>();
 
       CHECK_EQUAL(std::numeric_limits<int64_t>::min(), value);
     }
@@ -607,8 +607,8 @@ namespace
     //*************************************************************************
     TEST(test_value_s64_max)
     {
-      constexpr etl::bitset<64> data((unsigned long long)etl::integral_limits<int64_t>::max);
-      constexpr int64_t value = data.value<int64_t>();
+      ETL_CONSTEXPR14 etl::bitset<64> data((unsigned long long)etl::integral_limits<int64_t>::max);
+      ETL_CONSTEXPR14 int64_t value = data.value<int64_t>();
 
       CHECK_EQUAL(std::numeric_limits<int64_t>::max(), value);
     }
@@ -638,7 +638,7 @@ namespace
     }
 
     //*************************************************************************
-    constexpr etl::bitset<64, int64_t> test_reset_helper()
+    ETL_CONSTEXPR14 etl::bitset<64, int64_t> test_reset_helper()
     {
       etl::bitset<64, int64_t> data(0xFFFFFFFFFFFFFFFULL);
       data.reset();
@@ -649,7 +649,7 @@ namespace
     TEST(test_reset)
     {
       std::bitset<64> compare(0xFFFFFFFFFFFFFFFULL);
-      constexpr etl::bitset<64, int64_t> data(test_reset_helper());
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data(test_reset_helper());
 
       compare.reset();
       
@@ -666,7 +666,7 @@ namespace
     }
 
     //*************************************************************************
-    constexpr etl::bitset<64, int64_t> test_position_reset_helper()
+    ETL_CONSTEXPR14 etl::bitset<64, int64_t> test_position_reset_helper()
     {
       etl::bitset<64, int64_t> data(0xFFFFFFFFFFFFFFFULL);
       data.reset(1);
@@ -680,7 +680,7 @@ namespace
     TEST(test_position_reset)
     {
       std::bitset<64> compare(0xFFFFFFFFFFFFFFFULL);
-      constexpr etl::bitset<64, int64_t> data(test_position_reset_helper());
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data(test_position_reset_helper());
 
       compare.reset(1);
       compare.reset(3);
@@ -702,28 +702,28 @@ namespace
     //*************************************************************************
     TEST(test_index_operator_read)
     {
-      constexpr std::bitset<64> compare(0x3123456731234567ULL);
-      constexpr etl::bitset<64, int64_t> data(0x3123456731234567ULL);
+      ETL_CONSTEXPR14 std::bitset<64> compare(0x3123456731234567ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data(0x3123456731234567ULL);
 
-      constexpr bool bc0 = compare[1U];
-      constexpr bool bd0 = data[1U];
+      ETL_CONSTEXPR14 bool bc0 = compare[1U];
+      ETL_CONSTEXPR14 bool bd0 = data[1U];
       CHECK_EQUAL(bc0, bd0);
 
-      constexpr bool bc3 = compare[3U];
-      constexpr bool bd3 = data[3U];
+      ETL_CONSTEXPR14 bool bc3 = compare[3U];
+      ETL_CONSTEXPR14 bool bd3 = data[3U];
       CHECK_EQUAL(bc3, bd3);
 
-      constexpr bool bc7 = compare[7U];
-      constexpr bool bd7 = data[7U];
+      ETL_CONSTEXPR14 bool bc7 = compare[7U];
+      ETL_CONSTEXPR14 bool bd7 = data[7U];
       CHECK_EQUAL(bc7, bd7);
 
-      constexpr bool bc13 = compare[13U];
-      constexpr bool bd13 = data[13U];
+      ETL_CONSTEXPR14 bool bc13 = compare[13U];
+      ETL_CONSTEXPR14 bool bd13 = data[13U];
       CHECK_EQUAL(bc13, bd13);
     }
 
     //*************************************************************************
-    constexpr etl::bitset<64, int64_t> test_index_operator_write_helper()
+    ETL_CONSTEXPR14 etl::bitset<64, int64_t> test_index_operator_write_helper()
     {
       etl::bitset<64, int64_t> data;
 
@@ -737,7 +737,7 @@ namespace
 
     TEST(test_index_operator_write)
     {
-      constexpr etl::bitset<64, int64_t> data(test_index_operator_write_helper());
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data(test_index_operator_write_helper());
 
       CHECK(data[1U]);
       CHECK(data[3U]);
@@ -748,15 +748,15 @@ namespace
     //*************************************************************************
     TEST(test_any)
     {
-      constexpr etl::bitset<64, int64_t> data1(ull(0x0000000000000000));
-      constexpr etl::bitset<64, int64_t> data2(ull(0x0000010000000000));
-      constexpr etl::bitset<64, int64_t> data3(ull(0x1000010001000100));
-      constexpr etl::bitset<64, int64_t> data4(ull(0xFFFFFFFFFFFFFFFF));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data1(ull(0x0000000000000000));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data2(ull(0x0000010000000000));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data3(ull(0x1000010001000100));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data4(ull(0xFFFFFFFFFFFFFFFF));
 
-      constexpr bool bd1 = data1.any();
-      constexpr bool bd2 = data2.any();
-      constexpr bool bd3 = data3.any();
-      constexpr bool bd4 = data4.any();
+      ETL_CONSTEXPR14 bool bd1 = data1.any();
+      ETL_CONSTEXPR14 bool bd2 = data2.any();
+      ETL_CONSTEXPR14 bool bd3 = data3.any();
+      ETL_CONSTEXPR14 bool bd4 = data4.any();
 
       CHECK_FALSE(bd1);
       CHECK_TRUE(bd2);
@@ -767,17 +767,17 @@ namespace
     //*************************************************************************
     TEST(test_any_with_mask)
     {
-      constexpr etl::bitset<64, int64_t> data1(ull(0xF000000000000000));
-      constexpr etl::bitset<64, int64_t> data2(ull(0x0000010000000000));
-      constexpr etl::bitset<64, int64_t> data3(ull(0x1000010001000100));
-      constexpr etl::bitset<64, int64_t> data4(ull(0xFFFFFFFFFFFFFFFF));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data1(ull(0xF000000000000000));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data2(ull(0x0000010000000000));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data3(ull(0x1000010001000100));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data4(ull(0xFFFFFFFFFFFFFFFF));
 
-      constexpr ull mask = ull(0x0FFFFFFFFFFFFFFF);
+      ETL_CONSTEXPR14 ull mask = ull(0x0FFFFFFFFFFFFFFF);
 
-      constexpr bool bd1 = data1.any(mask);
-      constexpr bool bd2 = data2.any(mask);
-      constexpr bool bd3 = data3.any(mask);
-      constexpr bool bd4 = data4.any(mask);
+      ETL_CONSTEXPR14 bool bd1 = data1.any(mask);
+      ETL_CONSTEXPR14 bool bd2 = data2.any(mask);
+      ETL_CONSTEXPR14 bool bd3 = data3.any(mask);
+      ETL_CONSTEXPR14 bool bd4 = data4.any(mask);
 
       CHECK_FALSE(bd1);
       CHECK_TRUE(bd2);
@@ -788,15 +788,15 @@ namespace
     //*************************************************************************
     TEST(test_none)
     {
-      constexpr etl::bitset<64, int64_t> data1(ull(0x0000000000000000));
-      constexpr etl::bitset<64, int64_t> data2(ull(0x0000010000000000));
-      constexpr etl::bitset<64, int64_t> data3(ull(0x1000010001000100));
-      constexpr etl::bitset<64, int64_t> data4(ull(0xFFFFFFFFFFFFFFFF));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data1(ull(0x0000000000000000));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data2(ull(0x0000010000000000));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data3(ull(0x1000010001000100));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data4(ull(0xFFFFFFFFFFFFFFFF));
 
-      constexpr bool bd1 = data1.none();
-      constexpr bool bd2 = data2.none();
-      constexpr bool bd3 = data3.none();
-      constexpr bool bd4 = data4.none();
+      ETL_CONSTEXPR14 bool bd1 = data1.none();
+      ETL_CONSTEXPR14 bool bd2 = data2.none();
+      ETL_CONSTEXPR14 bool bd3 = data3.none();
+      ETL_CONSTEXPR14 bool bd4 = data4.none();
 
       CHECK_TRUE(bd1);
       CHECK_FALSE(bd2);
@@ -807,17 +807,17 @@ namespace
     //*************************************************************************
     TEST(test_none_with_mask)
     {
-      constexpr etl::bitset<64, int64_t> data1(ull(0xF000000000000000));
-      constexpr etl::bitset<64, int64_t> data2(ull(0x0000010000000000));
-      constexpr etl::bitset<64, int64_t> data3(ull(0x1000010001000100));
-      constexpr etl::bitset<64, int64_t> data4(ull(0xFFFFFFFFFFFFFFFF));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data1(ull(0xF000000000000000));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data2(ull(0x0000010000000000));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data3(ull(0x1000010001000100));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data4(ull(0xFFFFFFFFFFFFFFFF));
 
-      constexpr ull mask = ull(0x0FFFFFFFFFFFFFFF);
+      ETL_CONSTEXPR14 ull mask = ull(0x0FFFFFFFFFFFFFFF);
 
-      constexpr bool bd1 = data1.none(mask);
-      constexpr bool bd2 = data2.none(mask);
-      constexpr bool bd3 = data3.none(mask);
-      constexpr bool bd4 = data4.none(mask);
+      ETL_CONSTEXPR14 bool bd1 = data1.none(mask);
+      ETL_CONSTEXPR14 bool bd2 = data2.none(mask);
+      ETL_CONSTEXPR14 bool bd3 = data3.none(mask);
+      ETL_CONSTEXPR14 bool bd4 = data4.none(mask);
 
       CHECK_TRUE(bd1);
       CHECK_FALSE(bd2);
@@ -828,15 +828,15 @@ namespace
     //*************************************************************************
     TEST(test_all)
     {
-      constexpr etl::bitset<64, int64_t> data1(ull(0x0000000000000000));
-      constexpr etl::bitset<64, int64_t> data2(ull(0x0000010000000000));
-      constexpr etl::bitset<64, int64_t> data3(ull(0x1000010001000100));
-      constexpr etl::bitset<64, int64_t> data4(ull(0xFFFFFFFFFFFFFFFF));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data1(ull(0x0000000000000000));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data2(ull(0x0000010000000000));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data3(ull(0x1000010001000100));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data4(ull(0xFFFFFFFFFFFFFFFF));
 
-      constexpr bool bd1 = data1.all();
-      constexpr bool bd2 = data2.all();
-      constexpr bool bd3 = data3.all();
-      constexpr bool bd4 = data4.all();
+      ETL_CONSTEXPR14 bool bd1 = data1.all();
+      ETL_CONSTEXPR14 bool bd2 = data2.all();
+      ETL_CONSTEXPR14 bool bd3 = data3.all();
+      ETL_CONSTEXPR14 bool bd4 = data4.all();
 
       CHECK_FALSE(bd1);
       CHECK_FALSE(bd2);
@@ -847,17 +847,17 @@ namespace
     //*************************************************************************
     TEST(test_all_with_mask)
     {
-      constexpr etl::bitset<64, int64_t> data1(ull(0x0000000000000000));
-      constexpr etl::bitset<64, int64_t> data2(ull(0x0000010000000000));
-      constexpr etl::bitset<64, int64_t> data3(ull(0x1000010001000100));
-      constexpr etl::bitset<64, int64_t> data4(ull(0x0FFFFFFFFFFFFFFF));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data1(ull(0x0000000000000000));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data2(ull(0x0000010000000000));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data3(ull(0x1000010001000100));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data4(ull(0x0FFFFFFFFFFFFFFF));
 
-      constexpr ull mask = ull(0x0FFFFFFFFFFFFFFF);
+      ETL_CONSTEXPR14 ull mask = ull(0x0FFFFFFFFFFFFFFF);
 
-      constexpr bool bd1 = data1.all(mask);
-      constexpr bool bd2 = data2.all(mask);
-      constexpr bool bd3 = data3.all(mask);
-      constexpr bool bd4 = data4.all(mask);
+      ETL_CONSTEXPR14 bool bd1 = data1.all(mask);
+      ETL_CONSTEXPR14 bool bd2 = data2.all(mask);
+      ETL_CONSTEXPR14 bool bd3 = data3.all(mask);
+      ETL_CONSTEXPR14 bool bd4 = data4.all(mask);
 
       CHECK_FALSE(bd1);
       CHECK_FALSE(bd2);
@@ -866,7 +866,7 @@ namespace
     }
 
     //*************************************************************************
-    constexpr etl::bitset<64, int64_t> test_flip_helper()
+    ETL_CONSTEXPR14 etl::bitset<64, int64_t> test_flip_helper()
     {
       etl::bitset<64, int64_t> data;
       data.flip();
@@ -877,7 +877,7 @@ namespace
     TEST(test_flip)
     {
       std::bitset<64> compare;
-      constexpr etl::bitset<64, int64_t> data(test_flip_helper());
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data(test_flip_helper());
 
       compare.flip();
 
@@ -888,7 +888,7 @@ namespace
     }
 
     //*************************************************************************
-    constexpr etl::bitset<64, int64_t> test_flip_position_helper()
+    ETL_CONSTEXPR14 etl::bitset<64, int64_t> test_flip_position_helper()
     {
       etl::bitset<64, int64_t> data;
       data.flip(1);
@@ -902,7 +902,7 @@ namespace
     TEST(test_flip_position)
     {
       std::bitset<64> compare;
-      constexpr etl::bitset<64, int64_t> data(test_flip_position_helper());
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data(test_flip_position_helper());
 
       compare.flip(1);
       compare.flip(3);
@@ -916,7 +916,7 @@ namespace
     }
 
     //*************************************************************************
-    constexpr etl::bitset<64, int64_t> test_flip_reference_helper()
+    ETL_CONSTEXPR14 etl::bitset<64, int64_t> test_flip_reference_helper()
     {
       etl::bitset<64, int64_t> data;
       data[1].flip();
@@ -930,7 +930,7 @@ namespace
     TEST(test_flip_reference)
     {
       std::bitset<64> compare;
-      constexpr etl::bitset<64, int64_t> data(test_flip_reference_helper());
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data(test_flip_reference_helper());
 
       compare[1].flip();
       compare[3].flip();
@@ -955,7 +955,7 @@ namespace
     }
 
     //*************************************************************************
-    constexpr etl::bitset<64, int64_t> test_assignment_operator_helper(etl::bitset<64, int64_t> to, const etl::bitset<64, int64_t>& from)
+    ETL_CONSTEXPR14 etl::bitset<64, int64_t> test_assignment_operator_helper(etl::bitset<64, int64_t> to, const etl::bitset<64, int64_t>& from)
     {
       to = from;
 
@@ -964,9 +964,9 @@ namespace
 
     TEST(test_assignment_operator)
     {
-      constexpr std::bitset<64> compare(0xFFFFFFFFFFFFFFFULL);
-      constexpr etl::bitset<64, int64_t> data1(0xFFFFFFFFFFFFFFFULL);
-      constexpr etl::bitset<64, int64_t> data2(test_assignment_operator_helper(etl::bitset<64, int64_t>(), data1));
+      ETL_CONSTEXPR14 std::bitset<64> compare(0xFFFFFFFFFFFFFFFULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data1(0xFFFFFFFFFFFFFFFULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data2(test_assignment_operator_helper(etl::bitset<64, int64_t>(), data1));
 
       for (size_t i = 0UL; i < data2.size(); ++i)
       {
@@ -977,12 +977,12 @@ namespace
     //*************************************************************************
     TEST(test_equality_operator)
     {
-      constexpr etl::bitset<64, int64_t> data1(0x123456781234567ULL);
-      constexpr etl::bitset<64, int64_t> data2(0x123456781234567ULL);
-      constexpr etl::bitset<64, int64_t> data3;
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data1(0x123456781234567ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data2(0x123456781234567ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data3;
 
-      constexpr bool equal     =  (data1 == data2);
-      constexpr bool not_equal = !(data1 == data3);
+      ETL_CONSTEXPR14 bool equal     =  (data1 == data2);
+      ETL_CONSTEXPR14 bool not_equal = !(data1 == data3);
 
       CHECK(equal);
       CHECK(not_equal);
@@ -991,12 +991,12 @@ namespace
     //*************************************************************************
     TEST(test_inequality_operator)
     {
-      constexpr etl::bitset<64, int64_t> data1(0x123456781234567ULL);
-      constexpr etl::bitset<64, int64_t> data2(0x123456781234567ULL);
-      constexpr etl::bitset<64, int64_t> data3;
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data1(0x123456781234567ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data2(0x123456781234567ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data3;
 
-      constexpr bool equal = !(data1 != data2);
-      constexpr bool not_equal = (data1 != data3);
+      ETL_CONSTEXPR14 bool equal = !(data1 != data2);
+      ETL_CONSTEXPR14 bool not_equal = (data1 != data3);
 
       CHECK(equal);
       CHECK(not_equal);
@@ -1005,9 +1005,9 @@ namespace
     //*************************************************************************
     TEST(test_shift_left_operator)
     {
-      constexpr etl::bitset<64, int64_t> shift1(0x2468ACF0ULL);
-      constexpr etl::bitset<64, int64_t> shift2(0x48D159E0ULL);
-      constexpr etl::bitset<64, int64_t> shift11(0x91A2B3C000ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> shift1(0x2468ACF0ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> shift2(0x48D159E0ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> shift11(0x91A2B3C000ULL);
 
       CHECK((generate_shift_left_bitset<64, int64_t>(0x12345678ULL, 1U)) == shift1);
       CHECK((generate_shift_left_bitset<64, int64_t>(0x12345678ULL, 2U)) == shift2);
@@ -1017,8 +1017,8 @@ namespace
     //*************************************************************************
     TEST(test_shift_left_operator_overflow)
     {
-      constexpr etl::bitset<32, int32_t> data(generate_shift_left_bitset<32, int32_t>(0x7FFFFFFFULL, 1U));
-      constexpr etl::bitset<32, int32_t> shifted(0xFFFFFFFEUL);
+      ETL_CONSTEXPR14 etl::bitset<32, int32_t> data(generate_shift_left_bitset<32, int32_t>(0x7FFFFFFFULL, 1U));
+      ETL_CONSTEXPR14 etl::bitset<32, int32_t> shifted(0xFFFFFFFEUL);
 
       CHECK_EQUAL_HEX(shifted.value<int32_t>(), data.value<int32_t>());
     }
@@ -1026,16 +1026,16 @@ namespace
     //*************************************************************************
     TEST(test_shift_left_copy_operator)
     {
-      constexpr etl::bitset<64, int64_t> shift8(0x1234567800ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> shift8(0x1234567800ULL);
       CHECK_EQUAL_HEX(shift8.value<int64_t>(), (generate_shift_left_bitset_copy<64, int64_t>(0x12345678UL, 8U).value<int64_t>()));
 
-      constexpr etl::bitset<64, int64_t> shift16(0x123456780000ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> shift16(0x123456780000ULL);
       CHECK_EQUAL_HEX(shift16.value<int64_t>(), (generate_shift_left_bitset_copy<64, int64_t>(0x12345678UL, 16U).value<int64_t>()));
 
-      constexpr etl::bitset<64, int64_t> shift24(0x12345678000000ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> shift24(0x12345678000000ULL);
       CHECK_EQUAL_HEX(shift24.value<int64_t>(), (generate_shift_left_bitset_copy<64, int64_t>(0x12345678UL, 24U).value<int64_t>()));
 
-      constexpr etl::bitset<64, int64_t> shift64(0x0000000000000000ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> shift64(0x0000000000000000ULL);
       CHECK_EQUAL_HEX(shift64.value<int64_t>(), (generate_shift_left_bitset_copy<64, int64_t>(0x12345678UL, 64U).value<int64_t>()));
     }
 
@@ -1114,9 +1114,9 @@ namespace
     //*************************************************************************
     TEST(test_shift_right_operator)
     {
-      constexpr etl::bitset<64, int64_t> shift1(0x91A2B3CULL);
-      constexpr etl::bitset<64, int64_t> shift2(0x48D159EULL);
-      constexpr etl::bitset<64, int64_t> shift11(0x2468AULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> shift1(0x91A2B3CULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> shift2(0x48D159EULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> shift11(0x2468AULL);
 
       CHECK_EQUAL_HEX(shift1.value<int64_t>(),  (generate_shift_right_bitset<64, int64_t>(0x12345678ULL, 1U).value<int64_t>()));
       CHECK_EQUAL_HEX(shift2.value<int64_t>(),  (generate_shift_right_bitset<64, int64_t>(0x12345678ULL, 2U).value<int64_t>()));
@@ -1126,16 +1126,16 @@ namespace
     //*************************************************************************
     TEST(test_shift_right_copy_operator)
     {
-      constexpr etl::bitset<64, int64_t> shift8(0x123456ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> shift8(0x123456ULL);
       CHECK_EQUAL_HEX(shift8.value<int64_t>(), (generate_shift_right_bitset_copy<64, int64_t>(0x12345678UL, 8U).value<int64_t>()));
 
-      constexpr etl::bitset<64, int64_t> shift16(0x1234ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> shift16(0x1234ULL);
       CHECK_EQUAL_HEX(shift16.value<int64_t>(), (generate_shift_right_bitset_copy<64, int64_t>(0x12345678UL, 16U).value<int64_t>()));
 
-      constexpr etl::bitset<64, int64_t> shift24(0x12ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> shift24(0x12ULL);
       CHECK_EQUAL_HEX(shift24.value<int64_t>(), (generate_shift_right_bitset_copy<64, int64_t>(0x12345678UL, 24U).value<int64_t>()));
 
-      constexpr etl::bitset<64, int64_t> shift60(0x00ULL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> shift60(0x00ULL);
       CHECK_EQUAL_HEX(shift60.value<int64_t>(), (generate_shift_right_bitset_copy<64, int64_t>(0x12345678UL, 60U).value<int64_t>()));
     }
 
@@ -1287,16 +1287,16 @@ namespace
     //*************************************************************************
     TEST(test_and_operator)
     {
-      constexpr etl::bitset<64, int64_t> data1(0x12345678UL);
-      constexpr etl::bitset<64, int64_t> data2(0x23456789UL);
-      constexpr etl::bitset<64, int64_t> data4(0x12345678UL & 0x23456789UL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data1(0x12345678UL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data2(0x23456789UL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data4(0x12345678UL & 0x23456789UL);
 
-      constexpr etl::bitset<64, int64_t> data3 = data1 & data2;
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data3 = data1 & data2;
       CHECK(data3 == data4);
     }
 
     //*************************************************************************
-    constexpr etl::bitset<64, int64_t> test_and_equals_operator_helper(etl::bitset<64, int64_t> data1, const etl::bitset<64, int64_t>& data2)
+    ETL_CONSTEXPR14 etl::bitset<64, int64_t> test_and_equals_operator_helper(etl::bitset<64, int64_t> data1, const etl::bitset<64, int64_t>& data2)
     {
       data1 &= data2;
 
@@ -1305,10 +1305,10 @@ namespace
     
     TEST(test_and_equals_operator)
     {
-      constexpr etl::bitset<64, int64_t> data1(0x12345678UL);
-      constexpr etl::bitset<64, int64_t> data2(0x23456789UL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data1(0x12345678UL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data2(0x23456789UL);
       
-      constexpr etl::bitset<64, int64_t> data3(test_and_equals_operator_helper(data1, data2));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data3(test_and_equals_operator_helper(data1, data2));
 
       CHECK((data1 & data2) == data3);
     }
@@ -1316,16 +1316,16 @@ namespace
     //*************************************************************************
     TEST(test_or_operator)
     {
-      constexpr etl::bitset<64, int64_t> data1(0x12345678UL);
-      constexpr etl::bitset<64, int64_t> data2(0x23456789UL);
-      constexpr etl::bitset<64, int64_t> data4(0x12345678UL | 0x23456789UL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data1(0x12345678UL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data2(0x23456789UL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data4(0x12345678UL | 0x23456789UL);
 
-      constexpr etl::bitset<64, int64_t> data3 = data1 | data2;
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data3 = data1 | data2;
       CHECK(data3 == data4);
     }
 
     //*************************************************************************
-    constexpr etl::bitset<64, int64_t> test_or_equals_operator_helper(etl::bitset<64, int64_t> data1, const etl::bitset<64, int64_t>& data2)
+    ETL_CONSTEXPR14 etl::bitset<64, int64_t> test_or_equals_operator_helper(etl::bitset<64, int64_t> data1, const etl::bitset<64, int64_t>& data2)
     {
       data1 |= data2;
 
@@ -1334,10 +1334,10 @@ namespace
 
     TEST(test_or_equals_operator)
     {
-      constexpr etl::bitset<64, int64_t> data1(0x12345678UL);
-      constexpr etl::bitset<64, int64_t> data2(0x23456789UL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data1(0x12345678UL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data2(0x23456789UL);
 
-      constexpr etl::bitset<64, int64_t> data3(test_or_equals_operator_helper(data1, data2));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data3(test_or_equals_operator_helper(data1, data2));
 
       CHECK((data1 | data2) == data3);
     }
@@ -1345,16 +1345,16 @@ namespace
     //*************************************************************************
     TEST(test_xor_operator)
     {
-      constexpr etl::bitset<64, int64_t> data1(0x12345678UL);
-      constexpr etl::bitset<64, int64_t> data2(0x23456789UL);
-      constexpr etl::bitset<64, int64_t> data4(0x12345678UL ^ 0x23456789UL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data1(0x12345678UL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data2(0x23456789UL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data4(0x12345678UL ^ 0x23456789UL);
 
-      constexpr etl::bitset<64, int64_t> data3 = data1 ^ data2;
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data3 = data1 ^ data2;
       CHECK(data3 == data4);
     }
 
     //*************************************************************************
-    constexpr etl::bitset<64, int64_t> test_xor_equals_operator_helper(etl::bitset<64, int64_t> data1, const etl::bitset<64, int64_t>& data2)
+    ETL_CONSTEXPR14 etl::bitset<64, int64_t> test_xor_equals_operator_helper(etl::bitset<64, int64_t> data1, const etl::bitset<64, int64_t>& data2)
     {
       data1 ^= data2;
 
@@ -1363,10 +1363,10 @@ namespace
 
     TEST(test_xor_equals_operator)
     {
-      constexpr etl::bitset<64, int64_t> data1(0x12345678UL);
-      constexpr etl::bitset<64, int64_t> data2(0x23456789UL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data1(0x12345678UL);
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data2(0x23456789UL);
 
-      constexpr etl::bitset<64, int64_t> data3(test_xor_equals_operator_helper(data1, data2));
+      ETL_CONSTEXPR14 etl::bitset<64, int64_t> data3(test_xor_equals_operator_helper(data1, data2));
 
       CHECK((data1 ^ data2) == data3);
     }
@@ -1374,45 +1374,45 @@ namespace
     //*************************************************************************
     TEST(test_find_first)
     {
-      constexpr etl::bitset<8, int8_t> bs1(ull(0x00));
-      constexpr size_t bs1fff = bs1.find_first(false);
-      constexpr size_t bs1fft = bs1.find_first(true);
+      ETL_CONSTEXPR14 etl::bitset<8, int8_t> bs1(ull(0x00));
+      ETL_CONSTEXPR14 size_t bs1fff = bs1.find_first(false);
+      ETL_CONSTEXPR14 size_t bs1fft = bs1.find_first(true);
       CHECK_EQUAL(0U, bs1fff);
       CHECK_EQUAL(etl::bitset<>::npos, bs1fft);
 
-      constexpr etl::bitset<8, int8_t> bs2(ull(0xFF));
-      constexpr size_t bs2fff = bs2.find_first(false);
-      constexpr size_t bs2fft = bs2.find_first(true);
+      ETL_CONSTEXPR14 etl::bitset<8, int8_t> bs2(ull(0xFF));
+      ETL_CONSTEXPR14 size_t bs2fff = bs2.find_first(false);
+      ETL_CONSTEXPR14 size_t bs2fft = bs2.find_first(true);
       CHECK_EQUAL(etl::bitset<>::npos, bs2fff);
       CHECK_EQUAL(0U, bs2fft);
 
-      constexpr etl::bitset<8, int8_t> bs3(ull(0x01));
-      constexpr size_t bs3fff = bs3.find_first(false);
-      constexpr size_t bs3fft = bs3.find_first(true);
+      ETL_CONSTEXPR14 etl::bitset<8, int8_t> bs3(ull(0x01));
+      ETL_CONSTEXPR14 size_t bs3fff = bs3.find_first(false);
+      ETL_CONSTEXPR14 size_t bs3fft = bs3.find_first(true);
       CHECK_EQUAL(1U, bs3fff);
       CHECK_EQUAL(0U, bs3fft);
 
-      constexpr etl::bitset<8, int8_t> bs4(ull(0x20));
-      constexpr size_t bs4fff = bs4.find_first(false);
-      constexpr size_t bs4fft = bs4.find_first(true);
+      ETL_CONSTEXPR14 etl::bitset<8, int8_t> bs4(ull(0x20));
+      ETL_CONSTEXPR14 size_t bs4fff = bs4.find_first(false);
+      ETL_CONSTEXPR14 size_t bs4fft = bs4.find_first(true);
       CHECK_EQUAL(0U, bs4fff);
       CHECK_EQUAL(5U, bs4fft);
 
-      constexpr etl::bitset<8, int8_t> bs5(ull(0x21));
-      constexpr size_t bs5fff = bs5.find_first(false);
-      constexpr size_t bs5fft = bs5.find_first(true);
+      ETL_CONSTEXPR14 etl::bitset<8, int8_t> bs5(ull(0x21));
+      ETL_CONSTEXPR14 size_t bs5fff = bs5.find_first(false);
+      ETL_CONSTEXPR14 size_t bs5fft = bs5.find_first(true);
       CHECK_EQUAL(1U, bs5fff);
       CHECK_EQUAL(0U, bs5fft);
 
-      constexpr etl::bitset<8, int8_t> bs6(ull(0x0E));
-      constexpr size_t bs6fff = bs6.find_first(false);
-      constexpr size_t bs6fft = bs6.find_first(true);
+      ETL_CONSTEXPR14 etl::bitset<8, int8_t> bs6(ull(0x0E));
+      ETL_CONSTEXPR14 size_t bs6fff = bs6.find_first(false);
+      ETL_CONSTEXPR14 size_t bs6fft = bs6.find_first(true);
       CHECK_EQUAL(0U, bs6fff);
       CHECK_EQUAL(1U, bs6fft);
 
-      constexpr etl::bitset<8, int8_t> bs7(ull(0x31));
-      constexpr size_t bs7fff = bs7.find_first(false);
-      constexpr size_t bs7fft = bs7.find_first(true);
+      ETL_CONSTEXPR14 etl::bitset<8, int8_t> bs7(ull(0x31));
+      ETL_CONSTEXPR14 size_t bs7fff = bs7.find_first(false);
+      ETL_CONSTEXPR14 size_t bs7fft = bs7.find_first(true);
       CHECK_EQUAL(1U, bs7fff);
       CHECK_EQUAL(0U, bs7fft);
     }
@@ -1420,41 +1420,41 @@ namespace
     //*************************************************************************
     TEST(test_find_next)
     {
-      constexpr etl::bitset<8, int8_t> bs1(ull(0x00));
-      constexpr size_t bs1fnf0 = bs1.find_next(false, 0);
-      constexpr size_t bs1fnf1 = bs1.find_next(false, 1);
-      constexpr size_t bs1fnt2 = bs1.find_next(true, 2);
+      ETL_CONSTEXPR14 etl::bitset<8, int8_t> bs1(ull(0x00));
+      ETL_CONSTEXPR14 size_t bs1fnf0 = bs1.find_next(false, 0);
+      ETL_CONSTEXPR14 size_t bs1fnf1 = bs1.find_next(false, 1);
+      ETL_CONSTEXPR14 size_t bs1fnt2 = bs1.find_next(true, 2);
       CHECK_EQUAL(0U, bs1fnf0);
       CHECK_EQUAL(1U, bs1fnf1);
       CHECK_EQUAL(etl::bitset<>::npos, bs1fnt2);
 
-      constexpr etl::bitset<8, int8_t> bs2(ull(0xFF));
-      constexpr size_t bs2fnt0 = bs2.find_next(true, 0);
-      constexpr size_t bs2fnt1 = bs2.find_next(true, 1);
-      constexpr size_t bs2fnf2 = bs2.find_next(false, 2);
+      ETL_CONSTEXPR14 etl::bitset<8, int8_t> bs2(ull(0xFF));
+      ETL_CONSTEXPR14 size_t bs2fnt0 = bs2.find_next(true, 0);
+      ETL_CONSTEXPR14 size_t bs2fnt1 = bs2.find_next(true, 1);
+      ETL_CONSTEXPR14 size_t bs2fnf2 = bs2.find_next(false, 2);
       CHECK_EQUAL(0U, bs2fnt0);
       CHECK_EQUAL(1U, bs2fnt1);
       CHECK_EQUAL(etl::bitset<>::npos, bs2fnf2);
 
-      constexpr etl::bitset<8, int8_t> bs3(ull(0x0E));
-      constexpr size_t bs3fnf0 = bs3.find_next(false, 0);
-      constexpr size_t bs3fnt1 = bs3.find_next(true, 1);
-      constexpr size_t bs3fnf2 = bs3.find_next(false, 2);
+      ETL_CONSTEXPR14 etl::bitset<8, int8_t> bs3(ull(0x0E));
+      ETL_CONSTEXPR14 size_t bs3fnf0 = bs3.find_next(false, 0);
+      ETL_CONSTEXPR14 size_t bs3fnt1 = bs3.find_next(true, 1);
+      ETL_CONSTEXPR14 size_t bs3fnf2 = bs3.find_next(false, 2);
       CHECK_EQUAL(0U, bs3fnf0);
       CHECK_EQUAL(1U, bs3fnt1);
       CHECK_EQUAL(4U, bs3fnf2);
 
-      constexpr etl::bitset<8, int8_t> bs4(ull(0x31));
-      constexpr size_t bs4fnt0 = bs4.find_next(true, 0);
-      constexpr size_t bs4fnf0 = bs4.find_next(false, 0);
-      constexpr size_t bs4fnt1 = bs4.find_next(true, 1);
+      ETL_CONSTEXPR14 etl::bitset<8, int8_t> bs4(ull(0x31));
+      ETL_CONSTEXPR14 size_t bs4fnt0 = bs4.find_next(true, 0);
+      ETL_CONSTEXPR14 size_t bs4fnf0 = bs4.find_next(false, 0);
+      ETL_CONSTEXPR14 size_t bs4fnt1 = bs4.find_next(true, 1);
       CHECK_EQUAL(0U, bs4fnt0);
       CHECK_EQUAL(1U, bs4fnf0);
       CHECK_EQUAL(4U, bs4fnt1);
     }
 
     //*************************************************************************
-    constexpr std::pair<etl::bitset<8, int8_t>, etl::bitset<8, int8_t>> test_swap_helper()
+    ETL_CONSTEXPR14 std::pair<etl::bitset<8, int8_t>, etl::bitset<8, int8_t>> test_swap_helper()
     {
       etl::bitset<8, int8_t> data1(ull(0x2A));
       etl::bitset<8, int8_t> data2(ull(0x15));
@@ -1466,10 +1466,10 @@ namespace
 
     TEST(test_swap)
     {
-      constexpr etl::bitset<8, int8_t> compare1(0x2A);
-      constexpr etl::bitset<8, int8_t> compare2(0x15);
+      ETL_CONSTEXPR14 etl::bitset<8, int8_t> compare1(0x2A);
+      ETL_CONSTEXPR14 etl::bitset<8, int8_t> compare2(0x15);
 
-      constexpr std::pair<etl::bitset<8, int8_t>, etl::bitset<8, int8_t>> swapped = test_swap_helper();
+      ETL_CONSTEXPR14 std::pair<etl::bitset<8, int8_t>, etl::bitset<8, int8_t>> swapped = test_swap_helper();
 
       CHECK(swapped.first == compare2);
       CHECK(swapped.second == compare1);
@@ -1502,7 +1502,7 @@ namespace
     {
       using bs32 = etl::bitset<32, int32_t>;
 
-      constexpr bs32 b(0x12345678UL);
+      ETL_CONSTEXPR14 bs32 b(0x12345678UL);
 
       etl::string<32> text = b.to_string('.', '*');
       std::string stdtext  = b.to_string<std::string>('.', '*');
@@ -1517,7 +1517,7 @@ namespace
     {
       using bs32 = etl::bitset<32, int32_t>;
 
-      constexpr bs32 b(0x12345678UL);
+      ETL_CONSTEXPR14 bs32 b(0x12345678UL);
 
       etl::wstring<32> text = b.to_string<etl::wstring<32>>(L'.', L'*');
       std::wstring stdtext = b.to_string<std::wstring>(L'.', L'*');
@@ -1531,7 +1531,7 @@ namespace
     {
       using bs32 = etl::bitset<32, int32_t>;
 
-      constexpr bs32 b(0x12345678UL);
+      ETL_CONSTEXPR14 bs32 b(0x12345678UL);
 
       etl::u16string<32> text = b.to_string<etl::u16string<32>>(u'.', u'*');
       std::u16string stdtext = b.to_string<std::u16string>(u'.', u'*');
@@ -1545,7 +1545,7 @@ namespace
     {
       using bs32 = etl::bitset<32, int32_t>;
 
-      constexpr bs32 b(0x12345678UL);
+      ETL_CONSTEXPR14 bs32 b(0x12345678UL);
 
       etl::u32string<32> text = b.to_string<etl::u32string<32>>(U'.', U'*');
       std::u32string stdtext = b.to_string<std::u32string>(U'.', U'*');

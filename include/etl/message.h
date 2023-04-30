@@ -86,16 +86,16 @@ namespace etl
 
   public:
 
-    enum
-    {
-      ID = ID_
-    };
+    static ETL_CONSTANT etl::message_id_t ID = ID_;
 
     ETL_NODISCARD etl::message_id_t get_message_id() const ETL_NOEXCEPT ETL_OVERRIDE
     {
       return ID;
     }
   };
+
+  template <etl::message_id_t ID_, typename TParent>
+  ETL_CONSTANT etl::message_id_t message<ID_, TParent>::ID;
 }
 
 #endif

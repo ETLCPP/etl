@@ -813,11 +813,11 @@ namespace etl
 // Traits are derived from the STL
 //*****************************************************************************
 
-//***************************************************************************
-/// integral_constant
-///\ingroup type_traits
-template <typename T, T VALUE>
-struct integral_constant : std::integral_constant<T, VALUE> {};
+  //***************************************************************************
+  /// integral_constant
+  ///\ingroup type_traits
+  template <typename T, T VALUE>
+  struct integral_constant : std::integral_constant<T, VALUE> {};
 
 /// integral_constant specialisations
 ///\ingroup type_traits

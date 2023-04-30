@@ -526,12 +526,10 @@ namespace etl
     typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
       accepts()
     {
-      ETL_CONSTANT etl::message_id_t id = TMessage::ID;
-
-      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
-             T5::ID == id || T6::ID == id || T7::ID == id || T8::ID == id ||
-             T9::ID == id || T10::ID == id || T11::ID == id || T12::ID == id ||
-             T13::ID == id || T14::ID == id || T15::ID == id || T16::ID == id;
+      return T1::ID == TMessage::ID || T2::ID == TMessage::ID || T3::ID == TMessage::ID || T4::ID == TMessage::ID ||
+             T5::ID == TMessage::ID || T6::ID == TMessage::ID || T7::ID == TMessage::ID || T8::ID == TMessage::ID ||
+             T9::ID == TMessage::ID || T10::ID == TMessage::ID || T11::ID == TMessage::ID || T12::ID == TMessage::ID ||
+             T13::ID == TMessage::ID || T14::ID == TMessage::ID || T15::ID == TMessage::ID || T16::ID == TMessage::ID;
     }
 
     enum
@@ -819,12 +817,10 @@ namespace etl
     typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
       accepts()
     {
-      ETL_CONSTANT etl::message_id_t id = TMessage::ID;
-
-      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
-             T5::ID == id || T6::ID == id || T7::ID == id || T8::ID == id ||
-             T9::ID == id || T10::ID == id || T11::ID == id || T12::ID == id ||
-             T13::ID == id || T14::ID == id || T15::ID == id;
+      return T1::ID == TMessage::ID || T2::ID == TMessage::ID || T3::ID == TMessage::ID || T4::ID == TMessage::ID ||
+             T5::ID == TMessage::ID || T6::ID == TMessage::ID || T7::ID == TMessage::ID || T8::ID == TMessage::ID ||
+             T9::ID == TMessage::ID || T10::ID == TMessage::ID || T11::ID == TMessage::ID || T12::ID == TMessage::ID ||
+             T13::ID == TMessage::ID || T14::ID == TMessage::ID || T15::ID == TMessage::ID;
     }
 
     enum
@@ -1110,12 +1106,10 @@ namespace etl
     typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
       accepts()
     {
-      ETL_CONSTANT etl::message_id_t id = TMessage::ID;
-
-      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
-             T5::ID == id || T6::ID == id || T7::ID == id || T8::ID == id ||
-             T9::ID == id || T10::ID == id || T11::ID == id || T12::ID == id ||
-             T13::ID == id || T14::ID == id;
+      return T1::ID == TMessage::ID || T2::ID == TMessage::ID || T3::ID == TMessage::ID || T4::ID == TMessage::ID ||
+             T5::ID == TMessage::ID || T6::ID == TMessage::ID || T7::ID == TMessage::ID || T8::ID == TMessage::ID ||
+             T9::ID == TMessage::ID || T10::ID == TMessage::ID || T11::ID == TMessage::ID || T12::ID == TMessage::ID ||
+             T13::ID == TMessage::ID || T14::ID == TMessage::ID;
     }
 
     enum
@@ -1399,12 +1393,10 @@ namespace etl
     typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
       accepts()
     {
-      ETL_CONSTANT etl::message_id_t id = TMessage::ID;
-
-      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
-             T5::ID == id || T6::ID == id || T7::ID == id || T8::ID == id ||
-             T9::ID == id || T10::ID == id || T11::ID == id || T12::ID == id ||
-             T13::ID == id;
+      return T1::ID == TMessage::ID || T2::ID == TMessage::ID || T3::ID == TMessage::ID || T4::ID == TMessage::ID ||
+             T5::ID == TMessage::ID || T6::ID == TMessage::ID || T7::ID == TMessage::ID || T8::ID == TMessage::ID ||
+             T9::ID == TMessage::ID || T10::ID == TMessage::ID || T11::ID == TMessage::ID || T12::ID == TMessage::ID ||
+             T13::ID == TMessage::ID;
     }
 
     enum
@@ -1683,11 +1675,9 @@ namespace etl
     typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
       accepts()
     {
-      ETL_CONSTANT etl::message_id_t id = TMessage::ID;
-
-      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
-             T5::ID == id || T6::ID == id || T7::ID == id || T8::ID == id ||
-             T9::ID == id || T10::ID == id || T11::ID == id || T12::ID == id;
+      return T1::ID == TMessage::ID || T2::ID == TMessage::ID || T3::ID == TMessage::ID || T4::ID == TMessage::ID ||
+             T5::ID == TMessage::ID || T6::ID == TMessage::ID || T7::ID == TMessage::ID || T8::ID == TMessage::ID ||
+             T9::ID == TMessage::ID || T10::ID == TMessage::ID || T11::ID == TMessage::ID || T12::ID == TMessage::ID;
     }
 
     enum
@@ -1964,11 +1954,9 @@ namespace etl
     typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
       accepts()
     {
-      ETL_CONSTANT etl::message_id_t id = TMessage::ID;
-
-      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
-             T5::ID == id || T6::ID == id || T7::ID == id || T8::ID == id ||
-             T9::ID == id || T10::ID == id || T11::ID == id;
+      return T1::ID == TMessage::ID || T2::ID == TMessage::ID || T3::ID == TMessage::ID || T4::ID == TMessage::ID ||
+             T5::ID == TMessage::ID || T6::ID == TMessage::ID || T7::ID == TMessage::ID || T8::ID == TMessage::ID ||
+             T9::ID == TMessage::ID || T10::ID == TMessage::ID || T11::ID == TMessage::ID;
     }
 
     enum
@@ -2243,11 +2231,9 @@ namespace etl
     typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
       accepts()
     {
-      ETL_CONSTANT etl::message_id_t id = TMessage::ID;
-
-      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
-             T5::ID == id || T6::ID == id || T7::ID == id || T8::ID == id ||
-             T9::ID == id || T10::ID == id;
+      return T1::ID == TMessage::ID || T2::ID == TMessage::ID || T3::ID == TMessage::ID || T4::ID == TMessage::ID ||
+             T5::ID == TMessage::ID || T6::ID == TMessage::ID || T7::ID == TMessage::ID || T8::ID == TMessage::ID ||
+             T9::ID == TMessage::ID || T10::ID == TMessage::ID;
     }
 
     enum
@@ -2520,11 +2506,9 @@ namespace etl
     typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
       accepts()
     {
-      ETL_CONSTANT etl::message_id_t id = TMessage::ID;
-
-      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
-             T5::ID == id || T6::ID == id || T7::ID == id || T8::ID == id ||
-             T9::ID == id;
+      return T1::ID == TMessage::ID || T2::ID == TMessage::ID || T3::ID == TMessage::ID || T4::ID == TMessage::ID ||
+             T5::ID == TMessage::ID || T6::ID == TMessage::ID || T7::ID == TMessage::ID || T8::ID == TMessage::ID ||
+             T9::ID == TMessage::ID;
     }
 
     enum
@@ -2792,10 +2776,8 @@ namespace etl
     typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
       accepts()
     {
-      ETL_CONSTANT etl::message_id_t id = TMessage::ID;
-
-      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
-             T5::ID == id || T6::ID == id || T7::ID == id || T8::ID == id;
+      return T1::ID == TMessage::ID || T2::ID == TMessage::ID || T3::ID == TMessage::ID || T4::ID == TMessage::ID ||
+             T5::ID == TMessage::ID || T6::ID == TMessage::ID || T7::ID == TMessage::ID || T8::ID == TMessage::ID;
     }
 
     enum
@@ -3061,10 +3043,8 @@ namespace etl
     typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
       accepts()
     {
-      ETL_CONSTANT etl::message_id_t id = TMessage::ID;
-
-      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
-             T5::ID == id || T6::ID == id || T7::ID == id;
+      return T1::ID == TMessage::ID || T2::ID == TMessage::ID || T3::ID == TMessage::ID || T4::ID == TMessage::ID ||
+             T5::ID == TMessage::ID || T6::ID == TMessage::ID || T7::ID == TMessage::ID;
     }
 
     enum
@@ -3328,10 +3308,8 @@ namespace etl
     typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
       accepts()
     {
-      ETL_CONSTANT etl::message_id_t id = TMessage::ID;
-
-      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
-             T5::ID == id || T6::ID == id;
+      return T1::ID == TMessage::ID || T2::ID == TMessage::ID || T3::ID == TMessage::ID || T4::ID == TMessage::ID ||
+             T5::ID == TMessage::ID || T6::ID == TMessage::ID;
     }
 
     enum
@@ -3593,10 +3571,8 @@ namespace etl
     typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
       accepts()
     {
-      ETL_CONSTANT etl::message_id_t id = TMessage::ID;
-
-      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id ||
-             T5::ID == id;
+      return T1::ID == TMessage::ID || T2::ID == TMessage::ID || T3::ID == TMessage::ID || T4::ID == TMessage::ID ||
+             T5::ID == TMessage::ID;
     }
 
     enum
@@ -3853,9 +3829,7 @@ namespace etl
     typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
       accepts()
     {
-      ETL_CONSTANT etl::message_id_t id = TMessage::ID;
-
-      return T1::ID == id || T2::ID == id || T3::ID == id || T4::ID == id;
+      return T1::ID == TMessage::ID || T2::ID == TMessage::ID || T3::ID == TMessage::ID || T4::ID == TMessage::ID;
     }
 
     enum
@@ -4110,9 +4084,7 @@ namespace etl
     typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
       accepts()
     {
-      ETL_CONSTANT etl::message_id_t id = TMessage::ID;
-
-      return T1::ID == id || T2::ID == id || T3::ID == id;
+      return T1::ID == TMessage::ID || T2::ID == TMessage::ID || T3::ID == TMessage::ID;
     }
 
     enum
@@ -4365,9 +4337,7 @@ namespace etl
     typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
       accepts()
     {
-      ETL_CONSTANT etl::message_id_t id = TMessage::ID;
-
-      return T1::ID == id || T2::ID == id;
+      return T1::ID == TMessage::ID || T2::ID == TMessage::ID;
     }
 
     enum
@@ -4618,9 +4588,7 @@ namespace etl
     typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
       accepts()
     {
-      ETL_CONSTANT etl::message_id_t id = TMessage::ID;
-
-      return T1::ID == id;
+      return T1::ID == TMessage::ID;
     }
 
     enum
