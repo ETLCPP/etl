@@ -41,6 +41,7 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "memory.h"
 #include "array.h"
+#include "byte.h"
 
 #include "private/dynamic_extent.h"
 
@@ -938,6 +939,24 @@ namespace etl
     }
   };
 #endif
+
+  //*************************************************************************
+  /// Obtains a view to the object representation of the elements of the span s.
+  //*************************************************************************
+
+  template <class T, std::size_t N>
+  auto as_bytes(span<T, N> s) ETL_NOEXCEPT
+  {
+    return span <const byte, (N == etl::dynamic_extent) ? (etl::dynamic_extent) : (N * sizeof(T)) > {reinterpret_cast<byte*>(s.data()), s.size_bytes()};
+  }
+
+  template <class T, std::size_t N>
+  auto as_writable_bytes(span<T, N> s) ETL_NOEXCEPT
+  {
+    ETL_STATIC_ASSERT(not etl::is_const<T>::value, "span<T> must be of non-const type");
+    return span <byte, (N == etl::dynamic_extent) ? (etl::dynamic_extent) : (N * sizeof(T)) > {reinterpret_cast<byte*>(s.data()), s.size_bytes()};
+  }
+
 }
 
 #endif
