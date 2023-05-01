@@ -55,6 +55,7 @@ namespace etl
     /// Can only be called once.
     /// Subsequent calls will do nothing.
     ///\param call_on_enter_state If true will call on_enter_state() for the first state. Default = true.
+    /// If the first state has child states then they will be recersively entered.
     //*******************************************
     void start(bool call_on_enter_state = true) ETL_OVERRIDE
     {
@@ -65,7 +66,7 @@ namespace etl
         ETL_ASSERT(p_state != ETL_NULLPTR, ETL_ERROR(etl::fsm_null_state_exception));
 
         if (call_on_enter_state)
-        {         
+        {
           etl::fsm_state_id_t next_state = do_enters(ETL_NULLPTR, p_state, true);
 
           if (next_state != ifsm_state::No_State_Change)
