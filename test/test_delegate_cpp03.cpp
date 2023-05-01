@@ -34,6 +34,8 @@ SOFTWARE.
 #include "etl/vector.h"
 
 #include <vector>
+#include <functional>
+#include <algorithm>
 
 namespace
 {
