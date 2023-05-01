@@ -33,6 +33,7 @@ SOFTWARE.
 
 #if !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
 
+#include <vector>
 #include <functional>
 
 namespace
@@ -1188,6 +1189,52 @@ namespace
 
       CHECK(function_called == FunctionCalled::Free_Int_Called);
       CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_delegate_identification)
+    {
+      Test test1;
+      Test test2;
+
+      auto d1 = etl::delegate<void(int, int)>::create<free_int>();
+      auto d2 = etl::delegate<void(int, int)>::create<Test, &Test::member_int>(test1);
+      auto d3 = etl::delegate<void(int, int)>::create<Test, &Test::member_int>(test2);
+
+      etl::delegate<void(int, int)> d4;
+
+      using Delegate_List = std::vector<etl::delegate<void(int, int)>>;
+
+      Delegate_List delegate_list = { d1, d2, d3 };
+
+      Delegate_List::const_iterator itr;
+
+      d4 = d1;
+
+      itr = std::find(delegate_list.begin(), delegate_list.end(), d4);
+      CHECK(*itr == d1);
+      CHECK(*itr != d2);
+      CHECK(*itr != d3);
+
+      d4 = d2;
+
+      itr = std::find(delegate_list.begin(), delegate_list.end(), d4);
+      CHECK(*itr != d1);
+      CHECK(*itr == d2);
+      CHECK(*itr != d3);
+
+      d4 = d3;
+
+      itr = std::find(delegate_list.begin(), delegate_list.end(), d4);
+      CHECK(*itr != d1);
+      CHECK(*itr != d2);
+      CHECK(*itr == d3);
+
+      d4 = etl::delegate<void(int, int)>::create<Test, &Test::member_int>(test2); // Same as d3
+      itr = std::find(delegate_list.begin(), delegate_list.end(), d4);
+      CHECK(*itr != d1);
+      CHECK(*itr != d2);
+      CHECK(*itr == d3);
     }
   };
 }
