@@ -65,16 +65,13 @@ namespace etl
         ETL_ASSERT(p_state != ETL_NULLPTR, ETL_ERROR(etl::fsm_null_state_exception));
 
         if (call_on_enter_state)
-        {
-            do_enters(ETL_NULLPTR, p_state, true);
+        {         
+          etl::fsm_state_id_t next_state = do_enters(ETL_NULLPTR, p_state, true);
 
-
-            //etl::fsm_state_id_t next_state = do_enters(ETL_NULLPTR, p_state, true);
-
-            //if (ifsm_state::No_State_Change != next_state)
-            //{
-            //  p_state = state_list[next_state];
-            //}
+          if (next_state != ifsm_state::No_State_Change)
+          {
+            p_state = state_list[next_state];
+          }
         }
       }
     }
