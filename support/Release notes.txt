@@ -4,6 +4,7 @@
 #675 Compilation error in optional.h
 #684 Added sanitization fix for MinGW
 #687 Build failure
+#689 Add as_bytes and as_writable_bytes
 Unit tests compile for C++11
 Fixed C++11 constexpr compatibility
 Removed redundant 'const' in template parameters

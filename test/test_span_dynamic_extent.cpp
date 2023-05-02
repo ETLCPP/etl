@@ -1135,7 +1135,6 @@ namespace
 
       CHECK_EQUAL(const_bytes.size(),    sizeof(data));
       CHECK_EQUAL(writable_bytes.size(), sizeof(data));
-
     }
 
 #include "etl/private/diagnostic_pop.h"
