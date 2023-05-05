@@ -93,7 +93,7 @@ namespace etl
   //*************************************************************************
   /// Or.
   //*************************************************************************
-  constexpr etl::byte operator |(etl::byte lhs, etl::byte rhs) noexcept
+  inline constexpr etl::byte operator |(etl::byte lhs, etl::byte rhs) noexcept
   {
     return etl::byte(static_cast<unsigned int>(lhs) | static_cast<unsigned int>(rhs));
   }
@@ -101,7 +101,7 @@ namespace etl
   //*************************************************************************
   /// And.
   //*************************************************************************
-  constexpr etl::byte operator &(etl::byte lhs, etl::byte rhs) noexcept
+  inline constexpr etl::byte operator &(etl::byte lhs, etl::byte rhs) noexcept
   {
     return etl::byte(static_cast<unsigned int>(lhs) & static_cast<unsigned int>(rhs));
   }
@@ -109,7 +109,7 @@ namespace etl
   //*************************************************************************
   /// Exclusive Or.
   //*************************************************************************
-  constexpr etl::byte operator ^(etl::byte lhs, etl::byte rhs) noexcept
+  inline constexpr etl::byte operator ^(etl::byte lhs, etl::byte rhs) noexcept
   {
     return etl::byte(static_cast<unsigned int>(lhs) ^ static_cast<unsigned int>(rhs));
   }
@@ -117,7 +117,7 @@ namespace etl
   //*************************************************************************
   /// Or equals.
   //*************************************************************************
-  ETL_CONSTEXPR14 etl::byte& operator |=(etl::byte& lhs, etl::byte rhs) noexcept
+  inline ETL_CONSTEXPR14 etl::byte& operator |=(etl::byte& lhs, etl::byte rhs) noexcept
   {
     return lhs = lhs | rhs;
   }
@@ -125,7 +125,7 @@ namespace etl
   //*************************************************************************
   /// And equals
   //*************************************************************************
-  ETL_CONSTEXPR14 etl::byte& operator &=(etl::byte& lhs, etl::byte rhs) noexcept
+  inline ETL_CONSTEXPR14 etl::byte& operator &=(etl::byte& lhs, etl::byte rhs) noexcept
   {
     return lhs = lhs & rhs;
   }
@@ -133,7 +133,7 @@ namespace etl
   //*************************************************************************
   /// Exclusive or equals.
   //*************************************************************************
-  ETL_CONSTEXPR14 etl::byte& operator ^=(etl::byte& lhs, etl::byte rhs) noexcept
+  inline ETL_CONSTEXPR14 etl::byte& operator ^=(etl::byte& lhs, etl::byte rhs) noexcept
   {
     return lhs = lhs ^ rhs;
   }
@@ -141,7 +141,7 @@ namespace etl
   //*************************************************************************
   /// Not.
   //*************************************************************************
-  constexpr etl::byte operator ~(etl::byte b) noexcept
+  inline constexpr etl::byte operator ~(etl::byte b) noexcept
   {
     return etl::byte(~static_cast<unsigned int>(b));
   }
@@ -192,7 +192,7 @@ namespace etl
   //*************************************************************************
   /// Equality test
   //*************************************************************************
-  bool operator ==(etl::byte lhs, etl::byte rhs)
+  inline bool operator ==(etl::byte lhs, etl::byte rhs)
   {
     return (lhs.value == rhs.value);
   }
@@ -200,7 +200,7 @@ namespace etl
   //*************************************************************************
   /// Inequality test
   //*************************************************************************
-  bool operator !=(etl::byte lhs, etl::byte rhs)
+  inline bool operator !=(etl::byte lhs, etl::byte rhs)
   {
     return !(lhs == rhs);
   }
@@ -262,7 +262,7 @@ namespace etl
   //*************************************************************************
   /// Or.
   //*************************************************************************
-  etl::byte operator |(etl::byte lhs, etl::byte rhs)
+  inline etl::byte operator |(etl::byte lhs, etl::byte rhs)
   {
     return etl::byte(to_integer<unsigned int>(lhs) | to_integer<unsigned int>(rhs));
   }
@@ -270,7 +270,7 @@ namespace etl
   //*************************************************************************
   /// And.
   //*************************************************************************
-  etl::byte operator &(etl::byte lhs, etl::byte rhs)
+  inline etl::byte operator &(etl::byte lhs, etl::byte rhs)
   {
     return etl::byte(to_integer<unsigned int>(lhs) & to_integer<unsigned int>(rhs));
   }
@@ -278,7 +278,7 @@ namespace etl
   //*************************************************************************
   /// Exclusive Or.
   //*************************************************************************
-   etl::byte operator ^(etl::byte lhs, etl::byte rhs)
+  inline etl::byte operator ^(etl::byte lhs, etl::byte rhs)
   {
    return etl::byte(to_integer<unsigned int>(lhs) ^ to_integer<unsigned int>(rhs));
   }
@@ -286,7 +286,7 @@ namespace etl
   //*************************************************************************
   /// Or equals.
   //*************************************************************************
-  etl::byte& operator |=(etl::byte& lhs, etl::byte rhs)
+  inline etl::byte& operator |=(etl::byte& lhs, etl::byte rhs)
   {
     return lhs = lhs | rhs;
   }
@@ -294,7 +294,7 @@ namespace etl
   //*************************************************************************
   /// And equals
   //*************************************************************************
-  etl::byte& operator &=(etl::byte& lhs, etl::byte rhs)
+  inline etl::byte& operator &=(etl::byte& lhs, etl::byte rhs)
   {
     return lhs = lhs & rhs;
   }
@@ -302,7 +302,7 @@ namespace etl
   //*************************************************************************
   /// Exclusive or equals.
   //*************************************************************************
-  etl::byte& operator ^=(etl::byte& lhs, etl::byte rhs)
+  inline etl::byte& operator ^=(etl::byte& lhs, etl::byte rhs)
   {
     return lhs = lhs ^ rhs;
   }
@@ -310,7 +310,7 @@ namespace etl
   //*************************************************************************
   /// Not.
   //*************************************************************************
-   etl::byte operator ~(etl::byte b)
+  inline etl::byte operator ~(etl::byte b)
   {
     return etl::byte(~to_integer<unsigned char>(b));
   }
