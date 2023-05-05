@@ -113,30 +113,23 @@ namespace etl
     }
 #endif
 
-#if ETL_CPP11_SUPPORTED
     //*******************************************
-    /// Construct from argument.
+    /// Construct from an lvalue.
     //*******************************************
-    template <typename TErr = TError, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TErr>::type, unexpected>::value &&
-                                                                         !etl::is_same<typename etl::remove_cvref<TErr>::type, etl::in_place_t>::value, int>::type>
-    ETL_CONSTEXPR explicit unexpected(TErr&& e)
-      : error_value(etl::forward<TErr>(e))
-    {
-    }
-
-#else
-    //*******************************************
-    /// Construct from argument.
-    //*******************************************
-    template <typename TErr>
-    explicit unexpected(const TErr& e, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TErr>::type, unexpected>::value &&
-                                                               !etl::is_same<typename etl::remove_cvref<TErr>::type, etl::in_place_t>::value, int>::type = 0)
+    ETL_CONSTEXPR explicit unexpected(const TError& e)
       : error_value(e)
     {
     }
-#endif
 
 #if ETL_USING_CPP11
+    //*******************************************
+    /// Construct from an rvalue.
+    //*******************************************
+    ETL_CONSTEXPR explicit unexpected(TError&& e)
+      : error_value(etl::forward<TError>(e))
+    {
+    }
+
     //*******************************************
     /// Construct from arguments.
     //*******************************************
@@ -203,7 +196,7 @@ namespace etl
 
     //*******************************************
     /// Get the error.
-    //*******************************************    
+    //*******************************************
     ETL_CONSTEXPR14 TError&& error()&& ETL_NOEXCEPT
     {
       return etl::move(error_value);
@@ -322,8 +315,10 @@ namespace etl
     //*******************************************
     /// Copy construct from unexpected type.
     //*******************************************
-    template <typename F>
-    ETL_CONSTEXPR14 explicit expected(const etl::unexpected<F>& ue)
+    template <typename G>
+    ETL_CONSTEXPR14
+    ETL_EXPLICIT_EXPR(!etl::is_convertible_v<const G&, TError>)
+    expected(const etl::unexpected<G>& ue)
       : storage(etl::in_place_index_t<Error_Type>(), ue.error())
     {
     }
@@ -332,8 +327,10 @@ namespace etl
     //*******************************************
     /// Move construct from unexpected type.
     //*******************************************
-    template <typename F>
-    ETL_CONSTEXPR14 explicit expected(etl::unexpected<F>&& ue)
+    template <typename G>
+    ETL_CONSTEXPR14
+    ETL_EXPLICIT_EXPR(!etl::is_convertible_v<G, TError>)
+    expected(etl::unexpected<G>&& ue)
       : storage(etl::in_place_index_t<Error_Type>(), etl::move(ue.error()))
     {
     }
@@ -388,7 +385,7 @@ namespace etl
 #endif
 
     //*******************************************
-    /// 
+    ///
     //*******************************************
     this_type& operator =(const this_type& other)
     {
@@ -401,7 +398,7 @@ namespace etl
 
 #if ETL_USING_CPP11
     //*******************************************
-    /// 
+    ///
     //*******************************************
     this_type& operator =(this_type&& other)
     {
@@ -503,7 +500,7 @@ namespace etl
 #endif
 
     //*******************************************
-    /// 
+    ///
     //*******************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
@@ -513,7 +510,7 @@ namespace etl
     }
 
     //*******************************************
-    /// 
+    ///
     //*******************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
@@ -524,7 +521,7 @@ namespace etl
 
 #if ETL_USING_CPP11
     //*******************************************
-    /// 
+    ///
     //*******************************************
     template <typename U>
     ETL_NODISCARD
@@ -542,7 +539,7 @@ namespace etl
     }
 
     //*******************************************
-    /// 
+    ///
     //*******************************************
     template <typename U>
     ETL_NODISCARD
@@ -560,7 +557,7 @@ namespace etl
     }
 
     //*******************************************
-    /// 
+    ///
     //*******************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
@@ -570,7 +567,7 @@ namespace etl
     }
 
     //*******************************************
-    /// 
+    ///
     //*******************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
@@ -580,7 +577,7 @@ namespace etl
     }
 
     //*******************************************
-    /// 
+    ///
     //*******************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
@@ -590,7 +587,7 @@ namespace etl
     }
 
     //*******************************************
-    /// 
+    ///
     //*******************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
@@ -600,7 +597,7 @@ namespace etl
     }
 
     //*******************************************
-    /// 
+    ///
     //*******************************************
     template <typename... Args>
     ETL_CONSTEXPR14 value_type& emplace(Args&&... args) ETL_NOEXCEPT
@@ -609,7 +606,7 @@ namespace etl
     }
 
     //*******************************************
-    /// 
+    ///
     //*******************************************
     template <typename U, typename... Args>
     ETL_CONSTEXPR14 value_type& emplace(std::initializer_list<U>& il, Args&&... args) ETL_NOEXCEPT
@@ -618,7 +615,7 @@ namespace etl
     }
 #else
     //*******************************************
-    /// 
+    ///
     //*******************************************
     template <typename U>
     value_type value_or(const U& default_value) const
@@ -634,7 +631,7 @@ namespace etl
     }
 
     //*******************************************
-    /// 
+    ///
     //*******************************************
     error_type& error() const
     {
@@ -643,7 +640,7 @@ namespace etl
 #endif
 
     //*******************************************
-    /// 
+    ///
     //*******************************************
     value_type* operator ->()
     {
@@ -655,7 +652,7 @@ namespace etl
     }
 
     //*******************************************
-    /// 
+    ///
     //*******************************************
     const value_type* operator ->() const
     {
@@ -667,7 +664,7 @@ namespace etl
     }
 
     //*******************************************
-    /// 
+    ///
     //*******************************************
     value_type& operator *()&
     {
@@ -679,7 +676,7 @@ namespace etl
     }
 
     //*******************************************
-    /// 
+    ///
     //*******************************************
     const value_type& operator *() const&
     {
