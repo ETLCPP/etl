@@ -44,7 +44,7 @@ namespace etl
 {
   namespace private_multi_vector
   {
-    template <class T, size_t TD1, size_t... TDn>
+    template <typename T, size_t TD1, size_t... TDn>
     struct multi_vector_t
     {
       using type = etl::vector<typename multi_vector_t<T, TDn...>::type, TD1>;
