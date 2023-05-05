@@ -987,8 +987,8 @@ namespace etl
   /// Get the 'begin' pointer for an array.
   ///\ingroup container
   //*****************************************************************************
-  template<typename TValue, size_t ARRAY_SIZE>
-  ETL_CONSTEXPR TValue* begin(TValue(&data)[ARRAY_SIZE])
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR TValue* begin(TValue(&data)[Array_Size])
   {
     return &data[0];
   }
@@ -997,8 +997,8 @@ namespace etl
   /// Get the 'begin' const iterator for an array.
   ///\ingroup container
   //*****************************************************************************
-  template<typename TValue, size_t ARRAY_SIZE>
-  ETL_CONSTEXPR const TValue* begin(const TValue(&data)[ARRAY_SIZE])
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR const TValue* begin(const TValue(&data)[Array_Size])
   {
     return &data[0];
   }
@@ -1007,8 +1007,8 @@ namespace etl
   /// Get the 'begin' const iterator for an array.
   ///\ingroup container
   //*****************************************************************************
-  template<typename TValue, size_t ARRAY_SIZE>
-  ETL_CONSTEXPR const TValue* cbegin(const TValue(&data)[ARRAY_SIZE])
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR const TValue* cbegin(const TValue(&data)[Array_Size])
   {
     return &data[0];
   }
@@ -1017,30 +1017,30 @@ namespace etl
   /// Get the 'end' iterator for an array.
   ///\ingroup container
   //*****************************************************************************
-  template<typename TValue, size_t ARRAY_SIZE>
-  ETL_CONSTEXPR TValue* end(TValue(&data)[ARRAY_SIZE])
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR TValue* end(TValue(&data)[Array_Size])
   {
-    return &data[ARRAY_SIZE];
+    return &data[Array_Size];
   }
 
   //*****************************************************************************
   /// Get the 'end' const iterator for an array.
   ///\ingroup container
   //*****************************************************************************
-  template<typename TValue, size_t ARRAY_SIZE>
-  ETL_CONSTEXPR const TValue* end(const TValue(&data)[ARRAY_SIZE])
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR const TValue* end(const TValue(&data)[Array_Size])
   {
-    return &data[ARRAY_SIZE];
+    return &data[Array_Size];
   }
 
   //*****************************************************************************
   /// Get the 'end' const iterator for an array.
   ///\ingroup container
   //*****************************************************************************
-  template<typename TValue, size_t ARRAY_SIZE>
-  ETL_CONSTEXPR const TValue* cend(const TValue(&data)[ARRAY_SIZE])
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR const TValue* cend(const TValue(&data)[Array_Size])
   {
-    return &data[ARRAY_SIZE];
+    return &data[Array_Size];
   }
 #endif
 
@@ -1109,28 +1109,28 @@ namespace etl
   /// Get the 'begin' reverse_iterator for an array.
   ///\ingroup container
   //*****************************************************************************
-  template<typename TValue, size_t ARRAY_SIZE>
-  ETL_OR_STD::reverse_iterator<TValue*> rbegin(TValue(&data)[ARRAY_SIZE])
+  template<typename TValue, size_t Array_Size>
+  ETL_OR_STD::reverse_iterator<TValue*> rbegin(TValue(&data)[Array_Size])
   {
-    return ETL_OR_STD::reverse_iterator<TValue*>(&data[ARRAY_SIZE]);
+    return ETL_OR_STD::reverse_iterator<TValue*>(&data[Array_Size]);
   }
 
   //*****************************************************************************
   /// Get the 'begin' const reverse_iterator for an array.
   ///\ingroup container
   //*****************************************************************************
-  template<typename TValue, size_t ARRAY_SIZE>
-  ETL_CONSTEXPR ETL_OR_STD::reverse_iterator<const TValue*> crbegin(const TValue(&data)[ARRAY_SIZE])
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR ETL_OR_STD::reverse_iterator<const TValue*> crbegin(const TValue(&data)[Array_Size])
   {
-    return ETL_OR_STD::reverse_iterator<const TValue*>(&data[ARRAY_SIZE]);
+    return ETL_OR_STD::reverse_iterator<const TValue*>(&data[Array_Size]);
   }
 
   //*****************************************************************************
   /// Get the 'end' reverse_iterator for an array.
   ///\ingroup container
   //*****************************************************************************
-  template<typename TValue, size_t ARRAY_SIZE>
-  ETL_CONSTEXPR ETL_OR_STD::reverse_iterator<TValue*> rend(TValue(&data)[ARRAY_SIZE])
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR ETL_OR_STD::reverse_iterator<TValue*> rend(TValue(&data)[Array_Size])
   {
     return ETL_OR_STD::reverse_iterator<TValue*>(&data[0]);
   }
@@ -1139,8 +1139,8 @@ namespace etl
   /// Get the 'end' const reverse_iterator for an array.
   ///\ingroup container
   //*****************************************************************************
-  template<typename TValue, size_t ARRAY_SIZE>
-  ETL_CONSTEXPR ETL_OR_STD::reverse_iterator<const TValue*> crend(const TValue(&data)[ARRAY_SIZE])
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR ETL_OR_STD::reverse_iterator<const TValue*> crend(const TValue(&data)[Array_Size])
   {
     return ETL_OR_STD::reverse_iterator<const TValue*>(&data[0]);
   }
@@ -1162,10 +1162,10 @@ namespace etl
   /// Get the size of an array in elements at run time, or compile time if C++11 or above.
   ///\ingroup container
   ///**************************************************************************
-  template<typename TValue, size_t ARRAY_SIZE>
-  ETL_CONSTEXPR size_t size(TValue(&)[ARRAY_SIZE])
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR size_t size(TValue(&)[Array_Size])
   {
-    return ARRAY_SIZE;
+    return Array_Size;
   }
 #endif
 
@@ -1176,11 +1176,11 @@ namespace etl
   ///\endcode
   ///\ingroup container
   ///**************************************************************************
-  template <typename T, size_t ARRAY_SIZE>
-  char(&array_size(T(&array)[ARRAY_SIZE]))[ARRAY_SIZE];
-}
+  template <typename T, size_t Array_Size>
+  char(&array_size(T(&array)[Array_Size]))[Array_Size];
 
 #define ETL_ARRAY_SIZE(a) sizeof(etl::array_size(a))
+}
 
 #endif
 

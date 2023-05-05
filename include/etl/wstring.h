@@ -467,10 +467,10 @@ namespace etl
   //***************************************************************************
   /// Make string from string literal or array
   //***************************************************************************
-  template<size_t ARRAY_SIZE>
-  etl::wstring<ARRAY_SIZE - 1U> make_string(const wchar_t(&text)[ARRAY_SIZE])
+  template<size_t Array_Size>
+  etl::wstring<Array_Size - 1U> make_string(const wchar_t(&text)[Array_Size])
   {
-    return etl::wstring<ARRAY_SIZE - 1U>(text, etl::strlen(text, ARRAY_SIZE - 1U));
+    return etl::wstring<Array_Size - 1U>(text, etl::strlen(text, Array_Size - 1U));
   }
 
   //***************************************************************************
