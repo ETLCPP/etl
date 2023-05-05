@@ -935,6 +935,8 @@ namespace etl
 
     static ETL_CONSTANT size_t MAX_SIZE = MAX_SIZE_;
 
+    using typename ireference_flat_set<TKey, TKeyCompare>::value_type;
+
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
@@ -974,8 +976,6 @@ namespace etl
     }
 
   private:
-
-    typedef TKey value_type;
 
     // The vector that stores pointers to the nodes.
     etl::vector<value_type*, MAX_SIZE> lookup;
