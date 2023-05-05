@@ -247,9 +247,9 @@ namespace
       stateMachine.set_states(stateList, StateId::Number_Of_States);
 
       // Set up the child states.
-      state1.set_child_states(childStates1, etl::size(childStates1));
+      state1.set_child_states(childStates1, ETL_OR_STD17::size(childStates1));
 
-      state1_1.set_child_states(childStates1_1, etl::size(childStates1_1));
+      state1_1.set_child_states(childStates1_1, ETL_OR_STD17::size(childStates1_1));
 
       // Start the FSM.
       stateMachine.start(true);
