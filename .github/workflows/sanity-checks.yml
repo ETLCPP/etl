@@ -1,4 +1,4 @@
-name: gcc
+name: gcc sanity checks
 on:
   push:
     branches: [ feature/sanity-checks-for-github-ci ]
@@ -18,7 +18,7 @@ jobs:
 
     - name: Build
       run: |
-        git fetch --tags
+        git fetch
         cmake -DNO_STL=OFF ./test/sanity-check/c++03
         gcc --version
         make
@@ -35,7 +35,7 @@ jobs:
 
     - name: Build
       run: |
-        git fetch --tags
+        git fetch
         cmake -DNO_STL=ON ./test/sanity-check/c++03
         gcc --version
         make
