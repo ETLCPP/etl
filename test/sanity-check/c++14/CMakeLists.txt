@@ -5,6 +5,8 @@ add_definitions(-DETL_DEBUG)
 
 option(NO_STL "No STL" OFF)
 
+message(STATUS "Compiling for C++14")
+
 if (NO_STL)
 	message(STATUS "Compiling for No STL")
 	add_definitions(-DETL_NO_STL)

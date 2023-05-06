@@ -6,8 +6,8 @@ on:
     branches: [ master ]
 
 jobs:
-  build-gcc-cpp03-linux:
-    name: GCC C++03 Linux
+  build-gcc-cpp03-linux-STL:
+    name: GCC C++03 Linux STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -19,6 +19,23 @@ jobs:
     - name: Build
       run: |
         git fetch --tags
-        cmake ./test/sanity-check/c++03
+        cmake -DNO_STL=OFF ./test/sanity-check/c++03
+        gcc --version
+        make
+
+  build-gcc-cpp03-linux-No-STL:
+    name: GCC C++03 Linux No STL 
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch --tags
+        cmake -DNO_STL=ON ./test/sanity-check/c++03
         gcc --version
         make
