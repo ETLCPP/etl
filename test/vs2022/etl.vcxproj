@@ -13426,6 +13426,7 @@
     <None Include="..\..\.github\workflows\clang.yml" />
     <None Include="..\..\.github\workflows\gcc.yml" />
     <None Include="..\..\.github\workflows\msvc.yml" />
+    <None Include="..\..\.github\workflows\sanity-checks.yml" />
     <None Include="..\..\.gitignore" />
     <None Include="..\..\.gitmodules" />
     <None Include="..\..\appveyor.yml" />
