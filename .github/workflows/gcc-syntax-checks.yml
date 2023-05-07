@@ -1,7 +1,7 @@
 name: gcc syntax checks
 on:
   push:
-    branches: [  feature/syntax-checks-for-github-ci ]
+    branches: [  master, development ]
   pull_request:
     branches: [ master ]
 
