@@ -6,6 +6,29 @@ on:
     branches: [ master ]
 
 jobs:
+  build-gcc-cpp11-linux-stl:
+    name: GCC C++11 Linux - STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        export CC=gcc
+        export CXX=g++
+        cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=11 ./
+        gcc --version
+        make
+    
+    - name: Run tests
+      run: ./test/etl_tests
+
   build-gcc-cpp14-linux-stl:
     name: GCC C++14 Linux - STL
     runs-on: ${{ matrix.os }}
