@@ -1,0 +1,349 @@
+name: clang sanity checks
+on:
+  push:
+    branches: [ feature/sanity-checks-for-github-ci ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-clang-cpp03-linux-STL:
+    name: Clang C++03 Linux STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch
+        export CC=clang
+        export CXX=clang++
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++03
+        clang --version
+        make
+
+  build-clang-cpp03-linux-No-STL:
+    name: Clang C++03 Linux No STL 
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch
+        export CC=clang
+        export CXX=clang++
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++03
+        clang --version
+        make
+
+  build-clang-cpp11-linux-STL:
+    name: Clang C++11 Linux STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch
+        export CC=clang
+        export CXX=clang++
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++11
+        clang --version
+        make
+
+  build-clang-cpp11-linux-No-STL:
+    name: Clang C++11 Linux No STL 
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch
+        export CC=clang
+        export CXX=clang++
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++11
+        clang --version
+        make
+
+  build-clang-cpp11-linux-STL-Force-CPP03:
+    name: Clang C++11 Linux STL Force C++03
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch
+        export CC=clang
+        export CXX=clang++
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/sanity-check/c++11
+        clang --version
+        make
+
+  build-clang-cpp11-linux-No-STL-Force-CPP03:
+    name: Clang C++11 Linux No STL Force C++03
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch
+        export CC=clang
+        export CXX=clang++
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/sanity-check/c++11
+        clang --version
+        make
+
+  build-clang-cpp14-linux-STL:
+    name: Clang C++14 Linux STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch
+        export CC=clang
+        export CXX=clang++
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++14
+        clang --version
+        make
+
+  build-clang-cpp14-linux-No-STL:
+    name: Clang C++14 Linux No STL 
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch
+        export CC=clang
+        export CXX=clang++
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++14
+        clang --version
+        make
+
+  build-clang-cpp14-linux-STL-Force-CPP03:
+    name: Clang C++14 Linux STL Force C++03
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch
+        export CC=clang
+        export CXX=clang++
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/sanity-check/c++14
+        clang --version
+        make
+
+  build-clang-cpp14-linux-No-STL-Force-CPP03:
+    name: Clang C++14 Linux No STL Force C++03
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch
+        export CC=clang
+        export CXX=clang++
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/sanity-check/c++14
+        clang --version
+        make
+
+  build-clang-cpp17-linux-STL:
+    name: Clang C++17 Linux STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch
+        export CC=clang
+        export CXX=clang++
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++17
+        clang --version
+        make
+
+  build-clang-cpp17-linux-No-STL:
+    name: Clang C++17 Linux No STL 
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch
+        export CC=clang
+        export CXX=clang++
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++17
+        clang --version
+        make
+
+  build-clang-cpp17-linux-STL-Force-CPP03:
+    name: Clang C++17 Linux STL Force C++03
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch
+        export CC=clang
+        export CXX=clang++
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/sanity-check/c++17
+        clang --version
+        make
+
+  build-clang-cpp17-linux-No-STL-Force-CPP03:
+    name: Clang C++17 Linux No STL Force C++03
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch
+        export CC=clang
+        export CXX=clang++
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/sanity-check/c++17
+        clang --version
+        make
+
+  build-clang-cpp20-linux-STL:
+    name: Clang C++20 Linux STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch
+        export CC=clang
+        export CXX=clang++
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++20
+        clang --version
+        make
+
+  build-clang-cpp20-linux-No-STL:
+    name: Clang C++20 Linux No STL 
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch
+        export CC=clang
+        export CXX=clang++
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++20
+        clang --version
+        make
+
+  build-clang-cpp20-linux-STL-Force-CPP03:
+    name: Clang C++20 Linux STL Force C++03
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch
+        export CC=clang
+        export CXX=clang++
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/sanity-check/c++20
+        clang --version
+        make
+
+  build-clang-cpp20-linux-No-STL-Force-CPP03:
+    name: Clang C++20 Linux No STL Force C++03
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch
+        export CC=clang
+        export CXX=clang++
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/sanity-check/c++20
+        clang --version
+        make
