@@ -3071,6 +3071,7 @@
     <ClInclude Include="..\sanity-check\c++11\etl_profile.h" />
     <ClInclude Include="..\sanity-check\c++14\etl_profile.h" />
     <ClInclude Include="..\sanity-check\c++17\etl_profile.h" />
+    <ClInclude Include="..\sanity-check\c++20\etl_profile.h" />
     <ClInclude Include="..\unittest++\AssertException.h" />
     <ClInclude Include="..\unittest++\CheckMacros.h" />
     <ClInclude Include="..\unittest++\Checks.h" />
@@ -13592,6 +13593,7 @@
     <Text Include="..\sanity-check\c++11\CMakeLists.txt" />
     <Text Include="..\sanity-check\c++14\CMakeLists.txt" />
     <Text Include="..\sanity-check\c++17\CMakeLists.txt" />
+    <Text Include="..\sanity-check\c++20\CMakeLists.txt" />
     <Text Include="..\sanity-check\log.txt" />
   </ItemGroup>
   <ItemGroup>
