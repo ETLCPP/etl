@@ -383,3 +383,10 @@ build-test-Desktop_x86_windows_msvc2019_pe_64bit-Debug
 test/vs2022/Debug MSVC C++14 - No STL
 test/log.txt
 test/etl_error_handler/log.txt
+test/syntax_check/c++03/bgcc
+test/syntax_check/c++11/bclang
+test/syntax_check/c++14/bclang
+test/syntax_check/c++17/bclang
+test/syntax_check/c++03/bclang
+test/syntax_check/c++14/bgcc
+test/syntax_check/c++20/bclang

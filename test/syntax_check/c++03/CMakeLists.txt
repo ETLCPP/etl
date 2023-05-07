@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.5.0)
-project(etl_14sanity_tests)
+project(etl_03_syntax_check)
 
 add_definitions(-DETL_DEBUG)
 
 option(NO_STL "No STL" OFF)
 
-message(STATUS "Compiling for C++14")
+message(STATUS "Compiling for C++03")
 
 if (NO_STL)
 	message(STATUS "Compiling for No STL")
@@ -29,16 +29,16 @@ if (ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 	add_definitions(-DETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 endif()
 
-add_library(t14 OBJECT)
-target_compile_definitions(t14 PRIVATE __STDC_LIMIT_MACROS __STDC_CONSTANT_MACROS __STDC_FORMAT_MACROS)
-target_include_directories(t14 PRIVATE "")
-target_include_directories(t14 SYSTEM PRIVATE ../../../include)
-set_target_properties(t14 PROPERTIES
-        CXX_STANDARD 14
+add_library(t98 OBJECT)
+target_compile_definitions(t98 PRIVATE __STDC_LIMIT_MACROS __STDC_CONSTANT_MACROS __STDC_FORMAT_MACROS)
+target_include_directories(t98 PRIVATE "")
+target_include_directories(t98 SYSTEM PRIVATE ../../../include)
+set_target_properties(t98 PROPERTIES
+        CXX_STANDARD 98
         CXX_STANDARD_REQUIRED ON
         CXX_EXTENSIONS ON
         )
-target_sources(t14 PRIVATE etl_profile.h
+target_sources(t98 PRIVATE etl_profile.h
         ../absolute.h.t.cpp
         ../algorithm.h.t.cpp
         ../alignment.h.t.cpp
@@ -215,8 +215,8 @@ target_sources(t14 PRIVATE etl_profile.h
         ../pearson.h.t.cpp
         ../permutations.h.t.cpp
         ../placement_new.h.t.cpp
-        ../platform.h.t.cpp
         ../poly_span.h.t.cpp
+        ../platform.h.t.cpp
         ../pool.h.t.cpp
         ../power.h.t.cpp
         ../priority_queue.h.t.cpp

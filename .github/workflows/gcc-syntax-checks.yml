@@ -1,7 +1,7 @@
-name: gcc sanity checks
+name: gcc syntax checks
 on:
   push:
-    branches: [ feature/sanity-checks-for-github-ci ]
+    branches: [  feature/syntax-checks-for-github-ci ]
   pull_request:
     branches: [ master ]
 

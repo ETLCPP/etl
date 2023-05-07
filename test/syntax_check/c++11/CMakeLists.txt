@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5.0)
-project(etl_11sanity_tests)
+project(etl_11_syntax_check)
 
 add_definitions(-DETL_DEBUG)
 

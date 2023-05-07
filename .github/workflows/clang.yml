@@ -6,8 +6,83 @@ on:
     branches: [ master ]
 
 jobs:
-  build-clang-linux-stl:
-    name: Clang Linux - STL
+  build-clang-cpp11-linux-stl:
+    name: Clang C++11 Linux - STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y "clang" "lldb" "lld" "clang-format"
+        export CC=clang
+        export CXX=clang++
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        git fetch
+        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=11 ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-cpp14-linux-stl:
+    name: Clang C++14 Linux - STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y "clang" "lldb" "lld" "clang-format"
+        export CC=clang
+        export CXX=clang++
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        git fetch
+        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=14 ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-cpp17-linux-stl:
+    name: Clang C++17 Linux - STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y "clang" "lldb" "lld" "clang-format"
+        export CC=clang
+        export CXX=clang++
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        git fetch
+        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=17 ./
+        clang --version
+        make
+
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-clang-cpp20-linux-stl:
+    name: Clang C++20 Linux - STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -31,8 +106,8 @@ jobs:
     - name: Run tests
       run: ./test/etl_tests
 
-  build-clang-linux-no-stl:
-    name: Clang Linux - No STL
+  build-clang-cpp20-linux-no-stl:
+    name: Clang C++20 Linux - No STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -56,8 +131,8 @@ jobs:
     - name: Run tests
       run: ./test/etl_tests
 
-  build-clang-linux-stl-force-cpp03:
-    name: Clang Linux - STL - Force C++03
+  build-clang-cpp20-linux-stl-force-cpp03:
+    name: Clang C++20 Linux - STL - Force C++03
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -81,8 +156,8 @@ jobs:
     - name: Run tests
       run: ./test/etl_tests
 
-  build-clang-10-osx-stl:
-    name: Clang-10 OSX - STL
+  build-clang-cpp20-osx-stl:
+    name: Clang C++20 OSX - STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -104,8 +179,8 @@ jobs:
     - name: Run tests
       run: ./test/etl_tests
 
-  build-clang-10-osx-no-stl:
-    name: Clang-10 OSX - No STL
+  build-clang-cpp20-osx-no-stl:
+    name: Clang C++20 OSX - No STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -127,8 +202,8 @@ jobs:
     - name: Run tests
       run: ./test/etl_tests
 
-  build-clang-10-osx-stl-force-cpp03:
-    name: Clang-10 OSX - STL - Force C++03
+  build-clang-cpp20-osx-stl-force-cpp03:
+    name: Clang C++20 OSX - STL - Force C++03
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

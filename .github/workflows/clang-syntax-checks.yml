@@ -1,7 +1,7 @@
-name: clang sanity checks
+name: clang syntax checks
 on:
   push:
-    branches: [ feature/sanity-checks-for-github-ci ]
+    branches: [ feature/syntax-checks-for-github-ci ]
   pull_request:
     branches: [ master ]
 
@@ -21,7 +21,7 @@ jobs:
         git fetch
         export CC=clang
         export CXX=clang++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++03
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax-check/c++03
         clang --version
         make
 
@@ -40,7 +40,7 @@ jobs:
         git fetch
         export CC=clang
         export CXX=clang++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++03
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax-check/c++03
         clang --version
         make
 
@@ -59,7 +59,7 @@ jobs:
         git fetch
         export CC=clang
         export CXX=clang++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++11
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax-check/c++11
         clang --version
         make
 
@@ -78,7 +78,7 @@ jobs:
         git fetch
         export CC=clang
         export CXX=clang++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++11
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax-check/c++11
         clang --version
         make
 
@@ -97,7 +97,7 @@ jobs:
         git fetch
         export CC=clang
         export CXX=clang++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/sanity-check/c++11
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax-check/c++11
         clang --version
         make
 
@@ -116,7 +116,7 @@ jobs:
         git fetch
         export CC=clang
         export CXX=clang++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/sanity-check/c++11
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax-check/c++11
         clang --version
         make
 
@@ -135,7 +135,7 @@ jobs:
         git fetch
         export CC=clang
         export CXX=clang++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++14
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax-check/c++14
         clang --version
         make
 
@@ -154,7 +154,7 @@ jobs:
         git fetch
         export CC=clang
         export CXX=clang++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++14
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax-check/c++14
         clang --version
         make
 
@@ -173,7 +173,7 @@ jobs:
         git fetch
         export CC=clang
         export CXX=clang++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/sanity-check/c++14
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax-check/c++14
         clang --version
         make
 
@@ -192,7 +192,7 @@ jobs:
         git fetch
         export CC=clang
         export CXX=clang++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/sanity-check/c++14
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax-check/c++14
         clang --version
         make
 
@@ -211,7 +211,7 @@ jobs:
         git fetch
         export CC=clang
         export CXX=clang++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++17
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax-check/c++17
         clang --version
         make
 
@@ -230,7 +230,7 @@ jobs:
         git fetch
         export CC=clang
         export CXX=clang++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++17
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax-check/c++17
         clang --version
         make
 
@@ -249,7 +249,7 @@ jobs:
         git fetch
         export CC=clang
         export CXX=clang++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/sanity-check/c++17
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax-check/c++17
         clang --version
         make
 
@@ -268,7 +268,7 @@ jobs:
         git fetch
         export CC=clang
         export CXX=clang++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/sanity-check/c++17
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax-check/c++17
         clang --version
         make
 
@@ -287,7 +287,7 @@ jobs:
         git fetch
         export CC=clang
         export CXX=clang++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++20
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax-check/c++20
         clang --version
         make
 
@@ -306,7 +306,7 @@ jobs:
         git fetch
         export CC=clang
         export CXX=clang++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/sanity-check/c++20
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ./test/syntax-check/c++20
         clang --version
         make
 
@@ -325,7 +325,7 @@ jobs:
         git fetch
         export CC=clang
         export CXX=clang++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/sanity-check/c++20
+        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax-check/c++20
         clang --version
         make
 
@@ -344,6 +344,6 @@ jobs:
         git fetch
         export CC=clang
         export CXX=clang++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/sanity-check/c++20
+        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON ./test/syntax-check/c++20
         clang --version
         make
