@@ -18,7 +18,7 @@ jobs:
 
     - name: Build
       run: |
-        git fetch --tags
+        git fetch
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         export CC=gcc
         export CXX=g++
@@ -41,7 +41,7 @@ jobs:
 
     - name: Build
       run: |
-        git fetch --tags
+        git fetch
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         export CC=gcc
         export CXX=g++
@@ -64,7 +64,7 @@ jobs:
 
     - name: Build
       run: |
-        git fetch --tags
+        git fetch
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         export CC=gcc
         export CXX=g++
@@ -87,7 +87,7 @@ jobs:
 
     - name: Build
       run: |
-        git fetch --tags
+        git fetch
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         export CC=gcc
         export CXX=g++
@@ -110,7 +110,7 @@ jobs:
 
     - name: Build
       run: |
-        git fetch --tags
+        git fetch
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         export CC=gcc
         export CXX=g++

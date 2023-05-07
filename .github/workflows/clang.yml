@@ -23,7 +23,7 @@ jobs:
         export CC=clang
         export CXX=clang++
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        git fetch --tags
+        git fetch
         cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=20 ./
         clang --version
         make
@@ -48,7 +48,7 @@ jobs:
         export CC=clang
         export CXX=clang++
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        git fetch --tags
+        git fetch
         cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=20 ./
         clang --version
         make
@@ -73,7 +73,7 @@ jobs:
         export CC=clang
         export CXX=clang++
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        git fetch --tags
+        git fetch
         cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON -DETL_CXX_STANDARD=20 ./
         clang --version
         make
@@ -96,7 +96,7 @@ jobs:
         export CC=clang
         export CXX=clang++
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        git fetch --tags
+        git fetch
         cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=20 ./
         clang --version
         make
@@ -119,7 +119,7 @@ jobs:
         export CC=clang
         export CXX=clang++
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        git fetch --tags
+        git fetch
         cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=20 ./
         clang --version
         make
@@ -142,7 +142,7 @@ jobs:
         export CC=clang
         export CXX=clang++
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        git fetch --tags
+        git fetch
         cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON -DETL_CXX_STANDARD=20 ./
         clang --version
         make
