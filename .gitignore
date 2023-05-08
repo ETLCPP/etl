@@ -292,26 +292,9 @@ test/sanity-check/c++11/bclang
 test/sanity-check/c++11/bgcc
 test/sanity-check/c++14/bclang
 test/sanity-check/c++14/bgcc
-test/sanity-check/c++17/bclang
-test/sanity-check/c++17/bgcc
 test/log.txt
 log.txt
-test/sanity-check/c++17/CMakeFiles
 test/CMakeFiles
-test/sanity-check/c++11/CMakeFiles
-test/sanity-check/c++14/CMakeFiles
-test/sanity-check/c++11/cmake_install.cmake
-test/sanity-check/c++11/CMakeCache.txt
-test/sanity-check/c++11/libt11.a
-test/sanity-check/c++11/Makefile
-test/sanity-check/c++14/cmake_install.cmake
-test/sanity-check/c++14/CMakeCache.txt
-test/sanity-check/c++14/libt14.a
-test/sanity-check/c++14/Makefile
-test/sanity-check/c++17/cmake_install.cmake
-test/sanity-check/c++17/CMakeCache.txt
-test/sanity-check/c++17/libt17.a
-test/sanity-check/c++17/Makefile
 test/vs2019/Debug LLVM
 test/vs2019/DebugLLVMNoSTL
 test/vs2019/DebugNoSTL
