@@ -86,7 +86,7 @@ namespace etl
   //***************************************************************************
   /// The common base for a bip_buffer_spsc_atomic_base.
   //***************************************************************************
-  template <const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
+  template <size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class bip_buffer_spsc_atomic_base
   {
   public:
@@ -267,12 +267,12 @@ namespace etl
         // Wrapped around already
         if (write_index < read_index)
         {
-          ETL_ASSERT_AND_RETURN((windex == write_index) && ((wsize + 1) <= read_index), ETL_ERROR(bip_buffer_reserve_invalid));
+          ETL_ASSERT_OR_RETURN((windex == write_index) && ((wsize + 1) <= read_index), ETL_ERROR(bip_buffer_reserve_invalid));
         }
         // No wraparound so far, also not wrapping around with this block
         else if (windex == write_index)
         {
-          ETL_ASSERT_AND_RETURN(wsize <= (capacity() - write_index), ETL_ERROR(bip_buffer_reserve_invalid));
+          ETL_ASSERT_OR_RETURN(wsize <= (capacity() - write_index), ETL_ERROR(bip_buffer_reserve_invalid));
 
           // Move both indexes forward
           last.store(windex + wsize, etl::memory_order_release);
@@ -280,7 +280,7 @@ namespace etl
         // Wrapping around now
         else
         {
-          ETL_ASSERT_AND_RETURN((windex == 0) && ((wsize + 1) <= read_index), ETL_ERROR(bip_buffer_reserve_invalid));
+          ETL_ASSERT_OR_RETURN((windex == 0) && ((wsize + 1) <= read_index), ETL_ERROR(bip_buffer_reserve_invalid));
         }
         
         // Always update write index
@@ -330,7 +330,7 @@ namespace etl
       if (rsize > 0)
       {
         size_type rsize_checker = rsize;
-        ETL_ASSERT_AND_RETURN((rindex == get_read_reserve(&rsize_checker)) && (rsize == rsize_checker), ETL_ERROR(bip_buffer_reserve_invalid));
+        ETL_ASSERT_OR_RETURN((rindex == get_read_reserve(&rsize_checker)) && (rsize == rsize_checker), ETL_ERROR(bip_buffer_reserve_invalid));
 
         read.store(rindex + rsize, etl::memory_order_release);
       }
@@ -526,11 +526,14 @@ namespace etl
       base_t::clear();
     }
 
-  private:
+  private: 
 
     /// The uninitialised buffer of T used in the bip_buffer_spsc.
     etl::uninitialized_buffer_of<T, RESERVED_SIZE> buffer;
   };
+
+  template <typename T, const size_t SIZE, const size_t MEMORY_MODEL> 
+  ETL_CONSTANT typename bip_buffer_spsc_atomic<T, SIZE, MEMORY_MODEL>::size_type bip_buffer_spsc_atomic<T, SIZE, MEMORY_MODEL>::RESERVED_SIZE;
 }
 
 #endif /* ETL_HAS_ATOMIC && ETL_USING_CPP11 */

@@ -48,8 +48,8 @@ namespace etl
     public:
 
       //***********************************
-      explicit add_insert_iterator(TCMA& cma) ETL_NOEXCEPT
-        : p_cma(&cma)
+      explicit add_insert_iterator(TCMA& pma) ETL_NOEXCEPT
+        : p_pma(&pma)
       {
       }
 
@@ -74,18 +74,18 @@ namespace etl
       //***********************************
       add_insert_iterator& operator =(typename TCMA::value_type value)
       {
-        p_cma->add(value);
+        p_pma->add(value);
         return *this;
       }
 
     private:
 
-      TCMA* p_cma;
+      TCMA* p_pma;
     };
   }
 
   //***************************************************************************
-  /// Cumulative Moving Average
+  /// Pseudo Moving Average
   /// \tparam T           The sample value type.
   /// \tparam SAMPLE_SIZE The number of samples to average over.
   /// \tparam SCALING     The scaling factor applied to samples. Default = 1.
@@ -98,7 +98,7 @@ namespace etl
   class pseudo_moving_average;
 
   //***************************************************************************
-  /// Cumulative Moving Average
+  /// Pseudo Moving Average
   /// For integral types.
   /// \tparam T           The sample value type.
   /// \tparam SAMPLE_SIZE The number of samples to average over.
@@ -177,8 +177,14 @@ namespace etl
     T average; ///< The current pseudo moving average.
   };
 
+  template <typename T, const size_t SAMPLE_SIZE_, const size_t SCALING_>
+  ETL_CONSTANT size_t pseudo_moving_average<T, SAMPLE_SIZE_, SCALING_, true, false>::SAMPLE_SIZE;
+  
+  template <typename T, const size_t SAMPLE_SIZE_, const size_t SCALING_>
+  ETL_CONSTANT size_t pseudo_moving_average<T, SAMPLE_SIZE_, SCALING_, true, false>::SCALING;
+
   //***************************************************************************
-/// Cumulative Moving Average
+/// Pseudo Moving Average
 /// For integral types.
 /// \tparam T           The sample value type.
 /// \tparam SCALING     The scaling factor applied to samples. Default = 1.
@@ -263,8 +269,11 @@ namespace etl
     sample_t samples; ///< The number of samples to average over.
   };
 
+  template <typename T, const size_t SCALING_>
+  ETL_CONSTANT size_t pseudo_moving_average<T, 0, SCALING_, true, false>::SCALING;
+
   //***************************************************************************
-  /// Cumulative Moving Average
+  /// Pseudo Moving Average
   /// For floating point types.
   /// \tparam T           The sample value type.
   /// \tparam SAMPLE_SIZE The number of samples to average over.
@@ -333,11 +342,13 @@ namespace etl
     T       average;                   ///< The current pseudo moving average.
   };
 
+  template <typename T, const size_t SAMPLE_SIZE_>
+  ETL_CONSTANT size_t pseudo_moving_average<T, SAMPLE_SIZE_, 1U, false, true>::SAMPLE_SIZE;
+
   //***************************************************************************
-  /// Cumulative Moving Average
+  /// Pseudo Moving Average
   /// For floating point types.
-  /// \tparam T           The sample value type.
-  /// \tparam SAMPLE_SIZE The number of samples to average over.
+  /// \tparam T The sample value type.
   //***************************************************************************
   template <typename T>
   class pseudo_moving_average<T, 0U, 1U, false, true>

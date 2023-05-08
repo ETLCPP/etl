@@ -58,12 +58,23 @@ namespace etl
 
   template<> struct char_traits_types<wchar_t>
   {
-    typedef wchar_t   char_type;
-    typedef wchar_t   int_type;
-    typedef long long off_type;
-    typedef size_t    pos_type;
-    typedef char      state_type;
+    typedef wchar_t        char_type;
+    typedef uint_least16_t int_type;
+    typedef long long      off_type;
+    typedef size_t         pos_type;
+    typedef char           state_type;
   };
+
+#if ETL_USING_CPP20
+  template<> struct char_traits_types<char8_t>
+  {
+    typedef char8_t       char_type;
+    typedef unsigned int  int_type;
+    typedef long long     off_type;
+    typedef size_t        pos_type;
+    typedef char          state_type;
+  };
+#endif
 
   template<> struct char_traits_types<char16_t>
   {
@@ -140,15 +151,15 @@ namespace etl
     }
 
     //*************************************************************************
-    static void assign(char_type& r, const char_type& c)
+    static ETL_CONSTEXPR14 void assign(char_type& r, const char_type& c)
     {
       r = c;
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR char_type* assign(char_type* p, size_t n, char_type c)
+    static ETL_CONSTEXPR14 char_type* assign(char_type* p, size_t n, char_type c)
     {
-      if (p != 0)
+      if (p != ETL_NULLPTR)
       {
         etl::fill_n(p, n, c);
       }
@@ -157,7 +168,7 @@ namespace etl
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR char_type* move(char_type* dst, const char_type* src, size_t count)
+    static ETL_CONSTEXPR14 char_type* move(char_type* dst, const char_type* src, size_t count)
     {
       if ((dst < src) || (dst > (src + count)))
       {
@@ -174,7 +185,7 @@ namespace etl
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR char_type* copy(char_type* dst, const char_type* src, size_t count)
+    static ETL_CONSTEXPR14 char_type* copy(char_type* dst, const char_type* src, size_t count)
     {
       etl::copy_n(src, count, dst);
 
@@ -186,17 +197,17 @@ namespace etl
     {
       for (size_t i = 0UL; i < count; ++i)
       {
-        if (*s1 < *s2)
+        const char_type c1 = *s1++;
+        const char_type c2 = *s2++;
+
+        if (c1 < c2)
         {
           return -1;
         }
-          else if (*s1 > *s2)
+        else if (c1 > c2)
         {
           return 1;
         }
-
-        ++s1;
-        ++s2;
       }
 
       return 0;

@@ -1,4 +1,38 @@
 ===============================================================================
+20.36.0
+#663 Make unit tests compile for C++20
+#675 Compilation error in optional.h
+#684 Added sanitization fix for MinGW
+#687 Build failure
+#689 Add as_bytes and as_writable_bytes
+Unit tests compile for C++11
+Fixed C++11 constexpr compatibility
+Removed redundant 'const' in template parameters
+Updated CI scripts to enable C++ standard and optimisation selection
+Updated static definitions
+Fixed incorrect return types for reverse iterator begin() & end()
+Updated C++ standard conditional compilation for reverse iterator functions
+Fixed latest Address Sanitizer issues
+Message packet unused parameter fix
+Added ETL_OR_STD17 macro as the namespace for size()
+Added Tasking compiler
+Fix type traits generator
+Fix test array sizes
+Changed some ETL_ASSERT macros to ETL_ASSERT_OR_RETURN
+Updated CMake files to allow C++ standard selection
+Replaced ETL_ASSERT_AND_RETURN with ETL_ASSERT_OR_RETURN
+Changed native char8_t check
+Renamed Github vs2022.yml to visual-studio.yml
+Updated Unittest++ checks
+Comments and noexcept updates to placement new
+
+===============================================================================
+20.35.15
+#627 Make tests build with C++14
+#663 Make unit tests compile for C++20
+#675 Compilation error in optional.h line 405
+
+===============================================================================
 20.35.14
 Convert the Visual Studio project to VS2022
 

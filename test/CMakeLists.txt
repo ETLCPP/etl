@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.5.0)
 project(etl_unit_tests LANGUAGES CXX)
 
+#include(FetchContent)
+#FetchContent_Declare(
+#  googletest
+#  URL https://github.com/google/googletest/archive/refs/heads/main.zip
+#)
+
+#set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+#FetchContent_MakeAvailable(googletest)
+
 add_executable(etl_tests
 	main.cpp
 	murmurhash3.cpp
@@ -10,7 +19,7 @@ add_executable(etl_tests
 	test_array_view.cpp
 	test_array_wrapper.cpp
 	test_atomic.cpp
-	test_binary.cpp
+    test_binary.cpp
 	test_bip_buffer_spsc_atomic.cpp
 	test_bit.cpp
 	test_bitset_legacy.cpp
@@ -40,7 +49,6 @@ add_executable(etl_tests
 	test_circular_buffer_external_buffer.cpp
 	test_circular_iterator.cpp
 	test_compare.cpp
-	test_compiler_settings.cpp
 	test_constant.cpp
 	test_container.cpp
 	test_correlation.cpp
@@ -147,7 +155,7 @@ add_executable(etl_tests
 	test_mean.cpp
 	test_mem_cast.cpp
 	test_mem_cast_ptr.cpp
-    test_memory.cpp
+	test_memory.cpp
 	test_message_broker.cpp
 	test_message_bus.cpp
 	test_message_packet.cpp
@@ -155,7 +163,7 @@ add_executable(etl_tests
 	test_message_router_registry.cpp
 	test_message_timer.cpp
 	test_message_timer_atomic.cpp
-    test_message_timer_interrupt.cpp
+	test_message_timer_interrupt.cpp
 	test_message_timer_locked.cpp
 	test_multimap.cpp
 	test_multiset.cpp
@@ -276,6 +284,26 @@ target_compile_definitions(etl_tests PRIVATE -DETL_DEBUG)
 
 option(ETL_NO_STL "No STL" OFF)
 
+if (ETL_CXX_STANDARD MATCHES "98")
+	message(STATUS "Compiling for C++98")
+    set_property(TARGET etl_tests PROPERTY CXX_STANDARD 98)
+elseif (ETL_CXX_STANDARD MATCHES "03")
+	message(STATUS "Compiling for C++03 (C++98)")    
+	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 98)
+elseif (ETL_CXX_STANDARD MATCHES "11")
+	message(STATUS "Compiling for C++11")    
+	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 11)
+elseif (ETL_CXX_STANDARD MATCHES "14")
+	message(STATUS "Compiling for C++14")    
+	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 14)
+elseif (ETL_CXX_STANDARD MATCHES "17")
+	message(STATUS "Compiling for C++17")    
+	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 17)
+else()
+	message(STATUS "Compiling for C++20")
+	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 20)
+endif()
+
 if (NO_STL OR ETL_NO_STL)
 	message(STATUS "Compiling for No STL")
 	target_compile_definitions(etl_tests PRIVATE -DETL_NO_STL)
@@ -320,10 +348,18 @@ target_include_directories(etl_tests
 add_subdirectory(UnitTest++)
 target_link_libraries(etl_tests PRIVATE UnitTestpp)
 
+if ((CMAKE_CXX_COMPILER_ID MATCHES "MSVC"))
+	target_compile_options(etl_tests
+			PRIVATE
+			/Zc:__cplusplus
+			)
+endif ()
+
 if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
 	target_compile_options(etl_tests
 			PRIVATE
 			-fno-omit-frame-pointer
+			-fno-common
 			-Wall
 			-Wextra
 			-Werror
@@ -351,5 +387,4 @@ add_test(etl_unit_tests etl_tests)
 # as they appear from UnitTest++
 add_custom_target(test_verbose COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
 
-set_property(TARGET etl_tests PROPERTY CXX_STANDARD 17)
  

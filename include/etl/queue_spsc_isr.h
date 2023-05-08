@@ -797,6 +797,9 @@ namespace etl
     /// The uninitialised buffer of T used in the queue_spsc_isr.
     typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type buffer[MAX_SIZE];
   };
+
+  template <typename T, size_t SIZE, typename TAccess, const size_t MEMORY_MODEL>
+  ETL_CONSTANT typename queue_spsc_isr<T, SIZE, TAccess, MEMORY_MODEL>::size_type queue_spsc_isr<T, SIZE, TAccess, MEMORY_MODEL>::MAX_SIZE;
 }
 
 #endif

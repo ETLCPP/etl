@@ -133,9 +133,9 @@ namespace etl
   /// For pointers.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR typename etl::enable_if<etl::is_pointer<T>::value&&
-                                        !etl::is_integral<T>::value &&
-                                        !etl::is_floating_point<T>::value, T>::type
+  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_pointer<T>::value&&
+                                          !etl::is_integral<T>::value &&
+                                          !etl::is_floating_point<T>::value, T>::type
     midpoint(T a, T b) ETL_NOEXCEPT
   {
     if (a > b)
@@ -153,7 +153,7 @@ namespace etl
   /// For ETL random access iterators.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR T midpoint(T a, T b, typename etl::enable_if<!etl::is_pointer<T>::value &&
+  ETL_CONSTEXPR14 T midpoint(T a, T b, typename etl::enable_if<!etl::is_pointer<T>::value &&
     !etl::is_integral<T>::value &&
     !etl::is_floating_point<T>::value &&
     etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::random_access_iterator_tag>::value , int>::type = 0)
@@ -174,11 +174,11 @@ namespace etl
   /// Parameter 'a' must be before 'b', otherwise the result is undefined.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR T midpoint(T a, T b, typename etl::enable_if<(!etl::is_pointer<T>::value &&
-    !etl::is_integral<T>::value &&
-    !etl::is_floating_point<T>::value &&
-    (etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::forward_iterator_tag>::value ||
-     etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::bidirectional_iterator_tag>::value)),  int>::type = 0)
+  ETL_CONSTEXPR14 T midpoint(T a, T b, typename etl::enable_if<(!etl::is_pointer<T>::value &&
+                                                                !etl::is_integral<T>::value &&
+                                                                !etl::is_floating_point<T>::value &&
+                                                                (etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::forward_iterator_tag>::value ||
+                                                                 etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::bidirectional_iterator_tag>::value)),  int>::type = 0)
   {
     etl::advance(a, etl::distance(a, b) / 2U);
     return a;

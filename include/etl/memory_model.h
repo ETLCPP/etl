@@ -46,7 +46,7 @@ namespace etl
   ETL_USER_TYPE(MEMORY_MODEL_HUGE,   3)
   ETL_END_USER_TYPE(memory_model)
 
-  template <const size_t MEMORY_MODEL>
+  template <size_t MEMORY_MODEL>
   struct size_type_lookup;
 
   template <>

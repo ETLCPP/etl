@@ -89,6 +89,7 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP14
     TEST(test_constexpr)
     {
       constexpr Flags cef1;
@@ -176,6 +177,7 @@ namespace
       CHECK(!is_not_same2);
       CHECK(!is_not_same3);
     }
+#endif
 
     //*************************************************************************
     TEST(test_value_masked)

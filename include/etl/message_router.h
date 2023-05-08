@@ -607,25 +607,23 @@ namespace etl
     }
 
     template <typename TMessage>
-    void receive(const TMessage& msg, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0)
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value, void>::type
+      receive(const TMessage& msg)
     {
-      if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3, T4, 
-                                                    T5, T6, T7, T8, 
-                                                    T9, T10, T11, T12, 
-                                                    T13, T14, T15, T16>::value)
+      static_cast<TDerived*>(this)->on_receive(msg);
+    }
+
+    template <typename TMessage>
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>::value, void>::type
+      receive(const TMessage& msg)
+    {
+      if (has_successor())
       {
-        static_cast<TDerived*>(this)->on_receive(msg);
+        get_successor().receive(msg);
       }
       else
       {
-        if (has_successor())
-        {
-          get_successor().receive(msg);
-        }
-        else
-        {
-          static_cast<TDerived*>(this)->on_receive_unknown(msg);
-        }
+        static_cast<TDerived*>(this)->on_receive_unknown(msg);
       }
     }
 
@@ -753,27 +751,26 @@ namespace etl
     }
 
     template <typename TMessage>
-    void receive(const TMessage& msg, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0)
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::value, void>::type
+      receive(const TMessage& msg)
     {
-      if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3, T4, 
-                                                    T5, T6, T7, T8, 
-                                                    T9, T10, T11, T12, 
-                                                    T13, T14, T15>::value)
+      static_cast<TDerived*>(this)->on_receive(msg);
+    }
+
+    template <typename TMessage>
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>::value, void>::type
+      receive(const TMessage& msg)
+    {
+      if (has_successor())
       {
-        static_cast<TDerived*>(this)->on_receive(msg);
+        get_successor().receive(msg);
       }
       else
       {
-        if (has_successor())
-        {
-          get_successor().receive(msg);
-        }
-        else
-        {
-          static_cast<TDerived*>(this)->on_receive_unknown(msg);
-        }
+        static_cast<TDerived*>(this)->on_receive_unknown(msg);
       }
     }
+
 
     //**********************************************
     using imessage_router::accepts;
@@ -898,27 +895,26 @@ namespace etl
     }
 
     template <typename TMessage>
-    void receive(const TMessage& msg, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0)
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::value, void>::type
+      receive(const TMessage& msg)
     {
-      if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3, T4, 
-                                                    T5, T6, T7, T8, 
-                                                    T9, T10, T11, T12, 
-                                                    T13, T14>::value)
+      static_cast<TDerived*>(this)->on_receive(msg);
+    }
+
+    template <typename TMessage>
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>::value, void>::type
+      receive(const TMessage& msg)
+    {
+      if (has_successor())
       {
-        static_cast<TDerived*>(this)->on_receive(msg);
+        get_successor().receive(msg);
       }
       else
       {
-        if (has_successor())
-        {
-          get_successor().receive(msg);
-        }
-        else
-        {
-          static_cast<TDerived*>(this)->on_receive_unknown(msg);
-        }
+        static_cast<TDerived*>(this)->on_receive_unknown(msg);
       }
     }
+
 
     //**********************************************
     using imessage_router::accepts;
@@ -1042,27 +1038,26 @@ namespace etl
     }
 
     template <typename TMessage>
-    void receive(const TMessage& msg, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0)
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::value, void>::type
+      receive(const TMessage& msg)
     {
-      if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3, T4, 
-                                                    T5, T6, T7, T8, 
-                                                    T9, T10, T11, T12, 
-                                                    T13>::value)
+      static_cast<TDerived*>(this)->on_receive(msg);
+    }
+
+    template <typename TMessage>
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>::value, void>::type
+      receive(const TMessage& msg)
+    {
+      if (has_successor())
       {
-        static_cast<TDerived*>(this)->on_receive(msg);
+        get_successor().receive(msg);
       }
       else
       {
-        if (has_successor())
-        {
-          get_successor().receive(msg);
-        }
-        else
-        {
-          static_cast<TDerived*>(this)->on_receive_unknown(msg);
-        }
+        static_cast<TDerived*>(this)->on_receive_unknown(msg);
       }
     }
+
 
     //**********************************************
     using imessage_router::accepts;
@@ -1184,26 +1179,26 @@ namespace etl
     }
 
     template <typename TMessage>
-    void receive(const TMessage& msg, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0)
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::value, void>::type
+      receive(const TMessage& msg)
     {
-      if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3, T4, 
-                                                    T5, T6, T7, T8, 
-                                                    T9, T10, T11, T12>::value)
+      static_cast<TDerived*>(this)->on_receive(msg);
+    }
+
+    template <typename TMessage>
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>::value, void>::type
+      receive(const TMessage& msg)
+    {
+      if (has_successor())
       {
-        static_cast<TDerived*>(this)->on_receive(msg);
+        get_successor().receive(msg);
       }
       else
       {
-        if (has_successor())
-        {
-          get_successor().receive(msg);
-        }
-        else
-        {
-          static_cast<TDerived*>(this)->on_receive_unknown(msg);
-        }
+        static_cast<TDerived*>(this)->on_receive_unknown(msg);
       }
     }
+
 
     //**********************************************
     using imessage_router::accepts;
@@ -1324,26 +1319,26 @@ namespace etl
     }
 
     template <typename TMessage>
-    void receive(const TMessage& msg, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0)
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::value, void>::type
+      receive(const TMessage& msg)
     {
-      if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3, T4, 
-                                                    T5, T6, T7, T8, 
-                                                    T9, T10, T11>::value)
+      static_cast<TDerived*>(this)->on_receive(msg);
+    }
+
+    template <typename TMessage>
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>::value, void>::type
+      receive(const TMessage& msg)
+    {
+      if (has_successor())
       {
-        static_cast<TDerived*>(this)->on_receive(msg);
+        get_successor().receive(msg);
       }
       else
       {
-        if (has_successor())
-        {
-          get_successor().receive(msg);
-        }
-        else
-        {
-          static_cast<TDerived*>(this)->on_receive_unknown(msg);
-        }
+        static_cast<TDerived*>(this)->on_receive_unknown(msg);
       }
     }
+
 
     //**********************************************
     using imessage_router::accepts;
@@ -1463,26 +1458,26 @@ namespace etl
     }
 
     template <typename TMessage>
-    void receive(const TMessage& msg, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0)
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::value, void>::type
+      receive(const TMessage& msg)
     {
-      if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3, T4, 
-                                                    T5, T6, T7, T8, 
-                                                    T9, T10>::value)
+      static_cast<TDerived*>(this)->on_receive(msg);
+    }
+
+    template <typename TMessage>
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>::value, void>::type
+      receive(const TMessage& msg)
+    {
+      if (has_successor())
       {
-        static_cast<TDerived*>(this)->on_receive(msg);
+        get_successor().receive(msg);
       }
       else
       {
-        if (has_successor())
-        {
-          get_successor().receive(msg);
-        }
-        else
-        {
-          static_cast<TDerived*>(this)->on_receive_unknown(msg);
-        }
+        static_cast<TDerived*>(this)->on_receive_unknown(msg);
       }
     }
+
 
     //**********************************************
     using imessage_router::accepts;
@@ -1601,26 +1596,26 @@ namespace etl
     }
 
     template <typename TMessage>
-    void receive(const TMessage& msg, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0)
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9>::value, void>::type
+      receive(const TMessage& msg)
     {
-      if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3, T4, 
-                                                    T5, T6, T7, T8, 
-                                                    T9>::value)
+      static_cast<TDerived*>(this)->on_receive(msg);
+    }
+
+    template <typename TMessage>
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8, T9>::value, void>::type
+      receive(const TMessage& msg)
+    {
+      if (has_successor())
       {
-        static_cast<TDerived*>(this)->on_receive(msg);
+        get_successor().receive(msg);
       }
       else
       {
-        if (has_successor())
-        {
-          get_successor().receive(msg);
-        }
-        else
-        {
-          static_cast<TDerived*>(this)->on_receive_unknown(msg);
-        }
+        static_cast<TDerived*>(this)->on_receive_unknown(msg);
       }
     }
+
 
     //**********************************************
     using imessage_router::accepts;
@@ -1737,25 +1732,26 @@ namespace etl
     }
 
     template <typename TMessage>
-    void receive(const TMessage& msg, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0)
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8>::value, void>::type
+      receive(const TMessage& msg)
     {
-      if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3, T4, 
-                                                    T5, T6, T7, T8>::value)
+      static_cast<TDerived*>(this)->on_receive(msg);
+    }
+
+    template <typename TMessage>
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7, T8>::value, void>::type
+      receive(const TMessage& msg)
+    {
+      if (has_successor())
       {
-        static_cast<TDerived*>(this)->on_receive(msg);
+        get_successor().receive(msg);
       }
       else
       {
-        if (has_successor())
-        {
-          get_successor().receive(msg);
-        }
-        else
-        {
-          static_cast<TDerived*>(this)->on_receive_unknown(msg);
-        }
+        static_cast<TDerived*>(this)->on_receive_unknown(msg);
       }
     }
+
 
     //**********************************************
     using imessage_router::accepts;
@@ -1871,25 +1867,26 @@ namespace etl
     }
 
     template <typename TMessage>
-    void receive(const TMessage& msg, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0)
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7>::value, void>::type
+      receive(const TMessage& msg)
     {
-      if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3, T4, 
-                                                    T5, T6, T7>::value)
+      static_cast<TDerived*>(this)->on_receive(msg);
+    }
+
+    template <typename TMessage>
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6, T7>::value, void>::type
+      receive(const TMessage& msg)
+    {
+      if (has_successor())
       {
-        static_cast<TDerived*>(this)->on_receive(msg);
+        get_successor().receive(msg);
       }
       else
       {
-        if (has_successor())
-        {
-          get_successor().receive(msg);
-        }
-        else
-        {
-          static_cast<TDerived*>(this)->on_receive_unknown(msg);
-        }
+        static_cast<TDerived*>(this)->on_receive_unknown(msg);
       }
     }
+
 
     //**********************************************
     using imessage_router::accepts;
@@ -2003,25 +2000,26 @@ namespace etl
     }
 
     template <typename TMessage>
-    void receive(const TMessage& msg, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0)
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6>::value, void>::type
+      receive(const TMessage& msg)
     {
-      if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3, T4, 
-                                                    T5, T6>::value)
+      static_cast<TDerived*>(this)->on_receive(msg);
+    }
+
+    template <typename TMessage>
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5, T6>::value, void>::type
+      receive(const TMessage& msg)
+    {
+      if (has_successor())
       {
-        static_cast<TDerived*>(this)->on_receive(msg);
+        get_successor().receive(msg);
       }
       else
       {
-        if (has_successor())
-        {
-          get_successor().receive(msg);
-        }
-        else
-        {
-          static_cast<TDerived*>(this)->on_receive_unknown(msg);
-        }
+        static_cast<TDerived*>(this)->on_receive_unknown(msg);
       }
     }
+
 
     //**********************************************
     using imessage_router::accepts;
@@ -2134,25 +2132,26 @@ namespace etl
     }
 
     template <typename TMessage>
-    void receive(const TMessage& msg, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0)
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4, T5>::value, void>::type
+      receive(const TMessage& msg)
     {
-      if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3, T4, 
-                                                    T5>::value)
+      static_cast<TDerived*>(this)->on_receive(msg);
+    }
+
+    template <typename TMessage>
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4, T5>::value, void>::type
+      receive(const TMessage& msg)
+    {
+      if (has_successor())
       {
-        static_cast<TDerived*>(this)->on_receive(msg);
+        get_successor().receive(msg);
       }
       else
       {
-        if (has_successor())
-        {
-          get_successor().receive(msg);
-        }
-        else
-        {
-          static_cast<TDerived*>(this)->on_receive_unknown(msg);
-        }
+        static_cast<TDerived*>(this)->on_receive_unknown(msg);
       }
     }
+
 
     //**********************************************
     using imessage_router::accepts;
@@ -2263,24 +2262,26 @@ namespace etl
     }
 
     template <typename TMessage>
-    void receive(const TMessage& msg, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0)
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3, T4>::value, void>::type
+      receive(const TMessage& msg)
     {
-      if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3, T4>::value)
+      static_cast<TDerived*>(this)->on_receive(msg);
+    }
+
+    template <typename TMessage>
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3, T4>::value, void>::type
+      receive(const TMessage& msg)
+    {
+      if (has_successor())
       {
-        static_cast<TDerived*>(this)->on_receive(msg);
+        get_successor().receive(msg);
       }
       else
       {
-        if (has_successor())
-        {
-          get_successor().receive(msg);
-        }
-        else
-        {
-          static_cast<TDerived*>(this)->on_receive_unknown(msg);
-        }
+        static_cast<TDerived*>(this)->on_receive_unknown(msg);
       }
     }
+
 
     //**********************************************
     using imessage_router::accepts;
@@ -2390,24 +2391,26 @@ namespace etl
     }
 
     template <typename TMessage>
-    void receive(const TMessage& msg, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0)
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2, T3>::value, void>::type
+      receive(const TMessage& msg)
     {
-      if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2, T3>::value)
+      static_cast<TDerived*>(this)->on_receive(msg);
+    }
+
+    template <typename TMessage>
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2, T3>::value, void>::type
+      receive(const TMessage& msg)
+    {
+      if (has_successor())
       {
-        static_cast<TDerived*>(this)->on_receive(msg);
+        get_successor().receive(msg);
       }
       else
       {
-        if (has_successor())
-        {
-          get_successor().receive(msg);
-        }
-        else
-        {
-          static_cast<TDerived*>(this)->on_receive_unknown(msg);
-        }
+        static_cast<TDerived*>(this)->on_receive_unknown(msg);
       }
     }
+
 
     //**********************************************
     using imessage_router::accepts;
@@ -2516,24 +2519,26 @@ namespace etl
     }
 
     template <typename TMessage>
-    void receive(const TMessage& msg, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0)
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1, T2>::value, void>::type
+      receive(const TMessage& msg)
     {
-      if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1, T2>::value)
+      static_cast<TDerived*>(this)->on_receive(msg);
+    }
+
+    template <typename TMessage>
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1, T2>::value, void>::type
+      receive(const TMessage& msg)
+    {
+      if (has_successor())
       {
-        static_cast<TDerived*>(this)->on_receive(msg);
+        get_successor().receive(msg);
       }
       else
       {
-        if (has_successor())
-        {
-          get_successor().receive(msg);
-        }
-        else
-        {
-          static_cast<TDerived*>(this)->on_receive_unknown(msg);
-        }
+        static_cast<TDerived*>(this)->on_receive_unknown(msg);
       }
     }
+
 
     //**********************************************
     using imessage_router::accepts;
@@ -2641,24 +2646,26 @@ namespace etl
     }
 
     template <typename TMessage>
-    void receive(const TMessage& msg, typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value, int>::type = 0)
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && etl::is_one_of<TMessage, T1>::value, void>::type
+      receive(const TMessage& msg)
     {
-      if ETL_IF_CONSTEXPR (etl::is_one_of<TMessage, T1>::value)
+      static_cast<TDerived*>(this)->on_receive(msg);
+    }
+
+    template <typename TMessage>
+    typename etl::enable_if<etl::is_base_of<imessage, TMessage>::value && !etl::is_one_of<TMessage, T1>::value, void>::type
+      receive(const TMessage& msg)
+    {
+      if (has_successor())
       {
-        static_cast<TDerived*>(this)->on_receive(msg);
+        get_successor().receive(msg);
       }
       else
       {
-        if (has_successor())
-        {
-          get_successor().receive(msg);
-        }
-        else
-        {
-          static_cast<TDerived*>(this)->on_receive_unknown(msg);
-        }
+        static_cast<TDerived*>(this)->on_receive_unknown(msg);
       }
     }
+
 
     //**********************************************
     using imessage_router::accepts;

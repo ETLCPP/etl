@@ -33,19 +33,57 @@ SOFTWARE.
 
 namespace etl
 {
-  namespace math
+  namespace private_math_constants
   {
-    ETL_CONSTANT double pi               = 3.14159265358979;
-    ETL_CONSTANT double pi_reciprocal    = 0.31830988618379;
-    ETL_CONSTANT double pi_squared       = 9.86960440108936;
-    ETL_CONSTANT double e                = 2.71828182845905;
-    ETL_CONSTANT double e_reciprocal     = 0.36787944117144;
-    ETL_CONSTANT double e_squared        = 7.38905609893065;
-    ETL_CONSTANT double root2            = 1.41421356237310;
-    ETL_CONSTANT double root2_reciprocal = 0.70710678118655;
-    ETL_CONSTANT double euler            = 0.57721566490153;
-    ETL_CONSTANT double golden_ratio     = 1.61803398874989;
+    template <typename T = void>
+    struct math_helper
+    {
+      static ETL_CONSTANT double pi               = 3.14159265358979;
+      static ETL_CONSTANT double pi_reciprocal    = 0.31830988618379;
+      static ETL_CONSTANT double pi_squared       = 9.86960440108936;
+      static ETL_CONSTANT double e                = 2.71828182845905;
+      static ETL_CONSTANT double e_reciprocal     = 0.36787944117144;
+      static ETL_CONSTANT double e_squared        = 7.38905609893065;
+      static ETL_CONSTANT double root2            = 1.41421356237310;
+      static ETL_CONSTANT double root2_reciprocal = 0.70710678118655;
+      static ETL_CONSTANT double euler            = 0.57721566490153;
+      static ETL_CONSTANT double golden_ratio     = 1.61803398874989;
+    };
+
+    template <typename T>
+    ETL_CONSTANT double math_helper<T>::pi;
+
+    template <typename T>
+    ETL_CONSTANT double math_helper<T>::pi_reciprocal;
+
+    template <typename T>
+    ETL_CONSTANT double math_helper<T>::pi_squared;
+
+    template <typename T>
+    ETL_CONSTANT double math_helper<T>::e;
+
+    template <typename T>
+    ETL_CONSTANT double math_helper<T>::e_reciprocal;
+    
+    template <typename T>
+    ETL_CONSTANT double math_helper<T>::e_squared;
+    
+    template <typename T>
+    ETL_CONSTANT double math_helper<T>::root2;
+    
+    template <typename T>
+    ETL_CONSTANT double math_helper<T>::root2_reciprocal;
+    
+    template <typename T>
+    ETL_CONSTANT double math_helper<T>::euler;
+    
+    template <typename T>
+    ETL_CONSTANT double math_helper<T>::golden_ratio;
   }
+
+  struct math : public private_math_constants::math_helper<>
+  {
+  };
 }
 
 #endif

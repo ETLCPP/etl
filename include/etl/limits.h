@@ -101,69 +101,658 @@ namespace etl
 {
   enum float_round_style
   {
-    round_indeterminate       = -1,
-    round_toward_zero         = 0,
-    round_to_nearest          = 1,
-    round_toward_infinity     = 2,
+    round_indeterminate = -1,
+    round_toward_zero = 0,
+    round_to_nearest = 1,
+    round_toward_infinity = 2,
     round_toward_neg_infinity = 3,
   };
 
   enum float_denorm_style
   {
     denorm_indeterminate = -1,
-    denorm_absent        = 0,
-    denorm_present       = 1
+    denorm_absent = 0,
+    denorm_present = 1
   };
 
-
-  class etl_integral_limits
+  namespace private_limits
   {
-  public:
+    //*********************************
+    // Integral limits common
+    template <typename T = void>
+    class integral_limits_common
+    {
+    public:
 
-    static ETL_CONSTANT bool is_specialized    = true;
-    static ETL_CONSTANT bool is_integer        = true;
-    static ETL_CONSTANT bool is_exact          = true;
-    static ETL_CONSTANT int  max_digits10      = 0;
-    static ETL_CONSTANT int  radix             = 2;
-    static ETL_CONSTANT int  min_exponent      = 0;
-    static ETL_CONSTANT int  min_exponent10    = 0;
-    static ETL_CONSTANT int  max_exponent      = 0;
-    static ETL_CONSTANT int  max_exponent10    = 0;
-    static ETL_CONSTANT bool has_infinity      = false;
-    static ETL_CONSTANT bool has_quiet_NaN     = false;
-    static ETL_CONSTANT bool has_signaling_NaN = false;
-    static ETL_CONSTANT bool has_denorm_loss   = false;
-    static ETL_CONSTANT bool is_iec559         = false;
-    static ETL_CONSTANT bool is_bounded        = true;
-    static ETL_CONSTANT bool traps             = false;
-    static ETL_CONSTANT bool tinyness_before   = false;
-    static ETL_CONSTANT float_denorm_style has_denorm = denorm_absent;
-    static ETL_CONSTANT float_round_style round_style = round_toward_zero;
-  };
+      static ETL_CONSTANT bool is_specialized    = true;
+      static ETL_CONSTANT bool is_integer        = true;
+      static ETL_CONSTANT bool is_exact          = true;
+      static ETL_CONSTANT int  max_digits10      = 0;
+      static ETL_CONSTANT int  radix             = 2;
+      static ETL_CONSTANT int  min_exponent      = 0;
+      static ETL_CONSTANT int  min_exponent10    = 0;
+      static ETL_CONSTANT int  max_exponent      = 0;
+      static ETL_CONSTANT int  max_exponent10    = 0;
+      static ETL_CONSTANT bool has_infinity      = false;
+      static ETL_CONSTANT bool has_quiet_NaN     = false;
+      static ETL_CONSTANT bool has_signaling_NaN = false;
+      static ETL_CONSTANT bool has_denorm_loss   = false;
+      static ETL_CONSTANT bool is_iec559         = false;
+      static ETL_CONSTANT bool is_bounded        = true;
+      static ETL_CONSTANT bool traps             = false;
+      static ETL_CONSTANT bool tinyness_before   = false;
+      static ETL_CONSTANT float_denorm_style has_denorm  = denorm_absent;
+      static ETL_CONSTANT float_round_style  round_style = round_toward_zero;
+    };
 
-  class etl_floating_point_limits
-  {
-  public:
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_common<T>::is_specialized;
 
-    static ETL_CONSTANT bool is_specialized    = true;
-    static ETL_CONSTANT bool is_signed         = true;
-    static ETL_CONSTANT bool is_integer        = false;
-    static ETL_CONSTANT bool is_exact          = false;
-    static ETL_CONSTANT int radix              = 2;
-    static ETL_CONSTANT bool has_infinity      = true;
-    static ETL_CONSTANT bool has_quiet_NaN     = ETL_HAS_NAN;
-    static ETL_CONSTANT bool has_signaling_NaN = ETL_HAS_NAN;
-    static ETL_CONSTANT bool has_denorm_loss   = false;
-    static ETL_CONSTANT bool is_iec559         = false;
-    static ETL_CONSTANT bool is_bounded        = true;
-    static ETL_CONSTANT bool is_modulo         = false;
-    static ETL_CONSTANT bool traps             = false;
-    static ETL_CONSTANT bool tinyness_before   = false;
-    static ETL_CONSTANT float_denorm_style has_denorm = denorm_indeterminate;
-    static ETL_CONSTANT float_round_style round_style = round_indeterminate;
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_common<T>::is_integer;
 
-    static float round_error() { return float(0.5); }
-  };
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_common<T>::is_exact;
+
+    template <typename T>
+    ETL_CONSTANT int  integral_limits_common<T>::max_digits10;
+
+    template <typename T>
+    ETL_CONSTANT int  integral_limits_common<T>::radix;
+
+    template <typename T>
+    ETL_CONSTANT int  integral_limits_common<T>::min_exponent;
+
+    template <typename T>
+    ETL_CONSTANT int  integral_limits_common<T>::min_exponent10;
+
+    template <typename T>
+    ETL_CONSTANT int  integral_limits_common<T>::max_exponent;
+
+    template <typename T>
+    ETL_CONSTANT int  integral_limits_common<T>::max_exponent10;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_common<T>::has_infinity;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_common<T>::has_quiet_NaN;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_common<T>::has_signaling_NaN;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_common<T>::has_denorm_loss;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_common<T>::is_iec559;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_common<T>::is_bounded;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_common<T>::traps;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_common<T>::tinyness_before;
+
+    template <typename T>
+    ETL_CONSTANT float_denorm_style integral_limits_common<T>::has_denorm;
+
+    template <typename T>
+    ETL_CONSTANT float_round_style integral_limits_common<T>::round_style;
+
+    //*********************************
+    // bool
+    template <typename T = void>
+    struct integral_limits_bool
+    {
+      static ETL_CONSTANT int  digits    = 1;
+      static ETL_CONSTANT int  digits10  = 0;
+      static ETL_CONSTANT bool is_signed = false;
+      static ETL_CONSTANT bool is_modulo = false;
+    };
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_bool<T>::digits;
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_bool<T>::digits10;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_bool<T>::is_signed;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_bool<T>::is_modulo;
+
+    //*********************************
+    // char
+    template <typename T = void>
+    struct integral_limits_char
+    {
+      static ETL_CONSTANT int  digits    = (CHAR_BIT * sizeof(char)) - (etl::is_signed<char>::value ? 1 : 0);
+      static ETL_CONSTANT int  digits10  = ETL_LOG10_OF_2(digits);
+      static ETL_CONSTANT bool is_signed = etl::is_signed<char>::value;
+      static ETL_CONSTANT bool is_modulo = etl::is_unsigned<char>::value;
+    };
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_char<T>::digits;
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_char<T>::digits10;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_char<T>::is_signed;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_char<T>::is_modulo;
+
+    //*********************************
+    // unsigned char
+    template <typename T = void>
+    struct integral_limits_unsigned_char
+    {
+      static ETL_CONSTANT int  digits    = (CHAR_BIT * sizeof(unsigned char));
+      static ETL_CONSTANT int  digits10  = ETL_LOG10_OF_2(digits);
+      static ETL_CONSTANT bool is_signed = false;
+      static ETL_CONSTANT bool is_modulo = true;
+    };
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_unsigned_char<T>::digits;
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_unsigned_char<T>::digits10;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_unsigned_char<T>::is_signed;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_unsigned_char<T>::is_modulo;
+
+    //*********************************
+    // signed char
+    template <typename T = void>
+    struct integral_limits_signed_char
+    {
+      static ETL_CONSTANT int  digits    = (CHAR_BIT * sizeof(char)) - 1;
+      static ETL_CONSTANT int  digits10  = ETL_LOG10_OF_2(digits);
+      static ETL_CONSTANT bool is_signed = true;
+      static ETL_CONSTANT bool is_modulo = false;
+    };
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_signed_char<T>::digits;
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_signed_char<T>::digits10;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_signed_char<T>::is_signed;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_signed_char<T>::is_modulo;
+
+#if ETL_HAS_NATIVE_CHAR8_T
+    //*********************************
+    // char8_t
+    template <typename T = void>
+    struct integral_limits_char8_t
+    {
+      static ETL_CONSTANT int  digits    = (CHAR_BIT * sizeof(char8_t)) - (etl::is_signed<char8_t>::value ? 1 : 0);
+      static ETL_CONSTANT int  digits10  = ETL_LOG10_OF_2(digits);
+      static ETL_CONSTANT bool is_signed = etl::is_signed<char8_t>::value;
+      static ETL_CONSTANT bool is_modulo = false;
+    };
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_char8_t<T>::digits;
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_char8_t<T>::digits10;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_char8_t<T>::is_signed;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_char8_t<T>::is_modulo;
+#endif
+
+#if ETL_HAS_NATIVE_CHAR16_T
+    //*********************************
+    // char16_t
+    template <typename T = void>
+    struct integral_limits_char16_t
+    {
+      static ETL_CONSTANT int  digits    = (CHAR_BIT * sizeof(char16_t));
+      static ETL_CONSTANT int  digits10  = ETL_LOG10_OF_2(digits);
+      static ETL_CONSTANT bool is_signed = false;
+      static ETL_CONSTANT bool is_modulo = true;
+    };
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_char16_t<T>::digits;
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_char16_t<T>::digits10;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_char16_t<T>::is_signed;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_char16_t<T>::is_modulo;
+#endif
+
+#if ETL_HAS_NATIVE_CHAR32_T
+    //*********************************
+    // char32_t
+    template <typename T = void>
+    struct integral_limits_char32_t
+    {
+      static ETL_CONSTANT int  digits    = (CHAR_BIT * sizeof(char32_t));
+      static ETL_CONSTANT int  digits10  = ETL_LOG10_OF_2(digits);
+      static ETL_CONSTANT bool is_signed = false;
+      static ETL_CONSTANT bool is_modulo = true;
+    };
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_char32_t<T>::digits;
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_char32_t<T>::digits10;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_char32_t<T>::is_signed;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_char32_t<T>::is_modulo;
+#endif
+
+    //*********************************
+    // wchar_t
+    template <typename T = void>
+    struct integral_limits_wchar_t
+    {
+      static ETL_CONSTANT int  digits    = (CHAR_BIT * sizeof(wchar_t)) - (etl::is_signed<wchar_t>::value ? 1 : 0);
+      static ETL_CONSTANT int  digits10  = ETL_LOG10_OF_2(digits);
+      static ETL_CONSTANT bool is_signed = etl::is_signed<wchar_t>::value;
+      static ETL_CONSTANT bool is_modulo = etl::is_unsigned<wchar_t>::value;
+    };
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_wchar_t<T>::digits;
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_wchar_t<T>::digits10;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_wchar_t<T>::is_signed;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_wchar_t<T>::is_modulo;
+
+    //*********************************
+    // short
+    template <typename T = void>
+    struct integral_limits_short
+    {
+      static ETL_CONSTANT int  digits    = (CHAR_BIT * sizeof(short)) - 1;
+      static ETL_CONSTANT int  digits10  = ETL_LOG10_OF_2(digits);
+      static ETL_CONSTANT bool is_signed = true;
+      static ETL_CONSTANT bool is_modulo = false;
+    };
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_short<T>::digits;
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_short<T>::digits10;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_short<T>::is_signed;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_short<T>::is_modulo;
+
+    //*********************************
+    // unsigned short
+    template <typename T = void>
+    struct integral_limits_unsigned_short
+    {
+      static ETL_CONSTANT int  digits    = (CHAR_BIT * sizeof(unsigned short));
+      static ETL_CONSTANT int  digits10  = ETL_LOG10_OF_2(digits);
+      static ETL_CONSTANT bool is_signed = false;
+      static ETL_CONSTANT bool is_modulo = true;
+    };
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_unsigned_short<T>::digits;
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_unsigned_short<T>::digits10;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_unsigned_short<T>::is_signed;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_unsigned_short<T>::is_modulo;
+
+    //*********************************
+    // int
+    template <typename T = void>
+    struct integral_limits_int
+    {
+      static ETL_CONSTANT int digits     = (CHAR_BIT * sizeof(int)) - 1;
+      static ETL_CONSTANT int digits10   = ETL_LOG10_OF_2(digits);
+      static ETL_CONSTANT bool is_signed = true;
+      static ETL_CONSTANT bool is_modulo = false;
+    };
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_int<T>::digits;
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_int<T>::digits10;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_int<T>::is_signed;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_int<T>::is_modulo;
+
+    //*********************************
+    // unsigned int
+    template <typename T = void>
+    struct integral_limits_unsigned_int
+    {
+      static ETL_CONSTANT int  digits    = (CHAR_BIT * sizeof(unsigned int));
+      static ETL_CONSTANT int  digits10  = ETL_LOG10_OF_2(digits);
+      static ETL_CONSTANT bool is_signed = false;
+      static ETL_CONSTANT bool is_modulo = true;
+    };
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_unsigned_int<T>::digits;
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_unsigned_int<T>::digits10;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_unsigned_int<T>::is_signed;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_unsigned_int<T>::is_modulo;
+
+    //*********************************
+    // long
+    template <typename T = void>
+    struct integral_limits_long
+    {
+      static ETL_CONSTANT int  digits    = (CHAR_BIT * sizeof(long)) - 1;
+      static ETL_CONSTANT int  digits10  = ETL_LOG10_OF_2(digits);
+      static ETL_CONSTANT bool is_signed = true;
+      static ETL_CONSTANT bool is_modulo = false;
+    };
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_long<T>::digits;
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_long<T>::digits10;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_long<T>::is_signed;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_long<T>::is_modulo;
+
+    //*********************************
+    // unsigned long
+    template <typename T = void>
+    struct integral_limits_unsigned_long
+    {
+      static ETL_CONSTANT int  digits    = (CHAR_BIT * sizeof(unsigned long));
+      static ETL_CONSTANT int  digits10  = ETL_LOG10_OF_2(digits);
+      static ETL_CONSTANT bool is_signed = false;
+      static ETL_CONSTANT bool is_modulo = true;
+    };
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_unsigned_long<T>::digits;
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_unsigned_long<T>::digits10;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_unsigned_long<T>::is_signed;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_unsigned_long<T>::is_modulo;
+
+    //*********************************
+    // long long
+    template <typename T = void>
+    struct integral_limits_long_long
+    {
+      static ETL_CONSTANT int  digits    = (CHAR_BIT * sizeof(long long)) - 1;
+      static ETL_CONSTANT int  digits10  = ETL_LOG10_OF_2(digits);
+      static ETL_CONSTANT bool is_signed = true;
+      static ETL_CONSTANT bool is_modulo = false;
+    };
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_long_long<T>::digits;
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_long_long<T>::digits10;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_long_long<T>::is_signed;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_long_long<T>::is_modulo;
+
+    //*********************************
+    // unsigned long long
+    template <typename T = void>
+    struct integral_limits_unsigned_long_long
+    {
+      static ETL_CONSTANT int  digits    = (CHAR_BIT * sizeof(unsigned long long));
+      static ETL_CONSTANT int  digits10  = ETL_LOG10_OF_2(digits);
+      static ETL_CONSTANT bool is_signed = false;
+      static ETL_CONSTANT bool is_modulo = true;
+    };
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_unsigned_long_long<T>::digits;
+
+    template <typename T>
+    ETL_CONSTANT int integral_limits_unsigned_long_long<T>::digits10;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_unsigned_long_long<T>::is_signed;
+
+    template <typename T>
+    ETL_CONSTANT bool integral_limits_unsigned_long_long<T>::is_modulo;
+
+    //*********************************
+    // Floating point limits common
+    template <typename T = void>
+    class floating_point_limits_common
+    {
+    public:
+
+      static ETL_CONSTANT bool is_specialized    = true;
+      static ETL_CONSTANT bool is_signed         = true;
+      static ETL_CONSTANT bool is_integer        = false;
+      static ETL_CONSTANT bool is_exact          = false;
+      static ETL_CONSTANT int  radix             = 2;
+      static ETL_CONSTANT bool has_infinity      = true;
+      static ETL_CONSTANT bool has_quiet_NaN     = ETL_HAS_NAN;
+      static ETL_CONSTANT bool has_signaling_NaN = ETL_HAS_NAN;
+      static ETL_CONSTANT bool has_denorm_loss   = false;
+      static ETL_CONSTANT bool is_iec559         = false;
+      static ETL_CONSTANT bool is_bounded        = true;
+      static ETL_CONSTANT bool is_modulo         = false;
+      static ETL_CONSTANT bool traps             = false;
+      static ETL_CONSTANT bool tinyness_before   = false;
+      static ETL_CONSTANT float_denorm_style has_denorm  = denorm_indeterminate;
+      static ETL_CONSTANT float_round_style  round_style = round_indeterminate;
+
+      static float round_error() { return float(0.5); }
+    };
+
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_common<T>::is_specialized;
+
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_common<T>::is_integer;
+
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_common<T>::is_exact;
+
+    template <typename T>
+    ETL_CONSTANT int  floating_point_limits_common<T>::radix;
+
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_common<T>::has_infinity;
+
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_common<T>::has_quiet_NaN;
+
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_common<T>::has_signaling_NaN;
+
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_common<T>::has_denorm_loss;
+
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_common<T>::is_iec559;
+
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_common<T>::is_bounded;
+
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_common<T>::traps;
+
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_common<T>::tinyness_before;
+
+    template <typename T>
+    ETL_CONSTANT float_denorm_style floating_point_limits_common<T>::has_denorm;
+
+    template <typename T>
+    ETL_CONSTANT float_round_style floating_point_limits_common<T>::round_style;
+
+    //*********************************
+    // float
+    template <typename T = void>
+    struct floating_point_limits_float
+    {
+      static ETL_CONSTANT int digits         = FLT_MANT_DIG;
+      static ETL_CONSTANT int digits10       = FLT_DIG;
+      static ETL_CONSTANT int max_digits10   = ETL_LOG10_OF_2(FLT_MANT_DIG) + 2;
+
+      static ETL_CONSTANT int min_exponent   = FLT_MIN_EXP;
+      static ETL_CONSTANT int min_exponent10 = FLT_MIN_10_EXP;
+      static ETL_CONSTANT int max_exponent   = FLT_MAX_EXP;
+      static ETL_CONSTANT int max_exponent10 = FLT_MAX_10_EXP;
+    };
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_float<T>::digits;
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_float<T>::digits10;
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_float<T>::max_digits10;
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_float<T>::min_exponent;
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_float<T>::min_exponent10;
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_float<T>::max_exponent;
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_float<T>::max_exponent10;
+
+    //*********************************
+    // double
+    template <typename T = void>
+    struct floating_point_limits_double
+    {
+      static ETL_CONSTANT int digits         = DBL_MANT_DIG;
+      static ETL_CONSTANT int digits10       = DBL_DIG;
+      static ETL_CONSTANT int max_digits10   = ETL_LOG10_OF_2(DBL_MANT_DIG) + 2;
+
+      static ETL_CONSTANT int min_exponent   = DBL_MIN_EXP;
+      static ETL_CONSTANT int min_exponent10 = DBL_MIN_10_EXP;
+      static ETL_CONSTANT int max_exponent   = DBL_MAX_EXP;
+      static ETL_CONSTANT int max_exponent10 = DBL_MAX_10_EXP;
+    };
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_double<T>::digits;
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_double<T>::digits10;
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_double<T>::max_digits10;
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_double<T>::min_exponent;
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_double<T>::min_exponent10;
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_double<T>::max_exponent;
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_double<T>::max_exponent10;
+
+    //*********************************
+    // long double
+    template <typename T = void>
+    struct floating_point_limits_long_double
+    {
+      static ETL_CONSTANT int digits         = LDBL_MANT_DIG;
+      static ETL_CONSTANT int digits10       = LDBL_DIG;
+      static ETL_CONSTANT int max_digits10   = ETL_LOG10_OF_2(LDBL_MANT_DIG) + 2;
+
+      static ETL_CONSTANT int min_exponent   = LDBL_MIN_EXP;
+      static ETL_CONSTANT int min_exponent10 = LDBL_MIN_10_EXP;
+      static ETL_CONSTANT int max_exponent   = LDBL_MAX_EXP;
+      static ETL_CONSTANT int max_exponent10 = LDBL_MAX_10_EXP;
+    };
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_long_double<T>::digits;
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_long_double<T>::digits10;
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_long_double<T>::max_digits10;
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_long_double<T>::min_exponent;
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_long_double<T>::min_exponent10;
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_long_double<T>::max_exponent;
+
+    template <typename T>
+    ETL_CONSTANT int floating_point_limits_long_double<T>::max_exponent10;
+  }
 
   //***************************************************************************
   // Default
@@ -179,17 +768,13 @@ namespace etl
   template <typename T>
   class numeric_limits<const volatile T> : public numeric_limits<T> { };
 
-  //***************************************************************************
+  //***********************************
   // bool
   template<>
-  class numeric_limits<bool> : public etl_integral_limits
+  class numeric_limits<bool> : public private_limits::integral_limits_common<>, 
+                               public private_limits::integral_limits_bool<>
   {
   public:
-
-    static ETL_CONSTANT int  digits    = 1;
-    static ETL_CONSTANT int  digits10  = 0;
-    static ETL_CONSTANT bool is_signed = false;
-    static ETL_CONSTANT bool is_modulo = false;
 
     static ETL_CONSTEXPR bool min() { return false; }
     static ETL_CONSTEXPR bool max() { return true; }
@@ -205,14 +790,10 @@ namespace etl
   //***************************************************************************
   // char
   template<>
-  class numeric_limits<char> : public etl_integral_limits
+  class numeric_limits<char> : public private_limits::integral_limits_common<>,
+                               public private_limits::integral_limits_char<>
   {
   public:
-
-    static ETL_CONSTANT int digits     = (CHAR_BIT * sizeof(char)) - (etl::is_signed<char>::value ? 1 : 0);
-    static ETL_CONSTANT int digits10   = ETL_LOG10_OF_2(digits);
-    static ETL_CONSTANT bool is_signed = etl::is_signed<char>::value;
-    static ETL_CONSTANT bool is_modulo = false;
 
     static ETL_CONSTEXPR char min() { return char(CHAR_MIN); }
     static ETL_CONSTEXPR char max() { return char(CHAR_MAX); }
@@ -228,14 +809,10 @@ namespace etl
   //***************************************************************************
   // unsigned char
   template<>
-  class numeric_limits<unsigned char> : public etl_integral_limits
+  class numeric_limits<unsigned char> : public private_limits::integral_limits_common<>,
+                                        public private_limits::integral_limits_unsigned_char<>
   {
   public:
-
-    static ETL_CONSTANT int digits     = (CHAR_BIT * sizeof(unsigned char)) - (etl::is_signed<unsigned char>::value ? 1 : 0);
-    static ETL_CONSTANT int digits10   = ETL_LOG10_OF_2(digits);
-    static ETL_CONSTANT bool is_signed = false;
-    static ETL_CONSTANT bool is_modulo = true;
 
     static ETL_CONSTEXPR unsigned char min() { return 0U; }
     static ETL_CONSTEXPR unsigned char max() { return UCHAR_MAX; }
@@ -251,14 +828,10 @@ namespace etl
   //***************************************************************************
   // signed char
   template<>
-  class numeric_limits<signed char> : public etl_integral_limits
+  class numeric_limits<signed char> : public private_limits::integral_limits_common<>,
+                                      public private_limits::integral_limits_signed_char<>
   {
   public:
-
-    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(char)) - (etl::is_signed<char>::value ? 1 : 0);
-    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
-    static ETL_CONSTANT bool is_signed = true;
-    static ETL_CONSTANT bool is_modulo = false;
 
     static ETL_CONSTEXPR signed char min() { return SCHAR_MIN; }
     static ETL_CONSTEXPR signed char max() { return SCHAR_MAX; }
@@ -275,15 +848,11 @@ namespace etl
   //***************************************************************************
   // char8_t
   template<>
-  class numeric_limits<char8_t> : public etl_integral_limits
+  class numeric_limits<char8_t> : public private_limits::integral_limits_common<>,
+                                  public private_limits::integral_limits_char8_t<>
   {
   public:
-
-    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(char8_t)) - (etl::is_signed<char8_t>::value ? 1 : 0);
-    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
-    static ETL_CONSTANT bool is_signed = etl::is_signed<char8_t>::value;
-    static ETL_CONSTANT bool is_modulo = false;
-
+    
     static ETL_CONSTEXPR char8_t min() { return char8_t(CHAR_MIN); }
     static ETL_CONSTEXPR char8_t max() { return char8_t(CHAR_MAX); }
     static ETL_CONSTEXPR char8_t lowest() { return char8_t(CHAR_MIN); }
@@ -300,14 +869,10 @@ namespace etl
   //***************************************************************************
   // char16_t
   template<>
-  class numeric_limits<char16_t> : public etl_integral_limits
+  class numeric_limits<char16_t> : public private_limits::integral_limits_common<>,
+                                   public private_limits::integral_limits_char16_t<>
   {
   public:
-
-    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(char16_t)) - (etl::is_signed<char16_t>::value ? 1 : 0);
-    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
-    static ETL_CONSTANT bool is_signed = false;
-    static ETL_CONSTANT bool is_modulo = true;
 
     static ETL_CONSTEXPR char16_t min() { return 0U; }
     static ETL_CONSTEXPR char16_t max() { return UINT_LEAST16_MAX; }
@@ -325,14 +890,10 @@ namespace etl
   //***************************************************************************
   // char32_t
   template<>
-  class numeric_limits<char32_t> : public etl_integral_limits
+  class numeric_limits<char32_t> : public private_limits::integral_limits_common<>,
+                                   public private_limits::integral_limits_char32_t<>
   {
   public:
-
-    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(char32_t)) - (etl::is_signed<char32_t>::value ? 1 : 0);
-    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
-    static ETL_CONSTANT bool is_signed = false;
-    static ETL_CONSTANT bool is_modulo = true;
 
     static ETL_CONSTEXPR char32_t min() { return 0U; }
     static ETL_CONSTEXPR char32_t max() { return UINT_LEAST32_MAX; }
@@ -349,14 +910,11 @@ namespace etl
   //***************************************************************************
   // wchar_t
   template<>
-  class numeric_limits<wchar_t> : public etl_integral_limits
+  class numeric_limits<wchar_t> : public private_limits::integral_limits_common<>,
+                                  public private_limits::integral_limits_wchar_t<>
   {
   public:
 
-    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(wchar_t)) - (etl::is_signed<wchar_t>::value ? 1 : 0);
-    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
-    static ETL_CONSTANT bool is_signed = etl::is_signed<wchar_t>::value;
-    static ETL_CONSTANT bool is_modulo = etl::is_unsigned<wchar_t>::value;
     static ETL_CONSTEXPR wchar_t min() { return WCHAR_MIN; }
     static ETL_CONSTEXPR wchar_t max() { return WCHAR_MAX; }
     static ETL_CONSTEXPR wchar_t lowest() { return WCHAR_MIN; }
@@ -371,14 +929,10 @@ namespace etl
   //***************************************************************************
   // short
   template<>
-  class numeric_limits<short> : public etl_integral_limits
+  class numeric_limits<short> : public private_limits::integral_limits_common<>,
+                                public private_limits::integral_limits_short<>
   {
   public:
-
-    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(short)) - (etl::is_signed<short>::value ? 1 : 0);
-    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
-    static ETL_CONSTANT bool is_signed = true;
-    static ETL_CONSTANT bool is_modulo = false;
 
     static ETL_CONSTEXPR short min() { return SHRT_MIN; }
     static ETL_CONSTEXPR short max() { return SHRT_MAX; }
@@ -394,14 +948,10 @@ namespace etl
   //***************************************************************************
   // unsigned short
   template<>
-  class numeric_limits<unsigned short> : public etl_integral_limits
+  class numeric_limits<unsigned short> : public private_limits::integral_limits_common<>,
+                                         public private_limits::integral_limits_unsigned_short<>
   {
   public:
-
-    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(unsigned short)) - (etl::is_signed<unsigned short>::value ? 1 : 0);
-    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
-    static ETL_CONSTANT bool is_signed = false;
-    static ETL_CONSTANT bool is_modulo = true;
 
     static ETL_CONSTEXPR unsigned short min() { return 0U; }
     static ETL_CONSTEXPR unsigned short max() { return USHRT_MAX; }
@@ -412,20 +962,15 @@ namespace etl
     static ETL_CONSTEXPR unsigned short infinity() { return 0U; }
     static ETL_CONSTEXPR unsigned short quiet_NaN() { return 0U; }
     static ETL_CONSTEXPR unsigned short signaling_NaN() { return 0U; }
-
   };
 
   //***************************************************************************
   // int
   template<>
-  class numeric_limits<int> : public etl_integral_limits
+  class numeric_limits<int> : public private_limits::integral_limits_common<>,
+                              public private_limits::integral_limits_int<>
   {
   public:
-
-    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(int)) - (etl::is_signed<int>::value ? 1 : 0);
-    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
-    static ETL_CONSTANT bool is_signed = true;
-    static ETL_CONSTANT bool is_modulo = false;
 
     static ETL_CONSTEXPR int min() { return INT_MIN; }
     static ETL_CONSTEXPR int max() { return INT_MAX; }
@@ -441,14 +986,10 @@ namespace etl
   //***************************************************************************
   // unsigned int
   template<>
-  class numeric_limits<unsigned int> : public etl_integral_limits
+  class numeric_limits<unsigned int> : public private_limits::integral_limits_common<>,
+                                       public private_limits::integral_limits_unsigned_int<>
   {
   public:
-
-    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(unsigned int)) - (etl::is_signed<unsigned int>::value ? 1 : 0);
-    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
-    static ETL_CONSTANT bool is_signed = false;
-    static ETL_CONSTANT bool is_modulo = true;
 
     static ETL_CONSTEXPR unsigned int min() { return 0U; }
     static ETL_CONSTEXPR unsigned int max() { return UINT_MAX; }
@@ -464,14 +1005,10 @@ namespace etl
   //***************************************************************************
   // long
   template<>
-  class numeric_limits<long> : public etl_integral_limits
+  class numeric_limits<long> : public private_limits::integral_limits_common<>,
+                               public private_limits::integral_limits_long<>
   {
   public:
-
-    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(long)) - (etl::is_signed<long>::value ? 1 : 0);
-    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
-    static ETL_CONSTANT bool is_signed = true;
-    static ETL_CONSTANT bool is_modulo = false;
 
     static ETL_CONSTEXPR long min() { return LONG_MIN; }
     static ETL_CONSTEXPR long max() { return LONG_MAX; }
@@ -487,14 +1024,10 @@ namespace etl
   //***************************************************************************
   // unsigned long
   template<>
-  class numeric_limits<unsigned long> : public etl_integral_limits
+  class numeric_limits<unsigned long> : public private_limits::integral_limits_common<>,
+                                        public private_limits::integral_limits_unsigned_long<>
   {
   public:
-
-    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(unsigned long)) - (etl::is_signed<unsigned long>::value ? 1 : 0);
-    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
-    static ETL_CONSTANT bool is_signed = false;
-    static ETL_CONSTANT bool is_modulo = true;
 
     static ETL_CONSTEXPR unsigned long min() { return 0U; }
     static ETL_CONSTEXPR unsigned long max() { return ULONG_MAX; }
@@ -510,14 +1043,10 @@ namespace etl
   //***************************************************************************
   // long long
   template<>
-  class numeric_limits<long long> : public etl_integral_limits
+  class numeric_limits<long long> : public private_limits::integral_limits_common<>,
+                                    public private_limits::integral_limits_long_long<>
   {
   public:
-
-    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(long long)) - (etl::is_signed<long long>::value ? 1 : 0);
-    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
-    static ETL_CONSTANT bool is_signed = true;
-    static ETL_CONSTANT bool is_modulo = false;
 
     static ETL_CONSTEXPR long long min() { return LLONG_MIN; }
     static ETL_CONSTEXPR long long max() { return LLONG_MAX; }
@@ -533,14 +1062,10 @@ namespace etl
   //***************************************************************************
   // unsigned long long
   template<>
-  class numeric_limits<unsigned long long> : public etl_integral_limits
+  class numeric_limits<unsigned long long> : public private_limits::integral_limits_common<>,
+                                             public private_limits::integral_limits_unsigned_long_long<>
   {
   public:
-
-    static ETL_CONSTANT int digits = (CHAR_BIT * sizeof(unsigned long long)) - (etl::is_signed<unsigned long long>::value ? 1 : 0);
-    static ETL_CONSTANT int digits10 = ETL_LOG10_OF_2(digits);
-    static ETL_CONSTANT bool is_signed = false;
-    static ETL_CONSTANT bool is_modulo = true;
 
     static ETL_CONSTEXPR unsigned long long min() { return 0U; }
     static ETL_CONSTEXPR unsigned long long max() { return ULLONG_MAX; }
@@ -556,7 +1081,8 @@ namespace etl
   //***************************************************************************
   // float
   template<>
-  class numeric_limits<float> : public etl_floating_point_limits
+  class numeric_limits<float> : public private_limits::floating_point_limits_common<>,
+                                public private_limits::floating_point_limits_float<>
   {
   public:
 
@@ -568,21 +1094,13 @@ namespace etl
     static ETL_CONSTEXPR float infinity() { return HUGE_VALF; }
     static float quiet_NaN() { return ETL_NANF; }
     static float signaling_NaN() { return ETL_NANF; }
-
-    static ETL_CONSTANT int digits       = FLT_MANT_DIG;
-    static ETL_CONSTANT int digits10     = FLT_DIG;
-    static ETL_CONSTANT int max_digits10 = ETL_LOG10_OF_2(FLT_MANT_DIG) + 2;
-
-    static ETL_CONSTANT int min_exponent   = FLT_MIN_EXP;
-    static ETL_CONSTANT int min_exponent10 = FLT_MIN_10_EXP;
-    static ETL_CONSTANT int max_exponent   = FLT_MAX_EXP;
-    static ETL_CONSTANT int max_exponent10 = FLT_MAX_10_EXP;
   };
 
   //***************************************************************************
   // double
   template<>
-  class numeric_limits<double> : public etl_floating_point_limits
+  class numeric_limits<double> : public private_limits::floating_point_limits_common<>,
+                                 public private_limits::floating_point_limits_double<>
   {
   public:
 
@@ -594,21 +1112,13 @@ namespace etl
     static ETL_CONSTEXPR double infinity() { return HUGE_VAL; }
     static double quiet_NaN() { return ETL_NAN; }
     static double signaling_NaN() { return ETL_NAN; }
-
-    static ETL_CONSTANT int digits       = DBL_MANT_DIG;
-    static ETL_CONSTANT int digits10     = DBL_DIG;
-    static ETL_CONSTANT int max_digits10 = ETL_LOG10_OF_2(DBL_MANT_DIG) + 2;
-
-    static ETL_CONSTANT int min_exponent   = DBL_MIN_EXP;
-    static ETL_CONSTANT int min_exponent10 = DBL_MIN_10_EXP;
-    static ETL_CONSTANT int max_exponent   = DBL_MAX_EXP;
-    static ETL_CONSTANT int max_exponent10 = DBL_MAX_10_EXP;
   };
 
   //***************************************************************************
   // long double
   template<>
-  class numeric_limits<long double> : public etl_floating_point_limits
+  class numeric_limits<long double> : public private_limits::floating_point_limits_common<>,
+                                      public private_limits::floating_point_limits_long_double<>
   {
   public:
 
@@ -620,15 +1130,6 @@ namespace etl
     static ETL_CONSTEXPR long double infinity() { return HUGE_VALL; }
     static long double quiet_NaN() { return ETL_NANL; }
     static long double signaling_NaN() { return ETL_NANL; }
-
-    static ETL_CONSTANT int digits       = LDBL_MANT_DIG;
-    static ETL_CONSTANT int digits10     = LDBL_DIG;
-    static ETL_CONSTANT int max_digits10 = ETL_LOG10_OF_2(LDBL_MANT_DIG) + 2;
-
-    static ETL_CONSTANT int min_exponent   = LDBL_MIN_EXP;
-    static ETL_CONSTANT int min_exponent10 = LDBL_MIN_10_EXP;
-    static ETL_CONSTANT int max_exponent   = LDBL_MAX_EXP;
-    static ETL_CONSTANT int max_exponent10 = LDBL_MAX_10_EXP;
   };
 }
 
@@ -654,10 +1155,15 @@ namespace etl
     denorm_present       = std::denorm_present
   };
 
+#if ETL_USING_CPP11
+  template <typename T>
+  using numeric_limits = std::numeric_limits<T>;
+#else
   template <typename T>
   class numeric_limits : public std::numeric_limits<T>
   {
   };
+#endif
 }
 #endif
 

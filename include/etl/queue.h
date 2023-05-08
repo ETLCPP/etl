@@ -103,7 +103,7 @@ namespace etl
   /// The base class for all queues.
   ///\ingroup queue
   //***************************************************************************
-  template <const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
+  template <size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_base
   {
   public:
@@ -660,6 +660,9 @@ namespace etl
     /// The uninitialised buffer of T used in the queue.
     container_type buffer[SIZE];
   };
+
+  template <typename T, const size_t SIZE, const size_t MEMORY_MODEL>
+  ETL_CONSTANT typename queue<T, SIZE, MEMORY_MODEL>::size_type queue<T, SIZE, MEMORY_MODEL>::MAX_SIZE;
 }
 
 #endif

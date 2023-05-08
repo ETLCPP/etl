@@ -315,6 +315,12 @@ namespace etl
     etl::uninitialized_buffer<Size, 1U, Alignment> buffer;
   };
 
+  template <size_t Size_, size_t Alignment_>
+  ETL_CONSTANT size_t mem_cast<Size_, Alignment_>::Size;
+
+  template <size_t Size_, size_t Alignment_>
+  ETL_CONSTANT size_t mem_cast<Size_, Alignment_>::Alignment;
+
   //*****************************************************************************
   /// mem_cast_ptr
   //*****************************************************************************

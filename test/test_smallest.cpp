@@ -55,22 +55,24 @@ namespace
       CHECK(type);
     }
 
+
     //*************************************************************************
     TEST(test_pod_vt)
     {
       size_t size;
       bool   type;
 
+#if ETL_USING_CPP17
       size = etl::smallest_type_v<char, short, int>;
-      type = etl::is_same<char, etl::smallest_type_t<char, short, int>>::value;
-
       CHECK_EQUAL(sizeof(char), size);
+#endif
+      type = etl::is_same<char, etl::smallest_type_t<char, short, int>>::value;
       CHECK(type);
 
       size = etl::smallest_type<int, char, short>::size;
-      type = etl::is_same<char, etl::smallest_type<char, short, int>::type>::value;
-
       CHECK_EQUAL(sizeof(char), size);
+
+      type = etl::is_same<char, etl::smallest_type<char, short, int>::type>::value;
       CHECK(type);
     }
 
@@ -100,23 +102,28 @@ namespace
     //*************************************************************************
     TEST(test_non_pod_vt)
     {
-      size_t size;
       bool   type;
 
       struct S1 { char a; char  b; char c; };
       struct S2 { char a; short b; char c; };
       struct S3 { int  a; short b; char c; };
 
+#if ETL_USING_CPP17
+      size_t size;
+      
       size = etl::smallest_type_v<S1, S2, S3>;
-      type = etl::is_same<S1, etl::smallest_type_t<S1, S2, S3>>::value;
-
       CHECK_EQUAL(sizeof(S1), size);
+#endif
+
+      type = etl::is_same<S1, etl::smallest_type_t<S1, S2, S3>>::value;
       CHECK(type);
 
+#if ETL_USING_CPP17
       size = etl::smallest_type_v<S2, S3, S1>;
-      type = etl::is_same<S1, etl::smallest_type_t<S2, S3, S1>>::value;
-
       CHECK_EQUAL(sizeof(S1), size);
+#endif
+
+      type = etl::is_same<S1, etl::smallest_type_t<S2, S3, S1>>::value;
       CHECK(type);
     }
 

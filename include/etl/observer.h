@@ -154,7 +154,7 @@ namespace etl
       if (i_observer_item == observer_list.end())
       {
         // Is there enough room?
-        ETL_ASSERT_AND_RETURN(!observer_list.full(), ETL_ERROR(etl::observer_list_full));
+        ETL_ASSERT_OR_RETURN(!observer_list.full(), ETL_ERROR(etl::observer_list_full));
 
         // Add it.
         observer_list.push_back(observer_item(observer));

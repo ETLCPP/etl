@@ -57,22 +57,28 @@ namespace etl
   /// Calculates powers.
   ///\note Only supports positive N.
   //***************************************************************************
-  template <const size_t NV, const size_t POWER>
+  template <size_t NV, size_t POWER>
   struct power
   {
     static ETL_CONSTANT private_power::type value = NV * power<NV, POWER - 1>::value;
   };
+
+  template <size_t NV, size_t POWER>
+  ETL_CONSTANT private_power::type power<NV, POWER>::value;
 
   //***************************************************************************
   /// Calculates powers.
   ///\note Only supports positive N.
   /// Specialisation for POWER == 0.
   //***************************************************************************
-  template <const size_t NV>
+  template <size_t NV>
   struct power<NV, 0>
   {
     static ETL_CONSTANT private_power::type value = 1;
   };
+
+  template <size_t NV>
+  ETL_CONSTANT private_power::type power<NV, 0>::value;
 
 #if ETL_USING_CPP17
   template <size_t NV, size_t POWER>
@@ -83,7 +89,7 @@ namespace etl
   ///\ingroup power
   /// Calculates the rounded up power of 2.
   //***************************************************************************
-  template <const size_t NV>
+  template <size_t NV>
   struct power_of_2_round_up
   {
     enum value_type
@@ -115,7 +121,7 @@ namespace etl
   ///\ingroup power
   /// Calculates the rounded down power of 2.
   //***************************************************************************
-  template <const size_t NV>
+  template <size_t NV>
   struct power_of_2_round_down
   {
     enum value_type
@@ -175,7 +181,7 @@ namespace etl
   ///\ingroup power
   /// Checks if N is a power of 2.
   //***************************************************************************
-  template <const size_t NV>
+  template <size_t NV>
   struct is_power_of_2
   {
     static ETL_CONSTANT bool value = (NV & (NV - 1)) == 0;
@@ -202,6 +208,9 @@ namespace etl
   {
     static ETL_CONSTANT bool value = false;
   };
+
+  template <size_t NV>
+  ETL_CONSTANT bool is_power_of_2<NV>::value;
 
 #if ETL_USING_CPP17
   template <size_t NV>

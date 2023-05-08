@@ -807,10 +807,16 @@ namespace etl
   };
 
   template <typename T>
+  ETL_CONSTANT bool is_input_iterator<T>::value;
+
+  template <typename T>
   struct is_output_iterator
   {
     static ETL_CONSTANT bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::output_iterator_tag>::value;
   };
+
+  template <typename T>
+  ETL_CONSTANT bool is_output_iterator<T>::value;
 
   template <typename T>
   struct is_forward_iterator
@@ -819,10 +825,16 @@ namespace etl
   };
 
   template <typename T>
+  ETL_CONSTANT bool is_forward_iterator<T>::value;
+
+  template <typename T>
   struct is_bidirectional_iterator
   {
     static ETL_CONSTANT bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::bidirectional_iterator_tag>::value;
   };
+
+  template <typename T>
+  ETL_CONSTANT bool is_bidirectional_iterator<T>::value;
 
   // Deprecated
   template <typename T>
@@ -832,10 +844,16 @@ namespace etl
   };
 
   template <typename T>
+  ETL_CONSTANT bool is_random_iterator<T>::value;
+
+  template <typename T>
   struct is_random_access_iterator
   {
     static ETL_CONSTANT bool value = etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::random_access_iterator_tag>::value;
   };
+
+  template <typename T>
+  ETL_CONSTANT bool is_random_access_iterator<T>::value;
 
   template <typename T>
   struct is_input_iterator_concept
@@ -847,6 +865,9 @@ namespace etl
   };
 
   template <typename T>
+  ETL_CONSTANT bool is_input_iterator_concept<T>::value;
+
+  template <typename T>
   struct is_output_iterator_concept
   {
     static ETL_CONSTANT bool value = etl::is_output_iterator<T>::value ||
@@ -854,6 +875,9 @@ namespace etl
                                                etl::is_bidirectional_iterator<T>::value ||
                                                etl::is_random_iterator<T>::value;
   };
+
+  template <typename T>
+  ETL_CONSTANT bool is_output_iterator_concept<T>::value;
 
   template <typename T>
   struct is_forward_iterator_concept
@@ -864,11 +888,17 @@ namespace etl
   };
 
   template <typename T>
+  ETL_CONSTANT bool is_forward_iterator_concept<T>::value;
+
+  template <typename T>
   struct is_bidirectional_iterator_concept
   {
     static ETL_CONSTANT bool value = etl::is_bidirectional_iterator<T>::value ||
                                                etl::is_random_iterator<T>::value;
   };
+
+  template <typename T>
+  ETL_CONSTANT bool is_bidirectional_iterator_concept<T>::value;
 
   // Deprecated
   template <typename T>
@@ -877,11 +907,20 @@ namespace etl
     static ETL_CONSTANT bool value = etl::is_random_iterator<T>::value;
   };
 
+  // Deprecated
+  template <typename T>
+  ETL_CONSTANT bool is_random_iterator_concept<T>::value;
+
+  // Deprecated
   template <typename T>
   struct is_random_access_iterator_concept
   {
     static ETL_CONSTANT bool value = etl::is_random_access_iterator<T>::value;
   };
+
+  // Deprecated
+  template <typename T>
+  ETL_CONSTANT bool is_random_access_iterator_concept<T>::value;
 
 #if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
   //*****************************************************************************
@@ -915,26 +954,6 @@ namespace etl
   }
 
   //*****************************************************************************
-  /// Get the 'begin' reverse_iterator for a container.
-  ///\ingroup container
-  //*****************************************************************************
-  template<typename TContainer>
-  ETL_CONSTEXPR typename TContainer::reverse_iterator rbegin(const TContainer& container)
-  {
-    return container.rbegin();
-  }
-
-  //*****************************************************************************
-  /// Get the 'begin' reverse_iterator for a container.
-  ///\ingroup container
-  //*****************************************************************************
-  template<typename TContainer>
-  ETL_CONSTEXPR typename TContainer::reverse_iterator crbegin(const TContainer& container)
-  {
-    return container.crbegin();
-  }
-
-  //*****************************************************************************
   /// Get the 'end' iterator for a container.
   ///\ingroup container
   //*****************************************************************************
@@ -965,11 +984,103 @@ namespace etl
   }
 
   //*****************************************************************************
+  /// Get the 'begin' pointer for an array.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR TValue* begin(TValue(&data)[Array_Size])
+  {
+    return &data[0];
+  }
+
+  //*****************************************************************************
+  /// Get the 'begin' const iterator for an array.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR const TValue* begin(const TValue(&data)[Array_Size])
+  {
+    return &data[0];
+  }
+
+  //*****************************************************************************
+  /// Get the 'begin' const iterator for an array.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR const TValue* cbegin(const TValue(&data)[Array_Size])
+  {
+    return &data[0];
+  }
+
+  //*****************************************************************************
+  /// Get the 'end' iterator for an array.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR TValue* end(TValue(&data)[Array_Size])
+  {
+    return &data[Array_Size];
+  }
+
+  //*****************************************************************************
+  /// Get the 'end' const iterator for an array.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR const TValue* end(const TValue(&data)[Array_Size])
+  {
+    return &data[Array_Size];
+  }
+
+  //*****************************************************************************
+  /// Get the 'end' const iterator for an array.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR const TValue* cend(const TValue(&data)[Array_Size])
+  {
+    return &data[Array_Size];
+  }
+#endif
+
+#if ETL_NOT_USING_STL || ETL_CPP14_NOT_SUPPORTED
+  //*****************************************************************************
+  /// Get the 'begin' reverse_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TContainer>
+  ETL_CONSTEXPR typename TContainer::reverse_iterator rbegin(TContainer& container)
+  {
+    return container.rbegin();
+  }
+
+  //*****************************************************************************
+  /// Get the 'begin' reverse_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TContainer>
+  ETL_CONSTEXPR typename TContainer::const_reverse_iterator rbegin(const TContainer& container)
+  {
+    return container.rbegin();
+  }
+
+  //*****************************************************************************
+  /// Get the 'begin' reverse_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TContainer>
+  ETL_CONSTEXPR typename TContainer::const_reverse_iterator crbegin(const TContainer& container)
+  {
+    return container.crbegin();
+  }
+
+  //*****************************************************************************
   /// Get the 'end' reverse_iterator for a container.
   ///\ingroup container
   //*****************************************************************************
   template<typename TContainer>
-  ETL_CONSTEXPR typename TContainer::const_iterator rend(const TContainer& container)
+  ETL_CONSTEXPR typename TContainer::reverse_iterator rend(TContainer& container)
   {
     return container.rend();
   }
@@ -979,97 +1090,47 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template<typename TContainer>
-  ETL_CONSTEXPR typename TContainer::reverse_iterator crend(const TContainer& container)
+  ETL_CONSTEXPR typename TContainer::const_reverse_iterator rend(const TContainer& container)
+  {
+    return container.rend();
+  }
+
+  //*****************************************************************************
+  /// Get the 'end' reverse_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template<typename TContainer>
+  ETL_CONSTEXPR typename TContainer::const_reverse_iterator crend(const TContainer& container)
   {
     return container.crend();
-  }
-
-  //*****************************************************************************
-  /// Get the 'begin' pointer for an array.
-  ///\ingroup container
-  //*****************************************************************************
-  template<typename TValue, const size_t ARRAY_SIZE>
-  ETL_CONSTEXPR TValue* begin(TValue(&data)[ARRAY_SIZE])
-  {
-    return &data[0];
-  }
-
-  //*****************************************************************************
-  /// Get the 'begin' const iterator for an array.
-  ///\ingroup container
-  //*****************************************************************************
-  template<typename TValue, const size_t ARRAY_SIZE>
-  ETL_CONSTEXPR const TValue* begin(const TValue(&data)[ARRAY_SIZE])
-  {
-    return &data[0];
-  }
-
-  //*****************************************************************************
-  /// Get the 'begin' const iterator for an array.
-  ///\ingroup container
-  //*****************************************************************************
-  template<typename TValue, const size_t ARRAY_SIZE>
-  ETL_CONSTEXPR const TValue* cbegin(const TValue(&data)[ARRAY_SIZE])
-  {
-    return &data[0];
   }
 
   //*****************************************************************************
   /// Get the 'begin' reverse_iterator for an array.
   ///\ingroup container
   //*****************************************************************************
-  template<typename TValue, const size_t ARRAY_SIZE>
-  ETL_OR_STD::reverse_iterator<TValue*> rbegin(const TValue(&data)[ARRAY_SIZE])
+  template<typename TValue, size_t Array_Size>
+  ETL_OR_STD::reverse_iterator<TValue*> rbegin(TValue(&data)[Array_Size])
   {
-    return ETL_OR_STD::reverse_iterator<TValue*>(&data[ARRAY_SIZE]);
+    return ETL_OR_STD::reverse_iterator<TValue*>(&data[Array_Size]);
   }
 
   //*****************************************************************************
   /// Get the 'begin' const reverse_iterator for an array.
   ///\ingroup container
   //*****************************************************************************
-  template<typename TValue, const size_t ARRAY_SIZE>
-  ETL_CONSTEXPR ETL_OR_STD::reverse_iterator<const TValue*> crbegin(const TValue(&data)[ARRAY_SIZE])
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR ETL_OR_STD::reverse_iterator<const TValue*> crbegin(const TValue(&data)[Array_Size])
   {
-    return ETL_OR_STD::reverse_iterator<const TValue*>(&data[ARRAY_SIZE]);
-  }
-
-  //*****************************************************************************
-  /// Get the 'end' iterator for an array.
-  ///\ingroup container
-  //*****************************************************************************
-  template<typename TValue, const size_t ARRAY_SIZE>
-  ETL_CONSTEXPR TValue* end(TValue(&data)[ARRAY_SIZE])
-  {
-    return &data[ARRAY_SIZE];
-  }
-
-  //*****************************************************************************
-  /// Get the 'end' const iterator for an array.
-  ///\ingroup container
-  //*****************************************************************************
-  template<typename TValue, const size_t ARRAY_SIZE>
-  ETL_CONSTEXPR const TValue* end(const TValue(&data)[ARRAY_SIZE])
-  {
-    return &data[ARRAY_SIZE];
-  }
-
-  //*****************************************************************************
-  /// Get the 'end' const iterator for an array.
-  ///\ingroup container
-  //*****************************************************************************
-  template<typename TValue, const size_t ARRAY_SIZE>
-  ETL_CONSTEXPR const TValue* cend(const TValue(&data)[ARRAY_SIZE])
-  {
-    return &data[ARRAY_SIZE];
+    return ETL_OR_STD::reverse_iterator<const TValue*>(&data[Array_Size]);
   }
 
   //*****************************************************************************
   /// Get the 'end' reverse_iterator for an array.
   ///\ingroup container
   //*****************************************************************************
-  template<typename TValue, const size_t ARRAY_SIZE>
-  ETL_CONSTEXPR ETL_OR_STD::reverse_iterator<TValue*> rend(const TValue(&data)[ARRAY_SIZE])
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR ETL_OR_STD::reverse_iterator<TValue*> rend(TValue(&data)[Array_Size])
   {
     return ETL_OR_STD::reverse_iterator<TValue*>(&data[0]);
   }
@@ -1078,8 +1139,8 @@ namespace etl
   /// Get the 'end' const reverse_iterator for an array.
   ///\ingroup container
   //*****************************************************************************
-  template<typename TValue, const size_t ARRAY_SIZE>
-  ETL_CONSTEXPR ETL_OR_STD::reverse_iterator<const TValue*> crend(const TValue(&data)[ARRAY_SIZE])
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR ETL_OR_STD::reverse_iterator<const TValue*> crend(const TValue(&data)[Array_Size])
   {
     return ETL_OR_STD::reverse_iterator<const TValue*>(&data[0]);
   }
@@ -1101,10 +1162,10 @@ namespace etl
   /// Get the size of an array in elements at run time, or compile time if C++11 or above.
   ///\ingroup container
   ///**************************************************************************
-  template<typename TValue, const size_t ARRAY_SIZE>
-  ETL_CONSTEXPR size_t size(TValue(&)[ARRAY_SIZE])
+  template<typename TValue, size_t Array_Size>
+  ETL_CONSTEXPR size_t size(TValue(&)[Array_Size])
   {
-    return ARRAY_SIZE;
+    return Array_Size;
   }
 #endif
 
@@ -1115,11 +1176,11 @@ namespace etl
   ///\endcode
   ///\ingroup container
   ///**************************************************************************
-  template <typename T, const size_t ARRAY_SIZE>
-  char(&array_size(T(&array)[ARRAY_SIZE]))[ARRAY_SIZE];
-}
+  template <typename T, size_t Array_Size>
+  char(&array_size(T(&array)[Array_Size]))[Array_Size];
 
 #define ETL_ARRAY_SIZE(a) sizeof(etl::array_size(a))
+}
 
 #endif
 

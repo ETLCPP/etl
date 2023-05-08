@@ -1620,7 +1620,7 @@ namespace
 
       auto v = *data.begin();
       using Type = decltype(v);
-      CHECK((std::is_same_v<Pair, Type>));
+      CHECK((std::is_same<Pair, Type>::value));
 
       decltype(data)::const_iterator itr = data.begin();
 

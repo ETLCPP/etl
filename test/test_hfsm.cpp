@@ -474,9 +474,9 @@ namespace
       CHECK(motorControl.is_producer());
       CHECK(motorControl.is_consumer());
 
-      running.set_child_states(childStates, std::size(childStates));
+      running.set_child_states(childStates, ETL_OR_STD17::size(childStates));
 
-      motorControl.Initialise(stateList, std::size(stateList));
+      motorControl.Initialise(stateList, ETL_OR_STD17::size(stateList));
       motorControl.reset();
       motorControl.ClearStatistics();
 
@@ -647,7 +647,7 @@ namespace
     {
       etl::null_message_router nmr;
 
-      motorControl.Initialise(stateList, std::size(stateList)); 
+      motorControl.Initialise(stateList, ETL_OR_STD17::size(stateList)); 
       motorControl.reset();
       motorControl.ClearStatistics();
 
@@ -700,7 +700,7 @@ namespace
     {
       etl::null_message_router nmr;
 
-      motorControl.Initialise(stateList, std::size(stateList)); 
+      motorControl.Initialise(stateList, ETL_OR_STD17::size(stateList)); 
       motorControl.reset();
       motorControl.ClearStatistics();
 
@@ -754,7 +754,7 @@ namespace
     {
       etl::null_message_router nmr;
 
-      motorControl.Initialise(stateList, std::size(stateList));
+      motorControl.Initialise(stateList, ETL_OR_STD17::size(stateList));
       motorControl.reset();
       motorControl.ClearStatistics();
 
@@ -809,7 +809,7 @@ namespace
     {
       etl::null_message_router nmr;
 
-      motorControl.Initialise(stateList, std::size(stateList));
+      motorControl.Initialise(stateList, ETL_OR_STD17::size(stateList));
       motorControl.reset();
       motorControl.ClearStatistics();
 
@@ -902,7 +902,7 @@ namespace
     {
       MotorControl mc;
 
-      motorControl.Initialise(stateList, std::size(stateList));
+      motorControl.Initialise(stateList, ETL_OR_STD17::size(stateList));
       motorControl.reset();
       motorControl.ClearStatistics();
 
@@ -941,7 +941,7 @@ namespace
     {
       MotorControl mc;
 
-      motorControl.Initialise(stateList, std::size(stateList));
+      motorControl.Initialise(stateList, ETL_OR_STD17::size(stateList));
       motorControl.reset();
       motorControl.ClearStatistics();
 

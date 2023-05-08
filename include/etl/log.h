@@ -94,7 +94,7 @@ namespace etl
   ///\ingroup log
   /// Calculates base 2 logs.
   //***************************************************************************
-  template <const size_t NV>
+  template <size_t NV>
   struct log2
   {
     enum value_type
@@ -112,7 +112,7 @@ namespace etl
   ///\ingroup log
   /// Calculates base 10 logs.
   //***************************************************************************
-  template <const size_t NV>
+  template <size_t NV>
   struct log10
   {
     enum value_type

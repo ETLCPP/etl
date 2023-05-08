@@ -45,7 +45,7 @@ namespace etl
   /// \tparam OFFSET The lowest callback id value.
   /// The callback ids must range between OFFSET and OFFSET + RANGE - 1.
   //***************************************************************************
-  template <const size_t RANGE, const size_t OFFSET = 0U>
+  template <size_t RANGE, size_t OFFSET = 0U>
   class callback_service
   {
   public:
@@ -67,7 +67,7 @@ namespace etl
     /// \tparam ID The id of the callback.
     /// \param callback Reference to the callback.
     //*************************************************************************
-    template <const size_t ID>
+    template <size_t ID>
     void register_callback(etl::ifunction<size_t>& callback)
     {
       ETL_STATIC_ASSERT(ID < (OFFSET + RANGE), "Callback Id out of range");
@@ -82,7 +82,7 @@ namespace etl
     /// \param id       Id of the callback.
     /// \param callback Reference to the callback.
     //*************************************************************************
-    void register_callback(const size_t id, etl::ifunction<size_t>& callback)
+    void register_callback(size_t id, etl::ifunction<size_t>& callback)
     {
       if ((id >= OFFSET) && (id < (OFFSET + RANGE)))
       {
@@ -104,7 +104,7 @@ namespace etl
     /// Compile time assert if the id is out of range.
     /// \tparam ID The id of the callback.
     //*************************************************************************
-    template <const size_t ID>
+    template <size_t ID>
     void callback()
     {
       ETL_STATIC_ASSERT(ID < (OFFSET + RANGE), "Callback Id out of range");
@@ -117,7 +117,7 @@ namespace etl
     /// Executes the callback function for the index.
     /// \param id Id of the callback.
     //*************************************************************************
-    void callback(const size_t id)
+    void callback(size_t id)
     {
       if ((id >= OFFSET) && (id < (OFFSET + RANGE)))
       {

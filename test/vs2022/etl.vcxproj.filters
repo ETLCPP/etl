@@ -2213,9 +2213,6 @@
     <ClCompile Include="..\test_compare.cpp">
       <Filter>Tests\Misc</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_compiler_settings.cpp">
-      <Filter>Tests\Misc</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_flags.cpp">
       <Filter>Tests\Misc</Filter>
     </ClCompile>
@@ -3472,13 +3469,7 @@
     <None Include="..\..\.github\workflows\gcc.yml">
       <Filter>Resource Files\CI\Github</Filter>
     </None>
-    <None Include="..\..\.github\workflows\vs2019.yml">
-      <Filter>Resource Files\CI\Github</Filter>
-    </None>
     <None Include="..\runsanitychecks.sh">
-      <Filter>Tests\Scripts</Filter>
-    </None>
-    <None Include="..\runtests.sh">
       <Filter>Tests\Scripts</Filter>
     </None>
     <None Include="..\..\.clang-format">
@@ -3520,13 +3511,10 @@
     <None Include="..\meson.build">
       <Filter>Tests\Test Support</Filter>
     </None>
-    <None Include="..\runtests-01.sh">
-      <Filter>Tests\Scripts</Filter>
+    <None Include="..\..\.github\workflows\msvc.yml">
+      <Filter>Resource Files\CI\Github</Filter>
     </None>
-    <None Include="..\runtests-03.sh">
-      <Filter>Tests\Scripts</Filter>
-    </None>
-    <None Include="..\runtests-02.sh">
+    <None Include="..\runtests.sh">
       <Filter>Tests\Scripts</Filter>
     </None>
   </ItemGroup>

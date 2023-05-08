@@ -152,12 +152,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_default_constructor_use_array_buffer)
     {
-      Text text(array_text, std::size(array_text));
+      Text text(array_text, ETL_OR_STD17::size(array_text));
 
       CHECK_EQUAL(0U, text.size());
       CHECK(text.empty());
-      CHECK_EQUAL(std::size(array_text) - 1, text.capacity());
-      CHECK_EQUAL(std::size(array_text) - 1, text.max_size());
+      CHECK_EQUAL(ETL_OR_STD17::size(array_text) - 1, text.capacity());
+      CHECK_EQUAL(ETL_OR_STD17::size(array_text) - 1, text.max_size());
       CHECK(text.begin() == text.end());
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(!text.is_truncated());
@@ -167,12 +167,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_default_constructor_use_array_buffer_text)
     {
-      Text text(array_text, array_text, std::size(array_text));
+      Text text(array_text, array_text, ETL_OR_STD17::size(array_text));
 
       CHECK_EQUAL(text.size(), etl::strlen(array_text));
       CHECK(!text.empty());
-      CHECK_EQUAL(std::size(array_text) - 1, text.capacity());
-      CHECK_EQUAL(std::size(array_text) - 1, text.max_size());
+      CHECK_EQUAL(ETL_OR_STD17::size(array_text) - 1, text.capacity());
+      CHECK_EQUAL(ETL_OR_STD17::size(array_text) - 1, text.max_size());
       CHECK(text.begin() != text.end());
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(!text.is_truncated());

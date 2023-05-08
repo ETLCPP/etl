@@ -45,11 +45,14 @@ namespace etl
   ///\ingroup combinations
   /// Calculates combinations.
   //***************************************************************************
-  template <const size_t NV, const size_t KV>
+  template <size_t NV, size_t KV>
   struct combinations
   {
     static ETL_CONSTANT size_t value = etl::permutations<NV, KV>::value / etl::factorial<KV>::value;
   };
+
+  template <size_t NV, size_t KV>
+  ETL_CONSTANT size_t combinations<NV, KV>::value;
 
 #if ETL_USING_CPP17
   template <size_t NV, size_t KV>

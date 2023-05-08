@@ -6,63 +6,105 @@ on:
     branches: [ master ]
 
 jobs:
-  build-gcc-linux-stl:
-    name: GCC Linux - STL
+  build-gcc-cpp14-linux-stl:
+    name: GCC C++14 Linux - STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04]
+        os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Build
       run: |
         git fetch --tags
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
+        cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=14 ./
         gcc --version
         make
     
     - name: Run tests
       run: ./test/etl_tests
 
-  build-gcc-linux-no-stl:
-    name: GCC Linux - No STL
+  build-gcc-cpp17-linux-stl:
+    name: GCC C++17 Linux - STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04]
+        os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Build
       run: |
         git fetch --tags
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
+        cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=17 ./
         gcc --version
         make
     
     - name: Run tests
       run: ./test/etl_tests
 
-  build-gcc-linux-stl-force-cpp03:
-    name: GCC Linux - STL - Force C++03
+  build-gcc-cpp20-linux-stl:
+    name: GCC C++20 Linux - STL
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04]
+        os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Build
       run: |
         git fetch --tags
         export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ./
+        cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=20 ./
+        gcc --version
+        make
+    
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-gcc-cpp20-linux-no-stl:
+    name: GCC C++20 Linux - No STL
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch --tags
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=20 ./
+        gcc --version
+        make
+    
+    - name: Run tests
+      run: ./test/etl_tests
+
+  build-gcc-cpp20-linux-stl-force-cpp03:
+    name: GCC C++20 Linux - STL - Force C++03
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        git fetch --tags
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON -DETL_CXX_STANDARD=20 ./
         gcc --version
         make
     

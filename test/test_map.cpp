@@ -1599,7 +1599,7 @@ namespace
 
       auto v = *data.begin();
       using Type = decltype(v);
-      CHECK((std::is_same_v<Pair, Type>));
+      CHECK((std::is_same<Pair, Type>::value));
 
       CHECK_EQUAL(0, data.at("0"));
       CHECK_EQUAL(1, data.at("1"));

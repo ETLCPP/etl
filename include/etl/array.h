@@ -83,7 +83,7 @@ namespace etl
   ///\ingroup array
   /// A replacement for std::array if you haven't got C++0x11.
   //***************************************************************************
-  template <typename T, const size_t SIZE_>
+  template <typename T, size_t SIZE_>
   class array
   {
   private:
@@ -92,10 +92,7 @@ namespace etl
 
   public:
 
-    enum
-    {
-      SIZE = SIZE_
-    };
+    static ETL_CONSTANT size_t SIZE = SIZE_;
 
     typedef T                                     value_type;
     typedef size_t                                size_type;
@@ -236,7 +233,7 @@ namespace etl
     //*************************************************************************
     iterator end() ETL_NOEXCEPT
     {
-      return &_buffer[SIZE];
+      return _buffer + SIZE;
     }
 
     //*************************************************************************
@@ -244,7 +241,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR const_iterator end() const ETL_NOEXCEPT
     {
-      return &_buffer[SIZE];
+      return _buffer + SIZE;
     }
 
     //*************************************************************************
@@ -252,7 +249,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR const_iterator cend() const ETL_NOEXCEPT
     {
-      return &_buffer[SIZE];
+      return _buffer + SIZE;
     }
 
     //*************************************************************************
@@ -562,6 +559,9 @@ namespace etl
       return const_cast<iterator>(itr);
     }
   };
+
+  template <typename T, size_t SIZE_>
+  ETL_CONSTANT size_t array<T, SIZE_>::SIZE;
 
   //*************************************************************************
   /// Template deduction guides.

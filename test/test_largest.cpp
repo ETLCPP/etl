@@ -55,7 +55,7 @@ namespace
       CHECK(type);
     }
 
-#if !defined(ETL_LARGEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
+#if ETL_USING_CPP17 && !defined(ETL_LARGEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_pod_type_vt)
     {
@@ -99,7 +99,7 @@ namespace
       CHECK(type);
     }
 
-#if !defined(ETL_LARGEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
+#if ETL_USING_CPP17 && !defined(ETL_LARGEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_non_pod_type_vt)
     {
@@ -132,6 +132,7 @@ namespace
       CHECK_EQUAL(std::alignment_of<double>::value, size);
     }
 
+#if ETL_USING_CPP17 && !defined(ETL_LARGEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_pod_alignment_v)
     {
@@ -139,6 +140,7 @@ namespace
 
       CHECK_EQUAL(std::alignment_of<double>::value, size);
     }
+#endif
 
     //*************************************************************************
     TEST(test_non_pod_alignment)
@@ -152,6 +154,7 @@ namespace
       CHECK_EQUAL(std::alignment_of<S3>::value, size);
     }
 
+#if ETL_USING_CPP17 && !defined(ETL_LARGEST_TYPE_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     TEST(test_non_pod_alignment_v)
     {
@@ -163,6 +166,7 @@ namespace
 
       CHECK_EQUAL(std::alignment_of<S3>::value, size);
     }
+#endif
 
     //*************************************************************************
     TEST(test_larger_int_type)

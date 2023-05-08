@@ -601,6 +601,9 @@ namespace etl
     /// The uninitialised buffer of T used in the stack.
     container_type buffer[SIZE];
   };
+
+  template <typename T, const size_t SIZE>
+  ETL_CONSTANT size_t stack<T, SIZE>::MAX_SIZE;
 }
 
 #endif

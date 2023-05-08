@@ -74,10 +74,9 @@ namespace
     using TextT        = etl::u16string<SIZE>;
     using Compare_Text = std::u16string;
     using value_t      = Text::value_type;
-
-    using TextBuffer  = std::array<IText::value_type, SIZE + 1>;
-    using TextBufferL = std::array<IText::value_type, SIZE_L + 1>;
-    using TextBufferS = std::array<IText::value_type, SIZE_S + 1>;
+    using TextBuffer   = std::array<IText::value_type, SIZE + 1>;
+    using TextBufferL  = std::array<IText::value_type, SIZE_L + 1>;
+    using TextBufferS  = std::array<IText::value_type, SIZE_S + 1>;
 
     Compare_Text initial_text;
     Compare_Text less_text;
@@ -168,12 +167,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_default_constructor_use_array_buffer)
     {
-      Text text(array_text, std::size(array_text));
+      Text text(array_text, ETL_OR_STD17::size(array_text));
 
       CHECK_EQUAL(0U, text.size());
       CHECK(text.empty());
-      CHECK_EQUAL(std::size(array_text) - 1, text.capacity());
-      CHECK_EQUAL(std::size(array_text) - 1, text.max_size());
+      CHECK_EQUAL(ETL_OR_STD17::size(array_text) - 1, text.capacity());
+      CHECK_EQUAL(ETL_OR_STD17::size(array_text) - 1, text.max_size());
       CHECK(text.begin() == text.end());
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(!text.is_truncated());
@@ -183,12 +182,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_default_constructor_use_array_buffer_text)
     {
-      Text text(array_text, array_text, std::size(array_text));
+      Text text(array_text, array_text, ETL_OR_STD17::size(array_text));
 
       CHECK_EQUAL(text.size(), etl::strlen(array_text));
       CHECK(!text.empty());
-      CHECK_EQUAL(std::size(array_text) - 1, text.capacity());
-      CHECK_EQUAL(std::size(array_text) - 1, text.max_size());
+      CHECK_EQUAL(ETL_OR_STD17::size(array_text) - 1, text.capacity());
+      CHECK_EQUAL(ETL_OR_STD17::size(array_text) - 1, text.max_size());
       CHECK(text.begin() != text.end());
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(!text.is_truncated());
@@ -735,7 +734,7 @@ namespace
       TextBuffer buffer2;
       const Text constText(initial_text.c_str(), buffer2.data(), buffer2.size());
 
-      CHECK_EQUAL(&text[0], text.begin());
+      CHECK_EQUAL(&text[0],      text.begin());
       CHECK_EQUAL(&constText[0], constText.begin());
     }
 
@@ -749,7 +748,7 @@ namespace
       TextBuffer buffer2;
       const Text constText(initial_text.c_str(), buffer2.data(), buffer2.size());
 
-      CHECK_EQUAL(&text[initial_text.size()], text.end());
+      CHECK_EQUAL(&text[initial_text.size()],      text.end());
       CHECK_EQUAL(&constText[initial_text.size()], constText.end());
     }
 

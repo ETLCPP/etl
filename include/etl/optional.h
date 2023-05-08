@@ -133,6 +133,7 @@ namespace etl
     {
     }
 
+#include "etl/private/diagnostic_uninitialized_push.h"
     //***************************************************************************
     /// Copy constructor.
     //***************************************************************************
@@ -144,6 +145,7 @@ namespace etl
         storage.construct(other.value());
       }
     }
+#include "etl/private/diagnostic_pop.h"
 
 #if ETL_USING_CPP11
     //***************************************************************************
@@ -451,7 +453,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value.
     ///\param args The arguments to construct with.
-    //*************************************************************************
+    //*************************************************************************   
     template <typename ... TArgs>
     ETL_CONSTEXPR20_STL
     void emplace(TArgs&& ... args)

@@ -700,8 +700,8 @@ namespace
     {
       auto data = etl::make_array<char>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-      using Type = std::remove_reference_t<decltype(data[0])>;
-      CHECK((std::is_same_v<char, Type>));
+      using Type = etl::remove_reference_t<decltype(data[0])>;
+      CHECK((std::is_same<char, Type>::value));
 
       CHECK_EQUAL(0, data[0]);
       CHECK_EQUAL(1, data[1]);
@@ -722,8 +722,8 @@ namespace
     {
       auto data = etl::make_array<Moveable>(Moveable(0), Moveable(1), Moveable(2), Moveable(3), Moveable(4), Moveable(5), Moveable(6), Moveable(7), Moveable(8), Moveable(9));
 
-      using Type = std::remove_reference_t<decltype(data[0])>;
-      CHECK((std::is_same_v<Moveable, Type>));
+      using Type = etl::remove_reference_t<decltype(data[0])>;
+      CHECK((std::is_same<Moveable, Type>::value));
 
       CHECK_EQUAL(Moveable(0), data[0]);
       CHECK_EQUAL(Moveable(1), data[1]);

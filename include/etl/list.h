@@ -689,7 +689,7 @@ namespace etl
     //*************************************************************************
     const_iterator end() const
     {
-      return const_iterator(static_cast<const data_node_t&>(terminal_node));
+      return const_iterator(terminal_node);
     }
 
     //*************************************************************************
@@ -705,7 +705,7 @@ namespace etl
     //*************************************************************************
     const_iterator cend() const
     {
-      return const_iterator(static_cast<const data_node_t&>(terminal_node));
+      return const_iterator(terminal_node);
     }
 
     //*************************************************************************
@@ -721,7 +721,7 @@ namespace etl
     //*************************************************************************
     const_reverse_iterator rbegin() const
     {
-      return const_reverse_iterator(static_cast<const data_node_t&>(terminal_node));
+      return const_reverse_iterator(terminal_node);
     }
 
     //*************************************************************************
@@ -745,7 +745,7 @@ namespace etl
     //*************************************************************************
     const_reverse_iterator crbegin() const
     {
-      return const_reverse_iterator(static_cast<const data_node_t&>(terminal_node));
+      return const_reverse_iterator(terminal_node);
     }
 
     //*************************************************************************
@@ -2166,6 +2166,9 @@ namespace etl
     /// The pool of nodes used in the list.
     etl::pool<typename etl::ilist<T>::data_node_t, MAX_SIZE> node_pool;
   };
+
+  template <typename T, const size_t MAX_SIZE_>
+  ETL_CONSTANT size_t list<T, MAX_SIZE_>::MAX_SIZE;
 
   //*************************************************************************
   /// Template deduction guides.

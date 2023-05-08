@@ -61,7 +61,7 @@ namespace etl
   ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
   ///\ingroup wstring
   //***************************************************************************
-  template <const size_t MAX_SIZE_>
+  template <size_t MAX_SIZE_>
   class wstring : public iwstring
   {
   public:
@@ -438,18 +438,18 @@ namespace etl
   {
     size_t operator()(const etl::iwstring& text) const
     {
-      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(text.data()),
+                                                     reinterpret_cast<const uint8_t*>(text.data() + text.size()));
     }
   };
 
-  template <const size_t SIZE>
+  template <size_t SIZE>
   struct hash<etl::wstring<SIZE> >
   {
     size_t operator()(const etl::wstring<SIZE>& text) const
     {
-      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(text.data()),
+                                                     reinterpret_cast<const uint8_t*>(text.data() + text.size()));
     }
   };
 
@@ -458,8 +458,8 @@ namespace etl
   {
     size_t operator()(const etl::wstring_ext& text) const
     {
-      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(text.data()),
+                                                     reinterpret_cast<const uint8_t*>(text.data() + text.size()));
     }
   };
 #endif
@@ -467,16 +467,16 @@ namespace etl
   //***************************************************************************
   /// Make string from string literal or array
   //***************************************************************************
-  template<size_t ARRAY_SIZE>
-  etl::wstring<ARRAY_SIZE - 1U> make_string(const wchar_t(&text)[ARRAY_SIZE])
+  template<size_t Array_Size>
+  etl::wstring<Array_Size - 1U> make_string(const wchar_t(&text)[Array_Size])
   {
-    return etl::wstring<ARRAY_SIZE - 1U>(text, etl::strlen(text, ARRAY_SIZE - 1U));
+    return etl::wstring<Array_Size - 1U>(text, etl::strlen(text, Array_Size - 1U));
   }
 
   //***************************************************************************
   /// Make string with max capacity from string literal or array
   //***************************************************************************
-  template<const size_t MAX_SIZE, const size_t SIZE>
+  template<size_t MAX_SIZE, size_t SIZE>
   etl::wstring<MAX_SIZE> make_string_with_capacity(const wchar_t(&text)[SIZE])
   {
     return etl::wstring<MAX_SIZE>(text, etl::strlen(text, SIZE));

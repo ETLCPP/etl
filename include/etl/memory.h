@@ -2146,6 +2146,15 @@ namespace etl
 #endif
   };
 
+  template <size_t VObject_Size, size_t VN_Objects, size_t VAlignment>
+  ETL_CONSTANT size_t uninitialized_buffer<VObject_Size, VN_Objects, VAlignment>::Object_Size;
+
+  template <size_t VObject_Size, size_t VN_Objects, size_t VAlignment>
+  ETL_CONSTANT size_t uninitialized_buffer<VObject_Size, VN_Objects, VAlignment>::N_Objects;
+
+  template <size_t VObject_Size, size_t VN_Objects, size_t VAlignment>
+  ETL_CONSTANT size_t uninitialized_buffer<VObject_Size, VN_Objects, VAlignment>::Alignment;
+
   //***************************************************************************
   /// Declares an aligned buffer of VN_Objects as if they were type T.
   ///\ingroup alignment
@@ -2234,6 +2243,15 @@ namespace etl
     };
 #endif
   };
+
+  template <typename T, size_t VN_Objects>
+  ETL_CONSTANT size_t uninitialized_buffer_of<T, VN_Objects>::Object_Size;
+
+  template <typename T, size_t VN_Objects>
+  ETL_CONSTANT size_t uninitialized_buffer_of<T, VN_Objects>::N_Objects;
+
+  template <typename T, size_t VN_Objects>
+  ETL_CONSTANT size_t uninitialized_buffer_of<T, VN_Objects>::Alignment;
 
 #if ETL_USING_CPP11
   template <typename T, size_t N_Objects>

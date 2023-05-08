@@ -2469,6 +2469,9 @@ namespace etl
     etl::uninitialized_buffer_of<T, BUFFER_SIZE> buffer;
   };
 
+  template <typename T, const size_t MAX_SIZE_>
+  ETL_CONSTANT size_t deque<T, MAX_SIZE_>::MAX_SIZE;
+
   //*************************************************************************
   /// Template deduction guides.
   //*************************************************************************

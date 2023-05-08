@@ -206,7 +206,7 @@ namespace etl
     //*********************************************************************
     const_reverse_iterator rend() const
     {
-      refmap_t::rend();
+      return refmap_t::rend();
     }
 
     //*********************************************************************
@@ -1040,6 +1040,9 @@ namespace etl
     // The vector that stores pointers to the nodes.
     etl::vector<node_t*, MAX_SIZE> lookup;
   };
+
+  template <typename TKey, typename TValue, const size_t MAX_SIZE_, typename TCompare>
+  ETL_CONSTANT size_t flat_multimap<TKey, TValue, MAX_SIZE_, TCompare>::MAX_SIZE;
 
   //*************************************************************************
   /// Template deduction guides.

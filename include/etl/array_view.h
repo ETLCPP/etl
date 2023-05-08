@@ -258,10 +258,10 @@ namespace etl
     //*************************************************************************
     /// Construct from C array
     //*************************************************************************
-    template<size_t ARRAY_SIZE>
-    ETL_CONSTEXPR array_view(T(&begin_)[ARRAY_SIZE])
+    template<size_t Array_Size>
+    ETL_CONSTEXPR array_view(T(&begin_)[Array_Size])
       : mbegin(begin_),
-        mend(begin_ + ARRAY_SIZE)
+        mend(begin_ + Array_Size)
     {
     }
 
@@ -636,8 +636,8 @@ namespace etl
   {
     size_t operator()(const etl::array_view<T>& view) const
     {
-      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&view[0]),
-                                                     reinterpret_cast<const uint8_t*>(&view[view.size()]));
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(view.data()),
+                                                     reinterpret_cast<const uint8_t*>(view.data() + view.size()));
     }
   };
 #endif

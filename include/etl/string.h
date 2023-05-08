@@ -63,7 +63,7 @@ namespace etl
   ///\tparam MAX_SIZE_ The maximum number of elements that can be stored.
   ///\ingroup string
   //***************************************************************************
-  template <const size_t MAX_SIZE_>
+  template <size_t MAX_SIZE_>
   class string : public istring
   {
   public:
@@ -258,6 +258,9 @@ namespace etl
 
     value_type buffer[MAX_SIZE + 1];
   };
+
+  template <size_t MAX_SIZE_>
+  ETL_CONSTANT size_t string<MAX_SIZE_>::MAX_SIZE;
 
   //***************************************************************************
   /// A string implementation that uses a fixed size external buffer.
@@ -455,18 +458,18 @@ namespace etl
   {
     size_t operator()(const etl::istring& text) const
     {
-      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(text.data()),
+                                                     reinterpret_cast<const uint8_t*>(text.data() + text.size()));
     }
   };
 
-  template <const size_t SIZE>
+  template <size_t SIZE>
   struct hash<etl::string<SIZE> >
   {
     size_t operator()(const etl::string<SIZE>& text) const
     {
-      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(text.data()),
+                                                     reinterpret_cast<const uint8_t*>(text.data() + text.size()));
     }
   };
 
@@ -475,8 +478,8 @@ namespace etl
   {
     size_t operator()(const etl::string_ext& text) const
     {
-      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(&text[0]),
-                                                     reinterpret_cast<const uint8_t*>(&text[text.size()]));
+      return etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(text.data()),
+                                                     reinterpret_cast<const uint8_t*>(text.data() + text.size()));
     }
   };
 #endif
@@ -484,16 +487,16 @@ namespace etl
   //***************************************************************************
   /// Make string from string literal or array
   //***************************************************************************
-  template<size_t ARRAY_SIZE>
-  etl::string<ARRAY_SIZE - 1U> make_string(const char(&text)[ARRAY_SIZE])
+  template<size_t Array_Size>
+  etl::string<Array_Size - 1U> make_string(const char(&text)[Array_Size])
   {
-    return etl::string<ARRAY_SIZE - 1U>(text, etl::strlen(text, ARRAY_SIZE - 1));
+    return etl::string<Array_Size - 1U>(text, etl::strlen(text, Array_Size - 1));
   }
 
   //***************************************************************************
   /// Make string with max capacity from string literal or array
   //***************************************************************************
-  template<const size_t MAX_SIZE, const size_t SIZE>
+  template<size_t MAX_SIZE, size_t SIZE>
   etl::string<MAX_SIZE> make_string_with_capacity(const char(&text)[SIZE])
   {
     return etl::string<MAX_SIZE>(text, etl::strlen(text, SIZE));

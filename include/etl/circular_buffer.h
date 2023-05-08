@@ -170,7 +170,7 @@ namespace etl
     size_type buffer_size;
     size_type in;            ///< Index to the next write.
     size_type out;           ///< Index to the next read.
-    ETL_DECLARE_DEBUG_COUNT; ///< Internal debugging.
+    ETL_DECLARE_DEBUG_COUNT  ///< Internal debugging.
   };
 
   //***************************************************************************
@@ -1225,6 +1225,9 @@ namespace etl
     /// The uninitialised storage.
     etl::uninitialized_buffer_of<T, MAX_SIZE + 1> buffer;
   };
+
+  template <typename T, size_t MAX_SIZE_>
+  ETL_CONSTANT typename icircular_buffer<T>::size_type circular_buffer<T, MAX_SIZE_>::MAX_SIZE;
 
   //***************************************************************************
   /// A fixed capacity circular buffer.

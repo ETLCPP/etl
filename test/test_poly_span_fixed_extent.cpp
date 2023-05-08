@@ -158,7 +158,7 @@ namespace
       etl::poly_span<Base, 4U> s(data);
       CHECK_EQUAL(sizeof(Derived), s.size_of_element());
       CHECK(!s.empty());
-      CHECK_EQUAL(std::size(data), s.size());
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.size());
       CHECK_EQUAL(s.size() * sizeof(Derived), s.size_bytes());
       CHECK_EQUAL(data[0].value(), s[0].value());
       CHECK_EQUAL(data[1].value(), s[1].value());
@@ -173,7 +173,7 @@ namespace
       etl::poly_span<const Base, 4U> s(data);
       CHECK_EQUAL(sizeof(Derived), s.size_of_element());
       CHECK(!s.empty());
-      CHECK_EQUAL(std::size(data), s.size());
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.size());
       CHECK_EQUAL(s.size() * sizeof(Derived), s.size_bytes());
       CHECK_EQUAL(data[0].value(), s[0].value());
       CHECK_EQUAL(data[1].value(), s[1].value());
@@ -185,7 +185,7 @@ namespace
     //*************************************************************************
     TEST(test_poly_span_construct_from_std_array) 
     {
-      std::array data{ Derived(1), Derived(2), Derived(3), Derived(4) };
+      std::array<Derived, 4> data{ Derived(1), Derived(2), Derived(3), Derived(4) };
       etl::poly_span<Base, 4U> s(data);
       CHECK(!s.empty());
       CHECK_EQUAL(data.size(), s.size());
@@ -199,7 +199,7 @@ namespace
     //*************************************************************************
     TEST(test_poly_span_construct_from_const_std_array)
     {
-      const std::array data{ Derived(1), Derived(2), Derived(3), Derived(4) };
+      const std::array<Derived, 4> data{ Derived(1), Derived(2), Derived(3), Derived(4) };
       etl::poly_span<const Base, 4U> s(data);
       CHECK(!s.empty());
       CHECK_EQUAL(data.size(), s.size());
@@ -214,7 +214,7 @@ namespace
     //*************************************************************************
     TEST(test_poly_span_construct_from_etl_array)
     {
-      etl::array data{ Derived(1), Derived(2), Derived(3), Derived(4) };
+      etl::array<Derived, 4> data{ Derived(1), Derived(2), Derived(3), Derived(4) };
       etl::poly_span<Base, 4U> s(data);
       CHECK(!s.empty());
       CHECK_EQUAL(data.size(), s.size());
@@ -228,7 +228,7 @@ namespace
     //*************************************************************************
     TEST(test_poly_span_construct_from_const_etl_array)
     {
-      const etl::array data{ Derived(1), Derived(2), Derived(3), Derived(4) };
+      const etl::array<Derived, 4> data{ Derived(1), Derived(2), Derived(3), Derived(4) };
       etl::poly_span<const Base, 4U> s(data);
       CHECK(!s.empty());
       CHECK_EQUAL(data.size(), s.size());
@@ -502,6 +502,7 @@ namespace
       CHECK_EQUAL(hashdata, hashview);
     }
 
+#if ETL_USING_CPP17
     //*************************************************************************
     TEST(test_template_deduction_guide_for_c_array)
     {
@@ -509,8 +510,8 @@ namespace
 
       etl::poly_span s = data;
 
-      CHECK_EQUAL(std::size(data), s.extent);
-      CHECK_EQUAL(std::size(data), s.size());
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.size());
       CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
     }
 
@@ -522,8 +523,8 @@ namespace
 
       etl::poly_span s = data;
 
-      CHECK_EQUAL(std::size(data), s.extent);
-      CHECK_EQUAL(std::size(data), s.size());
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.size());
       CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
     }
 #endif
@@ -535,8 +536,8 @@ namespace
 
       etl::poly_span s = data;
 
-      CHECK_EQUAL(std::size(data), s.extent);
-      CHECK_EQUAL(std::size(data), s.size());
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data), s.size());
       CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
     }
 
@@ -563,5 +564,6 @@ namespace
       CHECK_EQUAL(4U, s.size());
       CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
     }
+#endif
   }
 }

@@ -74,7 +74,7 @@ namespace
       CHECK(&data[0] == iBegin);
 
       int* iEnd = etl::end(data);
-      CHECK(&data[SIZE] == iEnd);
+      CHECK((data + SIZE) == iEnd);
     }
 
     //*************************************************************************
@@ -87,7 +87,7 @@ namespace
       CHECK(&data[0] == iBegin);
 
       const int* const iEnd = etl::end(data);
-      CHECK(&data[SIZE] == iEnd);
+      CHECK((data + SIZE) == iEnd);
     }
 
 
@@ -129,7 +129,7 @@ namespace
       const size_t SIZE = 10UL;
       std::list<int> data(SIZE);
 
-      size_t runtime_size = etl::size(data);
+      size_t runtime_size = ETL_OR_STD17::size(data);
       CHECK_EQUAL(SIZE, runtime_size);
     }
 
@@ -139,7 +139,7 @@ namespace
       const size_t SIZE = 10UL;
       int data[SIZE];
 
-      size_t runtime_size = etl::size(data);
+      size_t runtime_size = ETL_OR_STD17::size(data);
       CHECK_EQUAL(SIZE, runtime_size);
 
       size_t compiletime_size = sizeof(etl::array_size(data));

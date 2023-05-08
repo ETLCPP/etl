@@ -31,6 +31,7 @@ SOFTWARE.
 #include <ostream>
 #include <sstream>
 #include <iomanip>
+#include <limits>
 
 #include "etl/to_arithmetic.h"
 #include "etl/u16string.h"
@@ -1005,6 +1006,7 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP14
     TEST(test_constexpr_integral)
     {
       constexpr Text::const_pointer text{ STR("123") };
@@ -1014,5 +1016,6 @@ namespace
 
       CHECK_EQUAL(123, i);
     }
+#endif
   }
 }

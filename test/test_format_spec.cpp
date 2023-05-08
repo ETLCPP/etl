@@ -92,6 +92,7 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP14
     TEST(test_format_constexpr)
     {
       constexpr etl::format_spec format = etl::format_spec().base(16).boolalpha(true).fill('?').left().precision(6).show_base(true).upper_case(true).width(10);
@@ -116,6 +117,7 @@ namespace
       CHECK_EQUAL(true,  show_base);
       CHECK_EQUAL(true,  upper_case);
     }
+#endif
   };
 }
 

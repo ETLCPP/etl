@@ -1,4 +1,4 @@
-name: vs2019
+name: msvc
 on:
   push:
     branches: [ master, development]
@@ -6,13 +6,13 @@ on:
     branches: [ master ]
 
 jobs:
-  build-windows-vs2019-stl:
-    name: Windows VS2019 Debug - STL
-    runs-on: [windows-2019]
+  build-windows-msvc-stl:
+    name: Windows VS2022 Debug - STL
+    runs-on: [windows-2022]
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         submodules: recursive
 
@@ -22,19 +22,19 @@ jobs:
     - name: Build
       run: |
         git fetch --tags
-        cmake -G "Visual Studio 16 2019" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
+        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=20 ./
         MSBuild.exe -version
         MSBuild.exe .\etl.sln
         
     - name: Run tests
       run: test/Debug/etl_tests.exe
 
-  build-windows-vs2019-no-stl:
-    name: Windows VS2019 Debug - No STL
-    runs-on: [windows-2019]
+  build-windows-msvc-no-stl:
+    name: Windows VS2022 Debug - No STL
+    runs-on: [windows-2022]
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         submodules: recursive
 
@@ -44,20 +44,20 @@ jobs:
     - name: Build
       run: |
         git fetch --tags
-        cmake -G "Visual Studio 16 2019" -AWin32 -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF ./
+        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=17 ./
         MSBuild.exe -version
         MSBuild.exe .\etl.sln
         
     - name: Run tests
       run: test/Debug/etl_tests.exe
 
-  build-windows-vs2019-stl-force-cpp03:
-    name: Windows VS2019 Debug - STL - Force C++03
-    runs-on: [windows-2019]
+  build-windows-msvc-stl-force-cpp03:
+    name: Windows VS2022 Debug - STL - Force C++03
+    runs-on: [windows-2022]
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         submodules: recursive
 
@@ -67,7 +67,7 @@ jobs:
     - name: Build
       run: |
         git fetch --tags
-        cmake -G "Visual Studio 16 2019" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON ./
+        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON -DETL_CXX_STANDARD=17 ./
         MSBuild.exe -version
         MSBuild.exe .\etl.sln
         

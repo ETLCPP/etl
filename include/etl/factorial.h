@@ -61,6 +61,9 @@ namespace etl
     static ETL_CONSTANT size_t value = 1;
   };
 
+  template <size_t N>
+  ETL_CONSTANT size_t factorial<N>::value;
+
 #if ETL_USING_CPP17
   template <size_t N>
   inline constexpr size_t factorial_v = factorial<N>::value;
