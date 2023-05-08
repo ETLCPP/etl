@@ -69,7 +69,7 @@ jobs:
         MSBuild.exe .\etl.sln
 
     - name: Run tests
-      run: ./test/etl_tests
+      run: test/Debug/etl_tests.exe
         
   build-windows-msvc-no-stl-force-cpp03:
     name: Windows - No STL - Force C++03
