@@ -222,7 +222,7 @@ namespace etl
     //*************************************************************************
     template <typename U, size_t N>
     ETL_CONSTEXPR span(const etl::span<U, N>& other, typename etl::enable_if<(Extent == etl::dynamic_extent) || (N == etl::dynamic_extent) || (N == Extent), void>::type) ETL_NOEXCEPT
-      : pbegin(other.pbegin)
+      : pbegin(other.data())
     {
     }
 
@@ -625,8 +625,8 @@ namespace etl
     //*************************************************************************
     template <typename U, size_t N>
     ETL_CONSTEXPR span(const etl::span<U, N>& other) ETL_NOEXCEPT
-      : pbegin(other.pbegin)
-      , pend(other.pend)
+      : pbegin(other.data())
+      , pend(other.data() + other.size())
     {
     }
 

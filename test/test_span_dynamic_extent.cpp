@@ -306,6 +306,36 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_copy_constructor_from_same_span_type)
+    {
+      etl::array<char, 10> data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      const etl::span<char> view1(data.data(), data.data() + data.size());
+      etl::span<char> view2(view1);
+
+      CHECK_EQUAL(data.size(), view1.size());
+      CHECK_EQUAL(data.size(), view2.size());
+
+      bool isEqual = std::equal(view1.begin(), view1.end(), view2.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_copy_constructor_from_different_span_type)
+    {
+      etl::array<char, 10> data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      const etl::span<char> view1(data.data(), data.data() + data.size());
+      etl::span<const char> view2(view1);
+
+      CHECK_EQUAL(data.size(), view1.size());
+      CHECK_EQUAL(data.size(), view2.size());
+
+      bool isEqual = std::equal(view1.begin(), view1.end(), view2.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST(test_assign_from_span)
     {
       View view1(etldata);
