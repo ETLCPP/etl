@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-windows-msvc-stl:
-    name: Windows VS2022 Debug - STL
+    name: Windows - STL
     runs-on: [windows-2022]
 
     steps:
@@ -21,7 +21,6 @@ jobs:
 
     - name: Build
       run: |
-        git fetch
         cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=20 ./
         MSBuild.exe -version
         MSBuild.exe .\etl.sln
@@ -30,7 +29,7 @@ jobs:
       run: test/Debug/etl_tests.exe
 
   build-windows-msvc-no-stl:
-    name: Windows VS2022 Debug - No STL
+    name: Windows - No STL
     runs-on: [windows-2022]
     steps:
     - name: Checkout
@@ -43,7 +42,6 @@ jobs:
 
     - name: Build
       run: |
-        git fetch
         cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=17 ./
         MSBuild.exe -version
         MSBuild.exe .\etl.sln
@@ -52,7 +50,7 @@ jobs:
       run: test/Debug/etl_tests.exe
 
   build-windows-msvc-stl-force-cpp03:
-    name: Windows VS2022 Debug - STL - Force C++03
+    name: Windows - STL - Force C++03
     runs-on: [windows-2022]
 
     steps:
@@ -66,11 +64,32 @@ jobs:
 
     - name: Build
       run: |
-        git fetch
         cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON -DETL_CXX_STANDARD=17 ./
         MSBuild.exe -version
         MSBuild.exe .\etl.sln
+
+    - name: Run tests
+      run: ./test/etl_tests
         
+  build-windows-msvc-no-stl-force-cpp03:
+    name: Windows - No STL - Force C++03
+    runs-on: [windows-2022]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Build
+      run: |
+        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON -DETL_CXX_STANDARD=17 ./
+        MSBuild.exe -version
+        MSBuild.exe .\etl.sln
+
     - name: Run tests
       run: test/Debug/etl_tests.exe
 
