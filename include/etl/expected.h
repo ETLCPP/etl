@@ -666,7 +666,7 @@ namespace etl
     //*******************************************
     ///
     //*******************************************
-    value_type& operator *()&
+    value_type& operator *() ETL_LVALUE_REF_QUALIFIER
     {
 #if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(storage.index() == Value_Type, ETL_ERROR(expected_invalid<TError>));
@@ -678,7 +678,7 @@ namespace etl
     //*******************************************
     ///
     //*******************************************
-    const value_type& operator *() const&
+    const value_type& operator *() const ETL_LVALUE_REF_QUALIFIER
     {
 #if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(storage.index() == Value_Type, ETL_ERROR(expected_invalid<TError>));
@@ -687,6 +687,7 @@ namespace etl
       return etl::get<value_type>(storage);
     }
 
+#if ETL_USING_CPP11
     //*******************************************
     ///
     //*******************************************
@@ -710,6 +711,7 @@ namespace etl
 
       return etl::move(etl::get<value_type>(storage));
     }
+#endif
 
   private:
 

@@ -302,7 +302,7 @@ namespace etl
     /// Dereference operator.
     //***************************************************************************
     ETL_CONSTEXPR20_STL
-    T& operator *()&
+    T& operator *() ETL_LVALUE_REF_QUALIFIER
     {
 #if ETL_IS_DEBUG_BUILD && !(ETL_USING_CPP20 && ETL_USING_STL)
       ETL_ASSERT(has_value(), ETL_ERROR(optional_invalid));
@@ -315,7 +315,7 @@ namespace etl
     /// Dereference operator.
     //***************************************************************************
     ETL_CONSTEXPR20_STL
-    const T& operator *() const&
+    const T& operator *() const ETL_LVALUE_REF_QUALIFIER
     {
 #if ETL_IS_DEBUG_BUILD && !(ETL_USING_CPP20 && ETL_USING_STL)
       ETL_ASSERT(has_value(), ETL_ERROR(optional_invalid));
@@ -324,6 +324,7 @@ namespace etl
       return storage.u.value;
     }
 
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Dereference operator.
     //***************************************************************************
@@ -349,6 +350,7 @@ namespace etl
 
       return etl::move(storage.u.value);
     }
+#endif
 
     //***************************************************************************
     // Check whether optional contains value
@@ -372,7 +374,7 @@ namespace etl
     /// Get a reference to the value.
     //***************************************************************************
     ETL_CONSTEXPR20_STL
-    T& value()&
+    T& value() ETL_LVALUE_REF_QUALIFIER
     {
 #if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(has_value(), ETL_ERROR(optional_invalid));
@@ -385,7 +387,7 @@ namespace etl
     /// Get a const reference to the value.
     //***************************************************************************
     ETL_CONSTEXPR20_STL
-    const T& value() const&
+    const T& value() const ETL_LVALUE_REF_QUALIFIER
     {
 #if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(has_value(), ETL_ERROR(optional_invalid));
@@ -394,6 +396,16 @@ namespace etl
       return storage.u.value;
     }
 
+    //***************************************************************************
+    /// Gets the value or a default if not valid.
+    //***************************************************************************
+    ETL_CONSTEXPR20_STL
+    T value_or(const T& default_value) const ETL_LVALUE_REF_QUALIFIER
+    {
+      return has_value() ? value() : default_value;
+    }
+
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Get an rvalue reference to the value.
     //***************************************************************************
@@ -424,10 +436,11 @@ namespace etl
     /// Gets the value or a default if not valid.
     //***************************************************************************
     ETL_CONSTEXPR20_STL
-    T value_or(T default_value) const
+    T&& value_or(T&& default_value) const&&
     {
-      return has_value() ? value() : default_value;
+      return has_value() ? etl::move(value()) : default_value;
     }
+#endif
 
     //***************************************************************************
     /// Swaps this value with another.
@@ -791,7 +804,7 @@ namespace etl
     //***************************************************************************
     /// Dereference operator.
     //***************************************************************************
-    ETL_CONSTEXPR14 T& operator *()&
+    ETL_CONSTEXPR14 T& operator *() ETL_LVALUE_REF_QUALIFIER
     {
 #if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
@@ -803,7 +816,7 @@ namespace etl
     //***************************************************************************
     /// Dereference operator.
     //***************************************************************************
-    ETL_CONSTEXPR14 const T& operator *() const&
+    ETL_CONSTEXPR14 const T& operator *() const ETL_LVALUE_REF_QUALIFIER
     {
 #if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
@@ -812,6 +825,7 @@ namespace etl
       return storage;
     }
 
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Dereference operator.
     //***************************************************************************
@@ -835,6 +849,7 @@ namespace etl
 
       return etl::move(storage);
     }
+#endif
 
     //***************************************************************************
     /// Bool conversion operator.
@@ -855,7 +870,7 @@ namespace etl
     //***************************************************************************
     /// Get a reference to the value.
     //***************************************************************************
-    ETL_CONSTEXPR14 T& value()&
+    ETL_CONSTEXPR14 T& value() ETL_LVALUE_REF_QUALIFIER
     {
 #if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
@@ -867,7 +882,7 @@ namespace etl
     //***************************************************************************
     /// Get a const reference to the value.
     //***************************************************************************
-    ETL_CONSTEXPR14 const T& value() const&
+    ETL_CONSTEXPR14 const T& value() const ETL_LVALUE_REF_QUALIFIER
     {
 #if ETL_IS_DEBUG_BUILD
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
@@ -876,6 +891,15 @@ namespace etl
       return storage;
     }
 
+    //***************************************************************************
+    /// Gets the value or a default if no valid.
+    //***************************************************************************
+    ETL_CONSTEXPR14 T value_or(const T& default_value) const ETL_LVALUE_REF_QUALIFIER
+    {
+      return valid ? value() : default_value;
+    }
+
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Get an rvalue reference to the value.
     //***************************************************************************
@@ -903,10 +927,11 @@ namespace etl
     //***************************************************************************
     /// Gets the value or a default if no valid.
     //***************************************************************************
-    ETL_CONSTEXPR14 T value_or(T default_value) const
+    ETL_CONSTEXPR14 T&& value_or(T&& default_value) const&&
     {
-      return valid ? value() : default_value;
+      return valid ? etl::move(value()) : default_value;
     }
+#endif
 
     //***************************************************************************
     /// Swaps this value with another.

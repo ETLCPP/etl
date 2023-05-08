@@ -246,6 +246,7 @@ SOFTWARE.
   #define ETL_MOVE(x)                     etl::move(x)
   #define ETL_ENUM_CLASS(name)            enum class name
   #define ETL_ENUM_CLASS_TYPE(name, type) enum class name : type
+  #define ETL_LVALUE_REF_QUALIFIER        &
 
   #if ETL_USING_EXCEPTIONS
     #define ETL_NOEXCEPT           noexcept
@@ -268,6 +269,7 @@ SOFTWARE.
   #define ETL_MOVE(x) x
   #define ETL_ENUM_CLASS(name)            enum name
   #define ETL_ENUM_CLASS_TYPE(name, type) enum name
+  #define ETL_LVALUE_REF_QUALIFIER
 #endif
 
 //*************************************
