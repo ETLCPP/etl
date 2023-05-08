@@ -7,7 +7,7 @@ testname="Test Name Not Set"
 
 FailColour='\033[38;2;255;128;128m'
 PassColour='\033[38;2;128;255;128m'
-TitleColour='\033[38;2;100;173;254m'
+TitleColour='\033[38;2;107;210;255m'
 NoColour='\033[0m'
 
 SetCxxStandard()
@@ -22,39 +22,39 @@ SetTestName()
 
 PrintHeader()
 {
-	echo "${TitleColour}"
-	echo "----------------------------------------------------------------------------" | tee -a log.txt
-	echo " $testname" | tee -a log.txt
-	echo " Language standard : C++${cxx_standard}" | tee -a log.txt
-	echo "----------------------------------------------------------------------------" | tee -a log.txt
-	echo "${NoColour}"
+	echo "$TitleColour"
+	echo "============================================================================" | tee -a log.txt
+	echo " $testname                                                                  " | tee -a log.txt
+	echo " Language standard : C++$cxx_standard                                       " | tee -a log.txt
+	echo "============================================================================" | tee -a log.txt
+	echo "$NoColour"
 }
 
 PassedCompilation()
 {
-	echo "${PassColour}"
+	echo "$PassColour"
 	echo "-----------------------------------------------" | tee -a log.txt
-	echo " Passed Compilation - $testname" | tee -a ../log.txt
+	echo " Passed Compilation - $testname                " | tee -a ../log.txt
 	echo "-----------------------------------------------" | tee -a log.txt
-	echo "${NoColour}"
+	echo "$NoColour"
 }
 
 FailedCompilation()
 {
-	echo "${FailColour}"
+	echo "$FailColour"
 	echo "****************************************************************************" | tee -a log.txt
-    echo "**** Failed Compilation $testname" | tee -a log.txt
+    echo "**** Failed Compilation $testname                                           " | tee -a log.txt
 	echo "****************************************************************************" | tee -a ../log.txt
-	echo "${NoColour}"
+	echo "$NoColour"
 }
 
 ChecksCompleted()
 {
-	echo "${PassColour}"
+	echo "$PassColour"
 	echo "-----------------------------------------------" | tee -a log.txt
-	echo " All Checks Completed OK" | tee -a log.txt
+	echo " All Checks Completed OK                       " | tee -a log.txt
 	echo "-----------------------------------------------" | tee -a log.txt
-	echo "${NoColour}"
+	echo "$NoColour"
 }
 
 cd syntax_check || exit 1
@@ -115,6 +115,36 @@ fi
 #  exit $?
 #fi
 
+SetTestName "GCC - STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+
+SetTestName "GCC - No STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+
 SetTestName "Clang - STL"
 PrintHeader
 rm -rdf bgcc
@@ -159,6 +189,36 @@ fi
 #  FailedCompilation
 #  exit $?
 #fi
+
+SetTestName "Clang - STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+
+SetTestName "Clang - No STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
 
 ###############################################################################
 cd ../c++11 || exit 1
@@ -240,6 +300,36 @@ fi
 #  exit $?
 #fi
 
+SetTestName "GCC - STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+
+SetTestName "GCC - No STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+
 SetTestName  "Clang - STL"
 PrintHeader
 rm -rdf bgcc
@@ -314,6 +404,36 @@ fi
 #  FailedCompilation
 #  exit $?
 #fi
+
+SetTestName "Clang - STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+
+SetTestName "Clang - No STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
 
 ###############################################################################
 cd ../c++14 || exit 1
@@ -395,6 +515,36 @@ fi
 #  exit $?
 #fi
 
+SetTestName "GCC - STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+
+SetTestName "GCC - No STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+
 SetTestName "Clang - STL"
 PrintHeader
 rm -rdf bgcc
@@ -469,6 +619,36 @@ fi
 #  FailedCompilation
 #  exit $?
 #fi
+
+SetTestName "Clang - STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+
+SetTestName "Clang - No STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
 
 ###############################################################################
 cd ../c++17 || exit 1
@@ -550,6 +730,36 @@ fi
 #  exit $?
 #fi
 
+SetTestName "GCC - STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+
+SetTestName "GCC - No STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+
 SetTestName "Clang - STL"
 PrintHeader
 rm -rdf bgcc
@@ -624,6 +834,36 @@ fi
 #  FailedCompilation
 #  exit $?
 #fi
+
+SetTestName "Clang - STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+
+SetTestName "Clang - No STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
 
 ###############################################################################
 cd ../c++20 || exit 1
@@ -705,6 +945,36 @@ fi
 #  exit $?
 #fi
 
+SetTestName "GCC - STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+
+SetTestName "GCC - No STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=gcc CXX=g++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+
 SetTestName "Clang - STL"
 PrintHeader
 rm -rdf bgcc
@@ -780,5 +1050,34 @@ fi
 #  exit $?
 #fi
 
+SetTestName "Clang - STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
+
+SetTestName "Clang - No STL - Built-in traits"
+PrintHeader
+rm -rdf bgcc
+rm -rdf bclang
+cmake -E make_directory bgcc bclang
+g++ --version | head --lines=1 | tee -a ../log.txt
+CC=clang CXX=clang++ cmake -E chdir bgcc cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF ..
+cmake --build bgcc
+if [ $? -eq 0 ]; then
+  PassedCompilation
+else
+  FailedCompilation
+  exit $?
+fi
 
 ChecksCompleted

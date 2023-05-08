@@ -373,3 +373,6 @@ test/syntax_check/c++17/bclang
 test/syntax_check/c++03/bclang
 test/syntax_check/c++14/bgcc
 test/syntax_check/c++20/bclang
+test/syntax_check/c++11/bgcc
+test/syntax_check/c++17/bgcc
+test/syntax_check/c++20/bgcc

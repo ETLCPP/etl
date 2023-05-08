@@ -1,7 +1,7 @@
 name: gcc syntax checks
 on:
   push:
-    branches: [  master, development ]
+    branches: [ master, development ]
   pull_request:
     branches: [ master ]
 

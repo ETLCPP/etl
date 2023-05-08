@@ -15,7 +15,7 @@ testname="Test Name Not Set"
 
 FailColour='\033[38;2;255;128;128m'
 PassColour='\033[38;2;128;255;128m'
-TitleColour='\033[38;2;100;173;254m'
+TitleColour='\033[38;2;107;210;255m'
 HelpColour='\033[38;2;250;180;250m'
 NoColour='\033[0m'
 
@@ -31,70 +31,70 @@ Bell()
 
 PrintHeader()
 {
-	echo "${TitleColour}"
-	echo "----------------------------------------------------------------------------" | tee -a log.txt
-	echo " $testname" | tee -a log.txt
-	echo " Language standard : C++${cxx_standard}" | tee -a log.txt
-    echo " Optimisation      : ${opt}" | tee -a log.txt
-	echo "----------------------------------------------------------------------------" | tee -a log.txt
-	echo "${NoColour}"
+	echo "$TitleColour"
+	echo "============================================================================" | tee -a log.txt
+	echo " $testname                                                                  " | tee -a log.txt
+	echo " Language standard : C++$cxx_standard                                       " | tee -a log.txt
+    echo " Optimisation      : $opt                                                   " | tee -a log.txt
+	echo "============================================================================" | tee -a log.txt
+	echo "$NoColour"
 }
 
 PrintHelp()
 {
-	echo "${HelpColour}"
+	echo "$HelpColour"
 	echo "----------------------------------------------------------------------------"
-	echo " Syntax       : ./runtests.sh <C++ Standard> <Optimisation>"
-	echo " C++ Standard : 11, 14, 17 or 20"
-	echo " Optimisation : 0, 1, 2 or 3. Default = 0"
+	echo " Syntax       : ./runtests.sh <C++ Standard> <Optimisation>                 "
+	echo " C++ Standard : 11, 14, 17 or 20                                            "
+	echo " Optimisation : 0, 1, 2 or 3. Default = 0                                   "
 	echo "----------------------------------------------------------------------------"
-	echo "${NoColour}"
+	echo "$NoColour"
 }
 
 PassedCompilation()
 {
-	echo "${PassColour}"
+	echo "$PassColour"
 	echo "-----------------------------------------------" | tee -a log.txt
-	echo " Passed Compilation - $testname" | tee -a ../log.txt
+	echo " Passed Compilation - $testname                " | tee -a ../log.txt
 	echo "-----------------------------------------------" | tee -a log.txt
-	echo "${NoColour}"
+	echo "$NoColour"
 }
 
 PassedTests()
 {
-	echo "${PassColour}"
+	echo "$PassColour"
 	echo "-----------------------------------------------" | tee -a log.txt
-	echo " Passed Tests - $testname" | tee -a ../log.txt
+	echo " Passed Tests - $testname                      " | tee -a ../log.txt
 	echo "-----------------------------------------------" | tee -a log.txt
 }
 
 FailedCompilation()
 {
-	echo "${FailColour}"
+	echo "$FailColour"
 	echo "****************************************************************************" | tee -a log.txt
-    echo "**** Failed Compilation $testname" | tee -a log.txt
+    echo "**** Failed Compilation $testname                                           " | tee -a log.txt
 	echo "****************************************************************************" | tee -a ../log.txt
-	echo "${NoColour}"
+	echo "$NoColour"
 	Bell
 }
 
 FailedTests()
 {
-	echo "${FailColour}"
+	echo "$FailColour"
 	echo "****************************************************************************" | tee -a log.txt
-    echo "**** Failed Tests $testname" | tee -a log.txt
+    echo "**** Failed Tests $testname                                                 " | tee -a log.txt
 	echo "****************************************************************************" | tee -a ../log.txt
-	echo "${NoColour}"
+	echo "$NoColour"
 	Bell
 }
 
 TestsCompleted()
 {
-	echo "${PassColour}"
+	echo "$PassColour"
 	echo "-----------------------------------------------" | tee -a log.txt
-	echo " All Tests Completed OK" | tee -a log.txt
+	echo " All Tests Completed OK                        " | tee -a log.txt
 	echo "-----------------------------------------------" | tee -a log.txt
-	echo "${NoColour}"
+	echo "$NoColour"
 }
 
 #******************************************************************************
