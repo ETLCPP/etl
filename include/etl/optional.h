@@ -539,7 +539,7 @@ namespace etl
       //*******************************
       template <typename... TArgs>
       ETL_CONSTEXPR20_STL
-      void construct(TArgs... args)
+      void construct(TArgs&&... args)
       {
         destroy();
         etl::construct_at(&u.value, etl::forward<TArgs>(args)...);
