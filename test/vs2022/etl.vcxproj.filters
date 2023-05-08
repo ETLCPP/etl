@@ -87,24 +87,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Tests\Sanity Checks">
-      <UniqueIdentifier>{8a3300fa-c2cd-44dd-8582-692f97ec4dc0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Tests\Sanity Checks\C++03">
-      <UniqueIdentifier>{ca522a34-8cf0-4f64-8ca1-33f52f65a9a7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Tests\Sanity Checks\C++11">
-      <UniqueIdentifier>{ba2bf848-6023-4906-a0d4-14a4c8fba0e5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Tests\Sanity Checks\C++14">
-      <UniqueIdentifier>{527f4d9a-8968-4352-8cdf-f6ccc391dcf9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Tests\Sanity Checks\C++17">
-      <UniqueIdentifier>{57b110fa-b3d8-4cc4-9619-ca510a29c213}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Tests\Sanity Checks\Logs">
-      <UniqueIdentifier>{5b76fd56-eb83-489f-b9a6-798c07c5fa76}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Tests\Scripts">
       <UniqueIdentifier>{562466b5-677d-4448-9e9e-f70805cd71ad}</UniqueIdentifier>
     </Filter>
@@ -181,9 +163,6 @@
     <Filter Include="Tests\Callback Timers">
       <UniqueIdentifier>{dc898ba2-50f4-4c3d-abee-039670df8582}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tests\Sanity Checks\Source">
-      <UniqueIdentifier>{a05ae045-3218-4ca2-9f25-08cc977898df}</UniqueIdentifier>
-    </Filter>
     <Filter Include="UnitTest++\Header Files\Win32">
       <UniqueIdentifier>{4dd0f57a-eeab-4910-a243-42c0950f0536}</UniqueIdentifier>
     </Filter>
@@ -216,6 +195,30 @@
     </Filter>
     <Filter Include="Tests\Error Handler\Exceptions_And_Log_Errors">
       <UniqueIdentifier>{de372ec9-d193-4956-871f-065414a9d3be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Syntax Checks">
+      <UniqueIdentifier>{8a3300fa-c2cd-44dd-8582-692f97ec4dc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Syntax Checks\C++03">
+      <UniqueIdentifier>{ca522a34-8cf0-4f64-8ca1-33f52f65a9a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Syntax Checks\C++11">
+      <UniqueIdentifier>{ba2bf848-6023-4906-a0d4-14a4c8fba0e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Syntax Checks\C++14">
+      <UniqueIdentifier>{527f4d9a-8968-4352-8cdf-f6ccc391dcf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Syntax Checks\C++17">
+      <UniqueIdentifier>{57b110fa-b3d8-4cc4-9619-ca510a29c213}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Syntax Checks\Logs">
+      <UniqueIdentifier>{5b76fd56-eb83-489f-b9a6-798c07c5fa76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Syntax Checks\Source">
+      <UniqueIdentifier>{a05ae045-3218-4ca2-9f25-08cc977898df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Syntax Checks\C++20">
+      <UniqueIdentifier>{3336d15c-7c22-4df0-a6b2-1eb605099a1a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -831,18 +834,6 @@
     <ClInclude Include="..\..\include\etl\imemory_block_allocator.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\sanity-check\c++03\etl_profile.h">
-      <Filter>Tests\Sanity Checks\C++03</Filter>
-    </ClInclude>
-    <ClInclude Include="..\sanity-check\c++11\etl_profile.h">
-      <Filter>Tests\Sanity Checks\C++11</Filter>
-    </ClInclude>
-    <ClInclude Include="..\sanity-check\c++14\etl_profile.h">
-      <Filter>Tests\Sanity Checks\C++14</Filter>
-    </ClInclude>
-    <ClInclude Include="..\sanity-check\c++17\etl_profile.h">
-      <Filter>Tests\Sanity Checks\C++17</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\private\crc_implementation.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
@@ -1349,6 +1340,21 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\private\diagnostic_deprecated_push.h">
       <Filter>ETL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\syntax_check\c++03\etl_profile.h">
+      <Filter>Tests\Syntax Checks\C++03</Filter>
+    </ClInclude>
+    <ClInclude Include="..\syntax_check\c++11\etl_profile.h">
+      <Filter>Tests\Syntax Checks\C++11</Filter>
+    </ClInclude>
+    <ClInclude Include="..\syntax_check\c++14\etl_profile.h">
+      <Filter>Tests\Syntax Checks\C++14</Filter>
+    </ClInclude>
+    <ClInclude Include="..\syntax_check\c++17\etl_profile.h">
+      <Filter>Tests\Syntax Checks\C++17</Filter>
+    </ClInclude>
+    <ClInclude Include="..\syntax_check\c++20\etl_profile.h">
+      <Filter>Tests\Syntax Checks\C++20</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2265,748 +2271,748 @@
       <Filter>Tests\Messaging</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\algorithm.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\alignment.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\array.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\array_view.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\array_wrapper.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\atomic.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\basic_format_spec.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\basic_string.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\basic_string_stream.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\binary.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\bip_buffer_spsc_atomic.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\bit.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\bit_stream.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\bitset_legacy.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\bloom_filter.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\bresenham_line.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\buffer_descriptors.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\byte.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\byte_stream.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\callback.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\callback_service.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\callback_timer.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\callback_timer_atomic.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\callback_timer_interrupt.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\callback_timer_locked.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\char_traits.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\checksum.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\circular_buffer.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\combinations.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\compare.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\constant.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\container.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\correlation.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\covariance.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc8_ccitt.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc8_cdma2000.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc8_darc.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc8_dvbs2.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc8_ebu.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc8_icode.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc8_itu.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc8_maxim.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc8_rohc.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc8_wcdma.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_a.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_arc.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_aug_ccitt.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_buypass.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_ccitt.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_cdma2000.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_dds110.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_dectr.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_dectx.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_dnp.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_en13757.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_genibus.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_kermit.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_maxim.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_mcrf4xx.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_modbus.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_profibus.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_riello.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_t10dif.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_teledisk.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_tms37157.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_usb.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_x25.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_xmodem.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc32.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc32_bzip2.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc32_c.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc32_d.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc32_jamcrc.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc32_mpeg2.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc32_posix.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc32_q.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc32_xfer.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc64_ecma.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\pseudo_moving_average.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\cyclic_value.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\debounce.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\debug_count.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\delegate.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\delegate_service.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\deque.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\endianness.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\enum_type.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\error_handler.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\exception.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\factorial.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\fibonacci.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\file_error_numbers.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\fixed_iterator.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\fixed_sized_memory_block_allocator.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\flags.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\flat_map.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\flat_multimap.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\flat_multiset.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\flat_set.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\fnv_1.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\format_spec.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\forward_list.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\frame_check_sequence.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\fsm.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\function.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\functional.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\gamma.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\generic_pool.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\hash.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\histogram.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\ihash.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\imemory_block_allocator.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\indirect_vector.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\initializer_list.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\instance_count.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\integral_limits.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\intrusive_forward_list.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\intrusive_links.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\intrusive_list.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\intrusive_queue.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\intrusive_stack.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\invert.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\io_port.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\ipool.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\ireference_counted_message_pool.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\iterator.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\jenkins.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\largest.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\limiter.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\limits.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\list.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\log.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\macros.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\map.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\math_constants.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\mean.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\mem_cast.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\memory.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\memory_model.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\message.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\message_bus.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\message_packet.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\message_router.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\message_router_registry.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\message_timer.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\message_timer_atomic.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\message_timer_interrupt.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\message_timer_locked.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\message_types.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\multi_array.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\multi_range.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\multi_span.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\multi_vector.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\multimap.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\multiset.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\murmur3.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\mutex.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\negative.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\nth_type.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\null_type.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\nullptr.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\numeric.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\observer.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\optional.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\overload.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\packet.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\parameter_pack.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\parameter_type.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\pearson.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\permutations.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\placement_new.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\platform.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\pool.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\power.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\priority_queue.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\quantize.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\queue.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\queue_lockable.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\queue_mpmc_mutex.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\queue_spsc_atomic.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\queue_spsc_isr.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\queue_spsc_locked.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\radix.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\random.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\ratio.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\reference_counted_message.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\reference_counted_message_pool.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\reference_counted_object.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\reference_flat_map.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\reference_flat_multimap.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\reference_flat_multiset.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\reference_flat_set.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\rescale.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\rms.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\scaled_rounding.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\scheduler.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\set.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\shared_message.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\singleton.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\smallest.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\span.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\sqrt.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\stack.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\standard_deviation.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\state_chart.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\static_assert.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\string.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\string_stream.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\string_utilities.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\string_view.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\successor.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\task.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\threshold.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\timer.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\to_string.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\to_u16string.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\to_u32string.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\to_wstring.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\type_def.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\type_lookup.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\type_select.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\type_traits.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\u16format_spec.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\u16string.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\u16string_stream.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\u32format_spec.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\u32string.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\u32string_stream.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\unaligned_type.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\unordered_map.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\unordered_multimap.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\unordered_multiset.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\unordered_set.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\user_type.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\utility.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\variance.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\variant.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\variant_legacy.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\variant_old.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\variant_pool.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\variant_variadic.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\vector.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\version.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\visitor.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\wformat_spec.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\wstring.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\wstring_stream.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\correlation.h.t.cpp">
       <Filter>Tests\Sanity Checks\Source</Filter>
@@ -3222,7 +3228,7 @@
       <Filter>Tests\Patterns</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\absolute.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc8_ebu.h.t.cpp">
       <Filter>Tests\Sanity Checks\Source</Filter>
@@ -3300,7 +3306,7 @@
       <Filter>Tests\Sanity Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\delegate_cpp03.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\test_bit_stream_writer_big_endian.cpp">
       <Filter>Tests\Binary</Filter>
@@ -3321,7 +3327,7 @@
       <Filter>Tests\Binary</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\poly_span.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\test_poly_span_dynamic_extent.cpp">
       <Filter>Tests\Containers</Filter>
@@ -3345,7 +3351,7 @@
       <Filter>Tests\Messaging</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\message_broker.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\test_char_traits.cpp">
       <Filter>Tests\Misc</Filter>
@@ -3354,7 +3360,7 @@
       <Filter>Tests\Binary</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\bitset_new.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\test_bitset_new_explicit_single_element_type.cpp">
       <Filter>Tests\Binary</Filter>
@@ -3363,7 +3369,7 @@
       <Filter>Tests\Memory &amp; Iterators</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\circular_iterator.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\test_bitset_new_ext_default_element_type.cpp">
       <Filter>Tests\Binary</Filter>
@@ -3384,7 +3390,7 @@
       <Filter>Tests\Strings</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\to_arithmetic.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\test_crc16_m17.cpp">
       <Filter>Tests\CRC</Filter>
@@ -3399,13 +3405,16 @@
       <Filter>Tests\Containers</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\expected.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\sanity-check\crc16_m17.h.t.cpp">
-      <Filter>Tests\Sanity Checks\Source</Filter>
+      <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\etl_error_handler\log_errors_and_exceptions\test_error_handler.cpp">
       <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_hfsm_recurse_to_inner_state_on_start.cpp">
+      <Filter>Tests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3469,9 +3478,6 @@
     <None Include="..\..\.github\workflows\gcc.yml">
       <Filter>Resource Files\CI\Github</Filter>
     </None>
-    <None Include="..\runsanitychecks.sh">
-      <Filter>Tests\Scripts</Filter>
-    </None>
     <None Include="..\..\.clang-format">
       <Filter>Resource Files</Filter>
     </None>
@@ -3514,7 +3520,16 @@
     <None Include="..\..\.github\workflows\msvc.yml">
       <Filter>Resource Files\CI\Github</Filter>
     </None>
-    <None Include="..\runtests.sh">
+    <None Include="..\..\.github\workflows\clang-syntax-checks.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-syntax-checks.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\run-syntax-checks.sh">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\run-tests.sh">
       <Filter>Tests\Scripts</Filter>
     </None>
   </ItemGroup>
@@ -3527,21 +3542,6 @@
     </Text>
     <Text Include="..\..\CMakeLists.txt">
       <Filter>Resource Files\CMake</Filter>
-    </Text>
-    <Text Include="..\sanity-check\c++03\CMakeLists.txt">
-      <Filter>Tests\Sanity Checks\C++03</Filter>
-    </Text>
-    <Text Include="..\sanity-check\c++11\CMakeLists.txt">
-      <Filter>Tests\Sanity Checks\C++11</Filter>
-    </Text>
-    <Text Include="..\sanity-check\c++14\CMakeLists.txt">
-      <Filter>Tests\Sanity Checks\C++14</Filter>
-    </Text>
-    <Text Include="..\sanity-check\c++17\CMakeLists.txt">
-      <Filter>Tests\Sanity Checks\C++17</Filter>
-    </Text>
-    <Text Include="..\sanity-check\log.txt">
-      <Filter>Tests\Sanity Checks\Logs</Filter>
     </Text>
     <Text Include="..\CMakeLists.txt">
       <Filter>Tests\Test Support</Filter>
@@ -3560,6 +3560,21 @@
     </Text>
     <Text Include="..\etl_error_handler\log_errors_and_exceptions\CMakeLists.txt">
       <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
+    </Text>
+    <Text Include="..\syntax_check\c++03\CMakeLists.txt">
+      <Filter>Tests\Syntax Checks\C++03</Filter>
+    </Text>
+    <Text Include="..\syntax_check\c++11\CMakeLists.txt">
+      <Filter>Tests\Syntax Checks\C++11</Filter>
+    </Text>
+    <Text Include="..\syntax_check\c++14\CMakeLists.txt">
+      <Filter>Tests\Syntax Checks\C++14</Filter>
+    </Text>
+    <Text Include="..\syntax_check\c++17\CMakeLists.txt">
+      <Filter>Tests\Syntax Checks\C++17</Filter>
+    </Text>
+    <Text Include="..\syntax_check\c++20\CMakeLists.txt">
+      <Filter>Tests\Syntax Checks\C++20</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
