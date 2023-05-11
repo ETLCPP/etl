@@ -267,7 +267,7 @@ namespace etl
         value_type* pvalue = storage.allocate<value_type>();
         ::new (pvalue) value_type(etl::move(value));
         ETL_INCREMENT_DEBUG_COUNT
-          result = refset_t::insert_at(i_element, *pvalue);
+        result = refset_t::insert_at(i_element, *pvalue);
       }
 
       return result;
