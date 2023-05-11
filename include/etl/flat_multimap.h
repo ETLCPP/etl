@@ -93,7 +93,7 @@ namespace etl
 
   protected:
 
-    typedef const key_type& key_parameter_t;
+    typedef const key_type& const_key_reference;
 
   private:
 
@@ -460,7 +460,7 @@ namespace etl
     ///\param key The key to erase.
     ///\return The number of elements erased. 0 or 1.
     //*********************************************************************
-    size_t erase(key_parameter_t key)
+    size_t erase(const_key_reference key)
     {
       ETL_OR_STD::pair<iterator, iterator> range = equal_range(key);
 
@@ -572,7 +572,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    iterator find(key_parameter_t key)
+    iterator find(const_key_reference key)
     {
       return refmap_t::find(key);
     }
@@ -591,7 +591,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pointing to the element or end() if not found.
     //*********************************************************************
-    const_iterator find(key_parameter_t key) const
+    const_iterator find(const_key_reference key) const
     {
       return refmap_t::find(key);
     }
@@ -610,7 +610,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return 1 if the key exists, otherwise 0.
     //*********************************************************************
-    size_t count(key_parameter_t key) const
+    size_t count(const_key_reference key) const
     {
       return refmap_t::count(key);
     }
@@ -629,7 +629,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    iterator lower_bound(key_parameter_t key)
+    iterator lower_bound(const_key_reference key)
     {
       return refmap_t::lower_bound(key);
     }
@@ -648,7 +648,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    const_iterator lower_bound(key_parameter_t key) const
+    const_iterator lower_bound(const_key_reference key) const
     {
       return refmap_t::lower_bound(key);
     }
@@ -667,7 +667,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    iterator upper_bound(key_parameter_t key)
+    iterator upper_bound(const_key_reference key)
     {
       return refmap_t::upper_bound(key);
     }
@@ -686,7 +686,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator.
     //*********************************************************************
-    const_iterator upper_bound(key_parameter_t key) const
+    const_iterator upper_bound(const_key_reference key) const
     {
       return refmap_t::upper_bound(key);
     }
@@ -705,7 +705,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_OR_STD::pair<iterator, iterator> equal_range(key_parameter_t key)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(const_key_reference key)
     {
       return refmap_t::equal_range(key);
     }
@@ -724,7 +724,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair.
     //*********************************************************************
-    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const_key_reference key) const
     {
       return refmap_t::equal_range(key);
     }
@@ -741,7 +741,7 @@ namespace etl
     //*************************************************************************
     /// Check if the map contains the key.
     //*************************************************************************
-    bool contains(key_parameter_t key) const
+    bool contains(const_key_reference key) const
     {
       return find(key) != end();
     }

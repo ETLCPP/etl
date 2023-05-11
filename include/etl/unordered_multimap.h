@@ -142,7 +142,7 @@ namespace etl
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
 
-    typedef const TKey& key_parameter_t;
+    typedef const TKey& const_key_reference;
 
     typedef etl::forward_link<0> link_t; // Default link.
 
@@ -589,7 +589,7 @@ namespace etl
     /// Returns the bucket index for the key.
     ///\return The bucket index for the key.
     //*********************************************************************
-    size_type get_bucket_index(key_parameter_t key) const
+    size_type get_bucket_index(const_key_reference key) const
     {
       return key_hash_function(key) % number_of_buckets;
     }
@@ -598,7 +598,7 @@ namespace etl
     /// Returns the size of the bucket key.
     ///\return The bucket size of the bucket key.
     //*********************************************************************
-    size_type bucket_size(key_parameter_t key) const
+    size_type bucket_size(const_key_reference key) const
     {
       size_t index = bucket(key);
 
@@ -832,7 +832,7 @@ namespace etl
     ///\param key The key to erase.
     ///\return The number of elements erased.
     //*********************************************************************
-    size_t erase(key_parameter_t key)
+    size_t erase(const_key_reference key)
     {
       size_t n = 0UL;
       size_t bucket_id = get_bucket_index(key);
@@ -972,7 +972,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return 1 if the key exists, otherwise 0.
     //*********************************************************************
-    size_t count(key_parameter_t key) const
+    size_t count(const_key_reference key) const
     {
       size_t n = 0UL;
       const_iterator f = find(key);
@@ -998,7 +998,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator to the element if the key exists, otherwise end().
     //*********************************************************************
-    iterator find(key_parameter_t key)
+    iterator find(const_key_reference key)
     {
       size_t index = get_bucket_index(key);
 
@@ -1032,7 +1032,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator to the element if the key exists, otherwise end().
     //*********************************************************************
-    const_iterator find(key_parameter_t key) const
+    const_iterator find(const_key_reference key) const
     {
       size_t index = get_bucket_index(key);
 
@@ -1069,7 +1069,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return An iterator pair to the range of elements if the key exists, otherwise end().
     //*********************************************************************
-    ETL_OR_STD::pair<iterator, iterator> equal_range(key_parameter_t key)
+    ETL_OR_STD::pair<iterator, iterator> equal_range(const_key_reference key)
     {
       iterator f = find(key);
       iterator l = f;
@@ -1095,7 +1095,7 @@ namespace etl
     ///\param key The key to search for.
     ///\return A const iterator pair to the range of elements if the key exists, otherwise end().
     //*********************************************************************
-    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const
+    ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const_key_reference key) const
     {
       const_iterator f = find(key);
       const_iterator l = f;
