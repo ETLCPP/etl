@@ -950,7 +950,7 @@ namespace etl
 #else
     mapped_type& operator [](const_key_reference key)
     {
-      iterator i_element = find(etl::forward<KeyType>(key));
+      iterator i_element = find(key);
 
       if (!i_element.p_node)
       {
