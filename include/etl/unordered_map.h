@@ -627,7 +627,8 @@ namespace etl
     ///\param key The key.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
-    mapped_type& operator [](key_parameter_t key)
+    template <typename TKeyType>
+    mapped_type& operator [](TKeyType&& key)
     {
       // Find the bucket.
       bucket_t* pbucket = pbuckets + get_bucket_index(key);
@@ -653,7 +654,8 @@ namespace etl
       // Doesn't exist, so add a new one.
       // Get a new node.
       node_t& node = create_data_node();
-      ::new (&node.key_value_pair) value_type(key, T());
+      ::new ((void*)etl::addressof(node.key_value_pair.first))  key_type(etl::forward<TKeyType>(key));
+      ::new ((void*)etl::addressof(node.key_value_pair.second)) mapped_type();
       ETL_INCREMENT_DEBUG_COUNT
 
       pbucket->insert_after(pbucket->before_begin(), node);
@@ -783,7 +785,7 @@ namespace etl
       {
         // Get a new node.
         node_t& node = create_data_node();
-        ::new (&node.key_value_pair) value_type(key_value_pair);
+        ::new ((void*)etl::addressof(node.key_value_pair)) value_type(key_value_pair);        
         ETL_INCREMENT_DEBUG_COUNT
 
         // Just add the pointer to the bucket;
@@ -817,7 +819,7 @@ namespace etl
         {
           // Get a new node.
           node_t& node = create_data_node();
-          ::new (&node.key_value_pair) value_type(key_value_pair);
+          ::new ((void*)etl::addressof(node.key_value_pair)) value_type(key_value_pair);
           ETL_INCREMENT_DEBUG_COUNT
 
           // Add the node to the end of the bucket;
@@ -859,7 +861,7 @@ namespace etl
       {
         // Get a new node.
         node_t& node = create_data_node();
-        ::new (&node.key_value_pair) value_type(etl::move(key_value_pair));
+        ::new ((void*)etl::addressof(node.key_value_pair)) value_type(etl::move(key_value_pair));
         ETL_INCREMENT_DEBUG_COUNT
 
         // Just add the pointer to the bucket;
@@ -893,7 +895,7 @@ namespace etl
         {
           // Get a new node.
           node_t& node = create_data_node();
-          ::new (&node.key_value_pair) value_type(etl::move(key_value_pair));
+          ::new ((void*)etl::addressof(node.key_value_pair)) value_type(etl::move(key_value_pair));
           ETL_INCREMENT_DEBUG_COUNT
 
           // Add the node to the end of the bucket;

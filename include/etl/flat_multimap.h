@@ -347,14 +347,14 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the map.
     //*************************************************************************
-    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const mapped_type& value)
+    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const mapped_type& mapped)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_multimap_full));
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
-      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(mapped);
       iterator i_element = upper_bound(key);
       ETL_INCREMENT_DEBUG_COUNT
 
