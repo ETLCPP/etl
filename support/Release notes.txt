@@ -5,11 +5,13 @@
 #684 Added sanitization fix for MinGW
 #687 Build failure
 #689 Add as_bytes and as_writable_bytes
+#692 operator [] for flat_map always calls default constructor for mapped_type
+Optimised map/flat_map/unordered_map [] operator and insert()
 Unit tests compile for C++11
 Fixed C++11 constexpr compatibility
 Removed redundant 'const' in template parameters
 Updated CI scripts to enable C++ standard and optimisation selection
-Updated static definitions
+Updated static constant definitions
 Fixed incorrect return types for reverse iterator begin() & end()
 Updated C++ standard conditional compilation for reverse iterator functions
 Fixed latest Address Sanitizer issues

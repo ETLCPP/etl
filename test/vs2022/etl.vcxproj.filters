@@ -3414,7 +3414,7 @@
       <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
     </ClCompile>
     <ClCompile Include="..\test_hfsm_recurse_to_inner_state_on_start.cpp">
-      <Filter>Tests</Filter>
+      <Filter>Tests\State Machines</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
