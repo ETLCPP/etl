@@ -84,16 +84,17 @@ namespace etl
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
 
+    typedef const key_type&   const_key_reference;
+#if ETL_USING_CPP11
+    typedef key_type&&        rvalue_key_reference;
+#endif
+
     typedef typename refmap_t::iterator       iterator;
     typedef typename refmap_t::const_iterator const_iterator;
 
     typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
     typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
-
-  protected:
-
-    typedef const key_type& const_key_reference;
 
   private:
 

@@ -475,6 +475,14 @@ namespace etl
     typedef const value_type*              const_pointer;
     typedef size_t                         size_type;
 
+    /// Defines the parameter types
+    typedef const key_type&    const_key_reference;
+#if ETL_USING_CPP11
+    typedef key_type&&         rvalue_key_reference;
+#endif
+    typedef mapped_type&       mapped_reference;
+    typedef const mapped_type& const_mapped_reference;
+
     class value_compare
     {
     public:
@@ -508,9 +516,6 @@ namespace etl
 
       value_type value;
     };
-
-    /// Defines the key value parameter type
-    typedef const TKey& const_key_reference;
 
     //*************************************************************************
     /// How to compare node elements.
@@ -918,10 +923,9 @@ namespace etl
     ///\param key The key.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
-    template <typename TKeyType>
-    mapped_type& operator [](TKeyType&& key)
+    mapped_reference operator [](rvalue_key_reference key)
     {
-      iterator i_element = find(etl::forward<TKeyType>(key));
+      iterator i_element = find(etl::move(key));
 
       if (!i_element.p_node)
       {
@@ -933,7 +937,7 @@ namespace etl
         // Get next available free node
         Data_Node& node = create_data_node();
 
-        ::new ((void*)etl::addressof(node.value.first))  key_type(etl::forward<TKeyType>(key));
+        ::new ((void*)etl::addressof(node.value.first))  key_type(etl::move(key));
         ::new ((void*)etl::addressof(node.value.second)) mapped_type();
 
         // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
@@ -947,8 +951,14 @@ namespace etl
 
       return i_element->second;
     }
-#else
-    mapped_type& operator [](const_key_reference key)
+#endif
+
+    //*********************************************************************
+    /// Returns a reference to the value at index 'key'
+    ///\param key The key.
+    ///\return A reference to the value at index 'key'
+    //*********************************************************************
+    mapped_reference operator [](const_key_reference key)
     {
       iterator i_element = find(key);
 
@@ -974,7 +984,6 @@ namespace etl
 
       return i_element->second;
     }
-#endif
 
     //*********************************************************************
     /// Returns a reference to the value at index 'key'
@@ -982,7 +991,7 @@ namespace etl
     ///\param key The key.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
-    mapped_type& at(const_key_reference key)
+    mapped_reference at(const_key_reference key)
     {
       iterator i_element = find(key);
 
@@ -994,7 +1003,7 @@ namespace etl
 #if ETL_USING_CPP11
     //*********************************************************************
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
-    mapped_type& at(const K& key)
+    mapped_reference at(const K& key)
     {
       iterator i_element = find(key);
 
@@ -1010,7 +1019,7 @@ namespace etl
     ///\param key The key.
     ///\return A const reference to the value at index 'key'
     //*********************************************************************
-    const mapped_type& at(const_key_reference key) const
+    const_mapped_reference at(const_key_reference key) const
     {
       const_iterator i_element = find(key);
 
@@ -1022,7 +1031,7 @@ namespace etl
 #if ETL_USING_CPP11
     //*********************************************************************
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
-    const mapped_type& at(const K& key) const
+    const_mapped_reference at(const K& key) const
     {
       const_iterator i_element = find(key);
 

@@ -142,7 +142,10 @@ namespace etl
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
 
-    typedef const TKey& const_key_reference;
+    typedef const key_type&   const_key_reference;
+#if ETL_USING_CPP11
+    typedef key_type&&        rvalue_key_reference;
+#endif
 
     typedef etl::forward_link<0> link_t; // Default link.
 
@@ -659,7 +662,7 @@ namespace etl
 
       ETL_ASSERT(!full(), ETL_ERROR(unordered_multimap_full));
 
-      const key_type&    key = key_value_pair.first;
+      const_key_reference key = key_value_pair.first;
 
       // Get the hash index.
       size_t index = get_bucket_index(key);
@@ -728,7 +731,7 @@ namespace etl
 
       ETL_ASSERT(!full(), ETL_ERROR(unordered_multimap_full));
 
-      const key_type&    key = key_value_pair.first;
+      const_key_reference    key = key_value_pair.first;
 
       // Get the hash index.
       size_t index = get_bucket_index(key);

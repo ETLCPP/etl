@@ -626,17 +626,22 @@ namespace etl
   public:
 
     typedef ETL_OR_STD::pair<const TKey, TMapped> value_type;
-    typedef const TKey                     key_type;
-    typedef TMapped                        mapped_type;
-    typedef TKeyCompare                    key_compare;
-    typedef value_type&                    reference;
-    typedef const value_type&              const_reference;
+    typedef const TKey        key_type;
+    typedef TMapped           mapped_type;
+    typedef TKeyCompare       key_compare;
+    typedef value_type&       reference;
+    typedef const value_type& const_reference;
 #if ETL_USING_CPP11
-    typedef value_type&&                   rvalue_reference;
+    typedef value_type&&      rvalue_reference;
 #endif
-    typedef value_type*                    pointer;
-    typedef const value_type*              const_pointer;
-    typedef size_t                         size_type;
+    typedef value_type*       pointer;
+    typedef const value_type* const_pointer;
+    typedef size_t            size_type;
+
+    typedef const key_type&   const_key_reference;
+#if ETL_USING_CPP11
+    typedef key_type&&        rvalue_key_reference;
+#endif
 
     class value_compare
     {
@@ -666,9 +671,6 @@ namespace etl
 
       value_type value;
     };
-
-    /// Defines the key value parameter type
-    typedef const TKey& const_key_reference;
 
     //*************************************************************************
     /// How to compare node elements.

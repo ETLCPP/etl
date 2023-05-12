@@ -83,17 +83,19 @@ namespace etl
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
 
+    typedef const key_type&    const_key_reference;
+#if ETL_USING_CPP11
+    typedef key_type&&         rvalue_key_reference;
+#endif
+    typedef mapped_type&       mapped_reference;
+    typedef const mapped_type& const_mapped_reference;
+
     typedef typename refmap_t::iterator       iterator;
     typedef typename refmap_t::const_iterator const_iterator;
 
     typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
     typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
-
-  protected:
-
-    typedef const key_type&    const_key_reference;
-    typedef const mapped_type& const_mapped_reference;
 
   private:
 
@@ -233,26 +235,26 @@ namespace etl
     ///\param i The index.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
-    template <typename TKeyType>
-    mapped_type& operator [](TKeyType&& key)
+    mapped_reference operator [](rvalue_key_reference key)
     {
       iterator i_element = lower_bound(key);
 
       // Doesn't already exist?
       if ((i_element == end()) || compare(key, i_element->first))
       {
-        insert_default_value(i_element, etl::forward<TKeyType>(key));
+        insert_default_value(i_element, etl::move(key));
       }
 
       return i_element->second;
     }
-#else
+#endif
+
     //*********************************************************************
     /// Returns a reference to the value at index 'key'
     ///\param i The index.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
-    mapped_type& operator [](const key_type& key)
+    mapped_reference operator [](const_key_reference key)
     {
       iterator i_element = lower_bound(key);
 
@@ -264,7 +266,6 @@ namespace etl
 
       return i_element->second;
     }
-#endif
 
     //*********************************************************************
     /// Returns a reference to the value at index 'key'
@@ -272,7 +273,7 @@ namespace etl
     ///\param i The index.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
-    mapped_type& at(const key_type& key)
+    mapped_reference at(const_key_reference key)
     {
       return refmap_t::at(key);
     }
@@ -280,7 +281,7 @@ namespace etl
 #if ETL_USING_CPP11
     //*********************************************************************
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
-    mapped_type& at(const K& key)
+    mapped_reference at(const K& key)
     {
       return refmap_t::at(key);
     }
@@ -427,7 +428,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename ... Args>
-    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, Args && ... args)
+    ETL_OR_STD::pair<iterator, bool> emplace(const_key_reference key, Args && ... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
@@ -461,7 +462,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1>
-    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1)
+    ETL_OR_STD::pair<iterator, bool> emplace(const_key_reference key, const T1& value1)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
@@ -493,7 +494,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1, typename T2>
-    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2)
+    ETL_OR_STD::pair<iterator, bool> emplace(const_key_reference key, const T1& value1, const T2& value2)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
@@ -525,7 +526,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1, typename T2, typename T3>
-    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3)
+    ETL_OR_STD::pair<iterator, bool> emplace(const_key_reference key, const T1& value1, const T2& value2, const T3& value3)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
@@ -557,7 +558,7 @@ namespace etl
     /// Emplaces a value to the map.
     //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
-    ETL_OR_STD::pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    ETL_OR_STD::pair<iterator, bool> emplace(const_key_reference key, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
@@ -1047,19 +1048,19 @@ namespace etl
 
 #if ETL_USING_CPP11
     //*************************************************************************
-    template <typename TKeyType>
-    ETL_OR_STD::pair<iterator, bool> insert_default_value(iterator i_element, TKeyType&& key)
+    ETL_OR_STD::pair<iterator, bool> insert_default_value(iterator i_element, rvalue_key_reference key)
     {
       ETL_ASSERT(!refmap_t::full(), ETL_ERROR(flat_map_full));
 
       value_type* pvalue = storage.allocate<value_type>();
-      ::new ((void*)etl::addressof(pvalue->first)) key_type(etl::forward<TKeyType>(key));
+      ::new ((void*)etl::addressof(pvalue->first)) key_type(etl::move(key));
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type();
       ETL_INCREMENT_DEBUG_COUNT
         
       return refmap_t::insert_at(i_element, *pvalue);
     }
-#else
+#endif
+
     //*************************************************************************
     ETL_OR_STD::pair<iterator, bool> insert_default_value(iterator i_element, const_key_reference key)
     {
@@ -1069,9 +1070,9 @@ namespace etl
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type();
       ETL_INCREMENT_DEBUG_COUNT
-        return refmap_t::insert_at(i_element, *pvalue);
+      
+      return refmap_t::insert_at(i_element, *pvalue);
     }
-#endif
 
     //*************************************************************************
     /// Destructor.

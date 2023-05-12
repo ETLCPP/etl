@@ -142,7 +142,13 @@ namespace etl
     typedef const value_type* const_pointer;
     typedef size_t            size_type;
 
-    typedef const TKey& const_key_reference;
+    /// Defines the parameter types
+    typedef const key_type&    const_key_reference;
+#if ETL_USING_CPP11
+    typedef key_type&&         rvalue_key_reference;
+#endif
+    typedef mapped_type&       mapped_reference;
+    typedef const mapped_type& const_mapped_reference;
 
     typedef etl::forward_link<0> link_t; // Default link.
 
@@ -628,8 +634,7 @@ namespace etl
     ///\param key The key.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
-    template <typename TKeyType>
-    mapped_type& operator [](TKeyType&& key)
+    mapped_reference operator [](rvalue_key_reference key)
     {
       // Find the bucket.
       bucket_t* pbucket = pbuckets + get_bucket_index(key);
@@ -655,7 +660,7 @@ namespace etl
       // Doesn't exist, so add a new one.
       // Get a new node.
       node_t& node = create_data_node();
-      ::new ((void*)etl::addressof(node.key_value_pair.first))  key_type(etl::forward<TKeyType>(key));
+      ::new ((void*)etl::addressof(node.key_value_pair.first))  key_type(etl::move(key));
       ::new ((void*)etl::addressof(node.key_value_pair.second)) mapped_type();
       ETL_INCREMENT_DEBUG_COUNT
 
@@ -665,13 +670,14 @@ namespace etl
 
       return pbucket->begin()->key_value_pair.second;
     }
-#else
+#endif
+
     //*********************************************************************
     /// Returns a reference to the value at index 'key'
     ///\param key The key.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
-    mapped_type& operator [](const_key_reference key)
+    mapped_reference operator [](const_key_reference key)
     {
       // Find the bucket.
       bucket_t* pbucket = pbuckets + get_bucket_index(key);
@@ -707,7 +713,6 @@ namespace etl
 
       return pbucket->begin()->key_value_pair.second;
     }
-#endif
 
     //*********************************************************************
     /// Returns a reference to the value at index 'key'
@@ -715,7 +720,7 @@ namespace etl
     ///\param key The key.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
-    mapped_type& at(const_key_reference key)
+    mapped_reference at(const_key_reference key)
     {
       // Find the bucket.
       bucket_t* pbucket = pbuckets + get_bucket_index(key);
@@ -750,7 +755,7 @@ namespace etl
     ///\param key The key.
     ///\return A const reference to the value at index 'key'
     //*********************************************************************
-    const mapped_type& at(const_key_reference key) const
+    const_mapped_reference at(const_key_reference key) const
     {
       // Find the bucket.
       bucket_t* pbucket = pbuckets + get_bucket_index(key);
