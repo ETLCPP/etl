@@ -67,7 +67,7 @@ namespace etl
   {
     //***************************************************************************
     // This is a copy of the normal etl::parameter_pack, but without the static_assert
-    // so that the C++11 versions of do_accept() & do_operator() do not throw a compile time error.
+    // so that the C++11 versions of do_visitor() & do_operator() do not throw a compile time error.
     //***************************************************************************
     template <typename... TTypes>
     class parameter_pack
@@ -536,7 +536,7 @@ namespace etl
 #include "etl/private/diagnostic_pop.h"
 
     //***************************************************************************
-    /// Constructor from a value.
+    /// Construct from a value.
     //***************************************************************************
 #include "etl/private/diagnostic_uninitialized_push.h"
     template <typename T, etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value, int> = 0>
@@ -825,26 +825,24 @@ namespace etl
     //***************************************************************************
     /// Accept an etl::visitor.
     //***************************************************************************
-    template <typename TVisitor>
-    void accept_visitor(TVisitor& v)
+    void accept(etl::visitor<TTypes...>& v)
     {
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
-      do_accept(v, etl::make_index_sequence<sizeof...(TTypes)>{});
+      do_visitor(v, etl::make_index_sequence<sizeof...(TTypes)>{});
 #else
-      do_accept(v);
+      do_visitor(v);
 #endif
     }
 
     //***************************************************************************
     /// Accept an etl::visitor.
     //***************************************************************************
-    template <typename TVisitor>
-    void accept_visitor(TVisitor& v) const
+    void accept(etl::visitor<TTypes...>& v) const
     {
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
-      do_accept(v, etl::make_index_sequence<sizeof...(TTypes)>{});
+      do_visitor(v, etl::make_index_sequence<sizeof...(TTypes)>{});
 #else
-      do_accept(v);
+      do_visitor(v);
 #endif
     }
 
@@ -852,7 +850,8 @@ namespace etl
     /// Accept a generic functor.
     //***************************************************************************
     template <typename TVisitor>
-    void accept_functor(TVisitor& v)
+    etl::enable_if_t<!etl::is_base_of<etl::visitor<TTypes...>, TVisitor>::value, void>
+      accept(TVisitor& v)
     {
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
       do_operator(v, etl::make_index_sequence<sizeof...(TTypes)>{});
@@ -865,6 +864,75 @@ namespace etl
     /// Accept a generic functor.
     //***************************************************************************
     template <typename TVisitor>
+    etl::enable_if_t<!etl::is_base_of<etl::visitor<TTypes...>, TVisitor>::value, void>
+      accept(TVisitor& v) const
+    {
+#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+      do_operator(v, etl::make_index_sequence<sizeof...(TTypes)>{});
+#else
+      do_operator(v);
+#endif
+    }
+
+    //***************************************************************************
+    /// Accept an etl::visitor.
+    /// Deprecated.
+    //***************************************************************************
+    template <typename TVisitor>
+#if !defined(ETL_IN_UNIT_TEST)
+    ETL_DEPRECATED_REASON("Replace with accept()")
+#endif
+    void accept_visitor(TVisitor& v)
+    {
+#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+      do_visitor(v, etl::make_index_sequence<sizeof...(TTypes)>{});
+#else
+      do_visitor(v);
+#endif
+    }
+
+    //***************************************************************************
+    /// Accept an etl::visitor.
+    /// Deprecated.
+    //***************************************************************************
+    template <typename TVisitor>
+#if !defined(ETL_IN_UNIT_TEST)
+    ETL_DEPRECATED_REASON("Replace with accept()")
+#endif
+    void accept_visitor(TVisitor& v) const
+    {
+#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+      do_visitor(v, etl::make_index_sequence<sizeof...(TTypes)>{});
+#else
+      do_visitor(v);
+#endif
+    }
+
+    //***************************************************************************
+    /// Accept a generic functor.
+    /// Deprecated.
+    //***************************************************************************
+    template <typename TVisitor>
+#if !defined(ETL_IN_UNIT_TEST)
+    ETL_DEPRECATED_REASON("Replace with accept()")
+#endif
+    void accept_functor(TVisitor& v)
+    {
+#if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
+      do_operator(v, etl::make_index_sequence<sizeof...(TTypes)>{});
+#else
+      do_operator(v);
+#endif
+    }
+
+    //***************************************************************************
+    /// Accept a generic functor.
+    /// Deprecated.
+    //***************************************************************************
+    template <typename TVisitor>
+#if !defined(ETL_IN_UNIT_TEST)
+    ETL_DEPRECATED_REASON("Replace with accept()")
+#endif
     void accept_functor(TVisitor& v) const
     {
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
@@ -928,7 +996,7 @@ namespace etl
     /// Call the relevent visitor by attempting each one.
     //***************************************************************************
     template <typename TVisitor, size_t... I>
-    void do_accept(TVisitor& visitor, etl::index_sequence<I...>)
+    void do_visitor(TVisitor& visitor, etl::index_sequence<I...>)
     {
       (attempt_visitor<I>(visitor) || ...);
     }
@@ -937,7 +1005,7 @@ namespace etl
     /// Call the relevent visitor by attempting each one.
     //***************************************************************************
     template <typename TVisitor, size_t... I>
-    void do_accept(TVisitor& visitor, etl::index_sequence<I...>) const
+    void do_visitor(TVisitor& visitor, etl::index_sequence<I...>) const
     {
       (attempt_visitor<I>(visitor) || ...);
     }
@@ -946,7 +1014,7 @@ namespace etl
     /// /// Call the relevent visitor.
     //***************************************************************************
     template <typename TVisitor>
-    void do_accept(TVisitor& visitor)
+    void do_visitor(TVisitor& visitor)
     {
       switch (index())
       {
@@ -996,7 +1064,7 @@ namespace etl
     /// /// Call the relevent visitor.
     //***************************************************************************
     template <typename TVisitor>
-    void do_accept(TVisitor& visitor) const
+    void do_visitor(TVisitor& visitor) const
     {
       switch (index())
       {

@@ -806,15 +806,18 @@ namespace
       test_variant_etl_3 variant_etl;
 
       variant_etl = char(1);
-      variant_etl.accept_visitor(visitor);
+      //variant_etl.accept_visitor(visitor);
+      variant_etl.accept(visitor);
       CHECK_EQUAL(1, visitor.result_c);
       
       variant_etl = int(2);
-      variant_etl.accept_visitor(visitor);
+      //variant_etl.accept_visitor(visitor);
+      variant_etl.accept(visitor);
       CHECK_EQUAL(2, visitor.result_i);
 
       variant_etl = std::string("3");
-      variant_etl.accept_visitor(visitor);
+      //variant_etl.accept_visitor(visitor);
+      variant_etl.accept(visitor);
       CHECK_EQUAL("3", visitor.result_s);
     }
 
@@ -857,16 +860,19 @@ namespace
       variant_etl = char(1);
       const test_variant_etl_3 const_variant_etl1(variant_etl);
       const_variant_etl1.accept_visitor(visitor);
+      //const_variant_etl1.accept(visitor);
       CHECK_EQUAL(1, visitor.result_c);
 
       variant_etl = int(2);
       const test_variant_etl_3 const_variant_etl2(variant_etl);
-      const_variant_etl2.accept_visitor(visitor);
+      //const_variant_etl2.accept_visitor(visitor);
+      const_variant_etl2.accept(visitor);
       CHECK_EQUAL(2, visitor.result_i);
 
       variant_etl = std::string("3");
       const test_variant_etl_3 const_variant_etl3(variant_etl);
-      const_variant_etl3.accept_visitor(visitor);
+      //const_variant_etl3.accept_visitor(visitor);
+      const_variant_etl3.accept(visitor);
       CHECK_EQUAL("3", visitor.result_s);
     }
 
@@ -907,15 +913,18 @@ namespace
       test_variant_etl_3 variant_etl;      
 
       variant_etl = char(1);
-      variant_etl.accept_functor(visitor);
+      //variant_etl.accept_functor(visitor);
+      variant_etl.accept(visitor);
       CHECK_EQUAL(1, visitor.result_c);
       
       variant_etl = int(2);
-      variant_etl.accept_functor(visitor);
+      //variant_etl.accept_functor(visitor);
+      variant_etl.accept(visitor);
       CHECK_EQUAL(2, visitor.result_i);
 
       variant_etl = std::string("3");
-      variant_etl.accept_functor(visitor);
+      //variant_etl.accept_functor(visitor);
+      variant_etl.accept(visitor);
       CHECK_EQUAL("3", visitor.result_s);
     }
 
@@ -957,17 +966,20 @@ namespace
 
       variant_etl = char(1);
       const test_variant_etl_3 const_variant_etl1(variant_etl);
-      const_variant_etl1.accept_functor(visitor);
+      //const_variant_etl1.accept_functor(visitor);
+      const_variant_etl1.accept(visitor);
       CHECK_EQUAL(1, visitor.result_c);
 
       variant_etl = int(2);
       const test_variant_etl_3 const_variant_etl2(variant_etl);
-      const_variant_etl2.accept_functor(visitor);
+      //const_variant_etl2.accept_functor(visitor);
+      const_variant_etl2.accept(visitor);
       CHECK_EQUAL(2, visitor.result_i);
 
       variant_etl = std::string("3");
       const test_variant_etl_3 const_variant_etl3(variant_etl);
-      const_variant_etl3.accept_functor(visitor);
+      //const_variant_etl3.accept_functor(visitor);
+      const_variant_etl3.accept(visitor);
       CHECK_EQUAL("3", visitor.result_s);
     }
 
@@ -985,15 +997,18 @@ namespace
       test_variant_etl_3 variant_etl;
 
       variant_etl = char(1);
-      variant_etl.accept_functor(visitor);
+      //variant_etl.accept_functor(visitor);
+      variant_etl.accept(visitor);
       CHECK_EQUAL(1, result_c);
 
       variant_etl = int(2);
-      variant_etl.accept_functor(visitor);
+      //variant_etl.accept_functor(visitor);
+      variant_etl.accept(visitor);
       CHECK_EQUAL(2, result_i);
 
       variant_etl = std::string("3");
-      variant_etl.accept_functor(visitor);
+      //variant_etl.accept_functor(visitor);
+      variant_etl.accept(visitor);
       CHECK_EQUAL("3", result_s);
     }
 
@@ -1012,17 +1027,20 @@ namespace
 
       variant_etl = char(1);
       const test_variant_etl_3 const_variant_etl1(variant_etl);
-      const_variant_etl1.accept_functor(visitor);
+      //const_variant_etl1.accept_functor(visitor);
+      const_variant_etl1.accept(visitor);
       CHECK_EQUAL(1, result_c);
 
       variant_etl = int(2);
       const test_variant_etl_3 const_variant_etl2(variant_etl);
-      const_variant_etl2.accept_functor(visitor);
+      //const_variant_etl2.accept_functor(visitor);
+      const_variant_etl2.accept(visitor);
       CHECK_EQUAL(2, result_i);
 
       variant_etl = std::string("3");
       const test_variant_etl_3 const_variant_etl3(variant_etl);
-      const_variant_etl3.accept_functor(visitor);
+      //const_variant_etl3.accept_functor(visitor);
+      const_variant_etl3.accept(visitor);
       CHECK_EQUAL("3", result_s);
     }
 
