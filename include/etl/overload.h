@@ -35,10 +35,10 @@ SOFTWARE.
 #include "utility.h"
 #include "type_traits.h"
 
-namespace etl
-{
 #if ETL_USING_CPP17
 
+namespace etl
+{
   //*************************************************************************
   /// Variadic template definition of overload for C++17 and above.
   //*************************************************************************
@@ -52,22 +52,6 @@ namespace etl
   /// Template deduction guide.
   //*************************************************************************
   template<typename... TOverloads> overload(TOverloads...)->overload<TOverloads...>;
-
-  //*************************************************************************
-  /// Variadic template definition of overload for C++11.
-  //*************************************************************************
-  template <typename TFirst, typename... TOthers>
-  struct overload : TFirst, overload<TOthers...>
-  {
-    using TFirst::operator();
-    using overload<TOthers...>::operator();
-  };
-
-  template <typename TFirst> 
-  struct overload<TFirst> : TFirst
-  {
-    using TFirst::operator();
-  };
 
   //*************************************************************************
   /// Make an overload.
