@@ -57,8 +57,8 @@ Global
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug Intel C++17 - No STL|Win32.Build.0 = Debug Intel - No STL|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug Intel C++17 - No STL|x64.ActiveCfg = Debug Intel - No STL|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug Intel C++17 - No STL|x64.Build.0 = Debug Intel - No STL|x64
-		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug Intel C++17|Win32.ActiveCfg = Debug Intel|Win32
-		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug Intel C++17|Win32.Build.0 = Debug Intel|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug Intel C++17|Win32.ActiveCfg = Debug LLVM|Win32
+		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug Intel C++17|Win32.Build.0 = Debug LLVM|Win32
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug Intel C++17|x64.ActiveCfg = Debug Intel|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug Intel C++17|x64.Build.0 = Debug Intel|x64
 		{C21DF78C-D8E0-46AB-9D6F-D38A3C1CB0FB}.Debug LLVM C++17 - No STL - Force Built-ins|Win32.ActiveCfg = Debug|Win32
