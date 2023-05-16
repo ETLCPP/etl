@@ -1018,41 +1018,41 @@ namespace etl
     {
       switch (index())
       {
-        case 0: visitor.visit(etl::get<0>(*this)); break;
-        case 1: visitor.visit(etl::get<1>(*this)); break;
-        case 2: visitor.visit(etl::get<2>(*this)); break;
-        case 3: visitor.visit(etl::get<3>(*this)); break;
-        case 4: visitor.visit(etl::get<4>(*this)); break;
-        case 5: visitor.visit(etl::get<5>(*this)); break;
-        case 6: visitor.visit(etl::get<6>(*this)); break;
-        case 7: visitor.visit(etl::get<7>(*this)); break;
+        case 0: { auto arg = etl::get<0>(*this); visitor.visit(arg); break; }
+        case 1: { auto arg = etl::get<1>(*this); visitor.visit(arg); break; }
+        case 2: { auto arg = etl::get<2>(*this); visitor.visit(arg); break; }
+        case 3: { auto arg = etl::get<3>(*this); visitor.visit(arg); break; }
+        case 4: { auto arg = etl::get<4>(*this); visitor.visit(arg); break; }
+        case 5: { auto arg = etl::get<5>(*this); visitor.visit(arg); break; }
+        case 6: { auto arg = etl::get<6>(*this); visitor.visit(arg); break; }
+        case 7: { auto arg = etl::get<7>(*this); visitor.visit(arg); break; }
 #if !defined(ETL_VARIANT_CPP11_MAX_8_TYPES)
-        case 8: visitor.visit(etl::get<8>(*this)); break;
-        case 9: visitor.visit(etl::get<9>(*this)); break;
-        case 10: visitor.visit(etl::get<10>(*this)); break;
-        case 11: visitor.visit(etl::get<11>(*this)); break;
-        case 12: visitor.visit(etl::get<12>(*this)); break;
-        case 13: visitor.visit(etl::get<13>(*this)); break;
-        case 14: visitor.visit(etl::get<14>(*this)); break;
-        case 15: visitor.visit(etl::get<15>(*this)); break;
+        case 8: { auto arg = etl::get<8>(*this); visitor.visit(arg); break; }
+        case 9: { auto arg = etl::get<9>(*this); visitor.visit(arg); break; }
+        case 10: { auto arg = etl::get<10>(*this); visitor.visit(arg); break; }
+        case 11: { auto arg = etl::get<11>(*this); visitor.visit(arg); break; }
+        case 12: { auto arg = etl::get<12>(*this); visitor.visit(arg); break; }
+        case 13: { auto arg = etl::get<13>(*this); visitor.visit(arg); break; }
+        case 14: { auto arg = etl::get<14>(*this); visitor.visit(arg); break; }
+        case 15: { auto arg = etl::get<15>(*this); visitor.visit(arg); break; }
 #if !defined(ETL_VARIANT_CPP11_MAX_16_TYPES)
-        case 16: visitor.visit(etl::get<16>(*this)); break;
-        case 17: visitor.visit(etl::get<17>(*this)); break;
-        case 18: visitor.visit(etl::get<18>(*this)); break;
-        case 19: visitor.visit(etl::get<19>(*this)); break;
-        case 20: visitor.visit(etl::get<20>(*this)); break;
-        case 21: visitor.visit(etl::get<21>(*this)); break;
-        case 22: visitor.visit(etl::get<22>(*this)); break;
-        case 23: visitor.visit(etl::get<23>(*this)); break;
+        case 16: { auto arg = etl::get<16>(*this); visitor.visit(arg); break; }
+        case 17: { auto arg = etl::get<17>(*this); visitor.visit(arg); break; }
+        case 18: { auto arg = etl::get<18>(*this); visitor.visit(arg); break; }
+        case 19: { auto arg = etl::get<19>(*this); visitor.visit(arg); break; }
+        case 20: { auto arg = etl::get<20>(*this); visitor.visit(arg); break; }
+        case 21: { auto arg = etl::get<21>(*this); visitor.visit(arg); break; }
+        case 22: { auto arg = etl::get<22>(*this); visitor.visit(arg); break; }
+        case 23: { auto arg = etl::get<23>(*this); visitor.visit(arg); break; }
 #if !defined(ETL_VARIANT_CPP11_MAX_24_TYPES)
-        case 24: visitor.visit(etl::get<24>(*this)); break;
-        case 25: visitor.visit(etl::get<25>(*this)); break;
-        case 26: visitor.visit(etl::get<26>(*this)); break;
-        case 27: visitor.visit(etl::get<27>(*this)); break;
-        case 28: visitor.visit(etl::get<28>(*this)); break;
-        case 29: visitor.visit(etl::get<29>(*this)); break;
-        case 30: visitor.visit(etl::get<30>(*this)); break;
-        case 31: visitor.visit(etl::get<31>(*this)); break;
+        case 24: { auto arg = etl::get<24>(*this); visitor.visit(arg); break; }
+        case 25: { auto arg = etl::get<25>(*this); visitor.visit(arg); break; }
+        case 26: { auto arg = etl::get<26>(*this); visitor.visit(arg); break; }
+        case 27: { auto arg = etl::get<27>(*this); visitor.visit(arg); break; }
+        case 28: { auto arg = etl::get<28>(*this); visitor.visit(arg); break; }
+        case 29: { auto arg = etl::get<29>(*this); visitor.visit(arg); break; }
+        case 30: { auto arg = etl::get<30>(*this); visitor.visit(arg); break; }
+        case 31: { auto arg = etl::get<31>(*this); visitor.visit(arg); break; }
 #endif
 #endif
 #endif
@@ -1068,41 +1068,41 @@ namespace etl
     {
       switch (index())
       {
-        case 0: visitor.visit(etl::get<0>(*this)); break;
-        case 1: visitor.visit(etl::get<1>(*this)); break;
-        case 2: visitor.visit(etl::get<2>(*this)); break;
-        case 3: visitor.visit(etl::get<3>(*this)); break;
-        case 4: visitor.visit(etl::get<4>(*this)); break;
-        case 5: visitor.visit(etl::get<5>(*this)); break;
-        case 6: visitor.visit(etl::get<6>(*this)); break;
-        case 7: visitor.visit(etl::get<7>(*this)); break;
+        case 0: { auto arg = etl::get<0>(*this); visitor.visit(arg); break; }
+        case 1: { auto arg = etl::get<1>(*this); visitor.visit(arg); break; }
+        case 2: { auto arg = etl::get<2>(*this); visitor.visit(arg); break; }
+        case 3: { auto arg = etl::get<3>(*this); visitor.visit(arg); break; }
+        case 4: { auto arg = etl::get<4>(*this); visitor.visit(arg); break; }
+        case 5: { auto arg = etl::get<5>(*this); visitor.visit(arg); break; }
+        case 6: { auto arg = etl::get<6>(*this); visitor.visit(arg); break; }
+        case 7: { auto arg = etl::get<7>(*this); visitor.visit(arg); break; }
 #if !defined(ETL_VARIANT_CPP11_MAX_8_TYPES)
-        case 8: visitor.visit(etl::get<8>(*this)); break;
-        case 9: visitor.visit(etl::get<9>(*this)); break;
-        case 10: visitor.visit(etl::get<10>(*this)); break;
-        case 11: visitor.visit(etl::get<11>(*this)); break;
-        case 12: visitor.visit(etl::get<12>(*this)); break;
-        case 13: visitor.visit(etl::get<13>(*this)); break;
-        case 14: visitor.visit(etl::get<14>(*this)); break;
-        case 15: visitor.visit(etl::get<15>(*this)); break;
+        case 8: { auto arg = etl::get<8>(*this); visitor.visit(arg); break; }
+        case 9: { auto arg = etl::get<9>(*this); visitor.visit(arg); break; }
+        case 10: { auto arg = etl::get<10>(*this); visitor.visit(arg); break; }
+        case 11: { auto arg = etl::get<11>(*this); visitor.visit(arg); break; }
+        case 12: { auto arg = etl::get<12>(*this); visitor.visit(arg); break; }
+        case 13: { auto arg = etl::get<13>(*this); visitor.visit(arg); break; }
+        case 14: { auto arg = etl::get<14>(*this); visitor.visit(arg); break; }
+        case 15: { auto arg = etl::get<15>(*this); visitor.visit(arg); break; }
 #if !defined(ETL_VARIANT_CPP11_MAX_16_TYPES)
-        case 16: visitor.visit(etl::get<16>(*this)); break;
-        case 17: visitor.visit(etl::get<17>(*this)); break;
-        case 18: visitor.visit(etl::get<18>(*this)); break;
-        case 19: visitor.visit(etl::get<19>(*this)); break;
-        case 20: visitor.visit(etl::get<20>(*this)); break;
-        case 21: visitor.visit(etl::get<21>(*this)); break;
-        case 22: visitor.visit(etl::get<22>(*this)); break;
-        case 23: visitor.visit(etl::get<23>(*this)); break;
+        case 16: { auto arg = etl::get<16>(*this); visitor.visit(arg); break; }
+        case 17: { auto arg = etl::get<17>(*this); visitor.visit(arg); break; }
+        case 18: { auto arg = etl::get<18>(*this); visitor.visit(arg); break; }
+        case 19: { auto arg = etl::get<19>(*this); visitor.visit(arg); break; }
+        case 20: { auto arg = etl::get<20>(*this); visitor.visit(arg); break; }
+        case 21: { auto arg = etl::get<21>(*this); visitor.visit(arg); break; }
+        case 22: { auto arg = etl::get<22>(*this); visitor.visit(arg); break; }
+        case 23: { auto arg = etl::get<23>(*this); visitor.visit(arg); break; }
 #if !defined(ETL_VARIANT_CPP11_MAX_24_TYPES)
-        case 24: visitor.visit(etl::get<24>(*this)); break;
-        case 25: visitor.visit(etl::get<25>(*this)); break;
-        case 26: visitor.visit(etl::get<26>(*this)); break;
-        case 27: visitor.visit(etl::get<27>(*this)); break;
-        case 28: visitor.visit(etl::get<28>(*this)); break;
-        case 29: visitor.visit(etl::get<29>(*this)); break;
-        case 30: visitor.visit(etl::get<30>(*this)); break;
-        case 31: visitor.visit(etl::get<31>(*this)); break;
+        case 24: { auto arg = etl::get<24>(*this); visitor.visit(arg); break; }
+        case 25: { auto arg = etl::get<25>(*this); visitor.visit(arg); break; }
+        case 26: { auto arg = etl::get<26>(*this); visitor.visit(arg); break; }
+        case 27: { auto arg = etl::get<27>(*this); visitor.visit(arg); break; }
+        case 28: { auto arg = etl::get<28>(*this); visitor.visit(arg); break; }
+        case 29: { auto arg = etl::get<29>(*this); visitor.visit(arg); break; }
+        case 30: { auto arg = etl::get<30>(*this); visitor.visit(arg); break; }
+        case 31: { auto arg = etl::get<31>(*this); visitor.visit(arg); break; }
 #endif
 #endif
 #endif
