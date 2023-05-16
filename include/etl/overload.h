@@ -37,7 +37,7 @@ SOFTWARE.
 
 namespace etl
 {
-#if ETL_USING_CPP17 && !defined(ETL_OVERLOAD_FORCE_CPP14)
+#if ETL_USING_CPP17
 
   //*************************************************************************
   /// Variadic template definition of overload for C++17 and above.
@@ -53,10 +53,8 @@ namespace etl
   //*************************************************************************
   template<typename... TOverloads> overload(TOverloads...)->overload<TOverloads...>;
 
-#else
-
   //*************************************************************************
-  /// Variadic template definition of overload for C++14.
+  /// Variadic template definition of overload for C++11.
   //*************************************************************************
   template <typename TFirst, typename... TOthers>
   struct overload : TFirst, overload<TOthers...>
@@ -71,9 +69,6 @@ namespace etl
     using TFirst::operator();
   };
 
-#endif
-
-#if ETL_USING_CPP17
   //*************************************************************************
   /// Make an overload.
   //*************************************************************************
@@ -82,7 +77,8 @@ namespace etl
   {
     return overload<TOverloads...>{ etl::forward<TOverloads>(overloads)... };
   }
-#endif
 }
+
+#endif
 
 #endif
