@@ -31,8 +31,6 @@ SOFTWARE.
 #include <stdio.h>
 #include <iostream>
 
-etl::error_handler eh;
-
 //*****************************************************************************
 struct ErrorLog
 {
