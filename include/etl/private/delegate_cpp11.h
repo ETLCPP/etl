@@ -464,10 +464,8 @@ namespace etl
     /// Constructs a delegate from an object and stub.
     //*************************************************************************
     ETL_CONSTEXPR14 delegate(void* object, stub_type stub)
-      //: invocation(object, stub)
+      : invocation(object, stub)
     {
-      invocation.object = object;
-      invocation.stub = stub;
     }
 
     //*************************************************************************
