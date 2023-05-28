@@ -31,6 +31,7 @@
 
 #include "platform.h"
 #include "atomic.h"
+#include "exception.h"
 #include "error_handler.h"
 
 #include <stdint.h>

@@ -1,6 +1,7 @@
 // Hint files help the Visual Studio IDE interpret Visual C++ identifiers
 // such as names of functions and macros.
 // For more information see https://go.microsoft.com/fwlink/?linkid=865984
+#define ETL_CONSTANT
 #define ETL_CONSTEXPR
 #define ETL_CONSTEXPR14
 #define ETL_CONSTEXPR17
@@ -21,16 +22,6 @@
 #define ETL_CPP11_SUPPORTED
 #define ETL_CPP14_SUPPORTED
 #define ETL_CPP17_SUPPORTED
-#define TEST
-#define CHECK
-#define CHECK_EQUAL
-#define CHECK_THROW
-#define ETL_ASSERT(b, e)
-#define ETL_ASSERT(b, e) {if (!(b)) {etl::error_handler::error((e)); throw((e));}}
-#define ETL_ASSERT(b, e) {if (!(b)) {throw((e));}}
-#define ETL_ASSERT(b, e) {if(!(b)) {etl::error_handler::error((e));}}
-#define ETL_ASSERT(b, e) assert((b))
+#define ETL_ASSERT
 #define ETL_NULLPTR
-#define ETL_NODISCARD [[nodiscard]]
-#define ETL_NODISCARD
-#define ETL_CONSTANT
+#define ETL_USING_STLPORT

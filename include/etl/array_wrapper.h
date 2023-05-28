@@ -37,7 +37,6 @@ SOFTWARE.
 #include "exception.h"
 #include "hash.h"
 #include "parameter_type.h"
-
 #include "algorithm.h"
 
 ///\defgroup array array
