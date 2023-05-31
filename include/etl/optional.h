@@ -854,7 +854,8 @@ namespace etl
     //***************************************************************************
     /// Bool conversion operator.
     //***************************************************************************
-    ETL_CONSTEXPR14 operator bool() const
+    ETL_CONSTEXPR14 
+    ETL_EXPLICIT operator bool() const
     {
       return valid;
     }
