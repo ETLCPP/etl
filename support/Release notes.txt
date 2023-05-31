@@ -5,7 +5,11 @@
 #684 Added sanitization fix for MinGW
 #687 Build failure
 #689 Add as_bytes and as_writable_bytes
+#690 Add rvalue accessors to expected and optional and update constructors
 #692 operator [] for flat_map always calls default constructor for mapped_type
+#695 Visiting a const variant (variadic)
+#698 Behaviour of bidirectional_link nodes
+#699 Optional(POD) operator bool explicit
 Optimised map/flat_map/unordered_map [] operator and insert()
 Unit tests compile for C++11
 Fixed C++11 constexpr compatibility
@@ -27,6 +31,13 @@ Changed native char8_t check
 Renamed Github vs2022.yml to visual-studio.yml
 Updated Unittest++ checks
 Comments and noexcept updates to placement new
+etl::variant (variadic) refactor and updates for C++ standards compatibility
+etl::overload available in C++17 only
+map/flat_map speed optimisations
+Various C++03 compatibilty updates for maps
+Refactored Bash compilation scripts to allow selection of C++ standard and optimisation level
+Renamed Bash compilation scripts. Changed 'sanity checks' to 'syntax checks
+Some internal constant case changes from all upper to capital case
 
 ===============================================================================
 20.35.15
