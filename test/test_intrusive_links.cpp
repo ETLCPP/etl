@@ -96,7 +96,7 @@ namespace
     int value;
   };
 
-  SUITE(test_forward_list)
+  SUITE(test_intrusive_links)
   {
     //*************************************************************************
     TEST(test_link_forward_link)
@@ -806,8 +806,8 @@ namespace
 
       etl::unlink<BLink0>(data0);
 
-      CHECK(data0.BLink0::etl_previous == &data0);
-      CHECK(data0.BLink0::etl_next     == &data0);
+      CHECK(data0.BLink0::etl_previous == ETL_NULLPTR);
+      CHECK(data0.BLink0::etl_next     == ETL_NULLPTR);
     }
 
     //*************************************************************************
@@ -966,6 +966,18 @@ namespace
       etl::link<BLink1>(bdata, bdata);
       CHECK(bdata.BLink0::is_linked());
       CHECK(bdata.BLink1::is_linked());
+
+      etl::unlink<BLink0>(bdata); // Global API
+      CHECK(!bdata.BLink0::is_linked());
+      CHECK(bdata.BLink1::is_linked());
+
+      bdata.BLink1::unlink();     // Member API
+      CHECK(!bdata.BLink0::is_linked());
+      CHECK(!bdata.BLink1::is_linked());
+
+      bdata.BLink0::clear();
+      CHECK(!bdata.BLink0::is_linked());
+      CHECK(!bdata.BLink1::is_linked());
 
       // Tree link
       TData tdata(0);

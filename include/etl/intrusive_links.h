@@ -282,6 +282,8 @@ namespace etl
         {
           etl_next->etl_previous = etl_previous;
         }
+
+        clear();
     }
   };
 
