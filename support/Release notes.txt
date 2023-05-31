@@ -3,7 +3,7 @@
 #663 Make unit tests compile for C++20
 #675 Compilation error in optional.h
 #684 Added sanitization fix for MinGW
-#687 Build failure
+#687 Build failure. constexpr keyword before template keyword 
 #689 Add as_bytes and as_writable_bytes
 #690 Add rvalue accessors to expected and optional and update constructors
 #692 operator [] for flat_map always calls default constructor for mapped_type
