@@ -4,10 +4,12 @@ branches:
   - master
 image: Visual Studio 2022
 configuration:
-- Debug
-- Debug - No STL
-- Debug MSVC - No STL - Built-ins
-- Debug MSVC - Force C++03
+- Debug MSVC C++14
+- Debug MSVC C++14 - No STL
+- Debug MSVC C++17
+- Debug MSVC C++17 - No STL
+- Debug MSVC C++20
+- Debug MSVC C++20 - No STL
 clone_folder: c:\projects\etl
 install:
 - cmd: git submodule update --init --recursive
