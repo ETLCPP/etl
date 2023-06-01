@@ -11,6 +11,7 @@
 #698 Behaviour of bidirectional_link nodes. Links are now cleared when unlinked
 #699 Optional(POD) operator bool explicit
 Optimised map/flat_map/unordered_map [] operator and insert()
+Removed [] operator for reference_flat_map
 Unit tests compile for C++11
 Fixed C++11 constexpr compatibility
 Removed redundant 'const' in template parameters
