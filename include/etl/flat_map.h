@@ -1056,7 +1056,7 @@ namespace etl
       ::new ((void*)etl::addressof(pvalue->first)) key_type(etl::move(key));
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type();
       ETL_INCREMENT_DEBUG_COUNT
-        
+
       return refmap_t::insert_at(i_element, *pvalue);
     }
 #endif

@@ -1,4 +1,9 @@
 ===============================================================================
+20.36.1
+#700 Compilation error for [] map operator. Fixed map const placement new issue.
+Re-enabled memcast tests.
+
+===============================================================================
 20.36.0
 #663 Make unit tests compile for C++20
 #675 Compilation error in optional.h

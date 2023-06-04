@@ -935,18 +935,13 @@ namespace etl
         ETL_ASSERT(!full(), ETL_ERROR(map_full));
 
         // Get next available free node
-        Data_Node& node = create_data_node();
-
-        ::new ((void*)etl::addressof(node.value.first))  key_type(etl::move(key));
-        ::new ((void*)etl::addressof(node.value.second)) mapped_type();
+        Data_Node& node = allocate_data_node_with_key(etl::move(key));
 
         // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
         inserted_node = insert_node(root_node, node);
 
         // Insert node into tree and return iterator to new node location in tree
         i_element = iterator(*this, inserted_node);
-
-        ETL_INCREMENT_DEBUG_COUNT
       }
 
       return i_element->second;
@@ -970,10 +965,7 @@ namespace etl
         ETL_ASSERT(!full(), ETL_ERROR(map_full));
 
         // Get next available free node
-        Data_Node& node = create_data_node();
-
-        ::new (etl::addressof(node.value.first))  key_type(key);
-        ::new (etl::addressof(node.value.second)) mapped_type();
+        Data_Node& node = allocate_data_node_with_key(key);
 
         // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
         inserted_node = insert_node(root_node, node);
@@ -1510,6 +1502,19 @@ namespace etl
       return node;
     }
 
+    //*************************************************************************
+    /// Allocate a Data_Node with the supplied key.
+    //*************************************************************************
+    Data_Node& allocate_data_node_with_key(const_key_reference key)
+    {
+      Data_Node& node = create_data_node();
+
+      ::new ((void*)etl::addressof(node.value.first))  key_type(key);
+      ::new ((void*)etl::addressof(node.value.second)) mapped_type();
+      ETL_INCREMENT_DEBUG_COUNT
+      return node;
+    }
+
 #if ETL_USING_CPP11
     //*************************************************************************
     /// Allocate a Data_Node.
@@ -1521,6 +1526,20 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT
       return node;
     }
+
+    //*************************************************************************
+    /// Allocate a Data_Node with the supplied key.
+    //*************************************************************************
+    Data_Node& allocate_data_node_with_key(rvalue_key_reference key)
+    {
+      Data_Node& node = create_data_node();
+
+      ::new ((void*)etl::addressof(node.value.first))  key_type(etl::move(key));
+      ::new ((void*)etl::addressof(node.value.second)) mapped_type();
+      ETL_INCREMENT_DEBUG_COUNT
+      return node;
+    }
+
 #endif
 
     //*************************************************************************
