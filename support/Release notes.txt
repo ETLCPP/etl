@@ -1,4 +1,8 @@
 ===============================================================================
+20.36.2
+#707 parameter_pack: Fix C++17 pedantic build
+
+===============================================================================
 20.36.1
 #700 Compilation error for [] map operator. Fixed map const placement new issue.
 Re-enabled memcast tests.
