@@ -66,6 +66,7 @@ PassedTests()
 	echo "-----------------------------------------------" | tee -a log.txt
 	echo " Passed Tests - $testname                      " | tee -a ../log.txt
 	echo "-----------------------------------------------" | tee -a log.txt
+	echo "$NoColour"
 }
 
 FailedCompilation()
