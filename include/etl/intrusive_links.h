@@ -91,6 +91,22 @@ namespace etl
       ID = ID_,
     };
 
+    forward_link()
+      : etl_next(ETL_NULLPTR)
+    {
+    }
+
+    forward_link(const forward_link& other)
+      : etl_next(other.etl_next)
+    {
+    }
+
+    forward_link& operator =(const forward_link& rhs)
+    {
+      etl_next = rhs.etl_next;
+      return *this;
+    }
+
     void clear()
     {
       etl_next = ETL_NULLPTR;
@@ -130,6 +146,38 @@ namespace etl
     {
       lhs->etl_next = rhs;
     }
+  }
+
+  // Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
+    link_clear(TLink& node)
+  {
+    node.clear();
+  }
+
+  // Pointer
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, void>::type
+    link_clear(TLink* node)
+  {
+    node->clear();
+  }
+
+  // Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, bool>::type
+    link_is_linked(TLink& node)
+  {
+    return node.is_linked();
+  }
+
+  // Pointer
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::forward_link<TLink::ID> >::value, bool>::type
+    link_is_linked(TLink* node)
+  {
+    return node.is_linked();
   }
 
   // Pointer, Pointer
@@ -247,6 +295,25 @@ namespace etl
     {
       ID = ID_,
     };
+
+    bidirectional_link()
+      : etl_previous(ETL_NULLPTR)
+      , etl_next(ETL_NULLPTR)
+    {
+    }
+
+    bidirectional_link(const bidirectional_link& other)
+      : etl_previous(other.etl_previous)
+      , etl_next(other.etl_next)
+    {
+    }
+
+    bidirectional_link& operator =(const bidirectional_link& rhs)
+    {
+      etl_previous = rhs.etl_previous;
+      etl_next     = rhs.etl_next;
+      return *this;
+    }
 
     void clear()
     {
@@ -468,6 +535,38 @@ namespace etl
   // Reference
   template <typename TLink>
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
+    link_clear(TLink& node)
+  {
+    node.clear();
+  }
+
+  // Pointer
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
+    link_clear(TLink* node)
+  {
+    node->clear();
+  }
+
+  // Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, bool>::type
+    link_is_linked(TLink& node)
+  {
+    return node.is_linked();
+  }
+
+  // Pointer
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, bool>::type
+    link_is_linked(TLink* node)
+  {
+    return node.is_linked();
+  }
+
+  // Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
   unlink(TLink& node)
   {
     node.unlink();
@@ -506,6 +605,28 @@ namespace etl
       {
         ID = ID_,
       };
+
+      tree_link()
+        : etl_parent(ETL_NULLPTR)
+        , etl_left(ETL_NULLPTR)
+        , etl_right(ETL_NULLPTR)
+      {
+      }
+
+      tree_link(const tree_link& other)
+        : etl_parent(other.etl_parent)
+        , etl_left(other.etl_left)
+        , etl_right(other.etl_right)
+      {
+      }
+
+      tree_link& operator =(const tree_link& rhs)
+      {
+        etl_parent = other.etl_parent;
+        etl_left   = other.etl_left;
+        etl_right  = other.etl_right;
+        return *this;
+      }
 
       void clear()
       {
@@ -789,6 +910,38 @@ namespace etl
         etl::link_rotate_left(*parent, leaf);
       }
     }
+  }
+
+  // Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+    link_clear(TLink& node)
+  {
+    node.clear();
+  }
+
+  // Pointer
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
+    link_clear(TLink* node)
+  {
+    node->clear();
+  }
+
+  // Reference
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, bool>::type
+    link_is_linked(TLink& node)
+  {
+    return node.is_linked();
+  }
+
+  // Pointer
+  template <typename TLink>
+  typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, bool>::type
+    link_is_linked(TLink* node)
+  {
+    return node.is_linked();
   }
 }
 

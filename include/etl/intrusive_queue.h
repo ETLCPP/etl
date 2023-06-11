@@ -87,7 +87,10 @@ namespace etl
     //*************************************************************************
     void push(link_type& value)
     {
-      value.clear();
+      //if (value.is_linked())
+      //{
+      //  return;
+      //}
 
       if (p_back != ETL_NULLPTR)
       {
@@ -113,7 +116,7 @@ namespace etl
       ETL_ASSERT(!empty(), ETL_ERROR(intrusive_queue_empty));
 #endif
       link_type* p_next = p_front->etl_next;
-
+      p_front->clear();
       p_front = p_next;
 
       // Now empty?

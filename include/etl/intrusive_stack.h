@@ -87,6 +87,11 @@ namespace etl
     //*************************************************************************
     void push(link_type& value)
     {
+      //if (value.is_linked())
+      //{
+      //  return;
+      //}
+
       value.clear();
 
       if (p_top != ETL_NULLPTR)
