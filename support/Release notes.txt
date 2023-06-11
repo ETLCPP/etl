@@ -1,6 +1,7 @@
 ===============================================================================
 20.37.0
 #708 Fix missing class key with friend.
+#709 intrusive_list::iterator operator -> should not dereference pointer before return
 #710 Calling accept on etl::variant visits a copy instead of the original object.
 Modified etl::visitor to allow direct specification of the argument type.
 Added etl::is_visitor trait.
