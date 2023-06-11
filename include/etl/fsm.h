@@ -325,7 +325,7 @@ namespace etl
   {
   public:
 
-    friend etl::hfsm;
+    friend class etl::hfsm;
     using imessage_router::receive;
 
     //*******************************************
