@@ -376,3 +376,4 @@ test/syntax_check/c++20/bclang
 test/syntax_check/c++11/bgcc
 test/syntax_check/c++17/bgcc
 test/syntax_check/c++20/bgcc
+test/vs2022/Debug MSVC C++17
