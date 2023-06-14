@@ -1147,7 +1147,7 @@ namespace etl
         // Workaround for MSVC (2023/05/13)
         // It doesn't compile 'visitor.visit(etl::get<Index>(*this))' correctly for C++17 & C++20.
         // Changed all of the instances for consistancy.      
-        //decltype(auto) v = etl::get<Index>(*this);
+        auto& v = etl::get<Index>(*this);
         visitor.visit(v);
         return true;
       }
