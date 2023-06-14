@@ -285,6 +285,18 @@ namespace etl
       return delegate(const_method_instance_stub<T, Instance, Method>);
     }
 
+#if !(defined(ETL_COMPILER_GCC) && (__GNUC__ <= 8))
+    //*************************************************************************
+    /// Create from instance function operator (Compile time).
+    /// At the time of writing, GCC appears to have trouble with this.
+    //*************************************************************************
+    template <typename T, T& Instance>
+    static delegate create()
+    {
+      return delegate(operator_instance_stub<T, Instance>);
+    }
+#endif
+
     //*************************************************************************
     /// Set from function (Compile time).
     //*************************************************************************
@@ -350,17 +362,13 @@ namespace etl
       assign(ETL_NULLPTR, const_method_instance_stub<T, Instance, Method>);
     }
 
-#if !(defined(ETL_COMPILER_GCC) && (__GNUC__ <= 8))
     //*************************************************************************
-    /// Create from instance function operator (Compile time).
-    /// At the time of writing, GCC appears to have trouble with this.
+    /// Clear the delegate.
     //*************************************************************************
-    template <typename T, T& Instance>
-    static delegate create()
+    ETL_CONSTEXPR14 void clear()
     {
-      return delegate(operator_instance_stub<T, Instance>);
+      invocation.clear();
     }
-#endif
 
     //*************************************************************************
     /// Execute the delegate.
@@ -501,6 +509,13 @@ namespace etl
       bool operator !=(const invocation_element& rhs) const
       {
         return (rhs.stub != stub) || (rhs.object != object);
+      }
+
+      //***********************************************************************
+      ETL_CONSTEXPR14 void clear()
+      {
+        object = ETL_NULLPTR;
+        stub   = ETL_NULLPTR;
       }
 
       //***********************************************************************
@@ -731,6 +746,18 @@ namespace etl
       return delegate(const_method_instance_stub<T, Instance, Method>);
     }
 
+#if !(defined(ETL_COMPILER_GCC) && (__GNUC__ <= 8))
+    //*************************************************************************
+    /// Create from instance function operator (Compile time).
+    /// At the time of writing, GCC appears to have trouble with this.
+    //*************************************************************************
+    template <typename T, T& Instance>
+    static delegate create()
+    {
+      return delegate(operator_instance_stub<T, Instance>);
+    }
+#endif
+
     //*************************************************************************
     /// Set from function (Compile time).
     //*************************************************************************
@@ -796,17 +823,13 @@ namespace etl
       assign(ETL_NULLPTR, const_method_instance_stub<T, Instance, Method>);
     }
 
-#if !(defined(ETL_COMPILER_GCC) && (__GNUC__ <= 8))
     //*************************************************************************
-    /// Create from instance function operator (Compile time).
-    /// At the time of writing, GCC appears to have trouble with this.
+    /// Clear the delegate.
     //*************************************************************************
-    template <typename T, T& Instance>
-    static delegate create()
+    ETL_CONSTEXPR14 void clear()
     {
-      return delegate(operator_instance_stub<T, Instance>);
+      invocation.clear();
     }
-#endif
 
     //*************************************************************************
     /// Execute the delegate.
@@ -947,6 +970,13 @@ namespace etl
       bool operator !=(const invocation_element& rhs) const
       {
         return (rhs.stub != stub) || (rhs.object != object);
+      }
+
+      //***********************************************************************
+      ETL_CONSTEXPR14 void clear()
+      {
+        object = ETL_NULLPTR;
+        stub   = ETL_NULLPTR;
       }
 
       //***********************************************************************

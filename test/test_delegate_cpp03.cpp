@@ -240,6 +240,26 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_is_valid_true)
+    {
+      auto d = etl_cpp03::delegate<void(void)>::create<free_void>();
+
+      CHECK(d.is_valid());
+      CHECK(d);
+      CHECK_NO_THROW(d());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_is_valid_after_clear)
+    {
+      auto d = etl_cpp03::delegate<void(void)>::create<free_void>();
+
+      CHECK_TRUE(d.is_valid());
+      d.clear();
+      CHECK_FALSE(d.is_valid());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_free_void)
     {
       auto d = etl_cpp03::delegate<void(void)>::create<free_void>();

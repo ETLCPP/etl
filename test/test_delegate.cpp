@@ -295,6 +295,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_is_valid_after_clear)
+    {
+      etl::delegate<void(void)> d([] {});
+
+      CHECK_TRUE(d.is_valid());
+      d.clear();
+      CHECK_FALSE(d.is_valid());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_free_void)
     {
       auto d = etl::delegate<void(void)>::create<free_void>();
