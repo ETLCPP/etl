@@ -495,12 +495,18 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_optional_pod_assign_bug_714)
+    struct MyPODObject
     {
-      etl::optional<int> o = 42;
-      o = etl::nullopt;
+      MyPODObject() = delete;
+      int value;
+    };
 
-      CHECK_EQUAL(false, o.has_value());
+    TEST(test_optional_pod_emplace_bug_712)
+    {
+      etl::optional<MyPODObject> optionalObject; // The Test: Does this compile for an object with a deleted default constructor?
+
+      // Make sure it isn't optimised away.
+      CHECK_FALSE(optionalObject.has_value());
     }
   };
 }
