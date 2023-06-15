@@ -1979,9 +1979,6 @@
     <ClCompile Include="..\test_user_type.cpp">
       <Filter>Tests\Types</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_intrusive_links.cpp">
-      <Filter>Tests\Types</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_integral_limits.cpp">
       <Filter>Tests\Types</Filter>
     </ClCompile>
@@ -3415,6 +3412,9 @@
     </ClCompile>
     <ClCompile Include="..\test_hfsm_recurse_to_inner_state_on_start.cpp">
       <Filter>Tests\State Machines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_intrusive_links.cpp">
+      <Filter>Tests\Containers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
