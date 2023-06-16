@@ -493,6 +493,15 @@ namespace
       CHECK_TRUE(result.has_value());
       CHECK_EQUAL(2, result.value());
     }
+
+    //*************************************************************************
+    TEST(test_optional_pod_assign_bug_714)
+    {
+      etl::optional<int> o = 42;
+      o = etl::nullopt;
+
+      CHECK_EQUAL(false, o.has_value());
+    }
   };
 }
 
