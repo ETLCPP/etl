@@ -720,6 +720,7 @@ namespace etl
     //***************************************************************************
     ETL_CONSTEXPR14 optional& operator =(etl::nullopt_t)
     {
+      valid = false;
       return *this;
     }
 
