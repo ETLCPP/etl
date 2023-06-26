@@ -54,7 +54,7 @@ namespace etl
   ///\ingroup numeric
   //***************************************************************************
   template <typename TIterator, typename T>
-  void iota(TIterator first, TIterator last, T value)
+  ETL_CONSTEXPR14 void iota(TIterator first, TIterator last, T value)
   {
     while (first != last)
     {

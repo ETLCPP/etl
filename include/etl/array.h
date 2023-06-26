@@ -137,7 +137,7 @@ namespace etl
     /// Returns a reference to the value at index 'i'.
     ///\param i The index of the element to access.
     //*************************************************************************
-    reference operator[](size_t i)
+    ETL_CONSTEXPR14 reference operator[](size_t i)
     {
       return _buffer[i];
     }
@@ -155,7 +155,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reference to the first element.
     //*************************************************************************
-    reference front()
+    ETL_CONSTEXPR14 reference front()
     {
       return _buffer[0];
     }
@@ -171,7 +171,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reference to the last element.
     //*************************************************************************
-    reference back()
+    ETL_CONSTEXPR14 reference back()
     {
       return _buffer[SIZE - 1];
     }
@@ -187,7 +187,7 @@ namespace etl
     //*************************************************************************
     /// Returns a pointer to the first element of the internal buffer.
     //*************************************************************************
-    pointer data() ETL_NOEXCEPT
+    ETL_CONSTEXPR14 pointer data() ETL_NOEXCEPT
     {
       return &_buffer[0];
     }
@@ -207,7 +207,7 @@ namespace etl
     //*************************************************************************
     /// Returns an iterator to the beginning of the array.
     //*************************************************************************
-    iterator begin() ETL_NOEXCEPT
+    ETL_CONSTEXPR14 iterator begin() ETL_NOEXCEPT
     {
       return &_buffer[0];
     }
@@ -231,7 +231,7 @@ namespace etl
     //*************************************************************************
     /// Returns an iterator to the end of the array.
     //*************************************************************************
-    iterator end() ETL_NOEXCEPT
+    ETL_CONSTEXPR14 iterator end() ETL_NOEXCEPT
     {
       return _buffer + SIZE;
     }
@@ -255,7 +255,7 @@ namespace etl
     //*************************************************************************
     // Returns an reverse iterator to the reverse beginning of the array.
     //*************************************************************************
-    reverse_iterator rbegin() ETL_NOEXCEPT
+    ETL_CONSTEXPR14 reverse_iterator rbegin() ETL_NOEXCEPT
     {
       return reverse_iterator(end());
     }
@@ -279,7 +279,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reverse iterator to the end of the array.
     //*************************************************************************
-    reverse_iterator rend() ETL_NOEXCEPT
+    ETL_CONSTEXPR14 reverse_iterator rend() ETL_NOEXCEPT
     {
       return reverse_iterator(begin());
     }
@@ -336,7 +336,7 @@ namespace etl
     /// Fills the array with the specified value.
     ///\param value The value to fill the array with.
     //*************************************************************************
-    void fill(parameter_t value)
+    ETL_CONSTEXPR14 void fill(parameter_t value)
     {
       etl::fill(begin(), end(), value);
     }
