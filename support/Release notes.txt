@@ -8,6 +8,7 @@
 #712 Unable to use etl::optional with non-default-constructible POD objects.
 Modified etl::visitor to allow direct specification of the argument type.
 Added etl::is_visitor trait.
+Removed default link type for etl::intrusive_list and etl::intrusive_forward_list
 
 ===============================================================================
 20.36.2

@@ -69,6 +69,20 @@ namespace etl
   };
 
   //***************************************************************************
+  /// intrusive_stack_value_is_already_linked exception.
+  ///\ingroup intrusive_stack
+  //***************************************************************************
+  class intrusive_stack_value_is_already_linked : public intrusive_stack_exception
+  {
+  public:
+
+    intrusive_stack_value_is_already_linked(string_type file_name_, numeric_type line_number_)
+      : intrusive_stack_exception(ETL_ERROR_TEXT("intrusive_stack:value is already linked", ETL_INTRUSIVE_STACK_FILE_ID"B"), file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
   ///\ingroup stack
   /// Base for intrusive stack. Stores elements derived any type that supports an 'etl_next' pointer member.
   /// \tparam TLink  The link type that the value is derived from.
@@ -87,20 +101,11 @@ namespace etl
     //*************************************************************************
     void push(link_type& value)
     {
-      //if (value.is_linked())
-      //{
-      //  return;
-      //}
+      ETL_ASSERT_OR_RETURN(!value.is_linked(), ETL_ERROR(intrusive_stack_value_is_already_linked));
 
-      value.clear();
-
-      if (p_top != ETL_NULLPTR)
-      {
-        etl::link(value, p_top);
-      }
-
+      value.etl_next = p_top;
       p_top = &value;
-
+      
       ++current_size;
     }
 
@@ -111,9 +116,10 @@ namespace etl
     void pop()
     {
 #if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!empty(), ETL_ERROR(intrusive_stack_empty));
+      ETL_ASSERT_OR_RETURN(!empty(), ETL_ERROR(intrusive_stack_empty));
 #endif
       link_type* p_next = p_top->etl_next;
+      p_top->clear();
       p_top = p_next;
       --current_size;
     }
@@ -136,11 +142,11 @@ namespace etl
     //*************************************************************************
     void reverse()
     {
-      link_type* previous = ETL_NULLPTR;
+      link_type* previous = &terminator;
       link_type* current = p_top;
       link_type* next;
 
-      while (current != ETL_NULLPTR)
+      while (current != &terminator)
       {
         next = current->etl_next;
         current->etl_next = previous;
@@ -186,9 +192,9 @@ namespace etl
     /// Constructor
     //*************************************************************************
     intrusive_stack_base()
-      : p_top(ETL_NULLPTR),
-        current_size(0)
-    {
+      : p_top(&terminator)
+      , current_size(0)
+    {      
     }
 
     //*************************************************************************
@@ -198,7 +204,8 @@ namespace etl
     {
     }
 
-    link_type* p_top; ///< The current top of the stack.
+    link_type* p_top;      ///< The current top of the stack.
+    link_type  terminator; ///< Terminator link of the queue.
 
     size_t current_size; ///< Counts the number of elements in the list.
   };

@@ -138,10 +138,30 @@ namespace
       queueC.push(data2);
 
       queueD.clear();
+
+      CHECK_TRUE(queueD.empty());
+      CHECK_FALSE(queueC.empty());
+
+      CHECK_FALSE(etl::is_linked<link_fwd>(data1));
+      CHECK_FALSE(etl::is_linked<link_fwd>(data2));
+      CHECK_FALSE(etl::is_linked<link_fwd>(data3));
+
+      CHECK_TRUE(etl::is_linked<link_bdir>(data1));
+      CHECK_TRUE(etl::is_linked<link_bdir>(data2));
+      CHECK_FALSE(etl::is_linked<link_bdir>(data3));
+
       queueC.clear();
 
-      CHECK(queueD.empty());
-      CHECK(queueC.empty());
+      CHECK_FALSE(etl::is_linked<link_fwd>(data1));
+      CHECK_FALSE(etl::is_linked<link_fwd>(data2));
+      CHECK_FALSE(etl::is_linked<link_fwd>(data3));
+
+      CHECK_FALSE(etl::is_linked<link_bdir>(data1));
+      CHECK_FALSE(etl::is_linked<link_bdir>(data2));
+      CHECK_FALSE(etl::is_linked<link_bdir>(data3));
+
+      CHECK_TRUE(queueD.empty());
+      CHECK_TRUE(queueC.empty());
     }
 
     //*************************************************************************
@@ -186,34 +206,34 @@ namespace
       etl::intrusive_queue<Data, link_fwd> queue;
 
       queue.push(data1);
-      CHECK(data1.link_fwd::etl_next == ETL_NULLPTR);
-      CHECK(data2.link_fwd::etl_next == ETL_NULLPTR);
-      CHECK(data3.link_fwd::etl_next == ETL_NULLPTR);
-      CHECK(data4.link_fwd::etl_next == ETL_NULLPTR);
+      CHECK_TRUE(data1.link_fwd::is_linked());
+      CHECK_FALSE(data2.link_fwd::is_linked());
+      CHECK_FALSE(data3.link_fwd::is_linked());
+      CHECK_FALSE(data4.link_fwd::is_linked());
 
       queue.push(data2);
-      CHECK(data1.link_fwd::etl_next == &data2);
-      CHECK(data2.link_fwd::etl_next == ETL_NULLPTR);
-      CHECK(data3.link_fwd::etl_next == ETL_NULLPTR);
-      CHECK(data4.link_fwd::etl_next == ETL_NULLPTR);
+      CHECK_TRUE(data1.link_fwd::is_linked());
+      CHECK_TRUE(data2.link_fwd::is_linked());
+      CHECK_FALSE(data3.link_fwd::is_linked());
+      CHECK_FALSE(data4.link_fwd::is_linked());
 
       queue.push(data3);
-      CHECK(data1.link_fwd::etl_next == &data2);
-      CHECK(data2.link_fwd::etl_next == &data3);
-      CHECK(data3.link_fwd::etl_next == ETL_NULLPTR);
-      CHECK(data4.link_fwd::etl_next == ETL_NULLPTR);
+      CHECK_TRUE(data1.link_fwd::is_linked());
+      CHECK_TRUE(data2.link_fwd::is_linked());
+      CHECK_TRUE(data3.link_fwd::is_linked());
+      CHECK_FALSE(data4.link_fwd::is_linked());
 
-      queue.push(data2);
-      CHECK(data1.link_fwd::etl_next == &data2);
-      CHECK(data2.link_fwd::etl_next == &data3);
-      CHECK(data3.link_fwd::etl_next == ETL_NULLPTR);
-      CHECK(data4.link_fwd::etl_next == ETL_NULLPTR);
+      CHECK_THROW(queue.push(data2), etl::intrusive_queue_value_is_already_linked);
+      CHECK_TRUE(data1.link_fwd::is_linked());
+      CHECK_TRUE(data2.link_fwd::is_linked());
+      CHECK_TRUE(data3.link_fwd::is_linked());
+      CHECK_FALSE(data4.link_fwd::is_linked());
 
       queue.push(data4);
-      CHECK(data1.link_fwd::etl_next == &data2);
-      CHECK(data2.link_fwd::etl_next == &data3);
-      CHECK(data3.link_fwd::etl_next == &data4);
-      CHECK(data4.link_fwd::etl_next == ETL_NULLPTR);
+      CHECK_TRUE(data1.link_fwd::is_linked());
+      CHECK_TRUE(data2.link_fwd::is_linked());
+      CHECK_TRUE(data3.link_fwd::is_linked());
+      CHECK_TRUE(data4.link_fwd::is_linked());
 
       CHECK_EQUAL(4, queue.size());
     }
@@ -238,20 +258,25 @@ namespace
       CHECK_EQUAL(queueD.front(), data1);
       CHECK_EQUAL(queueD.back(), data3);
       queueD.pop();
+      CHECK_FALSE(data1.link_fwd::is_linked());
       CHECK_EQUAL(queueD.front(), data2);
       CHECK_EQUAL(queueD.back(), data3);
       queueD.pop();
+      CHECK_FALSE(data2.link_fwd::is_linked());
       CHECK_EQUAL(queueD.front(), data3);
       CHECK_EQUAL(queueD.back(), data3);
       queueD.pop();
+      CHECK_FALSE(data3.link_fwd::is_linked());
       CHECK(queueD.empty());
 
       CHECK_EQUAL(queueC.front(), data1);
       CHECK_EQUAL(queueC.back(), data2);
       queueC.pop();
+      CHECK_FALSE(data1.link_bdir::is_linked());
       CHECK_EQUAL(queueC.front(), data2);
       CHECK_EQUAL(queueC.back(), data2);
       queueC.pop();
+      CHECK_FALSE(data2.link_bdir::is_linked());
       CHECK(queueC.empty());
     }
 
@@ -266,10 +291,22 @@ namespace
       etl::intrusive_queue<Data, link_fwd> queue2;
 
       queue1.push(data1);
+      CHECK_TRUE(data1.link_fwd::is_linked());
+      CHECK_FALSE(data2.link_fwd::is_linked());
+      CHECK_FALSE(data3.link_fwd::is_linked());
+
       queue1.push(data2);
+      CHECK_TRUE(data1.link_fwd::is_linked());
+      CHECK_TRUE(data2.link_fwd::is_linked());
+      CHECK_FALSE(data3.link_fwd::is_linked());
+
       queue1.push(data3);
+      CHECK_TRUE(data1.link_fwd::is_linked());
+      CHECK_TRUE(data2.link_fwd::is_linked());
+      CHECK_TRUE(data3.link_fwd::is_linked());
 
       queue1.pop_into(queue2);
+      CHECK_TRUE(data1.link_fwd::is_linked());
       CHECK_EQUAL(2U, queue1.size());
       CHECK_EQUAL(data2, queue1.front());
 
@@ -278,6 +315,7 @@ namespace
       CHECK_EQUAL(data1, queue2.back());
 
       queue1.pop_into(queue2);
+      CHECK_TRUE(data2.link_fwd::is_linked());
       CHECK_EQUAL(1U, queue1.size());
       CHECK_EQUAL(data3, queue1.front());
 
@@ -286,6 +324,7 @@ namespace
       CHECK_EQUAL(data2, queue2.back());
 
       queue1.pop_into(queue2);
+      CHECK_TRUE(data3.link_fwd::is_linked());
       CHECK_EQUAL(0U, queue1.size());
 
       CHECK_EQUAL(3U, queue2.size());
@@ -305,24 +344,24 @@ namespace
       queue.push(data1);
       queue.push(data2);
       queue.push(data3);
-      CHECK_TRUE(data1.link_fwd::etl_next != ETL_NULLPTR);
-      CHECK_TRUE(data2.link_fwd::etl_next != ETL_NULLPTR);
-      CHECK_TRUE(data3.link_fwd::etl_next == ETL_NULLPTR);
+      CHECK_TRUE(data1.link_fwd::is_linked());
+      CHECK_TRUE(data2.link_fwd::is_linked());
+      CHECK_TRUE(data3.link_fwd::is_linked());
 
       queue.pop();
-      CHECK_TRUE(data1.link_fwd::etl_next == ETL_NULLPTR);
-      CHECK_TRUE(data2.link_fwd::etl_next != ETL_NULLPTR);
-      CHECK_TRUE(data3.link_fwd::etl_next == ETL_NULLPTR);
+      CHECK_FALSE(data1.link_fwd::is_linked());
+      CHECK_TRUE(data2.link_fwd::is_linked());
+      CHECK_TRUE(data3.link_fwd::is_linked());
 
       queue.pop();
-      CHECK_TRUE(data1.link_fwd::etl_next == ETL_NULLPTR);
-      CHECK_TRUE(data2.link_fwd::etl_next == ETL_NULLPTR);
-      CHECK_TRUE(data3.link_fwd::etl_next == ETL_NULLPTR);
+      CHECK_FALSE(data1.link_fwd::is_linked());
+      CHECK_FALSE(data2.link_fwd::is_linked());
+      CHECK_TRUE(data3.link_fwd::is_linked());
 
       queue.pop();
-      CHECK_TRUE(data1.link_fwd::etl_next == ETL_NULLPTR);
-      CHECK_TRUE(data2.link_fwd::etl_next == ETL_NULLPTR);
-      CHECK_TRUE(data3.link_fwd::etl_next == ETL_NULLPTR);
+      CHECK_FALSE(data1.link_fwd::is_linked());
+      CHECK_FALSE(data2.link_fwd::is_linked());
+      CHECK_FALSE(data3.link_fwd::is_linked());
     }
 
     //*************************************************************************
@@ -337,24 +376,24 @@ namespace
       queue.push(data1);
       queue.push(data2);
       queue.push(data3);
-      CHECK_TRUE(data1.link_bdir::etl_next != ETL_NULLPTR);
-      CHECK_TRUE(data2.link_bdir::etl_next != ETL_NULLPTR);
-      CHECK_TRUE(data3.link_bdir::etl_next == ETL_NULLPTR);
+      CHECK_TRUE(data1.link_bdir::is_linked());
+      CHECK_TRUE(data2.link_bdir::is_linked());
+      CHECK_TRUE(data3.link_bdir::is_linked());
 
       queue.pop();
-      CHECK_TRUE(data1.link_bdir::etl_next == ETL_NULLPTR);
-      CHECK_TRUE(data2.link_bdir::etl_next != ETL_NULLPTR);
-      CHECK_TRUE(data3.link_bdir::etl_next == ETL_NULLPTR);
+      CHECK_FALSE(data1.link_bdir::is_linked());
+      CHECK_TRUE(data2.link_bdir::is_linked());
+      CHECK_TRUE(data3.link_bdir::is_linked());
 
       queue.pop();
-      CHECK_TRUE(data1.link_bdir::etl_next == ETL_NULLPTR);
-      CHECK_TRUE(data2.link_bdir::etl_next == ETL_NULLPTR);
-      CHECK_TRUE(data3.link_bdir::etl_next == ETL_NULLPTR);
+      CHECK_FALSE(data1.link_bdir::is_linked());
+      CHECK_FALSE(data2.link_bdir::is_linked());
+      CHECK_TRUE(data3.link_bdir::is_linked());
 
       queue.pop();
-      CHECK_TRUE(data1.link_bdir::etl_next == ETL_NULLPTR);
-      CHECK_TRUE(data2.link_bdir::etl_next == ETL_NULLPTR);
-      CHECK_TRUE(data3.link_bdir::etl_next == ETL_NULLPTR);
+      CHECK_FALSE(data1.link_bdir::is_linked());
+      CHECK_FALSE(data2.link_bdir::is_linked());
+      CHECK_FALSE(data3.link_bdir::is_linked());
     }
 
     //*************************************************************************

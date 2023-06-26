@@ -69,8 +69,22 @@ namespace etl
   };
 
   //***************************************************************************
+  /// intrusive_queue_value_is_already_linked exception.
+  ///\ingroup intrusive_queue
+  //***************************************************************************
+  class intrusive_queue_value_is_already_linked : public intrusive_queue_exception
+  {
+  public:
+
+    intrusive_queue_value_is_already_linked(string_type file_name_, numeric_type line_number_)
+      : intrusive_queue_exception(ETL_ERROR_TEXT("intrusive_queue:value is already linked", ETL_INTRUSIVE_QUEUE_FILE_ID"B"), file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
   ///\ingroup queue
-  /// Base for intrusive queue. Stores elements derived any type that supports an 'etl_next' pointer member.
+  /// Base for intrusive queue. Stores elements derived any ETL type that supports an 'etl_next' pointer member.
   /// \tparam TLink  The link type that the value is derived from.
   //***************************************************************************
   template <typename TLink>
@@ -87,21 +101,19 @@ namespace etl
     //*************************************************************************
     void push(link_type& value)
     {
-      //if (value.is_linked())
-      //{
-      //  return;
-      //}
+      ETL_ASSERT_OR_RETURN(!value.is_linked(), ETL_ERROR(intrusive_queue_value_is_already_linked));
 
-      if (p_back != ETL_NULLPTR)
+      if (empty())
       {
-        etl::link(p_back, value);
+        terminator.etl_next = &value;
       }
       else
       {
-        p_front = &value;
+        p_back->etl_next = &value;
       }
 
       p_back = &value;
+      value.etl_next = &terminator;
 
       ++current_size;
     }
@@ -113,16 +125,19 @@ namespace etl
     void pop()
     {
 #if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!empty(), ETL_ERROR(intrusive_queue_empty));
+      ETL_ASSERT_OR_RETURN(!empty(), ETL_ERROR(intrusive_queue_empty));
 #endif
-      link_type* p_next = p_front->etl_next;
-      p_front->clear();
-      p_front = p_next;
 
-      // Now empty?
-      if (p_front == ETL_NULLPTR)
+      link_type* p_front = terminator.etl_next;
+
+      link_type* p_next = p_front->etl_next;
+      terminator.etl_next = p_next;
+
+      p_front->clear();
+
+      if (empty())
       {
-        p_back = ETL_NULLPTR;
+        p_back = &terminator;
       }
 
       --current_size;
@@ -136,7 +151,7 @@ namespace etl
     template <typename TContainer>
     void pop_into(TContainer& destination)
     {
-      link_type* p_link = p_front;
+      link_type* p_link = terminator.etl_next;
       pop();
       destination.push(*p_link);
     }
@@ -176,10 +191,10 @@ namespace etl
     /// Constructor
     //*************************************************************************
     intrusive_queue_base()
-      : p_front(ETL_NULLPTR),
-        p_back(ETL_NULLPTR),
-        current_size(0)
+      : p_back (&terminator)
+      , current_size(0)
     {
+      terminator.etl_next = &terminator;
     }
 
     //*************************************************************************
@@ -189,8 +204,8 @@ namespace etl
     {
     }
 
-    link_type* p_front; ///< The current front of the queue.
-    link_type* p_back;  ///< The current back of the queue.
+    link_type* p_back;     ///< Pointer to the current back of the queue.
+    link_type  terminator; ///< This link terminates the queue and points to the front of the queue.
 
     size_t current_size; ///< Counts the number of elements in the list.
   };
@@ -233,7 +248,7 @@ namespace etl
     //*************************************************************************
     reference front()
     {
-      return *static_cast<TValue*>(this->p_front);
+      return *static_cast<TValue*>(this->terminator.etl_next);
     }
 
     //*************************************************************************
@@ -253,7 +268,7 @@ namespace etl
     //*************************************************************************
     const_reference front() const
     {
-      return *static_cast<const TValue*>(this->p_front);
+      return *static_cast<const TValue*>(this->terminator.etl_next);
     }
 
     //*************************************************************************

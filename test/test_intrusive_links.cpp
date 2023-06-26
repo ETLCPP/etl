@@ -106,19 +106,19 @@ namespace
       FData data2(2);
       FData data3(3);
 
-      data0.FLink0::clear();
+      etl::link_clear<FLink0>(data0);
       etl::link<FLink0>(data0,  data1);
       CHECK(data0.FLink0::etl_next == &data1);
 
-      data0.FLink0::clear();
+      etl::link_clear<FLink0>(data0);
       etl::link<FLink0>(&data0, data1);
       CHECK(data0.FLink0::etl_next == &data1);
 
-      data0.FLink0::clear();
+      etl::link_clear<FLink0>(data0);
       etl::link<FLink0>(data0,  &data1);
       CHECK(data0.FLink0::etl_next == &data1);
 
-      data0.FLink0::clear();
+      etl::link_clear<FLink0>(data0);
       etl::link<FLink0>(&data0, &data1);
       CHECK(data0.FLink0::etl_next == &data1);
 
@@ -390,7 +390,7 @@ namespace
       FLink0* start = etl::unlink_after<FLink0>(data0, data2);
       CHECK(data0.FLink0::etl_next == &data3);
       CHECK(data1.FLink0::etl_next == &data2);
-      CHECK(data2.FLink0::etl_next == &data3);
+      CHECK(data2.FLink0::etl_next == nullptr);
       CHECK(data3.FLink0::etl_next == nullptr);
       
       etl::link_clear_range(*start);
@@ -416,7 +416,7 @@ namespace
 
       etl::unlink_after<FLink0>(data0);
 
-      CHECK(data0.FLink0::etl_next == &data0);
+      CHECK(data0.FLink0::etl_next == nullptr);
     }
 
     //*************************************************************************

@@ -138,10 +138,30 @@ namespace
       stackC.push(data2);
 
       stackD.clear();
+
+      CHECK_TRUE(stackD.empty());
+      CHECK_FALSE(stackC.empty());
+
+      CHECK_FALSE(etl::is_linked<link0>(data1));
+      CHECK_FALSE(etl::is_linked<link0>(data2));
+      CHECK_FALSE(etl::is_linked<link0>(data3));
+
+      CHECK_TRUE(etl::is_linked<link1>(data1));
+      CHECK_TRUE(etl::is_linked<link1>(data2));
+      CHECK_FALSE(etl::is_linked<link1>(data3));
+
       stackC.clear();
 
-      CHECK(stackD.empty());
-      CHECK(stackC.empty());
+      CHECK_FALSE(etl::is_linked<link0>(data1));
+      CHECK_FALSE(etl::is_linked<link0>(data2));
+      CHECK_FALSE(etl::is_linked<link0>(data3));
+
+      CHECK_FALSE(etl::is_linked<link1>(data1));
+      CHECK_FALSE(etl::is_linked<link1>(data2));
+      CHECK_FALSE(etl::is_linked<link1>(data3));
+
+      CHECK_TRUE(stackD.empty());
+      CHECK_TRUE(stackC.empty());
     }
 
     //*************************************************************************
