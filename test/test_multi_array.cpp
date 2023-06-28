@@ -87,8 +87,8 @@ namespace
         }
       }
 
-      CHECK_THROW(data.at(data.size()), etl::array_out_of_range);
-      CHECK_THROW(data[0].at(data[0].size()), etl::array_out_of_range);
+      CHECK_THROW({ auto d = data.at(data.size()); (void)d; }, etl::array_out_of_range);
+      CHECK_THROW({ auto d = data[0].at(data[0].size()); (void)d; }, etl::array_out_of_range);
     }
 
     //*************************************************************************
@@ -103,7 +103,7 @@ namespace
           CHECK_EQUAL(data[i].at(j), compare_data[i].at(j));
         }
 
-        CHECK_THROW(data.at(data.size()), etl::array_out_of_range);
+        CHECK_THROW({ auto d = data.at(data.size()); (void)d; }, etl::array_out_of_range);
       }
     }
 
