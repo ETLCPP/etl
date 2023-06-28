@@ -236,6 +236,7 @@ SOFTWARE.
 // C++11
 #if ETL_USING_CPP11 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
   #define ETL_CONSTEXPR                   constexpr
+  #define ETL_CONSTEXPR11                 constexpr // Synonym for ETL_CONSTEXPR
   #define ETL_CONSTANT                    constexpr
   #define ETL_STATIC_CONSTANT             constexpr
   #define ETL_DELETE                      = delete
@@ -257,6 +258,7 @@ SOFTWARE.
   #endif
 #else
   #define ETL_CONSTEXPR
+  #define ETL_CONSTEXPR11
   #define ETL_CONSTANT                    const
   #define ETL_STATIC_CONSTANT             static const
   #define ETL_DELETE
