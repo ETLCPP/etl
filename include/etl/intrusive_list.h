@@ -105,6 +105,20 @@ namespace etl
   };
 
   //***************************************************************************
+  /// Already exception for the intrusive_list.
+  ///\ingroup intrusive_list
+  //***************************************************************************
+  class intrusive_list_value_is_already_linked : public intrusive_list_exception
+  {
+  public:
+
+    intrusive_list_value_is_already_linked(string_type file_name_, numeric_type line_number_)
+      : intrusive_list_exception(ETL_ERROR_TEXT("intrusive_list:value is already linked", ETL_INTRUSIVE_LIST_FILE_ID"E"), file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
   /// Base for intrusive list.
   ///\ingroup intrusive_list
   //***************************************************************************
@@ -148,6 +162,8 @@ namespace etl
     //*************************************************************************
     void push_front(link_type& value)
     {
+      ETL_ASSERT_OR_RETURN(!value.is_linked(), ETL_ERROR(intrusive_list_value_is_already_linked));
+
       insert_link(terminal_link, value);
     }
 
@@ -167,6 +183,8 @@ namespace etl
     //*************************************************************************
     void push_back(link_type& value)
     {
+      ETL_ASSERT_OR_RETURN(!value.is_linked(), ETL_ERROR(intrusive_list_value_is_already_linked));
+
       insert_link(terminal_link.link_type::etl_previous, value);
     }
 

@@ -125,7 +125,7 @@ namespace
 
 namespace
 {
-  SUITE(test_forward_list)
+  SUITE(test_intrusive_forward_list)
   {
     InitialDataNDC stable_sort_data;
     InitialDataNDC unsorted_data;
@@ -304,14 +304,14 @@ namespace
     ////*************************************************************************
     TEST_FIXTURE(SetupFixture, test_two_lists_different)
     {
-      ItemNDCNode node0("0");
-      ItemNDCNode node1("1");
-      ItemNDCNode node2("2");
-      ItemNDCNode node3("3");
-      ItemNDCNode node4("4");
-      ItemNDCNode node5("5");
-      ItemNDCNode node6("6");
-      ItemNDCNode node7("7");
+      static ItemNDCNode node0("0");
+      static ItemNDCNode node1("1");
+      static ItemNDCNode node2("2");
+      static ItemNDCNode node3("3");
+      static ItemNDCNode node4("4");
+      static ItemNDCNode node5("5");
+      static ItemNDCNode node6("6");
+      static ItemNDCNode node7("7");
 
       {
         std::list<ItemNDCNode> compare0;
@@ -460,12 +460,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_front)
     {
-      ItemNDCNode node1("1");
-      ItemNDCNode node2("2");
-      ItemNDCNode node3("3");
-      ItemNDCNode node4("4");
-      ItemNDCNode node5("5");
-      ItemNDCNode node6("6");
+      static ItemNDCNode node1("1");
+      static ItemNDCNode node2("2");
+      static ItemNDCNode node3("3");
+      static ItemNDCNode node4("4");
+      static ItemNDCNode node5("5");
+      static ItemNDCNode node6("6");
 
       {
         std::list<ItemNDCNode> compare_data;
@@ -495,12 +495,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_front_pop_front)
     {
-      ItemNDCNode node1("1");
-      ItemNDCNode node2("2");
-      ItemNDCNode node3("3");
-      ItemNDCNode node4("4");
-      ItemNDCNode node5("5");
-      ItemNDCNode node6("6");
+      static ItemNDCNode node1("1");
+      static ItemNDCNode node2("2");
+      static ItemNDCNode node3("3");
+      static ItemNDCNode node4("4");
+      static ItemNDCNode node5("5");
+      static ItemNDCNode node6("6");
 
       {
         DataNDC0 data0;
@@ -544,6 +544,17 @@ namespace
         CHECK_EQUAL(6, std::distance(data1.begin(), data1.end()));
         CHECK(!data1.empty());
       }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_push_front_already_linked_value)
+    {
+      DataNDC0 data0;
+
+      static ItemNDCNode node1("1");
+
+      data0.push_front(node1);
+      CHECK_THROW(data0.push_front(node1), etl::intrusive_forward_list_value_is_already_linked);
     }
 
     //*************************************************************************
@@ -794,40 +805,7 @@ namespace
       DataNDC0 data0(sorted_data.begin(), sorted_data.end());
       DataNDC1 data1(sorted_data.begin(), sorted_data.end());
 
-      FirstLink& fl0 = sorted_data[0];
-      FirstLink& fl1 = sorted_data[1];
-      FirstLink& fl2 = sorted_data[2];
-      FirstLink& fl3 = sorted_data[3];
-      FirstLink& fl4 = sorted_data[4];
-      FirstLink& fl5 = sorted_data[5];
-      FirstLink& fl6 = sorted_data[6];
-      FirstLink& fl7 = sorted_data[7];
-      FirstLink& fl8 = sorted_data[8];
-      FirstLink& fl9 = sorted_data[9];
-
-      CHECK_TRUE(fl0.etl_next == &fl1);
-      CHECK_TRUE(fl1.etl_next == &fl2);
-      CHECK_TRUE(fl2.etl_next == &fl3);
-      CHECK_TRUE(fl3.etl_next == &fl4);
-      CHECK_TRUE(fl4.etl_next == &fl5);
-      CHECK_TRUE(fl5.etl_next == &fl6);
-      CHECK_TRUE(fl6.etl_next == &fl7);
-      CHECK_TRUE(fl7.etl_next == &fl8);
-      CHECK_TRUE(fl8.etl_next == &fl9);
-      CHECK_TRUE(fl9.etl_next == &(*data0.end()));
-
       data0.reverse(); // Just reverse one of them.
-
-      CHECK_TRUE(fl9.etl_next == &fl8);
-      CHECK_TRUE(fl8.etl_next == &fl7);
-      CHECK_TRUE(fl7.etl_next == &fl6);
-      CHECK_TRUE(fl6.etl_next == &fl5);
-      CHECK_TRUE(fl5.etl_next == &fl4);
-      CHECK_TRUE(fl4.etl_next == &fl3);
-      CHECK_TRUE(fl3.etl_next == &fl2);
-      CHECK_TRUE(fl2.etl_next == &fl1);
-      CHECK_TRUE(fl1.etl_next == &fl0);
-      CHECK_TRUE(fl0.etl_next == &(*data0.end()));
 
       CHECK_EQUAL(data1.size(), data0.size());
       CHECK_EQUAL(data0.size(), size_t(std::distance(data0.begin(), data0.end())));

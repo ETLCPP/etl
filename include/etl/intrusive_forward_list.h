@@ -305,7 +305,7 @@ namespace etl
     {
       link_type* p_next = link.etl_next;
 
-      if (p_next != ETL_NULLPTR)
+      if (p_next != &this->terminator)
       {
         link_type* p_unlinked = etl::unlink_after<link_type>(link);
         p_unlinked->clear();
@@ -729,7 +729,7 @@ namespace etl
       link_type* last    = this->get_head();
       link_type* current = last->etl_next;
 
-      while (current != ETL_NULLPTR)
+      while (current != &this->terminator)
       {
         // Is this value the same as the last?
         if (isEqual(*static_cast<pointer>(current), *static_cast<pointer>(last)))

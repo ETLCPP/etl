@@ -431,14 +431,14 @@ namespace
       DataNDC0 data0;
       DataNDC1 data1;
 
-      ItemNDCNode node0("0");
-      ItemNDCNode node1("1");
-      ItemNDCNode node2("2");
-      ItemNDCNode node3("3");
-      ItemNDCNode node4("4");
-      ItemNDCNode node5("5");
-      ItemNDCNode node6("6");
-      ItemNDCNode node7("7");
+      static ItemNDCNode node0("0");
+      static ItemNDCNode node1("1");
+      static ItemNDCNode node2("2");
+      static ItemNDCNode node3("3");
+      static ItemNDCNode node4("4");
+      static ItemNDCNode node5("5");
+      static ItemNDCNode node6("6");
+      static ItemNDCNode node7("7");
 
       compare0.push_front(node0);
       compare0.push_front(node1);
@@ -593,12 +593,12 @@ namespace
       std::list<ItemNDCNode> compare_data;
       DataNDC0 data0;
 
-      ItemNDCNode node1("1");
-      ItemNDCNode node2("2");
-      ItemNDCNode node3("3");
-      ItemNDCNode node4("4");
-      ItemNDCNode node5("5");
-      ItemNDCNode node6("6");
+      static ItemNDCNode node1("1");
+      static ItemNDCNode node2("2");
+      static ItemNDCNode node3("3");
+      static ItemNDCNode node4("4");
+      static ItemNDCNode node5("5");
+      static ItemNDCNode node6("6");
 
       compare_data.push_front(node1);
       compare_data.push_front(node2);
@@ -626,12 +626,12 @@ namespace
       DataNDC0 data0;
       DataNDC1 data1;
 
-      ItemNDCNode node1("1");
-      ItemNDCNode node2("2");
-      ItemNDCNode node3("3");
-      ItemNDCNode node4("4");
-      ItemNDCNode node5("5");
-      ItemNDCNode node6("6");
+      static ItemNDCNode node1("1");
+      static ItemNDCNode node2("2");
+      static ItemNDCNode node3("3");
+      static ItemNDCNode node4("4");
+      static ItemNDCNode node5("5");
+      static ItemNDCNode node6("6");
 
       data0.push_front(node1);
       data0.push_front(node2);
@@ -670,6 +670,28 @@ namespace
       CHECK_EQUAL(6U, data1.size());
       CHECK_EQUAL(6, std::distance(data1.begin(), data1.end()));
       CHECK(!data1.empty());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_push_front_already_linked_value)
+    {
+      DataNDC0 data0;
+
+      static ItemNDCNode node1("1");
+
+      data0.push_front(node1);
+      CHECK_THROW(data0.push_front(node1), etl::intrusive_list_value_is_already_linked);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_push_back_already_linked_value)
+    {
+      DataNDC0 data0;
+
+      static ItemNDCNode node1("1");
+
+      data0.push_front(node1);
+      CHECK_THROW(data0.push_back(node1), etl::intrusive_list_value_is_already_linked);
     }
 
     //*************************************************************************
