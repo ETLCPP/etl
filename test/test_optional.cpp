@@ -508,6 +508,15 @@ namespace
       // Make sure it isn't optimised away.
       CHECK_FALSE(optionalObject.has_value());
     }
+
+    //*************************************************************************
+    TEST(test_optional_pod_assign_bug_714)
+    {
+      etl::optional<int> o = 42;
+      o = etl::nullopt;
+
+      CHECK_EQUAL(false, o.has_value());
+    }
   };
 }
 
