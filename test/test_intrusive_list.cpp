@@ -223,6 +223,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_iterator_arrow_operator)
+    {
+      ItemNDCNode item1("1");
+      ItemNDCNode item2("2");
+      DataNDC0 data;
+      data.push_back(item1);
+      data.push_back(item2);
+
+      auto iter = data.begin();
+      CHECK(*(iter.operator->()) == item1);
+      ++iter;
+      CHECK(*(iter.operator->()) == item2);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_iterator)
     {
       bool are_equal;
@@ -232,6 +247,21 @@ namespace
       are_equal = std::equal(data0.cbegin(), data0.cend(), sorted_data.begin());
 
       CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_const_iterator_arrow_operator)
+    {
+      ItemNDCNode item1("1");
+      ItemNDCNode item2("2");
+      DataNDC0 data;
+      data.push_back(item1);
+      data.push_back(item2);
+
+      auto iter = data.cbegin();
+      CHECK(*(iter.operator->()) == item1);
+      ++iter;
+      CHECK(*(iter.operator->()) == item2);
     }
 
     //*************************************************************************
