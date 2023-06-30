@@ -548,6 +548,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_position_set_invalid_position_does_not_corrupt_memory_github_issue_722)
+    {
+      etl::bitset<12> data;
+      ETL_MAYBE_UNUSED uint16_t some_memory = 0;
+
+      data.set(17);
+      CHECK_EQUAL(some_memory, 0);
+    }
+
+    //*************************************************************************
     TEST(test_reset)
     {
       std::bitset<60> compare(0xFFFFFFFFFFFFFFFULL);
@@ -614,6 +624,27 @@ namespace
       {
         CHECK_EQUAL(compare.test(i), data.test(i));
       }
+    }
+
+    //*************************************************************************
+    TEST(test_position_reset_invalid_position_does_not_corrupt_memory_github_issue_722)
+    {
+      etl::bitset<12> data;
+      ETL_MAYBE_UNUSED uint16_t some_memory = 0xFFFFU;
+
+      data.reset(17);
+      CHECK_EQUAL(some_memory, 0xFFFFU);
+    }
+
+    //*************************************************************************
+    TEST(test_position_test_invalid_position_returns_always_false_github_issue_722)
+    {
+      etl::bitset<12> data;
+      ETL_MAYBE_UNUSED uint16_t some_memory = 0xFFFFU;
+
+      data.set(13);
+      CHECK_FALSE(data.test(13));
+      CHECK_FALSE(data.test(17));
     }
 
     //*************************************************************************
