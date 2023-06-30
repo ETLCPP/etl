@@ -638,6 +638,17 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_position_set_invalid_position_does_not_corrupt_memory_github_issue_722)
+    {
+      etl::bitset<12, uint16_t> data;
+      uint16_t some_memory = 0;
+      (void) some_memory;
+
+      data.set(17);
+      CHECK_EQUAL(some_memory, 0);
+    }
+
+    //*************************************************************************
     ETL_CONSTEXPR14 etl::bitset<64, int64_t> test_reset_helper()
     {
       etl::bitset<64, int64_t> data(0xFFFFFFFFFFFFFFFULL);
@@ -697,6 +708,29 @@ namespace
       {
         CHECK_EQUAL(compare.test(i), data.test(i));
       }
+    }
+
+    //*************************************************************************
+    TEST(test_position_reset_invalid_position_does_not_corrupt_memory_github_issue_722)
+    {
+      etl::bitset<12, uint16_t> data;
+      uint16_t some_memory = 0xFFFFU;
+      (void) some_memory;
+
+      data.reset(17);
+      CHECK_EQUAL(some_memory, 0xFFFFU);
+    }
+
+    //*************************************************************************
+    TEST(test_position_test_invalid_position_returns_always_false_github_issue_722)
+    {
+      etl::bitset<12, uint16_t> data;
+      uint16_t some_memory = 0xFFFFU;
+      (void) some_memory;
+
+      data.set(13);
+      CHECK_FALSE(data.test(13));
+      CHECK_FALSE(data.test(17));
     }
 
     //*************************************************************************

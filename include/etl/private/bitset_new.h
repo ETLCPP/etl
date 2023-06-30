@@ -1921,8 +1921,11 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset<Active_Bits, TElement, false>& set(size_t position, bool value = true) ETL_NOEXCEPT
     {
-      ibitset.set(buffer, Number_Of_Elements, position, value);
-      clear_unused_bits_in_msb();
+      if (position < Active_Bits)
+      {
+        ibitset.set(buffer, Number_Of_Elements, position, value);
+        clear_unused_bits_in_msb();
+      }
       
       return *this;
     }
@@ -2051,7 +2054,10 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset<Active_Bits, TElement, false>& reset(size_t position) ETL_NOEXCEPT
     {
-      ibitset.reset(buffer, Number_Of_Elements, position);
+      if (position < Active_Bits)
+      {
+        ibitset.reset(buffer, Number_Of_Elements, position);
+      }
       return *this;
     }
 
@@ -2061,7 +2067,14 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bool test(size_t position) const ETL_NOEXCEPT
     {
-      return ibitset.test(buffer, Number_Of_Elements, position);
+      if (position < Active_Bits)
+      {
+        return ibitset.test(buffer, Number_Of_Elements, position);
+      }
+      else
+      {
+        return false;
+      }
     }
  
     //*************************************************************************
@@ -3633,8 +3646,11 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, false>& set(size_t position, bool value = true) ETL_NOEXCEPT
     {
-      ibitset.set(pbuffer, Number_Of_Elements, position, value);
-      clear_unused_bits_in_msb();
+      if (position < Active_Bits)
+      {
+        ibitset.set(pbuffer, Number_Of_Elements, position, value);
+        clear_unused_bits_in_msb();
+      }
 
       return *this;
     }
@@ -3763,7 +3779,10 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement, false>& reset(size_t position) ETL_NOEXCEPT
     {
-      ibitset.reset(pbuffer, Number_Of_Elements, position);
+      if (position < Active_Bits)
+      {
+        ibitset.reset(pbuffer, Number_Of_Elements, position);
+      }
       return *this;
     }
 
@@ -3773,7 +3792,14 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bool test(size_t position) const ETL_NOEXCEPT
     {
-      return ibitset.test(pbuffer, Number_Of_Elements, position);
+      if (position < Active_Bits)
+      {
+        return ibitset.test(pbuffer, Number_Of_Elements, position);
+      }
+      else
+      {
+        return false;
+      }
     }
 
     //*************************************************************************
