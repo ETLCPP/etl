@@ -440,7 +440,7 @@ namespace etl
 
       pointer operator ->() const
       {
-        return *static_cast<pointer>(p_value);
+        return static_cast<pointer>(p_value);
       }
 
       friend bool operator == (const iterator& lhs, const iterator& rhs)
