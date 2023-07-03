@@ -548,6 +548,13 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_position_set_invalid_position_raises_bitset_overflow_github_issue_722)
+    {
+      etl::bitset<12> data;
+      CHECK_THROW(data.set(13), etl::bitset_overflow);
+    }
+
+    //*************************************************************************
     TEST(test_reset)
     {
       std::bitset<60> compare(0xFFFFFFFFFFFFFFFULL);
@@ -614,6 +621,30 @@ namespace
       {
         CHECK_EQUAL(compare.test(i), data.test(i));
       }
+    }
+
+    //*************************************************************************
+    TEST(test_position_reset_invalid_position_raises_bitset_overflow_github_issue_722)
+    {
+      etl::bitset<12> data;
+
+      CHECK_THROW(data.reset(13), etl::bitset_overflow);
+    }
+
+    //*************************************************************************
+    TEST(test_position_flip_invalid_position_raises_bitset_overflow_github_issue_722)
+    {
+      etl::bitset<12> data;
+
+      CHECK_THROW(data.flip(13), etl::bitset_overflow);
+    }
+
+    //*************************************************************************
+    TEST(test_position_test_invalid_position_raises_bitset_overflow_github_issue_722)
+    {
+      etl::bitset<12> data;
+
+      CHECK_THROW(data.test(13), etl::bitset_overflow);
     }
 
     //*************************************************************************

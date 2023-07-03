@@ -1266,6 +1266,15 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_position_set_invalid_position_raises_bitset_overflow_github_issue_722)
+    {
+      etl::bitset_ext<12>::buffer_type buffer;
+      etl::bitset_ext<12> data(buffer);
+
+      CHECK_THROW(data.set(13), etl::bitset_overflow);
+    }
+
+    //*************************************************************************
     TEST(test_reset)
     {
       etl::bitset_ext<60>::buffer_type buffer;
@@ -1316,6 +1325,33 @@ namespace
       {
         CHECK_EQUAL(compare.test(i), data.test(i));
       }
+    }
+
+    //*************************************************************************
+    TEST(test_position_reset_invalid_position_raises_bitset_overflow_github_issue_722)
+    {
+      etl::bitset_ext<12>::buffer_type buffer;
+      etl::bitset_ext<12> data(buffer);
+
+      CHECK_THROW(data.reset(13), etl::bitset_overflow);
+    }
+
+    //*************************************************************************
+    TEST(test_position_flip_invalid_position_raises_bitset_overflow_github_issue_722)
+    {
+      etl::bitset_ext<12>::buffer_type buffer;
+      etl::bitset_ext<12> data(buffer);
+
+      CHECK_THROW(data.flip(13), etl::bitset_overflow);
+    }
+
+    //*************************************************************************
+    TEST(test_position_test_invalid_position_raises_bitset_overflow_github_issue_722)
+    {
+      etl::bitset_ext<12>::buffer_type buffer;
+      etl::bitset_ext<12> data(buffer);
+
+      CHECK_THROW(data.test(13), etl::bitset_overflow);
     }
 
     //*************************************************************************
