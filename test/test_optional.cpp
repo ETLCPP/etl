@@ -165,6 +165,33 @@ namespace
     }
 
     //*************************************************************************
+    struct github_bug_720_bug_helper
+    {
+      int value{ 5 };
+
+      etl::optional<int> get_valid() const
+      {
+        return value;
+      }
+
+      etl::optional<int> get_invalid() const
+      {
+        return etl::optional<int>();
+      }
+    };
+
+    TEST(test_chained_value_or_github_bug_720 )
+    {
+      github_bug_720_bug_helper helper {};
+
+      int value1 = helper.get_valid().value_or(1);
+      CHECK_EQUAL(5, value1);
+
+      int value2 = helper.get_invalid().value_or(1);
+      CHECK_EQUAL(1, value2);
+    }
+
+    //*************************************************************************
     TEST(test_equality)
     {
       etl::optional<Data> data1;

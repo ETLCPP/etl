@@ -435,10 +435,23 @@ namespace etl
     //***************************************************************************
     /// Gets the value or a default if not valid.
     //***************************************************************************
+    template <typename U>
     ETL_CONSTEXPR20_STL
-    T&& value_or(T&& default_value) const&&
+    etl::enable_if_t<etl::is_convertible<U, T>::value, T>
+      value_or(U&& default_value) const&
     {
-      return has_value() ? etl::move(value()) : default_value;
+      return has_value() ? value() : etl::forward<T>(default_value);
+    }
+
+    //***************************************************************************
+    /// Gets the value or a default if not valid.
+    //***************************************************************************
+    template <typename U>
+    ETL_CONSTEXPR20_STL
+    etl::enable_if_t<etl::is_convertible<U, T>::value, T>
+      value_or(U&& default_value) &&
+    {
+      return has_value() ? etl::move(value()) : etl::forward<T>(default_value);
     }
 #endif
 
@@ -927,11 +940,39 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Gets the value or a default if no valid.
+    /// Gets the value or a default if not valid.
     //***************************************************************************
-    ETL_CONSTEXPR14 T&& value_or(T&& default_value) const&&
+    template <typename U>
+    ETL_CONSTEXPR20_STL
+    etl::enable_if_t<etl::is_convertible<U, T>::value, T>
+      value_or(U&& default_value) const&
     {
-      return valid ? etl::move(value()) : default_value;
+      if (has_value())
+      {
+        return value();
+      }
+      else
+      {
+        return static_cast<T>(etl::forward<U>(default_value));
+      }
+    }
+
+    //***************************************************************************
+    /// Gets the value or a default if not valid.
+    //***************************************************************************
+    template <typename U>
+    ETL_CONSTEXPR20_STL
+    etl::enable_if_t<etl::is_convertible<U, T>::value, T>
+      value_or(U&& default_value) &&
+    {
+      if (has_value())
+      {
+        return etl::move(value());
+      }
+      else
+      {
+        return static_cast<T>(etl::forward<U>(default_value));
+      }
     }
 #endif
 

@@ -542,7 +542,8 @@ namespace etl
     template <typename U>
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    value_type value_or(U&& default_value) const&
+    etl::enable_if_t<etl::is_convertible<U, value_type>::value, value_type>
+      value_or(U&& default_value) const&
     {
       if (has_value())
       {
@@ -550,7 +551,7 @@ namespace etl
       }
       else
       {
-        return default_value;
+        return static_cast<value_type>(etl::forward<U>(default_value));
       }
     }
 
@@ -560,7 +561,8 @@ namespace etl
     template <typename U>
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    value_type value_or(U&& default_value)&&
+    etl::enable_if_t<etl::is_convertible<U, value_type>::value, value_type>
+      value_or(U&& default_value)&&
     {
       if (has_value())
       {
@@ -568,7 +570,7 @@ namespace etl
       }
       else
       {
-        return etl::move(default_value);
+        return static_cast<value_type>(etl::forward<U>(default_value));
       }
     }
 

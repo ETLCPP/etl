@@ -131,7 +131,7 @@ namespace
 
 namespace
 {
-  SUITE(test_result)
+  SUITE(test_expected)
   {
     //*************************************************************************
     TEST(test_default_constructor)
@@ -442,6 +442,33 @@ namespace
 
       CHECK_EQUAL("",        output1.e);
       CHECK_EQUAL("error 1", output2.e);
+    }
+
+    //*************************************************************************
+    struct value_or_helper
+    {
+      Expected get_value() const
+      {
+        Value value = { "value5" };
+        return Expected(value);
+      }
+
+      Expected get_error() const
+      {
+        Error error = { "error1" };
+        return Expected(Unexpected(error));
+      }
+    };
+
+    TEST(test_chained_value_or_github_bug_720)
+    {
+      value_or_helper helper{};
+
+      Value value1 = helper.get_value().value_or(Value("value1"));
+      CHECK_EQUAL("value5", value1.v);
+
+      Value value2 = helper.get_error().value_or(Value("value1"));
+      CHECK_EQUAL("value1", value2.v);
     }
   };
 }
