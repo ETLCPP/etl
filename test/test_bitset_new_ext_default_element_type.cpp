@@ -1266,15 +1266,12 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_position_set_invalid_position_does_not_corrupt_memory_github_issue_722)
+    TEST(test_position_set_invalid_position_raises_bitset_overflow_github_issue_722)
     {
       etl::bitset_ext<12>::buffer_type buffer;
-      uint16_t some_memory = 0;
-      (void) some_memory;
       etl::bitset_ext<12> data(buffer);
 
-      data.set(17);
-      CHECK_EQUAL(some_memory, 0);
+      CHECK_THROW(data.set(13), etl::bitset_overflow);
     }
 
     //*************************************************************************
@@ -1331,28 +1328,30 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_position_reset_invalid_position_does_not_corrupt_memory_github_issue_722)
+    TEST(test_position_reset_invalid_position_raises_bitset_overflow_github_issue_722)
     {
       etl::bitset_ext<12>::buffer_type buffer;
-      uint16_t some_memory = 0xFFFFU;
-      (void) some_memory;
       etl::bitset_ext<12> data(buffer);
 
-      data.reset(17);
-      CHECK_EQUAL(some_memory, 0xFFFFU);
+      CHECK_THROW(data.reset(13), etl::bitset_overflow);
     }
 
     //*************************************************************************
-    TEST(test_position_test_invalid_position_returns_always_false_github_issue_722)
+    TEST(test_position_flip_invalid_position_raises_bitset_overflow_github_issue_722)
     {
       etl::bitset_ext<12>::buffer_type buffer;
-      uint16_t some_memory = 0xFFFFU;
-      (void) some_memory;
       etl::bitset_ext<12> data(buffer);
 
-      data.set(13);
-      CHECK_FALSE(data.test(13));
-      CHECK_FALSE(data.test(17));
+      CHECK_THROW(data.flip(13), etl::bitset_overflow);
+    }
+
+    //*************************************************************************
+    TEST(test_position_test_invalid_position_raises_bitset_overflow_github_issue_722)
+    {
+      etl::bitset_ext<12>::buffer_type buffer;
+      etl::bitset_ext<12> data(buffer);
+
+      CHECK_THROW(data.test(13), etl::bitset_overflow);
     }
 
     //*************************************************************************

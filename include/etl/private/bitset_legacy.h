@@ -280,6 +280,7 @@ namespace etl
     //*************************************************************************
     bool test(size_t position) const
     {
+      ETL_ASSERT_OR_RETURN_VALUE(position < Active_Bits, ETL_ERROR(bitset_overflow), false);
       size_t    index;
       element_type mask;
 
@@ -321,6 +322,7 @@ namespace etl
     //*************************************************************************
     ibitset& set(size_t position, bool value = true)
     {
+      ETL_ASSERT_OR_RETURN_VALUE(position < Active_Bits, ETL_ERROR(bitset_overflow), *this);
       size_t    index;
       element_type bit;
 
@@ -520,6 +522,7 @@ namespace etl
     //*************************************************************************
     ibitset& reset(size_t position)
     {
+      ETL_ASSERT_OR_RETURN_VALUE(position < Active_Bits, ETL_ERROR(bitset_overflow), *this);
       size_t       index;
       element_type bit;
 
@@ -566,28 +569,26 @@ namespace etl
     //*************************************************************************
     ibitset& flip(size_t position)
     {
-      if (position < Active_Bits)
+      ETL_ASSERT_OR_RETURN_VALUE(position < Active_Bits, ETL_ERROR(bitset_overflow), *this);
+      size_t    index;
+      element_type bit;
+      
+      if (Number_Of_Elements == 0)
       {
-        size_t    index;
-        element_type bit;
-        
-        if (Number_Of_Elements == 0)
-        {
-          return *this;
-        }
-        else if (Number_Of_Elements == 1)
-        {
-          index = 0;
-          bit = element_type(1) << position;
-        }
-        else
-        {
-          index = position >> log2<Bits_Per_Element>::value;
-          bit = element_type(1) << (position & (Bits_Per_Element - 1));
-        }
-
-        pdata[index] ^= bit;
+        return *this;
       }
+      else if (Number_Of_Elements == 1)
+      {
+        index = 0;
+        bit = element_type(1) << position;
+      }
+      else
+      {
+        index = position >> log2<Bits_Per_Element>::value;
+        bit = element_type(1) << (position & (Bits_Per_Element - 1));
+      }
+
+      pdata[index] ^= bit;
 
       return *this;
     }
