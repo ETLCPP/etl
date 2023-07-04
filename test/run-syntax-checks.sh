@@ -60,10 +60,17 @@ ChecksCompleted()
 cd syntax_check || exit 1
 echo "" > log.txt
 
-export CMAKE_BUILD_PARALLEL_LEVEL=6
+#******************************************************************************
+# Set the number of concurrent processes to use.
+#******************************************************************************
+if [ $# -eq 0 ]; then
+  export CMAKE_BUILD_PARALLEL_LEVEL=4
+else
+  export CMAKE_BUILD_PARALLEL_LEVEL=$1
+fi
 
 echo ""
-echo "Using "${CMAKE_BUILD_PARALLEL_LEVEL}" jobs"
+echo "Using "$CMAKE_BUILD_PARALLEL_LEVEL" concurrent processes"
 
 ###############################################################################
 cd c++03 || exit 1

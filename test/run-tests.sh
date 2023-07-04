@@ -9,8 +9,6 @@ echo "ETL Tests" > log.txt
 export ASAN_OPTIONS=symbol_line=1
 export ASAN_SYMBOLIZER_PATH=/usr/lib/llvm-14/bin//llvm-symbolizer
 
-export CMAKE_BUILD_PARALLEL_LEVEL=6
-
 echo -e
 
 testname="Test Name Not Set"
@@ -129,8 +127,17 @@ else
   opt="-O0"
 fi
 
+#******************************************************************************
+# Set the number of concurrent processes to use.
+#******************************************************************************
+if [ $# -eq 2 ]; then
+  export CMAKE_BUILD_PARALLEL_LEVEL=4
+else
+  export CMAKE_BUILD_PARALLEL_LEVEL=$3
+fi
+
 echo ""
-echo "Using "${CMAKE_BUILD_PARALLEL_LEVEL}" jobs"
+echo "Using "${CMAKE_BUILD_PARALLEL_LEVEL}" concurrent processes"
 
 #******************************************************************************
 # GCC
