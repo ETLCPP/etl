@@ -9,6 +9,8 @@ echo "ETL Tests" > log.txt
 export ASAN_OPTIONS=symbol_line=1
 export ASAN_SYMBOLIZER_PATH=/usr/lib/llvm-14/bin//llvm-symbolizer
 
+export CMAKE_BUILD_PARALLEL_LEVEL=6
+
 echo -e
 
 testname="Test Name Not Set"
@@ -127,6 +129,9 @@ else
   opt="-O0"
 fi
 
+echo ""
+echo "Using "${CMAKE_BUILD_PARALLEL_LEVEL}" jobs"
+
 #******************************************************************************
 # GCC
 #******************************************************************************
@@ -135,7 +140,7 @@ PrintHeader
 rm * -rf
 gcc --version | grep gcc | tee -a log.txt
 cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
-make -j4
+cmake --build .
 if [ $? -eq 0 ]; then
   PassedCompilation
 else
@@ -156,7 +161,7 @@ PrintHeader
 rm * -rf
 gcc --version | grep gcc | tee -a log.txt
 cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
-make -j4
+cmake --build .
 if [ $? -eq 0 ]; then
   PassedCompilation
 else
@@ -177,7 +182,7 @@ PrintHeader
 rm * -rf
 gcc --version | grep gcc | tee -a log.txt
 cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
-make -j4
+cmake --build .
 if [ $? -eq 0 ]; then
   PassedCompilation
 else
@@ -198,7 +203,7 @@ PrintHeader
 rm * -rf
 gcc --version | grep gcc | tee -a log.txt
 cmake -DCMAKE_CXX_COMPILER="g++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
-make -j4
+cmake --build .
 if [ $? -eq 0 ]; then
   PassedCompilation
 else
@@ -221,7 +226,7 @@ PrintHeader
 rm * -rf
 clang --version | grep clang | tee -a log.txt
 cmake -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
-make -j4
+cmake --build .
 if [ $? -eq 0 ]; then
   PassedCompilation
 else
@@ -242,7 +247,7 @@ PrintHeader
 rm * -rf
 clang --version | grep clang | tee -a log.txt
 cmake -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
-make -j4
+cmake --build .
 if [ $? -eq 0 ]; then
   PassedCompilation
 else
@@ -263,7 +268,7 @@ PrintHeader
 rm * -rf
 clang --version | grep clang | tee -a log.txt
 cmake -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
-make -j4
+cmake --build .
 if [ $? -eq 0 ]; then
   PassedCompilation
 else
@@ -284,7 +289,7 @@ PrintHeader
 rm * -rf
 clang --version | grep clang | tee -a log.txt
 cmake -DCMAKE_CXX_COMPILER="clang++" -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
-make -j4
+cmake --build .
 if [ $? -eq 0 ]; then
   PassedCompilation
 else
@@ -308,7 +313,7 @@ cd build-make || exit 1
 rm * -rf
 gcc --version | grep gcc | tee -a log.txt
 cmake -DCMAKE_CXX_COMPILER="g++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
-make -j4
+cmake --build .
 if [ $? -eq 0 ]; then
   PassedCompilation
 else
@@ -329,7 +334,7 @@ PrintHeader
 rm * -rf
 clang --version | grep clang | tee -a log.txt
 cmake -DCMAKE_CXX_COMPILER="clang++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
-make -j4
+cmake --build .
 if [ $? -eq 0 ]; then
   PassedCompilation
 else
@@ -353,7 +358,7 @@ cd build-make || exit 1
 rm * -rf
 gcc --version | grep gcc | tee -a log.txt
 cmake -DCMAKE_CXX_COMPILER="g++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
-make -j4
+cmake --build .
 if [ $? -eq 0 ]; then
   PassedCompilation
 else
@@ -377,7 +382,7 @@ cd build-make || exit 1
 rm * -rf
 gcc --version | grep gcc | tee -a log.txt
 cmake -DCMAKE_CXX_COMPILER="g++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
-make -j4
+cmake --build .
 if [ $? -eq 0 ]; then
   PassedCompilation
 else
@@ -401,7 +406,7 @@ cd build-make || exit 1
 rm * -rf
 gcc --version | grep gcc | tee -a log.txt
 cmake -DCMAKE_CXX_COMPILER="g++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
-make -j4
+cmake --build .
 if [ $? -eq 0 ]; then
   PassedCompilation
 else
@@ -425,7 +430,7 @@ cd build-make || exit 1
 rm * -rf
 clang --version | grep clang | tee -a log.txt
 cmake -DCMAKE_CXX_COMPILER="clang++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
-make -j4
+cmake --build .
 if [ $? -eq 0 ]; then
   PassedCompilation
 else
@@ -449,7 +454,7 @@ cd build-make || exit 1
 rm * -rf
 clang --version | grep clang | tee -a log.txt
 cmake -DCMAKE_CXX_COMPILER="clang++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
-make -j4
+cmake --build .
 if [ $? -eq 0 ]; then
   PassedCompilation
 else
@@ -473,7 +478,7 @@ cd build-make || exit 1
 rm * -rf
 clang --version | grep clang | tee -a log.txt
 cmake -DCMAKE_CXX_COMPILER="clang++" -DETL_OPTIMISATION=$opt -DETL_CXX_STANDARD=$cxx_standard ..
-make -j4
+cmake --build .
 if [ $? -eq 0 ]; then
   PassedCompilation
 else
