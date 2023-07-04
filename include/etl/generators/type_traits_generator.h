@@ -1996,7 +1996,6 @@ typedef integral_constant<bool, true>  true_type;
     struct is_constructible_<void_t<decltype(T(etl::declval<Args>()...))>, T, Args...> : etl::true_type {};
   };
 
-
   //*********************************************
   // is_constructible
   template <class T, class... Args>
