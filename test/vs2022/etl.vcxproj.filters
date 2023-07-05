@@ -99,9 +99,6 @@
     <Filter Include="Tests\Strings">
       <UniqueIdentifier>{43578ed8-b61d-4210-b5d4-bb4a26351934}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tests\Messaging">
-      <UniqueIdentifier>{c75cedd3-8b6c-4662-b965-aecbe7fd5d1c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Tests\CRC">
       <UniqueIdentifier>{da470864-7708-4e89-a24c-93a9ca2c4856}</UniqueIdentifier>
     </Filter>
@@ -219,6 +216,9 @@
     </Filter>
     <Filter Include="Tests\Syntax Checks\C++20">
       <UniqueIdentifier>{3336d15c-7c22-4df0-a6b2-1eb605099a1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Messaging">
+      <UniqueIdentifier>{c75cedd3-8b6c-4662-b965-aecbe7fd5d1c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
