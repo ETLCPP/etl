@@ -245,7 +245,7 @@ namespace etl
       ]]]*/
       /*[[[end]]]*/
 
-      return base_t::template create<T>(args...);
+      return base_t::template create<T>(etl::forward<Args>(args)...);
     }
 #endif
 
@@ -457,7 +457,7 @@ namespace etl
       ]]]*/
       /*[[[end]]]*/
 
-      return base_t::template create<T>(args...);
+      return base_t::template create<T>(etl::forward<Args>(args)...);
     }
 #endif
 
