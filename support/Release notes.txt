@@ -9,6 +9,7 @@
 #716 etl::variant (variant_varadic) default constructed state
 #720 etl::optional rvalue value_or() broken
 #722 Bitset accesses memory out of bounds
+#725 variant_pool create method should use std::forward
 Modified etl::visitor to allow direct specification of the argument type.
 Added etl::is_visitor trait.
 Removed default link type for etl::intrusive_list and etl::intrusive_forward_list
