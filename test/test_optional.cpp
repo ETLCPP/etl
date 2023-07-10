@@ -539,10 +539,56 @@ namespace
     //*************************************************************************
     TEST(test_optional_pod_assign_bug_714)
     {
-      etl::optional<int> o = 42;
-      o = etl::nullopt;
+      etl::optional<int> opt = 42;
+      opt = etl::nullopt;
 
-      CHECK_EQUAL(false, o.has_value());
+      CHECK_EQUAL(false, opt.has_value());
+    }
+
+    //*************************************************************************   
+    TEST(test_dereference_operator_bug_730)
+    {
+      etl::optional<int> opt = 42;
+      etl::optional<int>* p_opt = &opt;
+
+      CHECK_EQUAL(42, *opt);
+    }
+
+    //*************************************************************************
+    TEST(test_const_dereference_operator_bug_730)
+    {
+      const etl::optional<int> opt = 42;
+      const etl::optional<int>* p_opt = &opt;
+
+      CHECK_EQUAL(42, *opt);
+    }
+
+    //*************************************************************************   
+    TEST(test_arrow_operator_bug_730)
+    {
+      struct Object
+      {
+        int value;
+      };
+
+      etl::optional<Object> opt = Object{ 42 };
+      etl::optional<Object>* p_opt = &opt;
+
+      CHECK_EQUAL(42, opt->value);
+    }
+
+    //*************************************************************************   
+    TEST(test_const_arrow_operator_bug_730)
+    {
+      struct Object
+      {
+        int value;
+      };
+
+      const etl::optional<Object> opt = Object{ 42 };
+      const etl::optional<Object>* p_opt = &opt;
+
+      CHECK_EQUAL(42, opt->value);
     }
   };
 }
