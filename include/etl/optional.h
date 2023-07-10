@@ -800,7 +800,7 @@ namespace etl
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
-      return &storage;
+      return &storage.u.value;
     }
 
     //***************************************************************************
@@ -812,7 +812,7 @@ namespace etl
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
-      return &storage;
+      return &storage.u.value;
     }
 
     //***************************************************************************
@@ -824,7 +824,7 @@ namespace etl
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
-      return storage;
+      return storage.u.value;
     }
 
     //***************************************************************************
@@ -836,7 +836,7 @@ namespace etl
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
-      return storage;
+      return storage.u.value;
     }
 
 #if ETL_USING_CPP11
@@ -849,7 +849,7 @@ namespace etl
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
-      return etl::move(storage);
+      return etl::move(storage.u.value);
     }
 
     //***************************************************************************
@@ -861,7 +861,7 @@ namespace etl
       ETL_ASSERT(valid, ETL_ERROR(optional_invalid));
 #endif
 
-      return etl::move(storage);
+      return etl::move(storage.u.value);
     }
 #endif
 
