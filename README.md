@@ -30,13 +30,13 @@ The ETL is not designed to completely replace the STL, but complement it.
 Its design objective covers three areas.
 
 - Create a set of containers where the size or maximum size is determined at compile time. These containers are direct equivalents of those supplied in the STL.
-- Be compatible with C++ 03 but implement as many of the C++ 11 additions as possible.
+- Be compatible with C++ 03 but implement as many of the C++ 11/14/17/20 additions as possible.
 - Add other useful components that are not present in the standard library.
 
 The embedded template library has been designed for lower resource embedded applications.
 It contains a set of containers, algorithms and utilities, some of which emulate parts of the STL.
 There is no dynamic memory allocation. The library makes no use of the heap. All of the containers have a fixed capacity allowing all memory allocation to be determined at compile time.
-The library is intended for any compiler that supports C++ 03.
+The library is intended for any compiler that supports C++98/03/11/14/17/20.
 
 ## Main features
 
