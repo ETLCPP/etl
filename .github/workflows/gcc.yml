@@ -160,3 +160,25 @@ jobs:
     
     - name: Run tests
       run: ./test/etl_tests
+
+  build-gcc-cpp20-linux-no-stl-optimisation-02:
+    name: GCC C++20 Linux - No STL - Optimisation 02
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        export CC=gcc
+        export CXX=g++
+        cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=20 -DETL_OPTIMISATION=-O2 ./
+        gcc --version
+        make
+    
+    - name: Run tests
+      run: ./test/etl_tests
