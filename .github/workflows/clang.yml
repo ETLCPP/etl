@@ -160,28 +160,6 @@ jobs:
     - name: Run tests
       run: ./test/etl_tests
 
-  build-clang-cpp20-linux-no-stl-optimisation-02:
-    name: Clang C++20 Linux - No STL - Optimisation 02
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-22.04]
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Build
-      run: |    
-        export CC=clang
-        export CXX=clang++
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON -DETL_CXX_STANDARD=20 -DETL_OPTIMISATION=-O2 ./
-        clang --version
-        make
-    
-    - name: Run tests
-      run: ./test/etl_tests
-
   build-clang-cpp20-osx-stl:
     name: Clang C++20 OSX - STL
     runs-on: ${{ matrix.os }}
@@ -269,3 +247,4 @@ jobs:
 
     - name: Run tests
       run: ./test/etl_tests
+
