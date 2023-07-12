@@ -1,6 +1,8 @@
 ===============================================================================
 20.37.1
+#723 Added missing final CR/LF to result.h.
 Fixed etl::optional arrow and dereference operators.
+Enhanced min/max push/pop headers. Detects mismatched header includes.
 
 ===============================================================================
 20.37.0
