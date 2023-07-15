@@ -68,6 +68,55 @@ namespace etl
     ETL_STATIC_ASSERT(!etl::is_lvalue_reference<T>::value, "Invalid rvalue to lvalue conversion");
     return static_cast<T&&>(t);
   }
+
+  //******************************************************************************
+  /// See std::forward_like https://en.cppreference.com/w/cpp/utility/forward_like
+  /// Returns a reference to x which has similar properties to T&&.
+  ///\return
+  /// If etl::remove_reference_t<T> is const then returns a const reference if U is an lvalue, otherwise a const rvalue reference.
+  /// If etl::remove_reference_t<T> is not const then returns a reference if U is an lvalue, otherwise an rvalue reference.
+  //******************************************************************************
+  template <typename T, typename U>
+  ETL_NODISCARD
+  ETL_CONSTEXPR14
+  auto&& forward_like(U&& u) ETL_NOEXCEPT
+  {
+    using TType = etl::remove_reference_t<T>;
+    using UType = etl::remove_reference_t<U>;
+
+    if ETL_IF_CONSTEXPR (etl::is_const<TType>::value) 
+    {
+      // For const TType
+      if ETL_IF_CONSTEXPR (etl::is_lvalue_reference<T>::value) 
+      {
+        // const lvalue
+        return static_cast<const UType&>(u);
+      }
+      else 
+      {
+        // const rvalue
+        return static_cast<const UType&&>(u);
+      }
+    }
+    else 
+    {
+      // For non-const TType
+      if ETL_IF_CONSTEXPR (etl::is_lvalue_reference<T>::value) 
+      {
+        // lvalue
+        return static_cast<UType&>(u);
+      }
+      else 
+      {
+        // rvalue
+        return static_cast<UType&&>(u);
+      }
+    }
+  }
+
+  // Defines the type that forward_like would cast to.
+  template <typename T, typename U>
+  using forward_like_t = decltype(etl::forward_like<T>(etl::declval<U&>()));
 #endif
 
   // We can't have std::swap and etl::swap templates coexisting in the unit tests
@@ -612,4 +661,3 @@ namespace etl
 }
 
 #endif
-
