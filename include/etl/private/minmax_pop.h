@@ -46,9 +46,10 @@ SOFTWARE.
         #undef ETL_RESTORE_MAX
       #endif
     #endif
-    
-    #undef ETL_PUSHED_MIN_MAX
   #endif
+    
+  #undef ETL_PUSHED_MIN_MAX
+
 #else
   #error minmax_pop without matching push
 #endif

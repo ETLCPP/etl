@@ -50,9 +50,10 @@ SOFTWARE.
       #endif
       #undef max
     #endif
-
-    #define ETL_PUSHED_MIN_MAX
   #endif
+
+  #define ETL_PUSHED_MIN_MAX
+  
 #else
   #error minmax_push without matching pop
 #endif
