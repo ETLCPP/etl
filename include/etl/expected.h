@@ -450,25 +450,25 @@ namespace etl
 #endif
 
     //*******************************************
-    /// Copy assign from error
+    /// Copy assign from unexpected
     //*******************************************
-    expected& operator =(const unexpected_type& error)
+    expected& operator =(const unexpected_type& ue)
     {
       ETL_STATIC_ASSERT(etl::is_copy_constructible<TError>::value, "Error not copy assignable");
 
-      storage.template emplace<Error_Type>(error);
+      storage.template emplace<Error_Type>(ue.error());
       return *this;
     }
 
 #if ETL_USING_CPP11
     //*******************************************
-    /// Move assign from error
+    /// Move assign from unexpected
     //*******************************************
-    expected& operator =(unexpected_type&& error)
+    expected& operator =(unexpected_type&& ue)
     {
       ETL_STATIC_ASSERT(etl::is_move_constructible<TError>::value, "Error not move assignable");
 
-      storage.template emplace<Error_Type>(etl::move(error));
+      storage.template emplace<Error_Type>(etl::move(ue.error()));
       return *this;
     }
 #endif
@@ -830,25 +830,25 @@ namespace etl
 #endif
 
     //*******************************************
-    /// Copy assign from error
+    /// Copy assign from unexpected
     //*******************************************
-    expected& operator =(const unexpected_type& error)
+    expected& operator =(const unexpected_type& ue)
     {
       ETL_STATIC_ASSERT(etl::is_copy_constructible<TError>::value, "Error not copy assignable");
 
-      storage.template emplace<Error_Type>(error);
+      storage.template emplace<Error_Type>(ue.error());
       return *this;
     }
 
 #if ETL_USING_CPP11
     //*******************************************
-    /// Move assign from error
+    /// Move assign from unexpected
     //*******************************************
-    expected& operator =(unexpected_type&& error)
+    expected& operator =(unexpected_type&& ue)
     {
       ETL_STATIC_ASSERT(etl::is_move_constructible<TError>::value, "Error not move assignable");
 
-      storage.template emplace<Error_Type>(etl::move(error));
+      storage.template emplace<Error_Type>(etl::move(ue.error()));
       return *this;
     }
 #endif
