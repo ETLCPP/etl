@@ -622,7 +622,7 @@ namespace etl
     template <typename... Args>
     ETL_CONSTEXPR14 value_type& emplace(Args&&... args) ETL_NOEXCEPT
     {
-      storage.emplace(args...);
+      storage.emplace(etl::forward<Args>(args)...);
     }
 
     //*******************************************
@@ -631,7 +631,7 @@ namespace etl
     template <typename U, typename... Args>
     ETL_CONSTEXPR14 value_type& emplace(std::initializer_list<U>& il, Args&&... args) ETL_NOEXCEPT
     {
-      storage.emplace(il, args...);
+      storage.emplace(il, etl::forward<Args>(args)...);
     }
 #else
     //*******************************************
