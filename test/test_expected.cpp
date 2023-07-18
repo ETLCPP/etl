@@ -110,6 +110,11 @@ namespace
     {
     }
 
+    operator std::string() const
+    {
+      return e;
+    }
+
     ErrorM(ErrorM&&) = default;
     ErrorM& operator =(ErrorM&&) = default;
 
@@ -323,6 +328,23 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_copy_assign_from_error)
+    {
+      Value    input = { "value 1" };
+      Expected expected(input);
+
+      Error      error = { "error 1" };
+      Unexpected unexpected(error);
+
+      expected = unexpected;
+
+      Error output = expected.error();
+
+      CHECK_FALSE(expected.has_value());
+      CHECK_EQUAL(std::string(error), std::string(expected.error()));
+    }
+
+    //*************************************************************************
     TEST(test_move_construct)
     {
       ValueM    input1 = { "value 1" };
@@ -358,6 +380,23 @@ namespace
 
       CHECK_EQUAL("", output1.v);
       CHECK_EQUAL("value 1", output2.v);
+    }
+
+    //*************************************************************************
+    TEST(test_move_assign_from_error)
+    {
+      ValueM    input = { "value 1" };
+      ExpectedM expected(etl::move(input));
+
+      ErrorM      error = { "error 1" };
+      UnexpectedM unexpected(etl::move(error));
+
+      expected = etl::move(unexpected);
+
+      ErrorM output = etl::move(expected.error());
+
+      CHECK_FALSE(expected.has_value());
+      CHECK_EQUAL(std::string(error), std::string(expected.error()));
     }
 
     //*************************************************************************

@@ -432,7 +432,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT(etl::is_copy_constructible<TValue>::value, "Value not copy assignable");
 
-      storage.template emplace<Value_Type>(value);
+      storage = value;
       return *this;
     }
 
@@ -444,31 +444,33 @@ namespace etl
     {
       ETL_STATIC_ASSERT(etl::is_move_constructible<TValue>::value, "Value not move assignable");
 
-      storage.template emplace<Value_Type>(etl::move(value));
+      storage = etl::move(value);
       return *this;
     }
 #endif
 
     //*******************************************
-    /// Copy assign from error
+    /// Copy assign from unexpected
     //*******************************************
-    expected& operator =(const unexpected_type& error)
+    expected& operator =(const unexpected_type& ue)
     {
       ETL_STATIC_ASSERT(etl::is_copy_constructible<TError>::value, "Error not copy assignable");
 
-      storage.template emplace<Error_Type>(error);
+      storage = ue.error();
+
       return *this;
     }
 
 #if ETL_USING_CPP11
     //*******************************************
-    /// Move assign from error
+    /// Move assign from unexpected
     //*******************************************
-    expected& operator =(unexpected_type&& error)
+    expected& operator =(unexpected_type&& ue)
     {
       ETL_STATIC_ASSERT(etl::is_move_constructible<TError>::value, "Error not move assignable");
 
-      storage.template emplace<Error_Type>(etl::move(error));
+      storage = etl::move(ue.error());
+
       return *this;
     }
 #endif
@@ -620,7 +622,7 @@ namespace etl
     template <typename... Args>
     ETL_CONSTEXPR14 value_type& emplace(Args&&... args) ETL_NOEXCEPT
     {
-      storage.emplace(args...);
+      storage.emplace(etl::forward<Args>(args)...);
     }
 
     //*******************************************
@@ -629,7 +631,7 @@ namespace etl
     template <typename U, typename... Args>
     ETL_CONSTEXPR14 value_type& emplace(std::initializer_list<U>& il, Args&&... args) ETL_NOEXCEPT
     {
-      storage.emplace(il, args...);
+      storage.emplace(il, etl::forward<Args>(args)...);
     }
 #else
     //*******************************************
@@ -830,25 +832,25 @@ namespace etl
 #endif
 
     //*******************************************
-    /// Copy assign from error
+    /// Copy assign from unexpected
     //*******************************************
-    expected& operator =(const unexpected_type& error)
+    expected& operator =(const unexpected_type& ue)
     {
       ETL_STATIC_ASSERT(etl::is_copy_constructible<TError>::value, "Error not copy assignable");
 
-      storage.template emplace<Error_Type>(error);
+      storage.template emplace<Error_Type>(ue.error());
       return *this;
     }
 
 #if ETL_USING_CPP11
     //*******************************************
-    /// Move assign from error
+    /// Move assign from unexpected
     //*******************************************
-    expected& operator =(unexpected_type&& error)
+    expected& operator =(unexpected_type&& ue)
     {
       ETL_STATIC_ASSERT(etl::is_move_constructible<TError>::value, "Error not move assignable");
 
-      storage.template emplace<Error_Type>(etl::move(error));
+      storage.template emplace<Error_Type>(etl::move(ue.error()));
       return *this;
     }
 #endif
