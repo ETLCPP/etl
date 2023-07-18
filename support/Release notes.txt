@@ -1,4 +1,10 @@
 ===============================================================================
+20.37.2
+#733 Fix etl::expected assignment from etl unexpected.
+#734 Add missing new line at end of files.
+#735 fix(minmax): fix bug in minmax include mismatch detection.
+
+===============================================================================
 20.37.1
 #723 Added missing final CR/LF to result.h.
 Fixed etl::optional arrow and dereference operators.
