@@ -842,11 +842,10 @@ namespace etl
           pdata[dst_index] &= lsb_shifted_mask;
           --dst_index;
 
-          // The other remaining bytes on the right.
-          while (dst_index >= 0)
+          // The other remaining elements.
+          for (int i = 0; i <= dst_index; ++i)
           {
-            pdata[dst_index] = 0;
-            --dst_index;
+            pdata[i] = 0;
           }
         }
 
@@ -922,11 +921,10 @@ namespace etl
           pdata[dst_index] &= msb_shifted_mask;
           ++dst_index;
 
-          // The other remaining bytes.
-          while (dst_index < int(Number_Of_Elements))
+          // The other remaining elements.
+          for (int i = dst_index; i < int(Number_Of_Elements); ++i)
           {
-            pdata[dst_index] = 0;
-            ++dst_index;
+            pdata[i] = 0;
           }
         }
       }

@@ -30,6 +30,7 @@ SOFTWARE.
 
 #include <string>
 #include <ostream>
+#include <cstdint>
 
 #include "etl/optional.h"
 #include "etl/vector.h"

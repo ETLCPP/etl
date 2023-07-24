@@ -887,14 +887,14 @@ namespace
 
       bit_stream.restart();
 
-      char rc1;
-      char rc2;
-      unsigned short rs1;
-      unsigned short rs2;
-      int32_t ri1;
-      int32_t ri2;
-      float rf;
-      double rd;
+      char rc1 = 0;
+      char rc2 = 0;
+      unsigned short rs1 = 0;
+      unsigned short rs2 = 0;
+      int32_t ri1 = 0;
+      int32_t ri2 = 0;
+      float rf = 0;
+      double rd = 0;
 
       // Read them all back.
       CHECK(bit_stream.get(rc1));
@@ -978,15 +978,15 @@ namespace
 
       bit_stream.restart();
 
-      char rc1;
-      char rc2;
-      unsigned short rs1;
-      unsigned short rs2;
-      int32_t ri1;
-      int32_t ri2;
-      float rf;
-      double rd;
-      int64_t rll;
+      char rc1 = 0;
+      char rc2 = 0;
+      unsigned short rs1 = 0;
+      unsigned short rs2 = 0;
+      int32_t ri1 = 0;
+      int32_t ri2 = 0;
+      float rf = 0;
+      double rd = 0;
+      int64_t rll = 0;
 
       // Read them all back.
       CHECK(bit_stream.get(rc1, 6));
@@ -1058,8 +1058,8 @@ namespace
 
       bit_stream.restart();
 
-      float rf;
-      double rd;
+      float rf = 0;
+      double rd = 0;
 
       CHECK(bit_stream.get(rf));
       CHECK_CLOSE(f, rf, 0.1f);
