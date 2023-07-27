@@ -62,7 +62,7 @@ namespace
     }
 
     Message1(Message1&& other)
-      : x(other.x)
+      : x(std::move(other.x))
       , moved(true)
       , copied(false)
     {
@@ -78,7 +78,7 @@ namespace
 
     Message1& operator =(Message1&& other)
     {
-      x = other.x;
+      x = std::move(other.x);
       moved = true;
       copied = false;
       return *this;
@@ -106,7 +106,7 @@ namespace
     }
 
     Message2(Message2&& other)
-      : x(other.x)
+      : x(std::move(other.x))
       , moved(true)
       , copied(false)
     {
@@ -122,7 +122,7 @@ namespace
 
     Message2& operator =(Message2&& other)
     {
-      x = other.x;
+      x = std::move(other.x);
       moved = true;
       copied = false;
       return *this;
@@ -150,7 +150,7 @@ namespace
     }
 
     Message3(Message3&& other)
-      : x(other.x)
+      : x(std::move(other.x))
       , moved(true)
       , copied(false)
     {
@@ -166,7 +166,7 @@ namespace
 
     Message3& operator =(Message3&& other)
     {
-      x = other.x;
+      x = std::move(other.x);
       moved = true;
       copied = false;
       return *this;
