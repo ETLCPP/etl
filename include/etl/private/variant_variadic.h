@@ -705,7 +705,7 @@ namespace etl
     /// Emplace by index with variadic constructor parameters.
     //***************************************************************************
     template <size_t Index, typename... TArgs>
-    typename etl::variant_alternative<Index, variant<TArgs...>>::type emplace(TArgs&&... args)
+    typename etl::variant_alternative<Index, variant<TArgs...>>::type& emplace(TArgs&&... args)
     {    
       static_assert(Index < etl::private_variant::parameter_pack<TTypes...>::size, "Index out of range");
 
