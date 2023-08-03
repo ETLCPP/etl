@@ -232,19 +232,19 @@ namespace
     //*************************************************************************
     TEST(test_constructor_for_result_void_value_with_value)
     {
-       ExpectedV expected;
+      ExpectedV expected;
 
-       CHECK_TRUE(expected.has_value());
-       CHECK_TRUE(bool(expected));
+      CHECK_TRUE(expected.has_value());
+      CHECK_TRUE(bool(expected));
     }
 
     //*************************************************************************
     TEST(test_constructor_for_const_result_void_value_with_value)
     {
-       const ExpectedV expected;
+      const ExpectedV expected;
 
-       CHECK_TRUE(expected.has_value());
-       CHECK_TRUE(bool(expected));
+      CHECK_TRUE(expected.has_value());
+      CHECK_TRUE(bool(expected));
     }
 
     //*************************************************************************
@@ -428,7 +428,7 @@ namespace
 
       ExpectedV   expected1(unexpected1);
       ExpectedV   expected2(unexpected2);
-      
+
       expected2 = expected1;
 
       Error output1 = expected1.error();
@@ -508,6 +508,16 @@ namespace
 
       Value value2 = helper.get_error().value_or(Value("value1"));
       CHECK_EQUAL("value1", value2.v);
+    }
+
+    //*************************************************************************
+    TEST(test_assignment_bug_738)
+    {
+      etl::expected<int, int> test_exp{1};
+      CHECK_TRUE(test_exp.has_value());
+
+      test_exp = etl::unexpected<int>(2);
+      CHECK_FALSE(test_exp.has_value());
     }
   };
 }
