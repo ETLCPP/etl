@@ -560,6 +560,7 @@ namespace etl
   //***************************************************************************
   // equal
 #if ETL_USING_STL && ETL_USING_CPP20
+  // Three parameter
   template <typename TIterator1, typename TIterator2>
   [[nodiscard]]
   constexpr
@@ -568,6 +569,7 @@ namespace etl
     return std::equal(first1, last1, first2);
   }
 
+  // Three parameter + predicate
   template <typename TIterator1, typename TIterator2, typename TPredicate>
   [[nodiscard]]
   constexpr
@@ -575,8 +577,27 @@ namespace etl
   {
     return std::equal(first1, last1, first2, predicate);
   }
+
+  // Four parameter
+  template <typename TIterator1, typename TIterator2>
+  [[nodiscard]]
+  constexpr
+  bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2, TIterator2 last2)
+  {
+    return std::equal(first1, last1, first2, last2);
+  }
+
+  // Four parameter + Predicate
+  template <typename TIterator1, typename TIterator2, typename TPredicate>
+  [[nodiscard]]
+  constexpr
+  bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2, TIterator2 last2, TPredicate predicate)
+  {
+    return std::equal(first1, last1, first2, last2, predicate);
+  }
+
 #else
-  // Not pointer types or not trivially copyable.
+
   template <typename TIterator1, typename TIterator2>
   ETL_NODISCARD
   ETL_CONSTEXPR14
@@ -639,8 +660,8 @@ namespace etl
   // Four parameter, Predicate
   template <typename TIterator1, typename TIterator2, typename TPredicate>
   ETL_NODISCARD
-    ETL_CONSTEXPR14
-    bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2, TIterator2 last2, TPredicate predicate)
+  ETL_CONSTEXPR14
+  bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2, TIterator2 last2, TPredicate predicate)
   {
     while ((first1 != last1) && (first2 != last2))
     {

@@ -47,6 +47,7 @@ namespace
     typedef std::vector<int> StlVData;
 
     typedef etl::span<int, 10U> View;
+    typedef etl::span<int, 9U> SView;
     typedef etl::span<const int, 10U> CView;
 
     EtlData etldata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -998,6 +999,7 @@ namespace
       etl::array<int, 10> data1{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
       etl::array<int, 10> data2{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
       etl::array<int, 10> data3{ 0, 1, 2, 3, 4, 4, 6, 7, 8, 9 };
+      etl::array<int, 9>  data4{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 
       View view1{ data1 };
       View view2{ data1 };
@@ -1005,18 +1007,21 @@ namespace
       View view4{ data3 };
       View view6;
       View view7;
+      SView view8{ data4 };
 
       CHECK_TRUE(etl::equal(view1, view2));
       CHECK_TRUE(etl::equal(view1, view3));
       CHECK_FALSE(etl::equal(view1, view4));
       CHECK_TRUE(etl::equal(view6, view6));
       CHECK_TRUE(etl::equal(view6, view7));
+      CHECK_FALSE(etl::equal(view1, view8));
 
       CHECK_TRUE(view1 == view2);
       CHECK_FALSE(view1 == view3);
       CHECK_FALSE(view1 == view4);
       CHECK_TRUE(view6 == view6);
       CHECK_TRUE(view6 == view7);
+      CHECK_FALSE(view1 == view8);
     }
 
     //*************************************************************************
