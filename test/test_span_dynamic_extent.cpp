@@ -42,12 +42,12 @@ namespace
   {
     static const size_t SIZE = 10UL;
 
-    typedef etl::array<int, SIZE> EtlData;
-    typedef std::array<int, SIZE> StlData;
-    typedef std::vector<int> StlVData;
+    using EtlData  = etl::array<int, SIZE>;
+    using StlData  = std::array<int, SIZE>;
+    using StlVData = std::vector<int>;
 
-    typedef etl::span<int> View;
-    typedef etl::span<const int> CView;
+    using View  = etl::span<int>;
+    using CView = etl::span<const int>;
 
     EtlData etldata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     StlData stldata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
