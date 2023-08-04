@@ -132,11 +132,18 @@ namespace etl
 #if ETL_USING_CPP17
   template <typename T, typename... TTypes>
   inline constexpr size_t parameter_pack_v = etl::parameter_pack<TTypes...>::template index_of_type<T>::value;
-#else
+#endif
+
+#if ETL_USING_CPP14
   //***********************************
   template <typename... TTypes>
   template <typename T>
   constexpr size_t parameter_pack<TTypes...>::template index_of_type<T>::value;
+#else
+  //***********************************
+  template <typename... TTypes>
+  template <typename T>
+  constexpr size_t parameter_pack<TTypes...>::index_of_type<T>::value;
 #endif
 }
 #endif
