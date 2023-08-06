@@ -135,9 +135,16 @@ namespace
 
   struct Message3 : public etl::message<MESSAGE3>
   {
-    Message3(std::string x_)
+    Message3(const std::string& x_)
       : x(x_)
       , moved(false)
+      , copied(false)
+    {
+    }
+
+    Message3(std::string&& x_)
+      : x(std::move(x_))
+      , moved(true)
       , copied(false)
     {
     }

@@ -1356,6 +1356,9 @@
     <ClInclude Include="..\syntax_check\c++20\etl_profile.h">
       <Filter>Tests\Syntax Checks\C++20</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\diagnostic_stringop_overread_push.h">
+      <Filter>ETL\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">

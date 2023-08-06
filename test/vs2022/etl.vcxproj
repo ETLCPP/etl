@@ -1134,6 +1134,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -2751,6 +2752,7 @@
     <ClInclude Include="..\..\include\etl\private\bitset_new.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_array_bounds_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_deprecated_push.h" />
+    <ClInclude Include="..\..\include\etl\private\diagnostic_stringop_overread_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_uninitialized_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_pessimizing_move_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_pop.h" />

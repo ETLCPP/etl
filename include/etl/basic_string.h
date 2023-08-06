@@ -2087,7 +2087,7 @@ namespace etl
       {
         for (size_type i = position; i < size(); ++i)
         {
-          if (p_buffer[i] != c)
+          if (*(p_buffer + i) != c)
           {
             return i;
           }

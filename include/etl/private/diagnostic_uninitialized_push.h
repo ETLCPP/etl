@@ -34,12 +34,12 @@ SOFTWARE.
  */
 
 #if defined(__GNUC__) && !defined(__clang__) && !defined(__llvm__)
-#pragma GCC diagnostic push 
-#pragma GCC diagnostic ignored "-Wuninitialized"
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+  #pragma GCC diagnostic push 
+  #pragma GCC diagnostic ignored "-Wuninitialized"
+  #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 #endif
 
 #if defined(__clang__) || defined(__llvm__)
-#pragma clang diagnostic push 
-#pragma clang diagnostic ignored "-Wuninitialized"
+  #pragma clang diagnostic push 
+  #pragma clang diagnostic ignored "-Wuninitialized"
 #endif

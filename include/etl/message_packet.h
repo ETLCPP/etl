@@ -151,6 +151,7 @@ namespace etl
     }
 
     //**********************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(const message_packet& rhs)
     {
       delete_current_message();
@@ -162,8 +163,10 @@ namespace etl
 
       return *this;
     }
+#include "etl/private/diagnostic_pop.h"
 
     //**********************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(message_packet&& rhs)
     {
       delete_current_message();
@@ -175,6 +178,7 @@ namespace etl
 
       return *this;
     }
+#include "etl/private/diagnostic_pop.h"
 
     //********************************************
     ~message_packet()
@@ -275,6 +279,7 @@ namespace etl
       (add_new_message_type<TMessageTypes>(etl::move(msg)) || ...);
     }
 
+#include "etl/private/diagnostic_uninitialized_push.h"
     //********************************************
     /// Only enabled for types that are in the typelist.
     //********************************************
@@ -285,7 +290,9 @@ namespace etl
       void* p = data;
       new (p) etl::remove_reference_t<TMessage>((etl::forward<TMessage>(msg)));
     }
+#include "etl/private/diagnostic_pop.h"
 
+#include "etl/private/diagnostic_uninitialized_push.h"
     //********************************************
     template <typename TType>
     bool add_new_message_type(const etl::imessage& msg)
@@ -301,6 +308,7 @@ namespace etl
         return false;
       }
     }
+#include "etl/private/diagnostic_pop.h"
 
     //********************************************
     template <typename TType>
@@ -444,6 +452,7 @@ namespace etl
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(const message_packet& rhs)
     {
       delete_current_message();
@@ -455,9 +464,11 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(message_packet&& rhs)
     {
       delete_current_message();
@@ -469,6 +480,7 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //********************************************
@@ -735,6 +747,7 @@ namespace etl
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(const message_packet& rhs)
     {
       delete_current_message();
@@ -746,9 +759,11 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(message_packet&& rhs)
     {
       delete_current_message();
@@ -760,6 +775,7 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //********************************************
@@ -1024,6 +1040,7 @@ namespace etl
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(const message_packet& rhs)
     {
       delete_current_message();
@@ -1035,9 +1052,11 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(message_packet&& rhs)
     {
       delete_current_message();
@@ -1049,6 +1068,7 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //********************************************
@@ -1311,6 +1331,7 @@ namespace etl
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(const message_packet& rhs)
     {
       delete_current_message();
@@ -1322,9 +1343,11 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(message_packet&& rhs)
     {
       delete_current_message();
@@ -1336,6 +1359,7 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //********************************************
@@ -1595,6 +1619,7 @@ namespace etl
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(const message_packet& rhs)
     {
       delete_current_message();
@@ -1606,9 +1631,11 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(message_packet&& rhs)
     {
       delete_current_message();
@@ -1620,6 +1647,7 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //********************************************
@@ -1874,6 +1902,7 @@ namespace etl
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(const message_packet& rhs)
     {
       delete_current_message();
@@ -1885,9 +1914,11 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(message_packet&& rhs)
     {
       delete_current_message();
@@ -1899,6 +1930,7 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //********************************************
@@ -2151,6 +2183,7 @@ namespace etl
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(const message_packet& rhs)
     {
       delete_current_message();
@@ -2162,9 +2195,11 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(message_packet&& rhs)
     {
       delete_current_message();
@@ -2176,6 +2211,7 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //********************************************
@@ -2426,6 +2462,7 @@ namespace etl
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(const message_packet& rhs)
     {
       delete_current_message();
@@ -2437,9 +2474,11 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(message_packet&& rhs)
     {
       delete_current_message();
@@ -2451,6 +2490,7 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //********************************************
@@ -2698,6 +2738,7 @@ namespace etl
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(const message_packet& rhs)
     {
       delete_current_message();
@@ -2709,9 +2750,11 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(message_packet&& rhs)
     {
       delete_current_message();
@@ -2723,6 +2766,7 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //********************************************
@@ -2965,6 +3009,7 @@ namespace etl
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(const message_packet& rhs)
     {
       delete_current_message();
@@ -2976,9 +3021,11 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(message_packet&& rhs)
     {
       delete_current_message();
@@ -2990,6 +3037,7 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //********************************************
@@ -3230,6 +3278,7 @@ namespace etl
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(const message_packet& rhs)
     {
       delete_current_message();
@@ -3241,9 +3290,11 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(message_packet&& rhs)
     {
       delete_current_message();
@@ -3255,6 +3306,7 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //********************************************
@@ -3493,6 +3545,7 @@ namespace etl
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(const message_packet& rhs)
     {
       delete_current_message();
@@ -3504,9 +3557,11 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(message_packet&& rhs)
     {
       delete_current_message();
@@ -3518,6 +3573,7 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //********************************************
@@ -3753,6 +3809,7 @@ namespace etl
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(const message_packet& rhs)
     {
       delete_current_message();
@@ -3764,9 +3821,11 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(message_packet&& rhs)
     {
       delete_current_message();
@@ -3778,6 +3837,7 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //********************************************
@@ -4008,6 +4068,7 @@ namespace etl
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(const message_packet& rhs)
     {
       delete_current_message();
@@ -4019,9 +4080,11 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(message_packet&& rhs)
     {
       delete_current_message();
@@ -4033,6 +4096,7 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //********************************************
@@ -4261,6 +4325,7 @@ namespace etl
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(const message_packet& rhs)
     {
       delete_current_message();
@@ -4272,9 +4337,11 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(message_packet&& rhs)
     {
       delete_current_message();
@@ -4286,6 +4353,7 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //********************************************
@@ -4512,6 +4580,7 @@ namespace etl
   #endif
 
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(const message_packet& rhs)
     {
       delete_current_message();
@@ -4523,9 +4592,11 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
 
   #if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)
     //**********************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     message_packet& operator =(message_packet&& rhs)
     {
       delete_current_message();
@@ -4537,6 +4608,7 @@ namespace etl
 
       return *this;
     }
+  #include "etl/private/diagnostic_pop.h"
   #endif
 
     //********************************************

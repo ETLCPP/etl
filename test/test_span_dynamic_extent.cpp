@@ -1010,7 +1010,7 @@ namespace
       etl::array<int, 10> data3{ 0, 1, 2, 3, 4, 4, 6, 7, 8, 9 };
       etl::array<int, 9>  data4{ 0, 1, 2, 3, 5, 6, 7, 8, 9 };
 
-      int i;
+      int i = 1;
 
       View view1{ data1 };
       View view2{ data1 };
@@ -1048,7 +1048,7 @@ namespace
       etl::array<int, 10> data3{ 0, 1, 2, 3, 4, 4, 6, 7, 8, 9 };
       etl::array<int, 9>  data4{ 0, 1, 2, 3, 5, 6, 7, 8, 9 };
 
-      int i;
+      int i = 1;
 
       View view1{ data1 };
       CView view2{ data1 };
@@ -1086,7 +1086,7 @@ namespace
       etl::array<int, 10> data3{ 0, 1, 2, 3, 4, 4, 6, 7, 8, 9 };
       etl::array<int, 10> data4{ 0, 1, 2, 3, 5, 6, 7, 8, 9 };
 
-      int i;
+      int i = 1;
 
       View view1{ data1 };
       View view2{ data1 };
@@ -1124,7 +1124,7 @@ namespace
       etl::array<int, 10> data3{ 0, 1, 2, 3, 4, 4, 6, 7, 8, 9 };
       etl::array<int, 9>  data4{ 0, 1, 2, 3, 5, 6, 7, 8, 9 };
 
-      int i;
+      int i = 1;
 
       View view1{ data1 };
       CView view2{ data1 };

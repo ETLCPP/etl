@@ -1859,6 +1859,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_append_truncated_string)
     {
+#include "etl/private/diagnostic_array_bounds_push.h"
       TextBuffer buffer;
       Text text(short_text.c_str(), buffer.data(), buffer.size());
 
@@ -1872,6 +1873,7 @@ namespace
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(text.is_truncated());
 #endif
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -2683,6 +2685,8 @@ namespace
       CHECK(!text.is_truncated());
 #endif
 
+#include "etl/private/diagnostic_array_bounds_push.h"
+#include "etl/private/diagnostic_stringop_overread_push.h"
       // Overflow short text.
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
@@ -2696,6 +2700,8 @@ namespace
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(text.is_truncated());
 #endif
+#include "etl/private/diagnostic_pop.h"
+#include "etl/private/diagnostic_pop.h"
 
       // Non-overflow.
       compare_text.assign(initial_text.c_str());
@@ -2711,6 +2717,8 @@ namespace
       CHECK(!text.is_truncated());
 #endif
 
+#include "etl/private/diagnostic_array_bounds_push.h"
+#include "etl/private/diagnostic_stringop_overread_push.h"
       // Overflow.
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
@@ -2724,6 +2732,8 @@ namespace
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(text.is_truncated());
 #endif
+#include "etl/private/diagnostic_pop.h"
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -3840,10 +3850,12 @@ namespace
 
       CHECK_EQUAL(position1, position2);
 
+#include "etl/private/diagnostic_array_bounds_push.h"
       position1 = compare_text.find_first_of(Compare_Text(STR("ZCXF")), 100);
       position2 = text.find_first_of(TextT(STR("ZCXF")), 100);
 
       CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -3869,10 +3881,12 @@ namespace
 
       CHECK_EQUAL(position1, position2);
 
+#include "etl/private/diagnostic_array_bounds_push.h"
       position1 = compare_text.find_first_of(STR("ZCXF"), 100);
       position2 = text.find_first_of(STR("ZCXF"), 100);
 
       CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -3903,10 +3917,12 @@ namespace
 
       CHECK_EQUAL(position1, position2);
 
+#include "etl/private/diagnostic_array_bounds_push.h"
       position1 = compare_text.find_first_of(STR("ZCXF"), 100);
       position2 = text.find_first_of(STR("ZCXF"), 100);
 
       CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -3942,10 +3958,12 @@ namespace
 
       CHECK_EQUAL(position1, position2);
 
+#include "etl/private/diagnostic_array_bounds_push.h"
       position1 = compare_text.find_first_of(STR('C'), 100);
       position2 = text.find_first_of(STR('C'), 100);
 
       CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -3976,10 +3994,12 @@ namespace
 
       CHECK_EQUAL(position1, position2);
 
+#include "etl/private/diagnostic_array_bounds_push.h"
       position1 = compare_text.find_last_of(Compare_Text(STR("ZCXE")), 100);
       position2 = text.find_last_of(TextT(STR("ZCXE")), 100);
 
       CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -4015,10 +4035,12 @@ namespace
 
       CHECK_EQUAL(position1, position2);
 
+#include "etl/private/diagnostic_array_bounds_push.h"
       position1 = compare_text.find_last_of(STR("ZCXE"), 100);
       position2 = text.find_last_of(STR("ZCXE"), 100);
 
       CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -4054,10 +4076,12 @@ namespace
 
       CHECK_EQUAL(position1, position2);
 
+#include "etl/private/diagnostic_array_bounds_push.h"
       position1 = compare_text.find_last_of(STR("ZCXE"), 100, 4);
       position2 = text.find_last_of(STR("ZCXE"), 100, 4);
 
       CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -4093,10 +4117,12 @@ namespace
 
       CHECK_EQUAL(position1, position2);
 
+#include "etl/private/diagnostic_array_bounds_push.h"
       position1 = compare_text.find_last_of(STR('C'), 100);
       position2 = text.find_last_of(STR('C'), 100);
 
       CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -4127,10 +4153,12 @@ namespace
 
       CHECK_EQUAL(position1, position2);
 
+#include "etl/private/diagnostic_array_bounds_push.h"
       position1 = compare_text.find_first_not_of(Compare_Text(STR("ZAXB")), 100);
       position2 = text.find_first_not_of(TextT(STR("ZAXB")), 100);
 
       CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -4161,10 +4189,12 @@ namespace
 
       CHECK_EQUAL(position1, position2);
 
+#include "etl/private/diagnostic_array_bounds_push.h"
       position1 = compare_text.find_first_not_of(STR("ZAXB"), 100);
       position2 = text.find_first_not_of(STR("ZAXB"), 100);
 
       CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -4200,10 +4230,12 @@ namespace
 
       CHECK_EQUAL(position1, position2);
 
+#include "etl/private/diagnostic_array_bounds_push.h"
       position1 = compare_text.find_first_not_of(STR("ZAXB"), 100);
       position2 = text.find_first_not_of(STR("ZAXB"), 100);
 
       CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -4239,10 +4271,12 @@ namespace
 
       CHECK_EQUAL(position1, position2);
 
+#include "etl/private/diagnostic_array_bounds_push.h"
       position1 = compare_text.find_first_not_of(STR('C'), 100);
       position2 = text.find_first_not_of(STR('C'), 100);
 
       CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -4273,10 +4307,12 @@ namespace
 
       CHECK_EQUAL(position1, position2);
 
+#include "etl/private/diagnostic_array_bounds_push.h"
       position1 = compare_text.find_last_not_of(Compare_Text(STR("ZEXD")), 100);
       position2 = text.find_last_not_of(TextT(STR("ZEXD")), 100);
 
       CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -4307,10 +4343,12 @@ namespace
 
       CHECK_EQUAL(position1, position2);
 
+#include "etl/private/diagnostic_array_bounds_push.h"
       position1 = compare_text.find_last_not_of(STR("ZEXD"), 100);
       position2 = text.find_last_not_of(STR("ZEXD"), 100);
 
       CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -4380,10 +4418,12 @@ namespace
 
       CHECK_EQUAL(position1, position2);
 
+#include "etl/private/diagnostic_array_bounds_push.h"
       position1 = compare_text.find_last_not_of(STR('C'), 100);
       position2 = text.find_last_not_of(STR('C'), 100);
 
       CHECK_EQUAL(position1, position2);
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************

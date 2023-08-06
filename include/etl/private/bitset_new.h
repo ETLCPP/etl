@@ -648,13 +648,12 @@ namespace etl
         // Clear the remaining bits.
         // First lsb.
         pbuffer[dst_index] &= lsb_shifted_mask;
-        --dst_index;
+//        --dst_index;
 
         // The other remaining bytes on the right.
-        while (dst_index >= 0)
+        for (int i = 0; i < dst_index; ++i)
         {
-          pbuffer[dst_index] = 0;
-          --dst_index;
+          pbuffer[i] = 0;
         }
       }
     }
