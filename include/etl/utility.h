@@ -132,7 +132,7 @@ namespace etl
 #endif
 
   // We can't have std::swap and etl::swap templates coexisting in the unit tests
-  // as the compiler will be unable to decide of which one to use, due to ADL.
+  // as the compiler will be unable to decide which one to use, due to ADL.
 #if ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST)
   //***************************************************************************
   // swap
