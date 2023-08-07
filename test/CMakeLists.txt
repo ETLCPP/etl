@@ -342,10 +342,19 @@ if (ETL_OPTIMISATION MATCHES "-O3")
 endif()
 
 if ((CMAKE_CXX_COMPILER_ID MATCHES "MSVC"))
+	message(STATUS "Using MSVC compiler")
 	target_compile_options(etl_tests
 			PRIVATE
 			/Zc:__cplusplus
 			)
+endif ()
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+	message(STATUS "Using GCC compiler")
+endif ()
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    message(STATUS "Using Clang compiler")
 endif ()
 
 if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
