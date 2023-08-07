@@ -362,7 +362,6 @@ if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Cla
 			PRIVATE
 			-fno-omit-frame-pointer
 			-fno-common
-			-Werror=maybe-uninitialized
 			-Wall
 			-Wextra
 			-Werror
