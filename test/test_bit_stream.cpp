@@ -136,7 +136,7 @@ namespace
     //*************************************************************************
     TEST(put_int8_t)
     {
-      std::array<unsigned char, 256> storage;
+      std::array<unsigned char, 256> storage{0};
 
       std::array<unsigned char, 256> compare_data;
       std::iota(compare_data.begin(), compare_data.end(), 0);
@@ -160,7 +160,7 @@ namespace
     //*************************************************************************
     TEST(put_uint8_t)
     {
-      std::array<unsigned char, 256> storage;
+      std::array<unsigned char, 256> storage{0};
 
       std::array<unsigned char, 256> compare_data;
       std::iota(compare_data.begin(), compare_data.end(), 0);
@@ -185,7 +185,7 @@ namespace
     TEST(put_int16_t)
     {
       // Tests assume big endian.
-      std::array<unsigned char, sizeof(int16_t) * 4> storage;
+      std::array<unsigned char, sizeof(int16_t) * 4> storage{0};
       std::array<unsigned char, sizeof(int16_t) * 4> compare_data = { 0x00U, 0x01U, 0x5AU, 0xA5U, 0xA5U, 0x5AU, 0xFFU, 0xFFU };
 
       CHECK(compare_data.size() == storage.size());
@@ -210,7 +210,7 @@ namespace
     TEST(put_uint16_t)
     {
       // Tests assume big endian.
-      std::array<unsigned char, sizeof(uint16_t) * 4> storage;
+      std::array<unsigned char, sizeof(uint16_t) * 4> storage{0};
       std::array<unsigned char, sizeof(uint16_t) * 4> compare_data = { 0x00U, 0x01U, 0x5AU, 0xA5U, 0xA5U, 0x5AU, 0xFFU, 0xFFU };
 
       CHECK(compare_data.size() == storage.size());
@@ -235,7 +235,7 @@ namespace
     TEST(put_int32_t)
     {
       // Tests assume big endian.
-      std::array<unsigned char, sizeof(int32_t) * 4> storage;
+      std::array<unsigned char, sizeof(int32_t) * 4> storage{0};
       std::array<unsigned char, sizeof(int32_t) * 4> compare_data = { 0x00U, 0x00U, 0x00U, 0x01U,
                                                                       0x5AU, 0xA5U, 0xA5U, 0x5AU,
                                                                       0xA5U, 0x5AU, 0x5AU, 0xA5U,
@@ -263,7 +263,7 @@ namespace
     TEST(put_uint32_t)
     {
       // Tests assume big endian.
-      std::array<unsigned char, sizeof(uint32_t) * 4> storage;
+      std::array<unsigned char, sizeof(uint32_t) * 4> storage{0};
       std::array<unsigned char, sizeof(uint32_t) * 4> compare_data = { 0x00U, 0x00U, 0x00U, 0x01U,
                                                                        0x5AU, 0xA5U, 0xA5U, 0x5AU,
                                                                        0xA5U, 0x5AU, 0x5AU, 0xA5U,
@@ -291,7 +291,7 @@ namespace
     TEST(put_int64_t)
     {
       // Tests assume big endian.
-      std::array<unsigned char, sizeof(int64_t) * 4> storage;
+      std::array<unsigned char, sizeof(int64_t) * 4> storage{0};
       std::array<unsigned char, sizeof(int64_t) * 4> compare_data = { 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x01U,
                                                                       0x5AU, 0xA5U, 0xA5U, 0x5AU, 0xA5U, 0x5AU, 0x5AU, 0xA5U,
                                                                       0xA5U, 0x5AU, 0x5AU, 0xA5U, 0x5AU, 0xA5U, 0xA5U, 0x5AU,
@@ -319,7 +319,7 @@ namespace
     TEST(put_uint64_t)
     {
       // Tests assume big endian.
-      std::array<unsigned char, sizeof(uint64_t) * 4> storage;
+      std::array<unsigned char, sizeof(uint64_t) * 4> storage{0};
       std::array<unsigned char, sizeof(uint64_t) * 4> compare_data = { 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x01U,
                                                                        0x5AU, 0xA5U, 0xA5U, 0x5AU, 0xA5U, 0x5AU, 0x5AU, 0xA5U,
                                                                        0xA5U, 0x5AU, 0x5AU, 0xA5U, 0x5AU, 0xA5U, 0xA5U, 0x5AU,
@@ -372,7 +372,7 @@ namespace
     //*************************************************************************
     TEST(put_get_int8_t)
     {
-      std::array<unsigned char, 4 * sizeof(int8_t)> storage;
+      std::array<unsigned char, 4 * sizeof(int8_t)> storage{0};
       std::array<int8_t, 4> put_data = { int8_t(0x01), int8_t(0x5A), int8_t(0xA5), int8_t(0xFF) };
       std::array<int8_t, 4> get_data = { int8_t(0x00), int8_t(0x00), int8_t(0x00), int8_t(0x00) };
 
@@ -402,7 +402,7 @@ namespace
     //*************************************************************************
     TEST(put_get_int8_t_5bits)
     {
-      std::array<unsigned char, 4 * sizeof(int8_t)> storage;
+      std::array<unsigned char, 4 * sizeof(int8_t)> storage{0};
       std::array<int8_t, 4> put_data    = { int8_t(0x01), int8_t(0x15), int8_t(0xA5), int8_t(0x1F) }; // 1, -11, 10, -1
       std::array<int8_t, 4> expect_data = { int8_t(0x01), int8_t(0xF5), int8_t(0x05), int8_t(0xFF) }; // 1, -11, 10, -1
       std::array<int8_t, 4> get_data    = { int8_t(0x00), int8_t(0x00), int8_t(0x00), int8_t(0x00) };
@@ -433,7 +433,7 @@ namespace
     //*************************************************************************
     TEST(put_get_uint8_t)
     {
-      std::array<unsigned char, 4 * sizeof(uint8_t)> storage;
+      std::array<unsigned char, 4 * sizeof(uint8_t)> storage{0};
       std::array<uint8_t, 4> put_data = { uint8_t(0x01U), uint8_t(0x5AU), uint8_t(0xA5U), uint8_t(0xFFU) };
       std::array<uint8_t, 4> get_data = { uint8_t(0x00U), uint8_t(0x00U), uint8_t(0x00U), uint8_t(0x00U) };
 
@@ -463,7 +463,7 @@ namespace
     //*************************************************************************
     TEST(put_get_uint8_t_5bits)
     {
-      std::array<unsigned char, 4 * sizeof(uint8_t)> storage;
+      std::array<unsigned char, 4 * sizeof(uint8_t)> storage{0};
       std::array<uint8_t, 4> put_data    = { uint8_t(0x01U), uint8_t(0x5AU), uint8_t(0xA5U), uint8_t(0xFFU) }; // 1, -11, 10, -1
       std::array<uint8_t, 4> expect_data = { uint8_t(0x01U), uint8_t(0x1AU), uint8_t(0x05U), uint8_t(0x1FU) }; // 1, -11, 10, -1
       std::array<uint8_t, 4> get_data    = { uint8_t(0x00U), uint8_t(0x00U), uint8_t(0x00U), uint8_t(0x00U) };
@@ -494,7 +494,7 @@ namespace
     //*************************************************************************
     TEST(put_get_int16_t)
     {
-      std::array<unsigned char, 4 * sizeof(int16_t)> storage;
+      std::array<unsigned char, 4 * sizeof(int16_t)> storage{0};
       std::array<int16_t, 4> put_data = { int16_t(0x0001), int16_t(0xA55A), int16_t(0x5AA5), int16_t(0xFFFF) };
       std::array<int16_t, 4> get_data = { int16_t(0x0000), int16_t(0x0000), int16_t(0x0000), int16_t(0x0000) };
 
@@ -524,7 +524,7 @@ namespace
     //*************************************************************************
     TEST(put_get_int16_t_10bits)
     {
-      std::array<unsigned char, 4 * sizeof(int16_t)> storage;
+      std::array<unsigned char, 4 * sizeof(int16_t)> storage{0};
       std::array<int16_t, 4> put_data    = { int16_t(0x0001), int16_t(0xA55A), int16_t(0x5AA5), int16_t(0xFFFF) };
       std::array<int16_t, 4> expect_data = { int16_t(0x0001), int16_t(0x015A), int16_t(0xFEA5), int16_t(0xFFFF) };
       std::array<int16_t, 4> get_data    = { int16_t(0x0000), int16_t(0x0000), int16_t(0x0000), int16_t(0x0000) };
@@ -555,7 +555,7 @@ namespace
     //*************************************************************************
     TEST(put_get_uint16_t)
     {
-      std::array<unsigned char, 4 * sizeof(uint16_t)> storage;
+      std::array<unsigned char, 4 * sizeof(uint16_t)> storage{0};
       std::array<uint16_t, 4> put_data = { uint16_t(0x0001U), uint16_t(0xA55AU), uint16_t(0x5AA5U), uint16_t(0xFFFFU) };
       std::array<uint16_t, 4> get_data = { uint16_t(0x0000U), uint16_t(0x0000U), uint16_t(0x0000U), uint16_t(0x0000U) };
 
@@ -585,7 +585,7 @@ namespace
     //*************************************************************************
     TEST(put_get_uint16_t_10bits)
     {
-      std::array<unsigned char, 4 * sizeof(uint16_t)> storage;
+      std::array<unsigned char, 4 * sizeof(uint16_t)> storage{0};
       std::array<uint16_t, 4> put_data    = { uint16_t(0x0001U), uint16_t(0xA55AU), uint16_t(0x5AA5U), uint16_t(0xFFFFU) };
       std::array<uint16_t, 4> expect_data = { uint16_t(0x0001U), uint16_t(0x015AU), uint16_t(0x02A5U), uint16_t(0x03FFU) };
       std::array<uint16_t, 4> get_data    = { uint16_t(0x0000U), uint16_t(0x0000U), uint16_t(0x0000U), uint16_t(0x0000U) };
@@ -616,7 +616,7 @@ namespace
     //*************************************************************************
     TEST(put_get_int32_t)
     {
-      std::array<unsigned char, 4 * sizeof(int32_t)> storage;
+      std::array<unsigned char, 4 * sizeof(int32_t)> storage{0};
       std::array<int32_t, 4> put_data = { int32_t(0x00000001L), int32_t(0xA55AA55AL), int32_t(0x5AA55AA5L), int32_t(0xFFFFFFFFL) };
       std::array<int32_t, 4> get_data = { int32_t(0x00000000L), int32_t(0x00000000L), int32_t(0x00000000L), int32_t(0x00000000L) };
 
@@ -646,7 +646,7 @@ namespace
     //*************************************************************************
     TEST(put_get_int32_t_22bits)
     {
-      std::array<unsigned char, 4 * sizeof(int32_t)> storage;
+      std::array<unsigned char, 4 * sizeof(int32_t)> storage{0};
       std::array<int32_t, 4> put_data    = { int32_t(0x00000001L), int32_t(0xA55AA55AL), int32_t(0x5AA55AA5L), int32_t(0xFFFFFFFFL) };
       std::array<int32_t, 4> expect_data = { int32_t(0x00000001L), int32_t(0x001AA55AL), int32_t(0xFFE55AA5L), int32_t(0xFFFFFFFFL) };
       std::array<int32_t, 4> get_data    = { int32_t(0x00000000L), int32_t(0x00000000L), int32_t(0x00000000L), int32_t(0x00000000L) };
@@ -677,7 +677,7 @@ namespace
     //*************************************************************************
     TEST(put_get_uint32_t)
     {
-      std::array<unsigned char, 4 * sizeof(uint32_t)> storage;
+      std::array<unsigned char, 4 * sizeof(uint32_t)> storage{0};
       std::array<uint32_t, 4> put_data = { uint32_t(0x00000001UL), uint32_t(0xA55AA55AUL), uint32_t(0x5AA55AA5UL), uint32_t(0xFFFFFFFFUL) };
       std::array<uint32_t, 4> get_data = { uint32_t(0x00000000UL), uint32_t(0x00000000UL), uint32_t(0x00000000UL), uint32_t(0x00000000UL) };
 
@@ -707,7 +707,7 @@ namespace
     //*************************************************************************
     TEST(put_get_uint32_t_22bits)
     {
-      std::array<unsigned char, 4 * sizeof(uint32_t)> storage;
+      std::array<unsigned char, 4 * sizeof(uint32_t)> storage{0};
       std::array<uint32_t, 4> put_data    = { uint32_t(0x00000001UL), uint32_t(0xA55AA55AUL), uint32_t(0x5AA55AA5UL), uint32_t(0xFFFFFFFFUL) };
       std::array<uint32_t, 4> expect_data = { uint32_t(0x00000001UL), uint32_t(0x001AA55AUL), uint32_t(0x00255AA5UL), uint32_t(0x003FFFFFUL) };
       std::array<uint32_t, 4> get_data    = { uint32_t(0x00000000UL), uint32_t(0x00000000UL), uint32_t(0x00000000UL), uint32_t(0x00000000UL) };
@@ -738,7 +738,7 @@ namespace
     //*************************************************************************
     TEST(put_get_int64_t)
     {
-      std::array<unsigned char, 4 * sizeof(int64_t)> storage;
+      std::array<unsigned char, 4 * sizeof(int64_t)> storage{0};
       std::array<int64_t, 4> put_data    = { int64_t(0x0000000000000001LL), int64_t(0xA55AA55AA55AA55ALL), int64_t(0x5AA55AA55AA55AA5LL), int64_t(0xFFFFFFFFFFFFFFFFLL) };
       std::array<int64_t, 4> expect_data = { int64_t(0x0000000000000001LL), int64_t(0xA55AA55AA55AA55ALL), int64_t(0x5AA55AA55AA55AA5LL), int64_t(0xFFFFFFFFFFFFFFFFLL) };
       std::array<int64_t, 4> get_data    = { int64_t(0x0000000000000000LL), int64_t(0x0000000000000000LL), int64_t(0x0000000000000000LL), int64_t(0x0000000000000000LL) };
@@ -769,7 +769,7 @@ namespace
     //*************************************************************************
     TEST(put_get_int64_t_47bits)
     {
-      std::array<unsigned char, 4 * sizeof(int64_t)> storage;
+      std::array<unsigned char, 4 * sizeof(int64_t)> storage{0};
       std::array<int64_t, 4> put_data    = { int64_t(0x0000000000000001LL), int64_t(0xA55AA55AA55AA55ALL), int64_t(0x5AA55AA55AA55AA5LL), int64_t(0xFFFFFFFFFFFFFFFFLL) };
       std::array<int64_t, 4> expect_data = { int64_t(0x0000000000000001LL), int64_t(0x0000255AA55AA55ALL), int64_t(0xFFFFDAA55AA55AA5LL), int64_t(0xFFFFFFFFFFFFFFFFLL) };
       std::array<int64_t, 4> get_data    = { int64_t(0x0000000000000000LL), int64_t(0x0000000000000000LL), int64_t(0x0000000000000000LL), int64_t(0x0000000000000000LL) };
@@ -800,7 +800,7 @@ namespace
     //*************************************************************************
     TEST(put_get_uint64_t)
     {
-      std::array<unsigned char, 4 * sizeof(uint64_t)> storage;
+      std::array<unsigned char, 4 * sizeof(uint64_t)> storage{0};
       std::array<uint64_t, 4> put_data    = { uint64_t(0x0000000000000001ULL), uint64_t(0xA55AA55AA55AA55AULL), uint64_t(0x5AA55AA55AA55AA5ULL), uint64_t(0xFFFFFFFFFFFFFFFFULL) };
       std::array<uint64_t, 4> expect_data = { uint64_t(0x0000000000000001ULL), uint64_t(0xA55AA55AA55AA55AULL), uint64_t(0x5AA55AA55AA55AA5ULL), uint64_t(0xFFFFFFFFFFFFFFFFULL) };
       std::array<uint64_t, 4> get_data    = { uint64_t(0x0000000000000000ULL), uint64_t(0x0000000000000000ULL), uint64_t(0x0000000000000000ULL), uint64_t(0x0000000000000000ULL) };
@@ -831,7 +831,7 @@ namespace
     //*************************************************************************
     TEST(put_get_uint64_t_47bits)
     {
-      std::array<unsigned char, 4 * sizeof(uint64_t)> storage;
+      std::array<unsigned char, 4 * sizeof(uint64_t)> storage{0};
       std::array<uint64_t, 4> put_data    = { uint64_t(0x0000000000000001ULL), uint64_t(0xA55AA55AA55AA55AULL), uint64_t(0x5AA55AA55AA55AA5ULL), uint64_t(0xFFFFFFFFFFFFFFFFULL) };
       std::array<uint64_t, 4> expect_data = { uint64_t(0x0000000000000001ULL), uint64_t(0x0000255AA55AA55AULL), uint64_t(0x00005AA55AA55AA5ULL), uint64_t(0x00007FFFFFFFFFFFULL) };
       std::array<uint64_t, 4> get_data    = { uint64_t(0x0000000000000000ULL), uint64_t(0x0000000000000000ULL), uint64_t(0x0000000000000000ULL), uint64_t(0x0000000000000000ULL) };
@@ -871,7 +871,7 @@ namespace
       float f = 3.1415927f;
       double d = 3.1415927;
 
-      std::array<unsigned char, 100> storage;
+      std::array<unsigned char, 100> storage{0};
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
 
@@ -935,7 +935,7 @@ namespace
       double d = 3.1415927;
       int64_t ll = 140737488355327LL;
 
-      std::array<unsigned char, 100> storage;
+      std::array<unsigned char, 100> storage{0};
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
 
@@ -1020,7 +1020,7 @@ namespace
     //*************************************************************************
     TEST(put_get_object_global)
     {
-      std::array<unsigned char, 2 * sizeof(Object)> storage;
+      std::array<unsigned char, 2 * sizeof(Object)> storage{0};
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
 
@@ -1049,7 +1049,7 @@ namespace
       float  f = 3.1415927f;
       double d = 3.1415927;
 
-      std::array<unsigned char, 12> storage;
+      std::array<unsigned char, 12> storage{0};
 
       etl::bit_stream bit_stream(storage.data(), storage.size());
 
