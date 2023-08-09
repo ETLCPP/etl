@@ -1,4 +1,11 @@
 ===============================================================================
+20.37.3
+#737 Etl::equal specialisation for etl::span is deduced wrongly when using STL and CPP20. Added C++20 four iterator std::equal variants.
+#738 etl::expected assignment operator won't work when TValue and TError are the same type. Changed assignment from etl::unexpected to use variant::emplace instead of direct assignment.
+#739 Could not compile ETL with gcc 9.4.0 (C++11). Added compatibility for GCC-9 + C++11. Added missing return reference from emplace member function int variant_variadic.h
+Removed many -02 warnings for GCC-13
+
+===============================================================================
 20.37.2
 #733 Fix etl::expected assignment from etl unexpected.
 #734 Add missing new line at end of files.
