@@ -62,7 +62,7 @@ namespace
   //  return os;
   //}
 
-  SUITE(test_string_char)
+  SUITE(test_string_char32_t)
   {
     static const size_t SIZE = 11;
 
