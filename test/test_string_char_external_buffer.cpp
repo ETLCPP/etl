@@ -47,7 +47,7 @@ namespace
            ((result1 > 0)  && (result2 > 0));
   }
 
-  SUITE(test_string_char)
+  SUITE(test_string_char_external_buffer)
   {
     static constexpr size_t SIZE   = 11UL;
     static constexpr size_t SIZE_L = 52UL;
@@ -1698,7 +1698,8 @@ namespace
       for (size_t offset = 0UL; offset <= short_text.size(); ++offset)
       {
         Compare_Text compare_text(short_text.cbegin(), short_text.cend());
-        TextBuffer buffer{0};
+        TextBuffer buffer;
+        buffer.fill(0);
         Text text(short_text.begin(), short_text.end(), buffer.data(), buffer.size());
 
         TextBuffer buffer2{0};

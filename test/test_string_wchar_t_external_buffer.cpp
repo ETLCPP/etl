@@ -63,7 +63,7 @@ namespace
   //  return os;
   //}
 
-  SUITE(test_string_char)
+  SUITE(test_string_wchar_t_external_buffer)
   {
     static constexpr size_t SIZE   = 11;
     static constexpr size_t SIZE_L = 52;

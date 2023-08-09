@@ -63,7 +63,7 @@ namespace
   //  return os;
   //}
 
-  SUITE(test_string_char)
+  SUITE(test_string_char32_t_external_buffer)
   {
     static constexpr size_t SIZE   = 11;
     static constexpr size_t SIZE_L = 52;
@@ -1712,10 +1712,12 @@ namespace
       for (size_t offset = 0UL; offset <= short_text.size(); ++offset)
       {
         Compare_Text compare_text(short_text.cbegin(), short_text.cend());
-        TextBuffer buffer{0};
+        TextBuffer buffer;
+        buffer.fill(0);
         Text text(short_text.begin(), short_text.end(), buffer.data(), buffer.size());
 
-        TextBuffer buffer2{0};
+        TextBuffer buffer2;
+        buffer2.fill(0);
         Text insert(insert_text.begin(), insert_text.end(), buffer2.data(), buffer2.size());
 
         text.insert(offset, insert);
