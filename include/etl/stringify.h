@@ -1,5 +1,5 @@
-/** \file */
-#pragma once
+#ifndef ETL_ETL_STRINGIFY_INCLUDED
+#define ETL_ETL_STRINGIFY_INCLUDED
 
 /** Helper macro for STRINGIFY. */
 #define STRINGIFY_1(...) #__VA_ARGS__
@@ -14,3 +14,5 @@
  *             For example `STRINGIFY( a , b )` will be expanded to "a , b".
  */
 #define STRINGIFY(...) STRINGIFY_1(__VA_ARGS__)
+
+#endif /* ETL_ETL_STRINGIFY_INCLUDED */
