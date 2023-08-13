@@ -1359,6 +1359,9 @@
     <ClInclude Include="..\..\include\etl\private\diagnostic_stringop_overread_push.h">
       <Filter>ETL\Private</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\stringify.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3417,6 +3420,9 @@
       <Filter>Tests\Containers</Filter>
     </ClCompile>
     <ClCompile Include="..\test_expected.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_macros.cpp">
       <Filter>Tests\Misc</Filter>
     </ClCompile>
   </ItemGroup>
