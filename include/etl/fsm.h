@@ -182,6 +182,9 @@ namespace etl
       
       // Pass this when this event also needs to be passed to the parent.
       static ETL_CONSTANT fsm_state_id_t Pass_To_Parent = No_State_Change - 1U;
+
+      // Pass this when this event should trigger a self transition.
+      static ETL_CONSTANT fsm_state_id_t Self_Transition = No_State_Change - 2U;
     };
 
     template <typename T>
@@ -189,6 +192,9 @@ namespace etl
 
     template <typename T>
     ETL_CONSTANT fsm_state_id_t ifsm_state_helper<T>::Pass_To_Parent;
+
+    template <typename T>
+    ETL_CONSTANT fsm_state_id_t ifsm_state_helper<T>::Self_Transition;
   }
 
   //***************************************************************************
@@ -204,6 +210,7 @@ namespace etl
 
     using private_fsm::ifsm_state_helper<>::No_State_Change;
     using private_fsm::ifsm_state_helper<>::Pass_To_Parent;
+    using private_fsm::ifsm_state_helper<>::Self_Transition;
 
 #if ETL_USING_CPP17 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++17 and above
     template <typename, typename, etl::fsm_state_id_t, typename...>
@@ -418,6 +425,11 @@ namespace etl
           }
         } while (p_next_state != p_state); // Have we changed state again?
       }
+      else if (is_self_transition(next_state_id))
+      {
+        p_state->on_exit_state();
+        p_state->on_enter_state();
+      }
     }
 
     using imessage_router::accepts;
@@ -504,7 +516,14 @@ namespace etl
     bool have_changed_state(etl::fsm_state_id_t next_state_id) const
     {
       return (next_state_id != p_state->get_state_id()) &&
-             (next_state_id != ifsm_state::No_State_Change);
+             (next_state_id != ifsm_state::No_State_Change) &&
+             (next_state_id != ifsm_state::Self_Transition);
+    }
+
+    //********************************************
+    bool is_self_transition(etl::fsm_state_id_t next_state_id) const
+    {
+      return (next_state_id == ifsm_state::Self_Transition);
     }
 
     etl::ifsm_state*    p_state;          ///< A pointer to the current state.
