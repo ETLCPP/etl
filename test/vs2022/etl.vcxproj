@@ -1131,7 +1131,7 @@
       </UndefinePreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -2892,6 +2892,7 @@
     <ClInclude Include="..\..\include\etl\queue_mpmc_mutex.h" />
     <ClInclude Include="..\..\include\etl\sqrt.h" />
     <ClInclude Include="..\..\include\etl\string.h" />
+    <ClInclude Include="..\..\include\etl\stringify.h" />
     <ClInclude Include="..\..\include\etl\string_stream.h" />
     <ClInclude Include="..\..\include\etl\string_utilities.h" />
     <ClInclude Include="..\..\include\etl\string_view.h" />
@@ -13343,6 +13344,7 @@
     <ClCompile Include="..\test_expected.cpp" />
     <ClCompile Include="..\test_hfsm_recurse_to_inner_state_on_start.cpp" />
     <ClCompile Include="..\test_intrusive_links.cpp" />
+    <ClCompile Include="..\test_macros.cpp" />
     <ClCompile Include="..\test_message_broker.cpp" />
     <ClCompile Include="..\test_poly_span_dynamic_extent.cpp" />
     <ClCompile Include="..\test_poly_span_fixed_extent.cpp" />

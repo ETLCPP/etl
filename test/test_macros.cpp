@@ -1,5 +1,3 @@
-///\file
-
 /******************************************************************************
 The MIT License(MIT)
 
@@ -7,7 +5,9 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2018 John Wellbelove
+Documentation: 
+
+Copyright(c) 2022 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -28,20 +28,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_MACROS_INCLUDED
-#define ETL_MACROS_INCLUDED
+#include "unit_test_framework.h"
 
-#define ETL_CONCAT2(X, Y)  X##Y
-#define ETL_CONCAT(X, Y)   ETL_CONCAT2(X, Y)
+#include "etl/platform.h"
+#include "etl/macros.h"
+#include "etl/char_traits.h"
 
-#define ETL_STRINGIFY_1(...) #__VA_ARGS__
-#define ETL_STRINGIFY(...) ETL_STRINGIFY_1(__VA_ARGS__)
+#include <algorithm>
 
-#define ETL_STRING(X)      ETL_CONCAT(, ETL_STRINGIFY(X))
-#define ETL_WIDE_STRING(X) ETL_CONCAT(L, ETL_STRINGIFY(X))
-#define ETL_U8_STRING(X)   ETL_CONCAT(u8, ETL_STRINGIFY(X))
-#define ETL_U16_STRING(X)  ETL_CONCAT(u, ETL_STRINGIFY(X))
-#define ETL_U32_STRING(X)  ETL_CONCAT(U, ETL_STRINGIFY(X))
+namespace
+{
+  SUITE(test_macros)
+  {
+    template <typename T>
+    bool CheckEqualStrings(const T * expected, const T * actual)
+    {
+      return (etl::strlen(expected) == etl::strlen(actual)) &&
+             std::equal(expected, expected + etl::strlen(expected), actual);
+    }
 
-#endif
+    TEST(test_macros)
+    {
+      CHECK_TRUE(CheckEqualStrings("A, B, C, D, E, F", ETL_STRINGIFY(A, B, C, D, E, F)));
 
+      CHECK_ARRAY_EQUAL( "ABCDEF",  ETL_STRING(ABCDEF),      etl::strlen("ABCDEF"));
+      CHECK_ARRAY_EQUAL(L"ABCDEF",  ETL_WIDE_STRING(ABCDEF), etl::strlen(L"ABCDEF"));
+      CHECK_ARRAY_EQUAL(u8"ABCDEF", ETL_U8_STRING(ABCDEF),   etl::strlen(u8"ABCDEF"));
+      CHECK_ARRAY_EQUAL(u"ABCDEF",  ETL_U16_STRING(ABCDEF),  etl::strlen(u"ABCDEF"));
+      CHECK_ARRAY_EQUAL(U"ABCDEF",  ETL_U32_STRING(ABCDEF),  etl::strlen(U"ABCDEF"));
+    }
+  };
+}
