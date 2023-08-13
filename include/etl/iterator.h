@@ -1147,11 +1147,11 @@ namespace etl
 #endif
 
 #if ETL_NOT_USING_STL || ETL_CPP17_NOT_SUPPORTED
-  ///**************************************************************************
+  //**************************************************************************
   /// Get the size of a container.
   /// Expects the container to have defined 'size_type'.
   ///\ingroup container
-  ///**************************************************************************
+  //**************************************************************************
   template<typename TContainer>
   ETL_CONSTEXPR typename TContainer::size_type size(const TContainer& container)
   {
@@ -1169,13 +1169,13 @@ namespace etl
   }
 #endif
 
-  ///**************************************************************************
+  //**************************************************************************
   /// Get the size of an array in elements at compile time for C++03
   ///\code
   /// sizeof(array_size(array))
   ///\endcode
   ///\ingroup container
-  ///**************************************************************************
+  //**************************************************************************
   template <typename T, size_t Array_Size>
   char(&array_size(T(&array)[Array_Size]))[Array_Size];
 
