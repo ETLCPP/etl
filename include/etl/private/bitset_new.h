@@ -1318,8 +1318,6 @@ namespace etl
 
       const element_type mask = element_type(element_type(1) << position);
       return (buffer & mask) != 0U;
-
-      return false;
     }
 
     //*************************************************************************
@@ -3032,8 +3030,6 @@ namespace etl
 
       const element_type mask = element_type(element_type(1) << position);
       return (*pbuffer & mask) != 0U;
-
-      return false;
     }
 
     //*************************************************************************
