@@ -232,6 +232,14 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Indicate if etl::imassage is to be non-virtual.
+#if defined(ETL_MESSAGES_ARE_NOT_VIRTUAL)
+  #define ETL_HAS_VIRTUAL_MESSAGES 0
+#else
+  #define ETL_HAS_VIRTUAL_MESSAGES 1
+#endif
+
+//*************************************
 // The macros below are dependent on the profile.
 // C++11
 #if ETL_USING_CPP11 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
@@ -449,7 +457,7 @@ namespace etl
     static ETL_CONSTANT bool using_generic_compiler           = (ETL_USING_GENERIC_COMPILER == 1);
     static ETL_CONSTANT bool using_legacy_bitset              = (ETL_USING_LEGACY_BITSET == 1);
     static ETL_CONSTANT bool using_exceptions                 = (ETL_USING_EXCEPTIONS == 1);
-
+    
     // Has...
     static ETL_CONSTANT bool has_initializer_list             = (ETL_HAS_INITIALIZER_LIST == 1);
     static ETL_CONSTANT bool has_8bit_types                   = (ETL_USING_8BIT_TYPES == 1);
@@ -467,6 +475,7 @@ namespace etl
     static ETL_CONSTANT bool has_ivector_repair               = (ETL_HAS_IVECTOR_REPAIR == 1);
     static ETL_CONSTANT bool has_mutable_array_view           = (ETL_HAS_MUTABLE_ARRAY_VIEW == 1);
     static ETL_CONSTANT bool has_ideque_repair                = (ETL_HAS_IDEQUE_REPAIR == 1);
+    static ETL_CONSTANT bool has_virtual_messages             = (ETL_HAS_VIRTUAL_MESSAGES == 1);
 
     // Is...
     static ETL_CONSTANT bool is_debug_build                   = (ETL_IS_DEBUG_BUILD == 1);

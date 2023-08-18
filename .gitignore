@@ -382,3 +382,5 @@ test/vs2022/Release MSVC C++20 - No STL - Optimised -O2
 test/vs2022/Release MSVC C++20 - Optimised O2
 test/vs2022/Debug MSVC C++ 20 - No Tests
 test/vs2022/enc_temp_folder
+test/vs2022/Debug MSVC C++20 - No virtual messages
+examples/MutexMessageRouter/.vs

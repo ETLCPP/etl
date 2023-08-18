@@ -35,7 +35,7 @@ SOFTWARE.
 #include "etl/queue.h"
 
 #include <iostream>
-
+#include <limits>
 
 namespace
 {
@@ -166,6 +166,9 @@ namespace
       entered_state = false;
       isLampOn      = false;
       speed         = 0;
+
+      last_event_id          = std::numeric_limits<etl::message_id_t>::max();
+      last_returned_state_id = std::numeric_limits<etl::fsm_state_id_t>::max();
     }
 
     //***********************************
@@ -208,6 +211,8 @@ namespace
     bool entered_state;
     bool isLampOn;
     int  speed;
+    etl::message_id_t   last_event_id;
+    etl::fsm_state_id_t last_returned_state_id;
   };
 
   //***********************************
@@ -234,6 +239,8 @@ namespace
     //***********************************
     etl::fsm_state_id_t on_event(const SelfTransition&)
     {
+      get_fsm_context().last_event_id          = SelfTransition::ID;
+      get_fsm_context().last_returned_state_id = etl::ifsm_state::Self_Transition;
       return etl::ifsm_state::Self_Transition;
     }
 
@@ -658,6 +665,9 @@ namespace
 
       // Execute self transition.
       motorControl.receive(SelfTransition());
+
+      CHECK_EQUAL(size_t(SelfTransition::ID),               size_t(motorControl.last_event_id));
+      CHECK_EQUAL(size_t(etl::ifsm_state::Self_Transition), size_t(motorControl.last_returned_state_id));
 
       CHECK_TRUE(motorControl.exited_state);
       CHECK_TRUE(motorControl.entered_state);

@@ -59,6 +59,7 @@ namespace
       CHECK_EQUAL((ETL_USING_INTEL_COMPILER == 1),             etl::traits::using_intel_compiler);
       CHECK_EQUAL((ETL_USING_TEXAS_INSTRUMENTS_COMPILER == 1), etl::traits::using_texas_instruments_compiler);
       CHECK_EQUAL((ETL_USING_GENERIC_COMPILER == 1),           etl::traits::using_generic_compiler);
+
       CHECK_EQUAL((ETL_USING_8BIT_TYPES == 1),                 etl::traits::has_8bit_types);
       CHECK_EQUAL((ETL_USING_64BIT_TYPES == 1),                etl::traits::has_64bit_types);
       CHECK_EQUAL((ETL_HAS_ATOMIC == 1),                       etl::traits::has_atomic);
@@ -74,7 +75,9 @@ namespace
       CHECK_EQUAL((ETL_HAS_ISTRING_REPAIR == 1),               etl::traits::has_istring_repair);
       CHECK_EQUAL((ETL_HAS_IVECTOR_REPAIR == 1),               etl::traits::has_ivector_repair);
       CHECK_EQUAL((ETL_HAS_IDEQUE_REPAIR == 1),                etl::traits::has_ideque_repair);
-      CHECK_EQUAL((ETL_HAS_MUTABLE_ARRAY_VIEW == 1),           etl::traits::has_mutable_array_view);     
+      CHECK_EQUAL((ETL_HAS_MUTABLE_ARRAY_VIEW == 1),           etl::traits::has_mutable_array_view);
+      CHECK_EQUAL((ETL_HAS_VIRTUAL_MESSAGES == 1),             etl::traits::has_virtual_messages);
+
       CHECK_EQUAL((ETL_IS_DEBUG_BUILD == 1),                   etl::traits::is_debug_build);
       CHECK_EQUAL(__cplusplus,                                 etl::traits::cplusplus);
       CHECK_EQUAL(ETL_VERSION_MAJOR,                           etl::traits::version_major);

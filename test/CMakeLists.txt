@@ -321,6 +321,11 @@ if (ETL_USER_DEFINED_TYPE_TRAITS)
 	target_compile_definitions(etl_tests PRIVATE -DETL_USER_DEFINED_TYPE_TRAITS)
 endif()
 
+if (ETL_MESSAGES_ARE_NOT_VIRTUAL)
+	message(STATUS "Compiling for non-virtual messages")
+	target_compile_definitions(etl_tests PRIVATE -DETL_MESSAGES_ARE_NOT_VIRTUAL)
+endif()
+
 if (ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 	message(STATUS "Compiling for C++03 tests")
 	target_compile_definitions(etl_tests PRIVATE -DETL_FORCE_TEST_CPP03_IMPLEMENTATION)

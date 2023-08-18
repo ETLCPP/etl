@@ -54,7 +54,9 @@ SOFTWARE.
 #include "platform.h"
 #include "message.h"
 #include "shared_message.h"
-#include "message_packet.h"
+#if ETL_HAS_VIRTUAL_MESSAGES
+  #include "message_packet.h"
+#endif
 #include "message_types.h"
 #include "alignment.h"
 #include "error_handler.h"
@@ -390,7 +392,9 @@ namespace etl
   {
   public:
 
+#if ETL_HAS_VIRTUAL_MESSAGES
     typedef etl::message_packet<TMessageTypes...> message_packet;
+#endif
 
     //**********************************************
     message_router()
@@ -538,7 +542,9 @@ namespace etl
   {
   public:
 
+  #if ETL_HAS_VIRTUAL_MESSAGES
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15,  T16> message_packet;
+  #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -683,7 +689,9 @@ namespace etl
   {
   public:
 
+  #if ETL_HAS_VIRTUAL_MESSAGES
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14,  T15> message_packet;
+  #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -828,7 +836,9 @@ namespace etl
   {
   public:
 
+  #if ETL_HAS_VIRTUAL_MESSAGES
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,  T14> message_packet;
+  #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -972,7 +982,9 @@ namespace etl
   {
   public:
 
+  #if ETL_HAS_VIRTUAL_MESSAGES
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12,  T13> message_packet;
+  #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -1114,7 +1126,9 @@ namespace etl
   {
   public:
 
+  #if ETL_HAS_VIRTUAL_MESSAGES
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,  T12> message_packet;
+  #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -1255,7 +1269,9 @@ namespace etl
   {
   public:
 
+  #if ETL_HAS_VIRTUAL_MESSAGES
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10,  T11> message_packet;
+  #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -1395,7 +1411,9 @@ namespace etl
   {
   public:
 
+  #if ETL_HAS_VIRTUAL_MESSAGES
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8, T9,  T10> message_packet;
+  #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -1534,7 +1552,9 @@ namespace etl
   {
   public:
 
+  #if ETL_HAS_VIRTUAL_MESSAGES
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7, T8,  T9> message_packet;
+  #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -1671,7 +1691,9 @@ namespace etl
   {
   public:
 
+  #if ETL_HAS_VIRTUAL_MESSAGES
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6, T7,  T8> message_packet;
+  #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -1807,7 +1829,9 @@ namespace etl
   {
   public:
 
+  #if ETL_HAS_VIRTUAL_MESSAGES
     typedef etl::message_packet<T1, T2, T3, T4, T5, T6,  T7> message_packet;
+  #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -1941,7 +1965,9 @@ namespace etl
   {
   public:
 
+  #if ETL_HAS_VIRTUAL_MESSAGES
     typedef etl::message_packet<T1, T2, T3, T4, T5,  T6> message_packet;
+  #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -2074,7 +2100,9 @@ namespace etl
   {
   public:
 
+  #if ETL_HAS_VIRTUAL_MESSAGES
     typedef etl::message_packet<T1, T2, T3, T4,  T5> message_packet;
+  #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -2205,7 +2233,9 @@ namespace etl
   {
   public:
 
+  #if ETL_HAS_VIRTUAL_MESSAGES
     typedef etl::message_packet<T1, T2, T3,  T4> message_packet;
+  #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -2335,7 +2365,9 @@ namespace etl
   {
   public:
 
+  #if ETL_HAS_VIRTUAL_MESSAGES
     typedef etl::message_packet<T1, T2,  T3> message_packet;
+  #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -2464,7 +2496,9 @@ namespace etl
   {
   public:
 
+  #if ETL_HAS_VIRTUAL_MESSAGES
     typedef etl::message_packet<T1,  T2> message_packet;
+  #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)
@@ -2592,7 +2626,9 @@ namespace etl
   {
   public:
 
+  #if ETL_HAS_VIRTUAL_MESSAGES
     typedef etl::message_packet< T1> message_packet;
+  #endif
 
     //**********************************************
     message_router(etl::message_router_id_t id_)

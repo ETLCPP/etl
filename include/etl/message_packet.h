@@ -51,6 +51,10 @@ SOFTWARE.
 #ifndef ETL_MESSAGE_PACKET_INCLUDED
 #define ETL_MESSAGE_PACKET_INCLUDED
 
+#include "platform.h"
+
+#if ETL_HAS_VIRTUAL_MESSAGES
+
 #include "message.h"
 #include "error_handler.h"
 #include "static_assert.h"
@@ -4717,5 +4721,8 @@ namespace etl
   };
 #endif
 }
+#else
+  #error "etl::message_packet is not compatible with non-virtual etl::imessage"
+#endif
 
 #endif
