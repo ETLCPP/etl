@@ -587,13 +587,11 @@ namespace etl
                   // Call the function wrapper callback.
                   (*reinterpret_cast<etl::ifunction<void>*>(timer.p_callback))();
                 }
-#if ETL_USING_CPP11
                 else if(timer.cbk_type == callback_timer_data::DELEGATE)
                 {
                     // Call the delegate callback.
                     (*reinterpret_cast<callback_type*>(timer.p_callback))();
                 }
-#endif
               }
 
               has_active = !active_list.empty();
