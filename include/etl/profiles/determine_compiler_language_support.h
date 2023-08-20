@@ -31,7 +31,7 @@ SOFTWARE.
 #ifndef ETL_DETERMINE_COMPILER_LANGUAGE_SUPPORT_H_INCLUDED
 #define ETL_DETERMINE_COMPILER_LANGUAGE_SUPPORT_H_INCLUDED
 
-#include <math.h>
+//#include <math.h>
 
 #include "determine_compiler.h"
 

@@ -35,7 +35,6 @@ SOFTWARE.
 #include "functional.h"
 #include "limits.h"
 
-#include <math.h>
 #include <stdint.h>
 
 namespace etl
