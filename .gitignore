@@ -384,3 +384,4 @@ test/vs2022/Debug MSVC C++ 20 - No Tests
 test/vs2022/enc_temp_folder
 test/vs2022/Debug MSVC C++20 - No virtual messages
 examples/MutexMessageRouter/.vs
+support/time remaining test.xlsx

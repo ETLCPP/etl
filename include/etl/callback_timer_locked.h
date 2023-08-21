@@ -309,6 +309,18 @@ namespace etl
       unlock   = unlock_;
     }
 
+    //*******************************************
+    /// Get the time to the next timer event.
+    //*******************************************
+    uint32_t time_to_next() const
+    {
+      lock();
+      uint32_t delta = active_list.front().delta;
+      unlock();
+
+      return delta;
+    }
+
   protected:
 
     //*************************************************************************
@@ -516,6 +528,12 @@ namespace etl
 
       //*******************************
       timer_data& front()
+      {
+        return ptimers[head];
+      }
+
+      //*******************************
+      const timer_data& front() const
       {
         return ptimers[head];
       }

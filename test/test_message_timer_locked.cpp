@@ -716,6 +716,61 @@ namespace
     }
 
     //*************************************************************************
+    TEST(message_timer_time_to_next)
+    {
+      locks.clear();
+      try_lock_type try_lock = try_lock_type::create<Locks, locks, &Locks::try_lock>();
+      lock_type     lock     = lock_type::create<Locks, locks, &Locks::lock>();
+      unlock_type   unlock   = unlock_type::create<Locks, locks, &Locks::unlock>();
+
+      etl::message_timer_locked<3> timer_controller(try_lock, lock, unlock);
+
+      etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::REPEATING);
+      etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::REPEATING);
+      etl::timer::id::type id3 = timer_controller.register_timer(message3, router1, 11, etl::timer::mode::REPEATING);
+
+      router1.clear();
+
+      timer_controller.start(id1);
+      timer_controller.start(id3);
+      timer_controller.start(id2);
+
+      timer_controller.enable(true);
+
+      CHECK_EQUAL(11, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(4, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(8, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(1, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(5, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(2, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(2, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(6, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(10, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(3, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(4, timer_controller.time_to_next());
+    }
+
+    //*************************************************************************
 #if REALTIME_TEST
 
   #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported

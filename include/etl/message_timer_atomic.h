@@ -302,6 +302,18 @@ namespace etl
       return false;
     }
 
+    //*******************************************
+    /// Get the time to the next timer event.
+    //*******************************************
+    uint32_t time_to_next() const
+    {
+      ++process_semaphore;
+      uint32_t delta = active_list.front().delta;
+      --process_semaphore;
+
+      return delta;
+    }
+
   protected:
 
     //*************************************************************************
@@ -405,10 +417,10 @@ namespace etl
 
       //*******************************
       timer_list(timer_data* ptimers_)
-        : head(etl::timer::id::NO_TIMER),
-        tail(etl::timer::id::NO_TIMER),
-        current(etl::timer::id::NO_TIMER),
-        ptimers(ptimers_)
+        : head(etl::timer::id::NO_TIMER)
+        , tail(etl::timer::id::NO_TIMER)
+        , current(etl::timer::id::NO_TIMER)
+        , ptimers(ptimers_)
       {
       }
 
@@ -528,6 +540,12 @@ namespace etl
       }
 
       //*******************************
+      const timer_data& front() const
+      {
+        return ptimers[head];
+      }
+
+      //*******************************
       etl::timer::id::type begin()
       {
         current = head;
@@ -581,7 +599,7 @@ namespace etl
     timer_list active_list;
 
     bool enabled;
-    TSemaphore process_semaphore;
+    mutable TSemaphore process_semaphore;
     uint_least8_t registered_timers;
 
   public:

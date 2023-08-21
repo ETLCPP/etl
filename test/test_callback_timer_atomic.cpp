@@ -541,7 +541,7 @@ namespace
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback1,        37, etl::timer::mode::REPEATING);
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback1, 23, etl::timer::mode::REPEATING);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2,         11, etl::timer::mode::REPEATING);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::REPEATING);
 
       test.tick_list.clear();
       free_tick_list1.clear();
@@ -651,6 +651,54 @@ namespace
       CHECK(free_tick_list1.size() != 0);
 
       CHECK_ARRAY_EQUAL(compare1.data(), free_tick_list1.data(), compare1.size());
+    }
+
+    //*************************************************************************
+    TEST(message_timer_time_to_next)
+    {
+      etl::callback_timer_atomic<3, std::atomic_uint32_t> timer_controller;
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback1,        37, etl::timer::mode::REPEATING);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback1, 23, etl::timer::mode::REPEATING);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::REPEATING);
+
+      timer_controller.start(id1);
+      timer_controller.start(id3);
+      timer_controller.start(id2);
+
+      timer_controller.enable(true);
+
+      CHECK_EQUAL(11, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(4, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(8, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(1, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(5, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(2, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(2, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(6, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(10, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(3, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(4, timer_controller.time_to_next());
     }
 
     //*************************************************************************

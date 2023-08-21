@@ -311,6 +311,19 @@ namespace etl
       return false;
     }
 
+    //*******************************************
+    /// Get the time to the next timer event.
+    //*******************************************
+    uint32_t time_to_next() const
+    {
+      TInterruptGuard guard;
+      (void)guard; // Silence 'unused variable warnings.
+
+      uint32_t delta = active_list.front().delta;
+
+      return delta;
+    }
+
   protected:
 
     //*************************************************************************
@@ -531,6 +544,12 @@ namespace etl
 
       //*******************************
       timer_data& front()
+      {
+        return ptimers[head];
+      }
+
+      //*******************************
+      const timer_data& front() const
       {
         return ptimers[head];
       }

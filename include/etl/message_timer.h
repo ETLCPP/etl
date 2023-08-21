@@ -281,6 +281,12 @@ namespace etl
       }
 
       //*******************************
+      const etl::message_timer_data& front() const
+      {
+        return ptimers[head];
+      }
+
+      //*******************************
       etl::timer::id::type begin()
       {
         current = head;
@@ -583,6 +589,18 @@ namespace etl
       return false;
     }
 
+    //*******************************************
+    /// Get the time to the next timer event.
+    //*******************************************
+    uint32_t time_to_next() const
+    {
+      ETL_DISABLE_TIMER_UPDATES;
+      uint32_t delta = active_list.front().delta;
+      ETL_ENABLE_TIMER_UPDATES;
+
+      return delta;
+    }
+
   protected:
 
     //*******************************************
@@ -629,7 +647,7 @@ namespace etl
   #endif
 #endif
 
-    etl::timer_semaphore_t process_semaphore;
+    mutable etl::timer_semaphore_t process_semaphore;
 #endif
     uint_least8_t registered_timers;
 

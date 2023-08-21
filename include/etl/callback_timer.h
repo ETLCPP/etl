@@ -139,7 +139,6 @@ namespace etl
     {
     }
 
-#if ETL_USING_CPP11
     //*******************************************
     /// ETL delegate callback
     //*******************************************
@@ -157,7 +156,6 @@ namespace etl
               cbk_type(DELEGATE)
     {
     }
-#endif
 
     //*******************************************
     /// Returns true if the timer is active.
@@ -320,6 +318,12 @@ namespace etl
 
       //*******************************
       etl::callback_timer_data& front()
+      {
+        return ptimers[head];
+      }
+
+      //*******************************
+      const etl::callback_timer_data& front() const
       {
         return ptimers[head];
       }
@@ -704,6 +708,16 @@ namespace etl
       return false;
     }
 
+    //*******************************************
+    /// Get the time to the next timer event.
+    //*******************************************
+    uint32_t time_to_next() const
+    {
+      uint32_t delta = active_list.front().delta;
+
+      return delta;
+    }
+
   protected:
 
     //*******************************************
@@ -742,7 +756,7 @@ namespace etl
   #endif
 #endif
 
-    etl::timer_semaphore_t process_semaphore;
+    mutable etl::timer_semaphore_t process_semaphore;
 #endif
     uint_least8_t registered_timers;
 
