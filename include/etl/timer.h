@@ -59,7 +59,10 @@ namespace etl
       enum
       {
         SINGLE_SHOT = false,
-        REPEATING   = true
+        REPEATING   = true,
+
+        Single_Shot = false,
+        Repeating   = true
       };
 
       typedef bool type;
@@ -71,7 +74,10 @@ namespace etl
       enum
       {
         DELAYED   = false,
-        IMMEDIATE = true
+        IMMEDIATE = true,
+
+        Delayed   = false,
+        Immediate = true
       };
 
       typedef bool type;
@@ -82,7 +88,8 @@ namespace etl
     {
       enum
       {
-        NO_TIMER = 255
+        NO_TIMER = 255,
+        No_Timer = 255
       };
 
       typedef uint_least8_t type;
@@ -93,7 +100,8 @@ namespace etl
     {
       enum
       {
-        INACTIVE = 0xFFFFFFFFUL
+        INACTIVE = 0xFFFFFFFFUL,
+        Inactive = 0xFFFFFFFFUL
       };
     };
   };

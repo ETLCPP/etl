@@ -94,7 +94,7 @@ namespace etl
     callback_timer_data()
       : p_callback(ETL_NULLPTR),
         period(0),
-        delta(etl::timer::state::INACTIVE),
+        delta(etl::timer::state::Inactive),
         id(etl::timer::id::NO_TIMER),
         previous(etl::timer::id::NO_TIMER),
         next(etl::timer::id::NO_TIMER),
@@ -112,7 +112,7 @@ namespace etl
                         bool                 repeating_)
       : p_callback(reinterpret_cast<void*>(p_callback_)),
         period(period_),
-        delta(etl::timer::state::INACTIVE),
+        delta(etl::timer::state::Inactive),
         id(id_),
         previous(etl::timer::id::NO_TIMER),
         next(etl::timer::id::NO_TIMER),
@@ -130,7 +130,7 @@ namespace etl
                         bool                  repeating_)
       : p_callback(reinterpret_cast<void*>(&callback_)),
         period(period_),
-        delta(etl::timer::state::INACTIVE),
+        delta(etl::timer::state::Inactive),
         id(id_),
         previous(etl::timer::id::NO_TIMER),
         next(etl::timer::id::NO_TIMER),
@@ -148,7 +148,7 @@ namespace etl
                         bool                 repeating_)
             : p_callback(reinterpret_cast<void*>(&callback_)),
               period(period_),
-              delta(etl::timer::state::INACTIVE),
+              delta(etl::timer::state::Inactive),
               id(id_),
               previous(etl::timer::id::NO_TIMER),
               next(etl::timer::id::NO_TIMER),
@@ -162,7 +162,7 @@ namespace etl
     //*******************************************
     bool is_active() const
     {
-      return delta != etl::timer::state::INACTIVE;
+      return delta != etl::timer::state::Inactive;
     }
 
     //*******************************************
@@ -170,7 +170,7 @@ namespace etl
     //*******************************************
     void set_inactive()
     {
-      delta = etl::timer::state::INACTIVE;
+      delta = etl::timer::state::Inactive;
     }
 
     void*                 p_callback;
@@ -313,7 +313,7 @@ namespace etl
 
         timer.previous = etl::timer::id::NO_TIMER;
         timer.next     = etl::timer::id::NO_TIMER;
-        timer.delta    = etl::timer::state::INACTIVE;
+        timer.delta    = etl::timer::state::Inactive;
       }
 
       //*******************************
@@ -631,7 +631,7 @@ namespace etl
         if (timer.id != etl::timer::id::NO_TIMER)
         {
           // Has a valid period.
-          if (timer.period != etl::timer::state::INACTIVE)
+          if (timer.period != etl::timer::state::Inactive)
           {
             ETL_DISABLE_TIMER_UPDATES;
             if (timer.is_active())
