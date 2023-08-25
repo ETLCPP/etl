@@ -717,7 +717,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_FORWARD_LIST_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Emplaces a value to the front of the list..
     //*************************************************************************
@@ -734,6 +734,21 @@ namespace etl
       return front();
     }
 #else
+    //*************************************************************************
+    /// Emplaces a value to the front of the list..
+    //*************************************************************************
+    reference emplace_front()
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+#endif
+      data_node_t* p_data_node = allocate_data_node();
+      ::new (&(p_data_node->value)) T();
+      ETL_INCREMENT_DEBUG_COUNT
+        insert_node_after(start_node, *p_data_node);
+      return front();
+    }
+
     //*************************************************************************
     /// Emplaces a value to the front of the list..
     //*************************************************************************
@@ -879,7 +894,7 @@ namespace etl
       return iterator(&data_node);
     }
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_FORWARD_LIST_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Emplaces a value to the forward_list after the specified position.
     //*************************************************************************
@@ -899,6 +914,21 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the forward_list after the specified position.
     //*************************************************************************
+    iterator emplace_after(const_iterator position)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(forward_list_full));
+
+      data_node_t* p_data_node = allocate_data_node();
+      ::new (&(p_data_node->value)) T();
+      ETL_INCREMENT_DEBUG_COUNT
+      insert_node_after(*to_iterator(position).p_node, *p_data_node);
+
+      return iterator(p_data_node);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the forward_list after the specified position.
+    //*************************************************************************
     template <typename T1>
     iterator emplace_after(const_iterator position, const T1& value1)
     {
@@ -907,7 +937,7 @@ namespace etl
       data_node_t* p_data_node = allocate_data_node();
       ::new (&(p_data_node->value)) T(value1);
       ETL_INCREMENT_DEBUG_COUNT
-      insert_node_after(*position.p_node, *p_data_node);
+      insert_node_after(*to_iterator(position).p_node, *p_data_node);
 
       return iterator(p_data_node);
     }
@@ -923,7 +953,7 @@ namespace etl
       data_node_t* p_data_node = allocate_data_node();
       ::new (&(p_data_node->value)) T(value1, value2);
       ETL_INCREMENT_DEBUG_COUNT
-      insert_node_after(*position.p_node, *p_data_node);
+      insert_node_after(*to_iterator(position).p_node, *p_data_node);
 
       return iterator(p_data_node);
     }
@@ -939,7 +969,7 @@ namespace etl
       data_node_t* p_data_node = allocate_data_node();
       ::new (&(p_data_node->value)) T(value1, value2, value3);
       ETL_INCREMENT_DEBUG_COUNT
-      insert_node_after(*position.p_node, *p_data_node);
+      insert_node_after(*to_iterator(position).p_node, *p_data_node);
 
       return iterator(p_data_node);
     }
@@ -955,7 +985,7 @@ namespace etl
       data_node_t* p_data_node = allocate_data_node();
       ::new (&(p_data_node->value)) T(value1, value2, value3, value4);
       ETL_INCREMENT_DEBUG_COUNT
-      insert_node_after(*position.p_node, *p_data_node);
+      insert_node_after(*to_iterator(position).p_node, *p_data_node);
 
       return iterator(p_data_node);
     }

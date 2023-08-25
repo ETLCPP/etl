@@ -462,6 +462,29 @@ namespace etl
       return position_;
     }
 
+    //*************************************************************************
+    /// Emplaces a value to the vector at the specified position.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    //*************************************************************************
+    iterator emplace(const_iterator position)
+    {
+      ETL_ASSERT(size() != CAPACITY, ETL_ERROR(vector_full));
+
+      iterator position_ = to_iterator(position);
+
+      if (position_ != end())
+      {
+        ++p_end;
+        etl::copy_backward(position_, end() - 1, end());
+        *position_ = ETL_NULLPTR;
+      }
+      else
+      {
+        *p_end++ = ETL_NULLPTR;
+      }
+
+      return position_;
+    }
 
     //*************************************************************************
     /// Emplaces a value to the vector at the specified position.

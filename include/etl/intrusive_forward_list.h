@@ -177,13 +177,9 @@ namespace etl
 
       link_type* p_last = &start;
 
-      int count = 0;
-
       // Add all of the elements.
       while (first != last)
       {
-        ++count;
-
         link_type& value = *first++;
 
         ETL_ASSERT_OR_RETURN(!value.is_linked(), ETL_ERROR(intrusive_forward_list_value_is_already_linked));

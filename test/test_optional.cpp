@@ -126,6 +126,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_emplace_zero_parameters)
+    {
+      etl::optional<std::uint8_t> result = 1;
+      result.emplace();
+
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL(int(0), int(result.value()));
+    }
+
+    //*************************************************************************
     TEST(test_moveable)
     {
 #include "etl/private/diagnostic_pessimizing_move_push.h"
@@ -503,6 +513,7 @@ namespace
       return result;
     }
 
+    //*************************************************************************
     TEST(test_bug_634)
     {
       etl::optional<std::uint8_t> result;

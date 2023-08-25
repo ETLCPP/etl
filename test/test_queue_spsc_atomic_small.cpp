@@ -330,17 +330,20 @@ namespace
     //*************************************************************************
     TEST(test_multiple_emplace)
     {
-      etl::queue_spsc_atomic<Data, 4, etl::memory_model::MEMORY_MODEL_SMALL> queue;
+      etl::queue_spsc_atomic<Data, 5> queue;
 
+      queue.emplace();
       queue.emplace(1);
       queue.emplace(1, 2);
       queue.emplace(1, 2, 3);
       queue.emplace(1, 2, 3, 4);
 
-      CHECK_EQUAL(4U, queue.size());
+      CHECK_EQUAL(5U, queue.size());
 
       Data popped;
 
+      queue.pop(popped);
+      CHECK(popped == Data(0, 0, 0, 0));
       queue.pop(popped);
       CHECK(popped == Data(1, 2, 3, 4));
       queue.pop(popped);

@@ -248,14 +248,7 @@ namespace etl
   template <typename TIterator1, typename TIterator2>
   ETL_CONSTEXPR14 TIterator2 move(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
-    while (sb != se)
-    {
-      *db = *sb;
-      ++db;
-      ++sb;
-    }
-
-    return db;
+    return copy(sb, se, db);
   }
 #endif
 
@@ -284,12 +277,7 @@ namespace etl
   template <typename TIterator1, typename TIterator2>
   ETL_CONSTEXPR14 TIterator2 move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
-    while (sb != se)
-    {
-      *(--de) = *(--se);
-    }
-
-    return de;
+    return etl::copy_backward(sb, se, de);
   }
 #endif
 

@@ -518,17 +518,20 @@ namespace
     //*************************************************************************
     TEST(test_multiple_emplace)
     {
-      etl::queue_spsc_locked<Data, 4, etl::memory_model::MEMORY_MODEL_SMALL> queue(lock, unlock);
+      etl::queue_spsc_locked<Data, 5, etl::memory_model::MEMORY_MODEL_SMALL> queue(lock, unlock);
 
+      queue.emplace();
       queue.emplace(1);
       queue.emplace(1, 2);
       queue.emplace(1, 2, 3);
       queue.emplace(1, 2, 3, 4);
 
-      CHECK_EQUAL(4U, queue.size());
+      CHECK_EQUAL(5U, queue.size());
 
       Data popped;
 
+      queue.pop(popped);
+      CHECK(popped == Data(0, 0, 0, 0));
       queue.pop(popped);
       CHECK(popped == Data(1, 2, 3, 4));
       queue.pop(popped);

@@ -372,6 +372,20 @@ namespace etl
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     //*************************************************************************
+    bool emplace()
+    {
+      this->lock();
+
+      bool result = emplace_implementation();
+
+      this->unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    //*************************************************************************
     template <typename T1>
     bool emplace(const T1& value1)
     {

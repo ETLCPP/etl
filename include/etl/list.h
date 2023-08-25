@@ -857,7 +857,7 @@ namespace etl
     }
 #endif
 
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_LIST_FORCE_CPP03_IMPLEMENTATION)
     //*************************************************************************
     /// Emplaces a value to the front of the list.
     //*************************************************************************
@@ -876,6 +876,23 @@ namespace etl
       return front();
     }
 #else
+    //*************************************************************************
+    /// Emplaces a value to the front of the list.
+    //*************************************************************************
+    reference emplace_front()
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(list_full));
+#endif
+      ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(list_no_pool));
+
+      data_node_t* p_data_node = allocate_data_node();
+      ::new (&(p_data_node->value)) T();
+      ETL_INCREMENT_DEBUG_COUNT
+        insert_node(get_head(), *p_data_node);
+      return front();
+    }
+
     //*************************************************************************
     /// Emplaces a value to the front of the list.
     //*************************************************************************
@@ -1004,6 +1021,20 @@ namespace etl
       return back();
     }
 #else
+    reference emplace_back()
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(list_full));
+#endif
+      ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(list_no_pool));
+
+      data_node_t* p_data_node = allocate_data_node();
+      ::new (&(p_data_node->value)) T();
+      ETL_INCREMENT_DEBUG_COUNT
+        insert_node(terminal_node, *p_data_node);
+      return back();
+    }
+
     template <typename T1>
     reference emplace_back(const T1& value1)
     {
@@ -1108,9 +1139,9 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the list at the specified position.
     //*************************************************************************
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_LIST_FORCE_CPP03_IMPLEMENTATION)
     template <typename ... Args>
-    iterator emplace(const_iterator position, Args && ... args)
+    iterator emplace(const_iterator position, Args&& ... args)
     {
       ETL_ASSERT(!full(), ETL_ERROR(list_full));
       ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(list_no_pool));
@@ -1123,6 +1154,19 @@ namespace etl
       return iterator(*p_data_node);
     }
 #else
+    iterator emplace(const_iterator position)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(list_full));
+      ETL_ASSERT(p_node_pool != ETL_NULLPTR, ETL_ERROR(list_no_pool));
+
+      data_node_t* p_data_node = allocate_data_node();
+      ::new (&(p_data_node->value)) T();
+      ETL_INCREMENT_DEBUG_COUNT
+      insert_node(*to_iterator(position).p_node, *p_data_node);
+
+      return iterator(*p_data_node);
+    }
+
     template <typename T1>
     iterator emplace(const_iterator position, const T1& value1)
     {
@@ -1132,7 +1176,7 @@ namespace etl
       data_node_t* p_data_node = allocate_data_node();
       ::new (&(p_data_node->value)) T(value1);
       ETL_INCREMENT_DEBUG_COUNT
-      insert_node(*position.p_node, *p_data_node);
+      insert_node(*to_iterator(position).p_node, *p_data_node);
 
       return iterator(*p_data_node);
     }
@@ -1146,7 +1190,7 @@ namespace etl
       data_node_t* p_data_node = allocate_data_node();
       ::new (&(p_data_node->value)) T(value1, value2);
       ETL_INCREMENT_DEBUG_COUNT
-      insert_node(*position.p_node, *p_data_node);
+      insert_node(*to_iterator(position).p_node, *p_data_node);
 
       return iterator(*p_data_node);
     }
@@ -1160,7 +1204,7 @@ namespace etl
       data_node_t* p_data_node = allocate_data_node();
       ::new (&(p_data_node->value)) T(value1, value2, value3);
       ETL_INCREMENT_DEBUG_COUNT
-      insert_node(*position.p_node, *p_data_node);
+      insert_node(*to_iterator(position).p_node, *p_data_node);
 
       return iterator(*p_data_node);
     }
@@ -1174,7 +1218,7 @@ namespace etl
       data_node_t* p_data_node = allocate_data_node();
       ::new (&(p_data_node->value)) T(value1, value2, value3, value4);
       ETL_INCREMENT_DEBUG_COUNT
-      insert_node(*position.p_node, *p_data_node);
+      insert_node(*to_iterator(position).p_node, *p_data_node);
 
       return iterator(*p_data_node);
     }

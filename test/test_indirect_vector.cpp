@@ -693,6 +693,27 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_back_default_value)
+    {
+      CompareDataDC compare_data;
+      DataDC data;
+
+      for (size_t i = 0UL; i < SIZE; ++i)
+      {
+        compare_data.emplace_back();
+        data.emplace_back();
+      }
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+
+      bool is_equal = std::equal(data.begin(),
+        data.end(),
+        compare_data.begin());
+
+      CHECK(is_equal);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_emplace_back)
     {
       CompareDataNDC compare_data;
@@ -802,7 +823,6 @@ namespace
     }
 
     //*************************************************************************
-    // To test the CPP03 versions then ETL_TEST_VECTOR_CPP11 must be set to 0 in vector.h
     TEST_FIXTURE(SetupFixture, test_emplace_back_multiple)
     {
       class Data
@@ -961,6 +981,31 @@ namespace
                                    data.end(),
                                    compare_data.begin());
 
+        CHECK(is_equal);
+      }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_position_default_value)
+    {
+      const size_t INITIAL_SIZE = 5UL;
+
+      for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
+      {
+        CompareDataDC compare_data;
+        DataDC data;
+
+        DC initial[] = { DC("0"), DC("1"), DC("2"), DC("3"), DC("4"), DC("4"), DC("4"), DC("5"), DC("6"), DC("7"), DC("8"), DC("9") };
+
+        data.assign(std::begin(initial), std::begin(initial) + INITIAL_SIZE);
+        compare_data.assign(std::begin(initial), std::begin(initial) + INITIAL_SIZE);
+
+        data.emplace(data.begin() + offset);
+        compare_data.emplace(compare_data.begin() + offset);
+
+        CHECK_EQUAL(compare_data.size(), data.size());
+
+        bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
         CHECK(is_equal);
       }
     }

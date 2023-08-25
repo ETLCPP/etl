@@ -1069,6 +1069,52 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_emplace_default)
+    {
+      static int initial = 0;
+
+      // First fill with Initial values.
+      etl::vector<int*, SIZE> data;
+      data.resize(SIZE, &initial);
+      data.clear();
+
+      // Then emplace Default values.
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        data.emplace(data.begin());
+      }
+
+      // Compare with an array of default values.
+      std::array<int*, SIZE> compare_data;
+      compare_data.fill(nullptr);
+
+      CHECK_TRUE(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_emplace_back_default)
+    {
+      static int initial = 0;
+
+      // First fill with initial values.
+      etl::vector<int*, SIZE> data;
+      data.resize(SIZE, &initial);
+      data.clear();
+
+      // Then emplace default values.
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        data.emplace_back();
+      }
+
+      // Compare with an array of default values.
+      std::array<int*, SIZE> compare_data;
+      compare_data.fill(nullptr);
+
+      CHECK_TRUE(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_pop_back)
     {
       Compare_Data compare_data(initial_data.begin(), initial_data.end());

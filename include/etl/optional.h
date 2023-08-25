@@ -115,6 +115,8 @@ namespace etl
   {
   public:
 
+    typedef T value_type;
+
     //***************************************************************************
     /// Constructor.
     //***************************************************************************
@@ -491,6 +493,24 @@ namespace etl
     /// Emplaces a value.
     /// 1 parameter.
     //*************************************************************************
+    T& emplace()
+    {
+      if (has_value())
+      {
+        // Destroy the old one.
+        storage.destroy();
+      }
+
+      T* p = ::new (&storage.u.value) T();
+      storage.valid = true;
+
+      return *p;
+    }
+
+    //*************************************************************************
+    /// Emplaces a value.
+    /// 1 parameter.
+    //*************************************************************************
     template <typename T1>
     T& emplace(const T1& value1)
     {
@@ -669,6 +689,8 @@ namespace etl
   class optional<T, true>
   {
   public:
+
+    typedef T value_type;
 
     //***************************************************************************
     /// Constructor.
@@ -1006,6 +1028,16 @@ namespace etl
       valid = true;
     }
 #else
+    //*************************************************************************
+    /// Emplaces a value.
+    /// 0 parameters.
+    //*************************************************************************
+    void emplace()
+    {
+      storage.u.value = value_type();
+      valid = true;
+    }
+
     //*************************************************************************
     /// Emplaces a value.
     /// 1 parameter.
