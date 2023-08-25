@@ -1176,7 +1176,6 @@ namespace etl
       data_node_t* p_data_node = allocate_data_node();
       ::new (&(p_data_node->value)) T(value1);
       ETL_INCREMENT_DEBUG_COUNT
-      iterator(*p_data_node).p_node;
       insert_node(*to_iterator(position).p_node, *p_data_node);
 
       return iterator(*p_data_node);
