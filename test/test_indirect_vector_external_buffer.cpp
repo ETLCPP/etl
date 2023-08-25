@@ -593,6 +593,17 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_reserve)
+    {
+      LookupNDC lookup;
+      PoolNDC   pool;
+      DataNDC   data(lookup, pool);
+
+      CHECK_NO_THROW(data.reserve(data.max_size()));
+      CHECK_THROW(data.reserve(data.max_size() + 1), etl::vector_out_of_bounds);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_empty)
     {
       LookupDC lookup;

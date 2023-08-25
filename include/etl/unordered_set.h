@@ -668,7 +668,7 @@ namespace etl
         node_t& node = allocate_data_node();
         node.clear();
         ::new (&node.key) value_type(key);
-        ETL_INCREMENT_DEBUG_COUNT
+        ETL_INCREMENT_DEBUG_COUNT;
 
         // Just add the pointer to the bucket;
         bucket.insert_after(bucket.before_begin(), node);
@@ -702,7 +702,7 @@ namespace etl
           node_t& node = allocate_data_node();
           node.clear();
           ::new (&node.key) value_type(key);
-          ETL_INCREMENT_DEBUG_COUNT
+          ETL_INCREMENT_DEBUG_COUNT;
 
           // Add the node to the end of the bucket;
           bucket.insert_after(inode_previous, node);
@@ -743,7 +743,7 @@ namespace etl
         node_t& node = allocate_data_node();
         node.clear();
         ::new (&node.key) value_type(etl::move(key));
-        ETL_INCREMENT_DEBUG_COUNT
+        ETL_INCREMENT_DEBUG_COUNT;
 
           // Just add the pointer to the bucket;
           bucket.insert_after(bucket.before_begin(), node);
@@ -777,7 +777,7 @@ namespace etl
           node_t& node = allocate_data_node();
           node.clear();
           ::new (&node.key) value_type(etl::move(key));
-          ETL_INCREMENT_DEBUG_COUNT
+          ETL_INCREMENT_DEBUG_COUNT;
 
             // Add the node to the end of the bucket;
             bucket.insert_after(inode_previous, node);
@@ -1226,7 +1226,7 @@ namespace etl
               // Destroy the value contents.
               it->key.~value_type();
               ++it;
-              ETL_DECREMENT_DEBUG_COUNT
+              ETL_DECREMENT_DEBUG_COUNT;
             }
 
             // Now it's safe to clear the bucket.
@@ -1348,7 +1348,7 @@ namespace etl
       icurrent->key.~value_type();                          // Destroy the value.
       pnodepool->release(&*icurrent);                       // Release it back to the pool.
       adjust_first_last_markers_after_erase(&bucket);
-      ETL_DECREMENT_DEBUG_COUNT
+      ETL_DECREMENT_DEBUG_COUNT;
 
       return inext;
     }
@@ -1376,7 +1376,7 @@ namespace etl
     key_equal key_equal_function;
 
     /// For library debugging purposes only.
-    ETL_DECLARE_DEBUG_COUNT
+    ETL_DECLARE_DEBUG_COUNT;
 
       //*************************************************************************
       /// Destructor.

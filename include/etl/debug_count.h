@@ -42,15 +42,15 @@ SOFTWARE.
 
 #if defined(ETL_DEBUG_COUNT)
 
-  #define ETL_DECLARE_DEBUG_COUNT              etl::debug_count etl_debug_count;
+  #define ETL_DECLARE_DEBUG_COUNT              etl::debug_count etl_debug_count
   #define ETL_SET_DEBUG_COUNT(n)               etl_debug_count.set(n)
   #define ETL_GET_DEBUG_COUNT                  etl_debug_count.get()
   #define ETL_INCREMENT_DEBUG_COUNT            ++etl_debug_count;
   #define ETL_DECREMENT_DEBUG_COUNT            --etl_debug_count;
-  #define ETL_ADD_DEBUG_COUNT(n)               etl_debug_count += (n);
-  #define ETL_SUBTRACT_DEBUG_COUNT(n)          etl_debug_count -= (n);
-  #define ETL_RESET_DEBUG_COUNT                etl_debug_count.clear();
-  #define ETL_OBJECT_RESET_DEBUG_COUNT(object) object.etl_debug_count.clear();
+  #define ETL_ADD_DEBUG_COUNT(n)               etl_debug_count += (n)
+  #define ETL_SUBTRACT_DEBUG_COUNT(n)          etl_debug_count -= (n)
+  #define ETL_RESET_DEBUG_COUNT                etl_debug_count.clear()
+  #define ETL_OBJECT_RESET_DEBUG_COUNT(object) object.etl_debug_count.clear()
   #define ETL_OBJECT_GET_DEBUG_COUNT(object)   object.etl_debug_count.get()
 
 namespace etl

@@ -598,11 +598,13 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Does nothing.
     /// For compatibility with the STL vector API.
+    /// Does not increase the capacity, as this is fixed.
+    /// Asserts an etl::vector_out_of_bounds error if the request is for more than the capacity.
     //*********************************************************************
-    void reserve(size_t)
+    void reserve(size_t n)
     {
+      ETL_ASSERT(n <= capacity(), ETL_ERROR(vector_out_of_bounds));
     }
 
     //*********************************************************************
