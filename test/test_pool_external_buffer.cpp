@@ -205,6 +205,9 @@ namespace
 
       CHECK_EQUAL(4U, pool.available());
 
+      CHECK_THROW(pool.release(p4), etl::pool_no_allocation);
+      CHECK_EQUAL(4U, pool.available());
+
       Test_Data not_in_pool;
 
       CHECK_THROW(pool.release(&not_in_pool), etl::pool_object_not_in_pool);
