@@ -42,10 +42,17 @@ namespace
 
   struct Item
   {
+    Item()
+      : c('a')
+      , i(1)
+      , d(1.2)
+    {
+    }
+
     Item(char c_, int i_, double d_)
-      : c(c_),
-      i(i_),
-      d(d_)
+      : c(c_)
+      , i(i_)
+      , d(d_)
     {
     }
 
@@ -344,8 +351,11 @@ namespace
     //*************************************************************************
     TEST(test_emplace)
     {
-      etl::priority_queue<Item, SIZE> priority_queue;
+      etl::priority_queue<Item, 5> priority_queue;
       std::priority_queue<Item> compare_priority_queue;
+
+      priority_queue.emplace();
+      compare_priority_queue.emplace();
 
       priority_queue.emplace('d', 4, 7.8);
       compare_priority_queue.emplace('d', 4, 7.8);

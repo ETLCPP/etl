@@ -1761,6 +1761,23 @@ namespace etl
     /// Emplaces an item to the back of the deque.
     /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
     //*************************************************************************
+    reference emplace_back()
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+#endif
+
+      ::new (&(*_end)) T();
+      ++_end;
+      ++current_size;
+      ETL_INCREMENT_DEBUG_COUNT
+        return back();
+    }
+
+    //*************************************************************************
+    /// Emplaces an item to the back of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
     template <typename T1>
     reference emplace_back(const T1& value1)
     {
@@ -1889,6 +1906,23 @@ namespace etl
     }
 
 #else
+
+    //*************************************************************************
+    /// Emplaces an item to the front of the deque.
+    /// If asserts or exceptions are enabled, throws an etl::deque_full if the deque is already full.
+    //*************************************************************************
+    reference emplace_front()
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(deque_full));
+#endif
+
+      --_begin;
+      ::new (&(*_begin)) T();
+      ++current_size;
+      ETL_INCREMENT_DEBUG_COUNT
+        return front();
+    }
 
     //*************************************************************************
     /// Emplaces an item to the front of the deque.

@@ -62,6 +62,11 @@ namespace
 
   struct D1
   {
+    D1()
+      : a("a")
+    {
+    }
+
     D1(const std::string& a_)
       : a(a_)
     {
@@ -72,9 +77,15 @@ namespace
 
   struct D2
   {
+    D2()
+      : a("a")
+      , b("b")
+    {
+    }
+
     D2(const std::string& a_, const std::string& b_)
-      : a(a_),
-        b(b_)
+      : a(a_)
+      , b(b_)
     {
     }
 
@@ -84,10 +95,17 @@ namespace
 
   struct D3
   {
+    D3()
+      : a("a")
+      , b("b")
+      , c("c")
+    {
+    }
+
     D3(const std::string& a_, const std::string& b_, const std::string& c_)
-      : a(a_),
-        b(b_),
-        c(c_)
+      : a(a_)
+      , b(b_)
+      , c(c_)
     {
     }
 
@@ -98,11 +116,19 @@ namespace
 
   struct D4
   {
+    D4()
+      : a("a")
+      , b("b")
+      , c("c")
+      , d("d")
+    {
+    }
+
     D4(const std::string& a_, const std::string& b_, const std::string& c_, const std::string& d_)
-      : a(a_),
-        b(b_),
-        c(c_),
-        d(d_)
+      : a(a_)
+      , b(b_)
+      , c(c_)
+      , d(d_)
     {
     }
 
@@ -583,6 +609,37 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_default_value)
+    {
+      Compare1 compare;
+      Data1 data;
+
+      data.emplace();
+      compare.emplace();
+
+      data.emplace();
+      compare.emplace();
+
+      data.emplace();
+      compare.emplace();
+
+      // Do it again.
+      data.emplace();
+      compare.emplace();
+
+      data.emplace();
+      compare.emplace();
+
+      data.emplace();
+      compare.emplace();
+
+      CHECK_EQUAL(compare.size(), data.size());
+
+      bool isEqual = std::equal(data.begin(), data.end(), compare.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_emplace_value1)
     {
       Compare1 compare;
@@ -609,10 +666,7 @@ namespace
 
       CHECK_EQUAL(compare.size(), data.size());
 
-      bool isEqual = std::equal(data.begin(),
-                                data.end(),
-                                compare.begin());
-
+      bool isEqual = std::equal(data.begin(), data.end(), compare.begin());
       CHECK(isEqual);
     }
 
@@ -643,10 +697,7 @@ namespace
 
       CHECK_EQUAL(compare.size(), data.size());
 
-      bool isEqual = std::equal(data.begin(),
-                                data.end(),
-                                compare.begin());
-
+      bool isEqual = std::equal(data.begin(), data.end(), compare.begin());
       CHECK(isEqual);
     }
 
@@ -677,10 +728,7 @@ namespace
 
       CHECK_EQUAL(compare.size(), data.size());
 
-      bool isEqual = std::equal(data.begin(),
-                                data.end(),
-                                compare.begin());
-
+      bool isEqual = std::equal(data.begin(), data.end(), compare.begin());
       CHECK(isEqual);
     }
 
@@ -711,10 +759,7 @@ namespace
 
       CHECK_EQUAL(compare.size(), data.size());
 
-      bool isEqual = std::equal(data.begin(),
-                                data.end(),
-                                compare.begin());
-
+      bool isEqual = std::equal(data.begin(), data.end(), compare.begin());
       CHECK(isEqual);
     }
 

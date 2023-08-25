@@ -326,7 +326,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the set.
     //*************************************************************************
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_FLAT_SET_FORCE_CPP03_IMPLEMENTATION)
     template <typename ... Args>
     ETL_OR_STD::pair<iterator, bool> emplace(Args && ... args)
     {
@@ -357,6 +357,38 @@ namespace etl
       return result;
     }
 #else
+    //*************************************************************************
+    /// Emplaces a value to the set.
+    //*************************************************************************
+    ETL_OR_STD::pair<iterator, bool> emplace()
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(flat_set_full));
+
+      ETL_OR_STD::pair<iterator, bool> result;
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new (pvalue) value_type();
+
+      iterator i_element = lower_bound(*pvalue);
+
+      // Doesn't already exist?
+      if ((i_element == end()) || compare(*pvalue, *i_element))
+      {
+        ETL_INCREMENT_DEBUG_COUNT
+          result = refset_t::insert_at(i_element, *pvalue);
+      }
+      else
+      {
+        // Destroy it.
+        pvalue->~value_type();
+        storage.release(pvalue);
+        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
+      }
+
+      return result;
+    }
+
     //*************************************************************************
     /// Emplaces a value to the set.
     //*************************************************************************

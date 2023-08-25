@@ -203,6 +203,22 @@ namespace etl
     /// is the priority queue is already full.
     ///\param value The value to push to the queue.
     //*************************************************************************
+    void emplace()
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(etl::priority_queue_full));
+
+      // Put element at end
+      container.emplace_back();
+      // Make elements in container into heap
+      etl::push_heap(container.begin(), container.end(), compare);
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the queue.
+    /// If asserts or exceptions are enabled, throws an etl::priority_queue_full
+    /// is the priority queue is already full.
+    ///\param value The value to push to the queue.
+    //*************************************************************************
     template <typename T1>
     void emplace(const T1& value1)
     {

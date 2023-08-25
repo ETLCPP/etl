@@ -523,6 +523,21 @@ namespace etl
       //***************************************************************************
       /// Emplace with one constructor parameter.
       //***************************************************************************
+      template <typename T>
+      T& emplace()
+      {
+        ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+
+        destruct_current();
+        ::new (static_cast<T*>(data)) T();
+        type_id = Type_Id_Lookup<T>::type_id;
+
+        return *static_cast<T*>(data);
+      }
+
+      //***************************************************************************
+      /// Emplace with one constructor parameter.
+      //***************************************************************************
       template <typename T, typename TP1>
       T& emplace(const TP1& value1)
       {

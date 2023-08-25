@@ -771,7 +771,6 @@ namespace
 #endif
 
     //*************************************************************************
-    // To test the CPP03 versions then ETL_TEST_VECTOR_CPP11 must be set to 0 in vector.h
     TEST_FIXTURE(SetupFixture, test_emplace_back_multiple)
     {
       class Data

@@ -796,6 +796,94 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_emplace_default)
+    {
+      const int Initial = 1;
+      const int Default = 2;
+
+      struct S
+      {
+        S()
+          : value(Default)
+        {
+        }
+
+        S(int v)
+          : value(v)
+        {
+        }
+
+        bool operator ==(const S& rhs) const
+        {
+          return value == rhs.value;
+        }
+
+        int value;
+      };
+
+      // First fill with Initial values.
+      etl::vector<S, SIZE> data;
+      data.resize(SIZE, S(Initial));
+      data.clear();
+
+      // Then emplace Default values.
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        data.emplace(data.end());
+      }
+
+      // Compare with an array of default values.
+      std::array<S, SIZE> compare_data;
+      compare_data.fill(S());
+
+      CHECK_TRUE(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_emplace_back_default)
+    {
+      const int Initial = 1;
+      const int Default = 2;
+
+      struct S
+      {
+        S()
+          : value(Default)
+        {
+        }
+
+        S(int v)
+          : value(v)
+        {
+        }
+
+        bool operator ==(const S& rhs) const
+        {
+          return value == rhs.value;
+        }
+
+        int value;
+      };
+
+      // First fill with Initial values.
+      etl::vector<S, SIZE> data;
+      data.resize(SIZE, S(Initial));
+      data.clear();
+
+      // Then emplace Default values.
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        data.emplace_back();
+      }
+
+      // Compare with an array of default values.
+      std::array<S, SIZE> compare_data;
+      compare_data.fill(S());
+
+      CHECK_TRUE(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+    }
+
+    //*************************************************************************
 #include "etl/private/diagnostic_array_bounds_push.h"
     TEST_FIXTURE(SetupFixture, test_insert_position_value_excess)
     {

@@ -297,6 +297,20 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
     ///\param value The value to push to the stack.
     //*************************************************************************
+    void emplace()
+    {
+#if defined(ETL_CHECK_PUSH_POP)
+      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
+#endif
+      base_t::add_in();
+      ::new (&p_buffer[top_index]) T();
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the stack place'.
+    /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
+    ///\param value The value to push to the stack.
+    //*************************************************************************
     template <typename T1>
     void emplace(const T1& value1)
     {
