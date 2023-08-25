@@ -134,16 +134,16 @@ namespace
     {
       etl::callback_timer_interrupt<2, ScopedGuard> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::SINGLE_SHOT);
-      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::SINGLE_SHOT);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Single_Shot);
 
       CHECK(id1 != etl::timer::id::NO_TIMER);
       CHECK(id2 != etl::timer::id::NO_TIMER);
       CHECK(id3 == etl::timer::id::NO_TIMER);
 
       timer_controller.clear();
-      id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::SINGLE_SHOT);
+      id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Single_Shot);
       CHECK(id3 != etl::timer::id::NO_TIMER);
 
       CHECK_EQUAL(0U, ScopedGuard::guard_count);
@@ -154,9 +154,9 @@ namespace
     {
       etl::callback_timer_interrupt<4, ScopedGuard> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::SINGLE_SHOT);
-      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::SINGLE_SHOT);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Single_Shot);
 
       test.tick_list.clear();
       free_tick_list1.clear();
@@ -198,7 +198,7 @@ namespace
     {
       etl::callback_timer_interrupt<1, ScopedGuard> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Single_Shot);
       test.tick_list.clear();
 
       timer_controller.start(id1);
@@ -246,9 +246,9 @@ namespace
     {
       etl::callback_timer_interrupt<3, ScopedGuard> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::REPEATING);
-      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::REPEATING);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::REPEATING);
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::Repeating);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Repeating);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Repeating);
 
       test.tick_list.clear();
       free_tick_list1.clear();
@@ -290,9 +290,9 @@ namespace
     {
       etl::callback_timer_interrupt<3, ScopedGuard> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::REPEATING);
-      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::REPEATING);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::REPEATING);
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::Repeating);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Repeating);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Repeating);
 
       test.tick_list.clear();
       free_tick_list1.clear();
@@ -338,9 +338,9 @@ namespace
     {
       etl::callback_timer_interrupt<3, ScopedGuard> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::REPEATING);
-      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::REPEATING);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::REPEATING);
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::Repeating);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Repeating);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Repeating);
 
       test.tick_list.clear();
       free_tick_list1.clear();
@@ -393,9 +393,9 @@ namespace
     {
       etl::callback_timer_interrupt<3, ScopedGuard> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(member_callback2, 100, etl::timer::mode::SINGLE_SHOT);
-      etl::timer::id::type id2 = timer_controller.register_timer(member_callback, 10, etl::timer::mode::SINGLE_SHOT);
-      etl::timer::id::type id3 = timer_controller.register_timer(member_callback, 22, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback2, 100, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id2 = timer_controller.register_timer(member_callback, 10, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id3 = timer_controller.register_timer(member_callback, 22, etl::timer::mode::Single_Shot);
 
       (void)id2;
       (void)id3;
@@ -432,9 +432,9 @@ namespace
     {
       etl::callback_timer_interrupt<3, ScopedGuard> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(member_callback2, 100, etl::timer::mode::SINGLE_SHOT);
-      etl::timer::id::type id2 = timer_controller.register_timer(member_callback,   10, etl::timer::mode::SINGLE_SHOT);
-      etl::timer::id::type id3 = timer_controller.register_timer(member_callback,   22, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback2, 100, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id2 = timer_controller.register_timer(member_callback,   10, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id3 = timer_controller.register_timer(member_callback,   22, etl::timer::mode::Single_Shot);
 
       (void)id2;
       (void)id3;
@@ -472,8 +472,8 @@ namespace
       etl::callback_timer_interrupt<3, ScopedGuard> timer_controller;
 
       etl::timer::id::type id1;
-      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::REPEATING);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::REPEATING);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Repeating);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Repeating);
 
       test.tick_list.clear();
       free_tick_list1.clear();
@@ -494,7 +494,7 @@ namespace
         {
           timer_controller.unregister_timer(id2);
 
-          id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::REPEATING);
+          id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Repeating);
           timer_controller.start(id1);
         }
 
@@ -522,9 +522,9 @@ namespace
     {
       etl::callback_timer_interrupt<3, ScopedGuard> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::REPEATING);
-      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::REPEATING);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::REPEATING);
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::Repeating);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Repeating);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Repeating);
 
       test.tick_list.clear();
       free_tick_list1.clear();
@@ -572,9 +572,9 @@ namespace
     {
       etl::callback_timer_interrupt<3, ScopedGuard> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::REPEATING);
-      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::REPEATING);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::REPEATING);
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::Repeating);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Repeating);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Repeating);
 
       test.tick_list.clear();
       free_tick_list1.clear();
@@ -585,9 +585,9 @@ namespace
       ticks = 5;
       timer_controller.tick(uint32_t(ticks));
 
-      timer_controller.start(id1, etl::timer::start::IMMEDIATE);
-      timer_controller.start(id2, etl::timer::start::IMMEDIATE);
-      timer_controller.start(id3, etl::timer::start::DELAYED);
+      timer_controller.start(id1, etl::timer::start::Immediate);
+      timer_controller.start(id2, etl::timer::start::Immediate);
+      timer_controller.start(id3, etl::timer::start::Delayed);
 
       const uint32_t step = 1U;
 
@@ -617,8 +617,8 @@ namespace
     {
       etl::callback_timer_interrupt<3, ScopedGuard> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(free_function_callback,  15, etl::timer::mode::SINGLE_SHOT);
-      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback2, 5,  etl::timer::mode::REPEATING);
+      etl::timer::id::type id1 = timer_controller.register_timer(free_function_callback,  15, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback2, 5,  etl::timer::mode::Repeating);
 
       free_tick_list1.clear();
       free_tick_list2.clear();
@@ -655,7 +655,7 @@ namespace
     {
       etl::callback_timer_interrupt<3, ScopedGuard> timer_controller;
 
-      etl::timer::id::type id1 = timer_controller.register_timer(free_function_callback, 5, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id1 = timer_controller.register_timer(free_function_callback, 5, etl::timer::mode::Single_Shot);
 
       free_tick_list1.clear();
 
@@ -693,6 +693,54 @@ namespace
     }
 
     //*************************************************************************
+    TEST(message_timer_time_to_next)
+    {
+      etl::callback_timer_interrupt<3, ScopedGuard> timer_controller;
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback,         37, etl::timer::mode::Repeating);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,  23, etl::timer::mode::Repeating);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Repeating);
+
+      timer_controller.start(id1);
+      timer_controller.start(id3);
+      timer_controller.start(id2);
+
+      timer_controller.enable(true);
+
+      CHECK_EQUAL(11, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(4, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(8, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(1, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(5, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(2, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(2, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(6, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(10, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(3, timer_controller.time_to_next());
+
+      timer_controller.tick(7);
+      CHECK_EQUAL(4, timer_controller.time_to_next());
+    }
+
+    //*************************************************************************
     class test_object
     {
     public:
@@ -714,7 +762,7 @@ namespace
 
       timer_controller.enable(true);
 
-      etl::timer::id::type id = timer_controller.register_timer(delegate_callback, 5, etl::timer::mode::SINGLE_SHOT);
+      etl::timer::id::type id = timer_controller.register_timer(delegate_callback, 5, etl::timer::mode::Single_Shot);
       timer_controller.start(id);
 
       timer_controller.tick(4);
@@ -772,10 +820,10 @@ namespace
       constexpr uint32_t T3 = 5U;
 
       // Register the timers.
-      etl::timer::id::type id0 = timer_controller.register_timer(delegate_callback0, T0, etl::timer::mode::REPEATING);
-      etl::timer::id::type id1 = timer_controller.register_timer(delegate_callback1, T1, etl::timer::mode::SINGLE_SHOT);
-      etl::timer::id::type id2 = timer_controller.register_timer(delegate_callback2, T2, etl::timer::mode::REPEATING);
-      etl::timer::id::type id3 = timer_controller.register_timer(delegate_callback3, T3, etl::timer::mode::REPEATING);
+      etl::timer::id::type id0 = timer_controller.register_timer(delegate_callback0, T0, etl::timer::mode::Repeating);
+      etl::timer::id::type id1 = timer_controller.register_timer(delegate_callback1, T1, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id2 = timer_controller.register_timer(delegate_callback2, T2, etl::timer::mode::Repeating);
+      etl::timer::id::type id3 = timer_controller.register_timer(delegate_callback3, T3, etl::timer::mode::Repeating);
       
       // Start the repeating timers.
       timer_controller.start(id0);

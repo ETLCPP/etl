@@ -232,7 +232,7 @@ namespace etl
         if (timer.id != etl::timer::id::NO_TIMER)
         {
           // Has a valid period.
-          if (timer.period != etl::timer::state::INACTIVE)
+          if (timer.period != etl::timer::state::Inactive)
           {
             TInterruptGuard guard;
             (void)guard; // Silence 'unused variable warnings.
@@ -311,6 +311,19 @@ namespace etl
       return false;
     }
 
+    //*******************************************
+    /// Get the time to the next timer event.
+    //*******************************************
+    uint32_t time_to_next() const
+    {
+      TInterruptGuard guard;
+      (void)guard; // Silence 'unused variable warnings.
+
+      uint32_t delta = active_list.front().delta;
+
+      return delta;
+    }
+
   protected:
 
     //*************************************************************************
@@ -322,7 +335,7 @@ namespace etl
         : p_message(ETL_NULLPTR)
         , p_router(ETL_NULLPTR)
         , period(0)
-        , delta(etl::timer::state::INACTIVE)
+        , delta(etl::timer::state::Inactive)
         , destination_router_id(etl::imessage_bus::ALL_MESSAGE_ROUTERS)
         , id(etl::timer::id::NO_TIMER)
         , previous(etl::timer::id::NO_TIMER)
@@ -341,7 +354,7 @@ namespace etl
         : p_message(&message_)
         , p_router(&irouter_)
         , period(period_)
-        , delta(etl::timer::state::INACTIVE)
+        , delta(etl::timer::state::Inactive)
         , destination_router_id(destination_router_id_)
         , id(id_)
         , previous(etl::timer::id::NO_TIMER)
@@ -355,7 +368,7 @@ namespace etl
       //*******************************************
       bool is_active() const
       {
-        return delta != etl::timer::state::INACTIVE;
+        return delta != etl::timer::state::Inactive;
       }
 
       //*******************************************
@@ -363,7 +376,7 @@ namespace etl
       //*******************************************
       void set_inactive()
       {
-        delta = etl::timer::state::INACTIVE;
+        delta = etl::timer::state::Inactive;
       }
 
       const etl::imessage* p_message;
@@ -526,11 +539,17 @@ namespace etl
 
         timer.previous = etl::timer::id::NO_TIMER;
         timer.next = etl::timer::id::NO_TIMER;
-        timer.delta = etl::timer::state::INACTIVE;
+        timer.delta = etl::timer::state::Inactive;
       }
 
       //*******************************
       timer_data& front()
+      {
+        return ptimers[head];
+      }
+
+      //*******************************
+      const timer_data& front() const
       {
         return ptimers[head];
       }
