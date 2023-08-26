@@ -549,7 +549,7 @@ namespace etl
     //********************************************
     bool is_self_transition(etl::fsm_state_id_t next_state_id) const
     {
-      return (next_state_id != ifsm_state::Self_Transition);
+      return (next_state_id == ifsm_state::Self_Transition);
     }
 
     etl::ifsm_state*    p_state;          ///< A pointer to the current state.

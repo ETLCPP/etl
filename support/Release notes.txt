@@ -1,4 +1,20 @@
 ===============================================================================
+20.38.0
+#696 fsm/hfsm self-transitions
+#702 etl::message not trivially_copyable
+#744 Feature request: Get time when next timer will expire etl::callback_timer
+#745 Assertion triggered in hash.h when compiling for MSP430
+#746 Missing etl::legacy::variant overload of emplace with 0 Arguments
+#748 armcc error on vector::insert
+Fixed unexpected pool release behavior when the pool is empty
+Added C++03 compatible etl::move and etl::move_backward
+Allow C++03 delegate in etl::callback_timer
+Change to require semicolons after debug count macros
+Re-enabled tests for etl::string_ext
+Removed redundant #includes
+Added MutexMessageRouter example
+
+===============================================================================
 20.37.3
 #737 Etl::equal specialisation for etl::span is deduced wrongly when using STL and CPP20. Added C++20 four iterator std::equal variants.
 #738 etl::expected assignment operator won't work when TValue and TError are the same type. Changed assignment from etl::unexpected to use variant::emplace instead of direct assignment.
