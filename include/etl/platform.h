@@ -63,6 +63,9 @@ SOFTWARE.
   #include "etl_profile.h"
 #endif
 
+// Null statement
+#define ETL_DO_NOTHING static_cast<void>(0)
+
 // Determine the bit width of the platform.
 #define ETL_PLATFORM_16BIT (UINT16_MAX == UINTPTR_MAX)
 #define ETL_PLATFORM_32BIT (UINT32_MAX == UINTPTR_MAX)
@@ -339,6 +342,14 @@ SOFTWARE.
 #endif
 
 //*************************************
+// C++23
+#if ETL_USING_CPP23 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
+  #define ETL_ASSUME(expression) [[assume(expression)]]
+#else
+  #define ETL_ASSUME ETL_DO_NOTHING
+#endif
+
+//*************************************
 // Determine if the ETL can use char8_t type.
 #if ETL_USING_8BIT_TYPES
   #if ETL_NO_SMALL_CHAR_SUPPORT
@@ -479,7 +490,6 @@ namespace etl
 
     // Is...
     static ETL_CONSTANT bool is_debug_build                   = (ETL_IS_DEBUG_BUILD == 1);
-
   }
 }
 

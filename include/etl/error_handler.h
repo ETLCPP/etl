@@ -268,22 +268,22 @@ namespace etl
 ///\ingroup error_handler
 //***************************************************************************
 #if defined(ETL_NO_CHECKS)
-  #define ETL_ASSERT(b, e)                       // Does nothing.
-  #define ETL_ASSERT_OR_RETURN(b, e)            // Does nothing.
-  #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v)   // Does nothing.
+  #define ETL_ASSERT(b, e)                       ETL_DO_NOTHING // Does nothing.
+  #define ETL_ASSERT_OR_RETURN(b, e)             ETL_DO_NOTHING // Does nothing.
+  #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v)    ETL_DO_NOTHING // Does nothing.
   
-  #define ETL_ASSERT_FAIL(e)                     // Does nothing.
-  #define ETL_ASSERT_FAIL_AND_RETURN(e)          // Does nothing.
-  #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) // Does nothing.
+  #define ETL_ASSERT_FAIL(e)                     ETL_DO_NOTHING // Does nothing.
+  #define ETL_ASSERT_FAIL_AND_RETURN(e)          ETL_DO_NOTHING // Does nothing.
+  #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) ETL_DO_NOTHING // Does nothing.
 #elif ETL_USING_EXCEPTIONS
   #if defined(ETL_LOG_ERRORS)
     #define ETL_ASSERT(b, e) {if (!(b)) {etl::error_handler::error((e)); throw((e));}}                                // If the condition fails, calls the error handler then throws an exception.
-    #define ETL_ASSERT_OR_RETURN(b, e) {if (!(b)) {etl::error_handler::error((e)); throw((e)); return;}}             // If the condition fails, calls the error handler then throws an exception.
-    #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) {if (!(b)) {etl::error_handler::error((e)); throw((e)); return(v);}} // If the condition fails, calls the error handler then throws an exception.
+    #define ETL_ASSERT_OR_RETURN(b, e) {if (!(b)) {etl::error_handler::error((e)); throw((e)); return;}}              // If the condition fails, calls the error handler then throws an exception.
+    #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) {if (!(b)) {etl::error_handler::error((e)); throw((e)); return(v);}}  // If the condition fails, calls the error handler then throws an exception.
     
     #define ETL_ASSERT_FAIL(e) {etl::error_handler::error((e)); throw((e));}                                          // Calls the error handler then throws an exception.
     #define ETL_ASSERT_FAIL_AND_RETURN(e) {etl::error_handler::error((e)); throw((e)); return;}                       // Calls the error handler then throws an exception.
-    #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) {etl::error_handler::error((e)); throw((e)); return(v);}              // Calls the error handler then throws an exception.
+    #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) {etl::error_handler::error((e)); throw((e)); return(v);}           // Calls the error handler then throws an exception.
   #else
     #define ETL_ASSERT(b, e) {if (!(b)) {throw((e));}}                    // If the condition fails, throws an exception.
     #define ETL_ASSERT_OR_RETURN(b, e) {if (!(b)) {throw((e));}}          // If the condition fails, throws an exception.
@@ -297,8 +297,8 @@ namespace etl
 #else
   #if defined(ETL_LOG_ERRORS)
     #define ETL_ASSERT(b, e) {if(!(b)) {etl::error_handler::error((e));}}                                 // If the condition fails, calls the error handler
-    #define ETL_ASSERT_OR_RETURN(b, e) {if(!(b)) {etl::error_handler::error((e)); return;}}              // If the condition fails, calls the error handler and return
-    #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) {if(!(b)) {etl::error_handler::error((e)); return (v);}} // If the condition fails, calls the error handler and return a value
+    #define ETL_ASSERT_OR_RETURN(b, e) {if(!(b)) {etl::error_handler::error((e)); return;}}               // If the condition fails, calls the error handler and return
+    #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) {if(!(b)) {etl::error_handler::error((e)); return (v);}}  // If the condition fails, calls the error handler and return a value
     
     #define ETL_ASSERT_FAIL(e) {etl::error_handler::error((e));}                                          // Calls the error handler
     #define ETL_ASSERT_FAIL_AND_RETURN(e) {etl::error_handler::error((e)); return;}                       // Calls the error handler and return
@@ -306,8 +306,8 @@ namespace etl
   #else
     #if ETL_IS_DEBUG_BUILD
       #define ETL_ASSERT(b, e) assert((b))                                                                // If the condition fails, asserts.
-      #define ETL_ASSERT_OR_RETURN(b, e) {if (!(b)) {assert(false); return;}}                            // If the condition fails, asserts and return.
-      #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) {if (!(b)) {assert(false); return(v);}}                // If the condition fails, asserts and return a value.
+      #define ETL_ASSERT_OR_RETURN(b, e) {if (!(b)) {assert(false); return;}}                             // If the condition fails, asserts and return.
+      #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) {if (!(b)) {assert(false); return(v);}}                 // If the condition fails, asserts and return a value.
     
       #define ETL_ASSERT_FAIL(e) assert(false)                                    // Asserts.
       #define ETL_ASSERT_FAIL_AND_RETURN(e) {assert(false);  return;}             // Asserts.
