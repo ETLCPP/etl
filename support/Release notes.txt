@@ -1,4 +1,8 @@
 ===============================================================================
+20.38.1
+#749 Code change causes warning with armcc compiler
+
+===============================================================================
 20.38.0
 #696 fsm/hfsm self-transitions
 #702 etl::message not trivially_copyable
