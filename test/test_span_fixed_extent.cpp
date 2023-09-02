@@ -35,6 +35,9 @@ SOFTWARE.
 #include <vector>
 #include <algorithm>
 #include <iterator>
+#if ETL_USING_CPP20
+  #include <span>
+#endif
 
 namespace
 {
@@ -49,6 +52,10 @@ namespace
     typedef etl::span<int, 10U> View;
     typedef etl::span<int, 9U> SView;
     typedef etl::span<const int, 10U> CView;
+
+#if ETL_USING_CPP20
+    using StdView = std::span<int, 10U>;
+#endif
 
     EtlData etldata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     StlData stldata = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -78,6 +85,34 @@ namespace
       CHECK_EQUAL(10U, view.max_size());
       CHECK(!view.empty());
     }
+
+#if ETL_USING_CPP20
+    //*************************************************************************
+    TEST(test_construct_from_std_span)
+    {
+      StdView stdview(stldata);
+      View view(stdview);
+
+      CHECK_EQUAL(stdview.size(), view.size());
+      CHECK_EQUAL(stdview.size(), view.size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), stdview.begin());
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_construct_std_span_from_etl_span)
+    {
+      View view(etldata);
+      StdView stdview(view);
+
+      CHECK_EQUAL(stdview.size(), view.size());
+      CHECK_EQUAL(stdview.size(), view.size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), stdview.begin());
+      CHECK(isEqual);
+    }
+#endif
 
     //*************************************************************************
     TEST(test_constructor_etl_array_1)

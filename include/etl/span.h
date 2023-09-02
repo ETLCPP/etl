@@ -45,10 +45,6 @@ SOFTWARE.
 
 #include "private/dynamic_extent.h"
 
-#if ETL_USING_STL && ETL_USING_CPP11
-  #include <array>
-#endif
-
 ///\defgroup span span
 ///\ingroup containers
 
@@ -112,64 +108,6 @@ namespace etl
       : pbegin(begin_)
     {
     }
-
-#if ETL_USING_CPP11
-    //*************************************************************************
-    /// Construct from etl::array.
-    //*************************************************************************
-    template <typename U, size_t N, typename = typename etl::enable_if<(N == Extent) && etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
-    ETL_CONSTEXPR span(etl::array<U, N>& a) ETL_NOEXCEPT
-      : pbegin(a.data())
-    {
-    }
-
-    //*************************************************************************
-    /// Construct from etl::array.
-    //*************************************************************************
-    template <typename U, size_t N, typename = typename etl::enable_if<(N == Extent) && etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
-    ETL_CONSTEXPR span(const etl::array<U, N>& a) ETL_NOEXCEPT
-      : pbegin(a.data())
-    {
-    }
-#else
-    //*************************************************************************
-    /// Construct from etl::array.
-    //*************************************************************************
-    template <typename U, size_t N>
-    ETL_CONSTEXPR span(etl::array<U, N>& a, typename etl::enable_if<(N == Extent) && etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type* = 0) ETL_NOEXCEPT
-      : pbegin(a.data())
-    {
-    }
-
-    //*************************************************************************
-    /// Construct from etl::array.
-    //*************************************************************************
-    template <typename U, size_t N>
-    ETL_CONSTEXPR span(const etl::array<U, N>& a, typename etl::enable_if<(N == Extent) && etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type* = 0) ETL_NOEXCEPT
-      : pbegin(a.data())
-    {
-    }
-#endif
-
-#if ETL_USING_STL && ETL_USING_CPP11
-    //*************************************************************************
-    /// Construct from std::array.
-    //*************************************************************************
-    template <typename U, size_t N, typename = typename etl::enable_if<(N == Extent) && etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
-    ETL_CONSTEXPR span(std::array<U, N>& a) ETL_NOEXCEPT
-      : pbegin(a.data())
-    {
-    }
-
-    //*************************************************************************
-    /// Construct from std::array.
-    //*************************************************************************
-    template <typename U, size_t N, typename = typename etl::enable_if<(N == Extent) && etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
-    ETL_CONSTEXPR span(const std::array<U, N>& a) ETL_NOEXCEPT
-      : pbegin(a.data())
-    {
-    }
-#endif
 
 #if ETL_USING_CPP11
     //*************************************************************************
@@ -347,25 +285,6 @@ namespace etl
       return pbegin[i];
     }
 
-    ////*************************************************************************
-    ///// Compare two spans for equality.
-    ////*************************************************************************
-    //template <typename Type2, size_t N2, typename etl::enable_if<etl::is_same<typename etl::remove_cv<Type2>::type, value_type>::value, bool>::type = true>
-    //ETL_NODISCARD ETL_CONSTEXPR bool operator==(const etl::span<Type2, N2>& other) const ETL_NOEXCEPT
-    //{
-    //  return ((begin() == other.begin()) && (Extent == other.size())) ||
-    //         etl::equal(begin(), end(), other.begin(), other.end());
-    //}
-
-    ////*************************************************************************
-    ///// Compare two spans for non-equality.
-    ////*************************************************************************
-    //template <typename Type2, size_t N2, typename etl::enable_if<etl::is_same<typename etl::remove_cv<Type2>::type, value_type>::value, bool>::type = true>
-    //ETL_NODISCARD ETL_CONSTEXPR bool operator!=(const etl::span<Type2, N2>& other) const ETL_NOEXCEPT
-    //{
-    //  return !(*this == other);
-    //}
-
     //*************************************************************************
     /// Obtains a span that is a view over the first COUNT elements of this span.
     //*************************************************************************
@@ -505,70 +424,6 @@ namespace etl
       , pend(begin_ + Array_Size)
     {
     }
-
-#if ETL_USING_CPP11
-    //*************************************************************************
-    /// Construct from etl::array.
-    //*************************************************************************
-    template <typename U, size_t N, typename = typename etl::enable_if<etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
-    ETL_CONSTEXPR span(etl::array<U, N>& a) ETL_NOEXCEPT
-      : pbegin(a.data())
-      , pend(a.data() + a.size())
-    {
-    }
-
-    //*************************************************************************
-    /// Construct from etl::array.
-    //*************************************************************************
-    template <typename U, size_t N, typename = typename etl::enable_if<etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
-    ETL_CONSTEXPR span(const etl::array<U, N>& a) ETL_NOEXCEPT
-      : pbegin(a.data())
-      , pend(a.data() + a.size())
-    {
-    }
-#else
-    //*************************************************************************
-    /// Construct from etl::array.
-    //*************************************************************************
-    template <typename U, size_t N>
-    ETL_CONSTEXPR span(etl::array<U, N>& a, typename etl::enable_if<etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type* = 0) ETL_NOEXCEPT
-      : pbegin(a.data())
-      , pend(a.data() + a.size())
-    {
-    }
-
-    //*************************************************************************
-    /// Construct from etl::array.
-    //*************************************************************************
-    template <typename U, size_t N>
-    ETL_CONSTEXPR span(const etl::array<U, N>& a, typename etl::enable_if<etl::is_same<typename etl::remove_cv<T>::type, typename etl::remove_cv<U>::type>::value, void>::type* = 0) ETL_NOEXCEPT
-      : pbegin(a.data())
-      , pend(a.data() + a.size())
-    {
-    }
-#endif
-
-#if ETL_USING_STL && ETL_USING_CPP11
-    //*************************************************************************
-    /// Construct from std::array.
-    //*************************************************************************
-    template <typename U, size_t N, typename = typename etl::enable_if<etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
-    ETL_CONSTEXPR span(std::array<U, N>& a) ETL_NOEXCEPT
-      : pbegin(a.data())
-      , pend(a.data() + a.size())
-    {
-    }
-
-    //*************************************************************************
-    /// Construct from std::array.
-    //*************************************************************************
-    template <typename U, size_t N, typename = typename etl::enable_if<etl::is_same<etl::remove_cv_t<T>, etl::remove_cv_t<U>>::value, void>::type>
-    ETL_CONSTEXPR span(const std::array<U, N>& a) ETL_NOEXCEPT
-      : pbegin(a.data())
-      , pend(a.data() + a.size())
-    {
-    }
-#endif
 
 #if ETL_USING_CPP11
     //*************************************************************************
@@ -751,26 +606,6 @@ namespace etl
     {
       return pbegin[i];
     }
-
-    ////*************************************************************************
-    ///// Compare two spans for equality.
-    ////*************************************************************************
-    //template <typename Type2, typename etl::enable_if<etl::is_same<typename etl::remove_cv<Type2>::type, value_type>::value, bool>::type = true>
-    //ETL_NODISCARD ETL_CONSTEXPR bool operator==(const etl::span<Type2>& other) const ETL_NOEXCEPT
-    //{
-    //  return (empty() && other.empty()) ||
-    //         ((begin() == other.begin()) && (end() == other.end())) ||
-    //         etl::equal(begin(), end(), other.begin(), other.end());
-    //}
-
-    ////*************************************************************************
-    ///// Compare two spans for non-equality.
-    ////*************************************************************************
-    //template <typename Type2, typename etl::enable_if<etl::is_same<typename etl::remove_cv<Type2>::type, value_type>::value, bool>::type = true>
-    //ETL_NODISCARD ETL_CONSTEXPR bool operator!=(const etl::span<Type2>& other) const ETL_NOEXCEPT
-    //{
-    //  return !(*this == other);
-    //}
 
     //*************************************************************************
     /// Obtains a span that is a view over the first COUNT elements of this span.
