@@ -766,9 +766,9 @@ namespace
     {
       std::array<char, 2 * sizeof(Object)> storage;
       storage.fill(0);
-      std::array expected{ char(0xEC), char(0xBA), char(0xDE), char(0x68),
-                           char(0xAF), char(0xD2), char(0xC5), char(0xC8),
-                           char(0x65), char(0xD3), char(0xDF), char(0x80) };
+      std::array<char, 12U> expected{ char(0xEC), char(0xBA), char(0xDE), char(0x68),
+                                      char(0xAF), char(0xD2), char(0xC5), char(0xC8),
+                                      char(0x65), char(0xD3), char(0xDF), char(0x80) };
 
       etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big);
 
