@@ -134,7 +134,9 @@ namespace etl
 #endif
     const_reference at(size_t i) const
     {
+#if defined(ETL_THROW_EXCEPTIONS)
       ETL_ASSERT(i < SIZE, ETL_ERROR(array_out_of_range));
+#endif
 
       return _buffer[i];
     }
