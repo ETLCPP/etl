@@ -45,6 +45,10 @@ SOFTWARE.
 
 #include "private/dynamic_extent.h"
 
+#if ETL_USING_CPP20 && ETL_USING_STL
+  #include <span>
+#endif
+
 ///\defgroup span span
 ///\ingroup containers
 
@@ -366,7 +370,7 @@ namespace etl
   /// Span - Dynamic Extent
   //***************************************************************************
   template <typename T>
-  class span<T, etl::dynamic_extent>
+  class  span<T, etl::dynamic_extent>
   {
   public:
 

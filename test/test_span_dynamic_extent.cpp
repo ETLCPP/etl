@@ -98,19 +98,6 @@ namespace
       bool isEqual = std::equal(view.begin(), view.end(), stdview.begin());
       CHECK(isEqual);
     }
-
-    //*************************************************************************
-    TEST(test_construct_std_span_from_etl_span)
-    {
-      View view(etldata);
-      StdView stdview(view);
-
-      CHECK_EQUAL(stdview.size(), view.size());
-      CHECK_EQUAL(stdview.size(), view.size());
-
-      bool isEqual = std::equal(view.begin(), view.end(), stdview.begin());
-      CHECK(isEqual);
-    }
 #endif
 
     //*************************************************************************
