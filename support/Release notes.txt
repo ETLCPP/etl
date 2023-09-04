@@ -1,4 +1,12 @@
 ===============================================================================
+20.38.2
+
+#753 IAR's overload resolution struggles with etl::span::span(etl::array&)
+#754 ambiguous etl::bit_stream_reader::bit_stream_reader() for some etl::span
+#755 warning about constexpr in array.h
+Re-enabled bit_stream_writer tests
+
+===============================================================================
 20.38.1
 #749 Code change causes warning with armcc compiler
 
