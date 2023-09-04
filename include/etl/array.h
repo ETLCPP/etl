@@ -127,16 +127,10 @@ namespace etl
     ///\param i The index of the element to access.
     //*************************************************************************
     ETL_NODISCARD
-#if defined(ETL_THROW_EXCEPTIONS)
     ETL_CONSTEXPR14
-#else
-    ETL_CONSTEXPR
-#endif
     const_reference at(size_t i) const
     {
-#if defined(ETL_THROW_EXCEPTIONS)
       ETL_ASSERT(i < SIZE, ETL_ERROR(array_out_of_range));
-#endif
 
       return _buffer[i];
     }
