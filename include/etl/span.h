@@ -365,7 +365,7 @@ namespace etl
     //*************************************************************************
     /// Conversion operator to std::span
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR operator etl::span<element_type, Extent>()
+    ETL_NODISCARD ETL_CONSTEXPR operator std::span<element_type, Extent>()
     {
       return std::span<element_type, Extent>(pbegin, Extent);
     }
@@ -697,9 +697,9 @@ namespace etl
     //*************************************************************************
     /// Conversion operator to std::span
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR operator etl::span<element_type, etl::dynamic_extent>()
+    ETL_NODISCARD ETL_CONSTEXPR operator etl::span<element_type, std::dynamic_extent>()
     {
-      return std::span<element_type, etl::dynamic_extent>(pbegin, etl::dynamic_extent);
+      return std::span<element_type, std::dynamic_extent>(pbegin, std::dynamic_extent);
     }
 #endif
 
