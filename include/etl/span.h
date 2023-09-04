@@ -361,16 +361,6 @@ namespace etl
                                             : etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pbegin + offset + count);
     }
 
-#if ETL_USING_CPP20 && ETL_USING_STL
-    //*************************************************************************
-    /// Conversion operator to std::span
-    //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR operator std::span<element_type, Extent>()
-    {
-      return std::span<element_type, Extent>(pbegin, Extent);
-    }
-#endif
-
   private:
 
     pointer pbegin;
@@ -692,16 +682,6 @@ namespace etl
       return (count == etl::dynamic_extent) ? etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pend)
                                             : etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pbegin + offset + count);
     }
-
-#if ETL_USING_CPP20 && ETL_USING_STL
-    //*************************************************************************
-    /// Conversion operator to std::span
-    //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR operator etl::span<element_type, std::dynamic_extent>()
-    {
-      return std::span<element_type, std::dynamic_extent>(pbegin, std::dynamic_extent);
-    }
-#endif
 
   private:
 
