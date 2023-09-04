@@ -103,7 +103,7 @@ namespace
     TEST(test_construct_std_span_from_etl_span)
     {
       View view(etldata);
-      StdView stdview(view);
+      StdView stdview = StdView(view);
 
       CHECK_EQUAL(stdview.size(), view.size());
       CHECK_EQUAL(stdview.size(), view.size());
