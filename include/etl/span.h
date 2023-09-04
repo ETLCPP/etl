@@ -45,6 +45,10 @@ SOFTWARE.
 
 #include "private/dynamic_extent.h"
 
+#if ETL_USING_CPP20 && ETL_USING_STL
+  #include <span>
+#endif
+
 ///\defgroup span span
 ///\ingroup containers
 
@@ -357,6 +361,16 @@ namespace etl
                                             : etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pbegin + offset + count);
     }
 
+#if ETL_USING_CPP20 && ETL_USING_STL
+    //*************************************************************************
+    /// Conversion operator to std::span
+    //*************************************************************************
+    ETL_NODISCARD ETL_CONSTEXPR operator etl::span<element_type, Extent>()
+    {
+      return std::span<element_type, Extent>(pbegin, Extent);
+    }
+#endif
+
   private:
 
     pointer pbegin;
@@ -366,7 +380,7 @@ namespace etl
   /// Span - Dynamic Extent
   //***************************************************************************
   template <typename T>
-  class span<T, etl::dynamic_extent>
+  class  span<T, etl::dynamic_extent>
   {
   public:
 
@@ -678,6 +692,16 @@ namespace etl
       return (count == etl::dynamic_extent) ? etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pend)
                                             : etl::span<element_type, etl::dynamic_extent>(pbegin + offset, pbegin + offset + count);
     }
+
+#if ETL_USING_CPP20 && ETL_USING_STL
+    //*************************************************************************
+    /// Conversion operator to std::span
+    //*************************************************************************
+    ETL_NODISCARD ETL_CONSTEXPR operator etl::span<element_type, etl::dynamic_extent>()
+    {
+      return std::span<element_type, etl::dynamic_extent>(pbegin, etl::dynamic_extent);
+    }
+#endif
 
   private:
 
