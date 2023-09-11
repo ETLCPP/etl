@@ -182,53 +182,10 @@ namespace etl
     //***********************************************************************
     ETL_CONSTEXPR etl::chrono::days operator -(const etl::chrono::day& d1, const etl::chrono::day& d2) ETL_NOEXCEPT
     {
-      return etl::chrono::days(static_cast<int>(static_cast<unsigned>(d1)) - 
-                               static_cast<int>(static_cast<unsigned>(d2)));
-    }
+      etl::chrono::days result;
 
-    //***********************************************************************
-    ETL_CONSTEXPR bool operator ==(const etl::chrono::day& d1, const etl::chrono::day& d2) ETL_NOEXCEPT
-    {
-      return (static_cast<unsigned>(d1) == static_cast<unsigned>(d2));
+      return etl::chrono::days(static_cast<unsigned>(d1) - static_cast<unsigned>(d2));
     }
-
-    //***********************************************************************
-    ETL_CONSTEXPR bool operator !=(const etl::chrono::day& d1, const etl::chrono::day& d2) ETL_NOEXCEPT
-    {
-      return !(d1 == d2);
-    }
-
-    //***********************************************************************
-    ETL_CONSTEXPR bool operator <(const etl::chrono::day& d1, const etl::chrono::day& d2) ETL_NOEXCEPT
-    {
-      return (static_cast<unsigned>(d1) < static_cast<unsigned>(d2));
-    }
-
-    //***********************************************************************
-    ETL_CONSTEXPR bool operator <=(const etl::chrono::day& d1, const etl::chrono::day& d2) ETL_NOEXCEPT
-    {
-      return (static_cast<unsigned>(d1) <= static_cast<unsigned>(d2));
-    }
-
-    //***********************************************************************
-    ETL_CONSTEXPR bool operator >(const etl::chrono::day& d1, const etl::chrono::day& d2) ETL_NOEXCEPT
-    {
-      return (static_cast<unsigned>(d1) > static_cast<unsigned>(d2));
-    }
-
-    //***********************************************************************
-    ETL_CONSTEXPR bool operator >=(const etl::chrono::day& d1, const etl::chrono::day& d2) ETL_NOEXCEPT
-    {
-      return (static_cast<unsigned>(d1) >= static_cast<unsigned>(d2));
-    }
-
-    //***********************************************************************
-#if ETL_USING_CPP20
-    ETL_CONSTEXPR auto operator <=>(const etl::chrono::day& d1, const etl::chrono::day& d2)
-    {
-      return (static_cast<unsigned>(d1) <=> static_cast<unsigned>(d2));
-    }
-#endif
   }
 
   //*************************************************************************
@@ -249,15 +206,12 @@ namespace etl
 #endif
 }
 
-#if ETL_USING_CPP11
 namespace etl
 {
   namespace literals
   {
     namespace chrono_literals
     {
-      //***********************************************************************
-      /// Literal for days
       //***********************************************************************
       ETL_CONSTEXPR etl::chrono::day operator ""_d(unsigned long long d) ETL_NOEXCEPT
       {
@@ -266,6 +220,5 @@ namespace etl
     }
   }
 }
-#endif
 
 #endif

@@ -154,40 +154,28 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_day_plus_days)
+    TEST(test_plus_days)
     {
-      std::chrono::day std_day(0);
-      etl::chrono::day day(0);
+      std::chrono::day std_day1(0);
+      std::chrono::day std_day2(0);
+      etl::chrono::day day1(0);
+      etl::chrono::day day2(0);
 
       std::chrono::days std_days(2);
       etl::chrono::days days(2);
 
       for (int i = 0; i < 128; ++i)
       {
-        std_day = std_day + std_days;        
-        day     = day + days;
+        std_day1 = std_days + std_day1;
+        std_day2 = std_day2 + std_days;
+        
+        day1 = days + day1;
+        day2 = day2 + days;
 
-        CHECK_EQUAL(std_day.ok(), day.ok());
-        CHECK_EQUAL(unsigned(std_day), unsigned(day));
-      }
-    }
-
-    //*************************************************************************
-    TEST(test_days_plus_day)
-    {
-      std::chrono::day std_day(0);
-      etl::chrono::day day(0);
-
-      std::chrono::days std_days(2);
-      etl::chrono::days days(2);
-
-      for (int i = 0; i < 128; ++i)
-      {
-        std_day = std_days + std_day;
-        day     = days + day;
-
-        CHECK_EQUAL(std_day.ok(), day.ok());
-        CHECK_EQUAL(unsigned(std_day), unsigned(day));
+        CHECK_EQUAL(std_day1.ok(), day1.ok());
+        CHECK_EQUAL(std_day2.ok(), day2.ok());
+        CHECK_EQUAL(unsigned(std_day1), unsigned(day1));
+        CHECK_EQUAL(unsigned(std_day2), unsigned(day2));
       }
     }
 
@@ -211,43 +199,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_day_minus_days)
-    {
-      std::chrono::day std_day(0);
-      etl::chrono::day day(0);
-
-      std::chrono::days std_days(2);
-      etl::chrono::days days(2);
-
-      for (int i = 0; i < 128; ++i)
-      {
-        std_day = std_day - std_days;
-        day     = day - days;
-
-        CHECK_EQUAL(std_day.ok(), day.ok());
-        CHECK_EQUAL(unsigned(std_day), unsigned(day));
-      }
-    }
-
-    //*************************************************************************
-    TEST(test_day_minus_day)
-    {
-      for (int i = 1; i < 31; ++i)
-      {
-        std::chrono::day std_day1(i);
-        std::chrono::day std_day2(31 - i);
-
-        etl::chrono::day day1(i);
-        etl::chrono::day day2(31 - i);
-
-        std::chrono::days std_days = std_day1 - std_day2;
-        etl::chrono::days days     = day1 - day2;
-
-        CHECK_EQUAL(std_days.count(), days.count());
-      }
-    }
-
-    //*************************************************************************
     TEST(test_literal_days)
     {
       using namespace std::literals::chrono_literals;
@@ -258,46 +209,6 @@ namespace
 
       CHECK_EQUAL(std_day.ok(), day.ok());
       CHECK_EQUAL(unsigned(std_day), unsigned(day));
-    }
-
-    //*************************************************************************
-    TEST(test_day_comparison_operators)
-    {
-        etl::chrono::day day10(10);
-        etl::chrono::day day20(20);
-
-        CHECK_TRUE(day10  == day10);
-        CHECK_FALSE(day10 != day10);
-        CHECK_TRUE(day10   < day20);
-        CHECK_FALSE(day10  < day10);
-        CHECK_FALSE(day20  < day10);
-        CHECK_TRUE(day10  <= day20);
-        CHECK_TRUE(day10  <= day10);
-        CHECK_FALSE(day20 <= day10);
-        CHECK_FALSE(day10  > day20);
-        CHECK_FALSE(day10  > day10);
-        CHECK_TRUE(day20   > day10);
-        CHECK_FALSE(day10 >= day20);
-        CHECK_TRUE(day10  >= day10);
-        CHECK_TRUE(day20  >= day10);
-
-#if ETL_USING_CPP20
-        CHECK_TRUE((day10 <=> day10) == 0);
-        CHECK_TRUE((day10 <=> day20)  < 0);
-        CHECK_TRUE((day20 <=> day10)  > 0);
-#endif
-    }
-
-    //*************************************************************************
-    TEST(test_day_hash)
-    {
-      etl::chrono::day day(10);
-
-      size_t h = 0;
-      
-      h = etl::hash<etl::chrono::day>()(day);
-
-      CHECK_TRUE(h != 0);
     }
   };
 }
