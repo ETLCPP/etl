@@ -3027,6 +3027,7 @@
     <ClInclude Include="..\..\include\etl\callback_timer_atomic.h" />
     <ClInclude Include="..\..\include\etl\callback_timer_interrupt.h" />
     <ClInclude Include="..\..\include\etl\callback_timer_locked.h" />
+    <ClInclude Include="..\..\include\etl\chrono.h" />
     <ClInclude Include="..\..\include\etl\circular_buffer.h" />
     <ClInclude Include="..\..\include\etl\circular_iterator.h" />
     <ClInclude Include="..\..\include\etl\combinations.h" />
@@ -3091,6 +3092,7 @@
     <ClInclude Include="..\..\include\etl\poly_span.h" />
     <ClInclude Include="..\..\include\etl\private\bitset_legacy.h" />
     <ClInclude Include="..\..\include\etl\private\bitset_new.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\day.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_array_bounds_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_cxx_20_compat_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_deprecated_push.h" />
@@ -7751,6 +7753,7 @@
     <ClCompile Include="..\test_callback_timer_interrupt.cpp" />
     <ClCompile Include="..\test_callback_timer_locked.cpp" />
     <ClCompile Include="..\test_char_traits.cpp" />
+    <ClCompile Include="..\test_chrono_day.cpp" />
     <ClCompile Include="..\test_circular_buffer.cpp" />
     <ClCompile Include="..\test_circular_buffer_external_buffer.cpp" />
     <ClCompile Include="..\test_circular_iterator.cpp" />
