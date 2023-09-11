@@ -220,6 +220,12 @@
     <Filter Include="Tests\Messaging">
       <UniqueIdentifier>{c75cedd3-8b6c-4662-b965-aecbe7fd5d1c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Private\chrono">
+      <UniqueIdentifier>{46e23f29-ce01-418f-8331-9c739774414c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Chrono">
+      <UniqueIdentifier>{1b1afa65-108a-4665-9e74-3c67a27ff917}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -1361,6 +1367,12 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\stringify.h">
       <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\chrono.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\day.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3424,6 +3436,9 @@
     </ClCompile>
     <ClCompile Include="..\test_macros.cpp">
       <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_day.cpp">
+      <Filter>Tests\Chrono</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
