@@ -146,7 +146,7 @@ namespace etl
 
     private:
 
-      unsigned value;
+      unsigned char value;
     };
 
     //***********************************************************************
