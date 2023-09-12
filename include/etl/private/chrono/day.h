@@ -50,11 +50,15 @@ namespace etl
     public:
 
       //***********************************************************************
+      /// Default constructor
+      //***********************************************************************
       ETL_CONSTEXPR day()
         : value(0)
       {
       }
 
+      //***********************************************************************
+      /// Construct from unsigned
       //***********************************************************************
       ETL_CONSTEXPR day(unsigned value_)
         : value(value_)
@@ -62,11 +66,15 @@ namespace etl
       }
 
       //***********************************************************************
+      /// Copy constructor
+      //***********************************************************************
       ETL_CONSTEXPR day(const etl::chrono::day& other)
         : value(other.value)
       {
       }
 
+      //***********************************************************************
+      /// Assignment operator
       //***********************************************************************
       ETL_CONSTEXPR etl::chrono::day& operator =(const etl::chrono::day& rhs)
       {
@@ -76,12 +84,7 @@ namespace etl
       }
 
       //***********************************************************************
-      template <typename TToDuration, typename TValue2, typename TPeriod2>
-      ETL_CONSTEXPR etl::chrono::day& operator =(const etl::chrono::duration<TValue2, TPeriod2>& rhs)
-      {
-        value = etl::chrono::duration_cast<TToDuration, TValue2, TPeriod2>(rhs);
-      }
-
+      /// Pre-increment operator
       //***********************************************************************
       ETL_CONSTEXPR etl::chrono::day& operator ++() ETL_NOEXCEPT
       {
@@ -90,6 +93,8 @@ namespace etl
         return *this;
       }
 
+      //***********************************************************************
+      /// Post-increment operator
       //***********************************************************************
       ETL_CONSTEXPR14 etl::chrono::day operator ++(int) ETL_NOEXCEPT
       {
@@ -100,6 +105,8 @@ namespace etl
       }
 
       //***********************************************************************
+      /// Pre-decrement operator
+      //***********************************************************************
       ETL_CONSTEXPR etl::chrono::day& operator --() ETL_NOEXCEPT
       {
         --value;
@@ -107,6 +114,8 @@ namespace etl
         return *this;
       }
 
+      //***********************************************************************
+      /// Post-decrement operator
       //***********************************************************************
       ETL_CONSTEXPR14 etl::chrono::day operator --(int) ETL_NOEXCEPT
       {
@@ -117,6 +126,8 @@ namespace etl
       }
 
       //***********************************************************************
+      /// Plus-equals operator adding etl::chrono::days
+      //***********************************************************************
       ETL_CONSTEXPR etl::chrono::day& operator +=(const etl::chrono::days& ds) ETL_NOEXCEPT
       {
         value += static_cast<unsigned char>(ds.count());
@@ -124,6 +135,8 @@ namespace etl
         return *this;
       }
 
+      //***********************************************************************
+      /// Minus-equals operator subtracting etl::chrono::days
       //***********************************************************************
       ETL_CONSTEXPR etl::chrono::day& operator -=(const etl::chrono::days& ds) ETL_NOEXCEPT
       {
@@ -133,11 +146,15 @@ namespace etl
       }
 
       //***********************************************************************
+      /// Returns <b>true</b> if the day is within the valid 1 to 31 range
+      //***********************************************************************
       ETL_CONSTEXPR bool ok() const ETL_NOEXCEPT
       {
         return (value >= 1U) && (value <= 31U);
       }
 
+      //***********************************************************************
+      /// Conversion operator to unsigned int
       //***********************************************************************
       ETL_CONSTEXPR operator unsigned() const ETL_NOEXCEPT
       {
@@ -150,6 +167,9 @@ namespace etl
     };
 
     //***********************************************************************
+    /// Add etl::chrono::days to etl::chrono::day
+    ///\return etl::chrono::day
+    //***********************************************************************
     ETL_CONSTEXPR etl::chrono::day operator +(const etl::chrono::day& d, const etl::chrono::days& ds) ETL_NOEXCEPT
     {
       etl::chrono::day result(d);
@@ -159,6 +179,9 @@ namespace etl
       return result;
     }
 
+    //***********************************************************************
+    /// Add etl::chrono::day to etl::chrono::days
+    ///\return etl::chrono::day
     //***********************************************************************
     ETL_CONSTEXPR etl::chrono::day operator +(const etl::chrono::days& ds, const etl::chrono::day& d) ETL_NOEXCEPT
     {
@@ -170,6 +193,9 @@ namespace etl
     }
 
     //***********************************************************************
+    /// Subtract etl::chrono::days from etl::chrono::day
+    ///\return etl::chrono::day
+    //***********************************************************************
     ETL_CONSTEXPR etl::chrono::day operator -(const etl::chrono::day& d, const etl::chrono::days& ds) ETL_NOEXCEPT
     {
       etl::chrono::day result(d);
@@ -180,6 +206,9 @@ namespace etl
     }
 
     //***********************************************************************
+    /// Subtract etl::chrono::day from etl::chrono::day
+    ///\return etl::chrono::days
+    //***********************************************************************
     ETL_CONSTEXPR etl::chrono::days operator -(const etl::chrono::day& d1, const etl::chrono::day& d2) ETL_NOEXCEPT
     {
       return etl::chrono::days(static_cast<int>(static_cast<unsigned>(d1)) - 
@@ -187,11 +216,15 @@ namespace etl
     }
 
     //***********************************************************************
+    /// Equality operator
+    //***********************************************************************
     ETL_CONSTEXPR bool operator ==(const etl::chrono::day& d1, const etl::chrono::day& d2) ETL_NOEXCEPT
     {
       return (static_cast<unsigned>(d1) == static_cast<unsigned>(d2));
     }
 
+    //***********************************************************************
+    /// Inequality operator
     //***********************************************************************
     ETL_CONSTEXPR bool operator !=(const etl::chrono::day& d1, const etl::chrono::day& d2) ETL_NOEXCEPT
     {
@@ -199,11 +232,15 @@ namespace etl
     }
 
     //***********************************************************************
+    /// Less-than operator
+    //***********************************************************************
     ETL_CONSTEXPR bool operator <(const etl::chrono::day& d1, const etl::chrono::day& d2) ETL_NOEXCEPT
     {
       return (static_cast<unsigned>(d1) < static_cast<unsigned>(d2));
     }
 
+    //***********************************************************************
+    /// Less-than-or-equal operator
     //***********************************************************************
     ETL_CONSTEXPR bool operator <=(const etl::chrono::day& d1, const etl::chrono::day& d2) ETL_NOEXCEPT
     {
@@ -211,17 +248,23 @@ namespace etl
     }
 
     //***********************************************************************
+    /// Greater-than operator
+    //***********************************************************************
     ETL_CONSTEXPR bool operator >(const etl::chrono::day& d1, const etl::chrono::day& d2) ETL_NOEXCEPT
     {
       return (static_cast<unsigned>(d1) > static_cast<unsigned>(d2));
     }
 
     //***********************************************************************
+    /// Greater-than-or-equal operator
+    //***********************************************************************
     ETL_CONSTEXPR bool operator >=(const etl::chrono::day& d1, const etl::chrono::day& d2) ETL_NOEXCEPT
     {
       return (static_cast<unsigned>(d1) >= static_cast<unsigned>(d2));
     }
 
+    //***********************************************************************
+    /// Spaceship operator
     //***********************************************************************
 #if ETL_USING_CPP20
     ETL_CONSTEXPR auto operator <=>(const etl::chrono::day& d1, const etl::chrono::day& d2)
@@ -232,7 +275,7 @@ namespace etl
   }
 
   //*************************************************************************
-  /// Hash function.
+  /// Hash function for etl::chrono::day
   //*************************************************************************
 #if ETL_USING_8BIT_TYPES
   template <>
