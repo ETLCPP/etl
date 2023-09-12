@@ -35,5 +35,7 @@ SOFTWARE.
 
 #include "private/chrono/duration.h"
 #include "private/chrono/day.h"
+#include "private/chrono/month.h"
+#include "private/chrono/year.h"
   
 #endif

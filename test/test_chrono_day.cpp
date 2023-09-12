@@ -248,7 +248,14 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_literal_days)
+    TEST(test_min_max_day)
+    {
+      CHECK_EQUAL(1U,  etl::chrono::day::min());
+      CHECK_EQUAL(31U, etl::chrono::day::max());
+    }
+
+    //*************************************************************************
+    TEST(test_literal_day)
     {
       using namespace std::literals::chrono_literals;
       using namespace etl::literals::chrono_literals;

@@ -240,6 +240,14 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Indicate if etl::literals::chrono_literals has month (_m)
+#if defined(ETL_ENABLE_CHRONO_LITERALS_MONTH)
+  #define ETL_HAS_CHRONO_LITERALS_MONTH 1
+#else
+  #define ETL_HAS_CHRONO_LITERALS_MONTH 0
+#endif
+
+//*************************************
 // The macros below are dependent on the profile.
 // C++11
 #if ETL_USING_CPP11 && !defined(ETL_FORCE_NO_ADVANCED_CPP)
@@ -476,6 +484,7 @@ namespace etl
     static ETL_CONSTANT bool has_mutable_array_view           = (ETL_HAS_MUTABLE_ARRAY_VIEW == 1);
     static ETL_CONSTANT bool has_ideque_repair                = (ETL_HAS_IDEQUE_REPAIR == 1);
     static ETL_CONSTANT bool has_virtual_messages             = (ETL_HAS_VIRTUAL_MESSAGES == 1);
+    static ETL_CONSTANT bool has_chrono_literals_month        = (ETL_HAS_CHRONO_LITERALS_MONTH == 1);
 
     // Is...
     static ETL_CONSTANT bool is_debug_build                   = (ETL_IS_DEBUG_BUILD == 1);

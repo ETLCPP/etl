@@ -101,7 +101,6 @@ namespace etl
     private:
 
       TValue  value;
-      //TPeriod period;
     };
 
     //***********************************************************************
