@@ -1,9 +1,10 @@
 ===============================================================================
 20.38.2
-
 #753 IAR's overload resolution struggles with etl::span::span(etl::array&)
 #754 ambiguous etl::bit_stream_reader::bit_stream_reader() for some etl::span
 #755 warning about constexpr in array.h
+#756 Parameter pack compilation error
+#758 Move assignment not working for non-empty containers
 Re-enabled bit_stream_writer tests
 
 ===============================================================================
@@ -28,7 +29,7 @@ Added MutexMessageRouter example
 
 ===============================================================================
 20.37.3
-#737 Etl::equal specialisation for etl::span is deduced wrongly when using STL and CPP20. Added C++20 four iterator std::equal variants.
+#737 etl::equal specialisation for etl::span is deduced wrongly when using STL and CPP20. Added C++20 four iterator std::equal variants.
 #738 etl::expected assignment operator won't work when TValue and TError are the same type. Changed assignment from etl::unexpected to use variant::emplace instead of direct assignment.
 #739 Could not compile ETL with gcc 9.4.0 (C++11). Added compatibility for GCC-9 + C++11. Added missing return reference from emplace member function int variant_variadic.h
 Removed many -02 warnings for GCC-13
