@@ -357,6 +357,7 @@ namespace
       data1.insert(ItemM(4));
 
       DataM data2;
+      data2.insert(ItemM(5));
 
       data2 = std::move(data1);
 

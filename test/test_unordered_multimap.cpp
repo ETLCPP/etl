@@ -414,6 +414,7 @@ namespace
       data1.insert(DataM::value_type(std::string("4"), ItemM(4)));
 
       data2 = std::move(data1);
+      data2.insert(DataM::value_type(std::string("5"), ItemM(5)));
 
       CHECK_EQUAL(1, data2.find("1")->second.value);
       CHECK_EQUAL(2, data2.find("2")->second.value);
