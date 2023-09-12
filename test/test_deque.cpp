@@ -254,6 +254,7 @@ namespace
       std::unique_ptr<uint32_t> p2(new uint32_t(2U));
       std::unique_ptr<uint32_t> p3(new uint32_t(3U));
       std::unique_ptr<uint32_t> p4(new uint32_t(4U));
+      std::unique_ptr<uint32_t> p5(new uint32_t(5U));
 
       Data deque1;
       deque1.push_back(std::move(p1));
@@ -262,6 +263,7 @@ namespace
       deque1.push_back(std::move(p4));
 
       Data deque2;
+      deque2.push_back(std::move(p5));
       deque2 = std::move(deque1);
 
       CHECK_EQUAL(4U, deque2.size());
@@ -298,6 +300,7 @@ namespace
       std::unique_ptr<uint32_t> p2(new uint32_t(2U));
       std::unique_ptr<uint32_t> p3(new uint32_t(3U));
       std::unique_ptr<uint32_t> p4(new uint32_t(4U));
+      std::unique_ptr<uint32_t> p5(new uint32_t(5U));
 
       Data deque1;
       deque1.push_back(std::move(p1));
@@ -306,6 +309,7 @@ namespace
       deque1.push_back(std::move(p4));
 
       Data deque2;
+      deque2.push_back(std::move(p5));
 
       IData& ideque1 = deque1;
       IData& ideque2 = deque2;

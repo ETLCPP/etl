@@ -1448,6 +1448,8 @@ namespace etl
       // Skip if doing self assignment
       if (this != &rhs)
       {
+        clear();
+
         typename etl::imultiset<TKey, TCompare>::iterator from = rhs.begin();
 
         while (from != rhs.end())

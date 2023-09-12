@@ -1228,6 +1228,7 @@ namespace
       data1.push_back(std::move(p4));
 
       DataM data2;
+      data2.push_back(ItemM(5U));
       data2 = std::move(data1);
 
       CHECK_EQUAL(0U, data1.size());
@@ -1275,6 +1276,7 @@ namespace
       data1.push_back(std::move(p4));
 
       DataM data2;
+      data2.push_back(ItemM(5U));
 
       IDataM& idata1 = data1;
       IDataM& idata2 = data2;

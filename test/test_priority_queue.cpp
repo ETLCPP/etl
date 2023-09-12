@@ -527,6 +527,7 @@ namespace
       priority_queue.push(std::move(b));
 
       etl::priority_queue<ItemM, SIZE> priority_queue2;
+      priority_queue2.push(ItemM("E"));
 
       priority_queue2 = std::move(priority_queue);
 

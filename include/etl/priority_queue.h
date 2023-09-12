@@ -399,6 +399,7 @@ namespace etl
     {
       if (&rhs != this)
       {
+        clear();
         move(etl::move(rhs));
       }
 
@@ -535,6 +536,7 @@ namespace etl
     {
       if (&rhs != this)
       {
+        etl::ipriority_queue<T, TContainer, TCompare>::clear();
         etl::ipriority_queue<T, TContainer, TCompare>::move(etl::move(rhs));
       }
 
