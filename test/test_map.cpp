@@ -389,6 +389,7 @@ namespace
       data1.insert(DataM::value_type(std::string("3"), etl::move(d3)));
       data1.insert(DataM::value_type(std::string("4"), ItemM(4)));
 
+      data2.insert(DataM::value_type(std::string("5"), ItemM(5)));
       data2 = std::move(data1);
 
       CHECK(1 == data2.at("1").value);

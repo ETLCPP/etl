@@ -312,6 +312,7 @@ namespace
       std::unique_ptr<uint32_t> p2(new uint32_t(2U));
       std::unique_ptr<uint32_t> p3(new uint32_t(3U));
       std::unique_ptr<uint32_t> p4(new uint32_t(4U));
+      std::unique_ptr<uint32_t> p5(new uint32_t(5U));
 
       Data data1;
       data1.push_back(std::move(p1));
@@ -325,6 +326,7 @@ namespace
       CHECK(!bool(p4));
 
       Data data2;
+      data2.push_back(std::move(p5));
       data2 = std::move(data1);
 
       CHECK_EQUAL(0U, data1.size());

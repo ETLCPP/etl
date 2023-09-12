@@ -815,6 +815,8 @@ namespace etl
       // Skip if doing self assignment
       if (this != &rhs)
       {
+        this->clear();
+
         typename etl::iset<TKey, TCompare>::iterator from = rhs.begin();
 
         while (from != rhs.end())
@@ -2603,6 +2605,8 @@ namespace etl
       // Skip if doing self assignment
       if (this != &rhs)
       {
+        this->clear();
+
         typename etl::iset<TKey, TCompare>::iterator from = rhs.begin();
 
         while (from != rhs.end())

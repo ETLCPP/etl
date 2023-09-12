@@ -360,6 +360,7 @@ namespace
     {
       Data data(initial_data.begin(), initial_data.end());
       Data other_data;
+      other_data.push_back(nullptr);
 
       other_data = std::move(data);
 
