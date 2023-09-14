@@ -5,6 +5,7 @@
 #755 warning about constexpr in array.h
 #756 Parameter pack compilation error
 #758 Move assignment not working for non-empty containers
+#761 Make "private" includes relative
 Re-enabled bit_stream_writer tests
 
 ===============================================================================
