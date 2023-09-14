@@ -320,7 +320,7 @@ namespace etl
       //***********************************************************************
       ETL_CONSTEXPR etl::chrono::day operator ""_d(unsigned long long d) ETL_NOEXCEPT
       {
-        return etl::chrono::day(d);
+        return etl::chrono::day(static_cast<unsigned>(d));
       }
     }
   }

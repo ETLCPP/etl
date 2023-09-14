@@ -50,6 +50,7 @@ namespace etl
 
       //***********************************************************************
       ETL_CONSTEXPR duration() ETL_NOEXCEPT
+        : value(0)
       {
       }
 

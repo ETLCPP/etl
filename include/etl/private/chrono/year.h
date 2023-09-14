@@ -328,7 +328,7 @@ namespace etl
       //***********************************************************************
       constexpr etl::chrono::year operator ""_y(unsigned long long y) noexcept
       {
-        return etl::chrono::year(y);
+        return etl::chrono::year(static_cast<int16_t>(y));
       }
     }
   }

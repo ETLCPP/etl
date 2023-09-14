@@ -42,6 +42,12 @@ namespace etl
 {
   namespace chrono
   {
+    class month;
+
+    ETL_CONSTEXPR etl::chrono::month operator +(const etl::chrono::month& m,   const etl::chrono::months& ms) ETL_NOEXCEPT;
+    ETL_CONSTEXPR etl::chrono::month operator +(const etl::chrono::months& ms, const etl::chrono::month& m)   ETL_NOEXCEPT;
+    ETL_CONSTEXPR etl::chrono::month operator -(const etl::chrono::month& m,   const etl::chrono::months& ms) ETL_NOEXCEPT;
+
     //***********************************************************************
     /// month
     //***********************************************************************
@@ -88,12 +94,7 @@ namespace etl
       //***********************************************************************
       ETL_CONSTEXPR etl::chrono::month& operator ++() ETL_NOEXCEPT
       {
-        value %= 12U;
-
-        if (++value == 13U)
-        {
-          value = 1U;
-        }
+        *this += etl::chrono::months(1);
 
         return *this;
       }
@@ -105,7 +106,7 @@ namespace etl
       {
         const etl::chrono::month temp = *this;
         
-        this->operator++();
+        *this += etl::chrono::months(1);
 
         return temp;
       }
@@ -115,19 +116,7 @@ namespace etl
       //***********************************************************************
       ETL_CONSTEXPR etl::chrono::month& operator --() ETL_NOEXCEPT
       {
-        if (value > 0U)
-        {
-          value = ((value - 1U) % 12U) + 1U;
-        }
-        
-        if (value == 1U)
-        {
-          value = 12U;
-        }
-        else
-        {
-          --value;
-        }
+        *this -= etl::chrono::months(1);
 
         return *this;
       }
@@ -139,7 +128,7 @@ namespace etl
       {
         etl::chrono::month temp = *this;
 
-        this->operator--();
+        *this -= etl::chrono::months(1);
 
         return temp;
       }
@@ -149,7 +138,7 @@ namespace etl
       //***********************************************************************
       ETL_CONSTEXPR etl::chrono::month& operator +=(const etl::chrono::months& ms) ETL_NOEXCEPT
       {
-        value += static_cast<unsigned char>(ms.count());
+        *this = *this + ms;
 
         return *this;
       }
@@ -159,7 +148,7 @@ namespace etl
       //***********************************************************************
       ETL_CONSTEXPR etl::chrono::month& operator -=(const etl::chrono::months& ms) ETL_NOEXCEPT
       {
-        value -= static_cast<unsigned char>(ms.count());
+        *this = *this - ms;
 
         return *this;
       }
@@ -207,11 +196,24 @@ namespace etl
     //***********************************************************************
     ETL_CONSTEXPR etl::chrono::month operator +(const etl::chrono::month& m, const etl::chrono::months& ms) ETL_NOEXCEPT
     {
-      etl::chrono::month result(m);
+      unsigned int value = static_cast<unsigned int>(m);
 
-      result += ms;
+      value = value % 12U;
 
-      return result;
+      if (value == 0U)
+      {
+        value = 12U;
+      }
+
+      int delta = ms.count() % 12;
+
+      // Adjust to allow a limited +-11 month delta
+      value += 11U;
+      value += delta;
+      value %= 12U;
+      ++value;
+
+      return etl::chrono::month(value);
     }
 
     //***********************************************************************
@@ -220,11 +222,7 @@ namespace etl
     //***********************************************************************
     ETL_CONSTEXPR etl::chrono::month operator +(const etl::chrono::months& ms, const etl::chrono::month& m) ETL_NOEXCEPT
     {
-      etl::chrono::month result(m);
-
-      result += ms;
-
-      return result;
+      return m + ms;
     }
 
     //***********************************************************************
@@ -233,21 +231,28 @@ namespace etl
     //***********************************************************************
     ETL_CONSTEXPR etl::chrono::month operator -(const etl::chrono::month& m, const etl::chrono::months& ms) ETL_NOEXCEPT
     {
-      etl::chrono::month result(m);
-
-      result -= ms;
-
-      return result;
+      return m + etl::chrono::months(-ms.count());
     }
 
     //***********************************************************************
     /// Subtract etl::chrono::month from etl::chrono::month
     ///\return etl::chrono::months
     //***********************************************************************
-    ETL_CONSTEXPR etl::chrono::months operator -(const etl::chrono::month& d1, const etl::chrono::month& d2) ETL_NOEXCEPT
+    ETL_CONSTEXPR etl::chrono::months operator -(const etl::chrono::month& m1, const etl::chrono::month& m2) ETL_NOEXCEPT
     {
-      return etl::chrono::months(static_cast<int>(static_cast<unsigned>(d1)) - 
-                               static_cast<int>(static_cast<unsigned>(d2)));
+      if (m1.ok() && m2.ok())
+      {
+        etl::chrono::months ms(static_cast<signed>(static_cast<unsigned>(m1)) - 
+                               static_cast<signed>(static_cast<unsigned>(m2)) % 12);
+
+        if (m1 == (m2 + ms))
+        {
+          return ms;
+        }
+      }
+
+
+      return etl::chrono::months();
     }
 
     //***********************************************************************
