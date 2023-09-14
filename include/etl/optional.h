@@ -135,7 +135,7 @@ namespace etl
     {
     }
 
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "private/diagnostic_uninitialized_push.h"
     //***************************************************************************
     /// Copy constructor.
     //***************************************************************************
@@ -147,7 +147,7 @@ namespace etl
         storage.construct(other.value());
       }
     }
-#include "etl/private/diagnostic_pop.h"
+#include "private/diagnostic_pop.h"
 
 #if ETL_USING_CPP11
     //***************************************************************************
@@ -481,7 +481,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value.
     ///\param args The arguments to construct with.
-    //*************************************************************************   
+    //*************************************************************************
     template <typename ... TArgs>
     ETL_CONSTEXPR20_STL
     void emplace(TArgs&& ... args)
@@ -890,7 +890,7 @@ namespace etl
     //***************************************************************************
     /// Bool conversion operator.
     //***************************************************************************
-    ETL_CONSTEXPR14 
+    ETL_CONSTEXPR14
     ETL_EXPLICIT operator bool() const
     {
       return valid;
@@ -1110,7 +1110,7 @@ namespace etl
     storage_type storage;
   };
 
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "private/diagnostic_uninitialized_push.h"
 
   //***************************************************************************
   /// Equality operator. cppreference 1
@@ -1404,7 +1404,7 @@ namespace etl
     return rhs.has_value() ? lhs >= rhs.value() : true;
   }
 
-#include "etl/private/diagnostic_pop.h"
+#include "private/diagnostic_pop.h"
 
   //***************************************************************************
   /// Make an optional.

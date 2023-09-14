@@ -430,7 +430,7 @@ namespace etl
   /// 'Bad variant access' exception for the variant class.
   ///\ingroup variant
   //***************************************************************************
-  class bad_variant_access : public variant_exception 
+  class bad_variant_access : public variant_exception
   {
   public:
     bad_variant_access(string_type file_name_, numeric_type line_number_)
@@ -524,7 +524,7 @@ namespace etl
     /// Default constructor.
     /// Sets the state of the instance to containing no valid data.
     //***************************************************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "diagnostic_uninitialized_push.h"
     ETL_CONSTEXPR14 variant()
     {
       using type = typename etl::private_variant::parameter_pack<TTypes...>::template type_from_index<0U>::type;
@@ -533,12 +533,12 @@ namespace etl
       operation = operation_type<type, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
       type_id   = 0U;
     }
-#include "etl/private/diagnostic_pop.h"
+#include "diagnostic_pop.h"
 
     //***************************************************************************
     /// Construct from a value.
     //***************************************************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "diagnostic_uninitialized_push.h"
     template <typename T, etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value, int> = 0>
     ETL_CONSTEXPR14 variant(T&& value)
       : operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T>>::value, etl::is_move_constructible<etl::remove_cvref_t<T>>::value>::do_operation)
@@ -548,12 +548,12 @@ namespace etl
 
       construct_in_place<etl::remove_cvref_t<T>>(data, etl::forward<T>(value));
     }
-#include "etl/private/diagnostic_pop.h"
+#include "diagnostic_pop.h"
 
     //***************************************************************************
     /// Construct from arguments.
     //***************************************************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "diagnostic_uninitialized_push.h"
     template <typename T, typename... TArgs>
     ETL_CONSTEXPR14 explicit variant(etl::in_place_type_t<T>, TArgs&&... args)
       : operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T>>::value, etl::is_move_constructible<etl::remove_cvref_t<T>>::value>::do_operation)
@@ -563,12 +563,12 @@ namespace etl
 
       construct_in_place_args<etl::remove_cvref_t<T>>(data, etl::forward<TArgs>(args)...);
     }
-#include "etl/private/diagnostic_pop.h"
+#include "diagnostic_pop.h"
 
     //***************************************************************************
     /// Construct from arguments.
     //***************************************************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "diagnostic_uninitialized_push.h"
     template <size_t Index, typename... TArgs>
     ETL_CONSTEXPR14 explicit variant(etl::in_place_index_t<Index>, TArgs&&... args)
       : type_id(Index)
@@ -580,13 +580,13 @@ namespace etl
 
       operation = operation_type<type, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
     }
-#include "etl/private/diagnostic_pop.h"
+#include "diagnostic_pop.h"
 
 #if ETL_HAS_INITIALIZER_LIST
     //***************************************************************************
     /// Construct from type, initializer_list and arguments.
     //***************************************************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "diagnostic_uninitialized_push.h"
     template <typename T, typename U, typename... TArgs >
     ETL_CONSTEXPR14 explicit variant(etl::in_place_type_t<T>, std::initializer_list<U> init, TArgs&&... args)
       : operation(operation_type<etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T>>::value, etl::is_move_constructible<etl::remove_cvref_t<T>>::value>::do_operation)
@@ -596,12 +596,12 @@ namespace etl
 
       construct_in_place_args<etl::remove_cvref_t<T>>(data, init, etl::forward<TArgs>(args)...);
     }
-#include "etl/private/diagnostic_pop.h"
+#include "diagnostic_pop.h"
 
     //***************************************************************************
     /// Construct from index, initializer_list and arguments.
     //***************************************************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "diagnostic_uninitialized_push.h"
     template <size_t Index, typename U, typename... TArgs >
     ETL_CONSTEXPR14 explicit variant(etl::in_place_index_t<Index>, std::initializer_list<U> init, TArgs&&... args)
       : type_id(Index)
@@ -613,14 +613,14 @@ namespace etl
 
       operation = operation_type<type, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
     }
-#include "etl/private/diagnostic_pop.h"
+#include "diagnostic_pop.h"
 #endif
 
     //***************************************************************************
     /// Copy constructor.
     ///\param other The other variant object to copy.
     //***************************************************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "diagnostic_uninitialized_push.h"
     ETL_CONSTEXPR14 variant(const variant& other)
       : operation(other.operation)
       , type_id(other.type_id)
@@ -637,13 +637,13 @@ namespace etl
         }
       }
     }
-#include "etl/private/diagnostic_pop.h"
+#include "diagnostic_pop.h"
 
     //***************************************************************************
     /// Move constructor.
     ///\param other The other variant object to copy.
     //***************************************************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "diagnostic_uninitialized_push.h"
     ETL_CONSTEXPR14 variant(variant&& other)
       : operation(other.operation)
       , type_id(other.type_id)
@@ -664,7 +664,7 @@ namespace etl
         type_id = variant_npos;
       }
     }
-#include "etl/private/diagnostic_pop.h"
+#include "diagnostic_pop.h"
 
     //***************************************************************************
     /// Destructor.
@@ -706,7 +706,7 @@ namespace etl
     //***************************************************************************
     template <size_t Index, typename... TArgs>
     typename etl::variant_alternative<Index, variant<TArgs...>>::type& emplace(TArgs&&... args)
-    {    
+    {
       static_assert(Index < etl::private_variant::parameter_pack<TTypes...>::size, "Index out of range");
 
       using type = typename etl::private_variant::parameter_pack<TTypes...>::template type_from_index<Index>::type;
@@ -826,7 +826,7 @@ namespace etl
     /// Accept an etl::visitor.
     //***************************************************************************
     template <typename TVisitor>
-    etl::enable_if_t<etl::is_visitor<TVisitor>::value, void> 
+    etl::enable_if_t<etl::is_visitor<TVisitor>::value, void>
       accept(TVisitor& v)
     {
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
@@ -840,7 +840,7 @@ namespace etl
     /// Accept an etl::visitor.
     //***************************************************************************
     template <typename TVisitor>
-    etl::enable_if_t<etl::is_visitor<TVisitor>::value, void> 
+    etl::enable_if_t<etl::is_visitor<TVisitor>::value, void>
       accept(TVisitor& v) const
     {
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
@@ -1125,7 +1125,7 @@ namespace etl
       {
         // Workaround for MSVC (2023/05/13)
         // It doesn't compile 'visitor.visit(etl::get<Index>(*this))' correctly for C++17 & C++20.
-        // Changed all of the instances for consistancy.   
+        // Changed all of the instances for consistancy.
         auto& v = etl::get<Index>(*this);
         visitor.visit(v);
         return true;
@@ -1146,7 +1146,7 @@ namespace etl
       {
         // Workaround for MSVC (2023/05/13)
         // It doesn't compile 'visitor.visit(etl::get<Index>(*this))' correctly for C++17 & C++20.
-        // Changed all of the instances for consistancy.      
+        // Changed all of the instances for consistancy.
         auto& v = etl::get<Index>(*this);
         visitor.visit(v);
         return true;
@@ -1700,7 +1700,7 @@ namespace etl
     struct do_visit_helper
     {
       using function_pointer = add_pointer_t<TRet(TCallable&&, TCurVariant&&, TVarRest&&...)>;
-      
+
       template <size_t tIndex>
       static constexpr function_pointer fptr() noexcept
       {
@@ -1715,10 +1715,10 @@ namespace etl
     static ETL_CONSTEXPR14 TRet do_visit(TCallable&& f, TVariant&& v, index_sequence<tIndices...>, TVarRest&&... variants)
     {
       ETL_ASSERT(!v.valueless_by_exception(), ETL_ERROR(bad_variant_access));
-      
+
       using helper_t = do_visit_helper<TRet, TCallable, TVariant, TVarRest...>;
       using func_ptr = typename helper_t::function_pointer;
-      
+
       constexpr func_ptr jmp_table[]
       {
         helper_t::template fptr<tIndices>()...
