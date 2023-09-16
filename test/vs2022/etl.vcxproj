@@ -3004,6 +3004,7 @@
     <ClInclude Include="..\..\include\etl\private\chrono\day.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\duration.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\month.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\weekday.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\year.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_array_bounds_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_deprecated_push.h" />
@@ -14344,6 +14345,7 @@
     <ClCompile Include="..\test_char_traits.cpp" />
     <ClCompile Include="..\test_chrono_day.cpp" />
     <ClCompile Include="..\test_chrono_month.cpp" />
+    <ClCompile Include="..\test_chrono_weekday.cpp" />
     <ClCompile Include="..\test_chrono_year.cpp" />
     <ClCompile Include="..\test_circular_buffer.cpp" />
     <ClCompile Include="..\test_circular_buffer_external_buffer.cpp" />

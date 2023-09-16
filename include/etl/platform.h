@@ -240,11 +240,35 @@ SOFTWARE.
 #endif
 
 //*************************************
-// Indicate if etl::literals::chrono_literals has month (_m)
-#if defined(ETL_ENABLE_CHRONO_LITERALS_MONTH)
-  #define ETL_HAS_CHRONO_LITERALS_MONTH 1
+// Indicate if etl::literals::chrono_literals has weekdays (_day)
+#if defined(ETL_DISABLE_CHRONO_LITERALS_WEEKDAY)
+  #define ETL_HAS_CHRONO_LITERALS_DAY 0
 #else
+  #define ETL_HAS_CHRONO_LITERALS_DAY 1
+#endif
+
+//*************************************
+// Indicate if etl::literals::chrono_literals has weekdays (_weekday)
+#if defined(ETL_DISABLE_CHRONO_LITERALS_WEEKDAY)
+  #define ETL_HAS_CHRONO_LITERALS_WEEKDAY 0
+#else
+  #define ETL_HAS_CHRONO_LITERALS_WEEKDAY 1
+#endif
+
+//*************************************
+// Indicate if etl::literals::chrono_literals has month (_month)
+#if defined(ETL_DISABLE_CHRONO_LITERALS_MONTH)
   #define ETL_HAS_CHRONO_LITERALS_MONTH 0
+#else
+  #define ETL_HAS_CHRONO_LITERALS_MONTH 1
+#endif
+
+//*************************************
+// Indicate if etl::literals::chrono_literals has year (_year)
+#if defined(ETL_DISABLE_CHRONO_LITERALS_YEAR)
+  #define ETL_HAS_CHRONO_LITERALS_YEAR 0
+#else
+  #define ETL_HAS_CHRONO_LITERALS_YEAR 1
 #endif
 
 //*************************************
@@ -484,7 +508,10 @@ namespace etl
     static ETL_CONSTANT bool has_mutable_array_view           = (ETL_HAS_MUTABLE_ARRAY_VIEW == 1);
     static ETL_CONSTANT bool has_ideque_repair                = (ETL_HAS_IDEQUE_REPAIR == 1);
     static ETL_CONSTANT bool has_virtual_messages             = (ETL_HAS_VIRTUAL_MESSAGES == 1);
+    static ETL_CONSTANT bool has_chrono_literals_day          = (ETL_HAS_CHRONO_LITERALS_DAY == 1);
+    static ETL_CONSTANT bool has_chrono_literals_weekday      = (ETL_HAS_CHRONO_LITERALS_WEEKDAY == 1);
     static ETL_CONSTANT bool has_chrono_literals_month        = (ETL_HAS_CHRONO_LITERALS_MONTH == 1);
+    static ETL_CONSTANT bool has_chrono_literals_year         = (ETL_HAS_CHRONO_LITERALS_YEAR == 1);
 
     // Is...
     static ETL_CONSTANT bool is_debug_build                   = (ETL_IS_DEBUG_BUILD == 1);

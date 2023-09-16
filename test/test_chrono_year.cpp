@@ -261,7 +261,7 @@ namespace
       using namespace etl::literals::chrono_literals;
 
       std::chrono::year std_year = 25y;
-      etl::chrono::year year     = 25_y;
+      etl::chrono::year year     = 25_year;
 
       CHECK_EQUAL(std_year.ok(), year.ok());
       CHECK_EQUAL(int(std_year), int(year));
@@ -270,7 +270,7 @@ namespace
     //*************************************************************************
     TEST(test_year_comparison_operators)
     {
-        etl::chrono::year year10(-10);
+        etl::chrono::year year10(10);
         etl::chrono::year year20(20);
 
         CHECK_TRUE(year10  == year10);
@@ -296,21 +296,18 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_year_hash)
+    TEST(test_year_hashes_are_unique)
     {
-      etl::chrono::year year(-32767);
+      std::vector<size_t> hashes;
 
-      size_t h = 0;
-      
-      h = etl::hash<etl::chrono::year>()(year);
+      for (int32_t i = -32767; i < 32768; ++i)
+      {
+        hashes.push_back(etl::hash<etl::chrono::year>()(etl::chrono::year(i)));
+      }
 
-      CHECK_TRUE(h != 0);
-
-      year = etl::chrono::year(32767);
-      h = 0;
-      h = etl::hash<etl::chrono::year>()(year);
-
-      CHECK_TRUE(h != 0);
+      std::sort(hashes.begin(), hashes.end());
+      (void)std::unique(hashes.begin(), hashes.end());
+      CHECK_EQUAL(65535U, hashes.size());
     }
   };
 }

@@ -37,6 +37,8 @@ SOFTWARE.
 #include "etl/chrono.h"
 
 #include <chrono>
+#include <array>
+#include <algorithm>
 
 namespace
 {
@@ -86,7 +88,7 @@ namespace
       std::chrono::month std_month(0);
       etl::chrono::month month(0);
 
-      for (int i = 0; i < 255; ++i)
+      for (int i = 0; i < 256; ++i)
       {
         std::chrono::month std_last_month = std_month++;
         etl::chrono::month last_month     = month++;
@@ -102,10 +104,10 @@ namespace
     //*************************************************************************
     TEST(test_pre_decrement)
     {
-      std::chrono::month std_month(256);
-      etl::chrono::month month(256);
+      std::chrono::month std_month(255);
+      etl::chrono::month month(255);
 
-      for (int i = 0; i < 255; ++i)
+      for (int i = 0; i < 256; ++i)
       {
         --std_month;
         --month;
@@ -121,131 +123,150 @@ namespace
       std::chrono::month std_month(255);
       etl::chrono::month month(255);
 
-      for (int i = 0; i < 255; ++i)
+      for (int i = 0; i < 256; ++i)
       {
         std::chrono::month std_last_month = std_month--;
         etl::chrono::month last_month = month--;
 
-//        CHECK_EQUAL(std_last_month.ok(), last_month.ok());
+        CHECK_EQUAL(std_last_month.ok(), last_month.ok());
         CHECK_EQUAL(unsigned(std_last_month), unsigned(last_month));
 
-//        CHECK_EQUAL(std_month.ok(), month.ok());
+        CHECK_EQUAL(std_month.ok(), month.ok());
         CHECK_EQUAL(unsigned(std_month), unsigned(month));
       }
     }
 
-    ////*************************************************************************
-    //TEST(test_plus_equal_months)
-    //{
-    //  std::chrono::month std_month(0);
-    //  etl::chrono::month month(0);
+    //*************************************************************************
+    TEST(test_plus_equal_months)
+    {
+      for (int m = 0; m <= 12; ++m)
+      {
+        for (int ms = 0; ms <= 24; ++ms)
+        {
+          std::chrono::month std_month(m);
+          etl::chrono::month month(m);
 
-    //  std::chrono::months std_months(2);
-    //  etl::chrono::months months(2);
+          std::chrono::months std_months(ms);
+          etl::chrono::months months(ms);
 
-    //  for (int i = 0; i < 128; ++i)
-    //  {
-    //    std_month += std_months;
-    //    month     += months;
+          std_month += std_months;
+          month     += months;
 
-    //    CHECK_EQUAL(std_month.ok(), month.ok());
-    //    CHECK_EQUAL(unsigned(std_month), unsigned(month));
-    //  }
-    //}
+          CHECK_EQUAL(std_month.ok(), month.ok());
+          CHECK_EQUAL(unsigned(std_month), unsigned(month));
+        }
+      }
+    }
 
-    ////*************************************************************************
-    //TEST(test_month_plus_months)
-    //{
-    //  std::chrono::month std_month(0);
-    //  etl::chrono::month month(0);
+    //*************************************************************************
+    TEST(test_month_plus_months)
+    {
+      for (int m = 0; m <= 12; ++m)
+      {
+        for (int ms = 0; ms <= 24; ++ms)
+        {
+          std::chrono::month std_month(m);
+          etl::chrono::month month(m);
 
-    //  std::chrono::months std_months(2);
-    //  etl::chrono::months months(2);
+          std::chrono::months std_months(ms);
+          etl::chrono::months months(ms);
 
-    //  for (int i = 0; i < 128; ++i)
-    //  {
-    //    std_month = std_month + std_months;        
-    //    month     = month + months;
+          std_month = std_month + std_months;
+          month     = month + months;
 
-    //    CHECK_EQUAL(std_month.ok(), month.ok());
-    //    CHECK_EQUAL(unsigned(std_month), unsigned(month));
-    //  }
-    //}
+          CHECK_EQUAL(std_month.ok(), month.ok());
+          CHECK_EQUAL(unsigned(std_month), unsigned(month));
+        }
+      }
+    }
 
-    ////*************************************************************************
-    //TEST(test_months_plus_month)
-    //{
-    //  std::chrono::month std_month(0);
-    //  etl::chrono::month month(0);
+    //*************************************************************************
+    TEST(test_months_plus_month)
+    {
+      for (int m = 0; m <= 12; ++m)
+      {
+        for (int ms = 0; ms <= 24; ++ms)
+        {
+          std::chrono::month std_month(m);
+          etl::chrono::month month(m);
 
-    //  std::chrono::months std_months(2);
-    //  etl::chrono::months months(2);
+          std::chrono::months std_months(ms);
+          etl::chrono::months months(ms);
 
-    //  for (int i = 0; i < 128; ++i)
-    //  {
-    //    std_month = std_months + std_month;
-    //    month     = months + month;
+          std_month = std_months + std_month;
+          month     = months + month;
 
-    //    CHECK_EQUAL(std_month.ok(), month.ok());
-    //    CHECK_EQUAL(unsigned(std_month), unsigned(month));
-    //  }
-    //}
+          CHECK_EQUAL(std_month.ok(), month.ok());
+          CHECK_EQUAL(unsigned(std_month), unsigned(month));
+        }
+      }
+    }
 
-    ////*************************************************************************
-    //TEST(test_minus_equal_months)
-    //{
-    //  std::chrono::month std_month(256);
-    //  etl::chrono::month month(256);
+    //*************************************************************************
+    TEST(test_minus_equal_months)
+    {
+      for (int m = 0; m <= 12; ++m)
+      {
+        for (int ms = 0; ms <= 24; ++ms)
+        {
+          std::chrono::month std_month(m);
+          etl::chrono::month month(m);
 
-    //  std::chrono::months std_months(2);
-    //  etl::chrono::months months(2);
+          std::chrono::months std_months(ms);
+          etl::chrono::months months(ms);
 
-    //  for (int i = 0; i < 128; ++i)
-    //  {
-    //    std_month -= std_months;
-    //    month     -= months;
+          std_month -= std_months;
+          month     -= months;
 
-    //    CHECK_EQUAL(std_month.ok(), month.ok());
-    //    CHECK_EQUAL(unsigned(std_month), unsigned(month));
-    //  }
-    //}
+          CHECK_EQUAL(std_month.ok(), month.ok());
+          CHECK_EQUAL(unsigned(std_month), unsigned(month));
+        }
+      }
+    }
 
-    ////*************************************************************************
-    //TEST(test_month_minus_months)
-    //{
-    //  std::chrono::month std_month(0);
-    //  etl::chrono::month month(0);
+    //*************************************************************************
+    TEST(test_month_minus_months)
+    {
+      for (int m = 0; m <= 12; ++m)
+      {
+        for (int ms = 0; ms <= 24; ++ms)
+        {
+          std::chrono::month std_month(m);
+          etl::chrono::month month(m);
 
-    //  std::chrono::months std_months(2);
-    //  etl::chrono::months months(2);
+          std::chrono::months std_months(ms);
+          etl::chrono::months months(ms);
 
-    //  for (int i = 0; i < 128; ++i)
-    //  {
-    //    std_month = std_month - std_months;
-    //    month     = month - months;
+          std_month = std_month - std_months;
+          month     = month - months;
 
-    //    CHECK_EQUAL(std_month.ok(), month.ok());
-    //    CHECK_EQUAL(unsigned(std_month), unsigned(month));
-    //  }
-    //}
+          CHECK_EQUAL(std_month.ok(), month.ok());
+          CHECK_EQUAL(unsigned(std_month), unsigned(month));
+        }
+      }
+    }
 
-    ////*************************************************************************
-    //TEST(test_month_minus_month)
-    //{
-    //  for (int i = 1; i < 12; ++i)
-    //  {
-    //    std::chrono::month std_month1(i);
-    //    std::chrono::month std_month2(12 - i);
+    //*************************************************************************
+    TEST(test_month_minus_month)
+    {
+      for (int m = 0; m < 256; ++m)
+      {
+        std::chrono::month std_month1(m);
+        std::chrono::month std_month2(255 - m);
 
-    //    etl::chrono::month month1(i);
-    //    etl::chrono::month month2(12 - i);
+        std::chrono::month month1(m);
+        std::chrono::month month2(255 - m);
 
-    //    std::chrono::months std_months = std_month1 - std_month2;
-    //    etl::chrono::months months     = month1 - month2;
+        auto std_months12 = std_month1 - std_month2;
+        auto std_months21 = std_month2 - std_month1;
 
-    //    CHECK_EQUAL(std_months.count(), months.count());
-    //  }
-    //}
+        auto months12 = month1 - month2;
+        auto months21 = month2 - month1;
+
+        CHECK_EQUAL(std_months12.count(), months12.count());
+        CHECK_EQUAL(std_months21.count(), months21.count());
+      }
+    }
 
     //*************************************************************************
     TEST(test_min_max_month)
@@ -259,18 +280,18 @@ namespace
     {
       using namespace etl::literals::chrono_literals;
 
-      etl::chrono::month month1  = 1_m;
-      etl::chrono::month month2  = 2_m;
-      etl::chrono::month month3  = 3_m;
-      etl::chrono::month month4  = 4_m;
-      etl::chrono::month month5  = 5_m;
-      etl::chrono::month month6  = 6_m;
-      etl::chrono::month month7  = 7_m;
-      etl::chrono::month month8  = 8_m;
-      etl::chrono::month month9  = 9_m;
-      etl::chrono::month month10 = 10_m;
-      etl::chrono::month month11 = 11_m;
-      etl::chrono::month month12 = 12_m;
+      etl::chrono::month month1  = 1_month;
+      etl::chrono::month month2  = 2_month;
+      etl::chrono::month month3  = 3_month;
+      etl::chrono::month month4  = 4_month;
+      etl::chrono::month month5  = 5_month;
+      etl::chrono::month month6  = 6_month;
+      etl::chrono::month month7  = 7_month;
+      etl::chrono::month month8  = 8_month;
+      etl::chrono::month month9  = 9_month;
+      etl::chrono::month month10 = 10_month;
+      etl::chrono::month month11 = 11_month;
+      etl::chrono::month month12 = 12_month;
 
       CHECK_TRUE(month1.ok());
       CHECK_TRUE(month2.ok());
@@ -328,15 +349,35 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_month_hash)
+    TEST(test_month_hashes_are_unique)
     {
-      etl::chrono::month month(10);
+      std::vector<size_t> hashes;
 
-      size_t h = 0;
-      
-      h = etl::hash<etl::chrono::month>()(month);
+      for (int i = 0; i < 256; ++i)
+      {
+        hashes.push_back(etl::hash<etl::chrono::month>()(etl::chrono::month(i)));
+      }
 
-      CHECK_TRUE(h != 0);
+      std::sort(hashes.begin(), hashes.end());
+      (void)std::unique(hashes.begin(), hashes.end());
+      CHECK_EQUAL(256U, hashes.size());
+    }
+
+    //*************************************************************************
+    TEST(test_month_types)
+    {
+      CHECK_EQUAL(static_cast<unsigned>(std::chrono::January),   static_cast<unsigned>(etl::chrono::January));
+      CHECK_EQUAL(static_cast<unsigned>(std::chrono::February),  static_cast<unsigned>(etl::chrono::February));
+      CHECK_EQUAL(static_cast<unsigned>(std::chrono::March),     static_cast<unsigned>(etl::chrono::March));
+      CHECK_EQUAL(static_cast<unsigned>(std::chrono::April),     static_cast<unsigned>(etl::chrono::April));
+      CHECK_EQUAL(static_cast<unsigned>(std::chrono::May),       static_cast<unsigned>(etl::chrono::May));
+      CHECK_EQUAL(static_cast<unsigned>(std::chrono::June),      static_cast<unsigned>(etl::chrono::June));
+      CHECK_EQUAL(static_cast<unsigned>(std::chrono::July),      static_cast<unsigned>(etl::chrono::July));
+      CHECK_EQUAL(static_cast<unsigned>(std::chrono::August),    static_cast<unsigned>(etl::chrono::August));
+      CHECK_EQUAL(static_cast<unsigned>(std::chrono::September), static_cast<unsigned>(etl::chrono::September));
+      CHECK_EQUAL(static_cast<unsigned>(std::chrono::October),   static_cast<unsigned>(etl::chrono::October));
+      CHECK_EQUAL(static_cast<unsigned>(std::chrono::November),  static_cast<unsigned>(etl::chrono::November));
+      CHECK_EQUAL(static_cast<unsigned>(std::chrono::December),  static_cast<unsigned>(etl::chrono::December));
     }
   };
 }

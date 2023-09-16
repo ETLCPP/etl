@@ -1383,6 +1383,9 @@
     <ClInclude Include="..\..\include\etl\private\chrono\year.h">
       <Filter>ETL\Private\chrono</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\weekday.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3453,6 +3456,9 @@
       <Filter>Tests\Chrono</Filter>
     </ClCompile>
     <ClCompile Include="..\test_chrono_year.cpp">
+      <Filter>Tests\Chrono</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_chrono_weekday.cpp">
       <Filter>Tests\Chrono</Filter>
     </ClCompile>
   </ItemGroup>
