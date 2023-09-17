@@ -28,10 +28,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_CHRONO_DURATION_INCLUDED
-#define ETL_CHRONO_DURATION_INCLUDED
+#ifndef ETL_IN_CHRONO_H
+  #error DO NOT DIRECTLY INCLUDE THIS FILE. USE CHRONO.H
+#endif
 
-#include "../../platform.h"
 #include "../../ratio.h"
 #include "../../static_assert.h"
 #include "../../limits.h"
@@ -94,7 +94,7 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_NODISCARD ETL_CONSTEXPR TValue count() const
+      ETL_NODISCARD ETL_CONSTEXPR TValue count() const ETL_NOEXCEPT
       {
         return value;
       }
@@ -129,11 +129,9 @@ namespace etl
     /// duration_cast
     //***********************************************************************
     template <typename TToDuration, typename TValue, typename TPeriod>
-    ETL_CONSTEXPR TToDuration duration_cast(const etl::chrono::duration<TValue, TPeriod>& d)
+    ETL_CONSTEXPR TToDuration duration_cast(const etl::chrono::duration<TValue, TPeriod>& d) ETL_NOEXCEPT
     {
       return TToDuration();
     }
   }
 }
-  
-#endif

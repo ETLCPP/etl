@@ -3003,8 +3003,11 @@
     <ClInclude Include="..\..\include\etl\private\bitset_new.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\day.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\duration.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\last_spec.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\month.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\weekday.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\weekday_indexed.h" />
+    <ClInclude Include="..\..\include\etl\private\chrono\weekday_last.h" />
     <ClInclude Include="..\..\include\etl\private\chrono\year.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_array_bounds_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_deprecated_push.h" />

@@ -1386,6 +1386,15 @@
     <ClInclude Include="..\..\include\etl\private\chrono\weekday.h">
       <Filter>ETL\Private\chrono</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\weekday_indexed.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\weekday_last.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\chrono\last_spec.h">
+      <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
