@@ -209,7 +209,23 @@ namespace etl
       //  std::chrono::weekday_last();
       //}
 
+      //***********************************************************************
+      /// Returns <b>true</b> if the day is a weekend.
+      //***********************************************************************
+      ETL_NODISCARD ETL_CONSTEXPR14 bool is_weekend()
+      {
+        return (c_encoding() == 0U) || (c_encoding() == 6U);
+      }
+
     private:
+
+      //***********************************************************************
+      /// Normalise to a in-range weekday
+      //***********************************************************************
+      ETL_NODISCARD ETL_CONSTEXPR void normalise()
+      {
+        value %= 7U;
+      }
 
       unsigned char value;
     };

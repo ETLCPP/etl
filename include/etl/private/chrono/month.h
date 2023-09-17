@@ -187,6 +187,14 @@ namespace etl
 
     private:
 
+      //***********************************************************************
+      /// Normalise to a in-range month
+      //***********************************************************************
+      ETL_NODISCARD ETL_CONSTEXPR void normalise()
+      {
+        value = ((value % 12U) == 0U) ? 12U : value;
+      }
+
       unsigned char value;
     };
 
