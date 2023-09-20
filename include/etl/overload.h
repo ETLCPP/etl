@@ -35,10 +35,9 @@ SOFTWARE.
 #include "utility.h"
 #include "type_traits.h"
 
-#if ETL_USING_CPP17
-
 namespace etl
 {
+#if ETL_USING_CPP17
   //*************************************************************************
   /// Variadic template definition of overload for C++17 and above.
   //*************************************************************************
@@ -61,8 +60,39 @@ namespace etl
   {
     return overload<TOverloads...>{ etl::forward<TOverloads>(overloads)... };
   }
-}
+#elif ETL_USING_CPP11
+  //*************************************************************************
+  /// Variadic template definition of overload for C++11 & C++14.
+  //*************************************************************************
+  template <typename... TRest>
+  struct overload;
 
+  //*************************************************************************
+  template <typename TOverload, typename... TRest>
+  struct overload<TOverload, TRest...> : TOverload, overload<TRest...>
+  {
+    overload(TOverload ovl0, TRest... rest) : TOverload(ovl0), overload<TRest...>(rest...) {}
+
+    using TOverload::operator();
+    using overload<TRest...>::operator();
+  };
+
+  //*************************************************************************
+  template <typename TOverload>
+  struct overload<TOverload> : TOverload
+  {
+    overload(TOverload ovl0) : TOverload(ovl0) {}
+
+    using TOverload::operator();
+  };
+
+  //*************************************************************************
+  template <typename... TRest>
+  overload<TRest...> make_overload(TRest... overloads)
+  {
+    return overload<TRest...>(overloads...);
+  }
 #endif
+}
 
 #endif

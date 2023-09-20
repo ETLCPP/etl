@@ -30,7 +30,7 @@ SOFTWARE.
 
 #include "etl/overload.h"
 
-#if ETL_USING_CPP17
+#if ETL_USING_CPP11
 
 #include <iostream>
 
@@ -100,6 +100,7 @@ namespace
       CHECK(result.bs == true);
     }
 
+#if ETL_USING_CPP_17
     //*************************************************************************
     TEST(test_overload_lambdas_initializer_list)
     {
@@ -136,6 +137,7 @@ namespace
       CHECK(result.bd == false);
       CHECK(result.bs == true);
     }
+#endif
 
     //*************************************************************************
     TEST(test_visitor_overload)
