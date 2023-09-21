@@ -68,24 +68,34 @@ namespace etl
   struct overload;
 
   //*************************************************************************
+  /// Specialisation for multiple overloads.
+  //*************************************************************************
   template <typename TOverload, typename... TRest>
   struct overload<TOverload, TRest...> : TOverload, overload<TRest...>
   {
-    overload(TOverload ovl0, TRest... rest) : TOverload(ovl0), overload<TRest...>(rest...) {}
+    overload(TOverload first, TRest... rest) : TOverload(first), overload<TRest...>(rest...) 
+    {
+    }
 
     using TOverload::operator();
     using overload<TRest...>::operator();
   };
 
   //*************************************************************************
+  /// Specialisation for one overload.
+  //*************************************************************************
   template <typename TOverload>
   struct overload<TOverload> : TOverload
   {
-    overload(TOverload ovl0) : TOverload(ovl0) {}
+    overload(TOverload first) : TOverload(first) 
+    {
+    }
 
     using TOverload::operator();
   };
 
+  //*************************************************************************
+  /// Make an overload.
   //*************************************************************************
   template <typename... TRest>
   overload<TRest...> make_overload(TRest... overloads)
