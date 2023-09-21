@@ -881,7 +881,7 @@ namespace etl
     storage_t& storage;
 
     /// Internal debugging.
-    ETL_DECLARE_DEBUG_COUNT;
+    ETL_DECLARE_DEBUG_COUNT
 
     //*************************************************************************
     /// Destructor.

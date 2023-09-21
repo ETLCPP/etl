@@ -1376,7 +1376,7 @@ namespace etl
     key_equal key_equal_function;
 
     /// For library debugging purposes only.
-    ETL_DECLARE_DEBUG_COUNT;
+    ETL_DECLARE_DEBUG_COUNT
 
     //*************************************************************************
     /// Destructor.
