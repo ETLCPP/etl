@@ -45,7 +45,7 @@ SOFTWARE.
   #define ETL_STATIC_ASSERT(Condition, Message) \
 		  enum \
 		  { \
-        ETL_SA2(dummy, __LINE__) = sizeof(ETL_ETL_STATIC_ASSERT_FAILED<(bool)(Condition)>) \
+        ETL_SA2(dummy, __LINE__) = sizeof(ETL_ETL_STATIC_ASSERT_FAILED<static_cast<bool>(Condition)>) \
 	    }
 #endif
 

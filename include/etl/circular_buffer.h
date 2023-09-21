@@ -883,7 +883,7 @@ namespace etl
       }
       else
       {
-        ETL_INCREMENT_DEBUG_COUNT;;
+        ETL_INCREMENT_DEBUG_COUNT;
       }
     }
 
@@ -907,7 +907,7 @@ namespace etl
       }
       else
       {
-        ETL_INCREMENT_DEBUG_COUNT;;
+        ETL_INCREMENT_DEBUG_COUNT;
       }
     }
 #endif
