@@ -1,16 +1,19 @@
 ===============================================================================
 20.38.2
+#749 Code change causes warning with armcc compiler
 #753 IAR's overload resolution struggles with etl::span::span(etl::array&)
 #754 ambiguous etl::bit_stream_reader::bit_stream_reader() for some etl::span
 #755 warning about constexpr in array.h
 #756 Parameter pack compilation error
 #758 Move assignment not working for non-empty containers
 #761 Make "private" includes relative
+#765 etl::optional cannot be constexpr
+#766 etl::unique_ptr::reset() can call deleter with nullptr argument 
 Re-enabled bit_stream_writer tests
 
 ===============================================================================
 20.38.1
-#749 Code change causes warning with armcc compiler
+Deleted
 
 ===============================================================================
 20.38.0
