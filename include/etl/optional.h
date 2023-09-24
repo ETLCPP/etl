@@ -1096,37 +1096,16 @@ namespace etl
       dummy_t dummy;
       T       value;
 
-      constexpr storage_type()
+      ETL_CONSTEXPR storage_type()
         : dummy()
       {
       }
 
-      constexpr storage_type(const T& v)
+      ETL_CONSTEXPR storage_type(const T& v)
         : value(v) 
       {
       }
     };
-
-
-    //struct storage_type
-    //{
-    //  storage_type()
-    //  {
-    //  }
-
-    //  union union_type
-    //  {
-    //    union_type()
-    //      : dummy(0)
-    //    {
-    //    }
-
-    //    char dummy;
-    //    T value;
-    //  };
-
-    //  union_type u;
-    //};
 
     storage_type storage;
   };
