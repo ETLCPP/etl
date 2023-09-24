@@ -663,7 +663,7 @@ namespace etl
       {
         ETL_CONSTEXPR20_STL
         union_type()
-          : dummy{}
+          : dummy()
         {
         }
 
