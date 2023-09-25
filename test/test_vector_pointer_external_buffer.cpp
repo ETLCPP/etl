@@ -47,7 +47,7 @@ namespace
   int* buffer4[SIZE];
   int* buffer5[SIZE];
 
-  SUITE(test_vector_pointer)
+  SUITE(test_vector_pointer_external_buffer)
   {
     typedef etl::vector_ext<int*>       Data;
     typedef etl::vector_ext<const int*> CData;

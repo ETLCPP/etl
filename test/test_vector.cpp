@@ -1436,12 +1436,14 @@ namespace
     }
 
     //*************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     TEST(test_three_parameter_insert_same_type_not_iterator)
     {
       // No compilation error.
       etl::vector<int, 10> v;
       v.insert(v.end(), 5, 5);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     TEST(remove)
