@@ -1,4 +1,8 @@
 ===============================================================================
+20.38.3
+#767 etl::pool silently produces unaligned allocations for types with stricter alignment requirements than built in types 
+
+===============================================================================
 20.38.2
 #749 Code change causes warning with armcc compiler
 #753 IAR's overload resolution struggles with etl::span::span(etl::array&)

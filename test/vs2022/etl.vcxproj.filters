@@ -3541,6 +3541,18 @@
     <None Include="..\run-tests.sh">
       <Filter>Tests\Scripts</Filter>
     </None>
+    <None Include="..\..\scripts\generator_test.bat">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\update_release.bat">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\update_version.bat">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\update_version.py">
+      <Filter>Tests\Scripts</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\support\Release notes.txt">

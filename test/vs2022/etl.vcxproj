@@ -15401,8 +15401,12 @@
     <None Include="..\..\library.properties" />
     <None Include="..\..\meson.build" />
     <None Include="..\..\README.md" />
+    <None Include="..\..\scripts\generator_test.bat" />
     <None Include="..\..\scripts\generator_test.py" />
+    <None Include="..\..\scripts\update_release.bat" />
     <None Include="..\..\scripts\update_release.py" />
+    <None Include="..\..\scripts\update_version.bat" />
+    <None Include="..\..\scripts\update_version.py" />
     <None Include="..\meson.build" />
     <None Include="..\run-syntax-checks.sh" />
     <None Include="..\run-tests.sh" />

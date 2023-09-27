@@ -214,7 +214,7 @@ namespace etl
   #endif
 #endif
 
-      ETL_STATIC_ASSERT(etl::alignment_of<type>::value == Alignment, "Unable to create the type with the specified alignment");
+    ETL_STATIC_ASSERT(etl::alignment_of<type>::value == Alignment, "Unable to create the type with the specified alignment");
   };
 
 #if ETL_USING_CPP11
