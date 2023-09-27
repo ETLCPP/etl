@@ -204,12 +204,23 @@ namespace etl
   {
   public:
 
-#if ETL_NOT_USING_64BIT_TYPES
-    typedef typename private_alignment::type_with_alignment_helper<Alignment, int_least8_t, int_least16_t, int32_t, float, double, void*>::type type;
+#if ETL_USING_CPP11
+    typedef struct { alignas(Alignment) char dummy; } type;
 #else
-    typedef typename private_alignment::type_with_alignment_helper<Alignment, int_least8_t, int_least16_t, int32_t, int64_t, float, double, void*>::type type;
+  #if ETL_NOT_USING_64BIT_TYPES
+      typedef typename private_alignment::type_with_alignment_helper<Alignment, int_least8_t, int_least16_t, int32_t, float, double, void*>::type type;
+  #else
+      typedef typename private_alignment::type_with_alignment_helper<Alignment, int_least8_t, int_least16_t, int32_t, int64_t, float, double, void*>::type type;
+  #endif
 #endif
+
+      ETL_STATIC_ASSERT(etl::alignment_of<type>::value == Alignment, "Unable to create the type with the specified alignment");
   };
+
+#if ETL_USING_CPP11
+  template <size_t Alignment>
+  using type_with_alignment_t = typename type_with_alignment<Alignment>::type;
+#endif
 
   //***************************************************************************
   /// Aligned storage
