@@ -2928,6 +2928,7 @@
     <ClInclude Include="..\..\include\etl\atomic\atomic_gcc_sync.h" />
     <ClInclude Include="..\..\include\etl\atomic\atomic_clang_sync.h" />
     <ClInclude Include="..\..\include\etl\atomic\atomic_std.h" />
+    <ClInclude Include="..\..\include\etl\base64.h" />
     <ClInclude Include="..\..\include\etl\basic_format_spec.h" />
     <ClInclude Include="..\..\include\etl\basic_string_stream.h" />
     <ClInclude Include="..\..\include\etl\bip_buffer_spsc_atomic.h" />
@@ -14319,6 +14320,7 @@
     <ClCompile Include="..\test_algorithm.cpp" />
     <ClCompile Include="..\test_alignment.cpp" />
     <ClCompile Include="..\test_atomic.cpp" />
+    <ClCompile Include="..\test_base64.cpp" />
     <ClCompile Include="..\test_bit.cpp" />
     <ClCompile Include="..\test_bitset_new_default_element_type.cpp" />
     <ClCompile Include="..\test_bitset_new_explicit_single_element_type.cpp" />

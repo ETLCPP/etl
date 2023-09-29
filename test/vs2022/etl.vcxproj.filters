@@ -220,6 +220,12 @@
     <Filter Include="Tests\Messaging">
       <UniqueIdentifier>{c75cedd3-8b6c-4662-b965-aecbe7fd5d1c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Codecs">
+      <UniqueIdentifier>{6bbca8f0-f707-45ee-9dad-6d41d401bbaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Codecs">
+      <UniqueIdentifier>{9713a35d-8f0e-4722-9b15-a5c477c9ecdb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -1361,6 +1367,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\stringify.h">
       <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\base64.h">
+      <Filter>ETL\Codecs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3424,6 +3433,9 @@
     </ClCompile>
     <ClCompile Include="..\test_macros.cpp">
       <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_base64.cpp">
+      <Filter>Tests\Codecs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
