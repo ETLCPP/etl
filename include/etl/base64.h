@@ -1,4 +1,6 @@
-///\file
+//*************************************************************************
+///Decode from Base64 from and to pointer/length
+//*************************************************************************///\file
 
 /******************************************************************************
 The MIT License(MIT)
@@ -34,6 +36,7 @@ SOFTWARE.
 #include "etl/binary.h"
 #include "etl/algorithm.h"
 #include "etl/integral_limits.h"
+#include "etl/iterator.h"
 
 #include <stdint.h>
 
@@ -65,136 +68,156 @@ namespace etl
     }
   };
 
+  //*************************************************************************
+  /// Codec for Base64
+  //*************************************************************************
   class base64
   {
   public:
 
     //*************************************************************************
+    /// Encode to Base64 from and to pointer/length
+    //*************************************************************************
     template <typename T>
     ETL_CONSTEXPR14
     static 
-    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), etl::span<const char> >::type 
+    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type 
       encode(const T* input, size_t input_length, char* output, size_t output_length)
     {
-      etl::span<const char> result;
-
-      int count = 0;
-
-      if (input_length > 0U)
+      if (input_length == 0U)
       {
-        // Figure out if the output buffer is large enough.
-        size_t required_output_length = (input_length * 8U) / 6U;
-
-        if ((input_length % 3U) != 0U)
-        {
-          while ((required_output_length % 4U) != 0)
-          {
-            ++required_output_length;
-          }
-        }
-
-        ETL_ASSERT_OR_RETURN_VALUE(output_length >= required_output_length, ETL_ERROR(base64_overflow), etl::span<const T>());
-
-        const T* p_in     = input;
-        const T* p_in_end = input + input_length;
-
-        char* p_out     = output;
-        char* p_out_end = output + required_output_length;
-
-        int next_sextet = First_Sextet;
-
-        // Step through the input buffer, creating the output sextets.
-        while (p_in != p_in_end)
-        {
-          T c = *p_in;
-          char  index = 0;
-
-          switch (next_sextet)
-          {
-            case First_Sextet:
-            {
-              index = static_cast<char>((c & b11111100) >> 2);
-              next_sextet = Second_Sextet;
-              break;
-            }
-
-            case Second_Sextet:
-            {
-              index = static_cast<char>((c & b00000011) << 4);
-              ++p_in;
-              ++count;
-
-              // Next byte valid?
-              if (p_in != p_in_end)
-              {
-                c = *p_in;
-                index = index | ((c & b11110000) >> 4);
-              }
-              next_sextet = Third_Sextet;
-              break;
-            }
-
-            case Third_Sextet:
-            {
-              index = (c & b00001111) << 2;
-              ++p_in;
-              ++count;
-
-              // Next byte valid?
-              if (p_in != p_in_end)
-              {
-                c = *p_in;
-                index = index | static_cast<char>((c & b11000000) >> 6);
-              }
-              next_sextet = Fourth_Sextet;
-              break;
-            }
-
-            case Fourth_Sextet:
-            {
-              index = static_cast<char>(c & b00111111);
-              ++p_in;
-              ++count;
-              next_sextet = First_Sextet;
-              break;
-            }
-
-            default:
-            {
-              // Should never get here.
-              break;
-            }
-          }
-
-          *p_out = get_sextet_from_index(index);
-          ++p_out;
-        }
-
-        // Pad out the end of the output buffer.
-        while (p_out != p_out_end)
-        {
-          *p_out++ = Padding;
-        }
-
-        result = etl::span<const char>(output, p_out);
+        return 0;
       }
 
-      return result;
+      // Figure out if the output buffer is large enough.
+      size_t required_output_length = (input_length * 8U) / 6U;
+
+      if ((input_length % 3U) != 0U)
+      {
+        while ((required_output_length % 4U) != 0)
+        {
+          ++required_output_length;
+        }
+      }
+
+      ETL_ASSERT_OR_RETURN_VALUE(output_length >= required_output_length, ETL_ERROR(base64_overflow), etl::span<const T>());
+
+      const T* p_in     = input;
+      const T* p_in_end = input + input_length;
+
+      char* p_out     = output;
+      char* p_out_end = output + required_output_length;
+
+      int next_sextet = First_Sextet;
+
+      // Step through the input buffer, creating the output sextets.
+      while (p_in != p_in_end)
+      {
+        T c = *p_in;
+        char  index = 0;
+
+        switch (next_sextet)
+        {
+          //**************************
+          case First_Sextet:
+          {
+            index = static_cast<char>((*p_in & b11111100) >> 2);
+            next_sextet = Second_Sextet;
+            break;
+          }
+
+          //**************************
+          case Second_Sextet:
+          {
+            index = static_cast<char>((c & b00000011) << 4);
+            ++p_in;
+
+            // Next byte valid?
+            if (p_in != p_in_end)
+            {
+              index = index | ((*p_in & b11110000) >> 4);
+            }
+            next_sextet = Third_Sextet;
+            break;
+          }
+
+          //**************************
+          case Third_Sextet:
+          {
+            index = (c & b00001111) << 2;
+            ++p_in;
+
+            // Next byte valid?
+            if (p_in != p_in_end)
+            {
+              index = index | static_cast<char>((*p_in & b11000000) >> 6);
+            }
+            next_sextet = Fourth_Sextet;
+            break;
+          }
+
+          //**************************
+          case Fourth_Sextet:
+          {
+            index = static_cast<char>(c & b00111111);
+            ++p_in;
+            next_sextet = First_Sextet;
+            break;
+          }
+
+          //**************************
+          default:
+          {
+            // Should never get here.
+            assert(false);
+            break;
+          }
+        }
+
+        *p_out = get_sextet_from_index(index);
+        ++p_out;
+      }
+
+      // Pad out the end of the output buffer.
+      while (p_out != p_out_end)
+      {
+        *p_out++ = padding();
+      }
+
+      return static_cast<size_t>(etl::distance(output, p_out));
     }
 
+    //*************************************************************************
+    /// Encode to Base64 from and to span/span
     //*************************************************************************
     template <typename T, size_t Length1, size_t Length2>
     ETL_CONSTEXPR14
     static
-    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), etl::span<const char> >::type
-     encode(const etl::span<const T, Length1>& input_span,
-            const etl::span<char, Length2>&    output_span)
+    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type
+      encode(const etl::span<const T, Length1>& input_span,
+             const etl::span<char, Length2>&    output_span)
     {
-      return encode(input_span.begin(), input_span.size(),
-        output_span.begin(), output_span.size());
+      return encode(input_span.begin(),  input_span.size(),
+                    output_span.begin(), output_span.size());
     }
 
     //*************************************************************************
+    /// Encode to Base64 from and to pointer/pointer
+    //*************************************************************************
+    template <typename T>
+    ETL_CONSTEXPR14
+    static
+    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type
+      encode(const T* input_begin, const T* input_end, char* output_begin, char* output_end)
+    {
+      return encode(input_begin,  static_cast<size_t>(etl::distance(input_begin, input_end)),
+                    output_begin, static_cast<size_t>(etl::distance(output_begin, output_end)));
+    }
+
+    //*************************************************************************
+    /// Calculates the buffer size required to encode to Base64
+    //*************************************************************************
+    ETL_NODISCARD
     ETL_CONSTEXPR14
     static
     size_t encode_size(size_t input_length)
@@ -213,97 +236,104 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Decode from Base64 from and to pointer/length
+    //*************************************************************************
     template <typename T>
     ETL_CONSTEXPR14
     static
-    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), etl::span<const T> >::type 
+    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type 
       decode(const char* input, size_t input_length, T* output, size_t output_length)
     {
-      etl::span<const T> result;
-
-      if (input_length > 0)
+      if (input_length == 0)
       {
-        // Figure out if the output buffer is large enough.
-        size_t length = etl::distance(input, etl::find(input, input + input_length, Padding)) - 1;
-        size_t required_output_length = length - (length / 4U);
+        return 0;
+      }
 
-        ETL_ASSERT_OR_RETURN_VALUE(output_length >= required_output_length, ETL_ERROR(base64_overflow), etl::span<const T>());
+      // Figure out if the output buffer is large enough.
+      size_t length = static_cast<size_t>(etl::distance(input, etl::find(input, input + input_length, padding())) - 1);
+      size_t required_output_length = length - (length / 4U);
 
-        const char* p_in     = input;
-        const char* p_in_end = input + input_length;
+      ETL_ASSERT_OR_RETURN_VALUE(output_length >= required_output_length, ETL_ERROR(base64_overflow), etl::span<const T>());
 
-        T* p_out     = output;
-        T* p_out_end = output + output_length;
+      const char* p_in     = input;
+      const char* p_in_end = input + input_length;
 
-        T c = 0;
-        int next_sextet = First_Sextet;
+      T* p_out = output;
 
-        // Step through the input buffer, creating the output binary.
-        while (p_in != p_in_end)
+      T c = 0;
+      int next_sextet = First_Sextet;
+
+      // Step through the input buffer, creating the output binary.
+      while (p_in != p_in_end)
+      {
+        char sextet = *p_in++; // Get the sextet as a T.
+
+        if (sextet == padding())
         {
-          char sextet = *p_in++; // Get the sextet as a T.
+          break;
+        }
 
-          if (sextet == Padding)
+        char index = get_index_from_sextet(sextet);
+
+        switch (next_sextet)
+        {
+          //**************************
+          case First_Sextet:
           {
+            c = (index & b00111111) << 2;
+            next_sextet = Second_Sextet;
             break;
           }
 
-          char index = get_index_from_sextet(sextet);
-
-          switch (next_sextet)
+          //**************************
+          case Second_Sextet:
           {
-            case First_Sextet:
-            {
-              c = (index & b00111111) << 2;
-              next_sextet = Second_Sextet;
-              break;
-            }
+            c |= (index & b00110000) >> 4;
+            *p_out++ = static_cast<T>(c);
+            c = (index & b00001111) << 4;
+            next_sextet = Third_Sextet;
+            break;
+          }
 
-            case Second_Sextet:
-            {
-              c |= (index & b00110000) >> 4;
-              *p_out++ = static_cast<T>(c);
-              c = (index & b00001111) << 4;
-              next_sextet = Third_Sextet;
-              break;
-            }
+          //**************************
+          case Third_Sextet:
+          {
+            c |= (index & b00111100) >> 2;
+            *p_out++ = static_cast<T>(c);
+            c = (index & b00000011) << 6;
+            next_sextet = Fourth_Sextet;
+            break;
+          }
 
-            case Third_Sextet:
-            {
-              c |= (index & b00111100) >> 2;
-              *p_out++ = static_cast<T>(c);
-              c = (index & b00000011) << 6;
-              next_sextet = Fourth_Sextet;
-              break;
-            }
+          //**************************
+          case Fourth_Sextet:
+          {
+            c |= (index & b00111111);
+            *p_out++ = static_cast<T>(c);
+            next_sextet = First_Sextet;
+            break;
+          }
 
-            case Fourth_Sextet:
-            {
-              c |= (index & b00111111);
-              *p_out++ = static_cast<T>(c);
-              next_sextet = First_Sextet;
-              break;
-            }
-
-            default:
-            {
-              // Should never get here.
-              break;
-            }
+          //**************************
+          default:
+          {
+            // Should never get here.
+            assert(false);
+            break;
           }
         }
-
-        result = etl::span<const T>(output, p_out);
       }
 
-      return result;
+      return static_cast<size_t>(etl::distance(output, p_out));
     }
 
+    //*************************************************************************
+    /// Decode from Base64 from and to span/span
     //*************************************************************************
     template <typename T, size_t Length1, size_t Length2>
     ETL_CONSTEXPR14
     static
-    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), etl::span<const T> >::type
+    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type
       decode(const etl::span<const char, Length1>& input_span,
              const etl::span<T, Length2>&          output_span)
     {
@@ -311,26 +341,33 @@ namespace etl
                     output_span.begin(), output_span.size());
     }
 
-    ////*************************************************************************
-    //template <typename T, size_t Length>
-    //ETL_CONSTEXPR14
-    //static
-    //typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), etl::span<const T> >::type
-    //  decode_size(const etl::span<const char, Length>& input_span)
-    //{
-    //  // Figure out the minimum output buffer size.
-    //  size_t length = etl::distance(input, etl::find(input, input + input_length, Padding)) - 1;
-    //  size_t required_output_length = length - (length / 4U);
-
-    //  return required_output_length;
-    //}
+    //*************************************************************************
+    /// Decode from Base64 from and to pointer/pointer
+    //*************************************************************************
+    template <typename T>
+    ETL_CONSTEXPR14
+    static
+    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type
+      decode(const char* input_begin, const char* input_end, T* output_begin, T* output_end)
+    {
+      return decode(input_begin,  static_cast<size_t>(etl::distance(input_begin,  input_end)),
+                    output_begin, static_cast<size_t>(etl::distance(output_begin, output_end)));
+    }
 
     //*************************************************************************
+    /// Calculates the buffer size required to decode from Base64
+    //*************************************************************************
+    ETL_NODISCARD
     ETL_CONSTEXPR14
     static size_t decode_size(const char* input, size_t input_length)
     {
+      if (input_length == 0U)
+      {
+        return 0U;
+      }
+
       // Figure out the minimum output buffer size.
-      size_t length = etl::distance(input, etl::find(input, input + input_length, Padding)) - 1;
+      size_t length = static_cast<size_t>(etl::distance(input, etl::find(input, input + input_length, padding())) - 1);
       size_t required_output_length = length - (length / 4U);
 
       return required_output_length;
@@ -348,38 +385,92 @@ namespace etl
       Fourth_Sextet
     };
 
-    //*************************************************************************
-    /// The Base64 padding character
-    static ETL_CONSTANT char Padding = '=';
-
-    //*************************************************************************
-    // Sextet lookup.
-    static ETL_CONSTANT char lookup_char[64] =
-    {
-        'A', 'B', 'C', 'D', 'E', 'F' , 'G', 'H',
-        'I', 'J', 'K', 'L', 'M', 'N' , 'O', 'P',
-        'Q', 'R', 'S', 'T', 'U', 'V' , 'W', 'X',
-        'Y', 'Z', 'a', 'b', 'c', 'd' , 'e', 'f',
-        'g', 'h', 'i', 'j', 'k', 'l' , 'm', 'n',
-        'o', 'p', 'q', 'r', 's', 't' , 'u', 'v',
-        'w', 'x', 'y', 'z', '0', '1' , '2', '3',
-        '4', '5', '6', '7', '8', '9' , '+', '/'
-    };
+    // Sextets
+    // 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+    // 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+    // 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+    // 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+    // 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+    // 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+    // 'w', 'x', 'y', 'z', '0', '1', '2', '3',
+    // '4', '5', '6', '7', '8', '9', '+', '/'
 
     //*************************************************************************
     // Translates an index into a sextet
+    //*************************************************************************
     ETL_CONSTEXPR14 static char get_sextet_from_index(char index)
     {
-      return lookup_char[index];
+      if ((index >= 0) && (index < 26))
+      {
+        return 'A' + index;
+      }
+      else if ((index >= 26) && (index < 52))
+      {
+        index -= 26;
+        return 'a' + index;
+      }
+      else if ((index >= 52) && (index < 62))
+      {
+        index -= 52;
+        return '0' + index;
+      }
+      else if (index == 62)
+      {
+        return '+';
+      }
+      else if (index == 63)
+      {
+        return '/';
+      }
+      else
+      {
+        // Should never get here.
+        assert(false);
+        return padding();
+      }
     }
 
     //*************************************************************************
     // Translates a sextet into an index 
+    //*************************************************************************
     ETL_CONSTEXPR14 static char get_index_from_sextet(char sextet)
     {
-      const char* p = etl::find(lookup_char, lookup_char + 64, sextet);
+      if ((sextet >= 'A') && (sextet <= 'Z'))
+      {
+        return sextet - 'A';
+      }
+      else if ((sextet >= 'a') && (sextet <= 'z'))
+      {
+        return sextet - 'a' + 26;
+      }
+      else if ((sextet >= '0') && (sextet <= '9'))
+      {
+        return sextet - '0' + 52;
+      }
+      else if (sextet == '+')
+      {
+        return 62;
+      }
+      else if (sextet == '/')
+      {
+        return 63;
+      }
+      else
+      {
+        // Should never get here.
+        assert(false);
+        return 0;
+      }
+    }
 
-      return static_cast<char>(etl::distance(lookup_char, p));
+    //*************************************************************************
+    /// Gets the padding character
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    static char padding()
+    {
+      return '=';
     }
   };
 }
