@@ -19,6 +19,7 @@ add_executable(etl_tests
 	test_array_view.cpp
 	test_array_wrapper.cpp
 	test_atomic.cpp
+	test_base64.cpp
     test_binary.cpp
 	test_bip_buffer_spsc_atomic.cpp
 	test_bit.cpp
