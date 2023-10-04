@@ -495,7 +495,7 @@ namespace
     //*************************************************************************
     TEST(test_encode_overflow)
     {
-      std::array<char, 1> encoded_output;
+      std::array<char, 1> encoded_output{ 0 };
 
       CHECK_THROW((etl::base64::encode(input_data_unsigned_char.data(), 10, 
                                        encoded_output.data(),           encoded_output.size())), etl::base64_overflow);
@@ -540,7 +540,7 @@ namespace
     //*************************************************************************
     TEST(test_decode_overflow)
     {
-      std::array<unsigned char, 1> decoded_output;
+      std::array<unsigned char, 1> decoded_output{ 0 };
 
       CHECK_THROW((etl::base64::decode(encoded[10].data(), encoded[10].size(), 
                                        decoded_output.data(), decoded_output.size())), etl::base64_overflow);
