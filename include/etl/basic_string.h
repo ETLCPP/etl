@@ -503,6 +503,16 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Fills the string with the specified character.
+    /// Does not change the string length.
+    ///\param value The character used to fill the string.
+    //*********************************************************************
+    void fill(T value)
+    {
+      etl::fill(begin(), end(), value);
+    }
+
+    //*********************************************************************
     /// Returns a reference to the value at index 'i'
     ///\param i The index.
     ///\return A reference to the value at index 'i'

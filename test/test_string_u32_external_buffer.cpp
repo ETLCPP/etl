@@ -917,6 +917,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_fill)
+    {
+      TextBuffer buffer1{ 0 };
+      TextBuffer buffer2{ 0 };
+      Text text(11, STR('A'), buffer1.data(), buffer1.size());
+      Text expected(11, STR('B'), buffer2.data(), buffer2.size());
+
+      text.fill(STR('B'));
+
+      bool is_equal = Equal(expected, text);
+      CHECK(is_equal);
+
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_empty_full)
     {
       TextBuffer buffer{0};
