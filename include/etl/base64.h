@@ -30,6 +30,7 @@ SOFTWARE.
 
 #include "etl/platform.h"
 #include "etl/span.h"
+#include "etl/static_assert.h"
 #include "etl/error_handler.h"
 #include "etl/exception.h"
 #include "etl/type_traits.h"
@@ -37,8 +38,13 @@ SOFTWARE.
 #include "etl/algorithm.h"
 #include "etl/integral_limits.h"
 #include "etl/iterator.h"
+#include "etl/string.h"
 
 #include <stdint.h>
+
+#if ETL_USING_STL
+  #include <string>
+#endif
 
 namespace etl
 {
@@ -90,17 +96,9 @@ namespace etl
       }
 
       // Figure out if the output buffer is large enough.
-      size_t required_output_length = (input_length * 8U) / 6U;
+      size_t required_output_length = encode_size(input_length);
 
-      if ((input_length % 3U) != 0U)
-      {
-        while ((required_output_length % 4U) != 0)
-        {
-          ++required_output_length;
-        }
-      }
-
-      ETL_ASSERT_OR_RETURN_VALUE(output_length >= required_output_length, ETL_ERROR(base64_overflow), etl::span<const T>());
+      ETL_ASSERT_OR_RETURN_VALUE(output_length >= required_output_length, ETL_ERROR(base64_overflow), 0U);
 
       const T* p_in     = input;
       const T* p_in_end = input + input_length;
@@ -188,6 +186,19 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Encode to Base64 from and to pointer/pointer
+    //*************************************************************************
+    template <typename T>
+    ETL_CONSTEXPR14
+      static
+      typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type
+      encode(const T* input_begin, const T* input_end, char* output_begin, char* output_end)
+    {
+      return encode(input_begin, static_cast<size_t>(etl::distance(input_begin, input_end)),
+        output_begin, static_cast<size_t>(etl::distance(output_begin, output_end)));
+    }
+
+    //*************************************************************************
     /// Encode to Base64 from and to span/span
     //*************************************************************************
     template <typename T, size_t Length1, size_t Length2>
@@ -202,16 +213,51 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Encode to Base64 from and to pointer/pointer
+    /// Encode to Base64 from pointer/length to etl::istring
     //*************************************************************************
     template <typename T>
     ETL_CONSTEXPR14
     static
     typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type
-      encode(const T* input_begin, const T* input_end, char* output_begin, char* output_end)
+      encode(const T* input_begin, size_t input_length,
+             etl::istring& output)
     {
-      return encode(input_begin,  static_cast<size_t>(etl::distance(input_begin, input_end)),
-                    output_begin, static_cast<size_t>(etl::distance(output_begin, output_end)));
+      output.resize(etl::base64::encode_size(input_length));
+
+      return encode(input_begin,   input_length,
+                    output.data(), output.size());
+    }
+
+    //*************************************************************************
+    /// Encode to Base64 from pointer/pointer to etl::istring
+    //*************************************************************************
+    template <typename T>
+    ETL_CONSTEXPR14
+    static
+    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type
+      encode(const T* input_begin, const T* input_end,
+             etl::istring& output)
+    {
+      output.resize(etl::base64::encode_size(etl::distance(input_begin, input_end)));
+
+      return encode(input_begin,   static_cast<size_t>(etl::distance(input_begin, input_end)),
+                    output.data(), output.size());
+    }
+
+    //*************************************************************************
+    /// Encode to Base64 from span to etl::istring
+    //*************************************************************************
+    template <typename T, size_t Length1>
+    ETL_CONSTEXPR14
+    static
+    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type
+      encode(const etl::span<const T, Length1>& input_span,
+             etl::istring& output)
+    {
+      output.resize(etl::base64::encode_size(Length1));
+
+      return encode(input_span.begin(), input_span.size(),
+                    output.data(),      output.size());
     }
 
     //*************************************************************************
@@ -250,10 +296,9 @@ namespace etl
       }
 
       // Figure out if the output buffer is large enough.
-      size_t length = static_cast<size_t>(etl::distance(input, etl::find(input, input + input_length, padding())) - 1);
-      size_t required_output_length = length - (length / 4U);
+      size_t required_output_length = etl::base64::decode_size(input, input_length);
 
-      ETL_ASSERT_OR_RETURN_VALUE(output_length >= required_output_length, ETL_ERROR(base64_overflow), etl::span<const T>());
+      ETL_ASSERT_OR_RETURN_VALUE(output_length >= required_output_length, ETL_ERROR(base64_overflow), 0U);
 
       const char* p_in     = input;
       const char* p_in_end = input + input_length;
@@ -328,20 +373,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Decode from Base64 from and to span/span
-    //*************************************************************************
-    template <typename T, size_t Length1, size_t Length2>
-    ETL_CONSTEXPR14
-    static
-    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type
-      decode(const etl::span<const char, Length1>& input_span,
-             const etl::span<T, Length2>&          output_span)
-    {
-      return decode(input_span.begin(),  input_span.size(),
-                    output_span.begin(), output_span.size());
-    }
-
-    //*************************************************************************
     /// Decode from Base64 from and to pointer/pointer
     //*************************************************************************
     template <typename T>
@@ -352,6 +383,20 @@ namespace etl
     {
       return decode(input_begin,  static_cast<size_t>(etl::distance(input_begin,  input_end)),
                     output_begin, static_cast<size_t>(etl::distance(output_begin, output_end)));
+    }
+
+    //*************************************************************************
+    /// Decode from Base64 from and to span/span
+    //*************************************************************************
+    template <typename T, size_t Length1, size_t Length2>
+    ETL_CONSTEXPR14
+      static
+      typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type
+      decode(const etl::span<const char, Length1>& input_span,
+      const etl::span<T, Length2>& output_span)
+    {
+      return decode(input_span.begin(), input_span.size(),
+        output_span.begin(), output_span.size());
     }
 
     //*************************************************************************
