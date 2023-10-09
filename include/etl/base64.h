@@ -46,6 +46,8 @@ SOFTWARE.
   #include <string>
 #endif
 
+#define ETL_IS_8_BIT_INTEGRAL(Type) (etl::is_integral<Type>::value && (etl::integral_limits<Type>::bits == 8U))
+
 namespace etl
 {
   //***************************************************************************
@@ -87,7 +89,7 @@ namespace etl
     template <typename T>
     ETL_CONSTEXPR14
     static 
-    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type 
+    typename etl::enable_if<ETL_IS_8_BIT_INTEGRAL(T), size_t>::type
       encode(const T* input, size_t input_length, char* output, size_t output_length)
     {
       if (input_length == 0U)
@@ -96,7 +98,7 @@ namespace etl
       }
 
       // Figure out if the output buffer is large enough.
-      size_t required_output_length = encode_size(input_length);
+      size_t required_output_length = encoded_size(input_length);
 
       ETL_ASSERT_OR_RETURN_VALUE(output_length >= required_output_length, ETL_ERROR(base64_overflow), 0U);
 
@@ -190,8 +192,8 @@ namespace etl
     //*************************************************************************
     template <typename T>
     ETL_CONSTEXPR14
-      static
-      typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type
+    static
+    typename etl::enable_if<ETL_IS_8_BIT_INTEGRAL(T), size_t>::type
       encode(const T* input_begin, const T* input_end, char* output_begin, char* output_end)
     {
       return encode(input_begin, static_cast<size_t>(etl::distance(input_begin, input_end)),
@@ -204,7 +206,7 @@ namespace etl
     template <typename T, size_t Length1, size_t Length2>
     ETL_CONSTEXPR14
     static
-    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type
+    typename etl::enable_if<ETL_IS_8_BIT_INTEGRAL(T), size_t>::type
       encode(const etl::span<const T, Length1>& input_span,
              const etl::span<char, Length2>&    output_span)
     {
@@ -218,11 +220,11 @@ namespace etl
     template <typename T>
     ETL_CONSTEXPR14
     static
-    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type
+    typename etl::enable_if<ETL_IS_8_BIT_INTEGRAL(T), size_t>::type
       encode(const T* input_begin, size_t input_length,
              etl::istring& output)
     {
-      output.resize(etl::base64::encode_size(input_length));
+      output.resize(etl::base64::encoded_size(input_length));
 
       return encode(input_begin,   input_length,
                     output.data(), output.size());
@@ -234,11 +236,11 @@ namespace etl
     template <typename T>
     ETL_CONSTEXPR14
     static
-    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type
+    typename etl::enable_if<ETL_IS_8_BIT_INTEGRAL(T), size_t>::type
       encode(const T* input_begin, const T* input_end,
              etl::istring& output)
     {
-      output.resize(etl::base64::encode_size(etl::distance(input_begin, input_end)));
+      output.resize(etl::base64::encoded_size(etl::distance(input_begin, input_end)));
 
       return encode(input_begin,   static_cast<size_t>(etl::distance(input_begin, input_end)),
                     output.data(), output.size());
@@ -250,11 +252,11 @@ namespace etl
     template <typename T, size_t Length1>
     ETL_CONSTEXPR14
     static
-    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type
+    typename etl::enable_if<ETL_IS_8_BIT_INTEGRAL(T), size_t>::type
       encode(const etl::span<const T, Length1>& input_span,
              etl::istring& output)
     {
-      output.resize(etl::base64::encode_size(Length1));
+      output.resize(etl::base64::encoded_size(Length1));
 
       return encode(input_span.begin(), input_span.size(),
                     output.data(),      output.size());
@@ -266,16 +268,13 @@ namespace etl
     ETL_NODISCARD
     ETL_CONSTEXPR14
     static
-    size_t encode_size(size_t input_length)
+    size_t encoded_size(size_t input_length)
     {
       size_t required_output_length = (input_length * 8U) / 6U;
 
-      if ((input_length % 3U) != 0U)
+      while ((required_output_length % 4U) != 0)
       {
-        while ((required_output_length % 4U) != 0)
-        {
-          ++required_output_length;
-        }
+        ++required_output_length;
       }
 
       return required_output_length;
@@ -287,7 +286,7 @@ namespace etl
     template <typename T>
     ETL_CONSTEXPR14
     static
-    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type 
+    typename etl::enable_if<ETL_IS_8_BIT_INTEGRAL(T), size_t>::type
       decode(const char* input, size_t input_length, T* output, size_t output_length)
     {
       if (input_length == 0)
@@ -296,7 +295,7 @@ namespace etl
       }
 
       // Figure out if the output buffer is large enough.
-      size_t required_output_length = etl::base64::decode_size(input, input_length);
+      size_t required_output_length = etl::base64::decoded_size(input, input_length);
 
       ETL_ASSERT_OR_RETURN_VALUE(output_length >= required_output_length, ETL_ERROR(base64_overflow), 0U);
 
@@ -378,7 +377,7 @@ namespace etl
     template <typename T>
     ETL_CONSTEXPR14
     static
-    typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type
+    typename etl::enable_if<ETL_IS_8_BIT_INTEGRAL(T), size_t>::type
       decode(const char* input_begin, const char* input_end, T* output_begin, T* output_end)
     {
       return decode(input_begin,  static_cast<size_t>(etl::distance(input_begin,  input_end)),
@@ -390,8 +389,8 @@ namespace etl
     //*************************************************************************
     template <typename T, size_t Length1, size_t Length2>
     ETL_CONSTEXPR14
-      static
-      typename etl::enable_if<etl::is_integral<T>::value && (etl::integral_limits<T>::bits == 8U), size_t>::type
+    static
+    typename etl::enable_if<ETL_IS_8_BIT_INTEGRAL(T), size_t>::type
       decode(const etl::span<const char, Length1>& input_span,
       const etl::span<T, Length2>& output_span)
     {
@@ -404,7 +403,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    static size_t decode_size(const char* input, size_t input_length)
+    static size_t decoded_size(const char* input, size_t input_length)
     {
       if (input_length == 0U)
       {
@@ -416,6 +415,27 @@ namespace etl
       size_t required_output_length = length - (length / 4U);
 
       return required_output_length;
+    }
+
+    //*************************************************************************
+    /// Calculates the buffer size required to decode from Base64
+    //*************************************************************************
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    static size_t decoded_size(const char* input_begin, const char* input_end)
+    {
+      return decoded_size(input_begin, static_cast<size_t>(etl::distance(input_begin, input_end)));
+    }
+
+    //*************************************************************************
+    /// Calculates the buffer size required to decode from Base64
+    //*************************************************************************
+    template <size_t Length>
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    static size_t decoded_size(etl::span<const char, Length> sp)
+    {
+      return decoded_size(sp.begin(), sp.size());
     }
 
   private:
@@ -519,5 +539,7 @@ namespace etl
     }
   };
 }
+
+#undef ETL_IS_8_BIT_INTEGRAL
 
 #endif
