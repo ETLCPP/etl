@@ -365,7 +365,7 @@ namespace etl
     /// Returns a const pointer to the beginning of the vector data.
     ///\return A const pointer to the beginning of the vector data.
     //*********************************************************************
-    const_pointer data() const
+    ETL_CONSTEXPR const_pointer data() const
     {
       return p_buffer;
     }
@@ -974,7 +974,7 @@ namespace etl
     /// Gets the current size of the vector.
     ///\return The current size of the vector.
     //*************************************************************************
-    size_type size() const
+    ETL_CONSTEXPR size_type size() const
     {
       return size_t(p_end - p_buffer);
     }

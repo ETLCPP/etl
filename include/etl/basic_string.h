@@ -173,7 +173,7 @@ namespace etl
     /// Gets the current size of the string.
     ///\return The current size of the string.
     //*************************************************************************
-    size_type size() const
+    ETL_CONSTEXPR size_type size() const
     {
       return current_size;
     }
@@ -503,6 +503,16 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Fills the string with the specified character.
+    /// Does not change the string length.
+    ///\param value The character used to fill the string.
+    //*********************************************************************
+    void fill(T value)
+    {
+      etl::fill(begin(), end(), value);
+    }
+
+    //*********************************************************************
     /// Returns a reference to the value at index 'i'
     ///\param i The index.
     ///\return A reference to the value at index 'i'
@@ -595,7 +605,7 @@ namespace etl
     /// Returns a const pointer to the beginning of the string data.
     ///\return A const pointer to the beginning of the string data.
     //*********************************************************************
-    const_pointer data() const
+    ETL_CONSTEXPR const_pointer data() const
     {
       return p_buffer;
     }

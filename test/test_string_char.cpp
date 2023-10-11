@@ -754,6 +754,22 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_fill)
+    {
+      Text text(SIZE, STR('A'));
+      Text expected(SIZE, STR('B'));
+
+      text.fill(STR('B'));
+
+      bool is_equal = Equal(expected, text);
+      CHECK(is_equal);
+
+#if ETL_HAS_STRING_TRUNCATION_CHECKS
+      CHECK(!text.is_truncated());
+#endif
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_empty_full)
     {
       Text text;
