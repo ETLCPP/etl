@@ -11,5 +11,11 @@ namespace
     {
       ETL_STATIC_ASSERT(true, "condition must be true");
     }
+
+    //*************************************************************************
+    TEST(test_static_assert_1argument)
+    {
+      ETL_STATIC_ASSERT(true);
+    }
   }
 }
