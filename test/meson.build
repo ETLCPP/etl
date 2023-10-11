@@ -207,6 +207,7 @@ etl_test_sources = files(
 	'test_state_chart_with_rvalue_data_parameter.cpp',
 	'test_state_chart_compile_time.cpp',
 	'test_state_chart_compile_time_with_data_parameter.cpp',
+	'test_static_assert.cpp',
 	'test_string_char.cpp',
 	'test_string_char_external_buffer.cpp',
 	'test_string_stream.cpp',
