@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include <iterator>
 #include <vector>
+#include <array>
 
 namespace
 {
@@ -45,6 +46,14 @@ namespace
   int data6[3];
   int data7[1];
   int data8[2];
+
+  struct Data
+  {
+    int i;
+  };
+
+  Data struct_data1[] = {Data{1}, Data{2}, Data{3}};
+  Data struct_data2[] = {Data{4}, Data{5}, Data{6}};
 
   SUITE(test_multi_span)
   {
@@ -139,6 +148,31 @@ namespace
 
       std::copy(expected.begin(), expected.end(), ms_int.begin());
       CHECK(std::equal(expected.begin(), expected.end(), ms_int.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_member_pointer_operator)
+    {
+      std::vector<etl::span<Data>> span_list =
+      {
+        etl::span<Data>(struct_data1),
+        etl::span<Data>(struct_data2)
+      };
+
+      etl::multi_span<Data> ms_data(etl::multi_span<Data>::span_list_type(std::begin(span_list), std::end(span_list)));
+
+      etl::multi_span<Data>::iterator itr = ms_data.begin();
+      CHECK_EQUAL(struct_data1[0].i, itr->i);
+      ++itr;
+      CHECK_EQUAL(struct_data1[1].i, itr->i);
+      ++itr;
+      CHECK_EQUAL(struct_data1[2].i, itr->i);
+      ++itr;
+      CHECK_EQUAL(struct_data2[0].i, itr->i);
+      ++itr;
+      CHECK_EQUAL(struct_data2[1].i, itr->i);
+      ++itr;
+      CHECK_EQUAL(struct_data2[2].i, itr->i);
     }
   };
 }
