@@ -1,4 +1,8 @@
 ===============================================================================
+20.38.4
+#773 Return raw pointer for etl::multi_span::operator->()
+
+===============================================================================
 20.38.3
 #767 etl::pool silently produces unaligned allocations for types with stricter alignment requirements than built in types 
 

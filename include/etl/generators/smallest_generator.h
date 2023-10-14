@@ -140,7 +140,7 @@ namespace etl
   cog.outl("/// Supports up to %s types." % NTypes)
   cog.outl("/// Defines 'value_type' which is the type of the smallest parameter.")
   cog.outl("/// Defines 'size' which is the size of the smallest parameter.")
-  cog.outl("///\ingroup smallest")
+  cog.outl("///\\ingroup smallest")
   cog.outl("//***************************************************************************")
   cog.out("template <typename T1, ")
   for n in range(2, int(NTypes)):
