@@ -29,7 +29,6 @@ SOFTWARE.
 #define ETL_BASE64_INCLUDED
 
 #include "etl/platform.h"
-#include "etl/span.h"
 #include "etl/static_assert.h"
 #include "etl/error_handler.h"
 #include "etl/exception.h"
@@ -38,12 +37,25 @@ SOFTWARE.
 #include "etl/algorithm.h"
 #include "etl/integral_limits.h"
 #include "etl/iterator.h"
-#include "etl/string.h"
+#include "enum_type.h"
 
 #include <stdint.h>
 
 #define ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(Type) (etl::is_integral<typename etl::iterator_traits<typename etl::remove_cv<Type>::type>::value_type>::value && \
                                                    (etl::integral_limits<typename etl::iterator_traits<typename etl::remove_cv<Type>::type>::value_type>::bits == 8U))
+
+/**************************************************************************************************************************************************************************
+* See https://en.wikipedia.org/wiki/Base64
+* 
+* Encoding	                                                Encoding characters	     Separate encoding of lines	                          Decoding non-encoding characters
+*                                                           62nd	63rd	Pad	         Separators	Length	                        Checksum
+* RFC 1421 : Base64 for Privacy - Enhanced Mail(deprecated)   +    /    = mandatory 	CR + LF	    64, or lower for the last line	No	    No
+* RFC 2045 : Base64 transfer encoding for MIME                +    /    = mandatory 	CR + LF	    At most 76	No	                        Discarded
+* RFC 2152 : Base64 for UTF - 7                               +    /    No	         No	                                                  No
+* RFC 3501 : Base64 encoding for IMAP mailbox names           +    ,    No	         No	                                                  No
+* RFC 4648 : base64(standard)[a]                              +    /    = optional 	 No	                                                  No
+* RFC 4648 : base64url(URL - and filename - safe standard)    -    _    = optional   No	                                                  No
+**************************************************************************************************************************************************************************/
 
 namespace etl
 {
@@ -61,7 +73,7 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Memory misalignment exception.
+  /// buffer overflow exception.
   //***************************************************************************
   class base64_overflow : public base64_exception
   {
@@ -73,6 +85,19 @@ namespace etl
     }
   };
 
+  //***************************************************************************
+  /// Illegal character exception.
+  //***************************************************************************
+  class base64_illegal_character : public base64_exception
+  {
+  public:
+
+    base64_illegal_character(string_type file_name_, numeric_type line_number_)
+      : base64_exception(ETL_ERROR_TEXT("base64:illegal character", ETL_BASE64_FILE_ID"B"), file_name_, line_number_)
+    {
+    }
+  };
+
   //*************************************************************************
   /// Codec for Base64 (RFC 4648)
   //*************************************************************************
@@ -80,13 +105,143 @@ namespace etl
   {
   public:
 
+    struct Encoding
+    {
+      enum enum_type
+      {
+        RFC_1421,
+        RFC_2045,
+        RFC_2152,
+        RFC_3501,
+        RFC_4648,
+        RFC_4648_URL,
+      };
+
+      ETL_DECLARE_ENUM_TYPE(Encoding, int)
+      ETL_ENUM_TYPE(RFC_1421, "RFC 1421")
+      ETL_ENUM_TYPE(RFC_2045, "RFC 2045")
+      ETL_END_ENUM_TYPE
+    };
+
+    struct Padding
+    {
+      enum enum_type
+      {
+        No_Padding  = 0,
+        Use_Padding = 1
+      };
+
+      ETL_DECLARE_ENUM_TYPE(Padding, bool)
+      ETL_ENUM_TYPE(Use_Padding, "Use padding")
+      ETL_ENUM_TYPE(No_Padding,  "No padding")
+      ETL_END_ENUM_TYPE
+    };
+
     //*************************************************************************
     /// Default constructor
     //*************************************************************************
     ETL_CONSTEXPR14
-    base64()
-      : use_padding(true)
+      base64()
+      : encoding(Encoding::RFC_4648)
+      , use_padding(true)
+      , max_line_length(etl::integral_limits<size_t>::max)
     {
+    }
+
+    //*************************************************************************
+    /// Constructor
+    //*************************************************************************
+    ETL_CONSTEXPR14
+    base64(Encoding encoding_, bool use_padding_ = etl::base64::Padding::Use_Padding)
+      : encoding(Encoding::RFC_4648)
+      , use_padding(false)
+      , max_line_length(0)
+    {
+      switch (encoding)
+      {
+        case Encoding::RFC_1421:
+        {
+          use_padding = true;
+          max_line_length = 64;
+          break;
+        }
+
+        case Encoding::RFC_2045:
+        {
+          use_padding = true;
+          max_line_length = 76;
+          break;
+        }
+
+        case Encoding::RFC_2152:
+        {
+          use_padding = false;
+          max_line_length = etl::integral_limits<size_t>::max;
+          break;
+        }
+
+        case Encoding::RFC_3501:
+        {
+          use_padding = false;
+          max_line_length = etl::integral_limits<size_t>::max;
+          break;
+        }
+
+        case Encoding::RFC_4648:
+        {
+          use_padding = use_padding_;
+          max_line_length = etl::integral_limits<size_t>::max;
+          break;
+        }
+
+        case Encoding::RFC_4648_URL:
+        {
+          use_padding = use_padding_;
+          max_line_length = etl::integral_limits<size_t>::max;
+          break;
+        }
+
+        default:
+        {
+          break;
+        }
+      }
+    }
+
+    //*************************************************************************
+    /// Get the encoding standard
+    //*************************************************************************
+    ETL_CONSTEXPR14
+    Encoding get_encoding() const
+    {
+      return encoding;
+    }
+
+    //*************************************************************************
+    /// Get the maximum line length
+    //*************************************************************************
+    ETL_CONSTEXPR14
+    size_t get_max_line_length() const
+    {
+      return max_line_length;
+    }
+
+    //*************************************************************************
+    /// Get the padding flag
+    //*************************************************************************
+    ETL_CONSTEXPR14
+    bool using_padding() const
+    {
+      return use_padding;
+    }
+
+    //*************************************************************************
+    /// Get the line break flag
+    //*************************************************************************
+    ETL_CONSTEXPR14
+    bool has_line_breaks() const
+    {
+      return max_line_length != etl::integral_limits<size_t>::max;
     }
 
     //*************************************************************************
@@ -491,8 +646,7 @@ namespace etl
       }
       else
       {
-        // Should never get here.
-        assert(false);
+        ETL_ASSERT_FAIL_AND_RETURN_VALUE(ETL_ERROR(base64_illegal_character), 0);
         return padding<T>();
       }
     }
@@ -525,9 +679,7 @@ namespace etl
       }
       else
       {
-        // Should never get here.
-        assert(false);
-        return 0;
+        ETL_ASSERT_FAIL_AND_RETURN_VALUE(ETL_ERROR(base64_illegal_character), 0);
       }
     }
 
@@ -537,9 +689,34 @@ namespace etl
     template <typename T>
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    static T padding()
+    static 
+    T padding()
     {
       return static_cast<T>('=');
+    }
+
+    //*************************************************************************
+    /// Is the character a carriage return?
+    //*************************************************************************
+    template <typename T>
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    static 
+    bool is_carriage_return(T c)
+    {
+      return (static_cast<char>(c) == '\r');
+    }
+
+    //*************************************************************************
+    /// Is the character a line break?
+    //*************************************************************************
+    template <typename T>
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    static
+    bool is_line_feed(T c)
+    {
+      return (static_cast<char>(c) == '\n');
     }
 
     //*************************************************************************
@@ -671,7 +848,9 @@ namespace etl
       return output_length;
     }
 
-    bool use_padding;
+    Encoding encoding;
+    bool     use_padding;
+    size_t   max_line_length;
   };
 }
 
