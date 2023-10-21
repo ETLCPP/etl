@@ -86,7 +86,7 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator, typename TOutputIterator>
     ETL_CONSTEXPR14
-    static size_t encode(TInputIterator input_begin, TInputIterator input_end, TOutputIterator output_begin, TOutputIterator output_end)
+    size_t encode(TInputIterator input_begin, TInputIterator input_end, TOutputIterator output_begin, TOutputIterator output_end)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),  "Input type must be an 8 bit integral");
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TOutputIterator), "Output type must be an 8 bit integral");
@@ -109,7 +109,7 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator, typename TOutputIterator>
     ETL_CONSTEXPR14
-      static typename etl::enable_if<!etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
+    typename etl::enable_if<!etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
       encode(TInputIterator input_begin, TInputIterator input_end, TOutputIterator output_begin)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),  "Input type must be an 8 bit integral");
@@ -129,7 +129,7 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator, typename TOutputIterator>
     ETL_CONSTEXPR14
-    static typename etl::enable_if<etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
+    typename etl::enable_if<etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
       encode(TInputIterator input_begin, TInputIterator input_end, TOutputIterator output_begin)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator), "Input type must be an 8 bit integral");
@@ -146,7 +146,7 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator, typename TOutputIterator>
     ETL_CONSTEXPR14
-    static size_t encode(TInputIterator input_begin, size_t input_length, TOutputIterator output_begin, size_t output_length)
+    size_t encode(TInputIterator input_begin, size_t input_length, TOutputIterator output_begin, size_t output_length)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),  "Input type must be an 8 bit integral");
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TOutputIterator), "Output type must be an 8 bit integral");
@@ -166,7 +166,7 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator, typename TOutputIterator>
     ETL_CONSTEXPR14
-    static typename etl::enable_if<!etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
+    typename etl::enable_if<!etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
       encode(TInputIterator input_begin, size_t input_length, TOutputIterator output_begin)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),  "Input type must be an 8 bit integral");
@@ -185,8 +185,8 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator, typename TOutputIterator>
     ETL_CONSTEXPR14
-    static typename etl::enable_if<etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
-    encode(TInputIterator  input_begin, size_t input_length, TOutputIterator output_begin)
+    typename etl::enable_if<etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
+      encode(TInputIterator  input_begin, size_t input_length, TOutputIterator output_begin)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator), "Input type must be an 8 bit integral");
 
@@ -218,7 +218,7 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator, typename TOutputIterator>
     ETL_CONSTEXPR14
-    static size_t decode(TInputIterator input_begin, TInputIterator input_end, TOutputIterator output_begin, TOutputIterator output_end)
+    size_t decode(TInputIterator input_begin, TInputIterator input_end, TOutputIterator output_begin, TOutputIterator output_end)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),  "Input type must be an 8 bit integral");
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TOutputIterator), "Output type must be an 8 bit integral");
@@ -241,7 +241,7 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator, typename TOutputIterator>
     ETL_CONSTEXPR14
-    static typename etl::enable_if<!etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
+    typename etl::enable_if<!etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
       decode(TInputIterator input_begin, TInputIterator input_end, TOutputIterator output_begin)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),  "Input type must be an 8 bit integral");
@@ -264,7 +264,7 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator, typename TOutputIterator>
     ETL_CONSTEXPR14
-    static typename etl::enable_if<etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
+    typename etl::enable_if<etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
       decode(TInputIterator input_begin, TInputIterator input_end, TOutputIterator output_begin)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator), "Input type must be an 8 bit integral");
@@ -284,7 +284,7 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator, typename TOutputIterator>
     ETL_CONSTEXPR14
-    static size_t decode(TInputIterator input_begin, size_t input_length, TOutputIterator output_begin, size_t output_length)
+    size_t decode(TInputIterator input_begin, size_t input_length, TOutputIterator output_begin, size_t output_length)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),  "Input type must be an 8 bit integral");
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TOutputIterator), "Output type must be an 8 bit integral");
@@ -307,7 +307,7 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator, typename TOutputIterator>
     ETL_CONSTEXPR14
-    static typename etl::enable_if<!etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
+    typename etl::enable_if<!etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
       decode(TInputIterator input_begin, size_t input_length, TOutputIterator output_begin)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),  "Input type must be an 8 bit integral");
@@ -330,7 +330,7 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator, typename TOutputIterator>
     ETL_CONSTEXPR14
-    static typename etl::enable_if<etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
+    typename etl::enable_if<etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
       decode(TInputIterator  input_begin, size_t input_length, TOutputIterator output_begin)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator), "Input type must be an 8 bit integral");
@@ -401,8 +401,7 @@ namespace etl
     template <typename TInputIterator>
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    static
-    size_t decoded_size(TInputIterator input_begin, size_t input_length)
+    static size_t decoded_size(TInputIterator input_begin, size_t input_length)
     {
       if (input_length == 0U)
       {
@@ -420,8 +419,7 @@ namespace etl
     template <typename TInputIterator>
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    static
-      size_t decoded_size(TInputIterator input_begin, TInputIterator input_end)
+    static size_t decoded_size(TInputIterator input_begin, TInputIterator input_end)
     {
       return decoded_size(input_begin, static_cast<size_t>(etl::distance(input_begin, input_end)));
     }
@@ -431,8 +429,7 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD
     ETL_CONSTEXPR14
-    static
-    size_t decoded_size_from_valid_input_length(size_t input_length)
+    static size_t decoded_size_from_valid_input_length(size_t input_length)
     {
       if (input_length == 0U)
       {
@@ -541,7 +538,6 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator, typename TOutputIterator>
     ETL_CONSTEXPR14
-    static
     size_t process_encode(TInputIterator  input,  size_t input_length, 
                           TOutputIterator output, size_t output_length)
     {
@@ -618,7 +614,6 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator, typename TOutputIterator>
     ETL_CONSTEXPR14
-    static
     size_t process_decode(TInputIterator input, size_t input_length, TOutputIterator output, size_t output_length)
     {
       if (input_length == 0)
