@@ -563,7 +563,7 @@ namespace
       etl::array<char, etl::base64::encoded_size(Size)> output{ 0 };
 
       b64.encode(input.begin(), Size,
-                          output._buffer, encoded_size);
+                 output._buffer, encoded_size);
 
       return output;
     }
