@@ -40,6 +40,10 @@ SOFTWARE.
 
 #include "etl/integral_limits.h"
 
+//*****************************************************************************
+// Ecode/decode using RFC-4648 with padding
+//*****************************************************************************
+
 namespace
 {
   std::array<unsigned char, 256> input_data_unsigned_char =
@@ -343,12 +347,12 @@ namespace
     "OycDQy37KCphrrxJcTIBFWlcXvXVm96lV8nBfYDeTIHAzyrRhlbVcTfrgDLf5N+27j/cebMXjnZljpYhuYjRbdDd/9qoek31cXf9LvLkQHKMgwBvE3JT5GtwDjfKJc1oYsCrFMdZg9KCjJNtEyHACPltrIR4SYRva/sgO5xJ+06AaYIlhpXVTZHt0ncqJECK302ALc3VWiamcRVCDj+ycBQpH40jLsHqzvl+bN8co4QrJDWnY8gLH4u6Ub/pUYDSI7XRtFmufTAdABzYcGwWccdWCP6BrvvgktjbuVd8mctC7/yzVh7RQtMMGLPurxp3qFI8ns3eITQ+H7VU1/u0vQ=="
   };
 
-  SUITE(test_base64)
+  SUITE(test_base64_rfc4648_with_padding)
   {
     //*************************************************************************
     TEST(test_encode_unsigned_char_pointer_size)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
       std::array<char, 344U> encoded_output;
 
       for (size_t i = 0; i < 256; ++i)
@@ -356,7 +360,7 @@ namespace
         encoded_output.fill(0);
 
         auto size = b64.encode(input_data_unsigned_char.data(), i,
-                                        encoded_output.data(), encoded_output.size());
+                               encoded_output.data(), encoded_output.size());
 
         std::string expected(encoded[i]);
         std::string actual(encoded_output.data(), size);
@@ -369,7 +373,7 @@ namespace
     //*************************************************************************
     TEST(test_encode_unsigned_char_pointer_size_no_output_length)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
       std::array<char, 344U> encoded_output;
 
       for (size_t i = 0; i < 256; ++i)
@@ -377,7 +381,7 @@ namespace
         encoded_output.fill(0);
 
         auto size = b64.encode(input_data_unsigned_char.data(), i,
-                                        encoded_output.data());
+                               encoded_output.data());
 
         std::string expected(encoded[i]);
         std::string actual(encoded_output.data(), size);
@@ -390,14 +394,14 @@ namespace
     //*************************************************************************
     TEST(test_encode_unsigned_char_pointer_size_to_back_inserter)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
 
       for (size_t i = 0; i < 256; ++i) 
       {
         std::string actual;
 
         auto size = b64.encode(input_data_unsigned_char.data(), i,
-                                        etl::back_inserter(actual));
+                               etl::back_inserter(actual));
 
         std::string expected(encoded[i]);
         
@@ -409,7 +413,7 @@ namespace
     //*************************************************************************
     TEST(test_encode_unsigned_char_pointer_pointer)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
       std::array<char, 344U> encoded_output;
 
       for (size_t i = 0; i < 256; ++i)
@@ -417,7 +421,7 @@ namespace
         encoded_output.fill(0);
 
         auto size = b64.encode(input_data_unsigned_char.data(), input_data_unsigned_char.data() + i,
-                                        encoded_output.data(), encoded_output.data() + encoded_output.size());
+                               encoded_output.data(), encoded_output.data() + encoded_output.size());
 
         std::string expected(encoded[i]);
         std::string actual(encoded_output.data(), size);
@@ -430,7 +434,7 @@ namespace
     //*************************************************************************
     TEST(test_encode_unsigned_char_pointer_pointer_no_output_end_pointer)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
       std::array<char, 344U> encoded_output;
 
       for (size_t i = 6; i < 256; ++i)
@@ -438,7 +442,7 @@ namespace
         encoded_output.fill(0);
 
         auto size = b64.encode(input_data_unsigned_char.data(), input_data_unsigned_char.data() + i,
-                                        encoded_output.data());
+                               encoded_output.data());
 
         std::string expected(encoded[i]);
         std::string actual(encoded_output.data(), size);
@@ -451,7 +455,7 @@ namespace
     //*************************************************************************
     TEST(test_encode_int8_t_pointer_size)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
       std::array<char, 344U> encoded_output;
 
       for (size_t i = 11; i < 256; ++i)
@@ -459,7 +463,7 @@ namespace
         encoded_output.fill(0);
 
         auto size = b64.encode(input_data_int8_t.data(), i,
-                                        encoded_output.data(), encoded_output.size());
+                               encoded_output.data(), encoded_output.size());
 
         std::string expected(encoded[i]);
         std::string actual(encoded_output.data(), size);
@@ -472,7 +476,7 @@ namespace
     //*************************************************************************
     TEST(test_encode_int8_t_pointer_size_no_output_length)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
       std::array<char, 344U> encoded_output;
 
       for (size_t i = 6; i < 256; ++i)
@@ -480,7 +484,7 @@ namespace
         encoded_output.fill(0);
 
         auto size = b64.encode(input_data_int8_t.data(), i,
-                                        encoded_output.data());
+                               encoded_output.data());
 
         std::string expected(encoded[i]);
         std::string actual(encoded_output.data(), size);
@@ -493,14 +497,14 @@ namespace
     //*************************************************************************
     TEST(test_encode_int8_t_pointer_size_to_back_inserter)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
 
       for (size_t i = 0; i < 256; ++i)
       {
         std::string actual;
 
         auto size = b64.encode(input_data_int8_t.data(), i,
-                                        etl::back_inserter(actual));
+                               etl::back_inserter(actual));
 
         std::string expected(encoded[i]);
 
@@ -512,7 +516,7 @@ namespace
     //*************************************************************************
     TEST(test_encode_int8_t_pointer_pointer)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
       std::array<char, 344U> encoded_output;
 
       for (size_t i = 0; i < 256; ++i)
@@ -520,7 +524,7 @@ namespace
         encoded_output.fill(0);
 
         auto size = b64.encode(input_data_int8_t.data(), input_data_int8_t.data() + i,
-                                        encoded_output.data(),    encoded_output.data() + encoded_output.size());
+                               encoded_output.data(),    encoded_output.data() + encoded_output.size());
 
         std::string expected(encoded[i]);
         std::string actual(encoded_output.data(), size);
@@ -533,7 +537,7 @@ namespace
     //*************************************************************************
     TEST(test_encode_int8_t_pointer_pointer_no_end_pointer)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
 
       std::array<char, 344U> encoded_output;
 
@@ -542,7 +546,7 @@ namespace
         encoded_output.fill(0);
 
         auto size = b64.encode(input_data_int8_t.data(), input_data_int8_t.data() + i,
-                                        encoded_output.data());
+                               encoded_output.data());
 
         std::string expected(encoded[i]);
         std::string actual(encoded_output.data(), size);
@@ -557,7 +561,7 @@ namespace
     template <size_t Size>
     constexpr auto GetConstexprBase64(const etl::array<int8_t, Size> input) noexcept
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
 
       constexpr size_t encoded_size = etl::base64::encoded_size(Size);
       etl::array<char, etl::base64::encoded_size(Size)> output{ 0 };
@@ -585,18 +589,18 @@ namespace
     //*************************************************************************
     TEST(test_encode_overflow)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
       std::array<char, 1> encoded_output{ 0 };
 
       CHECK_THROW((b64.encode(input_data_unsigned_char.data(), 10,
-                                       encoded_output.data(), encoded_output.size())), 
+                              encoded_output.data(), encoded_output.size())), 
                   etl::base64_overflow);
     }
 
     //*************************************************************************
     TEST(test_decode_unsigned_char_pointer_size)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
       std::array<unsigned char, 256> decoded_output;
 
       for (size_t i = 0; i < 256; ++i)
@@ -604,7 +608,7 @@ namespace
         decoded_output.fill(0);
 
         auto decoded_size = b64.decode(encoded[i].data(),     encoded[i].size(),
-                                                decoded_output.data(), decoded_output.size());
+                                       decoded_output.data(), decoded_output.size());
 
         CHECK_ARRAY_EQUAL(input_data_unsigned_char.data(), decoded_output.data(), i);
         CHECK_EQUAL(i, etl::base64::decoded_size(encoded[i].data(), encoded[i].size()));
@@ -615,7 +619,7 @@ namespace
     //*************************************************************************
     TEST(test_decode_unsigned_char_pointer_size_no_end_pointer)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
       std::array<unsigned char, 256> decoded_output;
 
       for (size_t i = 0; i < 256; ++i)
@@ -623,7 +627,7 @@ namespace
         decoded_output.fill(0);
 
         auto decoded_size = b64.decode(encoded[i].data(), encoded[i].size(),
-                                                decoded_output.data());
+                                       decoded_output.data());
 
         CHECK_ARRAY_EQUAL(input_data_unsigned_char.data(), decoded_output.data(), i);
         CHECK_EQUAL(i, etl::base64::decoded_size(encoded[i].data(), encoded[i].size()));
@@ -634,7 +638,7 @@ namespace
     //*************************************************************************
     TEST(test_decode_unsigned_char_pointer_pointer)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
       std::array<unsigned char, 256> decoded_output;
 
       for (size_t i = 0; i < 256; ++i)
@@ -642,7 +646,7 @@ namespace
         decoded_output.fill(0);
 
         auto decoded_size = b64.decode(encoded[i].data(), encoded[i].data() + encoded[i].size(),
-                                                decoded_output.data(), decoded_output.data() + decoded_output.size());
+                                       decoded_output.data(), decoded_output.data() + decoded_output.size());
 
         CHECK_ARRAY_EQUAL(input_data_unsigned_char.data(), decoded_output.data(), i);
         CHECK_EQUAL(i, etl::base64::decoded_size(encoded[i].data(), encoded[i].size()));
@@ -653,7 +657,7 @@ namespace
     //*************************************************************************
     TEST(test_decode_unsigned_char_pointer_pointer_no_end_pointer)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
       std::array<unsigned char, 256> decoded_output;
 
       for (size_t i = 0; i < 256; ++i)
@@ -661,7 +665,7 @@ namespace
         decoded_output.fill(0);
 
         auto decoded_size = b64.decode(encoded[i].data(), encoded[i].data() + encoded[i].size(),
-                                                decoded_output.data());
+                                       decoded_output.data());
 
         CHECK_ARRAY_EQUAL(input_data_unsigned_char.data(), decoded_output.data(), i);
         CHECK_EQUAL(i, etl::base64::decoded_size(encoded[i].data(), encoded[i].size()));
@@ -672,7 +676,7 @@ namespace
     //*************************************************************************
     TEST(test_decode_int8_t_pointer_size)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
       std::array<int8_t, 256> decoded_output;
 
       for (size_t i = 0; i < 256; ++i)
@@ -680,7 +684,7 @@ namespace
         decoded_output.fill(0);
 
         auto decoded_size = b64.decode(encoded[i].data(), encoded[i].size(),
-                                                decoded_output.data(), decoded_output.size());
+                                       decoded_output.data(), decoded_output.size());
 
         CHECK_ARRAY_EQUAL(input_data_int8_t.data(), decoded_output.data(), i);
         CHECK_EQUAL(i, etl::base64::decoded_size(encoded[i].data(), encoded[i].size()));
@@ -691,7 +695,7 @@ namespace
     //*************************************************************************
     TEST(test_decode_int8_t_pointer_size_back_inserter)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
       std::vector<int8_t> decoded_output;
 
       for (size_t i = 0; i < 256; ++i)
@@ -699,7 +703,7 @@ namespace
         decoded_output.clear();
 
         auto decoded_size = b64.decode(encoded[i].data(), encoded[i].size(),
-                                                etl::back_inserter(decoded_output));
+                                       etl::back_inserter(decoded_output));
 
         CHECK_ARRAY_EQUAL(input_data_int8_t.data(), decoded_output.data(), i);
         CHECK_EQUAL(i, etl::base64::decoded_size(encoded[i].data(), encoded[i].size()));
@@ -710,7 +714,7 @@ namespace
     //*************************************************************************
     TEST(test_decode_int8_t_pointer_size_no_output_size)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
       std::array<int8_t, 256> decoded_output;
 
       for (size_t i = 0; i < 256; ++i)
@@ -718,7 +722,7 @@ namespace
         decoded_output.fill(0);
 
         auto decoded_size = b64.decode(encoded[i].data(), encoded[i].size(),
-                                                decoded_output.data());
+                                       decoded_output.data());
 
         CHECK_ARRAY_EQUAL(input_data_int8_t.data(), decoded_output.data(), i);
         CHECK_EQUAL(i, etl::base64::decoded_size(encoded[i].data(), encoded[i].size()));
@@ -729,7 +733,7 @@ namespace
     //*************************************************************************
     TEST(test_decode_int8_t_pointer_pointer)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
       std::array<int8_t, 256> decoded_output;
 
       for (size_t i = 0; i < 256; ++i)
@@ -737,7 +741,7 @@ namespace
         decoded_output.fill(0);
 
         auto decoded_size = b64.decode(encoded[i].data(), encoded[i].data() + encoded[i].size(),
-                                                decoded_output.data(), decoded_output.data() + decoded_output.size());
+                                       decoded_output.data(), decoded_output.data() + decoded_output.size());
 
         CHECK_ARRAY_EQUAL(input_data_int8_t.data(), decoded_output.data(), i);
         CHECK_EQUAL(i, etl::base64::decoded_size(encoded[i].data(), encoded[i].size()));
@@ -748,7 +752,7 @@ namespace
     //*************************************************************************
     TEST(test_decode_int8_t_pointer_pointer_back_inserter)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
       std::vector<int8_t> decoded_output;
 
       for (size_t i = 0; i < 256; ++i)
@@ -756,7 +760,7 @@ namespace
         decoded_output.clear();
 
         auto decoded_size = b64.decode(encoded[i].data(), encoded[i].data() + encoded[i].size(),
-                                                etl::back_inserter(decoded_output));
+                                       etl::back_inserter(decoded_output));
 
         CHECK_ARRAY_EQUAL(input_data_int8_t.data(), decoded_output.data(), i);
         CHECK_EQUAL(i, etl::base64::decoded_size(encoded[i].data(), encoded[i].size()));
@@ -767,7 +771,7 @@ namespace
     //*************************************************************************
     TEST(test_decode_int8_t_pointer_pointer_no_end_pointer)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
       std::array<int8_t, 256> decoded_output;
 
       for (size_t i = 0; i < 256; ++i)
@@ -775,7 +779,7 @@ namespace
         decoded_output.fill(0);
 
         auto decoded_size = b64.decode(encoded[i].data(), encoded[i].data() + encoded[i].size(),
-                                                decoded_output.data());
+                                       decoded_output.data());
 
         CHECK_ARRAY_EQUAL(input_data_int8_t.data(), decoded_output.data(), i);
         CHECK_EQUAL(i, etl::base64::decoded_size(encoded[i].data(), encoded[i].size()));
@@ -786,17 +790,30 @@ namespace
     //*************************************************************************
     TEST(test_decode_overflow)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
       std::array<unsigned char, 1> decoded_output{ 0 };
 
       CHECK_THROW((b64.decode(encoded[10].data(), encoded[10].size(),
-                                       decoded_output.data(), decoded_output.size())), etl::base64_overflow);
+                              decoded_output.data(), decoded_output.size())), etl::base64_overflow);
+    }
+
+    //*************************************************************************
+    TEST(test_decode_invalid_character)
+    {
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
+      std::array<unsigned char, 50U> decoded_output{ 0 };
+
+      std::string invalid_chararacter("OycD£Qy37KA==");
+      std::string invalid_padding("OycDQy37KA&=");
+
+      CHECK_THROW((b64.decode(invalid_chararacter.data(), invalid_chararacter.size(),
+                              decoded_output.data(), decoded_output.size())), etl::base64_illegal_character);
     }
 
     //*************************************************************************
     TEST(test_decoded_size)
     {
-      etl::base64 b64;
+      etl::base64 b64(etl::base64::Encoding::RFC_4648, etl::base64::Padding::Use_Padding);
 
       for (size_t i = 0; i < 256; ++i)
       {
