@@ -101,7 +101,7 @@ namespace etl
   //*************************************************************************
   /// Codec for Base64 (RFC 4648)
   //*************************************************************************
-  class base64
+  class ibase64
   {
   public:
 
@@ -118,8 +118,12 @@ namespace etl
       };
 
       ETL_DECLARE_ENUM_TYPE(Encoding, int)
-      ETL_ENUM_TYPE(RFC_1421, "RFC 1421")
-      ETL_ENUM_TYPE(RFC_2045, "RFC 2045")
+      ETL_ENUM_TYPE(RFC_1421,     "RFC_1421")
+      ETL_ENUM_TYPE(RFC_2045,     "RFC_2045")
+      ETL_ENUM_TYPE(RFC_2152,     "RFC_2152")
+      ETL_ENUM_TYPE(RFC_3501,     "RFC_3501")
+      ETL_ENUM_TYPE(RFC_4648,     "RFC_4648")
+      ETL_ENUM_TYPE(RFC_4648_URL, "RFC_4648_URL")
       ETL_END_ENUM_TYPE
     };
 
@@ -132,81 +136,10 @@ namespace etl
       };
 
       ETL_DECLARE_ENUM_TYPE(Padding, bool)
-      ETL_ENUM_TYPE(Use_Padding, "Use padding")
-      ETL_ENUM_TYPE(No_Padding,  "No padding")
+      ETL_ENUM_TYPE(Use_Padding, "Use_Padding")
+      ETL_ENUM_TYPE(No_Padding,  "No_Padding")
       ETL_END_ENUM_TYPE
     };
-
-    //*************************************************************************
-    /// Default constructor
-    //*************************************************************************
-    ETL_CONSTEXPR14
-      base64()
-      : encoding(Encoding::RFC_4648)
-      , use_padding(true)
-      , max_line_length(etl::integral_limits<size_t>::max)
-    {
-    }
-
-    //*************************************************************************
-    /// Constructor
-    //*************************************************************************
-    ETL_CONSTEXPR14
-    base64(Encoding encoding_, bool use_padding_ = etl::base64::Padding::Use_Padding)
-      : encoding(Encoding::RFC_4648)
-      , use_padding(false)
-      , max_line_length(0)
-    {
-      switch (encoding)
-      {
-        case Encoding::RFC_1421:
-        {
-          use_padding = true;
-          max_line_length = 64;
-          break;
-        }
-
-        case Encoding::RFC_2045:
-        {
-          use_padding = true;
-          max_line_length = 76;
-          break;
-        }
-
-        case Encoding::RFC_2152:
-        {
-          use_padding = false;
-          max_line_length = etl::integral_limits<size_t>::max;
-          break;
-        }
-
-        case Encoding::RFC_3501:
-        {
-          use_padding = false;
-          max_line_length = etl::integral_limits<size_t>::max;
-          break;
-        }
-
-        case Encoding::RFC_4648:
-        {
-          use_padding = use_padding_;
-          max_line_length = etl::integral_limits<size_t>::max;
-          break;
-        }
-
-        case Encoding::RFC_4648_URL:
-        {
-          use_padding = use_padding_;
-          max_line_length = etl::integral_limits<size_t>::max;
-          break;
-        }
-
-        default:
-        {
-          break;
-        }
-      }
-    }
 
     //*************************************************************************
     /// Get the encoding standard
@@ -259,7 +192,7 @@ namespace etl
       const size_t output_length = static_cast<size_t>(etl::distance(output_begin, output_end));
 
       // Figure out if the output buffer is large enough.
-      size_t required_output_length = etl::base64::encoded_size(input_length);
+      size_t required_output_length = encoded_size(input_length);
       ETL_ASSERT_OR_RETURN_VALUE(output_length >= required_output_length, ETL_ERROR(base64_overflow), 0U);
 
       return process_encode(input_begin, input_length, output_begin, required_output_length);
@@ -316,7 +249,7 @@ namespace etl
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TOutputIterator), "Output type must be an 8 bit integral");
 
       // Figure out if the output buffer is large enough.
-      size_t required_output_length = etl::base64::encoded_size(input_length);
+      size_t required_output_length = encoded_size(input_length);
       ETL_ASSERT_OR_RETURN_VALUE(output_length >= required_output_length, ETL_ERROR(base64_overflow), 0U);
 
       return process_encode(input_begin, input_length, output_begin, required_output_length);
@@ -391,7 +324,7 @@ namespace etl
       const size_t output_length = static_cast<size_t>(etl::distance(output_begin, output_end));
 
       // Figure out if the output buffer is large enough.
-      size_t required_output_length = etl::base64::decoded_size_from_valid_input_length(input_length);
+      size_t required_output_length = decoded_size_from_valid_input_length(input_length);
       ETL_ASSERT_OR_RETURN_VALUE(output_length >= required_output_length, ETL_ERROR(base64_overflow), 0U);
 
       return process_decode(input_begin, input_length, output_begin, required_output_length);
@@ -457,7 +390,7 @@ namespace etl
       input_length = valid_input_length(input_begin, input_length);
 
       // Figure out if the output buffer is large enough.
-      size_t required_output_length = etl::base64::decoded_size_from_valid_input_length(input_length);
+      size_t required_output_length = decoded_size_from_valid_input_length(input_length);
       ETL_ASSERT_OR_RETURN_VALUE(output_length >= required_output_length, ETL_ERROR(base64_overflow), 0U);
 
       return process_decode(input_begin, input_length, output_begin, required_output_length);
@@ -604,23 +537,29 @@ namespace etl
       return input_length - (input_length / 4U);
     }
 
-  private:
+  protected:
 
-    // Sextets
-    // 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-    // 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-    // 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-    // 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
-    // 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-    // 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-    // 'w', 'x', 'y', 'z', '0', '1', '2', '3',
-    // '4', '5', '6', '7', '8', '9', '+', '/'
+    //*************************************************************************
+    /// Constructor
+    //*************************************************************************
+    ETL_CONSTEXPR14
+    ibase64(Encoding encoding_, const char* lookup_, bool use_padding_, bool discard_illegal_characters_, size_t max_line_length_)
+      : encoding(encoding_)
+      , lookup(lookup_)
+      , use_padding(use_padding_)
+      , discard_illegal_characters(discard_illegal_characters_)
+      , max_line_length(max_line_length_)
+    {
+    }
+
+  private:
 
     //*************************************************************************
     // Translates an index into a sextet
     //*************************************************************************
     template <typename T>
-    ETL_CONSTEXPR14 static T get_sextet_from_index(char index)
+    ETL_CONSTEXPR14 
+    T get_sextet_from_index(char index)
     {
       if ((index >= 0) && (index < 26))
       {
@@ -638,11 +577,11 @@ namespace etl
       }
       else if (index == 62)
       {
-        return static_cast<T>('+');
+        return static_cast<T>(lookup[62]);
       }
       else if (index == 63)
       {
-        return static_cast<T>('/');
+        return static_cast<T>(lookup[63]);
       }
       else
       {
@@ -655,7 +594,8 @@ namespace etl
     // Translates a sextet into an index 
     //*************************************************************************
     template <typename T>
-    ETL_CONSTEXPR14 static uint32_t get_index_from_sextet(T sextet)
+    ETL_CONSTEXPR14 
+    uint32_t get_index_from_sextet(T sextet)
     {
       if ((sextet >= 'A') && (sextet <= 'Z'))
       {
@@ -848,9 +788,83 @@ namespace etl
       return output_length;
     }
 
-    Encoding encoding;
-    bool     use_padding;
-    size_t   max_line_length;
+    Encoding    encoding;
+    const char* lookup;
+    bool        use_padding;
+    bool        discard_illegal_characters;
+    size_t      max_line_length;
+  };
+
+  //*************************************************************************
+  /// Base64 RFC-1421
+  //*************************************************************************
+  class base64_rfc1421 : public ibase64
+  {
+  public:
+
+    ETL_CONSTEXPR14
+      base64_rfc1421()
+      : ibase64(etl::ibase64::Encoding::RFC_1421,
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
+                etl::ibase64::Padding::Use_Padding,
+                false,
+                64U)
+    {
+    }
+  };
+
+  //*************************************************************************
+  /// Base64 RFC-2045
+  //*************************************************************************
+  class base64_rfc2045 : public ibase64
+  {
+  public:
+
+    ETL_CONSTEXPR14
+      base64_rfc2045(size_t max_line_length)
+      : ibase64(etl::ibase64::Encoding::RFC_2045,
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
+                etl::ibase64::Padding::Use_Padding,
+                true,
+                max_line_length)
+    {
+    }
+  };
+
+  //*************************************************************************
+  /// Base64 RFC-4648
+  //*************************************************************************
+  class base64_rfc4648 : public ibase64
+  {
+  public:
+
+    ETL_CONSTEXPR14
+    base64_rfc4648(etl::ibase64::Padding use_padding)
+      : ibase64(etl::ibase64::Encoding::RFC_4648, 
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/", 
+                use_padding,
+                false,
+                etl::integral_limits<size_t>::max)
+    {
+    }
+  };
+
+  //*************************************************************************
+  /// Base64 RFC-4648 URL
+  //*************************************************************************
+  class base64_rfc4648_url : public ibase64
+  {
+  public:
+
+    ETL_CONSTEXPR14
+      base64_rfc4648_url(etl::ibase64::Padding use_padding)
+      : ibase64(etl::ibase64::Encoding::RFC_4648_URL,
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_",
+                use_padding,
+                false,
+                etl::integral_limits<size_t>::max)
+    {
+    }
   };
 }
 
