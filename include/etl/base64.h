@@ -81,6 +81,15 @@ namespace etl
   public:
 
     //*************************************************************************
+    /// Default constructor
+    //*************************************************************************
+    ETL_CONSTEXPR14
+    base64()
+      : use_padding(true)
+    {
+    }
+
+    //*************************************************************************
     /// Encode to Base64
     /// Four parameter
     //*************************************************************************
@@ -599,11 +608,14 @@ namespace etl
         }
       }
 
-      // Pad out the end of the output buffer.
-      while (output_count != output_length)
+      if (use_padding)
       {
-        *output++ = padding<char>();
-        ++output_count;
+        // Pad out the end of the output buffer.
+        while (output_count != output_length)
+        {
+          *output++ = padding<char>();
+          ++output_count;
+        }
       }
 
       return output_length;
@@ -658,6 +670,8 @@ namespace etl
 
       return output_length;
     }
+
+    bool use_padding;
   };
 }
 
