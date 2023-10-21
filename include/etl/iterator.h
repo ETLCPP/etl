@@ -605,14 +605,14 @@ namespace etl
     }
 
     //***************************************************************************
-    /// This kind of %iterator doesn't really have a @a position in the
+    /// This kind of iterator doesn't really have a a position in the
     /// container (you can think of the position as being permanently at
-    /// the end, if you like).  Assigning a value to the %iterator will
+    /// the end, if you like). Assigning a value to the iterator will
     /// always append the value to the end of the container.
     ///
     /// @param value An instance of whatever type container_type::const_reference is;
     ///              presumably a reference-to-const T for container<T>.
-    /// @return This %iterator, for chained operations.
+    /// @return This iterator, for chained operations.
     //***************************************************************************
     ETL_CONSTEXPR14 back_insert_iterator& operator =(const typename TContainer::value_type& value)
     {
@@ -644,7 +644,7 @@ namespace etl
 
     //***************************************************************************
     /// Pre-increment operator.
-    /// Simply returns *this.  (This %iterator does not @a move.)
+    /// Simply returns *this.  (This iterator does not move.)
     //***************************************************************************
     ETL_CONSTEXPR14 back_insert_iterator& operator ++()
     {
@@ -653,7 +653,7 @@ namespace etl
 
     //***************************************************************************
     /// Post-increment operator.
-    /// Simply returns *this.  (This %iterator does not @a move.)
+    /// Simply returns *this.  (This iterator does not move.)
     //***************************************************************************
     ETL_CONSTEXPR14 back_insert_iterator operator ++(int)
     {

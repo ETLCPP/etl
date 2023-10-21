@@ -593,7 +593,7 @@ namespace etl
       iterator last_  = to_iterator(last);
 
       etl::copy(last_, end(), first_);
-      size_t n_delete = etl::distance(first, last);
+      size_t n_delete = static_cast<size_t>(etl::distance(first, last));
 
       // Just adjust the count.
       p_end -= n_delete;
@@ -695,7 +695,7 @@ namespace etl
     //*************************************************************************
     void repair_buffer(void** p_buffer_)
     {
-      uintptr_t length = p_end - p_buffer;
+      uintptr_t length = static_cast<uintptr_t>(p_end - p_buffer);
 
       p_buffer = p_buffer_;
       p_end = p_buffer_ + length;
