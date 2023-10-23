@@ -803,7 +803,7 @@ namespace
       etl::base64_rfc4648 b64(etl::ibase64::Padding::Use_Padding);
       std::array<unsigned char, 50U> decoded_output{ 0 };
 
-      std::string invalid_chararacter("OycD£Qy37KA==");
+      std::string invalid_chararacter("OycDï¿½Qy37KA==");
       std::string invalid_padding("OycDQy37KA&=");
 
       CHECK_THROW((b64.decode(invalid_chararacter.data(), invalid_chararacter.size(),

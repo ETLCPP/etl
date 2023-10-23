@@ -865,6 +865,163 @@ namespace etl
                 etl::integral_limits<size_t>::max)
     {
     }
+
+    //*************************************************************************
+    /// Is the character a carriage return?
+    //*************************************************************************
+    template <typename T>
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    static 
+    bool is_carriage_return(T c)
+    {
+      return (static_cast<char>(c) == '\r');
+    }
+
+    //*************************************************************************
+    /// Is the character a line break?
+    //*************************************************************************
+    template <typename T>
+    ETL_NODISCARD
+    ETL_CONSTEXPR14
+    static
+    bool is_line_feed(T c)
+    {
+      return (static_cast<char>(c) == '\n');
+    }
+
+    //*************************************************************************
+    /// Encode to Base64 implementation
+    //*************************************************************************
+    template <typename TInputIterator, typename TOutputIterator>
+    ETL_CONSTEXPR14
+    size_t process_encode(TInputIterator  input,  size_t input_length, 
+                          TOutputIterator output, size_t output_length)
+    {
+      if (input_length == 0U)
+      {
+        return 0;
+      }
+
+      // Count the actual number of sextets written.
+      size_t output_count = 0;
+
+      uint32_t octets = 0;
+
+      // Read octet triplets and write sextet quartets
+      while (input_length >= 3U)
+      {
+        // Read in three octets
+        octets = (static_cast<uint32_t>(static_cast<unsigned char>(*input++)) << 16);
+        octets = octets | (static_cast<uint32_t>(static_cast<unsigned char>(*input++)) << 8);
+        octets = octets | static_cast<uint32_t>(static_cast<unsigned char>(*input++));
+
+        // Write out four sextets
+        *output++ = get_sextet_from_index<char>((octets >> 18) & b00111111);
+        *output++ = get_sextet_from_index<char>((octets >> 12) & b00111111);
+        *output++ = get_sextet_from_index<char>((octets >>  6) & b00111111);
+        *output++ = get_sextet_from_index<char>((octets >>  0) & b00111111);
+
+        input_length -= 3U;
+        output_count += 4U;
+      }
+
+      // Any input left?
+      if (input_length > 0)
+      {
+        // Write out any remaining sextets
+        if (input_length == 1U)
+        {
+          // There is one octet remaining
+          octets = static_cast<uint32_t>(static_cast<unsigned char>(*input++));
+          octets <<= 4; // Adjust one octet (8 bits) for two sextets worth of data (12 bits)
+          output_count += 2U;
+        }
+        else if (input_length == 2U)
+        {
+          // There are two octets remaining
+          octets = static_cast<uint32_t>(static_cast<unsigned char>(*input++));
+          octets <<= 8;
+          octets = octets | static_cast<uint32_t>(static_cast<unsigned char>(*input++));
+          octets <<= 2; // Adjust two octets (16 bits) for three sextets worth of data (18 bits)
+          output_count += 3U;
+        }
+
+        int shift = static_cast<int>(input_length * 6U);
+
+        while (shift >= 0)
+        {
+          *output++ = get_sextet_from_index<char>((octets >> shift) & b00111111);
+          shift -= 6;
+        }
+      }
+
+      if (use_padding)
+      {
+        // Pad out the end of the output buffer.
+        while (output_count != output_length)
+        {
+          *output++ = padding<char>();
+          ++output_count;
+        }
+      }
+
+      return output_length;
+    }
+
+    //*************************************************************************
+    /// Decode from Base64 implementation
+    //*************************************************************************
+    template <typename TInputIterator, typename TOutputIterator>
+    ETL_CONSTEXPR14
+    size_t process_decode(TInputIterator input, size_t input_length, TOutputIterator output, size_t output_length)
+    {
+      if (input_length == 0)
+      {
+        return 0;
+      }
+
+      // Read sextet quartets and write octet triplets
+      while (input_length >= 4U)
+      {
+        // Read in four sextets
+        uint32_t sextets = (get_index_from_sextet(*input++) << 18) | 
+                           (get_index_from_sextet(*input++) << 12) | 
+                           (get_index_from_sextet(*input++) << 6)  |
+                           (get_index_from_sextet(*input++));
+
+        // Write out three octets
+        *output++ = (sextets >> 16) & b11111111;
+        *output++ = (sextets >> 8)  & b11111111;
+        *output++ = (sextets >> 0)  & b11111111;
+
+        input_length -= 4U;
+      }
+
+      // Write out any remaining octets
+      if (input_length == 2U)
+      {
+        uint32_t sextets = (get_index_from_sextet(*input++) << 6) |
+                           (get_index_from_sextet(*input++));
+        *output++ = (sextets >> 4) & b11111111;
+        input_length -= 2U;
+      }
+      else if (input_length == 3U)
+      {
+        uint32_t sextets = (get_index_from_sextet(*input++) << 12) |
+                           (get_index_from_sextet(*input++) << 6) |
+                           (get_index_from_sextet(*input++));
+        *output++ = (sextets >> 10) & b11111111;
+        *output++ = (sextets >> 2) & b11111111;
+        input_length -= 3U;
+      }
+
+      return output_length;
+    }
+
+    Encoding encoding;
+    bool     use_padding;
+    size_t   max_line_length;
   };
 }
 
