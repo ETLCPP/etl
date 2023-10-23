@@ -41,6 +41,13 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#if ETL_USING_STL
+  #include <iterator>
+#endif
+
+#define ETL_IS_8_BIT_INTEGRAL(Type) (etl::is_integral<typename etl::remove_cv<Type>::type>::value && \
+                                     (etl::integral_limits<typename etl::remove_cv<Type>::type>::bits == 8U))
+
 #define ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(Type) (etl::is_integral<typename etl::iterator_traits<typename etl::remove_cv<Type>::type>::value_type>::value && \
                                                    (etl::integral_limits<typename etl::iterator_traits<typename etl::remove_cv<Type>::type>::value_type>::bits == 8U))
 
@@ -101,7 +108,7 @@ namespace etl
   //*************************************************************************
   /// Codec for Base64 (RFC 4648)
   //*************************************************************************
-  class base64
+  class ibase64
   {
   public:
 
@@ -118,8 +125,12 @@ namespace etl
       };
 
       ETL_DECLARE_ENUM_TYPE(Encoding, int)
-      ETL_ENUM_TYPE(RFC_1421, "RFC 1421")
-      ETL_ENUM_TYPE(RFC_2045, "RFC 2045")
+      ETL_ENUM_TYPE(RFC_1421,     "RFC_1421")
+      ETL_ENUM_TYPE(RFC_2045,     "RFC_2045")
+      ETL_ENUM_TYPE(RFC_2152,     "RFC_2152")
+      ETL_ENUM_TYPE(RFC_3501,     "RFC_3501")
+      ETL_ENUM_TYPE(RFC_4648,     "RFC_4648")
+      ETL_ENUM_TYPE(RFC_4648_URL, "RFC_4648_URL")
       ETL_END_ENUM_TYPE
     };
 
@@ -132,81 +143,24 @@ namespace etl
       };
 
       ETL_DECLARE_ENUM_TYPE(Padding, bool)
-      ETL_ENUM_TYPE(Use_Padding, "Use padding")
-      ETL_ENUM_TYPE(No_Padding,  "No padding")
+      ETL_ENUM_TYPE(No_Padding,  "No_Padding")
+      ETL_ENUM_TYPE(Use_Padding, "Use_Padding")
       ETL_END_ENUM_TYPE
     };
 
-    //*************************************************************************
-    /// Default constructor
-    //*************************************************************************
-    ETL_CONSTEXPR14
-      base64()
-      : encoding(Encoding::RFC_4648)
-      , use_padding(true)
-      , max_line_length(etl::integral_limits<size_t>::max)
+    struct Non_Coding_Characters
     {
-    }
-
-    //*************************************************************************
-    /// Constructor
-    //*************************************************************************
-    ETL_CONSTEXPR14
-    base64(Encoding encoding_, bool use_padding_ = etl::base64::Padding::Use_Padding)
-      : encoding(Encoding::RFC_4648)
-      , use_padding(false)
-      , max_line_length(0)
-    {
-      switch (encoding)
+      enum enum_type
       {
-        case Encoding::RFC_1421:
-        {
-          use_padding = true;
-          max_line_length = 64;
-          break;
-        }
+        Ignore = 0,
+        Reject = 1
+      };
 
-        case Encoding::RFC_2045:
-        {
-          use_padding = true;
-          max_line_length = 76;
-          break;
-        }
-
-        case Encoding::RFC_2152:
-        {
-          use_padding = false;
-          max_line_length = etl::integral_limits<size_t>::max;
-          break;
-        }
-
-        case Encoding::RFC_3501:
-        {
-          use_padding = false;
-          max_line_length = etl::integral_limits<size_t>::max;
-          break;
-        }
-
-        case Encoding::RFC_4648:
-        {
-          use_padding = use_padding_;
-          max_line_length = etl::integral_limits<size_t>::max;
-          break;
-        }
-
-        case Encoding::RFC_4648_URL:
-        {
-          use_padding = use_padding_;
-          max_line_length = etl::integral_limits<size_t>::max;
-          break;
-        }
-
-        default:
-        {
-          break;
-        }
-      }
-    }
+      ETL_DECLARE_ENUM_TYPE(Non_Coding_Characters, bool)
+      ETL_ENUM_TYPE(Ignore, "Ignore")
+      ETL_ENUM_TYPE(Reject, "Reject")
+      ETL_END_ENUM_TYPE
+    };
 
     //*************************************************************************
     /// Get the encoding standard
@@ -259,7 +213,7 @@ namespace etl
       const size_t output_length = static_cast<size_t>(etl::distance(output_begin, output_end));
 
       // Figure out if the output buffer is large enough.
-      size_t required_output_length = etl::base64::encoded_size(input_length);
+      size_t required_output_length = encoded_size(input_length);
       ETL_ASSERT_OR_RETURN_VALUE(output_length >= required_output_length, ETL_ERROR(base64_overflow), 0U);
 
       return process_encode(input_begin, input_length, output_begin, required_output_length);
@@ -267,14 +221,13 @@ namespace etl
 
     //*************************************************************************
     /// Encode to Base64
-    /// For TOutputIterator not derived from etl::iterator<ETL_OR_STD::output_iterator_tag, void, void, void, void>
+    /// For TOutputIterator value type not equal to void
     /// Three parameter
     /// Assumes the output container is large enough.
     //*************************************************************************
     template <typename TInputIterator, typename TOutputIterator>
     ETL_CONSTEXPR14
-    typename etl::enable_if<!etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
-      encode(TInputIterator input_begin, TInputIterator input_end, TOutputIterator output_begin)
+    size_t encode(TInputIterator input_begin, TInputIterator input_end, TOutputIterator output_begin)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),  "Input type must be an 8 bit integral");
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TOutputIterator), "Output type must be an 8 bit integral");
@@ -287,22 +240,43 @@ namespace etl
 
     //*************************************************************************
     /// Encode to Base64
-    /// For TOutputIterator derived from etl::iterator<ETL_OR_STD::output_iterator_tag, void, void, void, void>
+    /// For etl::back_insert_iterator
     /// Three parameter
     /// Assumes the output container is large enough.
     //*************************************************************************
-    template <typename TInputIterator, typename TOutputIterator>
+    template <typename TInputIterator, typename TContainer>
     ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
-      encode(TInputIterator input_begin, TInputIterator input_end, TOutputIterator output_begin)
+    size_t encode(TInputIterator input_begin, TInputIterator input_end, etl::back_insert_iterator<TContainer> output_begin)
     {
-      ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator), "Input type must be an 8 bit integral");
+      ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),    "Input type must be an 8 bit integral");
+      ETL_STATIC_ASSERT(ETL_IS_8_BIT_INTEGRAL(typename TContainer::value_type), "Output type must be an 8 bit integral");
 
       const size_t input_length  = static_cast<size_t>(etl::distance(input_begin, input_end));
       const size_t output_length = encoded_size(input_length);
 
       return process_encode(input_begin, input_length, output_begin, output_length);
     }
+
+#if ETL_USING_STL
+    //*************************************************************************
+    /// Encode to Base64
+    /// For std::back_insert_iterator
+    /// Three parameter
+    /// Assumes the output container is large enough.
+    //*************************************************************************
+    template <typename TInputIterator, typename TContainer>
+    ETL_CONSTEXPR14
+    size_t encode(TInputIterator input_begin, TInputIterator input_end, std::back_insert_iterator<TContainer> output_begin)
+    {
+      ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),    "Input type must be an 8 bit integral");
+      ETL_STATIC_ASSERT(ETL_IS_8_BIT_INTEGRAL(typename TContainer::value_type), "Output type must be an 8 bit integral");
+
+      const size_t input_length = static_cast<size_t>(etl::distance(input_begin, input_end));
+      const size_t output_length = encoded_size(input_length);
+
+      return process_encode(input_begin, input_length, output_begin, output_length);
+    }
+#endif
 
     //*************************************************************************
     /// Encode to Base64
@@ -316,7 +290,7 @@ namespace etl
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TOutputIterator), "Output type must be an 8 bit integral");
 
       // Figure out if the output buffer is large enough.
-      size_t required_output_length = etl::base64::encoded_size(input_length);
+      size_t required_output_length = encoded_size(input_length);
       ETL_ASSERT_OR_RETURN_VALUE(output_length >= required_output_length, ETL_ERROR(base64_overflow), 0U);
 
       return process_encode(input_begin, input_length, output_begin, required_output_length);
@@ -324,14 +298,13 @@ namespace etl
 
     //*************************************************************************
     /// Encode to Base64
-    /// For TOutputIterator not derived from etl::iterator<ETL_OR_STD::output_iterator_tag, void, void, void, void>
+    /// For TOutputIterator value_type not equal to void
     /// Three parameter
     /// Assumes the output container is large enough.
     //*************************************************************************
     template <typename TInputIterator, typename TOutputIterator>
     ETL_CONSTEXPR14
-    typename etl::enable_if<!etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
-      encode(TInputIterator input_begin, size_t input_length, TOutputIterator output_begin)
+    size_t encode(TInputIterator input_begin, size_t input_length, TOutputIterator output_begin)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),  "Input type must be an 8 bit integral");
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TOutputIterator), "Output type must be an 8 bit integral");
@@ -343,28 +316,49 @@ namespace etl
 
     //*************************************************************************
     /// Encode to Base64
-    /// For TOutputIterator derived from etl::iterator<ETL_OR_STD::output_iterator_tag, void, void, void, void>
+    /// For etl::back_insert_iterator
     /// Three parameter
     /// Assumes the output container is large enough.
     //*************************************************************************
-    template <typename TInputIterator, typename TOutputIterator>
+    template <typename TInputIterator, typename TContainer>
     ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
-      encode(TInputIterator  input_begin, size_t input_length, TOutputIterator output_begin)
+    size_t encode(TInputIterator  input_begin, size_t input_length, etl::back_insert_iterator<TContainer> output_begin)
     {
-      ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator), "Input type must be an 8 bit integral");
+      ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),    "Input type must be an 8 bit integral");
+      ETL_STATIC_ASSERT(ETL_IS_8_BIT_INTEGRAL(typename TContainer::value_type), "Output type must be an 8 bit integral");
 
       const size_t output_length = encoded_size(input_length);
 
       return process_encode(input_begin, input_length, output_begin, output_length);
     }
 
+#if ETL_USING_STL
+    //*************************************************************************
+    /// Encode to Base64
+    /// For std::back_insert_iterator
+    /// Three parameter
+    /// Assumes the output container is large enough.
+    //*************************************************************************
+    template <typename TInputIterator, typename TContainer>
+    ETL_CONSTEXPR14
+    size_t encode(TInputIterator  input_begin, size_t input_length, std::back_insert_iterator<TContainer> output_begin)
+    {
+      ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),    "Input type must be an 8 bit integral");
+      ETL_STATIC_ASSERT(ETL_IS_8_BIT_INTEGRAL(typename TContainer::value_type), "Output type must be an 8 bit integral");
+
+      const size_t output_length = encoded_size(input_length);
+
+      return process_encode(input_begin, input_length, output_begin, output_length);
+    }
+#endif
+
     //*************************************************************************
     /// Calculates the minimum buffer size required to encode to Base64
     //*************************************************************************
     ETL_NODISCARD
+    static
     ETL_CONSTEXPR14
-    static size_t encoded_size(size_t input_length)
+    size_t encoded_size(size_t input_length)
     {
       size_t required_output_length = (input_length * 4U) / 3U;
 
@@ -391,7 +385,7 @@ namespace etl
       const size_t output_length = static_cast<size_t>(etl::distance(output_begin, output_end));
 
       // Figure out if the output buffer is large enough.
-      size_t required_output_length = etl::base64::decoded_size_from_valid_input_length(input_length);
+      size_t required_output_length = decoded_size_from_valid_input_length(input_length);
       ETL_ASSERT_OR_RETURN_VALUE(output_length >= required_output_length, ETL_ERROR(base64_overflow), 0U);
 
       return process_decode(input_begin, input_length, output_begin, required_output_length);
@@ -399,14 +393,12 @@ namespace etl
 
     //*************************************************************************
     /// Decode from Base64
-    /// For TOutputIterator not derived from etl::iterator<ETL_OR_STD::output_iterator_tag, void, void, void, void>
     /// Three parameter
     /// Assumes the output container is large enough.
     //*************************************************************************
     template <typename TInputIterator, typename TOutputIterator>
     ETL_CONSTEXPR14
-    typename etl::enable_if<!etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
-      decode(TInputIterator input_begin, TInputIterator input_end, TOutputIterator output_begin)
+    size_t decode(TInputIterator input_begin, TInputIterator input_end, TOutputIterator output_begin)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),  "Input type must be an 8 bit integral");
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TOutputIterator), "Output type must be an 8 bit integral");
@@ -422,16 +414,16 @@ namespace etl
 
     //*************************************************************************
     /// Decode from Base64
-    /// For TOutputIterator derived from etl::iterator<ETL_OR_STD::output_iterator_tag, void, void, void, void>
+    /// For etl::back_insert_iterator
     /// Three parameter
     /// Assumes the output container is large enough.
     //*************************************************************************
-    template <typename TInputIterator, typename TOutputIterator>
+    template <typename TInputIterator, typename TContainer>
     ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
-      decode(TInputIterator input_begin, TInputIterator input_end, TOutputIterator output_begin)
+    size_t decode(TInputIterator input_begin, TInputIterator input_end, etl::back_insert_iterator<TContainer> output_begin)
     {
-      ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator), "Input type must be an 8 bit integral");
+      ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),    "Input type must be an 8 bit integral");
+      ETL_STATIC_ASSERT(ETL_IS_8_BIT_INTEGRAL(typename TContainer::value_type), "Output type must be an 8 bit integral");
 
       // Find the length of decodable characters.
       const size_t input_length = valid_input_length(input_begin, input_end);
@@ -441,6 +433,30 @@ namespace etl
 
       return process_decode(input_begin, input_length, output_begin, required_output_length);
     }
+
+#if ETL_USING_STL
+    //*************************************************************************
+    /// Decode from Base64
+    /// For std::back_insert_iterator
+    /// Three parameter
+    /// Assumes the output container is large enough.
+    //*************************************************************************
+    template <typename TInputIterator, typename TContainer>
+    ETL_CONSTEXPR14
+    size_t decode(TInputIterator input_begin, TInputIterator input_end, std::back_insert_iterator<TContainer> output_begin)
+    {
+      ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),    "Input type must be an 8 bit integral");
+      ETL_STATIC_ASSERT(ETL_IS_8_BIT_INTEGRAL(typename TContainer::value_type), "Output type must be an 8 bit integral");
+
+      // Find the length of decodable characters.
+      const size_t input_length = valid_input_length(input_begin, input_end);
+
+      // Find the length of the decoded output.
+      const size_t required_output_length = decoded_size(input_begin, input_length);
+
+      return process_decode(input_begin, input_length, output_begin, required_output_length);
+    }
+#endif
 
     //*************************************************************************
     /// Decode from Base64
@@ -457,7 +473,7 @@ namespace etl
       input_length = valid_input_length(input_begin, input_length);
 
       // Figure out if the output buffer is large enough.
-      size_t required_output_length = etl::base64::decoded_size_from_valid_input_length(input_length);
+      size_t required_output_length = decoded_size_from_valid_input_length(input_length);
       ETL_ASSERT_OR_RETURN_VALUE(output_length >= required_output_length, ETL_ERROR(base64_overflow), 0U);
 
       return process_decode(input_begin, input_length, output_begin, required_output_length);
@@ -465,14 +481,12 @@ namespace etl
 
     //*************************************************************************
     /// Decode from Base64
-    /// For TOutputIterator not derived from etl::iterator<ETL_OR_STD::output_iterator_tag, void, void, void, void>
     /// Three parameter
     /// Assumes the output container is large enough.
     //*************************************************************************
     template <typename TInputIterator, typename TOutputIterator>
     ETL_CONSTEXPR14
-    typename etl::enable_if<!etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
-      decode(TInputIterator input_begin, size_t input_length, TOutputIterator output_begin)
+    size_t decode(TInputIterator input_begin, size_t input_length, TOutputIterator output_begin)
     {
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),  "Input type must be an 8 bit integral");
       ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TOutputIterator), "Output type must be an 8 bit integral");
@@ -488,16 +502,16 @@ namespace etl
 
     //*************************************************************************
     /// Decode from Base64
-    /// For TOutputIterator derived from etl::iterator<ETL_OR_STD::output_iterator_tag, void, void, void, void>
+    /// For etl::back_insert_iterator
     /// Three parameter
     /// Assumes the output container is large enough.
     //*************************************************************************
-    template <typename TInputIterator, typename TOutputIterator>
+    template <typename TInputIterator, typename TContainer>
     ETL_CONSTEXPR14
-    typename etl::enable_if<etl::is_void<typename etl::iterator_traits<TOutputIterator>::value_type>::value, size_t>::type
-      decode(TInputIterator  input_begin, size_t input_length, TOutputIterator output_begin)
+    size_t decode(TInputIterator  input_begin, size_t input_length, etl::back_insert_iterator<TContainer> output_begin)
     {
-      ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator), "Input type must be an 8 bit integral");
+      ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),    "Input type must be an 8 bit integral");
+      ETL_STATIC_ASSERT(ETL_IS_8_BIT_INTEGRAL(typename TContainer::value_type), "Output type must be an 8 bit integral");
 
       // Find the length of decodable characters.
       input_length = valid_input_length(input_begin, input_length);
@@ -508,13 +522,38 @@ namespace etl
       return process_decode(input_begin, input_length, output_begin, output_length);
     }
 
+#if ETL_USING_STL
+    //*************************************************************************
+    /// Decode from Base64
+    /// For std::back_insert_iterator
+    /// Three parameter
+    /// Assumes the output container is large enough.
+    //*************************************************************************
+    template <typename TInputIterator, typename TContainer>
+    ETL_CONSTEXPR14
+    size_t decode(TInputIterator  input_begin, size_t input_length, std::back_insert_iterator<TContainer> output_begin)
+    {
+      ETL_STATIC_ASSERT(ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL(TInputIterator),    "Input type must be an 8 bit integral");
+      ETL_STATIC_ASSERT(ETL_IS_8_BIT_INTEGRAL(typename TContainer::value_type), "Output type must be an 8 bit integral");
+
+      // Find the length of decodable characters.
+      input_length = valid_input_length(input_begin, input_length);
+
+      // Find the length of the decoded output.
+      const size_t output_length = decoded_size(input_begin, input_length);
+
+      return process_decode(input_begin, input_length, output_begin, output_length);
+    }
+#endif
+
     //*************************************************************************
     /// Discovers the number of valid decodable characters
     //*************************************************************************
     template <typename TInputIterator>
     ETL_NODISCARD
+    static
     ETL_CONSTEXPR14
-    static size_t valid_input_length(TInputIterator input_begin, size_t input_length)
+    size_t valid_input_length(TInputIterator input_begin, size_t input_length)
     {
       if (input_length == 0U)
       {
@@ -531,7 +570,7 @@ namespace etl
         etl::advance(input_end, input_length);
       }
 
-      typedef etl::iterator_traits<TInputIterator>::value_type input_type;
+      typedef typename etl::iterator_traits<TInputIterator>::value_type input_type;
 
       if (*input_end != padding<input_type>())
       {
@@ -553,8 +592,9 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator>
     ETL_NODISCARD
+    static
     ETL_CONSTEXPR14
-    static size_t valid_input_length(TInputIterator input_begin, TInputIterator input_end)
+    size_t valid_input_length(TInputIterator input_begin, TInputIterator input_end)
     {
       return valid_input_length(input_begin, static_cast<size_t>(etl::distance(input_begin, input_end)));
     }
@@ -564,8 +604,9 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator>
     ETL_NODISCARD
+    static
     ETL_CONSTEXPR14
-    static size_t decoded_size(TInputIterator input_begin, size_t input_length)
+    size_t decoded_size(TInputIterator input_begin, size_t input_length)
     {
       if (input_length == 0U)
       {
@@ -582,8 +623,9 @@ namespace etl
     //*************************************************************************
     template <typename TInputIterator>
     ETL_NODISCARD
+    static
     ETL_CONSTEXPR14
-    static size_t decoded_size(TInputIterator input_begin, TInputIterator input_end)
+    size_t decoded_size(TInputIterator input_begin, TInputIterator input_end)
     {
       return decoded_size(input_begin, static_cast<size_t>(etl::distance(input_begin, input_end)));
     }
@@ -592,8 +634,9 @@ namespace etl
     /// Calculates the minimum buffer size required to decode from Base64
     //*************************************************************************
     ETL_NODISCARD
+    static
     ETL_CONSTEXPR14
-    static size_t decoded_size_from_valid_input_length(size_t input_length)
+    size_t decoded_size_from_valid_input_length(size_t input_length)
     {
       if (input_length == 0U)
       {
@@ -604,78 +647,76 @@ namespace etl
       return input_length - (input_length / 4U);
     }
 
-  private:
+  protected:
 
-    // Sextets
-    // 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-    // 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-    // 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-    // 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
-    // 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-    // 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-    // 'w', 'x', 'y', 'z', '0', '1', '2', '3',
-    // '4', '5', '6', '7', '8', '9', '+', '/'
+    //*************************************************************************
+    /// Constructor
+    //*************************************************************************
+    ETL_CONSTEXPR14
+    ibase64(Encoding encoding_, const char* p_lookup_, bool use_padding_, bool discard_illegal_characters_, size_t max_line_length_)
+      : encoding(encoding_)
+      , p_lookup(p_lookup_)
+      , use_padding(use_padding_)
+      , discard_illegal_characters(discard_illegal_characters_)
+      , max_line_length(max_line_length_)
+    {
+    }
+
+    //*************************************************************************
+    // Character set for RFC-1421, RFC-2045, RFC-2152 and RFC-4648
+    //*************************************************************************
+    static
+    ETL_CONSTEXPR14
+    const char* character_set_1()
+    {
+      return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    }
+
+    //*************************************************************************
+    // Character set for RFC-4648-URL
+    //*************************************************************************
+    static
+    ETL_CONSTEXPR14
+    const char* character_set_2()
+    {
+      return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+    }
+
+    //*************************************************************************
+    // Character set for RFC-3501-URL
+    //*************************************************************************
+    static
+    ETL_CONSTEXPR14
+    const char* character_set_3()
+    {
+      return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,";
+    }
+
+  private:
 
     //*************************************************************************
     // Translates an index into a sextet
     //*************************************************************************
     template <typename T>
-    ETL_CONSTEXPR14 static T get_sextet_from_index(char index)
+    ETL_CONSTEXPR14 
+    T get_sextet_from_index(int index)
     {
-      if ((index >= 0) && (index < 26))
-      {
-        return static_cast<T>('A' + index);
-      }
-      else if ((index >= 26) && (index < 52))
-      {
-        index -= 26;
-        return static_cast<T>('a' + index);
-      }
-      else if ((index >= 52) && (index < 62))
-      {
-        index -= 52;
-        return static_cast<T>('0' + index);
-      }
-      else if (index == 62)
-      {
-        return static_cast<T>('+');
-      }
-      else if (index == 63)
-      {
-        return static_cast<T>('/');
-      }
-      else
-      {
-        ETL_ASSERT_FAIL_AND_RETURN_VALUE(ETL_ERROR(base64_illegal_character), 0);
-        return padding<T>();
-      }
+      return static_cast<T>(p_lookup[index]);
     }
 
     //*************************************************************************
     // Translates a sextet into an index 
     //*************************************************************************
     template <typename T>
-    ETL_CONSTEXPR14 static uint32_t get_index_from_sextet(T sextet)
+    ETL_CONSTEXPR14 
+    uint32_t get_index_from_sextet(T sextet)
     {
-      if ((sextet >= 'A') && (sextet <= 'Z'))
+      const char* p_lookup_end = p_lookup + 64;
+      const char* p_sextet     = etl::find(p_lookup, p_lookup_end, static_cast<char>(sextet));
+
+      if (p_sextet != p_lookup_end)
       {
-        return sextet - 'A';
-      }
-      else if ((sextet >= 'a') && (sextet <= 'z'))
-      {
-        return sextet - 'a' + 26;
-      }
-      else if ((sextet >= '0') && (sextet <= '9'))
-      {
-        return sextet - '0' + 52;
-      }
-      else if ((sextet == '+'))
-      {
-        return 62;
-      }
-      else if ((sextet == '/'))
-      {
-        return 63;
+        return static_cast<uint32_t>(etl::distance(p_lookup, p_sextet));
       }
       else
       {
@@ -688,8 +729,8 @@ namespace etl
     //*************************************************************************
     template <typename T>
     ETL_NODISCARD
+    static
     ETL_CONSTEXPR14
-    static 
     T padding()
     {
       return static_cast<T>('=');
@@ -700,8 +741,8 @@ namespace etl
     //*************************************************************************
     template <typename T>
     ETL_NODISCARD
+    static
     ETL_CONSTEXPR14
-    static 
     bool is_carriage_return(T c)
     {
       return (static_cast<char>(c) == '\r');
@@ -712,8 +753,8 @@ namespace etl
     //*************************************************************************
     template <typename T>
     ETL_NODISCARD
-    ETL_CONSTEXPR14
     static
+    ETL_CONSTEXPR14
     bool is_line_feed(T c)
     {
       return (static_cast<char>(c) == '\n');
@@ -814,10 +855,10 @@ namespace etl
       while (input_length >= 4U)
       {
         // Read in four sextets
-        uint32_t sextets = (get_index_from_sextet(*input++) << 18) | 
-                           (get_index_from_sextet(*input++) << 12) | 
-                           (get_index_from_sextet(*input++) << 6)  |
-                           (get_index_from_sextet(*input++));
+        uint32_t  sextets = (get_index_from_sextet(*input++) << 18);
+        sextets = sextets | (get_index_from_sextet(*input++) << 12);
+        sextets = sextets | (get_index_from_sextet(*input++) << 6);
+        sextets = sextets | (get_index_from_sextet(*input++));
 
         // Write out three octets
         *output++ = (sextets >> 16) & b11111111;
@@ -830,16 +871,16 @@ namespace etl
       // Write out any remaining octets
       if (input_length == 2U)
       {
-        uint32_t sextets = (get_index_from_sextet(*input++) << 6) |
-                           (get_index_from_sextet(*input++));
+        uint32_t  sextets = (get_index_from_sextet(*input++) << 6);
+        sextets = sextets | (get_index_from_sextet(*input++));
         *output++ = (sextets >> 4) & b11111111;
         input_length -= 2U;
       }
       else if (input_length == 3U)
       {
-        uint32_t sextets = (get_index_from_sextet(*input++) << 12) |
-                           (get_index_from_sextet(*input++) << 6) |
-                           (get_index_from_sextet(*input++));
+        uint32_t  sextets = (get_index_from_sextet(*input++) << 12);
+        sextets = sextets | (get_index_from_sextet(*input++) << 6);
+        sextets = sextets | (get_index_from_sextet(*input++));
         *output++ = (sextets >> 10) & b11111111;
         *output++ = (sextets >> 2) & b11111111;
         input_length -= 3U;
@@ -848,10 +889,126 @@ namespace etl
       return output_length;
     }
 
-    Encoding encoding;
-    bool     use_padding;
-    size_t   max_line_length;
+    Encoding    encoding;
+    const char* p_lookup;
+    bool        use_padding;
+    bool        discard_illegal_characters;
+    size_t      max_line_length;
+  };
+
+  namespace private_base64
+  {
+    template <int Id>
+    struct character_set;
+
+    template <>
+    struct character_set<1>
+    {
+      static
+      ETL_CONSTEXPR14
+      const char* set()
+      {
+        return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+      }
+    };
+
+    template <>
+    struct character_set<2>
+    {
+      static
+      ETL_CONSTEXPR14
+      const char* set()
+      {
+        return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+      }
+    };
+
+    template <>
+    struct character_set<3>
+    {
+      static
+      ETL_CONSTEXPR14
+      const char* set()
+      {
+        return "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,";
+      }
+    };
+  }
+
+  //*************************************************************************
+  /// Base64 RFC-1421
+  //*************************************************************************
+  //class base64_rfc1421 : public ibase64
+  //{
+  //public:
+
+  //  ETL_CONSTEXPR14
+  //    base64_rfc1421()
+  //    : ibase64(etl::ibase64::Encoding::RFC_1421,
+  //              "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
+  //              etl::ibase64::Padding::Use_Padding,
+  //              false,
+  //              64U)
+  //  {
+  //  }
+  //};
+
+  //*************************************************************************
+  /// Base64 RFC-2045
+  //*************************************************************************
+  //class base64_rfc2045 : public ibase64
+  //{
+  //public:
+
+  //  ETL_CONSTEXPR14
+  //    base64_rfc2045(size_t max_line_length)
+  //    : ibase64(etl::ibase64::Encoding::RFC_2045,
+  //              "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
+  //              etl::ibase64::Padding::Use_Padding,
+  //              true,
+  //              max_line_length)
+  //  {
+  //  }
+  //};
+
+    //*************************************************************************
+  /// Base64 RFC-4648
+  //*************************************************************************
+  class base64_rfc4648 : public ibase64
+  {
+  public:
+
+    ETL_CONSTEXPR14
+    base64_rfc4648(etl::ibase64::Padding use_padding)
+      : ibase64(etl::ibase64::Encoding::RFC_4648, 
+                etl::private_base64::character_set<1>::set(),
+                use_padding,
+                etl::ibase64::Non_Coding_Characters::Reject,
+                etl::integral_limits<size_t>::max)
+    {
+    }
+  };
+
+  //*************************************************************************
+  /// Base64 RFC-4648 URL
+  //*************************************************************************
+  class base64_rfc4648_url : public ibase64
+  {
+  public:
+
+    ETL_CONSTEXPR14
+    base64_rfc4648_url(etl::ibase64::Padding use_padding)
+      : ibase64(etl::ibase64::Encoding::RFC_4648_URL,
+                etl::private_base64::character_set<2>::set(),
+                use_padding,
+                etl::ibase64::Non_Coding_Characters::Reject,
+                etl::integral_limits<size_t>::max)
+    {
+    }
   };
 }
+
+#undef ETL_IS_TYPE_8_BIT_INTEGRAL
+#undef ETL_IS_ITERATOR_TYPE_8_BIT_INTEGRAL
 
 #endif
