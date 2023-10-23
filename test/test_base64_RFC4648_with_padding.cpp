@@ -38,6 +38,10 @@ SOFTWARE.
 #include <vector>
 #include <algorithm>
 
+#if ETL_USING_STL
+  #include <iterator>
+#endif
+
 #include "etl/integral_limits.h"
 
 //*****************************************************************************
@@ -392,7 +396,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_encode_unsigned_char_pointer_size_to_back_inserter)
+    TEST(test_encode_unsigned_char_pointer_size_to_etl_back_inserter)
     {
       etl::base64_rfc4648 b64(etl::ibase64::Padding::Use_Padding);
 
@@ -409,6 +413,27 @@ namespace
         CHECK_EQUAL(etl::base64_rfc4648::encoded_size(i), size);
       }
     }
+
+#if ETL_USING_STL
+    //*************************************************************************
+    TEST(test_encode_unsigned_char_pointer_size_to_std_back_inserter)
+    {
+      etl::base64_rfc4648 b64(etl::ibase64::Padding::Use_Padding);
+
+      for (size_t i = 0; i < 256; ++i)
+      {
+        std::string actual;
+
+        auto size = b64.encode(input_data_unsigned_char.data(), i,
+                               std::back_inserter(actual));
+
+        std::string expected(encoded[i]);
+
+        CHECK_EQUAL(expected, actual);
+        CHECK_EQUAL(etl::base64_rfc4648::encoded_size(i), size);
+      }
+    }
+#endif
 
     //*************************************************************************
     TEST(test_encode_unsigned_char_pointer_pointer)
@@ -495,7 +520,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_encode_int8_t_pointer_size_to_back_inserter)
+    TEST(test_encode_int8_t_pointer_size_to_etl_back_inserter)
     {
       etl::base64_rfc4648 b64(etl::ibase64::Padding::Use_Padding);
 
@@ -512,6 +537,27 @@ namespace
         CHECK_EQUAL(etl::base64_rfc4648::encoded_size(i), size);
       }
     }
+
+#if ETL_USING_STL
+    //*************************************************************************
+    TEST(test_encode_int8_t_pointer_size_to_std_back_inserter)
+    {
+      etl::base64_rfc4648 b64(etl::ibase64::Padding::Use_Padding);
+
+      for (size_t i = 0; i < 256; ++i)
+      {
+        std::string actual;
+
+        auto size = b64.encode(input_data_int8_t.data(), i,
+                               std::back_inserter(actual));
+
+        std::string expected(encoded[i]);
+
+        CHECK_EQUAL(expected, actual);
+        CHECK_EQUAL(etl::base64_rfc4648::encoded_size(i), size);
+      }
+    }
+#endif
  
     //*************************************************************************
     TEST(test_encode_int8_t_pointer_pointer)
@@ -693,7 +739,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_decode_int8_t_pointer_size_back_inserter)
+    TEST(test_decode_int8_t_pointer_size_etl_back_inserter)
     {
       etl::base64_rfc4648 b64(etl::ibase64::Padding::Use_Padding);
       std::vector<int8_t> decoded_output;
@@ -710,6 +756,27 @@ namespace
         CHECK_EQUAL(i, decoded_size);
       }
     }
+
+#if ETL_USING_STL
+    //*************************************************************************
+    TEST(test_decode_int8_t_pointer_size_std_back_inserter)
+    {
+      etl::base64_rfc4648 b64(etl::ibase64::Padding::Use_Padding);
+      std::vector<int8_t> decoded_output;
+
+      for (size_t i = 0; i < 256; ++i)
+      {
+        decoded_output.clear();
+
+        auto decoded_size = b64.decode(encoded[i].data(), encoded[i].size(),
+                                       std::back_inserter(decoded_output));
+
+        CHECK_ARRAY_EQUAL(input_data_int8_t.data(), decoded_output.data(), i);
+        CHECK_EQUAL(i, etl::base64_rfc4648::decoded_size(encoded[i].data(), encoded[i].size()));
+        CHECK_EQUAL(i, decoded_size);
+      }
+    }
+#endif
 
     //*************************************************************************
     TEST(test_decode_int8_t_pointer_size_no_output_size)
@@ -750,7 +817,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_decode_int8_t_pointer_pointer_back_inserter)
+    TEST(test_decode_int8_t_pointer_pointer_etl_back_inserter)
     {
       etl::base64_rfc4648 b64(etl::ibase64::Padding::Use_Padding);
       std::vector<int8_t> decoded_output;
@@ -767,6 +834,27 @@ namespace
         CHECK_EQUAL(i, decoded_size);
       }
     }
+
+#if ETL_USING_STL
+    //*************************************************************************
+    TEST(test_decode_int8_t_pointer_pointer_std_back_inserter)
+    {
+      etl::base64_rfc4648 b64(etl::ibase64::Padding::Use_Padding);
+      std::vector<int8_t> decoded_output;
+
+      for (size_t i = 0; i < 256; ++i)
+      {
+        decoded_output.clear();
+
+        auto decoded_size = b64.decode(encoded[i].data(), encoded[i].data() + encoded[i].size(),
+                                       std::back_inserter(decoded_output));
+
+        CHECK_ARRAY_EQUAL(input_data_int8_t.data(), decoded_output.data(), i);
+        CHECK_EQUAL(i, etl::base64_rfc4648::decoded_size(encoded[i].data(), encoded[i].size()));
+        CHECK_EQUAL(i, decoded_size);
+      }
+    }
+#endif
 
     //*************************************************************************
     TEST(test_decode_int8_t_pointer_pointer_no_end_pointer)

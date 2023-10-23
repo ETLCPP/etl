@@ -12,7 +12,8 @@ project(etl_unit_tests LANGUAGES CXX)
 
 add_executable(etl_tests
 	main.cpp
-	test_base64.cpp
+	test_base64_RFC4648_with_padding.cpp
+	test_base64_RFC4648_URL_with_padding.cpp
   )
 
 target_compile_definitions(etl_tests PRIVATE -DETL_DEBUG)
