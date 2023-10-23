@@ -713,7 +713,7 @@ namespace etl
       set_truncated(*other != 0);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-      ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation))
+      ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation));
 #endif
 #endif
 
@@ -734,7 +734,7 @@ namespace etl
       set_truncated(length_ > CAPACITY);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-      ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation))
+      ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation));
 #endif
 #endif
 
@@ -774,7 +774,7 @@ namespace etl
       set_truncated(first != last);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-      ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation))
+      ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation));
 #endif
 #endif
     }
@@ -793,7 +793,7 @@ namespace etl
       set_truncated(n > CAPACITY);
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-      ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation))
+      ETL_ASSERT(flags.test<IS_TRUNCATED>() == false, ETL_ERROR(string_truncation));
 #endif
 #endif
 
