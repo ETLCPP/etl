@@ -17,13 +17,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    # Temporary fix. See https://github.com/actions/runner-images/issues/8659
-    - name: Install newer Clang
-      run: |
-       wget https://apt.llvm.org/llvm.sh
-       chmod +x ./llvm.sh
-       sudo ./llvm.sh 17
-
     - name: Build
       run: |
         export CC=clang
@@ -90,6 +83,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    # Temporary fix. See https://github.com/actions/runner-images/issues/8659
+    - name: Install newer Clang
+      run: |
+       wget https://apt.llvm.org/llvm.sh
+       chmod +x ./llvm.sh
+       sudo ./llvm.sh 17
+
     - name: Build
       run: |
         export CC=clang
@@ -111,6 +111,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+    # Temporary fix. See https://github.com/actions/runner-images/issues/8659
+    - name: Install newer Clang
+      run: |
+       wget https://apt.llvm.org/llvm.sh
+       chmod +x ./llvm.sh
+       sudo ./llvm.sh 17
 
     - name: Build
       run: |
@@ -134,6 +141,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    # Temporary fix. See https://github.com/actions/runner-images/issues/8659
+    - name: Install newer Clang
+      run: |
+       wget https://apt.llvm.org/llvm.sh
+       chmod +x ./llvm.sh
+       sudo ./llvm.sh 17
+
     - name: Build
       run: |
         export CC=clang
@@ -155,6 +169,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+    # Temporary fix. See https://github.com/actions/runner-images/issues/8659
+    - name: Install newer Clang
+      run: |
+       wget https://apt.llvm.org/llvm.sh
+       chmod +x ./llvm.sh
+       sudo ./llvm.sh 17
 
     - name: Build
       run: |
