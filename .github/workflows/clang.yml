@@ -3,7 +3,7 @@ on:
   push:
     branches: [ master, development ]
   pull_request:
-    branches: [ master ]
+    branches: [ master pull-request/*]
 
 jobs:
   build-clang-cpp11-linux-stl:
