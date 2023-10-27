@@ -1,9 +1,9 @@
 name: clang syntax checks
 on:
   push:
-    branches: [ master, development ]
+    branches: [ master, development, pull-request/* ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, pull-request/* ]
 
 jobs:
   build-clang-cpp03-linux-STL:
