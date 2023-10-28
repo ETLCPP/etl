@@ -687,9 +687,6 @@ namespace etl
   /// add_lvalue_reference
   template <typename T> struct add_lvalue_reference { typedef T& type; };
   template <typename T> struct add_lvalue_reference<T&> { typedef T& type; };
-#if ETL_USING_CPP11
-  template <typename T> struct add_lvalue_reference<T&&> { typedef T& type; };
-#endif
   template <>           struct add_lvalue_reference<void> { typedef void type; };
   template <>           struct add_lvalue_reference<const void> { typedef const void type; };
   template <>           struct add_lvalue_reference<volatile void> { typedef volatile void type; };
