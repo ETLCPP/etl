@@ -88,6 +88,37 @@ namespace etl
 //*****************************************************************************
 namespace etl
 {
+  namespace private_algorithm
+  {
+    template <bool use_swap>
+    struct swap_impl;
+
+    // Generic swap
+    template <>
+    struct swap_impl<false>
+    {
+      template <typename TIterator1, typename TIterator2>
+      static void do_swap(TIterator1 a, TIterator2 b)
+      {
+        typename etl::iterator_traits<TIterator1>::value_type tmp = *a;
+        *a = *b;
+        *b = tmp;
+      }
+    };
+
+    // Specialised swap
+    template <>
+    struct swap_impl<true>
+    {
+      template <typename TIterator1, typename TIterator2>
+      static void do_swap(TIterator1 a, TIterator2 b)
+      {
+        using ETL_OR_STD::swap; // Allow ADL
+        swap(*a, *b);
+      }
+    };
+  }
+
   //***************************************************************************
   // iter_swap
   //***************************************************************************
@@ -99,8 +130,20 @@ namespace etl
 #endif
   void iter_swap(TIterator1 a, TIterator2 b)
   {
-    using ETL_OR_STD::swap; // Allow ADL
-    swap(*a, *b);
+    typedef etl::iterator_traits<TIterator1> traits1;
+    typedef etl::iterator_traits<TIterator2> traits2;
+
+    typedef typename traits1::value_type v1;
+    typedef typename traits2::value_type v2;
+
+    typedef typename traits1::reference r1;
+    typedef typename traits2::reference r2;
+
+    const bool use_swap = etl::is_same<v1, v2>::value  &&
+                          etl::is_reference<r1>::value &&
+                          etl::is_reference<r2>::value;
+
+    private_algorithm::swap_impl<use_swap>::do_swap(a, b);
   }
 
   //***************************************************************************
