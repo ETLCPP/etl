@@ -1,7 +1,7 @@
 ===============================================================================
 20.38.6
 #777 Allow Building Tests as Submodule and GCC < 11
-Refactored etl::swap for maximum efficiency.
+Refactored etl::itr_swap for maximum efficiency.
 
 ===============================================================================
 20.38.5
