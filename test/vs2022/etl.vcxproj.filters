@@ -3224,6 +3224,15 @@
     <ClCompile Include="..\syntax_check\base64.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_base64_RFC4648_URL_with_padding.cpp">
+      <Filter>Tests\Codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_base64_RFC4648_with_no_padding.cpp">
+      <Filter>Tests\Codecs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_base64_RFC4648_URL_with_no_padding.cpp">
+      <Filter>Tests\Codecs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">

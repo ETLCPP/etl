@@ -7210,7 +7210,9 @@
     <ClCompile Include="..\test_algorithm.cpp" />
     <ClCompile Include="..\test_alignment.cpp" />
     <ClCompile Include="..\test_atomic.cpp" />
+    <ClCompile Include="..\test_base64_RFC4648_URL_with_no_padding.cpp" />
     <ClCompile Include="..\test_base64_RFC4648_URL_with_padding.cpp" />
+    <ClCompile Include="..\test_base64_RFC4648_with_no_padding.cpp" />
     <ClCompile Include="..\test_base64_RFC4648_with_padding.cpp" />
     <ClCompile Include="..\test_bit.cpp" />
     <ClCompile Include="..\test_bitset_new_default_element_type.cpp" />
