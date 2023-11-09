@@ -51,7 +51,7 @@ SOFTWARE.
  *
  * \param _1 is the first argument given to the called macro
  * \param _2 is either the second argument given to the called macro
- *           or the name of the macro which takes to arguments
+ *           or the name of the macro which takes two arguments
  * \param SELECTED_MACRO_NAME is the name of the macro to be called
  * \param ... is a non-empty list of arguments:
  *        The beginning of the list is a list of all macro names which accept less arguments than
