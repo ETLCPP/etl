@@ -210,6 +210,8 @@ etl_test_sources = files(
 	'test_string_char.cpp',
 	'test_string_char_external_buffer.cpp',
 	'test_string_stream.cpp',
+    'test_string_u8.cpp',
+	'test_string_u8_external_buffer.cpp',
 	'test_string_stream_u16.cpp',
 	'test_string_stream_u32.cpp',
 	'test_string_stream_wchar_t.cpp',

@@ -31,6 +31,9 @@ SOFTWARE.
 #include "etl/string_view.h"
 #include "etl/string.h"
 #include "etl/wstring.h"
+#if ETL_USING_CPP20
+  #include "etl/u8string.h"
+#endif
 #include "etl/u16string.h"
 #include "etl/u32string.h"
 #include "etl/hash.h"
@@ -45,12 +48,16 @@ namespace
 {
   using View    = etl::string_view;
   using WView   = etl::wstring_view;
+  using U8View  = etl::u8string_view;
   using U16View = etl::u16string_view;
   using U32View = etl::u32string_view;
 
   etl::string<11> etltext    = "Hello World";
   std::string text           = "Hello World";
   std::wstring wtext         = L"Hello World";
+#if ETL_USING_CPP20
+  std::u8string u8text       = u8"Hello World";
+#endif
   std::u16string u16text     = u"Hello World";
   std::u32string u32text     = U"Hello World";
   std::string text_smaller   = "Hello Worlc";
@@ -59,11 +66,17 @@ namespace
 
   constexpr char     cctext[]   = { 'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '\0' };
   constexpr wchar_t  cwtext[]   = { L'H', L'e', L'l', L'l', L'o', L' ', L'W', L'o', L'r', L'l', L'd', L'\0' };
+#if ETL_USING_CPP20
+  constexpr char8_t  cu8text[]  = { u8'H', u8'e', u8'l', u8'l', u8'o', u8' ', u8'W', u8'o', u8'r', u8'l', u8'd', u8'\0' };
+#endif
   constexpr char16_t cu16text[] = { u'H', u'e', u'l', u'l', u'o', u' ', u'W', u'o', u'r', u'l', u'd', u'\0' };
   constexpr char32_t cu32text[] = { U'H', U'e', U'l', U'l', U'o', U' ', U'W', U'o', U'r', U'l', U'd', U'\0' };
   
   const char*     pctext   = cctext;
   const wchar_t*  pwtext   = cwtext;
+#if ETL_USING_CPP20
+  const char8_t*  pu8text  = cu8text;
+#endif
   const char16_t* pu16text = cu16text;
   const char32_t* pu32text = cu32text;
 
@@ -125,6 +138,20 @@ namespace
       bool isEqual = std::equal(view.begin(), view.end(), text.begin());
       CHECK(isEqual);
     }
+
+    //*************************************************************************
+#if ETL_USING_CPP20
+    TEST(test_constructor_pointer_range_u8char_t)
+    {
+      U8View view(pu8text, pu8text + etl::strlen(pu8text));
+
+      CHECK(text.size() == view.size());
+      CHECK(text.size() == view.max_size());
+
+      bool isEqual = std::equal(view.begin(), view.end(), text.begin());
+      CHECK(isEqual);
+    }
+#endif
 
     //*************************************************************************
     TEST(test_constructor_pointer_range_u16char_t)
@@ -203,12 +230,18 @@ namespace
     {
       auto cview   = etl::make_string_view("Hello World");
       auto wview   = etl::make_string_view(L"Hello World");
+#if ETL_USING_CPP20
+      auto u8view  = etl::make_string_view(u8"Hello World");
+#endif
       auto u16view = etl::make_string_view(u"Hello World");
       auto u32view = etl::make_string_view(U"Hello World");
     
       CHECK(std::equal(cview.begin(),   cview.end(),   text.begin()));
       CHECK(std::equal(wview.begin(),   wview.end(),   wtext.begin()));
       CHECK(std::equal(u16view.begin(), u16view.end(), u16text.begin()));
+#if ETL_USING_CPP20
+      CHECK(std::equal(u8view.begin(),  u8view.end(),  u8text.begin()));
+#endif
       CHECK(std::equal(u32view.begin(), u32view.end(), u32text.begin()));
     }
 
@@ -218,13 +251,19 @@ namespace
     {
       constexpr auto cview   = etl::make_string_view(cctext);
       constexpr auto wview   = etl::make_string_view(cwtext);
+#if ETL_USING_CPP20
+      constexpr auto u8view  = etl::make_string_view(cu8text);
+#endif
       constexpr auto u16view = etl::make_string_view(cu16text);
       constexpr auto u32view = etl::make_string_view(cu32text);
 
       CHECK(std::equal(cview.begin(),   cview.end(),   text.begin()));
-      CHECK(std::equal(wview.begin(),   wview.end(),   text.begin()));
-      CHECK(std::equal(u16view.begin(), u16view.end(), text.begin()));
-      CHECK(std::equal(u32view.begin(), u32view.end(), text.begin()));
+      CHECK(std::equal(wview.begin(),   wview.end(),   wtext.begin()));
+#if ETL_USING_CPP20
+      CHECK(std::equal(u8view.begin(),  u8view.end(),  u8text.begin()));
+#endif
+      CHECK(std::equal(u16view.begin(), u16view.end(), u16text.begin()));
+      CHECK(std::equal(u32view.begin(), u32view.end(), u32text.begin()));
     }
 #endif
 

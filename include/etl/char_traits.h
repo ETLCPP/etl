@@ -65,7 +65,6 @@ namespace etl
     typedef char           state_type;
   };
 
-#if ETL_USING_CPP20
   template<> struct char_traits_types<char8_t>
   {
     typedef char8_t       char_type;
@@ -74,7 +73,6 @@ namespace etl
     typedef size_t        pos_type;
     typedef char          state_type;
   };
-#endif
 
   template<> struct char_traits_types<char16_t>
   {

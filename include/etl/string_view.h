@@ -802,6 +802,7 @@ namespace etl
 
   typedef etl::basic_string_view<char>     string_view;
   typedef etl::basic_string_view<wchar_t>  wstring_view;
+  typedef etl::basic_string_view<char8_t>  u8string_view;
   typedef etl::basic_string_view<char16_t> u16string_view;
   typedef etl::basic_string_view<char32_t> u32string_view;
 
@@ -823,6 +824,15 @@ namespace etl
     size_t length = etl::char_traits<wchar_t>::length(text, Array_Size - 1U);
 
     return wstring_view(text, length);
+  }
+
+  //***********************************
+  template<size_t Array_Size>
+  ETL_CONSTEXPR14 u8string_view make_string_view(const char8_t(&text)[Array_Size])
+  {
+    size_t length = etl::char_traits<char8_t>::length(text, Array_Size - 1U);
+
+    return u8string_view(text, length);
   }
 
   //***********************************

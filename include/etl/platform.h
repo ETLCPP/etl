@@ -351,25 +351,20 @@ SOFTWARE.
 
 //*************************************
 // Determine if the ETL can use char8_t type.
-#if ETL_USING_8BIT_TYPES
-  #if ETL_NO_SMALL_CHAR_SUPPORT
-    typedef int8_t char8_t;
-    #define ETL_HAS_CHAR8_T 1
-    #define ETL_HAS_NATIVE_CHAR8_T 0
-  #else
-    #define ETL_HAS_CHAR8_T 1
-    #define ETL_HAS_NATIVE_CHAR8_T 1
-  #endif
-#else
-  #define ETL_HAS_CHAR8_T 0
+#if ETL_NO_SMALL_CHAR_SUPPORT
+  typedef uint_least8_t char8_t;
+  #define ETL_HAS_CHAR8_T 1
   #define ETL_HAS_NATIVE_CHAR8_T 0
+#else
+  #define ETL_HAS_CHAR8_T 1
+  #define ETL_HAS_NATIVE_CHAR8_T 1
 #endif
 
 //*************************************
 // Define the large character types if necessary.
 #if ETL_NO_LARGE_CHAR_SUPPORT
-  typedef int16_t char16_t;
-  typedef int32_t char32_t;
+  typedef uint_least16_t char16_t;
+  typedef uint_least32_t char32_t;
   #define ETL_HAS_NATIVE_CHAR16_T 0
   #define ETL_HAS_NATIVE_CHAR32_T 0
 #else

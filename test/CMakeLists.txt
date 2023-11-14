@@ -225,18 +225,23 @@ add_executable(etl_tests
 	test_string_char.cpp
 	test_string_char_external_buffer.cpp
 	test_string_stream.cpp
+	test_string_stream_u8.cpp
 	test_string_stream_u16.cpp
 	test_string_stream_u32.cpp
 	test_string_stream_wchar_t.cpp
+	test_string_u8.cpp
+	test_string_u8_external_buffer.cpp
 	test_string_u16.cpp
 	test_string_u16_external_buffer.cpp
 	test_string_u32.cpp
 	test_string_u32_external_buffer.cpp
 	test_string_utilities.cpp
 	test_string_utilities_std.cpp
+	test_string_utilities_std_u8.cpp
 	test_string_utilities_std_u16.cpp
 	test_string_utilities_std_u32.cpp
 	test_string_utilities_std_wchar_t.cpp
+	test_string_utilities_u8.cpp
 	test_string_utilities_u16.cpp
 	test_string_utilities_u32.cpp
 	test_string_utilities_wchar_t.cpp
@@ -247,10 +252,12 @@ add_executable(etl_tests
 	test_task_scheduler.cpp
 	test_threshold.cpp
 	test_to_arithmetic.cpp
+	test_to_arithmetic_u8.cpp
 	test_to_arithmetic_u16.cpp
 	test_to_arithmetic_u32.cpp
 	test_to_arithmetic_wchar_t.cpp
 	test_to_string.cpp
+	test_to_u8string.cpp
 	test_to_u16string.cpp
 	test_to_u32string.cpp
 	test_to_wstring.cpp

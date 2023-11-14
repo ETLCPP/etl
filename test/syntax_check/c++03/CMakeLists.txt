@@ -263,6 +263,7 @@ target_sources(t98 PRIVATE etl_profile.h
         ../timer.h.t.cpp
         ../to_arithmetic.h.t.cpp
         ../to_string.h.t.cpp
+        ../to_u8string.h.t.cpp
         ../to_u16string.h.t.cpp
         ../to_u32string.h.t.cpp
         ../to_wstring.h.t.cpp
@@ -270,12 +271,16 @@ target_sources(t98 PRIVATE etl_profile.h
         ../type_lookup.h.t.cpp
         ../type_select.h.t.cpp
         ../type_traits.h.t.cpp
+        ../u8format_spec.h.t.cpp
+        ../u8string.h.t.cpp
+        ../u8string_stream.h.t.cpp
         ../u16format_spec.h.t.cpp
         ../u16string.h.t.cpp
         ../u16string_stream.h.t.cpp
         ../u32format_spec.h.t.cpp
         ../u32string.h.t.cpp
         ../u32string_stream.h.t.cpp
+        ../u8tring.h.t.cpp
         ../unaligned_type.h.t.cpp
         ../unordered_map.h.t.cpp
         ../unordered_multimap.h.t.cpp

@@ -77,6 +77,17 @@ namespace etl
     }
   };
 
+#if ETL_USING_CPP20
+  template <>
+  struct whitespace<char8_t>
+  {
+    static ETL_CONSTEXPR const char8_t* value()
+    {
+      return u8" \t\n\r\f\v";
+    }
+  };
+#endif
+
   template <>
   struct whitespace<wchar_t>
   {
