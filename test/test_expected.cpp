@@ -484,6 +484,28 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_dereference_operators)
+    {
+      struct ExpectedType
+      {
+        ExpectedType(int i_)
+          : i(i_)
+        {
+        }
+
+        int i;
+      };
+
+      etl::expected<ExpectedType, int>       exp  = etl::unexpected<int>(0);
+      const etl::expected<ExpectedType, int> cexp = etl::unexpected<int>(0);
+    
+      CHECK_THROW({ int i = (*exp).i;  (void)i; }, etl::expected_invalid);
+      CHECK_THROW({ int i = (*cexp).i; (void)i; }, etl::expected_invalid);
+      CHECK_THROW({ int i = exp->i;    (void)i; }, etl::expected_invalid);
+      CHECK_THROW({ int i = cexp->i;   (void)i; }, etl::expected_invalid);
+    }
+
+    //*************************************************************************
     struct value_or_helper
     {
       Expected get_value() const
@@ -518,6 +540,29 @@ namespace
 
       test_exp = etl::unexpected<int>(2);
       CHECK_FALSE(test_exp.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_expected_does_not_compile_with_ETL_LOG_ERRORS_bug_787)
+    {
+      etl::expected<int, int> test_exp = etl::unexpected<int>(0);
+      bool thrown = false;
+      std::string thrown_what;
+      std::string exception_what = etl::expected_invalid(__FILE__, __LINE__).what();
+
+      try
+      {
+        int i = *test_exp;
+        (void)i;
+      }
+      catch (etl::exception& e)
+      {
+        thrown = true;
+        thrown_what = e.what(); // what() should be accessible
+      }
+
+      CHECK_TRUE(thrown);
+      CHECK_TRUE(exception_what == thrown_what);
     }
   };
 }
