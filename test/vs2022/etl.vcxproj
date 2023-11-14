@@ -6791,6 +6791,20 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++14 - No STL|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Force C++03|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\syntax_check\to_u8string.h.t.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - No virtual imessage|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++ 20 - No Tests|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++14|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release MSVC C++20 - No STL - Optimised -O2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++17|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++17 - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release MSVC C++20 - Optimised O2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - No virtual messages|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++14 - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Force C++03|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\syntax_check\to_wstring.h.t.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - No virtual imessage|Win32'">true</ExcludedFromBuild>
