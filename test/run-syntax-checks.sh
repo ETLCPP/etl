@@ -10,6 +10,11 @@ PassColour='\033[38;2;128;255;128m'
 TitleColour='\033[38;2;107;210;255m'
 NoColour='\033[0m'
 
+ParseGitBranch() 
+{
+     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
+
 SetCxxStandard()
 {
 	cxx_standard=$1
@@ -27,6 +32,7 @@ PrintHeader()
 	echo " $testname                                                                  " | tee -a log.txt
 	echo " Language standard : C++$cxx_standard                                       " | tee -a log.txt
 	echo -n " ETL version       : " | cat - ../../../version.txt                        | tee -a log.txt
+	echo " Git branch        : "$(ParseGitBranch)                                       | tee -a log.txt
 	echo "============================================================================" | tee -a log.txt
 	echo "$NoColour"
 }
@@ -35,7 +41,7 @@ PassedCompilation()
 {
 	echo "$PassColour"
 	echo "-----------------------------------------------" | tee -a log.txt
-	echo " Passed Compilation - $testname                " | tee -a ../log.txt
+	echo " Passed Compilation - $testname                " | tee -a log.txt
 	echo "-----------------------------------------------" | tee -a log.txt
 	echo "$NoColour"
 }
@@ -45,7 +51,7 @@ FailedCompilation()
 	echo "$FailColour"
 	echo "****************************************************************************" | tee -a log.txt
     echo "**** Failed Compilation $testname                                           " | tee -a log.txt
-	echo "****************************************************************************" | tee -a ../log.txt
+	echo "****************************************************************************" | tee -a log.txt
 	echo "$NoColour"
 }
 

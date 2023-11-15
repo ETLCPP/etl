@@ -19,6 +19,11 @@ TitleColour='\033[38;2;107;210;255m'
 HelpColour='\033[38;2;250;180;250m'
 NoColour='\033[0m'
 
+ParseGitBranch() 
+{
+     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
+
 SetTestName()
 {
 	testname=$1
@@ -37,6 +42,7 @@ PrintHeader()
 	echo " Language standard : C++$cxx_standard                                       " | tee -a log.txt
     echo " Optimisation      : $opt                                                   " | tee -a log.txt
 	echo -n " ETL version       : " | cat - ../../version.txt                           | tee -a log.txt
+	echo " Git branch        : "$(ParseGitBranch)                                       | tee -a log.txt
 	echo "============================================================================" | tee -a log.txt
 	echo "$NoColour"
 }
