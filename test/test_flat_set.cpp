@@ -187,7 +187,7 @@ namespace
 
     //bool operator == (const D4& lhs, const D4& rhs)
     //{
-    //  return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
+    //  return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) &&  (lhs.d == rhs.d);
     //}
 
     //bool operator != (const D1& lhs, const D1& rhs)

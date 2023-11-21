@@ -152,7 +152,8 @@ add_executable(etl_tests
 	test_list_shared_pool.cpp
 	test_make_string.cpp
 	test_map.cpp
-	test_maths.cpp
+	test_math.cpp
+	test_math_functions.cpp
 	test_mean.cpp
 	test_mem_cast.cpp
 	test_mem_cast_ptr.cpp
@@ -371,6 +372,7 @@ if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Cla
 			-Wall
 			-Wextra
 			-Werror
+			-Wfloat-equal
 			)
 
 	if (ETL_ENABLE_SANITIZER)

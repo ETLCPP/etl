@@ -178,6 +178,7 @@ target_sources(t17 PRIVATE etl_profile.h
         ../log.h.t.cpp
         ../macros.h.t.cpp
         ../map.h.t.cpp
+        ../math.h.t.cpp
         ../math_constants.h.t.cpp
         ../mean.h.t.cpp
         ../mem_cast.h.t.cpp

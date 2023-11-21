@@ -85,7 +85,7 @@ namespace
     return permutations(n, k) / factorial(k);
   }
 
-  SUITE(test_maths)
+  SUITE(test_math_functions)
   {
     //*************************************************************************
     TEST(test_log_0_base)

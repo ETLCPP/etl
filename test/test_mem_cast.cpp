@@ -248,8 +248,8 @@ namespace
       CHECK_EQUAL(1.23, memCast.ref<double>());
 
       *reinterpret_cast<Data*>(pbuffer) = { 123, 1.23, { 1, 2, 3 } };
-      CHECK(123 == memCast.ref<Data>().c);
-      CHECK(1.23 == memCast.ref<Data>().d);
+      CHECK_EQUAL(123, memCast.ref<Data>().c);
+      CHECK_EQUAL(1.23, memCast.ref<Data>().d);
       CHECK_EQUAL(1, memCast.ref<Data>().a[0]);
       CHECK_EQUAL(2, memCast.ref<Data>().a[1]);
       CHECK_EQUAL(3, memCast.ref<Data>().a[2]);
@@ -269,8 +269,8 @@ namespace
       CHECK_EQUAL(1.23, memCastRef.ref<double>());
 
       *reinterpret_cast<Data*>(pbuffer) = { 123, 1.23, { 1, 2, 3 } };
-      CHECK(123 == memCastRef.ref<Data>().c);
-      CHECK(1.23 == memCastRef.ref<Data>().d);
+      CHECK_EQUAL(123, memCastRef.ref<Data>().c);
+      CHECK_EQUAL(1.23, memCastRef.ref<Data>().d);
       CHECK_EQUAL(1, memCast.ref<Data>().a[0]);
       CHECK_EQUAL(2, memCast.ref<Data>().a[1]);
       CHECK_EQUAL(3, memCast.ref<Data>().a[2]);
@@ -289,8 +289,8 @@ namespace
       CHECK_EQUAL(1.23, memCastTypes.ref<double>());
 
       *reinterpret_cast<Data*>(pbuffer) = { 123, 1.23, { 1, 2, 3 } };
-      CHECK(123 == memCastTypes.ref<Data>().c);
-      CHECK(1.23 == memCastTypes.ref<Data>().d);
+      CHECK_EQUAL(123, memCastTypes.ref<Data>().c);
+      CHECK_EQUAL(1.23, memCastTypes.ref<Data>().d);
       CHECK_EQUAL(1, memCastTypes.ref<Data>().a[0]);
       CHECK_EQUAL(2, memCastTypes.ref<Data>().a[1]);
       CHECK_EQUAL(3, memCastTypes.ref<Data>().a[2]);

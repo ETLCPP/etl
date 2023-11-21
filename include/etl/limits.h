@@ -599,12 +599,13 @@ namespace etl
       static ETL_CONSTANT bool tinyness_before   = false;
       static ETL_CONSTANT float_denorm_style has_denorm  = denorm_indeterminate;
       static ETL_CONSTANT float_round_style  round_style = round_indeterminate;
-
-      static float round_error() { return float(0.5); }
     };
 
     template <typename T>
     ETL_CONSTANT bool floating_point_limits_common<T>::is_specialized;
+
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_common<T>::is_signed;
 
     template <typename T>
     ETL_CONSTANT bool floating_point_limits_common<T>::is_integer;
@@ -632,6 +633,9 @@ namespace etl
 
     template <typename T>
     ETL_CONSTANT bool floating_point_limits_common<T>::is_bounded;
+
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_common<T>::is_modulo;
 
     template <typename T>
     ETL_CONSTANT bool floating_point_limits_common<T>::traps;
@@ -1092,6 +1096,7 @@ namespace etl
     static ETL_CONSTEXPR float epsilon() { return FLT_EPSILON; }
     static ETL_CONSTEXPR float denorm_min() { return FLT_MIN; }
     static ETL_CONSTEXPR float infinity() { return HUGE_VALF; }
+    static float round_error() { return 0.5f; }
     static float quiet_NaN() { return ETL_NANF; }
     static float signaling_NaN() { return ETL_NANF; }
   };
@@ -1110,6 +1115,7 @@ namespace etl
     static ETL_CONSTEXPR double epsilon() { return DBL_EPSILON; }
     static ETL_CONSTEXPR double denorm_min() { return DBL_MIN; }
     static ETL_CONSTEXPR double infinity() { return HUGE_VAL; }
+    static double round_error() { return 0.5; }
     static double quiet_NaN() { return ETL_NAN; }
     static double signaling_NaN() { return ETL_NAN; }
   };
@@ -1128,6 +1134,7 @@ namespace etl
     static ETL_CONSTEXPR long double epsilon() { return LDBL_EPSILON; }
     static ETL_CONSTEXPR long double denorm_min() { return LDBL_MIN; }
     static ETL_CONSTEXPR long double infinity() { return HUGE_VALL; }
+    static long double round_error() { return 0.5L; }
     static long double quiet_NaN() { return ETL_NANL; }
     static long double signaling_NaN() { return ETL_NANL; }
   };

@@ -198,9 +198,9 @@ namespace etl
     /// Constructor.
     //*************************************************************************
     deque_base(size_t max_size_, size_t buffer_size_)
-      : current_size(0),
-      CAPACITY(max_size_),
-      BUFFER_SIZE(buffer_size_)
+      : current_size(0)
+      , CAPACITY(max_size_)
+      , BUFFER_SIZE(buffer_size_)
     {
     }
 
@@ -229,12 +229,12 @@ namespace etl
 
     typedef T        value_type;
     typedef size_t   size_type;
-    typedef T& reference;
+    typedef T&       reference;
     typedef const T& const_reference;
 #if ETL_USING_CPP11
-    typedef T&& rvalue_reference;
+    typedef T&&      rvalue_reference;
 #endif
-    typedef T* pointer;
+    typedef T*       pointer;
     typedef const T* const_pointer;
     typedef typename etl::iterator_traits<pointer>::difference_type difference_type;
 
@@ -502,8 +502,8 @@ namespace etl
       //***************************************************
       const_iterator& operator =(const const_iterator& other)
       {
-        index = other.index;
-        p_deque = other.p_deque;
+        index    = other.index;
+        p_deque  = other.p_deque;
         p_buffer = other.p_buffer;
 
         return *this;
@@ -511,8 +511,8 @@ namespace etl
 
       const_iterator& operator =(const typename ideque::iterator& other)
       {
-        index = other.index;
-        p_deque = other.p_deque;
+        index    = other.index;
+        p_deque  = other.p_deque;
         p_buffer = other.p_buffer;
 
         return *this;
@@ -704,7 +704,7 @@ namespace etl
       }
 
       difference_type index;
-      ideque* p_deque;
+      ideque*         p_deque;
       pointer         p_buffer;
     };
 

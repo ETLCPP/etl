@@ -180,6 +180,7 @@ namespace etl
       friend class const_iterator;
 
       iterator()
+        : lookup_itr()
       {
       }
 
@@ -311,6 +312,7 @@ namespace etl
       friend class iindirect_vector;
 
       const_iterator()
+        : lookup_itr()
       {
       }
 

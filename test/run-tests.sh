@@ -36,6 +36,7 @@ PrintHeader()
 	echo " $testname                                                                  " | tee -a log.txt
 	echo " Language standard : C++$cxx_standard                                       " | tee -a log.txt
     echo " Optimisation      : $opt                                                   " | tee -a log.txt
+	echo " Sanitizer         : $sanitize                                              " | tee -a log.txt
 	echo "============================================================================" | tee -a log.txt
 	echo "$NoColour"
 }
