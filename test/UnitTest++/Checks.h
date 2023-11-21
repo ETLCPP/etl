@@ -4,11 +4,13 @@
 #if defined(__GNUC__) && !defined(__clang__) && !defined(__llvm__)
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wsign-compare"
+  #pragma GCC diagnostic ignored "-Wfloat-equal"
 #endif
 
 #if defined(__clang__) || defined(__llvm__)
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wsign-compare"
+  #pragma clang diagnostic ignored "-Wfloat-equal"
 #endif
 
 #include "Config.h"

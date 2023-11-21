@@ -44,6 +44,7 @@ SOFTWARE.
 #include "smallest.h"
 #include "absolute.h"
 #include "expected.h"
+#include "math.h"
 
 #include <math.h>
 
@@ -921,13 +922,11 @@ namespace etl
         value *= pow(static_cast<TValue>(10.0), static_cast<TValue>(exponent));
 
         // Check that the result is a valid floating point number.
-        if ((value == etl::numeric_limits<TValue>::infinity()) ||
-            (value == -etl::numeric_limits<TValue>::infinity()))
+        if (etl::is_infinity(value))
         {
           result = unexpected_type(to_arithmetic_status::Overflow);
         }
-        // Check for NaN.
-        else if (value != value)
+        else if (etl::is_nan(value))
         {
           result = unexpected_type(to_arithmetic_status::Invalid_Float);
         }

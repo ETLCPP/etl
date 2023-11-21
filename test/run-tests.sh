@@ -41,6 +41,7 @@ PrintHeader()
 	echo " $testname                                                                  " | tee -a log.txt
 	echo " Language standard : C++$cxx_standard                                       " | tee -a log.txt
     echo " Optimisation      : $opt                                                   " | tee -a log.txt
+	echo " Sanitizer         : $sanitize                                              " | tee -a log.txt
 	echo -n " ETL version       : " | cat - ../../version.txt                           | tee -a log.txt
 	echo " Git branch        : "$(ParseGitBranch)                                       | tee -a log.txt
 	echo "============================================================================" | tee -a log.txt
@@ -62,7 +63,7 @@ PassedCompilation()
 {
 	echo "$PassColour"
 	echo "-----------------------------------------------" | tee -a log.txt
-	echo " Passed Compilation - $testname                " | tee -a ../log.txt
+	echo " Passed Compilation - $testname                " | tee -a log.txt
 	echo "-----------------------------------------------" | tee -a log.txt
 	echo "$NoColour"
 }
@@ -71,7 +72,7 @@ PassedTests()
 {
 	echo "$PassColour"
 	echo "-----------------------------------------------" | tee -a log.txt
-	echo " Passed Tests - $testname                      " | tee -a ../log.txt
+	echo " Passed Tests - $testname                      " | tee -a log.txt
 	echo "-----------------------------------------------" | tee -a log.txt
 	echo "$NoColour"
 }
@@ -81,7 +82,7 @@ FailedCompilation()
 	echo "$FailColour"
 	echo "****************************************************************************" | tee -a log.txt
     echo "**** Failed Compilation $testname                                           " | tee -a log.txt
-	echo "****************************************************************************" | tee -a ../log.txt
+	echo "****************************************************************************" | tee -a log.txt
 	echo "$NoColour"
 	Bell
 }
@@ -91,7 +92,7 @@ FailedTests()
 	echo "$FailColour"
 	echo "****************************************************************************" | tee -a log.txt
     echo "**** Failed Tests $testname                                                 " | tee -a log.txt
-	echo "****************************************************************************" | tee -a ../log.txt
+	echo "****************************************************************************" | tee -a log.txt
 	echo "$NoColour"
 	Bell
 }

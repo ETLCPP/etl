@@ -1371,6 +1371,9 @@
     <ClInclude Include="..\..\include\etl\base64.h">
       <Filter>ETL\Codecs</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\math.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\etl\u8string.h">
       <Filter>ETL\Strings</Filter>
     </ClInclude>
@@ -1972,9 +1975,6 @@
     </ClCompile>
     <ClCompile Include="..\test_packet.cpp">
       <Filter>Tests\Containers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_maths.cpp">
-      <Filter>Tests\Algorithms</Filter>
     </ClCompile>
     <ClCompile Include="..\test_endian.cpp">
       <Filter>Tests\Types</Filter>
@@ -3235,6 +3235,15 @@
     </ClCompile>
     <ClCompile Include="..\syntax_check\base64.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_math.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_math_functions.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\math.h.t.cpp">
+      <Filter>Tests\Maths</Filter>
     </ClCompile>
     <ClCompile Include="..\test_string_u8.cpp">
       <Filter>Tests\Strings</Filter>

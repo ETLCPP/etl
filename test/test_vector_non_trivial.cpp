@@ -34,6 +34,7 @@
 #include <memory>
 
 #include "etl/vector.h"
+#include "etl/math.h"
 #include "data.h"
 
 namespace
@@ -786,10 +787,12 @@ namespace
         Data(std::string w, size_t x, double y, const char *z) : a(w), b(x), c(y), d(z){}
         bool operator == (const Data &other) const
         {
+#include "etl/private/diagnostic_float_equal_push.h"
           return (a == other.a) &&
                  (b == other.b) &&
                  (c == other.c) &&
                  (((d == nullptr) && (other.d == nullptr)) || (strcmp(d, other.d) == 0));
+#include "etl/private/diagnostic_pop.h"
         }
       };
 
@@ -846,7 +849,7 @@ namespace
         Data(std::string &w, size_t &x, double &y, const char *z) : a(w), b(x), c(y), d(z){}
         bool operator == (const Data &other) const
         {
-          return (a == other.a) && (b == other.b) && (c == other.c) && (d == other.d);
+          return (a == other.a) && (b == other.b) && !(c < other.c) && !(c > other.c) && (d == other.d);
         }
       };
 

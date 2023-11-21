@@ -41,6 +41,7 @@ SOFTWARE.
 #include "data.h"
 
 #include "etl/flat_map.h"
+#include "etl/limits.h"
 
 namespace
 {
