@@ -454,6 +454,7 @@ namespace etl
   /// Hash function.
   //*************************************************************************
 #if ETL_USING_8BIT_TYPES
+#include "private/diagnostic_useless_cast_push.h"
   template <>
   struct hash<etl::iu8string>
   {
@@ -483,6 +484,7 @@ namespace etl
                                                      reinterpret_cast<const uint8_t*>(text.data() + text.size()));
     }
   };
+#include "private/diagnostic_pop.h"
 #endif
 
   //***************************************************************************
