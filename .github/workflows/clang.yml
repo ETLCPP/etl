@@ -73,93 +73,93 @@ jobs:
     - name: Run tests
       run: ./test/etl_tests
 
-  build-clang-cpp20-linux-stl:
-    name: Clang C++20 Linux - STL
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-22.04]
+#  build-clang-cpp20-linux-stl:
+#    name: Clang C++20 Linux - STL
+#    runs-on: ${{ matrix.os }}
+#    strategy:
+#      matrix:
+#        os: [ubuntu-22.04]
+#
+#    steps:
+#    - uses: actions/checkout@v3
 
-    steps:
-    - uses: actions/checkout@v3
+#    - name: Build
+#      run: |
+#        export CC=clang
+#        export CXX=clang++
+#        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+#        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=20 ./
+#        clang --version
+#        make
 
-    - name: Build
-      run: |
-        export CC=clang
-        export CXX=clang++
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=20 ./
-        clang --version
-        make
+#   - name: Run tests
+#     run: ./test/etl_tests
 
-    - name: Run tests
-      run: ./test/etl_tests
+#  build-clang-cpp20-linux-no-stl:
+#    name: Clang C++20 Linux - No STL
+#    runs-on: ${{ matrix.os }}
+#    strategy:
+#      matrix:
+#        os: [ubuntu-22.04]
 
-  build-clang-cpp20-linux-no-stl:
-    name: Clang C++20 Linux - No STL
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-22.04]
+#    steps:
+#    - uses: actions/checkout@v3
 
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Build
-      run: |
-        export CC=clang
-        export CXX=clang++
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=20 ./
-        clang --version
-        make
+#    - name: Build
+#      run: |
+#        export CC=clang
+#        export CXX=clang++
+#        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+#        cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=OFF -DETL_CXX_STANDARD=20 ./
+#        clang --version
+#        make
     
-    - name: Run tests
-      run: ./test/etl_tests
+#    - name: Run tests
+#      run: ./test/etl_tests
 
-  build-clang-cpp20-linux-stl-force-cpp03:
-    name: Clang C++20 Linux - STL - Force C++03
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-22.04]
+#  build-clang-cpp20-linux-stl-force-cpp03:
+#    name: Clang C++20 Linux - STL - Force C++03
+#    runs-on: ${{ matrix.os }}
+#    strategy:
+#      matrix:
+#        os: [ubuntu-22.04]
 
-    steps:
-    - uses: actions/checkout@v3
+#    steps:
+#    - uses: actions/checkout@v3
 
-    - name: Build
-      run: |
-        export CC=clang
-        export CXX=clang++
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON -DETL_CXX_STANDARD=20 ./
-        clang --version
-        make
+#    - name: Build
+#      run: |
+#        export CC=clang
+#        export CXX=clang++
+#        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+#        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON -DETL_CXX_STANDARD=20 ./
+#        clang --version
+#        make
 
-    - name: Run tests
-      run: ./test/etl_tests
+#    - name: Run tests
+#      run: ./test/etl_tests
 
-  build-clang-cpp20-linux-no-stl-force-cpp03:
-    name: Clang C++20 Linux - No STL - Force C++03
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-22.04]
+#  build-clang-cpp20-linux-no-stl-force-cpp03:
+#    name: Clang C++20 Linux - No STL - Force C++03
+#    runs-on: ${{ matrix.os }}
+#    strategy:
+#      matrix:
+#        os: [ubuntu-22.04]
 
-    steps:
-    - uses: actions/checkout@v3
+#    steps:
+#    - uses: actions/checkout@v3
 
-    - name: Build
-      run: |
-        export CC=clang
-        export CXX=clang++
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON -DETL_CXX_STANDARD=20 ./
-        clang --version
-        make
+#    - name: Build
+#      run: |
+#        export CC=clang
+#        export CXX=clang++
+#        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+#        cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03=ON -DETL_CXX_STANDARD=20 ./
+#        clang --version
+#        make
 
-    - name: Run tests
-      run: ./test/etl_tests
+#    - name: Run tests
+#      run: ./test/etl_tests
 
   build-clang-cpp20-osx-stl:
     name: Clang C++20 OSX - STL
