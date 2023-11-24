@@ -132,7 +132,7 @@ namespace
       result.emplace();
 
       CHECK_TRUE(result.has_value());
-      CHECK_EQUAL(int(0), int(result.value()));
+      CHECK_EQUAL(0, int(result.value()));
     }
 
     //*************************************************************************

@@ -60,23 +60,23 @@ namespace
     //*************************************************************************
     TEST(test_midpoint_signed_integral)
     {
-      CHECK_EQUAL(int32_t(0), (etl::midpoint(int32_t(0), int32_t(0))));
-      CHECK_EQUAL(int32_t(0), (etl::midpoint(int32_t(0), int32_t(1))));
-      CHECK_EQUAL(int32_t(1), (etl::midpoint(int32_t(1), int32_t(0))));
+      CHECK_EQUAL(0, (etl::midpoint(0, 0)));
+      CHECK_EQUAL(0, (etl::midpoint(0, 1)));
+      CHECK_EQUAL(1, (etl::midpoint(1, 0)));
 
       CHECK_EQUAL(std::numeric_limits<int32_t>::max() / 2, (etl::midpoint(0, std::numeric_limits<int32_t>::max())));
       CHECK_EQUAL((std::numeric_limits<int32_t>::max() / 2) + 1, (etl::midpoint(std::numeric_limits<int32_t>::max(), 0)));
       
-      CHECK_EQUAL(int32_t(-1), (etl::midpoint(std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max())));
-      CHECK_EQUAL(int32_t(0), (etl::midpoint(std::numeric_limits<int32_t>::max(), std::numeric_limits<int32_t>::min())));
+      CHECK_EQUAL(-1, (etl::midpoint(std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max())));
+      CHECK_EQUAL(0, (etl::midpoint(std::numeric_limits<int32_t>::max(), std::numeric_limits<int32_t>::min())));
     }
 
     //*************************************************************************
     TEST(test_midpoint_unsigned_integral)
     {
-      CHECK_EQUAL(uint32_t(0), (etl::midpoint(uint32_t(0), uint32_t(0))));
-      CHECK_EQUAL(uint32_t(0), (etl::midpoint(uint32_t(0), uint32_t(1))));
-      CHECK_EQUAL(uint32_t(1), (etl::midpoint(uint32_t(1), uint32_t(0))));
+      CHECK_EQUAL(0, (etl::midpoint(0U, 0U)));
+      CHECK_EQUAL(0, (etl::midpoint(0U, 1U)));
+      CHECK_EQUAL(1, (etl::midpoint(1U, 0U)));
 
       CHECK_EQUAL((std::numeric_limits<uint32_t>::max() / 2U), (etl::midpoint(std::numeric_limits<uint32_t>::min(), std::numeric_limits<uint32_t>::max())));
       CHECK_EQUAL((std::numeric_limits<uint32_t>::max() / 2U) + 1, (etl::midpoint(std::numeric_limits<uint32_t>::max(), std::numeric_limits<uint32_t>::min())));

@@ -284,7 +284,7 @@ namespace
     {
       DataDC data;
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), SIZE);
       CHECK_EQUAL(data.max_size(), SIZE);
@@ -917,13 +917,13 @@ namespace
 
       DataNDC data(compare_data.begin(), compare_data.end());
       data.clear();
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
 
       // Do it again to check that clear() didn't screw up the internals.
       data.assign(compare_data.begin(), compare_data.end());
       CHECK_EQUAL(data.size(), compare_data.size());
       data.clear();
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
     }
 
     //*************************************************************************
@@ -932,13 +932,13 @@ namespace
       DataInt data(int_data.begin(), int_data.end());
 
       data.clear();
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
 
       // Do it again to check that clear() didn't screw up the internals.
       data.assign(int_data.begin(), int_data.end());
       CHECK_EQUAL(data.size(), int_data.size());
       data.clear();
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
     }
 
     //*************************************************************************

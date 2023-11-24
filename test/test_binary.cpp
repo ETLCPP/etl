@@ -38,6 +38,8 @@ SOFTWARE.
 #include "etl/integral_limits.h"
 #include "etl/type_traits.h"
 
+#include "etl/private/diagnostic_useless_cast_push.h"
+
 namespace
 {
   //***********************************
@@ -2758,4 +2760,6 @@ namespace
     }
   };
 }
+
+#include "etl/private/diagnostic_pop.h"
 

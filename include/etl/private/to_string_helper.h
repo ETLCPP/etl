@@ -43,6 +43,7 @@ SOFTWARE.
 #include "../algorithm.h"
 #include "../iterator.h"
 #include "../math.h"
+#include "../limits.h"
 
 #include <math.h>
 
@@ -307,9 +308,9 @@ namespace etl
 
       iterator start = str.end();
 
-      if (etl::is_nan(value) || etl::is_infinity(value))
+      if (isnan(value) || isinf(value))
       {
-        etl::private_to_string::add_nan_inf(etl::is_nan(value), etl::is_infinity(value), str);
+        etl::private_to_string::add_nan_inf(isnan(value), isinf(value), str);
       }
       else
       {

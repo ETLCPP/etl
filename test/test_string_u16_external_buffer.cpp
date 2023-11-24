@@ -62,7 +62,7 @@ namespace
 
   //  return os;
   //}
-   
+
   SUITE(test_string_char16_t_external_buffer)
   {
     static constexpr size_t SIZE   = 11;
@@ -2423,9 +2423,9 @@ namespace
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
 
-      compare_text.replace(2, 4, CompareText(STR("Replace")).c_str());
+      compare_text.replace(2, 4, STR("Replace"));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 4, TextL(STR("Replace")).c_str());
+      text.replace(2, 4, STR("Replace"));
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2437,9 +2437,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace")).c_str());
+      compare_text.replace(2, CompareText::npos, STR("Replace"));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextL(STR("Replace")).c_str());
+      text.replace(2, Text::npos, STR("Replace"));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2451,9 +2451,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, 4, CompareText(STR("Replace with some text")).c_str());
+      compare_text.replace(2, 4, STR("Replace with some text"));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 4, TextL(STR("Replace with some text")).c_str());
+      text.replace(2, 4, STR("Replace with some text"));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2465,9 +2465,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")).c_str());
+      compare_text.replace(2, CompareText::npos, STR("Replace with some text"));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextL(STR("Replace with some text")).c_str());
+      text.replace(2, Text::npos, STR("Replace with some text"));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2479,9 +2479,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, 7, CompareText(STR("Replace")).c_str());
+      compare_text.replace(2, 7, STR("Replace"));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 7, TextL(STR("Replace")).c_str());
+      text.replace(2, 7, STR("Replace"));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2493,9 +2493,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace")).c_str());
+      compare_text.replace(2, CompareText::npos, STR("Replace"));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextL(STR("Replace")).c_str());
+      text.replace(2, Text::npos, STR("Replace"));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2507,9 +2507,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, 4, CompareText(STR("Replace with some text")).c_str());
+      compare_text.replace(2, 4, STR("Replace with some text"));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 4, TextL(STR("Replace with some text")).c_str());
+      text.replace(2, 4, STR("Replace with some text"));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2521,9 +2521,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")).c_str());
+      compare_text.replace(2, CompareText::npos, STR("Replace with some text"));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextL(STR("Replace with some text")).c_str());
+      text.replace(2, Text::npos, STR("Replace with some text"));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2541,9 +2541,9 @@ namespace
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace")).c_str());
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, STR("Replace"));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, TextL(STR("Replace")).c_str());
+      text.replace(text.begin() + 2, text.begin() + 4, STR("Replace"));
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2555,9 +2555,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace with some text")).c_str());
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, STR("Replace with some text"));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, TextL(STR("Replace with some text")).c_str());
+      text.replace(text.begin() + 2, text.begin() + 4, STR("Replace with some text"));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2569,9 +2569,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 9, CompareText(STR("Replace")).c_str());
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 9, STR("Replace"));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 9, TextL(STR("Replace")).c_str());
+      text.replace(text.begin() + 2, text.begin() + 9, STR("Replace"));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2583,9 +2583,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace with some text")).c_str());
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, STR("Replace with some text"));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, TextL(STR("Replace with some text")).c_str());
+      text.replace(text.begin() + 2, text.begin() + 4, STR("Replace with some text"));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2603,9 +2603,9 @@ namespace
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
 
-      compare_text.replace(2, 4, CompareText(STR("Replace")).c_str(), 5);
+      compare_text.replace(2, 4, STR("Replace"), 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 4, TextL(STR("Replace")).c_str(), 5);
+      text.replace(2, 4, STR("Replace"), 5);
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2617,9 +2617,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace")).c_str(), 5);
+      compare_text.replace(2, CompareText::npos, STR("Replace"), 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextL(STR("Replace")).c_str(), 5);
+      text.replace(2, Text::npos, STR("Replace"), 5);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2631,9 +2631,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, 4, CompareText(STR("Replace with some text")).c_str(), 15);
+      compare_text.replace(2, 4, STR("Replace with some text"), 15);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 4, TextL(STR("Replace with some text")).c_str(), 15);
+      text.replace(2, 4, STR("Replace with some text"), 15);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2645,9 +2645,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")).c_str(), 15);
+      compare_text.replace(2, CompareText::npos, STR("Replace with some text"), 15);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextL(STR("Replace with some text")).c_str(), 15);
+      text.replace(2, Text::npos, STR("Replace with some text"), 15);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2659,9 +2659,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, 7, CompareText(STR("Replace")).c_str(), 5);
+      compare_text.replace(2, 7, STR("Replace"), 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 7, TextL(STR("Replace")).c_str(), 5);
+      text.replace(2, 7, STR("Replace"), 5);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2673,9 +2673,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace")).c_str(), 5);
+      compare_text.replace(2, CompareText::npos, STR("Replace"), 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextL(STR("Replace")).c_str(), 5);
+      text.replace(2, Text::npos, STR("Replace"), 5);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2687,9 +2687,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, 4, CompareText(STR("Replace with some text")).c_str(), 15);
+      compare_text.replace(2, 4, STR("Replace with some text"), 15);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 4, TextL(STR("Replace with some text")).c_str(), 15);
+      text.replace(2, 4, STR("Replace with some text"), 15);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2701,9 +2701,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")).c_str(), 15);
+      compare_text.replace(2, CompareText::npos, STR("Replace with some text"), 15);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextL(STR("Replace with some text")).c_str(), 15);
+      text.replace(2, Text::npos, STR("Replace with some text"), 15);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2721,9 +2721,9 @@ namespace
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace")).c_str(), 5);
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, STR("Replace"), 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, TextL(STR("Replace")).c_str(), 5);
+      text.replace(text.begin() + 2, text.begin() + 4, STR("Replace"), 5);
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2737,9 +2737,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace with some text")).c_str(), 15);
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, STR("Replace with some text"), 15);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, TextL(STR("Replace with some text")).c_str(), 15);
+      text.replace(text.begin() + 2, text.begin() + 4, STR("Replace with some text"), 15);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2753,9 +2753,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 9, CompareText(STR("Replace")).c_str(), 5);
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 9, STR("Replace"), 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 9, TextL(STR("Replace")).c_str(), 5);
+      text.replace(text.begin() + 2, text.begin() + 9, STR("Replace"), 5);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2769,9 +2769,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace with some text")).c_str(), 15);
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, STR("Replace with some text"), 15);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, TextL(STR("Replace with some text")).c_str(), 15);
+      text.replace(text.begin() + 2, text.begin() + 4, STR("Replace with some text"), 15);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);

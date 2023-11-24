@@ -31,8 +31,6 @@ SOFTWARE.
 #include <stdio.h>
 #include <iostream>
 
-etl::error_handler eh;
-
 //*****************************************************************************
 struct ErrorLog
 {
@@ -124,7 +122,7 @@ int main()
 {
   static ErrorLog error_log;
 
-  etl::error_handler::set_callback<ErrorLog, &ErrorLog::Log>(error_log);
+  etl::error_handler::set_callback<ErrorLog, error_log, &ErrorLog::Log>();
 
   Assert(false);
   Assert(true);

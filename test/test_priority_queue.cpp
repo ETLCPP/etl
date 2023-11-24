@@ -89,7 +89,7 @@ namespace
     {
       etl::priority_queue<int, SIZE> priority_queue;
 
-      CHECK_EQUAL(priority_queue.size(), size_t(0UL));
+      CHECK_EQUAL(priority_queue.size(), 0UL);
       CHECK_EQUAL(priority_queue.available(), SIZE);
       CHECK_EQUAL(priority_queue.max_size(), SIZE);
     }

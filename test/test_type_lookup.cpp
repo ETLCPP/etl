@@ -32,6 +32,8 @@ SOFTWARE.
 
 #include <type_traits>
 
+#include "etl/private/diagnostic_useless_cast_push.h"
+
 namespace
 {
   //***********************************
@@ -425,3 +427,5 @@ namespace
 #endif
   };
 }
+
+#include "etl/private/diagnostic_pop.h"

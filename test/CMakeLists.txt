@@ -371,7 +371,20 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     message(STATUS "Using Clang compiler")
 endif ()
 
-if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+	target_compile_options(etl_tests
+			PRIVATE
+			-fno-omit-frame-pointer
+			-fno-common
+			-Wall
+			-Wextra
+			-Werror
+			-Wfloat-equal
+			-Wuseless-cast
+			)
+endif ()
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 	target_compile_options(etl_tests
 			PRIVATE
 			-fno-omit-frame-pointer
@@ -381,7 +394,9 @@ if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Cla
 			-Werror
 			-Wfloat-equal
 			)
+endif ()
 
+if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
 	if (ETL_ENABLE_SANITIZER)
 		message(STATUS "Compiling with Sanitizer enabled")
 		# MinGW doesn't presently support sanitization

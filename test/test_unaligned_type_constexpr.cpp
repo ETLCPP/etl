@@ -33,6 +33,8 @@ SOFTWARE.
 
 #if ETL_USING_CPP14
 
+#include "etl/private/diagnostic_useless_cast_push.h"
+
 namespace
 {
   SUITE(test_unaligned_type_constexpr)
@@ -641,4 +643,8 @@ namespace
   };
 }
 
+#include "etl/private/diagnostic_pop.h"
+
 #endif
+
+

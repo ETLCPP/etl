@@ -7,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2022 John Wellbelove
+Copyright(c) 2023 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -34,10 +34,10 @@ SOFTWARE.
  */
 
 #if defined(__GNUC__) && !defined(__clang__) && !defined(__llvm__)
-  #pragma GCC diagnostic push
+  #pragma GCC diagnostic push 
+  #pragma GCC diagnostic ignored "-Wuseless-cast"
 #endif
 
 #if defined(__clang__) || defined(__llvm__)
   #pragma clang diagnostic push 
-  #pragma clang diagnostic ignored "-Wself-assign-overloaded"
 #endif

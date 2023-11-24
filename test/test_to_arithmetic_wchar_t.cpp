@@ -146,13 +146,13 @@ namespace
       const Text value6(STR("10101100"));
       const Text value7(STR("-01010100"));
 
-      CHECK_EQUAL(int(0), int(etl::to_arithmetic<int8_t>(value1.c_str(), value1.size(), etl::bin).value()));
-      CHECK_EQUAL(int(1), int(etl::to_arithmetic<int8_t>(value2.c_str(), value2.size(), etl::bin).value()));
-      CHECK_EQUAL(int(5), int(etl::to_arithmetic<int8_t>(value3.c_str(), value3.size(), etl::bin).value()));
-      CHECK_EQUAL(int(10), int(etl::to_arithmetic<int8_t>(value4.c_str(), value4.size(), etl::bin).value()));
-      CHECK_EQUAL(int(83), int(etl::to_arithmetic<int8_t>(value5.c_str(), value5.size(), etl::bin).value()));
-      CHECK_EQUAL(int(-84), int(etl::to_arithmetic<int8_t>(value6.c_str(), value6.size(), etl::bin).value()));
-      CHECK_EQUAL(int(-84), int(etl::to_arithmetic<int8_t>(value7.c_str(), value7.size(), etl::bin).value()));
+      CHECK_EQUAL(0, int(etl::to_arithmetic<int8_t>(value1.c_str(), value1.size(), etl::bin).value()));
+      CHECK_EQUAL(1, int(etl::to_arithmetic<int8_t>(value2.c_str(), value2.size(), etl::bin).value()));
+      CHECK_EQUAL(5, int(etl::to_arithmetic<int8_t>(value3.c_str(), value3.size(), etl::bin).value()));
+      CHECK_EQUAL(10, int(etl::to_arithmetic<int8_t>(value4.c_str(), value4.size(), etl::bin).value()));
+      CHECK_EQUAL(83, int(etl::to_arithmetic<int8_t>(value5.c_str(), value5.size(), etl::bin).value()));
+      CHECK_EQUAL(-84, int(etl::to_arithmetic<int8_t>(value6.c_str(), value6.size(), etl::bin).value()));
+      CHECK_EQUAL(-84, int(etl::to_arithmetic<int8_t>(value7.c_str(), value7.size(), etl::bin).value()));
 
       CHECK(etl::to_arithmetic<int8_t>(value1.c_str(), value1.size(), etl::bin).has_value());
       CHECK(etl::to_arithmetic<int8_t>(value2.c_str(), value2.size(), etl::bin).has_value());
@@ -313,13 +313,13 @@ namespace
       const Text value6(STR("0254"));
       const Text value7(STR("-0124"));
 
-      CHECK_EQUAL(int(0), int(etl::to_arithmetic<int8_t>(value1.c_str(), value1.size(), etl::oct).value()));
-      CHECK_EQUAL(int(1), int(etl::to_arithmetic<int8_t>(value2.c_str(), value2.size(), etl::oct).value()));
-      CHECK_EQUAL(int(5), int(etl::to_arithmetic<int8_t>(value3.c_str(), value3.size(), etl::oct).value()));
-      CHECK_EQUAL(int(10), int(etl::to_arithmetic<int8_t>(value4.c_str(), value4.size(), etl::oct).value()));
-      CHECK_EQUAL(int(83), int(etl::to_arithmetic<int8_t>(value5.c_str(), value5.size(), etl::oct).value()));
-      CHECK_EQUAL(int(-84), int(etl::to_arithmetic<int8_t>(value6.c_str(), value6.size(), etl::oct).value()));
-      CHECK_EQUAL(int(-84), int(etl::to_arithmetic<int8_t>(value7.c_str(), value7.size(), etl::oct).value()));
+      CHECK_EQUAL(0, int(etl::to_arithmetic<int8_t>(value1.c_str(), value1.size(), etl::oct).value()));
+      CHECK_EQUAL(1, int(etl::to_arithmetic<int8_t>(value2.c_str(), value2.size(), etl::oct).value()));
+      CHECK_EQUAL(5, int(etl::to_arithmetic<int8_t>(value3.c_str(), value3.size(), etl::oct).value()));
+      CHECK_EQUAL(10, int(etl::to_arithmetic<int8_t>(value4.c_str(), value4.size(), etl::oct).value()));
+      CHECK_EQUAL(83, int(etl::to_arithmetic<int8_t>(value5.c_str(), value5.size(), etl::oct).value()));
+      CHECK_EQUAL(-84, int(etl::to_arithmetic<int8_t>(value6.c_str(), value6.size(), etl::oct).value()));
+      CHECK_EQUAL(-84, int(etl::to_arithmetic<int8_t>(value7.c_str(), value7.size(), etl::oct).value()));
     }
 
     //*************************************************************************
@@ -462,13 +462,13 @@ namespace
       const Text text5(STR("83"));
       const Text text6(STR("-84"));
 
-      CHECK_EQUAL(int(0), int(etl::to_arithmetic<int8_t>(text1.c_str(), text1.size(), etl::dec).value()));
-      CHECK_EQUAL(int(1), int(etl::to_arithmetic<int8_t>(text2.c_str(), text2.size(), etl::dec).value()));
-      CHECK_EQUAL(int(5), int(etl::to_arithmetic<int8_t>(text3.c_str(), text3.size(), etl::dec).value()));
-      CHECK_EQUAL(int(10), int(etl::to_arithmetic<int8_t>(text4.c_str(), text4.size(), etl::dec).value()));
-      CHECK_EQUAL(int(83), int(etl::to_arithmetic<int8_t>(text5.c_str(), text5.size(), etl::dec).value()));
-      CHECK_EQUAL(int(83), int(etl::to_arithmetic<uint8_t>(text5.c_str(), text5.size(), etl::dec).value()));
-      CHECK_EQUAL(int(-84), int(etl::to_arithmetic<int8_t>(text6.c_str(), text6.size(), etl::dec).value()));
+      CHECK_EQUAL(0, int(etl::to_arithmetic<int8_t>(text1.c_str(), text1.size(), etl::dec).value()));
+      CHECK_EQUAL(1, int(etl::to_arithmetic<int8_t>(text2.c_str(), text2.size(), etl::dec).value()));
+      CHECK_EQUAL(5, int(etl::to_arithmetic<int8_t>(text3.c_str(), text3.size(), etl::dec).value()));
+      CHECK_EQUAL(10, int(etl::to_arithmetic<int8_t>(text4.c_str(), text4.size(), etl::dec).value()));
+      CHECK_EQUAL(83, int(etl::to_arithmetic<int8_t>(text5.c_str(), text5.size(), etl::dec).value()));
+      CHECK_EQUAL(83, int(etl::to_arithmetic<uint8_t>(text5.c_str(), text5.size(), etl::dec).value()));
+      CHECK_EQUAL(-84, int(etl::to_arithmetic<int8_t>(text6.c_str(), text6.size(), etl::dec).value()));
     }
 
     //*************************************************************************
@@ -598,13 +598,13 @@ namespace
       const Text text6(STR("Ac"));
       const Text text7(STR("-54"));
 
-      CHECK_EQUAL(int(0), int(etl::to_arithmetic<int8_t>(text1.c_str(), text1.size(), etl::hex).value()));
-      CHECK_EQUAL(int(1), int(etl::to_arithmetic<int8_t>(text2.c_str(), text2.size(), etl::hex).value()));
-      CHECK_EQUAL(int(5), int(etl::to_arithmetic<int8_t>(text3.c_str(), text3.size(), etl::hex).value()));
-      CHECK_EQUAL(int(10), int(etl::to_arithmetic<int8_t>(text4.c_str(), text4.size(), etl::hex).value()));
-      CHECK_EQUAL(int(83), int(etl::to_arithmetic<int8_t>(text5.c_str(), text5.size(), etl::hex).value()));
-      CHECK_EQUAL(int(-84), int(etl::to_arithmetic<int8_t>(text6.c_str(), text6.size(), etl::hex).value()));
-      CHECK_EQUAL(int(-84), int(etl::to_arithmetic<int8_t>(text7.c_str(), text7.size(), etl::hex).value()));
+      CHECK_EQUAL(0, int(etl::to_arithmetic<int8_t>(text1.c_str(), text1.size(), etl::hex).value()));
+      CHECK_EQUAL(1, int(etl::to_arithmetic<int8_t>(text2.c_str(), text2.size(), etl::hex).value()));
+      CHECK_EQUAL(5, int(etl::to_arithmetic<int8_t>(text3.c_str(), text3.size(), etl::hex).value()));
+      CHECK_EQUAL(10, int(etl::to_arithmetic<int8_t>(text4.c_str(), text4.size(), etl::hex).value()));
+      CHECK_EQUAL(83, int(etl::to_arithmetic<int8_t>(text5.c_str(), text5.size(), etl::hex).value()));
+      CHECK_EQUAL(-84, int(etl::to_arithmetic<int8_t>(text6.c_str(), text6.size(), etl::hex).value()));
+      CHECK_EQUAL(-84, int(etl::to_arithmetic<int8_t>(text7.c_str(), text7.size(), etl::hex).value()));
     }
 
     //*************************************************************************

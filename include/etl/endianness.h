@@ -49,9 +49,9 @@ SOFTWARE.
 #if !defined(ETL_ENDIAN_NATIVE)
   // Can we use the C++20 definitions?
   #if ETL_USING_CPP20 && ETL_USING_STL
-    #define ETL_ENDIAN_LITTLE std::endian::little
-    #define ETL_ENDIAN_BIG    std::endian::big
-    #define ETL_ENDIAN_NATIVE std::endian::native
+    #define ETL_ENDIAN_LITTLE static_cast<int>(std::endian::little)
+    #define ETL_ENDIAN_BIG    static_cast<int>(std::endian::big)
+    #define ETL_ENDIAN_NATIVE static_cast<int>(std::endian::native)
   // Is this the IAR compiler?
   #elif defined(ETL_COMPILER_IAR) && defined(__LITTLE_ENDIAN__)
     #define ETL_ENDIAN_LITTLE 0
@@ -100,14 +100,14 @@ namespace etl
   {
     enum enum_type
     {
-      little  = static_cast<int>(ETL_ENDIAN_LITTLE),
-      big     = static_cast<int>(ETL_ENDIAN_BIG),
-      native  = static_cast<int>(ETL_ENDIAN_NATIVE),
+      little  = ETL_ENDIAN_LITTLE,
+      big     = ETL_ENDIAN_BIG,
+      native  = ETL_ENDIAN_NATIVE
     };
 
     ETL_DECLARE_ENUM_TYPE(endian, int)
-    ETL_ENUM_TYPE(little,  "little")
-    ETL_ENUM_TYPE(big,     "big")
+    ETL_ENUM_TYPE(little, "little")
+    ETL_ENUM_TYPE(big,    "big")
     ETL_END_ENUM_TYPE
   };
 

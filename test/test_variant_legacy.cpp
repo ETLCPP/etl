@@ -35,6 +35,8 @@ SOFTWARE.
 #include <algorithm>
 #include <string>
 
+#include "etl/private/diagnostic_useless_cast_push.h"
+
 namespace
 {
   // Test classes for polymorphic tests.
@@ -690,9 +692,11 @@ namespace
       ui16 = variant8;
       CHECK_EQUAL(ui16, variant8.get<uint16_t>());
 
+#include "etl/private/diagnostic_useless_cast_push.h"
       variant8 = int32_t(5);
       i32 = variant8;
       CHECK_EQUAL(i32, variant8.get<int32_t>());
+#include "etl/private/diagnostic_pop.h"
 
       variant8 = uint32_t(6);
       ui32 = variant8;
@@ -931,3 +935,5 @@ namespace
     }
   };
 }
+
+#include "etl/private/diagnostic_pop.h"

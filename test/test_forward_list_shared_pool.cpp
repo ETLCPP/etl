@@ -96,7 +96,7 @@ namespace
       PoolDC pool;
       DataDC data(pool);
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
       CHECK(data.empty());
       CHECK(!data.full());
       CHECK_EQUAL(data.available(), SIZE);
@@ -496,9 +496,9 @@ namespace
       data2.assign(sorted_data.begin(), sorted_data.end());
       CHECK_EQUAL(sorted_data.size(), data2.size());
       data1.clear();
-      CHECK_EQUAL(size_t(0UL), data1.size());
+      CHECK_EQUAL(0UL, data1.size());
       data2.clear();
-      CHECK_EQUAL(size_t(0UL), data2.size());
+      CHECK_EQUAL(0UL, data2.size());
     }
 
     //*************************************************************************
@@ -520,12 +520,12 @@ namespace
       data1.resize(SIZE);
       CHECK_EQUAL(SIZE, data1.size());
       data1.clear();
-      CHECK_EQUAL(size_t(0UL), data1.size());
+      CHECK_EQUAL(0UL, data1.size());
 
       data2.resize(SIZE);
       CHECK_EQUAL(SIZE, data2.size());
       data2.clear();
-      CHECK_EQUAL(size_t(0UL), data2.size());
+      CHECK_EQUAL(0UL, data2.size());
     }
 
     //*************************************************************************

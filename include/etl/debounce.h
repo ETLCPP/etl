@@ -55,7 +55,7 @@ namespace etl
       void add_sample(bool sample)
       {
         // Changed from last time?
-        if (sample != bool((flags & Sample) != 0))
+        if (sample != ((flags & Sample) != 0))
         {
           count = 0;
           flags = (flags & ~Sample) | (sample ? Sample : 0);

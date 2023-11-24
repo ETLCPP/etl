@@ -34,6 +34,8 @@ SOFTWARE.
 #include "etl/bit.h"
 #include "etl/fnv_1.h"
 
+#include "etl/private/diagnostic_useless_cast_push.h"
+
 namespace
 {
   //***********************************
@@ -1525,3 +1527,4 @@ namespace
   };
 }
 
+#include "etl/private/diagnostic_pop.h"

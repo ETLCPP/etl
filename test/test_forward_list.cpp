@@ -425,7 +425,7 @@ namespace
       data.assign(sorted_data.begin(), sorted_data.end());
       CHECK_EQUAL(SIZE, data.size());
       data.clear();
-      CHECK_EQUAL(size_t(0UL), data.size());
+      CHECK_EQUAL(0UL, data.size());
     }
 
     //*************************************************************************
@@ -440,7 +440,7 @@ namespace
       data.resize(SIZE);
       CHECK_EQUAL(SIZE, data.size());
       data.clear();
-      CHECK_EQUAL(size_t(0UL), data.size());
+      CHECK_EQUAL(0UL, data.size());
     }
 
     //*************************************************************************

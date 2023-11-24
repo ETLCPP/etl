@@ -223,7 +223,7 @@ namespace
     {
       Data data;
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
       CHECK(data.empty());
       CHECK_EQUAL(data.capacity(), MAX_SIZE);
       CHECK_EQUAL(data.max_size(), MAX_SIZE);
@@ -552,16 +552,16 @@ namespace
 
       // Check that elements in multiset are the same
       bool isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                                 data.end(),
+                                 compare_data.begin());
       CHECK(isEqual);
 
       data.insert(Data::const_iterator(data_result), 1);
-      compare_data.insert(Compare_Data::const_iterator(compare_result), 1);
+      compare_data.insert(compare_result, 1);
 
       isEqual = Check_Equal(data.begin(),
-        data.end(),
-        compare_data.begin());
+                            data.end(),
+                            compare_data.begin());
 
       CHECK(isEqual);
     }
@@ -834,7 +834,7 @@ namespace
       Data data(compare_data.begin(), compare_data.end());
       data.clear();
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
     }
 
     //*************************************************************************
@@ -1551,7 +1551,7 @@ namespace
 
       for (int eltNum = 0; eltNum != 10; ++eltNum)
       {
-        data.insert(Data::value_type(keys[eltNum]));
+        data.insert(keys[eltNum]);
       }
 
       data.erase(2);

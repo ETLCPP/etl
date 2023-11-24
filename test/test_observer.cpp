@@ -460,31 +460,31 @@ namespace
       Observer observer5;
 
       observable.add_observer(observer1);
-      CHECK_EQUAL(size_t(1UL), observable.number_of_observers());
+      CHECK_EQUAL(1UL, observable.number_of_observers());
 
       observable.add_observer(observer2);
-      CHECK_EQUAL(size_t(2UL), observable.number_of_observers());
+      CHECK_EQUAL(2UL, observable.number_of_observers());
 
       observable.add_observer(observer3);
-      CHECK_EQUAL(size_t(3UL), observable.number_of_observers());
+      CHECK_EQUAL(3UL, observable.number_of_observers());
 
       observable.add_observer(observer2);
-      CHECK_EQUAL(size_t(3UL), observable.number_of_observers());
+      CHECK_EQUAL(3UL, observable.number_of_observers());
 
       observable.add_observer(observer4);
-      CHECK_EQUAL(size_t(4UL), observable.number_of_observers());
+      CHECK_EQUAL(4UL, observable.number_of_observers());
 
       CHECK_THROW(observable.add_observer(observer5), etl::observer_list_full);
 
       CHECK(observable.remove_observer(observer3));
-      CHECK_EQUAL(size_t(3UL), observable.number_of_observers());
+      CHECK_EQUAL(3UL, observable.number_of_observers());
 
       // Try again.
       CHECK(!observable.remove_observer(observer3));
-      CHECK_EQUAL(size_t(3UL), observable.number_of_observers());
+      CHECK_EQUAL(3UL, observable.number_of_observers());
 
       observable.clear_observers();
-      CHECK_EQUAL(size_t(0UL), observable.number_of_observers());
+      CHECK_EQUAL(0UL, observable.number_of_observers());
     }
   }
 }

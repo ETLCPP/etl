@@ -179,7 +179,7 @@ namespace
     {
       Data data;
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
       CHECK(data.empty());
       CHECK_EQUAL(MAX_SIZE, data.available());
       CHECK_EQUAL(MAX_SIZE, data.capacity());
@@ -512,8 +512,8 @@ namespace
         compare_data.begin());
       CHECK(isEqual);
 
-      data.insert(Data::const_iterator(data_result.first), 1);
-      compare_data.insert(Compare_Data::const_iterator(compare_result.first), 1);
+      data.insert(data_result.first, 1);
+      compare_data.insert(compare_result.first, 1);
 
       isEqual = Check_Equal(data.begin(),
         data.end(),
@@ -816,7 +816,7 @@ namespace
       Data data(compare_data.begin(), compare_data.end());
       data.clear();
 
-      CHECK_EQUAL(data.size(), size_t(0UL));
+      CHECK_EQUAL(data.size(), 0UL);
     }
 
     //*************************************************************************
@@ -824,9 +824,9 @@ namespace
     {
       const Data data(initial_data.begin(), initial_data.end());
 
-      CHECK_EQUAL(data.count(3), size_t(1UL));
+      CHECK_EQUAL(data.count(3), 1UL);
 
-      CHECK_EQUAL(data.count(11), size_t(0UL));
+      CHECK_EQUAL(data.count(11), 0UL);
     }
 
     //*************************************************************************
@@ -835,9 +835,9 @@ namespace
       using EMap = etl::set<int, MAX_SIZE, etl::less<>>;
       const EMap data(initial_data.begin(), initial_data.end());
 
-      CHECK_EQUAL(data.count(Key(3)), size_t(1UL));
+      CHECK_EQUAL(data.count(Key(3)), 1UL);
 
-      CHECK_EQUAL(data.count(Key(11)), size_t(0UL));
+      CHECK_EQUAL(data.count(Key(11)), 0UL);
     }
 
     //*************************************************************************

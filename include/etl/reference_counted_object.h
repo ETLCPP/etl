@@ -171,7 +171,7 @@ namespace etl
     //***************************************************************************
     ETL_NODISCARD virtual int32_t decrement_reference_count() ETL_OVERRIDE
     {
-      return int32_t(1);
+      return 1;
     }
 
     //***************************************************************************
@@ -179,7 +179,7 @@ namespace etl
     //***************************************************************************
     ETL_NODISCARD virtual int32_t get_reference_count() const ETL_OVERRIDE
     {
-      return int32_t(1);
+      return 1;
     }
   };
 

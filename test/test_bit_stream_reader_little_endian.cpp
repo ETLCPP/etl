@@ -33,6 +33,8 @@ SOFTWARE.
 #include <array>
 #include <numeric>
 
+#include "etl/private/diagnostic_useless_cast_push.h"
+
 namespace
 {
   //***********************************
@@ -1192,4 +1194,6 @@ namespace
     }
   };
 }
+
+#include "etl/private/diagnostic_pop.h"
 

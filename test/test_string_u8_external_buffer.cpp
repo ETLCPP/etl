@@ -72,23 +72,23 @@ namespace
     static constexpr size_t SIZE_L = 52;
     static constexpr size_t SIZE_S = 4;
 
-    using Text         = etl::u8string_ext;
-    using IText        = etl::iu8string;
-    using TextT        = etl::u8string<SIZE>;
-    using Compare_Text = std::u8string;
-    using value_t      = Text::value_type;
-    using TextBuffer   = std::array<IText::value_type, SIZE + 1>;
-    using TextBufferL  = std::array<IText::value_type, SIZE_L + 1>;
-    using TextBufferS  = std::array<IText::value_type, SIZE_S + 1>;
+    using Text        = etl::u8string_ext;
+    using IText       = etl::iu8string;
+    using TextL       = etl::u8string<SIZE_L>;
+    using CompareText = std::u8string;
+    using value_t     = Text::value_type;
+    using TextBuffer  = std::array<IText::value_type, SIZE + 1>;
+    using TextBufferL = std::array<IText::value_type, SIZE_L + 1>;
+    using TextBufferS = std::array<IText::value_type, SIZE_S + 1>;
 
-    Compare_Text initial_text;
-    Compare_Text less_text;
-    Compare_Text greater_text;
-    Compare_Text shorter_text;
-    Compare_Text different_text;
-    Compare_Text insert_text;
-    Compare_Text longer_text;
-    Compare_Text short_text;
+    CompareText initial_text;
+    CompareText less_text;
+    CompareText greater_text;
+    CompareText shorter_text;
+    CompareText different_text;
+    CompareText insert_text;
+    CompareText longer_text;
+    CompareText short_text;
 
     const value_t* pinitial_text = STR("Hello World");
 
@@ -219,7 +219,7 @@ namespace
       const value_t INITIAL_VALUE = STR('A');
       TextBuffer    buffer{0};
 
-      Compare_Text compare_text(INITIAL_SIZE, INITIAL_VALUE);
+      CompareText compare_text(INITIAL_SIZE, INITIAL_VALUE);
       Text text(INITIAL_SIZE, INITIAL_VALUE, buffer.data(), buffer.size());
 
       CHECK(text.size() == INITIAL_SIZE);
@@ -249,7 +249,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_constructor_char_pointer)
     {
       TextBuffer buffer{0};
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
 
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
 
@@ -265,7 +265,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_char_pointer_excess)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       Text text(longer_text.c_str(), buffer.data(), buffer.size());
@@ -282,7 +282,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_char_pointer_size)
     {
-      Compare_Text compare_text(SIZE, STR('A'));
+      CompareText compare_text(SIZE, STR('A'));
 
       TextBuffer buffer{0};
       Text text(SIZE, STR('A'), buffer.data(), buffer.size());
@@ -299,7 +299,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_char_pointer_size_excess)
     {
-      Compare_Text compare_text(SIZE, STR('A'));
+      CompareText compare_text(SIZE, STR('A'));
 
       TextBuffer buffer{0};
       Text text(SIZE + 1, STR('A'), buffer.data(), buffer.size());
@@ -316,7 +316,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_size_char)
     {
-      Compare_Text compare_text(initial_text.c_str(), initial_text.size() / 2);
+      CompareText compare_text(initial_text.c_str(), initial_text.size() / 2);
 
       TextBuffer buffer{0};
       Text text(initial_text.c_str(), initial_text.size() / 2, buffer.data(), buffer.size());
@@ -333,7 +333,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_size_char_excess)
     {
-      Compare_Text compare_text(initial_text.c_str(), initial_text.size());
+      CompareText compare_text(initial_text.c_str(), initial_text.size());
 
       TextBuffer buffer{0};
       Text text(longer_text.c_str(), longer_text.size(), buffer.data(), buffer.size());
@@ -350,7 +350,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_range)
     {
-      Compare_Text compare_text(initial_text.begin(), initial_text.end());
+      CompareText compare_text(initial_text.begin(), initial_text.end());
 
       TextBuffer buffer{0};
       Text text(compare_text.begin(), compare_text.end(), buffer.data(), buffer.size());
@@ -466,8 +466,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_construct_position_length)
     {
-      Compare_Text compare_text(initial_text.c_str());
-      Compare_Text compare_text2(compare_text, 2, 4);
+      CompareText compare_text(initial_text.c_str());
+      CompareText compare_text2(compare_text, 2, 4);
 
       TextBuffer buffer{0};
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
@@ -485,8 +485,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_construct_position_length_excess)
     {
-      Compare_Text compare_text(longer_text.c_str());
-      Compare_Text compare_text2(compare_text, 2, 11);
+      CompareText compare_text(longer_text.c_str());
+      CompareText compare_text2(compare_text, 2, 11);
 
       TextBufferL bufferl{0};
       Text textl(longer_text.c_str(), bufferl.data(), bufferl.size());
@@ -505,7 +505,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_construct_initializer_list)
     {
-      Compare_Text compare_text = { STR('H'), STR('e'), STR('l') , STR('l') , STR('o') };
+      CompareText compare_text = { STR('H'), STR('e'), STR('l') , STR('l') , STR('o') };
 
       std::initializer_list<Text::value_type> il = { STR('H'), STR('e'), STR('l') , STR('l') , STR('o') };
       TextBuffer buffer{0};
@@ -521,7 +521,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_construct_initializer_list_excess)
     {
-      Compare_Text compare_text = { STR('H'), STR('e'), STR('l'), STR('l'), STR('o'),  STR(' '),
+      CompareText compare_text = { STR('H'), STR('e'), STR('l'), STR('l'), STR('o'),  STR(' '),
                                     STR('W'), STR('o'), STR('r'), STR('l'), STR('d') };
 
       std::initializer_list<Text::value_type> il = { STR('H'), STR('e'), STR('l'), STR('l'), STR('o'),  STR(' '),
@@ -1017,7 +1017,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_index)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
@@ -1035,7 +1035,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_index_const)
     {
-      const Compare_Text compare_text(initial_text.c_str());
+      const CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       const Text text(initial_text.c_str(), buffer.data(), buffer.size());
@@ -1053,7 +1053,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_at)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
@@ -1073,7 +1073,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_at_const)
     {
-      const Compare_Text compare_text(initial_text.c_str());
+      const CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       const Text text(initial_text.c_str(), buffer.data(), buffer.size());
@@ -1093,7 +1093,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_front)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
@@ -1107,7 +1107,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_front_const)
     {
-      const Compare_Text compare_text(initial_text.c_str());
+      const CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       const Text text(initial_text.c_str(), buffer.data(), buffer.size());
@@ -1121,7 +1121,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_back)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
@@ -1135,7 +1135,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_back_const)
     {
-      const Compare_Text compare_text(initial_text.c_str());
+      const CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       const Text text(initial_text.c_str(), buffer.data(), buffer.size());
@@ -1149,7 +1149,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_data)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       Text text(compare_text.begin(), compare_text.end(), buffer.data(), buffer.size());
@@ -1167,7 +1167,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_data_const)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       const Text text(compare_text.begin(), compare_text.end(), buffer.data(), buffer.size());
@@ -1185,12 +1185,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_string)
     {
-      Compare_Text compare_input(initial_text.c_str());
+      CompareText compare_input(initial_text.c_str());
 
       TextBuffer buffer{0};
       Text input(initial_text.c_str(), buffer.data(), buffer.size());
 
-      Compare_Text compare_text;
+      CompareText compare_text;
 
       TextBuffer buffer2{0};
       Text text(buffer2.data(), buffer2.size());
@@ -1208,12 +1208,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_string_excess)
     {
-      Compare_Text compare_input(initial_text.c_str());
+      CompareText compare_input(initial_text.c_str());
 
       TextBufferL bufferl{0};
       Text input(longer_text.c_str(), bufferl.data(), bufferl.size());
 
-      Compare_Text compare_text;
+      CompareText compare_text;
 
       TextBuffer buffer{0};
       Text text(buffer.data(), buffer.size());
@@ -1231,7 +1231,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_pointer)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       Text text(buffer.data(), buffer.size());
@@ -1247,7 +1247,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_pointer_excess)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       Text text(buffer.data(), buffer.size());
@@ -1263,7 +1263,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_pointer_length)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       Text text(buffer.data(), buffer.size());
@@ -1279,7 +1279,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_pointer_length_excess)
     {
-      Compare_Text compare_text(longer_text.c_str());
+      CompareText compare_text(longer_text.c_str());
 
       TextBuffer buffer{0};
       Text text(buffer.data(), buffer.size());
@@ -1297,7 +1297,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_range)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       Text text(buffer.data(), buffer.size());
@@ -1373,7 +1373,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_back)
     {
-      Compare_Text compare_text;
+      CompareText compare_text;
 
       TextBuffer buffer{0};
       Text text(buffer.data(), buffer.size());
@@ -1401,7 +1401,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_push_back_excess)
     {
-      Compare_Text compare_text;
+      CompareText compare_text;
 
       TextBuffer buffer{0};
       Text text(buffer.data(), buffer.size());
@@ -1434,7 +1434,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_pop_back)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
@@ -1460,7 +1460,7 @@ namespace
 
       for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
       {
-        Compare_Text compare_text;
+        CompareText compare_text;
 
         TextBuffer buffer{0};
         Text text(buffer.data(), buffer.size());
@@ -1482,7 +1482,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_value_excess)
     {
-      Compare_Text compare_text(initial_text.begin(), initial_text.end());
+      CompareText compare_text(initial_text.begin(), initial_text.end());
       TextBuffer buffer{0};
       Text text(initial_text.begin(), initial_text.end(), buffer.data(), buffer.size());
 
@@ -1528,7 +1528,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_n_value)
     {
-      Compare_Text compare_text;
+      CompareText compare_text;
       TextBuffer buffer{0};
       Text text(buffer.data(), buffer.size());
 
@@ -1555,7 +1555,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_n_value_excess)
     {
-      Compare_Text compare_text;
+      CompareText compare_text;
       TextBuffer buffer{0};
       Text text(buffer.data(), buffer.size());
 
@@ -1629,7 +1629,7 @@ namespace
 
       for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
-        Compare_Text compare_text;
+        CompareText compare_text;
         TextBuffer buffer{0};
         Text text(buffer.data(), buffer.size());
 
@@ -1653,7 +1653,7 @@ namespace
       const size_t INITIAL_SIZE = 5UL;
       const value_t INITIAL_VALUE = STR('A');
 
-      Compare_Text compare_text;
+      CompareText compare_text;
       TextBuffer buffer{0};
       Text text(buffer.data(), buffer.size());
 
@@ -1712,7 +1712,7 @@ namespace
 
       for (size_t offset = 10UL; offset < length; ++offset)
       {
-        Compare_Text compare_text = STR("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        CompareText compare_text = STR("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
         TextBufferL bufferl{0};
         Text text(bufferl.data(), bufferl.size());
         text = STR("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -1738,7 +1738,7 @@ namespace
 
       for (size_t offset = s; offset <= short_text.size(); ++offset)
       {
-        Compare_Text compare_text(short_text.cbegin(), short_text.cend());
+        CompareText compare_text(short_text.cbegin(), short_text.cend());
         TextBuffer buffer{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         Text text(short_text.begin(), short_text.end(), buffer.data(), buffer.size());
 
@@ -1769,7 +1769,7 @@ namespace
 #include "etl/private/diagnostic_array_bounds_push.h"
       for (size_t offset = 0UL; offset <= initial_text.size(); ++offset)
       {
-        Compare_Text compare_text(initial_text.cbegin(), initial_text.cend());
+        CompareText compare_text(initial_text.cbegin(), initial_text.cend());
 
         TextBuffer buffer{ 0 };
         Text text(initial_text.begin(), initial_text.end(), buffer.data(), buffer.size());
@@ -1795,7 +1795,7 @@ namespace
     {
       for (size_t offset = 0UL; offset <= short_text.size(); ++offset)
       {
-        Compare_Text compare_text(short_text.cbegin(), short_text.cend());
+        CompareText compare_text(short_text.cbegin(), short_text.cend());
 
         TextBuffer buffer{0};
         Text text(short_text.begin(), short_text.end(), buffer.data(), buffer.size());
@@ -1821,7 +1821,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_size_t_position_string_subpos_sunlen)
     {
-      Compare_Text compare_text(short_text.cbegin(), short_text.cend());
+      CompareText compare_text(short_text.cbegin(), short_text.cend());
 
       TextBuffer buffer{0};
       Text text(short_text.begin(), short_text.end(), buffer.data(), buffer.size());
@@ -1871,7 +1871,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_append_string)
     {
-      Compare_Text compare_text(short_text.c_str());
+      CompareText compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
@@ -1928,7 +1928,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_append_string_to_self)
     {
-      Compare_Text compare_text(short_text.c_str());
+      CompareText compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
@@ -1961,7 +1961,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_append_string_subpos_sublen)
     {
-      Compare_Text compare_text(short_text.c_str());
+      CompareText compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
@@ -2032,7 +2032,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_append_c_string)
     {
       // Non-overflow.
-      Compare_Text compare_text(short_text.c_str());
+      CompareText compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
@@ -2066,7 +2066,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_append_n_c)
     {
       // Non-overflow.
-      Compare_Text compare_text(short_text.c_str());
+      CompareText compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
@@ -2100,7 +2100,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_append_range)
     {
       // Non-overflow.
-      Compare_Text compare_text(short_text.c_str());
+      CompareText compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
@@ -2137,14 +2137,14 @@ namespace
     TEST_FIXTURE(SetupFixture, test_replace_position_length_string)
     {
       // Non-overflow short text, npos.
-      Compare_Text compare_text(short_text.c_str());
+      CompareText compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
 
-      compare_text.replace(2, Compare_Text::npos, Compare_Text(STR("Replace")));
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace")));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextT(STR("Replace")));
+      text.replace(2, Text::npos, TextL(STR("Replace")));
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2156,9 +2156,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, 2, Compare_Text(STR("Replace")));
+      compare_text.replace(2, 2, CompareText(STR("Replace")));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 2, TextT(STR("Replace")));
+      text.replace(2, 2, TextL(STR("Replace")));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2170,9 +2170,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, 2, Compare_Text(STR("Replace with some text")));
+      compare_text.replace(2, 2, CompareText(STR("Replace with some text")));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 2, TextT(STR("Replace with some text")));
+      text.replace(2, 2, TextL(STR("Replace with some text")));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2184,9 +2184,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, Compare_Text::npos, Compare_Text(STR("Replace with some text")));
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextT(STR("Replace with some text")));
+      text.replace(2, Text::npos, TextL(STR("Replace with some text")));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2198,9 +2198,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, 7, Compare_Text(STR("Replace")));
+      compare_text.replace(2, 7, CompareText(STR("Replace")));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 7, TextT(STR("Replace")));
+      text.replace(2, 7, TextL(STR("Replace")));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2212,9 +2212,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, 2, Compare_Text(STR("Replace with some text")));
+      compare_text.replace(2, 2, CompareText(STR("Replace with some text")));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 2, TextT(STR("Replace with some text")));
+      text.replace(2, 2, TextL(STR("Replace with some text")));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2226,9 +2226,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, Compare_Text::npos, Compare_Text(STR("Replace with some text")));
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextT(STR("Replace with some text")));
+      text.replace(2, Text::npos, TextL(STR("Replace with some text")));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2241,14 +2241,14 @@ namespace
     TEST_FIXTURE(SetupFixture, test_replace_first_last_string)
     {
       // Non-overflow short text.
-      Compare_Text compare_text(short_text.c_str());
+      CompareText compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, Compare_Text(STR("Replace")));
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace")));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, TextT(STR("Replace")));
+      text.replace(text.begin() + 2, text.begin() + 4, TextL(STR("Replace")));
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2260,9 +2260,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, Compare_Text(STR("Replace with some text")));
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace with some text")));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, TextT(STR("Replace with some text")));
+      text.replace(text.begin() + 2, text.begin() + 4, TextL(STR("Replace with some text")));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2274,9 +2274,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 9, Compare_Text(STR("Replace")));
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 9, CompareText(STR("Replace")));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 9, TextT(STR("Replace")));
+      text.replace(text.begin() + 2, text.begin() + 9, TextL(STR("Replace")));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2288,9 +2288,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, Compare_Text(STR("Replace with some text")));
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace with some text")));
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, TextT(STR("Replace with some text")));
+      text.replace(text.begin() + 2, text.begin() + 4, TextL(STR("Replace with some text")));
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2303,14 +2303,14 @@ namespace
     TEST_FIXTURE(SetupFixture, test_replace_position_length_string_subposition_sublength)
     {
       // Non-overflow short text.
-      Compare_Text compare_text(short_text.c_str());
+      CompareText compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
 
-      compare_text.replace(2, 4, Compare_Text(STR("Replace")), 1, 5);
+      compare_text.replace(2, 4, CompareText(STR("Replace")), 1, 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 4, TextT(STR("Replace")), 1, 5);
+      text.replace(2, 4, TextL(STR("Replace")), 1, 5);
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2322,9 +2322,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, Compare_Text::npos, Compare_Text(STR("Replace")), 1, Compare_Text::npos);
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace")), 1, CompareText::npos);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextT(STR("Replace")), 1, Text::npos);
+      text.replace(2, Text::npos, TextL(STR("Replace")), 1, Text::npos);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2336,9 +2336,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, 4, Compare_Text(STR("Replace with some text")), 1, 15);
+      compare_text.replace(2, 4, CompareText(STR("Replace with some text")), 1, 15);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 4, TextT(STR("Replace with some text")), 1, 15);
+      text.replace(2, 4, TextL(STR("Replace with some text")), 1, 15);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2350,9 +2350,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, Compare_Text::npos, Compare_Text(STR("Replace with some text")), 1, Compare_Text::npos);
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")), 1, CompareText::npos);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextT(STR("Replace with some text")), 1, Text::npos);
+      text.replace(2, Text::npos, TextL(STR("Replace with some text")), 1, Text::npos);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2364,9 +2364,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, 7, Compare_Text(STR("Replace")), 1, 5);
+      compare_text.replace(2, 7, CompareText(STR("Replace")), 1, 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 7, TextT(STR("Replace")), 1, 5);
+      text.replace(2, 7, TextL(STR("Replace")), 1, 5);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2378,9 +2378,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, Compare_Text::npos, Compare_Text(STR("Replace")), 1, Compare_Text::npos);
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace")), 1, CompareText::npos);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextT(STR("Replace")), 1, Text::npos);
+      text.replace(2, Text::npos, TextL(STR("Replace")), 1, Text::npos);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2392,9 +2392,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, 4, Compare_Text(STR("Replace with some text")), 1, 15);
+      compare_text.replace(2, 4, CompareText(STR("Replace with some text")), 1, 15);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 4, TextT(STR("Replace with some text")), 1, 15);
+      text.replace(2, 4, TextL(STR("Replace with some text")), 1, 15);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2406,9 +2406,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, Compare_Text::npos, Compare_Text(STR("Replace with some text")), 1, Compare_Text::npos);
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")), 1, CompareText::npos);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextT(STR("Replace with some text")), 1, Text::npos);
+      text.replace(2, Text::npos, TextL(STR("Replace with some text")), 1, Text::npos);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2421,14 +2421,14 @@ namespace
     TEST_FIXTURE(SetupFixture, test_replace_position_length_pointer)
     {
       // Non-overflow short text.
-      Compare_Text compare_text(short_text.c_str());
+      CompareText compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
 
-      compare_text.replace(2, 4, Compare_Text(STR("Replace")).c_str());
+      compare_text.replace(2, 4, CompareText(STR("Replace")).c_str());
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 4, TextT(STR("Replace")).c_str());
+      text.replace(2, 4, TextL(STR("Replace")).c_str());
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2440,9 +2440,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, Compare_Text::npos, Compare_Text(STR("Replace")).c_str());
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace")).c_str());
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextT(STR("Replace")).c_str());
+      text.replace(2, Text::npos, TextL(STR("Replace")).c_str());
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2454,9 +2454,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, 4, Compare_Text(STR("Replace with some text")).c_str());
+      compare_text.replace(2, 4, CompareText(STR("Replace with some text")).c_str());
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 4, TextT(STR("Replace with some text")).c_str());
+      text.replace(2, 4, TextL(STR("Replace with some text")).c_str());
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2468,9 +2468,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, Compare_Text::npos, Compare_Text(STR("Replace with some text")).c_str());
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")).c_str());
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextT(STR("Replace with some text")).c_str());
+      text.replace(2, Text::npos, TextL(STR("Replace with some text")).c_str());
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2482,9 +2482,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, 7, Compare_Text(STR("Replace")).c_str());
+      compare_text.replace(2, 7, CompareText(STR("Replace")).c_str());
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 7, TextT(STR("Replace")).c_str());
+      text.replace(2, 7, TextL(STR("Replace")).c_str());
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2496,9 +2496,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, Compare_Text::npos, Compare_Text(STR("Replace")).c_str());
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace")).c_str());
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextT(STR("Replace")).c_str());
+      text.replace(2, Text::npos, TextL(STR("Replace")).c_str());
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2510,9 +2510,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, 4, Compare_Text(STR("Replace with some text")).c_str());
+      compare_text.replace(2, 4, CompareText(STR("Replace with some text")).c_str());
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 4, TextT(STR("Replace with some text")).c_str());
+      text.replace(2, 4, TextL(STR("Replace with some text")).c_str());
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2524,9 +2524,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, Compare_Text::npos, Compare_Text(STR("Replace with some text")).c_str());
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")).c_str());
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextT(STR("Replace with some text")).c_str());
+      text.replace(2, Text::npos, TextL(STR("Replace with some text")).c_str());
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2539,14 +2539,14 @@ namespace
     TEST_FIXTURE(SetupFixture, test_replace_first_last_pointer)
     {
       // Non-overflow short text.
-      Compare_Text compare_text(short_text.c_str());
+      CompareText compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, Compare_Text(STR("Replace")).c_str());
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace")).c_str());
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, TextT(STR("Replace")).c_str());
+      text.replace(text.begin() + 2, text.begin() + 4, TextL(STR("Replace")).c_str());
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2558,9 +2558,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, Compare_Text(STR("Replace with some text")).c_str());
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace with some text")).c_str());
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, TextT(STR("Replace with some text")).c_str());
+      text.replace(text.begin() + 2, text.begin() + 4, TextL(STR("Replace with some text")).c_str());
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2572,9 +2572,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 9, Compare_Text(STR("Replace")).c_str());
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 9, CompareText(STR("Replace")).c_str());
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 9, TextT(STR("Replace")).c_str());
+      text.replace(text.begin() + 2, text.begin() + 9, TextL(STR("Replace")).c_str());
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2586,9 +2586,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, Compare_Text(STR("Replace with some text")).c_str());
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace with some text")).c_str());
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, TextT(STR("Replace with some text")).c_str());
+      text.replace(text.begin() + 2, text.begin() + 4, TextL(STR("Replace with some text")).c_str());
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2601,14 +2601,14 @@ namespace
     TEST_FIXTURE(SetupFixture, test_replace_position_length_pointer_n)
     {
       // Non-overflow short text.
-      Compare_Text compare_text(short_text.c_str());
+      CompareText compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
 
-      compare_text.replace(2, 4, Compare_Text(STR("Replace")).c_str(), 5);
+      compare_text.replace(2, 4, CompareText(STR("Replace")).c_str(), 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 4, TextT(STR("Replace")).c_str(), 5);
+      text.replace(2, 4, TextL(STR("Replace")).c_str(), 5);
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2620,9 +2620,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, Compare_Text::npos, Compare_Text(STR("Replace")).c_str(), 5);
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace")).c_str(), 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextT(STR("Replace")).c_str(), 5);
+      text.replace(2, Text::npos, TextL(STR("Replace")).c_str(), 5);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2634,9 +2634,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, 4, Compare_Text(STR("Replace with some text")).c_str(), 15);
+      compare_text.replace(2, 4, CompareText(STR("Replace with some text")).c_str(), 15);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 4, TextT(STR("Replace with some text")).c_str(), 15);
+      text.replace(2, 4, TextL(STR("Replace with some text")).c_str(), 15);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2648,9 +2648,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, Compare_Text::npos, Compare_Text(STR("Replace with some text")).c_str(), 15);
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")).c_str(), 15);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextT(STR("Replace with some text")).c_str(), 15);
+      text.replace(2, Text::npos, TextL(STR("Replace with some text")).c_str(), 15);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2662,9 +2662,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, 7, Compare_Text(STR("Replace")).c_str(), 5);
+      compare_text.replace(2, 7, CompareText(STR("Replace")).c_str(), 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 7, TextT(STR("Replace")).c_str(), 5);
+      text.replace(2, 7, TextL(STR("Replace")).c_str(), 5);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2676,9 +2676,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, Compare_Text::npos, Compare_Text(STR("Replace")).c_str(), 5);
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace")).c_str(), 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextT(STR("Replace")).c_str(), 5);
+      text.replace(2, Text::npos, TextL(STR("Replace")).c_str(), 5);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2690,9 +2690,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, 4, Compare_Text(STR("Replace with some text")).c_str(), 15);
+      compare_text.replace(2, 4, CompareText(STR("Replace with some text")).c_str(), 15);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, 4, TextT(STR("Replace with some text")).c_str(), 15);
+      text.replace(2, 4, TextL(STR("Replace with some text")).c_str(), 15);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2704,9 +2704,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, Compare_Text::npos, Compare_Text(STR("Replace with some text")).c_str(), 15);
+      compare_text.replace(2, CompareText::npos, CompareText(STR("Replace with some text")).c_str(), 15);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(2, Text::npos, TextT(STR("Replace with some text")).c_str(), 15);
+      text.replace(2, Text::npos, TextL(STR("Replace with some text")).c_str(), 15);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2719,14 +2719,14 @@ namespace
     TEST_FIXTURE(SetupFixture, test_replace_first_last_pointer_n)
     {
       // Non-overflow short text.
-      Compare_Text compare_text(short_text.c_str());
+      CompareText compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, Compare_Text(STR("Replace")).c_str(), 5);
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace")).c_str(), 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, TextT(STR("Replace")).c_str(), 5);
+      text.replace(text.begin() + 2, text.begin() + 4, TextL(STR("Replace")).c_str(), 5);
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2740,9 +2740,9 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, Compare_Text(STR("Replace with some text")).c_str(), 15);
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace with some text")).c_str(), 15);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, TextT(STR("Replace with some text")).c_str(), 15);
+      text.replace(text.begin() + 2, text.begin() + 4, TextL(STR("Replace with some text")).c_str(), 15);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2756,9 +2756,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 9, Compare_Text(STR("Replace")).c_str(), 5);
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 9, CompareText(STR("Replace")).c_str(), 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 9, TextT(STR("Replace")).c_str(), 5);
+      text.replace(text.begin() + 2, text.begin() + 9, TextL(STR("Replace")).c_str(), 5);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2772,9 +2772,9 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, Compare_Text(STR("Replace with some text")).c_str(), 15);
+      compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, CompareText(STR("Replace with some text")).c_str(), 15);
       compare_text.resize(std::min(compare_text.size(), SIZE));
-      text.replace(text.begin() + 2, text.begin() + 4, TextT(STR("Replace with some text")).c_str(), 15);
+      text.replace(text.begin() + 2, text.begin() + 4, TextL(STR("Replace with some text")).c_str(), 15);
 
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -2789,7 +2789,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_replace_position_length_n_c)
     {
       // Non-overflow short text.
-      Compare_Text compare_text(short_text.c_str());
+      CompareText compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
@@ -2808,7 +2808,7 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, Compare_Text::npos, 7, STR('A'));
+      compare_text.replace(2, CompareText::npos, 7, STR('A'));
       compare_text.resize(std::min(compare_text.size(), SIZE));
       text.replace(2, Text::npos, 7, STR('A'));
 
@@ -2836,7 +2836,7 @@ namespace
       compare_text.assign(short_text.c_str());
       text.assign(short_text.c_str());
 
-      compare_text.replace(2, Compare_Text::npos, 15, STR('A'));
+      compare_text.replace(2, CompareText::npos, 15, STR('A'));
       compare_text.resize(std::min(compare_text.size(), SIZE));
       text.replace(2, Text::npos, 15, STR('A'));
 
@@ -2864,7 +2864,7 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, Compare_Text::npos, 7, STR('A'));
+      compare_text.replace(2, CompareText::npos, 7, STR('A'));
       compare_text.resize(std::min(compare_text.size(), SIZE));
       text.replace(2, Text::npos, 7, STR('A'));
 
@@ -2892,7 +2892,7 @@ namespace
       compare_text.assign(initial_text.c_str());
       text.assign(initial_text.c_str());
 
-      compare_text.replace(2, Compare_Text::npos, 15, STR('A'));
+      compare_text.replace(2, CompareText::npos, 15, STR('A'));
       compare_text.resize(std::min(compare_text.size(), SIZE));
       text.replace(2, Text::npos, 15, STR('A'));
 
@@ -2907,7 +2907,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_replace_first_last_n_c)
     {
       // Non-overflow short text.
-      Compare_Text compare_text(short_text.c_str());
+      CompareText compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
@@ -2969,13 +2969,13 @@ namespace
     TEST_FIXTURE(SetupFixture, test_replace_first_last_first_last)
     {
       // Non-overflow short text.
-      Compare_Text compare_text(short_text.c_str());
+      CompareText compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
       Text text(short_text.c_str(), buffer.data(), buffer.size());
 
-      Compare_Text replace(STR("Replace"));
-      Compare_Text replace_long(STR("Replace with some text"));
+      CompareText replace(STR("Replace"));
+      CompareText replace_long(STR("Replace with some text"));
 
       compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, replace.begin() + 1, replace.begin() + 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
@@ -3033,11 +3033,11 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_single_iterator)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
       TextBuffer buffer{0};
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
 
-      Compare_Text::iterator citr = compare_text.erase(compare_text.begin() + 2);
+      CompareText::iterator citr = compare_text.erase(compare_text.begin() + 2);
       Text::iterator ditr = text.erase(text.begin() + 2);
       CHECK(*citr == *ditr);
 
@@ -3051,11 +3051,11 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_single_const_iterator)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
       TextBuffer buffer{0};
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
 
-      Compare_Text::iterator citr = compare_text.erase(compare_text.cbegin() + 2);
+      CompareText::iterator citr = compare_text.erase(compare_text.cbegin() + 2);
       Text::iterator ditr = text.erase(text.cbegin() + 2);
       CHECK(*citr == *ditr);
 
@@ -3069,11 +3069,11 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_range)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
       TextBuffer buffer{0};
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
 
-      Compare_Text::iterator citr = compare_text.erase(compare_text.cbegin() + 2, compare_text.cbegin() + 4);
+      CompareText::iterator citr = compare_text.erase(compare_text.cbegin() + 2, compare_text.cbegin() + 4);
       Text::iterator ditr = text.erase(text.cbegin() + 2, text.cbegin() + 4);
       CHECK(*citr == *ditr);
 
@@ -3100,7 +3100,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_iterator)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
@@ -3115,7 +3115,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_iterator)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
@@ -3130,7 +3130,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_reverse_iterator)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
@@ -3145,7 +3145,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_reverse_iterator)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
@@ -3364,7 +3364,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_copy)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
       
       TextBuffer buffer{0};
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
@@ -3408,7 +3408,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_copy_count_equals_npos)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
@@ -3416,7 +3416,7 @@ namespace
       value_t buffer1[SIZE];
       value_t buffer2[SIZE];
 
-      size_t length1 = compare_text.copy(buffer1, Compare_Text::npos, 2);
+      size_t length1 = compare_text.copy(buffer1, CompareText::npos, 2);
       buffer1[length1] = STR('\0');
 
       size_t length2 = text.copy(buffer2, Text::npos, 2);
@@ -3436,7 +3436,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_copy_count_too_large)
     {
-      Compare_Text compare_text(initial_text.c_str());
+      CompareText compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
@@ -3674,7 +3674,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_compare_string)
     {
-      Compare_Text compare_text(STR("ABCDEF"));
+      CompareText compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
       Text text(STR("ABCDEF"), buffer.data(), buffer.size());
@@ -3683,35 +3683,35 @@ namespace
       int result;
 
       // Equal.
-      compare_result = compare_text.compare(Compare_Text(STR("ABCDEF")));
-      result = text.compare(TextT(STR("ABCDEF")));
+      compare_result = compare_text.compare(CompareText(STR("ABCDEF")));
+      result = text.compare(TextL(STR("ABCDEF")));
       CHECK(compares_agree(compare_result, result));
 
       // Less.
-      compare_result = compare_text.compare(Compare_Text(STR("ABCDEE")));
-      result = text.compare(TextT(STR("ABCDEE")));
+      compare_result = compare_text.compare(CompareText(STR("ABCDEE")));
+      result = text.compare(TextL(STR("ABCDEE")));
       CHECK(compares_agree(compare_result, result));
 
       // Greater.
-      compare_result = compare_text.compare(Compare_Text(STR("ABCDEG")));
-      result = text.compare(TextT(STR("ABCDEG")));
+      compare_result = compare_text.compare(CompareText(STR("ABCDEG")));
+      result = text.compare(TextL(STR("ABCDEG")));
       CHECK(compares_agree(compare_result, result));
 
       // Shorter.
-      compare_result = compare_text.compare(Compare_Text(STR("ABCDE")));
-      result = text.compare(TextT(STR("ABCDE")));
+      compare_result = compare_text.compare(CompareText(STR("ABCDE")));
+      result = text.compare(TextL(STR("ABCDE")));
       CHECK(compares_agree(compare_result, result));
 
       // Longer.
-      compare_result = compare_text.compare(Compare_Text(STR("ABCDEFG")));
-      result = text.compare(TextT(STR("ABCDEFG")));
+      compare_result = compare_text.compare(CompareText(STR("ABCDEFG")));
+      result = text.compare(TextL(STR("ABCDEFG")));
       CHECK(compares_agree(compare_result, result));
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_compare_position_length_string)
     {
-      Compare_Text compare_text(STR("xxxABCDEFyyy"));
+      CompareText compare_text(STR("xxxABCDEFyyy"));
 
       TextBuffer buffer{0};
       Text text(STR("xxxABCDEFyyy"), buffer.data(), buffer.size());
@@ -3720,35 +3720,35 @@ namespace
       int result;
 
       // Equal.
-      compare_result = compare_text.compare(3, 6, Compare_Text(STR("ABCDEF")));
-      result = text.compare(3, 6, TextT(STR("ABCDEF")));
+      compare_result = compare_text.compare(3, 6, CompareText(STR("ABCDEF")));
+      result = text.compare(3, 6, TextL(STR("ABCDEF")));
       CHECK(compares_agree(compare_result, result));
 
       // Less.
-      compare_result = compare_text.compare(3, 6, Compare_Text(STR("ABCDEE")));
-      result = text.compare(3, 6, TextT(STR("ABCDEE")));
+      compare_result = compare_text.compare(3, 6, CompareText(STR("ABCDEE")));
+      result = text.compare(3, 6, TextL(STR("ABCDEE")));
       CHECK(compares_agree(compare_result, result));
 
       // Greater.
-      compare_result = compare_text.compare(3, 6, Compare_Text(STR("ABCDEG")));
-      result = text.compare(3, 6, TextT(STR("ABCDEG")));
+      compare_result = compare_text.compare(3, 6, CompareText(STR("ABCDEG")));
+      result = text.compare(3, 6, TextL(STR("ABCDEG")));
       CHECK(compares_agree(compare_result, result));
 
       // Shorter.
-      compare_result = compare_text.compare(3, 6, Compare_Text(STR("ABCDE")));
-      result = text.compare(3, 6, TextT(STR("ABCDE")));
+      compare_result = compare_text.compare(3, 6, CompareText(STR("ABCDE")));
+      result = text.compare(3, 6, TextL(STR("ABCDE")));
       CHECK(compares_agree(compare_result, result));
 
       // Longer.
-      compare_result = compare_text.compare(3, 6, Compare_Text(STR("ABCDEFG")));
-      result = text.compare(3, 6, TextT(STR("ABCDEFG")));
+      compare_result = compare_text.compare(3, 6, CompareText(STR("ABCDEFG")));
+      result = text.compare(3, 6, TextL(STR("ABCDEFG")));
       CHECK(compares_agree(compare_result, result));
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_compare_position_length_string_subposition_sublength)
     {
-      Compare_Text compare_text(STR("xxxABCDEFyyy"));
+      CompareText compare_text(STR("xxxABCDEFyyy"));
 
       TextBuffer buffer{0};
       Text text(STR("xxxABCDEFyyy"), buffer.data(), buffer.size());
@@ -3757,35 +3757,35 @@ namespace
       int result;
 
       // Equal.
-      compare_result = compare_text.compare(3, 6, Compare_Text(STR("aaABCDEFbb")), 2, 6);
-      result = text.compare(3, 6, TextT(STR("aaABCDEFbb")), 2, 6);
+      compare_result = compare_text.compare(3, 6, CompareText(STR("aaABCDEFbb")), 2, 6);
+      result = text.compare(3, 6, TextL(STR("aaABCDEFbb")), 2, 6);
       CHECK(compares_agree(compare_result, result));
 
       // Less.
-      compare_result = compare_text.compare(3, 6, Compare_Text(STR("aaABCDEEbb")), 2, 6);
-      result = text.compare(3, 6, TextT(STR("aaABCDEEbb")), 2, 6);
+      compare_result = compare_text.compare(3, 6, CompareText(STR("aaABCDEEbb")), 2, 6);
+      result = text.compare(3, 6, TextL(STR("aaABCDEEbb")), 2, 6);
       CHECK(compares_agree(compare_result, result));
 
       // Greater.
-      compare_result = compare_text.compare(3, 6, Compare_Text(STR("aaABCDEGbb")), 2, 6);
-      result = text.compare(3, 6, TextT(STR("aaABCDEGbb")), 2, 6);
+      compare_result = compare_text.compare(3, 6, CompareText(STR("aaABCDEGbb")), 2, 6);
+      result = text.compare(3, 6, TextL(STR("aaABCDEGbb")), 2, 6);
       CHECK(compares_agree(compare_result, result));
 
       // Shorter.
-      compare_result = compare_text.compare(3, 6, Compare_Text(STR("aaABCDEbb")), 2, 5);
-      result = text.compare(3, 6, TextT(STR("aaABCDEbb")), 2, 5);
+      compare_result = compare_text.compare(3, 6, CompareText(STR("aaABCDEbb")), 2, 5);
+      result = text.compare(3, 6, TextL(STR("aaABCDEbb")), 2, 5);
       CHECK(compares_agree(compare_result, result));
 
       // Longer.
-      compare_result = compare_text.compare(3, 6, Compare_Text(STR("aaABCDEFGbb")), 2, 7);
-      result = text.compare(3, 6, TextT(STR("aaABCDEFGbb")), 2, 7);
+      compare_result = compare_text.compare(3, 6, CompareText(STR("aaABCDEFGbb")), 2, 7);
+      result = text.compare(3, 6, TextL(STR("aaABCDEFGbb")), 2, 7);
       CHECK(compares_agree(compare_result, result));
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_compare_c_string)
     {
-      Compare_Text compare_text(STR("ABCDEF"));
+      CompareText compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
       Text text(STR("ABCDEF"), buffer.data(), buffer.size());
@@ -3822,7 +3822,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_compare_position_length_c_string)
     {
-      Compare_Text compare_text(STR("xxxABCDEFyyy"));
+      CompareText compare_text(STR("xxxABCDEFyyy"));
 
       TextBuffer buffer{0};
       Text text(STR("xxxABCDEFyyy"), buffer.data(), buffer.size());
@@ -3859,7 +3859,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_compare_position_length_c_string_n)
     {
-      Compare_Text compare_text(STR("xxxABCDEFyyy"));
+      CompareText compare_text(STR("xxxABCDEFyyy"));
 
       TextBuffer buffer{0};
       Text text(STR("xxxABCDEFyyy"), buffer.data(), buffer.size());
@@ -3896,29 +3896,29 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_first_of_string_position)
     {
-      Compare_Text compare_text(STR("ABCDEF"));
+      CompareText compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
       Text text(STR("ABCDEF"), buffer.data(), buffer.size());
 
-      size_t position1 = compare_text.find_first_of(Compare_Text(STR("ZCXF")));
-      size_t position2 = text.find_first_of(TextT(STR("ZCXF")));
+      size_t position1 = compare_text.find_first_of(CompareText(STR("ZCXF")));
+      size_t position2 = text.find_first_of(TextL(STR("ZCXF")));
 
       CHECK_EQUAL(position1, position2);
 
-      position1 = compare_text.find_first_of(Compare_Text(STR("WXYZ")));
-      position2 = text.find_first_of(TextT(STR("WXYZ")));
+      position1 = compare_text.find_first_of(CompareText(STR("WXYZ")));
+      position2 = text.find_first_of(TextL(STR("WXYZ")));
 
       CHECK_EQUAL(position1, position2);
 
-      position1 = compare_text.find_first_of(Compare_Text(STR("ZCXF")), 3);
-      position2 = text.find_first_of(TextT(STR("ZCXF")), 3);
+      position1 = compare_text.find_first_of(CompareText(STR("ZCXF")), 3);
+      position2 = text.find_first_of(TextL(STR("ZCXF")), 3);
 
       CHECK_EQUAL(position1, position2);
 
 #include "etl/private/diagnostic_array_bounds_push.h"
-      position1 = compare_text.find_first_of(Compare_Text(STR("ZCXF")), 100);
-      position2 = text.find_first_of(TextT(STR("ZCXF")), 100);
+      position1 = compare_text.find_first_of(CompareText(STR("ZCXF")), 100);
+      position2 = text.find_first_of(TextL(STR("ZCXF")), 100);
 
       CHECK_EQUAL(position1, position2);
 #include "etl/private/diagnostic_pop.h"
@@ -3927,7 +3927,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_first_of_pointer_position)
     {
-      Compare_Text compare_text(STR("ABCDEF"));
+      CompareText compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
       Text text(STR("ABCDEF"), buffer.data(), buffer.size());
@@ -3958,7 +3958,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_first_of_pointer_position_n)
     {
-      Compare_Text compare_text(STR("ABCDEF"));
+      CompareText compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
       Text text(STR("ABCDEF"), buffer.data(), buffer.size());
@@ -3994,7 +3994,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_first_of_character_position)
     {
-      Compare_Text compare_text(STR("ABCDEF"));
+      CompareText compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
       Text text(STR("ABCDEF"), buffer.data(), buffer.size());
@@ -4035,34 +4035,34 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_last_of_string_position)
     {
-      Compare_Text compare_text(STR("ABCDEFABCDE"));
+      CompareText compare_text(STR("ABCDEFABCDE"));
 
       TextBuffer buffer{0};
       Text text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
 
-      size_t position1 = compare_text.find_last_of(Compare_Text(STR("ZCXE")));
-      size_t position2 = text.find_last_of(TextT(STR("ZCXE")));
+      size_t position1 = compare_text.find_last_of(CompareText(STR("ZCXE")));
+      size_t position2 = text.find_last_of(TextL(STR("ZCXE")));
 
       CHECK_EQUAL(position1, position2);
 
-      position1 = compare_text.find_last_of(Compare_Text(STR("WXYZ")), 3);
-      position2 = text.find_last_of(TextT(STR("WXYZ")), 3);
+      position1 = compare_text.find_last_of(CompareText(STR("WXYZ")), 3);
+      position2 = text.find_last_of(TextL(STR("WXYZ")), 3);
 
       CHECK_EQUAL(position1, position2);
 
-      position1 = compare_text.find_last_of(Compare_Text(STR("ZCXE")), 5);
-      position2 = text.find_last_of(TextT(STR("ZCXE")), 5);
+      position1 = compare_text.find_last_of(CompareText(STR("ZCXE")), 5);
+      position2 = text.find_last_of(TextL(STR("ZCXE")), 5);
 
       CHECK_EQUAL(position1, position2);
 
-      position1 = compare_text.find_last_of(Compare_Text(STR("ZCXE")), compare_text.size());
-      position2 = text.find_last_of(TextT(STR("ZCXE")), text.size());
+      position1 = compare_text.find_last_of(CompareText(STR("ZCXE")), compare_text.size());
+      position2 = text.find_last_of(TextL(STR("ZCXE")), text.size());
 
       CHECK_EQUAL(position1, position2);
 
 #include "etl/private/diagnostic_array_bounds_push.h"
-      position1 = compare_text.find_last_of(Compare_Text(STR("ZCXE")), 100);
-      position2 = text.find_last_of(TextT(STR("ZCXE")), 100);
+      position1 = compare_text.find_last_of(CompareText(STR("ZCXE")), 100);
+      position2 = text.find_last_of(TextL(STR("ZCXE")), 100);
 
       CHECK_EQUAL(position1, position2);
 #include "etl/private/diagnostic_pop.h"
@@ -4071,7 +4071,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_last_of_pointer_position)
     {
-      Compare_Text compare_text(STR("ABCDEFABCDE"));
+      CompareText compare_text(STR("ABCDEFABCDE"));
 
       TextBuffer buffer{0};
       Text text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
@@ -4112,7 +4112,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_last_of_pointer_position_n)
     {
-      Compare_Text compare_text(STR("ABCDEFABCDE"));
+      CompareText compare_text(STR("ABCDEFABCDE"));
 
       TextBuffer buffer{0};
       Text text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
@@ -4151,7 +4151,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_last_of_character_position)
     {
-      Compare_Text compare_text(STR("ABCDEF"));
+      CompareText compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
       Text text(STR("ABCDEF"), buffer.data(), buffer.size());
@@ -4192,34 +4192,34 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_first_not_of_string_position)
     {
-      Compare_Text compare_text(STR("ABCDEF"));
+      CompareText compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
       Text text(STR("ABCDEF"), buffer.data(), buffer.size());
 
-      size_t position1 = compare_text.find_first_not_of(Compare_Text(STR("ZAXB")));
-      size_t position2 = text.find_first_not_of(TextT(STR("ZAXB")));
+      size_t position1 = compare_text.find_first_not_of(CompareText(STR("ZAXB")));
+      size_t position2 = text.find_first_not_of(TextL(STR("ZAXB")));
 
       CHECK_EQUAL(position1, position2);
 
-      position1 = compare_text.find_first_not_of(Compare_Text(STR("ZAXB")));
-      position2 = text.find_first_not_of(TextT(STR("ZAXB")));
+      position1 = compare_text.find_first_not_of(CompareText(STR("ZAXB")));
+      position2 = text.find_first_not_of(TextL(STR("ZAXB")));
 
       CHECK_EQUAL(position1, position2);
 
-      position1 = compare_text.find_first_not_of(Compare_Text(STR("ZAXB")), 3);
-      position2 = text.find_first_not_of(TextT(STR("ZAXB")), 3);
+      position1 = compare_text.find_first_not_of(CompareText(STR("ZAXB")), 3);
+      position2 = text.find_first_not_of(TextL(STR("ZAXB")), 3);
 
       CHECK_EQUAL(position1, position2);
 
-      position1 = compare_text.find_first_not_of(Compare_Text(STR("ZAXB")), compare_text.size());
-      position2 = text.find_first_not_of(TextT(STR("ZAXB")), text.size());
+      position1 = compare_text.find_first_not_of(CompareText(STR("ZAXB")), compare_text.size());
+      position2 = text.find_first_not_of(TextL(STR("ZAXB")), text.size());
 
       CHECK_EQUAL(position1, position2);
 
 #include "etl/private/diagnostic_array_bounds_push.h"
-      position1 = compare_text.find_first_not_of(Compare_Text(STR("ZAXB")), 100);
-      position2 = text.find_first_not_of(TextT(STR("ZAXB")), 100);
+      position1 = compare_text.find_first_not_of(CompareText(STR("ZAXB")), 100);
+      position2 = text.find_first_not_of(TextL(STR("ZAXB")), 100);
 
       CHECK_EQUAL(position1, position2);
 #include "etl/private/diagnostic_pop.h"
@@ -4228,7 +4228,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_first_not_of_pointer_position)
     {
-      Compare_Text compare_text(STR("ABCDEF"));
+      CompareText compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
       Text text(STR("ABCDEF"), buffer.data(), buffer.size());
@@ -4264,7 +4264,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_first_not_of_pointer_position_n)
     {
-      Compare_Text compare_text(STR("ABCDEF"));
+      CompareText compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
       Text text(STR("ABCDEF"), buffer.data(), buffer.size());
@@ -4305,7 +4305,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_first_not_of_character_position)
     {
-      Compare_Text compare_text(STR("ABCDEF"));
+      CompareText compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
       Text text(STR("ABCDEF"), buffer.data(), buffer.size());
@@ -4346,34 +4346,34 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_last_not_of_string_position)
     {
-      Compare_Text compare_text(STR("ABCDEFABCDE"));
+      CompareText compare_text(STR("ABCDEFABCDE"));
 
       TextBuffer buffer{0};
       Text text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
 
-      size_t position1 = compare_text.find_last_not_of(Compare_Text(STR("ZEXD")));
-      size_t position2 = text.find_last_not_of(TextT(STR("ZEXD")));
+      size_t position1 = compare_text.find_last_not_of(CompareText(STR("ZEXD")));
+      size_t position2 = text.find_last_not_of(TextL(STR("ZEXD")));
 
       CHECK_EQUAL(position1, position2);
 
-      position1 = compare_text.find_last_not_of(Compare_Text(STR("ZEXD")), 3);
-      position2 = text.find_last_not_of(TextT(STR("ZEXD")), 3);
+      position1 = compare_text.find_last_not_of(CompareText(STR("ZEXD")), 3);
+      position2 = text.find_last_not_of(TextL(STR("ZEXD")), 3);
 
       CHECK_EQUAL(position1, position2);
 
-      position1 = compare_text.find_last_not_of(Compare_Text(STR("ZEXD")), 5);
-      position2 = text.find_last_not_of(TextT(STR("ZEXD")), 5);
+      position1 = compare_text.find_last_not_of(CompareText(STR("ZEXD")), 5);
+      position2 = text.find_last_not_of(TextL(STR("ZEXD")), 5);
 
       CHECK_EQUAL(position1, position2);
 
-      position1 = compare_text.find_last_not_of(Compare_Text(STR("ZEXD")), compare_text.size());
-      position2 = text.find_last_not_of(TextT(STR("ZEXD")), text.size());
+      position1 = compare_text.find_last_not_of(CompareText(STR("ZEXD")), compare_text.size());
+      position2 = text.find_last_not_of(TextL(STR("ZEXD")), text.size());
 
       CHECK_EQUAL(position1, position2);
 
 #include "etl/private/diagnostic_array_bounds_push.h"
-      position1 = compare_text.find_last_not_of(Compare_Text(STR("ZEXD")), 100);
-      position2 = text.find_last_not_of(TextT(STR("ZEXD")), 100);
+      position1 = compare_text.find_last_not_of(CompareText(STR("ZEXD")), 100);
+      position2 = text.find_last_not_of(TextL(STR("ZEXD")), 100);
 
       CHECK_EQUAL(position1, position2);
 #include "etl/private/diagnostic_pop.h"
@@ -4382,7 +4382,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_last_not_of_pointer_position)
     {
-      Compare_Text compare_text(STR("ABCDEFABCDE"));
+      CompareText compare_text(STR("ABCDEFABCDE"));
 
       TextBuffer buffer{0};
       Text text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
@@ -4418,7 +4418,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_last_not_of_pointer_position_n)
     {
-      Compare_Text compare_text(STR("ABCDEFABCDE"));
+      CompareText compare_text(STR("ABCDEFABCDE"));
 
       TextBuffer buffer{0};
       Text text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
@@ -4452,7 +4452,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_last_not_of_character_position)
     {
-      Compare_Text compare_text(STR("ABCDEF"));
+      CompareText compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
       Text text(STR("ABCDEF"), buffer.data(), buffer.size());
@@ -4651,7 +4651,7 @@ namespace
       Text& text = *reinterpret_cast<Text*>(buffer);
       text.set_secure();
 
-      CHECK(TextT(STR("ABCDEF")) == text);
+      CHECK(TextL(STR("ABCDEF")) == text);
 
       Text::pointer pb = text.begin();
       Text::pointer pe = text.end();

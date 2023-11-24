@@ -44,6 +44,8 @@ SOFTWARE.
   #include <variant>
 #endif
 
+#include "etl/private/diagnostic_useless_cast_push.h"
+
 namespace
 {
   // Test variant_etl types.
@@ -1378,7 +1380,9 @@ namespace
       CHECK(etl::get_if<int>(&variant_etl)  == nullptr);
       CHECK(etl::get_if<std::string>(&variant_etl) == nullptr);
 
+#include "etl/private/diagnostic_useless_cast_push.h"
       variant_etl = int(2);
+#include "etl/private/diagnostic_pop.h"
       CHECK(etl::get_if<char>(&variant_etl) == nullptr);
       CHECK(etl::get_if<int>(&variant_etl)  != nullptr);
       CHECK(etl::get_if<std::string>(&variant_etl) == nullptr);
@@ -1593,7 +1597,7 @@ namespace
     //*************************************************************************
     TEST(test_get_if_by_type)
     {
-      int value;
+      int value = 0;
 
       etl::variant<int, double> v(value);
       const etl::variant<int, double> cv(value);
@@ -1629,7 +1633,7 @@ namespace
     //*************************************************************************
     TEST(test_get_if_by_index)
     {
-      int value;
+      int value = 0;
 
       etl::variant<int, double> v(value);
       const etl::variant<int, double> cv(value);
@@ -1916,5 +1920,7 @@ namespace
 #endif
   };
 }
+
+#include "etl/private/diagnostic_pop.h"
 
 #endif

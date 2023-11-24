@@ -208,7 +208,7 @@ namespace
     {
       Data data;
 
-      CHECK(data.size() == size_t(0UL));
+      CHECK(data.size() == 0UL);
       CHECK(data.empty());
       CHECK(data.capacity() == MAX_SIZE);
       CHECK(data.max_size() == MAX_SIZE);
@@ -888,7 +888,7 @@ namespace
       Data data(compare_data.begin(), compare_data.end());
       data.clear();
 
-      CHECK(data.size() == size_t(0UL));
+      CHECK(data.size() == 0UL);
     }
 
     //*************************************************************************
