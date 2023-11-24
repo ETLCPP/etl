@@ -652,7 +652,20 @@ namespace etl
     {
       ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
-      ETL_ASSERT(!full(), ETL_ERROR(unordered_set_full));
+      if (full())
+      {
+        iterator iter = find(key);
+        if (iter == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(unordered_set_full));
+        }
+        else
+        { 
+          result.first = iter;
+          result.second = false;
+          return result;
+        }
+      }
 
       // Get the hash index.
       size_t index = get_bucket_index(key);
@@ -727,7 +740,20 @@ namespace etl
     {
       ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
-      ETL_ASSERT(!full(), ETL_ERROR(unordered_set_full));
+      if (full())
+      {
+        iterator iter = find(key);
+        if (iter == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(unordered_set_full));
+        }
+        else
+        { 
+          result.first = iter;
+          result.second = false;
+          return result;
+        }
+      }
 
       // Get the hash index.
       size_t index = get_bucket_index(key);

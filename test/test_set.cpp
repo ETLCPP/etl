@@ -595,6 +595,51 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_existing_value_when_full)
+    {
+      Compare_Data compare_data;
+      Data data;
+      ETL_OR_STD::pair<Data::iterator, bool> data_result;
+      ETL_OR_STD::pair<Compare_Data::iterator, bool> compare_result;
+
+      for (size_t i = 0; i < MAX_SIZE; ++i)
+      {
+        data_result = data.insert(i);
+        compare_result = compare_data.insert(i);
+
+        // Check that both return successful return results
+        CHECK_EQUAL(*data_result.first, *compare_result.first);
+      }
+
+      // Try to insert when set is full should throw etl::set_full
+      try
+      {
+        data_result = data.insert(MAX_SIZE);
+      }
+      catch(const etl::set_full &e)
+      {}
+
+      // Try adding a duplicate (should return iterator pointing to duplicate) not throw error
+      for (size_t i = 0; i < MAX_SIZE; ++i)
+      {
+        data_result = data.insert(i);
+        compare_result = compare_data.insert(i);
+
+        // Check that both return successful return results
+        CHECK_EQUAL(*data_result.first, *compare_result.first);
+      }
+
+
+
+      // Check that elements in set are the same
+      bool isEqual = Check_Equal(data.begin(),
+                                 data.end(),
+                                 compare_data.begin());
+      CHECK(isEqual);
+
+    }
+
+    //*************************************************************************
     //TEST_FIXTURE(SetupFixture, test_emplace_value)
     //{
     //  Compare_Data compare_data;
