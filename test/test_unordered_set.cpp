@@ -465,6 +465,37 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_existing_value_when_full)
+    {
+      DataNDC data;
+
+      data.insert(N0);  // Inserted
+      data.insert(N1);  // Inserted
+      data.insert(N2);  // Inserted
+      data.insert(N3);  // Inserted
+      data.insert(N4);  // Inserted
+      data.insert(N5);  // Inserted  
+      data.insert(N6);  // Inserted
+      data.insert(N7);  // Inserted
+      data.insert(N8);  // Inserted
+      data.insert(N9);  // Inserted
+      
+      // Try to insert existing item when unordered_set is full should not fail
+      CHECK_NO_THROW(data.insert(N0));
+      CHECK_NO_THROW(data.insert(N1));
+      CHECK_NO_THROW(data.insert(N2));
+      CHECK_NO_THROW(data.insert(N3));
+      CHECK_NO_THROW(data.insert(N4));
+      CHECK_NO_THROW(data.insert(N5));
+      CHECK_NO_THROW(data.insert(N6));
+      CHECK_NO_THROW(data.insert(N7));
+      CHECK_NO_THROW(data.insert(N8));
+      CHECK_NO_THROW(data.insert(N9));
+      
+      CHECK(data.size() == SIZE);
+    }
+    
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_key)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
