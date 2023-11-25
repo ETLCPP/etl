@@ -1,4 +1,4 @@
-name: gcc
+name: gcc-c++20
 on:
   push:
     branches: [ master, development, pull-request/* ]
