@@ -1309,5 +1309,79 @@ namespace
       CHECK(std::u32string(U"...*..*...**.*...*.*.**..****...") == std::u32string(text.c_str()));
       CHECK(std::u32string(U"...*..*...**.*...*.*.**..****...") == std::u32string(stdtext.c_str()));
     }
+
+    //*************************************************************************
+    TEST(test_extract_with_run_time_parameters)
+    {
+      using bs32 = etl::bitset_ext<32, int32_t>;
+
+      bs32::buffer_type buffer;
+      bs32 b(0x12345678UL, buffer);
+
+      CHECK_EQUAL_HEX(uint8_t(0x78), b.extract<uint8_t>( 0, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x3C), b.extract<uint8_t>( 1, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x9E), b.extract<uint8_t>( 2, 8));
+      CHECK_EQUAL_HEX(uint8_t(0xCF), b.extract<uint8_t>( 3, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x67), b.extract<uint8_t>( 4, 8));
+      CHECK_EQUAL_HEX(uint8_t(0xB3), b.extract<uint8_t>( 5, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x59), b.extract<uint8_t>( 6, 8));
+      CHECK_EQUAL_HEX(uint8_t(0xAC), b.extract<uint8_t>( 7, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x56), b.extract<uint8_t>( 8, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x2B), b.extract<uint8_t>( 9, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x15), b.extract<uint8_t>(10, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x8A), b.extract<uint8_t>(11, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x45), b.extract<uint8_t>(12, 8));
+      CHECK_EQUAL_HEX(uint8_t(0xA2), b.extract<uint8_t>(13, 8));
+      CHECK_EQUAL_HEX(uint8_t(0xD1), b.extract<uint8_t>(14, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x68), b.extract<uint8_t>(15, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x34), b.extract<uint8_t>(16, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x1A), b.extract<uint8_t>(17, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x8D), b.extract<uint8_t>(18, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x46), b.extract<uint8_t>(19, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x23), b.extract<uint8_t>(20, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x91), b.extract<uint8_t>(21, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x48), b.extract<uint8_t>(22, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x24), b.extract<uint8_t>(23, 8));
+      CHECK_EQUAL_HEX(uint8_t(0x12), b.extract<uint8_t>(24, 8));
+    }
+
+    //*************************************************************************
+    TEST(test_extract_with_template_parameters)
+    {
+      using bs32 = etl::bitset_ext<32, int32_t>;
+
+      bs32::buffer_type buffer;
+      bs32 b(0x12345678UL, buffer);
+
+      CHECK_EQUAL_HEX(uint8_t(0x78), (b.extract<uint8_t,  0, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x3C), (b.extract<uint8_t,  1, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x9E), (b.extract<uint8_t,  2, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0xCF), (b.extract<uint8_t,  3, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x67), (b.extract<uint8_t,  4, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0xB3), (b.extract<uint8_t,  5, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x59), (b.extract<uint8_t,  6, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0xAC), (b.extract<uint8_t,  7, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x56), (b.extract<uint8_t,  8, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x2B), (b.extract<uint8_t,  9, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x15), (b.extract<uint8_t, 10, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x8A), (b.extract<uint8_t, 11, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x45), (b.extract<uint8_t, 12, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0xA2), (b.extract<uint8_t, 13, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0xD1), (b.extract<uint8_t, 14, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x68), (b.extract<uint8_t, 15, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x34), (b.extract<uint8_t, 16, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x1A), (b.extract<uint8_t, 17, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x8D), (b.extract<uint8_t, 18, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x46), (b.extract<uint8_t, 19, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x23), (b.extract<uint8_t, 20, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x91), (b.extract<uint8_t, 21, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x48), (b.extract<uint8_t, 22, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x24), (b.extract<uint8_t, 23, 8>()));
+      CHECK_EQUAL_HEX(uint8_t(0x12), (b.extract<uint8_t, 24, 8>()));
+
+      // The line below should static assert.
+      //uint8_t v = b.extract<uint8_t, 25, 8>();
+      //uint8_t v = b.extract<uint8_t, 25, 9>();
+    }
   };
 }
