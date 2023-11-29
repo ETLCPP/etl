@@ -190,7 +190,9 @@ namespace UnitTest
      if (!(expected == actual))
      {
        UnitTest::MemoryOutStream stream;
-       stream << std::hex << std::uppercase << std::setfill('0') << "Expected 0x" << std::setw(2 * sizeof(Expected)) << expected << " but was 0x" << std::setw(2 * sizeof(Actual)) << actual;
+       stream << std::hex << std::uppercase << std::setfill('0') 
+              << "Expected 0x" << std::setw(2 * sizeof(Expected)) << (expected & ~(typename std::make_unsigned<Expected>::type(0))) 
+              << " but was 0x" << std::setw(2 * sizeof(Actual))   << (actual   & ~(typename std::make_unsigned<Actual>::type(0)));
 
        results.OnTestFailure(details, stream.GetText());
      }
@@ -214,7 +216,8 @@ namespace UnitTest
      if (expected == actual)
      {
        UnitTest::MemoryOutStream stream;
-       stream << std::hex << std::uppercase << std::setfill('0') << std::setw(2 * sizeof(Actual)) << "Expected not equal, but both values are " << actual;
+       stream << std::hex << std::uppercase << std::setfill('0') << std::setw(2 * sizeof(Actual)) 
+              << "Expected not equal, but both values are " << (actual & ~(typename std::make_unsigned<Actual>::type(0)));
 
        results.OnTestFailure(details, stream.GetText());
      }
