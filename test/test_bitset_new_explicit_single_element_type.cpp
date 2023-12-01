@@ -1587,7 +1587,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_extract_with_run_time_parameters)
+    TEST(test_extract_uint8_t_with_run_time_parameters)
     {
       ETL_CONSTEXPR14 etl::bitset<32, uint32_t> b(0x12345678UL);
 
@@ -1620,7 +1620,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_extract_with_template_parameters)
+    TEST(test_extract_uint8_t_with_template_parameters)
     {
       ETL_CONSTEXPR14 etl::bitset<32, uint32_t> b(0x12345678UL);
 
