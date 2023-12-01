@@ -1480,7 +1480,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_extract_with_run_time_parameters)
+    TEST(test_extract_uint8_t_with_run_time_parameters)
     {
       using bs32 = etl::bitset_ext<32, int32_t>;
 
@@ -1515,7 +1515,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_extract_with_template_parameters)
+    TEST(test_extract_uint8_t_with_template_parameters)
     {
       using bs32 = etl::bitset_ext<32, int32_t>;
 
