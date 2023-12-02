@@ -416,11 +416,61 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Extract an value from multiple elements.
+    //*************************************************************************
+    template <typename T>
+    ETL_CONSTEXPR14
+    typename etl::make_unsigned<T>::type extract_from_multiple_elements(const element_type* pbuffer,
+                                                                        int                 element_index,
+                                                                        size_t              active_bits_in_msb,
+                                                                        size_t              length) const ETL_NOEXCEPT
+    {
+      typedef typename etl::make_unsigned<T>::type unsigned_t;
+
+      unsigned_t value(0);
+
+      // Extract the first element, if partially filled.
+      if (active_bits_in_msb < Bits_Per_Element)
+      {
+        element_type mask = ~(~element_type(0) << active_bits_in_msb);
+        value = pbuffer[element_index] & mask;
+        length -= active_bits_in_msb;
+        if (length >= Bits_Per_Element)
+        {
+          value = value << Bits_Per_Element;
+        }
+        --element_index;
+      }
+
+      // Loop through the fully filled elements
+      while (length >= Bits_Per_Element)
+      {
+        value |= pbuffer[element_index];
+        length -= Bits_Per_Element;
+        if (length >= Bits_Per_Element)
+        {
+          value = value << Bits_Per_Element;
+        }
+        --element_index;
+      }
+
+      // Extract the last element, if partially filled.
+      if (length != 0)
+      {
+        value = value << length;
+        element_type mask = ~(~element_type(0) << length);
+        value |= (pbuffer[element_index] >> (Bits_Per_Element - length)) & mask;
+      }
+
+      return value;
+    }
+
+    //*************************************************************************
     /// Extract an integral value from an arbitary position and length.
     //*************************************************************************
     template <typename T>
     ETL_CONSTEXPR14
-    T extract_from_buffer(const_pointer pbuffer, size_t position, size_t length) const ETL_NOEXCEPT
+    typename etl::make_unsigned<T>::type extract_from_buffer(const_pointer pbuffer, size_t position, size_t length) const ETL_NOEXCEPT
     {
       typedef typename etl::make_unsigned<T>::type unsigned_t;
 
@@ -442,37 +492,13 @@ namespace etl
         // Get the number of active bits in the msb element 
         size_t active_bits_in_msb = (position + length) - (Msb_Element_Index * Bits_Per_Element);
 
-        // Extract the first element if partially filled.
         // Start with index of the element containing the msb.
         int element_index = Msb_Element_Index;
 
-        if (active_bits_in_msb < Bits_Per_Element)
-        {
-          element_type mask = ~(~element_type(0) << active_bits_in_msb);
-          value |= pbuffer[element_index] & mask;
-          length -= active_bits_in_msb;
-          --element_index;
-        }
-
-        // Loop through the fully filled elements
-        while (length >= Bits_Per_Element)
-        {
-          value <<= Bits_Per_Element;
-          value |= pbuffer[element_index];
-          length -= Bits_Per_Element;
-          --element_index;
-        }
-
-        // Check if the last element is partially filled and extract.
-        if (length != 0)
-        {
-          value <<= length;
-          element_type mask = ~(~element_type(0) << length);
-          value |= (pbuffer[element_index] >> (Bits_Per_Element - length)) & mask;
-        }
+        value = extract_from_multiple_elements<T>(pbuffer, element_index, active_bits_in_msb, length);
       }
 
-      return static_cast<T>(value);
+      return value;
     }
 
     //*************************************************************************
@@ -480,7 +506,7 @@ namespace etl
     //*************************************************************************
     template <typename T, size_t Position, size_t Length>
     ETL_CONSTEXPR14
-    typename etl::enable_if<value_is_in_one_element<Position, Length, Bits_Per_Element>::value, T>::type
+    typename etl::enable_if<value_is_in_one_element<Position, Length, Bits_Per_Element>::value, typename etl::make_unsigned<T>::type>::type
       extract_from_buffer(const_pointer pbuffer) const
     {
       typedef typename etl::make_unsigned<T>::type unsigned_t;
@@ -489,9 +515,7 @@ namespace etl
       const unsigned_t Mask          = ~(~0 << Length);
       const unsigned_t Shift         = Position % Bits_Per_Element;
       
-      unsigned_t value = static_cast<unsigned_t>(pbuffer[Element_Index] >> Shift) & Mask;
-
-      return static_cast<T>(value);
+      return  static_cast<unsigned_t>(pbuffer[Element_Index] >> Shift) & Mask;
     }
 
     //*************************************************************************
@@ -499,13 +523,11 @@ namespace etl
     //*************************************************************************
     template <typename T, size_t Position, size_t Length>
     ETL_CONSTEXPR14
-    typename etl::enable_if<!value_is_in_one_element<Position, Length, Bits_Per_Element>::value, T>::type
+    typename etl::enable_if<!value_is_in_one_element<Position, Length, Bits_Per_Element>::value, typename etl::make_unsigned<T>::type>::type
       extract_from_buffer(const_pointer pbuffer) const
     {
       typedef typename etl::make_unsigned<T>::type unsigned_t;
-
-      unsigned_t value(0);
-
+       
       const int Msb_Element_Index = (Position + Length - 1) >> etl::log2<Bits_Per_Element>::value;
 
       // Start with index of the element containing the msb.
@@ -515,35 +537,9 @@ namespace etl
       size_t length = Length;
 
       // Get the number of active bits in the first element 
-      size_t active_bits_in_element = ((Position + Length - 1) % Bits_Per_Element) + 1;
+      size_t active_bits_in_msb = ((Position + Length - 1) % Bits_Per_Element) + 1;
 
-      // Extract the first element if partially filled.
-      if (active_bits_in_element < Bits_Per_Element)
-      {
-        element_type mask = ~(~element_type(0) << active_bits_in_element);
-        value |= pbuffer[element_index] & mask;
-        length -= active_bits_in_element;
-        --element_index;
-      }
-
-      // Loop through the fully filled elements
-      while (length >= Bits_Per_Element)
-      {
-        value <<= Bits_Per_Element;
-        value |= pbuffer[element_index];
-        length -= Bits_Per_Element;
-        --element_index;
-      }
-
-      // Check if the last element is partially filled and extract.
-      if (length != 0)
-      {
-        value <<= length;
-        element_type mask = ~(~element_type(0) << length);
-        value |= (pbuffer[element_index] >> (Bits_Per_Element - length)) & mask;
-      }
-
-      return static_cast<T>(value);
+      return extract_from_multiple_elements<T>(pbuffer, element_index, active_bits_in_msb, length);
     }
 
     //*************************************************************************
@@ -2222,7 +2218,16 @@ namespace etl
     {
       ETL_ASSERT_OR_RETURN_VALUE((position + length) <= Active_Bits, ETL_ERROR(bitset_overflow), 0);
 
-      return ibitset.extract_from_buffer<T>(buffer, position, length);
+      typedef typename etl::make_unsigned<T>::type unsigned_t;
+
+      unsigned_t value = ibitset.template extract_from_buffer<T>(buffer, position, length);;
+
+      if ((length != etl::integral_limits<T>::bits) && etl::integral_limits<T>::is_signed)
+      {
+        value = etl::sign_extend<T>(value, length);
+      }
+
+      return value;
     }
 
     //*************************************************************************
@@ -2235,7 +2240,16 @@ namespace etl
     {
       ETL_STATIC_ASSERT((Position + Length) <= Active_Bits, "Position/Length overflows bitset");
 
-      return ibitset.extract_from_buffer<T, Position, Length>(buffer);
+      typedef typename etl::make_unsigned<T>::type unsigned_t;
+
+      unsigned_t value = ibitset.template extract_from_buffer<T, Position, Length>(buffer);
+
+      if ETL_IF_CONSTEXPR((Length != etl::integral_limits<T>::bits) && etl::integral_limits<T>::is_signed)
+      {
+        value = etl::sign_extend<T, Length>(value);
+      }
+
+      return value;
     }
 
     //*************************************************************************
@@ -4010,7 +4024,7 @@ namespace etl
     {
       ETL_ASSERT_OR_RETURN_VALUE((position + length) <= Active_Bits, ETL_ERROR(bitset_overflow), 0);
 
-      return ibitset.extract_from_buffer<T>(pbuffer, position, length);
+      return ibitset.template extract_from_buffer<T>(pbuffer, position, length);
     }
 
     //*************************************************************************
@@ -4023,7 +4037,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT((Position + Length) <= Active_Bits, "Position/Length overflows bitset");
 
-      return ibitset.extract_from_buffer<T, Position, Length>(pbuffer);
+      return ibitset.template extract_from_buffer<T, Position, Length>(pbuffer);
     }
 
     //*************************************************************************
