@@ -3400,14 +3400,30 @@
     <None Include="..\..\scripts\update_version.py">
       <Filter>Tests\Scripts</Filter>
     </None>
-    <None Include="..\..\.github\workflows\clang-c++11.yml" />
-    <None Include="..\..\.github\workflows\clang-c++14.yml" />
-    <None Include="..\..\.github\workflows\clang-c++17.yml" />
-    <None Include="..\..\.github\workflows\clang-c++20.yml" />
-    <None Include="..\..\.github\workflows\gcc-c++11.yml" />
-    <None Include="..\..\.github\workflows\gcc-c++14.yml" />
-    <None Include="..\..\.github\workflows\gcc-c++17.yml" />
-    <None Include="..\..\.github\workflows\gcc-c++20.yml" />
+    <None Include="..\..\.github\workflows\clang-c++11.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang-c++14.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang-c++17.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang-c++20.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-c++11.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-c++14.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-c++17.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-c++20.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\support\Release notes.txt">
