@@ -1,6 +1,8 @@
 ===============================================================================
 20.38.7
 Updated CI scripts
+Updated build script text
+Added additional etl::make_lsb_mask and etl::make_msb_mask binary functions
 #779 hash.h: warnings produced with -Wfloat-equal
 #781 etl::multi_span::iterator::operator *() fails if first span is empty
 #780 endian enum_type produces useless-cast warnings
