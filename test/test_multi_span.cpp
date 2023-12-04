@@ -203,7 +203,7 @@ namespace
       ++itr;      
       CHECK_EQUAL(struct_data2[2].i, (*itr).i);
       ++itr;
-      CHECK_EQUAL(ETL_NULLPTR, itr.operator->());
+      CHECK(ETL_NULLPTR == itr.operator->());
     }
   };
 }
