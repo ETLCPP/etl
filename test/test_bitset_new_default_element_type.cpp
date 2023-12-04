@@ -2318,18 +2318,16 @@ namespace
     {
       ETL_CONSTEXPR14 etl::bitset<32> b(0x12345678UL);
 
-      auto v = b.extract<int8_t>(1, 6);
-
-      CHECK_EQUAL_HEX(int8_t(0xF8), (b.extract<int8_t>(0, 6)));
-      CHECK_EQUAL_HEX(int8_t(0xFC), (b.extract<int8_t>(1, 6)));
-      CHECK_EQUAL_HEX(int8_t(0x1E), (b.extract<int8_t>(2, 6)));
-      CHECK_EQUAL_HEX(int8_t(0x0F), (b.extract<int8_t>(3, 6)));
-      CHECK_EQUAL_HEX(int8_t(0xE7), (b.extract<int8_t>(4, 6)));
-      CHECK_EQUAL_HEX(int8_t(0xF3), (b.extract<int8_t>(5, 6)));
-      CHECK_EQUAL_HEX(int8_t(0x19), (b.extract<int8_t>(6, 6)));
-      CHECK_EQUAL_HEX(int8_t(0xEC), (b.extract<int8_t>(7, 6)));
-      CHECK_EQUAL_HEX(int8_t(0x16), (b.extract<int8_t>(8, 6)));
-      CHECK_EQUAL_HEX(int8_t(0xEB), (b.extract<int8_t>(9, 6)));
+      CHECK_EQUAL_HEX(int8_t(0xF8), (b.extract<int8_t>( 0, 6)));
+      CHECK_EQUAL_HEX(int8_t(0xFC), (b.extract<int8_t>( 1, 6)));
+      CHECK_EQUAL_HEX(int8_t(0x1E), (b.extract<int8_t>( 2, 6)));
+      CHECK_EQUAL_HEX(int8_t(0x0F), (b.extract<int8_t>( 3, 6)));
+      CHECK_EQUAL_HEX(int8_t(0xE7), (b.extract<int8_t>( 4, 6)));
+      CHECK_EQUAL_HEX(int8_t(0xF3), (b.extract<int8_t>( 5, 6)));
+      CHECK_EQUAL_HEX(int8_t(0x19), (b.extract<int8_t>( 6, 6)));
+      CHECK_EQUAL_HEX(int8_t(0xEC), (b.extract<int8_t>( 7, 6)));
+      CHECK_EQUAL_HEX(int8_t(0x16), (b.extract<int8_t>( 8, 6)));
+      CHECK_EQUAL_HEX(int8_t(0xEB), (b.extract<int8_t>( 9, 6)));
       CHECK_EQUAL_HEX(int8_t(0x15), (b.extract<int8_t>(10, 6)));
       CHECK_EQUAL_HEX(int8_t(0x0A), (b.extract<int8_t>(11, 6)));
       CHECK_EQUAL_HEX(int8_t(0x05), (b.extract<int8_t>(12, 6)));
@@ -2357,16 +2355,16 @@ namespace
     {
       ETL_CONSTEXPR14 etl::bitset<32> b(0x12345678UL);
 
-      CHECK_EQUAL_HEX(int8_t(0xF8), (b.extract<int8_t, 0, 6>()));
-      CHECK_EQUAL_HEX(int8_t(0xFC), (b.extract<int8_t, 1, 6>()));
-      CHECK_EQUAL_HEX(int8_t(0x1E), (b.extract<int8_t, 2, 6>()));
-      CHECK_EQUAL_HEX(int8_t(0x0F), (b.extract<int8_t, 3, 6>()));
-      CHECK_EQUAL_HEX(int8_t(0xE7), (b.extract<int8_t, 4, 6>()));
-      CHECK_EQUAL_HEX(int8_t(0xF3), (b.extract<int8_t, 5, 6>()));
-      CHECK_EQUAL_HEX(int8_t(0x19), (b.extract<int8_t, 6, 6>()));
-      CHECK_EQUAL_HEX(int8_t(0xEC), (b.extract<int8_t, 7, 6>()));
-      CHECK_EQUAL_HEX(int8_t(0x16), (b.extract<int8_t, 8, 6>()));
-      CHECK_EQUAL_HEX(int8_t(0xEB), (b.extract<int8_t, 9, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0xF8), (b.extract<int8_t,  0, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0xFC), (b.extract<int8_t,  1, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0x1E), (b.extract<int8_t,  2, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0x0F), (b.extract<int8_t,  3, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0xE7), (b.extract<int8_t,  4, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0xF3), (b.extract<int8_t,  5, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0x19), (b.extract<int8_t,  6, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0xEC), (b.extract<int8_t,  7, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0x16), (b.extract<int8_t,  8, 6>()));
+      CHECK_EQUAL_HEX(int8_t(0xEB), (b.extract<int8_t,  9, 6>()));
       CHECK_EQUAL_HEX(int8_t(0x15), (b.extract<int8_t, 10, 6>()));
       CHECK_EQUAL_HEX(int8_t(0x0A), (b.extract<int8_t, 11, 6>()));
       CHECK_EQUAL_HEX(int8_t(0x05), (b.extract<int8_t, 12, 6>()));
@@ -2653,16 +2651,16 @@ namespace
     {
       ETL_CONSTEXPR14 etl::bitset<32> b(0x12345678UL);
 
-      CHECK_EQUAL_HEX(int16_t(0x5678), b.extract<int16_t>(0, 16));
-      CHECK_EQUAL_HEX(int16_t(0x2B3C), b.extract<int16_t>(1, 16));
-      CHECK_EQUAL_HEX(int16_t(0x159E), b.extract<int16_t>(2, 16));
-      CHECK_EQUAL_HEX(int16_t(0x8ACF), b.extract<int16_t>(3, 16));
-      CHECK_EQUAL_HEX(int16_t(0x4567), b.extract<int16_t>(4, 16));
-      CHECK_EQUAL_HEX(int16_t(0xA2B3), b.extract<int16_t>(5, 16));
-      CHECK_EQUAL_HEX(int16_t(0xD159), b.extract<int16_t>(6, 16));
-      CHECK_EQUAL_HEX(int16_t(0x68AC), b.extract<int16_t>(7, 16));
-      CHECK_EQUAL_HEX(int16_t(0x3456), b.extract<int16_t>(8, 16));
-      CHECK_EQUAL_HEX(int16_t(0x1A2B), b.extract<int16_t>(9, 16));
+      CHECK_EQUAL_HEX(int16_t(0x5678), b.extract<int16_t>( 0, 16));
+      CHECK_EQUAL_HEX(int16_t(0x2B3C), b.extract<int16_t>( 1, 16));
+      CHECK_EQUAL_HEX(int16_t(0x159E), b.extract<int16_t>( 2, 16));
+      CHECK_EQUAL_HEX(int16_t(0x8ACF), b.extract<int16_t>( 3, 16));
+      CHECK_EQUAL_HEX(int16_t(0x4567), b.extract<int16_t>( 4, 16));
+      CHECK_EQUAL_HEX(int16_t(0xA2B3), b.extract<int16_t>( 5, 16));
+      CHECK_EQUAL_HEX(int16_t(0xD159), b.extract<int16_t>( 6, 16));
+      CHECK_EQUAL_HEX(int16_t(0x68AC), b.extract<int16_t>( 7, 16));
+      CHECK_EQUAL_HEX(int16_t(0x3456), b.extract<int16_t>( 8, 16));
+      CHECK_EQUAL_HEX(int16_t(0x1A2B), b.extract<int16_t>( 9, 16));
       CHECK_EQUAL_HEX(int16_t(0x8D15), b.extract<int16_t>(10, 16));
       CHECK_EQUAL_HEX(int16_t(0x468A), b.extract<int16_t>(11, 16));
       CHECK_EQUAL_HEX(int16_t(0x2345), b.extract<int16_t>(12, 16));
@@ -2680,16 +2678,16 @@ namespace
     {
       ETL_CONSTEXPR14 etl::bitset<32> b(0x12345678UL);
 
-      CHECK_EQUAL_HEX(int16_t(0x5678), (b.extract<int16_t, 0, 16>()));
-      CHECK_EQUAL_HEX(int16_t(0x2B3C), (b.extract<int16_t, 1, 16>()));
-      CHECK_EQUAL_HEX(int16_t(0x159E), (b.extract<int16_t, 2, 16>()));
-      CHECK_EQUAL_HEX(int16_t(0x8ACF), (b.extract<int16_t, 3, 16>()));
-      CHECK_EQUAL_HEX(int16_t(0x4567), (b.extract<int16_t, 4, 16>()));
-      CHECK_EQUAL_HEX(int16_t(0xA2B3), (b.extract<int16_t, 5, 16>()));
-      CHECK_EQUAL_HEX(int16_t(0xD159), (b.extract<int16_t, 6, 16>()));
-      CHECK_EQUAL_HEX(int16_t(0x68AC), (b.extract<int16_t, 7, 16>()));
-      CHECK_EQUAL_HEX(int16_t(0x3456), (b.extract<int16_t, 8, 16>()));
-      CHECK_EQUAL_HEX(int16_t(0x1A2B), (b.extract<int16_t, 9, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0x5678), (b.extract<int16_t,  0, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0x2B3C), (b.extract<int16_t,  1, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0x159E), (b.extract<int16_t,  2, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0x8ACF), (b.extract<int16_t,  3, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0x4567), (b.extract<int16_t,  4, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0xA2B3), (b.extract<int16_t,  5, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0xD159), (b.extract<int16_t,  6, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0x68AC), (b.extract<int16_t,  7, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0x3456), (b.extract<int16_t,  8, 16>()));
+      CHECK_EQUAL_HEX(int16_t(0x1A2B), (b.extract<int16_t,  9, 16>()));
       CHECK_EQUAL_HEX(int16_t(0x8D15), (b.extract<int16_t, 10, 16>()));
       CHECK_EQUAL_HEX(int16_t(0x468A), (b.extract<int16_t, 11, 16>()));
       CHECK_EQUAL_HEX(int16_t(0x2345), (b.extract<int16_t, 12, 16>()));

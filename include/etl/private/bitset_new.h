@@ -432,7 +432,7 @@ namespace etl
       // Extract the first element, if partially filled.
       if (active_bits_in_msb < Bits_Per_Element)
       {
-        element_type mask = ~(~element_type(0) << active_bits_in_msb);
+        element_type mask = etl::make_lsb_mask< element_type>(active_bits_in_msb);
         value = pbuffer[element_index] & mask;
         length -= active_bits_in_msb;
         if (length >= Bits_Per_Element)
@@ -458,7 +458,7 @@ namespace etl
       if (length != 0)
       {
         value = value << length;
-        element_type mask = ~(~element_type(0) << length);
+        element_type mask = etl::make_lsb_mask< element_type>(length);
         value |= (pbuffer[element_index] >> (Bits_Per_Element - length)) & mask;
       }
 
@@ -482,7 +482,7 @@ namespace etl
       // Is the value contained within one element?
       if (Msb_Element_Index == Lsb_Element_Index)
       {
-        const unsigned_t Mask = ~(~0 << length);
+        const unsigned_t Mask  = etl::make_lsb_mask< unsigned_t>(length);
         const unsigned_t Shift = position % Bits_Per_Element;
 
         value = static_cast<unsigned_t>(pbuffer[Msb_Element_Index] >> Shift) & Mask;
@@ -512,7 +512,7 @@ namespace etl
       typedef typename etl::make_unsigned<T>::type unsigned_t;
 
       const int        Element_Index = (Position + Length - 1) >> etl::log2<Bits_Per_Element>::value;
-      const unsigned_t Mask          = ~(~0 << Length);
+      const unsigned_t Mask          = etl::lsb_mask<unsigned_t, Length>::value;
       const unsigned_t Shift         = Position % Bits_Per_Element;
       
       return  static_cast<unsigned_t>(pbuffer[Element_Index] >> Shift) & Mask;
@@ -525,9 +525,7 @@ namespace etl
     ETL_CONSTEXPR14
     typename etl::enable_if<!value_is_in_one_element<Position, Length, Bits_Per_Element>::value, typename etl::make_unsigned<T>::type>::type
       extract_from_buffer(const_pointer pbuffer) const
-    {
-      typedef typename etl::make_unsigned<T>::type unsigned_t;
-       
+    {      
       const int Msb_Element_Index = (Position + Length - 1) >> etl::log2<Bits_Per_Element>::value;
 
       // Start with index of the element containing the msb.
@@ -992,7 +990,7 @@ namespace etl
   /// Specialisation that uses a single element if the element type is the 
   /// same size as the number of active bits.
   //***************************************************************************
-  template <size_t   Active_Bits, typename TElement>
+  template <size_t Active_Bits, typename TElement>
   class bitset<Active_Bits, TElement, true> : public bitset_constants<>
   {
   public:
@@ -1427,10 +1425,19 @@ namespace etl
       ETL_ASSERT_OR_RETURN_VALUE(length <= etl::integral_limits<T>::bits, ETL_ERROR(bitset_overflow), 0);
       ETL_ASSERT_OR_RETURN_VALUE((position + length) <= Active_Bits,      ETL_ERROR(bitset_overflow), 0);
 
-      element_type mask = (~(~0u << length) << position);
-      T value((buffer & mask) >> position);
+      typedef typename etl::make_unsigned<T>::type unsigned_t;
 
-      return value;
+      const unsigned_t Mask  = etl::make_lsb_mask< unsigned_t>(length);
+      const unsigned_t Shift = position % Bits_Per_Element;
+
+      unsigned_t value = static_cast<unsigned_t>(buffer >> Shift) & Mask;
+
+      if ((length != etl::integral_limits<T>::bits) && etl::integral_limits<T>::is_signed)
+      {
+        value = etl::sign_extend<T>(value, length);
+      }
+
+      return static_cast<T>(value);
     }
 
     //*************************************************************************
@@ -1444,10 +1451,19 @@ namespace etl
       ETL_STATIC_ASSERT(Length <= etl::integral_limits<T>::bits, "Length is larger that the required type");
       ETL_STATIC_ASSERT((Position + Length) <= Active_Bits,      "Position/Length overflows bitset");
       
-      element_type mask = (~(~0u << Length) << Position);
-      T value((buffer & mask) >> Position);
+      typedef typename etl::make_unsigned<T>::type unsigned_t;
 
-      return value;
+      const unsigned_t Mask  = etl::make_lsb_mask<unsigned_t, Length>();
+      const unsigned_t Shift = Position % Bits_Per_Element;
+
+      unsigned_t value = static_cast<unsigned_t>(buffer >> Shift) & Mask;
+
+      if ETL_IF_CONSTEXPR((Length != etl::integral_limits<T>::bits) && etl::integral_limits<T>::is_signed)
+      {
+        value = etl::sign_extend<T, Length>(value);
+      }
+
+      return static_cast<T>(value);
     }
 
     //*************************************************************************
@@ -2227,7 +2243,7 @@ namespace etl
         value = etl::sign_extend<T>(value, length);
       }
 
-      return value;
+      return static_cast<T>(value);
     }
 
     //*************************************************************************
@@ -2249,7 +2265,7 @@ namespace etl
         value = etl::sign_extend<T, Length>(value);
       }
 
-      return value;
+      return static_cast<T>(value);
     }
 
     //*************************************************************************
@@ -3223,10 +3239,19 @@ namespace etl
     {
       ETL_ASSERT_OR_RETURN_VALUE((position + length) <= Active_Bits, ETL_ERROR(bitset_overflow), 0);
 
-      element_type mask = (~(~0u << length) << position);
-      T v((*pbuffer & mask) >> position);
+      typedef typename etl::make_unsigned<T>::type unsigned_t;
 
-      return v;
+      const unsigned_t Mask = etl::make_lsb_mask<unsigned_t>(length);
+      const unsigned_t Shift = position % Bits_Per_Element;
+
+      unsigned_t value = static_cast<unsigned_t>(*pbuffer >> Shift) & Mask;
+
+      if ((length != etl::integral_limits<T>::bits) && etl::integral_limits<T>::is_signed)
+      {
+        value = etl::sign_extend<T>(value, length);
+      }
+
+      return static_cast<T>(value);
     }
 
     //*************************************************************************
@@ -3239,10 +3264,19 @@ namespace etl
     {
       ETL_STATIC_ASSERT((Position + Length) <= Active_Bits, "Position/Length overflows bitset");
 
-      element_type mask = (~(~0u << Length) << Position);
-      T v((*pbuffer & mask) >> Position);
+      typedef typename etl::make_unsigned<T>::type unsigned_t;
 
-      return v;
+      const unsigned_t Mask = etl::make_lsb_mask<unsigned_t, Length>();
+      const unsigned_t Shift = Position % Bits_Per_Element;
+
+      unsigned_t value = static_cast<unsigned_t>(*pbuffer >> Shift) & Mask;
+
+      if ETL_IF_CONSTEXPR((Length != etl::integral_limits<T>::bits) && etl::integral_limits<T>::is_signed)
+      {
+        value = etl::sign_extend<T, Length>(value);
+      }
+
+      return static_cast<T>(value);
     }
 
     //*************************************************************************
@@ -4024,7 +4058,16 @@ namespace etl
     {
       ETL_ASSERT_OR_RETURN_VALUE((position + length) <= Active_Bits, ETL_ERROR(bitset_overflow), 0);
 
-      return ibitset.template extract_from_buffer<T>(pbuffer, position, length);
+      typedef typename etl::make_unsigned<T>::type unsigned_t;
+
+      unsigned_t value = ibitset.template extract_from_buffer<T>(pbuffer, position, length);
+
+      if ((length != etl::integral_limits<T>::bits) && etl::integral_limits<T>::is_signed)
+      {
+        value = etl::sign_extend<T>(value, length);
+      }
+
+      return static_cast<T>(value);
     }
 
     //*************************************************************************
@@ -4037,7 +4080,16 @@ namespace etl
     {
       ETL_STATIC_ASSERT((Position + Length) <= Active_Bits, "Position/Length overflows bitset");
 
-      return ibitset.template extract_from_buffer<T, Position, Length>(pbuffer);
+      typedef typename etl::make_unsigned<T>::type unsigned_t;
+
+      unsigned_t value = ibitset.template extract_from_buffer<T, Position, Length>(pbuffer);
+
+      if ETL_IF_CONSTEXPR((Length != etl::integral_limits<T>::bits) && etl::integral_limits<T>::is_signed)
+      {
+        value = etl::sign_extend<T, Length>(value);
+      }
+
+      return static_cast<T>(value);
     }
 
     //*************************************************************************
