@@ -43,7 +43,7 @@ PrintHeader()
 	echo " Language standard : C++$cxx_standard                                       " | tee -a log.txt
     echo " Optimisation      : $opt                                                   " | tee -a log.txt
 	echo " Sanitizer         : $sanitize                                              " | tee -a log.txt
-	echo " ETL Version       : $etl_version                                           " | tee -a log.txt
+	echo " ETL version       : $etl_version                                           " | tee -a log.txt
 	echo " Git branch        : $(ParseGitBranch)                                      " | tee -a log.txt
 	echo " Processes         : ${CMAKE_BUILD_PARALLEL_LEVEL}                          " | tee -a log.txt
 	echo "============================================================================" | tee -a log.txt
