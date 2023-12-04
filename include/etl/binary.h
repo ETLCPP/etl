@@ -2216,6 +2216,8 @@ namespace etl
   {
   public:
 
+    ETL_STATIC_ASSERT(NBits <= etl::integral_limits<T>::bits, "Mask exceeds type size");
+
     static ETL_CONSTANT T value = static_cast<T>(etl::max_value_for_nbits<NBits>::value);
   };
 
@@ -2223,13 +2225,22 @@ namespace etl
   ETL_CONSTANT T lsb_mask<T, NBits>::value;
 
   //***********************************
+  template <typename T, size_t NBits>
+  ETL_CONSTEXPR T make_lsb_mask()
+  {
+    ETL_STATIC_ASSERT(NBits <= etl::integral_limits<T>::bits, "Mask exceeds type size");
+
+    return lsb_mask<T, NBits>::value;
+  }
+
+  //***********************************
   template <typename T>
-  ETL_CONSTEXPR14 T make_lsb_mask(size_t nbits)
+  ETL_CONSTEXPR T make_lsb_mask(size_t nbits)
   {
     typedef typename etl::make_unsigned<T>::type type;
 
-    return (nbits == etl::integral_limits<type>::bits) ? static_cast<T>(etl::integral_limits<type>::max)
-                                                       : static_cast<T>((static_cast<type>(1U) << nbits) - 1U);
+    return (nbits == 0U) ? static_cast<T>(0)
+      : static_cast<T>(static_cast<type>(~0) >> (etl::integral_limits<type>::bits - nbits));
   }
 
   //***********************************
@@ -2237,6 +2248,8 @@ namespace etl
   class msb_mask
   {
   public:
+
+    ETL_STATIC_ASSERT(NBits <= etl::integral_limits<T>::bits, "Mask exceeds type size");
 
     static ETL_CONSTANT T value = static_cast<T>(etl::reverse_bits_const<T, lsb_mask<T, NBits>::value>::value);
   };
@@ -2246,9 +2259,21 @@ namespace etl
 
   //***********************************
   template <typename T>
-  ETL_CONSTEXPR14 T make_msb_mask(size_t nbits)
+  ETL_CONSTEXPR T make_msb_mask(size_t nbits)
   {
-    return static_cast<T>(etl::reverse_bits(make_lsb_mask<T>(nbits)));
+    typedef typename etl::make_unsigned<T>::type type;
+
+    return (nbits == 0U) ? static_cast<T>(0)
+                         : static_cast<T>(static_cast<type>(~0) << (etl::integral_limits<type>::bits - nbits));
+  }
+
+  //***********************************
+  template <typename T, size_t NBits>
+  ETL_CONSTEXPR T make_msb_mask()
+  {
+    ETL_STATIC_ASSERT(NBits <= etl::integral_limits<T>::bits, "Mask exceeds type size");
+
+    return msb_mask<T, NBits>::value;
   }
 
   //***************************************************************************

@@ -32,7 +32,7 @@ PrintHeader()
 	echo " Configuration     : $configuration_name                                    " | tee -a log.txt
 	echo " Compiler          : $compiler                                              " | tee -a log.txt
 	echo " Language standard : C++$cxx_standard                                       " | tee -a log.txt
-	echo " ETL Version       : $etl_version                                           " | tee -a log.txt
+	echo " ETL version       : $etl_version                                           " | tee -a log.txt
 	echo " Git branch        : $(ParseGitBranch)                                      " | tee -a log.txt
 	echo " Processes         : ${CMAKE_BUILD_PARALLEL_LEVEL}                          " | tee -a log.txt
 	echo "============================================================================" | tee -a log.txt
