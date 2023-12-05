@@ -61,7 +61,7 @@ namespace etl
 #include "private/diagnostic_float_equal_push.h"
   template <typename T>
   ETL_CONSTEXPR
-    typename etl::enable_if<etl::is_floating_point<T>::value, bool>::ty
+    typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type
     is_nan(T value)
   {
     return (value != value);
