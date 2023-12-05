@@ -1,6 +1,7 @@
 ===============================================================================
 20.38.8
-Added check for NAN definitions for C++11 FP functions
+#795 etl::private_variant doesn't fully respect the chosen error reporting.
+#797 Undeclared FP_NAN, FP_INFINITE and FP_ZERO
 
 ===============================================================================
 20.38.7
