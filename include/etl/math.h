@@ -49,7 +49,7 @@ namespace etl
   //***************************************************************************
   // is_nan
   //***************************************************************************
-#if ETL_USING_CPP11
+#if ETL_USING_CPP11 && !defined(ETL_NO_CPP_NAN_SUPPORT)
   template <typename T>
   ETL_CONSTEXPR
     typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type
@@ -80,7 +80,7 @@ namespace etl
   //***************************************************************************
   // is_infinity
   //***************************************************************************
-#if ETL_USING_CPP11
+#if ETL_USING_CPP11 && !defined(ETL_NO_CPP_NAN_SUPPORT)
   template <typename T>
   ETL_CONSTEXPR
   typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type
@@ -112,7 +112,7 @@ namespace etl
   //***************************************************************************
   // is_zero
   //***************************************************************************
-#if ETL_USING_CPP11
+#if ETL_USING_CPP11 && !defined(ETL_NO_CPP_NAN_SUPPORT)
   template <typename T>
   ETL_CONSTEXPR
   typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type
