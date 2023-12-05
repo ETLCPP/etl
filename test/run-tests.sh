@@ -167,7 +167,7 @@ etl_version=$(echo $etl_version_raw | sed -e 's/\r//g') # Remove trailing \r
 # Get the compiler versions
 #******************************************************************************
 gcc_compiler=$(g++ --version | grep g++)
-clang_compiler=$(clang++ --version | grep clang++)
+clang_compiler=$(clang++ --version | grep clang)
 
 #******************************************************************************
 # GCC
