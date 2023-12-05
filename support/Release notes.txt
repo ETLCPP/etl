@@ -1,4 +1,8 @@
 ===============================================================================
+20.38.8
+Added check for NAN definitions for C++11 FP functions
+
+===============================================================================
 20.38.7
 Updated CI scripts
 Refactored GitHub CI workflows
