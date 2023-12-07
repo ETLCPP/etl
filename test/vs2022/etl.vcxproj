@@ -2951,6 +2951,7 @@
     <ClInclude Include="..\..\include\etl\correlation.h" />
     <ClInclude Include="..\..\include\etl\covariance.h" />
     <ClInclude Include="..\..\include\etl\crc.h" />
+    <ClInclude Include="..\..\include\etl\crc1.h" />
     <ClInclude Include="..\..\include\etl\crc16.h" />
     <ClInclude Include="..\..\include\etl\crc16_a.h" />
     <ClInclude Include="..\..\include\etl\crc16_arc.h" />
@@ -7309,6 +7310,7 @@
     <ClCompile Include="..\test_circular_iterator.cpp" />
     <ClCompile Include="..\test_correlation.cpp" />
     <ClCompile Include="..\test_covariance.cpp" />
+    <ClCompile Include="..\test_crc1.cpp" />
     <ClCompile Include="..\test_crc16.cpp" />
     <ClCompile Include="..\test_crc16_a.cpp" />
     <ClCompile Include="..\test_crc16_arc.cpp" />

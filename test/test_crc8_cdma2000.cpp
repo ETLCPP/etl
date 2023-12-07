@@ -41,7 +41,7 @@ SOFTWARE.
 
 namespace
 {
-  SUITE(test_crc_experimental)
+  SUITE(test_crc_crc8_cdma2000)
   {
     //*************************************************************************
     // Table size 4

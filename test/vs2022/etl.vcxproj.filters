@@ -1386,6 +1386,9 @@
     <ClInclude Include="..\..\include\etl\to_u8string.h">
       <Filter>ETL\Strings</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc1.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3277,6 +3280,9 @@
     </ClCompile>
     <ClCompile Include="..\syntax_check\to_u8string.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc1.cpp">
+      <Filter>Tests\CRC</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

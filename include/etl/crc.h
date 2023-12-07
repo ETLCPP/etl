@@ -31,6 +31,8 @@ SOFTWARE.
 #ifndef ETL_CRC_INCLUDED
 #define ETL_CRC_INCLUDED
 
+#include "crc1.h"
+
 #include "crc8_ccitt.h"
 #include "crc8_cdma2000.h"
 #include "crc8_darc.h"
