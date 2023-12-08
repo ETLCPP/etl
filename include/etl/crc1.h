@@ -47,14 +47,14 @@ namespace etl
 
     enum
     {
-      Odd_Parity  = 1,
-      Even_Parity = 0
+      odd_parity  = 1,
+      even_parity = 0
     };
 
     //*********************************
     value_type initial() const
     {
-      return Even_Parity;
+      return even_parity;
     }
 
     //*********************************
@@ -76,8 +76,8 @@ namespace etl
 
     enum
     {
-      Odd_Parity  = crc1_policy::Odd_Parity,
-      Even_Parity = crc1_policy::Even_Parity
+      odd_parity  = crc1_policy::odd_parity,
+      even_parity = crc1_policy::even_parity
     };
 
     //*************************************************************************

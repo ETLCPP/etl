@@ -38,6 +38,8 @@ SOFTWARE.
 namespace
 {
   //***************************************************************************
+  // Calculate parity the simple way.
+  //***************************************************************************
   template <typename TIterator>
   int calculate_parity(TIterator b, TIterator e)
   {
@@ -49,7 +51,7 @@ namespace
       ++b;
     }
 
-    return ((count &= 1) == 0) ? etl::crc1::Even_Parity : etl::crc1::Odd_Parity;
+    return ((count &= 1) == 0) ? etl::crc1::even_parity : etl::crc1::odd_parity;
   }
 
   SUITE(test_crc1)
@@ -122,6 +124,16 @@ namespace
 
       uint8_t crc3 = etl::crc1(data3.rbegin(), data3.rend());
       CHECK_EQUAL(int(crc1), int(crc3));
+    }
+
+    //*************************************************************************
+    TEST(test_crc1_constants)
+    {
+      std::vector<uint8_t> data_odd{  etl::b00000001, etl::b00000111, etl::b01010001, etl::b10000100 };
+      std::vector<uint8_t> data_even{ etl::b00000001, etl::b01000111, etl::b01010001, etl::b10000100 };
+
+      CHECK_EQUAL(etl::crc1::odd_parity,  etl::crc1(data_odd.begin(),  data_odd.end()));
+      CHECK_EQUAL(etl::crc1::even_parity, etl::crc1(data_even.begin(), data_even.end()));
     }
   };
 }
