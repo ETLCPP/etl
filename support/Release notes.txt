@@ -1,4 +1,9 @@
 ===============================================================================
+20.38.9
+Added etl::crc1 (parity)
+#799 Iterator returned by crc.input() does not satisfy std::output_iterator
+
+===============================================================================
 20.38.8
 #795 etl::private_variant doesn't fully respect the chosen error reporting.
 #797 Undeclared FP_NAN, FP_INFINITE and FP_ZERO
