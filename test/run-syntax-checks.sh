@@ -12,7 +12,7 @@ NoColour='\033[0m'
 
 ParseGitBranch() 
 {
-     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+    git rev-parse --abbrev-ref HEAD
 }
 
 SetCxxStandard()
@@ -29,12 +29,12 @@ PrintHeader()
 {
 	echo "$TitleColour"
 	echo "============================================================================" | tee -a log.txt
-	echo " Configuration     : $configuration_name                                    " | tee -a log.txt
-	echo " Compiler          : $compiler                                              " | tee -a log.txt
-	echo " Language standard : C++$cxx_standard                                       " | tee -a log.txt
-	echo " ETL version       : $etl_version                                           " | tee -a log.txt
-	echo " Git branch        : $(ParseGitBranch)                                      " | tee -a log.txt
-	echo " Processes         : ${CMAKE_BUILD_PARALLEL_LEVEL}                          " | tee -a log.txt
+	echo " Configuration     : $configuration_name" | tee -a log.txt
+	echo " Compiler          : $compiler          " | tee -a log.txt
+	echo " Language standard : C++$cxx_standard   " | tee -a log.txt
+	echo " ETL version       : $etl_version       " | tee -a log.txt
+	echo " Git branch        : $(ParseGitBranch)  " | tee -a log.txt
+	echo " Processes         : ${CMAKE_BUILD_PARALLEL_LEVEL}" | tee -a log.txt
 	echo "============================================================================" | tee -a log.txt
 	echo "$NoColour"
 }
@@ -43,7 +43,7 @@ PassedCompilation()
 {
 	echo "$PassColour"
 	echo "-----------------------------------------------" | tee -a log.txt
-	echo " Passed Compilation - $testname                " | tee -a log.txt
+	echo " Passed Compilation - $configuration_name" | tee -a log.txt
 	echo "-----------------------------------------------" | tee -a log.txt
 	echo "$NoColour"
 }
@@ -52,7 +52,7 @@ FailedCompilation()
 {
 	echo "$FailColour"
 	echo "****************************************************************************" | tee -a log.txt
-    echo "**** Failed Compilation $testname                                           " | tee -a log.txt
+    echo "**** Failed Compilation $configuration_name" | tee -a log.txt
 	echo "****************************************************************************" | tee -a log.txt
 	echo "$NoColour"
 }
