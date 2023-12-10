@@ -14,6 +14,7 @@ endif()
 project(etl VERSION ${ETL_VERSION} LANGUAGES CXX)
 
 option(BUILD_TESTS "Build unit tests" OFF)
+option(BUILD_FUZZ_TESTS "Build fuzz tests" OFF)
 option(NO_STL "No STL" OFF)
 # There is a bug on old gcc versions for some targets that causes all system headers
 # to be implicitly wrapped with 'extern "C"'
@@ -79,4 +80,21 @@ endif()
 if (BUILD_TESTS)
     enable_testing()
     add_subdirectory(test)
+endif()
+
+if (BUILD_FUZZ_TESTS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    # Determine the flags for fuzzing. Use OSS-Fuzz's configuration if available, otherwise fall back to defaults.
+    if(DEFINED ENV{LIB_FUZZING_ENGINE})
+        set(FUZZING_ENGINE $ENV{LIB_FUZZING_ENGINE})
+        set(FUZZING_COMPILE_FLAGS "")
+        set(FUZZING_LINK_FLAGS "${FUZZING_ENGINE}")
+    else()
+        # Instrument all source code for fuzzing.
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=fuzzer-no-link,address")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=fuzzer-no-link,address")
+        set(FUZZING_COMPILE_FLAGS "")
+        # Link against libfuzzer and adderss sanitizer.
+        set(FUZZING_LINK_FLAGS "-fsanitize=fuzzer,address")
+    endif()
+    add_subdirectory(fuzz)
 endif()
