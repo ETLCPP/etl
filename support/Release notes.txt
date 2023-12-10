@@ -1,4 +1,8 @@
 ===============================================================================
+20.38.10
+#800 Prioritize ETL_TARGET_OS_* for mutex selection
+
+===============================================================================
 20.38.9
 Added etl::crc1 (parity)
 #799 Iterator returned by crc.input() does not satisfy std::output_iterator
