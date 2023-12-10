@@ -31,14 +31,14 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if ETL_USING_STL && ETL_USING_CPP11
-  #include "mutex/mutex_std.h"
-  #define ETL_HAS_MUTEX 1
-#elif defined(ETL_TARGET_OS_CMSIS_OS2)
+#if defined(ETL_TARGET_OS_CMSIS_OS2)
   #include "mutex/mutex_cmsis_os2.h"
   #define ETL_HAS_MUTEX 1
 #elif defined(ETL_TARGET_OS_FREERTOS)
   #include "mutex/mutex_freertos.h"
+  #define ETL_HAS_MUTEX 1
+#elif ETL_USING_STL && ETL_USING_CPP11
+  #include "mutex/mutex_std.h"
   #define ETL_HAS_MUTEX 1
 #elif defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_ARM7) || defined(ETL_COMPILER_ARM8)
   #include "mutex/mutex_arm.h"
