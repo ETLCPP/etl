@@ -531,7 +531,7 @@ namespace etl
 
       default_construct_in_place<type>(data);
       operation = operation_type<type, etl::is_copy_constructible<type>::value, etl::is_move_constructible<type>::value>::do_operation;
-      type_id   = 0U;
+      type_id   = variant_npos;
     }
 #include "diagnostic_pop.h"
 
