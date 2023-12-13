@@ -1401,20 +1401,47 @@ namespace etl
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
   ///\ingroup unordered_multiset
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator ==(const etl::iunordered_multiset<TKey, TMapped, TKeyCompare>& lhs, const etl::iunordered_multiset<TKey, TMapped, TKeyCompare>& rhs)
+  template <typename TKey, typename THash = etl::hash<TKey>, typename TKeyEqual>
+  bool operator ==(const etl::iunordered_multiset<TKey, THash, TKeyEqual>& lhs, 
+                   const etl::iunordered_multiset<TKey, THash, TKeyEqual>& rhs)
   {
     const bool sizes_match = (lhs.size() == rhs.size());
     bool elements_match = true;
 
+    typedef typename etl::iunordered_multiset<TKey, THash, TKeyEqual>::const_iterator itr_t;
+
     if (sizes_match)
     {
-      for (size_t i = 0; (i < lhs.bucket_count()) && elements_match; ++i)
+      itr_t l_begin = lhs.begin();
+      itr_t l_end   = lhs.end();
+
+      while ((l_begin != l_end) && elements_match)
       {
-        if (!etl::is_permutation(lhs.begin(i), lhs.end(i), rhs.begin(i)))
+        const TKey l_value = *l_begin;
+
+        // See if the lhs keys exist in the rhs.
+        ETL_OR_STD::pair<itr_t, itr_t> l_range = lhs.equal_range(l_value);
+        ETL_OR_STD::pair<itr_t, itr_t> r_range = rhs.equal_range(l_value);
+
+        if (r_range.first != rhs.end())
+        {
+          bool distance_match = (etl::distance(l_range.first, l_range.second) == etl::distance(r_range.first, r_range.second));
+
+          if (distance_match)
+          {
+            elements_match = etl::is_permutation(l_range.first, l_range.second, r_range.first, r_range.second);
+          }
+          else
+          {
+            elements_match = false;
+          }
+        }
+        else
         {
           elements_match = false;
         }
+
+        ++l_begin;
       }
     }
 
@@ -1428,8 +1455,9 @@ namespace etl
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
   ///\ingroup unordered_multiset
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator !=(const etl::iunordered_multiset<TKey, TMapped, TKeyCompare>& lhs, const etl::iunordered_multiset<TKey, TMapped, TKeyCompare>& rhs)
+  template <typename TKey, typename THash = etl::hash<TKey>, typename TKeyEqual>
+  bool operator !=(const etl::iunordered_multiset<TKey, THash, TKeyEqual>& lhs, 
+                   const etl::iunordered_multiset<TKey, THash, TKeyEqual>& rhs)
   {
     return !(lhs == rhs);
   }

@@ -1569,20 +1569,41 @@ namespace etl
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
   ///\ingroup unordered_map
   //***************************************************************************
-  template <typename TKey, typename T, typename TKeyCompare>
-  bool operator ==(const etl::iunordered_map<TKey, T, TKeyCompare>& lhs, const etl::iunordered_map<TKey, T, TKeyCompare>& rhs)
+  template <typename TKey, typename T, typename THash, typename TKeyEqual>
+  bool operator ==(const etl::iunordered_map<TKey, T, THash, TKeyEqual>& lhs, 
+                   const etl::iunordered_map<TKey, T, THash, TKeyEqual>& rhs)
   {
     const bool sizes_match = (lhs.size() == rhs.size());
     bool elements_match = true;
 
+    typedef typename etl::iunordered_map<TKey, T, THash, TKeyEqual>::const_iterator itr_t;
+    
     if (sizes_match)
     {
-      for (size_t i = 0; (i < lhs.bucket_count()) && elements_match; ++i)
+      itr_t l_begin = lhs.begin();
+      itr_t l_end   = lhs.end();
+
+      while ((l_begin != l_end) && elements_match)
       {
-        if (!etl::is_permutation(lhs.begin(i), lhs.end(i), rhs.begin(i)))
+        const TKey key     = l_begin->first;
+        const T    l_value = l_begin->second;
+
+        // See if the lhs key exists in the rhs.
+        ETL_OR_STD::pair<itr_t, itr_t> range = rhs.equal_range(key);
+
+        if (range.first != rhs.end())
+        {
+          // See if the values match
+          const T r_value = range.first->second;
+
+          elements_match = (r_value == l_value);
+        }
+        else
         {
           elements_match = false;
         }
+
+        ++l_begin;
       }
     }
 
@@ -1596,8 +1617,9 @@ namespace etl
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
   ///\ingroup unordered_map
   //***************************************************************************
-  template <typename TKey, typename T, typename TKeyCompare>
-  bool operator !=(const etl::iunordered_map<TKey, T, TKeyCompare>& lhs, const etl::iunordered_map<TKey, T, TKeyCompare>& rhs)
+  template <typename TKey, typename T, typename THash, typename TKeyEqual>
+  bool operator !=(const etl::iunordered_map<TKey, T, THash, TKeyEqual>& lhs, 
+                   const etl::iunordered_map<TKey, T, THash, TKeyEqual>& rhs)
   {
     return !(lhs == rhs);
   }
