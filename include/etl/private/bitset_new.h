@@ -966,7 +966,7 @@ namespace etl
   //***************************************************************************
   template <size_t Active_Bits = 0U,
             typename TElement = char,
-            bool IsSingleElement = etl::integral_limits<TElement>::bits == Active_Bits>
+            bool FitsInSingleElement = etl::integral_limits<TElement>::bits >= Active_Bits>
   class bitset;
 
   //***************************************************************************
@@ -976,6 +976,20 @@ namespace etl
   template <>
   class bitset<0U, char, true> : public bitset_constants<>
   {
+  public:
+
+    typedef char element_type;
+
+    typedef element_type*       pointer;
+    typedef const element_type* const_pointer;
+
+    static ETL_CONSTANT size_t       Bits_Per_Element   = 0U;
+    static ETL_CONSTANT size_t       Number_Of_Elements = 0U;
+    static ETL_CONSTANT size_t       Allocated_Bits     = 0U;
+    static ETL_CONSTANT element_type All_Set_Element    = 0U;
+    static ETL_CONSTANT element_type All_Clear_Element  = 0U;
+    static ETL_CONSTANT size_t       Top_Mask_Shift     = 0U;
+    static ETL_CONSTANT element_type Top_Mask           = 0U;
   };
 
   //***************************************************************************
@@ -984,11 +998,25 @@ namespace etl
   template <>
   class bitset<0U, char, false> : public bitset_constants<>
   {
+  public:
+
+    typedef char element_type;
+
+    typedef element_type*       pointer;
+    typedef const element_type* const_pointer;
+
+    static ETL_CONSTANT size_t       Bits_Per_Element   = 0U;
+    static ETL_CONSTANT size_t       Number_Of_Elements = 0U;
+    static ETL_CONSTANT size_t       Allocated_Bits     = 0U;
+    static ETL_CONSTANT element_type All_Set_Element    = 0U;
+    static ETL_CONSTANT element_type All_Clear_Element  = 0U;
+    static ETL_CONSTANT size_t       Top_Mask_Shift     = 0U;
+    static ETL_CONSTANT element_type Top_Mask           = 0U;
   };
 
   //***************************************************************************
-  /// Specialisation that uses a single element if the element type is the 
-  /// same size as the number of active bits.
+  /// Specialisation that uses a single element if the number of active bits
+  /// fits into the element type size.
   //***************************************************************************
   template <size_t Active_Bits, typename TElement>
   class bitset<Active_Bits, TElement, true> : public bitset_constants<>
@@ -1173,16 +1201,6 @@ namespace etl
     ETL_CONSTEXPR14 bitset<Active_Bits, TElement, true>& set() ETL_NOEXCEPT
     {
       buffer = All_Set_Element;
-
-      return *this;
-    }
-
-    //*************************************************************************
-    /// Set from a value.
-    //*************************************************************************
-    ETL_CONSTEXPR14 bitset<Active_Bits, TElement, true>& set(element_type value) ETL_NOEXCEPT
-    {
-      buffer = value;
 
       return *this;
     }
@@ -3333,7 +3351,7 @@ namespace etl
     //*************************************************************************
     /// The number of bits in the bitset.
     //*************************************************************************
-    ETL_CONSTEXPR14  size_t size() const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 size_t size() const ETL_NOEXCEPT
     {
       return Active_Bits;
     }
@@ -4143,7 +4161,7 @@ namespace etl
     //*************************************************************************
     /// The number of bits in the bitset.
     //*************************************************************************
-    ETL_CONSTEXPR14  size_t size() const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 size_t size() const ETL_NOEXCEPT
     {
       return Active_Bits;
     }
