@@ -256,6 +256,50 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_construct_from_nullptr_char_string)
+    {
+      const char* s = nullptr;
+
+      etl::bitset<60, int64_t> data(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_nullptr_wchar_t_string)
+    {
+      const wchar_t* s = nullptr;
+
+      etl::bitset<60, int64_t> data(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_nullptr_char16_t_string)
+    {
+      const char16_t* s = nullptr;
+
+      etl::bitset<60, int64_t> data(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_nullptr_char32_t_string)
+    {
+      const char32_t* s = nullptr;
+
+      etl::bitset<60, int64_t> data(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
     TEST(test_construct_from_excess_string)
     {
       std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001111100001");
@@ -310,7 +354,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_char_string_set)
+    TEST(test_set_with_char_string)
     {
       std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<64, int64_t> data;
@@ -330,7 +374,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_wchar_t_string_set)
+    TEST(test_set_with_wchar_t_string)
     {
       std::bitset<64> compare(L"110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<64, int64_t> data;
@@ -350,7 +394,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_char16_t_string_set)
+    TEST(test_set_with_char16_t_string)
     {
       std::bitset<64> compare(u"110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<64, int64_t> data;
@@ -370,7 +414,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_char32_t_string_set)
+    TEST(test_set_with_char32_t_string)
     {
       std::bitset<64> compare(U"110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<64, int64_t> data;
@@ -390,7 +434,55 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_from_char_string)
+    TEST(test_set_from_char_nullptr)
+    {
+      const char* s = nullptr;
+
+      etl::bitset<60, int64_t> data;
+      data.set(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_set_from_wchar_t_nullptr)
+    {
+      const wchar_t* s = nullptr;
+
+      etl::bitset<60, int64_t> data;
+      data.set(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_set_from_char16_t_nullptr)
+    {
+      const char16_t* s = nullptr;
+
+      etl::bitset<60, int64_t> data;
+      data.set(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_set_from_char32_t_nullptr)
+    {
+      const char32_t* s = nullptr;
+
+      etl::bitset<60, int64_t> data;
+      data.set(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_from_string_with_char)
     {
       std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<64, int64_t> data;
@@ -410,7 +502,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_from_wchar_t_string)
+    TEST(test_from_string_with_wchar_t)
     {
       std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<64, int64_t> data;
@@ -450,7 +542,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_from_char32_t_string)
+    TEST(test_from_string_with_char32_t)
     {
       std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
       etl::bitset<64, int64_t> data;
@@ -467,6 +559,54 @@ namespace
       {
         CHECK_EQUAL(compare.test(i), data.test(i));
       }
+    }
+
+    //*************************************************************************
+    TEST(test_from_string_with_char_nullptr)
+    {
+      const char* s = nullptr;
+
+      etl::bitset<60, int64_t> data;
+      data.from_string(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_from_string_with_wchar_t_nullptr)
+    {
+      const wchar_t* s = nullptr;
+
+      etl::bitset<60, int64_t> data;
+      data.from_string(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_from_string_with_char16_t_nullptr)
+    {
+      const char16_t* s = nullptr;
+
+      etl::bitset<60, int64_t> data;
+      data.from_string(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_from_string_with_char32_t_nullptr)
+    {
+      const char32_t* s = nullptr;
+
+      etl::bitset<60, int64_t> data;
+      data.from_string(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
     }
 
     //*************************************************************************

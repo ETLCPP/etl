@@ -45,6 +45,23 @@ namespace
   SUITE(test_bitset_new_ext_explicit_element_type)
   {
     //*************************************************************************
+    TEST(test_construct_from_nullptr_buffer)
+    {
+      using BsExt = etl::bitset_ext<64, int64_t>;
+
+      BsExt::buffer_type buffer;
+      BsExt bs2a(buffer);
+
+      CHECK_THROW(BsExt bs1(nullptr) , etl::bitset_invalid_buffer);
+      CHECK_THROW(BsExt bs2b(bs2a, nullptr), etl::bitset_invalid_buffer);
+      CHECK_THROW(BsExt bs3(0ULL,  nullptr), etl::bitset_invalid_buffer);
+      CHECK_THROW(BsExt bs4("0",   nullptr), etl::bitset_invalid_buffer);
+      CHECK_THROW(BsExt bs5(L"0",  nullptr), etl::bitset_invalid_buffer);
+      CHECK_THROW(BsExt bs6(u"0",  nullptr), etl::bitset_invalid_buffer);
+      CHECK_THROW(BsExt bs7(U"0",  nullptr), etl::bitset_invalid_buffer);
+    }
+
+    //*************************************************************************
     TEST(test_default_constructor_from_array)
     {
       etl::bitset_ext<64, int64_t>::element_type buffer[etl::bitset_ext<64, int64_t>::Number_Of_Elements];
@@ -211,6 +228,54 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_construct_from_nullptr_char_string)
+    {
+      const char* s = nullptr;
+
+      etl::bitset_ext<60, int64_t>::buffer_type buffer;
+      etl::bitset_ext<60, int64_t> data(s, buffer);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_nullptr_wchar_t_string)
+    {
+      const wchar_t* s = nullptr;
+
+      etl::bitset_ext<60, int64_t>::buffer_type buffer;
+      etl::bitset_ext<60, int64_t> data(s, buffer);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_nullptr_char16_t_string)
+    {
+      const char16_t* s = nullptr;
+
+      etl::bitset_ext<60, int64_t>::buffer_type buffer;
+      etl::bitset_ext<60, int64_t> data(s, buffer);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_nullptr_char32_t_string)
+    {
+      const char32_t* s = nullptr;
+
+      etl::bitset_ext<60, int64_t>::buffer_type buffer;
+      etl::bitset_ext<60, int64_t> data(s, buffer);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
     TEST(test_construct_from_excess_string)
     {
       etl::bitset_ext<64, int64_t>::buffer_type buffer;
@@ -260,7 +325,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_char_string_set)
+    TEST(test_set_with_char_string)
     {
       etl::bitset_ext<64, int64_t>::buffer_type buffer;
       std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
@@ -281,7 +346,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_wchar_t_string_set)
+    TEST(test_set_with_wchar_t_string)
     {
       etl::bitset_ext<64, int64_t>::buffer_type buffer;
       std::bitset<64> compare(L"110001001000110100010101100111001100010010001101000101011001");
@@ -302,7 +367,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_char16_t_string_set)
+    TEST(test_set_with_char16_t_string)
     {
       etl::bitset_ext<64, int64_t>::buffer_type buffer;
       std::bitset<64> compare(u"110001001000110100010101100111001100010010001101000101011001");
@@ -323,7 +388,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_char32_t_string_set)
+    TEST(test_set_with_char32_t_string)
     {
       etl::bitset_ext<64, int64_t>::buffer_type buffer;
       std::bitset<64> compare(U"110001001000110100010101100111001100010010001101000101011001");
@@ -344,7 +409,59 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_from_char_string)
+    TEST(test_set_from_char_nullptr)
+    {
+      const char* s = nullptr;
+
+      etl::bitset_ext<64, int64_t>::buffer_type buffer;
+      etl::bitset_ext<64, int64_t> data(buffer);
+      data.set(s);
+
+      CHECK_EQUAL(64, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_set_from_wchar_t_nullptr)
+    {
+      const wchar_t* s = nullptr;
+
+      etl::bitset_ext<64, int64_t>::buffer_type buffer;
+      etl::bitset_ext<64, int64_t> data(buffer);
+      data.set(s);
+
+      CHECK_EQUAL(64, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_set_from_char16_t_nullptr)
+    {
+      const char16_t* s = nullptr;
+
+      etl::bitset_ext<64, int64_t>::buffer_type buffer;
+      etl::bitset_ext<64, int64_t> data(buffer);
+      data.set(s);
+
+      CHECK_EQUAL(64, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_set_from_char32_t_nullptr)
+    {
+      const char32_t* s = nullptr;
+
+      etl::bitset_ext<64, int64_t>::buffer_type buffer;
+      etl::bitset_ext<64, int64_t> data(buffer);
+      data.set(s);
+
+      CHECK_EQUAL(64, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_from_string_with_char)
     {
       etl::bitset_ext<64, int64_t>::buffer_type buffer;
       std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
@@ -365,7 +482,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_from_wchar_t_string)
+    TEST(test_from_string_with_wchar_t)
     {
       etl::bitset_ext<64, int64_t>::buffer_type buffer;
       std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
@@ -386,7 +503,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_from_char16_t_6string)
+    TEST(test_from_string_with_char16_t)
     {
       etl::bitset_ext<64, int64_t>::buffer_type buffer;
       std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
@@ -407,7 +524,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_from_char32_t_string)
+    TEST(test_from_string_with_char32_t)
     {
       etl::bitset_ext<64, int64_t>::buffer_type buffer;
       std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
@@ -425,6 +542,58 @@ namespace
       {
         CHECK_EQUAL(compare.test(i), data.test(i));
       }
+    }
+
+    //*************************************************************************
+    TEST(test_from_string_with_char_nullptr)
+    {
+      const char* s = nullptr;
+
+      etl::bitset_ext<60, int64_t>::buffer_type buffer;
+      etl::bitset_ext<60, int64_t> data(buffer);
+      data.from_string(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_from_string_with_wchar_t_nullptr)
+    {
+      const wchar_t* s = nullptr;
+
+      etl::bitset_ext<60, int64_t>::buffer_type buffer;
+      etl::bitset_ext<60, int64_t> data(buffer);
+      data.from_string(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_from_string_with_char16_t_nullptr)
+    {
+      const char16_t* s = nullptr;
+
+      etl::bitset_ext<60, int64_t>::buffer_type buffer;
+      etl::bitset_ext<60, int64_t> data(buffer);
+      data.from_string(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+    }
+
+    //*************************************************************************
+    TEST(test_from_string_with_char32_t_nullptr)
+    {
+      const char16_t* s = nullptr;
+
+      etl::bitset_ext<60, int64_t>::buffer_type buffer;
+      etl::bitset_ext<60, int64_t> data(buffer);
+      data.from_string(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
     }
 
     //*************************************************************************

@@ -127,6 +127,20 @@ namespace etl
     }
   };
 
+  //***************************************************************************
+  /// Bitset nullptr buffer exception.
+  ///\ingroup bitset
+  //***************************************************************************
+  class bitset_invalid_buffer : public bitset_exception
+  {
+  public:
+
+    bitset_invalid_buffer(string_type file_name_, numeric_type line_number_)
+      : bitset_exception(ETL_ERROR_TEXT("bitset:invalid buffer", ETL_BITSET_FILE_ID"D"), file_name_, line_number_)
+    {
+    }
+  };
+
   //*************************************************************************
   /// The implementation class for multi-element etl::bitset
   ///\ingroup bitset
@@ -2598,16 +2612,17 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(element_type* pbuffer_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 explicit bitset_ext(element_type* pbuffer_)
       : pbuffer(pbuffer_)
     {
+      ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
       *pbuffer = All_Clear_Element;
     }
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(buffer_type& buffer) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 explicit bitset_ext(buffer_type& buffer) ETL_NOEXCEPT
       : pbuffer(&buffer)
     {
       *pbuffer = All_Clear_Element;
@@ -2616,9 +2631,10 @@ namespace etl
     //*************************************************************************
     /// Construct copy.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(const bitset_ext<Active_Bits, TElement, true>& other, element_type* pbuffer_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset_ext(const bitset_ext<Active_Bits, TElement, true>& other, element_type* pbuffer_)
       : pbuffer(pbuffer_)
     {
+      ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
       *pbuffer = *other.pbuffer;
     }
 
@@ -2639,9 +2655,10 @@ namespace etl
     //*************************************************************************
     /// Construct from a value.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(unsigned long long value, element_type* pbuffer_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset_ext(unsigned long long value, element_type* pbuffer_)
       : pbuffer(pbuffer_)
     {
+      ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
       *pbuffer = element_type(value);
     }
 
@@ -2657,9 +2674,10 @@ namespace etl
     //*************************************************************************
     /// Construct from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(const char* text, element_type* pbuffer_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset_ext(const char* text, element_type* pbuffer_)
       : pbuffer(pbuffer_)
     {
+      ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
       *pbuffer = All_Clear_Element;
       set(text);
     }
@@ -2677,9 +2695,10 @@ namespace etl
     //*************************************************************************
     /// Construct from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(const wchar_t* text, element_type* pbuffer_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset_ext(const wchar_t* text, element_type* pbuffer_)
       : pbuffer(pbuffer_)
     {
+      ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
       *pbuffer = All_Clear_Element;
       set(text);
     }
@@ -2697,9 +2716,10 @@ namespace etl
     //*************************************************************************
     /// Construct from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(const char16_t* text, element_type* pbuffer_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset_ext(const char16_t* text, element_type* pbuffer_)
       : pbuffer(pbuffer_)
     {
+      ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
       *pbuffer = All_Clear_Element;
       set(text);
     }
@@ -2717,9 +2737,10 @@ namespace etl
     //*************************************************************************
     /// Construct from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(const char32_t* text, element_type* pbuffer_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset_ext(const char32_t* text, element_type* pbuffer_)
       : pbuffer(pbuffer_)
     {
+      ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
       *pbuffer = All_Clear_Element;
       set(text);
     }
@@ -2963,7 +2984,7 @@ namespace etl
     //*************************************************************************
     template <typename T>
     ETL_CONSTEXPR14
-      typename etl::enable_if<etl::is_integral<T>::value, T>::type
+    typename etl::enable_if<etl::is_integral<T>::value, T>::type
       value() const ETL_NOEXCEPT
     {
       ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Only integral types are supported");
@@ -3476,27 +3497,30 @@ namespace etl
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(element_type* pbuffer_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 explicit bitset_ext(element_type* pbuffer_)
       : pbuffer(pbuffer_)
     {
+      ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
       reset();
     }
 
     //*************************************************************************
     /// Default constructor.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(buffer_type& buffer) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 explicit bitset_ext(buffer_type& buffer)
       : pbuffer(buffer.data())
     {
+      ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
       reset();
     }
 
     //*************************************************************************
     /// Construct copy.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(const bitset_ext<Active_Bits, TElement, false>& other, element_type* pbuffer_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset_ext(const bitset_ext<Active_Bits, TElement, false>& other, element_type* pbuffer_)
       : pbuffer(pbuffer_)
     {
+      ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
       etl::copy_n(other.pbuffer, Number_Of_Elements, pbuffer);
     }
 
@@ -3517,9 +3541,10 @@ namespace etl
     //*************************************************************************
     /// Construct from a value.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(unsigned long long value, element_type* pbuffer_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset_ext(unsigned long long value, element_type* pbuffer_)
       : pbuffer(pbuffer_)
     {
+      ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
       ibitset.initialise(pbuffer, Number_Of_Elements, value);
       clear_unused_bits_in_msb();
     }
@@ -3537,9 +3562,10 @@ namespace etl
     //*************************************************************************
     /// Construct from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(const char* text, element_type* pbuffer_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset_ext(const char* text, element_type* pbuffer_)
       : pbuffer(pbuffer_)
     {
+      ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
       ibitset.set(pbuffer, Number_Of_Elements, Active_Bits, text);
       clear_unused_bits_in_msb();
     }
@@ -3557,9 +3583,10 @@ namespace etl
     //*************************************************************************
     /// Construct from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(const wchar_t* text, element_type* pbuffer_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset_ext(const wchar_t* text, element_type* pbuffer_)
       : pbuffer(pbuffer_)
     {
+      ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
       ibitset.set(pbuffer, Number_Of_Elements, Active_Bits, text);
       clear_unused_bits_in_msb();
     }
@@ -3577,9 +3604,10 @@ namespace etl
     //*************************************************************************
     /// Construct from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(const char16_t* text, element_type* pbuffer_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset_ext(const char16_t* text, element_type* pbuffer_)
       : pbuffer(pbuffer_)
     {
+      ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
       ibitset.set(pbuffer, Number_Of_Elements, Active_Bits, text);
       clear_unused_bits_in_msb();
     }
@@ -3597,9 +3625,10 @@ namespace etl
     //*************************************************************************
     /// Construct from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(const char32_t* text, element_type* pbuffer_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 bitset_ext(const char32_t* text, element_type* pbuffer_)
       : pbuffer(pbuffer_)
     {
+      ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
       ibitset.set(pbuffer, Number_Of_Elements, Active_Bits, text);
       clear_unused_bits_in_msb();
     }

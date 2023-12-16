@@ -114,7 +114,7 @@ namespace
     std::vector<char> data;
   };
 
-  SUITE(test_bit_stream_little_endian)
+  SUITE(test_bit_stream_writer_little_endian)
   {
     //*************************************************************************
     TEST(test_bit_stream_writer_construction)
