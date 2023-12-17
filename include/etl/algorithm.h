@@ -170,6 +170,18 @@ namespace etl
   }
 
   //***************************************************************************
+  // generate
+  template <typename TIterator, typename TFunction>
+  ETL_CONSTEXPR14
+  void generate(TIterator db, TIterator de, TFunction funct)
+  {
+    while (db != de)
+    {
+      *db++ = funct();
+    }
+  }
+
+  //***************************************************************************
   // copy
 #if ETL_USING_STL && ETL_USING_CPP20 
   // Use the STL constexpr implementation.
