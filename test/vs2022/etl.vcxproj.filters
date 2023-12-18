@@ -3340,12 +3340,6 @@
     <None Include="..\..\appveyor.yml">
       <Filter>Resource Files\CI\Appveyor</Filter>
     </None>
-    <None Include="..\..\.github\workflows\clang.yml">
-      <Filter>Resource Files\CI\Github</Filter>
-    </None>
-    <None Include="..\..\.github\workflows\gcc.yml">
-      <Filter>Resource Files\CI\Github</Filter>
-    </None>
     <None Include="..\..\.clang-format">
       <Filter>Resource Files</Filter>
     </None>
@@ -3411,6 +3405,30 @@
     </None>
     <None Include="..\..\scripts\update_version.py">
       <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang-c++11.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang-c++14.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang-c++17.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang-c++20.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-c++11.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-c++14.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-c++17.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-c++20.yml">
+      <Filter>Resource Files\CI\Github</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

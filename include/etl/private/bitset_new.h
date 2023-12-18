@@ -440,10 +440,10 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 void flip(pointer pbuffer, size_t number_of_elements) ETL_NOEXCEPT
     {
-      for (size_t i = 0UL; i < number_of_elements; ++i)
-      {
-        pbuffer[i] = ~pbuffer[i];
-      }
+      etl::transform_n(pbuffer,
+                       number_of_elements,
+                       pbuffer, 
+                       etl::binary_not<element_type>());
     }
 
     //*************************************************************************
