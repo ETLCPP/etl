@@ -2277,6 +2277,111 @@ namespace etl
   }
 
   //***************************************************************************
+  /// Bit 'not' a value
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  struct binary_not : public etl::unary_function<T, T>
+  {
+    //***********************************
+    ETL_CONSTEXPR
+    ETL_NODISCARD
+    T operator ()(T value) ETL_NOEXCEPT
+    {
+      ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+
+      return ~value;
+    }
+  };
+
+  //***************************************************************************
+  /// Bit 'and' a value with another
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  struct binary_and : public etl::unary_function<T, T>
+  {
+    //***********************************
+    ETL_CONSTEXPR 
+    explicit binary_and(T parameter_) ETL_NOEXCEPT
+      : parameter(parameter_)
+    {
+    }
+
+    //***********************************
+    ETL_CONSTEXPR 
+    ETL_NODISCARD
+    T operator ()(T value) ETL_NOEXCEPT
+    {
+      ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+
+      return value & parameter;
+    }
+
+  private:
+
+    T parameter;
+  };
+
+  //***************************************************************************
+  /// Bit 'or' a value with another
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  struct binary_or : public etl::unary_function<T, T>
+  {
+    //***********************************
+    ETL_CONSTEXPR
+    explicit binary_or(T parameter_) ETL_NOEXCEPT
+      : parameter(parameter_)
+    {
+    }
+
+    //***********************************
+    ETL_CONSTEXPR
+    ETL_NODISCARD
+    T operator ()(T value) ETL_NOEXCEPT
+    {
+      ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+
+      return value | parameter;
+    }
+
+  private:
+
+    T parameter;
+  };
+
+  //***************************************************************************
+  /// Bit 'exclusive-or' a value with another
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  struct binary_xor : public etl::unary_function<T, T>
+  {
+    //***********************************
+    ETL_CONSTEXPR
+    explicit binary_xor(T parameter_) ETL_NOEXCEPT
+      : parameter(parameter_)
+    {
+    }
+
+    //***********************************
+    ETL_CONSTEXPR
+    ETL_NODISCARD
+    T operator ()(T value) ETL_NOEXCEPT
+    {
+      ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
+
+      return value ^ parameter;
+    }
+
+  private:
+
+    T parameter;
+  };
+
+  //***************************************************************************
   /// 8 bit binary byte constants.
   ///\ingroup binary
   //***************************************************************************
