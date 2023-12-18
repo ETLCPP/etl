@@ -420,15 +420,15 @@ namespace
 
       test_variant_etl_3 variant_etl;
 
-      CHECK(etl::holds_alternative<char>(variant_etl));
+      CHECK(!etl::holds_alternative<char>(variant_etl));
       CHECK(!etl::holds_alternative<int>(variant_etl));
       CHECK(!etl::holds_alternative<std::string>(variant_etl));
 
-      CHECK(etl::holds_alternative<0U>(variant_etl));
+      CHECK(!etl::holds_alternative<0U>(variant_etl));
       CHECK(!etl::holds_alternative<1U>(variant_etl));
       CHECK(!etl::holds_alternative<2U>(variant_etl));
 
-      CHECK(etl::holds_alternative(0U, variant_etl));
+      CHECK(!etl::holds_alternative(0U, variant_etl));
       CHECK(!etl::holds_alternative(1U, variant_etl));
       CHECK(!etl::holds_alternative(2U, variant_etl));
       CHECK(!etl::holds_alternative(99U, variant_etl));
@@ -1830,7 +1830,7 @@ namespace
     //*************************************************************************
     TEST(test_variant_visit_void)
     {
-      etl::variant<int8_t, uint8_t> variant1;
+      etl::variant<int8_t, uint8_t> variant1 = int8_t{};
 
       bool       variant_was_signed{};
       auto const f = [&variant_was_signed](auto v)
@@ -1857,7 +1857,7 @@ namespace
 
       std::string result = "?";
 
-      etl::variant<TypeA, TypeB, TypeC, TypeD> package;
+      etl::variant<TypeA, TypeB, TypeC, TypeD> package = TypeA{};
 
       etl::visit(etl::overload
         {
