@@ -2284,8 +2284,8 @@ namespace etl
   struct binary_not : public etl::unary_function<T, T>
   {
     //***********************************
-    ETL_CONSTEXPR
     ETL_NODISCARD
+    ETL_CONSTEXPR
     T operator ()(T value) ETL_NOEXCEPT
     {
       ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
@@ -2309,8 +2309,8 @@ namespace etl
     }
 
     //***********************************
-    ETL_CONSTEXPR 
     ETL_NODISCARD
+    ETL_CONSTEXPR 
     T operator ()(T value) ETL_NOEXCEPT
     {
       ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
@@ -2338,8 +2338,8 @@ namespace etl
     }
 
     //***********************************
-    ETL_CONSTEXPR
     ETL_NODISCARD
+    ETL_CONSTEXPR
     T operator ()(T value) ETL_NOEXCEPT
     {
       ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
@@ -2367,8 +2367,8 @@ namespace etl
     }
 
     //***********************************
-    ETL_CONSTEXPR
     ETL_NODISCARD
+    ETL_CONSTEXPR
     T operator ()(T value) ETL_NOEXCEPT
     {
       ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
