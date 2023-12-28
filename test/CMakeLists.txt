@@ -98,6 +98,7 @@ add_executable(etl_tests
 	test_crc8_ebu.cpp
 	test_crc8_icode.cpp
 	test_crc8_itu.cpp
+	test_crc8_j1850.cpp
 	test_crc8_maxim.cpp
 	test_crc8_rohc.cpp
 	test_crc8_wcdma.cpp
