@@ -158,19 +158,19 @@ namespace
       CHECK_EQUAL(0x4BU, int(crc));
     }
 
-  //   //*************************************************************************
-  //   TEST(test_crc8_cdma2000_16_add_range_via_iterator)
-  //   {
-  //     std::string data("123456789");
+    //*************************************************************************
+    TEST(test_crc8_j1850_16_add_range_via_iterator)
+    {
+      std::string data("123456789");
 
-  //     etl::crc8_cdma2000_t16 crc_calculator;
+      etl::crc8_j1850_t16 crc_calculator;
 
-  //     std::copy(data.begin(), data.end(), crc_calculator.input());
+      std::copy(data.begin(), data.end(), crc_calculator.input());
 
-  //     uint8_t crc = crc_calculator.value();
+      uint8_t crc = crc_calculator.value();
 
-  //     CHECK_EQUAL(0xDAU, int(crc));
-  //   }
+      CHECK_EQUAL(0x4BU, int(crc));
+    }
 
   //   //*************************************************************************
   //   TEST(test_crc8_cdma2000_16_add_range_endian)
