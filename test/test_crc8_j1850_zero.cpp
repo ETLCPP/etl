@@ -230,19 +230,19 @@ namespace
       CHECK_EQUAL(0x37U, int(crc));
     }
 
-    // //*************************************************************************
-    // TEST(test_crc8_j1850_zero_256_add_range_via_iterator)
-    // {
-    //   std::string data("123456789");
+    //*************************************************************************
+    TEST(test_crc8_j1850_zero_256_add_range_via_iterator)
+    {
+      std::string data("123456789");
 
-    //   etl::crc8_j1850_zero crc_calculator;
+      etl::crc8_j1850_zero crc_calculator;
 
-    //   std::copy(data.begin(), data.end(), crc_calculator.input());
+      std::copy(data.begin(), data.end(), crc_calculator.input());
 
-    //   uint8_t crc = crc_calculator.value();
+      uint8_t crc = crc_calculator.value();
 
-    //   CHECK_EQUAL(0x37U, int(crc));
-    // }
+      CHECK_EQUAL(0x37U, int(crc));
+    }
 
     // //*************************************************************************
     // TEST(test_crc8_j1850_zero_256_add_range_endian)
