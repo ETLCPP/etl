@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_CRC8_CDMA2000_INCLUDED
-#define ETL_CRC8_CDMA2000_INCLUDED
+#ifndef ETL_CRC8_J1850_INCLUDED
+#define ETL_CRC8_J1850_INCLUDED
 
 #include "platform.h"
 #include "private/crc_implementation.h"
