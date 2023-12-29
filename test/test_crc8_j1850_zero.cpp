@@ -244,20 +244,20 @@ namespace
       CHECK_EQUAL(0x37U, int(crc));
     }
 
-    // //*************************************************************************
-    // TEST(test_crc8_j1850_zero_256_add_range_endian)
-    // {
-    //   std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
-    //   std::vector<uint32_t> data2 = { 0x04030201UL, 0x08070605UL };
-    //   std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
+    //*************************************************************************
+    TEST(test_crc8_j1850_zero_256_add_range_endian)
+    {
+      std::vector<uint8_t>  data1 = { 0x01U, 0x02U, 0x03U, 0x04U, 0x05U, 0x06U, 0x07U, 0x08U };
+      std::vector<uint32_t> data2 = { 0x04030201UL, 0x08070605UL };
+      std::vector<uint8_t>  data3 = { 0x08U, 0x07U, 0x06U, 0x05U, 0x04U, 0x03U, 0x02U, 0x01U };
 
-    //   uint8_t crc1 = etl::crc8_j1850_zero(data1.begin(), data1.end());
-    //   uint8_t crc2 = etl::crc8_j1850_zero((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
-    //   CHECK_EQUAL(int(crc1), int(crc2));
+      uint8_t crc1 = etl::crc8_j1850_zero(data1.begin(), data1.end());
+      uint8_t crc2 = etl::crc8_j1850_zero((uint8_t*)&data2[0], (uint8_t*)(&data2[0] + data2.size()));
+      CHECK_EQUAL(int(crc1), int(crc2));
 
-    //   uint8_t crc3 = etl::crc8_j1850_zero(data3.rbegin(), data3.rend());
-    //   CHECK_EQUAL(int(crc1), int(crc3));
-    // }
+      uint8_t crc3 = etl::crc8_j1850_zero(data3.rbegin(), data3.rend());
+      CHECK_EQUAL(int(crc1), int(crc3));
+    }
   };
 }
 
