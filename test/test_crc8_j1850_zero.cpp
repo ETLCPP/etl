@@ -115,17 +115,17 @@ namespace
       CHECK_EQUAL(int(crc1), int(crc3));
     }
 
-    // //*************************************************************************
-    // // Table size 16
-    // //*************************************************************************
-    // TEST(test_crc8_j1850_zero_16_constructor)
-    // {
-    //   std::string data("123456789");
+    //*************************************************************************
+    // Table size 16
+    //*************************************************************************
+    TEST(test_crc8_j1850_zero_16_constructor)
+    {
+      std::string data("123456789");
 
-    //   uint8_t crc = etl::crc8_j1850_zero_t16(data.begin(), data.end());
+      uint8_t crc = etl::crc8_j1850_zero_t16(data.begin(), data.end());
 
-    //   CHECK_EQUAL(0x37U, int(crc));
-    // }
+      CHECK_EQUAL(0x37U, int(crc));
+    }
 
     // //*************************************************************************
     // TEST(test_crc8_j1850_zero_16_add_values)
