@@ -146,6 +146,11 @@ namespace
       CHECK_EQUAL(1U, data16.Number_Of_Elements);
       CHECK_EQUAL(1U, data32.Number_Of_Elements);
       CHECK_EQUAL(1U, data64.Number_Of_Elements);
+
+      CHECK_EQUAL(etl::bitset_layout::Single, data8.Element_Layout);
+      CHECK_EQUAL(etl::bitset_layout::Single, data16.Element_Layout);
+      CHECK_EQUAL(etl::bitset_layout::Single, data32.Element_Layout);
+      CHECK_EQUAL(etl::bitset_layout::Single, data64.Element_Layout);
     }
 
     //*************************************************************************
@@ -340,6 +345,33 @@ namespace
       ETL_CONSTEXPR14 auto none  = data.none();
       ETL_CONSTEXPR14 auto any   = data.any();
       ETL_CONSTEXPR14 auto all   = data.all();
+
+      CHECK_EQUAL(compare.size(),  size);
+      CHECK_EQUAL(compare.count(), count);
+      CHECK_EQUAL(compare.none(),  none);
+      CHECK_EQUAL(compare.any(),   any);
+      CHECK_EQUAL(compare.all(),   all);
+
+      for (size_t i = 0UL; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data.test(i));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_set_less_than_full_size)
+    {
+      std::bitset<60> compare;
+      etl::bitset<60, uint64_t> data;
+
+      compare.set();
+      data.set();
+
+      auto size  = data.size();
+      auto count = data.count();
+      auto none  = data.none();
+      auto any   = data.any();
+      auto all   = data.all();
 
       CHECK_EQUAL(compare.size(),  size);
       CHECK_EQUAL(compare.count(), count);
