@@ -106,15 +106,20 @@ namespace
       etl::bitset_ext<32, uint32_t> data32(buffer32);
       etl::bitset_ext<64, uint64_t> data64(buffer64);
 
+      CHECK_EQUAL(8,  data8.Size);
+      CHECK_EQUAL(16, data16.Size);
+      CHECK_EQUAL(32, data32.Size);
+      CHECK_EQUAL(64, data64.Size);
+
       CHECK_EQUAL(1U, data8.Number_Of_Elements);
       CHECK_EQUAL(1U, data16.Number_Of_Elements);
       CHECK_EQUAL(1U, data32.Number_Of_Elements);
       CHECK_EQUAL(1U, data64.Number_Of_Elements);
 
-      CHECK_EQUAL(etl::bitset_layout::Single, data8.Element_Layout);
-      CHECK_EQUAL(etl::bitset_layout::Single, data16.Element_Layout);
-      CHECK_EQUAL(etl::bitset_layout::Single, data32.Element_Layout);
-      CHECK_EQUAL(etl::bitset_layout::Single, data64.Element_Layout);
+      CHECK_EQUAL(etl::bitset_storage_model::Single, data8.Storage_Model);
+      CHECK_EQUAL(etl::bitset_storage_model::Single, data16.Storage_Model);
+      CHECK_EQUAL(etl::bitset_storage_model::Single, data32.Storage_Model);
+      CHECK_EQUAL(etl::bitset_storage_model::Single, data64.Storage_Model);
     }
 
     //*************************************************************************
@@ -1581,6 +1586,9 @@ namespace
 
       span_t s = data.span();
       CHECK_EQUAL(0x12345678UL, s[0]);
+
+      s[0] = 0x87654321UL;
+      CHECK_EQUAL(0x87654321UL, data.value<uint32_t>());
     }
 
     //*************************************************************************

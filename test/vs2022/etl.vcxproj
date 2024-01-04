@@ -7288,6 +7288,7 @@
     <ClCompile Include="..\test_atomic.cpp" />
     <ClCompile Include="..\test_base64.cpp" />
     <ClCompile Include="..\test_bit.cpp" />
+    <ClCompile Include="..\test_bitset_new_comparisons.cpp" />
     <ClCompile Include="..\test_bitset_new_default_element_type.cpp" />
     <ClCompile Include="..\test_bitset_new_explicit_single_element_type.cpp" />
     <ClCompile Include="..\test_bitset_new_ext_default_element_type.cpp" />
