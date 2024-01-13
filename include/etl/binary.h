@@ -2286,7 +2286,7 @@ namespace etl
     //***********************************
     ETL_NODISCARD
     ETL_CONSTEXPR
-    T operator ()(T value) ETL_NOEXCEPT
+    T operator ()(T value) const ETL_NOEXCEPT
     {
       ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
@@ -2311,7 +2311,7 @@ namespace etl
     //***********************************
     ETL_NODISCARD
     ETL_CONSTEXPR 
-    T operator ()(T value) ETL_NOEXCEPT
+    T operator ()(T value) const ETL_NOEXCEPT
     {
       ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
@@ -2340,7 +2340,7 @@ namespace etl
     //***********************************
     ETL_NODISCARD
     ETL_CONSTEXPR
-    T operator ()(T value) ETL_NOEXCEPT
+    T operator ()(T value) const ETL_NOEXCEPT
     {
       ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
@@ -2369,7 +2369,7 @@ namespace etl
     //***********************************
     ETL_NODISCARD
     ETL_CONSTEXPR
-    T operator ()(T value) ETL_NOEXCEPT
+    T operator ()(T value) const ETL_NOEXCEPT
     {
       ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Not an integral type");
 
