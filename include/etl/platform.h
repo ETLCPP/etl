@@ -249,7 +249,6 @@ SOFTWARE.
   #define ETL_CONSTEXPR                   constexpr
   #define ETL_CONSTEXPR11                 constexpr // Synonym for ETL_CONSTEXPR
   #define ETL_CONSTANT                    constexpr
-  #define ETL_STATIC_CONSTANT             constexpr
   #define ETL_DELETE                      = delete
   #define ETL_EXPLICIT                    explicit
   #define ETL_OVERRIDE                    override
@@ -271,7 +270,6 @@ SOFTWARE.
   #define ETL_CONSTEXPR
   #define ETL_CONSTEXPR11
   #define ETL_CONSTANT                    const
-  #define ETL_STATIC_CONSTANT             static const
   #define ETL_DELETE
   #define ETL_EXPLICIT
   #define ETL_OVERRIDE
