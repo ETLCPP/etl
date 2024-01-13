@@ -46,6 +46,77 @@ namespace
   SUITE(test_bitset_new_ext_default_element_type)
   {
     //*************************************************************************
+    TEST(test_constants)
+    {
+      using bitset_type  = etl::bitset_ext<60>;
+      using element_type = bitset_type::element_type;
+
+      constexpr size_t       Size               = 60;
+      constexpr size_t       Bits_Per_Element   = etl::integral_limits<element_type>::bits;
+      constexpr size_t       Number_Of_Elements = (Size % Bits_Per_Element == 0) ? Size / Bits_Per_Element : Size / Bits_Per_Element + 1;
+      constexpr element_type All_Set_Element    = etl::integral_limits<element_type>::max;
+      constexpr element_type All_Clear_Element  = etl::integral_limits<element_type>::min;
+
+      //*******************************
+      constexpr size_t Size1 = bitset_type::Size;
+      constexpr size_t Size2 = bitset_type::size();
+
+      CHECK_EQUAL(Size, Size1);
+      CHECK_EQUAL(Size, Size2);
+
+      //*******************************
+      constexpr size_t Bits_Per_Element1 = bitset_type::Bits_Per_Element;
+      constexpr size_t Bits_Per_Element2 = bitset_type::bits_per_element();
+
+      CHECK_EQUAL(Bits_Per_Element, Bits_Per_Element1);
+      CHECK_EQUAL(Bits_Per_Element, Bits_Per_Element2);
+
+      //*******************************
+      constexpr size_t Number_Of_Elements1 = bitset_type::Number_Of_Elements;
+      constexpr size_t Number_Of_Elements2 = bitset_type::number_of_elements();
+
+      CHECK_EQUAL(Number_Of_Elements, Number_Of_Elements1);
+      CHECK_EQUAL(Number_Of_Elements, Number_Of_Elements2);
+
+      //*******************************
+      constexpr element_type All_Set_Element1 = bitset_type::All_Set_Element;
+      constexpr element_type All_Set_Element2 = bitset_type::all_set_element();
+
+      CHECK_EQUAL(All_Set_Element, All_Set_Element1);
+      CHECK_EQUAL(All_Set_Element, All_Set_Element2);
+
+      //*******************************
+      constexpr element_type All_Clear_Element1 = bitset_type::All_Clear_Element;
+      constexpr element_type All_Clear_Element2 = bitset_type::all_clear_element();
+
+      CHECK_EQUAL(All_Clear_Element, All_Clear_Element1);
+      CHECK_EQUAL(All_Clear_Element, All_Clear_Element2);
+
+      //*******************************
+      constexpr size_t Allocated_Bits = bitset_type::allocated_bits();
+
+      CHECK_EQUAL(Number_Of_Elements * Bits_Per_Element, Allocated_Bits);
+
+      //*******************************
+      constexpr char Storage_Model1 = bitset_type::Storage_Model;
+      constexpr char Storage_Model2 = bitset_type::storage_model();
+
+      CHECK_EQUAL(etl::bitset_storage_model::Multi, Storage_Model1);
+      CHECK_EQUAL(etl::bitset_storage_model::Multi, Storage_Model2);
+
+      etl::bitset_storage_model bsm;
+
+      bsm = etl::bitset_storage_model::Undefined;
+      CHECK_EQUAL(std::string("Undefined"), std::string(bsm.c_str()));
+
+      bsm = etl::bitset_storage_model::Single;
+      CHECK_EQUAL(std::string("Single"), std::string(bsm.c_str()));
+
+      bsm = etl::bitset_storage_model::Multi;
+      CHECK_EQUAL(std::string("Multi"), std::string(bsm.c_str()));
+    }
+
+    //*************************************************************************
     TEST(test_construct_from_nullptr_buffer)
     {
       using BsExt = etl::bitset_ext<64>;
@@ -327,6 +398,251 @@ namespace
       CHECK_EQUAL(compare.none(), none);
       CHECK_EQUAL(compare.any(), any);
       CHECK_EQUAL(compare.all(), all);
+
+      for (size_t i = 0UL; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data.test(i));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_set_run_time_position_default_value)
+    {
+      std::bitset<64> compare;
+      etl::bitset_ext<64>::buffer_type buffer;
+      etl::bitset_ext<64> data(buffer);
+
+      compare.set(2);
+      compare.set(3);
+      compare.set(5);
+      compare.set(7);
+      compare.set(11);
+      compare.set(13);
+      compare.set(17);
+      compare.set(19);
+      compare.set(23);
+      compare.set(29);
+      compare.set(31);
+
+      data.set(2);
+      data.set(3);
+      data.set(5);
+      data.set(7);
+      data.set(11);
+      data.set(13);
+      data.set(17);
+      data.set(19);
+      data.set(23);
+      data.set(29);
+      data.set(31);
+
+      auto size  = data.size();
+      auto count = data.count();
+      auto none  = data.none();
+      auto any   = data.any();
+      auto all   = data.all();
+
+      CHECK_EQUAL(compare.size(),  size);
+      CHECK_EQUAL(compare.count(), count);
+      CHECK_EQUAL(compare.none(),  none);
+      CHECK_EQUAL(compare.any(),   any);
+      CHECK_EQUAL(compare.all(),   all);
+
+      for (size_t i = 0UL; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data.test(i));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_set_run_time_position_value)
+    {
+      std::bitset<64> compare;
+      etl::bitset_ext<64>::buffer_type buffer;
+      etl::bitset_ext<64> data(buffer);
+
+      compare.set(2);
+      compare.set(3);
+      compare.set(5);
+      compare.set(7);
+      compare.set(11);
+      compare.set(13);
+      compare.set(17);
+      compare.set(19);
+      compare.set(23);
+      compare.set(29);
+      compare.set(31);
+
+      data.set(2, true);
+      data.set(3, true);
+      data.set(5, true);
+      data.set(7, true);
+      data.set(11, true);
+      data.set(13, true);
+      data.set(17, true);
+      data.set(19, true);
+      data.set(23, true);
+      data.set(29, true);
+      data.set(31, true);
+
+      auto size  = data.size();
+      auto count = data.count();
+      auto none  = data.none();
+      auto any   = data.any();
+      auto all   = data.all();
+
+      CHECK_EQUAL(compare.size(),  size);
+      CHECK_EQUAL(compare.count(), count);
+      CHECK_EQUAL(compare.none(),  none);
+      CHECK_EQUAL(compare.any(),   any);
+      CHECK_EQUAL(compare.all(),   all);
+
+      for (size_t i = 0UL; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data.test(i));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_set_compile_time_position_run_time_default_value)
+    {
+      std::bitset<64> compare;
+      etl::bitset_ext<64>::buffer_type buffer;
+      etl::bitset_ext<64> data(buffer);
+
+      compare.set(2);
+      compare.set(3);
+      compare.set(5);
+      compare.set(7);
+      compare.set(11);
+      compare.set(13);
+      compare.set(17);
+      compare.set(19);
+      compare.set(23);
+      compare.set(29);
+      compare.set(31);
+
+      data.set<2>();
+      data.set<3>();
+      data.set<5>();
+      data.set<7>();
+      data.set<11>();
+      data.set<13>();
+      data.set<17>();
+      data.set<19>();
+      data.set<23>();
+      data.set<29>();
+      data.set<31>();
+
+      auto size  = data.size();
+      auto count = data.count();
+      auto none  = data.none();
+      auto any   = data.any();
+      auto all   = data.all();
+
+      CHECK_EQUAL(compare.size(),  size);
+      CHECK_EQUAL(compare.count(), count);
+      CHECK_EQUAL(compare.none(),  none);
+      CHECK_EQUAL(compare.any(),   any);
+      CHECK_EQUAL(compare.all(),   all);
+
+      for (size_t i = 0UL; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data.test(i));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_set_compile_time_position_run_time_value)
+    {
+      std::bitset<64> compare;
+      etl::bitset_ext<64>::buffer_type buffer;
+      etl::bitset_ext<64> data(buffer);
+
+      compare.set(2);
+      compare.set(3);
+      compare.set(5);
+      compare.set(7);
+      compare.set(11);
+      compare.set(13);
+      compare.set(17);
+      compare.set(19);
+      compare.set(23);
+      compare.set(29);
+      compare.set(31);
+
+      data.set<2>(true);
+      data.set<3>(true);
+      data.set<5>(true);
+      data.set<7>(true);
+      data.set<11>(true);
+      data.set<13>(true);
+      data.set<17>(true);
+      data.set<19>(true);
+      data.set<23>(true);
+      data.set<29>(true);
+      data.set<31>(true);
+
+      auto size  = data.size();
+      auto count = data.count();
+      auto none  = data.none();
+      auto any   = data.any();
+      auto all   = data.all();
+
+      CHECK_EQUAL(compare.size(),  size);
+      CHECK_EQUAL(compare.count(), count);
+      CHECK_EQUAL(compare.none(),  none);
+      CHECK_EQUAL(compare.any(),   any);
+      CHECK_EQUAL(compare.all(),   all);
+
+      for (size_t i = 0UL; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data.test(i));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_set_compile_time_position_value)
+    {
+      std::bitset<64> compare;
+      etl::bitset_ext<64>::buffer_type buffer;
+      etl::bitset_ext<64> data(buffer);
+
+      compare.set(2);
+      compare.set(3);
+      compare.set(5);
+      compare.set(7);
+      compare.set(11);
+      compare.set(13);
+      compare.set(17);
+      compare.set(19);
+      compare.set(23);
+      compare.set(29);
+      compare.set(31);
+
+      data.set<2, true>();
+      data.set<3, true>();
+      data.set<5, true>();
+      data.set<7, true>();
+      data.set<11, true>();
+      data.set<13, true>();
+      data.set<17, true>();
+      data.set<19, true>();
+      data.set<23, true>();
+      data.set<29, true>();
+      data.set<31, true>();
+
+      auto size  = data.size();
+      auto count = data.count();
+      auto none  = data.none();
+      auto any   = data.any();
+      auto all   = data.all();
+
+      CHECK_EQUAL(compare.size(),  size);
+      CHECK_EQUAL(compare.count(), count);
+      CHECK_EQUAL(compare.none(),  none);
+      CHECK_EQUAL(compare.any(),   any);
+      CHECK_EQUAL(compare.all(),   all);
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -2019,6 +2335,63 @@ namespace
       // The lines below should static assert.
       //uint16_t v1 = b.extract<uint16_t, 16, 17>());
       //uint16_t v2 = b.extract<uint16_t, 17, 16>());
+    }
+
+    //*************************************************************************
+    bool test_bit(int i)
+    {
+      return (0x1234 & (1 << i)) != 0;
+    }
+
+    TEST(test_test_run_time)
+    {
+      etl::bitset_ext<16>::buffer_type buffer;
+
+      etl::bitset_ext<16> b(0x1234, buffer);
+
+      bool t0 = b.test(0);
+      bool t1 = b.test(1);
+      bool t2 = b.test(2);
+      bool t3 = b.test(3);
+      bool t4 = b.test(4);
+      bool t5 = b.test(5);
+      bool t6 = b.test(6);
+      bool t7 = b.test(7);
+
+      CHECK_EQUAL(test_bit(0), t0);
+      CHECK_EQUAL(test_bit(1), t1);
+      CHECK_EQUAL(test_bit(2), t2);
+      CHECK_EQUAL(test_bit(3), t3);
+      CHECK_EQUAL(test_bit(4), t4);
+      CHECK_EQUAL(test_bit(5), t5);
+      CHECK_EQUAL(test_bit(6), t6);
+      CHECK_EQUAL(test_bit(7), t7);
+    }
+
+    //*************************************************************************
+    TEST(test_test_compile_time)
+    {
+      etl::bitset_ext<16>::buffer_type buffer;
+
+      etl::bitset_ext<16> b(0x1234, buffer);
+
+      bool t0 = b.test<0>();
+      bool t1 = b.test<1>();
+      bool t2 = b.test<2>();
+      bool t3 = b.test<3>();
+      bool t4 = b.test<4>();
+      bool t5 = b.test<5>();
+      bool t6 = b.test<6>();
+      bool t7 = b.test<7>();
+
+      CHECK_EQUAL(test_bit(0), t0);
+      CHECK_EQUAL(test_bit(1), t1);
+      CHECK_EQUAL(test_bit(2), t2);
+      CHECK_EQUAL(test_bit(3), t3);
+      CHECK_EQUAL(test_bit(4), t4);
+      CHECK_EQUAL(test_bit(5), t5);
+      CHECK_EQUAL(test_bit(6), t6);
+      CHECK_EQUAL(test_bit(7), t7);
     }
   };
 }

@@ -90,9 +90,18 @@ namespace etl
   //***************************************************************************
   struct bitset_storage_model
   {
-    static ETL_CONSTANT char Undefined = 0;
-    static ETL_CONSTANT char Single    = 1;
-    static ETL_CONSTANT char Multi     = 2;
+    enum enum_type
+    {
+      Undefined = 0,
+      Single    = 1,
+      Multi     = 2
+    };
+
+    ETL_DECLARE_ENUM_TYPE(bitset_storage_model, char)
+    ETL_ENUM_TYPE(Undefined, "Undefined")
+    ETL_ENUM_TYPE(Single,    "Single")
+    ETL_ENUM_TYPE(Multi,     "Multi")
+    ETL_END_ENUM_TYPE
   };
 
   //***************************************************************************
@@ -151,6 +160,37 @@ namespace etl
     }
   };
 
+  //***************************************************************************
+  namespace private_bitset
+  {
+    template <typename TElement>
+    class bitset_impl_common
+    {
+    public:
+
+      typedef TElement            element_type;
+      typedef TElement*       pointer;
+      typedef const TElement* const_pointer;
+
+      static ETL_CONSTANT size_t   npos              = etl::integral_limits<size_t>::max;
+      static ETL_CONSTANT size_t   Bits_Per_Element  = etl::integral_limits<TElement>::bits;
+      static ETL_CONSTANT TElement All_Set_Element   = etl::integral_limits<TElement>::max;
+      static ETL_CONSTANT TElement All_Clear_Element = element_type(0);
+    };
+
+    template <typename TElement>
+    ETL_CONSTANT size_t bitset_impl_common<TElement>::npos;
+
+    template <typename TElement>
+    ETL_CONSTANT size_t bitset_impl_common<TElement>::Bits_Per_Element;
+
+    template <typename TElement>
+    ETL_CONSTANT TElement bitset_impl_common<TElement>::All_Set_Element;
+
+    template <typename TElement>
+    ETL_CONSTANT TElement bitset_impl_common<TElement>::All_Clear_Element;
+  }
+
   //*************************************************************************
   /// Bitset implementation declaration.
   ///\ingroup bitset
@@ -163,19 +203,19 @@ namespace etl
   ///\ingroup bitset
   //*************************************************************************
   template <typename TElement>
-  class bitset_impl<TElement, etl::bitset_storage_model::Single>
+  class bitset_impl<TElement, etl::bitset_storage_model::Single> : public etl::private_bitset::bitset_impl_common<TElement>
   {
   public:
 
-    typedef TElement            element_type;
-    typedef element_type*       pointer;
-    typedef const element_type* const_pointer;
+    using typename etl::private_bitset::bitset_impl_common<TElement>::element_type;
+    using typename etl::private_bitset::bitset_impl_common<TElement>::pointer;
+    using typename etl::private_bitset::bitset_impl_common<TElement>::const_pointer;
 
-    static ETL_CONSTANT size_t npos = etl::integral_limits<size_t>::max;
+    using etl::private_bitset::bitset_impl_common<TElement>::Bits_Per_Element;
+    using etl::private_bitset::bitset_impl_common<TElement>::All_Set_Element;
+    using etl::private_bitset::bitset_impl_common<TElement>::All_Clear_Element;
 
-    static ETL_CONSTANT size_t       Bits_Per_Element  = etl::integral_limits<element_type>::bits;
-    static ETL_CONSTANT element_type All_Set_Element   = etl::integral_limits<element_type>::max;
-    static ETL_CONSTANT element_type All_Clear_Element = element_type(0);
+    using etl::private_bitset::bitset_impl_common<TElement>::npos;
 
     //*************************************************************************
     /// Set all of the bits.
@@ -201,6 +241,47 @@ namespace etl
       const element_type mask = element_type(element_type(1) << position);
 
       if (value == true)
+      {
+        *pbuffer |= mask;
+      }
+      else
+      {
+        *pbuffer &= ~mask;
+      }
+    }
+
+    //*************************************************************************
+    /// Set the bit at the position.
+    //*************************************************************************
+    template <size_t Position>
+    ETL_CONSTEXPR14
+    static
+    void set_position(pointer pbuffer,
+                      bool    value = true)
+    {
+      const element_type mask = element_type(element_type(1) << Position);
+
+      if (value == true)
+      {
+        *pbuffer |= mask;
+      }
+      else
+      {
+        *pbuffer &= ~mask;
+      }
+    }
+
+    //*************************************************************************
+    /// Set the bit at the position.
+    //*************************************************************************
+    template <size_t Position, bool Value>
+    ETL_CONSTEXPR14
+    static
+    void set_position(pointer pbuffer)
+    {
+      const element_type mask = element_type(element_type(1) << Position);
+
+      if (Value == true)
       {
         *pbuffer |= mask;
       }
@@ -771,19 +852,23 @@ namespace etl
   ///\ingroup bitset
   //*************************************************************************
   template <typename TElement>
-  class bitset_impl<TElement, etl::bitset_storage_model::Multi>
+  class bitset_impl<TElement, etl::bitset_storage_model::Multi> : public etl::private_bitset::bitset_impl_common<TElement>
   {
+  private:
+
+    typedef etl::private_bitset::bitset_impl_common<TElement> common;
+
   public:
 
-    typedef TElement            element_type;
-    typedef element_type*       pointer;
-    typedef const element_type* const_pointer;
+    using typename etl::private_bitset::bitset_impl_common<TElement>::element_type;
+    using typename etl::private_bitset::bitset_impl_common<TElement>::pointer;
+    using typename etl::private_bitset::bitset_impl_common<TElement>::const_pointer;
 
-    static ETL_CONSTANT size_t npos = etl::integral_limits<size_t>::max;
+    using etl::private_bitset::bitset_impl_common<TElement>::Bits_Per_Element;
+    using etl::private_bitset::bitset_impl_common<TElement>::All_Set_Element;
+    using etl::private_bitset::bitset_impl_common<TElement>::All_Clear_Element;
 
-    static ETL_CONSTANT size_t       Bits_Per_Element = etl::integral_limits<element_type>::bits;
-    static ETL_CONSTANT element_type All_Set_Element = etl::integral_limits<element_type>::max;
-    static ETL_CONSTANT element_type All_Clear_Element = element_type(0);
+    using etl::private_bitset::bitset_impl_common<TElement>::npos;
 
     //*************************************************************************
     /// Check to see if the requested extract is contained within one element.
@@ -924,7 +1009,50 @@ namespace etl
       size_t       index = position >> etl::log2<Bits_Per_Element>::value;
       element_type bit   = element_type(1) << (position & (Bits_Per_Element - 1));
 
-      if (value)
+      if (value == true)
+      {
+        pbuffer[index] |= bit;
+      }
+      else
+      {
+        pbuffer[index] &= ~bit;
+      }
+    }
+
+    //*************************************************************************
+    /// Set the bit at the position.
+    //*************************************************************************
+    template <size_t Position>
+    ETL_CONSTEXPR14
+    static
+    void set_position(pointer pbuffer,
+                      bool    value = true)
+    {
+      size_t       index = Position >> etl::log2<Bits_Per_Element>::value;
+      element_type bit   = element_type(1) << (Position & (Bits_Per_Element - 1));
+
+      if (value == true)
+      {
+        pbuffer[index] |= bit;
+      }
+      else
+      {
+        pbuffer[index] &= ~bit;
+      }
+    }
+
+    //*************************************************************************
+    /// Set the bit at the position.
+    //*************************************************************************
+    template <size_t Position, bool Value>
+    ETL_CONSTEXPR14
+    static
+    void set_position(pointer pbuffer)
+    {
+      size_t       index = Position >> etl::log2<Bits_Per_Element>::value;
+      element_type bit = element_type(1) << (Position & (Bits_Per_Element - 1));
+
+      if (Value == true)
       {
         pbuffer[index] |= bit;
       }
@@ -1674,6 +1802,55 @@ namespace etl
     }
   };
 
+  namespace private_bitset
+  {
+    //***************************************************************************
+    template <size_t Active_Bits, typename TElement>
+    class bitset_common : public etl::private_bitset::bitset_impl_common<TElement>
+    {
+    public:
+
+      typedef typename etl::private_bitset::bitset_impl_common<TElement>::element_type element_type;
+      
+      using etl::private_bitset::bitset_impl_common<TElement>::Bits_Per_Element;
+      using etl::private_bitset::bitset_impl_common<TElement>::All_Set_Element;
+      using etl::private_bitset::bitset_impl_common<TElement>::All_Clear_Element;
+
+      static ETL_CONSTANT size_t Number_Of_Elements = (Active_Bits % Bits_Per_Element == 0) ? Active_Bits / Bits_Per_Element : Active_Bits / Bits_Per_Element + 1;
+      static ETL_CONSTANT size_t Size               = Active_Bits;
+      static ETL_CONSTANT size_t Allocated_Bits     = Number_Of_Elements * Bits_Per_Element;
+
+      static ETL_CONSTANT etl::bitset_storage_model Storage_Model = (Number_Of_Elements == 1U) ? etl::bitset_storage_model::Single : etl::bitset_storage_model::Multi;
+
+      typedef etl::span<element_type,       Number_Of_Elements> span_type;
+      typedef etl::span<const element_type, Number_Of_Elements> const_span_type;
+
+    private:
+
+      static ETL_CONSTANT size_t Top_Mask_Shift = ((Bits_Per_Element - ((Number_Of_Elements * Bits_Per_Element) - Active_Bits)) % Bits_Per_Element);
+
+    public:
+
+      static ETL_CONSTANT TElement Top_Mask = element_type(Top_Mask_Shift == 0 ? All_Set_Element : ~(All_Set_Element << Top_Mask_Shift));
+    };
+
+
+    template <size_t Active_Bits, typename TElement>
+    ETL_CONSTANT size_t bitset_common<Active_Bits, TElement>::Number_Of_Elements;
+
+    template <size_t Active_Bits, typename TElement>
+    ETL_CONSTANT size_t bitset_common<Active_Bits, TElement>::Size;
+
+    template <size_t Active_Bits, typename TElement>
+    ETL_CONSTANT etl::bitset_storage_model bitset_common<Active_Bits, TElement>::Storage_Model;
+
+    template <size_t Active_Bits, typename TElement>
+    ETL_CONSTANT size_t bitset_common<Active_Bits, TElement>::Top_Mask_Shift;
+
+    template <size_t Active_Bits, typename TElement>
+    ETL_CONSTANT TElement bitset_common<Active_Bits, TElement>::Top_Mask;  
+  }
+
   //***************************************************************************
   /// Bitset forward declaration
   //***************************************************************************
@@ -1685,61 +1862,46 @@ namespace etl
   /// Specialisation for zero bits.
   //***************************************************************************
   template <>
-  class bitset<0U, unsigned char>
+  class bitset<0U, unsigned char> : public etl::private_bitset::bitset_common<0U, unsigned char>
   {
   public:
 
-    typedef unsigned char element_type;
+    typedef typename etl::private_bitset::bitset_common<0U, unsigned char>::element_type    element_type;
+    typedef typename etl::private_bitset::bitset_common<0U, unsigned char>::span_type       span_type;
+    typedef typename etl::private_bitset::bitset_common<0U, unsigned char>::const_span_type const_span_type;
 
-    typedef element_type*       pointer;
-    typedef const element_type* const_pointer;
-
-    static ETL_CONSTANT size_t       Bits_Per_Element   = 0U;
-    static ETL_CONSTANT size_t       Number_Of_Elements = 0U;
-    static ETL_CONSTANT size_t       Allocated_Bits     = 0U;
-    static ETL_CONSTANT element_type All_Set_Element    = 0U;
-    static ETL_CONSTANT element_type All_Clear_Element  = 0U;
-    static ETL_CONSTANT size_t       Size               = 0U;
-    static ETL_CONSTANT char         Storage_Model      = etl::bitset_storage_model::Undefined;
-
-    static ETL_CONSTANT size_t npos = etl::integral_limits<size_t>::max;
+    using etl::private_bitset::bitset_common<0U, unsigned char>::Bits_Per_Element;
+    using etl::private_bitset::bitset_common<0U, unsigned char>::All_Set_Element;
+    using etl::private_bitset::bitset_common<0U, unsigned char>::All_Clear_Element;
+    using etl::private_bitset::bitset_common<0U, unsigned char>::Number_Of_Elements;
+    using etl::private_bitset::bitset_common<0U, unsigned char>::Size;
+    using etl::private_bitset::bitset_common<0U, unsigned char>::Storage_Model;
+    using etl::private_bitset::bitset_common<0U, unsigned char>::Top_Mask;
+    using etl::private_bitset::bitset_common<0U, unsigned char>::Allocated_Bits;
   };
 
   //*************************************************************************
   /// The bitset top level template.
   //*************************************************************************
   template <size_t Active_Bits, typename TElement>
-  class bitset
+  class bitset : public etl::private_bitset::bitset_common<Active_Bits, TElement>
   {
   public:
 
     ETL_STATIC_ASSERT(etl::is_unsigned<TElement>::value, "The element type must be unsigned");
 
-    typedef TElement            element_type;
-    typedef element_type*       pointer;
-    typedef const element_type* const_pointer;
+    typedef typename etl::private_bitset::bitset_common<Active_Bits, TElement>::element_type    element_type;
+    typedef typename etl::private_bitset::bitset_common<Active_Bits, TElement>::span_type       span_type;
+    typedef typename etl::private_bitset::bitset_common<Active_Bits, TElement>::const_span_type const_span_type;
 
-    static ETL_CONSTANT size_t npos = etl::integral_limits<size_t>::max;
-
-    static ETL_CONSTANT size_t       Bits_Per_Element   = etl::integral_limits<element_type>::bits;
-    static ETL_CONSTANT element_type All_Set_Element    = etl::integral_limits<element_type>::max;
-    static ETL_CONSTANT element_type All_Clear_Element  = element_type(0);
-    static ETL_CONSTANT size_t       Number_Of_Elements = (Active_Bits % Bits_Per_Element == 0) ? Active_Bits / Bits_Per_Element : Active_Bits / Bits_Per_Element + 1;
-    static ETL_CONSTANT size_t       Allocated_Bits     = Number_Of_Elements * Bits_Per_Element;
-    static ETL_CONSTANT size_t       Size               = Active_Bits;
-    static ETL_CONSTANT char         Storage_Model      = (Number_Of_Elements == 1U) ? etl::bitset_storage_model::Single : etl::bitset_storage_model::Multi;
-
-  private:
-    
-    static ETL_CONSTANT size_t       Top_Mask_Shift = ((Bits_Per_Element - (Allocated_Bits - Active_Bits)) % Bits_Per_Element);
-    static ETL_CONSTANT element_type Top_Mask       = element_type(Top_Mask_Shift == 0 ? All_Set_Element : ~(All_Set_Element << Top_Mask_Shift));
-
-  public:
-
-    static ETL_CONSTANT size_t ALLOCATED_BITS = Allocated_Bits; ///< For backward compatibility.
-
-    typedef etl::span<element_type, Number_Of_Elements>       span_type;
-    typedef etl::span<const element_type, Number_Of_Elements> const_span_type;
+    using etl::private_bitset::bitset_common<Active_Bits, TElement>::Bits_Per_Element;
+    using etl::private_bitset::bitset_common<Active_Bits, TElement>::All_Set_Element;
+    using etl::private_bitset::bitset_common<Active_Bits, TElement>::All_Clear_Element;
+    using etl::private_bitset::bitset_common<Active_Bits, TElement>::Number_Of_Elements;
+    using etl::private_bitset::bitset_common<Active_Bits, TElement>::Size;
+    using etl::private_bitset::bitset_common<Active_Bits, TElement>::Storage_Model;
+    using etl::private_bitset::bitset_common<Active_Bits, TElement>::Top_Mask;
+    using etl::private_bitset::bitset_common<Active_Bits, TElement>::Allocated_Bits;
 
     //*************************************************************************
     /// The reference type returned.
@@ -1912,7 +2074,8 @@ namespace etl
     //*************************************************************************
     /// Set the bit at the position.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset<Active_Bits, TElement>& set(size_t position, bool value = true)
+    ETL_CONSTEXPR14
+    bitset<Active_Bits, TElement>& set(size_t position, bool value = true)
     {
       ETL_ASSERT_OR_RETURN_VALUE(position < Active_Bits, ETL_ERROR(bitset_overflow), *this);
 
@@ -1922,11 +2085,27 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Set from a string.
+    /// Set the bit at the position.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset<Active_Bits, TElement>& set(const char* text) ETL_NOEXCEPT
+    template <size_t Position>
+    ETL_CONSTEXPR14 bitset<Active_Bits, TElement>& set(bool value = true)
     {
-      implementation::from_string(buffer, Number_Of_Elements, Active_Bits, text);
+      ETL_STATIC_ASSERT(Position < Active_Bits, "Position out of bounds");
+
+      implementation::template set_position<Position>(buffer, value);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Set the bit at the position.
+    //*************************************************************************
+    template <size_t Position, bool Value>
+    ETL_CONSTEXPR14 bitset<Active_Bits, TElement>& set()
+    {
+      ETL_STATIC_ASSERT(Position < Active_Bits, "Position out of bounds");
+
+      implementation::template set_position<Position, Value>(buffer);
 
       return *this;
     }
@@ -1934,7 +2113,10 @@ namespace etl
     //*************************************************************************
     /// Set from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset<Active_Bits, TElement>& set(const wchar_t* text) ETL_NOEXCEPT
+    template <typename TPString>
+    ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_same<TPString, const char*>::value, bitset<Active_Bits, TElement>&>::type
+      set(TPString text) ETL_NOEXCEPT
     {
       implementation::from_string(buffer, Number_Of_Elements, Active_Bits, text);
 
@@ -1942,9 +2124,12 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Set from a string.
+    /// Set from a wide string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset<Active_Bits, TElement>& set(const char16_t* text) ETL_NOEXCEPT
+    template <typename TPString>
+    ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_same<TPString, const wchar_t*>::value, bitset<Active_Bits, TElement>&>::type
+      set(TPString text) ETL_NOEXCEPT
     {
       implementation::from_string(buffer, Number_Of_Elements, Active_Bits, text);
 
@@ -1952,9 +2137,25 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Set from a string.
+    /// Set from a char16 string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset<Active_Bits, TElement>& set(const char32_t* text) ETL_NOEXCEPT
+    template <typename TPString>
+    ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_same<TPString, const char16_t*>::value, bitset<Active_Bits, TElement>&>::type
+      set(TPString text) ETL_NOEXCEPT
+    {
+      implementation::from_string(buffer, Number_Of_Elements, Active_Bits, text);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Set from a char32 string.
+    //*************************************************************************
+    template <typename TPString>
+    ETL_CONSTEXPR14 
+    typename etl::enable_if<etl::is_same<TPString, const char32_t*>::value, bitset<Active_Bits, TElement>&>::type
+      set(TPString text) ETL_NOEXCEPT
     {
       implementation::from_string(buffer, Number_Of_Elements, Active_Bits, text);
 
@@ -2100,11 +2301,81 @@ namespace etl
     }
  
     //*************************************************************************
+    /// Tests a bit at a position.
+    /// Positions greater than the number of configured bits will not compile.
+    //*************************************************************************
+    template <size_t Position>
+    ETL_CONSTEXPR14 bool test() const
+    {
+      ETL_STATIC_ASSERT(Position < Active_Bits, "Position out of bounds");
+
+      return implementation::test(buffer, Position);
+    }
+
+    //*************************************************************************
     /// The number of bits in the bitset.
     //*************************************************************************
-    ETL_CONSTEXPR14 size_t size() const ETL_NOEXCEPT
+    static ETL_CONSTEXPR size_t size() ETL_NOEXCEPT
     {
       return Active_Bits;
+    }
+
+    //*************************************************************************
+    /// The number of storage elements in the bitset.
+    //*************************************************************************
+    static ETL_CONSTEXPR size_t number_of_elements() ETL_NOEXCEPT
+    {
+      return Number_Of_Elements;
+    }
+
+    //*************************************************************************
+    /// The value of a set element.
+    //*************************************************************************
+    static ETL_CONSTEXPR element_type all_set_element() ETL_NOEXCEPT
+    {
+      return All_Set_Element;
+    }
+
+    //*************************************************************************
+    /// The value of a clear element.
+    //*************************************************************************
+    static ETL_CONSTEXPR element_type all_clear_element() ETL_NOEXCEPT
+    {
+      return All_Clear_Element;
+    }
+
+    //*************************************************************************
+    /// The number of bits in an element.
+    //*************************************************************************
+    static ETL_CONSTEXPR size_t bits_per_element() ETL_NOEXCEPT
+    {
+      return Bits_Per_Element;
+    }
+
+    //*************************************************************************
+    /// The mask for the msb element.
+    //*************************************************************************
+    static ETL_CONSTEXPR element_type top_mask() ETL_NOEXCEPT
+    {
+      return Top_Mask;
+    }
+
+    //*************************************************************************
+    /// The total number of bits of storage, including unused.
+    //*************************************************************************
+    static ETL_CONSTEXPR size_t allocated_bits() ETL_NOEXCEPT
+    {
+      return Number_Of_Elements * Bits_Per_Element;
+    }
+
+    //*************************************************************************
+    /// The storage model for the bitset.
+    /// etl::bitset_storage_model::Single
+    /// etl::bitset_storage_model::Multi
+    //*************************************************************************
+    static ETL_CONSTEXPR etl::bitset_storage_model storage_model() ETL_NOEXCEPT
+    {
+      return Storage_Model;
     }
 
     //*************************************************************************
@@ -2507,62 +2778,48 @@ namespace etl
   /// Specialisation for zero bits.
   //***************************************************************************
   template <>
-  class bitset_ext<0U, unsigned char>
+  class bitset_ext<0U, unsigned char> : public etl::private_bitset::bitset_common<0U, unsigned char>
   {
   public:
 
-    typedef unsigned char element_type;
+    typedef typename etl::private_bitset::bitset_common<0U, unsigned char>::element_type    element_type;
+    typedef typename etl::private_bitset::bitset_common<0U, unsigned char>::span_type       span_type;
+    typedef typename etl::private_bitset::bitset_common<0U, unsigned char>::const_span_type const_span_type;
 
-    typedef element_type* pointer;
-    typedef const element_type* const_pointer;
-
-    static ETL_CONSTANT size_t       Bits_Per_Element   = 0U;
-    static ETL_CONSTANT size_t       Number_Of_Elements = 0U;
-    static ETL_CONSTANT size_t       Allocated_Bits     = 0U;
-    static ETL_CONSTANT element_type All_Set_Element    = 0U;
-    static ETL_CONSTANT element_type All_Clear_Element  = 0U;
-    static ETL_CONSTANT size_t       Size               = 0U;
-    static ETL_CONSTANT char         Storage_Model      = etl::bitset_storage_model::Undefined;
-
-    static ETL_CONSTANT size_t npos = etl::integral_limits<size_t>::max;
+    using etl::private_bitset::bitset_common<0U, unsigned char>::Bits_Per_Element;
+    using etl::private_bitset::bitset_common<0U, unsigned char>::All_Set_Element;
+    using etl::private_bitset::bitset_common<0U, unsigned char>::All_Clear_Element;
+    using etl::private_bitset::bitset_common<0U, unsigned char>::Number_Of_Elements;
+    using etl::private_bitset::bitset_common<0U, unsigned char>::Size;
+    using etl::private_bitset::bitset_common<0U, unsigned char>::Storage_Model;
+    using etl::private_bitset::bitset_common<0U, unsigned char>::Top_Mask;
+    using etl::private_bitset::bitset_common<0U, unsigned char>::Allocated_Bits;
   };
 
   //*************************************************************************
-  /// The specialisation that uses an array of the default element type.
+  /// A bitset that uses externally declared storage.
   //*************************************************************************
   template <size_t Active_Bits, typename TElement>
-  class bitset_ext
+  class bitset_ext : public etl::private_bitset::bitset_common<Active_Bits, TElement>
   {
   public:
 
     ETL_STATIC_ASSERT(etl::is_unsigned<TElement>::value, "The element type must be unsigned");
 
-    typedef TElement            element_type;
-    typedef element_type*       pointer;
-    typedef const element_type* const_pointer;
+    typedef typename etl::private_bitset::bitset_common<Active_Bits, TElement>::element_type    element_type;
+    typedef typename etl::private_bitset::bitset_common<Active_Bits, TElement>::span_type       span_type;
+    typedef typename etl::private_bitset::bitset_common<Active_Bits, TElement>::const_span_type const_span_type;
+    
+    using etl::private_bitset::bitset_common<Active_Bits, TElement>::Bits_Per_Element;
+    using etl::private_bitset::bitset_common<Active_Bits, TElement>::All_Set_Element;
+    using etl::private_bitset::bitset_common<Active_Bits, TElement>::All_Clear_Element;
+    using etl::private_bitset::bitset_common<Active_Bits, TElement>::Number_Of_Elements;
+    using etl::private_bitset::bitset_common<Active_Bits, TElement>::Size;
+    using etl::private_bitset::bitset_common<Active_Bits, TElement>::Storage_Model;
+    using etl::private_bitset::bitset_common<Active_Bits, TElement>::Top_Mask;
+    using etl::private_bitset::bitset_common<Active_Bits, TElement>::Allocated_Bits;
 
-    static ETL_CONSTANT size_t npos = etl::integral_limits<size_t>::max;
-
-    static ETL_CONSTANT size_t       Bits_Per_Element   = etl::integral_limits<element_type>::bits;
-    static ETL_CONSTANT element_type All_Set_Element    = etl::integral_limits<element_type>::max;
-    static ETL_CONSTANT element_type All_Clear_Element  = element_type(0);
-    static ETL_CONSTANT size_t       Number_Of_Elements = (Active_Bits % Bits_Per_Element == 0) ? Active_Bits / Bits_Per_Element : Active_Bits / Bits_Per_Element + 1;
-    static ETL_CONSTANT size_t       Allocated_Bits     = Number_Of_Elements * Bits_Per_Element;
-    static ETL_CONSTANT size_t       Size               = Active_Bits;
-    static ETL_CONSTANT char         Storage_Model      = (Number_Of_Elements == 1U) ? etl::bitset_storage_model::Single : etl::bitset_storage_model::Multi;
-
-  private:
-
-    static ETL_CONSTANT size_t       Top_Mask_Shift = ((Bits_Per_Element - (Allocated_Bits - Active_Bits)) % Bits_Per_Element);
-    static ETL_CONSTANT element_type Top_Mask = element_type(Top_Mask_Shift == 0 ? All_Set_Element : ~(All_Set_Element << Top_Mask_Shift));
-
-  public:
-
-    static ETL_CONSTANT size_t ALLOCATED_BITS = Allocated_Bits; ///< For backward compatibility.
-
-    typedef etl::array<TElement, Number_Of_Elements>          buffer_type;
-    typedef etl::span<element_type, Number_Of_Elements>       span_type;
-    typedef etl::span<const element_type, Number_Of_Elements> const_span_type;
+    typedef etl::array<TElement, Number_Of_Elements> buffer_type;
 
     //*************************************************************************
     /// The reference type returned.
@@ -2811,21 +3068,38 @@ namespace etl
     //*************************************************************************
     /// Set the bit at the position.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& set(size_t position, bool value = true)
+    ETL_CONSTEXPR14
+      bitset_ext<Active_Bits, TElement>& set(size_t position, bool value = true)
     {
       ETL_ASSERT_OR_RETURN_VALUE(position < Active_Bits, ETL_ERROR(bitset_overflow), *this);
-      
+
       implementation::set_position(pbuffer, position, value);
 
       return *this;
     }
 
     //*************************************************************************
-    /// Set from a string.
+    /// Set the bit at the position.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& set(const char* text) ETL_NOEXCEPT
+    template <size_t Position>
+    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& set(bool value = true)
     {
-      implementation::from_string(pbuffer, Number_Of_Elements, Active_Bits, text);
+      ETL_STATIC_ASSERT(Position < Active_Bits, "Position out of bounds");
+
+      implementation::template set_position<Position>(pbuffer, value);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Set the bit at the position.
+    //*************************************************************************
+    template <size_t Position, bool Value>
+    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& set()
+    {
+      ETL_STATIC_ASSERT(Position < Active_Bits, "Position out of bounds");
+
+      implementation::template set_position<Position, Value>(pbuffer);
 
       return *this;
     }
@@ -2833,7 +3107,10 @@ namespace etl
     //*************************************************************************
     /// Set from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& set(const wchar_t* text) ETL_NOEXCEPT
+    template <typename TPString>
+    ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_same<TPString, const char*>::value, bitset_ext<Active_Bits, TElement>&>::type
+      set(TPString text) ETL_NOEXCEPT
     {
       implementation::from_string(pbuffer, Number_Of_Elements, Active_Bits, text);
 
@@ -2841,9 +3118,12 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Set from a string.
+    /// Set from a wide string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& set(const char16_t* text) ETL_NOEXCEPT
+    template <typename TPString>
+    ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_same<TPString, const wchar_t*>::value, bitset_ext<Active_Bits, TElement>&>::type
+      set(TPString text) ETL_NOEXCEPT
     {
       implementation::from_string(pbuffer, Number_Of_Elements, Active_Bits, text);
 
@@ -2851,9 +3131,25 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Set from a string.
+    /// Set from a char16 string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& set(const char32_t* text) ETL_NOEXCEPT
+    template <typename TPString>
+    ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_same<TPString, const char16_t*>::value, bitset_ext<Active_Bits, TElement>&>::type
+      set(TPString text) ETL_NOEXCEPT
+    {
+      implementation::from_string(pbuffer, Number_Of_Elements, Active_Bits, text);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Set from a char32 string.
+    //*************************************************************************
+    template <typename TPString>
+    ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_same<TPString, const char32_t*>::value, bitset_ext<Active_Bits, TElement>&>::type
+      set(TPString text) ETL_NOEXCEPT
     {
       implementation::from_string(pbuffer, Number_Of_Elements, Active_Bits, text);
 
@@ -2998,11 +3294,81 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Tests a bit at a position.
+    /// Positions greater than the number of configured bits will not compile.
+    //*************************************************************************
+    template <size_t Position>
+    ETL_CONSTEXPR14 bool test() const
+    {
+      ETL_STATIC_ASSERT(Position < Active_Bits, "Position out of bounds");
+
+      return implementation::test(pbuffer, Position);
+    }
+
+    //*************************************************************************
     /// The number of bits in the bitset.
     //*************************************************************************
-    ETL_CONSTEXPR14 size_t size() const ETL_NOEXCEPT
+    static ETL_CONSTEXPR size_t size() ETL_NOEXCEPT
     {
       return Active_Bits;
+    }
+
+    //*************************************************************************
+    /// The number of storage elements in the bitset.
+    //*************************************************************************
+    static ETL_CONSTEXPR size_t number_of_elements() ETL_NOEXCEPT
+    {
+      return Number_Of_Elements;
+    }
+
+    //*************************************************************************
+    /// The value of a set element.
+    //*************************************************************************
+    static ETL_CONSTEXPR element_type all_set_element() ETL_NOEXCEPT
+    {
+      return All_Set_Element;
+    }
+
+    //*************************************************************************
+    /// The value of a clear element.
+    //*************************************************************************
+    static ETL_CONSTEXPR element_type all_clear_element() ETL_NOEXCEPT
+    {
+      return All_Clear_Element;
+    }
+
+    //*************************************************************************
+    /// The mask for the msb element.
+    //*************************************************************************
+    static ETL_CONSTEXPR element_type top_mask() ETL_NOEXCEPT
+    {
+      return Top_Mask;
+    }
+
+    //*************************************************************************
+    /// The number of bits in an element.
+    //*************************************************************************
+    static ETL_CONSTEXPR size_t bits_per_element() ETL_NOEXCEPT
+    {
+      return Bits_Per_Element;
+    }
+
+    //*************************************************************************
+    /// The total number of bits of storage, including unused.
+    //*************************************************************************
+    static ETL_CONSTEXPR size_t allocated_bits() ETL_NOEXCEPT
+    {
+      return Number_Of_Elements * Bits_Per_Element;
+    }
+
+    //*************************************************************************
+    /// The storage model for the bitset.
+    /// etl::bitset_storage_model::Single
+    /// etl::bitset_storage_model::Multi
+    //*************************************************************************
+    static ETL_CONSTEXPR etl::bitset_storage_model storage_model() ETL_NOEXCEPT
+    {
+      return Storage_Model;
     }
 
     //*************************************************************************
@@ -3233,14 +3599,6 @@ namespace etl
     }
 
   private:
-
-    ////*************************************************************************
-    ///// Correct the unused top bits after bit manipulation.
-    ////*************************************************************************
-    //ETL_CONSTEXPR14 static void clear_unused_bits_in_msb() ETL_NOEXCEPT
-    //{
-    //  pbuffer[Number_Of_Elements - 1U] &= Top_Mask;
-    //}
 
     // The implementation of the bitset functionality.
     typedef etl::bitset_impl<element_type, (Number_Of_Elements == 1U) ? etl::bitset_storage_model::Single : etl::bitset_storage_model::Multi> implementation;
