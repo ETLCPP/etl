@@ -1340,7 +1340,7 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Delete a data noe at the specified location.
+    /// Delete a data node at the specified location.
     //*********************************************************************
     local_iterator delete_data_node(local_iterator iprevious, local_iterator icurrent, bucket_t& bucket)
     {

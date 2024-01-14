@@ -62,7 +62,7 @@ SOFTWARE.
 
 ///\defgroup type_traits type_traits
 /// A set of type traits definitions.
-/// Derived from either the standard or alternate definitions, dependant on whether or not ETL_NO_STL is defined.
+/// Derived from either the standard or alternate definitions, dependent on whether or not ETL_NO_STL is defined.
 /// \ingroup utilities
 
 #if ETL_USING_STL && ETL_USING_CPP11

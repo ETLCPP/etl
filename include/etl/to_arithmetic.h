@@ -397,7 +397,7 @@ namespace etl
           TValue old_value = integral_value;
           integral_value *= radix;
 
-          // No multipication overflow?
+          // No multiplication overflow?
           is_not_overflow = ((integral_value / radix) == old_value);
 
           if (is_not_overflow)

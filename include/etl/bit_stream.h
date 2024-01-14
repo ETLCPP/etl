@@ -861,7 +861,7 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Sets the function to call afer every write.
+    /// Sets the function to call after every write.
     //***************************************************************************
     void set_callback(callback_type callback_)
     {
@@ -869,7 +869,7 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Gets the function to call afer every write.
+    /// Gets the function to call after every write.
     //***************************************************************************
     callback_type get_callback() const
     {
