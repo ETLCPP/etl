@@ -38,6 +38,10 @@ set_target_properties(t20 PROPERTIES
         CXX_STANDARD_REQUIRED ON
         CXX_EXTENSIONS ON
         )
+target_compile_options(t20
+	    PRIVATE
+		-fsyntax-only
+		)
 target_sources(t20 PRIVATE etl_profile.h
         ../absolute.h.t.cpp
         ../algorithm.h.t.cpp
@@ -123,6 +127,8 @@ target_sources(t20 PRIVATE etl_profile.h
         ../crc8_maxim.h.t.cpp
         ../crc8_rohc.h.t.cpp
         ../crc8_wcdma.h.t.cpp
+        ../crc8_j1850.h.t.cpp
+        ../crc8_j1850_zero.h.t.cpp
         ../cyclic_value.h.t.cpp
         ../debounce.h.t.cpp
         ../debug_count.h.t.cpp
