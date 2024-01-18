@@ -1389,6 +1389,12 @@
     <ClInclude Include="..\..\include\etl\crc1.h">
       <Filter>ETL\Maths\CRC</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc8_j1850.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc8_j1850_zero.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3284,6 +3290,18 @@
     <ClCompile Include="..\test_crc1.cpp">
       <Filter>Tests\CRC</Filter>
     </ClCompile>
+    <ClCompile Include="..\syntax_check\crc8_j1850.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\crc8_j1850_zero.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_j1850.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_j1850_zero.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -3339,12 +3357,6 @@
     </None>
     <None Include="..\..\appveyor.yml">
       <Filter>Resource Files\CI\Appveyor</Filter>
-    </None>
-    <None Include="..\..\.github\workflows\clang.yml">
-      <Filter>Resource Files\CI\Github</Filter>
-    </None>
-    <None Include="..\..\.github\workflows\gcc.yml">
-      <Filter>Resource Files\CI\Github</Filter>
     </None>
     <None Include="..\..\.clang-format">
       <Filter>Resource Files</Filter>
@@ -3411,6 +3423,30 @@
     </None>
     <None Include="..\..\scripts\update_version.py">
       <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang-c++11.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang-c++14.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang-c++17.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang-c++20.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-c++11.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-c++14.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-c++17.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-c++20.yml">
+      <Filter>Resource Files\CI\Github</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
