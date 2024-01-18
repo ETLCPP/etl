@@ -1820,7 +1820,11 @@ namespace etl
       static ETL_CONSTANT size_t Size               = Active_Bits;
       static ETL_CONSTANT size_t Allocated_Bits     = Number_Of_Elements * Bits_Per_Element;
 
-      static ETL_CONSTANT etl::bitset_storage_model Storage_Model = (Number_Of_Elements == 1U) ? etl::bitset_storage_model::Single : etl::bitset_storage_model::Multi;
+#if ETL_USING_CPP11
+      static ETL_CONSTANT etl::bitset_storage_model Storage_Model = (bitset_common<Active_Bits, TElement>::Number_Of_Elements == 1U) ? etl::bitset_storage_model::Single : etl::bitset_storage_model::Multi;
+#else
+      static ETL_CONSTANT etl::bitset_storage_model Storage_Model;
+#endif
 
       typedef etl::span<element_type,       Number_Of_Elements> span_type;
       typedef etl::span<const element_type, Number_Of_Elements> const_span_type;
@@ -1841,8 +1845,13 @@ namespace etl
     template <size_t Active_Bits, typename TElement>
     ETL_CONSTANT size_t bitset_common<Active_Bits, TElement>::Size;
 
+#if ETL_USING_CPP11
     template <size_t Active_Bits, typename TElement>
     ETL_CONSTANT etl::bitset_storage_model bitset_common<Active_Bits, TElement>::Storage_Model;
+#else
+    template <size_t Active_Bits, typename TElement>
+    ETL_CONSTANT etl::bitset_storage_model bitset_common<Active_Bits, TElement>::Storage_Model = (bitset_common<Active_Bits, TElement>::Number_Of_Elements == 1U) ? etl::bitset_storage_model::Single : etl::bitset_storage_model::Multi;
+#endif
 
     template <size_t Active_Bits, typename TElement>
     ETL_CONSTANT size_t bitset_common<Active_Bits, TElement>::Top_Mask_Shift;
