@@ -1208,11 +1208,9 @@ namespace etl
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
 #ifdef ETL_ICIRCULAR_BUFFER_REPAIR_ENABLE
-    virtual
-#endif
+      virtual void repair() ETL_OVERRIDE
+#else
       void repair()
-#ifdef ETL_ICIRCULAR_BUFFER_REPAIR_ENABLE
-      ETL_OVERRIDE
 #endif
     {
       ETL_ASSERT(etl::is_trivially_copyable<T>::value, ETL_ERROR(etl::circular_buffer_incompatible_type));
@@ -1395,11 +1393,9 @@ namespace etl
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
 #ifdef ETL_ICIRCULAR_BUFFER_REPAIR_ENABLE
-    virtual
-#endif
-      void repair()
-#ifdef ETL_ICIRCULAR_BUFFER_REPAIR_ENABLE
-      ETL_OVERRIDE
+    virtual void repair() ETL_OVERRIDE
+#else
+    void repair()
 #endif
     {
     }

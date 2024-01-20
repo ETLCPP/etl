@@ -2483,11 +2483,9 @@ namespace etl
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
 #ifdef ETL_IDEQUE_REPAIR_ENABLE
-      virtual
-#endif
-      void repair()
-#ifdef ETL_IDEQUE_REPAIR_ENABLE
-      ETL_OVERRIDE
+        virtual void repair() ETL_OVERRIDE
+#else
+        void repair()
 #endif
     {
 #if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED

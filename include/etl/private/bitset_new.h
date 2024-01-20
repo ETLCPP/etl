@@ -492,8 +492,8 @@ namespace etl
 		template <typename T, size_t Position, size_t Length>
 #endif
     ETL_CONSTEXPR14
-      static
-      T extract(const_pointer pbuffer)
+    static
+    T extract(const_pointer pbuffer)
     {
       typedef typename etl::make_unsigned<T>::type unsigned_t;
 
