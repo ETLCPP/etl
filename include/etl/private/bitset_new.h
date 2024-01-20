@@ -459,7 +459,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Extract an integral value from an arbitary position and length.
+    /// Extract an integral value from an arbitrary position and length.
     //*************************************************************************
     template <typename T>
     ETL_CONSTEXPR14
@@ -484,9 +484,13 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Extract an integral value from an arbitary position and length.
+    /// Extract an integral value from an arbitrary position and length.
     //*************************************************************************
+#if ETL_USING_CPP11
     template <typename T, size_t Position, size_t Length = etl::integral_limits<T>::bits>
+#else
+		template <typename T, size_t Position, size_t Length>
+#endif
     ETL_CONSTEXPR14
       static
       T extract(const_pointer pbuffer)
@@ -1309,7 +1313,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Extract an integral value from an arbitary position and length.
+    /// Extract an integral value from an arbitrary position and length.
     /// Run time position and length.
     //*************************************************************************
     template <typename T>
@@ -1387,7 +1391,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Extract an integral value from an arbitary position and length.
+    /// Extract an integral value from an arbitrary position and length.
     //*************************************************************************
     template <typename T>
     ETL_CONSTEXPR14
@@ -1409,7 +1413,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Extract an integral value from an arbitary position and length.
+    /// Extract an integral value from an arbitrary position and length.
     //*************************************************************************
     template <typename T, size_t Position, size_t Length>
     ETL_CONSTEXPR14
@@ -1875,9 +1879,9 @@ namespace etl
   {
   public:
 
-    typedef typename etl::private_bitset::bitset_common<0U, unsigned char>::element_type    element_type;
-    typedef typename etl::private_bitset::bitset_common<0U, unsigned char>::span_type       span_type;
-    typedef typename etl::private_bitset::bitset_common<0U, unsigned char>::const_span_type const_span_type;
+    typedef etl::private_bitset::bitset_common<0U, unsigned char>::element_type    element_type;
+    typedef etl::private_bitset::bitset_common<0U, unsigned char>::span_type       span_type;
+    typedef etl::private_bitset::bitset_common<0U, unsigned char>::const_span_type const_span_type;
 
     using etl::private_bitset::bitset_common<0U, unsigned char>::Bits_Per_Element;
     using etl::private_bitset::bitset_common<0U, unsigned char>::All_Set_Element;
@@ -2226,7 +2230,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Extract an integral value from an arbitary position and length.
+    /// Extract an integral value from an arbitrary position and length.
     /// Run time position and length.
     //*************************************************************************
     template <typename T>
@@ -2242,10 +2246,14 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Extract an integral value from an arbitary position and length.
+    /// Extract an integral value from an arbitrary position and length.
     /// Compile time position and length.
     //*************************************************************************
-    template <typename T, size_t Position, size_t Length = etl::integral_limits<T>::bits>
+#if ETL_USING_CPP11    
+		template <typename T, size_t Position, size_t Length = etl::integral_limits<T>::bits>
+#else
+	  template <typename T, size_t Position, size_t Length>
+#endif
     ETL_CONSTEXPR14
     T extract() const
     {
@@ -2791,9 +2799,9 @@ namespace etl
   {
   public:
 
-    typedef typename etl::private_bitset::bitset_common<0U, unsigned char>::element_type    element_type;
-    typedef typename etl::private_bitset::bitset_common<0U, unsigned char>::span_type       span_type;
-    typedef typename etl::private_bitset::bitset_common<0U, unsigned char>::const_span_type const_span_type;
+    typedef etl::private_bitset::bitset_common<0U, unsigned char>::element_type    element_type;
+    typedef etl::private_bitset::bitset_common<0U, unsigned char>::span_type       span_type;
+    typedef etl::private_bitset::bitset_common<0U, unsigned char>::const_span_type const_span_type;
 
     using etl::private_bitset::bitset_common<0U, unsigned char>::Bits_Per_Element;
     using etl::private_bitset::bitset_common<0U, unsigned char>::All_Set_Element;
@@ -3219,7 +3227,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Extract an integral value from an arbitary position and length.
+    /// Extract an integral value from an arbitrary position and length.
     /// Run time position and length.
     //*************************************************************************
     template <typename T>
@@ -3235,10 +3243,14 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Extract an integral value from an arbitary position and length.
+    /// Extract an integral value from an arbitrary position and length.
     /// Compile time position and length.
     //*************************************************************************
+#if ETL_USING_CPP11
     template <typename T, size_t Position, size_t Length = etl::integral_limits<T>::bits>
+#else
+    template <typename T, size_t Position, size_t Length>
+#endif
     ETL_CONSTEXPR14
     T extract() const
     {
