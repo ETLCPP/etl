@@ -497,7 +497,7 @@ namespace etl
     {
       typedef typename etl::make_unsigned<T>::type unsigned_t;
 
-      const unsigned_t Mask = etl::make_lsb_mask<unsigned_t>(Length);
+      const unsigned_t Mask  = etl::make_lsb_mask<unsigned_t>(Length);
       const unsigned_t Shift = Position % Bits_Per_Element;
 
       unsigned_t value = static_cast<unsigned_t>(*pbuffer >> Shift) & Mask;
@@ -1780,10 +1780,17 @@ namespace etl
       const size_t Shift = etl::integral_limits<element_type>::bits;
 
       // Set the non-zero elements.
-      while ((value != 0) && (i != number_of_elements))
+      if ETL_IF_CONSTEXPR(etl::integral_limits<element_type>::bits == etl::integral_limits<unsigned long long>::bits)
       {
-        pbuffer[i++] = value & All_Set_Element;
-        value = value >> Shift;
+        pbuffer[i++] = value;
+      }
+      else
+      {
+        while ((value != 0) && (i != number_of_elements))
+        {
+          pbuffer[i++] = value & All_Set_Element;
+          value = value >> Shift;
+        }
       }
 
       // Clear the remaining elements.
@@ -2267,9 +2274,9 @@ namespace etl
     //*************************************************************************
     /// Get as an unsigned long.
     //*************************************************************************
-    ETL_CONSTEXPR14 unsigned long to_ulong() const ETL_NOEXCEPT
+    unsigned long to_ulong() const
     {
-      ETL_STATIC_ASSERT(etl::integral_limits<unsigned long>::bits >= Active_Bits, "to_ulong() : Active_Bits > unsigned long");
+      ETL_ASSERT(etl::integral_limits<unsigned long>::bits >= Active_Bits, ETL_ERROR(etl::bitset_overflow));
 
       return implementation::template value<unsigned long>(buffer, Number_Of_Elements);
     }
@@ -2277,9 +2284,9 @@ namespace etl
     //*************************************************************************
     /// Get as an unsigned long long.
     //*************************************************************************
-    ETL_CONSTEXPR14 unsigned long long to_ullong() const ETL_NOEXCEPT
+    unsigned long long to_ullong() const
     {
-      ETL_STATIC_ASSERT(etl::integral_limits<unsigned long long>::bits >= Active_Bits, "to_ullong() : Active_Bits > unsigned long long");
+      ETL_ASSERT(etl::integral_limits<unsigned long long>::bits >= Active_Bits, ETL_ERROR(etl::bitset_overflow));
 
       return implementation::template value<unsigned long long>(buffer, Number_Of_Elements);
     }
@@ -3264,9 +3271,9 @@ namespace etl
     //*************************************************************************
     /// Get as an unsigned long.
     //*************************************************************************
-    ETL_CONSTEXPR14 unsigned long to_ulong() const ETL_NOEXCEPT
+    unsigned long to_ulong() const
     {
-      ETL_STATIC_ASSERT(etl::integral_limits<unsigned long>::bits >= Active_Bits, "Active_Bits > unsigned long");
+      ETL_ASSERT(etl::integral_limits<unsigned long>::bits >= Active_Bits, ETL_ERROR(etl::bitset_overflow));
 
       return implementation::template value<unsigned long>(pbuffer, Number_Of_Elements);
     }
@@ -3274,9 +3281,9 @@ namespace etl
     //*************************************************************************
     /// Get as an unsigned long long.
     //*************************************************************************
-    ETL_CONSTEXPR14 unsigned long long to_ullong() const ETL_NOEXCEPT
+    unsigned long long to_ullong() const
     {
-      ETL_STATIC_ASSERT(etl::integral_limits<unsigned long long>::bits >= Active_Bits, "Active_Bits > unsigned long long");
+      ETL_ASSERT(etl::integral_limits<unsigned long long>::bits >= Active_Bits, ETL_ERROR(etl::bitset_overflow));
 
       return implementation::template value<unsigned long long>(pbuffer, Number_Of_Elements);
     }

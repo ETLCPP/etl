@@ -1083,6 +1083,62 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_to_ulong_min)
+    {
+      etl::bitset_ext<etl::integral_limits<unsigned long>::bits>::buffer_type buffer;
+      etl::bitset_ext<etl::integral_limits<unsigned long>::bits> data((unsigned long)etl::integral_limits<unsigned long>::min, buffer);
+      unsigned long value = data.to_ulong();
+
+      CHECK_EQUAL(std::numeric_limits<unsigned long>::min(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_to_ulong_max)
+    {
+      etl::bitset_ext<etl::integral_limits<unsigned long>::bits>::buffer_type buffer;
+      etl::bitset_ext<etl::integral_limits<unsigned long>::bits> data((unsigned long)etl::integral_limits<unsigned long>::max, buffer);
+      unsigned long value = data.to_ulong();
+
+      CHECK_EQUAL(std::numeric_limits<unsigned long>::max(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_to_ulong_overflow)
+    {
+      etl::bitset_ext<etl::integral_limits<unsigned long>::bits + 1>::buffer_type buffer;
+      etl::bitset_ext<etl::integral_limits<unsigned long>::bits + 1> data((unsigned long)etl::integral_limits<unsigned long>::min, buffer);
+      CHECK_THROW(data.to_ulong(), etl::bitset_overflow);
+    }
+
+    //*************************************************************************
+    TEST(test_to_ullong_min)
+    {
+      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits>::buffer_type buffer;
+      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits> data((unsigned long long)etl::integral_limits<unsigned long long>::min, buffer);
+      unsigned long long value = data.to_ullong();
+
+      CHECK_EQUAL(std::numeric_limits<unsigned long>::min(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_to_ullong_max)
+    {
+      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits>::buffer_type buffer;
+      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits> data((unsigned long long)etl::integral_limits<unsigned long long>::max, buffer);
+      unsigned long long value = data.to_ullong();
+
+      CHECK_EQUAL(std::numeric_limits<unsigned long long>::max(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_to_ullong_overflow)
+    {
+      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits + 1>::buffer_type buffer;
+      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits + 1> data((unsigned long long)etl::integral_limits<unsigned long long>::min, buffer);
+      CHECK_THROW(data.to_ullong(), etl::bitset_overflow);
+    }
+
+    //*************************************************************************
     TEST(test_position_set)
     {
       etl::bitset_ext<64>::buffer_type buffer;

@@ -1141,6 +1141,56 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_to_ulong_min)
+    {
+      ETL_CONSTEXPR14 etl::bitset<etl::integral_limits<unsigned long>::bits> data((unsigned long)etl::integral_limits<unsigned long>::min);
+      unsigned long value = data.to_ulong();
+
+      CHECK_EQUAL(std::numeric_limits<unsigned long>::min(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_to_ulong_max)
+    {
+      ETL_CONSTEXPR14 etl::bitset<etl::integral_limits<unsigned long>::bits> data((unsigned long)etl::integral_limits<unsigned long>::max);
+      unsigned long value = data.to_ulong();
+
+      CHECK_EQUAL(std::numeric_limits<unsigned long>::max(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_to_ulong_overflow)
+    {
+      ETL_CONSTEXPR14 etl::bitset<etl::integral_limits<unsigned long>::bits + 1> data((unsigned long)etl::integral_limits<unsigned long>::min);
+      CHECK_THROW(data.to_ulong(), etl::bitset_overflow);
+    }
+
+    //*************************************************************************
+    TEST(test_to_ullong_min)
+    {
+      ETL_CONSTEXPR14 etl::bitset<etl::integral_limits<unsigned long long>::bits> data((unsigned long long)etl::integral_limits<unsigned long long>::min);
+      unsigned long long value = data.to_ullong();
+
+      CHECK_EQUAL(std::numeric_limits<unsigned long>::min(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_to_ullong_max)
+    {
+      ETL_CONSTEXPR14 etl::bitset<etl::integral_limits<unsigned long long>::bits> data((unsigned long long)etl::integral_limits<unsigned long long>::max);
+      unsigned long long value = data.to_ullong();
+
+      CHECK_EQUAL(std::numeric_limits<unsigned long long>::max(), value);
+    }
+
+    //*************************************************************************
+    TEST(test_to_ullong_overflow)
+    {
+      ETL_CONSTEXPR14 etl::bitset<etl::integral_limits<unsigned long long>::bits + 1> data((unsigned long long)etl::integral_limits<unsigned long long>::min);
+      CHECK_THROW(data.to_ullong(), etl::bitset_overflow);
+    }
+
+    //*************************************************************************
     TEST(test_position_set)
     {
       std::bitset<64> compare;
