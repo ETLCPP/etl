@@ -2021,9 +2021,7 @@ namespace etl
   template <typename TIterator, typename T>
   ETL_CONSTEXPR14
   TIterator remove(TIterator first, TIterator last, const T& value)
-  {
-    first = etl::find(first, last, value);
-      
+  {    
     if (first != last)
     {
       TIterator itr = first;
@@ -2051,8 +2049,6 @@ namespace etl
   ETL_CONSTEXPR14
   TIterator remove_if(TIterator first, TIterator last, TUnaryPredicate predicate)
   {
-    first = etl::find_if(first, last, predicate);
-
     if (first != last)
     {
       TIterator itr = first;
