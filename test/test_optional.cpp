@@ -629,6 +629,21 @@ namespace
       CHECK_EQUAL(42, (*opt).v);
     }
 #endif
+
+    //*************************************************************************
+    TEST(test_optional_issue_819)
+    {
+      // The code below should compile without error.
+      class optional_type 
+      {
+      public:
+
+        static etl::optional<optional_type> function()
+        {
+          return {};
+        }
+      };
+    }
   };
 }
 
