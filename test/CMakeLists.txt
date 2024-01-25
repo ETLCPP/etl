@@ -384,6 +384,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 			-Wfloat-equal
 			-Wuseless-cast
 			-Wshadow
+			-Wnull-dereference
 			)
 endif ()
 
@@ -397,6 +398,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 			-Werror
 			-Wfloat-equal
 			-Wshadow
+			-Wnull-dereference
 			)
 endif ()
 
