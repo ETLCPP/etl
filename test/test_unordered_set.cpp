@@ -895,5 +895,19 @@ namespace
       using Set = etl::unordered_set<int, 1, 1>;
       CHECK((!std::is_same<typename Set::const_iterator::value_type, typename Set::iterator::value_type>::value));
     }
+
+    //*************************************************************************
+    TEST(test_iterator_value_types_bug_803)
+    {
+      using Set1 = etl::unordered_set<NDC, SIZE, 5>;
+      using Set2 = etl::unordered_set<NDC, 2 * SIZE, 10>;
+
+      Set1 set1(initial_data.begin(), initial_data.end());
+      Set2 set2a(initial_data.begin(), initial_data.end());
+      Set2 set2b(different_data.begin(), different_data.end());
+
+      CHECK_TRUE(set1 == set2a);
+      CHECK_FALSE(set1 == set2b);
+    }
   };
 }
