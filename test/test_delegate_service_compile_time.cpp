@@ -67,11 +67,11 @@ namespace
   //*****************************************************************************
   // The test class with member functions.
   //*****************************************************************************
-  class Test
+  class Object
   {
   public:
 
-    Test()
+    Object()
     {
     }
 
@@ -82,10 +82,10 @@ namespace
     }
   };
 
-  Test test;
+  Object object;
 
   // Callback for 'member'.
-  ETL_CONSTEXPR14 etl::delegate<void(size_t)> member_callback = etl::delegate<void(size_t)>::create<Test, test, &Test::member>();
+  ETL_CONSTEXPR14 etl::delegate<void(size_t)> member_callback = etl::delegate<void(size_t)>::create<Object, object, &Object::member>();
 
   // Callback for 'global'.
   ETL_CONSTEXPR14 etl::delegate<void(size_t)> global_callback = etl::delegate<void(size_t)>::create<global>();

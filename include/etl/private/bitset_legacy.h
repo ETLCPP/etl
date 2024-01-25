@@ -860,7 +860,7 @@ namespace etl
             --dst_index;
 
             // Shift lsb.
-            element_type lsb = element_type((pdata[src_index] & lsb_mask) << lsb_shift);
+            lsb = element_type((pdata[src_index] & lsb_mask) << lsb_shift);
             pdata[dst_index] = lsb;
             --src_index;
           }

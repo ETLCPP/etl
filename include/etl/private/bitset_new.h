@@ -827,13 +827,14 @@ namespace etl
     //*************************************************************************
     /// Initialise from an unsigned long long.
     //*************************************************************************
+    template <typename TElementType>
     ETL_CONSTEXPR14 
     static 
     void initialise(pointer            pbuffer, 
                     size_t             /*number_of_elements*/,
                     unsigned long long value) ETL_NOEXCEPT
     {
-      *pbuffer = static_cast<element_type>(value);
+      *pbuffer = static_cast<TElementType>(value);
     }
 
     //*************************************************************************
@@ -1672,7 +1673,7 @@ namespace etl
           --dst_index;
 
           // Shift lsb.
-          element_type lsb = element_type((pbuffer[src_index] & lsb_mask) << lsb_shift);
+          lsb = element_type((pbuffer[src_index] & lsb_mask) << lsb_shift);
           pbuffer[dst_index] = lsb;
           --src_index;
         }
@@ -1769,28 +1770,49 @@ namespace etl
 
     //*************************************************************************
     /// Initialise from an unsigned long long.
+    /// Enabled if the number of bits in the element equals the number of bits in an unsigned long long.
     //*************************************************************************
+    template <typename TElementType>
     ETL_CONSTEXPR14
     static
-    void initialise(pointer            pbuffer, 
-                    size_t             number_of_elements, 
-                    unsigned long long value) ETL_NOEXCEPT
+    typename etl::enable_if<etl::integral_limits<TElementType>::bits == etl::integral_limits<unsigned long long>::bits, void>::type
+      initialise(pointer            pbuffer, 
+                 size_t             number_of_elements, 
+                 unsigned long long value) ETL_NOEXCEPT
     {
       size_t i = 0UL;
-      const size_t Shift = etl::integral_limits<element_type>::bits;
+      
+      // Set the non-zero elements.
+      pbuffer[i++] = value;
+
+      // Clear the remaining elements.
+      while (i != number_of_elements)
+      {
+        pbuffer[i++] = All_Clear_Element;
+      }
+    }
+
+    //*************************************************************************
+    /// Initialise from an unsigned long long.
+    /// Enabled if the number of bits in the element doesn't equal the number of bits in an unsigned long long.
+    //*************************************************************************
+    template <typename TElementType>
+    ETL_CONSTEXPR14
+    static
+    typename etl::enable_if<etl::integral_limits<TElementType>::bits != etl::integral_limits<unsigned long long>::bits, void>::type
+      initialise(pointer            pbuffer,
+                 size_t             number_of_elements,
+                 unsigned long long value) ETL_NOEXCEPT
+    {
+      size_t i = 0UL;
 
       // Set the non-zero elements.
-      if ETL_IF_CONSTEXPR(etl::integral_limits<element_type>::bits == etl::integral_limits<unsigned long long>::bits)
+      const unsigned long long Shift = etl::integral_limits<element_type>::bits;
+
+      while ((value != 0) && (i != number_of_elements))
       {
-        pbuffer[i++] = value;
-      }
-      else
-      {
-        while ((value != 0) && (i != number_of_elements))
-        {
-          pbuffer[i++] = value & All_Set_Element;
-          value = value >> Shift;
-        }
+        pbuffer[i++] = value & All_Set_Element;
+        value = value >> Shift;
       }
 
       // Clear the remaining elements.
@@ -2029,25 +2051,18 @@ namespace etl
     //*************************************************************************
     /// Construct from a value.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset(unsigned long long value) ETL_NOEXCEPT
+    template <typename TValue>
+    ETL_CONSTEXPR14 bitset(TValue value, typename etl::enable_if<is_integral<TValue>::value>::type* = 0) ETL_NOEXCEPT
       : buffer()
     {
-      implementation::initialise(buffer, Number_Of_Elements, value);
+      implementation::template initialise<element_type>(buffer, Number_Of_Elements, value);
     }
 
     //*************************************************************************
     /// Construct from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset(const char* text) ETL_NOEXCEPT
-      : buffer()
-    {
-      implementation::from_string(buffer, Number_Of_Elements, Active_Bits, text);
-    }
-
-    //*************************************************************************
-    /// Construct from a string.
-    //*************************************************************************
-    ETL_CONSTEXPR14 bitset(const wchar_t* text) ETL_NOEXCEPT
+    template <typename TPString>
+    ETL_CONSTEXPR14 bitset(TPString text, typename etl::enable_if<is_same<TPString, const char*>::value>::type* = 0) ETL_NOEXCEPT
       : buffer()
     {
       implementation::from_string(buffer, Number_Of_Elements, Active_Bits, text);
@@ -2056,7 +2071,8 @@ namespace etl
     //*************************************************************************
     /// Construct from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset(const char16_t* text) ETL_NOEXCEPT
+    template <typename TPString>
+    ETL_CONSTEXPR14 bitset(TPString text, typename etl::enable_if<is_same<TPString, const wchar_t*>::value>::type* = 0) ETL_NOEXCEPT
       : buffer()
     {
       implementation::from_string(buffer, Number_Of_Elements, Active_Bits, text);
@@ -2065,7 +2081,18 @@ namespace etl
     //*************************************************************************
     /// Construct from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset(const char32_t* text) ETL_NOEXCEPT
+    template <typename TPString>
+    ETL_CONSTEXPR14 bitset(TPString text, typename etl::enable_if<is_same<TPString, const char16_t*>::value>::type* = 0) ETL_NOEXCEPT
+      : buffer()
+    {
+      implementation::from_string(buffer, Number_Of_Elements, Active_Bits, text);
+    }
+
+    //*************************************************************************
+    /// Construct from a string.
+    //*************************************************************************
+    template <typename TPString>
+    ETL_CONSTEXPR14 bitset(TPString text, typename etl::enable_if<is_same<TPString, const char32_t*>::value>::type* = 0) ETL_NOEXCEPT
       : buffer()
     {
       implementation::from_string(buffer, Number_Of_Elements, Active_Bits, text);
@@ -2981,22 +3008,24 @@ namespace etl
       : pbuffer(pbuffer_)
     {
       ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
-      implementation::initialise(pbuffer, Number_Of_Elements, value);
+      implementation::template initialise<element_type>(pbuffer, Number_Of_Elements, value);
     }
 
     //*************************************************************************
     /// Construct from a value.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(unsigned long long value, buffer_type& buffer) ETL_NOEXCEPT
+    template <typename TValue>
+    ETL_CONSTEXPR14 bitset_ext(TValue value, buffer_type& buffer, typename etl::enable_if<is_integral<TValue>::value>::type* = 0) ETL_NOEXCEPT
       : pbuffer(buffer.data())
     {
-      implementation::initialise(pbuffer, Number_Of_Elements, value);
+      implementation::template initialise<element_type>(pbuffer, Number_Of_Elements, value);
     }
 
     //*************************************************************************
     /// Construct from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(const char* text, element_type* pbuffer_)
+    template <typename TPString>
+    ETL_CONSTEXPR14 bitset_ext(TPString text, element_type* pbuffer_, typename etl::enable_if<is_same<TPString, const char*>::value>::type* = 0)
       : pbuffer(pbuffer_)
     {
       ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
@@ -3006,7 +3035,8 @@ namespace etl
     //*************************************************************************
     /// Construct from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(const char* text, buffer_type& buffer) ETL_NOEXCEPT
+    template <typename TPString>
+    ETL_CONSTEXPR14 bitset_ext(TPString text, buffer_type& buffer, typename etl::enable_if<is_same<TPString, const char*>::value>::type* = 0) ETL_NOEXCEPT
       : pbuffer(buffer.data())
     {
       implementation::from_string(pbuffer, Number_Of_Elements, Active_Bits, text);
@@ -3015,7 +3045,8 @@ namespace etl
     //*************************************************************************
     /// Construct from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(const wchar_t* text, element_type* pbuffer_)
+    template <typename TPString>
+    ETL_CONSTEXPR14 bitset_ext(TPString text, element_type* pbuffer_, typename etl::enable_if<is_same<TPString, const wchar_t*>::value>::type* = 0)
       : pbuffer(pbuffer_)
     {
       ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
@@ -3025,7 +3056,8 @@ namespace etl
     //*************************************************************************
     /// Construct from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(const wchar_t* text, buffer_type& buffer) ETL_NOEXCEPT
+    template <typename TPString>
+    ETL_CONSTEXPR14 bitset_ext(TPString text, buffer_type& buffer, typename etl::enable_if<is_same<TPString, const wchar_t*>::value>::type* = 0) ETL_NOEXCEPT
       : pbuffer(buffer.data())
     {
       implementation::from_string(pbuffer, Number_Of_Elements, Active_Bits, text);
@@ -3034,7 +3066,8 @@ namespace etl
     //*************************************************************************
     /// Construct from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(const char16_t* text, element_type* pbuffer_)
+    template <typename TPString>
+    ETL_CONSTEXPR14 bitset_ext(TPString text, element_type* pbuffer_, typename etl::enable_if<is_same<TPString, const char16_t*>::value>::type* = 0)
       : pbuffer(pbuffer_)
     {
       ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
@@ -3044,7 +3077,8 @@ namespace etl
     //*************************************************************************
     /// Construct from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(const char16_t* text, buffer_type& buffer) ETL_NOEXCEPT
+    template <typename TPString>
+    ETL_CONSTEXPR14 bitset_ext(TPString text, buffer_type& buffer, typename etl::enable_if<is_same<TPString, const char16_t*>::value>::type* = 0) ETL_NOEXCEPT
       : pbuffer(buffer.data())
     {
       implementation::from_string(pbuffer, Number_Of_Elements, Active_Bits, text);
@@ -3053,7 +3087,8 @@ namespace etl
     //*************************************************************************
     /// Construct from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(const char32_t* text, element_type* pbuffer_)
+    template <typename TPString>
+    ETL_CONSTEXPR14 bitset_ext(TPString text, element_type* pbuffer_, typename etl::enable_if<is_same<TPString, const char32_t*>::value>::type* = 0)
       : pbuffer(pbuffer_)
     {
       ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
@@ -3063,7 +3098,8 @@ namespace etl
     //*************************************************************************
     /// Construct from a string.
     //*************************************************************************
-    ETL_CONSTEXPR14 bitset_ext(const char32_t* text, buffer_type& buffer) ETL_NOEXCEPT
+    template <typename TPString>
+    ETL_CONSTEXPR14 bitset_ext(TPString text, buffer_type& buffer, typename etl::enable_if<is_same<TPString, const char32_t*>::value>::type* = 0) ETL_NOEXCEPT
       : pbuffer(buffer.data())
     {
       implementation::from_string(pbuffer, Number_Of_Elements, Active_Bits, text);

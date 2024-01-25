@@ -85,8 +85,8 @@ namespace
       CHECK_EQUAL(All_Set_Element, All_Set_Element2);
 
       //*******************************
-      constexpr size_t All_Clear_Element1 = bitset_type::All_Clear_Element;
-      constexpr size_t All_Clear_Element2 = bitset_type::all_clear_element();
+      constexpr element_type All_Clear_Element1 = bitset_type::All_Clear_Element;
+      constexpr element_type All_Clear_Element2 = bitset_type::all_clear_element();
 
       CHECK_EQUAL(All_Clear_Element, All_Clear_Element1);
       CHECK_EQUAL(All_Clear_Element, All_Clear_Element2);
@@ -1114,7 +1114,7 @@ namespace
     TEST(test_to_ulong_min)
     {
       etl::bitset_ext<etl::integral_limits<unsigned long>::bits, uint64_t>::buffer_type buffer;
-      etl::bitset_ext<etl::integral_limits<unsigned long>::bits, uint64_t> data((unsigned long)etl::integral_limits<unsigned long>::min, buffer);
+      etl::bitset_ext<etl::integral_limits<unsigned long>::bits, uint64_t> data(etl::integral_limits<unsigned long>::min, buffer);
       unsigned long value = data.to_ulong();
 
       CHECK_EQUAL(std::numeric_limits<unsigned long>::min(), value);
@@ -1124,7 +1124,7 @@ namespace
     TEST(test_to_ulong_max)
     {
       etl::bitset_ext<etl::integral_limits<unsigned long>::bits, uint64_t>::buffer_type buffer;
-      etl::bitset_ext<etl::integral_limits<unsigned long>::bits, uint64_t> data((unsigned long)etl::integral_limits<unsigned long>::max, buffer);
+      etl::bitset_ext<etl::integral_limits<unsigned long>::bits, uint64_t> data(etl::integral_limits<unsigned long>::max, buffer);
       unsigned long value = data.to_ulong();
 
       CHECK_EQUAL(std::numeric_limits<unsigned long>::max(), value);
@@ -1134,7 +1134,7 @@ namespace
     TEST(test_to_ulong_overflow)
     {
       etl::bitset_ext<etl::integral_limits<unsigned long>::bits + 1, uint64_t>::buffer_type buffer;
-      etl::bitset_ext<etl::integral_limits<unsigned long>::bits + 1, uint64_t> data((unsigned long)etl::integral_limits<unsigned long>::min, buffer);
+      etl::bitset_ext<etl::integral_limits<unsigned long>::bits + 1, uint64_t> data(etl::integral_limits<unsigned long>::min, buffer);
       CHECK_THROW(data.to_ulong(), etl::bitset_overflow);
     }
 
@@ -1142,7 +1142,7 @@ namespace
     TEST(test_to_ullong_min)
     {
       etl::bitset_ext<etl::integral_limits<unsigned long long>::bits, uint64_t>::buffer_type buffer;
-      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits, uint64_t> data((unsigned long long)etl::integral_limits<unsigned long long>::min, buffer);
+      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits, uint64_t> data(etl::integral_limits<unsigned long long>::min, buffer);
       unsigned long long value = data.to_ullong();
 
       CHECK_EQUAL(std::numeric_limits<unsigned long>::min(), value);
@@ -1152,7 +1152,7 @@ namespace
     TEST(test_to_ullong_max)
     {
       etl::bitset_ext<etl::integral_limits<unsigned long long>::bits, uint64_t>::buffer_type buffer;
-      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits, uint64_t> data((unsigned long long)etl::integral_limits<unsigned long long>::max, buffer);
+      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits, uint64_t> data(etl::integral_limits<unsigned long long>::max, buffer);
       unsigned long long value = data.to_ullong();
 
       CHECK_EQUAL(std::numeric_limits<unsigned long long>::max(), value);
@@ -1162,7 +1162,7 @@ namespace
     TEST(test_to_ullong_overflow)
     {
       etl::bitset_ext<etl::integral_limits<unsigned long long>::bits + 1, uint64_t>::buffer_type buffer;
-      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits + 1, uint64_t> data((unsigned long long)etl::integral_limits<unsigned long long>::min, buffer);    
+      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits + 1, uint64_t> data(etl::integral_limits<unsigned long long>::min, buffer);    
       
       CHECK_THROW(data.to_ullong(), etl::bitset_overflow);
     }
@@ -1749,7 +1749,7 @@ namespace
 
       etl::bitset_ext<64, uint64_t> original(0x0123456789ABCDEFULL, buffer1);
 
-      for (ull shift = 0U; shift < 64U; ++shift)
+      for (size_t shift = 0U; shift < 64ULL; ++shift)
       {
         etl::bitset_ext<64, uint64_t> data(original, buffer2);
         CHECK_EQUAL_HEX(((value & mask) << shift), (data <<= shift).value<uint64_t>());
@@ -1783,7 +1783,7 @@ namespace
 
       etl::bitset_ext<64, uint64_t> original(0x0123456789ABCDEFULL, buffer1);
       
-      for (ull shift = 0U; shift < 64U; ++shift)
+      for (size_t shift = 0U; shift < 64U; ++shift)
       {
         etl::bitset_ext<64, uint64_t> data(original, buffer2);
         CHECK_EQUAL_HEX((value >> shift), (data >>= shift).value<uint64_t>());

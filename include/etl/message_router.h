@@ -200,8 +200,8 @@ namespace etl
     }
 
     //********************************************
-    null_message_router(etl::imessage_router& successor)
-      : imessage_router(imessage_router::NULL_MESSAGE_ROUTER, successor)
+    null_message_router(etl::imessage_router& successor_)
+      : imessage_router(imessage_router::NULL_MESSAGE_ROUTER, successor_)
     {
     }
     
@@ -278,8 +278,8 @@ namespace etl
     }
 
     //********************************************
-    message_producer(etl::imessage_router& successor)
-      : imessage_router(imessage_router::NULL_MESSAGE_ROUTER, successor)
+    message_producer(etl::imessage_router& successor_)
+      : imessage_router(imessage_router::NULL_MESSAGE_ROUTER, successor_)
     {
     }
 
@@ -291,8 +291,8 @@ namespace etl
     }
 
     //********************************************
-    message_producer(etl::message_router_id_t id_, etl::imessage_router& successor)
-      : imessage_router(id_, successor)
+    message_producer(etl::message_router_id_t id_, etl::imessage_router& successor_)
+      : imessage_router(id_, successor_)
     {
       ETL_ASSERT(id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER, ETL_ERROR(etl::message_router_illegal_id));
     }

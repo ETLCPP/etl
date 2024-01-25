@@ -613,11 +613,11 @@ namespace etl
 
     //********************************************
     template <typename TMessage>
-    bool process_event_type(const etl::imessage& msg, etl::fsm_state_id_t& state_id)
+    bool process_event_type(const etl::imessage& msg, etl::fsm_state_id_t& new_state_id)
     {
       if (TMessage::ID == msg.get_message_id())
       {
-        state_id = static_cast<TDerived*>(this)->on_event(static_cast<const TMessage&>(msg));
+        new_state_id = static_cast<TDerived*>(this)->on_event(static_cast<const TMessage&>(msg));
         return true;
       }
       else

@@ -45,7 +45,7 @@ namespace etl
 namespace
 {
   // A class to test non-fundamental types.
-  struct Test
+  struct Object
   {
     int a;
   };
@@ -671,7 +671,7 @@ namespace
     //*************************************************************************
     TEST(test_alignment_of)
     {
-      struct Test
+      struct Object
       {
         int   a;
         char  b;
@@ -690,7 +690,7 @@ namespace
       CHECK(std::alignment_of<unsigned long long>::value == etl::alignment_of<unsigned long long>::value);
       CHECK(std::alignment_of<float>::value              == etl::alignment_of<float>::value);
       CHECK(std::alignment_of<double>::value             == etl::alignment_of<double>::value);
-      CHECK(std::alignment_of<Test>::value               == etl::alignment_of<Test>::value);
+      CHECK(std::alignment_of<Object>::value             == etl::alignment_of<Object>::value);
     }
 
     //*************************************************************************

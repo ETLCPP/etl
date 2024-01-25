@@ -38,7 +38,7 @@ namespace
   bool parameter_correct = false;
 
   //*****************************************************************************
-  // Test data structure.
+  // Object data structure.
   //*****************************************************************************
   struct Data
   {
@@ -126,7 +126,7 @@ namespace
   //*****************************************************************************
   // The test class with member functions.
   //*****************************************************************************
-  class Test
+  class Object
   {
   public:
 
@@ -148,7 +148,7 @@ namespace
     }
   };
 
-  Test test_static;
+  Object test_static;
 }
 
 //*****************************************************************************
@@ -298,8 +298,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_void)
     {
-      Test test;
-      etl::function<Test, void> function(test, &Test::member_void);
+      Object object;
+      etl::function<Object, void> function(object, &Object::member_void);
 
       call(function);
 
@@ -309,8 +309,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_member_void)
     {
-      Test test;
-      const etl::function<Test, void> function(test, &Test::member_void);
+      Object object;
+      const etl::function<Object, void> function(object, &Object::member_void);
 
       call(function);
 
@@ -320,8 +320,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_int)
     {
-      Test test;
-      etl::function<Test, int> function(test, &Test::member_int);
+      Object object;
+      etl::function<Object, int> function(object, &Object::member_int);
 
       call(function);
 
@@ -332,8 +332,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_member_int)
     {
-      Test test;
-      const etl::function<Test, int> function(test, &Test::member_int);
+      Object object;
+      const etl::function<Object, int> function(object, &Object::member_int);
 
       call(function);
 
@@ -344,8 +344,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_reference)
     {
-      Test test;
-      etl::function<Test, const Data&> function(test, &Test::member_reference);
+      Object object;
+      etl::function<Object, const Data&> function(object, &Object::member_reference);
 
       call(function);
 
@@ -356,8 +356,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_member_reference)
     {
-      Test test;
-      const etl::function<Test, const Data&> function(test, &Test::member_reference);
+      Object object;
+      const etl::function<Object, const Data&> function(object, &Object::member_reference);
 
       call(function);
 
@@ -368,8 +368,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_void_compile_time)
     {
-      Test test;
-      etl::function_mv<Test, &Test::member_void> function(test);
+      Object object;
+      etl::function_mv<Object, &Object::member_void> function(object);
 
       call(function);
 
@@ -379,8 +379,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_member_void_compile_time)
     {
-      Test test;
-      const etl::function_mv<Test, &Test::member_void> function(test);
+      Object object;
+      const etl::function_mv<Object, &Object::member_void> function(object);
 
       call(function);
 
@@ -390,8 +390,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_int_compile_time)
     {
-      Test test;
-      etl::function_mp<Test, int, &Test::member_int> function(test);
+      Object object;
+      etl::function_mp<Object, int, &Object::member_int> function(object);
 
       call(function);
 
@@ -402,8 +402,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_member_int_compile_time)
     {
-      Test test;
-      const etl::function_mp<Test, int, &Test::member_int> function(test);
+      Object object;
+      const etl::function_mp<Object, int, &Object::member_int> function(object);
 
       call(function);
 
@@ -414,8 +414,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_member_reference_compile_time)
     {
-      Test test;
-      etl::function_mp<Test, const Data&, &Test::member_reference> function(test);
+      Object object;
+      etl::function_mp<Object, const Data&, &Object::member_reference> function(object);
 
       call(function);
 
@@ -426,8 +426,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_const_member_reference_compile_time)
     {
-      Test test;
-      const etl::function_mp<Test, const Data&, &Test::member_reference> function(test);
+      Object object;
+      const etl::function_mp<Object, const Data&, &Object::member_reference> function(object);
 
       call(function);
 
@@ -440,7 +440,7 @@ namespace
     {
       function_called = false;
 
-      etl::function_imv<Test, test_static, &Test::member_void> function;
+      etl::function_imv<Object, test_static, &Object::member_void> function;
 
       call(function);
 
@@ -452,7 +452,7 @@ namespace
     {
       function_called = false;
 
-      const etl::function_imv<Test, test_static, &Test::member_void> function;
+      const etl::function_imv<Object, test_static, &Object::member_void> function;
 
       call(function);
 
@@ -464,7 +464,7 @@ namespace
     {
       function_called = false;
 
-      etl::function_imp<Test, int, test_static, &Test::member_int> function;
+      etl::function_imp<Object, int, test_static, &Object::member_int> function;
 
       call(function);
 
@@ -476,7 +476,7 @@ namespace
     {
       function_called = false;
 
-      const etl::function_imp<Test, int, test_static, &Test::member_int> function;
+      const etl::function_imp<Object, int, test_static, &Object::member_int> function;
 
       call(function);
 
@@ -488,7 +488,7 @@ namespace
     {
       function_called = false;
 
-      etl::function_imp<Test, const Data&, test_static, &Test::member_reference> function;
+      etl::function_imp<Object, const Data&, test_static, &Object::member_reference> function;
 
       call(function);
 
@@ -500,7 +500,7 @@ namespace
     {
       function_called = false;
 
-      const etl::function_imp<Test, const Data&, test_static, &Test::member_reference> function;
+      const etl::function_imp<Object, const Data&, test_static, &Object::member_reference> function;
 
       call(function);
 

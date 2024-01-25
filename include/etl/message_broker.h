@@ -228,9 +228,7 @@ namespace etl
       // Always pass the message on to the successor.
       if (has_successor())
       {
-        etl::imessage_router& successor = get_successor();
-
-        successor.receive(destination_router_id, msg);
+        get_successor().receive(destination_router_id, msg);
       }
     }
 

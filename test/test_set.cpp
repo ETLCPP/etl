@@ -612,12 +612,7 @@ namespace
       }
 
       // Try to insert when set is full should throw etl::set_full
-      try
-      {
-        data_result = data.insert(MAX_SIZE);
-      }
-      catch(const etl::set_full &e)
-      {}
+      CHECK_THROW(data_result = data.insert(MAX_SIZE), etl::set_full);
 
       // Try adding a duplicate (should return iterator pointing to duplicate) not throw error
       for (size_t i = 0; i < MAX_SIZE; ++i)
@@ -639,7 +634,7 @@ namespace
 
     }
 
-    //*************************************************************************
+    ////*************************************************************************
     //TEST_FIXTURE(SetupFixture, test_emplace_value)
     //{
     //  Compare_Data compare_data;

@@ -1420,14 +1420,14 @@ namespace etl
     //*************************************************************************
     /// Move from a range
     //*************************************************************************
-    void move(iterator first, iterator last)
+    void move(iterator b, iterator e)
     {
-      while (first != last)
+      while (b != e)
       {
-        iterator temp = first;
+        iterator temp = b;
         ++temp;
-        insert(etl::move(*first));
-        first = temp;
+        insert(etl::move(*b));
+        b = temp;
       }
     }
 #endif
@@ -1489,26 +1489,26 @@ namespace etl
         else if (pbucket == last)
         {
           // We erased the last, so we need to search again. Start from the first, go no further than the current last.
-          bucket_t* pcurrent = first;
+          pbucket = first;
           bucket_t* pend = last;
 
           last = first;
 
-          while (pcurrent != pend)
+          while (pbucket != pend)
           {
-            if (!pcurrent->empty())
+            if (!pbucket->empty())
             {
-              last = pcurrent;
+              last = pbucket;
             }
 
-            ++pcurrent;
+            ++pbucket;
           }
         }
       }
     }
 
     //*********************************************************************
-    /// Delete a data noe at the specified location.
+    /// Delete a data node at the specified location.
     //*********************************************************************
     local_iterator delete_data_node(local_iterator iprevious, local_iterator icurrent, bucket_t& bucket)
     {

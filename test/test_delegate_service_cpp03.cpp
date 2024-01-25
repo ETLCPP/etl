@@ -68,12 +68,12 @@ namespace
   //*****************************************************************************
   // The test class with member functions.
   //*****************************************************************************
-  class Test
+  class Object
   {
   public:
 
-    Test()
-      : callback(Service::delegate_type::create<Test, &Test::member1>(*this))
+    Object()
+      : callback(Service::delegate_type::create<Object, &Object::member1>(*this))
     {
     }
 
@@ -93,10 +93,10 @@ namespace
     Service::delegate_type callback;
   };
 
-  Test test;
+  Object object;
 
   // Callback for 'member2'.
-  Service::delegate_type member_callback = Service::delegate_type::create<Test, test, &Test::member2>();
+  Service::delegate_type member_callback = Service::delegate_type::create<Object, object, &Object::member2>();
 
   // Callback for 'global'.
   Service::delegate_type global_callback = Service::delegate_type::create<global>();

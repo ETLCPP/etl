@@ -84,9 +84,9 @@ namespace
     {
     }
 
-    Data(int a, int b)
-      : a(a)
-      , b(b)
+    Data(int a_, int b_)
+      : a(a_)
+      , b(b_)
     {
     }
 
