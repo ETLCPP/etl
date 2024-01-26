@@ -768,7 +768,10 @@ namespace etl
     {
       if (this != &other)
       {
-        storage.value = other.storage.value;
+        if (other.valid)
+        {
+          storage.value = other.storage.value;
+        }
         valid = other.valid;
       }
 
@@ -783,7 +786,10 @@ namespace etl
     {
       if (this != &other)
       {
-        storage.value = etl::move(other.storage.value);
+        if (other.valid)
+        {
+          storage.value = etl::move(other.storage.value);
+        }
         valid = other.valid;
       }
 
