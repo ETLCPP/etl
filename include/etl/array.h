@@ -94,15 +94,15 @@ namespace etl
 
     static ETL_CONSTANT size_t SIZE = SIZE_;
 
-    typedef T                                     value_type;
-    typedef size_t                                size_type;
-    typedef ptrdiff_t                             difference_type;
-    typedef T&                                    reference;
-    typedef const T&                              const_reference;
-    typedef T*                                    pointer;
-    typedef const T*                              const_pointer;
-    typedef T*                                    iterator;
-    typedef const T*                              const_iterator;
+    typedef T         value_type;
+    typedef size_t    size_type;
+    typedef ptrdiff_t difference_type;
+    typedef T&        reference;
+    typedef const T&  const_reference;
+    typedef T*        pointer;
+    typedef const T*  const_pointer;
+    typedef T*        iterator;
+    typedef const T*  const_iterator;
     typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
@@ -386,11 +386,12 @@ namespace etl
     /// If the range is smaller than the array then the unused array elements are left unmodified.
     ///\param first The iterator to the first item in the range.
     ///\param last  The iterator to one past the final item in the range.
+    ///\return An iterator to the first unassigned array element, or end().
     //*************************************************************************
     template <typename TIterator>
-    void assign(TIterator first, const TIterator last)
+    iterator assign(TIterator first, const TIterator last)
     {
-      etl::copy_s(first, last, begin(), end());
+      return etl::copy_s(first, last, begin(), end());
     }
 
     //*************************************************************************
@@ -398,15 +399,18 @@ namespace etl
     /// If the range is smaller than the array then the unused array elements are initialised with the supplied value.
     ///\param first The iterator to the first item in the range.
     ///\param last  The iterator to one past the final item in the range.
+    ///\return An iterator to the first array element set to 'value', or end().
     //*************************************************************************
     template <typename TIterator>
-    void assign(TIterator first, const TIterator last, parameter_t value)
+    iterator assign(TIterator first, const TIterator last, parameter_t value)
     {
       // Copy from the range.
-      iterator p = etl::copy(first, last, begin());
+      iterator p = etl::copy_s(first, last, begin(), end());
 
       // Initialise any that are left.
       etl::fill(p, end(), value);
+
+      return p;
     }
 
     //*************************************************************************
