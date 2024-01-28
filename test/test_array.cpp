@@ -375,20 +375,27 @@ namespace
 
       Data data = { 0 };
 
+      Data::iterator result;
+
       // Initial data.
-      data.assign(std::begin(initial), std::end(initial));
+      result = data.assign(std::begin(initial), std::end(initial));
+      CHECK(result == data.end());
       bool isEqual = std::equal(data.begin(), data.end(), std::begin(initial));
       CHECK(isEqual);
 
       // Assign smaller.
-      data.assign(std::begin(initial), std::end(initial));
-      data.assign(&source[0], &source[5]);
+      result = data.assign(std::begin(initial), std::end(initial));
+      CHECK(result == data.end());
+      result = data.assign(&source[0], &source[5]);
+      CHECK(result == &data[5]);
       isEqual = std::equal(data.begin(), data.end(), std::begin(check1));
       CHECK(isEqual);
 
       // Assign smaller + default.
-      data.assign(std::begin(initial), std::end(initial));
-      data.assign(&source[0], &source[5], 99);
+      result = data.assign(std::begin(initial), std::end(initial));
+      CHECK(result == data.end());
+      result = data.assign(&source[0], &source[5], 99);
+      CHECK(result == &data[5]);
       isEqual = std::equal(data.begin(), data.end(), std::begin(check2));
       CHECK(isEqual);
     }
