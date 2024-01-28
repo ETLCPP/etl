@@ -39,7 +39,7 @@ SOFTWARE.
 // Note: You will need Python and COG installed.
 //
 // python -m cogapp -d -e -omessage_router.h -DHandlers=<n> message_router_generator.h
-// Where <n> is the number of messages to support.
+// Where <n> is the maximum number of messages to support.
 //
 // e.g.
 // To generate handlers for up to 16 messages...
