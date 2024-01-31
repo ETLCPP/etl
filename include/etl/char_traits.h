@@ -153,7 +153,7 @@ namespace etl
     }
 
     //*************************************************************************
-    ETL_CONSTEXPR14 static size_t length(const char_type* str, size_t max_length)
+    static ETL_CONSTEXPR14 size_t length(const char_type* str, size_t max_length)
     {
       size_t count = 0UL;
 
