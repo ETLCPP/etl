@@ -48,6 +48,7 @@ namespace etl
   {
   public:
 
+    ETL_CONSTEXPR
     intrusive_stack_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
       : exception(reason_, file_name_, line_number_)
     {
@@ -62,6 +63,7 @@ namespace etl
   {
   public:
 
+    ETL_CONSTEXPR
     intrusive_stack_empty(string_type file_name_, numeric_type line_number_)
       : intrusive_stack_exception(ETL_ERROR_TEXT("intrusive_stack:empty", ETL_INTRUSIVE_STACK_FILE_ID"A"), file_name_, line_number_)
     {
@@ -76,6 +78,7 @@ namespace etl
   {
   public:
 
+    ETL_CONSTEXPR
     intrusive_stack_value_is_already_linked(string_type file_name_, numeric_type line_number_)
       : intrusive_stack_exception(ETL_ERROR_TEXT("intrusive_stack:value is already linked", ETL_INTRUSIVE_STACK_FILE_ID"B"), file_name_, line_number_)
     {
@@ -99,7 +102,7 @@ namespace etl
     /// Adds a value to the stack.
     ///\param value The value to push to the stack.
     //*************************************************************************
-    void push(link_type& value)
+    ETL_CONSTEXPR14 void push(link_type& value)
     {
       ETL_ASSERT_OR_RETURN(!value.is_linked(), ETL_ERROR(intrusive_stack_value_is_already_linked));
 
@@ -113,7 +116,7 @@ namespace etl
     /// Removes the oldest item from the top of the stack.
     /// Undefined behaviour if the stack is already empty.
     //*************************************************************************
-    void pop()
+    ETL_CONSTEXPR14 void pop()
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT_OR_RETURN(!empty(), ETL_ERROR(intrusive_stack_empty));
@@ -130,7 +133,7 @@ namespace etl
     /// NOTE: The destination must be an intrusive container that supports a push(TLink) member function.
     //*************************************************************************
     template <typename TContainer>
-    void pop_into(TContainer& destination)
+    ETL_CONSTEXPR14 void pop_into(TContainer& destination)
     {
       link_type* p_link = p_top;
       pop();
@@ -140,7 +143,7 @@ namespace etl
     //*************************************************************************
     /// Reverses the stack order.
     //*************************************************************************
-    void reverse()
+    ETL_CONSTEXPR14 void reverse()
     {
       link_type* previous = &terminator;
       link_type* current = p_top;
@@ -160,7 +163,7 @@ namespace etl
     //*************************************************************************
     /// Clears the stack to the empty state.
     //*************************************************************************
-    void clear()
+    ETL_CONSTEXPR14 void clear()
     {
       while (!empty())
       {
@@ -173,7 +176,7 @@ namespace etl
     //*************************************************************************
     /// Checks if the stack is in the empty state.
     //*************************************************************************
-    bool empty() const
+    ETL_CONSTEXPR bool empty() const
     {
       return current_size == 0;
     }
@@ -181,7 +184,7 @@ namespace etl
     //*************************************************************************
     /// Returns the number of elements.
     //*************************************************************************
-    size_t size() const
+    ETL_CONSTEXPR size_t size() const
     {
       return current_size;
     }
@@ -191,7 +194,7 @@ namespace etl
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    intrusive_stack_base()
+    ETL_CONSTEXPR14 intrusive_stack_base()
       : p_top(&terminator)
       , current_size(0)
     {      
@@ -236,7 +239,7 @@ namespace etl
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    intrusive_stack()
+    ETL_CONSTEXPR14 intrusive_stack()
     : intrusive_stack_base<TLink>()
     {
     }
@@ -246,7 +249,7 @@ namespace etl
     /// Undefined behaviour if the stack is empty.
     /// \return A reference to the value at the top of the stack.
     //*************************************************************************
-    reference top()
+    ETL_CONSTEXPR14 reference top()
     {
       return *static_cast<TValue*>(this->p_top);
     }
@@ -255,7 +258,7 @@ namespace etl
     /// Gets a const reference to the value at the top of the stack.<br>
     /// \return A const reference to the value at the top of the stack.
     //*************************************************************************
-    const_reference top() const
+    ETL_CONSTEXPR14 const_reference top() const
     {
       return *static_cast<const TValue*>(this->p_top);
     }

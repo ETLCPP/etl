@@ -55,6 +55,7 @@ namespace etl
   {
   public:
 
+    ETL_CONSTEXPR
     intrusive_forward_list_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
       : exception(reason_, file_name_, line_number_)
     {
@@ -69,6 +70,7 @@ namespace etl
   {
   public:
 
+    ETL_CONSTEXPR
     intrusive_forward_list_empty(string_type file_name_, numeric_type line_number_)
       : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:empty", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"A"), file_name_, line_number_)
     {
@@ -83,6 +85,7 @@ namespace etl
   {
   public:
 
+    ETL_CONSTEXPR
     intrusive_forward_list_iterator_exception(string_type file_name_, numeric_type line_number_)
       : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:iterator", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"B"), file_name_, line_number_)
     {
@@ -97,6 +100,7 @@ namespace etl
   {
   public:
 
+    ETL_CONSTEXPR
     intrusive_forward_list_index_exception(string_type file_name_, numeric_type line_number_)
       : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:bounds", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"C"), file_name_, line_number_)
     {
@@ -111,6 +115,7 @@ namespace etl
   {
   public:
 
+    ETL_CONSTEXPR
     intrusive_forward_list_unsorted(string_type file_name_, numeric_type line_number_)
       : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:unsorted", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"D"), file_name_, line_number_)
     {
@@ -125,6 +130,7 @@ namespace etl
   {
   public:
 
+    ETL_CONSTEXPR
     intrusive_forward_list_value_is_already_linked(string_type file_name_, numeric_type line_number_)
       : intrusive_forward_list_exception(ETL_ERROR_TEXT("intrusive_forward_list:value is already linked", ETL_INTRUSIVE_FORWARD_LIST_FILE_ID"E"), file_name_, line_number_)
     {
@@ -146,7 +152,7 @@ namespace etl
     //*************************************************************************
     /// Clears the intrusive_forward_list.
     //*************************************************************************
-    void clear()
+    ETL_CONSTEXPR14 void clear()
     {
       // Unlink all of the items.
       link_type* p_unlink = start.etl_next;
@@ -166,7 +172,7 @@ namespace etl
     /// If ETL_THROW_EXCEPTIONS & ETL_DEBUG are defined throws forward_list_iterator if the iterators are reversed.
     //*************************************************************************
     template <typename TIterator>
-    void assign(TIterator first, TIterator last)
+    ETL_CONSTEXPR14 void assign(TIterator first, TIterator last)
     {
 #if ETL_IS_DEBUG_BUILD
       intmax_t d = etl::distance(first, last);
@@ -194,7 +200,7 @@ namespace etl
     //*************************************************************************
     /// Pushes a value to the front of the intrusive_forward_list.
     //*************************************************************************
-    void push_front(link_type& value)
+    ETL_CONSTEXPR14 void push_front(link_type& value)
     {
       ETL_ASSERT_OR_RETURN(!value.is_linked(), ETL_ERROR(intrusive_forward_list_value_is_already_linked));
 
@@ -204,7 +210,7 @@ namespace etl
     //*************************************************************************
     /// Removes a value from the front of the intrusive_forward_list.
     //*************************************************************************
-    void pop_front()
+    ETL_CONSTEXPR14 void pop_front()
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT_OR_RETURN(!empty(), ETL_ERROR(intrusive_forward_list_empty));
@@ -215,7 +221,7 @@ namespace etl
     //*************************************************************************
     /// Reverses the intrusive_forward_list.
     //*************************************************************************
-    void reverse()
+    ETL_CONSTEXPR14 void reverse()
     {
       if (is_trivial_list())
       {
@@ -240,7 +246,7 @@ namespace etl
     //*************************************************************************
     /// Returns true if the list has no elements.
     //*************************************************************************
-    bool empty() const
+    ETL_CONSTEXPR bool empty() const
     {
       return (current_size == 0);
     }
@@ -248,7 +254,7 @@ namespace etl
     //*************************************************************************
     /// Returns the number of elements.
     //*************************************************************************
-    size_t size() const
+    ETL_CONSTEXPR size_t size() const
     {
       return current_size;
     }
@@ -263,7 +269,7 @@ namespace etl
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    intrusive_forward_list_base()
+    ETL_CONSTEXPR14 intrusive_forward_list_base()
     {
       initialise();
     }
@@ -279,7 +285,7 @@ namespace etl
     //*************************************************************************
     /// Is the intrusive_forward_list a trivial length?
     //*************************************************************************
-    bool is_trivial_list() const
+    ETL_CONSTEXPR bool is_trivial_list() const
     {
       return (size() <= 1U);
     }
@@ -287,7 +293,7 @@ namespace etl
     //*************************************************************************
     /// Insert a link.
     //*************************************************************************
-    void insert_link_after(link_type& position, link_type& link)
+    ETL_CONSTEXPR14 void insert_link_after(link_type& position, link_type& link)
     {
       // Connect to the intrusive_forward_list.
       etl::link_splice<link_type>(position, link);
@@ -297,7 +303,7 @@ namespace etl
     //*************************************************************************
     /// Remove a link.
     //*************************************************************************
-    void remove_link_after(link_type& link)
+    ETL_CONSTEXPR14 void remove_link_after(link_type& link)
     {
       link_type* p_next = link.etl_next;
 
@@ -312,7 +318,7 @@ namespace etl
     //*************************************************************************
     /// Get the head link.
     //*************************************************************************
-    link_type* get_head()
+    ETL_CONSTEXPR14 link_type* get_head()
     {
       return start.etl_next;
     }
@@ -320,7 +326,7 @@ namespace etl
     //*************************************************************************
     /// Get the head link.
     //*************************************************************************
-    const link_type* get_head() const
+    ETL_CONSTEXPR14 const link_type* get_head() const
     {
       return start.etl_next;
     }
@@ -328,7 +334,7 @@ namespace etl
     //*************************************************************************
     /// Initialise the intrusive_forward_list.
     //*************************************************************************
-    void initialise()
+    ETL_CONSTEXPR14 void initialise()
     {
       start.etl_next = &terminator;
       current_size = 0;
@@ -371,24 +377,24 @@ namespace etl
       friend class intrusive_forward_list;
       friend class const_iterator;
 
-      iterator()
+      ETL_CONSTEXPR iterator()
         : p_value(ETL_NULLPTR)
       {
       }
 
-      iterator(const iterator& other)
+      ETL_CONSTEXPR iterator(const iterator& other)
         : p_value(other.p_value)
       {
       }
 
-      iterator& operator ++()
+      ETL_CONSTEXPR14 iterator& operator ++()
       {
         // Read the appropriate 'etl_next'.
         p_value = p_value->etl_next;
         return *this;
       }
 
-      iterator operator ++(int)
+      ETL_CONSTEXPR14 iterator operator ++(int)
       {
         iterator temp(*this);
         // Read the appropriate 'etl_next'.
@@ -396,40 +402,40 @@ namespace etl
         return temp;
       }
 
-      iterator& operator =(const iterator& other)
+      ETL_CONSTEXPR14 iterator& operator =(const iterator& other)
       {
         p_value = other.p_value;
         return *this;
       }
 
-      reference operator *() const
+      ETL_CONSTEXPR reference operator *() const
       {
         return *static_cast<pointer>(p_value);
       }
 
-      pointer operator &() const
+      ETL_CONSTEXPR pointer operator &() const
       {
         return static_cast<pointer>(p_value);
       }
 
-      pointer operator ->() const
+      ETL_CONSTEXPR pointer operator ->() const
       {
         return static_cast<pointer>(p_value);
       }
 
-      friend bool operator == (const iterator& lhs, const iterator& rhs)
+      ETL_CONSTEXPR friend bool operator == (const iterator& lhs, const iterator& rhs)
       {
         return lhs.p_value == rhs.p_value;
       }
 
-      friend bool operator != (const iterator& lhs, const iterator& rhs)
+      ETL_CONSTEXPR friend bool operator != (const iterator& lhs, const iterator& rhs)
       {
         return !(lhs == rhs);
       }
 
     private:
 
-      iterator(link_type* value)
+      ETL_CONSTEXPR iterator(link_type* value)
         : p_value(value)
       {
       }
@@ -446,29 +452,29 @@ namespace etl
 
       friend class intrusive_forward_list;
 
-      const_iterator()
+      ETL_CONSTEXPR const_iterator()
         : p_value(ETL_NULLPTR)
       {
       }
 
-      const_iterator(const typename intrusive_forward_list::iterator& other)
+      ETL_CONSTEXPR const_iterator(const typename intrusive_forward_list::iterator& other)
         : p_value(other.p_value)
       {
       }
 
-      const_iterator(const const_iterator& other)
+      ETL_CONSTEXPR const_iterator(const const_iterator& other)
         : p_value(other.p_value)
       {
       }
 
-      const_iterator& operator ++()
+      ETL_CONSTEXPR14 const_iterator& operator ++()
       {
         // Read the appropriate 'etl_next'.
         p_value = p_value->etl_next;
         return *this;
       }
 
-      const_iterator operator ++(int)
+      ETL_CONSTEXPR14 const_iterator operator ++(int)
       {
         const_iterator temp(*this);
         // Read the appropriate 'etl_next'.
@@ -476,40 +482,40 @@ namespace etl
         return temp;
       }
 
-      const_iterator& operator =(const const_iterator& other)
+      ETL_CONSTEXPR14 const_iterator& operator =(const const_iterator& other)
       {
         p_value = other.p_value;
         return *this;
       }
 
-      const_reference operator *() const
+      ETL_CONSTEXPR const_reference operator *() const
       {
         return *static_cast<const value_type*>(p_value);
       }
 
-      const_pointer operator &() const
+      ETL_CONSTEXPR const_pointer operator &() const
       {
         return static_cast<const value_type*>(p_value);
       }
 
-      const_pointer operator ->() const
+      ETL_CONSTEXPR const_pointer operator ->() const
       {
         return static_cast<const value_type*>(p_value);
       }
 
-      friend bool operator == (const const_iterator& lhs, const const_iterator& rhs)
+      ETL_CONSTEXPR friend bool operator == (const const_iterator& lhs, const const_iterator& rhs)
       {
         return lhs.p_value == rhs.p_value;
       }
 
-      friend bool operator != (const const_iterator& lhs, const const_iterator& rhs)
+      ETL_CONSTEXPR friend bool operator != (const const_iterator& lhs, const const_iterator& rhs)
       {
         return !(lhs == rhs);
       }
 
     private:
 
-      const_iterator(const link_type* value)
+      ETL_CONSTEXPR const_iterator(const link_type* value)
         : p_value(value)
       {
       }
@@ -522,7 +528,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    intrusive_forward_list()
+    ETL_CONSTEXPR intrusive_forward_list()
     {
     }
 
@@ -537,7 +543,7 @@ namespace etl
     /// Constructor from range
     //*************************************************************************
     template <typename TIterator>
-    intrusive_forward_list(TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
+    ETL_CONSTEXPR14 intrusive_forward_list(TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
     {
       this->assign(first, last);
     }
@@ -545,7 +551,7 @@ namespace etl
     //*************************************************************************
     /// Gets the beginning of the intrusive_forward_list.
     //*************************************************************************
-    iterator begin()
+    ETL_CONSTEXPR14 iterator begin()
     {
       return iterator(this->get_head());
     }
@@ -553,7 +559,7 @@ namespace etl
     //*************************************************************************
     /// Gets the beginning of the intrusive_forward_list.
     //*************************************************************************
-    const_iterator begin() const
+    ETL_CONSTEXPR14 const_iterator begin() const
     {
       return const_iterator(this->get_head());
     }
@@ -561,7 +567,7 @@ namespace etl
     //*************************************************************************
     /// Gets before the beginning of the intrusive_forward_list.
     //*************************************************************************
-    iterator before_begin()
+    ETL_CONSTEXPR14 iterator before_begin()
     {
       return iterator(&this->start);
     }
@@ -569,7 +575,7 @@ namespace etl
     //*************************************************************************
     /// Gets before the beginning of the intrusive_forward_list.
     //*************************************************************************
-    const_iterator before_begin() const
+    ETL_CONSTEXPR14 const_iterator before_begin() const
     {
       return const_iterator(&this->start);
     }
@@ -577,7 +583,7 @@ namespace etl
     //*************************************************************************
     /// Gets the beginning of the intrusive_forward_list.
     //*************************************************************************
-    const_iterator cbegin() const
+    ETL_CONSTEXPR14 const_iterator cbegin() const
     {
       return const_iterator(this->get_head());
     }
@@ -585,7 +591,7 @@ namespace etl
     //*************************************************************************
     /// Gets the end of the intrusive_forward_list.
     //*************************************************************************
-    iterator end()
+    ETL_CONSTEXPR14 iterator end()
     {
       return iterator(&this->terminator);
     }
@@ -593,7 +599,7 @@ namespace etl
     //*************************************************************************
     /// Gets the end of the intrusive_forward_list.
     //*************************************************************************
-    const_iterator end() const
+    ETL_CONSTEXPR14 const_iterator end() const
     {
       return const_iterator(&this->terminator);
     }
@@ -601,7 +607,7 @@ namespace etl
     //*************************************************************************
     /// Gets the end of the intrusive_forward_list.
     //*************************************************************************
-    const_iterator cend() const
+    ETL_CONSTEXPR14 const_iterator cend() const
     {
       return const_iterator(&this->terminator);
     }
@@ -609,7 +615,7 @@ namespace etl
     //*************************************************************************
     /// Gets a reference to the first element.
     //*************************************************************************
-    reference front()
+    ETL_CONSTEXPR14 reference front()
     {
       return *static_cast<pointer>(this->get_head());
     }
@@ -617,7 +623,7 @@ namespace etl
     //*************************************************************************
     /// Gets a const reference to the first element.
     //*************************************************************************
-    const_reference front() const
+    ETL_CONSTEXPR14 const_reference front() const
     {
       return *static_cast<const value_type*>(this->get_head());
     }
@@ -625,7 +631,7 @@ namespace etl
     //*************************************************************************
     /// Inserts a value to the intrusive_forward_list after the specified position.
     //*************************************************************************
-    iterator insert_after(iterator position, value_type& value)
+    ETL_CONSTEXPR14 iterator insert_after(iterator position, value_type& value)
     {
       ETL_ASSERT_OR_RETURN_VALUE(!value.link_type::is_linked(), ETL_ERROR(intrusive_forward_list_value_is_already_linked), iterator(&value));
 
@@ -637,7 +643,7 @@ namespace etl
     /// Inserts a range of values to the intrusive_forward_list after the specified position.
     //*************************************************************************
     template <typename TIterator>
-    void insert_after(iterator position, TIterator first, TIterator last)
+    ETL_CONSTEXPR14 void insert_after(iterator position, TIterator first, TIterator last)
     {
       while (first != last)
       {
@@ -653,7 +659,7 @@ namespace etl
     //*************************************************************************
     /// Erases the value at the specified position.
     //*************************************************************************
-    iterator erase_after(iterator position)
+    ETL_CONSTEXPR14 iterator erase_after(iterator position)
     {
       iterator next(position);
       if (next != end())
@@ -672,7 +678,7 @@ namespace etl
     //*************************************************************************
     /// Erases a range of elements.
     //*************************************************************************
-    iterator erase_after(iterator first, iterator last)
+    ETL_CONSTEXPR14 iterator erase_after(iterator first, iterator last)
     {
       if (first != end() && (first != last))
       {
@@ -715,7 +721,7 @@ namespace etl
     /// elements in the container.
     //*************************************************************************
     template <typename TIsEqual>
-    void unique(TIsEqual isEqual)
+    ETL_CONSTEXPR14 void unique(TIsEqual isEqual)
     {
       if (this->empty())
       {
@@ -745,7 +751,7 @@ namespace etl
     //*************************************************************************
     /// Sort using in-place merge sort algorithm.
     //*************************************************************************
-    void sort()
+    ETL_CONSTEXPR14 void sort()
     {
       sort(etl::less<value_type>());
     }
@@ -776,7 +782,7 @@ namespace etl
     /// SOFTWARE.
     //*************************************************************************
     template <typename TCompare>
-    void sort(TCompare compare)
+    ETL_CONSTEXPR14 void sort(TCompare compare)
     {
       iterator i_left;
       iterator i_right;
@@ -890,7 +896,7 @@ namespace etl
     //*************************************************************************
     // Removes the values specified.
     //*************************************************************************
-    void remove(const_reference value)
+    ETL_CONSTEXPR14 void remove(const_reference value)
     {
       iterator i_item = begin();
       iterator i_last_item = before_begin();
@@ -913,7 +919,7 @@ namespace etl
     /// Removes according to a predicate.
     //*************************************************************************
     template <typename TPredicate>
-    void remove_if(TPredicate predicate)
+    ETL_CONSTEXPR14 void remove_if(TPredicate predicate)
     {
       iterator i_item = begin();
       iterator i_last_item = before_begin();
@@ -935,7 +941,7 @@ namespace etl
     //*************************************************************************
     /// Splice another list into this one.
     //*************************************************************************
-    void splice_after(iterator position, etl::intrusive_forward_list<TValue, TLink>& other)
+    ETL_CONSTEXPR14 void splice_after(iterator position, etl::intrusive_forward_list<TValue, TLink>& other)
     {
       // No point splicing to ourself!
       if (&other != this)
@@ -970,7 +976,7 @@ namespace etl
     //*************************************************************************
     /// Splice an element from another list into this one.
     //*************************************************************************
-    void splice_after(iterator position, etl::intrusive_forward_list<TValue, TLink>& other, iterator isource)
+    ETL_CONSTEXPR14 void splice_after(iterator position, etl::intrusive_forward_list<TValue, TLink>& other, iterator isource)
     {
       link_type& before = *position.p_value;
 
@@ -987,7 +993,7 @@ namespace etl
     //*************************************************************************
     /// Splice a range of elements from another list into this one.
     //*************************************************************************
-    void splice_after(iterator position, etl::intrusive_forward_list<TValue, TLink>& other, iterator begin_, iterator end_)
+    ETL_CONSTEXPR14 void splice_after(iterator position, etl::intrusive_forward_list<TValue, TLink>& other, iterator begin_, iterator end_)
     {
       if (!other.empty())
       {
@@ -1020,7 +1026,7 @@ namespace etl
     //*************************************************************************
     /// Merge another list into this one. Both lists should be sorted.
     //*************************************************************************
-    void merge(list_type& other)
+    ETL_CONSTEXPR14 void merge(list_type& other)
     {
       merge(other, etl::less<value_type>());
     }
@@ -1029,7 +1035,7 @@ namespace etl
     /// Merge another list into this one. Both lists should be sorted.
     //*************************************************************************
     template <typename TCompare>
-    void merge(list_type& other, TCompare compare)
+    ETL_CONSTEXPR14 void merge(list_type& other, TCompare compare)
     {
       if ((this != &other) && !other.empty())
       {
@@ -1090,7 +1096,7 @@ namespace etl
     //*************************************************************************
     /// Get the next value.
     //*************************************************************************
-    link_type* get_next(link_type* link) const
+    ETL_CONSTEXPR link_type* get_next(link_type* link) const
     {
       return link->etl_next;
     }

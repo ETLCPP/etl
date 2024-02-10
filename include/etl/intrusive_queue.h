@@ -48,7 +48,7 @@ namespace etl
   {
   public:
 
-    intrusive_queue_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+    ETL_CONSTEXPR intrusive_queue_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
       : exception(reason_, file_name_, line_number_)
     {
     }
@@ -62,7 +62,7 @@ namespace etl
   {
   public:
 
-    intrusive_queue_empty(string_type file_name_, numeric_type line_number_)
+    ETL_CONSTEXPR intrusive_queue_empty(string_type file_name_, numeric_type line_number_)
       : intrusive_queue_exception(ETL_ERROR_TEXT("intrusive_queue:empty", ETL_INTRUSIVE_QUEUE_FILE_ID"A"), file_name_, line_number_)
     {
     }
@@ -76,7 +76,7 @@ namespace etl
   {
   public:
 
-    intrusive_queue_value_is_already_linked(string_type file_name_, numeric_type line_number_)
+    ETL_CONSTEXPR intrusive_queue_value_is_already_linked(string_type file_name_, numeric_type line_number_)
       : intrusive_queue_exception(ETL_ERROR_TEXT("intrusive_queue:value is already linked", ETL_INTRUSIVE_QUEUE_FILE_ID"B"), file_name_, line_number_)
     {
     }
@@ -99,7 +99,7 @@ namespace etl
     /// Adds a value to the queue.
     ///\param value The value to push to the queue.
     //*************************************************************************
-    void push(link_type& value)
+    ETL_CONSTEXPR14 void push(link_type& value)
     {
       ETL_ASSERT_OR_RETURN(!value.is_linked(), ETL_ERROR(intrusive_queue_value_is_already_linked));
 
@@ -122,7 +122,7 @@ namespace etl
     /// Removes the oldest item from the queue.
     /// Undefined behaviour if the queue is already empty.
     //*************************************************************************
-    void pop()
+    ETL_CONSTEXPR14 void pop()
     {
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT_OR_RETURN(!empty(), ETL_ERROR(intrusive_queue_empty));
@@ -149,7 +149,7 @@ namespace etl
     /// NOTE: The destination must be an intrusive container that supports a push(TLink) member function.
     //*************************************************************************
     template <typename TContainer>
-    void pop_into(TContainer& destination)
+    ETL_CONSTEXPR14 void pop_into(TContainer& destination)
     {
       link_type* p_link = terminator.etl_next;
       pop();
@@ -159,7 +159,7 @@ namespace etl
     //*************************************************************************
     /// Clears the queue to the empty state.
     //*************************************************************************
-    void clear()
+    ETL_CONSTEXPR14 void clear()
     {
       while (!empty())
       {
@@ -172,7 +172,7 @@ namespace etl
     //*************************************************************************
     /// Checks if the queue is in the empty state.
     //*************************************************************************
-    bool empty() const
+    ETL_CONSTEXPR bool empty() const
     {
       return current_size == 0;
     }
@@ -180,7 +180,7 @@ namespace etl
     //*************************************************************************
     /// Returns the number of elements.
     //*************************************************************************
-    size_t size() const
+    ETL_CONSTEXPR size_t size() const
     {
       return current_size;
     }
@@ -190,7 +190,7 @@ namespace etl
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    intrusive_queue_base()
+    ETL_CONSTEXPR14 intrusive_queue_base()
       : p_back (&terminator)
       , current_size(0)
     {
@@ -236,7 +236,7 @@ namespace etl
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    intrusive_queue()
+    ETL_CONSTEXPR intrusive_queue()
       : intrusive_queue_base<TLink>()
     {
     }
@@ -246,7 +246,7 @@ namespace etl
     /// Undefined behaviour if the queue is empty.
     /// \return A reference to the value at the front of the queue.
     //*************************************************************************
-    reference front()
+    ETL_CONSTEXPR14 reference front()
     {
       return *static_cast<TValue*>(this->terminator.etl_next);
     }
@@ -256,7 +256,7 @@ namespace etl
     /// Undefined behaviour if the queue is empty.
     /// \return A reference to the value at the back of the queue.
     //*************************************************************************
-    reference back()
+    ETL_CONSTEXPR14 reference back()
     {
       return *static_cast<TValue*>(this->p_back);
     }
@@ -266,7 +266,7 @@ namespace etl
     /// Undefined behaviour if the queue is empty.
     /// \return A const reference to the value at the front of the queue.
     //*************************************************************************
-    const_reference front() const
+    ETL_CONSTEXPR14 const_reference front() const
     {
       return *static_cast<const TValue*>(this->terminator.etl_next);
     }
@@ -276,7 +276,7 @@ namespace etl
     /// Undefined behaviour if the queue is empty.
     /// \return A reference to the value at the back of the queue.
     //*************************************************************************
-    const_reference back() const
+    ETL_CONSTEXPR14 const_reference back() const
     {
       return *static_cast<const TValue*>(this->p_back);
     }

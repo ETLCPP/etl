@@ -61,6 +61,7 @@ namespace etl
   {
   public:
 
+    ETL_CONSTEXPR14
     link_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
       : exception(reason_, file_name_, line_number_)
     {
@@ -74,6 +75,7 @@ namespace etl
   {
   public:
 
+    ETL_CONSTEXPR14
     not_unlinked_exception(string_type file_name_, numeric_type line_number_)
       : link_exception(ETL_ERROR_TEXT("link:still linked", ETL_INTRUSIVE_LINKS_FILE_ID"A"), file_name_, line_number_)
     {
@@ -92,24 +94,28 @@ namespace etl
     };
 
     //***********************************
+    ETL_CONSTEXPR
     forward_link()
       : etl_next(ETL_NULLPTR)
     {
     }
 
     //***********************************
+    ETL_CONSTEXPR
     forward_link(forward_link* p_next)
       : etl_next(p_next)
     {
     }
 
     //***********************************
+    ETL_CONSTEXPR
     forward_link(const forward_link& other)
       : etl_next(other.etl_next)
     {
     }
 
     //***********************************
+    ETL_CONSTEXPR14
     forward_link& operator =(const forward_link& other)
     {
       etl_next = other.etl_next;
@@ -118,39 +124,42 @@ namespace etl
     }
 
     //***********************************
+    ETL_CONSTEXPR14
     void clear()
     {
       etl_next = ETL_NULLPTR;
     }
 
     //***********************************
-    ETL_NODISCARD
+    ETL_NODISCARD ETL_CONSTEXPR14
     bool is_linked() const
     {
       return etl_next != ETL_NULLPTR;
     }
 
     //***********************************
-    ETL_NODISCARD
+    ETL_NODISCARD ETL_CONSTEXPR14
     bool has_next() const
     {
       return etl_next != ETL_NULLPTR;
     }
 
     //***********************************
+    ETL_CONSTEXPR14
     void set_next(forward_link* n)
     {
       etl_next = n;
     }
 
     //***********************************
+    ETL_CONSTEXPR14
     void set_next(forward_link& n)
     {
       etl_next = &n;
     }
 
     //***********************************
-    ETL_NODISCARD
+    ETL_NODISCARD ETL_CONSTEXPR14
     forward_link* get_next() const
     {
       return etl_next;
@@ -177,6 +186,7 @@ namespace etl
   //***************************************************************************
   // Reference, Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_forward_link<TLink>::value, void>::type
     link(TLink& lhs, TLink& rhs)
   {
@@ -186,6 +196,7 @@ namespace etl
   //***********************************
   // Pointer, Pointer
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_forward_link<TLink>::value, void>::type
     link(TLink* lhs, TLink* rhs)
   {
@@ -198,6 +209,7 @@ namespace etl
   //***********************************
   // Reference, Pointer
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_forward_link<TLink>::value, void>::type
     link(TLink& lhs, TLink* rhs)
   {
@@ -207,6 +219,7 @@ namespace etl
   //***********************************
   // Pointer, Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_forward_link<TLink>::value, void>::type
     link(TLink* lhs, TLink& rhs)
   {
@@ -221,6 +234,7 @@ namespace etl
   //***************************************************************************
   // Reference, Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_forward_link<TLink>::value, void>::type
     link_splice(TLink& lhs, TLink& rhs)
   {
@@ -231,6 +245,7 @@ namespace etl
   //***********************************
   // Pointer, Pointer
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_forward_link<TLink>::value, void>::type
     link_splice(TLink* lhs, TLink* rhs)
   {
@@ -248,6 +263,7 @@ namespace etl
   //***********************************
   // Reference, Pointer
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_forward_link<TLink>::value, void>::type
     link_splice(TLink& lhs, TLink* rhs)
   {
@@ -262,6 +278,7 @@ namespace etl
   //***********************************
   // Pointer, Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_forward_link<TLink>::value, void>::type
     link_splice(TLink* lhs, TLink& rhs)
   {
@@ -275,6 +292,7 @@ namespace etl
   //***********************************
   // Reference, Reference, Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_forward_link<TLink>::value, void>::type
     link_splice(TLink& lhs, TLink& first, TLink& last)
   {
@@ -285,6 +303,7 @@ namespace etl
   //***********************************
   // Pointer, Reference, Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_forward_link<TLink>::value, void>::type
     link_splice(TLink* lhs, TLink& first, TLink& last)
   {
@@ -304,6 +323,7 @@ namespace etl
   //***************************************************************************
   // Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_forward_link<TLink>::value, TLink*>::type
     unlink_after(TLink& node)
   {
@@ -321,6 +341,7 @@ namespace etl
   //***********************************
   // Reference, Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_forward_link<TLink>::value, TLink*>::type
     unlink_after(TLink& before, TLink& last)
   {
@@ -337,6 +358,7 @@ namespace etl
 
   // Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_forward_link<TLink>::value, bool>::type
     is_linked(TLink& node)
   {
@@ -345,6 +367,7 @@ namespace etl
 
   // Pointer
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_forward_link<TLink>::value, bool>::type
     is_linked(TLink* node)
   {
@@ -356,6 +379,7 @@ namespace etl
   //***************************************************************************
   // Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_forward_link<TLink>::value, void>::type
     link_clear(TLink& start)
   {
@@ -365,6 +389,7 @@ namespace etl
   //***********************************
   // Pointer
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_forward_link<TLink>::value, void>::type
     link_clear(TLink* start)
   {
@@ -379,6 +404,7 @@ namespace etl
   //***************************************************************************
   // Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_forward_link<TLink>::value, void>::type
     link_clear_range(TLink& start)
   {
@@ -395,6 +421,7 @@ namespace etl
   //***********************************
   // Pointer
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_forward_link<TLink>::value, void>::type
     link_clear_range(TLink* start)
   {
@@ -416,28 +443,28 @@ namespace etl
     };
 
     //***********************************
-    bidirectional_link()
+    ETL_CONSTEXPR14 bidirectional_link()
       : etl_previous(ETL_NULLPTR)
       , etl_next(ETL_NULLPTR)
     {
     }
 
     //***********************************
-    bidirectional_link(bidirectional_link* p_previous, bidirectional_link* p_next)
+    ETL_CONSTEXPR14 bidirectional_link(bidirectional_link* p_previous, bidirectional_link* p_next)
       : etl_previous(p_previous)
       , etl_next(p_next)
     {
     }
 
     //***********************************
-    bidirectional_link(const bidirectional_link& other)
+    ETL_CONSTEXPR14 bidirectional_link(const bidirectional_link& other)
       : etl_previous(other.etl_previous)
       , etl_next(other.etl_next)
     {
     }
 
     //***********************************
-    bidirectional_link& operator =(const bidirectional_link& other)
+    ETL_CONSTEXPR14 bidirectional_link& operator =(const bidirectional_link& other)
     {
       etl_previous = other.etl_previous;
       etl_next     = other.etl_next;
@@ -446,72 +473,77 @@ namespace etl
     }
 
     //***********************************
-    void clear()
+    ETL_CONSTEXPR14 void clear()
     {
       etl_previous = ETL_NULLPTR;
       etl_next     = ETL_NULLPTR;
     }
 
     //***********************************
-    ETL_NODISCARD
+    ETL_NODISCARD ETL_CONSTEXPR14
     bool is_linked() const
     {
       return (etl_previous != ETL_NULLPTR) || (etl_next != ETL_NULLPTR);
     }
 
     //***********************************
-    ETL_NODISCARD
+    ETL_NODISCARD ETL_CONSTEXPR14
     bool has_next() const
     {
       return etl_next != ETL_NULLPTR;
     }
 
     //***********************************
-    ETL_NODISCARD
+    ETL_NODISCARD ETL_CONSTEXPR14
     bool has_previous() const
     {
       return etl_previous != ETL_NULLPTR;
     }
 
     //***********************************
+    ETL_CONSTEXPR14
     void set_next(bidirectional_link* n)
     {
       etl_next = n;
     }
 
     //***********************************
+    ETL_CONSTEXPR14
     void set_next(bidirectional_link& n)
     {
       etl_next = &n;
     }
 
     //***********************************
-    ETL_NODISCARD
+    ETL_NODISCARD ETL_CONSTEXPR14
     bidirectional_link* get_next() const
     {
       return etl_next;
     }
 
     //***********************************
+    ETL_CONSTEXPR14
     void set_previous(bidirectional_link* n)
     {
       etl_previous = n;
     }
 
     //***********************************
+    ETL_CONSTEXPR14
     void set_previous(bidirectional_link& n)
     {
       etl_previous = &n;
     }
 
     //***********************************
-    ETL_NODISCARD
+    ETL_NODISCARD ETL_CONSTEXPR14
     bidirectional_link* get_previous() const
     {
       return etl_previous;
     }
 
     //***********************************
+    ETL_CONSTEXPR14
     void reverse()
     {
       using ETL_OR_STD::swap; // Allow ADL
@@ -519,6 +551,7 @@ namespace etl
     }
 
     //***********************************
+    ETL_CONSTEXPR14
     void unlink()
     {
       // Connect the previous link with the next.
@@ -558,6 +591,7 @@ namespace etl
   //***************************************************************************
   // Reference, Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
     link(TLink& lhs, TLink& rhs)
   {
@@ -568,6 +602,7 @@ namespace etl
   //***********************************
   // Pointer, Pointer
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
     link(TLink* lhs, TLink* rhs)
   {
@@ -585,6 +620,7 @@ namespace etl
   //***********************************
   // Reference, Pointer
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
     link(TLink& lhs, TLink* rhs)
   {
@@ -599,6 +635,7 @@ namespace etl
   //***********************************
   // Pointer, Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
     link(TLink* lhs, TLink& rhs)
   {
@@ -613,6 +650,7 @@ namespace etl
   //***********************************
   // Reference, Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
     link_splice(TLink& lhs, TLink& rhs)
   {
@@ -632,6 +670,7 @@ namespace etl
   //***************************************************************************
   // Pointer, Pointer
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
     link_splice(TLink* lhs, TLink* rhs)
   {
@@ -659,6 +698,7 @@ namespace etl
   //***********************************
   // Reference, Pointer
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
     link_splice(TLink& lhs, TLink* rhs)
   {
@@ -679,6 +719,7 @@ namespace etl
   //***********************************
   // Pointer, Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
     link_splice(TLink* lhs, TLink& rhs)
   {
@@ -703,6 +744,7 @@ namespace etl
   //***********************************
   // Reference, Reference, Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
     link_splice(TLink& lhs, TLink& first, TLink& last)
   {
@@ -720,6 +762,7 @@ namespace etl
   //***********************************
   // Pointer, Reference, Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
     link_splice(TLink* lhs, TLink& first, TLink& last)
   {
@@ -750,6 +793,7 @@ namespace etl
   //***************************************************************************
   // Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
     unlink(TLink& node)
   {
@@ -759,6 +803,7 @@ namespace etl
   //***********************************
   // Reference Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, TLink&>::type
     unlink(TLink& first, TLink& last)
   {
@@ -788,6 +833,7 @@ namespace etl
 
   // Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, bool>::type
     is_linked(TLink& node)
   {
@@ -796,6 +842,7 @@ namespace etl
 
   // Pointer
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, bool>::type
     is_linked(TLink* node)
   {
@@ -807,6 +854,7 @@ namespace etl
   //***************************************************************************
   // Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
     link_clear_range(TLink& start)
   {
@@ -823,6 +871,7 @@ namespace etl
   //***********************************
   // Pointer
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type
     link_clear_range(TLink* start)
   {
@@ -841,7 +890,7 @@ namespace etl
       };
 
       //***********************************
-      tree_link()
+      ETL_CONSTEXPR14 tree_link()
         : etl_parent(ETL_NULLPTR)
         , etl_left(ETL_NULLPTR)
         , etl_right(ETL_NULLPTR)
@@ -849,7 +898,7 @@ namespace etl
       }
 
       //***********************************
-      tree_link(tree_link* p_parent, tree_link* p_left, tree_link* p_right)
+      ETL_CONSTEXPR14 tree_link(tree_link* p_parent, tree_link* p_left, tree_link* p_right)
         : etl_parent(p_parent)
         , etl_left(p_left)
         , etl_right(p_right)
@@ -857,7 +906,7 @@ namespace etl
       }
 
       //***********************************
-      tree_link(const tree_link& other)
+      ETL_CONSTEXPR14 tree_link(const tree_link& other)
         : etl_parent(other.etl_parent)
         , etl_left(other.etl_left)
         , etl_right(other.etl_right)
@@ -865,7 +914,7 @@ namespace etl
       }
 
       //***********************************
-      tree_link& operator =(const tree_link& other)
+      ETL_CONSTEXPR14 tree_link& operator =(const tree_link& other)
       {
         etl_parent = other.etl_parent;
         etl_left   = other.etl_left;
@@ -875,7 +924,7 @@ namespace etl
       }
 
       //***********************************
-      void clear()
+      ETL_CONSTEXPR14 void clear()
       {
         etl_parent = ETL_NULLPTR;
         etl_left   = ETL_NULLPTR;
@@ -883,63 +932,69 @@ namespace etl
       }
 
       //***********************************
-      bool is_linked() const
+      ETL_CONSTEXPR14 bool is_linked() const
       {
         return (etl_parent != ETL_NULLPTR) || (etl_left != ETL_NULLPTR) || (etl_right != ETL_NULLPTR);
       }
 
       //***********************************
-      ETL_NODISCARD
+      ETL_NODISCARD ETL_CONSTEXPR14
       bool has_parent() const
       {
         return etl_parent != ETL_NULLPTR;
       }
 
       //***********************************
-      ETL_NODISCARD
+      ETL_NODISCARD ETL_CONSTEXPR14
       bool has_left() const
       {
         return etl_left != ETL_NULLPTR;
       }
 
       //***********************************
-      ETL_NODISCARD
+      ETL_NODISCARD ETL_CONSTEXPR14
       bool has_right() const
       {
         return etl_right != ETL_NULLPTR;
       }
 
       //***********************************
+      ETL_CONSTEXPR14
       void set_parent(tree_link* p)
       {
         etl_parent = p;
       }
 
       //***********************************
+      ETL_CONSTEXPR14
       void set_left(tree_link* l)
       {
         etl_left = l;
       }
 
       //***********************************
+      ETL_CONSTEXPR14
       void set_right(tree_link* r)
       {
         etl_right = r;
       }
 
       //***********************************
+      ETL_CONSTEXPR14
       void set_parent(tree_link& p)
       {
         etl_parent = &p;
       }
 
       //***********************************
+      ETL_CONSTEXPR14
       void set_left(tree_link& l)
       {
         etl_left = &l;
       }
 
       //***********************************
+      ETL_CONSTEXPR14
       void set_right(tree_link& r)
       {
         etl_right = &r;
@@ -953,20 +1008,21 @@ namespace etl
       }
 
       //***********************************
-      ETL_NODISCARD
+      ETL_NODISCARD ETL_CONSTEXPR14
       tree_link* get_left() const
       {
         return etl_left;
       }
 
       //***********************************
-      ETL_NODISCARD
+      ETL_NODISCARD ETL_CONSTEXPR14
       tree_link* get_right() const
       {
         return etl_right;
       }
 
       //***********************************
+      ETL_CONSTEXPR14
       void mirror()
       {
         using ETL_OR_STD::swap;
@@ -997,6 +1053,7 @@ namespace etl
   //***************************************************************************
   // Reference, Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_left(TLink& parent, TLink& leaf)
   {
@@ -1007,6 +1064,7 @@ namespace etl
   //***********************************
   // Pointer, Pointer
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_left(TLink* parent, TLink* leaf)
   {
@@ -1024,6 +1082,7 @@ namespace etl
   //***********************************
   // Reference, Pointer
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_left(TLink& parent, TLink* leaf)
   {
@@ -1038,6 +1097,7 @@ namespace etl
   //***********************************
   // Pointer, Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_left(TLink* parent, TLink& leaf)
   {
@@ -1054,6 +1114,7 @@ namespace etl
   // Sets the right link.
   //***************************************************************************
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_right(TLink& parent, TLink& leaf)
   {
@@ -1063,6 +1124,7 @@ namespace etl
 
   //***********************************
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_right(TLink* parent, TLink* leaf)
   {
@@ -1079,6 +1141,7 @@ namespace etl
 
   //***********************************
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_right(TLink& parent, TLink* leaf)
   {
@@ -1092,6 +1155,7 @@ namespace etl
 
   //***********************************
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_right(TLink* parent, TLink& leaf)
   {
@@ -1108,6 +1172,7 @@ namespace etl
   //***************************************************************************
   // Reference, Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_rotate_left(TLink& parent, TLink& leaf)
   {
@@ -1126,6 +1191,7 @@ namespace etl
   //***********************************
   // Pointer, Pointer
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_rotate_left(TLink* parent, TLink* leaf)
   {
@@ -1138,6 +1204,7 @@ namespace etl
   //***********************************
   // Reference, Pointer
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_rotate_left(TLink& parent, TLink* leaf)
   {
@@ -1150,6 +1217,7 @@ namespace etl
   //***********************************
   // Pointer, Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_rotate_left(TLink* parent, TLink& leaf)
   {
@@ -1163,6 +1231,7 @@ namespace etl
   // link_rotate_right
   //***************************************************************************
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_rotate_right(TLink& parent, TLink& leaf)
   {
@@ -1180,6 +1249,7 @@ namespace etl
 
  
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_rotate_right(TLink* parent, TLink* leaf)
   {
@@ -1190,6 +1260,7 @@ namespace etl
   }
 
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_rotate_right(TLink& parent, TLink* leaf)
   {
@@ -1201,6 +1272,7 @@ namespace etl
 
   //***********************************
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_rotate_right(TLink* parent, TLink& leaf)
   {
@@ -1216,6 +1288,7 @@ namespace etl
   // Reference, Reference
   /// Automatically detects whether a left or right rotate is expected.
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_rotate(TLink& parent, TLink& leaf)
   {
@@ -1233,6 +1306,7 @@ namespace etl
   // Pointer, Pointer
   /// Automatically detects whether a left or right rotate is expected.
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_rotate(TLink* parent, TLink* leaf)
   {
@@ -1253,6 +1327,7 @@ namespace etl
   // Reference, Pointer
   /// Automatically detects whether a left or right rotate is expected.
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_rotate(TLink& parent, TLink* leaf)
   {
@@ -1273,6 +1348,7 @@ namespace etl
   // Pointer, Reference
   /// Automatically detects whether a left or right rotate is expected.
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_rotate(TLink* parent, TLink& leaf)
   {
@@ -1291,6 +1367,7 @@ namespace etl
 
   // Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_clear(TLink& node)
   {
@@ -1299,6 +1376,7 @@ namespace etl
 
   // Pointer
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, void>::type
     link_clear(TLink* node)
   {
@@ -1307,6 +1385,7 @@ namespace etl
 
   // Reference
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, bool>::type
     is_linked(TLink& node)
   {
@@ -1315,6 +1394,7 @@ namespace etl
 
   // Pointer
   template <typename TLink>
+  ETL_CONSTEXPR14
   typename etl::enable_if<etl::is_same<TLink, etl::tree_link<TLink::ID> >::value, bool>::type
     is_linked(TLink* node)
   {
