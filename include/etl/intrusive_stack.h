@@ -258,7 +258,7 @@ namespace etl
     /// Gets a const reference to the value at the top of the stack.<br>
     /// \return A const reference to the value at the top of the stack.
     //*************************************************************************
-    ETL_CONSTEXPR14 const_reference top() const
+    ETL_CONSTEXPR const_reference top() const
     {
       return *static_cast<const TValue*>(this->p_top);
     }

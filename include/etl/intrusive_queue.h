@@ -266,7 +266,7 @@ namespace etl
     /// Undefined behaviour if the queue is empty.
     /// \return A const reference to the value at the front of the queue.
     //*************************************************************************
-    ETL_CONSTEXPR14 const_reference front() const
+    ETL_CONSTEXPR const_reference front() const
     {
       return *static_cast<const TValue*>(this->terminator.etl_next);
     }
@@ -276,7 +276,7 @@ namespace etl
     /// Undefined behaviour if the queue is empty.
     /// \return A reference to the value at the back of the queue.
     //*************************************************************************
-    ETL_CONSTEXPR14 const_reference back() const
+    ETL_CONSTEXPR const_reference back() const
     {
       return *static_cast<const TValue*>(this->p_back);
     }

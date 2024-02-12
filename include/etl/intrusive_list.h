@@ -225,7 +225,7 @@ namespace etl
     //*************************************************************************
     /// Reverses the list.
     //*************************************************************************
-    ETL_CONSTEXPR void reverse()
+    ETL_CONSTEXPR14 void reverse()
     {
       if (is_trivial_list())
       {
@@ -351,7 +351,7 @@ namespace etl
     //*************************************************************************
     /// Get the head link.
     //*************************************************************************
-    ETL_CONSTEXPR14 const link_type* get_head() const
+    ETL_CONSTEXPR const link_type* get_head() const
     {
       return terminal_link.etl_next;
     }
@@ -367,7 +367,7 @@ namespace etl
     //*************************************************************************
     /// Get the tail link.
     //*************************************************************************
-    ETL_CONSTEXPR14 const link_type* get_tail() const
+    ETL_CONSTEXPR const link_type* get_tail() const
     {
       return terminal_link.etl_previous;
     }
@@ -629,7 +629,7 @@ namespace etl
     //*************************************************************************
     /// Gets the beginning of the intrusive_list.
     //*************************************************************************
-    ETL_CONSTEXPR14 const_iterator begin() const
+    ETL_CONSTEXPR const_iterator begin() const
     {
       return const_iterator(this->get_head());
     }
@@ -637,7 +637,7 @@ namespace etl
     //*************************************************************************
     /// Gets the beginning of the intrusive_list.
     //*************************************************************************
-    ETL_CONSTEXPR14 const_iterator cbegin() const
+    ETL_CONSTEXPR const_iterator cbegin() const
     {
       return const_iterator(this->get_head());
     }
@@ -653,7 +653,7 @@ namespace etl
     //*************************************************************************
     /// Gets the end of the intrusive_list.
     //*************************************************************************
-    ETL_CONSTEXPR14 const_iterator end() const
+    ETL_CONSTEXPR const_iterator end() const
     {
       return const_iterator(&this->terminal_link);
     }
@@ -677,7 +677,7 @@ namespace etl
     //*************************************************************************
     /// Gets a const reference to the first element.
     //*************************************************************************
-    ETL_CONSTEXPR14 const_reference front() const
+    ETL_CONSTEXPR const_reference front() const
     {
       return *static_cast<const_pointer>(this->get_head());
     }
@@ -693,7 +693,7 @@ namespace etl
     //*************************************************************************
     /// Gets a const reference to the last element.
     //*************************************************************************
-    ETL_CONSTEXPR14 const_reference back() const
+    ETL_CONSTEXPR const_reference back() const
     {
       return *static_cast<const_pointer>(this->get_tail());
     }
@@ -852,10 +852,10 @@ namespace etl
       iterator i_node;
       iterator i_head;
       iterator i_tail;
-      int      list_size = 1;
-      int      number_of_merges;
-      int      left_size;
-      int      right_size;
+      int      list_size        = 1;
+      int      number_of_merges = 0;
+      int      left_size        = 0;
+      int      right_size       = 0;
 
       if (this->is_trivial_list())
       {

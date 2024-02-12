@@ -131,14 +131,14 @@ namespace etl
     }
 
     //***********************************
-    ETL_NODISCARD ETL_CONSTEXPR14
+    ETL_NODISCARD ETL_CONSTEXPR
     bool is_linked() const
     {
       return etl_next != ETL_NULLPTR;
     }
 
     //***********************************
-    ETL_NODISCARD ETL_CONSTEXPR14
+    ETL_NODISCARD ETL_CONSTEXPR
     bool has_next() const
     {
       return etl_next != ETL_NULLPTR;
@@ -159,7 +159,7 @@ namespace etl
     }
 
     //***********************************
-    ETL_NODISCARD ETL_CONSTEXPR14
+    ETL_NODISCARD ETL_CONSTEXPR
     forward_link* get_next() const
     {
       return etl_next;
@@ -480,21 +480,21 @@ namespace etl
     }
 
     //***********************************
-    ETL_NODISCARD ETL_CONSTEXPR14
+    ETL_NODISCARD ETL_CONSTEXPR
     bool is_linked() const
     {
       return (etl_previous != ETL_NULLPTR) || (etl_next != ETL_NULLPTR);
     }
 
     //***********************************
-    ETL_NODISCARD ETL_CONSTEXPR14
+    ETL_NODISCARD ETL_CONSTEXPR
     bool has_next() const
     {
       return etl_next != ETL_NULLPTR;
     }
 
     //***********************************
-    ETL_NODISCARD ETL_CONSTEXPR14
+    ETL_NODISCARD ETL_CONSTEXPR
     bool has_previous() const
     {
       return etl_previous != ETL_NULLPTR;
@@ -515,7 +515,7 @@ namespace etl
     }
 
     //***********************************
-    ETL_NODISCARD ETL_CONSTEXPR14
+    ETL_NODISCARD ETL_CONSTEXPR
     bidirectional_link* get_next() const
     {
       return etl_next;
@@ -536,7 +536,7 @@ namespace etl
     }
 
     //***********************************
-    ETL_NODISCARD ETL_CONSTEXPR14
+    ETL_NODISCARD ETL_CONSTEXPR
     bidirectional_link* get_previous() const
     {
       return etl_previous;
@@ -932,27 +932,27 @@ namespace etl
       }
 
       //***********************************
-      ETL_CONSTEXPR14 bool is_linked() const
+      ETL_CONSTEXPR bool is_linked() const
       {
         return (etl_parent != ETL_NULLPTR) || (etl_left != ETL_NULLPTR) || (etl_right != ETL_NULLPTR);
       }
 
       //***********************************
-      ETL_NODISCARD ETL_CONSTEXPR14
+      ETL_NODISCARD ETL_CONSTEXPR
       bool has_parent() const
       {
         return etl_parent != ETL_NULLPTR;
       }
 
       //***********************************
-      ETL_NODISCARD ETL_CONSTEXPR14
+      ETL_NODISCARD ETL_CONSTEXPR
       bool has_left() const
       {
         return etl_left != ETL_NULLPTR;
       }
 
       //***********************************
-      ETL_NODISCARD ETL_CONSTEXPR14
+      ETL_NODISCARD ETL_CONSTEXPR
       bool has_right() const
       {
         return etl_right != ETL_NULLPTR;
@@ -1001,21 +1001,21 @@ namespace etl
       }
 
       //***********************************
-      ETL_NODISCARD
+      ETL_NODISCARD ETL_CONSTEXPR
       tree_link* get_parent() const
       {
         return etl_parent;
       }
 
       //***********************************
-      ETL_NODISCARD ETL_CONSTEXPR14
+      ETL_NODISCARD ETL_CONSTEXPR
       tree_link* get_left() const
       {
         return etl_left;
       }
 
       //***********************************
-      ETL_NODISCARD ETL_CONSTEXPR14
+      ETL_NODISCARD ETL_CONSTEXPR
       tree_link* get_right() const
       {
         return etl_right;
