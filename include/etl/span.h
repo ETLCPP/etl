@@ -331,6 +331,12 @@ namespace etl
     ETL_NODISCARD ETL_CONSTEXPR
     etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET> subspan() const ETL_NOEXCEPT
     {
+      //if extent is static, check that OFFSET is within the original span
+      static_assert((extent != etl::dynamic_extent) ? OFFSET <= extent : true);
+
+      //if count is also static, check that OFFSET + COUNT is within the original span
+      static_assert((extent != etl::dynamic_extent) && (COUNT != etl::dynamic_extent) ? COUNT <= (extent - OFFSET) : true);
+      
       return (COUNT == etl::dynamic_extent) ? etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET>(pbegin + OFFSET, (pbegin + Extent))
                                             : etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET>(pbegin + OFFSET, pbegin + OFFSET + COUNT);
     }
