@@ -354,6 +354,12 @@ namespace etl
     template <size_t OFFSET, size_t COUNT>
     etl::span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET> subspan() const
     {
+      //if extent is static, check that OFFSET is within the original span
+      ETL_STATIC_ASSERT((extent != etl::dynamic_extent) ? OFFSET <= extent : true, "OFFSET is not within the original span");
+
+      //if count is also static, check that OFFSET + COUNT is within the original span
+      ETL_STATIC_ASSERT((extent != etl::dynamic_extent) && (COUNT != etl::dynamic_extent) ? COUNT <= (extent - OFFSET) : true, "OFFSET + COUNT is not within the original span");
+      
       if (COUNT == etl::dynamic_extent)
       {
         return etl::span<element_type, (COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET)>(pbegin + OFFSET, (pbegin + Extent));
