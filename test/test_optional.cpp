@@ -53,6 +53,7 @@ std::ostream& operator << (std::ostream& os, const etl::optional<Data>& data)
 
 namespace
 {
+#include "etl/private/diagnostic_unused_function_push.h"
   //*************************************************************************
   struct NonTrivial
   {
@@ -65,21 +66,6 @@ namespace
       return lhs.a < rhs.a;
     }
 
-    constexpr friend bool operator <=(const NonTrivial& lhs, const NonTrivial& rhs)
-    {
-      return lhs.a <= rhs.a;
-    }
-
-    constexpr friend bool operator >(const NonTrivial& lhs, const NonTrivial& rhs)
-    {
-      return lhs.a > rhs.a;
-    }
-
-    constexpr friend bool operator >=(const NonTrivial& lhs, const NonTrivial& rhs)
-    {
-      return lhs.a >= rhs.a;
-    }
-
     constexpr friend bool operator ==(const NonTrivial& lhs, const NonTrivial& rhs)
     {
       return lhs.a == rhs.a;
@@ -87,6 +73,7 @@ namespace
 
     int a;
   };
+#include "etl/private/diagnostic_pop.h"
 
   SUITE(test_optional)
   {
@@ -294,9 +281,9 @@ namespace
       constexpr bool eq2 = (data1 == etl::nullopt);
       constexpr bool eq3 = (etl::nullopt == data1);
 
-      CHECK(eq1);
-      CHECK(eq2);
-      CHECK(eq3);
+      CHECK_FALSE(eq1);
+      CHECK_FALSE(eq2);
+      CHECK_FALSE(eq3);
     }
 #endif
 
@@ -311,9 +298,9 @@ namespace
       constexpr bool eq2 = (data1 == etl::nullopt);
       constexpr bool eq3 = (etl::nullopt == data1);
 
-      CHECK(eq1);
-      CHECK(eq2);
-      CHECK(eq3);
+      CHECK_FALSE(eq1);
+      CHECK_FALSE(eq2);
+      CHECK_FALSE(eq3);
     }
 #endif
 
@@ -361,13 +348,13 @@ namespace
       constexpr etl::optional<NonTrivial> data1(1);
       constexpr etl::optional<NonTrivial> data2(2);
 
-      constexpr bool eq1 = (data1 == data2);
-      constexpr bool eq2 = (data1 == etl::nullopt);
-      constexpr bool eq3 = (etl::nullopt == data1);
+      constexpr bool eq1 = (data1 != data2);
+      constexpr bool eq2 = (data1 != etl::nullopt);
+      constexpr bool eq3 = (etl::nullopt != data1);
 
-      CHECK(eq1);
-      CHECK(eq2);
-      CHECK(eq3);
+      CHECK_TRUE(eq1);
+      CHECK_TRUE(eq2);
+      CHECK_TRUE(eq3);
     }
 #endif
 
@@ -382,9 +369,9 @@ namespace
       constexpr bool neq2 = (data1 != etl::nullopt);
       constexpr bool neq3 = (etl::nullopt != data1);
 
-      CHECK(neq1);
-      CHECK(neq2);
-      CHECK(neq3);
+      CHECK_TRUE(neq1);
+      CHECK_TRUE(neq2);
+      CHECK_TRUE(neq3);
     }
 #endif
 
@@ -431,12 +418,14 @@ namespace
       constexpr etl::optional<NonTrivial> data2(2);
 
       constexpr bool lt1 = (data1 < data2);
-      constexpr bool lt2 = (data1 < etl::nullopt);
-      constexpr bool lt3 = (etl::nullopt < data1);
+      constexpr bool lt2 = (data2 < data1);
+      constexpr bool lt3 = (data1 < etl::nullopt);
+      constexpr bool lt4 = (etl::nullopt < data1);
 
-      CHECK(lt1);
-      CHECK(lt2);
-      CHECK(lt3);
+      CHECK_TRUE(lt1);
+      CHECK_FALSE(lt2);
+      CHECK_FALSE(lt3);
+      CHECK_TRUE(lt4);
     }
 #endif
 
@@ -448,12 +437,14 @@ namespace
       constexpr etl::optional<int> data2(2);
 
       constexpr bool lt1 = (data1 < data2);
-      constexpr bool lt2 = (data1 < etl::nullopt);
-      constexpr bool lt3 = (etl::nullopt < data1);
+      constexpr bool lt2 = (data2 < data1);
+      constexpr bool lt3 = (data1 < etl::nullopt);
+      constexpr bool lt4 = (etl::nullopt < data1);
 
-      CHECK(lt1);
-      CHECK(lt2);
-      CHECK(lt3);
+      CHECK_TRUE(lt1);
+      CHECK_FALSE(lt2);
+      CHECK_FALSE(lt3);
+      CHECK_TRUE(lt4);
     }
 #endif
 
@@ -498,13 +489,15 @@ namespace
       constexpr etl::optional<NonTrivial> data1(1);
       constexpr etl::optional<NonTrivial> data2(2);
 
-      constexpr bool lteq1 = (data1 <= data2);
-      constexpr bool lteq2 = (data1 <= etl::nullopt);
-      constexpr bool lteq3 = (etl::nullopt <= data1);
+      constexpr bool lt1 = (data1 <= data2);
+      constexpr bool lt2 = (data2 <= data1);
+      constexpr bool lt3 = (data1 <= etl::nullopt);
+      constexpr bool lt4 = (etl::nullopt <= data1);
 
-      CHECK(lteq1);
-      CHECK(lteq2);
-      CHECK(lteq3);
+      CHECK_TRUE(lt1);
+      CHECK_FALSE(lt2);
+      CHECK_FALSE(lt3);
+      CHECK_TRUE(lt4);
     }
 #endif
 
@@ -515,13 +508,15 @@ namespace
       constexpr etl::optional<int> data1(1);
       constexpr etl::optional<int> data2(2);
 
-      constexpr bool lteq1 = (data1 <= data2);
-      constexpr bool lteq2 = (data1 <= etl::nullopt);
-      constexpr bool lteq3 = (etl::nullopt <= data1);
+      constexpr bool lt1 = (data1 <= data2);
+      constexpr bool lt2 = (data2 <= data1);
+      constexpr bool lt3 = (data1 <= etl::nullopt);
+      constexpr bool lt4 = (etl::nullopt <= data1);
 
-      CHECK(lteq1);
-      CHECK(lteq2);
-      CHECK(lteq3);
+      CHECK_TRUE(lt1);
+      CHECK_FALSE(lt2);
+      CHECK_FALSE(lt3);
+      CHECK_TRUE(lt4);
     }
 #endif
 
@@ -564,13 +559,15 @@ namespace
       constexpr etl::optional<NonTrivial> data1(1);
       constexpr etl::optional<NonTrivial> data2(2);
 
-      constexpr bool gteq1 = (data1 > data2);
-      constexpr bool gteq2 = (data1 > etl::nullopt);
-      constexpr bool gteq3 = (etl::nullopt > data1);
+      constexpr bool gt1 = (data1 > data2);
+      constexpr bool gt2 = (data2 > data1);
+      constexpr bool gt3 = (data1 > etl::nullopt);
+      constexpr bool gt4 = (etl::nullopt > data1);
 
-      CHECK(gteq1);
-      CHECK(gteq2);
-      CHECK(gteq3);
+      CHECK_FALSE(gt1);
+      CHECK_TRUE(gt2);
+      CHECK_TRUE(gt3);
+      CHECK_FALSE(gt4);
     }
 #endif
 
@@ -581,13 +578,15 @@ namespace
       constexpr etl::optional<int> data1(1);
       constexpr etl::optional<int> data2(2);
 
-      constexpr bool gteq1 = (data1 > data2);
-      constexpr bool gteq2 = (data1 > etl::nullopt);
-      constexpr bool gteq3 = (etl::nullopt > data1);
+      constexpr bool gt1 = (data1 > data2);
+      constexpr bool gt2 = (data2 > data1);
+      constexpr bool gt3 = (data1 > etl::nullopt);
+      constexpr bool gt4 = (etl::nullopt > data1);
 
-      CHECK(gteq1);
-      CHECK(gteq2);
-      CHECK(gteq3);
+      CHECK_FALSE(gt1);
+      CHECK_TRUE(gt2);
+      CHECK_TRUE(gt3);
+      CHECK_FALSE(gt4);
     }
 #endif
 
@@ -632,13 +631,15 @@ namespace
       constexpr etl::optional<NonTrivial> data1(1);
       constexpr etl::optional<NonTrivial> data2(2);
 
-      constexpr bool gteq1 = (data1 >= data2);
-      constexpr bool gteq2 = (data1 >= etl::nullopt);
-      constexpr bool gteq3 = (etl::nullopt >= data1);
+      constexpr bool gte1 = (data1 >= data2);
+      constexpr bool gte2 = (data2 >= data1);
+      constexpr bool gte3 = (data1 >= etl::nullopt);
+      constexpr bool gte4 = (etl::nullopt >= data1);
 
-      CHECK(gteq1);
-      CHECK(gteq2);
-      CHECK(gteq3);
+      CHECK_FALSE(gte1);
+      CHECK_TRUE(gte2);
+      CHECK_TRUE(gte3);
+      CHECK_FALSE(gte4);
     }
 #endif
 
@@ -649,13 +650,15 @@ namespace
       constexpr etl::optional<int> data1(1);
       constexpr etl::optional<int> data2(2);
 
-      constexpr bool gteq1 = (data1 >= data2);
-      constexpr bool gteq2 = (data1 >= etl::nullopt);
-      constexpr bool gteq3 = (etl::nullopt >= data1);
+      constexpr bool gte1 = (data1 >= data2);
+      constexpr bool gte2 = (data2 >= data1);
+      constexpr bool gte3 = (data1 >= etl::nullopt);
+      constexpr bool gte4 = (etl::nullopt >= data1);
 
-      CHECK(gteq1);
-      CHECK(gteq2);
-      CHECK(gteq3);
+      CHECK_FALSE(gte1);
+      CHECK_TRUE(gte2);
+      CHECK_TRUE(gte3);
+      CHECK_FALSE(gte4);
     }
 #endif
 

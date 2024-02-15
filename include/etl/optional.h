@@ -138,7 +138,7 @@ namespace etl
       /// Copy constructor.
       //***************************************************************************
       ETL_CONSTEXPR20_STL
-      optional_impl(const optional_impl& other)
+      optional_impl(const optional_impl<T>& other)
       {
         if (other.has_value())
         {
@@ -152,7 +152,7 @@ namespace etl
       /// Move constructor.
       //***************************************************************************
       ETL_CONSTEXPR20_STL
-      optional_impl(optional_impl&& other)
+      optional_impl(optional_impl<T>&& other)
       {
         if (other.has_value())
         {
@@ -208,7 +208,7 @@ namespace etl
       /// Assignment operator from optional_impl.
       //***************************************************************************
       ETL_CONSTEXPR20_STL
-      optional_impl& operator =(const optional_impl& other)
+      optional_impl& operator =(const optional_impl<T>& other)
       {
         if (this != &other)
         {
@@ -711,7 +711,7 @@ namespace etl
       /// Copy constructor.
       //***************************************************************************
       ETL_CONSTEXPR14
-      optional_impl(const optional_impl& other)
+      optional_impl(const optional_impl<T>& other)
       {
         if (other.has_value())
         {
@@ -772,7 +772,7 @@ namespace etl
       /// Assignment operator from optional_impl.
       //***************************************************************************
       ETL_CONSTEXPR14
-      optional_impl& operator =(const optional_impl& other)
+      optional_impl& operator =(const optional_impl<T>& other)
       {
         if (this != &other)
         {
@@ -1277,7 +1277,7 @@ namespace etl
     template <typename U = T, ETL_OPTIONAL_ENABLE_CPP14>
     ETL_CONSTEXPR14
     optional(etl::nullopt_t)
-      : impl_t(etl::nullopt_t{})
+      : impl_t(etl::nullopt)
     {
     }
 
@@ -1287,7 +1287,7 @@ namespace etl
     template <typename U = T, ETL_OPTIONAL_ENABLE_CPP20_STL>
     ETL_CONSTEXPR20_STL
     optional(etl::nullopt_t)
-      : impl_t(etl::nullopt_t{})
+      : impl_t(etl::nullopt)
     {
     }
 #else
@@ -1295,7 +1295,7 @@ namespace etl
     /// Constructor with nullopt.
     //***************************************************************************
     optional(etl::nullopt_t)
-      : impl_t(etl::nullopt_t{})
+      : impl_t(etl::nullopt)
     {
     }
 #endif
@@ -1415,7 +1415,7 @@ namespace etl
     ETL_CONSTEXPR14
     optional& operator =(etl::nullopt_t)
     {
-      impl_t::operator=(etl::nullopt_t{});
+      impl_t::operator=(etl::nullopt);
 
       return *this;
     }
@@ -1427,7 +1427,7 @@ namespace etl
     ETL_CONSTEXPR20_STL
     optional& operator =(etl::nullopt_t)
     {
-      impl_t::operator=(etl::nullopt_t{});
+      impl_t::operator=(etl::nullopt);
 
       return *this;
     }
@@ -1437,7 +1437,7 @@ namespace etl
     //***************************************************************************
     optional& operator =(etl::nullopt_t)
     {
-      impl_t::operator=(etl::nullopt_t{});
+      impl_t::operator=(etl::nullopt);
 
       return *this;
     }
