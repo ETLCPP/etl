@@ -194,6 +194,16 @@ namespace
 
   using Packet = etl::message_packet<Message1, Message2, Message3>;
 
+  struct Object
+  {
+    void Push(const etl::message_packet<Message1, Message2>& p)
+    {
+      ::new (buffer) etl::message_packet<Message1, Message2>(p);
+    }
+
+    char buffer[100];
+  };
+
   SUITE(test_message_packet)
   {
     //*************************************************************************
@@ -451,6 +461,22 @@ namespace
       CHECK(Packet::accepts<MESSAGE2>());
       CHECK(Packet::accepts<MESSAGE3>());
       CHECK(!Packet::accepts<MESSAGE4>());
+    }
+
+    //*************************************************************************
+    TEST(test_message_packet_push_to_queue_bug_845)
+    {
+      using Packet = etl::message_packet<Message1, Message2>;
+
+      Object obj;
+
+      Message1 message1(1);
+      Message2 message2(1.2);
+      Packet packet1(message1);
+      Packet packet2(message2);
+
+      obj.Push(packet1);
+      obj.Push(packet2);
     }
   };
 }

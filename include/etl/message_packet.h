@@ -95,11 +95,35 @@ namespace etl
     }
 #include "private/diagnostic_pop.h"
 
+    //**********************************************
+#include "private/diagnostic_uninitialized_push.h"
+    message_packet(const message_packet& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(other.get());
+      }
+    }
+#include "private/diagnostic_pop.h"
+
+    //**********************************************
+#include "private/diagnostic_uninitialized_push.h"
+    message_packet(message_packet&& other)
+      : valid(other.is_valid())
+    {
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
+    }
+#include "private/diagnostic_pop.h"
+
     //********************************************
     ///
     //********************************************
 #include "private/diagnostic_uninitialized_push.h"
-    template <typename T>
+    template <typename T, typename = typename etl::enable_if<IsIMessage<T> || IsInMessageList<T>>::type>
     explicit message_packet(T&& msg)
       : valid(true)
     {
@@ -120,10 +144,6 @@ namespace etl
       else if constexpr (IsInMessageList<T>)
       {
         add_new_message_type<T>(etl::forward<T>(msg));
-      }
-      else if constexpr (IsMessagePacket<T>)
-      {
-        copy(etl::forward<T>(msg));
       }
       else
       {
