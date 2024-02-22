@@ -220,6 +220,7 @@ namespace
 
       // Should cause a static assert.
       //Packet packet4(message4);
+      //Packet packet4((Message4()));
 
       CHECK_EQUAL(MESSAGE1, packet1.get().get_message_id());
       CHECK_EQUAL(MESSAGE2, packet2.get().get_message_id());
@@ -455,7 +456,7 @@ namespace
       CHECK(Packet::accepts<Message2>());
       CHECK(Packet::accepts<Message3>());
       CHECK(!Packet::accepts<Message4>());
-
+       
       // From static message id.
       CHECK(Packet::accepts<MESSAGE1>());
       CHECK(Packet::accepts<MESSAGE2>());
