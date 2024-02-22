@@ -1,9 +1,9 @@
 name: gcc
 on:
   push:
-    branches: [ master, development ]
+    branches: [ master, development, pull-request/* ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, pull-request/* ]
 
 jobs:
   build-gcc-cpp11-linux-stl:

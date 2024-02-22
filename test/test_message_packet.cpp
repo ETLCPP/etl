@@ -28,6 +28,10 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include "etl/platform.h"
+
+#if ETL_HAS_VIRTUAL_MESSAGES
+
 #include "etl/message_packet.h"
 
 #include <string>
@@ -450,3 +454,5 @@ namespace
     }
   };
 }
+
+#endif

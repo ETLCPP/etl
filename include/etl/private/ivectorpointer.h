@@ -354,6 +354,18 @@ namespace etl
     /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
     ///\param value The value to add.
     //*********************************************************************
+    reference emplace_back()
+    {
+      base_t::emplace_back(ETL_NULLPTR);
+
+      return back();
+    }
+
+    //*********************************************************************
+    /// Constructs a value at the end of the vector.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    ///\param value The value to add.
+    //*********************************************************************
     reference emplace_back(parameter_t value)
     {
       base_t::emplace_back(value);
@@ -379,6 +391,14 @@ namespace etl
     iterator insert(const_iterator position, parameter_t value)
     {
       return iterator(base_t::insert(base_t::iterator(position), value));
+    }
+
+    //*************************************************************************
+    /// Emplaces a value to the vector at the specified position.
+    //*************************************************************************
+    iterator emplace(const_iterator position)
+    {
+      return iterator(base_t::emplace(base_t::iterator(position), ETL_NULLPTR));
     }
 
     //*************************************************************************

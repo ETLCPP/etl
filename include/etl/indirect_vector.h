@@ -598,11 +598,13 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Does nothing.
     /// For compatibility with the STL vector API.
+    /// Does not increase the capacity, as this is fixed.
+    /// Asserts an etl::vector_out_of_bounds error if the request is for more than the capacity.
     //*********************************************************************
-    void reserve(size_t)
+    void reserve(size_t n)
     {
+      ETL_ASSERT(n <= capacity(), ETL_ERROR(vector_out_of_bounds));
     }
 
     //*********************************************************************
@@ -794,6 +796,18 @@ namespace etl
     /// If asserts or exceptions are enabled, emits vector_full if the indirect_vector is already full.
     ///\param value The value to add.
     //*********************************************************************
+    reference emplace_back()
+    {
+      T* p = storage.create<T>(T());
+      lookup.push_back(p);
+      return back();
+    }
+
+    //*********************************************************************
+    /// Constructs a value at the end of the indirect_vector.
+    /// If asserts or exceptions are enabled, emits vector_full if the indirect_vector is already full.
+    ///\param value The value to add.
+    //*********************************************************************
     template <typename T1>
     reference emplace_back(const T1& value1)
     {
@@ -891,7 +905,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the vector at the specified position.
     //*************************************************************************
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_VECTOR_FORCE_CPP03_IMPLEMENTATION)
     template <typename ... Args>
     iterator emplace(iterator position, Args && ... args)
     {
@@ -903,6 +917,16 @@ namespace etl
       return position;
     }
 #else
+    iterator emplace(iterator position)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(vector_full));
+
+      T* p = storage.create<T>(T());
+      position = iterator(lookup.insert(position.lookup_itr, p));
+
+      return position;
+    }
+
     template <typename T1>
     iterator emplace(iterator position, const T1& value1)
     {

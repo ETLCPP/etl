@@ -44,10 +44,15 @@ namespace etl
   public:
 
     mutex()
-      : id(0)
+      : id(NULL)
     {
       osMutexAttr_t attr = { "ETL", osMutexRecursive | osMutexPrioInherit | osMutexRobust, 0, 0 };
       id = osMutexNew(&attr);
+    }
+
+    ~mutex()
+    {
+      osMutexDelete(id);
     }
 
     void lock()

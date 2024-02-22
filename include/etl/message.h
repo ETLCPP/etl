@@ -62,40 +62,127 @@ namespace etl
     }
   };
 
+#if ETL_HAS_VIRTUAL_MESSAGES
   //***************************************************************************
-  // Message interface.
+  /// Message interface.
+  /// Virtual.
   //***************************************************************************
   class imessage
   {
   public:
 
-    virtual ~imessage()
+    //***********************************
+    virtual ~imessage() ETL_NOEXCEPT
     {
     }
 
+    //***********************************
     ETL_NODISCARD virtual etl::message_id_t get_message_id() const ETL_NOEXCEPT = 0;
   };
 
   //***************************************************************************
-  // Message type.
+  /// Message type.
+  /// Virtual.
   //***************************************************************************
-  template <etl::message_id_t ID_, typename TParent = etl::imessage>
-  class message : public TParent
+  template <etl::message_id_t ID_, typename TBase = etl::imessage>
+  class message : public TBase
   {
-    ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TParent>::value), "TParent is not derived from etl::imessage");
-
   public:
 
-    static ETL_CONSTANT etl::message_id_t ID = ID_;
-
-    ETL_NODISCARD etl::message_id_t get_message_id() const ETL_NOEXCEPT ETL_OVERRIDE
+    //***********************************
+    ETL_NODISCARD virtual etl::message_id_t get_message_id() const ETL_NOEXCEPT ETL_OVERRIDE
     {
       return ID;
     }
+
+    //***********************************
+    static ETL_CONSTANT etl::message_id_t ID = ID_;
   };
 
-  template <etl::message_id_t ID_, typename TParent>
-  ETL_CONSTANT etl::message_id_t message<ID_, TParent>::ID;
+#else
+
+  //***************************************************************************
+  /// Message interface.
+  /// Non-virtual.
+  //***************************************************************************
+  class imessage
+  {
+  public:
+
+    //***********************************
+    ETL_NODISCARD etl::message_id_t get_message_id() const ETL_NOEXCEPT
+    {
+      return id;
+    }
+
+  protected:
+
+    //***********************************
+    imessage(etl::message_id_t id_) ETL_NOEXCEPT
+      : id(id_)
+    {
+    }
+
+    //***********************************
+    imessage(const imessage& other) ETL_NOEXCEPT
+      : id(other.id)
+    {
+    }
+
+    //***********************************
+    imessage& operator =(const imessage& rhs)  ETL_NOEXCEPT
+    {
+      id = rhs.id;
+      return *this;
+    }
+
+    //***********************************
+    etl::message_id_t id;
+
+  private:
+
+    imessage() ETL_DELETE;
+  };
+
+  //***************************************************************************
+  /// Message type.
+  /// Non-virtual.
+  //***************************************************************************
+  template <etl::message_id_t ID_, typename TBase = etl::imessage>
+  class message : public TBase
+  {
+  public:
+
+    ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TBase>::value), "TBase is not derived from etl::imessage");
+
+    //***********************************
+    message() ETL_NOEXCEPT
+      : TBase(ID)
+    {
+    }
+
+    //***********************************
+    message(const message&) ETL_NOEXCEPT
+      : TBase(ID)
+    {
+    }
+
+    //***********************************
+    message& operator =(const message&) ETL_NOEXCEPT
+    {
+      return *this;
+    }
+
+    //***********************************
+    static ETL_CONSTANT etl::message_id_t ID = ID_;
+  };
+#endif
+
+  //***************************************************************************
+  /// The message's static ID.
+  //***************************************************************************
+  template <etl::message_id_t ID_, typename TBase>
+  ETL_CONSTANT etl::message_id_t etl::message<ID_, TBase>::ID;
 }
 
 #endif

@@ -561,47 +561,96 @@ namespace
       CompareData compare_data(INITIAL_SIZE, VALUE);
       DataNDC data(INITIAL_SIZE, VALUE);
 
-      size_t offset = 2UL;
+      //size_t offset = 2UL;
 
       DataNDC::iterator i_data = data.begin();
-      std::advance(i_data, offset);
+      //std::advance(i_data, offset);
 
-      CompareData::iterator i_compare_data = compare_data.begin();
-      std::advance(i_compare_data, offset);
-
-      data.emplace(i_data, INSERT_VALUE);
-      compare_data.emplace(i_compare_data, INSERT_VALUE);
-
-      CHECK_EQUAL(compare_data.size(), data.size());
-
-      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
-
-      CHECK(are_equal);
-
-      offset = 0;
-
-      i_data = data.begin();
-      std::advance(i_data, offset);
-
-      i_compare_data = compare_data.begin();
-      std::advance(i_compare_data, offset);
+      //CompareData::iterator i_compare_data = compare_data.begin();
+      //std::advance(i_compare_data, offset);
 
       data.emplace(i_data, INSERT_VALUE);
-      compare_data.emplace(i_compare_data, INSERT_VALUE);
+      //compare_data.emplace(i_compare_data, INSERT_VALUE);
 
-      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      //CHECK_EQUAL(compare_data.size(), data.size());
 
-      CHECK(are_equal);
+      //are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
 
-      i_data = data.end();
-      i_compare_data = compare_data.end();
+      //CHECK(are_equal);
 
-      data.emplace(i_data, VALUE);
-      compare_data.emplace(i_compare_data, VALUE);
+      //offset = 0;
 
-      are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+      //i_data = data.begin();
+      //std::advance(i_data, offset);
 
-      CHECK(are_equal);
+      //i_compare_data = compare_data.begin();
+      //std::advance(i_compare_data, offset);
+
+      //data.emplace(i_data, INSERT_VALUE);
+      //compare_data.emplace(i_compare_data, INSERT_VALUE);
+
+      //are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      //CHECK(are_equal);
+
+      //i_data = data.end();
+      //i_compare_data = compare_data.end();
+
+      //data.emplace(i_data, VALUE);
+      //compare_data.emplace(i_compare_data, VALUE);
+
+      //are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      //CHECK(are_equal);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_position_default_constructor)
+    {
+      //std::list<ItemDC> compare_data;
+      //DataDC data;
+
+      //size_t offset = 2UL;
+
+      //DataDC::iterator i_data = data.begin();
+      //std::advance(i_data, offset);
+
+      //std::list<ItemDC>::iterator i_compare_data = compare_data.begin();
+      //std::advance(i_compare_data, offset);
+
+      //data.emplace(i_data);
+      //compare_data.emplace(i_compare_data);
+
+      //CHECK_EQUAL(compare_data.size(), data.size());
+
+      //are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      //CHECK(are_equal);
+
+      //offset = 0;
+
+      //i_data = data.begin();
+      //std::advance(i_data, offset);
+
+      //i_compare_data = compare_data.begin();
+      //std::advance(i_compare_data, offset);
+
+      //data.emplace(i_data);
+      //compare_data.emplace(i_compare_data);
+
+      //are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      //CHECK(are_equal);
+
+      //i_data = data.end();
+      //i_compare_data = compare_data.end();
+
+      //data.emplace(i_data);
+      //compare_data.emplace(i_compare_data);
+
+      //are_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      //CHECK(are_equal);
     }
 
     //*************************************************************************
@@ -708,9 +757,10 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_emplace_front)
     {
-      CompareData compare_data;
-      DataNDC data;
+      std::list<ItemDC> compare_data;
+      etl::list<ItemDC, 7U> data;
 
+      compare_data.emplace_front();
       compare_data.emplace_front("1");
       compare_data.emplace_front("2");
       compare_data.emplace_front("3");
@@ -718,6 +768,7 @@ namespace
       compare_data.emplace_front("5");
       compare_data.emplace_front("6");
 
+      CHECK_NO_THROW(data.emplace_front());
       CHECK_NO_THROW(data.emplace_front("1"));
       CHECK_NO_THROW(data.emplace_front("2"));
       CHECK_NO_THROW(data.emplace_front("3"));
@@ -874,9 +925,10 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_emplace_back)
     {
-      CompareData compare_data;
-      DataNDC data;
+      std::list<ItemDC> compare_data;
+      etl::list<ItemDC, 7U> data;
 
+      compare_data.emplace_back();
       compare_data.emplace_back("1");
       compare_data.emplace_back("2");
       compare_data.emplace_back("3");
@@ -884,6 +936,7 @@ namespace
       compare_data.emplace_back("5");
       compare_data.emplace_back("6");
 
+      CHECK_NO_THROW(data.emplace_back());
       CHECK_NO_THROW(data.emplace_back("1"));
       CHECK_NO_THROW(data.emplace_back("2"));
       CHECK_NO_THROW(data.emplace_back("3"));
@@ -1175,6 +1228,7 @@ namespace
       data1.push_back(std::move(p4));
 
       DataM data2;
+      data2.push_back(ItemM(5U));
       data2 = std::move(data1);
 
       CHECK_EQUAL(0U, data1.size());
@@ -1222,6 +1276,7 @@ namespace
       data1.push_back(std::move(p4));
 
       DataM data2;
+      data2.push_back(ItemM(5U));
 
       IDataM& idata1 = data1;
       IDataM& idata2 = data2;

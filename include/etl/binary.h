@@ -390,16 +390,21 @@ namespace etl
   template <size_t POSITION>
   struct bit
   {
-    typedef typename etl::smallest_uint_for_bits<POSITION + 1>::type value_type;
+    typedef typename etl::smallest_uint_for_bits<POSITION + 1U>::type value_type;
     static ETL_CONSTANT value_type value = value_type(1) << POSITION;
   };
 
   template <size_t POSITION>
   ETL_CONSTANT typename bit<POSITION>::value_type bit<POSITION>::value;
 
+#if ETL_USING_CPP11
+  template <size_t POSITION>
+  using bit_t = typename etl::bit<POSITION>::value_type;
+#endif
+
 #if ETL_USING_CPP17
   template <size_t POSITION>
-  inline constexpr typename bit<POSITION>::value_type bit_v = bit<POSITION>::value;
+  inline constexpr bit_t<POSITION> bit_v = etl::bit<POSITION>::value;
 #endif
 
   //***************************************************************************

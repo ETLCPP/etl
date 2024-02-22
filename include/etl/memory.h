@@ -1399,7 +1399,11 @@ namespace etl
 
       pointer value = p;
       p = p_;
-      deleter(value);
+
+      if (value != ETL_NULLPTR)
+      {
+        deleter(value);
+      }
     }
 
     //*********************************
@@ -1605,7 +1609,11 @@ namespace etl
 
       pointer value = p;
       p = p_;
-      delete[] value;
+      
+      if (value != ETL_NULLPTR)
+      {
+        deleter(value);
+      }
     }
 
     //*********************************

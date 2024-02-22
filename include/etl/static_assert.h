@@ -30,9 +30,10 @@ SOFTWARE.
 #define ETL_ETL_STATIC_ASSERT_INCLUDED
 
 #include "platform.h"
+#include "macros.h"
 
 #if (ETL_USING_CPP11)
-  #define ETL_STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
+  #define ETL_STATIC_ASSERT2(Condition, Message) static_assert(Condition, Message)
 #else
   template <bool Condition>
   struct ETL_ETL_STATIC_ASSERT_FAILED;
@@ -42,11 +43,26 @@ SOFTWARE.
 
   #define ETL_SA1(a,b) a##b
   #define ETL_SA2(a,b) ETL_SA1(a,b)
-  #define ETL_STATIC_ASSERT(Condition, Message) \
+  #define ETL_STATIC_ASSERT2(Condition, Message) \
 		  enum \
 		  { \
-        ETL_SA2(dummy, __LINE__) = sizeof(ETL_ETL_STATIC_ASSERT_FAILED<(bool)(Condition)>) \
+        ETL_SA2(dummy, __LINE__) = sizeof(ETL_ETL_STATIC_ASSERT_FAILED<static_cast<bool>(Condition)>) \
 	    }
 #endif
+
+#if (ETL_USING_CPP17)
+  #define ETL_STATIC_ASSERT1(Condition) static_assert(Condition)
+#else
+  #define ETL_STATIC_ASSERT1(Condition) ETL_STATIC_ASSERT2((Condition), ETL_STRINGIFY(Condition))
+#endif
+
+/**
+ * Overload for static_assert() with 1 or 2 arguments.
+ *
+ * Calls either STATIC_ASSERT1() or STATIC_ASSERT2().
+ */
+#define ETL_STATIC_ASSERT(...)                                                 \
+  GET_MACRO_OVERLOAD2(__VA_ARGS__, ETL_STATIC_ASSERT2, ETL_STATIC_ASSERT1, "") \
+  (__VA_ARGS__)
 
 #endif

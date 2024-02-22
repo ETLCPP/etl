@@ -177,20 +177,16 @@ namespace etl
 
       link_type* p_last = &start;
 
-      int count = 0;
-
       // Add all of the elements.
       while (first != last)
       {
-        ++count;
-
-        link_type& value = *first++;
+         link_type& value = *first++;
 
         ETL_ASSERT_OR_RETURN(!value.is_linked(), ETL_ERROR(intrusive_forward_list_value_is_already_linked));
 
-        value.etl_next = p_last->etl_next;
+        value.etl_next   = p_last->etl_next;
         p_last->etl_next = &value;
-        p_last = &value;
+        p_last           = &value;
         ++current_size;
       }
     }
@@ -232,7 +228,7 @@ namespace etl
         
       while (next != &terminator)
       {
-        next = next->etl_next;    // Point to next link.
+        next     = next->etl_next;    // Point to next link.
         current->etl_next = previous; // Reverse the current link.
         previous = current;           // Previous points to current.
         current  = next;              // Current points to next.

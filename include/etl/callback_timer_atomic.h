@@ -220,7 +220,7 @@ namespace etl
         if (timer.id != etl::timer::id::NO_TIMER)
         {
           // Has a valid period.
-          if (timer.period != etl::timer::state::INACTIVE)
+          if (timer.period != etl::timer::state::Inactive)
           {
             ++process_semaphore;
             if (timer.is_active())
@@ -297,6 +297,18 @@ namespace etl
       return false;
     }
 
+    //*******************************************
+    /// Get the time to the next timer event.
+    //*******************************************
+    uint32_t time_to_next() const
+    {
+      ++process_semaphore;
+      uint32_t delta = active_list.front().delta;
+      --process_semaphore;
+
+      return delta;
+    }
+
   protected:
 
     //*************************************************************************
@@ -307,7 +319,7 @@ namespace etl
       timer_data()
         : callback()
         , period(0U)
-        , delta(etl::timer::state::INACTIVE)
+        , delta(etl::timer::state::Inactive)
         , id(etl::timer::id::NO_TIMER)
         , previous(etl::timer::id::NO_TIMER)
         , next(etl::timer::id::NO_TIMER)
@@ -324,7 +336,7 @@ namespace etl
                  bool                 repeating_)
         : callback(callback_)
         , period(period_)
-        , delta(etl::timer::state::INACTIVE)
+        , delta(etl::timer::state::Inactive)
         , id(id_)
         , previous(etl::timer::id::NO_TIMER)
         , next(etl::timer::id::NO_TIMER)
@@ -337,7 +349,7 @@ namespace etl
       //*******************************************
       bool is_active() const
       {
-        return delta != etl::timer::state::INACTIVE;
+        return delta != etl::timer::state::Inactive;
       }
 
       //*******************************************
@@ -345,7 +357,7 @@ namespace etl
       //*******************************************
       void set_inactive()
       {
-        delta = etl::timer::state::INACTIVE;
+        delta = etl::timer::state::Inactive;
       }
 
       callback_type        callback;
@@ -500,11 +512,17 @@ namespace etl
 
         timer.previous = etl::timer::id::NO_TIMER;
         timer.next = etl::timer::id::NO_TIMER;
-        timer.delta = etl::timer::state::INACTIVE;
+        timer.delta = etl::timer::state::Inactive;
       }
 
       //*******************************
       timer_data& front()
+      {
+        return ptimers[head];
+      }
+
+      //*******************************
+      const timer_data& front() const
       {
         return ptimers[head];
       }
@@ -563,7 +581,7 @@ namespace etl
     timer_list active_list;
 
     bool enabled;
-    TSemaphore process_semaphore;
+    mutable TSemaphore process_semaphore;
     uint_least8_t number_of_registered_timers;
 
   public:

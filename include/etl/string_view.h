@@ -268,7 +268,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR size_t size() const
     {
-      return (mend - mbegin);
+      return static_cast<size_t>(mend - mbegin);
     }
 
     //*************************************************************************

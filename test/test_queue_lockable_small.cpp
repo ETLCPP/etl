@@ -108,7 +108,7 @@ namespace
   };
 
   //***********************************
-  class QueueData : public etl::queue_lockable<Data, 4, etl::memory_model::MEMORY_MODEL_SMALL>
+  class QueueData : public etl::queue_lockable<Data, 5, etl::memory_model::MEMORY_MODEL_SMALL>
   {
   public:
 
@@ -552,15 +552,20 @@ namespace
     {
       QueueData queue;
 
+      queue.emplace();
       queue.emplace(1);
       queue.emplace(1, 2);
       queue.emplace(1, 2, 3);
       queue.emplace(1, 2, 3, 4);
 
-      CHECK_EQUAL(4U, queue.size());
+      CHECK(queue.called_lock);
+      CHECK(queue.called_unlock);
+      CHECK_EQUAL(5U, queue.size());
 
       Data popped;
 
+      queue.pop(popped);
+      CHECK(popped == Data(0, 0, 0, 0));
       queue.pop(popped);
       CHECK(popped == Data(1, 2, 3, 4));
       queue.pop(popped);

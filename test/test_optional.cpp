@@ -126,6 +126,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_emplace_zero_parameters)
+    {
+      etl::optional<std::uint8_t> result = 1;
+      result.emplace();
+
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL(int(0), int(result.value()));
+    }
+
+    //*************************************************************************
     TEST(test_moveable)
     {
 #include "etl/private/diagnostic_pessimizing_move_push.h"
@@ -503,6 +513,7 @@ namespace
       return result;
     }
 
+    //*************************************************************************
     TEST(test_bug_634)
     {
       etl::optional<std::uint8_t> result;
@@ -587,6 +598,37 @@ namespace
 
       CHECK_EQUAL(42, opt->value);
     }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_optional_cannot_be_constexpr_765_pod)
+    {
+      constexpr etl::optional<int> opt(42);
+
+      CHECK_EQUAL(42, *opt);
+    }
+#endif
+
+#if ETL_USING_CPP20 && ETL_USING_STL
+    //*************************************************************************
+    TEST(test_optional_cannot_be_constexpr_765_non_pod)
+    {
+      struct NonPod
+      {
+        constexpr NonPod(int v_)
+          : v(v_)
+        {
+        }
+
+        int v;
+      };
+
+      constexpr NonPod data(42);
+      constexpr etl::optional<NonPod> opt = data;
+
+      CHECK_EQUAL(42, (*opt).v);
+    }
+#endif
   };
 }
 

@@ -31,6 +31,7 @@ SOFTWARE.
 #include "etl/byte_stream.h"
 #include "etl/optional.h"
 #include "etl/span.h"
+#include "etl/array.h"
 
 #include <array>
 #include <numeric>

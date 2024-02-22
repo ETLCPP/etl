@@ -237,7 +237,7 @@ namespace etl
 
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(value);
-      ETL_INCREMENT_DEBUG_COUNT
+      ETL_INCREMENT_DEBUG_COUNT;
         result = refset_t::insert_at(i_element, *pvalue);
 
       return result;
@@ -259,7 +259,7 @@ namespace etl
 
       value_type* pvalue = storage.allocate<value_type>();
       ::new (pvalue) value_type(etl::move(value));
-      ETL_INCREMENT_DEBUG_COUNT
+      ETL_INCREMENT_DEBUG_COUNT;
         result = refset_t::insert_at(i_element, *pvalue);
 
       return result;
@@ -319,7 +319,7 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the set.
     //*************************************************************************
-#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_FLAT_MULTISET_FORCE_CPP03_IMPLEMENTATION)
     template <typename ... Args>
     ETL_OR_STD::pair<iterator, bool> emplace(Args && ... args)
     {
@@ -331,10 +331,27 @@ namespace etl
 
       iterator i_element = upper_bound(*pvalue);
 
-      ETL_INCREMENT_DEBUG_COUNT
-        return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
+      ETL_INCREMENT_DEBUG_COUNT;
+      return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
     }
 #else
+    //*************************************************************************
+    /// Emplaces a value to the set.
+    //*************************************************************************
+    ETL_OR_STD::pair<iterator, bool> emplace()
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(flat_multiset_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new (pvalue) value_type();
+
+      iterator i_element = upper_bound(*pvalue);
+
+      ETL_INCREMENT_DEBUG_COUNT;
+      return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
+    }
+
     //*************************************************************************
     /// Emplaces a value to the set.
     //*************************************************************************
@@ -349,8 +366,8 @@ namespace etl
 
       iterator i_element = upper_bound(*pvalue);
 
-      ETL_INCREMENT_DEBUG_COUNT
-        return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
+      ETL_INCREMENT_DEBUG_COUNT;
+      return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
     }
 
     //*************************************************************************
@@ -367,8 +384,8 @@ namespace etl
 
       iterator i_element = upper_bound(*pvalue);
 
-      ETL_INCREMENT_DEBUG_COUNT
-        return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
+      ETL_INCREMENT_DEBUG_COUNT;
+      return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
     }
 
     //*************************************************************************
@@ -385,8 +402,8 @@ namespace etl
 
       iterator i_element = upper_bound(*pvalue);
 
-      ETL_INCREMENT_DEBUG_COUNT
-        return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
+      ETL_INCREMENT_DEBUG_COUNT;
+      return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
     }
 
     //*************************************************************************
@@ -403,8 +420,8 @@ namespace etl
 
       iterator i_element = upper_bound(*pvalue);
 
-      ETL_INCREMENT_DEBUG_COUNT
-        return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
+      ETL_INCREMENT_DEBUG_COUNT;
+      return ETL_OR_STD::pair<iterator, bool>(refset_t::insert_at(i_element, *pvalue));
     }
 #endif
 
@@ -457,7 +474,7 @@ namespace etl
     {
       etl::destroy_at(etl::addressof(*i_element));
       storage.release(etl::addressof(*i_element));
-      ETL_DECREMENT_DEBUG_COUNT
+      ETL_DECREMENT_DEBUG_COUNT;
       return refset_t::erase(i_element);
     }
 
@@ -469,7 +486,7 @@ namespace etl
     {
       etl::destroy_at(etl::addressof(*i_element));
       storage.release(etl::addressof(*i_element));
-      ETL_DECREMENT_DEBUG_COUNT
+      ETL_DECREMENT_DEBUG_COUNT;
       return refset_t::erase(i_element);
     }
 
@@ -489,7 +506,7 @@ namespace etl
         etl::destroy_at(etl::addressof(*itr));
         storage.release(etl::addressof(*itr));
         ++itr;
-        ETL_DECREMENT_DEBUG_COUNT
+        ETL_DECREMENT_DEBUG_COUNT;
       }
 
       return refset_t::erase(first, last);
@@ -516,7 +533,7 @@ namespace etl
         }
       }
 
-      ETL_RESET_DEBUG_COUNT
+      ETL_RESET_DEBUG_COUNT;
         refset_t::clear();
     }
 
@@ -835,7 +852,7 @@ namespace etl
     TKeyCompare compare;
 
     /// Internal debugging.
-    ETL_DECLARE_DEBUG_COUNT
+    ETL_DECLARE_DEBUG_COUNT;
 
       //*************************************************************************
       /// Destructor.

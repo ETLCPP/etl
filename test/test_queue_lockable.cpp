@@ -552,10 +552,10 @@ namespace
     {
       QueueData queue;
 
+      queue.emplace();
       queue.emplace(1);
       queue.emplace(1, 2);
       queue.emplace(1, 2, 3);
-      queue.emplace(1, 2, 3, 4);
 
       CHECK(queue.called_lock);
       CHECK(queue.called_unlock);
@@ -564,7 +564,7 @@ namespace
       Data popped;
 
       queue.pop(popped);
-      CHECK(popped == Data(1, 2, 3, 4));
+      CHECK(popped == Data(0, 0, 0, 0));
       queue.pop(popped);
       CHECK(popped == Data(1, 2, 3, 4));
       queue.pop(popped);

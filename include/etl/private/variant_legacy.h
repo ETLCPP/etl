@@ -460,12 +460,12 @@ namespace etl
       /// Default constructor.
       /// Sets the state of the instance to containing no valid data.
       //***************************************************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "diagnostic_uninitialized_push.h"
       variant()
         : type_id(UNSUPPORTED_TYPE_ID)
       {
       }
-#include "etl/private/diagnostic_pop.h"
+#include "diagnostic_pop.h"
 
       //***************************************************************************
       /// Constructor that catches any types that are not supported.
@@ -484,7 +484,7 @@ namespace etl
       /// Copy constructor.
       ///\param other The other variant object to copy.
       //***************************************************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "diagnostic_uninitialized_push.h"
       variant(const variant& other)
       {
         switch (other.type_id)
@@ -502,7 +502,7 @@ namespace etl
 
         type_id = other.type_id;
       }
-#include "etl/private/diagnostic_pop.h"
+#include "diagnostic_pop.h"
 
 #if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT && !defined(ETL_VARIANT_FORCE_CPP03_IMPLEMENTATION)
       //*************************************************************************
@@ -520,6 +520,21 @@ namespace etl
         return *static_cast<T*>(data);
       }
 #else
+      //***************************************************************************
+      /// Emplace with one constructor parameter.
+      //***************************************************************************
+      template <typename T>
+      T& emplace()
+      {
+        ETL_STATIC_ASSERT(Type_Is_Supported<T>::value, "Unsupported type");
+
+        destruct_current();
+        ::new (static_cast<T*>(data)) T();
+        type_id = Type_Id_Lookup<T>::type_id;
+
+        return *static_cast<T*>(data);
+      }
+
       //***************************************************************************
       /// Emplace with one constructor parameter.
       //***************************************************************************
@@ -854,8 +869,7 @@ namespace etl
       }
 
     private:
-
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "diagnostic_uninitialized_push.h"
       //***************************************************************************
       /// Destruct the current occupant of the variant.
       //***************************************************************************
@@ -876,7 +890,7 @@ namespace etl
 
         type_id = UNSUPPORTED_TYPE_ID;
       }
-#include "etl/private/diagnostic_pop.h"
+#include "diagnostic_pop.h"
 
       //***************************************************************************
       /// The internal storage.
@@ -995,4 +1009,3 @@ namespace etl
   }
 #endif
 }
-

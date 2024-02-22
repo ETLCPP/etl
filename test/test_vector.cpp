@@ -216,6 +216,7 @@ namespace
     {
       Data data(initial_data.begin(), initial_data.end());
       Data other_data;
+      other_data.push_back(1);
 
       other_data = std::move(data);
 
@@ -417,6 +418,15 @@ namespace
       }
 
       CHECK_EQUAL(data.size(), NEW_SIZE);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_reserve)
+    {
+      Data data;
+
+      CHECK_NO_THROW(data.reserve(data.max_size()));
+      CHECK_THROW(data.reserve(data.max_size() + 1), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************
@@ -793,6 +803,94 @@ namespace
 
         CHECK(is_equal);
       }
+    }
+
+    //*************************************************************************
+    TEST(test_emplace_default)
+    {
+      const int Initial = 1;
+      const int Default = 2;
+
+      struct S
+      {
+        S()
+          : value(Default)
+        {
+        }
+
+        S(int v)
+          : value(v)
+        {
+        }
+
+        bool operator ==(const S& rhs) const
+        {
+          return value == rhs.value;
+        }
+
+        int value;
+      };
+
+      // First fill with Initial values.
+      etl::vector<S, SIZE> data;
+      data.resize(SIZE, S(Initial));
+      data.clear();
+
+      // Then emplace Default values.
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        data.emplace(data.end());
+      }
+
+      // Compare with an array of default values.
+      std::array<S, SIZE> compare_data;
+      compare_data.fill(S());
+
+      CHECK_TRUE(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_emplace_back_default)
+    {
+      const int Initial = 1;
+      const int Default = 2;
+
+      struct S
+      {
+        S()
+          : value(Default)
+        {
+        }
+
+        S(int v)
+          : value(v)
+        {
+        }
+
+        bool operator ==(const S& rhs) const
+        {
+          return value == rhs.value;
+        }
+
+        int value;
+      };
+
+      // First fill with Initial values.
+      etl::vector<S, SIZE> data;
+      data.resize(SIZE, S(Initial));
+      data.clear();
+
+      // Then emplace Default values.
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        data.emplace_back();
+      }
+
+      // Compare with an array of default values.
+      std::array<S, SIZE> compare_data;
+      compare_data.fill(S());
+
+      CHECK_TRUE(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
     }
 
     //*************************************************************************
@@ -1338,12 +1436,14 @@ namespace
     }
 
     //*************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     TEST(test_three_parameter_insert_same_type_not_iterator)
     {
       // No compilation error.
       etl::vector<int, 10> v;
       v.insert(v.end(), 5, 5);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     TEST(remove)

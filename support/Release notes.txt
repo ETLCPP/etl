@@ -1,6 +1,56 @@
 ===============================================================================
+20.38.6
+#777 Allow Building Tests as Submodule and GCC < 11
+Refactored etl::itr_swap for maximum efficiency.
+
+===============================================================================
+20.38.5
+#776 Add missing semicolons
+
+===============================================================================
+20.38.4
+#773 Return raw pointer for etl::multi_span::operator->()
+
+===============================================================================
+20.38.3
+#767 etl::pool silently produces unaligned allocations for types with stricter alignment requirements than built in types 
+
+===============================================================================
+20.38.2
+#749 Code change causes warning with armcc compiler
+#753 IAR's overload resolution struggles with etl::span::span(etl::array&)
+#754 ambiguous etl::bit_stream_reader::bit_stream_reader() for some etl::span
+#755 warning about constexpr in array.h
+#756 Parameter pack compilation error
+#758 Move assignment not working for non-empty containers
+#761 Make "private" includes relative
+#765 etl::optional cannot be constexpr
+#766 etl::unique_ptr::reset() can call deleter with nullptr argument 
+Re-enabled bit_stream_writer tests
+
+===============================================================================
+20.38.1
+Deleted
+
+===============================================================================
+20.38.0
+#696 fsm/hfsm self-transitions
+#702 etl::message not trivially_copyable
+#744 Feature request: Get time when next timer will expire etl::callback_timer
+#745 Assertion triggered in hash.h when compiling for MSP430
+#746 Missing etl::legacy::variant overload of emplace with 0 Arguments
+#748 armcc error on vector::insert
+Fixed unexpected pool release behavior when the pool is empty
+Added C++03 compatible etl::move and etl::move_backward
+Allow C++03 delegate in etl::callback_timer
+Change to require semicolons after debug count macros
+Re-enabled tests for etl::string_ext
+Removed redundant #includes
+Added MutexMessageRouter example
+
+===============================================================================
 20.37.3
-#737 Etl::equal specialisation for etl::span is deduced wrongly when using STL and CPP20. Added C++20 four iterator std::equal variants.
+#737 etl::equal specialisation for etl::span is deduced wrongly when using STL and CPP20. Added C++20 four iterator std::equal variants.
 #738 etl::expected assignment operator won't work when TValue and TError are the same type. Changed assignment from etl::unexpected to use variant::emplace instead of direct assignment.
 #739 Could not compile ETL with gcc 9.4.0 (C++11). Added compatibility for GCC-9 + C++11. Added missing return reference from emplace member function int variant_variadic.h
 Removed many -02 warnings for GCC-13

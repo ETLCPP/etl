@@ -170,7 +170,7 @@ namespace etl
     size_type buffer_size;
     size_type in;            ///< Index to the next write.
     size_type out;           ///< Index to the next read.
-    ETL_DECLARE_DEBUG_COUNT  ///< Internal debugging.
+    ETL_DECLARE_DEBUG_COUNT;  ///< Internal debugging.
   };
 
   //***************************************************************************
@@ -933,7 +933,7 @@ namespace etl
       ETL_ASSERT(!empty(), ETL_ERROR(circular_buffer_empty));
       pbuffer[out].~T();
       increment_out();
-      ETL_DECREMENT_DEBUG_COUNT
+      ETL_DECREMENT_DEBUG_COUNT;
     }
 
     //*************************************************************************
@@ -956,7 +956,7 @@ namespace etl
       {
         in    = 0U;
         out   = 0U;
-        ETL_RESET_DEBUG_COUNT
+        ETL_RESET_DEBUG_COUNT;
       }
       else
       {

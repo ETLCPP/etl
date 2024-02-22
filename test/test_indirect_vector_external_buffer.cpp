@@ -364,6 +364,7 @@ namespace
       std::unique_ptr<uint32_t> p2(new uint32_t(2U));
       std::unique_ptr<uint32_t> p3(new uint32_t(3U));
       std::unique_ptr<uint32_t> p4(new uint32_t(4U));
+      std::unique_ptr<uint32_t> p5(new uint32_t(5U));
 
       Data data1(lookup1, pool1);
       data1.push_back(std::move(p1));
@@ -377,6 +378,7 @@ namespace
       CHECK(!bool(p4));
 
       Data data2(lookup2, pool2);
+      data2.push_back(std::move(p5));
       data2 = std::move(data1);
 
       CHECK_EQUAL(0U, data1.size());
@@ -428,6 +430,7 @@ namespace
       std::unique_ptr<uint32_t> p2(new uint32_t(2U));
       std::unique_ptr<uint32_t> p3(new uint32_t(3U));
       std::unique_ptr<uint32_t> p4(new uint32_t(4U));
+      std::unique_ptr<uint32_t> p5(new uint32_t(5U));
 
       Data data1(lookup1, pool1);
       data1.push_back(std::move(p1));
@@ -436,6 +439,7 @@ namespace
       data1.push_back(std::move(p4));
 
       Data data2(lookup2, pool2);
+      data2.push_back(std::move(p5));
 
       IData& idata1 = data1;
       IData& idata2 = data2;
@@ -590,6 +594,17 @@ namespace
       data.resize(NEW_SIZE, INITIAL_VALUE);
 
       CHECK_EQUAL(data.size(), NEW_SIZE);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_reserve)
+    {
+      LookupNDC lookup;
+      PoolNDC   pool;
+      DataNDC   data(lookup, pool);
+
+      CHECK_NO_THROW(data.reserve(data.max_size()));
+      CHECK_THROW(data.reserve(data.max_size() + 1), etl::vector_out_of_bounds);
     }
 
     //*************************************************************************

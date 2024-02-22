@@ -46,6 +46,7 @@ target_sources(t11 PRIVATE etl_profile.h
         ../array_view.h.t.cpp
         ../array_wrapper.h.t.cpp
         ../atomic.h.t.cpp
+        ../base64.h.t.cpp
         ../basic_format_spec.h.t.cpp
         ../basic_string.h.t.cpp
         ../basic_string_stream.h.t.cpp

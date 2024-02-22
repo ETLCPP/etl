@@ -64,7 +64,7 @@ namespace
 
   Compare_Data compare_data = { { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 9, 10, 11 } } };
 
-  SUITE(test_vector)
+  SUITE(test_multi_vector_external_buffer)
   {
     //*************************************************************************
     TEST(test_constructor)

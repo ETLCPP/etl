@@ -264,7 +264,7 @@ namespace etl
   /// Alternative strlen for all character types.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR size_t strlen(const T* t)
+  ETL_CONSTEXPR14 size_t strlen(const T* t)
   {
     return etl::char_traits<T>::length(t);
   }
@@ -273,9 +273,96 @@ namespace etl
   /// Alternative strlen for all character types, with maximum length.
   //***************************************************************************
   template <typename T>
-  size_t strlen(const T* t, size_t max_length)
+  ETL_CONSTEXPR14 size_t strlen(const T* t, size_t max_length)
   {
     return etl::char_traits<T>::length(t, max_length);
+  }
+
+  //***************************************************************************
+  /// Alternative strcmp for all character types.
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14 int strcmp(const T* t1, const T* t2)
+  {
+    while ((*t1 != 0) || (*t2 != 0))
+    {
+      if (*t1 > *t2)
+      {
+        return 1;
+      }
+      
+      if (*t1 < *t2)
+      {
+        return -1;
+      }
+
+      ++t1;
+      ++t2;
+    }
+
+    return 0;
+  }
+
+  //***************************************************************************
+  /// Alternative strncmp for all character types.
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14 int strncmp(const T* t1, const T* t2, size_t n)
+  {
+    while (((*t1 != 0) || (*t2 != 0)) && (n != 0))
+    {
+      if (*t1 < *t2)
+      {
+        return -1;
+      }
+      else if (*t1 > *t2)
+      {
+        return 1;
+      }
+
+      ++t1;
+      ++t2;
+      --n;
+    } 
+
+    return 0;
+  }
+
+  //***************************************************************************
+  /// Alternative strcpy for all character types.
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14 T* strcpy(T* dst, const T* src)
+  {
+    T* result = dst;
+
+    while (*src != 0)
+    {
+      *dst++ = *src++;
+    }
+
+    *dst = 0;
+
+    return result;
+  }
+
+  //***************************************************************************
+  /// Alternative strncpy for all character types.
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14 T* strncpy(T* dst, const T* src, size_t n)
+  {
+    T* result = dst;
+
+    while ((*src != 0) && (n != 0))
+    {
+      *dst++ = *src++;
+      --n;
+    }
+
+    *dst = 0;
+
+    return result;
   }
 }
 

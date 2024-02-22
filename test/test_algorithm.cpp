@@ -689,10 +689,21 @@ namespace
     }
 
     //*************************************************************************
-    TEST(iter_swap)
+    TEST(iter_swap_same_types)
     {
       int a = 1;
       int b = 2;
+
+      etl::iter_swap(&a, &b);
+      CHECK_EQUAL(2, a);
+      CHECK_EQUAL(1, b);
+    }
+
+    //*************************************************************************
+    TEST(iter_swap_differnt_types)
+    {
+      int  a = 1;
+      long b = 2;
 
       etl::iter_swap(&a, &b);
       CHECK_EQUAL(2, a);

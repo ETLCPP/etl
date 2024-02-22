@@ -421,7 +421,7 @@ namespace etl
     //*************************************************************************
     /// Returns <b>true</b> if the array size is zero.
     //*************************************************************************
-    bool empty() const
+    ETL_CONSTEXPR bool empty() const
     {
       return (mbegin == mend);
     }
@@ -429,15 +429,15 @@ namespace etl
     //*************************************************************************
     /// Returns the size of the array.
     //*************************************************************************
-    size_t size() const
+    ETL_CONSTEXPR size_t size() const
     {
-      return (mend - mbegin);
+      return static_cast<size_t>(mend - mbegin);
     }
 
     //*************************************************************************
     /// Returns the maximum possible size of the array.
     //*************************************************************************
-    size_t max_size() const
+    ETL_CONSTEXPR size_t max_size() const
     {
       return size();
     }

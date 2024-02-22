@@ -143,5 +143,17 @@ namespace
       CHECK_FALSE(etl::is_aligned<alignof(uint32_t)>(p));
       CHECK_FALSE(etl::is_aligned<uint32_t>(p));
     }
+
+    //*************************************************************************
+    TEST(test_type_with_alignment)
+    {
+      CHECK_EQUAL(1,  alignof(etl::type_with_alignment_t<1>));
+      CHECK_EQUAL(2,  alignof(etl::type_with_alignment_t<2>));
+      CHECK_EQUAL(4,  alignof(etl::type_with_alignment_t<4>));
+      CHECK_EQUAL(8,  alignof(etl::type_with_alignment_t<8>));
+      CHECK_EQUAL(16, alignof(etl::type_with_alignment_t<16>));
+      CHECK_EQUAL(32, alignof(etl::type_with_alignment_t<32>));
+      CHECK_EQUAL(64, alignof(etl::type_with_alignment_t<64>));
+    }
   };
 }

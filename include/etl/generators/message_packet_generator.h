@@ -63,6 +63,10 @@ cog.outl("//********************************************************************
 #ifndef ETL_MESSAGE_PACKET_INCLUDED
 #define ETL_MESSAGE_PACKET_INCLUDED
 
+#include "platform.h"
+
+#if ETL_HAS_VIRTUAL_MESSAGES
+
 #include "message.h"
 #include "error_handler.h"
 #include "static_assert.h"
@@ -96,17 +100,17 @@ namespace etl
   public:
 
     //********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "private/diagnostic_uninitialized_push.h"
     message_packet()
       : valid(false)
     {
     }
-#include "etl/private/diagnostic_pop.h"
+#include "private/diagnostic_pop.h"
 
     //********************************************
-    /// 
+    ///
     //********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "private/diagnostic_uninitialized_push.h"
     template <typename T>
     explicit message_packet(T&& msg)
       : valid(true)
@@ -138,7 +142,7 @@ namespace etl
         ETL_STATIC_ASSERT(IsInMessageList<T>, "Message not in packet type list");
       }
     }
-#include "etl/private/diagnostic_pop.h"
+#include "private/diagnostic_pop.h"
 
     //**********************************************
     void copy(const message_packet& other)
@@ -163,7 +167,7 @@ namespace etl
     }
 
     //**********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "private/diagnostic_uninitialized_push.h"
     message_packet& operator =(const message_packet& rhs)
     {
       delete_current_message();
@@ -175,10 +179,10 @@ namespace etl
 
       return *this;
     }
-#include "etl/private/diagnostic_pop.h"
+#include "private/diagnostic_pop.h"
 
     //**********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "private/diagnostic_uninitialized_push.h"
     message_packet& operator =(message_packet&& rhs)
     {
       delete_current_message();
@@ -190,7 +194,7 @@ namespace etl
 
       return *this;
     }
-#include "etl/private/diagnostic_pop.h"
+#include "private/diagnostic_pop.h"
 
     //********************************************
     ~message_packet()
@@ -267,7 +271,7 @@ namespace etl
     }
 
     //********************************************
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "private/diagnostic_uninitialized_push.h"
     void delete_current_message()
     {
       if (valid)
@@ -277,7 +281,7 @@ namespace etl
         pmsg->~imessage();
       }
     }
-#include "etl/private/diagnostic_pop.h"
+#include "private/diagnostic_pop.h"
 
     //********************************************
     void add_new_message(const etl::imessage& msg)
@@ -291,7 +295,7 @@ namespace etl
       (add_new_message_type<TMessageTypes>(etl::move(msg)) || ...);
     }
 
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "private/diagnostic_uninitialized_push.h"
     //********************************************
     /// Only enabled for types that are in the typelist.
     //********************************************
@@ -302,9 +306,9 @@ namespace etl
       void* p = data;
       new (p) etl::remove_reference_t<TMessage>((etl::forward<TMessage>(msg)));
     }
-#include "etl/private/diagnostic_pop.h"
+#include "private/diagnostic_pop.h"
 
-#include "etl/private/diagnostic_uninitialized_push.h"
+#include "private/diagnostic_uninitialized_push.h"
     //********************************************
     template <typename TType>
     bool add_new_message_type(const etl::imessage& msg)
@@ -320,7 +324,7 @@ namespace etl
         return false;
       }
     }
-#include "etl/private/diagnostic_pop.h"
+#include "private/diagnostic_pop.h"
 
     //********************************************
     template <typename TType>
@@ -394,9 +398,9 @@ namespace etl
         cog.out("                                 etl::is_one_of<typename etl::remove_cvref<TMessage>::type,")
         for i in range(1, n):
             cog.out("T%d, " % i)
-        cog.outl("T%s>::value);" % n)      
+        cog.outl("T%s>::value);" % n)
         cog.outl("")
-        cog.outl("    ETL_STATIC_ASSERT(Enabled, \"Message not in packet type list\");")   
+        cog.outl("    ETL_STATIC_ASSERT(Enabled, \"Message not in packet type list\");")
 
     ################################################
     def generate_static_assert_cpp11(n):
@@ -432,15 +436,15 @@ namespace etl
     cog.outl("public:")
     cog.outl("")
     cog.outl("  //********************************************")
-    cog.outl("#include \"etl/private/diagnostic_uninitialized_push.h\"")
+    cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
     cog.outl("  message_packet()")
     cog.outl("    : valid(false)")
     cog.outl("  {")
     cog.outl("  }")
-    cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+    cog.outl("#include \"private/diagnostic_pop.h\"")
     cog.outl("")
     cog.outl("  //********************************************")
-    cog.outl("#include \"etl/private/diagnostic_uninitialized_push.h\"")
+    cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
     cog.outl("  explicit message_packet(const etl::imessage& msg)")
     cog.outl("  {")
     cog.outl("    if (accepts(msg))")
@@ -455,11 +459,11 @@ namespace etl
     cog.outl("")
     cog.outl("    ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));")
     cog.outl("  }")
-    cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+    cog.outl("#include \"private/diagnostic_pop.h\"")
     cog.outl("")
     cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
     cog.outl("  //********************************************")
-    cog.outl("#include \"etl/private/diagnostic_uninitialized_push.h\"")
+    cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
     cog.outl("  explicit message_packet(etl::imessage&& msg)")
     cog.outl("  {")
     cog.outl("    if (accepts(msg))")
@@ -474,12 +478,12 @@ namespace etl
     cog.outl("")
     cog.outl("    ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));")
     cog.outl("  }")
-    cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+    cog.outl("#include \"private/diagnostic_pop.h\"")
     cog.outl("#endif")
     cog.outl("")
     cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)")
     cog.outl("  //********************************************")
-    cog.outl("#include \"etl/private/diagnostic_uninitialized_push.h\"")
+    cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
     cog.out("  template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<")
     for n in range(1, int(Handlers)):
         cog.out("T%s, " % n)
@@ -494,10 +498,10 @@ namespace etl
     cog.outl("  {")
     generate_static_assert_cpp11(int(Handlers))
     cog.outl("  }")
-    cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+    cog.outl("#include \"private/diagnostic_pop.h\"")
     cog.outl("#else")
     cog.outl("  //********************************************")
-    cog.outl("#include \"etl/private/diagnostic_uninitialized_push.h\"")
+    cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
     cog.outl("  template <typename TMessage>")
     cog.out("  explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<")
     for n in range(1, int(Handlers)):
@@ -512,11 +516,11 @@ namespace etl
     cog.outl("  {")
     generate_static_assert_cpp03(int(Handlers))
     cog.outl("  }")
-    cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+    cog.outl("#include \"private/diagnostic_pop.h\"")
     cog.outl("#endif")
     cog.outl("")
     cog.outl("  //**********************************************")
-    cog.outl("#include \"etl/private/diagnostic_uninitialized_push.h\"")
+    cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
     cog.outl("  message_packet(const message_packet& other)")
     cog.outl("    : valid(other.is_valid())")
     cog.outl("  {")
@@ -525,11 +529,11 @@ namespace etl
     cog.outl("      add_new_message(other.get());")
     cog.outl("    }")
     cog.outl("  }")
-    cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+    cog.outl("#include \"private/diagnostic_pop.h\"")
     cog.outl("")
     cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
     cog.outl("  //**********************************************")
-    cog.outl("#include \"etl/private/diagnostic_uninitialized_push.h\"")
+    cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
     cog.outl("  message_packet(message_packet&& other)")
     cog.outl("    : valid(other.is_valid())")
     cog.outl("  {")
@@ -538,11 +542,11 @@ namespace etl
     cog.outl("      add_new_message(etl::move(other.get()));")
     cog.outl("    }")
     cog.outl("  }")
-    cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+    cog.outl("#include \"private/diagnostic_pop.h\"")
     cog.outl("#endif")
     cog.outl("")
     cog.outl("  //**********************************************")
-    cog.outl("#include \"etl/private/diagnostic_uninitialized_push.h\"")
+    cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
     cog.outl("  message_packet& operator =(const message_packet& rhs)")
     cog.outl("  {")
     cog.outl("    delete_current_message();")
@@ -554,11 +558,11 @@ namespace etl
     cog.outl("")
     cog.outl("    return *this;")
     cog.outl("  }")
-    cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+    cog.outl("#include \"private/diagnostic_pop.h\"")
     cog.outl("")
     cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
     cog.outl("  //**********************************************")
-    cog.outl("#include \"etl/private/diagnostic_uninitialized_push.h\"")
+    cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
     cog.outl("  message_packet& operator =(message_packet&& rhs)")
     cog.outl("  {")
     cog.outl("    delete_current_message();")
@@ -570,7 +574,7 @@ namespace etl
     cog.outl("")
     cog.outl("    return *this;")
     cog.outl("  }")
-    cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+    cog.outl("#include \"private/diagnostic_pop.h\"")
     cog.outl("#endif")
     cog.outl("")
     cog.outl("  //********************************************")
@@ -624,7 +628,7 @@ namespace etl
     cog.outl("  {")
     generate_accepts_return_compile_time_TMessage(int(Handlers))
     cog.outl("  }")
-    cog.outl("")  
+    cog.outl("")
     cog.outl("  enum")
     cog.outl("  {")
     cog.out("    SIZE      = etl::largest<")
@@ -640,7 +644,7 @@ namespace etl
     cog.outl("private:")
     cog.outl("")
     cog.outl("  //********************************************")
-    cog.outl("  #include \"etl/private/diagnostic_uninitialized_push.h\"")
+    cog.outl("  #include \"private/diagnostic_uninitialized_push.h\"")
     cog.outl("  void delete_current_message()")
     cog.outl("  {")
     cog.outl("    if (valid)")
@@ -650,7 +654,7 @@ namespace etl
     cog.outl("      pmsg->~imessage();")
     cog.outl("    }")
     cog.outl("  }")
-    cog.outl("  #include \"etl/private/diagnostic_pop.h\"")
+    cog.outl("  #include \"private/diagnostic_pop.h\"")
     cog.outl("")
     cog.outl("  //********************************************")
     cog.outl("  void add_new_message(const etl::imessage& msg)")
@@ -720,15 +724,15 @@ namespace etl
         cog.outl("public:")
         cog.outl("")
         cog.outl("  //********************************************")
-        cog.outl("#include \"etl/private/diagnostic_uninitialized_push.h\"")
+        cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
         cog.outl("  message_packet()")
         cog.outl("    : valid(false)")
         cog.outl("  {")
         cog.outl("  }")
-        cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+        cog.outl("#include \"private/diagnostic_pop.h\"")
         cog.outl("")
         cog.outl("  //********************************************")
-        cog.outl("#include \"etl/private/diagnostic_uninitialized_push.h\"")
+        cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
         cog.outl("  explicit message_packet(const etl::imessage& msg)")
         cog.outl("  {")
         cog.outl("    if (accepts(msg))")
@@ -743,11 +747,11 @@ namespace etl
         cog.outl("")
         cog.outl("    ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));")
         cog.outl("  }")
-        cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+        cog.outl("#include \"private/diagnostic_pop.h\"")
         cog.outl("")
         cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
         cog.outl("  //********************************************")
-        cog.outl("#include \"etl/private/diagnostic_uninitialized_push.h\"")
+        cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
         cog.outl("  explicit message_packet(etl::imessage&& msg)")
         cog.outl("  {")
         cog.outl("    if (accepts(msg))")
@@ -762,12 +766,12 @@ namespace etl
         cog.outl("")
         cog.outl("    ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));")
         cog.outl("  }")
-        cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+        cog.outl("#include \"private/diagnostic_pop.h\"")
         cog.outl("#endif")
         cog.outl("")
         cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION) && !defined(ETL_COMPILER_GREEN_HILLS)")
         cog.outl("  //********************************************")
-        cog.outl("#include \"etl/private/diagnostic_uninitialized_push.h\"")
+        cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
         cog.out("  template <typename TMessage, typename = typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<")
         for t in range(1, n):
             cog.out("T%s, " % t)
@@ -782,10 +786,10 @@ namespace etl
         cog.outl("  {")
         generate_static_assert_cpp11(n)
         cog.outl("  }")
-        cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+        cog.outl("#include \"private/diagnostic_pop.h\"")
         cog.outl("#else")
         cog.outl("  //********************************************")
-        cog.outl("#include \"etl/private/diagnostic_uninitialized_push.h\"")
+        cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
         cog.outl("  template <typename TMessage>")
         cog.out("  explicit message_packet(const TMessage& /*msg*/, typename etl::enable_if<!etl::is_same<typename etl::remove_cvref<TMessage>::type, etl::message_packet<")
         for t in range(1, n):
@@ -800,11 +804,11 @@ namespace etl
         cog.outl("  {")
         generate_static_assert_cpp03(n)
         cog.outl("  }")
-        cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+        cog.outl("#include \"private/diagnostic_pop.h\"")
         cog.outl("#endif")
         cog.outl("")
         cog.outl("  //**********************************************")
-        cog.outl("#include \"etl/private/diagnostic_uninitialized_push.h\"")
+        cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
         cog.outl("  message_packet(const message_packet& other)")
         cog.outl("    : valid(other.is_valid())")
         cog.outl("  {")
@@ -813,11 +817,11 @@ namespace etl
         cog.outl("      add_new_message(other.get());")
         cog.outl("    }")
         cog.outl("  }")
-        cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+        cog.outl("#include \"private/diagnostic_pop.h\"")
         cog.outl("")
         cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
         cog.outl("  //**********************************************")
-        cog.outl("#include \"etl/private/diagnostic_uninitialized_push.h\"")
+        cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
         cog.outl("  message_packet(message_packet&& other)")
         cog.outl("    : valid(other.is_valid())")
         cog.outl("  {")
@@ -826,11 +830,11 @@ namespace etl
         cog.outl("      add_new_message(etl::move(other.get()));")
         cog.outl("    }")
         cog.outl("  }")
-        cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+        cog.outl("#include \"private/diagnostic_pop.h\"")
         cog.outl("#endif")
         cog.outl("")
         cog.outl("  //**********************************************")
-        cog.outl("#include \"etl/private/diagnostic_uninitialized_push.h\"")
+        cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
         cog.outl("  message_packet& operator =(const message_packet& rhs)")
         cog.outl("  {")
         cog.outl("    delete_current_message();")
@@ -842,11 +846,11 @@ namespace etl
         cog.outl("")
         cog.outl("    return *this;")
         cog.outl("  }")
-        cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+        cog.outl("#include \"private/diagnostic_pop.h\"")
         cog.outl("")
         cog.outl("#if ETL_USING_CPP11 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)")
         cog.outl("  //**********************************************")
-        cog.outl("#include \"etl/private/diagnostic_uninitialized_push.h\"")
+        cog.outl("#include \"private/diagnostic_uninitialized_push.h\"")
         cog.outl("  message_packet& operator =(message_packet&& rhs)")
         cog.outl("  {")
         cog.outl("    delete_current_message();")
@@ -858,7 +862,7 @@ namespace etl
         cog.outl("")
         cog.outl("    return *this;")
         cog.outl("  }")
-        cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+        cog.outl("#include \"private/diagnostic_pop.h\"")
         cog.outl("#endif")
         cog.outl("")
         cog.outl("  //********************************************")
@@ -928,7 +932,7 @@ namespace etl
         cog.outl("private:")
         cog.outl("")
         cog.outl("  //********************************************")
-        cog.outl("  #include \"etl/private/diagnostic_uninitialized_push.h\"")
+        cog.outl("  #include \"private/diagnostic_uninitialized_push.h\"")
         cog.outl("  void delete_current_message()")
         cog.outl("  {")
         cog.outl("    if (valid)")
@@ -938,7 +942,7 @@ namespace etl
         cog.outl("      pmsg->~imessage();")
         cog.outl("    }")
         cog.outl("  }")
-        cog.outl("  #include \"etl/private/diagnostic_pop.h\"")
+        cog.outl("  #include \"private/diagnostic_pop.h\"")
         cog.outl("")
         cog.outl("  //********************************************")
         cog.outl("  void add_new_message(const etl::imessage& msg)")
@@ -977,5 +981,8 @@ namespace etl
   /*[[[end]]]*/
 #endif
 }
+#else
+  #error "etl::message_packet is not compatible with non-virtual etl::imessage"
+#endif
 
 #endif

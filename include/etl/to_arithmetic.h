@@ -45,6 +45,8 @@ SOFTWARE.
 #include "absolute.h"
 #include "expected.h"
 
+#include <math.h>
+
 namespace etl
 {
   //***************************************************************************

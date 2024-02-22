@@ -68,22 +68,11 @@ namespace
   //};
 
   //***********************************
-  struct Interface : public etl::imessage
-  {
-    virtual int VirtualFunction() const = 0;
-  };
-
-  //***********************************
-  struct Message1 : public etl::message<MESSAGE1, Interface>
+  struct Message1 : public etl::message<MESSAGE1>
   {
     Message1(etl::imessage_router& callback_)
       : callback(callback_)
     {
-    }
-
-    int VirtualFunction() const override
-    {
-      return 1;
     }
 
     etl::imessage_router& callback;
@@ -153,7 +142,7 @@ namespace
     {
       ++message1_count;
       etl::send_message(msg.callback, message5);
-      CHECK_EQUAL(1, msg.VirtualFunction());
+      //CHECK_EQUAL(1, msg.VirtualFunction());
     }
 
     void on_receive(const Message2& msg)
@@ -228,7 +217,7 @@ namespace
       ++message1_count;
       sender_id = msg.callback.get_message_router_id();
       etl::send_message(msg.callback, message5);
-      CHECK_EQUAL(1, msg.VirtualFunction());
+      //CHECK_EQUAL(1, msg.VirtualFunction());
     }
 
     void on_receive(const Message2& msg)
@@ -516,6 +505,7 @@ namespace
       CHECK(r2.accepts(message5.get_message_id()));
     }
 
+#if ETL_HAS_VIRTUAL_MESSAGES
     //*************************************************************************
     TEST(message_router_queue)
     {
@@ -588,6 +578,7 @@ namespace
       CHECK_EQUAL(4, r1.callback_count);
       queue.pop();
     }
+#endif
 
     //*************************************************************************
     TEST(message_router_successor)

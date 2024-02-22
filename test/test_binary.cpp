@@ -1609,8 +1609,80 @@ namespace
     //*************************************************************************
     TEST(test_bit)
     {
+#if ETL_USING_64BIT_TYPES
+      const uint64_t N = 1UL;
+#else
       const uint32_t N = 1UL;
+#endif
 
+#if ETL_USING_CPP17
+      CHECK_EQUAL(N << 0U, etl::bit_v<0>);
+      CHECK_EQUAL(N << 1U, etl::bit_v<1>);
+      CHECK_EQUAL(N << 2U, etl::bit_v<2>);
+      CHECK_EQUAL(N << 3U, etl::bit_v<3>);
+      CHECK_EQUAL(N << 4U, etl::bit_v<4>);
+      CHECK_EQUAL(N << 5U, etl::bit_v<5>);
+      CHECK_EQUAL(N << 6U, etl::bit_v<6>);
+      CHECK_EQUAL(N << 7U, etl::bit_v<7>);
+      CHECK_EQUAL(N << 8U, etl::bit_v<8>);
+      CHECK_EQUAL(N << 9U, etl::bit_v<9>);
+      CHECK_EQUAL(N << 10U, etl::bit_v<10>);
+      CHECK_EQUAL(N << 11U, etl::bit_v<11>);
+      CHECK_EQUAL(N << 12U, etl::bit_v<12>);
+      CHECK_EQUAL(N << 13U, etl::bit_v<13>);
+      CHECK_EQUAL(N << 14U, etl::bit_v<14>);
+      CHECK_EQUAL(N << 15U, etl::bit_v<15>);
+      CHECK_EQUAL(N << 16U, etl::bit_v<16>);
+      CHECK_EQUAL(N << 17U, etl::bit_v<17>);
+      CHECK_EQUAL(N << 18U, etl::bit_v<18>);
+      CHECK_EQUAL(N << 19U, etl::bit_v<19>);
+      CHECK_EQUAL(N << 20U, etl::bit_v<20>);
+      CHECK_EQUAL(N << 21U, etl::bit_v<21>);
+      CHECK_EQUAL(N << 22U, etl::bit_v<22>);
+      CHECK_EQUAL(N << 23U, etl::bit_v<23>);
+      CHECK_EQUAL(N << 24U, etl::bit_v<24>);
+      CHECK_EQUAL(N << 25U, etl::bit_v<25>);
+      CHECK_EQUAL(N << 26U, etl::bit_v<26>);
+      CHECK_EQUAL(N << 27U, etl::bit_v<27>);
+      CHECK_EQUAL(N << 28U, etl::bit_v<28>);
+      CHECK_EQUAL(N << 29U, etl::bit_v<29>);
+      CHECK_EQUAL(N << 30U, etl::bit_v<30>);
+      CHECK_EQUAL(N << 31U, etl::bit_v<31>);
+  #if ETL_USING_64BIT_TYPES
+      CHECK_EQUAL(N << 32U, etl::bit_v<32>);
+      CHECK_EQUAL(N << 33U, etl::bit_v<33>);
+      CHECK_EQUAL(N << 34U, etl::bit_v<34>);
+      CHECK_EQUAL(N << 35U, etl::bit_v<35>);
+      CHECK_EQUAL(N << 36U, etl::bit_v<36>);
+      CHECK_EQUAL(N << 37U, etl::bit_v<37>);
+      CHECK_EQUAL(N << 38U, etl::bit_v<38>);
+      CHECK_EQUAL(N << 39U, etl::bit_v<39>);
+      CHECK_EQUAL(N << 40U, etl::bit_v<40>);
+      CHECK_EQUAL(N << 41U, etl::bit_v<41>);
+      CHECK_EQUAL(N << 42U, etl::bit_v<42>);
+      CHECK_EQUAL(N << 43U, etl::bit_v<43>);
+      CHECK_EQUAL(N << 44U, etl::bit_v<44>);
+      CHECK_EQUAL(N << 45U, etl::bit_v<45>);
+      CHECK_EQUAL(N << 46U, etl::bit_v<46>);
+      CHECK_EQUAL(N << 47U, etl::bit_v<47>);
+      CHECK_EQUAL(N << 48U, etl::bit_v<48>);
+      CHECK_EQUAL(N << 49U, etl::bit_v<49>);
+      CHECK_EQUAL(N << 50U, etl::bit_v<50>);
+      CHECK_EQUAL(N << 51U, etl::bit_v<51>);
+      CHECK_EQUAL(N << 52U, etl::bit_v<52>);
+      CHECK_EQUAL(N << 53U, etl::bit_v<53>);
+      CHECK_EQUAL(N << 54U, etl::bit_v<54>);
+      CHECK_EQUAL(N << 55U, etl::bit_v<55>);
+      CHECK_EQUAL(N << 56U, etl::bit_v<56>);
+      CHECK_EQUAL(N << 57U, etl::bit_v<57>);
+      CHECK_EQUAL(N << 58U, etl::bit_v<58>);
+      CHECK_EQUAL(N << 59U, etl::bit_v<59>);
+      CHECK_EQUAL(N << 60U, etl::bit_v<60>);
+      CHECK_EQUAL(N << 61U, etl::bit_v<61>);
+      CHECK_EQUAL(N << 62U, etl::bit_v<62>);
+      CHECK_EQUAL(N << 63U, etl::bit_v<63>);
+  #endif
+#else
       CHECK_EQUAL(N <<  0U, etl::bit<0>::value);
       CHECK_EQUAL(N <<  1U, etl::bit<1>::value);
       CHECK_EQUAL(N <<  2U, etl::bit<2>::value);
@@ -1643,6 +1715,109 @@ namespace
       CHECK_EQUAL(N << 29U, etl::bit<29>::value);
       CHECK_EQUAL(N << 30U, etl::bit<30>::value);
       CHECK_EQUAL(N << 31U, etl::bit<31>::value);
+  #if ETL_USING_64BIT_TYPES
+      CHECK_EQUAL(N << 32U, etl::bit<32>::value);
+      CHECK_EQUAL(N << 33U, etl::bit<33>::value);
+      CHECK_EQUAL(N << 34U, etl::bit<34>::value);
+      CHECK_EQUAL(N << 35U, etl::bit<35>::value);
+      CHECK_EQUAL(N << 36U, etl::bit<36>::value);
+      CHECK_EQUAL(N << 37U, etl::bit<37>::value);
+      CHECK_EQUAL(N << 38U, etl::bit<38>::value);
+      CHECK_EQUAL(N << 39U, etl::bit<39>::value);
+      CHECK_EQUAL(N << 40U, etl::bit<40>::value);
+      CHECK_EQUAL(N << 41U, etl::bit<41>::value);
+      CHECK_EQUAL(N << 42U, etl::bit<42>::value);
+      CHECK_EQUAL(N << 43U, etl::bit<43>::value);
+      CHECK_EQUAL(N << 44U, etl::bit<44>::value);
+      CHECK_EQUAL(N << 45U, etl::bit<45>::value);
+      CHECK_EQUAL(N << 46U, etl::bit<46>::value);
+      CHECK_EQUAL(N << 47U, etl::bit<47>::value);
+      CHECK_EQUAL(N << 48U, etl::bit<48>::value);
+      CHECK_EQUAL(N << 49U, etl::bit<49>::value);
+      CHECK_EQUAL(N << 50U, etl::bit<50>::value);
+      CHECK_EQUAL(N << 51U, etl::bit<51>::value);
+      CHECK_EQUAL(N << 52U, etl::bit<52>::value);
+      CHECK_EQUAL(N << 53U, etl::bit<53>::value);
+      CHECK_EQUAL(N << 54U, etl::bit<54>::value);
+      CHECK_EQUAL(N << 55U, etl::bit<55>::value);
+      CHECK_EQUAL(N << 56U, etl::bit<56>::value);
+      CHECK_EQUAL(N << 57U, etl::bit<57>::value);
+      CHECK_EQUAL(N << 58U, etl::bit<58>::value);
+      CHECK_EQUAL(N << 59U, etl::bit<59>::value);
+      CHECK_EQUAL(N << 60U, etl::bit<60>::value);
+      CHECK_EQUAL(N << 61U, etl::bit<61>::value);
+      CHECK_EQUAL(N << 62U, etl::bit<62>::value);
+      CHECK_EQUAL(N << 63U, etl::bit<63>::value);
+  #endif
+#endif
+
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<1>,  etl::bit_t<0>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<2>,  etl::bit_t<1>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<3>,  etl::bit_t<2>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<4>,  etl::bit_t<3>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<5>,  etl::bit_t<4>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<6>,  etl::bit_t<5>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<7>,  etl::bit_t<6>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<8>,  etl::bit_t<7>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<9>,  etl::bit_t<8>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<10>,  etl::bit_t<9>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<11>, etl::bit_t<10>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<12>, etl::bit_t<11>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<13>, etl::bit_t<12>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<14>, etl::bit_t<13>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<15>, etl::bit_t<14>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<16>, etl::bit_t<15>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<17>, etl::bit_t<16>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<18>, etl::bit_t<17>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<19>, etl::bit_t<18>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<20>, etl::bit_t<19>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<21>, etl::bit_t<20>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<22>, etl::bit_t<21>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<23>, etl::bit_t<22>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<24>, etl::bit_t<23>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<25>, etl::bit_t<24>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<26>, etl::bit_t<25>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<27>, etl::bit_t<26>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<28>, etl::bit_t<27>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<29>, etl::bit_t<28>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<30>, etl::bit_t<29>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<31>, etl::bit_t<30>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<32>, etl::bit_t<31>>::value));
+
+#if ETL_USING_64BIT_TYPES
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<33>, etl::bit_t<32>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<34>, etl::bit_t<33>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<35>, etl::bit_t<34>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<36>, etl::bit_t<35>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<37>, etl::bit_t<36>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<38>, etl::bit_t<37>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<39>, etl::bit_t<38>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<40>, etl::bit_t<39>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<41>, etl::bit_t<40>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<42>, etl::bit_t<41>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<43>, etl::bit_t<42>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<44>, etl::bit_t<43>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<45>, etl::bit_t<44>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<46>, etl::bit_t<45>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<47>, etl::bit_t<46>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<48>, etl::bit_t<47>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<49>, etl::bit_t<48>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<50>, etl::bit_t<49>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<51>, etl::bit_t<50>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<52>, etl::bit_t<51>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<53>, etl::bit_t<52>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<54>, etl::bit_t<53>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<55>, etl::bit_t<54>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<56>, etl::bit_t<55>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<57>, etl::bit_t<56>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<58>, etl::bit_t<57>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<59>, etl::bit_t<58>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<60>, etl::bit_t<59>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<61>, etl::bit_t<60>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<62>, etl::bit_t<61>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<63>, etl::bit_t<62>>::value));
+      CHECK_TRUE((std::is_same<etl::smallest_uint_for_bits_t<64>, etl::bit_t<63>>::value));
+#endif
     }
 
     //*************************************************************************

@@ -189,11 +189,18 @@ namespace etl
   template<>
   struct hash<wchar_t>
   {
-    ETL_STATIC_ASSERT(sizeof(size_t) >= sizeof(wchar_t), "size_t smaller than type");
-
     size_t operator ()(wchar_t v) const
     {
-      return static_cast<size_t>(v);
+      // If it's the same size as a size_t.
+      if ETL_IF_CONSTEXPR(sizeof(size_t) >= sizeof(v))
+      {
+        return static_cast<size_t>(v);
+      }
+      else
+      {
+        uint8_t* p = reinterpret_cast<uint8_t*>(&v);
+        return private_hash::generic_hash<size_t>(p, p + sizeof(v));
+      }
     }
   };
 
@@ -204,11 +211,18 @@ namespace etl
   template<>
   struct hash<short>
   {
-    ETL_STATIC_ASSERT(sizeof(size_t) >= sizeof(short), "size_t smaller than type");
-
     size_t operator ()(short v) const
     {
-      return static_cast<size_t>(v);
+      // If it's the same size as a size_t.
+      if ETL_IF_CONSTEXPR(sizeof(size_t) >= sizeof(v))
+      {
+        return static_cast<size_t>(v);
+      }
+      else
+      {
+        uint8_t* p = reinterpret_cast<uint8_t*>(&v);
+        return private_hash::generic_hash<size_t>(p, p + sizeof(v));
+      }
     }
   };
 
@@ -219,11 +233,18 @@ namespace etl
   template<>
   struct hash<unsigned short>
   {
-    ETL_STATIC_ASSERT(sizeof(size_t) >= sizeof(unsigned short), "size_t smaller than type");
-
     size_t operator ()(unsigned short v) const
     {
-      return static_cast<size_t>(v);
+      // If it's the same size as a size_t.
+      if ETL_IF_CONSTEXPR(sizeof(size_t) >= sizeof(v))
+      {
+        return static_cast<size_t>(v);
+      }
+      else
+      {
+        uint8_t* p = reinterpret_cast<uint8_t*>(&v);
+        return private_hash::generic_hash<size_t>(p, p + sizeof(v));
+      }
     }
   };
 
@@ -234,11 +255,18 @@ namespace etl
   template<>
   struct hash<int>
   {
-    ETL_STATIC_ASSERT(sizeof(size_t) >= sizeof(int), "size_t smaller than type");
-
     size_t operator ()(int v) const
     {
-      return static_cast<size_t>(v);
+      // If it's the same size as a size_t.
+      if ETL_IF_CONSTEXPR(sizeof(size_t) >= sizeof(v))
+      {
+        return static_cast<size_t>(v);
+      }
+      else
+      {
+        uint8_t* p = reinterpret_cast<uint8_t*>(&v);
+        return private_hash::generic_hash<size_t>(p, p + sizeof(v));
+      }
     }
   };
 
@@ -249,11 +277,18 @@ namespace etl
   template<>
   struct hash<unsigned int>
   {
-    ETL_STATIC_ASSERT(sizeof(size_t) >= sizeof(unsigned int), "size_t smaller than type");
-
     size_t operator ()(unsigned int v) const
     {
-      return static_cast<size_t>(v);
+      // If it's the same size as a size_t.
+      if ETL_IF_CONSTEXPR(sizeof(size_t) >= sizeof(v))
+      {
+        return static_cast<size_t>(v);
+      }
+      else
+      {
+        uint8_t* p = reinterpret_cast<uint8_t*>(&v);
+        return private_hash::generic_hash<size_t>(p, p + sizeof(v));
+      }
     }
   };
 

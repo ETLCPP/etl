@@ -450,7 +450,7 @@ namespace etl
     size_type current_size;   ///< The number of the used nodes.
     const size_type CAPACITY; ///< The maximum size of the map.
     Node* root_node;          ///< The node that acts as the map root.
-    ETL_DECLARE_DEBUG_COUNT
+    ETL_DECLARE_DEBUG_COUNT;
   };
 
   //***************************************************************************
@@ -1498,7 +1498,7 @@ namespace etl
     {
       Data_Node& node = allocate_data_node();
       ::new (&node.value) value_type(value);
-      ETL_INCREMENT_DEBUG_COUNT
+      ETL_INCREMENT_DEBUG_COUNT;
       return node;
     }
 
@@ -1511,7 +1511,7 @@ namespace etl
 
       ::new ((void*)etl::addressof(node.value.first))  key_type(key);
       ::new ((void*)etl::addressof(node.value.second)) mapped_type();
-      ETL_INCREMENT_DEBUG_COUNT
+      ETL_INCREMENT_DEBUG_COUNT;
       return node;
     }
 
@@ -1523,7 +1523,7 @@ namespace etl
     {
       Data_Node& node = allocate_data_node();
       ::new (&node.value) value_type(etl::move(value));
-      ETL_INCREMENT_DEBUG_COUNT
+      ETL_INCREMENT_DEBUG_COUNT;
       return node;
     }
 
@@ -1536,7 +1536,7 @@ namespace etl
 
       ::new ((void*)etl::addressof(node.value.first))  key_type(etl::move(key));
       ::new ((void*)etl::addressof(node.value.second)) mapped_type();
-      ETL_INCREMENT_DEBUG_COUNT
+      ETL_INCREMENT_DEBUG_COUNT;
       return node;
     }
 
@@ -1558,7 +1558,7 @@ namespace etl
     {
       node.value.~value_type();
       p_node_pool->release(&node);
-      ETL_DECREMENT_DEBUG_COUNT
+      ETL_DECREMENT_DEBUG_COUNT;
     }
 
     //*************************************************************************

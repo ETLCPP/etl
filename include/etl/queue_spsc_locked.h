@@ -324,6 +324,21 @@ namespace etl
     /// Constructs a value in the queue 'in place'.
     /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
     //*************************************************************************
+    bool emplace()
+    {
+      lock();
+
+      bool result = emplace_implementation();
+
+      unlock();
+
+      return result;
+    }
+
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    /// If asserts or exceptions are enabled, throws an etl::queue_full if the queue if already full.
+    //*************************************************************************
     template <typename T1>
     bool emplace(const T1& value1)
     {
@@ -640,6 +655,26 @@ namespace etl
       return false;
     }
 #else
+    //*************************************************************************
+    /// Constructs a value in the queue 'in place'.
+    //*************************************************************************
+    bool emplace_implementation()
+    {
+      if (this->current_size != this->MAX_SIZE)
+      {
+        ::new (&p_buffer[this->write_index]) T();
+
+        this->write_index = this->get_next_index(this->write_index, this->MAX_SIZE);
+
+        ++this->current_size;
+
+        return true;
+      }
+
+      // Queue is full.
+      return false;
+    }
+
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     //*************************************************************************

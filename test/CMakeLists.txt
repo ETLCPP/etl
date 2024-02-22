@@ -19,6 +19,7 @@ add_executable(etl_tests
 	test_array_view.cpp
 	test_array_wrapper.cpp
 	test_atomic.cpp
+	test_base64.cpp
     test_binary.cpp
 	test_bip_buffer_spsc_atomic.cpp
 	test_bit.cpp
@@ -221,6 +222,7 @@ add_executable(etl_tests
 	test_state_chart_with_rvalue_data_parameter.cpp
 	test_state_chart_compile_time.cpp
 	test_state_chart_compile_time_with_data_parameter.cpp
+	test_static_assert.cpp
 	test_string_char.cpp
 	test_string_char_external_buffer.cpp
 	test_string_stream.cpp
@@ -321,6 +323,11 @@ if (ETL_USER_DEFINED_TYPE_TRAITS)
 	target_compile_definitions(etl_tests PRIVATE -DETL_USER_DEFINED_TYPE_TRAITS)
 endif()
 
+if (ETL_MESSAGES_ARE_NOT_VIRTUAL)
+	message(STATUS "Compiling for non-virtual messages")
+	target_compile_definitions(etl_tests PRIVATE -DETL_MESSAGES_ARE_NOT_VIRTUAL)
+endif()
+
 if (ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 	message(STATUS "Compiling for C++03 tests")
 	target_compile_definitions(etl_tests PRIVATE -DETL_FORCE_TEST_CPP03_IMPLEMENTATION)
@@ -355,6 +362,7 @@ endif ()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     message(STATUS "Using Clang compiler")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 endif ()
 
 if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))

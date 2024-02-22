@@ -578,7 +578,7 @@ namespace etl
   //*************************
   template <typename T> struct in_place_type_t 
   {
-    explicit ETL_CONSTEXPR in_place_type_t() {};
+    explicit ETL_CONSTEXPR in_place_type_t() {}
   };
 
 #if ETL_USING_CPP17

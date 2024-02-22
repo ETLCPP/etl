@@ -446,7 +446,7 @@ namespace etl
     size_type current_size;   ///< The number of the used nodes.
     const size_type CAPACITY; ///< The maximum size of the set.
     Node* root_node;          ///< The node that acts as the set root.
-    ETL_DECLARE_DEBUG_COUNT
+    ETL_DECLARE_DEBUG_COUNT;
 
   };
 
@@ -815,6 +815,8 @@ namespace etl
       // Skip if doing self assignment
       if (this != &rhs)
       {
+        this->clear();
+
         typename etl::iset<TKey, TCompare>::iterator from = rhs.begin();
 
         while (from != rhs.end())
@@ -1363,7 +1365,7 @@ namespace etl
     {
       Data_Node& node = allocate_data_node();
       ::new ((void*)&node.value) value_type(value);
-      ETL_INCREMENT_DEBUG_COUNT
+      ETL_INCREMENT_DEBUG_COUNT;
       return node;
     }
 
@@ -1375,7 +1377,7 @@ namespace etl
     {
       Data_Node& node = allocate_data_node();
       ::new ((void*)&node.value) value_type(etl::move(value));
-      ETL_INCREMENT_DEBUG_COUNT
+      ETL_INCREMENT_DEBUG_COUNT;
       return node;
     }
 #endif
@@ -1396,7 +1398,7 @@ namespace etl
     {
       node.value.~value_type();
       p_node_pool->release(&node);
-      ETL_DECREMENT_DEBUG_COUNT
+      ETL_DECREMENT_DEBUG_COUNT;
     }
 
     //*************************************************************************
@@ -2603,6 +2605,8 @@ namespace etl
       // Skip if doing self assignment
       if (this != &rhs)
       {
+        this->clear();
+
         typename etl::iset<TKey, TCompare>::iterator from = rhs.begin();
 
         while (from != rhs.end())

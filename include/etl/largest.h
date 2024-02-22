@@ -261,7 +261,7 @@ namespace etl
   //***************************************************************************
   /// Defines a type that is as larger or larger than the specified type.
   /// Will return the specified type is there is not a larger type.
-  ///\ingroup largest
+  ///\\ingroup largest
   //***************************************************************************
   template <typename T>
   struct larger_int_type
