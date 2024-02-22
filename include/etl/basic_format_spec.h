@@ -172,10 +172,10 @@ namespace etl
   static ETL_CONSTANT private_basic_format_spec::base_spec hex(16U);
 
   //*********************************
-  static ETL_CONSTANT private_basic_format_spec::left_spec left;
+  static ETL_CONSTANT private_basic_format_spec::left_spec left = private_basic_format_spec::left_spec();
 
   //*********************************
-  static ETL_CONSTANT private_basic_format_spec::right_spec right;
+  static ETL_CONSTANT private_basic_format_spec::right_spec right = private_basic_format_spec::right_spec();
 
   //*********************************
   static ETL_CONSTANT private_basic_format_spec::boolalpha_spec boolalpha(true);
