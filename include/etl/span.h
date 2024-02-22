@@ -739,7 +739,7 @@ namespace etl
 
   //*************************************************************************
   /// Equality function.
-  /// Performs a comparision of the range values.
+  /// Performs a comparison of the range values.
   /// Returns <b>true</b> if one of the following are <b>true</b>
   /// 1. Both spans are empty.
   /// 2. They both point to the same range of data.

@@ -997,7 +997,7 @@ namespace etl
 
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
     //***************************************************************************
-    /// Call the relevent visitor by attempting each one.
+    /// Call the relevant visitor by attempting each one.
     //***************************************************************************
     template <typename TVisitor, size_t... I>
     void do_visitor(TVisitor& visitor, etl::index_sequence<I...>)
@@ -1006,7 +1006,7 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Call the relevent visitor by attempting each one.
+    /// Call the relevant visitor by attempting each one.
     //***************************************************************************
     template <typename TVisitor, size_t... I>
     void do_visitor(TVisitor& visitor, etl::index_sequence<I...>) const
@@ -1015,7 +1015,7 @@ namespace etl
     }
 #else
     //***************************************************************************
-    /// /// Call the relevent visitor.
+    /// /// Call the relevant visitor.
     //***************************************************************************
     template <typename TVisitor>
     void do_visitor(TVisitor& visitor)
@@ -1065,7 +1065,7 @@ namespace etl
     }
 
     //***************************************************************************
-    /// /// Call the relevent visitor.
+    /// /// Call the relevant visitor.
     //***************************************************************************
     template <typename TVisitor>
     void do_visitor(TVisitor& visitor) const
@@ -1125,7 +1125,7 @@ namespace etl
       {
         // Workaround for MSVC (2023/05/13)
         // It doesn't compile 'visitor.visit(etl::get<Index>(*this))' correctly for C++17 & C++20.
-        // Changed all of the instances for consistancy.
+        // Changed all of the instances for consistency.
         auto& v = etl::get<Index>(*this);
         visitor.visit(v);
         return true;
@@ -1146,7 +1146,7 @@ namespace etl
       {
         // Workaround for MSVC (2023/05/13)
         // It doesn't compile 'visitor.visit(etl::get<Index>(*this))' correctly for C++17 & C++20.
-        // Changed all of the instances for consistancy.
+        // Changed all of the instances for consistency.
         auto& v = etl::get<Index>(*this);
         visitor.visit(v);
         return true;
@@ -1159,7 +1159,7 @@ namespace etl
 
 #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
     //***************************************************************************
-    /// Call the relevent visitor by attempting each one.
+    /// Call the relevant visitor by attempting each one.
     //***************************************************************************
     template <typename TVisitor, size_t... I>
     void do_operator(TVisitor& visitor, etl::index_sequence<I...>)
@@ -1168,7 +1168,7 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Call the relevent visitor by attempting each one.
+    /// Call the relevant visitor by attempting each one.
     //***************************************************************************
     template <typename TVisitor, size_t... I>
     void do_operator(TVisitor& visitor, etl::index_sequence<I...>) const
@@ -1177,7 +1177,7 @@ namespace etl
     }
 #else
     //***************************************************************************
-    /// Call the relevent visitor.
+    /// Call the relevant visitor.
     //***************************************************************************
     template <typename TVisitor>
     void do_operator(TVisitor& visitor)
@@ -1241,7 +1241,7 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Call the relevent visitor.
+    /// Call the relevant visitor.
     //***************************************************************************
     template <typename TVisitor>
     void do_operator(TVisitor& visitor) const
@@ -1693,7 +1693,7 @@ namespace etl
 
     //***************************************************************************
     /// Helper to instantiate the function pointers needed for the "jump table".
-    /// Embedds the 'TVarRest' (remaining variants) into its type to come around
+    /// Embeds the 'TVarRest' (remaining variants) into its type to come around
     /// the "double expansion" otherwise needed in "do_visit".
     //***************************************************************************
     template <typename TRet, typename TCallable, typename TCurVariant, typename... TVarRest>

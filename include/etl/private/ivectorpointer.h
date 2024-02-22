@@ -986,7 +986,7 @@ namespace etl
   /// Less than or equal operator.
   ///\param lhs Reference to the first vector.
   ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the first vector is lexigraphically less than or equal to the second, otherwise <b>false</b>
+  ///\return <b>true</b> if the first vector is lexicographically less than or equal to the second, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
@@ -999,7 +999,7 @@ namespace etl
   /// Greater than or equal operator.
   ///\param lhs Reference to the first vector.
   ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the first vector is lexigraphically greater than or equal to the second, otherwise <b>false</b>
+  ///\return <b>true</b> if the first vector is lexicographically greater than or equal to the second, otherwise <b>false</b>
   ///\ingroup vector
   //***************************************************************************
   template <typename T>

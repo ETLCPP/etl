@@ -2185,7 +2185,7 @@ namespace etl
   //***************************************************************************
   /// copy_if
   /// A safer form of copy_if where it terminates when the first end iterator is reached.
-  /// There is currently no STL equivelent.
+  /// There is currently no STL equivalent.
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TInputIterator,

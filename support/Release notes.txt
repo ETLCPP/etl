@@ -160,7 +160,7 @@ Comments and noexcept updates to placement new
 etl::variant (variadic) refactor and updates for C++ standards compatibility
 etl::overload available in C++17 only
 map/flat_map speed optimisations
-Various C++03 compatibilty updates for maps
+Various C++03 compatibility updates for maps
 Refactored Bash compilation scripts to allow selection of C++ standard and optimisation level
 Renamed Bash compilation scripts. Changed 'sanity checks' to 'syntax checks
 Some internal constant case changes from all upper to capital case
@@ -226,7 +226,7 @@ Removed unused ETL_USE_MEM_BUILTINS option
 
 ===============================================================================
 20.35.7
-Updated etl::delgate to handle const functors correctly
+Updated etl::delegate to handle const functors correctly
 
 ===============================================================================
 20.35.6
@@ -274,7 +274,7 @@ Removed duplicate include in etl::array_view
 #621 No need to initialize the C-compiler, small speed improvement
 #626 Empty etl::optional ctor storage initialization performance
 Removed constexpr for etl::bit_cast due to unreliability of compiler support
-Added has_value() as an alias for is_value() for etl::result (consistancy with STL conventions)
+Added has_value() as an alias for is_value() for etl::result (consistency with STL conventions)
 Added ETL_ERROR_WITH_VALUE macro for exceptions that require a value
 Changed scaling template parameter for etl::scaled_rounding to uint32_t
 Remove redundant etl::pair functions
@@ -471,7 +471,7 @@ Fixed send_message function signatures.
 20.24.0
 #503 Algorithm transform uses expensive post increment operator - Fixed for all occurrences of iterator increment.
 #504 ETL_CONSTANT vs const in binary.h - Fixed.
-Many algorithms will leverage built-ins, if available. Dependant on compiler version.
+Many algorithms will leverage built-ins, if available. Dependent on compiler version.
 Added detection or selection of built-ins.
 Much of etl::string and etl::string_view can be constexpr.
 Added ETL initializer_list implementations that are compatible with major compilers.
@@ -839,7 +839,7 @@ Added example application for shared messages.
 Added a lockable queue with locks implemented as pure virtuals.
 Refactored the other queues.
 Fixed missing virtual destructor for C++11 observer.
-Added etl::successor class for consistant 'chain of responsibilty' pattern generation.
+Added etl::successor class for consistent 'chain of responsibilty' pattern generation.
 Added missing constructors to unique_ptr.
 Added nullptr check to unique_ptr destructor.
 Fixed VS2019 warning for etl::deque iterators.
@@ -1807,7 +1807,7 @@ Added constexpr constructors to string_view and array_view.
 
 ===============================================================================
 14.8.2
-Added missing #include "stl/interator.h" in frame_check_sequence.h
+Added missing #include "stl/iterator.h" in frame_check_sequence.h
 
 ===============================================================================
 14.8.1
@@ -2040,7 +2040,7 @@ Added SPSC & MPPC queues
 
 ===============================================================================
 11.3.0
-Improved compatibility with 64 bit pltforms.
+Improved compatibility with 64 bit platforms.
 
 ===============================================================================
 11.2.0
@@ -2077,7 +2077,7 @@ Improved etl::endianness. Added static functions.
 
 ===============================================================================
 10.19.2
-Fixed strict aliasing warnings for endianess.
+Fixed strict aliasing warnings for endianness.
 
 ===============================================================================
 10.19.1
@@ -2086,7 +2086,7 @@ Fixed strict aliasing warnings for aligned storage.
 ===============================================================================
 10.19.0
 Added 'create' and 'destroy' functions to pools.
-Modified class heirarchy.
+Modified class hierarchy.
 etl::generic_pool is derived from on etl::ipool.
 etl::pool is derived from etl::generic_pool.
 

@@ -158,7 +158,7 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Exception for forbidden state chages.
+  /// Exception for forbidden state changes.
   //***************************************************************************
   class fsm_state_composite_state_change_forbidden : public etl::fsm_exception
   {
