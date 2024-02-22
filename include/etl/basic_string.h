@@ -1262,7 +1262,7 @@ namespace etl
     /// Erases a sequence.
     ///\param position Position to start from.
     ///\param length   Number of characters.
-    ///\return A refernce to this string.
+    ///\return A reference to this string.
     //*********************************************************************
     etl::ibasic_string<T>& erase(size_type position, size_type length_ = npos)
     {
