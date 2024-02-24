@@ -114,4 +114,19 @@ SUITE(test_message)
     CHECK_FALSE(etl::is_user_message_base<int>::value);
 #endif
   }
+
+  //*************************************************************************
+  TEST(test_message_base_type)
+  {
+    struct Message1 : public etl::message<1> {};
+    
+    struct MessageBase : public etl::imessage {};
+    struct Message2 : public etl::message<2, MessageBase> {};
+
+    CHECK_TRUE((std::is_same_v<etl::imessage, Message1::base_type>));
+    CHECK_TRUE((std::is_same_v<MessageBase,   Message2::base_type>));
+
+    CHECK_FALSE((std::is_same_v<MessageBase,   Message1::base_type>));
+    CHECK_FALSE((std::is_same_v<etl::imessage, Message2::base_type>));
+  }
 };

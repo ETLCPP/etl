@@ -209,7 +209,7 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Is T derived from etl::message<>
+  /// Is T an etl::message<> or derived from etl::message<>
   //***************************************************************************
   template <typename T>
   struct is_message_type : public etl::bool_constant<etl::is_base_of<etl::message_tag, typename etl::remove_cvref<T>::type>::value>
@@ -225,7 +225,7 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Is T a user defined base of etl::message<T>
+  /// Is T a user defined base of etl::message<T> and not an etl::imessage
   //***************************************************************************
   template <typename T>
   struct is_user_message_base : public etl::bool_constant<etl::is_message_base<T>::value && !is_imessage<T>::value>
