@@ -103,6 +103,33 @@ namespace etl
     //*************************************************************************
     /// Allocate a reference counted message from the pool.
     //*************************************************************************
+    template <typename TMessage, typename... Args>
+    etl::reference_counted_message<TMessage, TCounter>* allocate(const TMessage*, Args&&... args)
+    {
+      ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
+
+      typedef etl::reference_counted_message<TMessage, TCounter> rcm_t;
+      typedef rcm_t* prcm_t;
+
+      prcm_t p = ETL_NULLPTR;
+
+      lock();
+      p = static_cast<prcm_t>(memory_block_allocator.allocate(sizeof(rcm_t), etl::alignment_of<rcm_t>::value));
+      unlock();
+
+      if (p != ETL_NULLPTR)
+      {
+        ::new(p) rcm_t(*this, etl::forward<Args>(args)...);
+      }
+
+      ETL_ASSERT((p != ETL_NULLPTR), ETL_ERROR(etl::reference_counted_message_pool_allocation_failure));
+
+      return p;
+    }
+
+    //*************************************************************************
+    /// Allocate a reference counted message from the pool.
+    //*************************************************************************
     template <typename TMessage>
     etl::reference_counted_message<TMessage, TCounter>* allocate(const TMessage& message)
     {
