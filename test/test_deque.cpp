@@ -107,20 +107,11 @@ namespace
     //*************************************************************************
     TEST(test_constructor_fill)
     {
-      //Compare_Data compare_data(SIZE, N999);
-      //DataNDC data(SIZE, N999);
+      Compare_Data compare_data(SIZE, N999);
+      DataNDC data(SIZE, N999);
 
-      etl::deque<int, 10> data;
-      using iter_type = etl::deque<int, 10>::iterator;
-
-      bool b1 = std::random_access_iterator<iter_type>;
-
-      bool b2 = std::sentinel_for<iter_type, iter_type>;
-
-      //bool b = std::equal(data.begin(), data.end(), data.begin());
-
-      //CHECK_EQUAL(compare_data.size(), data.size());
-      //CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
     }
 
     //*************************************************************************
