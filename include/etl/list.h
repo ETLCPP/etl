@@ -43,7 +43,6 @@ SOFTWARE.
 #include "type_traits.h"
 #include "algorithm.h"
 #include "memory.h"
-#include "iterator.h"
 #include "static_assert.h"
 #include "parameter_type.h"
 #include "placement_new.h"
