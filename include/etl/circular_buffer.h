@@ -247,6 +247,22 @@ namespace etl
       }
 
       //*************************************************************************
+      /// [] operator
+      //*************************************************************************
+      reference operator [](size_t index)
+      {
+        return pbuffer[(current + index) % picb->buffer_size];
+      }
+
+      //*************************************************************************
+      /// [] operator
+      //*************************************************************************
+      const_reference operator [](size_t index) const
+      {
+        return pbuffer[(current + index) % picb->buffer_size];
+      }
+
+      //*************************************************************************
       /// Pre-increment.
       //*************************************************************************
       iterator& operator ++()
@@ -329,6 +345,18 @@ namespace etl
       friend iterator operator +(const iterator& lhs, int n)
       {
         iterator temp = lhs;
+
+        temp += n;
+
+        return temp;
+      }
+
+      //*************************************************************************
+      /// Add offset.
+      //*************************************************************************
+      friend iterator operator +(int n, const iterator& rhs)
+      {
+        iterator temp = rhs;
 
         temp += n;
 
@@ -515,6 +543,14 @@ namespace etl
       const_pointer operator ->() const
       {
         return &(picb->pbuffer[current]);
+      }
+
+      //*************************************************************************
+      /// [] operator
+      //*************************************************************************
+      const_reference operator [](size_t index) const
+      {
+        return pbuffer[(current + index) % picb->buffer_size];
       }
 
       //*************************************************************************
@@ -996,22 +1032,6 @@ namespace etl
     friend difference_type operator -(const const_iterator& lhs, const const_iterator& rhs)
     {
       return distance(rhs, lhs);
-    }
-
-    //*************************************************************************
-    /// - operator for reverse_iterator
-    //*************************************************************************
-    friend difference_type operator -(const reverse_iterator& lhs, const reverse_iterator& rhs)
-    {
-      return distance(lhs.base(), rhs.base());
-    }
-
-    //*************************************************************************
-    /// - operator for const_reverse_iterator
-    //*************************************************************************
-    friend difference_type operator -(const const_reverse_iterator& lhs, const const_reverse_iterator& rhs)
-    {
-      return distance(lhs.base(), rhs.base());
     }
 
   protected:

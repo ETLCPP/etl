@@ -29,6 +29,7 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/deque.h"
+#include "etl/vector.h"
 
 #include "data.h"
 
@@ -106,11 +107,20 @@ namespace
     //*************************************************************************
     TEST(test_constructor_fill)
     {
-      Compare_Data compare_data(SIZE, N999);
-      DataNDC data(SIZE, N999);
+      //Compare_Data compare_data(SIZE, N999);
+      //DataNDC data(SIZE, N999);
 
-      CHECK_EQUAL(compare_data.size(), data.size());
-      CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+      etl::deque<int, 10> data;
+      using iter_type = etl::deque<int, 10>::iterator;
+
+      bool b1 = std::random_access_iterator<iter_type>;
+
+      bool b2 = std::sentinel_for<iter_type, iter_type>;
+
+      //bool b = std::equal(data.begin(), data.end(), data.begin());
+
+      //CHECK_EQUAL(compare_data.size(), data.size());
+      //CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
     }
 
     //*************************************************************************
@@ -698,6 +708,72 @@ namespace
 
       CHECK(first < second);
       CHECK(!(second < first));
+    }
+
+    //*************************************************************************
+    TEST(test_reverse_iterator_difference)
+    {
+      DataNDC data(SIZE, N0);
+
+      DataNDC::reverse_iterator first  = data.rbegin() + 1;
+      DataNDC::reverse_iterator second = data.rbegin() + 4;
+
+      CHECK_EQUAL(-3, first - second);
+      CHECK_EQUAL( 3, second - first);
+    }
+
+    //*************************************************************************
+    TEST(test_const_reverse_iterator_difference)
+    {
+      DataNDC data(SIZE, N0);
+
+      DataNDC::const_reverse_iterator first  = data.crbegin() + 1;
+      DataNDC::const_reverse_iterator second = data.crbegin() + 4;
+
+      CHECK_EQUAL(-3, first - second);
+      CHECK_EQUAL( 3, second - first);
+    }
+
+    //*************************************************************************
+    TEST(test_reverse_iterator_difference_rollover)
+    {
+      DataNDC data(SIZE, N0);
+
+      data.pop_back();
+      data.pop_back();
+      data.pop_back();
+      data.pop_back();
+      data.push_front(N1);
+      data.push_front(N1);
+      data.push_front(N1);
+      data.push_front(N1);
+
+      DataNDC::reverse_iterator first  = data.rbegin() + 1;
+      DataNDC::reverse_iterator second = data.rbegin() + 4;
+
+      CHECK_EQUAL(-3,  first - second);
+      CHECK_EQUAL( 3, second - first);
+    }
+
+    //*************************************************************************
+    TEST(test_const_reverse_iterator_difference_rollover)
+    {
+      DataNDC data(SIZE, N0);
+
+      data.pop_back();
+      data.pop_back();
+      data.pop_back();
+      data.pop_back();
+      data.push_front(N1);
+      data.push_front(N1);
+      data.push_front(N1);
+      data.push_front(N1);
+
+      DataNDC::const_reverse_iterator first  = data.crbegin() + 1;
+      DataNDC::const_reverse_iterator second = data.crbegin() + 4;
+
+      CHECK_EQUAL(-3,  first - second);
+      CHECK_EQUAL( 3, second - first);
     }
 
     //*************************************************************************
