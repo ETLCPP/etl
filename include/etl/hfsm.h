@@ -55,7 +55,7 @@ namespace etl
     /// Can only be called once.
     /// Subsequent calls will do nothing.
     ///\param call_on_enter_state If true will call on_enter_state() for the first state. Default = true.
-    /// If the first state has child states then they will be recersively entered.
+    /// If the first state has child states then they will be recursively entered.
     //*******************************************
     void start(bool call_on_enter_state = true) ETL_OVERRIDE
     {
