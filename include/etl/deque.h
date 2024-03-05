@@ -352,19 +352,19 @@ namespace etl
       }
 
       //***************************************************
-      reference operator [](size_t index)
+      reference operator [](size_t i)
       {
         iterator result(*this);
-        result += index;
+        result += i;
 
         return *result;
       }
 
       //***************************************************
-      const_reference operator [](size_t index) const
+      const_reference operator [](size_t i) const
       {
         iterator result(*this);
-        result += index;
+        result += i;
 
         return *result;
       }
@@ -622,10 +622,10 @@ namespace etl
       }
 
       //***************************************************
-      reference operator [](size_t index)
+      reference operator [](size_t i)
       {
         iterator result(*this);
-        result += index;
+        result += i;
 
         return *result;
       }

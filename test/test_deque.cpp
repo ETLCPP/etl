@@ -107,20 +107,11 @@ namespace
     //*************************************************************************
     TEST(test_constructor_fill)
     {
-      //Compare_Data compare_data(SIZE, N999);
-      //DataNDC data(SIZE, N999);
+      Compare_Data compare_data(SIZE, N999);
+      DataNDC data(SIZE, N999);
 
-      etl::deque<int, 10> data;
-      using iter_type = etl::deque<int, 10>::iterator;
-
-      bool b1 = std::random_access_iterator<iter_type>;
-
-      bool b2 = std::sentinel_for<iter_type, iter_type>;
-
-      //bool b = std::equal(data.begin(), data.end(), data.begin());
-
-      //CHECK_EQUAL(compare_data.size(), data.size());
-      //CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
+      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK(std::equal(compare_data.begin(), compare_data.end(), data.begin()));
     }
 
     //*************************************************************************
@@ -177,7 +168,6 @@ namespace
     //*************************************************************************
     TEST(test_move_constructor)
     {
-      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
 
       std::unique_ptr<uint32_t> p1(new uint32_t(1U));
@@ -206,7 +196,6 @@ namespace
     //*************************************************************************
     TEST(test_move_insert_erase)
     {
-      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
 
       std::unique_ptr<uint32_t> p1(new uint32_t(1U));
@@ -259,7 +248,6 @@ namespace
     //*************************************************************************
     TEST(test_move_assignment)
     {
-      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
 
       std::unique_ptr<uint32_t> p1(new uint32_t(1U));
@@ -304,7 +292,6 @@ namespace
     //*************************************************************************
     TEST(test_move_assignment_interface)
     {
-      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
       typedef etl::ideque<std::unique_ptr<uint32_t>> IData;
 
@@ -2148,7 +2135,6 @@ namespace
     //*************************************************************************
     TEST(test_move)
     {
-      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
 
       Data data1;
