@@ -111,6 +111,17 @@ namespace
     MoveableCopyable(const MoveableCopyable&) {}
     MoveableCopyable& operator =(const MoveableCopyable&) { return *this; }
   };
+
+  //*********************************************
+  struct NotDefaultConstructible
+  {
+    NotDefaultConstructible() = delete;
+    NotDefaultConstructible(const NotDefaultConstructible&) noexcept {}
+    NotDefaultConstructible& operator =(const NotDefaultConstructible&) noexcept { return *this; }
+
+    NotDefaultConstructible(NotDefaultConstructible&&) = delete;
+    NotDefaultConstructible& operator =(NotDefaultConstructible&) = delete;
+  };
 }
 
 // Definitions for when the STL and compiler built-ins are not available.
@@ -1137,10 +1148,28 @@ namespace
     CHECK((etl::is_constructible_v<Copyable>) == (std::is_constructible_v<Copyable>));
     CHECK((etl::is_constructible_v<Moveable>) == (std::is_constructible_v<Moveable>));
     CHECK((etl::is_constructible_v<MoveableCopyable>) == (std::is_constructible_v<MoveableCopyable>));
+    CHECK((etl::is_constructible_v<NotDefaultConstructible>) == (std::is_constructible_v<NotDefaultConstructible>));
 #else
     CHECK((etl::is_constructible<Copyable>::value) == (std::is_constructible<Copyable>::value));
     CHECK((etl::is_constructible<Moveable>::value) == (std::is_constructible<Moveable>::value));
     CHECK((etl::is_constructible<MoveableCopyable>::value) == (std::is_constructible<MoveableCopyable>::value));
+    CHECK((etl::is_constructible<NotDefaultConstructible>::value) == (std::is_constructible<NotDefaultConstructible>::value));
+#endif
+  }
+
+  //*************************************************************************
+  TEST(test_is_default_constructible)
+  {
+#if ETL_USING_CPP17
+    CHECK((etl::is_default_constructible_v<Copyable>) == (std::is_default_constructible_v<Copyable>));
+    CHECK((etl::is_default_constructible_v<Moveable>) == (std::is_default_constructible_v<Moveable>));
+    CHECK((etl::is_default_constructible_v<MoveableCopyable>) == (std::is_default_constructible_v<MoveableCopyable>));
+    CHECK((etl::is_default_constructible_v<NotDefaultConstructible>) == (std::is_default_constructible_v<NotDefaultConstructible>));
+#else
+    CHECK((etl::is_default_constructible<Copyable>::value) == (std::is_default_constructible<Copyable>::value));
+    CHECK((etl::is_default_constructible<Moveable>::value) == (std::is_default_constructible<Moveable>::value));
+    CHECK((etl::is_default_constructible<MoveableCopyable>::value) == (std::is_default_constructible<MoveableCopyable>::value));
+    CHECK((etl::is_default_constructible<NotDefaultConstructible>::value) == (std::is_default_constructible<NotDefaultConstructible>::value));
 #endif
   }
 
