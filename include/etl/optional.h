@@ -98,15 +98,15 @@ namespace etl
   };
 
   //*****************************************************************************
-  // Implementations for trivial and non trivial types.
+  // Implementations for fundamental and non fundamental types.
   //*****************************************************************************
   namespace private_optional
   {
-    template <typename T, bool IsTrivialType = etl::is_pod<T>::value>
+    template <typename T, bool IsDefaultConstructible = etl::is_integral<T>::value>
     class optional_impl;
 
     //*****************************************************************************
-    // Implementation for non trivial types.
+    // Implementation for non fundamental types.
     //*****************************************************************************
     template <typename T>
     class optional_impl<T, false>
@@ -679,7 +679,7 @@ namespace etl
     };
 
     //*****************************************************************************
-    // Implementation for trivial types.
+    // Implementation for fundamental types.
     //*****************************************************************************
     template <typename T>
     class optional_impl<T, true>
@@ -848,7 +848,7 @@ namespace etl
         ETL_ASSERT(has_value(), ETL_ERROR(optional_invalid));
 #endif
 
-        return &storage.u.value;
+        return &storage.value;
       }
 
       //***************************************************************************
@@ -861,7 +861,7 @@ namespace etl
         ETL_ASSERT(has_value(), ETL_ERROR(optional_invalid));
 #endif
 
-        return &storage.u.value;
+        return &storage.value;
       }
 
       //***************************************************************************
@@ -874,7 +874,7 @@ namespace etl
         ETL_ASSERT(has_value(), ETL_ERROR(optional_invalid));
 #endif
 
-        return storage.u.value;
+        return storage.value;
       }
 
       //***************************************************************************
@@ -887,7 +887,7 @@ namespace etl
         ETL_ASSERT(has_value(), ETL_ERROR(optional_invalid));
 #endif
 
-        return storage.u.value;
+        return storage.value;
       }
 
 #if ETL_USING_CPP11
@@ -901,7 +901,7 @@ namespace etl
         ETL_ASSERT(has_value(), ETL_ERROR(optional_invalid));
 #endif
 
-        return etl::move(storage.u.value);
+        return etl::move(storage.value);
       }
 
       //***************************************************************************
@@ -914,7 +914,7 @@ namespace etl
         ETL_ASSERT(has_value(), ETL_ERROR(optional_invalid));
 #endif
 
-        return etl::move(storage.u.value);
+        return etl::move(storage.value);
       }
 #endif
 
@@ -946,7 +946,7 @@ namespace etl
         ETL_ASSERT(has_value(), ETL_ERROR(optional_invalid));
 #endif
 
-        return storage.u.value;
+        return storage.value;
       }
 
       //***************************************************************************
@@ -959,7 +959,7 @@ namespace etl
         ETL_ASSERT(has_value(), ETL_ERROR(optional_invalid));
 #endif
 
-        return storage.u.value;
+        return storage.value;
       }
 
       //***************************************************************************
@@ -982,7 +982,7 @@ namespace etl
         ETL_ASSERT(has_value(), ETL_ERROR(optional_invalid));
 #endif
 
-        return etl::move(storage.u.value);
+        return etl::move(storage.value);
       }
 
       //***************************************************************************
@@ -995,7 +995,7 @@ namespace etl
         ETL_ASSERT(has_value(), ETL_ERROR(optional_invalid));
 #endif
 
-        return etl::move(storage.u.value);
+        return etl::move(storage.value);
       }
 
       //***************************************************************************
@@ -1065,7 +1065,7 @@ namespace etl
           storage.destroy();
         }
 
-        T* p = ::new (&storage.u.value) T();
+        T* p = ::new (&storage.value) T();
         storage.valid = true;
 
         return *p;
@@ -1084,7 +1084,7 @@ namespace etl
           storage.destroy();
         }
 
-        T* p = ::new (&storage.u.value) T(value1);
+        T* p = ::new (&storage.value) T(value1);
         storage.valid = true;
 
         return *p;
@@ -1103,7 +1103,7 @@ namespace etl
           storage.destroy();
         }
 
-        T* p = ::new (&storage.u.value) T(value1, value2);
+        T* p = ::new (&storage.value) T(value1, value2);
         storage.valid = true;
 
         return *p;
@@ -1122,7 +1122,7 @@ namespace etl
           storage.destroy();
         }
 
-        T* p = ::new (&storage.u.value) T(value1, value2, value3);
+        T* p = ::new (&storage.value) T(value1, value2, value3);
         storage.valid = true;
 
         return *p;
@@ -1141,7 +1141,7 @@ namespace etl
           storage.destroy();
         }
 
-        T* p = ::new (&storage.u.value) T(value1, value2, value3, value4);
+        T* p = ::new (&storage.value) T(value1, value2, value3, value4);
         storage.valid = true;
 
         return *p;
@@ -1150,8 +1150,6 @@ namespace etl
 
     private:
 
-      struct dummy_t {};
-
       //*************************************
       // The storage for the optional value.
       //*************************************
@@ -1159,8 +1157,8 @@ namespace etl
       {
         //*******************************
         ETL_CONSTEXPR14
-          storage_type()
-          : u()
+        storage_type()
+          : value()
           , valid(false)
         {
         }
@@ -1169,7 +1167,7 @@ namespace etl
         ETL_CONSTEXPR14
         void construct(const T& value_)
         {
-          u.value = value_;
+          value = value_;
           valid   = true;
         }
 
@@ -1178,7 +1176,7 @@ namespace etl
         ETL_CONSTEXPR14
         void construct(T&& value_)
         {
-          u.value = value_;
+          value = value_;
           valid = true;
         }
 
@@ -1187,7 +1185,7 @@ namespace etl
         ETL_CONSTEXPR14
         void construct(TArgs&&... args)
         {
-          u.value = T(etl::forward<TArgs>(args)...);
+          value = T(etl::forward<TArgs>(args)...);
           valid = true;
         }
 #endif
@@ -1199,19 +1197,7 @@ namespace etl
           valid = false;
         }
 
-        //*******************************
-        union union_type
-        {
-          ETL_CONSTEXPR14
-          union_type()
-            : dummy()
-          {
-          }
-
-          dummy_t dummy;
-          T       value;
-        } u;
-
+        T    value;
         bool valid;
       };
 
