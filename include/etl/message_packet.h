@@ -76,24 +76,17 @@ namespace etl
 
   private:
 
-    using ThisPacketType = etl::message_packet<TMessageTypes...>;
+    template <typename T>
+    static constexpr bool IsMessagePacket = etl::is_same_v< etl::remove_const_t<etl::remove_reference_t<T>>, etl::message_packet<TMessageTypes...>>;
 
     template <typename T>
-    static constexpr bool IsMessagePacket = etl::is_same_v<remove_cvref_t<T>, ThisPacketType>;
+    static constexpr bool IsInMessageList = etl::is_one_of_v<etl::remove_const_t<etl::remove_reference_t<T>>, TMessageTypes...>;
 
     template <typename T>
-    static constexpr bool IsInMessageList = etl::is_one_of_v<etl::remove_cvref_t<T>, TMessageTypes...>;
-
-    template <typename T>
-    static constexpr bool IsIMessage = etl::is_same_v<etl::remove_cvref_t<T>, etl::imessage>;   
-
-    template <typename T>
-    static constexpr bool IsDerivedFromIMessage = etl::is_base_of_v<etl::imessage, etl::remove_cvref_t<T>>;
+    static constexpr bool IsIMessage = etl::is_same_v<remove_const_t<etl::remove_reference_t<T>>, etl::imessage>;
 
   public:
 
-    //********************************************
-    /// Default constructor
     //********************************************
 #include "private/diagnostic_uninitialized_push.h"
     message_packet()
@@ -103,88 +96,39 @@ namespace etl
 #include "private/diagnostic_pop.h"
 
     //********************************************
-    /// Copy constructor
-    //********************************************
-#include "private/diagnostic_uninitialized_push.h"
-    message_packet(const message_packet& other)
-      : valid(other.is_valid())
-    {
-      if (valid)
-      {
-        add_new_message(other.get());
-      }
-    }
-#include "private/diagnostic_pop.h"
-
-    //********************************************
-    /// Move constructor
-    //********************************************
-#include "private/diagnostic_uninitialized_push.h"
-    message_packet(message_packet&& other)
-      : valid(other.is_valid())
-    {
-      if (valid)
-      {
-        add_new_message(etl::move(other.get()));
-      }
-    }
-#include "private/diagnostic_pop.h"
-
-#include "private/diagnostic_uninitialized_push.h"
-    //********************************************
     ///
     //********************************************
-    explicit message_packet(const etl::imessage& msg)
+#include "private/diagnostic_uninitialized_push.h"
+    template <typename T>
+    explicit message_packet(T&& msg)
       : valid(true)
     {
-      if (accepts(msg))
+      if constexpr (IsIMessage<T>)
       {
-        add_new_message(msg);
-        valid = true;
+        if (accepts(msg))
+        {
+          add_new_message(etl::forward<T>(msg));
+          valid = true;
+        }
+        else
+        {
+          valid = false;
+        }
+
+        ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
+      }
+      else if constexpr (IsInMessageList<T>)
+      {
+        add_new_message_type<T>(etl::forward<T>(msg));
+      }
+      else if constexpr (IsMessagePacket<T>)
+      {
+        copy(etl::forward<T>(msg));
       }
       else
       {
-        valid = false;
+        ETL_STATIC_ASSERT(IsInMessageList<T>, "Message not in packet type list");
       }
-
-      ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
-    }
-#include "private/diagnostic_pop.h"
-
-#include "private/diagnostic_uninitialized_push.h"
-    //********************************************
-    ///
-    //********************************************
-    explicit message_packet(etl::imessage&& msg)
-      : valid(true)
-    {
-      if (accepts(msg))
-      {
-        add_new_message(etl::move(msg));
-        valid = true;
-      }
-      else
-      {
-        valid = false;
-      }
-
-      ETL_ASSERT(valid, ETL_ERROR(unhandled_message_exception));
-    }
-#include "private/diagnostic_pop.h"
-
-#include "private/diagnostic_uninitialized_push.h"
-    //********************************************
-    /// Enabled for types that are not a message packet or etl::imessage
-    /// Invokes a static assert for types not in the message type list.
-    //********************************************
-    template <typename T, typename = etl::enable_if_t<!IsMessagePacket<T> &&
-                                                      !IsIMessage<T>, int>>
-      explicit message_packet(T&& msg)
-      : valid(true)
-    {
-      ETL_STATIC_ASSERT(IsInMessageList<T>, "Message type not in packet type list");
-
-      add_new_message_type(etl::forward<T>(msg));
     }
 #include "private/diagnostic_pop.h"
 
@@ -286,7 +230,7 @@ namespace etl
     //**********************************************
     template <typename TMessage>
     static ETL_CONSTEXPR
-    typename etl::enable_if_t<etl::is_base_of_v<etl::imessage, TMessage>, bool>
+      typename etl::enable_if<etl::is_base_of<etl::imessage, TMessage>::value, bool>::type
       accepts()
     {
       return accepts<TMessage::ID>();
@@ -294,7 +238,7 @@ namespace etl
 
     enum
     {
-      SIZE      = etl::largest<TMessageTypes...>::size,
+      SIZE = etl::largest<TMessageTypes...>::size,
       ALIGNMENT = etl::largest<TMessageTypes...>::alignment
     };
 
@@ -344,11 +288,11 @@ namespace etl
     /// Only enabled for types that are in the typelist.
     //********************************************
     template <typename TMessage>
-    etl::enable_if_t<IsInMessageList<TMessage>>
+    etl::enable_if_t<etl::is_one_of_v<etl::remove_const_t<etl::remove_reference_t<TMessage>>, TMessageTypes...>, void>
       add_new_message_type(TMessage&& msg)
     {
       void* p = data;
-      new (p) etl::remove_cvref_t<TMessage>((etl::forward<TMessage>(msg)));
+      new (p) etl::remove_reference_t<TMessage>((etl::forward<TMessage>(msg)));
     }
 #include "private/diagnostic_pop.h"
 
