@@ -72,9 +72,12 @@ namespace etl
     //***************************************************************************
     /// Constructor
     /// \param owner The message owner.
+    /// \param args  The constructor arguments.
     //***************************************************************************
-    reference_counted_message(etl::ireference_counted_message_pool& owner_)
-      : owner(owner_)
+    template <typename... Args>
+    reference_counted_message(etl::ireference_counted_message_pool& owner_, Args&&... args)
+      : rc_object(etl::forward<Args>(args)...)
+      , owner(owner_)
     {
     }
 
