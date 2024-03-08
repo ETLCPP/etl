@@ -37,35 +37,35 @@ namespace
 
   typedef etl::compare<int> CompareInt;
 
-  struct Test
+  struct Object
   {
     int a;
     int b;
   };
 
-  Test ta = { 1, 2 };
-  Test tb = { 2, 3 };
+  Object ta = { 1, 2 };
+  Object tb = { 2, 3 };
 
   //***********************************
-  bool operator <(const Test& lhs, const Test& rhs)
+  bool operator <(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) < (rhs.a + rhs.b);
   }
 
   //***********************************
-  bool operator >(const Test& lhs, const Test& rhs)
+  bool operator >(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) > (rhs.a + rhs.b);
   }
 
   //***********************************
-  bool operator <=(const Test& lhs, const Test& rhs)
+  bool operator <=(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) <= (rhs.a + rhs.b);
   }
 
   //***********************************
-  bool operator >=(const Test& lhs, const Test& rhs)
+  bool operator >=(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) >= (rhs.a + rhs.b);
   }
@@ -73,13 +73,13 @@ namespace
   //***********************************
   struct LessTest
   {
-    bool operator()(const Test& lhs, const Test& rhs) const
+    bool operator()(const Object& lhs, const Object& rhs) const
     {
       return (lhs.a + lhs.b) < (rhs.a + rhs.b);
     }
   };
 
-  typedef etl::compare<Test, LessTest> CompareTest;
+  typedef etl::compare<Object, LessTest> CompareTest;
 
   SUITE(test_compare)
   {

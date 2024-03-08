@@ -95,7 +95,7 @@ namespace etl
 
 namespace
 {
-  SUITE(test_bit_stream_reader)
+  SUITE(test_bit_stream_reader_little_endian)
   {
     //*************************************************************************
     TEST(test_read_bool)

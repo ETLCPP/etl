@@ -62,17 +62,17 @@ namespace etl
   /// An implementation of a bloom filter.
   /// Allows up to three hashes to be defined.
   /// Hashes must support the () operator and define 'argument_type'.
-  ///\tparam DESIRED_WIDTH The desired number of hash results that can be stored. Rounded up to best fit the underlying bitset.
+  ///\tparam Desired_Width The desired number of hash results that can be stored. Rounded up to best fit the underlying bitset.
   ///\tparam THash1        The first hash generator class.
   ///\tparam THash2        The second hash generator class. If omitted, uses the null hash.
   ///\tparam THash3        The third hash generator class.  If omitted, uses the null hash.
   /// The hash classes must define <b>argument_type</b>.
   ///\ingroup bloom_filter
   //***************************************************************************
-  template <size_t DESIRED_WIDTH,
-            typename     THash1,
-            typename     THash2 = private_bloom_filter::null_hash,
-            typename     THash3 = private_bloom_filter::null_hash>
+  template <size_t   Desired_Width,
+            typename THash1,
+            typename THash2 = private_bloom_filter::null_hash,
+            typename THash3 = private_bloom_filter::null_hash>
   class bloom_filter
   {
   private:
@@ -85,7 +85,7 @@ namespace etl
     enum
     {
       // Make the most efficient use of the bitset.
-      WIDTH = etl::bitset<DESIRED_WIDTH>::ALLOCATED_BITS
+      WIDTH = etl::bitset<Desired_Width>::Allocated_Bits
     };
 
     //***************************************************************************

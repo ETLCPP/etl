@@ -203,6 +203,14 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Option to enable repair-after-memcpy for icircular_buffer.
+#if defined(ETL_ICIRCULAR_BUFFER_REPAIR_ENABLE)
+#define ETL_HAS_ICIRCULAR_BUFFER_REPAIR 1
+#else
+#define ETL_HAS_ICIRCULAR_BUFFER_REPAIR 0
+#endif
+
+//*************************************
 // Indicate if C++ exceptions are enabled.
 #if defined(ETL_THROW_EXCEPTIONS)
   #define ETL_USING_EXCEPTIONS 1
@@ -249,7 +257,6 @@ SOFTWARE.
   #define ETL_CONSTEXPR                   constexpr
   #define ETL_CONSTEXPR11                 constexpr // Synonym for ETL_CONSTEXPR
   #define ETL_CONSTANT                    constexpr
-  #define ETL_STATIC_CONSTANT             constexpr
   #define ETL_DELETE                      = delete
   #define ETL_EXPLICIT                    explicit
   #define ETL_OVERRIDE                    override
@@ -271,7 +278,6 @@ SOFTWARE.
   #define ETL_CONSTEXPR
   #define ETL_CONSTEXPR11
   #define ETL_CONSTANT                    const
-  #define ETL_STATIC_CONSTANT             static const
   #define ETL_DELETE
   #define ETL_EXPLICIT
   #define ETL_OVERRIDE
@@ -479,6 +485,7 @@ namespace etl
     static ETL_CONSTANT bool has_string_clear_after_use       = (ETL_HAS_STRING_CLEAR_AFTER_USE == 1);
     static ETL_CONSTANT bool has_istring_repair               = (ETL_HAS_ISTRING_REPAIR == 1);
     static ETL_CONSTANT bool has_ivector_repair               = (ETL_HAS_IVECTOR_REPAIR == 1);
+    static ETL_CONSTANT bool has_icircular_buffer_repair      = (ETL_HAS_ICIRCULAR_BUFFER_REPAIR == 1);
     static ETL_CONSTANT bool has_mutable_array_view           = (ETL_HAS_MUTABLE_ARRAY_VIEW == 1);
     static ETL_CONSTANT bool has_ideque_repair                = (ETL_HAS_IDEQUE_REPAIR == 1);
     static ETL_CONSTANT bool has_virtual_messages             = (ETL_HAS_VIRTUAL_MESSAGES == 1);

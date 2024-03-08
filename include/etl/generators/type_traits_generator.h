@@ -74,7 +74,7 @@ cog.outl("//********************************************************************
 
 ///\defgroup type_traits type_traits
 /// A set of type traits definitions.
-/// Derived from either the standard or alternate definitions, dependant on whether or not ETL_NO_STL is defined.
+/// Derived from either the standard or alternate definitions, dependent on whether or not ETL_NO_STL is defined.
 /// \ingroup utilities
 
 #if ETL_USING_STL && ETL_USING_CPP11
@@ -1643,6 +1643,11 @@ typedef integral_constant<bool, true>  true_type;
   using is_constructible = std::is_constructible<T, TArgs...>;
 
   //*********************************************
+  // is_default_constructible
+  template<typename T, typename... TArgs>
+  using is_default_constructible = std::is_default_constructible<T>;
+
+  //*********************************************
   // is_copy_constructible
   template <typename T>
   using is_copy_constructible = std::is_copy_constructible<T>;
@@ -1878,6 +1883,14 @@ typedef integral_constant<bool, true>  true_type;
   {
   };
 #endif
+
+  //*********************************************
+  // is_default_constructible
+  template<typename T, typename = void>
+  struct is_default_constructible : etl::false_type { };
+
+  template<typename T>
+  struct is_default_constructible<T, etl::void_t<decltype(T())>> : etl::true_type { };
 
   //*********************************************
   // is_copy_constructible

@@ -151,10 +151,10 @@ namespace etl
     typedef typename etl::make_unsigned<ETL_BITSET_ELEMENT_TYPE>::type element_type;
     typedef element_type element_t; // Backward compatibility
 
-    static ETL_CONSTANT element_type ALL_SET = etl::integral_limits<element_type>::max;
+    static ETL_CONSTANT element_type ALL_SET   = etl::integral_limits<element_type>::max;
     static ETL_CONSTANT element_type ALL_CLEAR = 0;
 
-    static ETL_CONSTANT size_t    Bits_Per_Element = etl::integral_limits<element_type>::bits;
+    static ETL_CONSTANT size_t       Bits_Per_Element  = etl::integral_limits<element_type>::bits;
 
 #if ETL_USING_CPP11
     typedef etl::span<element_type>       span_type;
@@ -311,7 +311,7 @@ namespace etl
     //*************************************************************************
     ibitset& set()
     {
-      ::memset(pdata, 0xFF, Number_Of_Elements);
+      etl::fill_n(pdata, Number_Of_Elements - 1U, ALL_SET);
       pdata[Number_Of_Elements - 1U] = Top_Mask;
 
       return *this;
@@ -429,7 +429,14 @@ namespace etl
     //*************************************************************************
     ibitset& set(const char* text)
     {
-      from_string(text);
+      if (text == ETL_NULLPTR)
+      {
+        reset();
+      }
+      else
+      {
+        from_string(text);
+      }
 
       return *this;
     }
@@ -439,7 +446,14 @@ namespace etl
     //*************************************************************************
     ibitset& set(const wchar_t* text)
     {
-      from_string(text);
+      if (text == ETL_NULLPTR)
+      {
+        reset();
+      }
+      else
+      {
+        from_string(text);
+      }
 
       return *this;
     }
@@ -449,7 +463,14 @@ namespace etl
     //*************************************************************************
     ibitset& set(const char16_t* text)
     {
-      from_string(text);
+      if (text == ETL_NULLPTR)
+      {
+        reset();
+      }
+      else
+      {
+        from_string(text);
+      }
 
       return *this;
     }
@@ -459,7 +480,14 @@ namespace etl
     //*************************************************************************
     ibitset& set(const char32_t* text)
     {
-      from_string(text);
+      if (text == ETL_NULLPTR)
+      {
+        reset();
+      }
+      else
+      {
+        from_string(text);
+      }
 
       return *this;
     }
@@ -491,7 +519,7 @@ namespace etl
       return v;
     }
 
-    //*************************************************************************
+    //************************************************************************* 
     /// Put to a unsigned long.
     //*************************************************************************
     unsigned long to_ulong() const
@@ -512,7 +540,7 @@ namespace etl
     //*************************************************************************
     ibitset& reset()
     {
-      ::memset(pdata, 0x00, Number_Of_Elements);
+      etl::fill_n(pdata, Number_Of_Elements, ALL_CLEAR);
 
       return *this;
     }
@@ -554,10 +582,10 @@ namespace etl
     //*************************************************************************
     ibitset& flip()
     {
-      for (size_t i = 0UL; i < Number_Of_Elements; ++i)
-      {
-        pdata[i] = ~pdata[i];
-      }
+      etl::transform_n(pdata, 
+                       Number_Of_Elements, 
+                       pdata, 
+                       etl::binary_not<element_type>());
 
       clear_unused_bits_in_msb();
 
@@ -832,7 +860,7 @@ namespace etl
             --dst_index;
 
             // Shift lsb.
-            element_type lsb = element_type((pdata[src_index] & lsb_mask) << lsb_shift);
+            lsb = element_type((pdata[src_index] & lsb_mask) << lsb_shift);
             pdata[dst_index] = lsb;
             --src_index;
           }
@@ -1194,7 +1222,6 @@ namespace etl
     //*************************************************************************
     bitset<MaxN>& set(const char* text)
     {
-      ETL_ASSERT_OR_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
       etl::ibitset::set(text);
 
       return *this;
@@ -1205,7 +1232,6 @@ namespace etl
     //*************************************************************************
     bitset<MaxN>& set(const wchar_t* text)
     {
-      ETL_ASSERT_OR_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
       etl::ibitset::set(text);
 
       return *this;
@@ -1216,7 +1242,6 @@ namespace etl
     //*************************************************************************
     bitset<MaxN>& set(const char16_t* text)
     {
-      ETL_ASSERT_OR_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
       etl::ibitset::set(text);
 
       return *this;
@@ -1227,7 +1252,6 @@ namespace etl
     //*************************************************************************
     bitset<MaxN>& set(const char32_t* text)
     {
-      ETL_ASSERT_OR_RETURN_VALUE(text != 0, ETL_ERROR(bitset_nullptr), *this);
       etl::ibitset::set(text);
 
       return *this;

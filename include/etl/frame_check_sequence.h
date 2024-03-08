@@ -76,7 +76,7 @@ namespace etl
       }
 
       //***********************************
-      add_insert_iterator& operator =(typename TFrame_Check_Sequence::value_type value)
+      add_insert_iterator& operator =(uint8_t value)
       {
         p_fcs->add(value);
         return *this;

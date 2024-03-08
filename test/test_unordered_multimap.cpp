@@ -1030,6 +1030,7 @@ namespace
       CHECK((!std::is_same<typename Map::const_iterator::value_type, typename Map::iterator::value_type>::value));
     }
 
+    //*************************************************************************
     TEST(test_parameterized_eq)
     {
       constexpr std::size_t MODULO = 4;
@@ -1052,6 +1053,20 @@ namespace
         auto range = constmap.equal_range(6);
         CHECK_EQUAL(std::distance(range.first, range.second), 3);
       }
+    }
+
+    //*************************************************************************
+    TEST(test_iterator_value_types_bug_803)
+    {
+      using Map1 = etl::unordered_multimap<std::string, NDC, SIZE, 5>;
+      using Map2 = etl::unordered_multimap<std::string, NDC, 2 * SIZE, 10>;
+
+      Map1 map1(initial_data.begin(), initial_data.end());
+      Map2 map2a(initial_data.begin(), initial_data.end());
+      Map2 map2b(different_data.begin(), different_data.end());
+
+      CHECK_TRUE(map1 == map2a);
+      CHECK_FALSE(map1 == map2b);
     }
   };
 }

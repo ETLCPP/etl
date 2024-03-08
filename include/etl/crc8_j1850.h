@@ -1,3 +1,5 @@
+///\file
+
 /******************************************************************************
 The MIT License(MIT)
 
@@ -5,7 +7,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2015 John Wellbelove
+Copyright(c) 2021 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -26,65 +28,52 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "unit_test_framework.h"
+#ifndef ETL_CRC8_J1850_INCLUDED
+#define ETL_CRC8_J1850_INCLUDED
 
-#include <string>
-#include <ostream>
+#include "platform.h"
+#include "private/crc_implementation.h"
 
-#include "etl/parameter_type.h"
-
-namespace
-{
-  class Object
-  {
-  public:
-
-    Object()
-      : p(new int())
-    {
-      *p = 4;
-    }
-
-    ~Object()
-    {
-      delete p;
-    }
-
-    int* p;
-  };
-
-  class Object2 : public Object
-  {
-  };
-}
+///\defgroup SAE J1850 8 bit CRC calculation
+///\ingroup crc
 
 namespace etl
 {
-  // Object2 is a value parameter type.
-  template <>
-  struct parameter_type<Object2>
+#if ETL_USING_CPP11 && !defined(ETL_CRC_FORCE_CPP03_IMPLEMENTATION)
+  template <size_t Table_Size>
+  using crc8_j1850_t = etl::crc_type<etl::private_crc::crc8_j1850_parameters, Table_Size>;
+#else
+  template <size_t Table_Size>
+  class crc8_j1850_t : public etl::crc_type<etl::private_crc::crc8_j1850_parameters, Table_Size>
   {
-    typedef Object2 type;
-  };
-}
+  public:
 
-namespace
-{
-  SUITE(test_parameter_type)
-  {
     //*************************************************************************
-    TEST(test_parameters)
+    /// Default constructor.
+    //*************************************************************************
+    crc8_j1850_t()
     {
-      bool b;
+      this->reset();
+    }
 
-      b = !etl::is_reference<etl::parameter_type<int>::type>::value;
-      CHECK(b);
-
-      b = etl::is_reference<etl::parameter_type<Object>::type>::value;
-      CHECK(b);
-
-      b = !etl::is_reference<etl::parameter_type<Object2>::type>::value;
-      CHECK(b);
+    //*************************************************************************
+    /// Constructor from range.
+    /// \param begin Start of the range.
+    /// \param end   End of the range.
+    //*************************************************************************
+    template<typename TIterator>
+    crc8_j1850_t(TIterator begin, const TIterator end)
+    {
+      this->reset();
+      this->add(begin, end);
     }
   };
+#endif
+    
+  typedef etl::crc8_j1850_t<256U> crc8_j1850_t256;
+  typedef etl::crc8_j1850_t<16U>  crc8_j1850_t16;
+  typedef etl::crc8_j1850_t<4U>   crc8_j1850_t4;
+  typedef crc8_j1850_t256         crc8_j1850;
 }
+
+#endif
