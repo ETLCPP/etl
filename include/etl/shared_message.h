@@ -50,6 +50,16 @@ namespace etl
   public:
 
     //*************************************************************************
+    /// Creator for in-place instantiation
+    //*************************************************************************
+    template <typename TMessage, typename TPool, typename... Args>
+    static shared_message create(TPool& owner, Args&&... args)
+    {
+      const TMessage* msg = nullptr;
+      return shared_message(owner, msg, etl::forward<Args>(args)...);
+    }
+
+    //*************************************************************************
     /// Constructor
     //*************************************************************************
     template <typename TPool, typename TMessage>
@@ -59,7 +69,24 @@ namespace etl
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "TMessage not derived from etl::imessage");
 
       p_rcmessage = owner.allocate(message);
-      
+
+      if (p_rcmessage != ETL_NULLPTR)
+      {
+        p_rcmessage->get_reference_counter().set_reference_count(1U);
+      }
+    }
+
+    //*************************************************************************
+    /// Constructor
+    //*************************************************************************
+    template <typename TPool, typename TMessage, typename... Args>
+    shared_message(TPool& owner, const TMessage* message, Args&&... args)
+    {
+      ETL_STATIC_ASSERT((etl::is_base_of<etl::ireference_counted_message_pool, TPool>::value), "TPool not derived from etl::ireference_counted_message_pool");
+      ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "TMessage not derived from etl::imessage");
+
+      p_rcmessage = owner.allocate(message, etl::forward<Args>(args)...);
+
       if (p_rcmessage != ETL_NULLPTR)
       {
         p_rcmessage->get_reference_counter().set_reference_count(1U);
