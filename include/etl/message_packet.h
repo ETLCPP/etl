@@ -77,13 +77,10 @@ namespace etl
   private:
 
     template <typename T>
-    static constexpr bool IsMessagePacket = etl::is_same_v< etl::remove_const_t<etl::remove_reference_t<T>>, etl::message_packet<TMessageTypes...>>;
+    static constexpr bool IsInMessageList = etl::is_one_of_v<etl::remove_cvref_t<T>, TMessageTypes...>;
 
     template <typename T>
-    static constexpr bool IsInMessageList = etl::is_one_of_v<etl::remove_const_t<etl::remove_reference_t<T>>, TMessageTypes...>;
-
-    template <typename T>
-    static constexpr bool IsIMessage = etl::is_same_v<remove_const_t<etl::remove_reference_t<T>>, etl::imessage>;
+    static constexpr bool IsIMessage = etl::is_same_v<etl::remove_cvref_t<T>, etl::imessage>;
 
   public:
 
@@ -96,10 +93,11 @@ namespace etl
 #include "private/diagnostic_pop.h"
 
     //********************************************
-    ///
+    /// Explicit construction from imessage 
+    /// or concrete message that's in TMessageTypes.
     //********************************************
 #include "private/diagnostic_uninitialized_push.h"
-    template <typename T>
+    template <typename T, typename = typename etl::enable_if<IsIMessage<T> || IsInMessageList<T>, int>::type>
     explicit message_packet(T&& msg)
       : valid(true)
     {
@@ -121,16 +119,36 @@ namespace etl
       {
         add_new_message_type<T>(etl::forward<T>(msg));
       }
-      else if constexpr (IsMessagePacket<T>)
-      {
-        copy(etl::forward<T>(msg));
-      }
       else
       {
         ETL_STATIC_ASSERT(IsInMessageList<T>, "Message not in packet type list");
       }
     }
 #include "private/diagnostic_pop.h"
+
+    //**********************************************
+    message_packet(const message_packet& other)
+    {
+      valid = other.is_valid();
+
+      if (valid)
+      {
+        add_new_message(other.get());
+      }
+    }
+
+#if ETL_USING_CPP11
+    //**********************************************
+    message_packet(message_packet&& other)
+    {
+      valid = other.is_valid();
+
+      if (valid)
+      {
+        add_new_message(etl::move(other.get()));
+      }
+    }
+#endif
 
     //**********************************************
     void copy(const message_packet& other)
