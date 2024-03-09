@@ -2094,6 +2094,9 @@ typedef integral_constant<bool, true>  true_type;
   template<typename T, typename... TArgs>
   inline constexpr bool is_constructible_v = etl::is_constructible<T, TArgs...>::value;
 
+  template<typename T, typename... TArgs>
+  inline constexpr bool is_default_constructible_v = etl::is_default_constructible<T, TArgs...>::value;
+
   template<typename T>
   inline constexpr bool is_copy_constructible_v = etl::is_copy_constructible<T>::value;
 
