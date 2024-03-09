@@ -1424,7 +1424,10 @@ namespace etl
     //*********************************
     unique_ptr&	operator =(std::nullptr_t) ETL_NOEXCEPT
     {
-      reset(nullptr);
+      if (p)
+      {
+        reset(nullptr);
+      }
 
       return *this;
     }
@@ -1432,7 +1435,10 @@ namespace etl
     //*********************************
     unique_ptr&	operator =(void*) ETL_NOEXCEPT
     {
-      reset(NULL);
+      if (p)
+      {
+        reset(NULL);
+      }
 
       return *this;
     }
