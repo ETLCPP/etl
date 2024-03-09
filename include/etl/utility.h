@@ -672,6 +672,56 @@ namespace etl
     }
   };
 #endif
+
+  //*****************************************************************************
+  /// A tag that can be used as a concrete object to identify a type.
+  //*****************************************************************************
+  template <typename T>
+  struct type_tag
+  {
+    typedef T type;
+    typedef typename etl::remove_cvref<T>::type underlying_type;
+  };
+
+  //***********************************
+  /// Equality operator for type_tag
+  //***********************************
+  template <typename T1, typename T2>
+  ETL_CONSTEXPR bool operator ==(etl::type_tag<T1>, etl::type_tag<T2>)
+  {
+    return etl::is_same<etl::type_tag<T1>, etl::type_tag<T2> >::value;
+  }
+
+  //***********************************
+  /// Inequality operator for type_tag
+  //***********************************
+  template <typename T1, typename T2>
+  ETL_CONSTEXPR bool operator !=(etl::type_tag<T1>, etl::type_tag<T2>)
+  {
+    return !etl::is_same<etl::type_tag<T1>, etl::type_tag<T2> >::value;
+  }
+
+#if ETL_USING_CPP11
+  //***********************************
+  /// type_tag type
+  //***********************************
+  template <typename T>
+  using type_tag_t = typename etl::type_tag<T>::type;
+
+  //***********************************
+  /// type_tag underlying type
+  //***********************************
+  template <typename T>
+  using type_tag_underlying_t = typename etl::type_tag<T>::underlying_type;
+#endif
+
+#if ETL_USING_CPP17
+  //***********************************
+  /// constexpr type_tag value
+  //***********************************
+  template <typename T>
+  inline constexpr etl::type_tag<T> type_tag_v = etl::type_tag<T>{};
+#endif
 }
 
 #endif
