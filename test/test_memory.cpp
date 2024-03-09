@@ -925,6 +925,17 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_unique_ptr_nullptr_from_nullptr_assignment)
+    {
+      etl::unique_ptr<int> up;
+
+      up = nullptr;
+
+      CHECK(up.get() == nullptr);
+      CHECK(!bool(up));
+    }
+
+    //*************************************************************************
     TEST(test_unique_ptr_move_assignment)
     {
       etl::unique_ptr<int> up1(new int(1));
