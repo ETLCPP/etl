@@ -77,6 +77,9 @@ namespace etl
   private:
 
     template <typename T>
+    static constexpr bool IsMessagePacket = etl::is_same_v<etl::remove_cvref_t<T>, etl::message_packet<TMessageTypes...>>;
+
+    template <typename T>
     static constexpr bool IsInMessageList = etl::is_one_of_v<etl::remove_cvref_t<T>, TMessageTypes...>;
 
     template <typename T>
@@ -97,7 +100,7 @@ namespace etl
     /// or concrete message that's in TMessageTypes.
     //********************************************
 #include "private/diagnostic_uninitialized_push.h"
-    template <typename T, typename = typename etl::enable_if<IsIMessage<T> || IsInMessageList<T>, int>::type>
+    template <typename T, typename = typename etl::enable_if<!IsMessagePacket<T>, int>::type>
     explicit message_packet(T&& msg)
       : valid(true)
     {
