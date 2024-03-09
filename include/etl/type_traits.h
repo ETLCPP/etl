@@ -1636,11 +1636,6 @@ typedef integral_constant<bool, true>  true_type;
   using is_constructible = std::is_constructible<T, TArgs...>;
 
   //*********************************************
-  // is_default_constructible
-  template<typename T, typename... TArgs>
-  using is_default_constructible = std::is_default_constructible<T>;
-
-  //*********************************************
   // is_copy_constructible
   template <typename T>
   using is_copy_constructible = std::is_copy_constructible<T>;
@@ -1878,14 +1873,6 @@ typedef integral_constant<bool, true>  true_type;
 #endif
 
   //*********************************************
-  // is_default_constructible
-  template<typename T, typename = void>
-  struct is_default_constructible : etl::false_type { };
-
-  template<typename T>
-  struct is_default_constructible<T, etl::void_t<decltype(T())>> : etl::true_type { };
-
-  //*********************************************
   // is_copy_constructible
   template <typename T, bool B = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
   struct is_copy_constructible;
@@ -2082,6 +2069,24 @@ typedef integral_constant<bool, true>  true_type;
                                                           typename etl::add_lvalue_reference<typename etl::add_const<T2>::type>::type>
   {
   };
+
+#if ETL_USING_CPP11
+  //*********************************************
+  // is_default_constructible
+  template<typename T, typename = void>
+  struct is_default_constructible 
+    : etl::false_type { };
+
+  template<typename T>
+  struct is_default_constructible<T, etl::void_t<decltype(T())>> 
+    : etl::true_type { };
+#else
+  template <typename T>
+  struct is_default_constructible 
+    : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+#endif
 
 #if ETL_USING_CPP17
 
