@@ -226,9 +226,9 @@ namespace etl
     //***************************************************************************
     /// Constructor.
     //***************************************************************************
-    template <typename... Args>
-    reference_counted_object(Args&&... args)
-      : object(etl::forward<Args>(args)...)
+    template <typename... TArgs>
+    reference_counted_object(TArgs&&... args)
+      : object(etl::forward<TArgs>(args)...)
     {
     }
 

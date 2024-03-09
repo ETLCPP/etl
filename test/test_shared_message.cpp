@@ -50,25 +50,29 @@ namespace
   struct Message1 : public etl::message<MessageId1>
   {
     Message1()
-      : i(0)
+      : message()
+      , i(0)
     {
       ++message_1_instantiations;
     }
 
     Message1(int i_)
-      : i(i_)
+      : message()
+      , i(i_)
     {
       ++message_1_instantiations;
     }
 
     Message1(const Message1& msg)
-    : i(msg.i)
+      : message()
+      , i(msg.i)
     {
       ++message_1_instantiations;
     }
 
     Message1(Message1&& msg)
-    : i(msg.i)
+      : message()
+      , i(msg.i)
     {
       ++message_1_instantiations;
     }
@@ -176,7 +180,7 @@ namespace
 
     etl::fixed_sized_memory_block_allocator<pool_message_parameters::max_size,
                                             pool_message_parameters::max_alignment,
-                                            4U> memory_allocator;
+                                            4U> common_memory_allocator;
 
     class atomic_counted_message_factory : public etl::atomic_counted_message_pool
     {
@@ -193,7 +197,7 @@ namespace
         }
     };
 
-    atomic_counted_message_factory message_pool(memory_allocator);
+    atomic_counted_message_factory common_message_pool(common_memory_allocator);
 
     //*************************************************************************
     class Message2Allocator : public etl::ireference_counted_message_pool
@@ -236,7 +240,7 @@ namespace
       message_1_instantiations = 0;
 
 #include "etl/private/diagnostic_pessimizing_move_push.h"
-      etl::shared_message sm (std::move(message_pool.create_message<Message1>()));
+      etl::shared_message sm (std::move(common_message_pool.create_message<Message1>()));
 #include "etl/private/diagnostic_pop.h"
 
       CHECK_EQUAL(1, sm.get_reference_count());
@@ -247,7 +251,7 @@ namespace
     TEST(test_move_constructor_with_parametrized_constructed_message)
     {
 #include "etl/private/diagnostic_pessimizing_move_push.h"
-      etl::shared_message sm(std::move(etl::shared_message(message_pool, Message1(1))));
+      etl::shared_message sm(std::move(etl::shared_message(common_message_pool, Message1(1))));
 #include "etl/private/diagnostic_pop.h"
 
       CHECK_EQUAL(1, sm.get_reference_count());
@@ -259,7 +263,7 @@ namespace
       message_1_instantiations = 0;
 
 #include "etl/private/diagnostic_pessimizing_move_push.h"
-      etl::shared_message sm (std::move(message_pool.create_message<Message1>(1)));
+      etl::shared_message sm (std::move(common_message_pool.create_message<Message1>(1)));
 #include "etl/private/diagnostic_pop.h"
 
       CHECK_EQUAL(1, sm.get_reference_count());
