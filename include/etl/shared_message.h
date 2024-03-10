@@ -55,7 +55,7 @@ namespace etl
     template <typename TMessage, typename TPool, typename... TArgs>
     static shared_message create(TPool& owner, TArgs&&... args)
     {
-      return shared_message(owner, etl::type_tag<TMessage>(), etl::forward<TArgs>(args)...);
+      return shared_message(owner, etl::in_place_type_t<TMessage>(), etl::forward<TArgs>(args)...);
     }
 
     //*************************************************************************
@@ -79,7 +79,7 @@ namespace etl
     /// Constructor
     //*************************************************************************
     template <typename TPool, typename TMessage, typename... TArgs>
-    shared_message(TPool& owner, etl::type_tag<TMessage>, TArgs&&... args)
+    shared_message(TPool& owner, etl::in_place_type_t<TMessage>, TArgs&&... args)
     {
       ETL_STATIC_ASSERT((etl::is_base_of<etl::ireference_counted_message_pool, TPool>::value), "TPool not derived from etl::ireference_counted_message_pool");
       ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "TMessage not derived from etl::imessage");
