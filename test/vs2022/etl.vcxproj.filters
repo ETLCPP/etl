@@ -226,6 +226,9 @@
     <Filter Include="Tests\Codecs">
       <UniqueIdentifier>{9713a35d-8f0e-4722-9b15-a5c477c9ecdb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tests\Scripts\Generator test output">
+      <UniqueIdentifier>{6850e52c-a546-4219-a1bc-b3d1360f6ed7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -1394,6 +1397,33 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\crc8_j1850_zero.h">
       <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\build\generator_tmp\fsm.h">
+      <Filter>Tests\Scripts\Generator test output</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\build\generator_tmp\largest.h">
+      <Filter>Tests\Scripts\Generator test output</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\build\generator_tmp\message_packet.h">
+      <Filter>Tests\Scripts\Generator test output</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\build\generator_tmp\message_router.h">
+      <Filter>Tests\Scripts\Generator test output</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\build\generator_tmp\smallest.h">
+      <Filter>Tests\Scripts\Generator test output</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\build\generator_tmp\type_lookup.h">
+      <Filter>Tests\Scripts\Generator test output</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\build\generator_tmp\type_select.h">
+      <Filter>Tests\Scripts\Generator test output</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\build\generator_tmp\type_traits.h">
+      <Filter>Tests\Scripts\Generator test output</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\build\generator_tmp\variant_pool.h">
+      <Filter>Tests\Scripts\Generator test output</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3304,6 +3334,9 @@
     </ClCompile>
     <ClCompile Include="..\test_crc8_j1850_zero.cpp">
       <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_message.cpp">
+      <Filter>Tests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -77,13 +77,13 @@ namespace etl
   private:
 
     template <typename T>
-    static constexpr bool IsMessagePacket = etl::is_same_v<etl::remove_cvref_t<T>, etl::message_packet<TMessageTypes...>>;
+    static constexpr bool IsMessagePacket = etl::is_same_v< etl::remove_const_t<etl::remove_reference_t<T>>, etl::message_packet<TMessageTypes...>>;
 
     template <typename T>
-    static constexpr bool IsInMessageList = etl::is_one_of_v<etl::remove_cvref_t<T>, TMessageTypes...>;
+    static constexpr bool IsInMessageList = etl::is_one_of_v<etl::remove_const_t<etl::remove_reference_t<T>>, TMessageTypes...>;
 
     template <typename T>
-    static constexpr bool IsIMessage = etl::is_same_v<etl::remove_cvref_t<T>, etl::imessage>;
+    static constexpr bool IsIMessage = etl::is_same_v<remove_const_t<etl::remove_reference_t<T>>, etl::imessage>;
 
   public:
 
@@ -96,11 +96,10 @@ namespace etl
 #include "private/diagnostic_pop.h"
 
     //********************************************
-    /// Explicit construction from imessage 
-    /// or concrete message that's in TMessageTypes.
+    ///
     //********************************************
 #include "private/diagnostic_uninitialized_push.h"
-    template <typename T, typename = typename etl::enable_if<!IsMessagePacket<T>, int>::type>
+    template <typename T, typename = typename etl::enable_if<IsIMessage<T> || IsInMessageList<T>, int>::type>
     explicit message_packet(T&& msg)
       : valid(true)
     {

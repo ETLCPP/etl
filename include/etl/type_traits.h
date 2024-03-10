@@ -2074,16 +2074,13 @@ typedef integral_constant<bool, true>  true_type;
   //*********************************************
   // is_default_constructible
   template<typename T, typename = void>
-  struct is_default_constructible 
-    : etl::false_type { };
+  struct is_default_constructible : etl::false_type { };
 
   template<typename T>
-  struct is_default_constructible<T, etl::void_t<decltype(T())>> 
-    : etl::true_type { };
+  struct is_default_constructible<T, etl::void_t<decltype(T())>> : etl::true_type { };
 #else
   template <typename T>
-  struct is_default_constructible 
-    : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_default_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
   {
   };
 #endif
