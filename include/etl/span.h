@@ -80,14 +80,6 @@ namespace etl
     static ETL_CONSTANT size_t extent = Extent;
 
     //*************************************************************************
-    /// Default constructor.
-    //*************************************************************************
-    ETL_CONSTEXPR span() ETL_NOEXCEPT
-      : pbegin(ETL_NULLPTR)
-    {
-    }
-
-    //*************************************************************************
     /// Construct from iterators + size
     //*************************************************************************
     template <typename TIterator, typename TSize>
