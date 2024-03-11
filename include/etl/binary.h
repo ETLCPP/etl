@@ -344,45 +344,6 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Find the position of the first set bit.
-  /// Starts from LSB.
-  ///\ingroup binary
-  //***************************************************************************
-  template <typename T>
-  ETL_CONSTEXPR14 uint_least8_t first_set_bit_position(T value)
-  {
-    return count_trailing_zeros(value);
-  }
-
-  //***************************************************************************
-  /// Find the position of the first clear bit.
-  /// Starts from LSB.
-  ///\ingroup binary
-  //***************************************************************************
-  template <typename T>
-  ETL_CONSTEXPR14 uint_least8_t first_clear_bit_position(T value)
-  {
-    value = ~value;
-    return count_trailing_zeros(value);
-  }
-
-  //***************************************************************************
-  /// Find the position of the first bit that is clear or set.
-  /// Starts from LSB.
-  ///\ingroup binary
-  //***************************************************************************
-  template <typename T>
-  ETL_CONSTEXPR14 uint_least8_t first_bit_position(bool state, T value)
-  {
-    if (!state)
-    {
-      value = ~value;
-    }
-
-    return count_trailing_zeros(value);
-  }
-
-  //***************************************************************************
   /// Gets the value of the bit at POSITION
   /// Starts from LSB.
   ///\ingroup binary
@@ -2095,6 +2056,45 @@ namespace etl
     typedef typename etl::make_unsigned<T>::type unsigned_t;
 
     return static_cast<T>(count_leading_ones(static_cast<unsigned_t>(value)));
+  }
+
+  //***************************************************************************
+  /// Find the position of the first set bit.
+  /// Starts from LSB.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14 uint_least8_t first_set_bit_position(T value)
+  {
+    return count_trailing_zeros(value);
+  }
+
+  //***************************************************************************
+  /// Find the position of the first clear bit.
+  /// Starts from LSB.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14 uint_least8_t first_clear_bit_position(T value)
+  {
+    value = ~value;
+    return count_trailing_zeros(value);
+  }
+
+  //***************************************************************************
+  /// Find the position of the first bit that is clear or set.
+  /// Starts from LSB.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14 uint_least8_t first_bit_position(bool state, T value)
+  {
+    if (!state)
+    {
+      value = ~value;
+    }
+
+    return count_trailing_zeros(value);
   }
 
 #if ETL_USING_8BIT_TYPES
