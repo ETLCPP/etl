@@ -100,6 +100,7 @@ namespace etl
     {
     }
 
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Allocate a reference counted message from the pool.
     //*************************************************************************
@@ -126,6 +127,7 @@ namespace etl
 
       return p;
     }
+#endif
 
     //*************************************************************************
     /// Allocate a reference counted message from the pool.

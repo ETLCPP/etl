@@ -1401,7 +1401,7 @@ namespace etl
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
   ///\ingroup unordered_multiset
   //***************************************************************************
-  template <typename TKey, typename THash = etl::hash<TKey>, typename TKeyEqual>
+  template <typename TKey, typename THash, typename TKeyEqual>
   bool operator ==(const etl::iunordered_multiset<TKey, THash, TKeyEqual>& lhs, 
                    const etl::iunordered_multiset<TKey, THash, TKeyEqual>& rhs)
   {
@@ -1455,7 +1455,7 @@ namespace etl
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
   ///\ingroup unordered_multiset
   //***************************************************************************
-  template <typename TKey, typename THash = etl::hash<TKey>, typename TKeyEqual>
+  template <typename TKey, typename THash, typename TKeyEqual>
   bool operator !=(const etl::iunordered_multiset<TKey, THash, TKeyEqual>& lhs, 
                    const etl::iunordered_multiset<TKey, THash, TKeyEqual>& rhs)
   {

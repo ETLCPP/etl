@@ -33,6 +33,7 @@
 #include "atomic.h"
 #include "exception.h"
 #include "error_handler.h"
+#include "utility.h"
 
 #include <stdint.h>
 
@@ -223,6 +224,7 @@ namespace etl
     {
     }
 
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Constructor.
     //***************************************************************************
@@ -231,6 +233,7 @@ namespace etl
       : object(etl::forward<TArgs>(args)...)
     {
     }
+#endif
 
     //***************************************************************************
     /// Get a reference to the counted object.

@@ -49,6 +49,7 @@ namespace etl
   {
   public:
 
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Creator for in-place instantiation
     //*************************************************************************
@@ -57,6 +58,7 @@ namespace etl
     {
       return shared_message(owner, etl::in_place_type_t<TMessage>(), etl::forward<TArgs>(args)...);
     }
+#endif
 
     //*************************************************************************
     /// Constructor
@@ -75,6 +77,7 @@ namespace etl
       }
     }
 
+#if ETL_USING_CPP11
     //*************************************************************************
     /// Constructor
     //*************************************************************************
@@ -91,6 +94,7 @@ namespace etl
         p_rcmessage->get_reference_counter().set_reference_count(1U);
       }
     }
+#endif
 
     //*************************************************************************
     /// Constructor

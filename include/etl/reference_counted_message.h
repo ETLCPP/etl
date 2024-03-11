@@ -69,6 +69,7 @@ namespace etl
     typedef TMessage message_type;
     typedef TCounter counter_type;
 
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Constructor
     /// \param owner The message owner.
@@ -80,6 +81,7 @@ namespace etl
       , owner(owner_)
     {
     }
+#endif
 
     //***************************************************************************
     /// Constructor
