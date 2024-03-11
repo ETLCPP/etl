@@ -108,7 +108,7 @@ SUITE(test_message)
     CHECK_FALSE(etl::is_message_base<int>::value);
 
     // Is a user message base?
-    CHECK_TRUE(etl::is_user_message_base<etl::imessage>::value);
+    CHECK_FALSE(etl::is_user_message_base<etl::imessage>::value);
     CHECK_TRUE(etl::is_user_message_base<MessageBase>::value);
     CHECK_FALSE(etl::is_user_message_base<Message>::value);
     CHECK_FALSE(etl::is_user_message_base<int>::value);

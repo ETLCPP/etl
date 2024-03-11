@@ -220,7 +220,7 @@ namespace etl
   /// Is T a base of etl::message<T>
   //***************************************************************************
   template <typename T>
-  struct is_message_base : public etl::bool_constant<etl::is_message<T>::value && !is_message_type<T>::value>
+  struct is_message_base : public etl::bool_constant<etl::is_message<T>::value && !etl::is_message_type<T>::value>
   {
   };
 
@@ -228,7 +228,7 @@ namespace etl
   /// Is T a user defined base of etl::message<T> and not an etl::imessage
   //***************************************************************************
   template <typename T>
-  struct is_user_message_base : public etl::bool_constant<etl::is_message_base<T>::value && !is_imessage<T>::value>
+  struct is_user_message_base : public etl::bool_constant<etl::is_message_base<T>::value && !etl::is_imessage<T>::value>
   {
   };
 
