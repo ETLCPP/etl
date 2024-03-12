@@ -118,6 +118,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_get_constexpr)
+    {
+      class type1_t_tag;
+      typedef etl::type_def<type1_t_tag, uint32_t> type1_t;
+
+      class type2_t_tag;
+      typedef etl::type_def<type2_t_tag, uint32_t> type2_t;
+
+      constexpr type1_t t1(1);
+      constexpr type2_t t2(1);
+
+      CHECK_EQUAL(t1.get(), t2.get());
+    }
+
+    //*************************************************************************
     TEST(test_operators)
     {
       class __type_t__;
