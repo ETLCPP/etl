@@ -257,11 +257,19 @@ namespace etl
             return value;
         }
 
+#if ETL_USING_CPP14
         //*********************************************************************
         ETL_CONSTEXPR const TValue& get() const
         {
             return value;
         }
+#else 
+        //*********************************************************************
+        const TValue& get() const
+        {
+            return value;
+        }
+#endif // ETL_USING_CPP14
 
         //*********************************************************************
         friend ETL_CONSTEXPR bool operator <(const type_def& lhs, const type_def& rhs)
