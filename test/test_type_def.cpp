@@ -52,6 +52,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_macro_constexpr)
+    {
+      ETL_TYPEDEF(uint32_t, type1_t);
+      ETL_TYPEDEF(uint32_t, type2_t);
+
+      constexpr type1_t t1{1};
+      constexpr type2_t t2{1};
+
+      uint32_t i1 = t1.get();
+      uint32_t i2 = t2.get();
+
+      CHECK_EQUAL(i1, i2);
+    }
+
+    //*************************************************************************
     TEST(test_implicit)
     {
       class type1_t_tag;
