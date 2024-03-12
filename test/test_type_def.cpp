@@ -189,5 +189,28 @@ namespace
       CHECK(!(t1 >= t2));
       CHECK(t2 >= t4);
     }
+
+    //*************************************************************************
+    TEST(test_comparisons_constexpr)
+    {
+      class __type_t__;
+      typedef etl::type_def<__type_t__, uint32_t> type_t;
+
+      constexpr type_t t1(1);
+      constexpr type_t t2(2);
+      constexpr type_t t3(t1);
+      constexpr type_t t4(t2);
+
+      CHECK(t1 <  t2);
+      CHECK(!(t2 <  t1));
+      CHECK(t1 <= t2);
+      CHECK(!(t2 <= t1));
+      CHECK(t1 <= t3);
+      CHECK(t2 >  t1);
+      CHECK(!(t1 >  t2));
+      CHECK(t2 >= t1);
+      CHECK(!(t1 >= t2));
+      CHECK(t2 >= t4);
+    }
   };
 }
