@@ -44,7 +44,7 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// Defines <=, >, >= in terms of <
+  /// Defines <=, >, >=, ==, != in terms of <
   /// Default
   //***************************************************************************
   template <typename T, typename TLess = etl::less<T> >
@@ -72,6 +72,16 @@ namespace etl
     static result_type gte(first_argument_type lhs, second_argument_type rhs)
     {
       return !lt(lhs, rhs);
+    }
+
+    static result_type eq(first_argument_type lhs, second_argument_type rhs)
+    {
+      return gte(lhs, rhs) && lte(lhs, rhs);
+    }
+
+    static result_type ne(first_argument_type lhs, second_argument_type rhs)
+    {
+      return !eq(lhs, rhs);
     }
   };
 }

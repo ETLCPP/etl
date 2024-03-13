@@ -71,6 +71,18 @@ namespace
   }
 
   //***********************************
+  bool operator ==(const Test& lhs, const Test& rhs)
+  {
+    return (lhs.a + lhs.b) == (rhs.a + rhs.b);
+  }
+
+  //***********************************
+  bool operator !=(const Test& lhs, const Test& rhs)
+  {
+    return (lhs.a + lhs.b) != (rhs.a + rhs.b);
+  }
+
+  //***********************************
   struct LessTest
   {
     bool operator()(const Test& lhs, const Test& rhs) const
@@ -125,6 +137,28 @@ namespace
       CHECK_EQUAL(ta >= tb, (CompareTest::gte(ta, tb)));
       CHECK_EQUAL(tb >= ta, (CompareTest::gte(tb, ta)));
       CHECK_EQUAL(ta >= ta, (CompareTest::gte(ta, ta)));
+    }
+
+    //*************************************************************************
+    TEST(test_eq)
+    {
+      CHECK_EQUAL(a == b,   (CompareInt::eq(a, b)));
+      CHECK_EQUAL(b == a,   (CompareInt::eq(b, a)));
+      CHECK_EQUAL(a == a,   (CompareInt::eq(a, a)));
+      CHECK_EQUAL(ta == tb, (CompareTest::eq(ta, tb)));
+      CHECK_EQUAL(tb == ta, (CompareTest::eq(tb, ta)));
+      CHECK_EQUAL(ta == ta, (CompareTest::eq(ta, ta)));
+    }
+
+    //*************************************************************************
+    TEST(test_ne)
+    {
+      CHECK_EQUAL(a != b,   (CompareInt::ne(a, b)));
+      CHECK_EQUAL(b != a,   (CompareInt::ne(b, a)));
+      CHECK_EQUAL(a != a,   (CompareInt::ne(a, a)));
+      CHECK_EQUAL(ta != tb, (CompareTest::ne(ta, tb)));
+      CHECK_EQUAL(tb != ta, (CompareTest::ne(tb, ta)));
+      CHECK_EQUAL(ta != ta, (CompareTest::ne(ta, ta)));
     }
   };
 }
