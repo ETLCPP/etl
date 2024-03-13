@@ -52,6 +52,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_macro_constexpr)
+    {
+      ETL_TYPEDEF(uint32_t, type1_t);
+      ETL_TYPEDEF(uint32_t, type2_t);
+
+      constexpr type1_t t1 = type1_t(1);
+      constexpr type2_t t2 = type2_t(1);
+
+      uint32_t i1 = t1.get();
+      uint32_t i2 = t2.get();
+
+      CHECK_EQUAL(i1, i2);
+    }
+
+    //*************************************************************************
     TEST(test_implicit)
     {
       class type1_t_tag;
@@ -70,6 +85,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_implicit_constexpr)
+    {
+      class type1_t_tag;
+      typedef etl::type_def<type1_t_tag, uint32_t> type1_t;
+
+      class type2_t_tag;
+      typedef etl::type_def<type2_t_tag, uint32_t> type2_t;
+
+      constexpr type1_t t1 = type1_t(1);
+      constexpr type2_t t2 = type2_t(1);
+
+      uint32_t i1 = t1.get();
+      uint32_t i2 = t2.get();
+
+      CHECK_EQUAL(i1, i2);
+    }
+
+    //*************************************************************************
     TEST(test_get)
     {
       class type1_t_tag;
@@ -80,6 +113,21 @@ namespace
 
       type1_t t1(1);
       type2_t t2(1);
+
+      CHECK_EQUAL(t1.get(), t2.get());
+    }
+
+    //*************************************************************************
+    TEST(test_get_constexpr)
+    {
+      class type1_t_tag;
+      typedef etl::type_def<type1_t_tag, uint32_t> type1_t;
+
+      class type2_t_tag;
+      typedef etl::type_def<type2_t_tag, uint32_t> type2_t;
+
+      constexpr type1_t t1(1);
+      constexpr type2_t t2(1);
 
       CHECK_EQUAL(t1.get(), t2.get());
     }
@@ -129,6 +177,29 @@ namespace
       type_t t2(2);
       type_t t3(t1);
       type_t t4(t2);
+
+      CHECK(t1 <  t2);
+      CHECK(!(t2 <  t1));
+      CHECK(t1 <= t2);
+      CHECK(!(t2 <= t1));
+      CHECK(t1 <= t3);
+      CHECK(t2 >  t1);
+      CHECK(!(t1 >  t2));
+      CHECK(t2 >= t1);
+      CHECK(!(t1 >= t2));
+      CHECK(t2 >= t4);
+    }
+
+    //*************************************************************************
+    TEST(test_comparisons_constexpr)
+    {
+      class __type_t__;
+      typedef etl::type_def<__type_t__, uint32_t> type_t;
+
+      constexpr type_t t1(1);
+      constexpr type_t t2(2);
+      constexpr type_t t3(t1);
+      constexpr type_t t4(t2);
 
       CHECK(t1 <  t2);
       CHECK(!(t2 <  t1));
