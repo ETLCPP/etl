@@ -173,10 +173,8 @@ namespace
       class __type_t__;
       typedef etl::type_def<__type_t__, uint32_t> type_t;
 
-      constexpr type_t base(0x5A3DUL);
-
       constexpr auto preincrement = []() {
-        type_t t(base);
+        type_t t(0x5A3DUL);
         return ++t;
       };
 
@@ -192,10 +190,8 @@ namespace
       class __type_t__;
       typedef etl::type_def<__type_t__, uint32_t> type_t;
 
-      constexpr type_t base(0x5A3DUL);
-
       constexpr auto postincrement = []() {
-        type_t t(base);
+        type_t t(0x5A3DUL);
         return t++;
       };
 
@@ -211,10 +207,8 @@ namespace
       class __type_t__;
       typedef etl::type_def<__type_t__, uint32_t> type_t;
 
-      constexpr type_t base(0x5A3DUL);
-
       constexpr auto predecrement = []() {
-        type_t t(base);
+        type_t t(0x5A3DUL);
         return --t;
       };
 
@@ -230,10 +224,8 @@ namespace
       class __type_t__;
       typedef etl::type_def<__type_t__, uint32_t> type_t;
 
-      constexpr type_t base(0x5A3DUL);
-
       constexpr auto postdecrement = []() {
-        type_t t(base);
+        type_t t(0x5A3DUL);
         return t--;
       };
 
@@ -249,10 +241,8 @@ namespace
       class __type_t__;
       typedef etl::type_def<__type_t__, uint32_t> type_t;
 
-      constexpr type_t base(0x5A3DUL);
-
       constexpr auto addition_assignment = []() {
-        type_t t(base);
+        type_t t(0x5A3DUL);
         return t += 2;
       };
 
@@ -268,10 +258,8 @@ namespace
       class __type_t__;
       typedef etl::type_def<__type_t__, uint32_t> type_t;
 
-      constexpr type_t base(0x5A3DUL);
-
       constexpr auto subtraction_assignment = []() {
-        type_t t(base);
+        type_t t(0x5A3DUL);
         return t -= 2;
       };
 
@@ -279,6 +267,23 @@ namespace
       constexpr type_t t = subtraction_assignment();
 
       CHECK_EQUAL(i-=2, uint32_t(t));
+    }
+
+    //*************************************************************************
+    TEST(test_operator_multiplication_assignment_constexpr)
+    {
+      class __type_t__;
+      typedef etl::type_def<__type_t__, uint32_t> type_t;
+
+      constexpr auto multiplication_assignment = []() {
+        type_t t(0x5A3DUL);
+        return t *= 2;
+      };
+
+      uint32_t i = 0x5A3DUL;
+      constexpr type_t t = multiplication_assignment();
+
+      CHECK_EQUAL(i*=2, uint32_t(t));
     }
 
     //*************************************************************************
