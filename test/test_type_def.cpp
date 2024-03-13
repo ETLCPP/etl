@@ -355,6 +355,23 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_operator_left_shift_assignment_constexpr)
+    {
+      class __type_t__;
+      typedef etl::type_def<__type_t__, uint32_t> type_t;
+
+      constexpr auto left_shift_assignment = []() {
+        type_t t(0x5A3DUL);
+        return t <<= 2;
+      };
+
+      uint32_t i = 0x5A3DUL;
+      constexpr type_t t = left_shift_assignment();
+
+      CHECK_EQUAL(i<<=2, uint32_t(t));
+    }
+
+    //*************************************************************************
     TEST(test_comparisons)
     {
       class __type_t__;
