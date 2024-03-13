@@ -137,7 +137,7 @@ namespace
     {
       class __type_t__;
       typedef etl::type_def<__type_t__, uint32_t> type_t;
-      
+
       uint32_t i = 0x5A3DUL;
       type_t t(0x5A3DUL);
 
