@@ -170,6 +170,18 @@ namespace etl
   }
 
   //***************************************************************************
+  // generate
+  template <typename TIterator, typename TFunction>
+  ETL_CONSTEXPR14
+  void generate(TIterator db, TIterator de, TFunction funct)
+  {
+    while (db != de)
+    {
+      *db++ = funct();
+    }
+  }
+
+  //***************************************************************************
   // copy
 #if ETL_USING_STL && ETL_USING_CPP20 
   // Use the STL constexpr implementation.
@@ -2009,9 +2021,7 @@ namespace etl
   template <typename TIterator, typename T>
   ETL_CONSTEXPR14
   TIterator remove(TIterator first, TIterator last, const T& value)
-  {
-    first = etl::find(first, last, value);
-      
+  {    
     if (first != last)
     {
       TIterator itr = first;
@@ -2039,8 +2049,6 @@ namespace etl
   ETL_CONSTEXPR14
   TIterator remove_if(TIterator first, TIterator last, TUnaryPredicate predicate)
   {
-    first = etl::find_if(first, last, predicate);
-
     if (first != last)
     {
       TIterator itr = first;
@@ -2177,7 +2185,7 @@ namespace etl
   //***************************************************************************
   /// copy_if
   /// A safer form of copy_if where it terminates when the first end iterator is reached.
-  /// There is currently no STL equivelent.
+  /// There is currently no STL equivalent.
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TInputIterator,

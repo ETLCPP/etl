@@ -66,11 +66,11 @@ namespace
   //*****************************************************************************
   // The test class with member functions.
   //*****************************************************************************
-  class Test
+  class Object
   {
   public:
 
-    Test()
+    Object()
       : callback(*this)
     {
     }
@@ -88,13 +88,13 @@ namespace
     }
 
     // Callback for 'member1'.
-    etl::function_mp<Test, size_t, &Test::member1> callback;
+    etl::function_mp<Object, size_t, &Object::member1> callback;
   };
 
-  Test test;
+  Object object;
 
   // Callback for 'member2'.
-  etl::function_imp<Test, size_t, test, &Test::member2> member_callback;
+  etl::function_imp<Object, size_t, object, &Object::member2> member_callback;
 
   // Callback for 'global'.
   etl::function_fp<size_t, global> global_callback;
@@ -136,7 +136,7 @@ namespace
       Service service;
 
       service.register_callback<GLOBAL>(global_callback);
-      service.register_callback<MEMBER1>(test.callback);
+      service.register_callback<MEMBER1>(object.callback);
       service.register_callback<MEMBER2>(member_callback);
 
       service.callback<GLOBAL>();
@@ -154,7 +154,7 @@ namespace
       Service service;
 
       service.register_callback(GLOBAL,  global_callback);
-      service.register_callback(MEMBER1, test.callback);
+      service.register_callback(MEMBER1, object.callback);
       service.register_callback(MEMBER2, member_callback);
 
       service.callback(GLOBAL);
@@ -172,7 +172,7 @@ namespace
       Service service;
 
       service.register_callback<GLOBAL>(global_callback);
-      service.register_callback<MEMBER1>(test.callback);
+      service.register_callback<MEMBER1>(object.callback);
       service.register_callback<MEMBER2>(member_callback);
 
       service.callback<MEMBER1>();
@@ -190,7 +190,7 @@ namespace
       Service service;
 
       service.register_callback(GLOBAL,  global_callback);
-      service.register_callback(MEMBER1, test.callback);
+      service.register_callback(MEMBER1, object.callback);
       service.register_callback(MEMBER2, member_callback);
 
       service.callback(MEMBER1);
@@ -208,7 +208,7 @@ namespace
       Service service;
 
       service.register_callback<GLOBAL>(global_callback);
-      service.register_callback<MEMBER1>(test.callback);
+      service.register_callback<MEMBER1>(object.callback);
       service.register_callback<MEMBER2>(member_callback);
 
       service.callback<MEMBER2>();
@@ -226,7 +226,7 @@ namespace
       Service service;
 
       service.register_callback<GLOBAL>(global_callback);
-      service.register_callback<MEMBER1>(test.callback);
+      service.register_callback<MEMBER1>(object.callback);
       service.register_callback<MEMBER2>(member_callback);
 
       service.callback(OUT_OF_RANGE);
@@ -244,7 +244,7 @@ namespace
       Service service;
 
       service.register_callback<GLOBAL>(global_callback);
-      service.register_callback<MEMBER1>(test.callback);
+      service.register_callback<MEMBER1>(object.callback);
       service.register_callback<MEMBER2>(member_callback);
 
       service.register_unhandled_callback(unhandled_callback);

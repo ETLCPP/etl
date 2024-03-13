@@ -1427,9 +1427,9 @@ namespace
     {
       struct functor
       {
-        void operator()(const NDC& ndc)
+        void operator()(const NDC& object)
         {
-          result += ndc.value;
+          result += object.value;
         }
 
         std::string result;
@@ -1458,9 +1458,9 @@ namespace
     {
       struct functor
       {
-        bool operator()(const NDC& ndc)
+        bool operator()(const NDC& object)
         {
-          return ndc.value == "4";
+          return object.value == "4";
         }
 
         std::string result;

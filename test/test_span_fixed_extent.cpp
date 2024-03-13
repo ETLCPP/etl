@@ -76,16 +76,6 @@ namespace
     const int ccdata[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     const int* pccdata = ccdata;
 
-    //*************************************************************************
-    TEST(test_default_constructor)
-    {
-      View view;
-
-      CHECK_EQUAL(10U, view.size());
-      CHECK_EQUAL(10U, view.max_size());
-      CHECK(!view.empty());
-    }
-
 #if ETL_USING_CPP20
     //*************************************************************************
     TEST(test_construct_from_std_span)
@@ -272,9 +262,7 @@ namespace
     //*************************************************************************
     TEST(test_implicit_constructor_c_array_2)
     {
-      CView view;
-
-      view = ccdata;
+      CView view(ccdata);
 
       CHECK_EQUAL(SIZE, view.size());
       CHECK_EQUAL(SIZE, view.max_size());
@@ -362,12 +350,11 @@ namespace
     TEST(test_assign_from_span)
     {
       View view1(etldata);
-      View view2;
+      View view2 = view1;
 
       CView cview1(etldata);
-      CView cview2;
+      CView cview2 = view2;
 
-      view2 = view1;
       cview2 = cview1;
 
       CHECK_EQUAL(view1.size(), view2.size());
@@ -1027,22 +1014,16 @@ namespace
       View view2{ data1 };
       View view3{ data2 };
       View view4{ data3 };
-      View view6;
-      View view7;
       SView view8{ data4 };
 
       CHECK_TRUE(etl::equal(view1, view2));
       CHECK_TRUE(etl::equal(view1, view3));
       CHECK_FALSE(etl::equal(view1, view4));
-      CHECK_TRUE(etl::equal(view6, view6));
-      CHECK_TRUE(etl::equal(view6, view7));
       CHECK_FALSE(etl::equal(view1, view8));
 
       CHECK_TRUE(view1 == view2);
       CHECK_FALSE(view1 == view3);
       CHECK_FALSE(view1 == view4);
-      CHECK_TRUE(view6 == view6);
-      CHECK_TRUE(view6 == view7);
       CHECK_FALSE(view1 == view8);
     }
 
@@ -1057,20 +1038,14 @@ namespace
       CView view2{ data1 };
       CView view3{ data2 };
       CView view4{ data3 };
-      View view6;
-      CView view7;
 
       CHECK_TRUE(etl::equal(view1, view2));
       CHECK_TRUE(etl::equal(view1, view3));
       CHECK_FALSE(etl::equal(view1, view4));
-      CHECK_TRUE(etl::equal(view6, view6));
-      CHECK_TRUE(etl::equal(view6, view7));
 
       CHECK_TRUE(view1 == view2);
       CHECK_FALSE(view1 == view3);
       CHECK_FALSE(view1 == view4);
-      CHECK_TRUE(view6 == view6);
-      CHECK_TRUE(view6 == view7);
     }
 
     //*************************************************************************
@@ -1084,20 +1059,14 @@ namespace
       View view2{ data1 };
       View view3{ data2 };
       View view4{ data3 };
-      View view6;
-      View view7;
 
       CHECK_TRUE(etl::equal(view1, view2));
       CHECK_TRUE(etl::equal(view1, view3));
       CHECK_FALSE(etl::equal(view1, view4));
-      CHECK_TRUE(etl::equal(view6, view6));
-      CHECK_TRUE(etl::equal(view6, view7));
 
       CHECK_FALSE(view1 != view2);
       CHECK_TRUE(view1 != view3);
       CHECK_TRUE(view1 != view4);
-      CHECK_FALSE(view6 != view6);
-      CHECK_FALSE(view6 != view7);
     }
 
     //*************************************************************************
@@ -1111,20 +1080,14 @@ namespace
       CView view2{ data1 };
       CView view3{ data2 };
       CView view4{ data3 };
-      View view6;
-      View view7;
 
       CHECK_TRUE(etl::equal(view1, view2));
       CHECK_TRUE(etl::equal(view1, view3));
       CHECK_FALSE(etl::equal(view1, view4));
-      CHECK_TRUE(etl::equal(view6, view6));
-      CHECK_TRUE(etl::equal(view6, view7));
 
       CHECK_FALSE(view1 != view2);
       CHECK_TRUE(view1 != view3);
       CHECK_TRUE(view1 != view4);
-      CHECK_FALSE(view6 != view6);
-      CHECK_FALSE(view6 != view7);
     }
 
     //*************************************************************************

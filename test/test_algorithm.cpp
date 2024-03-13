@@ -84,9 +84,9 @@ namespace
     {
     }
 
-    Data(int a, int b)
-      : a(a)
-      , b(b)
+    Data(int a_, int b_)
+      : a(a_)
+      , b(b_)
     {
     }
 
@@ -2197,6 +2197,32 @@ namespace
 
       bool is_same = std::equal(expected.begin(), expected.end(), data.begin());
       CHECK(is_same);
+    }
+
+    //*************************************************************************
+    struct generator
+    {
+      generator(int value_)
+        : value(value_)
+      {
+      }
+
+      int operator()()
+      {
+        return value++;
+      }
+
+      int value;
+    };
+
+    TEST(generate)
+    {
+      std::array<int, 10> expected = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+      std::array<int, 10> actual;
+
+      etl::generate(actual.begin(), actual.end(), generator(2));
+
+      CHECK_ARRAY_EQUAL(expected.data(), actual.data(), expected.size());
     }
   };
 }

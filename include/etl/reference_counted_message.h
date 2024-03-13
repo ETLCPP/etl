@@ -69,14 +69,19 @@ namespace etl
     typedef TMessage message_type;
     typedef TCounter counter_type;
 
+#if ETL_USING_CPP11
     //***************************************************************************
     /// Constructor
     /// \param owner The message owner.
+    /// \param args  The constructor arguments.
     //***************************************************************************
-    reference_counted_message(etl::ireference_counted_message_pool& owner_)
-      : owner(owner_)
+    template <typename... TArgs>
+    reference_counted_message(etl::ireference_counted_message_pool& owner_, TArgs&&... args)
+      : rc_object(etl::forward<TArgs>(args)...)
+      , owner(owner_)
     {
     }
+#endif
 
     //***************************************************************************
     /// Constructor

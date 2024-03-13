@@ -238,30 +238,38 @@ namespace etl
         }
 
         //*********************************************************************
-        type_def& operator =(TValue rhs)
+        ETL_CONSTEXPR type_def& operator =(TValue rhs)
         {
             value = rhs;
             return *this;
         }
 
         //*********************************************************************
-        type_def& operator =(const type_def& rhs)
+        ETL_CONSTEXPR type_def& operator =(const type_def& rhs)
         {
           value = rhs.value;
           return *this;
         }
 
         //*********************************************************************
-        TValue& get()
+        ETL_CONSTEXPR TValue& get()
         {
             return value;
         }
 
+#if ETL_USING_CPP14
+        //*********************************************************************
+        ETL_CONSTEXPR const TValue& get() const
+        {
+            return value;
+        }
+#else 
         //*********************************************************************
         const TValue& get() const
         {
             return value;
         }
+#endif // ETL_USING_CPP14
 
         //*********************************************************************
         friend ETL_CONSTEXPR bool operator <(const type_def& lhs, const type_def& rhs)

@@ -1274,14 +1274,14 @@ namespace etl
     //*************************************************************************
     /// Move from a range
     //*************************************************************************
-    void move(iterator first, iterator last)
+    void move(iterator b, iterator e)
     {
-      while (first != last)
+      while (b != e)
       {
-        iterator temp = first;
+        iterator temp = b;
         ++temp;
-        insert(etl::move(*first));
-        first = temp;
+        insert(etl::move(*b));
+        b = temp;
       }
     }
 #endif
@@ -1323,7 +1323,7 @@ namespace etl
     //*********************************************************************
     /// Adjust the first and last markers according to the erased entry.
     //*********************************************************************
-    void adjust_first_last_markers_after_erase(bucket_t* pcurrent)
+    void adjust_first_last_markers_after_erase(bucket_t* pbucket)
     {
       if (empty())
       {
@@ -1332,7 +1332,7 @@ namespace etl
       }
       else
       {
-        if (pcurrent == first)
+        if (pbucket == first)
         {
           // We erased the first so, we need to search again from where we erased.
           while (first->empty())
@@ -1340,29 +1340,29 @@ namespace etl
             ++first;
           }
         }
-        else if (pcurrent == last)
+        else if (pbucket == last)
         {
           // We erased the last, so we need to search again. Start from the first, go no further than the current last.
-          bucket_t* pcurrent = first;
+          pbucket = first;
           bucket_t* pend = last;
 
           last = first;
 
-          while (pcurrent != pend)
+          while (pbucket != pend)
           {
-            if (!pcurrent->empty())
+            if (!pbucket->empty())
             {
-              last = pcurrent;
+              last = pbucket;
             }
 
-            ++pcurrent;
+            ++pbucket;
           }
         }
       }
     }
 
     //*********************************************************************
-    /// Delete a data noe at the specified location.
+    /// Delete a data node at the specified location.
     //*********************************************************************
     local_iterator delete_data_node(local_iterator iprevious, local_iterator icurrent, bucket_t& bucket)
     {
@@ -1423,20 +1423,48 @@ namespace etl
   ///\return <b>true</b> if the arrays are equal, otherwise <b>false</b>
   ///\ingroup unordered_multimap
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator ==(const etl::iunordered_multimap<TKey, TMapped, TKeyCompare>& lhs, const etl::iunordered_multimap<TKey, TMapped, TKeyCompare>& rhs)
+  template <typename TKey, typename T, typename THash, typename TKeyEqual>
+  bool operator ==(const etl::iunordered_multimap<TKey, T, THash, TKeyEqual>& lhs, 
+                   const etl::iunordered_multimap<TKey, T, THash, TKeyEqual>& rhs)
   {
     const bool sizes_match = (lhs.size() == rhs.size());
     bool elements_match = true;
 
+    typedef typename etl::iunordered_multimap<TKey, T, THash, TKeyEqual>::const_iterator itr_t;
+
     if (sizes_match)
     {
-      for (size_t i = 0; (i < lhs.bucket_count()) && elements_match; ++i)
+      itr_t l_begin = lhs.begin();
+      itr_t l_end   = lhs.end();
+
+      while ((l_begin != l_end) && elements_match)
       {
-        if (!etl::is_permutation(lhs.begin(i), lhs.end(i), rhs.begin(i)))
+        const TKey key     = l_begin->first;
+        const T    l_value = l_begin->second;
+
+        // See if the lhs keys exist in the rhs.
+        ETL_OR_STD::pair<itr_t, itr_t> l_range = lhs.equal_range(key);
+        ETL_OR_STD::pair<itr_t, itr_t> r_range = rhs.equal_range(key);
+
+        if (r_range.first != rhs.end())
+        {
+          bool distance_match = (etl::distance(l_range.first, l_range.second) == etl::distance(r_range.first, r_range.second));
+
+          if (distance_match)
+          {
+            elements_match = etl::is_permutation(l_range.first, l_range.second, r_range.first, r_range.second);
+          }
+          else
+          {
+            elements_match = false;
+          }
+        }
+        else
         {
           elements_match = false;
         }
+
+        ++l_begin;
       }
     }
 
@@ -1450,8 +1478,9 @@ namespace etl
   ///\return <b>true</b> if the arrays are not equal, otherwise <b>false</b>
   ///\ingroup unordered_multimap
   //***************************************************************************
-  template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator !=(const etl::iunordered_multimap<TKey, TMapped, TKeyCompare>& lhs, const etl::iunordered_multimap<TKey, TMapped, TKeyCompare>& rhs)
+  template <typename TKey, typename T, typename THash, typename TKeyEqual>
+  bool operator !=(const etl::iunordered_multimap<TKey, T, THash, TKeyEqual>& lhs, 
+                   const etl::iunordered_multimap<TKey, T, THash, TKeyEqual>& rhs)
   {
     return !(lhs == rhs);
   }

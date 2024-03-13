@@ -868,9 +868,9 @@ namespace etl
     /// Default constructor.
     //*************************************************************************
 
-    queue_spsc_locked(const etl::ifunction<void>& lock,
-                      const etl::ifunction<void>& unlock)
-      : base_t(reinterpret_cast<T*>(buffer.raw), MAX_SIZE, lock, unlock)
+    queue_spsc_locked(const etl::ifunction<void>& lock_,
+                      const etl::ifunction<void>& unlock_)
+      : base_t(reinterpret_cast<T*>(buffer.raw), MAX_SIZE, lock_, unlock_)
     {
     }
 

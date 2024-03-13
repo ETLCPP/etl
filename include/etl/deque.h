@@ -41,7 +41,6 @@ SOFTWARE.
 #include "debug_count.h"
 #include "algorithm.h"
 #include "type_traits.h"
-#include "iterator.h"
 #include "placement_new.h"
 #include "initializer_list.h"
 
@@ -258,17 +257,17 @@ namespace etl
 
       //***************************************************
       iterator(const iterator& other)
-        : index(other.index),
-        p_deque(other.p_deque),
-        p_buffer(other.p_buffer)
+        : index(other.index)
+        , p_deque(other.p_deque)
+        , p_buffer(other.p_buffer)
       {
       }
 
       //***************************************************
       iterator& operator =(const iterator& other)
       {
-        index = other.index;
-        p_deque = other.p_deque;
+        index    = other.index;
+        p_deque  = other.p_deque;
         p_buffer = other.p_buffer;
 
         return *this;
@@ -353,7 +352,33 @@ namespace etl
       }
 
       //***************************************************
+      reference operator [](size_t i)
+      {
+        iterator result(*this);
+        result += i;
+
+        return *result;
+      }
+
+      //***************************************************
+      const_reference operator [](size_t i) const
+      {
+        iterator result(*this);
+        result += i;
+
+        return *result;
+      }
+
+      //***************************************************
       friend iterator operator +(const iterator& lhs, difference_type offset)
+      {
+        iterator result(lhs);
+        result += offset;
+        return result;
+      }
+
+      //***************************************************
+      friend iterator operator +(difference_type offset, const iterator& lhs)
       {
         iterator result(lhs);
         result += offset;
@@ -597,7 +622,24 @@ namespace etl
       }
 
       //***************************************************
+      reference operator [](size_t i)
+      {
+        iterator result(*this);
+        result += i;
+
+        return *result;
+      }
+
+      //***************************************************
       friend const_iterator operator +(const const_iterator& lhs, difference_type offset)
+      {
+        const_iterator result(lhs);
+        result += offset;
+        return result;
+      }
+
+      //***************************************************
+      friend const_iterator operator +(difference_type offset, const const_iterator& lhs)
       {
         const_iterator result(lhs);
         result += offset;
@@ -2055,22 +2097,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// - operator for reverse_iterator
-    //*************************************************************************
-    friend difference_type operator -(const reverse_iterator& lhs, const reverse_iterator& rhs)
-    {
-      return distance(lhs.base(), rhs.base());
-    }
-
-    //*************************************************************************
-    /// - operator for const_reverse_iterator
-    //*************************************************************************
-    friend difference_type operator -(const const_reverse_iterator& lhs, const const_reverse_iterator& rhs)
-    {
-      return distance(lhs.base(), rhs.base());
-    }
-
-    //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
     ideque& operator =(const ideque& rhs)
@@ -2483,11 +2509,9 @@ namespace etl
     /// Fix the internal pointers after a low level memory copy.
     //*************************************************************************
 #ifdef ETL_IDEQUE_REPAIR_ENABLE
-      virtual
-#endif
-      void repair()
-#ifdef ETL_IDEQUE_REPAIR_ENABLE
-      ETL_OVERRIDE
+        virtual void repair() ETL_OVERRIDE
+#else
+        void repair()
 #endif
     {
 #if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED

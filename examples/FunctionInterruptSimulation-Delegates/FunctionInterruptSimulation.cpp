@@ -119,7 +119,7 @@ Uart  uart1(0, USART1_IRQ_HANDLER);
 Uart  uart2(1, USART2_IRQ_HANDLER);
 
 // Declare a global callback for the timer.
-// Uses the most efficient callback type for a class, as everthing is known at compile time.
+// Uses the most efficient callback type for a class, as everything is known at compile time.
 etl::delegate<void(size_t)> timer_member_callback = etl::delegate<void(size_t)>::create<Timer, timer, &Timer::InterruptHandler>();
 
 // Declare the callbacks for the free functions.

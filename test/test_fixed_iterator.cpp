@@ -101,21 +101,21 @@ namespace
     //*************************************************************************
     TEST(test_member_dereference_operator)
     {
-      struct Test
+      struct Object
       {
         int a;
         int b;
-      } test = { 1, 2 };
+      } object = { 1, 2 };
 
-      etl::fixed_iterator<Test*> fi(&test);
+      etl::fixed_iterator<Object*> fi(&object);
 
-      CHECK_EQUAL(test.a, fi->a);
-      CHECK_EQUAL(test.b, fi->b);
+      CHECK_EQUAL(object.a, fi->a);
+      CHECK_EQUAL(object.b, fi->b);
 
       *fi = { 3, 4 };
 
-      CHECK_EQUAL(test.a, fi->a);
-      CHECK_EQUAL(test.b, fi->b);
+      CHECK_EQUAL(object.a, fi->a);
+      CHECK_EQUAL(object.b, fi->b);
     }
 
     //*************************************************************************

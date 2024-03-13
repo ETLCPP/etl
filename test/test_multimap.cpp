@@ -106,7 +106,7 @@ namespace
     //*************************************************************************
     struct SetupFixture
     {
-      // Multimaps of predefined data from which to constuct multimaps used in
+      // Multimaps of predefined data from which to construct multimaps used in
       // each test
       std::multimap<std::string, int> initial_data;
       std::multimap<std::string, int> excess_data;

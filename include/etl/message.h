@@ -62,6 +62,8 @@ namespace etl
     }
   };
 
+  class message_tag {};
+
 #if ETL_HAS_VIRTUAL_MESSAGES
   //***************************************************************************
   /// Message interface.
@@ -85,9 +87,13 @@ namespace etl
   /// Virtual.
   //***************************************************************************
   template <etl::message_id_t ID_, typename TBase = etl::imessage>
-  class message : public TBase
+  class message : public TBase, public etl::message_tag
   {
   public:
+
+    ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TBase>::value), "TBase is not derived from etl::imessage");
+
+    typedef TBase base_type;
 
     //***********************************
     ETL_NODISCARD virtual etl::message_id_t get_message_id() const ETL_NOEXCEPT ETL_OVERRIDE
@@ -149,11 +155,13 @@ namespace etl
   /// Non-virtual.
   //***************************************************************************
   template <etl::message_id_t ID_, typename TBase = etl::imessage>
-  class message : public TBase
+  class message : public TBase, public etl::message_tag
   {
   public:
 
     ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TBase>::value), "TBase is not derived from etl::imessage");
+
+    typedef TBase base_type;
 
     //***********************************
     message() ETL_NOEXCEPT
@@ -183,6 +191,78 @@ namespace etl
   //***************************************************************************
   template <etl::message_id_t ID_, typename TBase>
   ETL_CONSTANT etl::message_id_t etl::message<ID_, TBase>::ID;
+
+  //***************************************************************************
+  /// Is T an etl::imessage?
+  //***************************************************************************
+  template <typename T>
+  struct is_imessage : public etl::bool_constant<etl::is_same<etl::imessage, typename etl::remove_cvref<T>::type>::value>
+  {
+  };
+
+  //***************************************************************************
+  /// Is T ultimately derived from etl::imessage?
+  //***************************************************************************
+  template <typename T>
+  struct is_message : public etl::bool_constant<etl::is_base_of<etl::imessage, typename etl::remove_cvref<T>::type>::value>
+  {
+  };
+
+  //***************************************************************************
+  /// Is T an etl::message<> or derived from etl::message<>
+  //***************************************************************************
+  template <typename T>
+  struct is_message_type : public etl::bool_constant<etl::is_base_of<etl::message_tag, typename etl::remove_cvref<T>::type>::value>
+  {
+  };
+
+  //***************************************************************************
+  /// Is T a base of etl::message<T>
+  //***************************************************************************
+  template <typename T>
+  struct is_message_base : public etl::bool_constant<etl::is_message<T>::value && !etl::is_message_type<T>::value>
+  {
+  };
+
+  //***************************************************************************
+  /// Is T a user defined base of etl::message<T> and not an etl::imessage
+  //***************************************************************************
+  template <typename T>
+  struct is_user_message_base : public etl::bool_constant<etl::is_message_base<T>::value && !etl::is_imessage<T>::value>
+  {
+  };
+
+#if ETL_USING_CPP17
+  //***************************************************************************
+  /// Is T an etl::imessage?
+  //***************************************************************************
+  template <typename T>
+  inline constexpr bool is_imessage_v = is_imessage<T>::value;
+
+  //***************************************************************************
+  /// Is T ultimately derived from etl::imessage?
+  //***************************************************************************
+  template <typename T>
+  inline constexpr bool is_message_v = is_message<T>::value;
+
+  //***************************************************************************
+  /// Is T derived from etl::message<>
+  //***************************************************************************
+  template <typename T>
+  inline constexpr bool is_message_type_v = is_message_type<T>::value;
+
+  //***************************************************************************
+  /// Is T a base of etl::message<T>
+  //***************************************************************************
+  template <typename T>
+  inline constexpr bool is_message_base_v = is_message_base<T>::value;
+
+  //***************************************************************************
+  /// Is T a user defined base of etl::message<T>
+  //***************************************************************************
+  template <typename T>
+  inline constexpr bool is_user_message_base_v = is_user_message_base<T>::value;
+#endif
 }
 
 #endif

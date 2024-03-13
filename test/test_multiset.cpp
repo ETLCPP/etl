@@ -121,7 +121,7 @@ namespace
     //*************************************************************************
     struct SetupFixture
     {
-      // Multisets of predefined data from which to constuct multisets used in
+      // Multisets of predefined data from which to construct multisets used in
       // each test
       std::multiset<int> initial_data;
       std::multiset<int> excess_data;

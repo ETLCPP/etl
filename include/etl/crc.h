@@ -40,6 +40,8 @@ SOFTWARE.
 #include "crc8_ebu.h"
 #include "crc8_icode.h"
 #include "crc8_itu.h"
+#include "crc8_j1850_zero.h"
+#include "crc8_j1850.h"
 #include "crc8_maxim.h"
 #include "crc8_rohc.h"
 #include "crc8_wcdma.h"

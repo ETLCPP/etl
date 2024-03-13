@@ -29,6 +29,7 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/deque.h"
+#include "etl/vector.h"
 
 #include "data.h"
 
@@ -167,7 +168,6 @@ namespace
     //*************************************************************************
     TEST(test_move_constructor)
     {
-      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
 
       std::unique_ptr<uint32_t> p1(new uint32_t(1U));
@@ -196,7 +196,6 @@ namespace
     //*************************************************************************
     TEST(test_move_insert_erase)
     {
-      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
 
       std::unique_ptr<uint32_t> p1(new uint32_t(1U));
@@ -249,7 +248,6 @@ namespace
     //*************************************************************************
     TEST(test_move_assignment)
     {
-      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
 
       std::unique_ptr<uint32_t> p1(new uint32_t(1U));
@@ -294,7 +292,6 @@ namespace
     //*************************************************************************
     TEST(test_move_assignment_interface)
     {
-      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
       typedef etl::ideque<std::unique_ptr<uint32_t>> IData;
 
@@ -698,6 +695,72 @@ namespace
 
       CHECK(first < second);
       CHECK(!(second < first));
+    }
+
+    //*************************************************************************
+    TEST(test_reverse_iterator_difference)
+    {
+      DataNDC data(SIZE, N0);
+
+      DataNDC::reverse_iterator first  = data.rbegin() + 1;
+      DataNDC::reverse_iterator second = data.rbegin() + 4;
+
+      CHECK_EQUAL(-3, first - second);
+      CHECK_EQUAL( 3, second - first);
+    }
+
+    //*************************************************************************
+    TEST(test_const_reverse_iterator_difference)
+    {
+      DataNDC data(SIZE, N0);
+
+      DataNDC::const_reverse_iterator first  = data.crbegin() + 1;
+      DataNDC::const_reverse_iterator second = data.crbegin() + 4;
+
+      CHECK_EQUAL(-3, first - second);
+      CHECK_EQUAL( 3, second - first);
+    }
+
+    //*************************************************************************
+    TEST(test_reverse_iterator_difference_rollover)
+    {
+      DataNDC data(SIZE, N0);
+
+      data.pop_back();
+      data.pop_back();
+      data.pop_back();
+      data.pop_back();
+      data.push_front(N1);
+      data.push_front(N1);
+      data.push_front(N1);
+      data.push_front(N1);
+
+      DataNDC::reverse_iterator first  = data.rbegin() + 1;
+      DataNDC::reverse_iterator second = data.rbegin() + 4;
+
+      CHECK_EQUAL(-3,  first - second);
+      CHECK_EQUAL( 3, second - first);
+    }
+
+    //*************************************************************************
+    TEST(test_const_reverse_iterator_difference_rollover)
+    {
+      DataNDC data(SIZE, N0);
+
+      data.pop_back();
+      data.pop_back();
+      data.pop_back();
+      data.pop_back();
+      data.push_front(N1);
+      data.push_front(N1);
+      data.push_front(N1);
+      data.push_front(N1);
+
+      DataNDC::const_reverse_iterator first  = data.crbegin() + 1;
+      DataNDC::const_reverse_iterator second = data.crbegin() + 4;
+
+      CHECK_EQUAL(-3,  first - second);
+      CHECK_EQUAL( 3, second - first);
     }
 
     //*************************************************************************
@@ -2072,7 +2135,6 @@ namespace
     //*************************************************************************
     TEST(test_move)
     {
-      const size_t SIZE = 10UL;
       typedef etl::deque<std::unique_ptr<uint32_t>, SIZE> Data;
 
       Data data1;
