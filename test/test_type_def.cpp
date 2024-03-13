@@ -206,6 +206,25 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_operator_predecrement_constexpr)
+    {
+      class __type_t__;
+      typedef etl::type_def<__type_t__, uint32_t> type_t;
+
+      constexpr type_t base(0x5A3DUL);
+
+      constexpr auto predecrement = []() {
+        type_t t(base);
+        return --t;
+      };
+
+      uint32_t i = 0x5A3DUL;
+      constexpr type_t t = predecrement();
+
+      CHECK_EQUAL(--i, uint32_t(t));
+    }
+
+    //*************************************************************************
     TEST(test_comparisons)
     {
       class __type_t__;
