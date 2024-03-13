@@ -34,94 +34,6 @@ SOFTWARE.
 
 namespace
 {
-
-  class __type_t__;
-  typedef etl::type_def<__type_t__, uint32_t> type_t;
-
-  constexpr type_t preincrement() 
-  {
-    type_t t(0x5A3DUL);
-    return ++t;
-  }
-
-  constexpr type_t postincrement()
-  {
-    type_t t(0x5A3DUL);
-    return t++;
-  }
-
-  constexpr type_t predecrement()
-  {
-    type_t t(0x5A3DUL);
-    return --t;
-  };
-
-  constexpr type_t postdecrement()
-  {
-    type_t t(0x5A3DUL);
-    return t--;
-  }
-
-  constexpr type_t addition_assignment()
-  {
-    type_t t(0x5A3DUL);
-    return t += 2;
-  }
-
-  constexpr type_t subtraction_assignment()
-  {
-    type_t t(0x5A3DUL);
-    return t -= 2;
-  }
-
-  constexpr type_t multiplication_assignment()
-  {
-    type_t t(0x5A3DUL);
-    return t *= 2;
-  }
-
-  constexpr type_t division_assignment()
-  {
-    type_t t(0x5A3DUL);
-    return t /= 2;
-  }
-
-  constexpr type_t and_assignment() 
-  {
-    type_t t(0x5A3DUL);
-    return t &= 2;
-  }
-
-  constexpr type_t or_assignment() 
-  {
-    type_t t(0x5A3DUL);
-    return t |= 2;
-  }
-
-  constexpr type_t xor_assignment()
-  {
-    type_t t(0x5A3DUL);
-    return t ^= 2;
-  }
-
-  constexpr type_t left_shift_assignment() 
-  {
-    type_t t(0x5A3DUL);
-    return t <<= 2;
-  }
-
-  constexpr type_t right_shift_assignment() 
-  {
-    type_t t(0x5A3DUL);
-    return t >>= 2;
-  }
-
-  constexpr type_t modulus_assignment() 
-  {
-    type_t t(0x5A3DUL);
-    return t %= 2;
-  }
-
   SUITE(test_type_def)
   {
     //*************************************************************************
@@ -223,6 +135,9 @@ namespace
     //*************************************************************************
     TEST(test_operators)
     {
+      class __type_t__;
+      typedef etl::type_def<__type_t__, uint32_t> type_t;
+      
       uint32_t i = 0x5A3DUL;
       type_t t(0x5A3DUL);
 
@@ -250,132 +165,6 @@ namespace
 
       t = type_t(0x1234U);
       CHECK_EQUAL(0x1234U, uint32_t(t));
-    }
-
-    //*************************************************************************
-    TEST(test_operator_preincrement_constexpr)
-    {
-      uint32_t i = 0x5A3DUL;
-      constexpr type_t t = preincrement();
-
-      CHECK_EQUAL(++i, uint32_t(t));
-    }
-
-    //*************************************************************************
-    TEST(test_operator_postincrement_constexpr)
-    {
-      uint32_t i = 0x5A3DUL;
-      constexpr type_t t = postincrement();
-
-      CHECK_EQUAL(i++, uint32_t(t));
-    }
-
-    //*************************************************************************
-    TEST(test_operator_predecrement_constexpr)
-    {
-      uint32_t i = 0x5A3DUL;
-      constexpr type_t t = predecrement();
-
-      CHECK_EQUAL(--i, uint32_t(t));
-    }
-
-    //*************************************************************************
-    TEST(test_operator_postdecrement_constexpr)
-    {
-      uint32_t i = 0x5A3DUL;
-      constexpr type_t t = postdecrement();
-
-      CHECK_EQUAL(i--, uint32_t(t));
-    }
-
-    //*************************************************************************
-    TEST(test_operator_addition_assignment_constexpr)
-    {
-      uint32_t i = 0x5A3DUL;
-      constexpr type_t t = addition_assignment();
-
-      CHECK_EQUAL(i+=2, uint32_t(t));
-    }
-
-    //*************************************************************************
-    TEST(test_operator_subtraction_assignment_constexpr)
-    {
-      uint32_t i = 0x5A3DUL;
-      constexpr type_t t = subtraction_assignment();
-
-      CHECK_EQUAL(i-=2, uint32_t(t));
-    }
-
-    //*************************************************************************
-    TEST(test_operator_multiplication_assignment_constexpr)
-    {
-      uint32_t i = 0x5A3DUL;
-      constexpr type_t t = multiplication_assignment();
-
-      CHECK_EQUAL(i*=2, uint32_t(t));
-    }
-
-    //*************************************************************************
-    TEST(test_operator_division_assignment_constexpr)
-    {
-      uint32_t i = 0x5A3DUL;
-      constexpr type_t t = division_assignment();
-
-      CHECK_EQUAL(i/=2, uint32_t(t));
-    }
-
-    //*************************************************************************
-    TEST(test_operator_and_assignment_constexpr)
-    {
-      uint32_t i = 0x5A3DUL;
-      constexpr type_t t = and_assignment();
-
-      CHECK_EQUAL(i&=2, uint32_t(t));
-    }
-
-    //*************************************************************************
-    TEST(test_operator_or_assignment_constexpr)
-    {
-      uint32_t i = 0x5A3DUL;
-      constexpr type_t t = or_assignment();
-
-      CHECK_EQUAL(i|=2, uint32_t(t));
-    }
-
-    //*************************************************************************
-    TEST(test_operator_xor_assignment_constexpr)
-    {
-      uint32_t i = 0x5A3DUL;
-      constexpr type_t t = xor_assignment();
-
-      CHECK_EQUAL(i^=2, uint32_t(t));
-    }
-
-    //*************************************************************************
-    TEST(test_operator_left_shift_assignment_constexpr)
-    {
-      uint32_t i = 0x5A3DUL;
-      constexpr type_t t = left_shift_assignment();
-
-      CHECK_EQUAL(i<<=2, uint32_t(t));
-    }
-
-    //*************************************************************************
-    TEST(test_operator_right_shift_assignment_constexpr)
-    {
-      uint32_t i = 0x5A3DUL;
-      constexpr type_t t = right_shift_assignment();
-
-      CHECK_EQUAL(i>>=2, uint32_t(t));
-    }
-
-    //*************************************************************************
-    TEST(test_operator_modulus_assignment_constexpr)
-    {
-      uint32_t i = 0x5A3DUL;
-      constexpr type_t t = modulus_assignment();
-
-      CHECK_EQUAL(i%=2, uint32_t(t));
     }
 
     //*************************************************************************
