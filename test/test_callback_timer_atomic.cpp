@@ -702,6 +702,38 @@ namespace
     }
 
     //*************************************************************************
+    TEST(message_timer_time_to_next_with_has_active_timer)
+    {
+      etl::callback_timer_atomic<3, std::atomic_uint32_t> timer_controller;
+
+      etl::timer::id::type id1 = timer_controller.register_timer(member_callback1, 37, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback1, 23, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_function_callback2, 11, etl::timer::mode::Single_Shot);
+
+      timer_controller.start(id1);
+      timer_controller.start(id3);
+      timer_controller.start(id2);
+
+      timer_controller.enable(true);
+
+      timer_controller.tick(11);
+      CHECK_EQUAL(12, timer_controller.time_to_next());
+      CHECK_TRUE(timer_controller.has_active_timer());
+
+      timer_controller.tick(23);
+      CHECK_EQUAL(3, timer_controller.time_to_next());
+      CHECK_TRUE(timer_controller.has_active_timer());
+
+      timer_controller.tick(2);
+      CHECK_EQUAL(1, timer_controller.time_to_next());
+      CHECK_TRUE(timer_controller.has_active_timer());
+
+      timer_controller.tick(1);
+      CHECK_EQUAL(static_cast<etl::timer::interval::type>(etl::timer::interval::No_Active_Interval), timer_controller.time_to_next());
+      CHECK_FALSE(timer_controller.has_active_timer());
+    }
+
+    //*************************************************************************
     class test_object
     {
     public:
