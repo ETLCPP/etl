@@ -168,6 +168,25 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_operator_preincrement_constexpr)
+    {
+      class __type_t__;
+      typedef etl::type_def<__type_t__, uint32_t> type_t;
+
+      constexpr type_t base(0x5A3DUL);
+
+      constexpr auto preincrement = []() {
+        type_t t(base);
+        return ++t;
+      };
+
+      uint32_t i = 0x5A3DUL;
+      constexpr type_t t = preincrement();
+
+      CHECK_EQUAL(++i, uint32_t(t));
+    }
+
+    //*************************************************************************
     TEST(test_comparisons)
     {
       class __type_t__;
