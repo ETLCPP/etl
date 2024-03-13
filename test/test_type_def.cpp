@@ -234,13 +234,13 @@ namespace
 
       constexpr auto postdecrement = []() {
         type_t t(base);
-        return --t;
+        return t--;
       };
 
       uint32_t i = 0x5A3DUL;
       constexpr type_t t = postdecrement();
 
-      CHECK_EQUAL(--i, uint32_t(t));
+      CHECK_EQUAL(i--, uint32_t(t));
     }
 
     //*************************************************************************
