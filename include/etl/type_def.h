@@ -251,19 +251,25 @@ namespace etl
           return *this;
         }
 
+#if ETL_USING_CPP14
         //*********************************************************************
         ETL_CONSTEXPR TValue& get()
         {
             return value;
         }
 
-#if ETL_USING_CPP14
         //*********************************************************************
         ETL_CONSTEXPR const TValue& get() const
         {
             return value;
         }
 #else 
+        //*********************************************************************
+        TValue& get()
+        {
+            return value;
+        }
+
         //*********************************************************************
         const TValue& get() const
         {
