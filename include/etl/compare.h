@@ -44,7 +44,7 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// Defines <=, >, >= in terms of <
+  /// Defines <=, >, >=, ==, !=, <=> in terms of <
   /// Default
   //***************************************************************************
   template <typename T, typename TLess = etl::less<T> >
@@ -53,6 +53,13 @@ namespace etl
     typedef typename etl::parameter_type<T>::type first_argument_type;
     typedef typename etl::parameter_type<T>::type second_argument_type;
     typedef bool result_type;
+
+    enum cmp_result
+    {
+      LESS = -1,
+      EQUAL = 0,
+      GREATER = 1
+    };
 
     static result_type lt(first_argument_type lhs, second_argument_type rhs)
     {
@@ -72,6 +79,31 @@ namespace etl
     static result_type gte(first_argument_type lhs, second_argument_type rhs)
     {
       return !lt(lhs, rhs);
+    }
+
+    static result_type eq(first_argument_type lhs, second_argument_type rhs)
+    {
+      return gte(lhs, rhs) && lte(lhs, rhs);
+    }
+
+    static result_type ne(first_argument_type lhs, second_argument_type rhs)
+    {
+      return !eq(lhs, rhs);
+    }
+
+    static cmp_result cmp(first_argument_type lhs, second_argument_type rhs)
+    {
+      if (lt(lhs, rhs))
+      {
+        return LESS;
+      }
+
+      if (gt(lhs, rhs))
+      {
+        return GREATER;
+      }
+
+      return EQUAL;
     }
   };
 }
