@@ -160,5 +160,16 @@ namespace
       CHECK_EQUAL(tb != ta, (CompareTest::ne(tb, ta)));
       CHECK_EQUAL(ta != ta, (CompareTest::ne(ta, ta)));
     }
+
+    //*************************************************************************
+    TEST(test_cmp)
+    {
+      CHECK_EQUAL(CompareInt::LESS,     (CompareInt::cmp(a, b)));
+      CHECK_EQUAL(CompareInt::GREATER,  (CompareInt::cmp(b, a)));
+      CHECK_EQUAL(CompareInt::EQUAL,    (CompareInt::cmp(a, a)));
+      CHECK_EQUAL(CompareTest::LESS,    (CompareTest::cmp(ta, tb)));
+      CHECK_EQUAL(CompareTest::GREATER, (CompareTest::cmp(tb, ta)));
+      CHECK_EQUAL(CompareTest::EQUAL,   (CompareTest::cmp(ta, ta)));
+    }
   };
 }
