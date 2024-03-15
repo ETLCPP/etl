@@ -37,47 +37,47 @@ namespace
 
   typedef etl::compare<int> CompareInt;
 
-  struct TestStruct
+  struct Object
   {
     int a;
     int b;
   };
 
-  TestStruct ta = { 1, 2 };
-  TestStruct tb = { 2, 3 };
+  Object ta = { 1, 2 };
+  Object tb = { 2, 3 };
 
   //***********************************
-  bool operator <(const TestStruct& lhs, const TestStruct& rhs)
+  bool operator <(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) < (rhs.a + rhs.b);
   }
 
   //***********************************
-  bool operator >(const TestStruct& lhs, const TestStruct& rhs)
+  bool operator >(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) > (rhs.a + rhs.b);
   }
 
   //***********************************
-  bool operator <=(const TestStruct& lhs, const TestStruct& rhs)
+  bool operator <=(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) <= (rhs.a + rhs.b);
   }
 
   //***********************************
-  bool operator >=(const TestStruct& lhs, const TestStruct& rhs)
+  bool operator >=(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) >= (rhs.a + rhs.b);
   }
 
   //***********************************
-  bool operator ==(const TestStruct& lhs, const TestStruct& rhs)
+  bool operator ==(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) == (rhs.a + rhs.b);
   }
 
   //***********************************
-  bool operator !=(const TestStruct& lhs, const TestStruct& rhs)
+  bool operator !=(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) != (rhs.a + rhs.b);
   }
@@ -85,13 +85,13 @@ namespace
   //***********************************
   struct LessTest
   {
-    bool operator()(const TestStruct& lhs, const TestStruct& rhs) const
+    bool operator()(const Object& lhs, const Object& rhs) const
     {
       return (lhs.a + lhs.b) < (rhs.a + rhs.b);
     }
   };
 
-  typedef etl::compare<TestStruct, LessTest> CompareTest;
+  typedef etl::compare<Object, LessTest> CompareTest;
 
   SUITE(test_compare)
   {
@@ -167,9 +167,9 @@ namespace
       CHECK_EQUAL(CompareInt::LESS,     (CompareInt::cmp(2, 4)));
       CHECK_EQUAL(CompareInt::GREATER,  (CompareInt::cmp(4, 2)));
       CHECK_EQUAL(CompareInt::EQUAL,    (CompareInt::cmp(0, 0)));
-      CHECK_EQUAL(CompareTest::LESS,    (CompareTest::cmp(TestStruct(0, 1), TestStruct(2, 4))));
-      CHECK_EQUAL(CompareTest::GREATER, (CompareTest::cmp(TestStruct(2, 4), TestStruct(0, 1))));
-      CHECK_EQUAL(CompareTest::EQUAL,   (CompareTest::cmp(TestStruct(2, 4), TestStruct(2, 4))));
+      CHECK_EQUAL(CompareTest::LESS,    (CompareTest::cmp(Object(0, 1), Object(2, 4))));
+      CHECK_EQUAL(CompareTest::GREATER, (CompareTest::cmp(Object(2, 4), Object(0, 1))));
+      CHECK_EQUAL(CompareTest::EQUAL,   (CompareTest::cmp(Object(2, 4), Object(2, 4))));
     }
   };
 }
