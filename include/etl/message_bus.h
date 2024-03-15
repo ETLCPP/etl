@@ -315,11 +315,35 @@ namespace etl
 
     //*******************************************
     /// Does this message bus accept the message id?
-    /// Yes!, it accepts everything!
+    /// Returns <b>true</b> on the first router that does.
     //*******************************************
-    bool accepts(etl::message_id_t) const ETL_OVERRIDE
+    bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
-      return true;
+      // Check the list of subscribed routers.
+      router_list_t::iterator irouter = router_list.begin();
+
+      while (irouter != router_list.end())
+      {
+        etl::imessage_router& router = **irouter;
+
+        if (router.accepts(id))
+        {
+          return true;
+        }
+
+        ++irouter;
+      }
+
+      // Check any successor.
+      if (has_successor())
+      {
+        if (get_successor().accepts(id))
+        {
+          return true;
+        }
+      }
+
+      return false;
     }
 
     //*******************************************

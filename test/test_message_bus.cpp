@@ -45,7 +45,9 @@ namespace
     MESSAGE2,
     MESSAGE3,
     MESSAGE4,
-    MESSAGE5
+    MESSAGE5,
+    MESSAGE6,
+    MESSAGE7
   };
 
   enum
@@ -104,6 +106,14 @@ namespace
   };
 
   Response response;
+
+  struct Message6 : public etl::message<MESSAGE6>
+  {
+  };
+
+  struct Message7 : public etl::message<MESSAGE7>
+  {
+  };
 
   int call_order;
 
@@ -225,6 +235,27 @@ namespace
   };
 
   //***************************************************************************
+  // Router that handles message 6 and returns nothing.
+  //***************************************************************************
+  class RouterC : public etl::message_router<RouterC, Message6>
+  {
+  public:
+
+    RouterC(etl::message_router_id_t id)
+      : message_router(id)
+    {
+    }
+
+    void on_receive(const Message6&)
+    {
+    }
+
+    void on_receive_unknown(const etl::imessage&)
+    {
+    }
+  };
+
+  //***************************************************************************
   template <size_t Size>
   class MessageBus : public etl::message_bus<Size>
   {
@@ -237,7 +268,7 @@ namespace
 
     using etl::message_bus<Size>::receive;
 
-    // Hook 'receive' to count the incomimg messages.
+    // Hook 'receive' to count the incoming messages.
     void receive(etl::message_router_id_t id, const etl::imessage& msg)
     {
       ++message_count;
@@ -950,6 +981,31 @@ namespace
       CHECK_EQUAL(1U, router.message5_count);
 
       CHECK_EQUAL(1, bus.message_count);
+    }
+
+    //*************************************************************************
+    TEST(message_bus_accepts)
+    {
+      MessageBus<2> bus1;
+      MessageBus<2> bus2;
+
+      RouterA router1(ROUTER1);
+      RouterB router2(ROUTER2);
+      RouterC router3(ROUTER3);
+
+      bus1.subscribe(router1);
+      bus1.subscribe(router2);
+      bus1.set_successor(bus2);
+
+      bus2.subscribe(router3);
+
+      CHECK_TRUE(bus1.accepts(MESSAGE1));
+      CHECK_TRUE(bus1.accepts(MESSAGE2));
+      CHECK_TRUE(bus1.accepts(MESSAGE3));
+      CHECK_TRUE(bus1.accepts(MESSAGE4));
+      CHECK_TRUE(bus1.accepts(MESSAGE5));
+      CHECK_TRUE(bus1.accepts(MESSAGE6));
+      CHECK_FALSE(bus1.accepts(MESSAGE7));
     }
   };
 }

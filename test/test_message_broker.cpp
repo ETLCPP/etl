@@ -232,7 +232,7 @@ namespace
   SUITE(test_message_broker)
   {
     //*************************************************************************
-    TEST(message_check_broker_id)
+    TEST(test_message_check_broker_id)
     {
       Broker broker1;
       Broker broker2(2);
@@ -245,7 +245,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(message_broker_subscribe_then_unsubscribe)
+    TEST(test_message_broker_subscribe_then_unsubscribe)
     {
       Router router1(1);
       Router router2(2);
@@ -255,33 +255,27 @@ namespace
       Subscription subscription3{ router2, { Message1::ID, Message3::ID } };
 
       Broker broker; 
-      CHECK(broker.empty());
-      CHECK(broker.accepts(MESSAGE1));
-      CHECK(broker.accepts(MESSAGE2));
-      CHECK(broker.accepts(MESSAGE3));
-      CHECK(broker.accepts(MESSAGE4));
-      CHECK(broker.accepts(MESSAGE5));
-      CHECK(broker.accepts(MESSAGE6));
-
+      CHECK_TRUE(broker.empty());
+      
       broker.subscribe(subscription1);
-      CHECK(!broker.empty());
+      CHECK_FALSE(broker.empty());
 
       broker.subscribe(subscription3);
-      CHECK(!broker.empty());
+      CHECK_FALSE(broker.empty());
 
       broker.unsubscribe(router1);
-      CHECK(!broker.empty());
+      CHECK_FALSE(broker.empty());
 
       broker.unsubscribe(router2);
-      CHECK(broker.empty());
+      CHECK_TRUE(broker.empty());
 
       // There is no router3 subscription in 'broker'.
       broker.unsubscribe(router3);
-      CHECK(broker.empty());
+      CHECK_TRUE(broker.empty());
     }
 
     //*************************************************************************
-    TEST(message_broker_subscribe_then_clear)
+    TEST(test_message_broker_subscribe_then_clear)
     {
       Router router1(1);
       Router router2(2);
@@ -337,7 +331,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(message_broker_send_messages_to_broker_with_no_subscribers)
+    TEST(test_message_broker_send_messages_to_broker_with_no_subscribers)
     {
       Broker broker;
       Router router1(1);
@@ -382,7 +376,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(message_broker_send_messages_to_subscribers)
+    TEST(test_message_broker_send_messages_to_subscribers)
     {
       Broker broker;
       Router router1(1);
@@ -439,7 +433,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(message_broker_send_messages_to_specific_subscribers)
+    TEST(test_message_broker_send_messages_to_specific_subscribers)
     {
       Broker broker;
       Router router1(1);
@@ -460,7 +454,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(message_broker_send_messages_to_subscribers_after_unsubscribe)
+    TEST(test_message_broker_send_messages_to_subscribers_after_unsubscribe)
     {
       Broker broker;
       Router router1(1);
@@ -515,6 +509,54 @@ namespace
       CHECK_EQUAL(0, router1.message_unknown_count);
       CHECK_EQUAL(0, router2.message_unknown_count);
       CHECK_EQUAL(1, router3.message_unknown_count);
+    }
+
+    //*************************************************************************
+    TEST(test_message_broker_accepts)
+    {
+      Router router1(1);
+      Router router2(2);
+      Router router3(3);
+
+      Subscription subscription1{ router1, { Message1::ID, Message3::ID } };
+      Subscription subscription2{ router2, { Message1::ID, Message2::ID, Message3::ID, Message4::ID } };
+
+      // Default constructed broker.
+      Broker broker;
+
+      CHECK_FALSE(broker.accepts(MESSAGE1));
+      CHECK_FALSE(broker.accepts(MESSAGE2));
+      CHECK_FALSE(broker.accepts(MESSAGE3));
+      CHECK_FALSE(broker.accepts(MESSAGE4));
+      CHECK_FALSE(broker.accepts(MESSAGE5));
+      CHECK_FALSE(broker.accepts(MESSAGE6));
+
+      // Subscribe router1.
+      broker.subscribe(subscription1);
+      CHECK_TRUE(broker.accepts(MESSAGE1));
+      CHECK_FALSE(broker.accepts(MESSAGE2));
+      CHECK_TRUE(broker.accepts(MESSAGE3));
+      CHECK_FALSE(broker.accepts(MESSAGE4));
+      CHECK_FALSE(broker.accepts(MESSAGE5));
+      CHECK_FALSE(broker.accepts(MESSAGE6));
+
+      // Subscribe router2.
+      broker.subscribe(subscription2);
+      CHECK_TRUE(broker.accepts(MESSAGE1));
+      CHECK_TRUE(broker.accepts(MESSAGE2));
+      CHECK_TRUE(broker.accepts(MESSAGE3));
+      CHECK_TRUE(broker.accepts(MESSAGE4));
+      CHECK_FALSE(broker.accepts(MESSAGE5));
+      CHECK_FALSE(broker.accepts(MESSAGE6));
+
+      // Set router3 as a successor.
+      broker.set_successor(router3);
+      CHECK_TRUE(broker.accepts(MESSAGE1));
+      CHECK_TRUE(broker.accepts(MESSAGE2));
+      CHECK_TRUE(broker.accepts(MESSAGE3));
+      CHECK_TRUE(broker.accepts(MESSAGE4));
+      CHECK_TRUE(broker.accepts(MESSAGE5));
+      CHECK_TRUE(broker.accepts(MESSAGE6));
     }
   };
 }
