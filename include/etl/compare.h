@@ -40,70 +40,63 @@ SOFTWARE.
 /// Comparisons only using less than operator
 ///\ingroup utilities
 //*****************************************************************************
-
 namespace etl
 {
-  //***************************************************************************
-  /// Defines <=, >, >=, ==, !=, <=> in terms of <
-  /// Default
-  //***************************************************************************
-  template <typename T, typename TLess = etl::less<T> >
-  struct compare
+  struct compare_types
   {
-    typedef typename etl::parameter_type<T>::type first_argument_type;
-    typedef typename etl::parameter_type<T>::type second_argument_type;
     typedef bool result_type;
 
     enum cmp_result
     {
-      LESS = -1,
-      EQUAL = 0,
-      GREATER = 1
+      Less    = 0,
+      Equal   = 1,
+      Greater = 2
     };
+  };
 
-    static result_type lt(first_argument_type lhs, second_argument_type rhs)
+  //***************************************************************************
+  /// Defines <=, >, >=, ==, !=, <=> in terms of <
+  /// Default implementation of TLess is etl::less
+  //***************************************************************************
+  template <typename T, typename TLess = etl::less<T> >
+  struct compare : public compare_types
+  {
+    typedef typename etl::parameter_type<T>::type first_argument_type;
+    typedef typename etl::parameter_type<T>::type second_argument_type;
+
+    static ETL_CONSTEXPR result_type lt(first_argument_type lhs, second_argument_type rhs)
     {
       return TLess()(lhs, rhs);
     }
 
-    static result_type gt(first_argument_type lhs, second_argument_type rhs)
+    static ETL_CONSTEXPR result_type gt(first_argument_type lhs, second_argument_type rhs)
     {
       return TLess()(rhs, lhs);
     }
 
-    static result_type lte(first_argument_type lhs, second_argument_type rhs)
+    static ETL_CONSTEXPR result_type lte(first_argument_type lhs, second_argument_type rhs)
     {
       return !gt(lhs, rhs);
     }
 
-    static result_type gte(first_argument_type lhs, second_argument_type rhs)
+    static ETL_CONSTEXPR result_type gte(first_argument_type lhs, second_argument_type rhs)
     {
       return !lt(lhs, rhs);
     }
 
-    static result_type eq(first_argument_type lhs, second_argument_type rhs)
+    static ETL_CONSTEXPR result_type eq(first_argument_type lhs, second_argument_type rhs)
     {
       return gte(lhs, rhs) && lte(lhs, rhs);
     }
 
-    static result_type ne(first_argument_type lhs, second_argument_type rhs)
+    static ETL_CONSTEXPR result_type ne(first_argument_type lhs, second_argument_type rhs)
     {
       return !eq(lhs, rhs);
     }
 
-    static cmp_result cmp(first_argument_type lhs, second_argument_type rhs)
+    static ETL_CONSTEXPR cmp_result cmp(first_argument_type lhs, second_argument_type rhs)
     {
-      if (lt(lhs, rhs))
-      {
-        return LESS;
-      }
-
-      if (gt(lhs, rhs))
-      {
-        return GREATER;
-      }
-
-      return EQUAL;
+      return lt(lhs, rhs) ? Less : gt(lhs, rhs) ? Greater : Equal;
     }
   };
 }
