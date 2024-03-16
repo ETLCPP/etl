@@ -37,49 +37,61 @@ namespace
 
   typedef etl::compare<int> CompareInt;
 
-  struct Test
+  struct Object
   {
     int a;
     int b;
   };
 
-  Test ta = { 1, 2 };
-  Test tb = { 2, 3 };
+  Object ta = { 1, 2 };
+  Object tb = { 2, 3 };
 
   //***********************************
-  bool operator <(const Test& lhs, const Test& rhs)
+  bool operator <(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) < (rhs.a + rhs.b);
   }
 
   //***********************************
-  bool operator >(const Test& lhs, const Test& rhs)
+  bool operator >(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) > (rhs.a + rhs.b);
   }
 
   //***********************************
-  bool operator <=(const Test& lhs, const Test& rhs)
+  bool operator <=(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) <= (rhs.a + rhs.b);
   }
 
   //***********************************
-  bool operator >=(const Test& lhs, const Test& rhs)
+  bool operator >=(const Object& lhs, const Object& rhs)
   {
     return (lhs.a + lhs.b) >= (rhs.a + rhs.b);
   }
 
   //***********************************
+  bool operator ==(const Object& lhs, const Object& rhs)
+  {
+    return (lhs.a + lhs.b) == (rhs.a + rhs.b);
+  }
+
+  //***********************************
+  bool operator !=(const Object& lhs, const Object& rhs)
+  {
+    return (lhs.a + lhs.b) != (rhs.a + rhs.b);
+  }
+
+  //***********************************
   struct LessTest
   {
-    bool operator()(const Test& lhs, const Test& rhs) const
+    bool operator()(const Object& lhs, const Object& rhs) const
     {
       return (lhs.a + lhs.b) < (rhs.a + rhs.b);
     }
   };
 
-  typedef etl::compare<Test, LessTest> CompareTest;
+  typedef etl::compare<Object, LessTest> CompareTest;
 
   SUITE(test_compare)
   {
@@ -125,6 +137,39 @@ namespace
       CHECK_EQUAL(ta >= tb, (CompareTest::gte(ta, tb)));
       CHECK_EQUAL(tb >= ta, (CompareTest::gte(tb, ta)));
       CHECK_EQUAL(ta >= ta, (CompareTest::gte(ta, ta)));
+    }
+
+    //*************************************************************************
+    TEST(test_eq)
+    {
+      CHECK_EQUAL(a == b,   (CompareInt::eq(a, b)));
+      CHECK_EQUAL(b == a,   (CompareInt::eq(b, a)));
+      CHECK_EQUAL(a == a,   (CompareInt::eq(a, a)));
+      CHECK_EQUAL(ta == tb, (CompareTest::eq(ta, tb)));
+      CHECK_EQUAL(tb == ta, (CompareTest::eq(tb, ta)));
+      CHECK_EQUAL(ta == ta, (CompareTest::eq(ta, ta)));
+    }
+
+    //*************************************************************************
+    TEST(test_ne)
+    {
+      CHECK_EQUAL(a != b,   (CompareInt::ne(a, b)));
+      CHECK_EQUAL(b != a,   (CompareInt::ne(b, a)));
+      CHECK_EQUAL(a != a,   (CompareInt::ne(a, a)));
+      CHECK_EQUAL(ta != tb, (CompareTest::ne(ta, tb)));
+      CHECK_EQUAL(tb != ta, (CompareTest::ne(tb, ta)));
+      CHECK_EQUAL(ta != ta, (CompareTest::ne(ta, ta)));
+    }
+
+    //*************************************************************************
+    TEST(test_cmp)
+    {
+      CHECK_EQUAL(CompareInt::LESS,     (CompareInt::cmp(2, 4)));
+      CHECK_EQUAL(CompareInt::GREATER,  (CompareInt::cmp(4, 2)));
+      CHECK_EQUAL(CompareInt::EQUAL,    (CompareInt::cmp(0, 0)));
+      CHECK_EQUAL(CompareTest::LESS,    (CompareTest::cmp(Object{0, 1}, Object{2, 4})));
+      CHECK_EQUAL(CompareTest::GREATER, (CompareTest::cmp(Object{2, 4}, Object{0, 1})));
+      CHECK_EQUAL(CompareTest::EQUAL,   (CompareTest::cmp(Object{2, 4}, Object{2, 4})));
     }
   };
 }
