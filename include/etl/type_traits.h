@@ -1713,7 +1713,7 @@ typedef integral_constant<bool, true>  true_type;
   using is_trivially_destructible = std::is_trivially_destructible<T>;
 #else
   template <typename T>
-  using is_trivially_destructible = etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>;
+  using is_trivially_destructible = etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value> || etl::is_pod<T>::value;
 #endif
 
   //*********************************************
