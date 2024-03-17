@@ -54,6 +54,11 @@ Original publication: https://www.codeproject.com/Articles/1170503/The-Impossibl
 #include "../type_traits.h"
 #include "../utility.h"
 #include "../optional.h"
+#include "../functional.h"
+#if ETL_USING_STL
+#include <functional>
+#endif
+#include <cstring>
 
 namespace etl
 {
@@ -111,20 +116,116 @@ namespace etl
     //*************************************************************************
     // Construct from lambda or functor.
     //*************************************************************************
-    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && ((sizeof(TLambda) <= sizeof(void*)) && (alignof(TLambda) <= alignof(void*)) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value) 
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
     ETL_CONSTEXPR14 delegate(TLambda& instance)
     {
-      assign((void*)(&instance), lambda_stub<TLambda>);
+      assign_lambda(instance, lambda_object_stub<TLambda>);
     }
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate(etl::reference_wrapper<TLambda>& instance)
+    {
+      assign((void*)(&instance.get()), lambda_stub<TLambda>);
+    }
+
+#if ETL_USING_STL
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate(std::reference_wrapper<TLambda>& instance)
+    {
+      assign((void*)(&instance.get()), lambda_stub<TLambda>);
+    }
+#endif
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && (((sizeof(TLambda) > sizeof(void*)) || (alignof(TLambda) > alignof(void*))) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate(TLambda& instance) = delete;
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && ((sizeof(TLambda) <= sizeof(void*)) && (alignof(TLambda) <= alignof(void*)) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate(TLambda&& instance)
+    {
+      assign_lambda(etl::forward<TLambda>(instance), lambda_object_stub<TLambda>);
+    }
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate(etl::reference_wrapper<TLambda>&& instance)
+    {
+      assign((void*)(&instance.get()), lambda_stub<TLambda>);
+    }
+
+#if ETL_USING_STL
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate(std::reference_wrapper<TLambda>&& instance)
+    {
+      assign((void*)(&instance.get()), lambda_stub<TLambda>);
+    }
+#endif
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && (((sizeof(TLambda) > sizeof(void*)) || (alignof(TLambda) > alignof(void*))) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate(TLambda&& instance) = delete;
 
     //*************************************************************************
     // Construct from const lambda or functor.
     //*************************************************************************
-    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && ((sizeof(TLambda) <= sizeof(void*)) && (alignof(TLambda) <= alignof(void*)) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
     ETL_CONSTEXPR14 delegate(const TLambda& instance)
     {
-      assign((void*)(&instance), const_lambda_stub<TLambda>);
+      assign_lambda(instance, const_lambda_object_stub<TLambda>);
     }
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate(etl::reference_wrapper<const TLambda>& instance)
+    {
+      assign((void*)(&instance.get()), const_lambda_stub<TLambda>);
+    }
+
+#if ETL_USING_STL
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate(std::reference_wrapper<const TLambda>& instance)
+    {
+      assign((void*)(&instance.get()), const_lambda_stub<TLambda>);
+    }
+#endif
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && (((sizeof(TLambda) > sizeof(void*)) || (alignof(TLambda) > alignof(void*))) && etl::is_trivially_copyable<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate(const TLambda& instance) = delete;
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && ((sizeof(TLambda) <= sizeof(void*)) && (alignof(TLambda) <= alignof(void*)) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate(const TLambda&& instance)
+    {
+      assign_lambda(etl::forward<TLambda>(instance), const_lambda_object_stub<TLambda>);
+    }
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate(etl::reference_wrapper<const TLambda>&& instance)
+    {
+      assign((void*)(&instance.get()), const_lambda_stub<TLambda>);
+    }
+
+#if ETL_USING_STL
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate(std::reference_wrapper<const TLambda>&& instance)
+    {
+      assign((void*)(&instance.get()), const_lambda_stub<TLambda>);
+    }
+#endif
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && (((sizeof(TLambda) > sizeof(void*)) || (alignof(TLambda) > alignof(void*))) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate(const TLambda&& instance) = delete;
 
     //*************************************************************************
     /// Create from function (Compile time).
@@ -235,20 +336,116 @@ namespace etl
     //*************************************************************************
     /// Set from Lambda or Functor.
     //*************************************************************************
-    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && ((sizeof(TLambda) <= sizeof(void*)) && (alignof(TLambda) <= alignof(void*)) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
     ETL_CONSTEXPR14 void set(TLambda& instance)
     {
-      assign((void*)(&instance), lambda_stub<TLambda>);
+      assign_lambda(instance, lambda_object_stub<TLambda>);
     }
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 void set(etl::reference_wrapper<TLambda>& instance)
+    {
+      assign((void*)(&instance.get()), lambda_stub<TLambda>);
+    }
+
+#if ETL_USING_STL
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 void set(std::reference_wrapper<TLambda>& instance)
+    {
+      assign((void*)(&instance.get()), lambda_stub<TLambda>);
+    }
+#endif
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && (((sizeof(TLambda) > sizeof(void*)) || (alignof(TLambda) > alignof(void*))) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 void set(TLambda& instance) = delete;
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && ((sizeof(TLambda) <= sizeof(void*)) && (alignof(TLambda) <= alignof(void*)) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 void set(TLambda&& instance)
+    {
+      assign_lambda(etl::forward<TLambda>(instance), lambda_object_stub<TLambda>);
+    }
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 void set(etl::reference_wrapper<TLambda>&& instance)
+    {
+      assign((void*)(&instance.get()), lambda_stub<TLambda>);
+    }
+
+#if ETL_USING_STL
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 void set(std::reference_wrapper<TLambda>&& instance)
+    {
+      assign((void*)(&instance.get()), lambda_stub<TLambda>);
+    }
+#endif
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && (((sizeof(TLambda) > sizeof(void*)) || (alignof(TLambda) > alignof(void*))) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 void set(TLambda&& instance) = delete;
 
     //*************************************************************************
     /// Set from const Lambda or Functor.
     //*************************************************************************
-    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && ((sizeof(TLambda) <= sizeof(void*)) && (alignof(TLambda) <= alignof(void*)) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
     ETL_CONSTEXPR14 void set(const TLambda& instance)
     {
-      assign((void*)(&instance), const_lambda_stub<TLambda>);
+      assign_lambda(instance, const_lambda_object_stub<TLambda>);
     }
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 void set(etl::reference_wrapper<const TLambda>& instance)
+    {
+      assign((void*)(&instance.get()), const_lambda_stub<TLambda>);
+    }
+
+#if ETL_USING_STL
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 void set(std::reference_wrapper<const TLambda>& instance)
+    {
+      assign((void*)(&instance.get()), const_lambda_stub<TLambda>);
+    }
+#endif
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && (((sizeof(TLambda) > sizeof(void*)) || (alignof(TLambda) > alignof(void*))) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 void set(const TLambda& instance) = delete;
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && ((sizeof(TLambda) <= sizeof(void*)) && etl::is_trivially_copyable<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 void set(const TLambda&& instance)
+    {
+      assign_lambda(etl::forward<TLambda>(instance), const_lambda_object_stub<TLambda>);
+    }
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 void set(etl::reference_wrapper<const TLambda>&& instance)
+    {
+      assign((void*)(&instance.get()), const_lambda_stub<TLambda>);
+    }
+
+#if ETL_USING_STL
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 void set(std::reference_wrapper<const TLambda>&& instance)
+    {
+      assign((void*)(&instance.get()), const_lambda_stub<TLambda>);
+    }
+#endif
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && (((sizeof(TLambda) > sizeof(void*)) || (alignof(TLambda) > alignof(void*))) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 void set(const TLambda&& instance) = delete;
 
     //*************************************************************************
     /// Set from instance method (Run time).
@@ -383,22 +580,128 @@ namespace etl
     //*************************************************************************
     /// Create from Lambda or Functor.
     //*************************************************************************
-    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && ((sizeof(TLambda) <= sizeof(void*)) && (alignof(TLambda) <= alignof(void*)) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
     ETL_CONSTEXPR14 delegate& operator =(TLambda& instance)
     {
-      assign((void*)(&instance), lambda_stub<TLambda>);
+      assign_lambda(instance, lambda_object_stub<TLambda>);
       return *this;
     }
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate& operator =(etl::reference_wrapper<TLambda>& instance)
+    {
+      assign((void*)(&instance.get()), lambda_stub<TLambda>);
+      return *this;
+    }
+
+#if ETL_USING_STL
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate& operator =(std::reference_wrapper<TLambda>& instance)
+    {
+      assign((void*)(&instance.get()), lambda_stub<TLambda>);
+      return *this;
+    }
+#endif
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && (((sizeof(TLambda) > sizeof(void*)) || (alignof(TLambda) > alignof(void*))) && etl::is_trivially_copyable<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate& operator =(TLambda& instance) = delete;
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && ((sizeof(TLambda) <= sizeof(void*)) && (alignof(TLambda) <= alignof(void*)) && etl::is_trivially_copyable<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate& operator =(TLambda&& instance)
+    {
+      assign_lambda(etl::forward<TLambda>(instance), lambda_object_stub<TLambda>);
+      return *this;
+    }
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate& operator =(etl::reference_wrapper<TLambda>&& instance)
+    {
+      assign((void*)(&instance.get()), lambda_stub<TLambda>);
+      return *this;
+    }
+
+#if ETL_USING_STL
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate& operator =(std::reference_wrapper<TLambda>&& instance)
+    {
+      assign((void*)(&instance.get()), lambda_stub<TLambda>);
+      return *this;
+    }
+#endif
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && (((sizeof(TLambda) > sizeof(void*)) || (alignof(TLambda) > alignof(void*))) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate& operator =(TLambda&& instance) = delete;
 
     //*************************************************************************
     /// Create from const Lambda or Functor.
     //*************************************************************************
-    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && ((sizeof(TLambda) <= sizeof(void*)) && (alignof(TLambda) <= alignof(void*)) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
     ETL_CONSTEXPR14 delegate& operator =(const TLambda& instance)
     {
-      assign((void*)(&instance), const_lambda_stub<TLambda>);
+      assign_lambda(instance, const_lambda_object_stub<TLambda>);
       return *this;
     }
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate& operator =(etl::reference_wrapper<const TLambda>& instance)
+    {
+      assign((void*)(&instance.get()), const_lambda_stub<TLambda>);
+      return *this;
+    }
+
+#if ETL_USING_STL
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate& operator =(std::reference_wrapper<const TLambda>& instance)
+    {
+      assign((void*)(&instance.get()), const_lambda_stub<TLambda>);
+      return *this;
+    }
+#endif
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && (((sizeof(TLambda) > sizeof(void*)) || (alignof(TLambda) > alignof(void*))) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate& operator =(const TLambda& instance) = delete;
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && ((sizeof(TLambda) <= sizeof(void*)) && (alignof(TLambda) <= alignof(void*)) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate& operator =(const TLambda&& instance)
+    {
+      assign_lambda(etl::forward<TLambda>(instance), const_lambda_object_stub<TLambda>);
+      return *this;
+    }
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate& operator =(etl::reference_wrapper<const TLambda>&& instance)
+    {
+      assign((void*)(&instance.get()), const_lambda_stub<TLambda>);
+      return *this;
+    }
+
+#if ETL_USING_STL
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate& operator =(std::reference_wrapper<const TLambda>&& instance)
+    {
+      assign((void*)(&instance.get()), const_lambda_stub<TLambda>);
+      return *this;
+    }
+#endif
+
+    template <typename TLambda, typename etl::enable_if_t<etl::is_class<TLambda>::value
+                                                       && (((sizeof(TLambda) > sizeof(void*)) || (alignof(TLambda) > alignof(void*))) && etl::is_trivially_copyable<TLambda>::value && etl::is_trivially_destructible<TLambda>::value)
+                                                       && !etl::is_same<etl::delegate<TReturn(TParams...)>, TLambda>::value, bool> = true>
+    ETL_CONSTEXPR14 delegate& operator =(const TLambda&& instance) = delete;
 
     //*************************************************************************
     /// Checks equality.
@@ -434,8 +737,20 @@ namespace etl
     }
 
   private:
+    struct lambda_tag {};
 
-    using stub_type = TReturn(*)(void* object, TParams...);
+    union object_type {
+      void* pointer;
+      alignas(void*) char buffer[sizeof(void*)];
+
+      ETL_CONSTEXPR14 object_type() : pointer{nullptr} {} // None constructor
+      ETL_CONSTEXPR14 object_type(void* ptr) : pointer {ptr} {} // object pointer 
+      template <typename T>
+      ETL_CONSTEXPR14 object_type(lambda_tag, T&& object) : buffer{0, } { new (&this->buffer[0]) T(etl::forward<T>(object)); }
+
+      ~object_type() = default;
+    };
+    using stub_type = TReturn(*)(object_type object, TParams...);
 
     //*************************************************************************
     /// The internal invocation object.
@@ -445,7 +760,7 @@ namespace etl
       invocation_element() = default;
 
       //***********************************************************************
-      ETL_CONSTEXPR14 invocation_element(void* object_, stub_type stub_)
+      ETL_CONSTEXPR14 invocation_element(object_type object_, stub_type stub_)
         : object(object_)
         , stub(stub_)
       {
@@ -454,13 +769,13 @@ namespace etl
       //***********************************************************************
       ETL_CONSTEXPR14 bool operator ==(const invocation_element& rhs) const
       {
-        return (rhs.stub == stub) && (rhs.object == object);
+        return (rhs.stub == stub) && (std::memcmp(&rhs.object, &object, sizeof(object)) == 0);
       }
 
       //***********************************************************************
       ETL_CONSTEXPR14 bool operator !=(const invocation_element& rhs) const
       {
-        return (rhs.stub != stub) || (rhs.object != object);
+        return (rhs.stub != stub) || (std::memcmp(&rhs.object, &object, sizeof(object)) != 0);
       }
 
       //***********************************************************************
@@ -471,14 +786,14 @@ namespace etl
       }
 
       //***********************************************************************
-      void*     object = ETL_NULLPTR;
-      stub_type stub   = ETL_NULLPTR;
+      object_type object {};
+      stub_type   stub   = ETL_NULLPTR;
     };
 
     //*************************************************************************
     /// Constructs a delegate from an object and stub.
     //*************************************************************************
-    ETL_CONSTEXPR14 delegate(void* object, stub_type stub)
+    ETL_CONSTEXPR14 delegate(object_type object, stub_type stub)
       : invocation(object, stub)
     {
     }
@@ -500,13 +815,27 @@ namespace etl
       invocation.stub   = stub;
     }
 
+    template <typename T>
+    ETL_CONSTEXPR14 void assign_lambda(T&& object, stub_type stub)
+    {
+      invocation.object = object_type(lambda_tag{}, etl::forward<T>(object));
+      invocation.stub   = stub;
+    }
+
+    template <typename T>
+    ETL_CONSTEXPR14 void assign_lambda(T& object, stub_type stub)
+    {
+      invocation.object = object_type(lambda_tag{}, object);
+      invocation.stub   = stub;
+    }
+
     //*************************************************************************
     /// Stub call for a member function. Run time instance.
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...)>
-    static ETL_CONSTEXPR14 TReturn method_stub(void* object, TParams... params)
+    static ETL_CONSTEXPR14 TReturn method_stub(object_type object, TParams... params)
     {
-      T* p = static_cast<T*>(object);
+      T* p = static_cast<T*>(object.pointer);
       return (p->*Method)(etl::forward<TParams>(params)...);
     }
 
@@ -514,9 +843,9 @@ namespace etl
     /// Stub call for a const member function. Run time instance.
     //*************************************************************************
     template <typename T, TReturn(T::*Method)(TParams...) const>
-    static ETL_CONSTEXPR14 TReturn const_method_stub(void* object, TParams... params)
+    static ETL_CONSTEXPR14 TReturn const_method_stub(object_type object, TParams... params)
     {
-      T* const p = static_cast<T*>(object);
+      T* const p = static_cast<T*>(object.pointer);
       return (p->*Method)(etl::forward<TParams>(params)...);
     }
 
@@ -524,7 +853,7 @@ namespace etl
     /// Stub call for a member function. Compile time instance.
     //*************************************************************************
     template <typename T, T& Instance, TReturn(T::*Method)(TParams...)>
-    static ETL_CONSTEXPR14 TReturn method_instance_stub(void*, TParams... params)
+    static ETL_CONSTEXPR14 TReturn method_instance_stub(object_type, TParams... params)
     {
       return (Instance.*Method)(etl::forward<TParams>(params)...);
     }
@@ -533,7 +862,7 @@ namespace etl
     /// Stub call for a const member function. Compile time instance.
     //*************************************************************************
     template <typename T, const T& Instance, TReturn(T::*Method)(TParams...) const>
-    static ETL_CONSTEXPR14 TReturn const_method_instance_stub(void*, TParams... params)
+    static ETL_CONSTEXPR14 TReturn const_method_instance_stub(object_type, TParams... params)
     {
       return (Instance.*Method)(etl::forward<TParams>(params)...);
     }
@@ -543,7 +872,7 @@ namespace etl
     /// Stub call for a function operator. Compile time instance.
     //*************************************************************************
     template <typename T, T& Instance>
-    static ETL_CONSTEXPR14 TReturn operator_instance_stub(void*, TParams... params)
+    static ETL_CONSTEXPR14 TReturn operator_instance_stub(object_type, TParams... params)
     {
       return Instance.operator()(etl::forward<TParams>(params)...);
     }
@@ -553,7 +882,7 @@ namespace etl
     /// Stub call for a free function.
     //*************************************************************************
     template <TReturn(*Method)(TParams...)>
-    static ETL_CONSTEXPR14 TReturn function_stub(void*, TParams... params)
+    static ETL_CONSTEXPR14 TReturn function_stub(object_type, TParams... params)
     {
       return (Method)(etl::forward<TParams>(params)...);
     }
@@ -562,20 +891,34 @@ namespace etl
     /// Stub call for a lambda or functor function.
     //*************************************************************************
     template <typename TLambda>
-    static ETL_CONSTEXPR14 TReturn lambda_stub(void* object, TParams... arg)
+    static ETL_CONSTEXPR14 TReturn lambda_stub(object_type object, TParams... arg)
     {
-      TLambda* p = static_cast<TLambda*>(object);
+      TLambda* p = static_cast<TLambda*>(object.pointer);
       return (p->operator())(etl::forward<TParams>(arg)...);
+    }
+
+    template <typename TLambda>
+    static ETL_CONSTEXPR14 TReturn lambda_object_stub(object_type object, TParams... arg)
+    {
+      TLambda& p = *reinterpret_cast<TLambda*>(&object.buffer);
+      return (p.operator())(etl::forward<TParams>(arg)...);
     }
 
     //*************************************************************************
     /// Stub call for a const lambda or functor function.
     //*************************************************************************
     template <typename TLambda>
-    static ETL_CONSTEXPR14 TReturn const_lambda_stub(void* object, TParams... arg)
+    static ETL_CONSTEXPR14 TReturn const_lambda_stub(object_type object, TParams... arg)
     {
-      const TLambda* p = static_cast<const TLambda*>(object);
+      const TLambda* p = static_cast<const TLambda*>(object.pointer);
       return (p->operator())(etl::forward<TParams>(arg)...);
+    }
+
+    template <typename TLambda>
+    static ETL_CONSTEXPR14 TReturn const_lambda_object_stub(object_type object, TParams... arg)
+    {
+      const TLambda& p = *reinterpret_cast<const TLambda*>(&object.buffer);
+      return (p.operator())(etl::forward<TParams>(arg)...);
     }
 
     //*************************************************************************

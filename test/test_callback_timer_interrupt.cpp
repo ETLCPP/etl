@@ -803,13 +803,13 @@ namespace
         timer_log.push_back(TimerLogEntry{ 3, timer_count });
       };
 
-      callback_type delegate_callback0(dc0);
+      callback_type delegate_callback0(etl::ref(dc0));
       
-      callback_type delegate_callback1(dc1);
+      callback_type delegate_callback1(etl::ref(dc1));
       
-      callback_type delegate_callback2(dc2);
+      callback_type delegate_callback2(etl::ref(dc2));
       
-      callback_type delegate_callback3(dc3);
+      callback_type delegate_callback3(etl::ref(dc3));
 
       timer_log.clear();
       timer_controller.enable(true);
