@@ -35,274 +35,262 @@ SOFTWARE.
 
 namespace etl
 {
-    #define ETL_TYPEDEF(T, name) class name##_tag; typedef etl::type_def<name##_tag, T> name
+  #define ETL_TYPEDEF(T, name) class name##_tag; typedef etl::type_def<name##_tag, T> name
 
-    //*************************************************************************
-    /// A template type to define strong typedefs.
-    /// Usage:
-    ///\code
-    /// // Short form.
-    /// ETL_TYPEDEF(int, mytype);
-    ///
-    /// // Long form.
-    /// class mytype_t_tag;
-    /// typedef etl::type_def<mytype_t_tag, int> mytype_t_tag;
-    ///\endcode
-    //*************************************************************************
-    template <typename TIdType, typename TValue>
-    class type_def
+  //*************************************************************************
+  /// A template type to define strong typedefs.
+  /// Usage:
+  ///\code
+  /// // Short form.
+  /// ETL_TYPEDEF(int, mytype);
+  ///
+  /// // Long form.
+  /// class mytype_t_tag;
+  /// typedef etl::type_def<mytype_t_tag, int> mytype_t_tag;
+  ///\endcode
+  //*************************************************************************
+  template <typename TIdType, typename TValue>
+  class type_def
+  {
+  public:
+
+    typedef TValue  value_type;
+    typedef TIdType id_type;
+
+    //*********************************************************************
+    ETL_CONSTEXPR type_def()
+      : value(TValue())
     {
-    public:
+    }
 
-        typedef TValue  value_type;
-        typedef TIdType id_type;
+    //*********************************************************************
+    ETL_CONSTEXPR type_def(TValue value_)
+      : value(value_)
+    {
+    }
 
-        //*********************************************************************
-        type_def()
-            : value(TValue())
-        {
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR type_def(const type_def& other)
+      : value(other.value)
+    {
+    }
 
-        //*********************************************************************
-        type_def(TValue value_)
-            : value(value_)
-        {
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR operator TValue() const
+    {
+      return value;
+    }
 
-        //*********************************************************************
-        type_def(const type_def& other)
-            : value(other.value)
-        {
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator ++()
+    {
+      ++value;
+      return *this;
+    }
 
-        //*********************************************************************
-        operator TValue() const
-        {
-            return value;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def operator ++(int)
+    {
+      type_def temp(*this);
+      type_def::operator ++();
+      return temp;
+    }
 
-        //*********************************************************************
-        type_def& operator ++()
-        {
-            ++value;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator --()
+    {
+      --value;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def operator ++(int)
-        {
-            type_def temp(*this);
-            type_def::operator ++();
-            return temp;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def operator --(int)
+    {
+      type_def temp(*this);
+      type_def::operator --();
+      return temp;
+    }
 
-        //*********************************************************************
-        type_def& operator --()
-        {
-            --value;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator +=(TValue rhs)
+    {
+      value += rhs;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def operator --(int)
-        {
-            type_def temp(*this);
-            type_def::operator --();
-            return temp;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator +=(const type_def& rhs)
+    {
+      value += rhs.value;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def& operator +=(TValue rhs)
-        {
-            value += rhs;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator -=(TValue rhs)
+    {
+      value -= rhs;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def& operator +=(const type_def& rhs)
-        {
-            value += rhs.value;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator -=(const type_def& rhs)
+    {
+      value -= rhs.value;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def& operator -=(TValue rhs)
-        {
-            value -= rhs;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator *=(TValue rhs)
+    {
+      value *= rhs;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def& operator -=(const type_def& rhs)
-        {
-            value -= rhs.value;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator *=(const type_def& rhs)
+    {
+      value *= rhs.value;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def& operator *=(TValue rhs)
-        {
-            value *= rhs;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator /=(TValue rhs)
+    {
+      value /= rhs;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def& operator *=(const type_def& rhs)
-        {
-            value *= rhs.value;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator /=(const type_def& rhs)
+    {
+      value /= rhs.value;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def& operator /=(TValue rhs)
-        {
-            value /= rhs;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator %=(TValue rhs)
+    {
+      value %= rhs;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def& operator /=(const type_def& rhs)
-        {
-            value /= rhs.value;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator %=(const type_def& rhs)
+    {
+      value %= rhs.value;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def& operator %=(TValue rhs)
-        {
-            value %= rhs;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator &=(TValue rhs)
+    {
+      value &= rhs;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def& operator %=(const type_def& rhs)
-        {
-            value %= rhs.value;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator &=(const type_def& rhs)
+    {
+      value &= rhs.value;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def& operator &=(TValue rhs)
-        {
-            value &= rhs;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator |=(TValue rhs)
+    {
+      value |= rhs;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def& operator &=(const type_def& rhs)
-        {
-            value &= rhs.value;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator |=(const type_def& rhs)
+    {
+      value |= rhs.value;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def& operator |=(TValue rhs)
-        {
-            value |= rhs;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator ^=(TValue rhs)
+    {
+      value ^= rhs;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def& operator |=(const type_def& rhs)
-        {
-            value |= rhs.value;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator ^=(const type_def& rhs)
+    {
+      value ^= rhs.value;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def& operator ^=(TValue rhs)
-        {
-            value ^= rhs;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator <<=(TValue rhs)
+    {
+      value <<= rhs;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def& operator ^=(const type_def& rhs)
-        {
-            value ^= rhs.value;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator >>=(TValue rhs)
+    {
+      value >>= rhs;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def& operator <<=(TValue rhs)
-        {
-            value <<= rhs;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator =(TValue rhs)
+    {
+      value = rhs;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def& operator >>=(TValue rhs)
-        {
-            value >>= rhs;
-            return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR14 type_def& operator =(const type_def& rhs)
+    {
+      value = rhs.value;
+      return *this;
+    }
 
-        //*********************************************************************
-        type_def& operator =(TValue rhs)
-        {
-            value = rhs;
-            return *this;
-        }
+    //*********************************************************************
+    TValue& get()
+    {
+      return value;
+    }
 
-        //*********************************************************************
-        type_def& operator =(const type_def& rhs)
-        {
-          value = rhs.value;
-          return *this;
-        }
+    //*********************************************************************
+    ETL_CONSTEXPR const TValue& get() const
+    {
+      return value;
+    }
 
-        //*********************************************************************
-        TValue& get()
-        {
-            return value;
-        }
+    //*********************************************************************
+    friend ETL_CONSTEXPR bool operator >(const type_def& lhs, const type_def& rhs)
+    {
+      return lhs.value > rhs.value;
+    }
 
-        //*********************************************************************
-        const TValue& get() const
-        {
-            return value;
-        }
+    //*********************************************************************
+    friend ETL_CONSTEXPR bool operator >=(const type_def& lhs, const type_def& rhs)
+    {
+      return lhs.value >= rhs.value;
+    }
 
-        //*********************************************************************
-        friend bool operator <(const type_def& lhs, const type_def& rhs)
-        {
-            return lhs.value < rhs.value;
-        }
+    //*********************************************************************
+    friend ETL_CONSTEXPR bool operator ==(const type_def& lhs, const type_def& rhs)
+    {
+      return lhs.value == rhs.value;
+    }
 
-        //*********************************************************************
-        friend bool operator <=(const type_def& lhs, const type_def& rhs)
-        {
-            return lhs.value <= rhs.value;
-        }
+    //*********************************************************************
+    friend ETL_CONSTEXPR bool operator !=(const type_def& lhs, const type_def& rhs)
+    {
+      return lhs.value != rhs.value;
+    }
 
-        //*********************************************************************
-        friend bool operator >(const type_def& lhs, const type_def& rhs)
-        {
-            return lhs.value > rhs.value;
-        }
+  private:
 
-        //*********************************************************************
-        friend bool operator >=(const type_def& lhs, const type_def& rhs)
-        {
-            return lhs.value >= rhs.value;
-        }
-
-        //*********************************************************************
-        friend bool operator ==(const type_def& lhs, const type_def& rhs)
-        {
-            return lhs.value == rhs.value;
-        }
-
-        //*********************************************************************
-        friend bool operator !=(const type_def& lhs, const type_def& rhs)
-        {
-            return lhs.value != rhs.value;
-        }
-
-    private:
-
-        TValue value;
-    };
+      TValue value;
+  };
 }
 
 #endif
