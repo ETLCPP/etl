@@ -807,6 +807,35 @@ namespace etl
   inline constexpr size_t alignment_of_v = etl::alignment_of<T>::value;
 #endif
 
+#if ETL_USING_CPP11
+  //***************************************************************************
+  /// is_empty
+  ///\ingroup type_traits
+  namespace private_type_traits 
+  {
+    // Make use of Empty Base Class Optimization for this to work
+    template <typename T, bool=false>
+    struct is_empty_ {
+      static constexpr bool value = false;
+    };
+    template <typename T>
+    struct is_empty_<T, true> { 
+      struct empty : T {
+        char _;
+      };
+      static constexpr bool value = sizeof(empty) == sizeof(char);
+    };
+  }
+
+  template <typename T, typename = void> struct is_empty : etl::false_type {};
+  template <typename T> struct is_empty<T, typename etl::enable_if<private_type_traits::is_empty_<T,is_class<T>::value>::value>::type> : etl::true_type {};
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_empty_v = is_empty<T>::value;
+#endif
+#endif
+
 #else // Condition = ETL_USING_STL && ETL_USING_CPP11
 
 //*****************************************************************************
@@ -1319,6 +1348,18 @@ typedef integral_constant<bool, true>  true_type;
 #if ETL_USING_CPP17
   template <typename T>
   inline constexpr size_t alignment_of_v = std::alignment_of_v<T>;
+#endif
+
+#if ETL_USING_CPP11
+  //***************************************************************************
+  /// is_empty
+  ///\ingroup type_traits
+  template <typename T> struct is_empty : std::is_empty<T> {};
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_empty_v = is_empty<T>::value;
+#endif
 #endif
 
 #endif // Condition = ETL_USING_STL && ETL_USING_CPP11
