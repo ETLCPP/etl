@@ -104,7 +104,7 @@ namespace etl
 
         if (next_state_id != ifsm_state::No_State_Change)
         {
-          ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
+          ETL_ASSERT_OR_RETURN(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
           etl::ifsm_state* p_next_state = state_list[next_state_id];
 
           // Have we changed state?
@@ -119,7 +119,7 @@ namespace etl
 
             if (next_state_id != ifsm_state::No_State_Change)
             {
-              ETL_ASSERT(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
+              ETL_ASSERT_OR_RETURN(next_state_id < number_of_states, ETL_ERROR(etl::fsm_state_id_exception));
               p_state = state_list[next_state_id];
             }
           }
