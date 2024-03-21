@@ -540,8 +540,8 @@ namespace etl
 
       typedef TReturnType(TClassType::* MemberFunctionType)(TArgs...);
 
-      ETL_CONSTEXPR mem_fn_impl(MemberFunctionType member_function)
-        : member_function(member_function)
+      ETL_CONSTEXPR mem_fn_impl(MemberFunctionType member_function_)
+        : member_function(member_function_)
       {
       }
 
@@ -563,8 +563,8 @@ namespace etl
 
       typedef TReturnType(TClassType::* MemberFunctionType)(TArgs...) const;
 
-      ETL_CONSTEXPR const_mem_fn_impl(MemberFunctionType member_function)
-        : member_function(member_function)
+      ETL_CONSTEXPR const_mem_fn_impl(MemberFunctionType member_function_)
+        : member_function(member_function_)
       {
       }
 
