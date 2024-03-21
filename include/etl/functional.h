@@ -547,7 +547,7 @@ namespace etl
 
       ETL_CONSTEXPR TReturnType operator()(TClassType& instance, TArgs... args) const
       {
-        return (instance.*member_function)(std::forward<TArgs>(args)...);
+        return (instance.*member_function)(etl::forward<TArgs>(args)...);
       }
 
     private:
@@ -570,7 +570,7 @@ namespace etl
 
       ETL_CONSTEXPR TReturnType operator()(const TClassType& instance, TArgs... args) const
       {
-        return (instance.*member_function)(std::forward<TArgs>(args)...);
+        return (instance.*member_function)(etl::forward<TArgs>(args)...);
       }
 
     private:
