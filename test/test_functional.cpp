@@ -50,6 +50,41 @@ namespace
     }
   };
 
+  struct MemFnTest
+  {
+    std::string Function1()
+    {
+      return std::string("Function1");
+    }
+
+    std::string Function2(const std::string& arg1)
+    {
+      return std::string("Function2: ") + arg1;
+    }
+
+    std::string Function3(const std::string& arg1, const std::string& arg2)
+    {
+      return std::string("Function3: ") + arg1 + arg2;
+    }
+
+    std::string Function1_Const() const
+    {
+      return std::string("Function1_Const");
+    }
+
+    std::string Function2_Const(const std::string& arg1) const
+    {
+      return std::string("Function2_Const: ") + arg1;
+    }
+
+    std::string Function3_Const(const std::string& arg1, const std::string& arg2) const
+    {
+      return std::string("Function3_Const: ") + arg1 + arg2;
+    }
+
+    mutable std::string result;
+  };
+
   SUITE(test_functional)
   {
     //*************************************************************************
@@ -277,6 +312,72 @@ namespace
       CHECK_EQUAL(uint8_t(~0x55U), f(0x55U));
       CHECK_EQUAL(uint8_t(~0xAAU), f(0xAAU));
       CHECK_EQUAL(uint8_t(~0xFFU), f(0xFFU));
+    }
+
+    //*************************************************************************
+    TEST(test_mem_fn)
+    {
+      MemFnTest mft;
+      std::string result;
+
+      auto f1 = etl::mem_fn(&MemFnTest::Function1);
+      result.clear();
+      result = f1(mft);
+      CHECK_EQUAL("Function1", result);
+
+      auto f2 = etl::mem_fn(&MemFnTest::Function2);
+      result.clear();
+      result = f2(mft, "Arg1");
+      CHECK_EQUAL("Function2: Arg1", result);
+
+      auto f3 = etl::mem_fn(&MemFnTest::Function3);
+      result.clear();
+      result = f3(mft, "Arg1", " : Arg2");
+      CHECK_EQUAL("Function3: Arg1 : Arg2", result);
+    }
+
+    //*************************************************************************
+    TEST(test_const_mem_fn)
+    {
+      const MemFnTest mft;
+      std::string result;
+
+      auto f1 = etl::mem_fn(&MemFnTest::Function1_Const);
+      result.clear();
+      result = f1(mft);
+      CHECK_EQUAL("Function1_Const", result);
+
+      auto f2 = etl::mem_fn(&MemFnTest::Function2_Const);
+      result.clear();
+      result = f2(mft, "Arg1");
+      CHECK_EQUAL("Function2_Const: Arg1", result);
+
+      auto f3 = etl::mem_fn(&MemFnTest::Function3_Const);
+      result.clear();
+      result = f3(mft, "Arg1", " : Arg2");
+      CHECK_EQUAL("Function3_Const: Arg1 : Arg2", result);
+    }
+
+    //*************************************************************************
+    TEST(test_constexpr_mem_fn)
+    {
+      const MemFnTest mft;
+      std::string result;
+
+      constexpr auto f1 = etl::mem_fn(&MemFnTest::Function1_Const);
+      result.clear();
+      result = f1(mft);
+      CHECK_EQUAL("Function1_Const", result);
+
+      constexpr auto f2 = etl::mem_fn(&MemFnTest::Function2_Const);
+      result.clear();
+      result = f2(mft, "Arg1");
+      CHECK_EQUAL("Function2_Const: Arg1", result);
+
+      constexpr auto f3 = etl::mem_fn(&MemFnTest::Function3_Const);
+      result.clear();
+      result = f3(mft, "Arg1", " : Arg2");
+      CHECK_EQUAL("Function3_Const: Arg1 : Arg2", result);
     }
   };
 }
