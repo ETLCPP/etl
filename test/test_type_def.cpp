@@ -224,6 +224,7 @@ namespace
       CHECK_TRUE(ngte);
     }
 
+#if ETL_USING_CPP14
     //*************************************************************************
     ETL_TYPEDEF(int32_t, arithmetic_type_t);
 
@@ -257,5 +258,6 @@ namespace
       CHECK_EQUAL(3,  value_plus.get());
       CHECK_EQUAL(-3, value_minus.get());
     }
+#endif
   };
 }
