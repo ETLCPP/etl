@@ -32,6 +32,7 @@ SOFTWARE.
 #define ETL_FUNCTIONAL_INCLUDED
 
 #include "platform.h"
+#include "utility.h"
 
 ///\defgroup functional functional
 ///\ingroup utilities
