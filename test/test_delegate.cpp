@@ -422,11 +422,31 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_lambda_capture_int)
+    {
+      struct CaptureObject {
+        int i;
+        int j;
+
+        bool eval(int i_, int j_) const { return (i_ == i) && (j_ == j); } 
+      };
+
+      CaptureObject co { VALUE1, VALUE2 };
+
+      etl::delegate<void(int, int)> d([co](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = co.eval(i,j); });
+
+      d(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Lambda_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_lambda_int_create)
     {
       auto lambda = [](int i, int j) { function_called = FunctionCalled::Lambda_Called; parameter_correct = (i == VALUE1) && (j == VALUE2); };
 
-      etl::delegate<void(int, int)> d(lambda);
+      etl::delegate<void(int, int)> d(etl::ref(lambda));
 
       d(VALUE1, VALUE2);
 
@@ -439,7 +459,7 @@ namespace
     {
       Test test;
 
-      etl::delegate<void(void)> d(test);
+      etl::delegate<void(void)> d(etl::ref(test));
 
       d();
 
@@ -477,7 +497,7 @@ namespace
     {
       const Test test;
 
-      etl::delegate<void(void)> d(test);
+      etl::delegate<void(void)> d(etl::ref(test));
 
       d();
 
@@ -537,7 +557,7 @@ namespace
 
       etl::delegate<void(void)> d;
 
-      d = test;
+      d = etl::ref(test);
 
       d();
 
@@ -958,6 +978,29 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_set_lambda_capture_int)
+    {
+      etl::delegate<void(int, int)> d;
+
+      struct CaptureObject {
+        int i;
+        int j;
+
+        bool eval(int i_, int j_) const { return (i_ == i) && (j_ == j); } 
+        void assign(int i_, int j_) { this->i = i_; this->j = j_; }
+      };
+
+      CaptureObject co { 0, 0 };
+
+      d.set([&co](int i, int j) { co.assign(i,j); function_called = FunctionCalled::Lambda_Called; parameter_correct = co.eval(i,j); });
+
+      d(VALUE1, VALUE2);
+
+      CHECK(function_called == FunctionCalled::Lambda_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_set_member_reference)
     {
       Test test;
@@ -1194,7 +1237,7 @@ namespace
     {
       std::function<void(int, int)> std_function(free_int);
 
-      etl::delegate<void(int, int)> d(std_function);
+      etl::delegate<void(int, int)> d(etl::ref(std_function));
 
       d(VALUE1, VALUE2);
 

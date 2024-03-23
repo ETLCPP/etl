@@ -694,6 +694,56 @@ namespace
     }
 
     //*************************************************************************
+namespace private_test_is_empty {
+      struct A {};
+      struct B { int m; };
+      struct C { static int m; };
+      struct D { virtual ~D(); };
+      union E {};
+#if ETL_USING_CPP20
+      struct F { [[no_unique_address]] E e; };
+#endif
+      struct G
+      {
+          int:0;
+          // C++ standard allow "as a special case, an unnamed bit-field with a width of zero
+          // specifies alignment of the next bit-field at an allocation unit boundary.
+          // Only when declaring an unnamed bit-field may the width be zero."
+      };
+  
+};
+    TEST(test_is_empty)
+    {
+#if ETL_USING_CPP11
+#if ETL_USING_CPP17
+      CHECK(etl::is_empty_v<private_test_is_empty::A> == std::is_empty_v<private_test_is_empty::A>);
+      CHECK(etl::is_empty_v<private_test_is_empty::B> == std::is_empty_v<private_test_is_empty::B>);
+      CHECK(etl::is_empty_v<private_test_is_empty::C> == std::is_empty_v<private_test_is_empty::C>);
+      CHECK(etl::is_empty_v<private_test_is_empty::D> == std::is_empty_v<private_test_is_empty::D>);
+#if ETL_USING_STL
+      CHECK(etl::is_empty_v<private_test_is_empty::E> == std::is_empty_v<private_test_is_empty::E>);
+#endif
+#if ETL_USING_CPP20
+      CHECK(etl::is_empty_v<private_test_is_empty::F> == std::is_empty_v<private_test_is_empty::F>);
+#endif
+      CHECK(etl::is_empty_v<private_test_is_empty::G> == std::is_empty_v<private_test_is_empty::G>);
+#else
+      CHECK(etl::is_empty<private_test_is_empty::A>::value == std::is_empty<private_test_is_empty::A>::value);
+      CHECK(etl::is_empty<private_test_is_empty::B>::value == std::is_empty<private_test_is_empty::B>::value);
+      CHECK(etl::is_empty<private_test_is_empty::C>::value == std::is_empty<private_test_is_empty::C>::value);
+      CHECK(etl::is_empty<private_test_is_empty::D>::value == std::is_empty<private_test_is_empty::D>::value);
+#if ETL_USING_STL
+      CHECK(etl::is_empty<private_test_is_empty::E>::value == std::is_empty<private_test_is_empty::E>::value);
+#endif
+#if ETL_USING_CPP20
+      CHECK(etl::is_empty<private_test_is_empty::F>::value == std::is_empty<private_test_is_empty::F>::value);
+#endif
+      CHECK(etl::is_empty<private_test_is_empty::G>::value == std::is_empty<private_test_is_empty::G>::value);
+#endif
+#endif
+    }
+
+    //*************************************************************************
     TEST(test_is_one_of)
     {
       typedef Type<0> T0;
