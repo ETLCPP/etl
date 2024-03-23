@@ -99,6 +99,26 @@ namespace etl
       return lt(lhs, rhs) ? Less : gt(lhs, rhs) ? Greater : Equal;
     }
   };
+
+  //***************************************************************************
+  /// Default implementation of TLess is etl::less
+  //***************************************************************************
+  template <typename T, typename TLess = etl::less<T>>
+  ETL_CONSTEXPR14 int three_way_compare(const T& lhs, const T& rhs)
+  {
+    if (lhs < rhs)
+    {
+      return -1;
+    }
+    else if (lhs > rhs)
+    {
+      return 1;
+    }
+    else
+    {
+      return 0;
+    }
+  }
 }
 
 #endif
