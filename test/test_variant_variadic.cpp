@@ -169,6 +169,7 @@ namespace
     return os;
   }
 
+#if ETL_USING_CPP20 && ETL_USING_STL
   std::ostream& operator <<(std::ostream& os, std::strong_ordering ordering)
   {
     if (ordering == std::strong_ordering::equal)
@@ -190,6 +191,7 @@ namespace
 
     return os;
   }
+#endif
 
   typedef etl::variant<etl::monostate, D1, D2, D3, D4> test_variant_emplace;
 
@@ -1941,6 +1943,7 @@ namespace
     }
 #endif
 
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_variant_comparisons)
     {
@@ -1959,7 +1962,9 @@ namespace
       Variant v_world(std::string("world"));
 
       CHECK_TRUE(v_empty1 == v_empty2);
+      CHECK_TRUE(v_empty1 < v_char_a);
     }
+#endif
 
 #if ETL_USING_CPP20 && ETL_USING_STL
     //*************************************************************************
@@ -1994,7 +1999,7 @@ namespace
 #endif
 
     //*************************************************************************
-    TEST(test_variant_three_way_compare)
+    TEST(test_variant_three_way_compare_using_etl_compare_cmp)
     {
       using Variant = etl::variant<char, int>;
 
@@ -2007,18 +2012,20 @@ namespace
       Variant v_int_1(1);
       Variant v_int_2(2);
 
-      CHECK_EQUAL( 0, (etl::three_way_compare(v_empty1, v_empty2)));
-      
-      CHECK_EQUAL( 0, (etl::three_way_compare(v_char_a, v_char_a)));
-      CHECK_EQUAL(-1, (etl::three_way_compare(v_char_a, v_char_b)));
-      CHECK_EQUAL( 1, (etl::three_way_compare(v_char_b, v_char_a)));
-      
-      CHECK_EQUAL( 0, (etl::three_way_compare(v_int_1,  v_int_1)));
-      CHECK_EQUAL(-1, (etl::three_way_compare(v_int_1,  v_int_2)));
-      CHECK_EQUAL( 1, (etl::three_way_compare(v_int_2,  v_int_1)));
+      using Compare = etl::compare<Variant>;
 
-      CHECK_EQUAL(-1, (etl::three_way_compare(v_char_a, v_int_1)));
-      CHECK_EQUAL( 1, (etl::three_way_compare(v_int_1,  v_char_a)));
+      CHECK_EQUAL(Compare::Equal,   (Compare::cmp(v_empty1, v_empty2)));
+      
+      CHECK_EQUAL(Compare::Equal,   (Compare::cmp(v_char_a, v_char_a)));
+      CHECK_EQUAL(Compare::Less,    (Compare::cmp(v_char_a, v_char_b)));
+      CHECK_EQUAL(Compare::Greater, (Compare::cmp(v_char_b, v_char_a)));
+      
+      CHECK_EQUAL(Compare::Equal,   (Compare::cmp(v_int_1,  v_int_1)));
+      CHECK_EQUAL(Compare::Less,    (Compare::cmp(v_int_1,  v_int_2)));
+      CHECK_EQUAL(Compare::Greater, (Compare::cmp(v_int_2,  v_int_1)));
+
+      CHECK_EQUAL(Compare::Less,    (Compare::cmp(v_char_a, v_int_1)));
+      CHECK_EQUAL(Compare::Greater, (Compare::cmp(v_int_1,  v_char_a)));
     }
   };
 }
