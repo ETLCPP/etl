@@ -912,7 +912,7 @@ namespace
     {
       test_variant_3 variant;
       variant = int8_t{};
-      // c++98 should generate a const ref of dispatchern.
+      // c++98 should generate a const ref of dispatcher.
       int16_t type = etl::legacy::visit<int16_t>(variant_test_visit_dispatcher{}, variant);
       CHECK_EQUAL(1, type);
       test_variant_3 const& variant_const = variant;
