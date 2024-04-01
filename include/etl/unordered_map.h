@@ -659,13 +659,13 @@ namespace etl
 
       // Doesn't exist, so add a new one.
       // Get a new node.
-      node_t& node = allocate_data_node();
-      node.clear();
-      ::new ((void*)etl::addressof(node.key_value_pair.first))  key_type(etl::move(key));
-      ::new ((void*)etl::addressof(node.key_value_pair.second)) mapped_type();
+      node_t* node = allocate_data_node();
+      node->clear();
+      ::new ((void*)etl::addressof(node->key_value_pair.first))  key_type(etl::move(key));
+      ::new ((void*)etl::addressof(node->key_value_pair.second)) mapped_type();
       ETL_INCREMENT_DEBUG_COUNT;
 
-      pbucket->insert_after(pbucket->before_begin(), node);
+      pbucket->insert_after(pbucket->before_begin(), *node);
 
       adjust_first_last_markers_after_insert(pbucket);
 
@@ -703,13 +703,13 @@ namespace etl
 
       // Doesn't exist, so add a new one.
       // Get a new node.
-      node_t& node = allocate_data_node();
-      node.clear();
-      ::new ((void*)etl::addressof(node.key_value_pair.first))  key_type(key);
-      ::new ((void*)etl::addressof(node.key_value_pair.second)) mapped_type();
+      node_t* node = allocate_data_node();
+      node->clear();
+      ::new ((void*)etl::addressof(node->key_value_pair.first))  key_type(key);
+      ::new ((void*)etl::addressof(node->key_value_pair.second)) mapped_type();
       ETL_INCREMENT_DEBUG_COUNT;
 
-        pbucket->insert_after(pbucket->before_begin(), node);
+        pbucket->insert_after(pbucket->before_begin(), *node);
 
       adjust_first_last_markers_after_insert(pbucket);
 
@@ -835,13 +835,13 @@ namespace etl
       if (bucket.empty())
       {
         // Get a new node.
-        node_t& node = allocate_data_node();
-        node.clear();
-        ::new ((void*)etl::addressof(node.key_value_pair)) value_type(key_value_pair);        
+        node_t* node = allocate_data_node();
+        node->clear();
+        ::new ((void*)etl::addressof(node->key_value_pair)) value_type(key_value_pair);        
         ETL_INCREMENT_DEBUG_COUNT;
 
         // Just add the pointer to the bucket;
-        bucket.insert_after(bucket.before_begin(), node);
+        bucket.insert_after(bucket.before_begin(), *node);
 
         adjust_first_last_markers_after_insert(pbucket);
 
@@ -870,13 +870,13 @@ namespace etl
         if (inode == bucket.end())
         {
           // Get a new node.
-          node_t& node = allocate_data_node();
-          node.clear();
-          ::new ((void*)etl::addressof(node.key_value_pair)) value_type(key_value_pair);
+          node_t* node = allocate_data_node();
+          node->clear();
+          ::new ((void*)etl::addressof(node->key_value_pair)) value_type(key_value_pair);
           ETL_INCREMENT_DEBUG_COUNT;
 
           // Add the node to the end of the bucket;
-          bucket.insert_after(inode_previous, node);
+          bucket.insert_after(inode_previous, *node);
           adjust_first_last_markers_after_insert(&bucket);
           ++inode_previous;
 
@@ -913,13 +913,13 @@ namespace etl
       if (bucket.empty())
       {
         // Get a new node.
-        node_t& node = allocate_data_node();
-        node.clear();
-        ::new ((void*)etl::addressof(node.key_value_pair)) value_type(etl::move(key_value_pair));
+        node_t* node = allocate_data_node();
+        node->clear();
+        ::new ((void*)etl::addressof(node->key_value_pair)) value_type(etl::move(key_value_pair));
         ETL_INCREMENT_DEBUG_COUNT;
 
         // Just add the pointer to the bucket;
-        bucket.insert_after(bucket.before_begin(), node);
+        bucket.insert_after(bucket.before_begin(), *node);
 
         adjust_first_last_markers_after_insert(pbucket);
 
@@ -948,13 +948,13 @@ namespace etl
         if (inode == bucket.end())
         {
           // Get a new node.
-          node_t& node = allocate_data_node();
-          node.clear();
-          ::new ((void*)etl::addressof(node.key_value_pair)) value_type(etl::move(key_value_pair));
+          node_t* node = allocate_data_node();
+          node->clear();
+          ::new ((void*)etl::addressof(node->key_value_pair)) value_type(etl::move(key_value_pair));
           ETL_INCREMENT_DEBUG_COUNT;
 
           // Add the node to the end of the bucket;
-          bucket.insert_after(inode_previous, node);
+          bucket.insert_after(inode_previous, *node);
           adjust_first_last_markers_after_insert(&bucket);
           ++inode_previous;
 
@@ -1437,10 +1437,10 @@ namespace etl
     //*************************************************************************
     /// Create a node.
     //*************************************************************************
-    node_t& allocate_data_node()
+    node_t* allocate_data_node()
     {
       node_t* (etl::ipool::*func)() = &etl::ipool::allocate<node_t>;
-      return *(pnodepool->*func)();
+      return (pnodepool->*func)();
     }
 
     //*********************************************************************

@@ -664,13 +664,13 @@ namespace etl
       if (bucket.empty())
       {
         // Get a new node.
-        node_t& node = allocate_data_node();
-        node.clear();
-        ::new (&node.key) value_type(key);
+        node_t* node = allocate_data_node();
+        node->clear();
+        ::new (&node->key) value_type(key);
         ETL_INCREMENT_DEBUG_COUNT;
 
         // Just add the pointer to the bucket;
-        bucket.insert_after(bucket.before_begin(), node);
+        bucket.insert_after(bucket.before_begin(), *node);
         adjust_first_last_markers_after_insert(&bucket);
 
         result.first = iterator((pbuckets + number_of_buckets), pbucket, pbucket->begin());
@@ -695,13 +695,13 @@ namespace etl
         }
 
         // Get a new node.
-        node_t& node = allocate_data_node();
-        node.clear();
-        ::new (&node.key) value_type(key);
+        node_t* node = allocate_data_node();
+        node->clear();
+        ::new (&node->key) value_type(key);
         ETL_INCREMENT_DEBUG_COUNT;
 
         // Add the node to the end of the bucket;
-        bucket.insert_after(inode_previous, node);
+        bucket.insert_after(inode_previous, *node);
         adjust_first_last_markers_after_insert(&bucket);
         ++inode_previous;
 
@@ -735,13 +735,13 @@ namespace etl
       if (bucket.empty())
       {
         // Get a new node.
-        node_t& node = allocate_data_node();
-        node.clear();
-        ::new (&node.key) value_type(etl::move(key));
+        node_t* node = allocate_data_node();
+        node->clear();
+        ::new (&node->key) value_type(etl::move(key));
         ETL_INCREMENT_DEBUG_COUNT;
 
         // Just add the pointer to the bucket;
-        bucket.insert_after(bucket.before_begin(), node);
+        bucket.insert_after(bucket.before_begin(), *node);
         adjust_first_last_markers_after_insert(&bucket);
 
         result.first = iterator((pbuckets + number_of_buckets), pbucket, pbucket->begin());
@@ -766,13 +766,13 @@ namespace etl
         }
 
         // Get a new node.
-        node_t& node = allocate_data_node();
-        node.clear();
-        ::new (&node.key) value_type(etl::move(key));
+        node_t* node = allocate_data_node();
+        node->clear();
+        ::new (&node->key) value_type(etl::move(key));
         ETL_INCREMENT_DEBUG_COUNT;
 
           // Add the node to the end of the bucket;
-          bucket.insert_after(inode_previous, node);
+          bucket.insert_after(inode_previous, *node);
         adjust_first_last_markers_after_insert(&bucket);
         ++inode_previous;
 
@@ -1269,10 +1269,10 @@ namespace etl
     //*************************************************************************
     /// Create a node.
     //*************************************************************************
-    node_t& allocate_data_node()
+    node_t* allocate_data_node()
     {
       node_t* (etl::ipool::*func)() = &etl::ipool::allocate<node_t>;
-      return *(pnodepool->*func)();
+      return (pnodepool->*func)();
     }
 
     //*********************************************************************

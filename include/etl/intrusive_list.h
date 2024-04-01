@@ -458,7 +458,9 @@ namespace etl
 
       reference operator *() const
       {
+#include "etl/private/diagnostic_null_dereference_push.h"
         return *static_cast<pointer>(p_value);
+#include "etl/private/diagnostic_pop.h"
       }
 
       pointer operator &() const
