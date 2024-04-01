@@ -41,6 +41,7 @@ SOFTWARE.
 #include "../placement_new.h"
 #include "../visitor.h"
 #include "../memory.h"
+#include "../compare.h"
 #include "../initializer_list.h"
 
 #include <stdint.h>
@@ -1816,7 +1817,7 @@ namespace etl
   }  // namespace private_variant
 
   //***************************************************************************
-  /// c++11/14 compatible etl::visit for etl::variant. Supports both c++17
+  /// C++11/14 compatible etl::visit for etl::variant. Supports both c++17
   /// "auto return type" signature and c++20 explicit template return type.
   //***************************************************************************
   template <typename TRet = private_variant::visit_auto_return, typename... TVariants, typename TCallable, typename TDeducedReturn = private_variant::visit_result_t<TRet, TCallable, TVariants...> >
@@ -1824,5 +1825,219 @@ namespace etl
   {
     return private_variant::visit<TDeducedReturn>(static_cast<TCallable&&>(f), static_cast<TVariants&&>(vs)...);
   }
+
+  namespace private_variant
+  {
+    //***************************************************************************
+    /// C++11 compatible visitor function for testing variant equality.
+    /// Assumes that the two variants are already known to contain the same type.
+    //***************************************************************************
+    template <typename TVariant>
+    struct equality_visitor
+    {
+      equality_visitor(const TVariant& rhs_)
+        : rhs(rhs_)
+      {
+      }
+
+      template <typename TValue>
+      bool operator()(const TValue& lhs_downcasted)
+      {
+        return lhs_downcasted == etl::get<TValue>(rhs);
+      }
+
+      const TVariant& rhs;
+    };
+
+    //***************************************************************************
+    /// C++11 compatible visitor function for testing variant '<' (less than).
+    /// Assumes that the two variants are already known to contain the same type.
+    //***************************************************************************
+    template <typename TVariant>
+    struct less_than_visitor
+    {
+      less_than_visitor(const TVariant& rhs_)
+        : rhs(rhs_)
+      {
+      }
+
+      template <typename TValue>
+      bool operator()(const TValue& lhs_downcasted)
+      {
+        return lhs_downcasted < etl::get<TValue>(rhs);
+      }
+
+      const TVariant& rhs;
+    };
+  }
+
+  //***************************************************************************
+  /// Checks if the variants are equal.
+  /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
+  //***************************************************************************
+  template <typename... TTypes>
+  ETL_CONSTEXPR14 bool operator ==(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  {
+    // If both variants are valueless, they are considered equal
+    if (lhs.valueless_by_exception() && rhs.valueless_by_exception())
+    {
+      return true;
+    }
+
+    // If one variant is valueless and the other is not, they are not equal
+    if (lhs.valueless_by_exception() || rhs.valueless_by_exception())
+    {
+      return false;
+    }
+
+    // If variants have different types, they are not equal
+    if (lhs.index() != rhs.index())
+    {
+      return false;
+    }
+
+    // Variants have the same type, apply the equality operator for the contained values
+    private_variant::equality_visitor<etl::variant<TTypes...>> visitor(rhs);
+
+    return etl::visit(visitor, lhs);
+  }
+
+  //***************************************************************************
+  /// Checks if the variants not equal.
+  /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
+  //***************************************************************************
+  template <typename... TTypes>
+  ETL_CONSTEXPR14 bool operator !=(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  {
+    return !(lhs == rhs);
+  }
+
+  //***************************************************************************
+  /// Checks if the lhs variant is less than rhs.
+  /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
+  //***************************************************************************
+  template <typename... TTypes>
+  ETL_CONSTEXPR14 bool operator <(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  {
+    // If both variants are valueless, they are considered equal, so not less than
+    if (lhs.valueless_by_exception() && rhs.valueless_by_exception())
+    {
+      return false;
+    }
+
+    // A valueless variant is always less than a variant with a value
+    if (lhs.valueless_by_exception())
+    {
+      return true;
+    }
+
+    // A variant with a value is never less than a valueless variant
+    if (rhs.valueless_by_exception())
+    {
+      return false;
+    }
+
+    // If variants have different types, compare the type index
+    if (lhs.index() != rhs.index())
+    {
+      return lhs.index() < rhs.index();
+    }
+
+    // Variants have the same type, apply the less than operator for the contained values
+    private_variant::less_than_visitor<etl::variant<TTypes...>> visitor(rhs);
+
+    return etl::visit(visitor, lhs);
+  }
+
+  //***************************************************************************
+  /// Checks if the lhs variant is greater than rhs.
+  /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
+  //***************************************************************************
+  template <typename... TTypes>
+  ETL_CONSTEXPR14 bool operator >(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  {
+    return (rhs < lhs);
+  }
+
+  //***************************************************************************
+  /// Checks if the lhs variant is less than or equal to rhs.
+  /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
+  //***************************************************************************
+  template <typename... TTypes>
+  ETL_CONSTEXPR14 bool operator <=(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  {
+    return  !(lhs > rhs);
+  }
+
+  //***************************************************************************
+  /// Checks if the lhs variant is greater than or equal to rhs.
+  /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
+  //***************************************************************************
+  template <typename... TTypes>
+  ETL_CONSTEXPR14 bool operator >=(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  {
+    return !(lhs < rhs);
+  }
+
+  namespace private_variant
+  {
+    //***************************************************************************
+    /// C++20 compatible visitor function for testing variant '<=>'.
+    /// Assumes that the two variants are already known to contain the same type.
+    //***************************************************************************
+    template <typename TVariant>
+    struct compare_visitor
+    {
+      compare_visitor(const TVariant& rhs_)
+        : rhs(rhs_)
+      {
+      }
+
+      template <typename TValue>
+      std::strong_ordering operator()(const TValue& lhs_downcasted)
+      {
+        return lhs_downcasted <=> etl::get<TValue>(rhs);
+      }
+
+      const TVariant& rhs;
+    };
+  }
+
+  //***************************************************************************
+  /// Defines the 'spaceship' <=> operator for comparing variants.
+  /// Only defined if using C++20 and STL.
+  /// https://en.cppreference.com/w/cpp/utility/variant/operator_cmp
+  //***************************************************************************
+#if ETL_USING_CPP20 && ETL_USING_STL
+  template <typename... TTypes>
+  ETL_CONSTEXPR14 
+  std::common_comparison_category_t<std::compare_three_way_result_t<TTypes>...>
+    operator <=>(const etl::variant<TTypes...>& lhs, const etl::variant<TTypes...>& rhs)
+  {
+    if (lhs.valueless_by_exception() && rhs.valueless_by_exception())
+    {
+      return std::strong_ordering::equal;
+    }
+    else if (lhs.valueless_by_exception())
+    {
+      return std::strong_ordering::less;
+    }
+    else if (rhs.valueless_by_exception())
+    {
+      return std::strong_ordering::greater;
+    }
+    else if (lhs.index() != rhs.index())
+    {
+      return lhs.index() <=> rhs.index();
+    }
+    else
+    {
+      // Variants have the same type, apply the equality operator for the contained values
+      private_variant::compare_visitor<etl::variant<TTypes...>> visitor(rhs);
+
+      return etl::visit(visitor, lhs);
+    }
+  }
+#endif
 }
 #endif
