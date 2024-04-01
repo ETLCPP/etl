@@ -1963,6 +1963,43 @@ namespace
 
       CHECK_TRUE(v_empty1 == v_empty2);
       CHECK_TRUE(v_empty1 < v_char_a);
+      CHECK_FALSE(v_char_a < v_empty1);
+
+      CHECK_TRUE(v_char_a == v_char_a);
+      CHECK_TRUE(v_char_a < v_char_b);
+      CHECK_FALSE(v_char_b < v_char_a);
+      CHECK_FALSE(v_char_a > v_char_b);
+      CHECK_TRUE(v_char_b > v_char_a);
+      CHECK_TRUE(v_char_a <= v_char_b);
+      CHECK_FALSE(v_char_b <= v_char_a);
+      CHECK_FALSE(v_char_a >= v_char_b);
+      CHECK_TRUE(v_char_b >= v_char_a);
+      CHECK_TRUE(v_char_a <= v_char_a);
+      CHECK_TRUE(v_char_a >= v_char_a);
+
+      CHECK_TRUE(v_int_1 == v_int_1);
+      CHECK_TRUE(v_int_1 < v_int_2);
+      CHECK_FALSE(v_int_2 < v_int_1);
+      CHECK_FALSE(v_int_1 > v_int_2);
+      CHECK_TRUE(v_int_2 > v_int_1);
+      CHECK_TRUE(v_int_1 <= v_int_2);
+      CHECK_FALSE(v_int_2 <= v_int_1);
+      CHECK_FALSE(v_int_1 >= v_int_2);
+      CHECK_TRUE(v_int_2 >= v_int_1);
+      CHECK_TRUE(v_int_1 <= v_int_1);
+      CHECK_TRUE(v_int_1 >= v_int_1);
+
+      CHECK_TRUE(v_hello == v_hello);
+      CHECK_TRUE(v_hello < v_world);
+      CHECK_FALSE(v_world < v_hello);
+      CHECK_FALSE(v_hello > v_world);
+      CHECK_TRUE(v_world > v_hello);
+      CHECK_TRUE(v_hello <= v_world);
+      CHECK_FALSE(v_world <= v_hello);
+      CHECK_FALSE(v_hello >= v_world);
+      CHECK_TRUE(v_world >= v_hello);
+      CHECK_TRUE(v_hello <= v_hello);
+      CHECK_TRUE(v_hello >= v_hello);
     }
 #endif
 
