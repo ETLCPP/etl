@@ -410,13 +410,38 @@ namespace etl
 
         disconnect_link(link);
 
-        if (p_next != &this->terminal_link)
+        if (p_next != &terminal_link)
         {
           result = p_next;
         }
       }
 
       return result;
+    }
+
+    //*************************************************************************
+    /// Removes a range of links.
+    //*************************************************************************
+    link_type* remove_link_range(link_type* p_first, link_type* p_last)
+    {
+      // Join the ends.
+      etl::link<link_type>(p_first->etl_previous, p_last);
+
+      while (p_first != p_last)
+      {
+        link_type* p_next = p_first->etl_next;
+        p_first->clear();
+        p_first = p_next;
+      }
+
+      if (p_last == &terminal_link)
+      {
+        return ETL_NULLPTR;
+      }
+      else
+      {
+        return p_last;
+      }
     }
   };
 
@@ -803,17 +828,9 @@ namespace etl
 
       this->current_size -= etl::distance(first, last);
 
-      // Join the ends.
-      etl::link<link_type>(p_first->etl_previous, p_last);
+      p_last = this->remove_link_range(p_first, p_last);
 
-      while (p_first != p_last)
-      {
-        link_type* p_next = p_first->etl_next;
-        p_first->clear();
-        p_first = p_next;
-      }
-
-      if (p_last == &this->terminal_link)
+      if (p_last == ETL_NULLPTR)
       {
         return end();
       }

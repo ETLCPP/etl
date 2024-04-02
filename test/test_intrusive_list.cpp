@@ -836,8 +836,8 @@ namespace
       ItemNDCNode* p_node5 = &data0.front();
 
       ItemNDCNode* p_next5 = static_cast<ItemNDCNode*>(p_node5->FirstLink::get_next());
-      p_node5 = data0.erase(*p_node5);
-      CHECK_EQUAL(ETL_NULLPTR, p_node5);
+      p_next5 = data0.erase(*p_node5);
+      CHECK_EQUAL(ETL_NULLPTR, p_next5);
     }
 
     //*************************************************************************

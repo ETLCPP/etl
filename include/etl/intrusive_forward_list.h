@@ -386,6 +386,36 @@ namespace etl
 
       return result;
     }
+
+    //*************************************************************************
+    /// Remove a range of elements.
+    //*************************************************************************
+    link_type* remove_link_range_after(link_type* p_first, link_type* p_last)
+    {
+      link_type* p_after = p_first->etl_next;
+
+      // Join the ends.
+      etl::link<link_type>(p_first, p_last);
+
+      // Unlink the erased range.
+      link_type* p_unlink = p_after;
+
+      while (p_unlink != p_last)
+      {
+        link_type* p_next = p_unlink->etl_next;
+        p_unlink->clear();
+        p_unlink = p_next;
+      }
+
+      if (p_after == &this->terminator)
+      {
+        return ETL_NULLPTR;
+      }
+      else
+      {
+        return p_last;
+      }
+    }
   };
 
   template <typename TLink>
@@ -737,22 +767,9 @@ namespace etl
 
         link_type* p_first = first.p_value;
         link_type* p_last  = last.p_value;
-        link_type* p_after = p_first->etl_next;
-        
-        // Join the ends.
-        etl::link<link_type>(p_first, p_last);
+        link_type* p_after = this->remove_link_range_after(p_first, p_last);
 
-        // Unlink the erased range.
-        link_type* p_unlink = p_after;
-
-        while (p_unlink != p_last)
-        {
-          link_type* p_next = p_unlink->etl_next;
-          p_unlink->clear();
-          p_unlink = p_next;
-        }
-
-        if (p_after == &this->terminator)
+        if (p_after == ETL_NULLPTR)
         {
           return end();
         }
