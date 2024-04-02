@@ -209,7 +209,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT_OR_RETURN(!empty(), ETL_ERROR(intrusive_forward_list_empty));
 #endif
-      remove_link_after(start);
+      disconnect_link_after(start);
     }
 
     //*************************************************************************
@@ -297,7 +297,7 @@ namespace etl
     //*************************************************************************
     /// Remove a link.
     //*************************************************************************
-    void remove_link_after(link_type& link)
+    void disconnect_link_after(link_type& link)
     {
       link_type* p_next = link.etl_next;
 
@@ -333,6 +333,59 @@ namespace etl
       start.etl_next = &terminator;
       current_size = 0;
     }
+
+    //*************************************************************************
+    /// Tests if the link is in this list.
+    /// Returns the previous link to it, if found, otherwise ETL_NULLPTR.
+    //*************************************************************************
+    link_type* is_link_in_list(link_type& search_link)
+    {
+      link_type* p_link     = start.etl_next;
+      link_type* p_previous = &start;
+
+      while (p_link != ETL_NULLPTR)
+      {
+        if (&search_link == p_link)
+        {
+          return p_previous;
+        }
+
+        p_previous = p_link;
+
+        if (p_link != ETL_NULLPTR)
+        {
+          p_link = p_link->link_type::etl_next;
+        }
+      }
+
+      return ETL_NULLPTR;
+    }
+
+    //*************************************************************************
+    /// Remove the specified node from the list.
+    /// Returns ETL_NULLPTR if the link was not in this list.
+    /// Returns the next 
+    //*************************************************************************
+    link_type* remove_link(link_type& link)
+    {
+      link_type* result = ETL_NULLPTR;
+
+      link_type* p_previous = is_link_in_list(link);
+
+      if (p_previous != ETL_NULLPTR)
+      {
+        link_type* p_next = link.etl_next;
+
+        disconnect_link_after(*p_previous);
+
+        if (p_next != &this->terminator)
+        {
+          result = p_next;
+        }
+      }
+
+      return result;
+    }
   };
 
   template <typename TLink>
@@ -360,6 +413,8 @@ namespace etl
     typedef size_t            size_type;
 
     typedef intrusive_forward_list<TValue, TLink> list_type;
+
+    typedef TValue node_type;
 
     //*************************************************************************
     /// iterator.
@@ -664,7 +719,7 @@ namespace etl
         if (next != end())
         {
           ++next;
-          this->remove_link_after(*position.p_value);
+          this->disconnect_link_after(*position.p_value);
         }
       }
 
@@ -713,6 +768,14 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Erases the specified node.
+    //*************************************************************************
+    node_type* erase(node_type& node)
+    {
+      return static_cast<node_type*>(this->remove_link(node));
+    }
+
+    //*************************************************************************
     /// Removes all but the one element from every consecutive group of equal
     /// elements in the container.
     //*************************************************************************
@@ -732,7 +795,7 @@ namespace etl
         // Is this value the same as the last?
         if (isEqual(*static_cast<pointer>(current), *static_cast<pointer>(last)))
         {
-          this->remove_link_after(*last);
+          this->disconnect_link_after(*last);
         }
         else
         {

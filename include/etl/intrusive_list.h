@@ -175,7 +175,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!empty(), ETL_ERROR(intrusive_list_empty));
 #endif
-      remove_link(get_head());
+      disconnect_link(get_head());
     }
 
     //*************************************************************************
@@ -196,7 +196,7 @@ namespace etl
 #if defined(ETL_CHECK_PUSH_POP)
       ETL_ASSERT(!empty(), ETL_ERROR(intrusive_list_empty));
 #endif
-      remove_link(get_tail());
+      disconnect_link(get_tail());
     }
 
     //*************************************************************************
@@ -320,7 +320,7 @@ namespace etl
     //*************************************************************************
     /// Remove a link.
     //*************************************************************************
-    void remove_link(link_type& link)
+    void disconnect_link(link_type& link)
     {
       etl::unlink<link_type>(link);
       --current_size;
@@ -329,7 +329,7 @@ namespace etl
     //*************************************************************************
     /// Remove a link.
     //*************************************************************************
-    void remove_link(link_type* link)
+    void disconnect_link(link_type* link)
     {
       etl::unlink<link_type>(*link);
       --current_size;
@@ -375,6 +375,49 @@ namespace etl
       etl::link(terminal_link, terminal_link);
       current_size = 0;
     }
+
+    //*************************************************************************
+    /// Tests if the link is in this list.
+    //*************************************************************************
+    bool is_link_in_list(link_type& search_link) const
+    {
+      link_type* p_link = terminal_link.link_type::etl_next;
+
+      while (p_link != &terminal_link)
+      {
+        if (&search_link == p_link)
+        {
+          return true;
+        }
+
+        p_link = p_link->link_type::etl_next;
+      }
+
+      return false;
+    }
+
+    //*************************************************************************
+    /// Remove the specified node from the list.
+    /// Returns ETL_NULLPTR if the link was not in this list or was the last in the list.
+    //*************************************************************************
+    link_type* remove_link(link_type& link)
+    {
+      link_type* result = ETL_NULLPTR;
+
+      if (is_link_in_list(link))
+      {
+        link_type* p_next = link.etl_next;
+
+        disconnect_link(link);
+
+        if (p_next != &this->terminal_link)
+        {
+          result = p_next;
+        }
+      }
+
+      return result;
+    }
   };
 
   //***************************************************************************
@@ -391,6 +434,8 @@ namespace etl
     typedef typename etl::intrusive_list_base<TLink>::link_type link_type;
 
     typedef intrusive_list<TValue, TLink> list_type;
+
+    typedef TValue node_type;
 
     // STL style typedefs.
     typedef TValue            value_type;
@@ -726,7 +771,7 @@ namespace etl
       iterator next(position);
       ++next;
 
-      this->remove_link(*position.p_value);
+      this->disconnect_link(*position.p_value);
 
       return next;
     }
@@ -739,7 +784,7 @@ namespace etl
       iterator next(position);
       ++next;
 
-      this->remove_link(*position.p_value);
+      this->disconnect_link(*position.p_value);
 
       return next;
     }
@@ -776,6 +821,14 @@ namespace etl
       {
         return iterator(static_cast<pointer>(p_last));
       }
+    }
+
+    //*************************************************************************
+    /// Erases the specified node.
+    //*************************************************************************
+    node_type* erase(node_type& node)
+    {
+      return static_cast<node_type*>(this->remove_link(node));
     }
 
     //*************************************************************************
