@@ -26,8 +26,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "unit_test_framework.h"
-
 #include "etl/private/variant_variadic.h"
 #include "etl/visitor.h"
 #include "etl/overload.h"
@@ -42,6 +40,10 @@ SOFTWARE.
 
 #if ETL_USING_CPP17
   #include <variant>
+#endif
+
+#if ETL_USING_CPP20
+  #include <compare>
 #endif
 
 #include "etl/private/diagnostic_useless_cast_push.h"
@@ -170,7 +172,7 @@ namespace
   }
 
 #if ETL_USING_CPP20 && ETL_USING_STL
-  std::ostream& operator <<(std::ostream& os, std::strong_ordering ordering)
+  std::ostream& operator <<(std::ostream& os, const std::strong_ordering& ordering)
   {
     if (ordering == std::strong_ordering::equal)
     {
@@ -319,6 +321,10 @@ namespace
     bool copied_to;
   };
 }
+
+// Moved from the top of the file otherwise clang has issues with
+// operator<< for std::strong_ordering.
+#include "unit_test_framework.h"
 
 // Definitions for when the STL and compiler built-ins are not available.
 #if ETL_NOT_USING_STL && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
