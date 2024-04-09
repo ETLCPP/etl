@@ -676,7 +676,7 @@ namespace
 
       CHECK(are_equal);
       CHECK_NOT_EQUAL(p_next3, p_node3);
-      CHECK_EQUAL(ETL_NULLPTR, p_node3);
+      CHECK(ETL_NULLPTR == p_node3);
       CHECK_EQUAL(compare_data.size(), data0.size());
       CHECK_EQUAL(compare_data.size(), size_t(std::distance(data0.begin(), data0.end())));
 
@@ -696,7 +696,7 @@ namespace
 
       ItemNDCNode* p_next5 = static_cast<ItemNDCNode*>(p_node5->FirstLink::get_next());
       p_next5 = data0.erase(*p_node5);
-      CHECK_EQUAL(ETL_NULLPTR, p_next5);
+      CHECK(ETL_NULLPTR == p_next5);
     }
 
     //*************************************************************************
