@@ -662,6 +662,7 @@ namespace etl
             if (mbegin[i] == view[j])
             {
               found = true;
+              break;
             }
           }
 
@@ -715,6 +716,7 @@ namespace etl
           if (mbegin[position] == view[j])
           {
             found = true;
+            break;
           }
         }
 
