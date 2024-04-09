@@ -1981,6 +1981,7 @@ namespace etl
 
   namespace private_variant
   {
+#if ETL_USING_CPP20 && ETL_USING_STL
     //***************************************************************************
     /// C++20 compatible visitor function for testing variant '<=>'.
     /// Assumes that the two variants are already known to contain the same type.
@@ -2001,6 +2002,7 @@ namespace etl
 
       const TVariant& rhs;
     };
+#endif
   }
 
   //***************************************************************************
