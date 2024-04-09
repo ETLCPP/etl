@@ -3073,6 +3073,73 @@ namespace etl
     return multimin_iter_compare(compare, t, multimin_iter_compare(compare, tx...));
   }
 #endif
+
+  //***************************************************************************
+  /// partition
+  /// For forward iterators only
+  /// Does at most etl::distance(first, last) swaps.
+  //***************************************************************************
+  template <typename TIterator, typename TPredicate>
+  ETL_CONSTEXPR14 
+  typename etl::enable_if<etl::is_forward_iterator<TIterator>::value, TIterator>::type
+    partition(TIterator first, TIterator last, TPredicate predicate)
+  {
+    first = etl::find_if_not(first, last, predicate);
+
+    if (first == last)
+    {
+      return first;
+    }
+
+    for (TIterator i = etl::next(first); i != last; ++i)
+    {
+      if (predicate(*i))
+      {
+        using ETL_OR_STD::swap;
+        swap(*i, *first);
+        ++first;
+      }
+    }
+
+    return first;
+  }
+
+  //***************************************************************************
+  /// partition
+  /// For iterators that support bidirectional iteration.
+  /// Does at most (etl::distance(first, last) / 2) swaps.
+  //***************************************************************************
+  template <typename TIterator, typename TPredicate>
+  ETL_CONSTEXPR14
+  typename etl::enable_if<etl::is_bidirectional_iterator_concept<TIterator>::value, TIterator>::type
+    partition(TIterator first, TIterator last, TPredicate predicate) 
+  {
+    while (first != last)
+    {
+      first = etl::find_if_not(first, last, predicate);
+
+      if (first == last)
+      {
+        break;
+      }
+
+      last = etl::find_if(etl::reverse_iterator<TIterator>(last),
+                          etl::reverse_iterator<TIterator>(first),
+                          predicate).base();
+
+      if (first == last)
+      {
+        break;
+      }
+
+      --last;
+      using ETL_OR_STD::swap;
+      swap(*first, *last);
+      ++first;
+    }
+
+    return first;
+  }
 }
 
 #include "private/minmax_pop.h"

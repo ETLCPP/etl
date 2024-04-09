@@ -30,6 +30,7 @@ SOFTWARE.
 
 #include "etl/algorithm.h"
 #include "etl/container.h"
+#include "etl/binary.h"
 
 #include "data.h"
 #include "iterators_for_unit_tests.h"
@@ -2223,6 +2224,84 @@ namespace
       etl::generate(actual.begin(), actual.end(), generator(2));
 
       CHECK_ARRAY_EQUAL(expected.data(), actual.data(), expected.size());
+    }
+
+    //*************************************************************************
+    TEST(partition_forward_iterator_container)
+    {
+      // 40,320 permutations.
+      std::array<int, 8> origin = { 0, 1, 2, 3, 4, 5, 6, 7 };
+
+      std::forward_list<int> compare(origin.begin(), origin.end());
+      std::forward_list<int> data(origin.begin(), origin.end());
+
+      bool complete = false;
+
+      while (!complete)
+      {
+        auto pivot1 = std::partition(compare.begin(), compare.end(), [](int i) { return etl::is_even(i); });
+        auto pivot2 = etl::partition(data.begin(), data.end(), [](int i) { return etl::is_even(i); });
+
+        auto distance1 = std::distance(compare.begin(), pivot1);
+        auto distance2 = std::distance(data.begin(), pivot2);
+
+        CHECK_EQUAL(*pivot1, *pivot2);
+        CHECK_EQUAL(distance1, distance2);
+
+        for (auto itr = compare.begin(); itr != pivot1; ++itr)
+        {
+          CHECK_TRUE((etl::is_even(*itr)));
+        }
+
+        for (auto itr = pivot1; itr != compare.end(); ++itr)
+        {
+          CHECK_FALSE((etl::is_even(*itr)));
+        }
+
+        complete = !std::next_permutation(origin.begin(), origin.end());
+
+        compare.assign(origin.begin(), origin.end());
+        data.assign(origin.begin(), origin.end());
+      }
+    }
+
+    //*************************************************************************
+    TEST(partition_bidirectional_iterator_container)
+    {
+      // 40,320 permutations.
+      std::array<int, 8> initial = { 0, 1, 2, 3, 4, 5, 6, 7 };
+      
+      std::array<int, 8> compare = initial;
+      std::array<int, 8> data = initial;
+
+      bool complete = false;
+
+      while (!complete)
+      {
+        auto pivot1 = std::partition(compare.begin(), compare.end(), [](int i) { return etl::is_even(i); });
+        auto pivot2 = etl::partition(data.begin(), data.end(), [](int i) { return etl::is_even(i); });
+
+        auto distance1 = std::distance(compare.begin(), pivot1);
+        auto distance2 = std::distance(data.begin(), pivot2);
+
+        CHECK_EQUAL(*pivot1, *pivot2);
+        CHECK_EQUAL(distance1, distance2);
+
+        for (auto itr = compare.begin(); itr != pivot1; ++itr)
+        {
+          CHECK_TRUE((etl::is_even(*itr)));
+        }
+
+        for (auto itr = pivot1; itr != compare.end(); ++itr)
+        {
+          CHECK_FALSE((etl::is_even(*itr)));
+        }
+
+        complete = !std::next_permutation(initial.begin(), initial.end());
+
+        compare = initial;
+        data = initial;
+      }
     }
   };
 }
