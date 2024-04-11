@@ -764,6 +764,7 @@ namespace etl
       return false;
     }
     
+    //*******************************************
     void set_status_callbacks(event_callback_type insert, event_callback_type remove)
     {
       insert_callback = insert;
@@ -771,7 +772,7 @@ namespace etl
     }
 
     //*******************************************
-    void clear_status_callbacks()
+    void clear_event_callbacks()
     {
       insert_callback.clear();
       remove_callback.clear();
