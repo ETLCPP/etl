@@ -80,19 +80,19 @@ SOFTWARE.
 
 #if defined(ETL_NO_CPP_NAN_SUPPORT)
   #if defined(NAN)
-  #include "etl/private/diagnostic_useless_cast_push.h"
+  #include "private/diagnostic_useless_cast_push.h"
     #define ETL_NANF    NAN
     #define ETL_NAN     static_cast<double>(NAN)
     #define ETL_NANL    static_cast<long double>(NAN)
     #define ETL_HAS_NAN true
-  #include "etl/private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
   #else
-  #include "etl/private/diagnostic_useless_cast_push.h"
+  #include "private/diagnostic_useless_cast_push.h"
     #define ETL_NANF HUGE_VALF    
     #define ETL_NAN  HUGE_VAL
     #define ETL_NANL HUGE_VALL
     #define ETL_HAS_NAN false
-  #include "etl/private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
   #endif
 #else
   #define ETL_NANF    nanf("")

@@ -462,12 +462,12 @@ namespace etl
 
     random_pcg()
     {
-#include "etl/private/diagnostic_useless_cast_push.h"
+#include "private/diagnostic_useless_cast_push.h"
       // An attempt to come up with a unique non-zero seed,
       // based on the address of the instance.
       uintptr_t n = reinterpret_cast<uintptr_t>(this);
       value = static_cast<uint64_t>(n);
-#include "etl/private/diagnostic_pop.h"
+#include "private/diagnostic_pop.h"
     }
 
     //***************************************************************************
