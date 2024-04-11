@@ -385,6 +385,8 @@ namespace etl
 
     typedef etl::delegate<void(void)> callback_type;
 
+    typedef etl::delegate<void(etl::timer::id::type)> event_callback_type;
+
     //*******************************************
     /// Register a timer.
     //*******************************************
@@ -500,6 +502,7 @@ namespace etl
           {
             ETL_DISABLE_TIMER_UPDATES;
             active_list.remove(timer.id, false);
+            remove_callback.call_if(timer.id);
             ETL_ENABLE_TIMER_UPDATES;
           }
 
@@ -571,12 +574,14 @@ namespace etl
               count -= timer.delta;
 
               active_list.remove(timer.id, true);
+              remove_callback.call_if(timer.id);
 
               if (timer.repeating)
               {
                 // Reinsert the timer.
                 timer.delta = timer.period;
                 active_list.insert(timer.id);
+                insert_callback.call_if(timer.id);
               }
 
               if (timer.p_callback != ETL_NULLPTR)
@@ -637,10 +642,12 @@ namespace etl
             if (timer.is_active())
             {
               active_list.remove(timer.id, false);
+              remove_callback.call_if(timer.id);
             }
 
             timer.delta = immediate_ ? 0 : timer.period;
             active_list.insert(timer.id);
+            insert_callback.call_if(timer.id);
             ETL_ENABLE_TIMER_UPDATES;
 
             result = true;
@@ -670,6 +677,7 @@ namespace etl
           {
             ETL_DISABLE_TIMER_UPDATES;
             active_list.remove(timer.id, false);
+            remove_callback.call_if(timer.id);
             ETL_ENABLE_TIMER_UPDATES;
           }
 
@@ -732,6 +740,20 @@ namespace etl
       return delta;
     }
 
+    //*******************************************
+    void set_status_callbacks(event_callback_type insert, event_callback_type remove)
+    {
+      insert_callback = insert;
+      remove_callback = remove;
+    }
+
+    //*******************************************
+    void clear_status_callbacks()
+    {
+      insert_callback.clear();
+      remove_callback.clear();
+    }
+
   protected:
 
     //*******************************************
@@ -773,6 +795,9 @@ namespace etl
     mutable etl::timer_semaphore_t process_semaphore;
 #endif
     uint_least8_t registered_timers;
+
+    event_callback_type insert_callback;
+    event_callback_type remove_callback;
 
   public:
 
