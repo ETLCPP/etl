@@ -741,14 +741,14 @@ namespace etl
     }
 
     //*******************************************
-    void set_status_callbacks(event_callback_type insert, event_callback_type remove)
+    void set_event_callbacks(event_callback_type insert, event_callback_type remove)
     {
       insert_callback = insert;
       remove_callback = remove;
     }
 
     //*******************************************
-    void clear_status_callbacks()
+    void clear_event_callbacks()
     {
       insert_callback.clear();
       remove_callback.clear();
