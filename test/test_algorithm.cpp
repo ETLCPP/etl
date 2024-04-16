@@ -2303,5 +2303,86 @@ namespace
         data = initial;
       }
     }
+
+    //*************************************************************************
+    TEST(nth_element_with_default_less_than_comparison)
+    {
+      // 40,320 permutations.
+      std::array<int, 8> initial = { 0, 1, 2, 3, 4, 5, 6, 7 };
+
+      std::array<int, 8> compare = initial;
+      std::array<int, 8> data    = initial;
+
+      bool complete = false;
+
+      // For each nth position of each permutation.
+      while (!complete)
+      {
+        // Try each nth position.
+        for (size_t i = 0; i < initial.size(); ++i)
+        {
+          std::sort(compare.begin(), compare.end());
+          etl::nth_element(data.begin(), data.begin() + i, data.end());
+
+          CHECK_EQUAL(compare[i], data[i]);
+        }
+
+        complete = !std::next_permutation(initial.begin(), initial.end());
+
+        compare = initial;
+        data    = initial;
+      }
+    }
+
+#if (ETL_USING_CPP20 && ETL_USING_STL) || (ETL_USING_CPP14 && ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST))
+    //*************************************************************************
+    constexpr int MakeNth(int nth_index)
+    {
+      std::array<int, 8> data = { 5, 1, 3, 7, 6, 2, 4, 0 };
+
+      etl::nth_element(data.begin(), data.begin() + nth_index, data.end());
+
+      return data[nth_index];
+    }
+    
+    TEST(constexpr_nth_element_with_default_less_than_comparison)
+    {
+      std::array<int, 8> compare = { 0, 1, 2, 3, 4, 5, 6, 7 };
+
+      constexpr int nth = MakeNth(3);
+
+      CHECK_EQUAL(compare[3], nth);
+    }
+#endif
+
+    //*************************************************************************
+    TEST(nth_element_with_custom_comparison)
+    {
+      // 40,320 permutations.
+      std::array<int, 8> initial = { 0, 1, 2, 3, 4, 5, 6, 7 };
+
+      std::array<int, 8> compare = initial;
+      std::array<int, 8> data = initial;
+
+      bool complete = false;
+
+      // For each nth position of each permutation.
+      while (!complete)
+      {
+        // Try each nth position.
+        for (size_t i = 0; i < initial.size(); ++i)
+        {
+          std::sort(compare.begin(), compare.end(), std::greater<int>());
+          etl::nth_element(data.begin(), data.begin() + i, data.end(), std::greater<int>());
+
+          CHECK_EQUAL(compare[i], data[i]);
+        }
+
+        complete = !std::next_permutation(initial.begin(), initial.end());
+
+        compare = initial;
+        data = initial;
+      }
+    }
   };
 }
