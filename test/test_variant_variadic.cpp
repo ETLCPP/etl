@@ -26,6 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
+#include "unit_test_framework.h"
+
 #include "etl/private/variant_variadic.h"
 #include "etl/visitor.h"
 #include "etl/overload.h"
@@ -44,6 +46,28 @@ SOFTWARE.
 
 #if ETL_USING_CPP20
   #include <compare>
+
+  std::ostream& operator <<(std::ostream& os, const std::strong_ordering& ordering)
+  {
+    if (ordering == std::strong_ordering::equal)
+    {
+      os << "std::strong_ordering::equal";
+    }
+    else if (ordering == std::strong_ordering::equivalent)
+    {
+      os << "std::strong_ordering::equivalent";
+    }
+    else if (ordering == std::strong_ordering::greater)
+    {
+      os << "std::strong_ordering::greater";
+    }
+    else if (ordering == std::strong_ordering::less)
+    {
+      os << "std::strong_ordering::less";
+    }
+
+    return os;
+  }
 #endif
 
 #include "etl/private/diagnostic_useless_cast_push.h"
@@ -170,30 +194,6 @@ namespace
 
     return os;
   }
-
-#if ETL_USING_CPP20 && ETL_USING_STL
-  std::ostream& operator <<(std::ostream& os, const std::strong_ordering& ordering)
-  {
-    if (ordering == std::strong_ordering::equal)
-    {
-      os << "std::strong_ordering::equal";
-    }
-    else if (ordering == std::strong_ordering::equivalent)
-    {
-      os << "std::strong_ordering::equivalent";
-    }
-    else if (ordering == std::strong_ordering::greater)
-    {
-      os << "std::strong_ordering::greater";
-    }
-    else if (ordering == std::strong_ordering::less)
-    {
-      os << "std::strong_ordering::less";
-    }
-
-    return os;
-  }
-#endif
 
   typedef etl::variant<etl::monostate, D1, D2, D3, D4> test_variant_emplace;
 
@@ -324,7 +324,7 @@ namespace
 
 // Moved from the top of the file otherwise clang has issues with
 // operator<< for std::strong_ordering.
-#include "unit_test_framework.h"
+//#include "unit_test_framework.h"
 
 // Definitions for when the STL and compiler built-ins are not available.
 #if ETL_NOT_USING_STL && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
@@ -2024,20 +2024,20 @@ namespace
       Variant v_int_1(1);
       Variant v_int_2(2);
 
-      CHECK_EQUAL(std::strong_ordering::equal,   v_empty1 <=> v_empty2);
-      CHECK_EQUAL(std::strong_ordering::less,    v_empty1 <=> v_char_a);
-      CHECK_EQUAL(std::strong_ordering::greater, v_char_a <=> v_empty1);
+      CHECK(std::strong_ordering::equal   == v_empty1 <=> v_empty2);
+      CHECK(std::strong_ordering::less    == v_empty1 <=> v_char_a);
+      CHECK(std::strong_ordering::greater == v_char_a <=> v_empty1);
 
-      CHECK_EQUAL(std::strong_ordering::equal,   v_char_a <=> v_char_a);
-      CHECK_EQUAL(std::strong_ordering::less,    v_char_a <=> v_char_b);
-      CHECK_EQUAL(std::strong_ordering::greater, v_char_b <=> v_char_a);
+      CHECK(std::strong_ordering::equal   == v_char_a <=> v_char_a);
+      CHECK(std::strong_ordering::less    == v_char_a <=> v_char_b);
+      CHECK(std::strong_ordering::greater == v_char_b <=> v_char_a);
 
-      CHECK_EQUAL(std::strong_ordering::equal,   v_int_1 <=> v_int_1);
-      CHECK_EQUAL(std::strong_ordering::less,    v_int_1 <=> v_int_2);
-      CHECK_EQUAL(std::strong_ordering::greater, v_int_2 <=> v_int_1);
+      CHECK(std::strong_ordering::equal   == v_int_1 <=> v_int_1);
+      CHECK(std::strong_ordering::less    == v_int_1 <=> v_int_2);
+      CHECK(std::strong_ordering::greater == v_int_2 <=> v_int_1);
 
-      CHECK_EQUAL(std::strong_ordering::less,    v_char_a <=> v_int_1);
-      CHECK_EQUAL(std::strong_ordering::greater, v_int_2  <=> v_char_a);
+      CHECK(std::strong_ordering::less    == v_char_a <=> v_int_1);
+      CHECK(std::strong_ordering::greater == v_int_2  <=> v_char_a);
     }
 #endif
 
